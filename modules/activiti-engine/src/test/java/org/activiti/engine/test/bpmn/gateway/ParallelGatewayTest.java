@@ -145,7 +145,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     		.processInstanceId(pi.getId()). list();
     
     for (HistoricActivityInstance h: history) {
-    	if (h.getActivityId().equals("parallelgateway2") || h.getActivityId().equals("parallelgateway2")) {
+    	if (h.getActivityId().equals("parallelgateway2")) {
     		  assertNotNull(h.getEndTime());
     	}
     }

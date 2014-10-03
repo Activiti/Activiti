@@ -22,6 +22,8 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
 import org.activiti.rest.service.application.ActivitiRestServicesApplication;
+import org.restlet.data.Status;
+import org.restlet.resource.Delete;
 import org.restlet.resource.Get;
 
 
@@ -45,6 +47,25 @@ public class ProcessInstanceIdentityLinkResource extends BaseProcessInstanceReso
     IdentityLink link = getIdentityLink(identityId, type, processInstance.getId());
     return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
             .createRestIdentityLink(this, link);
+  }
+  
+  @Delete
+  public void deleteIdentityLink() {
+    if(!authenticate())
+      return;
+    
+    ProcessInstance processInstance = getProcessInstanceFromRequest();
+    
+    // Extract and validate identity link from URL
+    String identityId = getAttribute("identityId");
+    String type = getAttribute("type");
+    validateIdentityLinkArguments(identityId, type);
+    
+    getIdentityLink(identityId, type, processInstance.getId());
+    
+    ActivitiUtil.getRuntimeService().deleteUserIdentityLink(processInstance.getId(), identityId, type);
+    
+    setStatus(Status.SUCCESS_NO_CONTENT);
   }
   
   protected void validateIdentityLinkArguments(String identityId, String type) {

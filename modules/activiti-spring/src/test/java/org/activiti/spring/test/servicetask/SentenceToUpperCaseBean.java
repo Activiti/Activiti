@@ -19,15 +19,15 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Joram Barrez
  */
 public class SentenceToUpperCaseBean {
-  
-  protected SentenceGenerator sentenceGenerator;
 
-  public void setSentence(ActivityExecution execution) {
-    execution.setVariable("myVar", sentenceGenerator.getSentence().toUpperCase());
-  }
-  
-  public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
-    this.sentenceGenerator = sentenceGenerator;
-  }
+    protected SentenceGenerator sentenceGenerator;
+
+    public void setSentence(ActivityExecution execution) {
+        execution.setVariable("myVar", sentenceGenerator.getSentence().toUpperCase());
+    }
+
+    public void setSentenceGenerator(SentenceGenerator sentenceGenerator) {
+        this.sentenceGenerator = sentenceGenerator;
+    }
 
 }
