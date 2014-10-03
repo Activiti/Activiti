@@ -1226,7 +1226,7 @@ public class DbSqlSession implements Session {
       
       BufferedReader reader = new BufferedReader(new StringReader(ddlStatements));
       String line = readNextTrimmedLine(reader);
-      boolean inOracleBeginStatement = false;
+      boolean inOraclePlsqlBlock = false;
       while (line != null) {
         if (line.startsWith("# ")) {
           log.debug(line.substring(2));
@@ -1252,14 +1252,18 @@ public class DbSqlSession implements Session {
         } else if (line.length()>0) {
           
           if ("oracle".equals(databaseType) && line.startsWith("begin")) {
-            inOracleBeginStatement = true;
-            
-          } else if ("oracle".equals(databaseType) && line.startsWith("/")) {
+            inOraclePlsqlBlock = true;
             sqlStatement = addSqlStatementPiece(sqlStatement, line);
-            inOracleBeginStatement = false;
             
-          } else if (line.endsWith(";") && inOracleBeginStatement == false) {
-            sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
+          } else if ((line.endsWith(";") && inOraclePlsqlBlock == false) ||
+              (line.startsWith("/") && inOraclePlsqlBlock == true)) {
+            
+            if (inOraclePlsqlBlock) {
+              inOraclePlsqlBlock = false;
+            } else {
+              sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
+            }
+            
             Statement jdbcStatement = connection.createStatement();
             try {
               // no logging needed as the connection will log it
