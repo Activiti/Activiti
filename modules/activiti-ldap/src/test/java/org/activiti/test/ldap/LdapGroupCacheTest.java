@@ -19,7 +19,6 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.ldap.LDAPGroupCache;
 import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
 import org.activiti.ldap.LDAPGroupManagerFactory;
-import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:activiti-context-ldap-group-cache.xml")

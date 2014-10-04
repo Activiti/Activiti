@@ -97,7 +97,7 @@ public class ActivitiStatusService extends StatusService {
       ResourceException re = (ResourceException) throwable;
       status = re.getStatus();
     } else if(throwable instanceof ActivitiException) {
-      status = new Status(Status.SERVER_ERROR_INTERNAL.getCode(), getSafeStatusName(throwable.getMessage()), getSafeStatusName(throwable.getMessage()), null);;
+      status = new Status(Status.SERVER_ERROR_INTERNAL.getCode(), getSafeStatusName(throwable.getMessage()), getSafeStatusName(throwable.getMessage()), null);
     } else {
       status = null;
     }

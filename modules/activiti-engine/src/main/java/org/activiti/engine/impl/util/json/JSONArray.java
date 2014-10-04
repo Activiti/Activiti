@@ -169,7 +169,7 @@ public class JSONArray {
     public JSONArray(Collection collection) {
 		this.myArrayList = new ArrayList();
 		if (collection != null) {
-			Iterator iter = collection.iterator();;
+			Iterator iter = collection.iterator();
 			while (iter.hasNext()) {
 			    Object o = iter.next();
                 this.myArrayList.add(JSONObject.wrap(o));  
