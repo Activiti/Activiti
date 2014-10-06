@@ -57,8 +57,6 @@ public class LockFreeAcquireJobsRunnable implements AcquireJobsRunnable {
   /** Flag to indicate whether the runnable is currently waiting. */
   protected final AtomicBoolean isWaiting = new AtomicBoolean(false);
   
-  protected long millisToWait = 0;
-  
   public LockFreeAcquireJobsRunnable(LockFreeJobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;
   }
@@ -97,9 +95,10 @@ public class LockFreeAcquireJobsRunnable implements AcquireJobsRunnable {
       
       
       if (nrOfAquiredJobs == 0) {
-      	log.info("Wrote lock owner to {} jobs", nrOfAquiredJobs);
       	sleep();
-      } 
+      } else {
+      	log.debug("Wrote lock owner to {} jobs. Putting them on the queue now.", nrOfAquiredJobs);
+      }
       
       // To avoid that one node in a job executor cluster acquires all jobs,
       // we always process the acquired jobs first before acquiring new ones.
@@ -232,14 +231,4 @@ public class LockFreeAcquireJobsRunnable implements AcquireJobsRunnable {
   }
   
   
-  /* Getters and Setters */
-  
-  public long getMillisToWait() {
-    return millisToWait;
-  }
-  
-  public void setMillisToWait(long millisToWait) {
-    this.millisToWait = millisToWait;
-  }
-
 }
