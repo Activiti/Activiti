@@ -21,7 +21,6 @@ import org.activiti.camel.exception.tools.ThrowBpmnExceptionBean;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
@@ -71,7 +70,7 @@ public class CamelExceptionTest extends SpringActivitiTestCase{
   
   
   
-  // If no exception is thrown, a normal happy path is expected
+  // check happy path in synchronouse camel call
   @Deployment(resources={"org/activiti/camel/exception/bpmnExceptionInRouteSynchron.bpmn20.xml"})
   public void testHappyPathSynchron() {
     
@@ -84,6 +83,7 @@ public class CamelExceptionTest extends SpringActivitiTestCase{
 
   }
   
+  // Check Non BPMN error in synchronouse camel call
   @Deployment(resources={"org/activiti/camel/exception/bpmnExceptionInRouteSynchron.bpmn20.xml"})
   public void testNonBpmnExceptionInCamel() {
     // Signal ThrowBpmnExceptionBean to throw a non BPMN Exception
@@ -103,9 +103,10 @@ public class CamelExceptionTest extends SpringActivitiTestCase{
    fail("Activiti exception expected");
   }
   
+  // check Bpmn Exception in synchronous camel call
   @Deployment(resources={"org/activiti/camel/exception/bpmnExceptionInRouteSynchron.bpmn20.xml"})
   public void testBpmnExceptionInCamel() {
-    // Signal ThrowBpmnExceptionBean to throw a non BPMN Exception
+    // Signal ThrowBpmnExceptionBean to throw a  BPMN Exception
     ThrowBpmnExceptionBean.setExceptionType(ThrowBpmnExceptionBean.ExceptionType.BPMN_EXCEPTION);    
 
     try {
@@ -119,7 +120,7 @@ public class CamelExceptionTest extends SpringActivitiTestCase{
   }
 
 
-  // If no exception is thrown, a normal happy path is expected
+  // check happy path in asynchronous camel call
   @Deployment(resources={"org/activiti/camel/exception/bpmnExceptionInRouteAsynchron.bpmn20.xml"})
   public void testHappyPathAsynchron() {
     
@@ -134,24 +135,24 @@ public class CamelExceptionTest extends SpringActivitiTestCase{
 
   }
   
-  // If no exception is thrown, a normal happy path is expected
+  // check non bpmn exception in asynchronouse camel call
   @Deployment(resources={"org/activiti/camel/exception/bpmnExceptionInRouteAsynchron.bpmn20.xml"})
   public void testNonBpmnPathAsynchron() {
     
-    // Signal ThrowBpmnExceptionBean to throw no exception
+    // Signal ThrowBpmnExceptionBean to throw non bpmn exception
     ThrowBpmnExceptionBean.setExceptionType(ThrowBpmnExceptionBean.ExceptionType.NON_BPMN_EXCEPTION);    
     runtimeService.startProcessInstanceByKey("exceptionInRouteSynchron");
     assertTrue(areJobsAvailable());
     int nErrorJobs =  (int) managementService.createJobQuery().count();
     
     assertEquals(1, nErrorJobs);
-    Job camelJob = managementService.createJobQuery().singleResult();
-    System.out.println(camelJob.getExceptionMessage());
+
+    nErrorJobs =  (int) managementService.createJobQuery().count();
     waitForJobExecutorToProcessAllJobs(10000000, 100);
-    System.out.println(camelJob.getExceptionMessage());
-        
-    nErrorJobs =  (int) managementService.createJobQuery().exceptionMessage("arbitary non bpmn exception").count();
-    assertEquals(1, nErrorJobs);
+    
+    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals("Unhandled exception on camel route", managementService.createJobQuery().singleResult().getExceptionMessage());
+    
     
     assertFalse(ExceptionServiceMock.isCalled());
     assertFalse(NoExceptionServiceMock.isCalled());

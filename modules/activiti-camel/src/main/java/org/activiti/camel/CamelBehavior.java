@@ -15,10 +15,6 @@ package org.activiti.camel;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -111,37 +107,10 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
     final ActivitiEndpoint endpoint = createEndpoint(execution);
     final Exchange exchange = createExchange(execution, endpoint);
     
-    if (isASync(execution)) {
-
-      FutureTask<Void> future = new FutureTask<Void>(new Callable<Void>() {
-          public Void call() {
-            try {
-              endpoint.process(exchange);
-            } catch (Exception e) {  
-              System.out.println("*******************  Exception happened in camel asynchronous task");
-              throw new RuntimeException("Unable to process camel endpint asynchronously.");
-            }
-            return null;
-          }
-      });
-      ExecutorService executor = Executors.newSingleThreadExecutor();
-      executor.submit(future);
-      if (!handleCamelException(exchange, execution)) {
-          execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
-          leave(execution);
-      }
-
-    } else {
-      endpoint.process(exchange);
-      if (!handleCamelException(exchange, execution)) {
-        execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
-        leave(execution);
-      }
-       
-
-        
-    }
-  
+    endpoint.process(exchange);
+    execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
+    if (!handleCamelException(exchange, execution))
+      leave(execution);
   }
 
   protected ActivitiEndpoint createEndpoint(ActivityExecution execution) {
