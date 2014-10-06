@@ -33,10 +33,11 @@ public class AsyncPingTest extends SpringActivitiTestCase {
 
        @Override
        public void configure() throws Exception {
-    	   from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");    	   
-       }
-	   });
-   }
+    	   from("activiti:asyncPingProcess:serviceAsyncPing").to("seda:continueAsync");
+    	   from("seda:continueAsync").to("activiti:asyncPingProcess:receiveAsyncPing");
+		  }
+		});
+  }
    
    public void tearDown() throws Exception {
      List<Route> routes = camelContext.getRoutes();
