@@ -1,26 +1,6 @@
 package org.activiti.rest.service.application;
 
 import org.activiti.rest.service.api.form.FormDataResource;
-import org.activiti.rest.service.api.history.HistoricActivityInstanceCollectionResource;
-import org.activiti.rest.service.api.history.HistoricActivityInstanceQueryResource;
-import org.activiti.rest.service.api.history.HistoricDetailCollectionResource;
-import org.activiti.rest.service.api.history.HistoricDetailDataResource;
-import org.activiti.rest.service.api.history.HistoricDetailQueryResource;
-import org.activiti.rest.service.api.history.HistoricProcessInstanceCollectionResource;
-import org.activiti.rest.service.api.history.HistoricProcessInstanceCommentCollectionResource;
-import org.activiti.rest.service.api.history.HistoricProcessInstanceCommentResource;
-import org.activiti.rest.service.api.history.HistoricProcessInstanceIdentityLinkCollectionResource;
-import org.activiti.rest.service.api.history.HistoricProcessInstanceQueryResource;
-import org.activiti.rest.service.api.history.HistoricProcessInstanceResource;
-import org.activiti.rest.service.api.history.HistoricProcessInstanceVariableDataResource;
-import org.activiti.rest.service.api.history.HistoricTaskInstanceCollectionResource;
-import org.activiti.rest.service.api.history.HistoricTaskInstanceIdentityLinkCollectionResource;
-import org.activiti.rest.service.api.history.HistoricTaskInstanceQueryResource;
-import org.activiti.rest.service.api.history.HistoricTaskInstanceResource;
-import org.activiti.rest.service.api.history.HistoricTaskInstanceVariableDataResource;
-import org.activiti.rest.service.api.history.HistoricVariableInstanceCollectionResource;
-import org.activiti.rest.service.api.history.HistoricVariableInstanceDataResource;
-import org.activiti.rest.service.api.history.HistoricVariableInstanceQueryResource;
 import org.activiti.rest.service.api.identity.GroupCollectionResource;
 import org.activiti.rest.service.api.identity.GroupMembershipCollectionResource;
 import org.activiti.rest.service.api.identity.GroupMembershipResource;
@@ -195,22 +175,6 @@ public class RestServicesInit {
     
     router.attach("/runtime/signals", SignalResource.class);
     
-    router.attach("/history/historic-process-instances/{processInstanceId}", HistoricProcessInstanceResource.class);
-    router.attach("/history/historic-process-instances/{processInstanceId}/identitylinks", HistoricProcessInstanceIdentityLinkCollectionResource.class);
-    router.attach("/history/historic-process-instances/{processInstanceId}/comments", HistoricProcessInstanceCommentCollectionResource.class);
-    router.attach("/history/historic-process-instances/{processInstanceId}/comments/{commentId}", HistoricProcessInstanceCommentResource.class);
-    router.attach("/history/historic-process-instances/{processInstanceId}/variables/{variableName}/data", HistoricProcessInstanceVariableDataResource.class);
-    router.attach("/history/historic-process-instances", HistoricProcessInstanceCollectionResource.class);
-    router.attach("/history/historic-task-instances/{taskId}", HistoricTaskInstanceResource.class);
-    router.attach("/history/historic-task-instances/{taskId}/identitylinks", HistoricTaskInstanceIdentityLinkCollectionResource.class);
-    router.attach("/history/historic-task-instances/{taskId}/variables/{variableName}/data", HistoricTaskInstanceVariableDataResource.class);
-    router.attach("/history/historic-task-instances", HistoricTaskInstanceCollectionResource.class);
-    router.attach("/history/historic-activity-instances", HistoricActivityInstanceCollectionResource.class);
-    router.attach("/history/historic-variable-instances", HistoricVariableInstanceCollectionResource.class);
-    router.attach("/history/historic-variable-instances/{varInstanceId}/data", HistoricVariableInstanceDataResource.class);
-    router.attach("/history/historic-detail", HistoricDetailCollectionResource.class);
-    router.attach("/history/historic-detail/{detailId}/data", HistoricDetailDataResource.class);
-    
     router.attach("/management/tables", TableCollectionResource.class);
     router.attach("/management/tables/{tableName}", TableResource.class);
     router.attach("/management/tables/{tableName}/columns", TableColumnsResource.class);
@@ -223,24 +187,9 @@ public class RestServicesInit {
     
     router.attach("/form/form-data", FormDataResource.class);
     
-    router.attach("/identity/users", UserCollectionResource.class);
-    router.attach("/identity/users/{userId}", UserResource.class);
-    router.attach("/identity/users/{userId}/picture", UserPictureResource.class);
-    router.attach("/identity/users/{userId}/info/{key}", UserInfoResource.class);
-    router.attach("/identity/users/{userId}/info", UserInfoCollectionResource.class);
-    router.attach("/identity/groups", GroupCollectionResource.class);
-    router.attach("/identity/groups/{groupId}", GroupResource.class);
-    router.attach("/identity/groups/{groupId}/members", GroupMembershipCollectionResource.class);
-    router.attach("/identity/groups/{groupId}/members/{userId}", GroupMembershipResource.class);
-    
     router.attach("/query/tasks", TaskQueryResource.class);
     router.attach("/query/process-instances", ProcessInstanceQueryResource.class);
     router.attach("/query/executions", ExecutionQueryResource.class);
-    router.attach("/query/historic-process-instances", HistoricProcessInstanceQueryResource.class);
-    router.attach("/query/historic-task-instances", HistoricTaskInstanceQueryResource.class);
-    router.attach("/query/historic-activity-instances", HistoricActivityInstanceQueryResource.class);
-    router.attach("/query/historic-variable-instances", HistoricVariableInstanceQueryResource.class);
-    router.attach("/query/historic-detail", HistoricDetailQueryResource.class);
     
     // Old rest-urls
     router.attach("/process-engine", ProcessEngineResource.class);

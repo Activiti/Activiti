@@ -319,7 +319,7 @@ RuntimeService.signalEventReceived(String signalName, String executionId);
 	           To restrict the <emphasis>scope</emphasis> of the signal event, add the (non-BPMN 2.0 standard!) <emphasis>scope attribute</emphasis>
 	           to the signal event definition:
 	           <programlisting>
-&lt;signal id=&quot;alertSignal&quot; name=&quot;alert&quot; activiti:scope&quot;processInstance&quot;/&gt;</programlisting>
+&lt;signal id=&quot;alertSignal&quot; name=&quot;alert&quot; activiti:scope=&quot;processInstance&quot;/&gt;</programlisting>
 	           The default value for this is attribute is <emphasis>&quot;global&quot;</emphasis>.
 	       </para>
 	    </section>

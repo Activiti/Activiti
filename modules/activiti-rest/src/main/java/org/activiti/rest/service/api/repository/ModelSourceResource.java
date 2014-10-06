@@ -13,32 +13,47 @@
 
 package org.activiti.rest.service.api.repository;
 
-import java.io.ByteArrayInputStream;
+import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.Model;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.restlet.data.MediaType;
-import org.restlet.representation.InputRepresentation;
+import org.apache.commons.httpclient.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ModelSourceResource extends BaseModelSourceResource {
 
-  @Override
-  protected InputRepresentation getModelStream(Model model) {
-    byte[] editorSource = ActivitiUtil.getRepositoryService().getModelEditorSource(model.getId());
-    if(editorSource == null) {
-      throw new ActivitiObjectNotFoundException("Model with id '" + model.getId() + "' does not have source available.", String.class);
+  @RequestMapping(value="/repository/models/{modelId}/source", method = RequestMethod.GET)
+  protected @ResponseBody byte[] getModelBytes(@PathVariable String modelId, HttpServletResponse response) {
+    byte[] editorSource = repositoryService.getModelEditorSource(modelId);
+    if (editorSource == null) {
+      throw new ActivitiObjectNotFoundException("Model with id '" + modelId + "' does not have source available.", String.class);
     }
-    return new InputRepresentation(new ByteArrayInputStream(editorSource), MediaType.APPLICATION_OCTET_STREAM);
+    response.setContentType("application/octet-stream");
+    return editorSource;
   }
   
-  @Override
-  protected void setModelSource(Model model, byte[] byteArray) {
-    ActivitiUtil.getRepositoryService().addModelEditorSource(model.getId(), byteArray);
+  @RequestMapping(value="/repository/models/{modelId}/source", method = RequestMethod.PUT)
+  protected void setModelSource(@PathVariable String modelId, @RequestParam("file") MultipartFile file, HttpServletResponse response) {
+    Model model = getModelFromRequest(modelId);
+    if (model != null) {
+      try {
+        repositoryService.addModelEditorSource(modelId, file.getBytes());
+        response.setStatus(HttpStatus.SC_NO_CONTENT);
+      } catch (Exception e) {
+        throw new ActivitiException("Error adding model editor source extra", e);
+      }
+    }
   }
-  
 }

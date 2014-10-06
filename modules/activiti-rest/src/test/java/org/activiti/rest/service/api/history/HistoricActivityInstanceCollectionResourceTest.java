@@ -23,12 +23,15 @@ import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.junit.Assert;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,13 +42,16 @@ import com.fasterxml.jackson.databind.JsonNode;
  * 
  * @author Tijs Rademakers
  */
-public class HistoricActivityInstanceCollectionResourceTest extends BaseRestTestCase {
+public class HistoricActivityInstanceCollectionResourceTest extends BaseSpringRestTestCase {
+  
+  private static final Logger logger = LoggerFactory.getLogger(HistoricActivityInstanceCollectionResourceTest.class);
   
   /**
    * Test querying historic activity instance. 
    * GET history/historic-activity-instances
    */
-  @Deployment
+  @Test
+  @Deployment(resources={"org/activiti/rest/service/api/twoTaskProcess.bpmn20.xml"})
   public void testQueryActivityInstances() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
@@ -105,16 +111,11 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseRestTest
   }
   
   protected void assertResultsPresentInDataResponse(String url, int numberOfResultsExpected, String... expectedActivityIds) throws JsonProcessingException, IOException {
-    
     // Do the actual call
-    ClientResource client = getAuthenticatedClient(url);
-    Representation response = client.get();
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), 200);
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    Assert.assertEquals(numberOfResultsExpected, dataNode.size());
     
-    // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
-    assertEquals(numberOfResultsExpected, dataNode.size());
-
     // Check presence of ID's
     if (expectedActivityIds != null) {
       List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedActivityIds));
@@ -123,9 +124,7 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseRestTest
         String activityId = it.next().get("activityId").textValue();
         toBeFound.remove(activityId);
       }
-      assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
+      Assert.assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
     }
-    
-    client.release();
   }
 }

@@ -14,94 +14,67 @@
 package org.activiti.rest.service.api.identity;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-import org.restlet.ext.fileupload.RestletFileUpload;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.representation.Representation;
-import org.restlet.resource.Get;
-import org.restlet.resource.Put;
-import org.restlet.resource.ResourceException;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class UserPictureResource extends BaseUserResource {
 
-  @Get
-  public InputRepresentation getUserPicture() {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/identity/users/{userId}/picture", method = RequestMethod.GET, produces = "application/json")
+  public @ResponseBody byte[] getUserPicture(@PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
+    User user = getUserFromRequest(userId);
+    Picture userPicture = identityService.getUserPicture(user.getId());
     
-    User user = getUserFromRequest();
-    Picture userPicture = ActivitiUtil.getIdentityService().getUserPicture(user.getId());
-    
-    if(userPicture == null) {
+    if (userPicture == null) {
       throw new ActivitiObjectNotFoundException("The user with id '" + user.getId() + "' does not have a picture.", Picture.class);
     }
     
-    MediaType mediaType = MediaType.IMAGE_JPEG;
-    if(userPicture.getMimeType() != null) {
-      mediaType = MediaType.valueOf(userPicture.getMimeType());
+    String mediaType = "image/jpeg";
+    if (userPicture.getMimeType() != null) {
+      mediaType = userPicture.getMimeType();
     }
     
-    return new InputRepresentation(userPicture.getInputStream(), mediaType);
+    response.setContentType(mediaType);
+    
+    try {
+      return IOUtils.toByteArray(userPicture.getInputStream());
+    } catch (Exception e) {
+      throw new ActivitiException("Error exporting picture: " + e.getMessage(), e);
+    }
   }
   
-  @Put
-  public void updateUserPicture(Representation representation) {
-  	if(authenticate() == false) return;
-    User user = getUserFromRequest();
-    
-    if(!MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
-      throw new ResourceException(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(), "The request should be of type 'multipart/form-data'.", null, null);
-    }
-    
-    RestletFileUpload upload = new RestletFileUpload(new DiskFileItemFactory());
+  @RequestMapping(value="/identity/users/{userId}/picture", method = RequestMethod.PUT)
+  public void updateUserPicture(@PathVariable String userId, @RequestParam("file") MultipartFile file) {
+    User user = getUserFromRequest(userId);
     try {
-      FileItem uploadItem = null;
-      List<FileItem> items = upload.parseRepresentation(representation);
-      String mimeType = MediaType.IMAGE_JPEG.toString();
-      
-      for (FileItem fileItem : items) {
-        if(fileItem.isFormField()) {
-          if("mimeType".equals(fileItem.getFieldName())) {
-            mimeType = fileItem.getString("UTF-8");
-          }
-        } else  if(fileItem.getName() != null) {
-          uploadItem = fileItem;
-        }
-      }
-      
-      if(uploadItem == null) {
-        throw new ActivitiIllegalArgumentException("No file content was found in request body.");
-      }
-      
-      int size = ((Long) uploadItem.getSize()).intValue();
+      String mimeType = file.getContentType();
+      int size = ((Long) file.getSize()).intValue();
       
       // Copy file-body in a bytearray as the engine requires this
       ByteArrayOutputStream bytesOutput = new ByteArrayOutputStream(size);
-      IOUtils.copy(uploadItem.getInputStream(), bytesOutput);
+      IOUtils.copy(file.getInputStream(), bytesOutput);
       
       Picture newPicture = new Picture(bytesOutput.toByteArray(), mimeType);
-      ActivitiUtil.getIdentityService().setUserPicture(user.getId(), newPicture);
+      identityService.setUserPicture(user.getId(), newPicture);
       
-    } catch (FileUploadException e) {
-      throw new ActivitiException("Error with uploaded file: " + e.getMessage(), e);
-    } catch (IOException e) {
+    } catch (Exception e) {
       throw new ActivitiException("Error while reading uploaded file: " + e.getMessage(), e);
     }
   }

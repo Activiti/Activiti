@@ -14,174 +14,177 @@
 package org.activiti.rest.service.api.history;
 
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.activiti.rest.common.api.DataResponse;
-import org.restlet.data.Form;
-import org.restlet.resource.Get;
+import org.activiti.rest.common.api.RequestUtil;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Tijs Rademakers
  */
+@RestController
 public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstanceBaseResource {
 
-  @Get("json")
-  public DataResponse getHistoricProcessInstances() {
-    if(!authenticate()) {
-      return null;
-    }
-    Form urlQuery = getQuery();
-   
+  @RequestMapping(value="/history/historic-task-instances", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getHistoricProcessInstances(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
     // Populate query based on request
     HistoricTaskInstanceQueryRequest queryRequest = new HistoricTaskInstanceQueryRequest();
     
-    if(getQueryParameter("taskId", urlQuery) != null) {
-      queryRequest.setTaskId(getQueryParameter("taskId", urlQuery));
+    if (allRequestParams.get("taskId") != null) {
+      queryRequest.setTaskId(allRequestParams.get("taskId"));
     }
     
-    if(getQueryParameter("processInstanceId", urlQuery) != null) {
-      queryRequest.setProcessInstanceId(getQueryParameter("processInstanceId", urlQuery));
+    if (allRequestParams.get("processInstanceId") != null) {
+      queryRequest.setProcessInstanceId(allRequestParams.get("processInstanceId"));
     }
     
-    if(getQueryParameter("processBusinessKey", urlQuery) != null) {
-      queryRequest.setProcessBusinessKey(getQueryParameter("processBusinessKey", urlQuery));
+    if (allRequestParams.get("processBusinessKey") != null) {
+      queryRequest.setProcessBusinessKey(allRequestParams.get("processBusinessKey"));
     }
     
-    if(getQueryParameter("processDefinitionKey", urlQuery) != null) {
-      queryRequest.setProcessDefinitionKey(getQueryParameter("processDefinitionKey", urlQuery));
+    if (allRequestParams.get("processDefinitionKey") != null) {
+      queryRequest.setProcessDefinitionKey(allRequestParams.get("processDefinitionKey"));
     }
     
-    if(getQueryParameter("processDefinitionId", urlQuery) != null) {
-      queryRequest.setProcessDefinitionId(getQueryParameter("processDefinitionId", urlQuery));
+    if (allRequestParams.get("processDefinitionId") != null) {
+      queryRequest.setProcessDefinitionId(allRequestParams.get("processDefinitionId"));
     }
     
-    if(getQueryParameter("processDefinitionName", urlQuery) != null) {
-      queryRequest.setProcessDefinitionName(getQueryParameter("processDefinitionName", urlQuery));
+    if (allRequestParams.get("processDefinitionName") != null) {
+      queryRequest.setProcessDefinitionName(allRequestParams.get("processDefinitionName"));
     }
     
-    if(getQueryParameter("executionId", urlQuery) != null) {
-      queryRequest.setExecutionId(getQueryParameter("executionId", urlQuery));
+    if (allRequestParams.get("executionId") != null) {
+      queryRequest.setExecutionId(allRequestParams.get("executionId"));
     }
     
-    if(getQueryParameter("taskName", urlQuery) != null) {
-      queryRequest.setTaskName(getQueryParameter("taskName", urlQuery));
+    if (allRequestParams.get("taskName") != null) {
+      queryRequest.setTaskName(allRequestParams.get("taskName"));
     }
     
-    if(getQueryParameter("taskNameLike", urlQuery) != null) {
-      queryRequest.setTaskNameLike(getQueryParameter("taskNameLike", urlQuery));
+    if (allRequestParams.get("taskNameLike") != null) {
+      queryRequest.setTaskNameLike(allRequestParams.get("taskNameLike"));
     }
     
-    if(getQueryParameter("taskDescription", urlQuery) != null) {
-      queryRequest.setTaskDescription(getQueryParameter("taskDescription", urlQuery));
+    if (allRequestParams.get("taskDescription") != null) {
+      queryRequest.setTaskDescription(allRequestParams.get("taskDescription"));
     }
     
-    if(getQueryParameter("taskDescriptionLike", urlQuery) != null) {
-      queryRequest.setTaskDescriptionLike(getQueryParameter("taskDescriptionLike", urlQuery));
+    if (allRequestParams.get("taskDescriptionLike") != null) {
+      queryRequest.setTaskDescriptionLike(allRequestParams.get("taskDescriptionLike"));
     }
     
-    if(getQueryParameter("taskDefinitionKey", urlQuery) != null) {
-      queryRequest.setTaskDefinitionKey(getQueryParameter("taskDefinitionKey", urlQuery));
+    if (allRequestParams.get("taskDefinitionKey") != null) {
+      queryRequest.setTaskDefinitionKey(allRequestParams.get("taskDefinitionKey"));
     }
     
-    if(getQueryParameter("taskDeleteReason", urlQuery) != null) {
-      queryRequest.setTaskDeleteReason(getQueryParameter("taskDeleteReason", urlQuery));
+    if (allRequestParams.get("taskDeleteReason") != null) {
+      queryRequest.setTaskDeleteReason(allRequestParams.get("taskDeleteReason"));
     }
     
-    if(getQueryParameter("taskDeleteReasonLike", urlQuery) != null) {
-      queryRequest.setTaskDeleteReasonLike(getQueryParameter("taskDeleteReasonLike", urlQuery));
+    if (allRequestParams.get("taskDeleteReasonLike") != null) {
+      queryRequest.setTaskDeleteReasonLike(allRequestParams.get("taskDeleteReasonLike"));
     }
     
-    if(getQueryParameter("taskAssignee", urlQuery) != null) {
-      queryRequest.setTaskAssignee(getQueryParameter("taskAssignee", urlQuery));
+    if (allRequestParams.get("taskAssignee") != null) {
+      queryRequest.setTaskAssignee(allRequestParams.get("taskAssignee"));
     }
     
-    if(getQueryParameter("taskAssigneeLike", urlQuery) != null) {
-      queryRequest.setTaskAssigneeLike(getQueryParameter("taskAssigneeLike", urlQuery));
+    if (allRequestParams.get("taskAssigneeLike") != null) {
+      queryRequest.setTaskAssigneeLike(allRequestParams.get("taskAssigneeLike"));
     }
     
-    if(getQueryParameter("taskOwner", urlQuery) != null) {
-      queryRequest.setTaskOwner(getQueryParameter("taskOwner", urlQuery));
+    if (allRequestParams.get("taskOwner") != null) {
+      queryRequest.setTaskOwner(allRequestParams.get("taskOwner"));
     }
     
-    if(getQueryParameter("taskOwnerLike", urlQuery) != null) {
-      queryRequest.setTaskOwnerLike(getQueryParameter("taskOwnerLike", urlQuery));
+    if (allRequestParams.get("taskOwnerLike") != null) {
+      queryRequest.setTaskOwnerLike(allRequestParams.get("taskOwnerLike"));
     }
     
-    if(getQueryParameter("taskInvolvedUser", urlQuery) != null) {
-      queryRequest.setTaskInvolvedUser(getQueryParameter("taskInvolvedUser", urlQuery));
+    if (allRequestParams.get("taskInvolvedUser") != null) {
+      queryRequest.setTaskInvolvedUser(allRequestParams.get("taskInvolvedUser"));
     }
     
-    if(getQueryParameter("taskPriority", urlQuery) != null) {
-      queryRequest.setTaskPriority(getQueryParameterAsInt("taskPriority", urlQuery));
+    if (allRequestParams.get("taskPriority") != null) {
+      queryRequest.setTaskPriority(Integer.valueOf(allRequestParams.get("taskPriority")));
     }
     
-    if(getQueryParameter("finished", urlQuery) != null) {
-      queryRequest.setFinished(getQueryParameterAsBoolean("finished", urlQuery));
+    if (allRequestParams.get("finished") != null) {
+      queryRequest.setFinished(Boolean.valueOf(allRequestParams.get("finished")));
     }
     
-    if(getQueryParameter("processFinished", urlQuery) != null) {
-      queryRequest.setProcessFinished(getQueryParameterAsBoolean("processFinished", urlQuery));
+    if (allRequestParams.get("processFinished") != null) {
+      queryRequest.setProcessFinished(Boolean.valueOf(allRequestParams.get("processFinished")));
     }
     
-    if(getQueryParameter("parentTaskId", urlQuery) != null) {
-      queryRequest.setParentTaskId(getQueryParameter("parentTaskId", urlQuery));
+    if (allRequestParams.get("parentTaskId") != null) {
+      queryRequest.setParentTaskId(allRequestParams.get("parentTaskId"));
     }
     
-    if(getQueryParameter("dueDate", urlQuery) != null) {
-      queryRequest.setDueDate(getQueryParameterAsDate("dueDate", urlQuery));
+    if (allRequestParams.get("dueDate") != null) {
+      queryRequest.setDueDate(RequestUtil.getDate(allRequestParams, "dueDate"));
     }
     
-    if(getQueryParameter("dueDateAfter", urlQuery) != null) {
-      queryRequest.setDueDateAfter(getQueryParameterAsDate("dueDateAfter", urlQuery));
+    if (allRequestParams.get("dueDateAfter") != null) {
+      queryRequest.setDueDateAfter(RequestUtil.getDate(allRequestParams, "dueDateAfter"));
     }
     
-    if(getQueryParameter("dueDateBefore", urlQuery) != null) {
-      queryRequest.setDueDateBefore(getQueryParameterAsDate("dueDateBefore", urlQuery));
+    if (allRequestParams.get("dueDateBefore") != null) {
+      queryRequest.setDueDateBefore(RequestUtil.getDate(allRequestParams, "dueDateBefore"));
     }
     
-    if(getQueryParameter("taskCreatedOn", urlQuery) != null) {
-      queryRequest.setTaskCreatedOn(getQueryParameterAsDate("taskCreatedOn", urlQuery));
+    if (allRequestParams.get("taskCreatedOn") != null) {
+      queryRequest.setTaskCreatedOn(RequestUtil.getDate(allRequestParams, "taskCreatedOn"));
     }
     
-    if(getQueryParameter("taskCreatedBefore", urlQuery) != null) {
-    	queryRequest.setTaskCreatedBefore(getQueryParameterAsDate("taskCreatedBefore", urlQuery));
+    if (allRequestParams.get("taskCreatedBefore") != null) {
+    	queryRequest.setTaskCreatedBefore(RequestUtil.getDate(allRequestParams, "taskCreatedBefore"));
     }
     
-    if(getQueryParameter("taskCreatedAfter", urlQuery) != null) {
-    	queryRequest.setTaskCreatedAfter(getQueryParameterAsDate("taskCreatedAfter", urlQuery));
+    if (allRequestParams.get("taskCreatedAfter") != null) {
+    	queryRequest.setTaskCreatedAfter(RequestUtil.getDate(allRequestParams, "taskCreatedAfter"));
     }
     
-    if(getQueryParameter("taskCompletedOn", urlQuery) != null) {
-    	queryRequest.setTaskCompletedOn(getQueryParameterAsDate("taskCompletedOn", urlQuery));
+    if (allRequestParams.get("taskCompletedOn") != null) {
+    	queryRequest.setTaskCompletedOn(RequestUtil.getDate(allRequestParams, "taskCompletedOn"));
     }
     
-    if(getQueryParameter("taskCompletedBefore", urlQuery) != null) {
-    	queryRequest.setTaskCompletedBefore(getQueryParameterAsDate("taskCompletedBefore", urlQuery));
+    if (allRequestParams.get("taskCompletedBefore") != null) {
+    	queryRequest.setTaskCompletedBefore(RequestUtil.getDate(allRequestParams, "taskCompletedBefore"));
     }
     
-    if(getQueryParameter("taskCompletedAfter", urlQuery) != null) {
-    	queryRequest.setTaskCompletedAfter(getQueryParameterAsDate("taskCompletedAfter", urlQuery));
+    if (allRequestParams.get("taskCompletedAfter") != null) {
+    	queryRequest.setTaskCompletedAfter(RequestUtil.getDate(allRequestParams, "taskCompletedAfter"));
     }
     
-    if(getQueryParameter("includeTaskLocalVariables", urlQuery) != null) {
-      queryRequest.setIncludeTaskLocalVariables(getQueryParameterAsBoolean("includeTaskLocalVariables", urlQuery));
+    if (allRequestParams.get("includeTaskLocalVariables") != null) {
+      queryRequest.setIncludeTaskLocalVariables(Boolean.valueOf(allRequestParams.get("includeTaskLocalVariables")));
     }
     
-    if(getQueryParameter("includeProcessVariables", urlQuery) != null) {
-      queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", urlQuery));
+    if (allRequestParams.get("includeProcessVariables") != null) {
+      queryRequest.setIncludeProcessVariables(Boolean.valueOf(allRequestParams.get("includeProcessVariables")));
     }
     
-    if(getQueryParameter("tenantId", urlQuery) != null) {
-      queryRequest.setTenantId(getQueryParameter("tenantId", urlQuery));
+    if (allRequestParams.get("tenantId") != null) {
+      queryRequest.setTenantId(allRequestParams.get("tenantId"));
     }
     
-    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
-    	queryRequest.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    if (allRequestParams.get("tenantIdLike") != null) {
+    	queryRequest.setTenantIdLike(allRequestParams.get("tenantIdLike"));
     }
     
-    if(getQueryParameter("withoutTenantId", urlQuery) != null) {
-    	queryRequest.setWithoutTenantId(getQueryParameterAsBoolean("withoutTenantId", urlQuery));
+    if (allRequestParams.get("withoutTenantId") != null) {
+    	queryRequest.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
     }
     
-    return getQueryResponse(queryRequest, urlQuery);
+    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/history/historic-task-instances", ""));
   }
 }

@@ -15,22 +15,28 @@ package org.activiti.rest.service.api.management;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.JobQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.JobQuery;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.SecuredResource;
-import org.restlet.data.Form;
-import org.restlet.resource.Get;
+import org.activiti.rest.common.api.RequestUtil;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
-public class JobCollectionResource extends SecuredResource {
+@RestController
+public class JobCollectionResource {
 
   protected static Map<String, QueryProperty> properties;
 
@@ -44,76 +50,78 @@ public class JobCollectionResource extends SecuredResource {
     properties.put("tenantId", JobQueryProperty.TENANT_ID);
   }
   
-  @Get("json")
-  public DataResponse getJobs() {
-    if (authenticate() == false)
-      return null;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected ManagementService managementService;
+  
+  @RequestMapping(value="/management/jobs", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getJobs(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
+    JobQuery query = managementService.createJobQuery();
     
-    JobQuery query = ActivitiUtil.getManagementService().createJobQuery();
-    Form form = getQuery();
-    Set<String> names = form.getNames();
-    
-    if(names.contains("id")) {
-      query.jobId(getQueryParameter("id", form));
+    if (allRequestParams.containsKey("id")) {
+      query.jobId(allRequestParams.get("id"));
     }
-    if(names.contains("processInstanceId")) {
-      query.processInstanceId(getQueryParameter("processInstanceId", form));
+    if (allRequestParams.containsKey("processInstanceId")) {
+      query.processInstanceId(allRequestParams.get("processInstanceId"));
     }
-    if(names.contains("executionId")) {
-      query.executionId(getQueryParameter("executionId", form));
+    if (allRequestParams.containsKey("executionId")) {
+      query.executionId(allRequestParams.get("executionId"));
     }
-    if(names.contains("processDefinitionId")) {
-      query.processDefinitionId(getQueryParameter("processDefinitionId", form));
+    if (allRequestParams.containsKey("processDefinitionId")) {
+      query.processDefinitionId(allRequestParams.get("processDefinitionId"));
     }
-    if(names.contains("withRetriesLeft")) {
-      if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withRetriesLeft", form))) {
+    if (allRequestParams.containsKey("withRetriesLeft")) {
+      if (Boolean.valueOf(allRequestParams.get("withRetriesLeft"))) {
         query.withRetriesLeft();
       }
     }
-    if(names.contains("executable")) {
-      if(Boolean.TRUE.equals(getQueryParameterAsBoolean("executable", form))) {
+    if (allRequestParams.containsKey("executable")) {
+      if (Boolean.valueOf(allRequestParams.get("executable"))) {
         query.executable();
       }
     }
-    if(names.contains("timersOnly")) {
-      if(names.contains("messagesOnly")) {
+    if (allRequestParams.containsKey("timersOnly")) {
+      if (allRequestParams.containsKey("messagesOnly")) {
         throw new ActivitiIllegalArgumentException("Only one of 'timersOnly' or 'messagesOnly' can be provided.");
       }
-      if(Boolean.TRUE.equals(getQueryParameterAsBoolean("timersOnly", form))) {
+      if (Boolean.valueOf(allRequestParams.get("timersOnly"))) {
         query.timers();
       }
     }
-    if(names.contains("messagesOnly")) {
-      if(Boolean.TRUE.equals(getQueryParameterAsBoolean("messagesOnly", form))) {
+    if (allRequestParams.containsKey("messagesOnly")) {
+      if (Boolean.valueOf(allRequestParams.get("messagesOnly"))) {
         query.messages();
       }
     }
-    if(names.contains("dueBefore")) {
-      query.duedateLowerThan(getQueryParameterAsDate("dueBefore", form));
+    if (allRequestParams.containsKey("dueBefore")) {
+      query.duedateLowerThan(RequestUtil.getDate(allRequestParams, "dueBefore"));
     }
-    if(names.contains("dueAfter")) {
-      query.duedateHigherThan(getQueryParameterAsDate("dueAfter", form));
+    if (allRequestParams.containsKey("dueAfter")) {
+      query.duedateHigherThan(RequestUtil.getDate(allRequestParams, "dueAfter"));
     }
-    if(names.contains("withException")) {
-      if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withException", form))) {
+    if (allRequestParams.containsKey("withException")) {
+      if (Boolean.valueOf(allRequestParams.get("withException"))) {
         query.withException();
       }
     }
-    if(names.contains("exceptionMessage")) {
-      query.exceptionMessage(getQueryParameter("exceptionMessage", form));
+    if (allRequestParams.containsKey("exceptionMessage")) {
+      query.exceptionMessage(allRequestParams.get("exceptionMessage"));
     }
-    if(names.contains("tenantId")) {
-      query.jobTenantId(getQueryParameter("tenantId", form));
+    if (allRequestParams.containsKey("tenantId")) {
+      query.jobTenantId(allRequestParams.get("tenantId"));
     }
-    if(names.contains("tenantIdLike")) {
-      query.jobTenantIdLike(getQueryParameter("tenantIdLike", form));
+    if (allRequestParams.containsKey("tenantIdLike")) {
+      query.jobTenantIdLike(allRequestParams.get("tenantIdLike"));
     }
-    if(names.contains("withoutTenantId")) {
-      if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", form))) {
+    if (allRequestParams.containsKey("withoutTenantId")) {
+      if (Boolean.valueOf(allRequestParams.get("withoutTenantId"))) {
         query.jobWithoutTenantId();
       }
     }
 
-    return new JobPaginateList(this).paginateList(form, query, "id", properties);
+    return new JobPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/management/jobs", ""))
+        .paginateList(allRequestParams, query, "id", properties);
   }
 }

@@ -13,32 +13,31 @@
 
 package org.activiti.rest.service.api.management;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.management.TableMetaData;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
-import org.restlet.resource.Get;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
-public class TableColumnsResource extends SecuredResource {
+@RestController
+public class TableColumnsResource {
   
-  @Get
-  public TableMetaData getTableMetaData() {
-    if(authenticate() == false) return null;
-
-    String tableName = getAttribute("tableName");
-    if(tableName == null) {
-      throw new ActivitiIllegalArgumentException("The tableName cannot be null");
-    }
-    
-    TableMetaData response = ActivitiUtil.getManagementService().getTableMetaData(tableName);
+  @Autowired
+  protected ManagementService managementService;
+  
+  @RequestMapping(value="/management/tables/{tableName}/columns", method = RequestMethod.GET, produces = "application/json")
+  public TableMetaData getTableMetaData(@PathVariable String tableName) {
+    TableMetaData response = managementService.getTableMetaData(tableName);
    
-   if(response == null) {
-     throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
-   }
-   return response;
+    if (response == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
+    }
+    return response;
   }
 }

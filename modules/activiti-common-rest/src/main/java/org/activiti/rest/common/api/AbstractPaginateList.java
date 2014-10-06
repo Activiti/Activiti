@@ -20,7 +20,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.query.Query;
 import org.activiti.engine.query.QueryProperty;
-import org.restlet.data.Form;
 
 /**
  * @author Tijs Rademakers
@@ -38,28 +37,28 @@ public abstract class AbstractPaginateList {
    * @param defaultSort THe default sort column (the rest attribute) that later will be mapped to an internal engine name
    */
   @SuppressWarnings("rawtypes")
-  public DataResponse paginateList(Form form, PaginateRequest paginateRequest, Query query,
+  public DataResponse paginateList(Map<String, String> requestParams, PaginateRequest paginateRequest, Query query,
       String defaultSort, Map<String, QueryProperty> properties) {
   	
-  	if(paginateRequest == null) {
+  	if (paginateRequest == null) {
   		paginateRequest = new PaginateRequest();
   	}
   	
   	// In case pagination request is incomplete, fill with values found in URL if possible
-  	if(paginateRequest.getStart() == null) {
-  		paginateRequest.setStart(RequestUtil.getInteger(form, "start", 0));
+  	if (paginateRequest.getStart() == null) {
+  		paginateRequest.setStart(RequestUtil.getInteger(requestParams, "start", 0));
   	}
   	
-  	if(paginateRequest.getSize() == null) {
-  		paginateRequest.setSize(RequestUtil.getInteger(form, "size", 10));
+  	if (paginateRequest.getSize() == null) {
+  		paginateRequest.setSize(RequestUtil.getInteger(requestParams, "size", 10));
   	}
   	
-  	if(paginateRequest.getOrder() == null) {
-  		paginateRequest.setOrder(form.getValues("order"));
+  	if (paginateRequest.getOrder() == null) {
+  		paginateRequest.setOrder(requestParams.get("order"));
   	}
   	
-  	if(paginateRequest.getSort() == null) {
-  		paginateRequest.setSort(form.getValues("sort"));
+  	if (paginateRequest.getSort() == null) {
+  		paginateRequest.setSort(requestParams.get("sort"));
   	}
       
   	// Use defaults for paging, if not set in the PaginationRequest, nor in the URL
@@ -124,9 +123,9 @@ public abstract class AbstractPaginateList {
    * @param defaultSort THe default sort column (the rest attribute) that later will be mapped to an internal engine name
    */
   @SuppressWarnings("rawtypes")
-  public DataResponse paginateList(Form form, Query query,
+  public DataResponse paginateList(Map<String, String> requestParams, Query query,
       String defaultSort, Map<String, QueryProperty> properties) {
-  	return paginateList(form, null, query, defaultSort, properties);
+  	return paginateList(requestParams, null, query, defaultSort, properties);
   }
   
   @SuppressWarnings("rawtypes")
