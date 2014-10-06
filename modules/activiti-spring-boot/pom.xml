@@ -6,6 +6,7 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-root</artifactId>
+        <relativePath>../..</relativePath>
         <version>5.16.4-SNAPSHOT</version>
     </parent>
 
