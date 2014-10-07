@@ -13,54 +13,111 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
+import org.apache.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 
 /**
  * @author Frederik Heremans
  */
-public class ProcessInstanceVariableResource extends ExecutionVariableResource {
+@RestController
+public class ProcessInstanceVariableResource extends BaseExecutionVariableResource {
 
-  /**
-   * Get valid execution from request, in this case a {@link ProcessInstance}.
-   */
-  protected Execution getExecutionFromRequest() {
-    String processInstanceId = getAttribute("processInstanceId");
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables/{variableName}", method = RequestMethod.GET, produces="application/json")
+  public RestVariable getVariable(@PathVariable("processInstanceId") String processInstanceId, 
+      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
+      HttpServletRequest request) {
     
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("The processInstanceId cannot be null");
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
+    
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    return getVariableFromRequest(execution, variableName, scope, false, serverRootUrl);
+  }
+  
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables/{variableName}", method = RequestMethod.PUT, produces="application/json")
+  public RestVariable updateVariable(@PathVariable("processInstanceId") String processInstanceId, 
+      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
+      @RequestParam("file") MultipartFile file, @RequestParam Map<String,String> allRequestParams,
+      @RequestBody RestVariable restVariable, HttpServletRequest request) {
+    
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
+    
+    RestVariable result = null;
+    if (file != null) {
+      result = setBinaryVariable(file, allRequestParams, execution, false, serverRootUrl);
+      
+      if (!result.getName().equals(variableName)) {
+        throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+      }
+      
+    } else {
+      if (restVariable == null) {
+        throw new ActivitiException("Invalid body was supplied");
+      }
+      if (!restVariable.getName().equals(variableName)) {
+        throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+      }
+      
+      result = setSimpleVariable(restVariable, execution, false, serverRootUrl);
+    }
+    return result;
+  }
+  
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables/{variableName}", method = RequestMethod.DELETE)
+  public void deleteVariable(@PathVariable("processInstanceId") String processInstanceId, 
+      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
+      HttpServletResponse response) {
+    
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    // Determine scope
+    RestVariableScope variableScope = RestVariableScope.LOCAL;
+    if (scope != null) {
+      variableScope = RestVariable.getScopeFromString(scope);
+    }
+
+    if (!hasVariableOnScope(execution, variableName, variableScope)) {
+      throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable '" + 
+          variableName + "' in scope " + variableScope.name().toLowerCase(), VariableInstanceEntity.class);
     }
     
-    Execution execution = ActivitiUtil.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-    if (execution == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", ProcessInstance.class);
+    if (variableScope == RestVariableScope.LOCAL) {
+      runtimeService.removeVariableLocal(execution.getId(), variableName);
+    } else {
+      // Safe to use parentId, as the hasVariableOnScope would have stopped a global-var update on a root-execution
+      runtimeService.removeVariable(execution.getParentId(), variableName);
     }
-    return execution;
+    response.setStatus(HttpStatus.SC_NO_CONTENT);
   }
+
   
   @Override
-  protected RestVariable constructRestVariable(SecuredResource securedResource, String variableName, Object value, RestVariableScope variableScope,
-          String executionId, boolean includeBinary) {
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestVariable(this, variableName, value, null, executionId, RestResponseFactory.VARIABLE_PROCESS, includeBinary);
-  }
-  
-  @Override
-  protected String getExecutionIdParameter() {
-    return "processInstanceId";
-  }
-  
-  @Override
-  protected boolean allowProcessInstanceUrl() {
-    return true;
+  protected RestVariable constructRestVariable(String variableName, Object value,
+      RestVariableScope variableScope, String executionId, boolean includeBinary, String serverRootUrl) {
+
+    return restResponseFactory.createRestVariable(variableName, value, null, executionId, 
+        RestResponseFactory.VARIABLE_PROCESS, includeBinary, serverRootUrl);
   }
 }

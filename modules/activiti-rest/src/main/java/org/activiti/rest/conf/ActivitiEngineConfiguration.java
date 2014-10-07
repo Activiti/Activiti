@@ -12,6 +12,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.slf4j.Logger;
@@ -70,6 +71,7 @@ public class ActivitiEngineConfiguration {
   	processEngineConfiguration.setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_TRUE);
   	processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager());
   	processEngineConfiguration.setJobExecutorActivate(false);
+  	processEngineConfiguration.setHistoryLevel(HistoryLevel.FULL);
   	return processEngineConfiguration;
   }
   

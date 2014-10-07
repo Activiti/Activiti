@@ -55,7 +55,7 @@ public class DeploymentResource {
     return restResponseFactory.createDeploymentResponse(deployment, serverRootUrl);
   }
   
-  @RequestMapping(value="/repository/deployments/{deploymentId}", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value="/repository/deployments/{deploymentId}", method = RequestMethod.DELETE, produces = "application/json")
   public void deleteDeployment(@PathVariable String deploymentId, @RequestParam(value="cascade", required=false, defaultValue="false") 
       Boolean cascade, HttpServletResponse response) {
     
