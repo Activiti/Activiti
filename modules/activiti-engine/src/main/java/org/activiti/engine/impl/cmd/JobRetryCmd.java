@@ -141,7 +141,8 @@ public class JobRetryCmd implements Command<Object> {
       }
     } else if (TimerStartEventJobHandler.TYPE.equals(type)) {
     	DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-      ProcessDefinitionEntity processDefinition =  deploymentManager.findDeployedLatestProcessDefinitionByKey(job.getJobHandlerConfiguration());
+      ProcessDefinitionEntity processDefinition =  
+      		deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(job.getJobHandlerConfiguration(), job.getTenantId());
       if (processDefinition != null) {
         activity = processDefinition.getInitial();
       }
