@@ -7,4 +7,7 @@ target
 .project
 .settings
 .DS_Store
+.gitignore
 *.bpmn/
+modules/activiti-webapp-angular2
+modules/activiti-alpaca-rest
