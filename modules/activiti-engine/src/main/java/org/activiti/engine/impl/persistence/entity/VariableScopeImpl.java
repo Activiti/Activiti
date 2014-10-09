@@ -50,21 +50,31 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   protected String id = null;
 
   protected abstract List<VariableInstanceEntity> loadVariableInstances();
+  protected abstract VariableInstanceEntity loadVariableInstance(String variableName);
+  protected abstract Long getVariablesCount();
   protected abstract VariableScopeImpl getParentVariableScope();
   protected abstract void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance);
 
-  protected void ensureVariableInstancesInitialized() {
-    if (variableInstances==null) {
-      variableInstances = new HashMap<String, VariableInstanceEntity>();
-      
+  
+  protected void loadAllVariables() {
       CommandContext commandContext = Context.getCommandContext();
       if (commandContext == null) {
         throw new ActivitiException("lazy loading outside command context");
       }
+      if (variableInstances==null) 
+        variableInstances = new HashMap<String, VariableInstanceEntity>();
+      
       List<VariableInstanceEntity> variableInstancesList = loadVariableInstances();
       for (VariableInstanceEntity variableInstance : variableInstancesList) {
         variableInstances.put(variableInstance.getName(), variableInstance);
       }
+  }
+  
+  protected void ensureVariableInstancesInitialized() {
+    if (variableInstances==null) {
+      variableInstances = new HashMap<String, VariableInstanceEntity>();
+      if (!Context.getProcessEngineConfiguration().isLazyLoadVariables()) 
+        loadAllVariables();
     }
   }
   
@@ -74,6 +84,11 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   
   protected Map<String, Object> collectVariables(HashMap<String, Object> variables) {
     ensureVariableInstancesInitialized();
+    
+    // if lazyloading is not set. all variables are already loaded in previous call to ensureVariablesInitialized
+    if (Context.getProcessEngineConfiguration().isLazyLoadVariables())
+      loadAllVariables();
+    
     VariableScopeImpl parentScope = getParentVariableScope();
     if (parentScope!=null) {
       variables.putAll(parentScope.collectVariables(variables));
@@ -85,11 +100,10 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   }
   
   public Object getVariable(String variableName) {
-    ensureVariableInstancesInitialized();
-    VariableInstanceEntity variableInstance = variableInstances.get(variableName);
-    if (variableInstance!=null) {
-      return variableInstance.getValue();
-    }
+    Object result = getVariableLocal(variableName);
+    if (result != null)
+      return result;
+    
     VariableScope parentScope = getParentVariableScope();
     if (parentScope!=null) {
       return parentScope.getVariable(variableName);
@@ -97,11 +111,20 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return null;
   }
   
+ 
   public Object getVariableLocal(String variableName) {
     ensureVariableInstancesInitialized();
     VariableInstanceEntity variableInstance = variableInstances.get(variableName);
     if (variableInstance!=null) {
       return variableInstance.getValue();
+    }
+    
+    if (Context.getProcessEngineConfiguration().isLazyLoadVariables()) {
+      variableInstance = loadVariableInstance(variableName);
+      if (variableInstance != null) {
+        variableInstances.put(variableName, variableInstance);
+        return variableInstance.getValue();
+      }
     }
     return null;
   }
@@ -112,15 +135,16 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       return true;
     }
     VariableScope parentScope = getParentVariableScope();
-    if (parentScope!=null) {
-      return parentScope.hasVariables();
+    if (parentScope!=null && parentScope.hasVariables()) {
+      return true;
     }
-    return false;
+    
+    return Context.getProcessEngineConfiguration().isLazyLoadVariables() && getVariablesCount() > 0;
   }
 
   public boolean hasVariablesLocal() {
     ensureVariableInstancesInitialized();
-    return !variableInstances.isEmpty();
+    return !variableInstances.isEmpty() || (Context.getProcessEngineConfiguration().isLazyLoadVariables() && getVariablesCount() > 0) ;
   }
 
   public boolean hasVariable(String variableName) {
@@ -136,11 +160,14 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
   public boolean hasVariableLocal(String variableName) {
     ensureVariableInstancesInitialized();
-    return variableInstances.containsKey(variableName);
+    return variableInstances.containsKey(variableName) 
+            || (Context.getProcessEngineConfiguration().isLazyLoadVariables() &&  loadVariableInstance(variableName) != null);
   }
 
   protected Set<String> collectVariableNames(Set<String> variableNames) {
     ensureVariableInstancesInitialized();
+    if (Context.getProcessEngineConfiguration().isLazyLoadVariables())
+      loadAllVariables();
     VariableScopeImpl parentScope = getParentVariableScope();
     if (parentScope!=null) {
       variableNames.addAll(parentScope.collectVariableNames(variableNames));

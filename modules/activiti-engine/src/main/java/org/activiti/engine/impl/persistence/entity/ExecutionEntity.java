@@ -1142,6 +1142,23 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   @Override
+  protected Long getVariablesCount() {
+    return (Long) Context
+      .getCommandContext()
+      .getVariableInstanceEntityManager()
+      .variablesCount(id);
+  }
+
+  @Override
+  protected VariableInstanceEntity loadVariableInstance(String variableName) {
+    return Context
+      .getCommandContext()
+      .getVariableInstanceEntityManager()
+      .findVariableInstanceByName(id, variableName);
+  }
+
+  
+  @Override
   protected VariableScopeImpl getParentVariableScope() {
     return getParent();
   }

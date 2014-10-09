@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +33,19 @@ public class VariableInstanceEntityManager extends AbstractManager {
   @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancesByExecutionId(String executionId) {
     return getDbSqlSession().selectList("selectVariablesByExecutionId", executionId);
+  }
+
+  @SuppressWarnings("unchecked")
+  public Long variablesCount(String executionId) {
+    return (Long) getDbSqlSession().selectOne("selectVariablesCount", executionId);
+  }
+
+  @SuppressWarnings("unchecked")
+  public VariableInstanceEntity findVariableInstanceByName(String executionId, String variableName) {
+    Map<String, String>  params = new HashMap<String, String>();
+    params.put("executionId", executionId);
+    params.put("name", variableName);
+    return (VariableInstanceEntity) getDbSqlSession().selectOne("selectVariableInstanceByName", params); 
   }
 
   public void deleteVariableInstanceByTask(TaskEntity task) {

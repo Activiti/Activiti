@@ -193,6 +193,10 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   protected ClassLoader classLoader;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
+  
+  protected boolean lazyLoadVariables = false;
+  
+  
 
   /** use one of the static createXxxx methods instead */
   protected ProcessEngineConfiguration() {
@@ -701,6 +705,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   public ProcessEngineConfiguration setAsyncFailedJobWaitTime(int asyncFailedJobWaitTime) {
     this.asyncFailedJobWaitTime = asyncFailedJobWaitTime;
+    return this;
+  }
+  
+  public boolean isLazyLoadVariables() {
+    return lazyLoadVariables;
+  }
+  
+  public ProcessEngineConfiguration setLazyLoadVariables(boolean lazyLoadVariables) {
+    this.lazyLoadVariables = lazyLoadVariables;
     return this;
   }
 }
