@@ -88,12 +88,20 @@
     select * from ${prefix}ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
   </select>
 
-  <select id="selectVariableInstanceByName" parameterType="java.util.Map"
+  <select id="selectVariableInstanceByExecutionAndName" parameterType="java.util.Map"
     resultMap="variableInstanceResultMap">
     select * from ${prefix}ACT_RU_VARIABLE 
     where 
           EXECUTION_ID_ = ${executionId}
-      and NAME_= ${name}
+      and NAME_= #{name, jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectVariableInstanceByTaskAndName" parameterType="java.util.Map"
+    resultMap="variableInstanceResultMap">
+    select * from ${prefix}ACT_RU_VARIABLE 
+    where 
+          TASK_ID_ = #{taskId, jdbcType=VARCHAR} 
+      and NAME_= #{name, jdbcType=VARCHAR}
   </select>
 
   <select id="selectVariablesByExecutionId"
@@ -106,7 +114,7 @@
 
   <select id="selectVariablesCount"
     parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
-    resultMap="java.lang.Long">
+    resultType="long">
     select count(*) from ${prefix}ACT_RU_VARIABLE
     where EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR}
     and TASK_ID_ is null

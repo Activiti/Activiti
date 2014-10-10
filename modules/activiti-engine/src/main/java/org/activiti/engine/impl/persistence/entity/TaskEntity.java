@@ -927,4 +927,21 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     this.queryVariables = queryVariables;
   }
 
+  @Override
+  protected VariableInstanceEntity loadVariableInstance(String variableName) {
+    return Context
+            .getCommandContext()
+            .getVariableInstanceEntityManager()
+            .findVariableInstanceByTaskAndName(id, variableName);
+  }
+  
+
+  @Override
+  protected Long getVariablesCount() {
+      return (Long) Context
+        .getCommandContext()
+        .getVariableInstanceEntityManager()
+        .variablesCount(id);
+  }
+
 }

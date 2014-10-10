@@ -35,9 +35,8 @@ import org.activiti.engine.test.Deployment;
  */
 public class VariableScopeTest extends PluggableActivitiTestCase {
   
-  @Deployment
-  public void testVariableScope() {
-    
+  
+  protected void doTestVariableScope() {
     // After starting the process, the task in the subprocess should be active
     Map<String, Object> varMap = new HashMap<String, Object>();
     varMap.put("test", "test");
@@ -78,15 +77,36 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     // After completing the task in the subprocess, 
     // the subprocess scope is destroyed and the complete process ends
     taskService.complete(subProcessTask.getId());
+    
   }
+  
+  
+  @Deployment
+  public void testVariableScope() {
+    processEngineConfiguration.setLazyLoadVariables(false);
+    doTestVariableScope();
+
+    processEngineConfiguration.setLazyLoadVariables(true);
+    doTestVariableScope();
+  }
+
   
   /**
    * A testcase to produce and fix issue ACT-862.
    * @author Roman Smirnov
    * @author Christian Lipphardt
    */
+  
   @Deployment
   public void testVariableNamesScope() {
+    processEngineConfiguration.setLazyLoadVariables(false);
+    doTestVariableNamesScope();
+
+    processEngineConfiguration.setLazyLoadVariables(true);
+    doTestVariableNamesScope();
+  }
+  
+  private void doTestVariableNamesScope() {
     
     // After starting the process, the task in the subprocess should be active
     Map<String, Object> varMap = new HashMap<String, Object>();
@@ -148,9 +168,19 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     
     taskService.complete(subProcessTask.getId());
   }
-  
+
   @Deployment
   public void testModeledVariableScope() {
+    processEngineConfiguration.setLazyLoadVariables(false);
+    doTestModeledVariableScope();
+
+    processEngineConfiguration.setLazyLoadVariables(true);
+    doTestModeledVariableScope();
+
+    
+  }
+
+  private void doTestModeledVariableScope() {
 
     // After starting the process, the task in the subprocess should be active
     Map<String, Object> varMap = new HashMap<String, Object>();

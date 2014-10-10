@@ -41,14 +41,26 @@ public class VariableInstanceEntityManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
-  public VariableInstanceEntity findVariableInstanceByName(String executionId, String variableName) {
+  public VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName) {
     Map<String, String>  params = new HashMap<String, String>();
     params.put("executionId", executionId);
     params.put("name", variableName);
-    return (VariableInstanceEntity) getDbSqlSession().selectOne("selectVariableInstanceByName", params); 
+    return (VariableInstanceEntity) getDbSqlSession().selectOne("selectVariableInstanceByExecutionAndName", params); 
   }
 
+  @SuppressWarnings("unchecked")
+  public VariableInstanceEntity findVariableInstanceByTaskAndName(String taskId, String variableName) {
+    Map<String, String>  params = new HashMap<String, String>();
+    params.put("taskId", taskId);
+    params.put("name", variableName);
+    return (VariableInstanceEntity) getDbSqlSession().selectOne("selectVariableInstanceByTaskAndName", params); 
+  }
+
+ 
+
+
   public void deleteVariableInstanceByTask(TaskEntity task) {
+    task.loadAllVariables();
     Map<String, VariableInstanceEntity> variableInstances = task.getVariableInstances();
     if (variableInstances!=null) {
       for (VariableInstanceEntity variableInstance: variableInstances.values()) {

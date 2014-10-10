@@ -1154,7 +1154,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return Context
       .getCommandContext()
       .getVariableInstanceEntityManager()
-      .findVariableInstanceByName(id, variableName);
+      .findVariableInstanceByExecutionAndName(id, variableName);
   }
 
   
