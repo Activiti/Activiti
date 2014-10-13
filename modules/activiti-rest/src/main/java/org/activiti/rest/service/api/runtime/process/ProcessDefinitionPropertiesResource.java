@@ -39,20 +39,23 @@ public class ProcessDefinitionPropertiesResource {
   @Autowired
   protected FormService formService;
   
+  @Autowired
+  protected ObjectMapper objectMapper;
+  
   @RequestMapping(value="/process-definition/{processDefinitionId}/properties", method = RequestMethod.GET, produces="application/json")
   public ObjectNode getStartFormProperties(@PathVariable String processDefinitionId) {
     StartFormData startFormData = formService.getStartFormData(processDefinitionId);
     
-    ObjectNode responseJSON = new ObjectMapper().createObjectNode();
+    ObjectNode responseJSON = objectMapper.createObjectNode();
     
-    ArrayNode propertiesJSON = new ObjectMapper().createArrayNode();
+    ArrayNode propertiesJSON = objectMapper.createArrayNode();
     
     if(startFormData != null) {
     
       List<FormProperty> properties = startFormData.getFormProperties();
       
       for (FormProperty property : properties) {
-        ObjectNode propertyJSON = new ObjectMapper().createObjectNode();
+        ObjectNode propertyJSON = objectMapper.createObjectNode();
         propertyJSON.put("id", property.getId());
         propertyJSON.put("name", property.getName());
         
@@ -69,11 +72,11 @@ public class ProcessDefinitionPropertiesResource {
             @SuppressWarnings("unchecked")
             Map<String, String> valuesMap = (Map<String, String>) property.getType().getInformation("values");
             if (valuesMap != null) {
-              ArrayNode valuesArray = new ObjectMapper().createArrayNode();
+              ArrayNode valuesArray = objectMapper.createArrayNode();
               propertyJSON.put("enumValues", valuesArray);
               
               for (String key : valuesMap.keySet()) {
-                ObjectNode valueJSON = new ObjectMapper().createObjectNode();
+                ObjectNode valueJSON = objectMapper.createObjectNode();
                 valueJSON.put("id", key);
                 valueJSON.put("name", valuesMap.get(key));
                 valuesArray.add(valueJSON);

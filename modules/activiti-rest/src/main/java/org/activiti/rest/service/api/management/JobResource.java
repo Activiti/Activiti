@@ -22,8 +22,8 @@ import org.activiti.engine.ManagementService;
 import org.activiti.engine.runtime.Job;
 import org.activiti.rest.service.api.RestActionRequest;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,7 +62,7 @@ public class JobResource {
       // Re-throw to have consistent error-messaging acrosse REST-api
       throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class); 
     }
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   @RequestMapping(value="/management/jobs/{jobId}", method = RequestMethod.POST)
@@ -78,7 +78,7 @@ public class JobResource {
       throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class); 
     }
     
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 
   protected Job getJobFromResponse(String jobId) {

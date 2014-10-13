@@ -111,15 +111,15 @@ public class HistoricProcessInstanceBaseResource {
       addVariables(query, queryRequest.getVariables());
     }
     
-    if(queryRequest.getTenantId() != null) {
+    if (queryRequest.getTenantId() != null) {
     	query.processInstanceTenantId(queryRequest.getTenantId());
     }
     
-    if(queryRequest.getTenantIdLike() != null) {
+    if (queryRequest.getTenantIdLike() != null) {
     	query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
     }
     
-    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+    if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
     	query.processInstanceWithoutTenantId();
     }
 

@@ -13,8 +13,6 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,14 +23,16 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -40,6 +40,9 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 public class TaskVariableResource extends TaskVariableBaseResource {
+  
+  @Autowired
+  protected ObjectMapper objectMapper;
 
   @RequestMapping(value="/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.GET, produces="application/json")
   public RestVariable getVariable(@PathVariable("taskId") String taskId, 
@@ -55,8 +58,7 @@ public class TaskVariableResource extends TaskVariableBaseResource {
   @RequestMapping(value="/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.PUT, produces="application/json")
   public RestVariable updateVariable(@PathVariable("taskId") String taskId, 
       @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
-      @RequestParam("file") MultipartFile file, @RequestParam Map<String,String> allRequestParams,
-      @RequestBody RestVariable restVariable, HttpServletRequest request) {
+      HttpServletRequest request) {
     
     Task task = getTaskFromRequest(taskId);
     
@@ -64,13 +66,23 @@ public class TaskVariableResource extends TaskVariableBaseResource {
     serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
     
     RestVariable result = null;
-    if (file != null) {
-      result = setBinaryVariable(file, allRequestParams, task, false, serverRootUrl);
+    if (request instanceof MultipartHttpServletRequest) {
+      result = setBinaryVariable((MultipartHttpServletRequest) request, task, false, serverRootUrl);
       
       if (!result.getName().equals(variableName)) {
         throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
       }
+      
     } else {
+      
+      RestVariable restVariable = null;
+      
+      try {
+        restVariable = objectMapper.readValue(request.getInputStream(), RestVariable.class);
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
+      }
+      
       if (restVariable == null) {
         throw new ActivitiException("Invalid body was supplied");
       }
@@ -107,6 +119,6 @@ public class TaskVariableResource extends TaskVariableBaseResource {
       // Safe to use executionId, as the hasVariableOnScope whould have stopped a global-var update on standalone task
       runtimeService.removeVariable(task.getExecutionId(), variableName);
     }
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

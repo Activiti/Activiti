@@ -20,8 +20,8 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,7 +51,7 @@ public class HistoricProcessInstanceResource {
   @RequestMapping(value="/history/historic-process-instances/{processInstanceId}", method = RequestMethod.DELETE)
   public void deleteProcessInstance(@PathVariable String processInstanceId, HttpServletResponse response) {
     historyService.deleteHistoricProcessInstance(processInstanceId);
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {

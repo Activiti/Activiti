@@ -28,14 +28,14 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.rest.exception.ActivitiContentNotSupportedException;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
 import org.apache.commons.io.IOUtils;
-import org.restlet.data.Status;
-import org.restlet.resource.ResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 
 /**
@@ -78,27 +78,45 @@ public class BaseExecutionVariableResource {
     }
   }
   
-  protected RestVariable setBinaryVariable(MultipartFile file, Map<String, String> requestParams, 
-      Execution execution, boolean isNew, String serverRootUrl) {
+  protected RestVariable setBinaryVariable(MultipartHttpServletRequest request, 
+      Execution execution, int responseVariableType, boolean isNew, String serverRootUrl) {
+    
+    // Validate input and set defaults
+    if (request.getFileMap().size() == 0) {
+      throw new ActivitiIllegalArgumentException("No file content was found in request body.");
+    }
+    
+    // Get first file in the map, ignore possible other files
+    MultipartFile file = request.getFile(request.getFileMap().keySet().iterator().next());
+    
+    if (file == null) {
+      throw new ActivitiIllegalArgumentException("No file content was found in request body.");
+    }
+    
+    String variableScope = null;
+    String variableName = null;
+    String variableType = null;
+    
+    Map<String, String[]> paramMap = request.getParameterMap();
+    for (String parameterName : paramMap.keySet()) {
+      
+      if (paramMap.get(parameterName).length > 0) {
+      
+        if (parameterName.equalsIgnoreCase("scope")) {
+          variableScope = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("name")) {
+          variableName = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("type")) {
+          variableType = paramMap.get(parameterName)[0];
+        }
+      }
+    }
     
     try {
-      String variableScope = null;
-      String variableName = null;
-      String variableType = null;
-      
-      if (requestParams.containsKey("scope")) {
-        variableScope = requestParams.get("scope");
-      } else if (requestParams.containsKey("name")) {
-        variableName = requestParams.get("name");
-      } else if (requestParams.containsKey("type")) {
-        variableType = requestParams.get("type");
-      }
       
       // Validate input and set defaults
-      if (file == null) {
-        throw new ActivitiIllegalArgumentException("No file content was found in request body.");
-      }
-      
       if (variableName == null) {
         throw new ActivitiIllegalArgumentException("No variable name was found in request body.");
       }
@@ -118,9 +136,9 @@ public class BaseExecutionVariableResource {
       
       if (variableType.equals(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE)) {
         // Use raw bytes as variable value
-        ByteArrayOutputStream variableOutput = new ByteArrayOutputStream(((Long) file.getSize()).intValue());
-        IOUtils.copy(file.getInputStream(), variableOutput);
-        setVariable(execution, variableName, variableOutput.toByteArray(), scope, isNew);
+        byte[] variableBytes = IOUtils.toByteArray(file.getInputStream());
+        setVariable(execution, variableName, variableBytes, scope, isNew);
+        
       } else {
         // Try deserializing the object
         ObjectInputStream stream = new ObjectInputStream(file.getInputStream());
@@ -129,7 +147,7 @@ public class BaseExecutionVariableResource {
         stream.close();
       }
       
-      if (execution instanceof ProcessInstance && allowProcessInstanceUrl()) {
+      if (responseVariableType == RestResponseFactory.VARIABLE_PROCESS) {
         return restResponseFactory.createBinaryRestVariable(variableName, scope, variableType, 
             null, null, execution.getId(), serverRootUrl);
       } else {
@@ -138,9 +156,9 @@ public class BaseExecutionVariableResource {
       }
       
     } catch (IOException ioe) {
-      throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, ioe);
+      throw new ActivitiIllegalArgumentException("Could not process multipart content", ioe);
     } catch (ClassNotFoundException ioe) {
-      throw new ResourceException(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(), "The provided body contains a serialized object for which the class is nog found: " + ioe.getMessage(), null, null);
+      throw new ActivitiContentNotSupportedException("The provided body contains a serialized object for which the class is nog found: " + ioe.getMessage());
     }
     
   }

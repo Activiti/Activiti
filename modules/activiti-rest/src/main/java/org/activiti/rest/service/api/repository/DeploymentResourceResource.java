@@ -44,29 +44,34 @@ public class DeploymentResourceResource {
   @Autowired
   protected RepositoryService repositoryService;
 
-  @RequestMapping(value="/repository/deployments/{deploymentId}/resources/{resourceId}", method = RequestMethod.GET, produces = "application/json")
+  @RequestMapping(value="/repository/deployments/{deploymentId}/resources/**", method = RequestMethod.GET, produces = "application/json")
   public DeploymentResourceResponse getDeploymentResource(@PathVariable("deploymentId") String deploymentId, 
-      @PathVariable("resourceId") String resourceId, HttpServletRequest request) {
+      HttpServletRequest request) {
     
     // Check if deployment exists
     Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
     if (deployment == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
+      throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.");
     }
+    
+    String pathInfo = request.getPathInfo();
+    String resourceName = pathInfo.replace("/repository/deployments/" + deploymentId + "/resources/", "");
     
     List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
     
     String serverRootUrl = request.getRequestURL().toString();
     serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/deployments/"));
 
-    if (resourceList.contains(resourceId)) {
+    if (resourceList.contains(resourceName)) {
       // Build resource representation
-      return restResponseFactory.createDeploymentResourceResponse(deploymentId, resourceId, 
-          contentTypeResolver.resolveContentType(resourceId), serverRootUrl);
+      DeploymentResourceResponse response = restResponseFactory.createDeploymentResourceResponse(deploymentId, resourceName, 
+          contentTypeResolver.resolveContentType(resourceName), serverRootUrl);
+      return response;
+      
     } else {
       // Resource not found in deployment
-      throw new ActivitiObjectNotFoundException("Could not find a resource with id '" + resourceId
-              + "' in deployment '" + deploymentId + "'.", String.class);
+      throw new ActivitiObjectNotFoundException("Could not find a resource with id '" + resourceName
+              + "' in deployment '" + deploymentId + "'.");
     }
   }
 }

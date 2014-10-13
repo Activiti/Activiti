@@ -24,7 +24,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +76,7 @@ public class ProcessDefinitionIdentityLinkCollectionResource extends BaseProcess
     // Always candidate for process-definition. User-provided value is ignored
     identityLink.setType(IdentityLinkType.CANDIDATE);
     
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     
     String serverRootUrl = request.getRequestURL().toString();
     serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/process-definitions/"));

@@ -77,7 +77,6 @@ import org.activiti.rest.service.api.identity.UserResponse;
 import org.activiti.rest.service.api.management.JobResponse;
 import org.activiti.rest.service.api.management.TableResponse;
 import org.activiti.rest.service.api.repository.DeploymentResourceResponse;
-import org.activiti.rest.service.api.repository.DeploymentResourceResponse.DeploymentResourceType;
 import org.activiti.rest.service.api.repository.DeploymentResponse;
 import org.activiti.rest.service.api.repository.ModelResponse;
 import org.activiti.rest.service.api.repository.ProcessDefinitionResponse;
@@ -165,10 +164,10 @@ public class RestResponseFactory {
     String resourceContentUrl = formatUrl(serverRootUrl, RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deploymentId, resourceId);
     
     // Determine type
-    DeploymentResourceType type = DeploymentResourceType.RESOURCE;
+    String type = "resource";
     for (String suffix : BpmnDeployer.BPMN_RESOURCE_SUFFIXES) {
       if (resourceId.endsWith(suffix)) {
-        type = DeploymentResourceType.PROCESS_DEFINITION;
+        type = "processDefinition";
         break;
       }
     }
@@ -231,7 +230,7 @@ public class RestResponseFactory {
         restVar.setType(converter.getRestTypeName());
       } else {
         // Revert to default conversion, which is the serializable/byte-array form
-        if(value instanceof Byte[] || value instanceof byte[]) {
+        if (value instanceof Byte[] || value instanceof byte[]) {
           restVar.setType(BYTE_ARRAY_VARIABLE_TYPE);
         } else {
           restVar.setType(SERIALIZABLE_VARIABLE_TYPE);
@@ -269,13 +268,13 @@ public class RestResponseFactory {
     restVar.setName(name);
     restVar.setType(type);
     
-    if(taskId != null) {
+    if (taskId != null) {
       restVar.setValueUrl(formatUrl(serverRootUrl, RestUrls.URL_TASK_VARIABLE_DATA, taskId, name));
     }
-    if(executionId != null) {
+    if (executionId != null) {
       restVar.setValueUrl(formatUrl(serverRootUrl, RestUrls.URL_EXECUTION_VARIABLE_DATA, executionId, name));
     }
-    if(processInstanceId != null) {
+    if (processInstanceId != null) {
       restVar.setValueUrl(formatUrl(serverRootUrl, RestUrls.URL_PROCESS_INSTANCE_VARIABLE_DATA, processInstanceId, name));
     }
     

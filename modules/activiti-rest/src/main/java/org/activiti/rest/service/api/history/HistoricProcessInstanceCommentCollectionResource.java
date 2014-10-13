@@ -26,8 +26,8 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.CommentResponse;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,7 +72,7 @@ public class HistoricProcessInstanceCommentCollectionResource {
     }
     
     Comment createdComment = taskService.addComment(null, instance.getId(), comment.getMessage());
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     
     String serverRootUrl = request.getRequestURL().toString();
     serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-process-instances/"));

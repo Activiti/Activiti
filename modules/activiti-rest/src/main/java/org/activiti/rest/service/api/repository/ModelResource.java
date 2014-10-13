@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.repository.Model;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,6 +76,6 @@ public class ModelResource extends BaseModelResource {
   public void deleteModel(@PathVariable String modelId, HttpServletResponse response) {
     Model model = getModelFromRequest(modelId);
     repositoryService.deleteModel(model.getId());
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ComponentScan(basePackages = {
-        "org.activiti.rest.conf"})
+        "org.activiti.rest.conf.common", "org.activiti.rest.conf.engine"})
 public class ApplicationConfiguration {
   
 }

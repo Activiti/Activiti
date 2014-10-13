@@ -24,7 +24,7 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.api.RestUrls;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -71,7 +71,7 @@ public class TaskIdentityLinkResource extends TaskBaseResource {
       taskService.deleteGroupIdentityLink(task.getId(), identityId, type);
     }
     
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   protected void validateIdentityLinkArguments(String family, String identityId, String type) {

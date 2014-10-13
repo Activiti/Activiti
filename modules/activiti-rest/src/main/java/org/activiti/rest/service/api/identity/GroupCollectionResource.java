@@ -26,11 +26,10 @@ import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.common.api.DataResponse;
+import org.activiti.rest.exception.ActivitiConflictException;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.apache.commons.httpclient.HttpStatus;
-import org.restlet.data.Status;
-import org.restlet.resource.ResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -92,7 +91,7 @@ public class GroupCollectionResource {
 
     // Check if a user with the given ID already exists so we return a CONFLICT
     if (identityService.createGroupQuery().groupId(groupRequest.getId()).count() > 0) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "A group with id '" + groupRequest.getId() + "' already exists.", null, null);
+      throw new ActivitiConflictException("A group with id '" + groupRequest.getId() + "' already exists.");
     }
     
     Group created = identityService.newGroup(groupRequest.getId());
@@ -101,7 +100,7 @@ public class GroupCollectionResource {
     created.setType(groupRequest.getType());
     identityService.saveGroup(created);
     
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     
     return restResponseFactory.createGroupResponse(created, httpRequest.getRequestURL().toString().replace("/identity/groups", ""));
   }

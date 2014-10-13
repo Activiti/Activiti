@@ -13,12 +13,11 @@
 
 package org.activiti.rest.service.api.management;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.runtime.Job;
-import org.restlet.data.MediaType;
-import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,8 +33,8 @@ public class JobExceptionStacktraceResource {
   @Autowired
   protected ManagementService managementService;
 
-  @RequestMapping(value="/management/jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET, produces = "application/json")
-  public Representation getJobStacktrace(@PathVariable String jobId) {
+  @RequestMapping(value="/management/jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET)
+  public String getJobStacktrace(@PathVariable String jobId, HttpServletResponse response) {
     Job job = getJobFromResponse(jobId);
     
     String stackTrace = managementService.getJobExceptionStacktrace(job.getId());
@@ -44,7 +43,8 @@ public class JobExceptionStacktraceResource {
       throw new ActivitiObjectNotFoundException("Job with id '" + job.getId() + "' doesn't have an exception stacktrace.", String.class);
     }
     
-    return new StringRepresentation(stackTrace, MediaType.TEXT_PLAIN);
+    response.setContentType("text/plain");
+    return stackTrace;
   }
 
   

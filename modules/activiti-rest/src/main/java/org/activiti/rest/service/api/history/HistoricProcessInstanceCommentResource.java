@@ -23,8 +23,8 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.CommentResponse;
-import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -74,7 +74,7 @@ public class HistoricProcessInstanceCommentResource {
     }
     
     taskService.deleteComment(commentId);
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
  protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {

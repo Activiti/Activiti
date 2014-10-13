@@ -23,7 +23,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -72,7 +72,7 @@ public class ProcessInstanceIdentityLinkCollectionResource extends BaseProcessIn
 
     runtimeService.addUserIdentityLink(processInstance.getId(), identityLink.getUser(), identityLink.getType());
     
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     
     String serverRootUrl = request.getRequestURL().toString();
     serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));

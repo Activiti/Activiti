@@ -1,4 +1,4 @@
-package org.activiti.rest.conf;
+package org.activiti.rest.conf.common;
 
 import org.activiti.rest.security.BasicAuthenticationProvider;
 import org.springframework.context.annotation.Bean;

@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -27,6 +28,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.runtime.process.ProcessInstanceResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -75,7 +77,9 @@ public class FormDataResource {
   }
   
   @RequestMapping(value="/form/form-data", method = RequestMethod.POST, produces="application/json")
-  public ProcessInstanceResponse submitForm(@RequestBody SubmitFormRequest submitRequest, HttpServletRequest request) {
+  public ProcessInstanceResponse submitForm(@RequestBody SubmitFormRequest submitRequest, 
+      HttpServletRequest request, HttpServletResponse response) {
+    
     if (submitRequest == null) {
       throw new ActivitiException("A request body was expected when executing the form submit.");
     }
@@ -93,15 +97,19 @@ public class FormDataResource {
     
     if (submitRequest.getTaskId() != null) {
       formService.submitTaskFormData(submitRequest.getTaskId(), propertyMap);
+      response.setStatus(HttpStatus.NO_CONTENT.value());
       return null;
+      
     } else {
       ProcessInstance processInstance = null;
       if (submitRequest.getBusinessKey() != null) {
-        processInstance = formService.submitStartFormData(submitRequest.getProcessDefinitionId(), submitRequest.getBusinessKey(), propertyMap);
+        processInstance = formService.submitStartFormData(submitRequest.getProcessDefinitionId(), 
+            submitRequest.getBusinessKey(), propertyMap);
       } else {
         processInstance = formService.submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
       }
-      return restResponseFactory.createProcessInstanceResponse(processInstance, request.getRequestURL().toString().replace("/form/form-data", ""));
+      return restResponseFactory.createProcessInstanceResponse(processInstance, 
+          request.getRequestURL().toString().replace("/form/form-data", ""));
     }
   }
 }

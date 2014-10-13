@@ -1,4 +1,4 @@
-package org.activiti.rest.service;
+package org.activiti.rest.api.jpa;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -21,8 +21,6 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -38,81 +36,110 @@ import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
+import org.activiti.rest.JPAWebConfigurer;
+import org.activiti.rest.api.jpa.repository.MessageRepository;
+import org.activiti.rest.conf.JPAApplicationConfiguration;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicHeader;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.session.HashSessionIdManager;
+import org.eclipse.jetty.server.session.HashSessionManager;
+import org.eclipse.jetty.server.session.SessionHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
-import org.restlet.Component;
-import org.restlet.data.ChallengeScheme;
-import org.restlet.data.Protocol;
-import org.restlet.data.Status;
-import org.restlet.engine.header.Header;
-import org.restlet.engine.header.HeaderConstants;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.util.Series;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
-public class BaseRestTestCase extends PvmTestCase {
+public class BaseJPARestTestCase extends PvmTestCase {
 
-  private static Logger log = LoggerFactory.getLogger(BaseRestTestCase.class);
-  protected Component component;
-  protected ObjectMapper objectMapper = new ObjectMapper();
+  private static Logger log = LoggerFactory.getLogger(BaseJPARestTestCase.class);
   
-  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
-      "ACT_GE_PROPERTY"
-    );
+  protected static final int HTTP_SERVER_PORT = 7878;
+  protected static final String SERVER_URL_PREFIX = "http://localhost:7878/service/";
+  protected static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
+    "ACT_GE_PROPERTY"
+  );
+  
+  protected static Server server;
+  protected static ApplicationContext appContext;
+  protected ObjectMapper objectMapper = new ObjectMapper();
 
-  protected ProcessEngine processEngine;
-  protected static ProcessEngine cachedProcessEngine;
+  protected static ProcessEngine processEngine;
   
   protected String deploymentId;
   protected Throwable exception;
 
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
-  protected RepositoryService repositoryService;
-  protected RuntimeService runtimeService;
-  protected TaskService taskService;
-  protected FormService formService;
-  protected HistoryService historyService;
-  protected IdentityService identityService;
-  protected ManagementService managementService;
+  protected static ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected static RepositoryService repositoryService;
+  protected static RuntimeService runtimeService;
+  protected static TaskService taskService;
+  protected static FormService formService;
+  protected static HistoryService historyService;
+  protected static IdentityService identityService;
+  protected static ManagementService managementService;
   
-  protected ClientResource getAuthenticatedClient(String uri) {
-    ClientResource client = new ClientResource("http://localhost:8182/" + uri);
-    client.setChallengeResponse(ChallengeScheme.HTTP_BASIC, "kermit", "kermit");
-    return client;
-  }
+  protected static MessageRepository messageRepository;
   
-  protected void initializeProcessEngine() {
-    if (cachedProcessEngine==null) {
-      cachedProcessEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti.cfg.xml").buildProcessEngine();
-      if (cachedProcessEngine==null) {
-        throw new ActivitiException("no in-memory process engine available");
+  protected ISO8601DateFormat dateFormat = new ISO8601DateFormat();
+  
+  static {
+    createAndStartServer();
+    
+    // Lookup services
+    processEngine = appContext.getBean("processEngine", ProcessEngine.class);
+    processEngineConfiguration = appContext.getBean(ProcessEngineConfigurationImpl.class);
+    repositoryService = appContext.getBean(RepositoryService.class);
+    runtimeService = appContext.getBean(RuntimeService.class);
+    taskService = appContext.getBean(TaskService.class);
+    formService = appContext.getBean(FormService.class);
+    historyService = appContext.getBean(HistoryService.class);
+    identityService = appContext.getBean(IdentityService.class);
+    managementService = appContext.getBean(ManagementService.class);
+    
+    messageRepository = appContext.getBean(MessageRepository.class);
+    
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+
+      @Override
+      public void run() {
+        if (server != null && server.isRunning()) {
+          try {
+            server.stop();
+          } catch (Exception e) {
+            log.error("Error stopping server", e);
+          }
+        }
       }
-      // hack to circumvent the loading of the activiti-context.xml of the REST web application
-      ProcessEnginesRest.init();
-      ProcessEngines.registerProcessEngine(cachedProcessEngine);
-    }
-    processEngine = cachedProcessEngine;
+    });
   }
+  
   
   @Override
   public void runBare() throws Throwable {
-    initializeRestServer();
-    initializeProcessEngine();
-    if (repositoryService==null) {
-      initializeServices();
-    }
-    
     createUsers();
 
     log.error(EMPTY_LINE);
@@ -139,13 +166,11 @@ public class BaseRestTestCase extends PvmTestCase {
       TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, getClass(), getName());
       dropUsers();
       assertAndEnsureCleanDb();
-      stopRestServer();
       processEngineConfiguration.getClock().reset();
     }
   }
   
   protected void createUsers() {
-    IdentityService identityService = processEngine.getIdentityService();
     User user = identityService.newUser("kermit");
     user.setFirstName("Kermit");
     user.setLastName("the Frog");
@@ -159,12 +184,80 @@ public class BaseRestTestCase extends PvmTestCase {
     identityService.createMembership(user.getId(), group.getId());
   }
   
-  protected void initializeRestServer() throws Exception {
-    component = new Component();  
-    // Add a new HTTP server listening on port 8182.  
-    component.getServers().add(Protocol.HTTP, 8182);   
-    component.getDefaultHost().attach(new ActivitiRestServicesApplication());
-    component.start();
+  public static void createAndStartServer() {
+    server = new Server(HTTP_SERVER_PORT);
+      
+    HashSessionIdManager idmanager = new HashSessionIdManager();
+    server.setSessionIdManager(idmanager);
+    
+    AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
+    applicationContext.register(JPAApplicationConfiguration.class);
+    applicationContext.refresh();
+      
+    appContext = applicationContext;
+      
+    try {
+      server.setHandler(getServletContextHandler(applicationContext));
+      server.start();
+    } catch (Exception e) {
+      log.error("Error starting server", e);
+    }
+  }
+  
+  private static ServletContextHandler getServletContextHandler(AnnotationConfigWebApplicationContext context) throws IOException {
+    ServletContextHandler contextHandler = new ServletContextHandler();
+    JPAWebConfigurer configurer = new JPAWebConfigurer();
+    configurer.setContext(context);
+    contextHandler.addEventListener(configurer);
+    
+    // Create the SessionHandler (wrapper) to handle the sessions
+    HashSessionManager manager = new HashSessionManager();
+    SessionHandler sessions = new SessionHandler(manager);
+    contextHandler.setHandler(sessions);
+    
+    return contextHandler;
+  }
+  
+  public HttpResponse executeHttpRequest(HttpUriRequest request, int expectedStatusCode) {
+    CredentialsProvider provider = new BasicCredentialsProvider();
+    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("kermit", "kermit");
+    provider.setCredentials(AuthScope.ANY, credentials);
+    HttpClient client = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build();
+    try {
+      if (request.getFirstHeader(HttpHeaders.CONTENT_TYPE) == null) {
+        // Revert to default content-type 
+        request.addHeader(new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json"));
+      }
+      HttpResponse response = client.execute(request);
+      Assert.assertNotNull(response.getStatusLine());
+      Assert.assertEquals(expectedStatusCode, response.getStatusLine().getStatusCode());
+      return response;
+      
+    } catch (ClientProtocolException e) {
+      Assert.fail(e.getMessage());
+    } catch (IOException e) {
+      Assert.fail(e.getMessage());
+    }
+    return null;
+  }
+  
+  public HttpResponse executeBinaryHttpRequest(HttpUriRequest request, int expectedStatusCode) {
+    CredentialsProvider provider = new BasicCredentialsProvider();
+    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("kermit", "kermit");
+    provider.setCredentials(AuthScope.ANY, credentials);
+    HttpClient client = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build();
+    try {
+      HttpResponse response = client.execute(request);
+      Assert.assertNotNull(response.getStatusLine());
+      Assert.assertEquals(expectedStatusCode, response.getStatusLine().getStatusCode());
+      return response;
+      
+    } catch (ClientProtocolException e) {
+      Assert.fail(e.getMessage());
+    } catch (IOException e) {
+      Assert.fail(e.getMessage());
+    }
+    return null;
   }
   
   protected void dropUsers() {
@@ -173,10 +266,6 @@ public class BaseRestTestCase extends PvmTestCase {
     identityService.deleteUser("kermit");
     identityService.deleteGroup("admin");
     identityService.deleteMembership("kermit", "admin");
-  }
-  
-  protected void stopRestServer() throws Exception {
-    component.stop();
   }
   
   /** Each test is assumed to clean up all DB content it entered.
@@ -224,7 +313,7 @@ public class BaseRestTestCase extends PvmTestCase {
   }
   
   protected String encode(String string) {
-    if(string != null) {
+    if (string != null) {
       try {
         return URLEncoder.encode(string, "UTF-8");
       } catch (UnsupportedEncodingException uee) {
@@ -232,18 +321,6 @@ public class BaseRestTestCase extends PvmTestCase {
       }
     }
     return null;
-  }
-
-
-  protected void initializeServices() {
-    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
-    repositoryService = processEngine.getRepositoryService();
-    runtimeService = processEngine.getRuntimeService();
-    taskService = processEngine.getTaskService();
-    formService = processEngine.getFormService();
-    historyService = processEngine.getHistoryService();
-    identityService = processEngine.getIdentityService();
-    managementService = processEngine.getManagementService();
   }
   
   public void assertProcessEnded(final String processInstanceId) {
@@ -345,12 +422,10 @@ public class BaseRestTestCase extends PvmTestCase {
     int numberOfResultsExpected = expectedResourceIds.length;
     
     // Do the actual call
-    ClientResource client = getAuthenticatedClient(url);
-    Representation response = client.get();
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
     
     // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's
@@ -361,60 +436,55 @@ public class BaseRestTestCase extends PvmTestCase {
       toBeFound.remove(id);
     }
     assertTrue("Not all process-definitions have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
-    
-    client.release();
   }
   
   /**
    * Checks if the returned "data" array (child-node of root-json node returned by invoking a POST on the given url) 
    * contains entries with the given ID's.
    */
-  protected void assertResultsPresentInDataResponse(String url, ObjectNode body, String... expectedResourceIds) throws JsonProcessingException, IOException {
+  protected void assertResultsPresentInPostDataResponse(String url, ObjectNode body, String... expectedResourceIds) throws JsonProcessingException, IOException {
+    assertResultsPresentInPostDataResponseWithStatusCheck(url, body, HttpStatus.SC_OK, expectedResourceIds);
+  }
+  
+  protected void assertResultsPresentInPostDataResponseWithStatusCheck(String url, ObjectNode body, int expectedStatusCode, String... expectedResourceIds) throws JsonProcessingException, IOException {
     int numberOfResultsExpected = 0;
     if (expectedResourceIds != null) {
       numberOfResultsExpected = expectedResourceIds.length;
     }
     
     // Do the actual call
-    ClientResource client = getAuthenticatedClient(url);
-    Representation response = client.post(body);
+    HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
+    post.setEntity(new StringEntity(body.toString()));
+    HttpResponse response = executeHttpRequest(post, expectedStatusCode);
     
-    // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode rootNode = objectMapper.readTree(response.getStream());
-    JsonNode dataNode = rootNode.get("data");
-    assertEquals(numberOfResultsExpected, dataNode.size());
-
-    // Check presence of ID's
-    if (expectedResourceIds != null) {
-      List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
-      Iterator<JsonNode> it = dataNode.iterator();
-      while(it.hasNext()) {
-        String id = it.next().get("id").textValue();
-        toBeFound.remove(id);
+    if (expectedStatusCode == HttpStatus.SC_OK) {
+      // Check status and size
+      JsonNode rootNode = objectMapper.readTree(response.getEntity().getContent());
+      JsonNode dataNode = rootNode.get("data");
+      assertEquals(numberOfResultsExpected, dataNode.size());
+  
+      // Check presence of ID's
+      if (expectedResourceIds != null) {
+        List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
+        Iterator<JsonNode> it = dataNode.iterator();
+        while(it.hasNext()) {
+          String id = it.next().get("id").textValue();
+          toBeFound.remove(id);
+        }
+        assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
       }
-      assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
     }
-    
-    client.release();
   }
   
   /**
    * Checks if the rest operation returns an error as expected 
    */
-  protected void assertErrorResult(String url, ObjectNode body, Status status) throws IOException {
+  protected void assertErrorResult(String url, ObjectNode body, int statusCode) throws IOException {
     
     // Do the actual call
-    ClientResource client = getAuthenticatedClient(url);
-    try {
-      client.post(body);
-      fail();
-    } catch(Exception e) {
-      // Check status
-      assertEquals(status, client.getResponse().getStatus());
-    }
-    
-    client.release();
+    HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
+    post.setEntity(new StringEntity(body.toString()));
+    executeHttpRequest(post, statusCode);
   }
   
   /**
@@ -431,12 +501,6 @@ public class BaseRestTestCase extends PvmTestCase {
   }
   
   protected String getISODateString(Date time) {
-    return ISO8601Utils.format(time, true);
-  }
-  
-  protected String getMediaType(ClientResource client) {
-    @SuppressWarnings("unchecked")
-    Series<Header> headers = (Series<Header>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
-    return headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE);
+    return dateFormat.format(time);
   }
 }

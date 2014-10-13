@@ -20,8 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.restlet.data.Status;
-import org.restlet.resource.ResourceException;
+import org.activiti.rest.exception.ActivitiConflictException;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -89,7 +88,7 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
       Date date, boolean isGraphicalNotationDefined, String serverRootUrl) {
     
     if (!processDefinition.isSuspended()) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process definition with id '" + processDefinition.getId() + " ' is already active", null, null);
+      throw new ActivitiConflictException("Process definition with id '" + processDefinition.getId() + " ' is already active");
     }
     repositoryService.activateProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
    
@@ -104,7 +103,7 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
       Date date, boolean isGraphicalNotationDefined, String serverRootUrl) {
     
     if (processDefinition.isSuspended()) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process definition with id '" + processDefinition.getId() + " ' is already suspended", null, null);
+      throw new ActivitiConflictException("Process definition with id '" + processDefinition.getId() + " ' is already suspended");
     }
     repositoryService.suspendProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
     

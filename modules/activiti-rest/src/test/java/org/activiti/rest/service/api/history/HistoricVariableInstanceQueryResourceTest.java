@@ -20,11 +20,12 @@ import java.util.Iterator;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -37,7 +38,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Tijs Rademakers
  */
-public class HistoricVariableInstanceQueryResourceTest extends BaseRestTestCase {
+public class HistoricVariableInstanceQueryResourceTest extends BaseSpringRestTestCase {
   
   /**
    * Test querying historic variable instance. 
@@ -124,18 +125,18 @@ public class HistoricVariableInstanceQueryResourceTest extends BaseRestTestCase 
     variableNode.put("name", "taskVariable");
     variableNode.put("value", "test");
     variableNode.put("operation", "notEquals");
-    assertErrorResult(url, requestNode, Status.CLIENT_ERROR_BAD_REQUEST);
+    assertErrorResult(url, requestNode, HttpStatus.SC_BAD_REQUEST);
   }
   
   protected void assertResultsPresentInDataResponse(String url, ObjectNode body, int numberOfResultsExpected, String variableName, Object variableValue) throws JsonProcessingException, IOException {
     
     // Do the actual call
-    ClientResource client = getAuthenticatedClient(url);
-    Representation response = client.post(body);
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + url);
+    httpPost.setEntity(new StringEntity(body.toString()));
+    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
     
     // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's
@@ -159,7 +160,5 @@ public class HistoricVariableInstanceQueryResourceTest extends BaseRestTestCase 
       }
       assertTrue("Variable " + variableName + " is missing", variableFound);
     }
-    
-    client.release();
   }
 }

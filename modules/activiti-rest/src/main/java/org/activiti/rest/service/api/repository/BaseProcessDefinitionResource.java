@@ -36,8 +36,7 @@ public class BaseProcessDefinitionResource {
    * when bad request was made or definition is not found.
    */
   protected ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
-    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-            .processDefinitionId(processDefinitionId).singleResult();
+    ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
    
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);

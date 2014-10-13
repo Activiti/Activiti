@@ -26,19 +26,20 @@ import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.UserQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.rest.common.api.DataResponse;
+import org.activiti.rest.exception.ActivitiConflictException;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.apache.commons.httpclient.HttpStatus;
-import org.restlet.data.Status;
-import org.restlet.resource.ResourceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class UserCollectionResource {
 
   protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
@@ -100,7 +101,7 @@ public class UserCollectionResource {
 
     // Check if a user with the given ID already exists so we return a CONFLICT
     if (identityService.createUserQuery().userId(userRequest.getId()).count() > 0) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "A user with id '" + userRequest.getId() + "' already exists.", null, null);
+      throw new ActivitiConflictException("A user with id '" + userRequest.getId() + "' already exists.");
     }
     
     User created = identityService.newUser(userRequest.getId());
@@ -110,7 +111,7 @@ public class UserCollectionResource {
     created.setPassword(userRequest.getPassword());
     identityService.saveUser(created);
     
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     
     return restResponseFactory.createUserResponse(created, true, request.getRequestURL().toString().replace("/identity/users", ""));
   }

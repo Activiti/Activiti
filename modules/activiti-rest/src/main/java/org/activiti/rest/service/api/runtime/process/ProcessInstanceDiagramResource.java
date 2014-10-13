@@ -16,8 +16,9 @@ package org.activiti.rest.service.api.runtime.process;
 import java.io.InputStream;
 import java.util.Collections;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
@@ -45,8 +46,8 @@ public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource 
   @Autowired
   protected ProcessEngineConfiguration processEngineConfiguration;
   
-  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/diagram", method = RequestMethod.GET, produces="image/png")
-  public @ResponseBody byte[] getProcessInstanceDiagram(@PathVariable String processInstanceId) {
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/diagram", method = RequestMethod.GET)
+  public @ResponseBody byte[] getProcessInstanceDiagram(@PathVariable String processInstanceId, HttpServletResponse response) {
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
     
     ProcessDefinitionEntity pde = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
@@ -60,12 +61,17 @@ public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource 
           processEngineConfiguration.getClassLoader(), 1.0);
 
       try {
-        return IOUtils.toByteArray(resource);
+        byte[] responseBytes = IOUtils.toByteArray(resource);
+        response.setContentType("image/png");
+        return responseBytes;
+        
       } catch(Exception e) {
-        throw new ActivitiException("Error exporting diagram", e);
+        response.setContentType("application/json");
+        throw new ActivitiIllegalArgumentException("Error exporting diagram", e);
       }
       
     } else {
+      response.setContentType("application/json");
       throw new ActivitiIllegalArgumentException("Process instance with id '" + processInstance.getId() + "' has no graphical notation defined.");
     }
   }

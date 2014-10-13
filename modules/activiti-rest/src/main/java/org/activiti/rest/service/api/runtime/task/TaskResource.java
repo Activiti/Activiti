@@ -22,8 +22,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.exception.ActivitiForbiddenException;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -100,7 +101,7 @@ public class TaskResource extends TaskBaseResource {
     Task taskToDelete = getTaskFromRequest(taskId);
     if (taskToDelete.getExecutionId() != null) {
       // Can't delete a task that is part of a process instance
-      throw new ActivitiException("Cannot delete a task that is part of a process-instance.");
+      throw new ActivitiForbiddenException("Cannot delete a task that is part of a process-instance.");
     }
     
     if (cascadeHistory != null) {
@@ -110,7 +111,7 @@ public class TaskResource extends TaskBaseResource {
       // Delete with delete-reason
       taskService.deleteTask(taskToDelete.getId(), deleteReason);
     }
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 
   protected void completeTask(Task task, TaskActionRequest actionRequest) {
@@ -145,7 +146,7 @@ public class TaskResource extends TaskBaseResource {
 
   protected void claimTask(Task task, TaskActionRequest actionRequest) {
     // In case the task is already claimed, a ActivitiTaskAlreadyClaimedException is thrown and converted to
-    // a CONFLICT response by the StatusService
+    // a CONFLICT response by the ExceptionHandlerAdvice
     taskService.claim(task.getId(), actionRequest.getAssignee());
   }
 }

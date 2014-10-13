@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -63,6 +63,6 @@ public class GroupResource extends BaseGroupResource {
   public void deleteGroup(@PathVariable String groupId, HttpServletResponse response) {
   	Group group = getGroupFromRequest(groupId);
     identityService.deleteGroup(group.getId());
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

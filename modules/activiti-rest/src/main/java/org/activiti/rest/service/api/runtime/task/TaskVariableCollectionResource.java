@@ -22,20 +22,22 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.exception.ActivitiConflictException;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -43,6 +45,9 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 public class TaskVariableCollectionResource extends TaskVariableBaseResource {
+  
+  @Autowired
+  protected ObjectMapper objectMapper;
 
   @RequestMapping(value="/runtime/tasks/{taskId}/variables", method = RequestMethod.GET, produces="application/json")
   public List<RestVariable> getVariables(@PathVariable String taskId, 
@@ -76,9 +81,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}/variables", method = RequestMethod.POST, produces="application/json")
-  public Object createTaskVariable(@PathVariable String taskId, @RequestParam Map<String,String> allRequestParams,
-      @RequestParam("file") MultipartFile file, @RequestBody List<RestVariable> restVariables,
-      HttpServletRequest request, HttpServletResponse response) {
+  public Object createTaskVariable(@PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
     
     Task task = getTaskFromRequest(taskId);
     
@@ -86,13 +89,26 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
     serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
     
     Object result = null;
-    if (file != null) {
-      result = setBinaryVariable(file, allRequestParams, task, true, serverRootUrl);
+    if (request instanceof MultipartHttpServletRequest) {
+      result = setBinaryVariable((MultipartHttpServletRequest) request, task, true, serverRootUrl);
     } else {
-      List<RestVariable> variables = new ArrayList<RestVariable>();
-      result = variables;
       
-      if (restVariables == null || restVariables.size() == 0) {
+      List<RestVariable> inputVariables = new ArrayList<RestVariable>();
+      List<RestVariable> resultVariables = new ArrayList<RestVariable>();
+      result = resultVariables;
+      
+      try {
+        @SuppressWarnings("unchecked")
+        List<Object> variableObjects = (List<Object>) objectMapper.readValue(request.getInputStream(), List.class);
+        for (Object restObject : variableObjects) {
+          RestVariable restVariable = objectMapper.convertValue(restObject, RestVariable.class);
+          inputVariables.add(restVariable);
+        }
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
+      }
+      
+      if (inputVariables == null || inputVariables.size() == 0) {
         throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
       }
       
@@ -100,7 +116,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
       RestVariableScope varScope = null;
       Map<String, Object> variablesToSet = new HashMap<String, Object>();
       
-      for (RestVariable var : restVariables) {
+      for (RestVariable var : inputVariables) {
         // Validate if scopes match
         varScope = var.getVariableScope();
         if (var.getName() == null) {
@@ -118,12 +134,12 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
         }
         
         if (hasVariableOnScope(task, var.getName(), varScope)) {
-          throw new ActivitiException("Variable '" + var.getName() + "' is already present on task '" + task.getId() + "'.");
+          throw new ActivitiConflictException("Variable '" + var.getName() + "' is already present on task '" + task.getId() + "'.");
         }
         
         Object actualVariableValue = restResponseFactory.getVariableValue(var);
         variablesToSet.put(var.getName(), actualVariableValue);
-        variables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope, 
+        resultVariables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope, 
             task.getId(), RestResponseFactory.VARIABLE_TASK, false, serverRootUrl));
       }
       
@@ -141,7 +157,8 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
         }
       }
     }
-    response.setStatus(HttpStatus.SC_CREATED);
+    
+    response.setStatus(HttpStatus.CREATED.value());
     return result;
   }
   
@@ -151,7 +168,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
     Collection<String> currentVariables = taskService.getVariablesLocal(task.getId()).keySet();
     taskService.removeVariablesLocal(task.getId(), currentVariables);
     
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap, String serverRootUrl) {

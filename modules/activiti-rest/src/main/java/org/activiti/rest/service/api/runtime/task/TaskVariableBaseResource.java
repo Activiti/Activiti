@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.Map;
@@ -24,12 +23,14 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Task;
+import org.activiti.rest.exception.ActivitiContentNotSupportedException;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 
 /**
@@ -100,26 +101,43 @@ public class TaskVariableBaseResource extends TaskBaseResource {
     return variableFound;
   }
   
-  protected RestVariable setBinaryVariable(MultipartFile file, Map<String, String> requestParams, 
-      Task task, boolean isNew, String serverRootUrl) {
+  protected RestVariable setBinaryVariable(MultipartHttpServletRequest request, Task task, 
+      boolean isNew, String serverRootUrl) {
+    
+    // Validate input and set defaults
+    if (request.getFileMap().size() == 0) {
+      throw new ActivitiIllegalArgumentException("No file content was found in request body.");
+    }
+    
+    // Get first file in the map, ignore possible other files
+    MultipartFile file = request.getFile(request.getFileMap().keySet().iterator().next());
+    
+    if (file == null) {
+      throw new ActivitiIllegalArgumentException("No file content was found in request body.");
+    }
+    
+    String variableScope = null;
+    String variableName = null;
+    String variableType = null;
+    
+    Map<String, String[]> paramMap = request.getParameterMap();
+    for (String parameterName : paramMap.keySet()) {
+      
+      if (paramMap.get(parameterName).length > 0) {
+      
+        if (parameterName.equalsIgnoreCase("scope")) {
+          variableScope = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("name")) {
+          variableName = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("type")) {
+          variableType = paramMap.get(parameterName)[0];
+        }
+      }
+    }
     
     try {
-      String variableScope = null;
-      String variableName = null;
-      String variableType = null;
-      
-      if (requestParams.containsKey("scope")) {
-        variableScope = requestParams.get("scope");
-      } else if (requestParams.containsKey("name")) {
-        variableName = requestParams.get("name");
-      } else if(requestParams.containsKey("type")) {
-        variableType = requestParams.get("type");
-      }
-      
-      // Validate input and set defaults
-      if (file == null) {
-        throw new ActivitiIllegalArgumentException("No file content was found in request body.");
-      }
       
       if (variableName == null) {
         throw new ActivitiIllegalArgumentException("No variable name was found in request body.");
@@ -140,9 +158,9 @@ public class TaskVariableBaseResource extends TaskBaseResource {
       
       if (variableType.equals(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE)) {
         // Use raw bytes as variable value
-        ByteArrayOutputStream variableOutput = new ByteArrayOutputStream(((Long) file.getSize()).intValue());
-        IOUtils.copy(file.getInputStream(), variableOutput);
-        setVariable(task, variableName, variableOutput.toByteArray(), scope, isNew);
+        byte[] variableBytes = IOUtils.toByteArray(file.getInputStream());
+        setVariable(task, variableName, variableBytes, scope, isNew);
+        
       } else {
         // Try deserializing the object
         ObjectInputStream stream = new ObjectInputStream(file.getInputStream());
@@ -154,9 +172,9 @@ public class TaskVariableBaseResource extends TaskBaseResource {
       return restResponseFactory.createBinaryRestVariable(variableName, scope, variableType, task.getId(), null, null, serverRootUrl);
       
     } catch (IOException ioe) {
-      throw new ActivitiException("Error getting binary variable", ioe);
+      throw new ActivitiIllegalArgumentException("Error getting binary variable", ioe);
     } catch (ClassNotFoundException ioe) {
-      throw new ActivitiException("The provided body contains a serialized object for which the class is nog found: " + ioe.getMessage());
+      throw new ActivitiContentNotSupportedException("The provided body contains a serialized object for which the class is nog found: " + ioe.getMessage());
     }
     
   }

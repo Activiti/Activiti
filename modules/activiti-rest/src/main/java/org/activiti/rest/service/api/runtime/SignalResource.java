@@ -23,8 +23,8 @@ import org.activiti.engine.RuntimeService;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.runtime.process.SignalEventReceivedRequest;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -61,7 +61,6 @@ public class SignalResource {
       }
     }
     
-    
     if (signalRequest.isAsync()) {
     	if(signalVariables != null) {
     		throw new ActivitiIllegalArgumentException("Async signals cannot take variables as payload");
@@ -72,14 +71,14 @@ public class SignalResource {
     	} else {
     	  runtimeService.signalEventReceivedAsync(signalRequest.getSignalName());
     	}
-    	response.setStatus(HttpStatus.SC_ACCEPTED);
+    	response.setStatus(HttpStatus.ACCEPTED.value());
     } else {
     	if (signalRequest.isCustomTenantSet()) {
     		runtimeService.signalEventReceivedWithTenantId(signalRequest.getSignalName(), signalVariables, signalRequest.getTenantId());
     	} else {
     		runtimeService.signalEventReceived(signalRequest.getSignalName(), signalVariables);
     	}
-    	response.setStatus(HttpStatus.SC_OK);
+    	response.setStatus(HttpStatus.NO_CONTENT.value());
     }
   }
 }

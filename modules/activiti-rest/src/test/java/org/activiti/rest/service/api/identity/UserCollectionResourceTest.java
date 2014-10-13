@@ -18,12 +18,12 @@ import java.util.List;
 
 import org.activiti.engine.identity.User;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Frederik Heremans
  */
-public class UserCollectionResourceTest extends BaseRestTestCase {
+public class UserCollectionResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting all users.
@@ -123,11 +123,12 @@ public class UserCollectionResourceTest extends BaseRestTestCase {
       requestNode.put("password", "test");
       requestNode.put("email", "no-reply@activiti.org");
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_COLLECTION, "testuser"));
-      Representation response = client.post(requestNode);
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_COLLECTION, "testuser"));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals("testuser", responseNode.get("id").textValue());
       assertEquals("Frederik", responseNode.get("firstName").textValue());
@@ -146,21 +147,16 @@ public class UserCollectionResourceTest extends BaseRestTestCase {
   }
   
   public void testCreateUserExceptions() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_COLLECTION, "unexisting"));
-    
     // Create without ID
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("firstName", "Frederik");
     requestNode.put("lastName", "Heremans");
     requestNode.put("email", "no-reply@activiti.org");
     
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Id cannot be null.", expected.getStatus().getDescription());
-    }
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_COLLECTION, "unexisting"));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
     
     // Create when user already exists
     // Create without ID
@@ -170,12 +166,7 @@ public class UserCollectionResourceTest extends BaseRestTestCase {
     requestNode.put("lastName", "Heremans");
     requestNode.put("email", "no-reply@activiti.org");
     
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-      assertEquals("A user with id 'kermit' already exists.", expected.getStatus().getDescription());
-    }
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_CONFLICT);
   }
 }

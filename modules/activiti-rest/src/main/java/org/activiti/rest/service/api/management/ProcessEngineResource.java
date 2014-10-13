@@ -17,8 +17,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineInfo;
 import org.activiti.engine.ProcessEngines;
-import org.activiti.spring.ProcessEngineFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,22 +29,21 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProcessEngineResource {
   
-  @Autowired
-  protected ProcessEngineFactoryBean engineFactoryBean;
+  @Autowired @Qualifier("processEngine")
+  protected ProcessEngine engine;
 
   @RequestMapping(value="/management/engine", method = RequestMethod.GET, produces = "application/json")
   public ProcessEngineInfoResponse getEngineInfo() {
     ProcessEngineInfoResponse response = new ProcessEngineInfoResponse();
     
     try {
-      ProcessEngineInfo engineInfo = ProcessEngines.getProcessEngineInfo(engineFactoryBean.getObject().getName());
+      ProcessEngineInfo engineInfo = ProcessEngines.getProcessEngineInfo(engine.getName());
       if (engineInfo != null) {
         response.setName(engineInfo.getName());
         response.setResourceUrl(engineInfo.getResourceUrl());
         response.setException(engineInfo.getException());
       } else {
         // Revert to using process-engine directly
-        ProcessEngine engine = engineFactoryBean.getObject();
         response.setName(engine.getName());
       }
     } catch (Exception e) {

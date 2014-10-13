@@ -27,14 +27,16 @@ import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.api.engine.AttachmentRequest;
 import org.activiti.rest.service.api.engine.AttachmentResponse;
-import org.apache.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -42,6 +44,9 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 public class TaskAttachmentCollectionResource extends TaskBaseResource {
+  
+  @Autowired
+  protected ObjectMapper objectMapper;
 
   @RequestMapping(value="/runtime/tasks/{taskId}/attachments", method = RequestMethod.GET, produces="application/json")
   public List<AttachmentResponse> getAttachments(@PathVariable String taskId, HttpServletRequest request) {
@@ -59,22 +64,33 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}/attachments", method = RequestMethod.POST, produces="application/json")
-  public AttachmentResponse createAttachment(@PathVariable String taskId, @RequestParam Map<String,String> allRequestParams,
-      @RequestParam("file") MultipartFile file, @RequestBody AttachmentRequest attachmentRequest, 
-      HttpServletRequest request, HttpServletResponse response) {
+  public AttachmentResponse createAttachment(@PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
     
     String serverRootUrl = request.getRequestURL().toString();
     serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
     
     AttachmentResponse result = null;
     Task task = getTaskFromRequest(taskId);
-    if (file != null) {
-      result = createBinaryAttachment(file, allRequestParams, task, serverRootUrl, response);
+    if (request instanceof MultipartHttpServletRequest) {
+      result = createBinaryAttachment((MultipartHttpServletRequest) request, task, serverRootUrl, response);
     } else {
+      
+      AttachmentRequest attachmentRequest = null;
+      try {
+        attachmentRequest = objectMapper.readValue(request.getInputStream(), AttachmentRequest.class);
+        
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Failed to serialize to a AttachmentRequest instance", e);
+      }
+      
+      if (attachmentRequest == null) {
+        throw new ActivitiIllegalArgumentException("AttachmentRequest properties not found in request");
+      }
+      
       result = createSimpleAttachment(attachmentRequest, task, serverRootUrl);
     }
     
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     return result;
   }
   
@@ -91,24 +107,38 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
     return restResponseFactory.createAttachmentResponse(createdAttachment, serverRootUrl);
   }
   
-  protected AttachmentResponse createBinaryAttachment(MultipartFile file, Map<String,String> requestParams, 
-      Task task, String serverRootUrl, HttpServletResponse response) {
+  protected AttachmentResponse createBinaryAttachment(MultipartHttpServletRequest request, Task task, 
+      String serverRootUrl, HttpServletResponse response) {
     
     String name = null;
     String description = null;
     String type = null;
     
-    if (requestParams.containsKey("name")) {
-      name = requestParams.get("name");
-    } else if (requestParams.containsKey("description")) {
-      description = requestParams.get("description");
-    } else if (requestParams.containsKey("type")) {
-      type = requestParams.get("type");
+    Map<String, String[]> paramMap = request.getParameterMap();
+    for (String parameterName : paramMap.keySet()) {
+      if (paramMap.get(parameterName).length > 0) {
+        
+        if (parameterName.equalsIgnoreCase("name")) {
+          name = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("description")) {
+          description = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("type")) {
+          type = paramMap.get(parameterName)[0];
+        }
+      }
     }
     
     if (name == null) {
       throw new ActivitiIllegalArgumentException("Attachment name is required.");
     }
+    
+    if (request.getFileMap().size() == 0) {
+      throw new ActivitiIllegalArgumentException("Attachment content is required.");
+    }
+    
+    MultipartFile file = request.getFileMap().values().iterator().next();
     
     if (file == null) {
       throw new ActivitiIllegalArgumentException("Attachment content is required.");
@@ -118,7 +148,7 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
       Attachment createdAttachment = taskService.createAttachment(type, task.getId(), task.getProcessInstanceId(), name,
               description, file.getInputStream());
       
-      response.setStatus(HttpStatus.SC_CREATED);
+      response.setStatus(HttpStatus.CREATED.value());
       return restResponseFactory.createAttachmentResponse(createdAttachment, serverRootUrl);
       
     } catch (Exception e) {

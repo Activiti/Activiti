@@ -20,8 +20,8 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.apache.commons.httpclient.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -50,7 +50,7 @@ public class HistoricTaskInstanceResource {
   @RequestMapping(value="/history/historic-task-instances/{taskId}", method = RequestMethod.DELETE)
   public void deleteTaskInstance(@PathVariable String taskId, HttpServletResponse response) {
     historyService.deleteHistoricTaskInstance(taskId);
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   protected HistoricTaskInstance getHistoricTaskInstanceFromRequest(String taskId) {

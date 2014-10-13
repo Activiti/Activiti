@@ -15,12 +15,13 @@ package org.activiti.rest.service.api.identity;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -29,7 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Frederik Heremans
  */
-public class GroupMembershipResourceTest extends BaseRestTestCase {
+public class GroupMembershipResourceTest extends BaseSpringRestTestCase {
 
   public void testCreatemembership() throws Exception {
     try {
@@ -41,15 +42,15 @@ public class GroupMembershipResourceTest extends BaseRestTestCase {
       User testUser = identityService.newUser("testuser");
       identityService.saveUser(testUser);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "testgroup"));
-      
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("userId", "testuser");
       
-      Representation response = client.post(requestNode);
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "testgroup"));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals("testuser", responseNode.get("userId").textValue());
       assertEquals("testgroup", responseNode.get("groupId").textValue());
@@ -92,18 +93,14 @@ public class GroupMembershipResourceTest extends BaseRestTestCase {
       
       identityService.createMembership("testuser", "testgroup");
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "testgroup"));
-      
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("userId", "testuser");
       
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-        assertEquals("User 'testuser' is already part of group 'testgroup'.", expected.getStatus().getDescription());
-      }
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "testgroup"));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_CONFLICT);
+      
     } finally {
       try {
         identityService.deleteGroup("testgroup");
@@ -133,12 +130,9 @@ public class GroupMembershipResourceTest extends BaseRestTestCase {
       
       identityService.createMembership("testuser", "testgroup");
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_GROUP_MEMBERSHIP, "testgroup", "testuser"));
-      
-      Representation response = client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-      assertEquals(0, response.getSize());
+      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP, "testgroup", "testuser"));
+      executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
       
       // Check if membership is actually deleted
       assertNull(identityService.createUserQuery().memberOfGroup("testgroup").singleResult());
@@ -172,16 +166,9 @@ public class GroupMembershipResourceTest extends BaseRestTestCase {
       User testUser = identityService.newUser("testuser");
       identityService.saveUser(testUser);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_GROUP_MEMBERSHIP, "testgroup", "testuser"));
-      
-      try {
-        client.delete();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("User 'testuser' is not part of group 'testgroup'.", expected.getStatus().getDescription());
-      }
+      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP, "testgroup", "testuser"));
+      executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
       
     } finally {
       try {
@@ -204,44 +191,28 @@ public class GroupMembershipResourceTest extends BaseRestTestCase {
    * Test deleting member from an unexisting group.
    */
   public void testDeleteMemberfromUnexistingGroup() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-            RestUrls.URL_GROUP_MEMBERSHIP, "unexisting", "kermit"));
-    try {
-      client.delete();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a group with id 'unexisting'.", expected.getStatus().getDescription());
-    }
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP, "unexisting", "kermit"));
+    executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
   }
   
    /**
    * Test adding member to an unexisting group.
    */
   public void testAddMemberToUnexistingGroup() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "unexisting"));
-    
-    try {
-      client.post(objectMapper.createObjectNode());
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a group with id 'unexisting'.", expected.getStatus().getDescription());
-    }
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "unexisting"));
+    httpPost.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
   }
   
   /**
    * Test adding member to a group, without specifying userId
    */
   public void testAddMemberNoUserId() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "admin"));
-    
-    try {
-      client.post(objectMapper.createObjectNode());
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("UserId cannot be null.", expected.getStatus().getDescription());
-    }
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "admin"));
+    httpPost.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
   }
 }

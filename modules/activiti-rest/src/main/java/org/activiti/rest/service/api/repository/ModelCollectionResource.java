@@ -24,7 +24,7 @@ import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 import org.activiti.rest.common.api.DataResponse;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -123,7 +123,7 @@ public class ModelCollectionResource extends BaseModelResource {
     model.setTenantId(modelRequest.getTenantId());
 
     repositoryService.saveModel(model);
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     return restResponseFactory.createModelResponse(model, request.getRequestURL().toString().replace("/repository/models", ""));
   }
 }

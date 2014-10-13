@@ -19,24 +19,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.rest.service.api.RestResponseFactory;
+import org.activiti.rest.exception.ActivitiConflictException;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.apache.http.HttpStatus;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
  * @author Tijs Rademakers
  */
 public class BaseVariableCollectionResource extends BaseExecutionVariableResource {
+  
+  @Autowired
+  protected ObjectMapper objectMapper;
 
-  protected List<RestVariable> processVariables(Execution execution, String scope, String serverRootUrl) {
+  protected List<RestVariable> processVariables(Execution execution, String scope, int variableType, String serverRootUrl) {
     List<RestVariable> result = new ArrayList<RestVariable>();
     Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
     
@@ -45,14 +51,14 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
     
     if (variableScope == null) {
       // Use both local and global variables
-      addLocalVariables(execution, variableMap, serverRootUrl);
-      addGlobalVariables(execution, variableMap, serverRootUrl);
+      addLocalVariables(execution, variableType, variableMap, serverRootUrl);
+      addGlobalVariables(execution, variableType, variableMap, serverRootUrl);
       
     } else if (variableScope == RestVariableScope.GLOBAL) {
-      addGlobalVariables(execution, variableMap, serverRootUrl);
+      addGlobalVariables(execution, variableType, variableMap, serverRootUrl);
       
     } else if (variableScope == RestVariableScope.LOCAL) {
-      addLocalVariables(execution, variableMap, serverRootUrl);
+      addLocalVariables(execution, variableType, variableMap, serverRootUrl);
     }
     
     // Get unique variables from map
@@ -64,21 +70,33 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
     Collection<String> currentVariables = runtimeService.getVariablesLocal(execution.getId()).keySet();
     runtimeService.removeVariablesLocal(execution.getId(), currentVariables);
     
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
-  protected Object createExecutionVariable(Execution execution, MultipartFile file, List<RestVariable> restVariables, 
-      Map<String, String> requestParams, boolean override, String serverRootUrl, HttpServletResponse response) {
+  protected Object createExecutionVariable(Execution execution, boolean override, int variableType, String serverRootUrl, 
+      HttpServletRequest request, HttpServletResponse response) {
     
     Object result = null;
-    if (file != null) {
-      result = setBinaryVariable(file, requestParams, execution, true, serverRootUrl);
+    if (request instanceof MultipartHttpServletRequest) {
+      result = setBinaryVariable((MultipartHttpServletRequest) request, execution, variableType, true, serverRootUrl);
     } else {
       
-      List<RestVariable> variables = new ArrayList<RestVariable>();
-      result = variables;
+      List<RestVariable> inputVariables = new ArrayList<RestVariable>();
+      List<RestVariable> resultVariables = new ArrayList<RestVariable>();
+      result = resultVariables;
       
-      if (restVariables == null || restVariables.size() == 0) {
+      try {
+        @SuppressWarnings("unchecked")
+        List<Object> variableObjects = (List<Object>) objectMapper.readValue(request.getInputStream(), List.class);
+        for (Object restObject : variableObjects) {
+          RestVariable restVariable = objectMapper.convertValue(restObject, RestVariable.class);
+          inputVariables.add(restVariable);
+        }
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
+      }
+      
+      if (inputVariables == null || inputVariables.size() == 0) {
         throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
       }
       
@@ -86,7 +104,7 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
       RestVariableScope varScope = null;
       Map<String, Object> variablesToSet = new HashMap<String, Object>();
       
-      for (RestVariable var : restVariables) {
+      for (RestVariable var : inputVariables) {
         // Validate if scopes match
         varScope = var.getVariableScope();
         if (var.getName() == null) {
@@ -104,13 +122,13 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
         }
         
         if (!override && hasVariableOnScope(execution, var.getName(), varScope)) {
-          throw new ActivitiException("Variable '" + var.getName() + "' is already present on execution '" + execution.getId() + "'.");
+          throw new ActivitiConflictException("Variable '" + var.getName() + "' is already present on execution '" + execution.getId() + "'.");
         }
         
         Object actualVariableValue = restResponseFactory.getVariableValue(var);
         variablesToSet.put(var.getName(), actualVariableValue);
-        variables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope, 
-            execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, false, serverRootUrl));
+        resultVariables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope, 
+            execution.getId(), variableType, false, serverRootUrl));
       }
       
       if (!variablesToSet.isEmpty()) {
@@ -127,14 +145,14 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
         }
       }
     }
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     return result;
   }
   
-  protected void addGlobalVariables(Execution execution, Map<String, RestVariable> variableMap, String serverRootUrl) {
+  protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, String serverRootUrl) {
     Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
     List<RestVariable> globalVariables = restResponseFactory.createRestVariables(rawVariables, 
-        execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, RestVariableScope.GLOBAL, serverRootUrl);
+        execution.getId(), variableType, RestVariableScope.GLOBAL, serverRootUrl);
     
     // Overlay global variables over local ones. In case they are present the values are not overridden, 
     // since local variables get precedence over global ones at all times.
@@ -145,10 +163,10 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
     }
   }
 
-  protected void addLocalVariables(Execution execution, Map<String, RestVariable> variableMap, String serverRootUrl) {
+  protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, String serverRootUrl) {
     Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
     List<RestVariable> localVariables = restResponseFactory.createRestVariables(rawLocalvariables, 
-        execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, RestVariableScope.LOCAL, serverRootUrl);
+        execution.getId(), variableType, RestVariableScope.LOCAL, serverRootUrl);
     
     for (RestVariable var : localVariables) {
       variableMap.put(var.getName(), var);

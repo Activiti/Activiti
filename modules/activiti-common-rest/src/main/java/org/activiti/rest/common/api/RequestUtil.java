@@ -18,7 +18,6 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.apache.commons.lang3.time.FastDateFormat;
-import org.restlet.data.Form;
 
 /**
  * @author Tijs Rademakers
@@ -48,11 +47,11 @@ public class RequestUtil {
     Date value = null;
     if (requestParams.get(name) != null) {
       
-      String input = requestParams.get(name);
+      String input = requestParams.get(name).trim();
       
       //this is zero time so we need to add that TZ indicator for 
       if (input.endsWith("Z")) {
-        input = input.substring( 0, input.length() - 1) + "GMT-00:00";
+        input = input.substring(0, input.length() - 1) + "GMT-00:00";
       } else {
         int inset = 6;
     

@@ -19,17 +19,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * @author Frederik Heremans
@@ -61,8 +63,21 @@ public class UserPictureResource extends BaseUserResource {
   }
   
   @RequestMapping(value="/identity/users/{userId}/picture", method = RequestMethod.PUT)
-  public void updateUserPicture(@PathVariable String userId, @RequestParam("file") MultipartFile file) {
+  public void updateUserPicture(@PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
     User user = getUserFromRequest(userId);
+    
+    if (request instanceof MultipartHttpServletRequest == false) {
+      throw new ActivitiIllegalArgumentException("Multipart request is required");
+    }
+    
+    MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+    
+    if (multipartRequest.getFileMap().size() == 0) {
+      throw new ActivitiIllegalArgumentException("Multipart request with file content is required");
+    }
+    
+    MultipartFile file = multipartRequest.getFileMap().values().iterator().next();
+    
     try {
       String mimeType = file.getContentType();
       int size = ((Long) file.getSize()).intValue();
@@ -73,6 +88,8 @@ public class UserPictureResource extends BaseUserResource {
       
       Picture newPicture = new Picture(bytesOutput.toByteArray(), mimeType);
       identityService.setUserPicture(user.getId(), newPicture);
+      
+      response.setStatus(HttpStatus.NO_CONTENT.value());
       
     } catch (Exception e) {
       throw new ActivitiException("Error while reading uploaded file: " + e.getMessage(), e);

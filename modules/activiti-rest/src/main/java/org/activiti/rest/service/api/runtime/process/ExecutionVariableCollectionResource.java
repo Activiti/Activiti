@@ -14,20 +14,18 @@
 package org.activiti.rest.service.api.runtime.process;
 
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.runtime.Execution;
+import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 
 /**
@@ -41,28 +39,26 @@ public class ExecutionVariableCollectionResource extends BaseVariableCollectionR
       @RequestParam(value="scope", required=false) String scope, HttpServletRequest request) {
     
     Execution execution = getExecutionFromRequest(executionId);
-    return processVariables(execution, scope, getServerRootUrl(request));
+    return processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION, getServerRootUrl(request));
   }
   
   @RequestMapping(value="/runtime/executions/{executionId}/variables", method = RequestMethod.PUT, produces="application/json")
-  public Object createOrUpdateExecutionVariable(@PathVariable String executionId, @RequestParam Map<String,String> allRequestParams,
-      @RequestParam("file") MultipartFile file, @RequestBody List<RestVariable> restVariables,
+  public Object createOrUpdateExecutionVariable(@PathVariable String executionId,
       HttpServletRequest request, HttpServletResponse response) {
     
     Execution execution = getExecutionFromRequest(executionId);
-    return createExecutionVariable(execution, file, restVariables, 
-        allRequestParams, true, getServerRootUrl(request), response);
+    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, 
+        getServerRootUrl(request), request, response);
   }
   
   
   @RequestMapping(value="/runtime/executions/{executionId}/variables", method = RequestMethod.POST, produces="application/json")
-  public Object createExecutionVariable(@PathVariable String executionId, @RequestParam Map<String,String> allRequestParams,
-      @RequestParam("file") MultipartFile file, @RequestBody List<RestVariable> restVariables,
+  public Object createExecutionVariable(@PathVariable String executionId,
       HttpServletRequest request, HttpServletResponse response) {
     
     Execution execution = getExecutionFromRequest(executionId);
-  	return createExecutionVariable(execution, file, restVariables, 
-  	    allRequestParams, false, getServerRootUrl(request), response);
+  	return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, 
+  	    getServerRootUrl(request), request, response);
   }
   
   @RequestMapping(value="/runtime/executions/{executionId}/variables", method = RequestMethod.DELETE)

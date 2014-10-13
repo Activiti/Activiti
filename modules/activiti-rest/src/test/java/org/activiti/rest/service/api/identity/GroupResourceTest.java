@@ -14,12 +14,14 @@
 package org.activiti.rest.service.api.identity;
 
 import org.activiti.engine.identity.Group;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -28,7 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Frederik Heremans
  */
-public class GroupResourceTest extends BaseRestTestCase {
+public class GroupResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting a single group.
@@ -40,12 +42,10 @@ public class GroupResourceTest extends BaseRestTestCase {
       testGroup.setType("Test type");
       identityService.saveGroup(testGroup);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
+      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup")), HttpStatus.SC_OK);
       
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals("testgroup", responseNode.get("id").textValue());
       assertEquals("Test group", responseNode.get("name").textValue());
@@ -57,6 +57,7 @@ public class GroupResourceTest extends BaseRestTestCase {
       assertNotNull(createdGroup);
       assertEquals("Test group", createdGroup.getName());
       assertEquals("Test type", createdGroup.getType());
+      
     } finally {
       try {
         identityService.deleteGroup("testgroup");
@@ -71,14 +72,8 @@ public class GroupResourceTest extends BaseRestTestCase {
    * Test getting an unexisting group.
    */
   public void testGetUnexistingGroup() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting"));
-    try {
-      client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a group with id 'unexisting'.", expected.getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -91,13 +86,11 @@ public class GroupResourceTest extends BaseRestTestCase {
       testGroup.setType("Test type");
       identityService.saveGroup(testGroup);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
-      
-      Representation response = client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-      assertEquals(0, response.getSize());
+      executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup")), HttpStatus.SC_NO_CONTENT);
       
       assertNull(identityService.createGroupQuery().groupId("testgroup").singleResult());
+      
     } finally {
       try {
         identityService.deleteGroup("testgroup");
@@ -112,15 +105,8 @@ public class GroupResourceTest extends BaseRestTestCase {
    * Test deleting an unexisting group.
    */
   public void testDeleteUnexistingGroup() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting"));
-    
-    try {
-      client.delete();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a group with id 'unexisting'.", expected.getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -133,16 +119,16 @@ public class GroupResourceTest extends BaseRestTestCase {
       testGroup.setType("Test type");
       identityService.saveGroup(testGroup);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
-      
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("name", "Updated group");
       requestNode.put("type", "Updated type");
       
-      Representation response = client.put(requestNode);
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals("testgroup", responseNode.get("id").textValue());
       assertEquals("Updated group", responseNode.get("name").textValue());
@@ -154,6 +140,7 @@ public class GroupResourceTest extends BaseRestTestCase {
       assertNotNull(createdGroup);
       assertEquals("Updated group", createdGroup.getName());
       assertEquals("Updated type", createdGroup.getType());
+      
     } finally {
       try {
         identityService.deleteGroup("testgroup");
@@ -174,14 +161,14 @@ public class GroupResourceTest extends BaseRestTestCase {
       testGroup.setType("Test type");
       identityService.saveGroup(testGroup);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
-      
       ObjectNode requestNode = objectMapper.createObjectNode();
       
-      Representation response = client.put(requestNode);
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals("testgroup", responseNode.get("id").textValue());
       assertEquals("Test group", responseNode.get("name").textValue());
@@ -193,6 +180,7 @@ public class GroupResourceTest extends BaseRestTestCase {
       assertNotNull(createdGroup);
       assertEquals("Test group", createdGroup.getName());
       assertEquals("Test type", createdGroup.getType());
+      
     } finally {
       try {
         identityService.deleteGroup("testgroup");
@@ -213,16 +201,16 @@ public class GroupResourceTest extends BaseRestTestCase {
       testGroup.setType("Test type");
       identityService.saveGroup(testGroup);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
-      
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("name", (JsonNode) null);
       requestNode.put("type",(JsonNode) null);
       
-      Representation response = client.put(requestNode);
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals("testgroup", responseNode.get("id").textValue());
       assertNull(responseNode.get("name").textValue());
@@ -234,6 +222,7 @@ public class GroupResourceTest extends BaseRestTestCase {
       assertNotNull(createdGroup);
       assertNull(createdGroup.getName());
       assertNull(createdGroup.getType());
+      
     } finally {
       try {
         identityService.deleteGroup("testgroup");
@@ -248,14 +237,9 @@ public class GroupResourceTest extends BaseRestTestCase {
    * Test updating an unexisting group.
    */
   public void testUpdateUnexistingGroup() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting"));
-    
-    try {
-      client.put(objectMapper.createObjectNode());
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a group with id 'unexisting'.", expected.getStatus().getDescription());
-    }
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting"));
+    httpPut.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
   }
 }

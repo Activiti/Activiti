@@ -25,7 +25,7 @@ import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.api.engine.CommentRequest;
 import org.activiti.rest.service.api.engine.CommentResponse;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,7 +70,7 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
       processInstanceId = taskEntity.getProcessInstanceId();
     }
     Comment createdComment = taskService.addComment(task.getId(), processInstanceId, comment.getMessage());
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     
     String serverRootUrl = request.getRequestURL().toString();
     serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));

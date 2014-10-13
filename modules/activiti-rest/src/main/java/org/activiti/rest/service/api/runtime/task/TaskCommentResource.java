@@ -21,7 +21,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.api.engine.CommentResponse;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -64,6 +64,6 @@ public class TaskCommentResource extends TaskBaseResource {
     }
     
     taskService.deleteComment(commentId);
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

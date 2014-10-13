@@ -109,7 +109,7 @@
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
-      <artifactId>activiti-json-converter</artifactId>
+      <artifactId>activiti-spring</artifactId>
     </dependency>
     <dependency>
       <groupId>org.activiti</groupId>
@@ -120,12 +120,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.restlet.jee</groupId>
-      <artifactId>org.restlet.ext.fileupload</artifactId>
-      <version>${restlet.version}</version>
     </dependency>
 
     <dependency>
@@ -175,18 +169,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.restlet.jse</groupId>
-      <artifactId>org.restlet.ext.jetty</artifactId>
-      <version>${restlet.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.restlet.jse</groupId>
-      <artifactId>org.restlet.ext.httpclient</artifactId>
-      <version>${restlet.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-validator</artifactId>
       <version>4.3.1.Final</version>
@@ -210,8 +192,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+   	  <artifactId>httpclient</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.httpcomponents</groupId>
+      <artifactId>httpmime</artifactId>
+      <version>4.3.5</version>
       <scope>test</scope>
     </dependency>
     
@@ -227,7 +215,7 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-context-support</artifactId>
-      <version>4.0.6.RELEASE</version>
+      <version>${spring.framework.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -240,12 +228,12 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
-      <version>4.0.6.RELEASE</version>
+      <version>${spring.framework.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
-      <version>4.0.6.RELEASE</version>
+      <version>${spring.framework.version}</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -261,6 +249,13 @@
       <groupId>org.springframework.security</groupId>
       <artifactId>spring-security-web</artifactId>
       <version>3.2.3.RELEASE</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
     </dependency>
     
     <dependency>
@@ -297,12 +292,6 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-util</artifactId>
       <version>9.2.1.v20140609</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

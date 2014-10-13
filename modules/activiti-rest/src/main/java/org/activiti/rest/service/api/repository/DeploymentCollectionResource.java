@@ -30,13 +30,14 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * @author Tijs Rademakers
@@ -98,8 +99,20 @@ public class DeploymentCollectionResource {
   }
   
   @RequestMapping(value="/repository/deployments", method = RequestMethod.POST, produces = "application/json")
-  public DeploymentResponse uploadDeployment(@RequestParam("tenantId") String tenantId, @RequestParam("file") MultipartFile file,
+  public DeploymentResponse uploadDeployment(@RequestParam(value="tenantId", required=false) String tenantId, 
       HttpServletRequest request, HttpServletResponse response) {
+    
+    if (request instanceof MultipartHttpServletRequest == false) {
+      throw new ActivitiIllegalArgumentException("Multipart request is required");
+    }
+    
+    MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+    
+    if (multipartRequest.getFileMap().size() == 0) {
+      throw new ActivitiIllegalArgumentException("Multipart request with file content is required");
+    }
+    
+    MultipartFile file = multipartRequest.getFileMap().values().iterator().next();
     
     try {
       DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
@@ -119,7 +132,7 @@ public class DeploymentCollectionResource {
       
       Deployment deployment = deploymentBuilder.deploy();
       
-      response.setStatus(HttpStatus.SC_CREATED);
+      response.setStatus(HttpStatus.CREATED.value());
       
       return restResponseFactory.createDeploymentResponse(deployment, request.getRequestURL().toString().replace("/repository/deployments", ""));
       

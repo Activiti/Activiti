@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.runtime.Execution;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -78,7 +78,7 @@ public class ExecutionResource extends ExecutionBaseResource {
     execution = runtimeService.createExecutionQuery().executionId(execution.getId()).singleResult();
     if (execution == null) {
       // Execution is finished, return empty body to inform user
-      response.setStatus(HttpStatus.SC_NO_CONTENT);
+      response.setStatus(HttpStatus.NO_CONTENT.value());
       return null;
     } else {
       String serverRootUrl = request.getRequestURL().toString();

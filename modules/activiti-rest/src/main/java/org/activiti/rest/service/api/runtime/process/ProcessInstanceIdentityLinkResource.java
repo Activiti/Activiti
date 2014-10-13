@@ -23,7 +23,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -51,7 +51,7 @@ public class ProcessInstanceIdentityLinkResource extends BaseProcessInstanceReso
     return restResponseFactory.createRestIdentityLink(link, serverRootUrl);
   }
   
-  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/identitylinks/users/{identityId}/{type}", method = RequestMethod.GET)
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/identitylinks/users/{identityId}/{type}", method = RequestMethod.DELETE)
   public void deleteIdentityLink(@PathVariable("processInstanceId") String processInstanceId, 
       @PathVariable("identityId") String identityId, @PathVariable("type") String type, HttpServletResponse response) {
     
@@ -63,7 +63,7 @@ public class ProcessInstanceIdentityLinkResource extends BaseProcessInstanceReso
     
     runtimeService.deleteUserIdentityLink(processInstance.getId(), identityId, type);
     
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   protected void validateIdentityLinkArguments(String identityId, String type) {

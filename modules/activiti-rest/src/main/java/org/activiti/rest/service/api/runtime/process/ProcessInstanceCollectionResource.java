@@ -28,8 +28,8 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -177,7 +177,7 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       	}
       }
       
-      response.setStatus(HttpStatus.SC_CREATED);
+      response.setStatus(HttpStatus.CREATED.value());
       
       String serverRootUrl = httpRequest.getRequestURL().toString().replace("/runtime/process-instances", "");
       

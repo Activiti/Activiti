@@ -21,8 +21,8 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,7 +85,7 @@ public class UserInfoResource extends BaseUserResource {
     
     identityService.setUserInfo(user.getId(), validKey, null);
     
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   protected String getValidKeyFromRequest(User user, String key) {

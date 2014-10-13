@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Group;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -46,6 +46,6 @@ public class GroupMembershipResource extends BaseGroupResource {
     }
    
     identityService.deleteMembership(userId, group.getId());
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

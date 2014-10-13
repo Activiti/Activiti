@@ -20,12 +20,11 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.common.api.RequestUtil;
-import org.apache.http.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -209,10 +208,6 @@ public class TaskCollectionResource extends TaskBaseResource {
   public TaskResponse createTask(@RequestBody TaskRequest taskRequest, 
       HttpServletRequest request, HttpServletResponse response) {
     
-    if (taskRequest == null) {
-      throw new ActivitiException("A request body was expected when creating the task.");
-    }
-    
     Task task = taskService.newTask();
 
     // Populate the task properties based on the request
@@ -222,7 +217,7 @@ public class TaskCollectionResource extends TaskBaseResource {
     }
     taskService.saveTask(task);
 
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     return restResponseFactory.createTaskResponse(task, request.getRequestURL().toString().replace("/runtime/tasks", ""));
   }
 }

@@ -27,11 +27,10 @@ import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.Assert;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -43,8 +42,6 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author Tijs Rademakers
  */
 public class HistoricActivityInstanceCollectionResourceTest extends BaseSpringRestTestCase {
-  
-  private static final Logger logger = LoggerFactory.getLogger(HistoricActivityInstanceCollectionResourceTest.class);
   
   /**
    * Test querying historic activity instance. 
@@ -112,7 +109,7 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseSpringRe
   
   protected void assertResultsPresentInDataResponse(String url, int numberOfResultsExpected, String... expectedActivityIds) throws JsonProcessingException, IOException {
     // Do the actual call
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), 200);
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     Assert.assertEquals(numberOfResultsExpected, dataNode.size());
     

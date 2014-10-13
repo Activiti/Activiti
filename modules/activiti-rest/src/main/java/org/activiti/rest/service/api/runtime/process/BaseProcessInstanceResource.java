@@ -197,8 +197,7 @@ public class BaseProcessInstanceResource {
     ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
            .processInstanceId(processInstanceId).singleResult();
     if (processInstance == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + 
-          processInstanceId + "'.", ProcessInstance.class);
+      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.");
     }
     return processInstance;
   }

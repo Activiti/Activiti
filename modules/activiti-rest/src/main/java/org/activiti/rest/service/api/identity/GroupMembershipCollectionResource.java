@@ -18,9 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
-import org.apache.commons.httpclient.HttpStatus;
-import org.restlet.data.Status;
-import org.restlet.resource.ResourceException;
+import org.activiti.rest.exception.ActivitiConflictException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,12 +48,12 @@ public class GroupMembershipCollectionResource extends BaseGroupResource {
         .userId(memberShip.getUserId())
         .count() > 0) {
      
-        throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "User '" + memberShip.getUserId() + 
-             "' is already part of group '" + group.getId() + "'.", null, null);
+        throw new ActivitiConflictException("User '" + memberShip.getUserId() + 
+             "' is already part of group '" + group.getId() + "'.");
     }
    
     identityService.createMembership(memberShip.getUserId(), group.getId());
-    response.setStatus(HttpStatus.SC_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
      
     String serverRootUrl = request.getRequestURL().toString();
     serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/groups/"));

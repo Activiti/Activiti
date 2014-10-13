@@ -18,9 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.apache.http.HttpStatus;
-import org.restlet.data.Status;
-import org.restlet.resource.ResourceException;
+import org.activiti.rest.exception.ActivitiConflictException;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,7 +48,7 @@ public class ProcessInstanceResource extends BaseProcessInstanceResource {
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
     
     runtimeService.deleteProcessInstance(processInstance.getId(), deleteReason);
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}", method = RequestMethod.PUT, produces="application/json")
@@ -72,8 +71,8 @@ public class ProcessInstanceResource extends BaseProcessInstanceResource {
   
   protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance, String serverRootUrl) {
     if (!processInstance.isSuspended()) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process instance with id '" + 
-          processInstance.getId() + "' is already active.", null, null);
+      throw new ActivitiConflictException("Process instance with id '" + 
+          processInstance.getId() + "' is already active.");
     }
     runtimeService.activateProcessInstanceById(processInstance.getId());
    
@@ -86,8 +85,8 @@ public class ProcessInstanceResource extends BaseProcessInstanceResource {
 
   protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance, String serverRootUrl) {
     if (processInstance.isSuspended()) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "Process instance with id '" + 
-          processInstance.getId() + "' is already suspended.", null, null);
+      throw new ActivitiConflictException("Process instance with id '" + 
+          processInstance.getId() + "' is already suspended.");
     }
     runtimeService.suspendProcessInstanceById(processInstance.getId());
     

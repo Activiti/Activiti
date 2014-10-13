@@ -13,19 +13,21 @@
 
 package org.activiti.rest.service.api.repository;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.Model;
-import org.apache.commons.httpclient.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 
 /**
@@ -45,12 +47,26 @@ public class ModelSourceExtraResource extends BaseModelSourceResource {
   }
 
   @RequestMapping(value="/repository/models/{modelId}/source-extra", method = RequestMethod.PUT)
-  protected void setModelSource(@PathVariable String modelId, @RequestParam("file") MultipartFile file, HttpServletResponse response) {
+  protected void setModelSource(@PathVariable String modelId, HttpServletRequest request, HttpServletResponse response) {
     Model model = getModelFromRequest(modelId);
     if (model != null) {
       try {
+        
+        if (request instanceof MultipartHttpServletRequest == false) {
+          throw new ActivitiIllegalArgumentException("Multipart request is required");
+        }
+        
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+        
+        if (multipartRequest.getFileMap().size() == 0) {
+          throw new ActivitiIllegalArgumentException("Multipart request with file content is required");
+        }
+        
+        MultipartFile file = multipartRequest.getFileMap().values().iterator().next();
+        
         repositoryService.addModelEditorSourceExtra(model.getId(), file.getBytes());
-        response.setStatus(HttpStatus.SC_NO_CONTENT);
+        response.setStatus(HttpStatus.NO_CONTENT.value());
+        
       } catch (Exception e) {
         throw new ActivitiException("Error adding model editor source extra", e);
       }

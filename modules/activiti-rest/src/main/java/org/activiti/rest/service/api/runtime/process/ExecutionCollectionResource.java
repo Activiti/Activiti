@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.rest.common.api.DataResponse;
-import org.apache.commons.httpclient.HttpStatus;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -109,6 +109,6 @@ public class ExecutionCollectionResource extends ExecutionBaseResource {
     } else {
       runtimeService.signalEventReceived(actionRequest.getSignalName());
     }
-    response.setStatus(HttpStatus.SC_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

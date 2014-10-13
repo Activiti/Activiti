@@ -22,6 +22,7 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Attachment;
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -52,9 +53,17 @@ public class TaskAttachmentContentResource extends TaskBaseResource {
           "' doesn't have content associated with it.", Attachment.class);
     }
     
+    MediaType mediaType = null;
     if (attachment.getType() != null) {
-      response.setContentType(attachment.getType());
-    } else {
+      try {
+        mediaType = MediaType.valueOf(attachment.getType());
+        response.setContentType(attachment.getType());
+      } catch (Exception e) {
+        // ignore if unknown media type
+      }
+    }
+    
+    if (mediaType == null) {
       response.setContentType("application/octet-stream");
     }
     

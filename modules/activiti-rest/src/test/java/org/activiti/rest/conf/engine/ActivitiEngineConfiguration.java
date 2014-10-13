@@ -1,4 +1,4 @@
-package org.activiti.rest.conf;
+package org.activiti.rest.conf.engine;
 
 import javax.sql.DataSource;
 
@@ -47,13 +47,14 @@ public class ActivitiEngineConfiguration {
     return transactionManager;
   }
   
-  @Bean(name="processEngine")
+  @Bean(name="processEngineFactoryBean")
   public ProcessEngineFactoryBean processEngineFactoryBean() {
     ProcessEngineFactoryBean factoryBean = new ProcessEngineFactoryBean();
     factoryBean.setProcessEngineConfiguration(processEngineConfiguration());
     return factoryBean;
   }
   
+  @Bean(name="processEngine")
   public ProcessEngine processEngine() {
     // Safe to call the getObject() on the @Bean annotated processEngineFactoryBean(), will be
     // the fully initialized object instanced from the factory and will NOT be created more than once

@@ -36,11 +36,12 @@ import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.rest.WebConfigurer;
 import org.activiti.rest.conf.ApplicationConfiguration;
-import org.activiti.rest.servlet.WebConfigurer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
@@ -61,11 +62,6 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 import org.junit.Assert;
-import org.restlet.data.Status;
-import org.restlet.engine.header.Header;
-import org.restlet.engine.header.HeaderConstants;
-import org.restlet.resource.ClientResource;
-import org.restlet.util.Series;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
@@ -75,7 +71,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
+import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 
 public class BaseSpringRestTestCase extends PvmTestCase {
 
@@ -91,26 +87,27 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   protected static ApplicationContext appContext;
   protected ObjectMapper objectMapper = new ObjectMapper();
 
-  protected ProcessEngine processEngine;
-  protected static ProcessEngine cachedProcessEngine;
+  protected static ProcessEngine processEngine;
   
   protected String deploymentId;
   protected Throwable exception;
 
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
-  protected RepositoryService repositoryService;
-  protected RuntimeService runtimeService;
-  protected TaskService taskService;
-  protected FormService formService;
-  protected HistoryService historyService;
-  protected IdentityService identityService;
-  protected ManagementService managementService;
+  protected static ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected static RepositoryService repositoryService;
+  protected static RuntimeService runtimeService;
+  protected static TaskService taskService;
+  protected static FormService formService;
+  protected static HistoryService historyService;
+  protected static IdentityService identityService;
+  protected static ManagementService managementService;
   
-  @Override
-  public void runBare() throws Throwable {
+  protected ISO8601DateFormat dateFormat = new ISO8601DateFormat();
+  
+  static {
     createAndStartServer();
+    
     // Lookup services
-    processEngine = appContext.getBean(ProcessEngine.class);
+    processEngine = appContext.getBean("processEngine", ProcessEngine.class);
     processEngineConfiguration = appContext.getBean(ProcessEngineConfigurationImpl.class);
     repositoryService = appContext.getBean(RepositoryService.class);
     runtimeService = appContext.getBean(RuntimeService.class);
@@ -120,6 +117,24 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     identityService = appContext.getBean(IdentityService.class);
     managementService = appContext.getBean(ManagementService.class);
     
+    Runtime.getRuntime().addShutdownHook(new Thread() {
+
+      @Override
+      public void run() {
+        if (server != null && server.isRunning()) {
+          try {
+            server.stop();
+          } catch (Exception e) {
+            log.error("Error stopping server", e);
+          }
+        }
+      }
+    });
+  }
+  
+  
+  @Override
+  public void runBare() throws Throwable {
     createUsers();
 
     log.error(EMPTY_LINE);
@@ -147,9 +162,6 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       dropUsers();
       assertAndEnsureCleanDb();
       processEngineConfiguration.getClock().reset();
-      if (server != null && server.isRunning()) {
-        server.stop();
-      }
     }
   }
   
@@ -167,7 +179,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     identityService.createMembership(user.getId(), group.getId());
   }
   
-  public void createAndStartServer() throws Exception {
+  public static void createAndStartServer() {
     server = new Server(HTTP_SERVER_PORT);
       
     HashSessionIdManager idmanager = new HashSessionIdManager();
@@ -179,8 +191,12 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       
     appContext = applicationContext;
       
-    server.setHandler(getServletContextHandler(applicationContext));
-    server.start();
+    try {
+      server.setHandler(getServletContextHandler(applicationContext));
+      server.start();
+    } catch (Exception e) {
+      log.error("Error starting server", e);
+    }
   }
   
   private static ServletContextHandler getServletContextHandler(AnnotationConfigWebApplicationContext context) throws IOException {
@@ -211,10 +227,30 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       Assert.assertNotNull(response.getStatusLine());
       Assert.assertEquals(expectedStatusCode, response.getStatusLine().getStatusCode());
       return response;
+      
     } catch (ClientProtocolException e) {
-        Assert.fail(e.getMessage());
+      Assert.fail(e.getMessage());
     } catch (IOException e) {
-        Assert.fail(e.getMessage());
+      Assert.fail(e.getMessage());
+    }
+    return null;
+  }
+  
+  public HttpResponse executeBinaryHttpRequest(HttpUriRequest request, int expectedStatusCode) {
+    CredentialsProvider provider = new BasicCredentialsProvider();
+    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("kermit", "kermit");
+    provider.setCredentials(AuthScope.ANY, credentials);
+    HttpClient client = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build();
+    try {
+      HttpResponse response = client.execute(request);
+      Assert.assertNotNull(response.getStatusLine());
+      Assert.assertEquals(expectedStatusCode, response.getStatusLine().getStatusCode());
+      return response;
+      
+    } catch (ClientProtocolException e) {
+      Assert.fail(e.getMessage());
+    } catch (IOException e) {
+      Assert.fail(e.getMessage());
     }
     return null;
   }
@@ -272,7 +308,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   }
   
   protected String encode(String string) {
-    if(string != null) {
+    if (string != null) {
       try {
         return URLEncoder.encode(string, "UTF-8");
       } catch (UnsupportedEncodingException uee) {
@@ -381,7 +417,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     int numberOfResultsExpected = expectedResourceIds.length;
     
     // Do the actual call
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), 200);
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
     
     // Check status and size
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
@@ -401,7 +437,11 @@ public class BaseSpringRestTestCase extends PvmTestCase {
    * Checks if the returned "data" array (child-node of root-json node returned by invoking a POST on the given url) 
    * contains entries with the given ID's.
    */
-  protected void assertResultsPresentInDataResponse(String url, ObjectNode body, String... expectedResourceIds) throws JsonProcessingException, IOException {
+  protected void assertResultsPresentInPostDataResponse(String url, ObjectNode body, String... expectedResourceIds) throws JsonProcessingException, IOException {
+    assertResultsPresentInPostDataResponseWithStatusCheck(url, body, HttpStatus.SC_OK, expectedResourceIds);
+  }
+  
+  protected void assertResultsPresentInPostDataResponseWithStatusCheck(String url, ObjectNode body, int expectedStatusCode, String... expectedResourceIds) throws JsonProcessingException, IOException {
     int numberOfResultsExpected = 0;
     if (expectedResourceIds != null) {
       numberOfResultsExpected = expectedResourceIds.length;
@@ -410,40 +450,36 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     // Do the actual call
     HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
     post.setEntity(new StringEntity(body.toString()));
-    HttpResponse response = executeHttpRequest(post, 200);
+    HttpResponse response = executeHttpRequest(post, expectedStatusCode);
     
-    // Check status and size
-    JsonNode rootNode = objectMapper.readTree(response.getEntity().getContent());
-    JsonNode dataNode = rootNode.get("data");
-    assertEquals(numberOfResultsExpected, dataNode.size());
-
-    // Check presence of ID's
-    if (expectedResourceIds != null) {
-      List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
-      Iterator<JsonNode> it = dataNode.iterator();
-      while(it.hasNext()) {
-        String id = it.next().get("id").textValue();
-        toBeFound.remove(id);
+    if (expectedStatusCode == HttpStatus.SC_OK) {
+      // Check status and size
+      JsonNode rootNode = objectMapper.readTree(response.getEntity().getContent());
+      JsonNode dataNode = rootNode.get("data");
+      assertEquals(numberOfResultsExpected, dataNode.size());
+  
+      // Check presence of ID's
+      if (expectedResourceIds != null) {
+        List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
+        Iterator<JsonNode> it = dataNode.iterator();
+        while(it.hasNext()) {
+          String id = it.next().get("id").textValue();
+          toBeFound.remove(id);
+        }
+        assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
       }
-      assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
     }
   }
   
   /**
    * Checks if the rest operation returns an error as expected 
    */
-  protected void assertErrorResult(String url, ObjectNode body, Status status) throws IOException {
+  protected void assertErrorResult(String url, ObjectNode body, int statusCode) throws IOException {
     
     // Do the actual call
     HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
     post.setEntity(new StringEntity(body.toString()));
-    try {
-      executeHttpRequest(post, 200);
-      fail();
-    } catch(Exception e) {
-      // Check status
-      assertEquals(status, 200);
-    }
+    executeHttpRequest(post, statusCode);
   }
   
   /**
@@ -460,12 +496,6 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   }
   
   protected String getISODateString(Date time) {
-    return ISO8601Utils.format(time, true);
-  }
-  
-  protected String getMediaType(ClientResource client) {
-    @SuppressWarnings("unchecked")
-    Series<Header> headers = (Series<Header>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
-    return headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE);
+    return dateFormat.format(time);
   }
 }
