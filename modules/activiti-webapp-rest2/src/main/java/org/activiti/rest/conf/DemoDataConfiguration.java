@@ -11,16 +11,16 @@
  * limitations under the License.
  */
 
-package org.activiti.rest.service.demo;
+package org.activiti.rest.conf;
 
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import org.activiti.editor.constants.ModelDataJsonConstants;
+import javax.annotation.PostConstruct;
+
 import org.activiti.engine.IdentityService;
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
@@ -32,6 +32,9 @@ import org.activiti.engine.repository.Model;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -40,56 +43,42 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Joram Barrez
  */
-public class DemoDataGenerator implements ModelDataJsonConstants {
+@Configuration
+public class DemoDataConfiguration {
   
-  protected static final Logger LOGGER = LoggerFactory.getLogger(DemoDataGenerator.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(DemoDataConfiguration.class);
 
-  protected transient ProcessEngine processEngine;
-  protected transient IdentityService identityService;
-  protected transient RepositoryService repositoryService;
-  protected transient TaskService taskService;
+  @Autowired
+  protected IdentityService identityService;
   
-  protected boolean createDemoUsersAndGroups;
-  protected boolean createDemoProcessDefinitions;
-  protected boolean createDemoModels;
+  @Autowired
+  protected RepositoryService repositoryService;
   
+  @Autowired
+  protected TaskService taskService;
+  
+  @Autowired
+  protected Environment environment;
+  
+  @PostConstruct
   public void init() {
-    this.identityService = processEngine.getIdentityService();
-    this.repositoryService = processEngine.getRepositoryService();
-    this.taskService = processEngine.getTaskService();
     
-    if (createDemoUsersAndGroups) {
+    if (Boolean.valueOf(environment.getProperty("create.demo.users", "true"))) {
       LOGGER.info("Initializing demo groups");
       initDemoGroups();
       LOGGER.info("Initializing demo users");
       initDemoUsers();
     }
     
-    if (createDemoProcessDefinitions) {
+    if (Boolean.valueOf(environment.getProperty("create.demo.definitions", "true"))) {
       LOGGER.info("Initializing demo process definitions");
       initDemoProcessDefinitions();
     }
     
-    if (createDemoModels) {
+    if (Boolean.valueOf(environment.getProperty("create.demo.models", "true"))) {
       LOGGER.info("Initializing demo models");
       initDemoModelData();
     }
-  }
-  
-  public void setProcessEngine(ProcessEngine processEngine) {
-    this.processEngine = processEngine;
-  }
-  
-  public void setCreateDemoUsersAndGroups(boolean createDemoUsersAndGroups) {
-    this.createDemoUsersAndGroups = createDemoUsersAndGroups;
-  }
-  
-  public void setCreateDemoProcessDefinitions(boolean createDemoProcessDefinitions) {
-    this.createDemoProcessDefinitions = createDemoProcessDefinitions;
-  }
-
-  public void setCreateDemoModels(boolean createDemoModels) {
-    this.createDemoModels = createDemoModels;
   }
 
   protected void initDemoGroups() {
@@ -162,14 +151,14 @@ public class DemoDataGenerator implements ModelDataJsonConstants {
       
     // user info
     if (userInfo != null) {
-      for(int i=0; i<userInfo.size(); i+=2) {
+      for (int i=0; i<userInfo.size(); i+=2) {
         identityService.setUserInfo(userId, userInfo.get(i), userInfo.get(i+1));
       }
     }
     
   }
   
-protected void initDemoProcessDefinitions() {
+  protected void initDemoProcessDefinitions() {
     
     String deploymentName = "Demo processes";
     List<Deployment> deploymentList = repositoryService.createDeploymentQuery().deploymentName(deploymentName).list();
@@ -203,8 +192,8 @@ protected void initDemoProcessDefinitions() {
       model.setName(name);
       
       ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
-      modelObjectNode.put(MODEL_NAME, name);
-      modelObjectNode.put(MODEL_DESCRIPTION, description);
+      modelObjectNode.put("name", name);
+      modelObjectNode.put("description", description);
       model.setMetaInfo(modelObjectNode.toString());
       
       repositoryService.saveModel(model);

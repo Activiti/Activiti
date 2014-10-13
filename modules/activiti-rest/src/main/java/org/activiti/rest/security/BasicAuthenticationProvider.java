@@ -27,6 +27,7 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
       String password = authentication.getCredentials().toString();
 
       boolean authenticated = identityService.checkPassword(name, password);
+      System.out.println("name " + name + " " + authenticated);
       if (authenticated) {
         List<Group> groups = identityService.createGroupQuery().groupMember(name).list();
         Collection<GrantedAuthority> grantedAuthorities = new ArrayList<GrantedAuthority>();
@@ -34,6 +35,7 @@ public class BasicAuthenticationProvider implements AuthenticationProvider {
             grantedAuthorities.add(new SimpleGrantedAuthority(group.getId()));
         }
         identityService.setAuthenticatedUserId(name);
+        System.out.println("authenticated " + name);
         return new UsernamePasswordAuthenticationToken(name, password, grantedAuthorities);
       } else {
         throw new BadCredentialsException("Authentication failed for this username and password");

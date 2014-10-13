@@ -21,10 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @RestController
-public class ProcessDefinitionDiagramLayoutResource extends BaseProcessDefinitionDiagramLayoutResource {
+public class ProcessInstanceDiagramLayoutResource extends BaseProcessDefinitionDiagramLayoutResource {
 
-  @RequestMapping(value="/process-definition/{processDefinitionId}/diagram-layout", method = RequestMethod.GET, produces = "application/json")
-  public ObjectNode getDiagram(@PathVariable String processDefinitionId) {
-    return getDiagramNode(null, processDefinitionId);
+  @RequestMapping(value="/process-instance/{processInstanceId}/diagram-layout", method = RequestMethod.GET, produces = "application/json")
+  public ObjectNode getDiagram(@PathVariable String processInstanceId) {
+    return getDiagramNode(processInstanceId, null);
   }
 }
