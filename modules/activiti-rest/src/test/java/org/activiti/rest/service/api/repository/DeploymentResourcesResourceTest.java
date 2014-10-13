@@ -4,12 +4,11 @@ import java.io.ByteArrayInputStream;
 import java.util.List;
 
 import org.activiti.engine.repository.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -18,7 +17,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * 
  * @author Frederik Heremans
  */
-public class DeploymentResourcesResourceTest extends BaseRestTestCase {
+public class DeploymentResourcesResourceTest extends BaseSpringRestTestCase {
 
   /**
   * Test getting all resources for a single deployment.
@@ -32,14 +31,11 @@ public class DeploymentResourcesResourceTest extends BaseRestTestCase {
               .addInputStream("test.txt", new ByteArrayInputStream("Test content".getBytes()))
               .deploy();
       
-      ClientResource client = getAuthenticatedClient(
-              RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCES, deployment.getId()));
-      Representation response = client.get();
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCES, deployment.getId()));
+      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
       
-      // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertTrue(responseNode.isArray());
       assertEquals(2, responseNode.size());
       
@@ -75,16 +71,8 @@ public class DeploymentResourcesResourceTest extends BaseRestTestCase {
    * GET repository/deployments/{deploymentId}/resources
    */
    public void testGetDeploymentResourcesUnexistingDeployment() throws Exception {
-
-     ClientResource client = getAuthenticatedClient(
-             RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCES, "unexisting"));
-     
-     try {
-       client.get();
-       fail("Expected 404 status, but was: " + client.getStatus());
-     } catch(ResourceException expected) {
-       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-       assertEquals("Could not find a deployment with id 'unexisting'.", expected.getStatus().getDescription());
-     }
+     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+         RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCES, "unexisting"));
+     executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
    }
 }

@@ -83,9 +83,9 @@ public class RestVariable {
   }
   
   public static RestVariableScope getScopeFromString(String scope) {
-    if(scope != null) {
-      for(RestVariableScope s : RestVariableScope.values()) {
-        if(s.name().equalsIgnoreCase(scope)) {
+    if (scope != null) {
+      for (RestVariableScope s : RestVariableScope.values()) {
+        if (s.name().equalsIgnoreCase(scope)) {
           return s;
         }
       }

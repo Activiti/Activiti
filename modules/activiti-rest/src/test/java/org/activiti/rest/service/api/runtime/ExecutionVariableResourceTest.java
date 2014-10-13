@@ -23,17 +23,16 @@ import java.util.Map;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
-import org.activiti.rest.service.HttpMultipartRepresentation;
+import org.activiti.rest.service.BaseSpringRestTestCase;
+import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-import org.restlet.engine.header.Header;
-import org.restlet.engine.header.HeaderConstants;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
-import org.restlet.util.Series;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -43,7 +42,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Frederik Heremans
  */
-public class ExecutionVariableResourceTest extends BaseRestTestCase {
+public class ExecutionVariableResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting an execution variable. GET
@@ -58,13 +57,11 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     assertNotNull(childExecution);
     runtimeService.setVariableLocal(childExecution.getId(), "variable", "childValue");
     
-
     // Get local scope variable
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "variable"));
-    Representation response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "variable")), HttpStatus.SC_OK);
+    
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("local", responseNode.get("scope").asText());
     assertEquals("childValue", responseNode.get("value").asText());
@@ -72,51 +69,27 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     assertEquals("string", responseNode.get("type").asText());
     
     // Get global scope variable
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "variable") + "?scope=global");
-    response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "variable") + "?scope=global"), HttpStatus.SC_OK);
 
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("global", responseNode.get("scope").asText());
     assertEquals("processValue", responseNode.get("value").asText());
     assertEquals("variable", responseNode.get("name").asText());
     assertEquals("string", responseNode.get("type").asText());
     
-    client.release();
-    
     // Illegal scope
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, processInstance.getId(), "variable") + "?scope=illegal");
-    try {
-      response = client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Invalid variable scope: 'illegal'", expected.getStatus().getDescription());
-    }
-    client.release();
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, processInstance.getId(), "variable") + "?scope=illegal"), HttpStatus.SC_BAD_REQUEST);
     
     // Unexisting process
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, "unexisting", "variable"));
-    try {
-      response = client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("execution unexisting doesn't exist", expected.getStatus().getDescription());
-    }
-    client.release();
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, "unexisting", "variable")), HttpStatus.SC_NOT_FOUND);
     
     // Unexisting variable
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, processInstance.getId(), "unexistingVariable"));
-    try {
-      response = client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Execution '" + processInstance.getId() + "' doesn't have a variable with name: 'unexistingVariable'.", expected.getStatus().getDescription());
-    }
-    client.release();
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, processInstance.getId(), "unexistingVariable")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -124,31 +97,27 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
    */
   @Deployment(resources = {"org/activiti/rest/service/api/runtime/ExecutionResourceTest.process-with-subprocess.bpmn20.xml"})
   public void testGetExecutionVariableData() throws Exception {
-      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne");
-      runtimeService.setVariableLocal(processInstance.getId(), "var", "This is a binary piece of text".getBytes());
-      
-      Execution childExecution = runtimeService.createExecutionQuery().parentId(processInstance.getId()).singleResult();
-      assertNotNull(childExecution);
-      runtimeService.setVariableLocal(childExecution.getId(), "var", "This is a binary piece of text in the child execution".getBytes());
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne");
+    runtimeService.setVariableLocal(processInstance.getId(), "var", "This is a binary piece of text".getBytes());
+    
+    Execution childExecution = runtimeService.createExecutionQuery().parentId(processInstance.getId()).singleResult();
+    assertNotNull(childExecution);
+    runtimeService.setVariableLocal(childExecution.getId(), "var", "This is a binary piece of text in the child execution".getBytes());
 
-      // Force content-type to TEXT_PLAIN to make sure this is ignored and application-octect-stream is always returned
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, childExecution.getId(), "var"));
-      client.get(MediaType.TEXT_PLAIN);
-      
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      String actualResponseBytesAsText = client.getResponse().getEntityAsText();
-      assertEquals("This is a binary piece of text in the child execution", actualResponseBytesAsText);
-      assertEquals(MediaType.APPLICATION_OCTET_STREAM.getName(), getMediaType(client));
-      
-      // Test global scope
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, childExecution.getId(), "var") + "?scope=global");
-      client.get();
-      
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      actualResponseBytesAsText = client.getResponse().getEntityAsText();
-      assertEquals("This is a binary piece of text", actualResponseBytesAsText);
-      assertEquals(MediaType.APPLICATION_OCTET_STREAM.getName(), getMediaType(client));
-      client.release();
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, childExecution.getId(), "var")), HttpStatus.SC_OK);
+    
+    String actualResponseBytesAsText = IOUtils.toString(response.getEntity().getContent());
+    assertEquals("This is a binary piece of text in the child execution", actualResponseBytesAsText);
+    assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
+    
+    // Test global scope
+    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, childExecution.getId(), "var") + "?scope=global"), HttpStatus.SC_OK);
+    
+    actualResponseBytesAsText = IOUtils.toString(response.getEntity().getContent());
+    assertEquals("This is a binary piece of text", actualResponseBytesAsText);
+    assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
   }
   
   /**
@@ -163,19 +132,16 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne");
     runtimeService.setVariableLocal(processInstance.getId(), "var", originalSerializable);
 
-    // Force content-type to TEXT_PLAIN to make sure this is ignored and application-octect-stream is always returned
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, processInstance.getId(), "var"));
-    client.get(MediaType.TEXT_PLAIN);
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, processInstance.getId(), "var")), HttpStatus.SC_OK);
     
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
     // Read the serializable from the stream
-    ObjectInputStream stream = new ObjectInputStream(client.getResponse().getEntity().getStream());
+    ObjectInputStream stream = new ObjectInputStream(response.getEntity().getContent());
     Object readSerializable = stream.readObject();
     assertNotNull(readSerializable);
     assertTrue(readSerializable instanceof TestSerializableVariable);
     assertEquals("This is some field", ((TestSerializableVariable) readSerializable).getSomeField());
-    assertEquals(MediaType.APPLICATION_JAVA_OBJECT.getName(), getMediaType(client));
-    client.release();
+    assertEquals("application/x-java-serialized-object", response.getEntity().getContentType().getValue());
   }
   
   /**
@@ -188,25 +154,12 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     runtimeService.setVariableLocal(processInstance.getId(), "localTaskVariable", "this is a plain string variable");
 
     // Try getting data for non-binary variable
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, processInstance.getId(), "localTaskVariable"));
-    try {
-      client.get();
-      fail("Exception expected");
-    } catch (ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("The variable does not have a binary data stream.", expected.getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, processInstance.getId(), "localTaskVariable")), HttpStatus.SC_NOT_FOUND);
 
     // Try getting data for unexisting property
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, processInstance.getId(), "unexistingVariable"));
-    try {
-      client.get();
-      fail("Exception expected");
-    } catch (ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Execution '" + processInstance.getId() + "' doesn't have a variable with name: 'unexistingVariable'.", expected.getStatus().getDescription());
-    }
-    client.release();
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE_DATA, processInstance.getId(), "unexistingVariable")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -222,32 +175,24 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     runtimeService.setVariableLocal(childExecution.getId(), "myVariable", "childValue");
     
     // Delete variable local
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "myVariable"));
-    Representation response = client.delete();
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    assertEquals(0L, response.getSize());
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "myVariable"));
+    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    
     assertFalse(runtimeService.hasVariableLocal(childExecution.getId(), "myVariable"));
     // Global variable should remain unaffected
     assertTrue(runtimeService.hasVariable(childExecution.getId(), "myVariable"));
     
     // Delete variable global
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "myVariable") + "?scope=global");
-    response = client.delete();
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    assertEquals(0L, response.getSize());
+    httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "myVariable") + "?scope=global");
+    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    
     assertFalse(runtimeService.hasVariableLocal(childExecution.getId(), "myVariable"));
     assertFalse(runtimeService.hasVariable(childExecution.getId(), "myVariable"));
     
     // Run the same delete again, variable is not there so 404 should be returned
-    client.release();
-    try {
-      client.delete();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Execution '" + childExecution.getId() + "' doesn't have a variable 'myVariable' in scope global", expected.getStatus().getDescription());
-    }
-    client.release();
+    executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -269,11 +214,12 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     requestNode.put("value", "updatedValue");
     requestNode.put("type", "string");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "myVar"));
-    Representation response = client.put(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "myVar"));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
     
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("updatedValue", responseNode.get("value").asText());
     assertEquals("local", responseNode.get("scope").asText());
@@ -289,11 +235,12 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     requestNode.put("type", "string");
     requestNode.put("scope", "global");
     
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "myVar"));
-    response = client.put(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "myVar"));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
     
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("updatedValueGlobal", responseNode.get("value").asText());
     assertEquals("global", responseNode.get("scope").asText());
@@ -302,28 +249,15 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     assertEquals("updatedValueGlobal", runtimeService.getVariable(processInstance.getId(), "myVar"));
     assertEquals("updatedValue", runtimeService.getVariableLocal(childExecution.getId(), "myVar"));
     
-           
-    // Try updating with mismatch between URL and body variableName
-    try {
-      requestNode.put("name", "unexistingVariable");
-      client.put(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Variable name in the body should be equal to the name used in the requested URL.", expected.getStatus().getDescription());
-    }
+    requestNode.put("name", "unexistingVariable");
     
-    // Try updating unexisting property
-    try {
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "unexistingVariable"));
-      requestNode.put("name", "unexistingVariable");
-      client.put(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Execution '" + childExecution.getId() + "' doesn't have a variable with name: 'unexistingVariable'.", expected.getStatus().getDescription());
-    }
-    client.release();
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_BAD_REQUEST);
+    
+    httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "unexistingVariable"));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -347,14 +281,12 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     additionalFields.put("name", "binaryVariable");
     additionalFields.put("type", "binary");
 
-    // Upload a valid BPMN-file using multipart-data
-    Representation uploadRepresentation = new HttpMultipartRepresentation("value", binaryContent, additionalFields);
-
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "binaryVariable"));
-    Representation response = client.put(uploadRepresentation);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "binaryVariable"));
+    httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/octet-stream", binaryContent, additionalFields));
+    HttpResponse response = executeBinaryHttpRequest(httpPut, HttpStatus.SC_OK);
+    
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("binaryVariable", responseNode.get("name").asText());
     assertTrue(responseNode.get("value").isNull());
@@ -373,12 +305,13 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     // Update variable in global scope
     additionalFields.put("scope", "global");
     binaryContent = new ByteArrayInputStream("This is binary content global".getBytes());
-    uploadRepresentation = new HttpMultipartRepresentation("value", binaryContent, additionalFields);
     
-    response = client.put(uploadRepresentation);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_EXECUTION_VARIABLE, childExecution.getId(), "binaryVariable"));
+    httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/octet-stream", binaryContent, additionalFields));
+    response = executeBinaryHttpRequest(httpPut, HttpStatus.SC_OK);
 
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("binaryVariable", responseNode.get("name").asText());
     assertTrue(responseNode.get("value").isNull());
@@ -399,13 +332,5 @@ public class ExecutionVariableResourceTest extends BaseRestTestCase {
     assertNotNull(variableValue);
     assertTrue(variableValue instanceof byte[]);
     assertEquals("This is binary content", new String((byte[]) variableValue));
-    
-    client.release();
-  }
-  
-  protected String getMediaType(ClientResource client) {
-    @SuppressWarnings("unchecked")
-    Series<Header> headers = (Series<Header>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
-    return headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE);
   }
 }

@@ -22,12 +22,12 @@ import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -38,7 +38,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Frederik Heremans
  */
-public class TaskCollectionResourceTest extends BaseRestTestCase {
+public class TaskCollectionResourceTest extends BaseSpringRestTestCase {
   
   /**
    * Test creating a task.
@@ -49,7 +49,6 @@ public class TaskCollectionResourceTest extends BaseRestTestCase {
       Task parentTask = taskService.newTask();
       taskService.saveTask(parentTask);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION));
       ObjectNode requestNode = objectMapper.createObjectNode();
       
       Calendar dueDate = Calendar.getInstance();
@@ -67,10 +66,12 @@ public class TaskCollectionResourceTest extends BaseRestTestCase {
       requestNode.put("tenantId", "test");
       
       // Execute the request
-      Representation response = client.post(requestNode);
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       String createdTaskId =  responseNode.get("id").asText();
       
       // Check if task is created with right arguments
@@ -81,7 +82,7 @@ public class TaskCollectionResourceTest extends BaseRestTestCase {
       assertEquals("owner", task.getOwner());
       assertEquals(20, task.getPriority());
       assertEquals(DelegationState.RESOLVED, task.getDelegationState());
-      assertEquals(dueDate.getTime(), task.getDueDate());
+      assertEquals(dateFormat.parse(dueDateString), task.getDueDate());
       assertEquals(parentTask.getId(), task.getParentTaskId());
       assertEquals("testKey", task.getFormKey());
       assertEquals("test", task.getTenantId());
@@ -101,15 +102,11 @@ public class TaskCollectionResourceTest extends BaseRestTestCase {
    */
   public void testCreateTaskNoBody() throws Exception {
     try {
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION));
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION));
+      httpPost.setEntity(null);
+      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
       
-      try {
-        client.post(null);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE, expected.getStatus());
-        assertEquals("A request body was expected when creating the task.", expected.getStatus().getDescription());
-      }
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -162,7 +159,7 @@ public class TaskCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, adhocTask.getId(), processTask.getId());
       
       // Name filtering
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?name=Name one";
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?name=" + encode("Name one");
       assertResultsPresentInDataResponse(url, adhocTask.getId());
       
       // Name like filtering
@@ -170,7 +167,7 @@ public class TaskCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, adhocTask.getId());
       
       // Description filtering
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?description=Description one";
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION) + "?description=" + encode("Description one");
       assertResultsPresentInDataResponse(url, adhocTask.getId());
       
       // Description like filtering

@@ -15,73 +15,71 @@ package org.activiti.rest.service.api.runtime.process;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLink;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ProcessInstanceIdentityLinkResource extends BaseProcessInstanceResource {
 
-  @Get
-  public RestIdentityLink getIdentityLink() {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/identitylinks/users/{identityId}/{type}", method = RequestMethod.GET, produces="application/json")
+  public RestIdentityLink getIdentityLink(@PathVariable("processInstanceId") String processInstanceId, 
+      @PathVariable("identityId") String identityId, @PathVariable("type") String type, HttpServletRequest request) {
     
-    ProcessInstance processInstance = getProcessInstanceFromRequest();
+    ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
     
-    // Extract and validate identity link from URL
-    String identityId = getAttribute("identityId");
-    String type = getAttribute("type");
     validateIdentityLinkArguments(identityId, type);
     
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
+    
     IdentityLink link = getIdentityLink(identityId, type, processInstance.getId());
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestIdentityLink(this, link);
+    return restResponseFactory.createRestIdentityLink(link, serverRootUrl);
   }
   
-  @Delete
-  public void deleteIdentityLink() {
-    if(!authenticate())
-      return;
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/identitylinks/users/{identityId}/{type}", method = RequestMethod.DELETE)
+  public void deleteIdentityLink(@PathVariable("processInstanceId") String processInstanceId, 
+      @PathVariable("identityId") String identityId, @PathVariable("type") String type, HttpServletResponse response) {
     
-    ProcessInstance processInstance = getProcessInstanceFromRequest();
+    ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
     
-    // Extract and validate identity link from URL
-    String identityId = getAttribute("identityId");
-    String type = getAttribute("type");
     validateIdentityLinkArguments(identityId, type);
     
     getIdentityLink(identityId, type, processInstance.getId());
     
-    ActivitiUtil.getRuntimeService().deleteUserIdentityLink(processInstance.getId(), identityId, type);
+    runtimeService.deleteUserIdentityLink(processInstance.getId(), identityId, type);
     
-    setStatus(Status.SUCCESS_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   protected void validateIdentityLinkArguments(String identityId, String type) {
-    if(identityId == null) {
+    if (identityId == null) {
       throw new ActivitiIllegalArgumentException("IdentityId is required.");
     }
-    if(type == null) {
+    if (type == null) {
       throw new ActivitiIllegalArgumentException("Type is required.");
     }
   }
   
   protected IdentityLink getIdentityLink(String identityId, String type, String processInstanceId) {
-    // Perhaps it would be better to offer getting a single identitylink from the API
-    List<IdentityLink> allLinks = ActivitiUtil.getRuntimeService().getIdentityLinksForProcessInstance(processInstanceId);
-    for(IdentityLink link : allLinks) {
-      if(identityId.equals(link.getUserId()) && link.getType().equals(type)) {
+    // Perhaps it would be better to offer getting a single identity link from the API
+    List<IdentityLink> allLinks = runtimeService.getIdentityLinksForProcessInstance(processInstanceId);
+    for (IdentityLink link : allLinks) {
+      if (identityId.equals(link.getUserId()) && link.getType().equals(type)) {
         return link;
       }
     }

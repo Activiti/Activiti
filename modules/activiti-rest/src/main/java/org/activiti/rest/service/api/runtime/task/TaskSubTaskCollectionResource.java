@@ -16,29 +16,31 @@ package org.activiti.rest.service.api.runtime.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.resource.Get;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Tijs Rademakers
  */
+@RestController
 public class TaskSubTaskCollectionResource extends TaskBaseResource {
 
-  @Get
-  public List<TaskResponse> getSubTasks() {
-    if(!authenticate())
-      return null;
-    
+  @RequestMapping(value="/runtime/tasks/{taskId}/subtasks", method = RequestMethod.GET, produces="application/json")
+  public List<TaskResponse> getSubTasks(@PathVariable String taskId, HttpServletRequest request) {
     List<TaskResponse> result = new ArrayList<TaskResponse>();
-    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    Task task = getTaskFromRequest();
+    Task task = getTaskFromRequest(taskId);
     
-    for(Task taskObject : ActivitiUtil.getTaskService().getSubTasks(task.getId())) {
-      result.add(responseFactory.createTaskResponse(this, taskObject));
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
+    for (Task taskObject : taskService.getSubTasks(task.getId())) {
+      result.add(restResponseFactory.createTaskResponse(taskObject, serverRootUrl));
     }
     
     return result;

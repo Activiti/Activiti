@@ -18,11 +18,12 @@ import java.util.HashMap;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -34,7 +35,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Tijs Rademakers
  */
-public class HistoricProcessInstanceQueryResourceTest extends BaseRestTestCase {
+public class HistoricProcessInstanceQueryResourceTest extends BaseSpringRestTestCase {
   
   /**
    * Test querying historic process instance based on variables. 
@@ -66,94 +67,94 @@ public class HistoricProcessInstanceQueryResourceTest extends BaseRestTestCase {
     variableNode.put("name", "stringVar");
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
 
     // Integer equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 67890);
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // Boolean equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", false);
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // String not equals
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "ghijkl");
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
 
     // Integer not equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 45678);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // Boolean not equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", true);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // String equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "azeRTY");
     variableNode.put("operation", "equalsIgnoreCase");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // String not equals ignore case (not supported)
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "HIJKLm");
     variableNode.put("operation", "notEqualsIgnoreCase");
-    assertErrorResult(url, requestNode, Status.CLIENT_ERROR_BAD_REQUEST);
+    assertErrorResult(url, requestNode, HttpStatus.SC_BAD_REQUEST);
     
     // String equals without value
     variableNode.removeAll();
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     // String equals with non existing value
     variableNode.removeAll();
     variableNode.put("value", "Azerty2");
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode);
+    assertResultsPresentInPostDataResponse(url, requestNode);
     
     requestNode = objectMapper.createObjectNode();
     requestNode.put("finished", true);
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
     
     requestNode = objectMapper.createObjectNode();
     requestNode.put("finished", false);
-    assertResultsPresentInDataResponse(url, requestNode, processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance2.getId());
     
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionId", processInstance.getProcessDefinitionId());
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionKey", "oneTaskProcess");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId(), processInstance2.getId());
     
     requestNode = objectMapper.createObjectNode();
     requestNode.put("processDefinitionKey", "oneTaskProcess");
     
-    ClientResource client = getAuthenticatedClient(url + "?sort=startTime");
-    Representation response = client.post(requestNode);
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + url + "?sort=startTime");
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
     
     // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     assertEquals(2, dataNode.size());
     assertEquals(processInstance.getId(), dataNode.get(0).get("id").asText());
     assertEquals(processInstance2.getId(), dataNode.get(1).get("id").asText());

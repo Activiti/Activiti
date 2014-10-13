@@ -4,12 +4,11 @@ import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -19,14 +18,13 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * 
  * @author Frederik Heremans
  */
-public class TableDataResourceTest extends BaseRestTestCase {
+public class TableDataResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting a single table's row data. GET
    * management/tables/{tableName}/data
    */
   public void testGetTableColumns() throws Exception {
-
     try {
       
       Task task = taskService.newTask();
@@ -38,12 +36,11 @@ public class TableDataResourceTest extends BaseRestTestCase {
       // We use variable-table as a reference
       String tableName = managementService.getTableName(VariableInstanceEntity.class);
 
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName));
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
+      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName)), HttpStatus.SC_OK);
+      
       // Check paging result
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals(3, responseNode.get("total").intValue());
       assertEquals(3, responseNode.get("size").intValue());
@@ -58,11 +55,10 @@ public class TableDataResourceTest extends BaseRestTestCase {
       
       
       // Check sorting, ascending
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=LONG_");
-      response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=LONG_"), HttpStatus.SC_OK);
 
-      responseNode = objectMapper.readTree(response.getStream());
+      responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals(3, responseNode.get("total").intValue());
       assertEquals(3, responseNode.get("size").intValue());
@@ -78,11 +74,10 @@ public class TableDataResourceTest extends BaseRestTestCase {
       assertEquals("var3", rows.get(2).get("NAME_").textValue());
       
       // Check sorting, descending
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderDescendingColumn=LONG_");
-      response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
-      responseNode = objectMapper.readTree(response.getStream());
+      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderDescendingColumn=LONG_"), HttpStatus.SC_OK);
+      
+      responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals(3, responseNode.get("total").intValue());
       assertEquals(3, responseNode.get("size").intValue());
@@ -99,11 +94,10 @@ public class TableDataResourceTest extends BaseRestTestCase {
       
       
       // Finally, check result limiting
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=LONG_&start=1&size=1");
-      response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=LONG_&start=1&size=1"), HttpStatus.SC_OK);
 
-      responseNode = objectMapper.readTree(response.getStream());
+      responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals(3, responseNode.get("total").intValue());
       assertEquals(1, responseNode.get("size").intValue());
@@ -123,26 +117,14 @@ public class TableDataResourceTest extends BaseRestTestCase {
   }
 
   public void testGetDataForUnexistingTable() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, "unexisting"));
-    try {
-      client.get();
-      fail();
-    } catch (ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a table with name 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, "unexisting")), HttpStatus.SC_NOT_FOUND);
   }
   
   public void testGetDataSortByIllegalColumn() throws Exception {
     // We use variable-table as a reference
     String tableName = managementService.getTableName(VariableInstanceEntity.class);
-
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=unexistingColumn");
-    try {
-      client.get();
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch (ResourceException expected) {
-      assertEquals(Status.SERVER_ERROR_INTERNAL, client.getResponse().getStatus());
-    }
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=unexistingColumn"), HttpStatus.SC_INTERNAL_SERVER_ERROR);
   }
 }

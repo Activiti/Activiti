@@ -20,13 +20,12 @@ import java.util.Iterator;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.restlet.data.ChallengeScheme;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -37,7 +36,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * 
  * @author Tijs Rademakers
  */
-public class HistoricDetailCollectionResourceTest extends BaseRestTestCase {
+public class HistoricDetailCollectionResourceTest extends BaseSpringRestTestCase {
   
   /**
    * Test querying historic detail. 
@@ -66,12 +65,11 @@ public class HistoricDetailCollectionResourceTest extends BaseRestTestCase {
     assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance2.getId(), 4, "intVar", 67890);
     assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance2.getId() + "&selectOnlyVariableUpdates=true", 4, "booleanVar", false);
     
-    ClientResource client = getAuthenticatedClient(url + "?processInstanceId=" + processInstance2.getId());
-    Representation response = client.get();
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        url + "?processInstanceId=" + processInstance2.getId()), HttpStatus.SC_OK);
     
     // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     
     boolean byteVarFound = false;
     Iterator<JsonNode> it = dataNode.iterator();
@@ -81,12 +79,9 @@ public class HistoricDetailCollectionResourceTest extends BaseRestTestCase {
       if ("byteVar".equals(name)) {
         byteVarFound = true;
         String valueUrl = variableNode.get("valueUrl").textValue();
-        client.release();
-        client = new ClientResource(valueUrl);
-        client.setChallengeResponse(ChallengeScheme.HTTP_BASIC, "kermit", "kermit");
-        response = client.get();
-        assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-        byte[] varInput = IOUtils.toByteArray(response.getStream());
+        
+        response = executeHttpRequest(new HttpGet(valueUrl), HttpStatus.SC_OK);
+        byte[] varInput = IOUtils.toByteArray(response.getEntity().getContent());
         assertEquals("test", new String(varInput));
         break;
       }
@@ -97,12 +92,9 @@ public class HistoricDetailCollectionResourceTest extends BaseRestTestCase {
   protected void assertResultsPresentInDataResponse(String url, int numberOfResultsExpected, String variableName, Object variableValue) throws JsonProcessingException, IOException {
     
     // Do the actual call
-    ClientResource client = getAuthenticatedClient(url);
-    Representation response = client.get();
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
     
-    // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's
@@ -125,7 +117,5 @@ public class HistoricDetailCollectionResourceTest extends BaseRestTestCase {
       }
       assertTrue("Variable " + variableName + " is missing", variableFound);
     }
-    
-    client.release();
   }
 }

@@ -13,107 +13,120 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.AttachmentRequest;
 import org.activiti.rest.service.api.engine.AttachmentResponse;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-import org.restlet.ext.fileupload.RestletFileUpload;
-import org.restlet.representation.Representation;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
-import org.restlet.resource.ResourceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class TaskAttachmentCollectionResource extends TaskBaseResource {
+  
+  @Autowired
+  protected ObjectMapper objectMapper;
 
-  @Get
-  public List<AttachmentResponse> getAttachments() {
-    if(!authenticate())
-      return null;
-    
+  @RequestMapping(value="/runtime/tasks/{taskId}/attachments", method = RequestMethod.GET, produces="application/json")
+  public List<AttachmentResponse> getAttachments(@PathVariable String taskId, HttpServletRequest request) {
     List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
-    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    HistoricTaskInstance task = getHistoricTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
     
-    for(Attachment attachment : ActivitiUtil.getTaskService().getTaskAttachments(task.getId())) {
-      result.add(responseFactory.createAttachmentResponse(this, attachment));
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
+    for (Attachment attachment : taskService.getTaskAttachments(task.getId())) {
+      result.add(restResponseFactory.createAttachmentResponse(attachment, serverRootUrl));
     }
     
     return result;
   }
   
-  @Post
-  public AttachmentResponse createAttachment(Representation representation) {
-    if (authenticate() == false)
-      return null;
+  @RequestMapping(value="/runtime/tasks/{taskId}/attachments", method = RequestMethod.POST, produces="application/json")
+  public AttachmentResponse createAttachment(@PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
+    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
     AttachmentResponse result = null;
-    Task task = getTaskFromRequest();
-    try {
-      if (MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
-        result = createBinaryAttachment(representation, task);
-      } else {
-        result = createSimpleAttachment(representation, task);
+    Task task = getTaskFromRequest(taskId);
+    if (request instanceof MultipartHttpServletRequest) {
+      result = createBinaryAttachment((MultipartHttpServletRequest) request, task, serverRootUrl, response);
+    } else {
+      
+      AttachmentRequest attachmentRequest = null;
+      try {
+        attachmentRequest = objectMapper.readValue(request.getInputStream(), AttachmentRequest.class);
+        
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Failed to serialize to a AttachmentRequest instance", e);
       }
-    } catch (IOException e) {
-      throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, e);
-    } catch (FileUploadException e) {
-      throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, e);
+      
+      if (attachmentRequest == null) {
+        throw new ActivitiIllegalArgumentException("AttachmentRequest properties not found in request");
+      }
+      
+      result = createSimpleAttachment(attachmentRequest, task, serverRootUrl);
     }
     
-    setStatus(Status.SUCCESS_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     return result;
   }
   
-  
-  protected AttachmentResponse createSimpleAttachment(Representation representation, Task task) throws IOException {
-    AttachmentRequest req = getConverterService().toObject(representation, AttachmentRequest.class, this);
-    if (req.getName() == null) {
+  protected AttachmentResponse createSimpleAttachment(AttachmentRequest attachmentRequest, 
+      Task task, String serverRootUrl) {
+    
+    if (attachmentRequest.getName() == null) {
       throw new ActivitiIllegalArgumentException("Attachment name is required.");
     }
 
-    Attachment createdAttachment = ActivitiUtil.getTaskService().createAttachment(req.getType(), task.getId(), task.getProcessInstanceId(), req.getName(),
-            req.getDescription(), req.getExternalUrl());
+    Attachment createdAttachment = taskService.createAttachment(attachmentRequest.getType(), task.getId(), 
+        task.getProcessInstanceId(), attachmentRequest.getName(), attachmentRequest.getDescription(), attachmentRequest.getExternalUrl());
 
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory().createAttachmentResponse(this, createdAttachment);
+    return restResponseFactory.createAttachmentResponse(createdAttachment, serverRootUrl);
   }
   
-  protected AttachmentResponse createBinaryAttachment(Representation representation, Task task) throws FileUploadException, IOException {
-    RestletFileUpload upload = new RestletFileUpload(new DiskFileItemFactory());
-    List<FileItem> items = upload.parseRepresentation(representation);
+  protected AttachmentResponse createBinaryAttachment(MultipartHttpServletRequest request, Task task, 
+      String serverRootUrl, HttpServletResponse response) {
     
     String name = null;
     String description = null;
     String type = null;
-    FileItem uploadItem = null;
     
-    for (FileItem fileItem : items) {
-      if(fileItem.isFormField()) {
-        if("name".equals(fileItem.getFieldName())) {
-          name = fileItem.getString("UTF-8");
-        } else if("description".equals(fileItem.getFieldName())) {
-          description = fileItem.getString("UTF-8");
-        } else if("type".equals(fileItem.getFieldName())) {
-          type = fileItem.getString("UTF-8");
+    Map<String, String[]> paramMap = request.getParameterMap();
+    for (String parameterName : paramMap.keySet()) {
+      if (paramMap.get(parameterName).length > 0) {
+        
+        if (parameterName.equalsIgnoreCase("name")) {
+          name = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("description")) {
+          description = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("type")) {
+          type = paramMap.get(parameterName)[0];
         }
-      } else  if(fileItem.getName() != null) {
-        uploadItem = fileItem;
       }
     }
     
@@ -121,14 +134,25 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
       throw new ActivitiIllegalArgumentException("Attachment name is required.");
     }
     
-    if (uploadItem == null) {
+    if (request.getFileMap().size() == 0) {
       throw new ActivitiIllegalArgumentException("Attachment content is required.");
     }
     
-    Attachment createdAttachment = ActivitiUtil.getTaskService().createAttachment(type, task.getId(), task.getProcessInstanceId(), name,
-            description, uploadItem.getInputStream());
+    MultipartFile file = request.getFileMap().values().iterator().next();
     
-    setStatus(Status.SUCCESS_CREATED);
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory().createAttachmentResponse(this, createdAttachment);
+    if (file == null) {
+      throw new ActivitiIllegalArgumentException("Attachment content is required.");
+    }
+    
+    try {
+      Attachment createdAttachment = taskService.createAttachment(type, task.getId(), task.getProcessInstanceId(), name,
+              description, file.getInputStream());
+      
+      response.setStatus(HttpStatus.CREATED.value());
+      return restResponseFactory.createAttachmentResponse(createdAttachment, serverRootUrl);
+      
+    } catch (Exception e) {
+      throw new ActivitiException("Error creating attachment response", e);
+    }
   }
 }

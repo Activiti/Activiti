@@ -5,12 +5,14 @@ import java.util.List;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -20,7 +22,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Frederik Heremans
  */
-public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase {
+public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTestCase {
   
   /**
   * Test getting identitylinks for a process definition.
@@ -32,14 +34,11 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
     repositoryService.addCandidateStarterGroup(processDefinition.getId(), "admin");
     repositoryService.addCandidateStarterUser(processDefinition.getId(), "kermit");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-            RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, processDefinition.getId()));
-    Representation response = client.get();
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, processDefinition.getId()));
+    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
     
-    // Check "OK" status
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(2, responseNode.size());
@@ -47,22 +46,23 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
     boolean groupCandidateFound = false;
     boolean userCandidateFound = false;
     
-    for(int i=0; i < responseNode.size(); i++) {
+    for (int i=0; i < responseNode.size(); i++) {
       ObjectNode link = (ObjectNode) responseNode.get(i);
       assertNotNull(link);
-      if(!link.get("user").isNull()) {
-          assertEquals("kermit", link.get("user").textValue());
-          assertEquals("candidate", link.get("type").textValue());
-          assertTrue(link.get("group").isNull());
-          assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
-                  encode(processDefinition.getId()), "users", "kermit")));
-          userCandidateFound = true;
-      } else if(!link.get("group").isNull()) {
+      if (!link.get("user").isNull()) {
+        assertEquals("kermit", link.get("user").textValue());
+        assertEquals("candidate", link.get("type").textValue());
+        assertTrue(link.get("group").isNull());
+        assertTrue(link.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+                processDefinition.getId(), "users", "kermit")));
+        userCandidateFound = true;
+          
+      } else if (!link.get("group").isNull()) {
         assertEquals("admin", link.get("group").textValue());
         assertEquals("candidate", link.get("type").textValue());
         assertTrue(link.get("user").isNull());
-        assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
-                encode(processDefinition.getId()), "groups", "admin")));
+        assertTrue(link.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+                processDefinition.getId(), "groups", "admin")));
         groupCandidateFound = true;
       }
     }
@@ -71,36 +71,31 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
   }
   
   public void testGetIdentityLinksForUnexistingProcessDefinition() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, "unexisting"));
-    try {
-      client.get();
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, "unexisting"));
+    executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
   }
   
   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
   public void testAddCandidateStarterToProcessDefinition() throws Exception {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, processDefinition.getId()));
-
+    
     // Create user candidate
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("user", "kermit");
     
-    Representation response = client.post(requestNode);
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, processDefinition.getId()));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
     
-    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
-
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("kermit", responseNode.get("user").textValue());
     assertEquals("candidate", responseNode.get("type").textValue());
     assertTrue(responseNode.get("group").isNull());
-    assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
-            encode(processDefinition.getId()), "users", "kermit")));
+    assertTrue(responseNode.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+            processDefinition.getId(), "users", "kermit")));
     
     List<IdentityLink> createdLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
     assertEquals(1, createdLinks.size());
@@ -112,17 +107,16 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
     requestNode = objectMapper.createObjectNode();
     requestNode.put("group", "admin");
     
-    response = client.post(requestNode);
-    
-    assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
 
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("admin", responseNode.get("group").textValue());
     assertEquals("candidate", responseNode.get("type").textValue());
     assertTrue(responseNode.get("user").isNull());
     assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
-            encode(processDefinition.getId()), "groups", "admin")));
+            processDefinition.getId(), "groups", "admin")));
     
     createdLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
     assertEquals(1, createdLinks.size());
@@ -132,19 +126,14 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
   }
   
   public void testAddCandidateStarterToUnexistingProcessDefinition() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, "unexisting"));
-
     // Create user candidate
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("user", "kermit");
 
-    try {
-      client.post(requestNode);
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, "unexisting"));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
   }
   
   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
@@ -154,32 +143,30 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
     repositoryService.addCandidateStarterUser(processDefinition.getId(), "kermit");
     
     // Get user candidate
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "users", "kermit"));
-    Representation response = client.get();
-    
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "users", "kermit"));
+    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
 
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("kermit", responseNode.get("user").textValue());
     assertEquals("candidate", responseNode.get("type").textValue());
     assertTrue(responseNode.get("group").isNull());
-    assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
-            encode(processDefinition.getId()), "users", "kermit")));
+    assertTrue(responseNode.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+            processDefinition.getId(), "users", "kermit")));
     
     // Get group candidate
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "groups", "admin"));
-    response = client.get();
+    httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "groups", "admin"));
+    response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
     
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("admin", responseNode.get("group").textValue());
     assertEquals("candidate", responseNode.get("type").textValue());
     assertTrue(responseNode.get("user").isNull());
-    assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
-            encode(processDefinition.getId()), "groups", "admin")));
+    assertTrue(responseNode.get("url").asText().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, 
+            processDefinition.getId(), "groups", "admin")));
   }
   
   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
@@ -188,13 +175,11 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
     repositoryService.addCandidateStarterGroup(processDefinition.getId(), "admin");
     repositoryService.addCandidateStarterUser(processDefinition.getId(), "kermit");
     
-    // Get user candidate
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "users", "kermit"));
-    Representation response = client.delete();
+    // Delete user candidate
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "users", "kermit"));
+    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
     
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    assertEquals(0, response.getSize());
-
     // Check if group-link remains
     List<IdentityLink> remainingLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
     assertEquals(1, remainingLinks.size());
@@ -202,11 +187,9 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
 
     
     // Delete group candidate
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "groups", "admin"));
-    response = client.delete();
-    
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    assertEquals(0, response.getSize());
+    httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "groups", "admin"));
+    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
     
     // Check if all links are removed
     remainingLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
@@ -214,26 +197,14 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseRestTestCase
   }
   
   public void testDeleteCandidateStarterFromUnexistingProcessDefinition() throws Exception {
-    ClientResource client = getAuthenticatedClient(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, "unexisting", "groups", "admin"));
-    try {
-      client.delete();
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, "unexisting", "groups", "admin"));
+    executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
   }
   
   public void testGetCandidateStarterFromUnexistingProcessDefinition() throws Exception {
-    ClientResource client = getAuthenticatedClient(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, "unexisting", "groups", "admin"));
-    try {
-      client.get();
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, "unexisting", "groups", "admin"));
+    executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
   }
 }

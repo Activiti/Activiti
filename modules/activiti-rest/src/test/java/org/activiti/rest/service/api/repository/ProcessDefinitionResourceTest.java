@@ -5,14 +5,16 @@ import java.util.Calendar;
 
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -22,7 +24,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Frederik Heremans
  */
-public class ProcessDefinitionResourceTest extends BaseRestTestCase {
+public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
   
   /**
   * Test getting a single process definition.
@@ -33,13 +35,11 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
 
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-    Representation response = client.get();
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
     
-    // Check "OK" status
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertEquals(processDefinition.getId(), responseNode.get("id").textValue());
     assertEquals(processDefinition.getKey(), responseNode.get("key").textValue());
     assertEquals(processDefinition.getCategory(), responseNode.get("category").textValue());
@@ -49,7 +49,7 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     assertFalse(responseNode.get("graphicalNotationDefined").booleanValue());
     
     // Check URL's
-    assertEquals(client.getRequest().getResourceRef().toString(), URLDecoder.decode(responseNode.get("url").textValue(),"UTF-8"));
+    assertEquals(httpGet.getURI().toString(), responseNode.get("url").asText());
     assertEquals(processDefinition.getDeploymentId(), responseNode.get("deploymentId").textValue());
     assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
     assertTrue(URLDecoder.decode(responseNode.get("resource").textValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
@@ -61,75 +61,69 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
    * Test getting a single process definition with a graphical notation defined.
    * GET repository/process-definitions/{processDefinitionResource}
    */
-   @Deployment
-   public void testGetProcessDefinitionWithGraphicalNotation() throws Exception {
+  @Deployment
+  public void testGetProcessDefinitionWithGraphicalNotation() throws Exception {
   
-     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
      
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-     Representation response = client.get();
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
      
-     // Check "OK" status
-     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    assertEquals(processDefinition.getId(), responseNode.get("id").textValue());
+    assertEquals(processDefinition.getKey(), responseNode.get("key").textValue());
+    assertEquals(processDefinition.getCategory(), responseNode.get("category").textValue());
+    assertEquals(processDefinition.getVersion(), responseNode.get("version").intValue());
+    assertEquals(processDefinition.getDescription(), responseNode.get("description").textValue());
+    assertEquals(processDefinition.getName(), responseNode.get("name").textValue());
+    assertTrue(responseNode.get("graphicalNotationDefined").booleanValue());
      
-     JsonNode responseNode = objectMapper.readTree(response.getStream());
-     assertEquals(processDefinition.getId(), responseNode.get("id").textValue());
-     assertEquals(processDefinition.getKey(), responseNode.get("key").textValue());
-     assertEquals(processDefinition.getCategory(), responseNode.get("category").textValue());
-     assertEquals(processDefinition.getVersion(), responseNode.get("version").intValue());
-     assertEquals(processDefinition.getDescription(), responseNode.get("description").textValue());
-     assertEquals(processDefinition.getName(), responseNode.get("name").textValue());
-     assertTrue(responseNode.get("graphicalNotationDefined").booleanValue());
-     
-     // Check URL's
-     assertEquals(client.getRequest().getResourceRef().toString(), URLDecoder.decode(responseNode.get("url").textValue(),"UTF-8"));
-     assertEquals(processDefinition.getDeploymentId(), responseNode.get("deploymentId").textValue());
-     assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
-     assertTrue(URLDecoder.decode(responseNode.get("resource").textValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
-             RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getResourceName())));
-     assertTrue(URLDecoder.decode(responseNode.get("diagramResource").textValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
-             RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName())));
-   }
+    // Check URL's
+    assertEquals(httpGet.getURI().toString(), responseNode.get("url").asText());
+    assertEquals(processDefinition.getDeploymentId(), responseNode.get("deploymentId").textValue());
+    assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, processDefinition.getDeploymentId())));
+    assertTrue(URLDecoder.decode(responseNode.get("resource").textValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getResourceName())));
+    assertTrue(URLDecoder.decode(responseNode.get("diagramResource").textValue(), "UTF-8").endsWith(RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_DEPLOYMENT_RESOURCE, processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName())));
+  }
   
   /**
    * Test getting an unexisting process-definition.
    * GET repository/process-definitions/{processDefinitionId}
    */
    public void testGetUnexistingProcessDefinition() throws Exception {
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, "unexisting"));
-     try {
-       client.get();
-       fail("404 expected, but was: " + client.getResponse().getStatus());
-     } catch(ResourceException expected) {
-       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-       assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-     }
+     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+         RestUrls.URL_PROCESS_DEFINITION, "unexisting"));
+     executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
    }
   
    /**
     * Test suspending a process definition.
     * POST repository/process-definitions/{processDefinitionId}
     */
-    @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
-    public void testSuspendProcessDefinition() throws Exception {
-      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-      assertFalse(processDefinition.isSuspended());
+   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
+   public void testSuspendProcessDefinition() throws Exception {
+     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     assertFalse(processDefinition.isSuspended());
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-      ObjectNode requestNode = objectMapper.createObjectNode();
-      requestNode.put("action", "suspend");
+     ObjectNode requestNode = objectMapper.createObjectNode();
+     requestNode.put("action", "suspend");
       
-      Representation response = client.put(requestNode);
+     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+         RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+     httpPut.setEntity(new StringEntity(requestNode.toString()));
+     HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
       
-      // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertTrue(responseNode.get("suspended").booleanValue());
+     // Check "OK" status
+     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+     assertTrue(responseNode.get("suspended").booleanValue());
       
-      // Check if process-definitoin is suspended
-      processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-      assertTrue(processDefinition.isSuspended());
-    }
+     // Check if process-definitoin is suspended
+     processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+     assertTrue(processDefinition.isSuspended());
+   }
     
   /**
    * Test suspending a process definition on a certain date.
@@ -140,7 +134,6 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
      assertFalse(processDefinition.isSuspended());
      
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
      ObjectNode requestNode = objectMapper.createObjectNode();
      
      Calendar cal = Calendar.getInstance();
@@ -153,11 +146,13 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      requestNode.put("action", "suspend");
      requestNode.put("date", dateString);
      
-     Representation response = client.put(requestNode);
+     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+         RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+     httpPut.setEntity(new StringEntity(requestNode.toString()));
+     HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
      
      // Check "OK" status
-     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-     JsonNode responseNode = objectMapper.readTree(response.getStream());
+     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
      assertTrue(responseNode.get("suspended").booleanValue());
      
      // Check if process-definition is not yet suspended
@@ -186,16 +181,13 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
      assertTrue(processDefinition.isSuspended());
      
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
      ObjectNode requestNode = objectMapper.createObjectNode();
      requestNode.put("action", "suspend");
      
-     try {
-       client.put(requestNode);
-       fail("Expected exception");
-     } catch(ResourceException expected) {
-       assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-     }
+     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+         RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+     httpPut.setEntity(new StringEntity(requestNode.toString()));
+     executeHttpRequest(httpPut, HttpStatus.SC_CONFLICT);
    }
    
   
@@ -211,15 +203,16 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
      assertTrue(processDefinition.isSuspended());
      
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
      ObjectNode requestNode = objectMapper.createObjectNode();
      requestNode.put("action", "activate");
      
-     Representation response = client.put(requestNode);
+     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+         RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+     httpPut.setEntity(new StringEntity(requestNode.toString()));
+     HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
      
      // Check "OK" status
-     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-     JsonNode responseNode = objectMapper.readTree(response.getStream());
+     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
      assertFalse(responseNode.get("suspended").booleanValue());
      
      // Check if process-definitoin is suspended
@@ -239,7 +232,6 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     assertTrue(processDefinition.isSuspended());
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
     ObjectNode requestNode = objectMapper.createObjectNode();
     
     Calendar cal = Calendar.getInstance();
@@ -252,11 +244,13 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     requestNode.put("action", "activate");
     requestNode.put("date", dateString);
     
-    Representation response = client.put(requestNode);
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
     
     // Check "OK" status
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertFalse(responseNode.get("suspended").booleanValue());
     
     // Check if process-definition is not yet active
@@ -282,16 +276,13 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
     assertFalse(processDefinition.isSuspended());
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("action", "activate");
     
-    try {
-      client.put(requestNode);
-      fail("Expected exception");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-    }
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+        RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_CONFLICT);
   }
   
   /**
@@ -304,29 +295,25 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
      assertFalse(processDefinition.isSuspended());
      
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
      ObjectNode requestNode = objectMapper.createObjectNode();
      requestNode.put("action", "unexistingaction");
      
-     try {
-       client.put(requestNode);
-       fail("Expected exception");
-     } catch(ResourceException expected) {
-       assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-     }
+     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+         RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+     httpPut.setEntity(new StringEntity(requestNode.toString()));
+     executeHttpRequest(httpPut, HttpStatus.SC_BAD_REQUEST);
    }
    
    @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
    public void testGetProcessDefinitionResourceData() throws Exception {
      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
      
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_RESOURCE_CONTENT, processDefinition.getId()));
-     
-     Representation response = client.get();
+     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+         RestUrls.URL_PROCESS_DEFINITION_RESOURCE_CONTENT, processDefinition.getId()));
+     HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
      
      // Check "OK" status
-     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-     String content = response.getText();
+     String content = IOUtils.toString(response.getEntity().getContent());
      assertNotNull(content);
      assertTrue(content.contains("The One Task Process"));
    }
@@ -335,13 +322,12 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
    public void testGetProcessDefinitionModel() throws Exception {
      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
      
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_MODEL, processDefinition.getId()));
-     
-     Representation response = client.get();
+     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+         RestUrls.URL_PROCESS_DEFINITION_MODEL, processDefinition.getId()));
+     HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
      
      // Check "OK" status
-     assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-     JsonNode resultNode = objectMapper.readTree(response.getReader());
+     JsonNode resultNode = objectMapper.readTree(response.getEntity().getContent());
      assertNotNull(resultNode);
      JsonNode processes = resultNode.get("processes");
      assertNotNull(processes);
@@ -354,29 +340,19 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
     * Test getting model for an unexisting process-definition .
     */
     public void testGetModelForUnexistingProcessDefinition() throws Exception {
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_MODEL, "unexisting"));
-      try {
-        client.get();
-        fail("404 expected, but was: " + client.getResponse().getStatus());
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-        assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-      }
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_PROCESS_DEFINITION_MODEL, "unexisting"));
+      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
     }
     
     /**
      * Test getting resource content for an unexisting process-definition .
      */
-     public void testGetResourceContentForUnexistingProcessDefinition() throws Exception {
-       ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_RESOURCE_CONTENT, "unexisting"));
-       try {
-         client.get();
-         fail("404 expected, but was: " + client.getResponse().getStatus());
-       } catch(ResourceException expected) {
-         assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-         assertEquals("Could not find a process definition with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-       }
-     }
+    public void testGetResourceContentForUnexistingProcessDefinition() throws Exception {
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_PROCESS_DEFINITION_RESOURCE_CONTENT, "unexisting"));
+      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+    }
      
      /**
       * Test activating a suspended process definition delayed.
@@ -387,16 +363,16 @@ public class ProcessDefinitionResourceTest extends BaseRestTestCase {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
         assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionCategory("OneTaskCategory").count());
         
-        ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
         ObjectNode requestNode = objectMapper.createObjectNode();
         requestNode.put("category", "updatedcategory");
         
-        Representation response = client.put(requestNode);
+        HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+            RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
+        httpPut.setEntity(new StringEntity(requestNode.toString()));
+        HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
         
         // Check "OK" status
-        assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-        
-        JsonNode responseNode = objectMapper.readTree(response.getStream());
+        JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
         assertEquals("updatedcategory", responseNode.get("category").textValue());
         
         // Check actual entry in DB

@@ -13,64 +13,57 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.engine.AttachmentResponse;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class TaskAttachmentResource extends TaskBaseResource {
 
-  @Get
-  public AttachmentResponse getAttachment() {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.GET, produces="application/json")
+  public AttachmentResponse getAttachment(@PathVariable("taskId") String taskId, 
+      @PathVariable("attachmentId") String attachmentId, HttpServletRequest request) {
     
-    HistoricTaskInstance task = getHistoricTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
     
-    String attachmentId = getAttribute("attachmentId");
-    if(attachmentId == null) {
-      throw new ActivitiIllegalArgumentException("AttachmentId is required.");
-    }
-    
-    Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
-    if(attachment == null || !task.getId().equals(attachment.getTaskId())) {
+    Attachment attachment = taskService.getAttachment(attachmentId);
+    if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
     }
     
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createAttachmentResponse(this, attachment);
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
+    return restResponseFactory.createAttachmentResponse(attachment, serverRootUrl);
   }
   
-  @Delete
-  public void deleteAttachment() {
-    if(!authenticate())
-      return;
+  @RequestMapping(value="/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.DELETE)
+  public void deleteAttachment(@PathVariable("taskId") String taskId, 
+      @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
     
-    Task task = getTaskFromRequest();
+    Task task = getTaskFromRequest(taskId);
     
-    String attachmentId = getAttribute("attachmentId");
-    if(attachmentId == null) {
-      throw new ActivitiIllegalArgumentException("AttachmentId is required.");
-    }
-    
-    Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
-    if(attachment == null || !task.getId().equals(attachment.getTaskId())) {
+    Attachment attachment = taskService.getAttachment(attachmentId);
+    if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
     }
     
-    ActivitiUtil.getTaskService().deleteAttachment(attachmentId);
-    setStatus(Status.SUCCESS_NO_CONTENT);
+    taskService.deleteAttachment(attachmentId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

@@ -13,77 +13,90 @@
 
 package org.activiti.rest.service.api.management;
 
+import java.util.Map;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.management.TablePage;
 import org.activiti.engine.management.TablePageQuery;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.SecuredResource;
-import org.restlet.data.Form;
-import org.restlet.resource.Get;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
-public class TableDataResource extends SecuredResource {
+@RestController
+public class TableDataResource {
   
   protected static final Integer DEFAULT_RESULT_SIZE = 10;
 
-  @Get("json")
-  public DataResponse getTableData() {
-    if(authenticate() == false) return null;
-
-    String tableName = getAttribute("tableName");
-    if(tableName == null) {
-      throw new ActivitiIllegalArgumentException("The tableName cannot be null");
-    }
-    
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected ManagementService managementService;
+  
+  @RequestMapping(value="/management/tables/{tableName}/data", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getTableData(@PathVariable String tableName, @RequestParam Map<String,String> allRequestParams) {
     // Check if table exists before continuing
-    if(ActivitiUtil.getManagementService().getTableMetaData(tableName) == null) {
+    if (managementService.getTableMetaData(tableName) == null) {
       throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
     }
     
-    Form queryForm = getQuery();
-    String orderAsc = getQueryParameter("orderAscendingColumn", queryForm);
-    String orderDesc = getQueryParameter("orderDescendingColumn", queryForm);
+    String orderAsc = allRequestParams.get("orderAscendingColumn");
+    String orderDesc = allRequestParams.get("orderDescendingColumn");
     
-    if(orderAsc != null && orderDesc != null) {
+    if (orderAsc != null && orderDesc != null) {
       throw new ActivitiIllegalArgumentException("Only one of 'orderAscendingColumn' or 'orderDescendingColumn' can be supplied.");
     }
     
-    Integer start = getQueryParameterAsInt("start", queryForm);
-    if(start == null) {
+    Integer start = null;
+    if (allRequestParams.containsKey("start")) {
+      start = Integer.valueOf(allRequestParams.get("start"));
+    }
+    
+    if (start == null) {
       start = 0;
     }
-    Integer size = getQueryParameterAsInt("size", queryForm);
-    if(size == null) {
+    
+    Integer size = null;
+    if (allRequestParams.containsKey("size")) {
+      size = Integer.valueOf(allRequestParams.get("size"));
+    }
+    
+    if (size == null) {
       size = DEFAULT_RESULT_SIZE;
     }
     
     DataResponse response = new DataResponse();
     
-    TablePageQuery tablePageQuery = ActivitiUtil.getManagementService().createTablePageQuery()
-            .tableName(tableName);
+    TablePageQuery tablePageQuery = managementService.createTablePageQuery().tableName(tableName);
     
-    if(orderAsc != null) {
+    if (orderAsc != null) {
       tablePageQuery.orderAsc(orderAsc);
       response.setOrder("asc");
       response.setSort(orderAsc);
     }
     
-    if(orderDesc != null) {
+    if (orderDesc != null) {
       tablePageQuery.orderDesc(orderDesc);
       response.setOrder("desc");
       response.setSort(orderDesc);
     }
     
     TablePage listPage = tablePageQuery.listPage(start, size);
-    response.setSize(((Long)listPage.getSize()).intValue());
-    response.setStart(((Long)listPage.getFirstResult()).intValue());
+    response.setSize(((Long) listPage.getSize()).intValue());
+    response.setStart(((Long) listPage.getFirstResult()).intValue());
     response.setTotal(listPage.getTotal());
     response.setData(listPage.getRows());
     
-   return response;
+    return response;
   }
 }

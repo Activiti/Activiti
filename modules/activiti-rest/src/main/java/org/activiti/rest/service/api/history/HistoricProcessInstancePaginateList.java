@@ -18,28 +18,27 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.rest.common.api.AbstractPaginateList;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 
 /**
  * @author Tijs Rademakers
  */
 public class HistoricProcessInstancePaginateList extends AbstractPaginateList {
 
-  private SecuredResource resource;
+  protected RestResponseFactory restResponseFactory;
+  protected String serverRootUrl;
   
-  public HistoricProcessInstancePaginateList(SecuredResource resource) {
-    this.resource = resource;
+  public HistoricProcessInstancePaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
+    this.restResponseFactory = restResponseFactory;
+    this.serverRootUrl = serverRootUrl;
   }
   
   @SuppressWarnings("rawtypes")
   @Override
   protected List processList(List list) {
     List<HistoricProcessInstanceResponse> responseList = new ArrayList<HistoricProcessInstanceResponse>();
-    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     for (Object instance : list) {
-      responseList.add(restResponseFactory.createHistoricProcessInstanceResponse(resource, (HistoricProcessInstance) instance));
+      responseList.add(restResponseFactory.createHistoricProcessInstanceResponse((HistoricProcessInstance) instance, serverRootUrl));
     }
     return responseList;
   }

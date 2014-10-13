@@ -15,23 +15,23 @@ package org.activiti.rest.service.api.runtime.task;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.task.TaskQuery;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import org.activiti.rest.service.api.engine.variable.QueryVariable.QueryVariableOperation;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Form;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
@@ -39,7 +39,7 @@ import org.restlet.data.Form;
  * 
  * @author Frederik Heremans
  */
-public class TaskBaseResource extends SecuredResource {
+public class TaskBaseResource {
   
   private static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
   
@@ -54,13 +54,22 @@ public class TaskBaseResource extends SecuredResource {
     properties.put("processInstanceId", TaskQueryProperty.PROCESS_INSTANCE_ID);
     properties.put("tenantId", TaskQueryProperty.TENANT_ID);
   }
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected TaskService taskService;
+  
+  @Autowired
+  protected HistoryService historyService;
 
   protected DelegationState getDelegationState(String delegationState) {
     DelegationState state = null;
-    if(delegationState != null) {
-      if(DelegationState.RESOLVED.name().toLowerCase().equals(delegationState)) {
+    if (delegationState != null) {
+      if (DelegationState.RESOLVED.name().toLowerCase().equals(delegationState)) {
         return DelegationState.RESOLVED;
-      } else if(DelegationState.PENDING.name().toLowerCase().equals(delegationState)) {
+      } else if (DelegationState.PENDING.name().toLowerCase().equals(delegationState)) {
         return DelegationState.PENDING;
       } else {
         throw new ActivitiIllegalArgumentException("Illegal value for delegationState: " + delegationState);
@@ -73,145 +82,149 @@ public class TaskBaseResource extends SecuredResource {
    * Populate the task based on the values that are present in the given {@link TaskRequest}.
    */
   protected void populateTaskFromRequest(Task task, TaskRequest taskRequest) {
-    if(taskRequest.isNameSet()) {
+    if (taskRequest.isNameSet()) {
       task.setName(taskRequest.getName());
     }
-    if(taskRequest.isAssigneeSet()) {
+    if (taskRequest.isAssigneeSet()) {
       task.setAssignee(taskRequest.getAssignee());
     }
-    if(taskRequest.isDescriptionSet()) {
+    if (taskRequest.isDescriptionSet()) {
       task.setDescription(taskRequest.getDescription());
     }
-    if(taskRequest.isDuedateSet()) {
+    if (taskRequest.isDuedateSet()) {
       task.setDueDate(taskRequest.getDueDate());
     }
-    if(taskRequest.isOwnerSet()) {
+    if (taskRequest.isOwnerSet()) {
       task.setOwner(taskRequest.getOwner());
     }
-    if(taskRequest.isParentTaskIdSet()) {
+    if (taskRequest.isParentTaskIdSet()) {
       task.setParentTaskId(taskRequest.getParentTaskId());
     }
-    if(taskRequest.isPrioritySet()) {
+    if (taskRequest.isPrioritySet()) {
       task.setPriority(taskRequest.getPriority());
     }
-    if(taskRequest.isCategorySet()) {
+    if (taskRequest.isCategorySet()) {
     	task.setCategory(taskRequest.getCategory());
     }
-    if(taskRequest.isTenantIdSet()) {
+    if (taskRequest.isTenantIdSet()) {
       task.setTenantId(taskRequest.getTenantId());
     }
-    if(taskRequest.isFormKeySet()) {
+    if (taskRequest.isFormKeySet()) {
       task.setFormKey(taskRequest.getFormKey());
     }
 
-    if(taskRequest.isDelegationStateSet()) {
+    if (taskRequest.isDelegationStateSet()) {
       DelegationState delegationState = getDelegationState(taskRequest.getDelegationState());
       task.setDelegationState(delegationState);
     }
   }
   
-  protected DataResponse getTasksFromQueryRequest(TaskQueryRequest request) {
-    TaskQuery taskQuery = ActivitiUtil.getTaskService().createTaskQuery();
-    Form query = getQuery();
+  protected DataResponse getTasksFromQueryRequest(TaskQueryRequest request, 
+      Map<String, String> requestParams, String serverRootUrl) {
+    
+    TaskQuery taskQuery = taskService.createTaskQuery();
     
     // Populate filter-parameters
-    if(request.getName() != null) {
+    if (request.getName() != null) {
       taskQuery.taskName(request.getName());
     }
-    if(request.getNameLike() != null) {
+    if (request.getNameLike() != null) {
       taskQuery.taskNameLike(request.getNameLike());
     }
-    if(request.getDescription() != null) {
+    if (request.getDescription() != null) {
       taskQuery.taskDescription(request.getDescription());
     }
-    if(request.getDescriptionLike() != null) {
+    if (request.getDescriptionLike() != null) {
       taskQuery.taskDescriptionLike(request.getDescriptionLike());
     }
-    if(request.getPriority() != null) {
+    if (request.getPriority() != null) {
       taskQuery.taskPriority(request.getPriority());
     }
-    if(request.getMinimumPriority() != null) {
+    if (request.getMinimumPriority() != null) {
       taskQuery.taskMinPriority(request.getMinimumPriority());
     }
-    if(request.getMaximumPriority() != null) {
+    if (request.getMaximumPriority() != null) {
       taskQuery.taskMaxPriority(request.getMaximumPriority());
     }
-    if(request.getAssignee() != null) {
+    if (request.getAssignee() != null) {
       taskQuery.taskAssignee(request.getAssignee());
     }
-    if(request.getAssigneeLike() != null) {
+    if (request.getAssigneeLike() != null) {
       taskQuery.taskAssigneeLike(request.getAssigneeLike());
     }
-    if(request.getOwner() != null) {
+    if (request.getOwner() != null) {
       taskQuery.taskOwner(request.getOwner());
     }
-    if(request.getOwnerLike() != null) {
+    if (request.getOwnerLike() != null) {
       taskQuery.taskOwnerLike(request.getOwnerLike());
     }
-    if(request.getUnassigned() != null) {
+    if (request.getUnassigned() != null) {
       taskQuery.taskUnassigned();
     }
-    if(request.getDelegationState() != null) {
+    if (request.getDelegationState() != null) {
       DelegationState state = getDelegationState(request.getDelegationState());
-      if(state != null) {
+      if (state != null) {
         taskQuery.taskDelegationState(state);
       }
     }
-    if(request.getCandidateUser() != null) {
+    if (request.getCandidateUser() != null) {
       taskQuery.taskCandidateUser(request.getCandidateUser());
     }
-    if(request.getInvolvedUser() != null) {
+    if (request.getInvolvedUser() != null) {
       taskQuery.taskInvolvedUser(request.getInvolvedUser());
     }
-    if(request.getCandidateGroup() != null) {
+    if (request.getCandidateGroup() != null) {
       taskQuery.taskCandidateGroup(request.getCandidateGroup());
     }
-    if(request.getCandidateGroupIn() != null) {
+    if (request.getCandidateGroupIn() != null) {
       taskQuery.taskCandidateGroupIn(request.getCandidateGroupIn());
     }
-    if(request.getProcessInstanceId() != null) {
+    if (request.getProcessInstanceId() != null) {
       taskQuery.processInstanceId(request.getProcessInstanceId());
     }
-    if(request.getProcessInstanceBusinessKey() != null) {
+    if (request.getProcessInstanceBusinessKey() != null) {
       taskQuery.processInstanceBusinessKey(request.getProcessInstanceBusinessKey());
     }
-    if(request.getExecutionId() != null) {
+    if (request.getExecutionId() != null) {
       taskQuery.executionId(request.getExecutionId());
     }
-    if(request.getCreatedOn() != null) {
+    if (request.getCreatedOn() != null) {
       taskQuery.taskCreatedOn(request.getCreatedOn());
     }
-    if(request.getCreatedBefore() != null) {
+    if (request.getCreatedBefore() != null) {
       taskQuery.taskCreatedBefore(request.getCreatedBefore());
     }
-    if(request.getCreatedAfter() != null) {
+    if (request.getCreatedAfter() != null) {
       taskQuery.taskCreatedAfter(request.getCreatedAfter());
     }
-    if(request.getExcludeSubTasks() != null) {
-      if(request.getExcludeSubTasks().booleanValue()) {
+    if (request.getExcludeSubTasks() != null) {
+      if (request.getExcludeSubTasks().booleanValue()) {
         taskQuery.excludeSubtasks();
       }
     }
 
-    if(request.getTaskDefinitionKey() != null) {
+    if (request.getTaskDefinitionKey() != null) {
       taskQuery.taskDefinitionKey(request.getTaskDefinitionKey());
     }
-    taskQuery.taskDefinitionKeyLike(request.getTaskDefinitionKeyLike());
-    if(request.getDueDate() != null) {
+    
+    if (request.getTaskDefinitionKeyLike() != null) {
+      taskQuery.taskDefinitionKeyLike(request.getTaskDefinitionKeyLike());
+    }
+    if (request.getDueDate() != null) {
       taskQuery.taskDueDate(request.getDueDate());
     }
-    if(request.getDueBefore() != null) {
+    if (request.getDueBefore() != null) {
       taskQuery.taskDueBefore(request.getDueBefore());
     }
-    if(request.getDueAfter() != null) {
+    if (request.getDueAfter() != null) {
       taskQuery.taskDueAfter(request.getDueAfter());
     }
-    if(request.getWithoutDueDate() != null && request.getWithoutDueDate()) {
+    if (request.getWithoutDueDate() != null && request.getWithoutDueDate()) {
     	taskQuery.withoutTaskDueDate();
     }
     
-    if(request.getActive() != null) {
-      if(request.getActive().booleanValue()) {
+    if (request.getActive() != null) {
+      if (request.getActive().booleanValue()) {
         taskQuery.active();
       } else {
         taskQuery.suspended();
@@ -229,23 +242,23 @@ public class TaskBaseResource extends SecuredResource {
       }
     }
     
-    if(request.getProcessInstanceBusinessKeyLike() != null) {
+    if (request.getProcessInstanceBusinessKeyLike() != null) {
     	taskQuery.processInstanceBusinessKeyLike(request.getProcessInstanceBusinessKeyLike());
     }
     
-    if(request.getProcessDefinitionKey() != null) {
+    if (request.getProcessDefinitionKey() != null) {
     	taskQuery.processDefinitionKey(request.getProcessDefinitionKey());
     }
     
-    if(request.getProcessDefinitionKeyLike() != null) {
+    if (request.getProcessDefinitionKeyLike() != null) {
     	taskQuery.processDefinitionKeyLike(request.getProcessDefinitionKeyLike());
     }
     
-    if(request.getProcessDefinitionName() != null) {
+    if (request.getProcessDefinitionName() != null) {
     	taskQuery.processDefinitionName(request.getProcessDefinitionName());
     }
     
-    if(request.getProcessDefinitionNameLike() != null) {
+    if (request.getProcessDefinitionNameLike() != null) {
     	taskQuery.processDefinitionNameLike(request.getProcessDefinitionNameLike());
     }
     
@@ -257,15 +270,15 @@ public class TaskBaseResource extends SecuredResource {
       addProcessvariables(taskQuery, request.getProcessInstanceVariables());
     }
     
-    if(request.getTenantId() != null) {
+    if (request.getTenantId() != null) {
     	taskQuery.taskTenantId(request.getTenantId());
     }
     
-    if(request.getTenantIdLike() != null) {
+    if (request.getTenantIdLike() != null) {
     	taskQuery.taskTenantIdLike(request.getTenantIdLike());
     }
     
-    if(Boolean.TRUE.equals(request.getWithoutTenantId())) {
+    if (Boolean.TRUE.equals(request.getWithoutTenantId())) {
     	taskQuery.taskWithoutTenantId();
     }
 
@@ -273,33 +286,33 @@ public class TaskBaseResource extends SecuredResource {
       taskQuery.taskCandidateOrAssigned(request.getCandidateOrAssigned());
     }
     
-    return new TaskPaginateList(this).paginateList(query, request, taskQuery, "id", properties);
+    return new TaskPaginateList(restResponseFactory, serverRootUrl).paginateList(
+        requestParams, request, taskQuery, "id", properties);
   }
   
   protected void addTaskvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
     
-    for(QueryVariable variable : variables) {
-      if(variable.getVariableOperation() == null) {
+    for (QueryVariable variable : variables) {
+      if (variable.getVariableOperation() == null) {
         throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
       }
-      if(variable.getValue() == null) {
+      if (variable.getValue() == null) {
         throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
       }
       
       boolean nameLess = variable.getName() == null;
       
-      Object actualValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-              .getVariableValue(variable);
+      Object actualValue = restResponseFactory.getVariableValue(variable);
       
       // A value-only query is only possible using equals-operator
-      if(nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
+      if (nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
         throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
       }
       
       switch(variable.getVariableOperation()) {
       
       case EQUALS:
-        if(nameLess) {
+        if (nameLess) {
           taskQuery.taskVariableValueEquals(actualValue);
         } else {
           taskQuery.taskVariableValueEquals(variable.getName(), actualValue);
@@ -307,7 +320,7 @@ public class TaskBaseResource extends SecuredResource {
         break;
         
       case EQUALS_IGNORE_CASE:
-        if(actualValue instanceof String) {
+        if (actualValue instanceof String) {
           taskQuery.taskVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
         } else {
           throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
@@ -319,7 +332,7 @@ public class TaskBaseResource extends SecuredResource {
         break;
         
       case NOT_EQUALS_IGNORE_CASE:
-        if(actualValue instanceof String) {
+        if (actualValue instanceof String) {
           taskQuery.taskVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
         } else {
           throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
@@ -343,7 +356,7 @@ public class TaskBaseResource extends SecuredResource {
       	break;
       	
       case LIKE:
-      	if(actualValue instanceof String) {
+      	if (actualValue instanceof String) {
       		taskQuery.taskVariableValueLike(variable.getName(), (String) actualValue);
       	} else {
       		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
@@ -356,80 +369,79 @@ public class TaskBaseResource extends SecuredResource {
   }
   
   protected void addProcessvariables(TaskQuery taskQuery, List<QueryVariable> variables) {
-    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    
-    for(QueryVariable variable : variables) {
-      if(variable.getVariableOperation() == null) {
+    for (QueryVariable variable : variables) {
+      if (variable.getVariableOperation() == null) {
         throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
       }
-      if(variable.getValue() == null) {
+      if (variable.getValue() == null) {
         throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
       }
       
       boolean nameLess = variable.getName() == null;
       
-      Object actualValue = responseFactory.getVariableValue(variable);
+      Object actualValue = restResponseFactory.getVariableValue(variable);
       
       // A value-only query is only possible using equals-operator
-      if(nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
+      if (nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
         throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
       }
       
-switch(variable.getVariableOperation()) {
+      switch(variable.getVariableOperation()) {
       
-      case EQUALS:
-        if(nameLess) {
-          taskQuery.processVariableValueEquals(actualValue);
-        } else {
-          taskQuery.processVariableValueEquals(variable.getName(), actualValue);
-        }
-        break;
-        
-      case EQUALS_IGNORE_CASE:
-        if(actualValue instanceof String) {
-          taskQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
-        } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
-        }
-        break;
-        
-      case NOT_EQUALS:
-        taskQuery.processVariableValueNotEquals(variable.getName(), actualValue);
-        break;
-        
-      case NOT_EQUALS_IGNORE_CASE:
-        if(actualValue instanceof String) {
-          taskQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
-        } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
-        }
-        break;
-        
-      case GREATER_THAN:
-      	taskQuery.processVariableValueGreaterThan(variable.getName(), actualValue);
-      	break;
-      	
-      case GREATER_THAN_OR_EQUALS:
-      	taskQuery.processVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
-      	break;
-      	
-      case LESS_THAN:
-      	taskQuery.processVariableValueLessThan(variable.getName(), actualValue);
-      	break;
-      	
-      case LESS_THAN_OR_EQUALS:
-      	taskQuery.processVariableValueLessThanOrEqual(variable.getName(), actualValue);
-      	break;
-      	
-      case LIKE:
-      	if(actualValue instanceof String) {
-      		taskQuery.processVariableValueLike(variable.getName(), (String) actualValue);
-      	} else {
-      		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
-      	}
-      	break;
-      default:
-        throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+        case EQUALS:
+          if (nameLess) {
+            taskQuery.processVariableValueEquals(actualValue);
+          } else {
+            taskQuery.processVariableValueEquals(variable.getName(), actualValue);
+          }
+          break;
+          
+        case EQUALS_IGNORE_CASE:
+          if (actualValue instanceof String) {
+            taskQuery.processVariableValueEqualsIgnoreCase(variable.getName(), (String)actualValue);
+          } else {
+            throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+          }
+          break;
+          
+        case NOT_EQUALS:
+          taskQuery.processVariableValueNotEquals(variable.getName(), actualValue);
+          break;
+          
+        case NOT_EQUALS_IGNORE_CASE:
+          if (actualValue instanceof String) {
+            taskQuery.processVariableValueNotEqualsIgnoreCase(variable.getName(), (String)actualValue);
+          } else {
+            throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+          }
+          break;
+          
+        case GREATER_THAN:
+        	taskQuery.processVariableValueGreaterThan(variable.getName(), actualValue);
+        	break;
+        	
+        case GREATER_THAN_OR_EQUALS:
+        	taskQuery.processVariableValueGreaterThanOrEqual(variable.getName(), actualValue);
+        	break;
+        	
+        case LESS_THAN:
+        	taskQuery.processVariableValueLessThan(variable.getName(), actualValue);
+        	break;
+        	
+        case LESS_THAN_OR_EQUALS:
+        	taskQuery.processVariableValueLessThanOrEqual(variable.getName(), actualValue);
+        	break;
+        	
+        case LIKE:
+        	if (actualValue instanceof String) {
+        		taskQuery.processVariableValueLike(variable.getName(), (String) actualValue);
+        	} else {
+        		throw new ActivitiIllegalArgumentException("Only string variable values are supported using like, but was: " + actualValue.getClass().getName());
+        	}
+        	break;
+        	
+        default:
+          throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
       }
     }
   }
@@ -437,14 +449,8 @@ switch(variable.getVariableOperation()) {
   /**
    * Get valid task from request. Throws exception if task doen't exist or if task id is not provided.
    */
-  protected Task getTaskFromRequest() {
-    String taskId = getAttribute("taskId");
-    
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
-    }
-    
-    Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+  protected Task getTaskFromRequest(String taskId) {
+    Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
     if (task == null) {
       throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
     }
@@ -454,14 +460,8 @@ switch(variable.getVariableOperation()) {
   /**
    * Get valid history task from request. Throws exception if task doen't exist or if task id is not provided.
    */
-  protected HistoricTaskInstance getHistoricTaskFromRequest() {
-    String taskId = getAttribute("taskId");
-    
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
-    }
-    
-    HistoricTaskInstance task = ActivitiUtil.getHistoryService().createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+  protected HistoricTaskInstance getHistoricTaskFromRequest(String taskId) {
+    HistoricTaskInstance task = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
     if (task == null) {
       throw new ActivitiObjectNotFoundException("Could not find a task with id '" + taskId + "'.", Task.class);
     }

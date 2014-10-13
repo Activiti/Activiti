@@ -1,12 +1,11 @@
 package org.activiti.rest.service.api.management;
 
 import org.activiti.engine.management.TableMetaData;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -16,8 +15,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
  * 
  * @author Frederik Heremans
  */
-public class TableColumnsResourceTest extends BaseRestTestCase {
-
+public class TableColumnsResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting a single table's columns. 
@@ -28,12 +26,11 @@ public class TableColumnsResourceTest extends BaseRestTestCase {
     
     TableMetaData metaData = managementService.getTableMetaData(tableName);
 
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_COLUMNS, tableName));
-    Representation response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_COLUMNS, tableName)), HttpStatus.SC_OK);
+    
     // Check table
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(tableName, responseNode.get("tableName").textValue());
     
@@ -52,13 +49,7 @@ public class TableColumnsResourceTest extends BaseRestTestCase {
   }
   
   public void testGetColumnsForUnexistingTable() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_COLUMNS, "unexisting"));
-    try {
-      client.get();
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a table with name 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_COLUMNS, "unexisting")), HttpStatus.SC_NOT_FOUND);
   }
 }

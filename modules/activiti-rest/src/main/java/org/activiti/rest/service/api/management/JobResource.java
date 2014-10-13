@@ -13,86 +13,76 @@
 
 package org.activiti.rest.service.api.management;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.runtime.Job;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestActionRequest;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
-public class JobResource extends SecuredResource {
+@RestController
+public class JobResource {
 
   private static final String EXECUTE_ACTION = "execute";
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected ManagementService managementService;
 
-  @Get
-  public JobResponse getJob() {
-    if (authenticate() == false)
-      return null;
-
-    Job job = getJobFromResponse();
-
-    JobResponse response = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createJobResponse(this, job);
+  @RequestMapping(value="/management/jobs/{jobId}", method = RequestMethod.GET, produces = "application/json")
+  public JobResponse getJob(@PathVariable String jobId, HttpServletRequest request) {
+    Job job = getJobFromResponse(jobId);
+    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/management/jobs/"));
+    JobResponse response = restResponseFactory.createJobResponse(job, serverRootUrl);
     return response;
   }
 
-  @Delete
-  public void deleteJob() {
-    if (authenticate() == false)
-      return;
-    
-    String jobId = getAttribute("jobId");
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("The jobId cannot be null");
-    }
+  @RequestMapping(value="/management/jobs/{jobId}", method = RequestMethod.DELETE)
+  public void deleteJob(@PathVariable String jobId, HttpServletResponse response) {
     try {
-      ActivitiUtil.getManagementService().deleteJob(jobId);
+      managementService.deleteJob(jobId);
     } catch(ActivitiObjectNotFoundException aonfe) {
       // Re-throw to have consistent error-messaging acrosse REST-api
       throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class); 
     }
-    setStatus(Status.SUCCESS_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
-  @Post
-  public void executeJobAction(RestActionRequest actionRequest) {
-    if (authenticate() == false)
-      return;
-    
-    String jobId = getAttribute("jobId");
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("The jobId cannot be null");
-    }
-    
-    if(actionRequest == null || ! EXECUTE_ACTION.equals(actionRequest.getAction())) {
+  @RequestMapping(value="/management/jobs/{jobId}", method = RequestMethod.POST)
+  public void executeJobAction(@PathVariable String jobId, @RequestBody RestActionRequest actionRequest, HttpServletResponse response) { 
+    if (actionRequest == null || ! EXECUTE_ACTION.equals(actionRequest.getAction())) {
       throw new ActivitiIllegalArgumentException("Invalid action, only 'execute' is supported.");
     }
     
     try {
-      ActivitiUtil.getManagementService().executeJob(jobId);
+      managementService.executeJob(jobId);
     } catch(ActivitiObjectNotFoundException aonfe) {
       // Re-throw to have consistent error-messaging acrosse REST-api
       throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class); 
     }
     
-    setStatus(Status.SUCCESS_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 
-  protected Job getJobFromResponse() {
-    String jobId = getAttribute("jobId");
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("The jobId cannot be null");
-    }
-
-    Job job = ActivitiUtil.getManagementService().createJobQuery().jobId(jobId).singleResult();
+  protected Job getJobFromResponse(String jobId) {
+    Job job = managementService.createJobQuery().jobId(jobId).singleResult();
 
     if (job == null) {
       throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);

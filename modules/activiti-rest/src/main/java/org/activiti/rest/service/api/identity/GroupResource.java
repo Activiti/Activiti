@@ -13,55 +13,56 @@
 
 package org.activiti.rest.service.api.identity;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.identity.Group;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
-import org.restlet.resource.Put;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class GroupResource extends BaseGroupResource {
 
-  @Get
-  public GroupResponse getUser() {
-    if(!authenticate())
-      return null;
-    
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createGroupResponse(this, getGroupFromRequest());
+  @RequestMapping(value="/identity/groups/{groupId}", method = RequestMethod.GET, produces = "application/json")
+  public GroupResponse getGroup(@PathVariable String groupId, HttpServletRequest request) {
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/groups/"));
+    return restResponseFactory.createGroupResponse(getGroupFromRequest(groupId), serverRootUrl);
   }
   
-  @Put
-  public GroupResponse updateGroup(GroupRequest request) {
-  	if(authenticate() == false) return null;
-    Group group = getGroupFromRequest();
+  @RequestMapping(value="/identity/groups/{groupId}", method = RequestMethod.PUT, produces = "application/json")
+  public GroupResponse updateGroup(@PathVariable String groupId, @RequestBody GroupRequest groupRequest, HttpServletRequest request) {
+    Group group = getGroupFromRequest(groupId);
 
-    if(request.getId() == null || request.getId().equals(group.getId())) {
-      if(request.isNameChanged()) {
-        group.setName(request.getName());
+    if (groupRequest.getId() == null || groupRequest.getId().equals(group.getId())) {
+      if (groupRequest.isNameChanged()) {
+        group.setName(groupRequest.getName());
       }
-      if(request.isTypeChanged()) {
-        group.setType(request.getType());
+      if (groupRequest.isTypeChanged()) {
+        group.setType(groupRequest.getType());
       }
-      ActivitiUtil.getIdentityService().saveGroup(group);
+      identityService.saveGroup(group);
     } else {
       throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
     }
     
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createGroupResponse(this, group);
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/groups/"));
+    return restResponseFactory.createGroupResponse(group, serverRootUrl);
   }
   
-  @Delete
-  public void deleteGroup() {
-  	if(authenticate() == false) return;
-    Group group = getGroupFromRequest();
-    ActivitiUtil.getIdentityService().deleteGroup(group.getId());
-    setStatus(Status.SUCCESS_NO_CONTENT);
+  @RequestMapping(value="/identity/groups/{groupId}", method = RequestMethod.DELETE)
+  public void deleteGroup(@PathVariable String groupId, HttpServletResponse response) {
+  	Group group = getGroupFromRequest(groupId);
+    identityService.deleteGroup(group.getId());
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

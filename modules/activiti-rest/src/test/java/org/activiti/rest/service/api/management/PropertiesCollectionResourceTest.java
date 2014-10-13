@@ -3,11 +3,11 @@ package org.activiti.rest.service.api.management;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -17,20 +17,19 @@ import com.fasterxml.jackson.databind.JsonNode;
  * 
  * @author Frederik Heremans
  */
-public class PropertiesCollectionResourceTest extends BaseRestTestCase {
+public class PropertiesCollectionResourceTest extends BaseSpringRestTestCase {
 
   
   /**
    * Test getting the engine properties.
    */
   public void testGetProperties() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROPERTIES_COLLECTION));
-    Representation response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROPERTIES_COLLECTION)), HttpStatus.SC_OK);
     
     Map<String, String> properties = managementService.getProperties();
     
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(properties.size(), responseNode.size());
     

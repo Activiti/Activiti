@@ -15,115 +15,92 @@ package org.activiti.rest.service.api.runtime.task;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Form;
-import org.restlet.data.Status;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
-import org.restlet.resource.ResourceException;
+import org.activiti.rest.common.api.RequestUtil;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author Frederik Heremans
+ * @author Tijs Rademakers
  */
+@RestController
 public class TaskCollectionResource extends TaskBaseResource {
-
-  @Post
-  public TaskResponse createTask(TaskRequest taskRequest) {
-    if (!authenticate()) { return null; }
-    
-    if (taskRequest == null) {
-      throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(),
-              "A request body was expected when creating the task.", null, null));
-    }
-    
-    Task task = ActivitiUtil.getTaskService().newTask();
-
-    // Populate the task properties based on the request
-    populateTaskFromRequest(task, taskRequest);
-    if (taskRequest.isTenantIdSet()) {
-      ((TaskEntity) task).setTenantId(taskRequest.getTenantId());
-    }
-    ActivitiUtil.getTaskService().saveTask(task);
-
-    setStatus(Status.SUCCESS_CREATED);
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createTaskResponse(this, task);
-  }
-  
-  @Get("json")
-  public DataResponse getTasks() {
-    if(!authenticate()) { return null; }
-    
+ 
+  @RequestMapping(value="/runtime/tasks", method = RequestMethod.GET, produces="application/json")
+  public DataResponse getTasks(@RequestParam Map<String, String> requestParams, HttpServletRequest httpRequest) {
     // Create a Task query request
     TaskQueryRequest request = new TaskQueryRequest();
-    Form query = getQuery();
-    Set<String> names = query.getNames();
     
     // Populate filter-parameters
-    if(names.contains("name")) {
-      request.setName(getQueryParameter("name", query));
+    if (requestParams.containsKey("name")) {
+      request.setName(requestParams.get("name"));
     }
     
-    if(names.contains("nameLike")) {
-      request.setNameLike(getQueryParameter("nameLike", query));
+    if (requestParams.containsKey("nameLike")) {
+      request.setNameLike(requestParams.get("nameLike"));
     }
     
-    if(names.contains("description")) {
-      request.setDescription(getQueryParameter("description", query));
+    if (requestParams.containsKey("description")) {
+      request.setDescription(requestParams.get("description"));
     }
     
-    if(names.contains("descriptionLike")) {
-      request.setDescriptionLike(getQueryParameter("descriptionLike", query));
+    if (requestParams.containsKey("descriptionLike")) {
+      request.setDescriptionLike(requestParams.get("descriptionLike"));
     }
     
-    if(names.contains("priority")) {
-      request.setPriority(getQueryParameterAsInt("priority", query));
+    if (requestParams.containsKey("priority")) {
+      request.setPriority(Integer.valueOf(requestParams.get("priority")));
     }
     
-    if(names.contains("minimumPriority")) {
-      request.setMinimumPriority(getQueryParameterAsInt("minimumPriority", query));
+    if (requestParams.containsKey("minimumPriority")) {
+      request.setMinimumPriority(Integer.valueOf(requestParams.get("minimumPriority")));
     }
     
-    if(names.contains("maximumPriority")) {
-      request.setMaximumPriority(getQueryParameterAsInt("maximumPriority", query));
+    if (requestParams.containsKey("maximumPriority")) {
+      request.setMaximumPriority(Integer.valueOf(requestParams.get("maximumPriority")));
     }
     
-    if(names.contains("assignee")) {
-      request.setAssignee(getQueryParameter("assignee", query));
+    if (requestParams.containsKey("assignee")) {
+      request.setAssignee(requestParams.get("assignee"));
     }
     
-    if(names.contains("owner")) {
-      request.setOwner(getQueryParameter("owner", query));
+    if (requestParams.containsKey("owner")) {
+      request.setOwner(requestParams.get("owner"));
     }
     
-    if(names.contains("unassigned")) {
-      request.setUnassigned(getQueryParameterAsBoolean("unassigned", query));
+    if (requestParams.containsKey("unassigned")) {
+      request.setUnassigned(Boolean.valueOf(requestParams.get("unassigned")));
     }
     
-    if(names.contains("delegationState")) {
-      request.setDelegationState(getQueryParameter("delegationState", query));
+    if (requestParams.containsKey("delegationState")) {
+      request.setDelegationState(requestParams.get("delegationState"));
     }
     
-    if(names.contains("candidateUser")) {
-      request.setCandidateUser(getQueryParameter("candidateUser", query));
+    if (requestParams.containsKey("candidateUser")) {
+      request.setCandidateUser(requestParams.get("candidateUser"));
     }
     
-    if(names.contains("involvedUser")) {
-      request.setInvolvedUser(getQueryParameter("involvedUser", query));
+    if (requestParams.containsKey("involvedUser")) {
+      request.setInvolvedUser(requestParams.get("involvedUser"));
     }
     
-    if(names.contains("candidateGroup")) {
-      request.setCandidateGroup(getQueryParameter("candidateGroup", query));
+    if (requestParams.containsKey("candidateGroup")) {
+      request.setCandidateGroup(requestParams.get("candidateGroup"));
     }
 
-    if(names.contains("candidateGroups")) {
-      String[] candidateGroups = getQueryParameter("candidateGroups", query).split(",");
+    if (requestParams.containsKey("candidateGroups")) {
+      String[] candidateGroups = requestParams.get("candidateGroups").split(",");
       List<String> groups = new ArrayList<String>(candidateGroups.length);
       for (String candidateGroup : candidateGroups) {
         groups.add(candidateGroup);
@@ -131,98 +108,116 @@ public class TaskCollectionResource extends TaskBaseResource {
       request.setCandidateGroupIn(groups);
     }
     
-    if(names.contains("processDefinitionKey")) {
-      request.setProcessDefinitionKey(getQueryParameter("processDefinitionKey", query));
+    if (requestParams.containsKey("processDefinitionKey")) {
+      request.setProcessDefinitionKey(requestParams.get("processDefinitionKey"));
     }
     
-    if(names.contains("processDefinitionKeyLike")) {
-    	request.setProcessDefinitionKeyLike(getQueryParameter("processDefinitionKeyLike", query));
+    if (requestParams.containsKey("processDefinitionKeyLike")) {
+    	request.setProcessDefinitionKeyLike(requestParams.get("processDefinitionKeyLike"));
     }
     
-    if(names.contains("processDefinitionName")) {
-    	request.setProcessDefinitionName(getQueryParameter("processDefinitionName", query));
+    if (requestParams.containsKey("processDefinitionName")) {
+    	request.setProcessDefinitionName(requestParams.get("processDefinitionName"));
     }
     
-    if(names.contains("processDefinitionNameLike")) {
-    	request.setProcessDefinitionNameLike(getQueryParameter("processDefinitionNameLike", query));
+    if (requestParams.containsKey("processDefinitionNameLike")) {
+    	request.setProcessDefinitionNameLike(requestParams.get("processDefinitionNameLike"));
     }
     
-    if(names.contains("processInstanceId")) {
-      request.setProcessInstanceId(getQueryParameter("processInstanceId", query));
+    if (requestParams.containsKey("processInstanceId")) {
+      request.setProcessInstanceId(requestParams.get("processInstanceId"));
     }
     
-    if(names.contains("processInstanceBusinessKey")) {
-      request.setProcessInstanceBusinessKey(getQueryParameter("processInstanceBusinessKey", query));
+    if (requestParams.containsKey("processInstanceBusinessKey")) {
+      request.setProcessInstanceBusinessKey(requestParams.get("processInstanceBusinessKey"));
     }
     
-    if(names.contains("executionId")) {
-      request.setExecutionId(getQueryParameter("executionId", query));
+    if (requestParams.containsKey("executionId")) {
+      request.setExecutionId(requestParams.get("executionId"));
     }
     
-    if(names.contains("createdOn")) {
-      request.setCreatedOn(getQueryParameterAsDate("createdOn", query));
+    if (requestParams.containsKey("createdOn")) {
+      request.setCreatedOn(RequestUtil.getDate(requestParams, "createdOn"));
     }
     
-    if(names.contains("createdBefore")) {
-      request.setCreatedBefore(getQueryParameterAsDate("createdBefore", query));
+    if (requestParams.containsKey("createdBefore")) {
+      request.setCreatedBefore(RequestUtil.getDate(requestParams, "createdBefore"));
     }
     
-    if(names.contains("createdAfter")) {
-      request.setCreatedAfter(getQueryParameterAsDate("createdAfter", query));
+    if (requestParams.containsKey("createdAfter")) {
+      request.setCreatedAfter(RequestUtil.getDate(requestParams, "createdAfter"));
     }
     
-    if(names.contains("excludeSubTasks")) {
-      request.setExcludeSubTasks(getQueryParameterAsBoolean("excludeSubTasks", query));
+    if (requestParams.containsKey("excludeSubTasks")) {
+      request.setExcludeSubTasks(Boolean.valueOf(requestParams.get("excludeSubTasks")));
     }
     
-    if(names.contains("taskDefinitionKey")) {
-      request.setTaskDefinitionKey(getQueryParameter("taskDefinitionKey", query));
+    if (requestParams.containsKey("taskDefinitionKey")) {
+      request.setTaskDefinitionKey(requestParams.get("taskDefinitionKey"));
     }
     
-    if(names.contains("taskDefinitionKeyLike")) {
-      request.setTaskDefinitionKeyLike(getQueryParameter("taskDefinitionKeyLike", query));
+    if (requestParams.containsKey("taskDefinitionKeyLike")) {
+      request.setTaskDefinitionKeyLike(requestParams.get("taskDefinitionKeyLike"));
     }
     
-    if(names.contains("dueDate")) {
-      request.setDueDate(getQueryParameterAsDate("dueDate", query));
+    if (requestParams.containsKey("dueDate")) {
+      request.setDueDate(RequestUtil.getDate(requestParams, "dueDate"));
     }
     
-    if(names.contains("dueBefore")) {
-      request.setDueBefore(getQueryParameterAsDate("dueBefore", query));
+    if (requestParams.containsKey("dueBefore")) {
+      request.setDueBefore(RequestUtil.getDate(requestParams, "dueBefore"));
     }
     
-    if(names.contains("dueAfter")) {
-      request.setDueAfter(getQueryParameterAsDate("dueAfter", query));
+    if (requestParams.containsKey("dueAfter")) {
+      request.setDueAfter(RequestUtil.getDate(requestParams, "dueAfter"));
     }
     
-    if(names.contains("active")) {
-      request.setActive(getQueryParameterAsBoolean("active", query));
+    if (requestParams.containsKey("active")) {
+      request.setActive(Boolean.valueOf(requestParams.get("active")));
     }
     
-    if(names.contains("includeTaskLocalVariables")) {
-      request.setIncludeTaskLocalVariables(getQueryParameterAsBoolean("includeTaskLocalVariables", query));
+    if (requestParams.containsKey("includeTaskLocalVariables")) {
+      request.setIncludeTaskLocalVariables(Boolean.valueOf(requestParams.get("includeTaskLocalVariables")));
     }
     
-    if(names.contains("includeProcessVariables")) {
-      request.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", query));
+    if (requestParams.containsKey("includeProcessVariables")) {
+      request.setIncludeProcessVariables(Boolean.valueOf(requestParams.get("includeProcessVariables")));
     }
     
-    if(names.contains("tenantId")) {
-      request.setTenantId(getQueryParameter("tenantId", query));
+    if (requestParams.containsKey("tenantId")) {
+      request.setTenantId(requestParams.get("tenantId"));
     }
     
-    if(names.contains("tenantIdLike")) {
-    	request.setTenantIdLike(getQueryParameter("tenantIdLike", query));
+    if (requestParams.containsKey("tenantIdLike")) {
+    	request.setTenantIdLike(requestParams.get("tenantIdLike"));
     }
     
-    if(names.contains("withoutTenantId") && Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", query))) {
+    if (requestParams.containsKey("withoutTenantId") && Boolean.valueOf(requestParams.get("withoutTenantId"))) {
     	request.setWithoutTenantId(Boolean.TRUE);
     }
 
-    if(names.contains("candidateOrAssigned")) {
-      request.setCandidateOrAssigned(getQueryParameter("candidateOrAssigned", query));
+    if (requestParams.containsKey("candidateOrAssigned")) {
+      request.setCandidateOrAssigned(requestParams.get("candidateOrAssigned"));
     }
     
-    return getTasksFromQueryRequest(request);
+    return getTasksFromQueryRequest(request, requestParams, 
+        httpRequest.getRequestURL().toString().replace("/runtime/tasks", ""));
+  }
+  
+  @RequestMapping(value="/runtime/tasks", method = RequestMethod.POST, produces="application/json")
+  public TaskResponse createTask(@RequestBody TaskRequest taskRequest, 
+      HttpServletRequest request, HttpServletResponse response) {
+    
+    Task task = taskService.newTask();
+
+    // Populate the task properties based on the request
+    populateTaskFromRequest(task, taskRequest);
+    if (taskRequest.isTenantIdSet()) {
+      ((TaskEntity) task).setTenantId(taskRequest.getTenantId());
+    }
+    taskService.saveTask(task);
+
+    response.setStatus(HttpStatus.CREATED.value());
+    return restResponseFactory.createTaskResponse(task, request.getRequestURL().toString().replace("/runtime/tasks", ""));
   }
 }

@@ -14,7 +14,7 @@
            #{key, jdbcType=VARCHAR}, 
            #{category, jdbcType=VARCHAR}, 
            #{createTime, jdbcType=TIMESTAMP},
-           #{createTime, jdbcType=TIMESTAMP},
+           #{lastUpdateTime, jdbcType=TIMESTAMP},
            #{version, jdbcType=INTEGER}, 
            #{metaInfo, jdbcType=VARCHAR}, 
            #{deploymentId, jdbcType=VARCHAR},

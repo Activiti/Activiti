@@ -14,47 +14,48 @@
 package org.activiti.rest.service.api.history;
 
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.activiti.rest.common.api.DataResponse;
-import org.restlet.data.Form;
-import org.restlet.resource.Get;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Tijs Rademakers
  */
+@RestController
 public class HistoricVariableInstanceCollectionResource extends HistoricVariableInstanceBaseResource {
 
-  @Get("json")
-  public DataResponse getHistoricActivityInstances() {
-    if(!authenticate()) {
-      return null;
-    }
-    Form urlQuery = getQuery();
-    
+  @RequestMapping(value="/history/historic-variable-instances", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getHistoricActivityInstances(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
     HistoricVariableInstanceQueryRequest query = new HistoricVariableInstanceQueryRequest();
 
     // Populate query based on request
-    if (getQueryParameter("excludeTaskVariables", urlQuery) != null) {
-      Boolean excludeTaskVariables = getQueryParameterAsBoolean("excludeTaskVariables", urlQuery);
-      query.setExcludeTaskVariables(excludeTaskVariables);
+    if (allRequestParams.get("excludeTaskVariables") != null) {
+      query.setExcludeTaskVariables(Boolean.valueOf(allRequestParams.get("excludeTaskVariables")));
     }
     
-    if (getQueryParameter("taskId", urlQuery) != null) {
-      query.setTaskId(getQueryParameter("taskId", urlQuery));
+    if (allRequestParams.get("taskId") != null) {
+      query.setTaskId(allRequestParams.get("taskId"));
     }
     
-    if (getQueryParameter("processInstanceId", urlQuery) != null) {
-      query.setProcessInstanceId(getQueryParameter("processInstanceId", urlQuery));
+    if (allRequestParams.get("processInstanceId") != null) {
+      query.setProcessInstanceId(allRequestParams.get("processInstanceId"));
     }
     
-    if (getQueryParameter("variableName", urlQuery) != null) {
-      query.setVariableName(getQueryParameter("variableName", urlQuery));
+    if (allRequestParams.get("variableName") != null) {
+      query.setVariableName(allRequestParams.get("variableName"));
     }
     
-    if (getQueryParameter("variableNameLike", urlQuery) != null) {
-      query.setVariableNameLike(getQueryParameter("variableNameLike", urlQuery));
+    if (allRequestParams.get("variableNameLike") != null) {
+      query.setVariableNameLike(allRequestParams.get("variableNameLike"));
     }
     
-    return getQueryResponse(query, urlQuery);
+    return getQueryResponse(query, allRequestParams, request.getRequestURL().toString().replace("/history/historic-variable-instances", ""));
   }
 }

@@ -14,94 +14,97 @@
 package org.activiti.rest.service.api.history;
 
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.activiti.rest.common.api.DataResponse;
-import org.restlet.data.Form;
-import org.restlet.resource.Get;
+import org.activiti.rest.common.api.RequestUtil;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Tijs Rademakers
  */
+@RestController
 public class HistoricProcessInstanceCollectionResource extends HistoricProcessInstanceBaseResource {
 
-  @Get("json")
-  public DataResponse getHistoricProcessInstances() {
-    if(!authenticate()) {
-      return null;
-    }
-    Form urlQuery = getQuery();
-   
+  @RequestMapping(value="/history/historic-process-instances", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getHistoricProcessInstances(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
     // Populate query based on request
     HistoricProcessInstanceQueryRequest queryRequest = new HistoricProcessInstanceQueryRequest();
     
-    if(getQueryParameter("processInstanceId", urlQuery) != null) {
-      queryRequest.setProcessInstanceId(getQueryParameter("processInstanceId", urlQuery));
+    if (allRequestParams.get("processInstanceId") != null) {
+      queryRequest.setProcessInstanceId(allRequestParams.get("processInstanceId"));
     }
     
-    if(getQueryParameter("processDefinitionKey", urlQuery) != null) {
-      queryRequest.setProcessDefinitionKey(getQueryParameter("processDefinitionKey", urlQuery));
+    if (allRequestParams.get("processDefinitionKey") != null) {
+      queryRequest.setProcessDefinitionKey(allRequestParams.get("processDefinitionKey"));
     }
     
-    if(getQueryParameter("processDefinitionId", urlQuery) != null) {
-      queryRequest.setProcessDefinitionId(getQueryParameter("processDefinitionId", urlQuery));
+    if (allRequestParams.get("processDefinitionId") != null) {
+      queryRequest.setProcessDefinitionId(allRequestParams.get("processDefinitionId"));
     }
     
-    if(getQueryParameter("businessKey", urlQuery) != null) {
-      queryRequest.setProcessBusinessKey(getQueryParameter("businessKey", urlQuery));
+    if (allRequestParams.get("businessKey") != null) {
+      queryRequest.setProcessBusinessKey(allRequestParams.get("businessKey"));
     }
     
-    if(getQueryParameter("involvedUser", urlQuery) != null) {
-      queryRequest.setInvolvedUser(getQueryParameter("involvedUser", urlQuery));
+    if (allRequestParams.get("involvedUser") != null) {
+      queryRequest.setInvolvedUser(allRequestParams.get("involvedUser"));
     }
     
-    if(getQueryParameter("finished", urlQuery) != null) {
-      queryRequest.setFinished(getQueryParameterAsBoolean("finished", urlQuery));
+    if (allRequestParams.get("finished") != null) {
+      queryRequest.setFinished(Boolean.valueOf(allRequestParams.get("finished")));
     }
     
-    if(getQueryParameter("superProcessInstanceId", urlQuery) != null) {
-      queryRequest.setSuperProcessInstanceId(getQueryParameter("superProcessInstanceId", urlQuery));
+    if (allRequestParams.get("superProcessInstanceId") != null) {
+      queryRequest.setSuperProcessInstanceId(allRequestParams.get("superProcessInstanceId"));
     }
     
-    if(getQueryParameter("excludeSubprocesses", urlQuery) != null) {
-      queryRequest.setExcludeSubprocesses(getQueryParameterAsBoolean("excludeSubprocesses", urlQuery));
+    if (allRequestParams.get("excludeSubprocesses") != null) {
+      queryRequest.setExcludeSubprocesses(Boolean.valueOf(allRequestParams.get("excludeSubprocesses")));
     }
     
-    if(getQueryParameter("finishedAfter", urlQuery) != null) {
-      queryRequest.setFinishedAfter(getQueryParameterAsDate("finishedAfter", urlQuery));
+    if (allRequestParams.get("finishedAfter") != null) {
+      queryRequest.setFinishedAfter(RequestUtil.getDate(allRequestParams, "finishedAfter"));
     }
     
-    if(getQueryParameter("finishedBefore", urlQuery) != null) {
-      queryRequest.setFinishedBefore(getQueryParameterAsDate("finishedBefore", urlQuery));
+    if (allRequestParams.get("finishedBefore") != null) {
+      queryRequest.setFinishedBefore(RequestUtil.getDate(allRequestParams, "finishedBefore"));
     }
     
-    if(getQueryParameter("startedAfter", urlQuery) != null) {
-      queryRequest.setStartedAfter(getQueryParameterAsDate("startedAfter", urlQuery));
+    if (allRequestParams.get("startedAfter") != null) {
+      queryRequest.setStartedAfter(RequestUtil.getDate(allRequestParams, "startedAfter"));
     }
     
-    if(getQueryParameter("startedBefore", urlQuery) != null) {
-      queryRequest.setStartedBefore(getQueryParameterAsDate("startedBefore", urlQuery));
+    if (allRequestParams.get("startedBefore") != null) {
+      queryRequest.setStartedBefore(RequestUtil.getDate(allRequestParams, "startedBefore"));
     }
     
-    if(getQueryParameter("startedBy", urlQuery) != null) {
-      queryRequest.setStartedBy(getQueryParameter("startedBy", urlQuery));
+    if (allRequestParams.get("startedBy") != null) {
+      queryRequest.setStartedBy(allRequestParams.get("startedBy"));
     }
     
-    if(getQueryParameter("includeProcessVariables", urlQuery) != null) {
-      queryRequest.setIncludeProcessVariables(getQueryParameterAsBoolean("includeProcessVariables", urlQuery));
+    if (allRequestParams.get("includeProcessVariables") != null) {
+      queryRequest.setIncludeProcessVariables(Boolean.valueOf(allRequestParams.get("includeProcessVariables")));
     }
     
-    if(getQueryParameter("tenantId", urlQuery) != null) {
-      queryRequest.setTenantId(getQueryParameter("tenantId", urlQuery));
+    if (allRequestParams.get("tenantId") != null) {
+      queryRequest.setTenantId(allRequestParams.get("tenantId"));
     }
     
-    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
-    	queryRequest.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    if (allRequestParams.get("tenantIdLike") != null) {
+    	queryRequest.setTenantIdLike(allRequestParams.get("tenantIdLike"));
     }
     
-    if(getQueryParameter("withoutTenantId", urlQuery) != null) {
-    	queryRequest.setWithoutTenantId(getQueryParameterAsBoolean("withoutTenantId", urlQuery));
+    if (allRequestParams.get("withoutTenantId") != null) {
+    	queryRequest.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
     }
     
-    return getQueryResponse(queryRequest, urlQuery);
+    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/history/historic-process-instances", ""));
   }
 }

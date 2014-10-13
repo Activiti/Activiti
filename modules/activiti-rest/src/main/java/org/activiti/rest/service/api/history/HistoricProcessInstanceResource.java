@@ -13,51 +13,49 @@
 
 package org.activiti.rest.service.api.history;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricProcessInstance;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Tijs Rademakers
  */
-public class HistoricProcessInstanceResource extends SecuredResource {
+@RestController
+public class HistoricProcessInstanceResource {
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected HistoryService historyService;
 
-  @Get
-  public HistoricProcessInstanceResponse getProcessInstance() {
-    if(!authenticate()) {
-      return null;
-    }
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createHistoricProcessInstanceResponse(this, getHistoricProcessInstanceFromRequest());
+  @RequestMapping(value="/history/historic-process-instances/{processInstanceId}", method = RequestMethod.GET, produces = "application/json")
+  public HistoricProcessInstanceResponse getProcessInstance(@PathVariable String processInstanceId, HttpServletRequest request) {
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-process-instances/"));
+    return restResponseFactory.createHistoricProcessInstanceResponse(
+        getHistoricProcessInstanceFromRequest(processInstanceId), serverRootUrl);
   }
   
-  @Delete
-  public void deleteProcessInstance() {
-    if(!authenticate()) {
-      return;
-    }
-    
-    String processInstanceId = getAttribute("processInstanceId");
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("The processInstanceId cannot be null");
-    }
-    
-    ActivitiUtil.getHistoryService().deleteHistoricProcessInstance(processInstanceId);
+  @RequestMapping(value="/history/historic-process-instances/{processInstanceId}", method = RequestMethod.DELETE)
+  public void deleteProcessInstance(@PathVariable String processInstanceId, HttpServletResponse response) {
+    historyService.deleteHistoricProcessInstance(processInstanceId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
-  protected HistoricProcessInstance getHistoricProcessInstanceFromRequest() {
-    String processInstanceId = getAttribute("processInstanceId");
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("The processInstanceId cannot be null");
-    }
-    
-    HistoricProcessInstance processInstance = ActivitiUtil.getHistoryService().createHistoricProcessInstanceQuery()
+  protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
+    HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery()
            .processInstanceId(processInstanceId).singleResult();
     if (processInstance == null) {
       throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
