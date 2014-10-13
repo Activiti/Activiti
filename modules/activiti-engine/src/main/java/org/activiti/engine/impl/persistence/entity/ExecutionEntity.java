@@ -1146,7 +1146,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return (Long) Context
       .getCommandContext()
       .getVariableInstanceEntityManager()
-      .variablesCount(id);
+      .variablesCountExecution(id);
   }
 
   @Override

@@ -941,7 +941,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
       return (Long) Context
         .getCommandContext()
         .getVariableInstanceEntityManager()
-        .variablesCount(id);
+        .variablesCountTask(id);
   }
 
 }

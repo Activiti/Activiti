@@ -36,9 +36,15 @@ public class VariableInstanceEntityManager extends AbstractManager {
   }
 
   @SuppressWarnings("unchecked")
-  public Long variablesCount(String executionId) {
-    return (Long) getDbSqlSession().selectOne("selectVariablesCount", executionId);
+  public Long variablesCountExecution(String executionId) {
+    return (Long) getDbSqlSession().selectOne("selectVariablesCountExecution", executionId);
   }
+  
+  @SuppressWarnings("unchecked")
+  public Long variablesCountTask(String taskId) {
+    return (Long) getDbSqlSession().selectOne("selectVariablesCountTask", taskId);
+  }
+  
 
   @SuppressWarnings("unchecked")
   public VariableInstanceEntity findVariableInstanceByExecutionAndName(String executionId, String variableName) {
