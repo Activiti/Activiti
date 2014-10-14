@@ -57,9 +57,6 @@
 			<fileset dir="../modules/activiti-spring/target">
 				<include name="activiti-spring-*.jar" />
 			</fileset>
-			<fileset dir="../modules/activiti-spring-boot/target">
-				<include name="activiti-spring-boot-*.jar" />
-			</fileset>
 			<fileset dir="../modules/activiti-bpmn-model/target">
 				<include name="activiti-bpmn-model-*.jar" />
 			</fileset>
