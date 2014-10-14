@@ -14,21 +14,26 @@ package org.activiti.rest.editor.main;
 
 import java.io.InputStream;
 
-import org.restlet.data.MediaType;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get;
-import org.restlet.resource.ServerResource;
+import org.activiti.engine.ActivitiException;
+import org.apache.commons.io.IOUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Tijs Rademakers
  */
-public class StencilsetRestResource extends ServerResource {
+@RestController
+public class StencilsetRestResource {
   
-  @Get
-  public InputRepresentation getStencilset() {
+  @RequestMapping(value="/editor/stencilset", method = RequestMethod.GET, produces = "application/json")
+  public @ResponseBody String getStencilset() {
     InputStream stencilsetStream = this.getClass().getClassLoader().getResourceAsStream("stencilset.json");
-    InputRepresentation stencilsetResultRepresentation = new InputRepresentation(stencilsetStream);
-    stencilsetResultRepresentation.setMediaType(MediaType.APPLICATION_JSON);
-    return stencilsetResultRepresentation;
+    try {
+      return IOUtils.toString(stencilsetStream);
+    } catch (Exception e) {
+      throw new ActivitiException("Error while loading stencil set", e);
+    }
   }
 }

@@ -746,7 +746,6 @@
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-spring</module>
-        <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-mule</module>
         <module>modules/activiti-camel</module>
@@ -800,7 +799,6 @@
       <id>check</id>
       <modules>
         <module>modules/activiti-spring</module>
-        <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
@@ -863,7 +861,6 @@
       <id>distro</id>
       <modules>
         <module>modules/activiti-spring</module>
-        <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
         <module>modules/activiti-image-generator</module>
@@ -910,7 +907,6 @@
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
         <module>modules/activiti-spring</module>
-        <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-explorer</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>

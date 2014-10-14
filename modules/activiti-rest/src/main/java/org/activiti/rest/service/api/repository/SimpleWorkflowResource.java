@@ -36,7 +36,7 @@ public class SimpleWorkflowResource {
   @Autowired
   protected RepositoryService repositoryService;
   
-  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/resourcedata", method = RequestMethod.POST, produces="application/json")
+  @RequestMapping(value="/simple-workflow", method = RequestMethod.POST, produces="application/json")
   public SimpleWorkflowSuccessResponse createWorkflow(@RequestBody String json) {
     // Convert json to simple workflow definition
     SimpleWorkflowJsonConverter jsonConverter = new SimpleWorkflowJsonConverter();

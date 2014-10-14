@@ -27,31 +27,31 @@ import java.io.IOException;
 @ConditionalOnClass(name = "javax.persistence.EntityManagerFactory")
 public class JpaProcessEngineAutoConfiguration {
 
-    @Configuration
-    @EnableConfigurationProperties(ActivitiProperties.class)
-    public static class JpaConfiguration
-            extends AbstractProcessEngineAutoConfiguration {
+  @Configuration
+  @EnableConfigurationProperties(ActivitiProperties.class)
+  public static class JpaConfiguration
+          extends AbstractProcessEngineAutoConfiguration {
 
 
-        @Bean
-        @ConditionalOnMissingBean
-        public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
-            return new JpaTransactionManager(emf);
-        }
-
-        @Bean
-        @ConditionalOnMissingBean
-        public SpringProcessEngineConfiguration springProcessEngineConfiguration(
-                DataSource dataSource, EntityManagerFactory entityManagerFactory,
-                PlatformTransactionManager transactionManager, SpringJobExecutor springJobExecutor) throws IOException {
-
-            SpringProcessEngineConfiguration config = this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springJobExecutor);
-            config.setJpaEntityManagerFactory(entityManagerFactory);
-            config.setTransactionManager(transactionManager);
-            config.setJpaHandleTransaction(false);
-            config.setJpaCloseEntityManager(false);
-            return config;
-        }
+    @Bean
+    @ConditionalOnMissingBean
+    public PlatformTransactionManager transactionManager(EntityManagerFactory emf) {
+      return new JpaTransactionManager(emf);
     }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public SpringProcessEngineConfiguration springProcessEngineConfiguration(
+            DataSource dataSource, EntityManagerFactory entityManagerFactory,
+            PlatformTransactionManager transactionManager, SpringJobExecutor springJobExecutor) throws IOException {
+
+      SpringProcessEngineConfiguration config = this.baseSpringProcessEngineConfiguration(dataSource, transactionManager, springJobExecutor);
+      config.setJpaEntityManagerFactory(entityManagerFactory);
+      config.setTransactionManager(transactionManager);
+      config.setJpaHandleTransaction(false);
+      config.setJpaCloseEntityManager(false);
+      return config;
+    }
+  }
 
 }

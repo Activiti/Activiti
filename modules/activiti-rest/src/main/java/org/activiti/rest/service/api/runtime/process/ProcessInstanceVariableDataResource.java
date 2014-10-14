@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Frederik Heremans
  */
 @RestController
-public class ProcessInstanceVariableDataResource extends ExecutionVariableDataResource {
+public class ProcessInstanceVariableDataResource extends BaseExecutionVariableResource {
 
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables/{variableName}/data", method = RequestMethod.GET)
   public @ResponseBody byte[] getVariableData(@PathVariable("processInstanceId") String processInstanceId, 

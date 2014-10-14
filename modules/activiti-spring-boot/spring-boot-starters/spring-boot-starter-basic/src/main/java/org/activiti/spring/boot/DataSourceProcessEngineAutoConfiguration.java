@@ -41,6 +41,7 @@ public class DataSourceProcessEngineAutoConfiguration {
                 DataSource dataSource,
                 PlatformTransactionManager transactionManager,
                 SpringJobExecutor springJobExecutor) throws IOException {
+          
             return this.baseSpringProcessEngineConfiguration(
                     dataSource, transactionManager, springJobExecutor);
         }

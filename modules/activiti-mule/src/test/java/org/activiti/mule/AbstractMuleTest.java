@@ -16,7 +16,8 @@ import org.mule.tck.junit4.FunctionalTestCase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class AbstractMuleTest extends FunctionalTestCase {
+
+public abstract class AbstractMuleTest extends FunctionalTestCase {
   
   protected static Logger log = LoggerFactory.getLogger(AbstractMuleTest.class);
   
@@ -47,7 +48,7 @@ public class AbstractMuleTest extends FunctionalTestCase {
       
       log.info("dropping and recreating db");
       
-      CommandExecutor commandExecutor = ((ProcessEngineImpl)processEngine).getProcessEngineConfiguration().getCommandExecutor();
+      CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
       CommandConfig config = new CommandConfig().transactionNotSupported();
       commandExecutor.execute(config, new Command<Object>() {
         public Object execute(CommandContext commandContext) {
