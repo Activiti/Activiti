@@ -21,7 +21,6 @@
     <spring.security.version>3.2.3.RELEASE</spring.security.version>
     <mule.version>3.5.0</mule.version>
     <cxf.version>2.6.14</cxf.version>
-    <restlet.version>2.2.1</restlet.version>
     <batik.version>1.7</batik.version>
 
     <!-- OSGi bundles properties -->
@@ -96,7 +95,6 @@
         <version>1.7.6</version>
       </dependency>
       <dependency>
-        <!-- required by Apache commons httpclient, required by restlet -->
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
         <version>1.1.1</version>
