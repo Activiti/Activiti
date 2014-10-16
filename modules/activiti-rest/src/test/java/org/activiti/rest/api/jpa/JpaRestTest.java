@@ -16,7 +16,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class JpaRestTest extends BaseJPARestTestCase {
   
-  @Test
   @Deployment(resources = {"org/activiti/rest/api/jpa/jpa-process.bpmn20.xml"})
   public void testGetJpaVariableViaTaskVariablesCollections() throws Exception {
 
@@ -49,7 +48,6 @@ public class JpaRestTest extends BaseJPARestTestCase {
     assertNotNull(responseNode.get("valueUrl"));
   }
   
-  @Test
   @Deployment(resources = {"org/activiti/rest/api/jpa/jpa-process.bpmn20.xml"})
   public void testGetJpaVariableViaTaskCollection() throws Exception {
 
@@ -86,7 +84,6 @@ public class JpaRestTest extends BaseJPARestTestCase {
     assertNotNull(variableNode.get("valueUrl"));
   }
   
-  @Test
   @Deployment(resources = {"org/activiti/rest/api/jpa/jpa-process.bpmn20.xml"})
   public void testGetJpaVariableViaHistoricProcessCollection() throws Exception {
 
@@ -122,7 +119,6 @@ public class JpaRestTest extends BaseJPARestTestCase {
     assertNotNull(variableNode.get("valueUrl"));
   }
   
-  @Test
   @Deployment(resources = {"org/activiti/rest/api/jpa/jpa-process.bpmn20.xml"})
   public void testGetJpaVariableViaHistoricVariablesCollections() throws Exception {
 

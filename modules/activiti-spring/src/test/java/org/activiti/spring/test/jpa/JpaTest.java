@@ -17,7 +17,6 @@ import java.util.Map;
 @ContextConfiguration( locations =  "JPASpringTest-context.xml")
 public class JpaTest extends SpringActivitiTestCase {
 
-    @Test
     public void testJpaVariableHappyPath() {
         before();
         Map<String, Object> variables = new HashMap<String, Object>();
@@ -54,7 +53,6 @@ public class JpaTest extends SpringActivitiTestCase {
         deleteDeployments();
     }
 
-    @Test
     public void testJpaVariableDisapprovalPath() {
 
         before();

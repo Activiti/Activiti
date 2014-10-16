@@ -47,7 +47,6 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseSpringRe
    * Test querying historic activity instance. 
    * GET history/historic-activity-instances
    */
-  @Test
   @Deployment(resources={"org/activiti/rest/service/api/twoTaskProcess.bpmn20.xml"})
   public void testQueryActivityInstances() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
