@@ -14,8 +14,8 @@
       <para>All REST-resources require a valid Activiti-user to be authenticated by default. Basic HTTP access authentication is used, so you should always include a <literal>Authorization: Basic ...==</literal> HTTP-header when performing requests or include the username and password in the request-url (eg. <literal>http://username:password@localhost...</literal>).
       </para>
       <para><emphasis role="bold">It's recommended to use Basic Authentication in combination with HTTPS.</emphasis></para>
-      
-     <section id="restUsageInTomcat">
+    </section>
+    <section id="restUsageInTomcat">
       <title>Usage in Tomcat</title>
       <para>Due to <ulink url="http://tomcat.apache.org/tomcat-7.0-doc/security-howto.html"> default security properties on Tomcat</ulink>, <emphasis role="bold">escaped forward slashes (<literal>%2F</literal> and <literal>%5C</literal>) are not allowed by default (400-result is returned).</emphasis>
       This may have an impact on the deployment resources and their data-URL, as the URL can potentially contain escaped forward slashes.
@@ -11702,6 +11702,5 @@ Only the attachment name is required to create a new attachment.
 }</programlisting>
        </para>
   </section> 
- </section>
-</section>    
+ </section>    
 </chapter>
