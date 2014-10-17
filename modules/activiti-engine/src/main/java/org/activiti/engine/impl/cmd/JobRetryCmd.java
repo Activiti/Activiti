@@ -167,4 +167,5 @@ public class JobRetryCmd implements Command<Object> {
   private ExecutionEntity fetchExecutionEntity(CommandContext commandContext, String executionId) {
     return commandContext.getExecutionEntityManager().findExecutionById(executionId);
   }
+  
 }
