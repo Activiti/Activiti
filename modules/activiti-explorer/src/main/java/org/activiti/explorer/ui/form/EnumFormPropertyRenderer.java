@@ -43,6 +43,9 @@ public class EnumFormPropertyRenderer extends AbstractFormPropertyRenderer {
     comboBox.setNullSelectionAllowed(false);
 
     Object firstItemId = null;
+    Object selectedItemId = null;
+    Object propertyValue = formProperty.getValue();
+
     Map<String, String> values = (Map<String, String>) formProperty.getType().getInformation("values");
     if (values != null) {
       for (Entry<String, String> enumEntry : values.entrySet()) {
@@ -55,12 +58,18 @@ public class EnumFormPropertyRenderer extends AbstractFormPropertyRenderer {
         
         if (enumEntry.getValue() != null) {
           comboBox.setItemCaption(enumEntry.getKey(), enumEntry.getValue());
+
+          if (propertyValue != null && enumEntry.getKey().toString().equals(propertyValue.toString())) {
+            selectedItemId = enumEntry.getKey();
+          }
         }
       }
     }
-    
-    // Select first element
-    if (firstItemId != null) {
+
+    // Select stored value
+    if (selectedItemId != null) {
+      comboBox.select(selectedItemId);
+    } else if (firstItemId != null) {
       comboBox.select(firstItemId);
     }
     
