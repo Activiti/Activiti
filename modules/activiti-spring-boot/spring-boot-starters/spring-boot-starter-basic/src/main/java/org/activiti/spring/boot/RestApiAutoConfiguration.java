@@ -15,14 +15,13 @@
  */
 package org.activiti.spring.boot;
 
-import org.activiti.rest.common.application.ContentTypeResolver;
-import org.activiti.rest.common.application.DefaultContentTypeResolver;
-import org.activiti.rest.service.api.RestResponseFactory;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+//import org.activiti.rest.common.application.ContentTypeResolver;
+//import org.activiti.rest.common.application.DefaultContentTypeResolver;
+//import org.activiti.rest.service.api.RestResponseFactory;
+//import org.springframework.context.annotation.Bean;
+//import org.springframework.context.annotation.ComponentScan;
 
 /**
  * Auto-configuration and starter for the Activiti REST APIs.
@@ -31,26 +30,26 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Josh Long
  */
 @Configuration
-@ComponentScan({"org.activiti.rest.exception", "org.activiti.rest.service.api"})
+//@ComponentScan({"org.activiti.rest.exception", "org.activiti.rest.service.api"}) // Where to put? Cannot be on class - will be triggered always instead of on condition!
 //@ConditionalOnClass(name = {"javax.servlet.http.HttpServlet"})
 public class RestApiAutoConfiguration {
 
-  @Bean()
-  public RestResponseFactory restResponseFactory() {
-    RestResponseFactory restResponseFactory = new RestResponseFactory();
-    return restResponseFactory;
-  }
-
-  @Bean()
-  public ContentTypeResolver contentTypeResolver() {
-    ContentTypeResolver resolver = new DefaultContentTypeResolver();
-    return resolver;
-  }
-  
-  @Bean()
-  public ObjectMapper objectMapper() {
-    // To avoid instantiating and configuring the mapper everywhere
-    ObjectMapper mapper = new ObjectMapper();
-    return mapper;
-  }
+//  @Bean()
+//  public RestResponseFactory restResponseFactory() {
+//    RestResponseFactory restResponseFactory = new RestResponseFactory();
+//    return restResponseFactory;
+//  }
+//
+//  @Bean()
+//  public ContentTypeResolver contentTypeResolver() {
+//    ContentTypeResolver resolver = new DefaultContentTypeResolver();
+//    return resolver;
+//  }
+//  
+//  @Bean()
+//  public ObjectMapper objectMapper() {
+//    // To avoid instantiating and configuring the mapper everywhere
+//    ObjectMapper mapper = new ObjectMapper();
+//    return mapper;
+//  }
 }
