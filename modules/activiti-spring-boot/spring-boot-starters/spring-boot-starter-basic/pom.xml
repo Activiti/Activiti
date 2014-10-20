@@ -45,6 +45,11 @@
             </exclusions>
             <optional>true</optional>
         </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-common-rest</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <!-- integration -->
         <dependency>
