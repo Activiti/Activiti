@@ -19,38 +19,38 @@ import org.springframework.test.context.ContextConfiguration;
  * The CallActivityBasedOnSpringBeansExpressionTest is isUsed to test dynamically wiring in the calledElement
  * in the callActivity task. This test case helps verify that we do not have to hard code the sub process
  * definition key within the process.
- * 
- * @author  Sang Venkatraman
+ *
+ * @author Sang Venkatraman
  */
 @ContextConfiguration("classpath:org/activiti/spring/test/expression/callactivity/testCallActivityByExpression-context.xml")
 public class CallActivityBasedOnSpringBeansExpressionTest extends SpringActivitiTestCase {
 
-	@Deployment(resources = {
-			"org/activiti/spring/test/expression/callactivity/CallActivityBasedOnSpringBeansExpressionTest.testCallActivityByExpression.bpmn20.xml",
-			"org/activiti/spring/test/expression/callactivity/simpleSubProcess.bpmn20.xml" })
-	public void testCallActivityByExpression() throws Exception {
-		// Start process (main)
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCallActivityByExpression");
+    @Deployment(resources = {
+            "org/activiti/spring/test/expression/callactivity/CallActivityBasedOnSpringBeansExpressionTest.testCallActivityByExpression.bpmn20.xml",
+            "org/activiti/spring/test/expression/callactivity/simpleSubProcess.bpmn20.xml"})
+    public void testCallActivityByExpression() throws Exception {
+        // Start process (main)
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testCallActivityByExpression");
 
-		// one task in the subprocess should be active after starting the process instance
-		TaskQuery taskQuery = taskService.createTaskQuery();
-		Task taskBeforeSubProcess = taskQuery.singleResult();
-		assertEquals("Task before subprocess", taskBeforeSubProcess.getName());
+        // one task in the subprocess should be active after starting the process instance
+        TaskQuery taskQuery = taskService.createTaskQuery();
+        Task taskBeforeSubProcess = taskQuery.singleResult();
+        assertEquals("Task before subprocess", taskBeforeSubProcess.getName());
 
-		// Completing the task continues the process which leads to calling the subprocess. The sub process we want to
-		// call is passed in as a variable into this task
-		taskService.complete(taskBeforeSubProcess.getId());
-		Task taskInSubProcess = taskQuery.singleResult();
-		assertEquals("Task in subprocess", taskInSubProcess.getName());
+        // Completing the task continues the process which leads to calling the subprocess. The sub process we want to
+        // call is passed in as a variable into this task
+        taskService.complete(taskBeforeSubProcess.getId());
+        Task taskInSubProcess = taskQuery.singleResult();
+        assertEquals("Task in subprocess", taskInSubProcess.getName());
 
-		// Completing the task in the subprocess, finishes the subprocess
-		taskService.complete(taskInSubProcess.getId());
-		Task taskAfterSubProcess = taskQuery.singleResult();
-		assertEquals("Task after subprocess", taskAfterSubProcess.getName());
+        // Completing the task in the subprocess, finishes the subprocess
+        taskService.complete(taskInSubProcess.getId());
+        Task taskAfterSubProcess = taskQuery.singleResult();
+        assertEquals("Task after subprocess", taskAfterSubProcess.getName());
 
-		// Completing this task end the process instance
-		taskService.complete(taskAfterSubProcess.getId());
-		assertProcessEnded(processInstance.getId());
-	}
+        // Completing this task end the process instance
+        taskService.complete(taskAfterSubProcess.getId());
+        assertProcessEnded(processInstance.getId());
+    }
 
 }

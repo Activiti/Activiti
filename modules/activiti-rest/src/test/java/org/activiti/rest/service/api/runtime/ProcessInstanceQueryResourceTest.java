@@ -17,11 +17,12 @@ import java.util.HashMap;
 
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -33,7 +34,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Frederik Heremans
  */
-public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
+public class ProcessInstanceQueryResourceTest extends BaseSpringRestTestCase {
   
   /**
    * Test querying process instance based on variables. 
@@ -61,68 +62,68 @@ public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
     variableNode.put("name", "stringVar");
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
 
     // Integer equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 67890);
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
     
     // Boolean equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", false);
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
     
     // String not equals
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "ghijkl");
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
 
     // Integer not equals
     variableNode.removeAll();
     variableNode.put("name", "intVar");
     variableNode.put("value", 45678);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
     
     // Boolean not equals
     variableNode.removeAll();
     variableNode.put("name", "booleanVar");
     variableNode.put("value", true);
     variableNode.put("operation", "notEquals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
     
     // String equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "azeRTY");
     variableNode.put("operation", "equalsIgnoreCase");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
     
     // String not equals ignore case
     variableNode.removeAll();
     variableNode.put("name", "stringVar");
     variableNode.put("value", "HIJKLm");
     variableNode.put("operation", "notEqualsIgnoreCase");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
     
     // String equals without value
     variableNode.removeAll();
     variableNode.put("value", "Azerty");
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode, processInstance.getId());
+    assertResultsPresentInPostDataResponse(url, requestNode, processInstance.getId());
     
     // String equals with non existing value
     variableNode.removeAll();
     variableNode.put("value", "Azerty2");
     variableNode.put("operation", "equals");
-    assertResultsPresentInDataResponse(url, requestNode);
+    assertResultsPresentInPostDataResponse(url, requestNode);
   }
   
   
@@ -142,29 +143,28 @@ public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
   	requestNode.put("sort", "processDefinitionKey");
     
   	String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_QUERY);
-  	ClientResource client = getAuthenticatedClient(url);
-    Representation response = client.post(requestNode);
+  	HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + url);
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
     
     // Check order
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode rootNode = objectMapper.readTree(response.getStream());
+    JsonNode rootNode = objectMapper.readTree(response.getEntity().getContent());
     JsonNode dataNode = rootNode.get("data");
     assertEquals(3, dataNode.size());
     
     assertEquals(processInstance3.getId(), dataNode.get(0).get("id").asText());
     assertEquals(processInstance2.getId(), dataNode.get(1).get("id").asText());
     assertEquals(processInstance1.getId(), dataNode.get(2).get("id").asText());
-    response.release();
     
     // Check paging size
     requestNode = objectMapper.createObjectNode();
   	requestNode.put("start", 0);
   	requestNode.put("size", 1);
   	
-  	response = client.post(requestNode);
+  	httpPost.setEntity(new StringEntity(requestNode.toString()));
+    response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
     
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    rootNode = objectMapper.readTree(response.getStream());
+    rootNode = objectMapper.readTree(response.getEntity().getContent());
     dataNode = rootNode.get("data");
     assertEquals(1, dataNode.size());
     
@@ -175,10 +175,10 @@ public class ProcessInstanceQueryResourceTest extends BaseRestTestCase {
   	requestNode.put("order", "desc");
   	requestNode.put("sort", "processDefinitionKey");
     
-  	response = client.post(requestNode);
+  	httpPost.setEntity(new StringEntity(requestNode.toString()));
+    response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
     
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    rootNode = objectMapper.readTree(response.getStream());
+    rootNode = objectMapper.readTree(response.getEntity().getContent());
     dataNode = rootNode.get("data");
     assertEquals(1, dataNode.size());
     assertEquals(processInstance2.getId(), dataNode.get(0).get("id").asText());

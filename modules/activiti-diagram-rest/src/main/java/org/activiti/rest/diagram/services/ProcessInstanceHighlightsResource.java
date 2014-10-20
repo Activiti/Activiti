@@ -1,3 +1,16 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.activiti.rest.diagram.services;
 
 import java.util.ArrayList;
@@ -6,45 +19,42 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.HistoryService;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.history.HistoricActivityInstance;
-import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
-import org.restlet.resource.Get;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public class ProcessInstanceHighlightsResource extends SecuredResource {
+@RestController
+public class ProcessInstanceHighlightsResource {
 
-	private RuntimeService runtimeService = ActivitiUtil.getRuntimeService();
-	private RepositoryServiceImpl repositoryService = (RepositoryServiceImpl) ActivitiUtil.getRepositoryService();
-	private HistoryService historyService = (HistoryService) ActivitiUtil.getHistoryService();
-	private ProcessInstance processInstance;
-	private ProcessDefinitionEntity processDefinition;
-	
-	List<String> historicActivityInstanceList = new ArrayList<String>();
-	List<String> highLightedFlows = new ArrayList<String>();
-	
+  @Autowired
+	private RuntimeService runtimeService;
+  
+  @Autowired
+	private RepositoryService repositoryService;
+  
+  @Autowired
+	private HistoryService historyService;
+  
 	protected ObjectMapper objectMapper = new ObjectMapper();
 
-	@Get("json")
-	public ObjectNode getHighlighted() {
-		String processInstanceId = (String) getRequest().getAttributes().get("processInstanceId");
-
-		if (processInstanceId == null) {
-			throw new ActivitiException("No process instance id provided");
-		}
-
-		ObjectNode responseJSON = objectMapper.createObjectNode();
+	@RequestMapping(value="/process-instance/{processInstanceId}/highlights", method = RequestMethod.GET, produces = "application/json")
+	public ObjectNode getHighlighted(@PathVariable String processInstanceId) {
+		
+	  ObjectNode responseJSON = objectMapper.createObjectNode();
 		
 		responseJSON.put("processInstanceId", processInstanceId);
 		
@@ -52,8 +62,8 @@ public class ProcessInstanceHighlightsResource extends SecuredResource {
 		ArrayNode flowsArray = objectMapper.createArrayNode();
 		
 		try {
-			processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-			processDefinition = (ProcessDefinitionEntity) repositoryService.getDeployedProcessDefinition(processInstance.getProcessDefinitionId());
+			ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+			ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 			
 			responseJSON.put("processDefinitionId", processInstance.getProcessDefinitionId());
 			

@@ -9,14 +9,15 @@ import java.util.zip.ZipOutputStream;
 
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
-import org.activiti.rest.service.HttpMultipartRepresentation;
+import org.activiti.rest.service.BaseSpringRestTestCase;
+import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -25,7 +26,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * 
  * @author Frederik Heremans
  */
-public class DeploymentResourceTest extends BaseRestTestCase {
+public class DeploymentResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test deploying singe bpmn-file.
@@ -34,17 +35,14 @@ public class DeploymentResourceTest extends BaseRestTestCase {
   public void testPostNewDeploymentBPMNFile() throws Exception {
     try {
       // Upload a valid BPMN-file using multipart-data
-      Representation uploadRepresentation = new HttpMultipartRepresentation("oneTaskProcess.bpmn20.xml",
-              ReflectUtil.getResourceAsStream("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"));
-      
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
-      Representation response = client.post(uploadRepresentation);
-      
-      // Check "CREATED" status
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
+      httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("oneTaskProcess.bpmn20.xml", "application/xml", 
+          ReflectUtil.getResourceAsStream("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"), null));
+      HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
       
       // Check deployment
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       
       String deploymentId = responseNode.get("id").textValue();
       String name = responseNode.get("name").textValue();
@@ -106,16 +104,14 @@ public class DeploymentResourceTest extends BaseRestTestCase {
       zipStream.close();
       
       // Upload a bar-file using multipart-data
-      Representation uploadRepresentation = new HttpMultipartRepresentation("test-deployment.bar",
-              new ByteArrayInputStream(zipOutput.toByteArray()));
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
-      Representation response = client.post(uploadRepresentation);
-        
-      // Check "CREATED" status
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
+      httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("test-deployment.bar", "application/zip", 
+          new ByteArrayInputStream(zipOutput.toByteArray()), null));
+      HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
       
       // Check deployment
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       
       String deploymentId = responseNode.get("id").textValue();
       String name = responseNode.get("name").textValue();
@@ -172,18 +168,14 @@ public class DeploymentResourceTest extends BaseRestTestCase {
      zipStream.close();
      
      // Upload a bar-file using multipart-data
-     
-     Representation uploadRepresentation = new HttpMultipartRepresentation("test-deployment.bar",
-             new ByteArrayInputStream(zipOutput.toByteArray()), Collections.singletonMap("tenantId", "myTenant"));
-     
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
-     Representation response = client.post(uploadRepresentation);
-     
-     // Check "CREATED" status
-     assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+         RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
+     httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("test-deployment.bar", "application/zip", 
+         new ByteArrayInputStream(zipOutput.toByteArray()), Collections.singletonMap("tenantId", "myTenant")));
+     HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
      
      // Check deployment
-     JsonNode responseNode = objectMapper.readTree(response.getStream());
+     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
      
      String tenantId = responseNode.get("tenantId").textValue();
      assertEquals("myTenant", tenantId);
@@ -207,18 +199,12 @@ public class DeploymentResourceTest extends BaseRestTestCase {
    * POST repository/deployments
    */
   public void testPostNewDeploymentInvalidFile() throws Exception {
-      // Upload a valid BPMN-file using multipart-data
-      Representation uploadRepresentation = new HttpMultipartRepresentation("oneTaskProcess.invalidfile",
-              ReflectUtil.getResourceAsStream("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"));
-      
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
-      try {
-        client.post(uploadRepresentation);
-        fail("400 expected, but was: " + client.getResponse().getStatus());
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("File must be of type .bpmn20.xml, .bpmn, .bar or .zip", expected.getStatus().getDescription());
-      }
+    // Upload a valid BPMN-file using multipart-data
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
+    httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("oneTaskProcess.invalidfile", "application/xml", 
+        ReflectUtil.getResourceAsStream("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"), null));
+    executeBinaryHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
   }
   
   /**
@@ -229,13 +215,11 @@ public class DeploymentResourceTest extends BaseRestTestCase {
   public void testGetDeployment() throws Exception {
     Deployment existingDeployment = repositoryService.createDeploymentQuery().singleResult();
      
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, existingDeployment.getId()));
-    Representation response = client.get();
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, existingDeployment.getId()));
+    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
     
-    // Check "OK" status
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
      
     String deploymentId = responseNode.get("id").textValue();
     String name = responseNode.get("name").textValue();
@@ -264,14 +248,9 @@ public class DeploymentResourceTest extends BaseRestTestCase {
    * GET repository/deployments/{deploymentId}
    */
    public void testGetUnexistingDeployment() throws Exception {
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, "unexisting"));
-     try {
-       client.get();
-       fail("404 expected, but was: " + client.getResponse().getStatus());
-     } catch(ResourceException expected) {
-       assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-       assertEquals("Could not find a deployment with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-     }
+     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+         RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, "unexisting"));
+     executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
    }
   
   /**
@@ -284,11 +263,9 @@ public class DeploymentResourceTest extends BaseRestTestCase {
      assertNotNull(existingDeployment);
      
      // Delete the deployment
-     ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, existingDeployment.getId()));
-     client.delete();
-     
-     // Check status
-     assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+         RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, existingDeployment.getId()));
+     executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
      
      existingDeployment = repositoryService.createDeploymentQuery().singleResult();
      assertNull(existingDeployment);
@@ -296,16 +273,11 @@ public class DeploymentResourceTest extends BaseRestTestCase {
    
    /**
     * Test deleting an unexisting deployment.
-    * GET repository/deployments/{deploymentId}
+    * DELETE repository/deployments/{deploymentId}
     */
     public void testDeleteUnexistingDeployment() throws Exception {
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, "unexisting"));
-      try {
-        client.delete();
-        fail("404 expected, but was: " + client.getResponse().getStatus());
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-        assertEquals("Could not find a deployment with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-      }
+      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, "unexisting"));
+      executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
     }
 }

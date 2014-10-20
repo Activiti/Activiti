@@ -17,11 +17,12 @@ import java.util.Calendar;
 
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -30,7 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Frederik Heremans
  */
-public class ModelCollectionResourceTest extends BaseRestTestCase {
+public class ModelCollectionResourceTest extends BaseSpringRestTestCase {
 
   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
   public void testGetModels() throws Exception {
@@ -65,7 +66,7 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, model1.getId());
       
       // Filter based on category
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?category=Another category";
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?category=" + encode("Another category");
       assertResultsPresentInDataResponse(url, model2.getId());
       
       // Filter based on category like
@@ -73,11 +74,11 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, model1.getId());
       
       // Filter based on category not equals
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?categoryNotEquals=Another category";
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?categoryNotEquals=" + encode("Another category");
       assertResultsPresentInDataResponse(url, model1.getId());
       
       // Filter based on name
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?name=Another name";
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?name=" + encode("Another name");
       assertResultsPresentInDataResponse(url, model2.getId());
       
       // Filter based on name like
@@ -85,7 +86,7 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, model1.getId());
       
       // Filter based on key
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?key=Model key";
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?key=" + encode("Model key");
       assertResultsPresentInDataResponse(url, model1.getId());
       
       // Filter based on version
@@ -105,7 +106,7 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, model2.getId());
       
       // Filter based on latestVersion
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?key=Model key&latestVersion=true";
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION) + "?key=" + encode("Model key") + "&latestVersion=true";
       // Make sure both models have same key
       model2 = repositoryService.createModelQuery().modelId(model2.getId()).singleResult();
       model2.setKey("Model key");
@@ -174,14 +175,12 @@ public class ModelCollectionResourceTest extends BaseRestTestCase {
       requestNode.put("version", 2);
       requestNode.put("tenantId", "myTenant");
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL_COLLECTION));
-      Representation response = client.post(requestNode);
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_COLLECTION));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
       
-      // Check "CREATED" status
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals("Model name", responseNode.get("name").textValue());
       assertEquals("Model key", responseNode.get("key").textValue());

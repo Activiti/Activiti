@@ -16,20 +16,21 @@ package org.activiti.rest.service.api.repository;
 import java.io.ByteArrayInputStream;
 
 import org.activiti.engine.repository.Model;
-import org.activiti.rest.service.BaseRestTestCase;
-import org.activiti.rest.service.HttpMultipartRepresentation;
+import org.activiti.rest.service.BaseSpringRestTestCase;
+import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 
 /**
  * @author Frederik Heremans
  */
-public class ModelResourceSourceTest extends BaseRestTestCase {
+public class ModelResourceSourceTest extends BaseSpringRestTestCase {
 
   public void testGetModelEditorSource() throws Exception {
     
@@ -42,17 +43,15 @@ public class ModelResourceSourceTest extends BaseRestTestCase {
       
       repositoryService.addModelEditorSource(model.getId(), "This is the editor source".getBytes());
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL_SOURCE, model.getId()));
-      Representation response = client.get();
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
+      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
       
       // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      assertEquals(MediaType.APPLICATION_OCTET_STREAM, response.getMediaType());
-      assertEquals("This is the editor source", response.getText());
+      assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
+      assertEquals("This is the editor source", IOUtils.toString(response.getEntity().getContent()));
       
-    } finally
-    {
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
       } catch(Throwable ignore) {
@@ -69,20 +68,11 @@ public class ModelResourceSourceTest extends BaseRestTestCase {
       model.setName("Model name");
       repositoryService.saveModel(model);
       
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
+      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL_SOURCE, model.getId()));
-      
-      try {
-        client.get();
-        fail("404 expected, but was: " + client.getResponse().getStatus());
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-        assertEquals("Model with id '" + model.getId() + "' does not have source available.", client.getResponse().getStatus().getDescription());
-      }
-      
-    } finally
-    {
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
       } catch(Throwable ignore) {
@@ -102,17 +92,15 @@ public class ModelResourceSourceTest extends BaseRestTestCase {
       
       repositoryService.addModelEditorSourceExtra(model.getId(), "This is the extra editor source".getBytes());
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
-      Representation response = client.get();
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
+      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
       
       // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      assertEquals(MediaType.APPLICATION_OCTET_STREAM, response.getMediaType());
-      assertEquals("This is the extra editor source", response.getText());
+      assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
+      assertEquals("This is the extra editor source", IOUtils.toString(response.getEntity().getContent()));
       
-    } finally
-    {
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
       } catch(Throwable ignore) {
@@ -129,20 +117,11 @@ public class ModelResourceSourceTest extends BaseRestTestCase {
       model.setName("Model name");
       repositoryService.saveModel(model);
       
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
+      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
-      
-      try {
-        client.get();
-        fail("404 expected, but was: " + client.getResponse().getStatus());
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-        assertEquals("Model with id '" + model.getId() + "' does not have extra source available.", client.getResponse().getStatus().getDescription());
-      }
-      
-    } finally
-    {
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
       } catch(Throwable ignore) {
@@ -153,25 +132,15 @@ public class ModelResourceSourceTest extends BaseRestTestCase {
  
   
   public void testGetModelSourceUnexistingModel() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
-    try {
-      client.get();
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a model with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
+    executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
   }
   
   public void testGetModelSourceExtraUnexistingModel() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
-    try {
-      client.get();
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a model with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
+    executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
   }
   
   public void testSetModelEditorSource() throws Exception {
@@ -183,20 +152,15 @@ public class ModelResourceSourceTest extends BaseRestTestCase {
       model.setName("Model name");
       repositoryService.saveModel(model);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL_SOURCE, model.getId()));
-      Representation response = client.put(new HttpMultipartRepresentation("sourcefile", new ByteArrayInputStream("This is the new editor source".getBytes())));
-      
-      // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      assertEquals(MediaType.APPLICATION_OCTET_STREAM, response.getMediaType());
-      assertEquals("This is the new editor source", response.getText());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
+      httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("sourcefile", "application/octet-stream", 
+          new ByteArrayInputStream("This is the new editor source".getBytes()), null));
+      executeBinaryHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
       
       assertEquals("This is the new editor source", new String(repositoryService.getModelEditorSource(model.getId())));
-
-      
-    } finally
-    {
+  
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
       } catch(Throwable ignore) {
@@ -214,20 +178,15 @@ public class ModelResourceSourceTest extends BaseRestTestCase {
       model.setName("Model name");
       repositoryService.saveModel(model);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
-      Representation response = client.put(new HttpMultipartRepresentation("sourcefile", new ByteArrayInputStream("This is the new extra editor source".getBytes())));
-      
-      // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      assertEquals(MediaType.APPLICATION_OCTET_STREAM, response.getMediaType());
-      assertEquals("This is the new extra editor source", response.getText());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
+      httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("sourcefile", "application/octet-stream", 
+          new ByteArrayInputStream("This is the new extra editor source".getBytes()), null));
+      executeBinaryHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
       
       assertEquals("This is the new extra editor source", new String(repositoryService.getModelEditorSourceExtra(model.getId())));
-
       
-    } finally
-    {
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
       } catch(Throwable ignore) {
@@ -237,24 +196,16 @@ public class ModelResourceSourceTest extends BaseRestTestCase {
   }
   
   public void testSetModelSourceUnexistingModel() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
-    try {
-      client.put("");
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a model with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
+    httpPut.setEntity(new StringEntity(""));
+    executeBinaryHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
   }
   
   public void testSetModelSourceExtraUnexistingModel() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
-    try {
-      client.put("");
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a model with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
+    httpPut.setEntity(new StringEntity(""));
+    executeBinaryHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
   }
 }

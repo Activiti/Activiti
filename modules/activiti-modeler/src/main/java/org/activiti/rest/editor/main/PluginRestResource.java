@@ -14,21 +14,26 @@ package org.activiti.rest.editor.main;
 
 import java.io.InputStream;
 
-import org.restlet.data.MediaType;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get;
-import org.restlet.resource.ServerResource;
+import org.activiti.engine.ActivitiException;
+import org.apache.commons.io.IOUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Tijs Rademakers
  */
-public class PluginRestResource extends ServerResource {
+@RestController
+public class PluginRestResource {
   
-  @Get
-  public InputRepresentation getPlugins() {
+  @RequestMapping(value="/editor/plugins", method = RequestMethod.GET, produces = "application/xml")
+  public @ResponseBody String getPlugins() {
     InputStream pluginStream = this.getClass().getClassLoader().getResourceAsStream("plugins.xml");
-    InputRepresentation pluginResultRepresentation = new InputRepresentation(pluginStream);
-    pluginResultRepresentation.setMediaType(MediaType.APPLICATION_XML);
-    return pluginResultRepresentation;
+    try {
+      return IOUtils.toString(pluginStream);
+    } catch (Exception e) {
+      throw new ActivitiException("Error while loading plugins", e);
+    }
   }
 }

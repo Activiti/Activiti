@@ -15,49 +15,63 @@ package org.activiti.rest.service.api.repository;
 
 import java.util.List;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.resource.Get;
+import org.activiti.rest.common.application.ContentTypeResolver;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
-public class DeploymentResourceResource extends SecuredResource {
+@RestController
+public class DeploymentResourceResource {
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected ContentTypeResolver contentTypeResolver;
+  
+  @Autowired
+  protected RepositoryService repositoryService;
 
-  @Get
-  public DeploymentResourceResponse getDeploymentResource() {
-  	if(authenticate() == false) return null;
-    
-    String deploymentId = getAttribute("deploymentId");
-    if(deploymentId == null) {
-      throw new ActivitiIllegalArgumentException("No deployment id provided");
-    }
-    String resourceId = getAttribute("resourceId");
-    if(resourceId == null) {
-      throw new ActivitiIllegalArgumentException("No resource id provided");
-    }
+  @RequestMapping(value="/repository/deployments/{deploymentId}/resources/**", method = RequestMethod.GET, produces = "application/json")
+  public DeploymentResourceResponse getDeploymentResource(@PathVariable("deploymentId") String deploymentId, 
+      HttpServletRequest request) {
     
     // Check if deployment exists
-    Deployment deployment = ActivitiUtil.getRepositoryService().createDeploymentQuery().deploymentId(deploymentId).singleResult();
-    if(deployment == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
+    Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+    if (deployment == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.");
     }
     
-    List<String> resourceList = ActivitiUtil.getRepositoryService().getDeploymentResourceNames(deploymentId);
+    String pathInfo = request.getPathInfo();
+    String resourceName = pathInfo.replace("/repository/deployments/" + deploymentId + "/resources/", "");
+    
+    List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
+    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/deployments/"));
 
-    if(resourceList.contains(resourceId)) {
+    if (resourceList.contains(resourceName)) {
       // Build resource representation
-           return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-                   .createDeploymentResourceResponse(this, deploymentId, resourceId);
+      DeploymentResourceResponse response = restResponseFactory.createDeploymentResourceResponse(deploymentId, resourceName, 
+          contentTypeResolver.resolveContentType(resourceName), serverRootUrl);
+      return response;
+      
     } else {
       // Resource not found in deployment
-      throw new ActivitiObjectNotFoundException("Could not find a resource with id '" + resourceId
-              + "' in deployment '" + deploymentId + "'.", String.class);
+      throw new ActivitiObjectNotFoundException("Could not find a resource with id '" + resourceName
+              + "' in deployment '" + deploymentId + "'.");
     }
   }
 }

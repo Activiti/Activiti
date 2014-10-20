@@ -16,63 +16,73 @@ package org.activiti.rest.service.api.identity;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.User;
-import org.activiti.rest.common.api.ActivitiUtil;
+import org.activiti.rest.exception.ActivitiConflictException;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
-import org.restlet.resource.ResourceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class UserInfoCollectionResource extends BaseUserResource {
 
-  @Get
-  public List<UserInfoResponse> getUserInfo() {
-    if(!authenticate())
-      return null;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected IdentityService identityService;
+  
+  @RequestMapping(value="/identity/users/{userId}/info", method = RequestMethod.GET, produces = "application/json")
+  public List<UserInfoResponse> getUserInfo(@PathVariable String userId, HttpServletRequest request) {
+    User user = getUserFromRequest(userId);
     
-    User user = getUserFromRequest();
-    
-    RestResponseFactory factory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     List<UserInfoResponse> responses = new ArrayList<UserInfoResponse>();
-    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
     // Create responses for all keys,not including value as this is exposed through the individual resource URL.
-    for(String key : ActivitiUtil.getIdentityService().getUserInfoKeys(user.getId())) {
-      responses.add(factory.createUserInfoResponse(this, key, null, user.getId()));
+    for (String key : identityService.getUserInfoKeys(user.getId())) {
+      responses.add(restResponseFactory.createUserInfoResponse(key, null, user.getId(), serverRootUrl));
     }
     
     return responses;
   }
   
   
-  @Post
-  public UserInfoResponse setUserInfo(UserInfoRequest request) {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/identity/users/{userId}/info", method = RequestMethod.POST, produces = "application/json")
+  public UserInfoResponse setUserInfo(@PathVariable String userId, @RequestBody UserInfoRequest userRequest, 
+      HttpServletRequest request, HttpServletResponse response) {
     
-    User user = getUserFromRequest();
+    User user = getUserFromRequest(userId);
     
-    if(request.getKey() == null) {
+    if (userRequest.getKey() == null) {
       throw new ActivitiIllegalArgumentException("The key cannot be null.");
     }
-    if(request.getValue() == null) {
+    if (userRequest.getValue() == null) {
       throw new ActivitiIllegalArgumentException("The value cannot be null.");
     }
     
-    String existingValue = ActivitiUtil.getIdentityService().getUserInfo(user.getId(), request.getKey());
-    if(existingValue != null) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "User info with key '" + request.getKey() + "' already exists for this user.", null, null);
+    String existingValue = identityService.getUserInfo(user.getId(), userRequest.getKey());
+    if (existingValue != null) {
+      throw new ActivitiConflictException("User info with key '" + userRequest.getKey() + "' already exists for this user.");
     }
     
-    ActivitiUtil.getIdentityService().setUserInfo(user.getId(), request.getKey(), request.getValue());
+    identityService.setUserInfo(user.getId(), userRequest.getKey(), userRequest.getValue());
     
-    setStatus(Status.SUCCESS_CREATED);
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createUserInfoResponse(this, request.getKey(), request.getValue(), user.getId());
+    response.setStatus(HttpStatus.CREATED.value());
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
+    return restResponseFactory.createUserInfoResponse(userRequest.getKey(), userRequest.getValue(), user.getId(), serverRootUrl);
   }
 }

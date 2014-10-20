@@ -17,18 +17,21 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
 import org.activiti.editor.constants.ModelDataJsonConstants;
-import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Model;
 import org.apache.batik.transcoder.TranscoderInput;
 import org.apache.batik.transcoder.TranscoderOutput;
 import org.apache.batik.transcoder.image.PNGTranscoder;
-import org.restlet.data.Form;
-import org.restlet.data.Status;
-import org.restlet.resource.Put;
-import org.restlet.resource.ServerResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -36,38 +39,35 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Tijs Rademakers
  */
-public class ModelSaveRestResource extends ServerResource implements ModelDataJsonConstants {
+@RestController
+public class ModelSaveRestResource implements ModelDataJsonConstants {
   
   protected static final Logger LOGGER = LoggerFactory.getLogger(ModelSaveRestResource.class);
 
-  @Put
-  public void saveModel(Form modelForm) {
-    ObjectMapper objectMapper = new ObjectMapper();
-    String modelId = (String) getRequest().getAttributes().get("modelId");
-    //System.out.println("json " + modelForm.getFirstValue("json_xml"));
-    
+  @Autowired
+  private RepositoryService repositoryService;
+  
+  @Autowired
+  private ObjectMapper objectMapper;
+  
+  @RequestMapping(value="/model/{modelId}/save", method = RequestMethod.PUT)
+  public void saveModel(@PathVariable String modelId, @RequestBody MultiValueMap<String, String> values) {
     try {
       
-      /*ObjectNode modelNode = (ObjectNode) objectMapper.readTree(modelForm.getFirstValue("json_xml"));
-      JsonToBpmnExport converter = new JsonToBpmnExport(modelNode);
-      byte[] bpmnBytes = converter.convert();
-      System.out.println("bpmn " + new String(bpmnBytes));*/
-      
-      RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
       Model model = repositoryService.getModel(modelId);
       
       ObjectNode modelJson = (ObjectNode) objectMapper.readTree(model.getMetaInfo());
       
-      modelJson.put(MODEL_NAME, modelForm.getFirstValue("name"));
-      modelJson.put(MODEL_DESCRIPTION, modelForm.getFirstValue("description"));
+      modelJson.put(MODEL_NAME, values.getFirst("name"));
+      modelJson.put(MODEL_DESCRIPTION, values.getFirst("description"));
       model.setMetaInfo(modelJson.toString());
-      model.setName(modelForm.getFirstValue("name"));
+      model.setName(values.getFirst("name"));
       
       repositoryService.saveModel(model);
       
-      repositoryService.addModelEditorSource(model.getId(), modelForm.getFirstValue("json_xml").getBytes("utf-8"));
+      repositoryService.addModelEditorSource(model.getId(), values.getFirst("json_xml").getBytes("utf-8"));
       
-      InputStream svgStream = new ByteArrayInputStream(modelForm.getFirstValue("svg_xml").getBytes("utf-8"));
+      InputStream svgStream = new ByteArrayInputStream(values.getFirst("svg_xml").getBytes("utf-8"));
       TranscoderInput input = new TranscoderInput(svgStream);
       
       PNGTranscoder transcoder = new PNGTranscoder();
@@ -81,9 +81,9 @@ public class ModelSaveRestResource extends ServerResource implements ModelDataJs
       repositoryService.addModelEditorSourceExtra(model.getId(), result);
       outStream.close();
       
-    } catch(Exception e) {
+    } catch (Exception e) {
       LOGGER.error("Error saving model", e);
-      setStatus(Status.SERVER_ERROR_INTERNAL);
+      throw new ActivitiException("Error saving model", e);
     }
   }
 }

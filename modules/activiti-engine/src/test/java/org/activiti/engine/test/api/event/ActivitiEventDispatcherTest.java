@@ -30,7 +30,7 @@ import org.activiti.engine.task.Task;
  * 
  * @author Frederik Heremans
  */
-public class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
+public abstract class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 
 	protected ActivitiEventDispatcher dispatcher;
 
@@ -45,7 +45,7 @@ public class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 	 * Test adding a listener and check if events are sent to it. Also checks that
 	 * after removal, no events are received.
 	 */
-	public void testAddAndRemoveEventListenerAllEvents() throws Exception {
+	public void addAndRemoveEventListenerAllEvents() throws Exception {
 		// Create a listener that just adds the events to a list
 		TestActivitiEventListener newListener = new TestActivitiEventListener();
 
@@ -76,7 +76,7 @@ public class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 	 * Test adding a listener and check if events are sent to it, for the types it
 	 * was registered for. Also checks that after removal, no events are received.
 	 */
-	public void testAddAndRemoveEventListenerTyped() throws Exception {
+	public void addAndRemoveEventListenerTyped() throws Exception {
 		// Create a listener that just adds the events to a list
 		TestActivitiEventListener newListener = new TestActivitiEventListener();
 
@@ -108,7 +108,7 @@ public class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 	/**
 	 * Test that adding a listener with a null-type is never called.
 	 */
-	public void testAddAndRemoveEventListenerTypedNullType() throws Exception {
+	public void addAndRemoveEventListenerTypedNullType() throws Exception {
 
 		// Create a listener that just adds the events to a list
 		TestActivitiEventListener newListener = new TestActivitiEventListener();
@@ -129,7 +129,7 @@ public class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 	/**
 	 * Test the {@link BaseEntityEventListener} shipped with Activiti.
 	 */
-	public void testBaseEntityEventListener() throws Exception {
+	public void baseEntityEventListener() throws Exception {
 		TestBaseEntityEventListener listener = new TestBaseEntityEventListener();
 
 		dispatcher.addEventListener(listener);
@@ -196,7 +196,7 @@ public class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 	/**
 	 * Test dispatching behavior when an exception occurs in the listener
 	 */
-	public void testExceptionInListener() throws Exception {
+	public void exceptionInListener() throws Exception {
 		// Create listener that doesn't force the dispatching to fail
 		TestExceptionActivitiEventListener listener = new TestExceptionActivitiEventListener(false);
 		TestActivitiEventListener secondListener = new TestActivitiEventListener();
@@ -241,7 +241,7 @@ public class ActivitiEventDispatcherTest extends PluggableActivitiTestCase {
 	 * {@link ProcessEngineConfigurationImpl#setTypedEventListeners(java.util.Map)}
 	 * .
 	 */
-	public void testActivitiEventTypeParsing() throws Exception {
+	public void activitiEventTypeParsing() throws Exception {
 		// Check with empty null
 		ActivitiEventType[] types = ActivitiEventType.getTypesFromString(null);
 		assertNotNull(types);

@@ -52,6 +52,22 @@
       ) 
   </update>
   
+  <update id="updateJobLockForAllJobs" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_JOB set
+      LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+      LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP}
+    where
+      (RETRIES_ &gt; 0)
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{dueDate, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null)
+      
+	 <!--  and (
+	  	    (EXECUTION_ID_ is null)
+	  		or 
+	  		(PI.SUSPENSION_STATE_ = 1)
+      ) 
+        -->
+  </update>
     
   <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
        Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
@@ -125,7 +141,17 @@
 	  		(PI.SUSPENSION_STATE_ = 1)
       )  
     ${limitAfter}	    
-  </select>     
+  </select>    
+  
+  <select id="selectJobsByLockOwner" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
+    select 
+    	RES.* ${limitBetween}    		
+    from ${prefix}ACT_RU_JOB RES    
+    where (RES.LOCK_OWNER_ = #{parameter, jdbcType=VARCHAR})
+    order by ID_ <!-- Need to have some definitive ordering to have a correct check in place during job fetching -->
+    ${limitAfter}	    
+  </select>   
   
   <select id="selectExclusiveJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
   	${limitBefore}

@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.DataObject;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
@@ -58,6 +59,11 @@ public class BpmnParseHandlers {
   }
   
   public void parseElement(BpmnParse bpmnParse, BaseElement element) {
+    
+    if (element instanceof DataObject) {
+      // ignore DataObject elements because they are processed on Process and Sub process level
+      return;
+    }
     
     if (element instanceof FlowElement) {
       bpmnParse.setCurrentFlowElement((FlowElement) element);

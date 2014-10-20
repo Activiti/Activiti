@@ -15,23 +15,26 @@ package org.activiti.rest.service.api.repository;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.impl.ModelQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Form;
-import org.restlet.data.Status;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ModelCollectionResource extends BaseModelResource {
 
  private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
@@ -47,82 +50,80 @@ public class ModelCollectionResource extends BaseModelResource {
     allowedSortProperties.put("tenantId", ModelQueryProperty.MODEL_TENANT_ID);
   }
   
-  @Get("json")
-  public DataResponse getModels() {
-  	if(authenticate() == false) return null;
-  	
-    ModelQuery modelQuery = ActivitiUtil.getRepositoryService().createModelQuery();
-    Form form = getQuery();
-    Set<String> names = form.getNames();
+  @RequestMapping(value="/repository/models", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getModels(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
+    ModelQuery modelQuery = repositoryService.createModelQuery();
     
-    if(names.contains("id")) {
-      modelQuery.modelId(getQueryParameter("id", form));
+    if (allRequestParams.containsKey("id")) {
+      modelQuery.modelId(allRequestParams.get("id"));
     }
-    if(names.contains("category")) {
-      modelQuery.modelCategory(getQueryParameter("category", form));
+    if (allRequestParams.containsKey("category")) {
+      modelQuery.modelCategory(allRequestParams.get("category"));
     }
-    if(names.contains("categoryLike")) {
-      modelQuery.modelCategoryLike(getQueryParameter("categoryLike", form));
+    if (allRequestParams.containsKey("categoryLike")) {
+      modelQuery.modelCategoryLike(allRequestParams.get("categoryLike"));
     }
-    if(names.contains("categoryNotEquals")) {
-      modelQuery.modelCategoryNotEquals(getQueryParameter("categoryNotEquals", form));
+    if (allRequestParams.containsKey("categoryNotEquals")) {
+      modelQuery.modelCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
     }
-    if(names.contains("name")) {
-      modelQuery.modelName(getQueryParameter("name", form));
+    if (allRequestParams.containsKey("name")) {
+      modelQuery.modelName(allRequestParams.get("name"));
     }
-    if(names.contains("nameLike")) {
-      modelQuery.modelNameLike(getQueryParameter("nameLike", form));
+    if (allRequestParams.containsKey("nameLike")) {
+      modelQuery.modelNameLike(allRequestParams.get("nameLike"));
     }
-    if(names.contains("key")) {
-      modelQuery.modelKey(getQueryParameter("key", form));
+    if (allRequestParams.containsKey("key")) {
+      modelQuery.modelKey(allRequestParams.get("key"));
     }
-    if(names.contains("version")) {
-      modelQuery.modelVersion(getQueryParameterAsInt("version", form));
+    if (allRequestParams.containsKey("version")) {
+      modelQuery.modelVersion(Integer.valueOf(allRequestParams.get("version")));
     }
-    if(names.contains("latestVersion")) {
-      boolean isLatestVersion = getQueryParameterAsBoolean("latestVersion", form);
-      if(isLatestVersion) {
+    if (allRequestParams.containsKey("latestVersion")) {
+      boolean isLatestVersion = Boolean.valueOf(allRequestParams.get("latestVersion"));
+      if (isLatestVersion) {
         modelQuery.latestVersion();
       }
     }
-    if(names.contains("deploymentId")) {
-      modelQuery.deploymentId(getQueryParameter("deploymentId", form));
+    if (allRequestParams.containsKey("deploymentId")) {
+      modelQuery.deploymentId(allRequestParams.get("deploymentId"));
     }
-    if(names.contains("deployed")) {
-      boolean isDeployed = getQueryParameterAsBoolean("deployed", form);
-      if(isDeployed) {
+    if (allRequestParams.containsKey("deployed")) {
+      boolean isDeployed = Boolean.valueOf(allRequestParams.get("deployed"));
+      if (isDeployed) {
         modelQuery.deployed();
       } else {
         modelQuery.notDeployed();
       }
     }
-    if(names.contains("tenantId")) {
-      modelQuery.modelTenantId(getQueryParameter("tenantId", form));
+    if (allRequestParams.containsKey("tenantId")) {
+      modelQuery.modelTenantId(allRequestParams.get("tenantId"));
     }
-    if(names.contains("tenantIdLike")) {
-      modelQuery.modelTenantIdLike(getQueryParameter("tenantIdLike", form));
+    if (allRequestParams.containsKey("tenantIdLike")) {
+      modelQuery.modelTenantIdLike(allRequestParams.get("tenantIdLike"));
     }
-    if(names.contains("withoutTenantId")) {
-      if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", form))) {
+    if (allRequestParams.containsKey("withoutTenantId")) {
+      boolean withoutTenantId = Boolean.valueOf(allRequestParams.get("withoutTenantId"));
+      if (withoutTenantId) {
       	modelQuery.modelWithoutTenantId();
       }
     }
-    return new ModelsPaginateList(this).paginateList(form, modelQuery, "id", allowedSortProperties);
+    return new ModelsPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/repository/models", ""))
+        .paginateList(allRequestParams, modelQuery, "id", allowedSortProperties);
   }
   
-  @Post
-  public ModelResponse createModel(ModelRequest request) {
-    Model model = ActivitiUtil.getRepositoryService().newModel();
-    model.setCategory(request.getCategory());
-    model.setDeploymentId(request.getDeploymentId());
-    model.setKey(request.getKey());
-    model.setMetaInfo(request.getMetaInfo());
-    model.setName(request.getName());
-    model.setVersion(request.getVersion());
-    model.setTenantId(request.getTenantId());
+  @RequestMapping(value="/repository/models", method = RequestMethod.POST, produces = "application/json")
+  public ModelResponse createModel(@RequestBody ModelRequest modelRequest, HttpServletRequest request, HttpServletResponse response) {
+    Model model = repositoryService.newModel();
+    model.setCategory(modelRequest.getCategory());
+    model.setDeploymentId(modelRequest.getDeploymentId());
+    model.setKey(modelRequest.getKey());
+    model.setMetaInfo(modelRequest.getMetaInfo());
+    model.setName(modelRequest.getName());
+    model.setVersion(modelRequest.getVersion());
+    model.setTenantId(modelRequest.getTenantId());
 
-    ActivitiUtil.getRepositoryService().saveModel(model);
-    setStatus(Status.SUCCESS_CREATED);
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory().createModelResponse(this, model);
+    repositoryService.saveModel(model);
+    response.setStatus(HttpStatus.CREATED.value());
+    return restResponseFactory.createModelResponse(model, request.getRequestURL().toString().replace("/repository/models", ""));
   }
 }

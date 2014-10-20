@@ -14,27 +14,33 @@
 package org.activiti.rest.service.api.identity;
 
 import java.util.HashMap;
-import java.util.Set;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.GroupQuery;
 import org.activiti.engine.impl.GroupQueryProperty;
 import org.activiti.engine.query.QueryProperty;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.SecuredResource;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Form;
-import org.restlet.data.Status;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
-import org.restlet.resource.ResourceException;
+import org.activiti.rest.exception.ActivitiConflictException;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
-public class GroupCollectionResource extends SecuredResource {
+@RestController
+public class GroupCollectionResource {
 
   protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
   
@@ -44,60 +50,59 @@ public class GroupCollectionResource extends SecuredResource {
     properties.put("type", GroupQueryProperty.TYPE);
   }
   
-  @Get("json")
-  public DataResponse getGroups() {
-    if(!authenticate())
-      return null;
-
-    GroupQuery query = ActivitiUtil.getIdentityService().createGroupQuery();
-    Form form = getQuery();
-    Set<String> names = form.getNames();
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected IdentityService identityService;
+  
+  @RequestMapping(value="/identity/groups", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getGroups(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
+    GroupQuery query = identityService.createGroupQuery();
     
-    if(names.contains("id")) {
-      query.groupId(getQueryParameter("id", form));
+    if (allRequestParams.containsKey("id")) {
+      query.groupId(allRequestParams.get("id"));
     }
-    if(names.contains("name")) {
-      query.groupName(getQueryParameter("name", form));
+    if (allRequestParams.containsKey("name")) {
+      query.groupName(allRequestParams.get("name"));
     }
-    if(names.contains("nameLike")) {
-      query.groupNameLike(getQueryParameter("nameLike", form));
+    if (allRequestParams.containsKey("nameLike")) {
+      query.groupNameLike(allRequestParams.get("nameLike"));
     }
-    if(names.contains("type")) {
-      query.groupType(getQueryParameter("type", form));
+    if (allRequestParams.containsKey("type")) {
+      query.groupType(allRequestParams.get("type"));
     }
-    if(names.contains("member")) {
-      query.groupMember(getQueryParameter("member", form));
+    if (allRequestParams.containsKey("member")) {
+      query.groupMember(allRequestParams.get("member"));
     }
-    if(names.contains("potentialStarter")) {
-      query.potentialStarter(getQueryParameter("potentialStarter", form));
+    if (allRequestParams.containsKey("potentialStarter")) {
+      query.potentialStarter(allRequestParams.get("potentialStarter"));
     }
 
-    return new GroupPaginateList(this).paginateList(form, query, "id", properties);
+    return new GroupPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/identity/groups", ""))
+        .paginateList(allRequestParams, query, "id", properties);
   }
   
-  @Post
-  public GroupResponse createGroup(GroupRequest request) {
-  	if(authenticate() == false) return null;
-  	
-    if(request.getId() == null) {
+  @RequestMapping(value="/identity/groups", method = RequestMethod.POST, produces = "application/json")
+  public GroupResponse createGroup(@RequestBody GroupRequest groupRequest, HttpServletRequest httpRequest, HttpServletResponse response) {
+    if (groupRequest.getId() == null) {
       throw new ActivitiIllegalArgumentException("Id cannot be null.");
     }
 
     // Check if a user with the given ID already exists so we return a CONFLICT
-    if(ActivitiUtil.getIdentityService().createGroupQuery().groupId(request.getId()).count() > 0) {
-      throw new ResourceException(Status.CLIENT_ERROR_CONFLICT.getCode(), "A group with id '" + request.getId() + "' already exists.", null, null);
+    if (identityService.createGroupQuery().groupId(groupRequest.getId()).count() > 0) {
+      throw new ActivitiConflictException("A group with id '" + groupRequest.getId() + "' already exists.");
     }
     
-    Group created = ActivitiUtil.getIdentityService().newGroup(request.getId());
-    created.setId(request.getId());
-    created.setName(request.getName());
-    created.setType(request.getType());
-    ActivitiUtil.getIdentityService().saveGroup(created);
+    Group created = identityService.newGroup(groupRequest.getId());
+    created.setId(groupRequest.getId());
+    created.setName(groupRequest.getName());
+    created.setType(groupRequest.getType());
+    identityService.saveGroup(created);
     
-    setStatus(Status.SUCCESS_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createGroupResponse(this, created);
+    return restResponseFactory.createGroupResponse(created, httpRequest.getRequestURL().toString().replace("/identity/groups", ""));
   }
   
 }

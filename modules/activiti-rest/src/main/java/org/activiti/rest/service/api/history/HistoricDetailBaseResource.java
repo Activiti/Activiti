@@ -16,18 +16,18 @@ package org.activiti.rest.service.api.history;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.impl.HistoricDetailQueryProperty;
 import org.activiti.engine.query.QueryProperty;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.SecuredResource;
-import org.restlet.data.Form;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Tijs Rademakers
  */
-public class HistoricDetailBaseResource extends SecuredResource {
+public class HistoricDetailBaseResource {
 
   private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 
@@ -38,9 +38,15 @@ public class HistoricDetailBaseResource extends SecuredResource {
     allowedSortProperties.put("revision", HistoricDetailQueryProperty.VARIABLE_REVISION);
     allowedSortProperties.put("variableType", HistoricDetailQueryProperty.VARIABLE_TYPE);
   }
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected HistoryService historyService;
 
-  protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Form urlQuery) {
-    HistoricDetailQuery query = ActivitiUtil.getHistoryService().createHistoricDetailQuery();
+  protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Map<String,String> allRequestParams, String serverRootUrl) {
+    HistoricDetailQuery query = historyService.createHistoricDetailQuery();
 
     // Populate query based on request
     if (queryRequest.getProcessInstanceId() != null) {
@@ -66,6 +72,7 @@ public class HistoricDetailBaseResource extends SecuredResource {
       }
     }
 
-    return new HistoricDetailPaginateList(this).paginateList(urlQuery, queryRequest, query, "processInstanceId", allowedSortProperties);
+    return new HistoricDetailPaginateList(restResponseFactory, serverRootUrl).paginateList(
+        allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 }

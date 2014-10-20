@@ -14,96 +14,101 @@
 package org.activiti.rest.service.api.runtime.process;
 
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.restlet.data.Form;
-import org.restlet.resource.Get;
-import org.restlet.resource.Put;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ExecutionCollectionResource extends ExecutionBaseResource {
 
-  @Get("json")
-  public DataResponse getProcessInstances() {
-    if(!authenticate()) {
-      return null;
-    }
-    Form urlQuery = getQuery();
-   
+  @RequestMapping(value="/runtime/executions", method = RequestMethod.GET, produces="application/json")
+  public DataResponse getProcessInstances(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
     // Populate query based on request
     ExecutionQueryRequest queryRequest = new ExecutionQueryRequest();
     
-    if(getQueryParameter("id", urlQuery) != null) {
-      queryRequest.setId(getQueryParameter("id", urlQuery));
+    if (allRequestParams.containsKey("id")) {
+      queryRequest.setId(allRequestParams.get("id"));
     }
     
-    if(getQueryParameter("processInstanceId", urlQuery) != null) {
-      queryRequest.setProcessInstanceId(getQueryParameter("processInstanceId", urlQuery));
+    if (allRequestParams.containsKey("processInstanceId")) {
+      queryRequest.setProcessInstanceId(allRequestParams.get("processInstanceId"));
     }
     
-    if(getQueryParameter("processInstanceBusinessKey", urlQuery) != null) {
-      queryRequest.setProcessBusinessKey(getQueryParameter("processInstanceBusinessKey", urlQuery));
+    if (allRequestParams.containsKey("processInstanceBusinessKey")) {
+      queryRequest.setProcessBusinessKey(allRequestParams.get("processInstanceBusinessKey"));
     }
     
-    if(getQueryParameter("processDefinitionKey", urlQuery) != null) {
-      queryRequest.setProcessDefinitionKey(getQueryParameter("processDefinitionKey", urlQuery));
+    if (allRequestParams.containsKey("processDefinitionKey")) {
+      queryRequest.setProcessDefinitionKey(allRequestParams.get("processDefinitionKey"));
     }
     
-    if(getQueryParameter("processDefinitionId", urlQuery) != null) {
-      queryRequest.setProcessDefinitionId(getQueryParameter("processDefinitionId", urlQuery));
+    if (allRequestParams.containsKey("processDefinitionId")) {
+      queryRequest.setProcessDefinitionId(allRequestParams.get("processDefinitionId"));
     }
     
-    if(getQueryParameter("messageEventSubscriptionName", urlQuery) != null) {
-      queryRequest.setMessageEventSubscriptionName(getQueryParameter("messageEventSubscriptionName", urlQuery));
+    if (allRequestParams.containsKey("messageEventSubscriptionName")) {
+      queryRequest.setMessageEventSubscriptionName(allRequestParams.get("messageEventSubscriptionName"));
     }
     
-    if(getQueryParameter("signalEventSubscriptionName", urlQuery) != null) {
-      queryRequest.setSignalEventSubscriptionName(getQueryParameter("signalEventSubscriptionName", urlQuery));
+    if (allRequestParams.containsKey("signalEventSubscriptionName")) {
+      queryRequest.setSignalEventSubscriptionName(allRequestParams.get("signalEventSubscriptionName"));
     }
     
-    if(getQueryParameter("activityId", urlQuery) != null) {
-      queryRequest.setActivityId(getQueryParameter("activityId", urlQuery));
+    if (allRequestParams.containsKey("activityId")) {
+      queryRequest.setActivityId(allRequestParams.get("activityId"));
     }
     
-    if(getQueryParameter("parentId", urlQuery) != null) {
-      queryRequest.setParentId(getQueryParameter("parentId", urlQuery));
+    if (allRequestParams.containsKey("parentId")) {
+      queryRequest.setParentId(allRequestParams.get("parentId"));
     }
     
-    if(getQueryParameter("tenantId", urlQuery) != null) {
-      queryRequest.setTenantId(getQueryParameter("tenantId", urlQuery));
+    if (allRequestParams.containsKey("tenantId")) {
+      queryRequest.setTenantId(allRequestParams.get("tenantId"));
     }
     
-    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
-      queryRequest.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    if (allRequestParams.containsKey("tenantIdLike")) {
+      queryRequest.setTenantIdLike(allRequestParams.get("tenantIdLike"));
     }
     
-    if(Boolean.TRUE.equals(getQueryParameterAsBoolean("withoutTenantId", urlQuery))) {
-    	queryRequest.setWithoutTenantId(Boolean.TRUE);
+    if (allRequestParams.containsKey("withoutTenantId")) {
+      if (Boolean.valueOf(allRequestParams.get("withoutTenantId"))) {
+        queryRequest.setWithoutTenantId(Boolean.TRUE);
+      }
     }
     
-    return getQueryResponse(queryRequest, urlQuery);
+    return getQueryResponse(queryRequest, allRequestParams, 
+        request.getRequestURL().toString().replace("/runtime/executions", ""));
   }
   
-  @Put
-  public void executeExecutionAction(ExecutionActionRequest actionRequest) {
-  	if(!authenticate()) { return; }
-  	
-    if(!ExecutionActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(actionRequest.getAction())) {
+  @RequestMapping(value="/runtime/executions", method = RequestMethod.PUT)
+  public void executeExecutionAction(@RequestBody ExecutionActionRequest actionRequest, HttpServletResponse response) {
+    if (!ExecutionActionRequest.ACTION_SIGNAL_EVENT_RECEIVED.equals(actionRequest.getAction())) {
       throw new ActivitiIllegalArgumentException("Illegal action: '" + actionRequest.getAction() +"'.");
     }
     
-    if(actionRequest.getSignalName() == null) {
+    if (actionRequest.getSignalName() == null) {
       throw new ActivitiIllegalArgumentException("Signal name is required.");
     }
     
-    if(actionRequest.getVariables() != null) {
-      ActivitiUtil.getRuntimeService().signalEventReceived(actionRequest.getSignalName(), getVariablesToSet(actionRequest));
+    if (actionRequest.getVariables() != null) {
+      runtimeService.signalEventReceived(actionRequest.getSignalName(), getVariablesToSet(actionRequest));
     } else {
-      ActivitiUtil.getRuntimeService().signalEventReceived(actionRequest.getSignalName());
+      runtimeService.signalEventReceived(actionRequest.getSignalName());
     }
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

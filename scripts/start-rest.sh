@@ -6,7 +6,7 @@ STATUS=$?
 if [ $STATUS -eq 0 ] 
 then
     cd modules/activiti-webapp-rest2
-    mvn -Dfile.encoding=UTF-8 clean package jetty:run
+    mvn -Dfile.encoding=UTF-8 clean package tomcat7:run
 else
     echo "Build failure in dependent project. Cannot boot Activiti Rest."
 fi    

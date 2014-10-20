@@ -1,10 +1,6 @@
 package org.activiti.spring;
 
-import org.activiti.engine.impl.calendar.AdvancedCycleBusinessCalendar;
-import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
-import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
-import org.activiti.engine.impl.calendar.BusinessCalendarManager;
-import org.activiti.engine.impl.calendar.MapBusinessCalendarManager;
+import org.activiti.engine.impl.calendar.*;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 
@@ -27,41 +23,41 @@ import org.activiti.engine.runtime.Clock;
  *  &lt;/bean&gt;
  * </pre>
  *
- * @see AdvancedCycleBusinessCalendar
  * @author mseiden
+ * @see AdvancedCycleBusinessCalendar
  */
 public class SpringAdvancedBusinessCalendarManagerFactory {
 
-  private Integer defaultScheduleVersion;
-  
-  private Clock clock;
+    private Integer defaultScheduleVersion;
 
-  public Integer getDefaultScheduleVersion() {
-    return defaultScheduleVersion;
-  }
+    private Clock clock;
 
-  public void setDefaultScheduleVersion(Integer defaultScheduleVersion) {
-    this.defaultScheduleVersion = defaultScheduleVersion;
-  }
-
-  public Clock getClock() {
-    if (clock == null) {
-      clock = new DefaultClockImpl();
+    public Integer getDefaultScheduleVersion() {
+        return defaultScheduleVersion;
     }
-    return clock;
-  }
 
-  public void setClock(Clock clock) {
-    this.clock = clock;
-  }
+    public void setDefaultScheduleVersion(Integer defaultScheduleVersion) {
+        this.defaultScheduleVersion = defaultScheduleVersion;
+    }
 
-  public BusinessCalendarManager getBusinessCalendarManager() {
-    MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
-    mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(getClock()));
-    mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(getClock()));
-    mapBusinessCalendarManager.addBusinessCalendar(AdvancedCycleBusinessCalendar.NAME, new AdvancedCycleBusinessCalendar(getClock(), defaultScheduleVersion));
+    public Clock getClock() {
+        if (clock == null) {
+            clock = new DefaultClockImpl();
+        }
+        return clock;
+    }
 
-    return mapBusinessCalendarManager;
-  }
+    public void setClock(Clock clock) {
+        this.clock = clock;
+    }
+
+    public BusinessCalendarManager getBusinessCalendarManager() {
+        MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
+        mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(getClock()));
+        mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(getClock()));
+        mapBusinessCalendarManager.addBusinessCalendar(AdvancedCycleBusinessCalendar.NAME, new AdvancedCycleBusinessCalendar(getClock(), defaultScheduleVersion));
+
+        return mapBusinessCalendarManager;
+    }
 
 }

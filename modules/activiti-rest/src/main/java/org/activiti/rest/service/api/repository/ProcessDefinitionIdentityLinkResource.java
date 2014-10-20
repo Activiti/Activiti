@@ -15,62 +15,62 @@ package org.activiti.rest.service.api.repository;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.RestUrls;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ProcessDefinitionIdentityLinkResource extends BaseProcessDefinitionResource {
 
-  @Get
-  public RestIdentityLink getIdentityLink() {
-    if (!authenticate())
-      return null;
+  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.GET, produces = "application/json")
+  public RestIdentityLink getIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, 
+      @PathVariable("identityId") String identityId, HttpServletRequest request) {
+    
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
 
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
-
-    // Extract and validate identity link from URL
-    String family = getAttribute("family");
-    String identityId = getAttribute("identityId");
     validateIdentityLinkArguments(family, identityId);
 
     // Check if identitylink to get exists
     IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory().createRestIdentityLink(this, link);
+    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/process-definitions/"));
+    
+    return restResponseFactory.createRestIdentityLink(link, serverRootUrl);
   }
 
-  @Delete
-  public void deleteIdentityLink() {
-    if (!authenticate())
-      return;
+  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.DELETE)
+  public void deleteIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, 
+      @PathVariable("identityId") String identityId, HttpServletResponse response) {
+    
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
 
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
-
-    // Extract and validate identity link from URL
-    String family = getAttribute("family");
-    String identityId = getAttribute("identityId");
     validateIdentityLinkArguments(family, identityId);
 
     // Check if identitylink to delete exists
     IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
-    if(link.getUserId() != null) {
-      ActivitiUtil.getRepositoryService().deleteCandidateStarterUser(processDefinition.getId(), link.getUserId());
+    if (link.getUserId() != null) {
+      repositoryService.deleteCandidateStarterUser(processDefinition.getId(), link.getUserId());
     } else {
-      ActivitiUtil.getRepositoryService().deleteCandidateStarterGroup(processDefinition.getId(), link.getGroupId());
+      repositoryService.deleteCandidateStarterGroup(processDefinition.getId(), link.getGroupId());
     }
     
-    setStatus(Status.SUCCESS_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 
   protected void validateIdentityLinkArguments(String family, String identityId) {
@@ -87,7 +87,7 @@ public class ProcessDefinitionIdentityLinkResource extends BaseProcessDefinition
 
     // Perhaps it would be better to offer getting a single identitylink from
     // the API
-    List<IdentityLink> allLinks = ActivitiUtil.getRepositoryService().getIdentityLinksForProcessDefinition(processDefinitionId);
+    List<IdentityLink> allLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
     for (IdentityLink link : allLinks) {
       boolean rightIdentity = false;
       if (isUser) {

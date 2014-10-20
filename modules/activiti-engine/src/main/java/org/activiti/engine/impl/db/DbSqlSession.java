@@ -172,9 +172,9 @@ public class DbSqlSession implements Session {
     cachePut(persistentObject, false);
   }
   
-  public void update(String statement, Object parameters) {
+  public int update(String statement, Object parameters) {
      String updateStatement = dbSqlSessionFactory.mapStatement(statement);
-     getSqlSession().update(updateStatement, parameters);
+     return getSqlSession().update(updateStatement, parameters);
   }
   
   // delete ///////////////////////////////////////////////////////////////////
@@ -1205,20 +1205,20 @@ public class DbSqlSession implements Session {
       Exception exception = null;
       byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
       String ddlStatements = new String(bytes);
+      String databaseType = dbSqlSessionFactory.getDatabaseType();
       
       // Special DDL handling for certain databases
       try {
-	    	String databaseType = dbSqlSessionFactory.getDatabaseType();
-	    	if (databaseType.equals("mysql")) {
-		     DatabaseMetaData databaseMetaData = connection.getMetaData();
-		     int majorVersion = databaseMetaData.getDatabaseMajorVersion();
-		     int minorVersion = databaseMetaData.getDatabaseMinorVersion();
-		     log.info("Found MySQL: majorVersion=" + majorVersion + " minorVersion=" + minorVersion);
+	    	if ("mysql".equals(databaseType)) {
+	    	  DatabaseMetaData databaseMetaData = connection.getMetaData();
+	    	  int majorVersion = databaseMetaData.getDatabaseMajorVersion();
+	    	  int minorVersion = databaseMetaData.getDatabaseMinorVersion();
+	    	  log.info("Found MySQL: majorVersion=" + majorVersion + " minorVersion=" + minorVersion);
 		      
-		     // Special care for MySQL < 5.6
-		     if (majorVersion <= 5 && minorVersion < 6) {
-		       ddlStatements = updateDdlForMySqlVersionLowerThan56(ddlStatements);
-		     }
+	    	  // Special care for MySQL < 5.6
+	    	  if (majorVersion <= 5 && minorVersion < 6) {
+	    	    ddlStatements = updateDdlForMySqlVersionLowerThan56(ddlStatements);
+	    	  }
 	    	}
       } catch (Exception e) {
         log.info("Could not get database metadata", e);
@@ -1226,6 +1226,7 @@ public class DbSqlSession implements Session {
       
       BufferedReader reader = new BufferedReader(new StringReader(ddlStatements));
       String line = readNextTrimmedLine(reader);
+      boolean inOraclePlsqlBlock = false;
       while (line != null) {
         if (line.startsWith("# ")) {
           log.debug(line.substring(2));
@@ -1250,8 +1251,19 @@ public class DbSqlSession implements Session {
           
         } else if (line.length()>0) {
           
-          if (line.endsWith(";")) {
-            sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
+          if ("oracle".equals(databaseType) && line.startsWith("begin")) {
+            inOraclePlsqlBlock = true;
+            sqlStatement = addSqlStatementPiece(sqlStatement, line);
+            
+          } else if ((line.endsWith(";") && inOraclePlsqlBlock == false) ||
+              (line.startsWith("/") && inOraclePlsqlBlock == true)) {
+            
+            if (inOraclePlsqlBlock) {
+              inOraclePlsqlBlock = false;
+            } else {
+              sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
+            }
+            
             Statement jdbcStatement = connection.createStatement();
             try {
               // no logging needed as the connection will log it

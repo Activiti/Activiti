@@ -13,26 +13,31 @@
 package org.activiti.rest.service.api.repository;
 
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory;
 import org.activiti.workflow.simple.converter.json.SimpleWorkflowJsonConverter;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
-import org.restlet.resource.Post;
-import org.restlet.resource.ServerResource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Joram Barrez
  */
-public class SimpleWorkflowResource extends ServerResource {
+@RestController
+public class SimpleWorkflowResource {
   
-  @Post
-  public SimpleWorkflowSuccessResponse createWorkflow(String json) {
+  @Autowired
+  protected RepositoryService repositoryService;
+  
+  @RequestMapping(value="/simple-workflow", method = RequestMethod.POST, produces="application/json")
+  public SimpleWorkflowSuccessResponse createWorkflow(@RequestBody String json) {
     // Convert json to simple workflow definition
     SimpleWorkflowJsonConverter jsonConverter = new SimpleWorkflowJsonConverter();
     WorkflowDefinition workflowDefinition = jsonConverter.readWorkflowDefinition(json.getBytes());
@@ -42,10 +47,9 @@ public class SimpleWorkflowResource extends ServerResource {
     conversion.convert();
     
     // Deploy process
-    ProcessEngine processEngine = ActivitiUtil.getProcessEngine();
-    RepositoryService repositoryService = processEngine.getRepositoryService();
+
     BpmnModel bpmnModel = conversion.getBpmnModel();
-    Deployment deployment =repositoryService.createDeployment()
+    Deployment deployment = repositoryService.createDeployment()
       .addBpmnModel(bpmnModel.getProcesses().get(0).getName() + ".bpmn20.xml", bpmnModel)
       .deploy();
     

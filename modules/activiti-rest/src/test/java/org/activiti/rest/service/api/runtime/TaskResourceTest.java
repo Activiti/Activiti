@@ -24,12 +24,15 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -41,7 +44,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Frederik Heremans
  */
-public class TaskResourceTest extends BaseRestTestCase {
+public class TaskResourceTest extends BaseSpringRestTestCase {
   
   /**
    * Test getting a single task, spawned by a process.
@@ -59,12 +62,11 @@ public class TaskResourceTest extends BaseRestTestCase {
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
 
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
-    Representation response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())), HttpStatus.SC_OK);
     
     // Check resulting task
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertEquals(task.getId(), responseNode.get("id").asText());
     assertEquals(task.getAssignee(), responseNode.get("assignee").asText());
     assertEquals(task.getOwner(), responseNode.get("owner").asText());
@@ -82,15 +84,15 @@ public class TaskResourceTest extends BaseRestTestCase {
     assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, task.getProcessInstanceId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(task.getProcessDefinitionId()))));
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, task.getProcessDefinitionId())));
     
     // Set tenant on deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
     
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
-    response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    responseNode = objectMapper.readTree(response.getStream());
+    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())), HttpStatus.SC_OK);
+    
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertEquals("myTenant", responseNode.get("tenantId").asText());
   }
   
@@ -119,12 +121,11 @@ public class TaskResourceTest extends BaseRestTestCase {
       task.setPriority(20);
       taskService.saveTask(task);
 
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())), HttpStatus.SC_OK);
       
       // Check resulting task
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertEquals(task.getId(), responseNode.get("id").asText());
       assertEquals(task.getAssignee(), responseNode.get("assignee").asText());
       assertEquals(task.getOwner(), responseNode.get("owner").asText());
@@ -175,12 +176,13 @@ public class TaskResourceTest extends BaseRestTestCase {
       task.setPriority(20);
       taskService.saveTask(task);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
       ObjectNode requestNode = objectMapper.createObjectNode();
       
       // Execute the request with an empty request JSON-object
-      client.put(requestNode);
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPut, HttpStatus.SC_OK);
       
       task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
       assertEquals("Task name", task.getName());
@@ -214,7 +216,6 @@ public class TaskResourceTest extends BaseRestTestCase {
       Task parentTask = taskService.newTask();
       taskService.saveTask(parentTask);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
       ObjectNode requestNode = objectMapper.createObjectNode();
       
       Calendar dueDate = Calendar.getInstance();
@@ -230,9 +231,10 @@ public class TaskResourceTest extends BaseRestTestCase {
       requestNode.put("parentTaskId", parentTask.getId());
       
       // Execute the request
-      client.put(requestNode);
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPut, HttpStatus.SC_OK);
       
       task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
       assertEquals("New task name", task.getName());
@@ -241,9 +243,8 @@ public class TaskResourceTest extends BaseRestTestCase {
       assertEquals("owner", task.getOwner());
       assertEquals(20, task.getPriority());
       assertEquals(DelegationState.RESOLVED, task.getDelegationState());
-      assertEquals(dueDate.getTime(), task.getDueDate());
+      assertEquals(dateFormat.parse(dueDateString), task.getDueDate());
       assertEquals(parentTask.getId(), task.getParentTaskId());
-      
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -259,17 +260,13 @@ public class TaskResourceTest extends BaseRestTestCase {
    * PUT runtime/tasks/{taskId}
    */
   public void testUpdateUnexistingTask() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, "unexistingtask"));
     ObjectNode requestNode = objectMapper.createObjectNode();
     
     // Execute the request with an empty request JSON-object
-    try {
-      client.put(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
-    }
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, "unexistingtask"));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -284,16 +281,15 @@ public class TaskResourceTest extends BaseRestTestCase {
       taskService.saveTask(task);
       String taskId = task.getId();
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
-      
       // Execute the request
-      client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
       
       task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
       assertNull(task);
       
-      if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
         // Check that the historic task has not been deleted
         assertNotNull(historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult());
       }
@@ -303,16 +299,15 @@ public class TaskResourceTest extends BaseRestTestCase {
       taskService.saveTask(task);
       taskId = task.getId();
       
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId) + "?cascadeHistory=true");
-      
       // Execute the request
-      client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+      httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId) + "?cascadeHistory=true");
+      executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
       
       task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
       assertNull(task);
       
-      if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
         // Check that the historic task has been deleted
         assertNull(historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult());
       }
@@ -322,21 +317,21 @@ public class TaskResourceTest extends BaseRestTestCase {
       taskService.saveTask(task);
       taskId = task.getId();
       
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId) + "?deleteReason=fortestingpurposes");
-      
       // Execute the request
-      client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+      httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId) + "?deleteReason=fortestingpurposes");
+      executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
       
       task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
       assertNull(task);
       
-      if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
         // Check that the historic task has been deleted and delete-reason has been set
         HistoricTaskInstance instance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult(); 
         assertNotNull(instance);
         assertEquals("fortestingpurposes", instance.getDeleteReason());
       }
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -357,15 +352,9 @@ public class TaskResourceTest extends BaseRestTestCase {
    * PUT runtime/tasks/{taskId}
    */
   public void testDeleteUnexistingTask() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, "unexistingtask"));
-    
-    try {
-      client.delete();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
-    }
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, "unexistingtask"));
+    executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -378,15 +367,9 @@ public class TaskResourceTest extends BaseRestTestCase {
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
-    
-    try {
-      client.delete();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_FORBIDDEN, expected.getStatus());
-      assertEquals("Cannot delete a task that is part of a process-instance.", expected.getStatus().getDescription());
-    }
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
+    executeHttpRequest(httpDelete, HttpStatus.SC_FORBIDDEN);
   }
   
   /**
@@ -401,11 +384,12 @@ public class TaskResourceTest extends BaseRestTestCase {
       taskService.saveTask(task);
       String taskId = task.getId();
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
-      
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("action", "complete");
-      client.post(requestNode);
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId()));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_OK);
       
       // Task shouldn't exist anymore
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -416,7 +400,6 @@ public class TaskResourceTest extends BaseRestTestCase {
       task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
       taskId = task.getId();
       
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
       requestNode = objectMapper.createObjectNode();
       ArrayNode variablesNode = objectMapper.createArrayNode();
       requestNode.put("action", "complete");
@@ -431,12 +414,15 @@ public class TaskResourceTest extends BaseRestTestCase {
       var2.put("name", "var2");
       var2.put("value", "Second value");
       
-      client.post(requestNode);
+      httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_OK);
       
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
       assertNull(task);
       
-      if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+      if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
         HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
         assertNotNull(historicTaskInstance);
         List<HistoricVariableInstance> updates =  historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).list();
@@ -444,11 +430,12 @@ public class TaskResourceTest extends BaseRestTestCase {
         assertEquals(2, updates.size());
         boolean foundFirst = false;
         boolean foundSecond = false;
-        for(HistoricVariableInstance var : updates) {
-          if(var.getVariableName().equals("var1")) {
+        
+        for (HistoricVariableInstance var : updates) {
+          if (var.getVariableName().equals("var1")) {
             assertEquals("First value", var.getValue());
             foundFirst = true;
-          } else if(var.getVariableName().equals("var2")) {
+          } else if (var.getVariableName().equals("var2")) {
             assertEquals("Second value", var.getValue());
             foundSecond = true;
           }
@@ -458,10 +445,7 @@ public class TaskResourceTest extends BaseRestTestCase {
         assertTrue(foundSecond);
       }
       
-      
-    }
-    finally
-    {
+    } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
       for(Task task : tasks) {
@@ -491,14 +475,15 @@ public class TaskResourceTest extends BaseRestTestCase {
       // Add candidate group
       String taskId = task.getId();
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
-      
       task.setAssignee("fred");
       // Claiming without assignee should set asisgnee to null
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("action", "claim");
       
-      client.post(requestNode);
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_OK);
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
       assertNotNull(task);
       assertNull(task.getAssignee());
@@ -506,14 +491,16 @@ public class TaskResourceTest extends BaseRestTestCase {
 
       // Claim the task and check result
       requestNode.put("assignee", "newAssignee");
-      client.post(requestNode);
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_OK);
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
       assertNotNull(task);
       assertEquals("newAssignee", task.getAssignee());
       assertEquals(0L, taskService.createTaskQuery().taskCandidateUser("newAssignee").count());
       
       // Claiming with the same user shouldn't cause an exception
-      client.post(requestNode);
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_OK);
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
       assertNotNull(task);
       assertEquals("newAssignee", task.getAssignee());
@@ -521,26 +508,19 @@ public class TaskResourceTest extends BaseRestTestCase {
       
       // Claiming with another user should cause exception
       requestNode.put("assignee", "anotherUser");
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-        assertEquals("Task '" + task.getId() + "' is already claimed by someone else.", expected.getStatus().getDescription());
-      }
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_CONFLICT);
       
-    }
-    finally
-    {
+    } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
-      for(Task task : tasks) {
+      for (Task task : tasks) {
         taskService.deleteTask(task.getId(), true);
       }
       
       // Clean historic tasks with no runtime-counterpart
       List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().list();
-      for(HistoricTaskInstance task : historicTasks) {
+      for (HistoricTaskInstance task : historicTasks) {
         historyService.deleteHistoricTaskInstance(task.getId());
       }
     }
@@ -558,22 +538,18 @@ public class TaskResourceTest extends BaseRestTestCase {
       taskService.saveTask(task);
       String taskId = task.getId();
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
-      
       // Delegating without assignee fails
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("action", "delegate");
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("An assignee is required when delegating a task.", expected.getStatus().getDescription());
-      }
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
 
       // Delegate the task and check result
       requestNode.put("assignee", "newAssignee");
-      client.post(requestNode);
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_OK);
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
       assertNotNull(task);
       assertEquals("newAssignee", task.getAssignee());
@@ -582,18 +558,18 @@ public class TaskResourceTest extends BaseRestTestCase {
       
       // Delegating again shouldn't cause an exception and should delegate to user without affecting initial delegator (owner)
       requestNode.put("assignee", "anotherAssignee");
-      client.post(requestNode);
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_OK);
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
       assertNotNull(task);
       assertEquals("anotherAssignee", task.getAssignee());
       assertEquals("initialAssignee", task.getOwner());
       assertEquals(DelegationState.PENDING, task.getDelegationState());
-    }
-    finally
-    {
+      
+    } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
-      for(Task task : tasks) {
+      for (Task task : tasks) {
         taskService.deleteTask(task.getId(), true);
       }
     }
@@ -605,19 +581,19 @@ public class TaskResourceTest extends BaseRestTestCase {
    */
   public void testResolveTask() throws Exception {
     try {
-      
       Task task = taskService.newTask();
       task.setAssignee("initialAssignee");
       taskService.saveTask(task);
       taskService.delegateTask(task.getId(), "anotherUser");
       String taskId = task.getId();
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
-      
       // Resolve the task and check result
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("action", "resolve");
-      client.post(requestNode);
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_OK);
       
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
       assertNotNull(task);
@@ -626,18 +602,18 @@ public class TaskResourceTest extends BaseRestTestCase {
       assertEquals(DelegationState.RESOLVED, task.getDelegationState());
       
       // Resolving again shouldn't cause an exception
-      client.post(requestNode);
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_OK);
       task = taskService.createTaskQuery().taskId(taskId).singleResult();
       assertNotNull(task);
       assertEquals("initialAssignee", task.getAssignee());
       assertEquals("initialAssignee", task.getOwner());
       assertEquals(DelegationState.RESOLVED, task.getDelegationState());
-    }
-    finally
-    {
+      
+    } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
-      for(Task task : tasks) {
+      for (Task task : tasks) {
         taskService.deleteTask(task.getId(), true);
       }
     }
@@ -649,35 +625,27 @@ public class TaskResourceTest extends BaseRestTestCase {
    */
   public void testInvalidTaskAction() throws Exception {
     try {
-      
       Task task = taskService.newTask();
       taskService.saveTask(task);
       String taskId = task.getId();
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
-      
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("action", "unexistingaction");
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, taskId));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
       
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("Invalid action: 'unexistingaction'.", expected.getStatus().getDescription());
-      }
-    }
-    finally
-    {
+    } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
-      for(Task task : tasks) {
+      for (Task task : tasks) {
         taskService.deleteTask(task.getId(), true);
       }
       
       // Clean historic tasks with no runtime-counterpart
       List<HistoricTaskInstance> historicTasks = historyService.createHistoricTaskInstanceQuery().list();
-      for(HistoricTaskInstance task : historicTasks) {
+      for (HistoricTaskInstance task : historicTasks) {
         historyService.deleteHistoricTaskInstance(task.getId());
       }
     }
@@ -688,45 +656,23 @@ public class TaskResourceTest extends BaseRestTestCase {
    * POST runtime/tasks/{taskId}
    */
   public void testActionsUnexistingTask() throws Exception {
-      
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, "unexisting"));
-      
-      ObjectNode requestNode = objectMapper.createObjectNode();
-      requestNode.put("action", "complete");
-      
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
-      }
-      
-      requestNode.put("action", "claim");
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
-      }
-      
-      requestNode.put("action", "delegate");
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
-      }
-      
-      requestNode.put("action", "resolve");
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
-      }
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    requestNode.put("action", "complete");
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, "unexisting"));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    
+    requestNode.put("action", "claim");
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    
+    requestNode.put("action", "delegate");
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    
+    requestNode.put("action", "resolve");
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
   }
 }

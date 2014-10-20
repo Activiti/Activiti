@@ -16,12 +16,14 @@ package org.activiti.rest.service.api.runtime;
 import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -31,7 +33,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Frederik Heremans
  */
-public class ProcessInstanceResourceTest extends BaseRestTestCase {
+public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting a single process instance.
@@ -39,12 +41,12 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
   @Deployment(resources = {"org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
   public void testGetProcessInstance() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
-    Representation response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())), HttpStatus.SC_OK);
     
     // Check resulting instance
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertEquals("myBusinessKey", responseNode.get("businessKey").textValue());
@@ -55,15 +57,15 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
     assertTrue(responseNode.get("url").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
     assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, encode(processInstance.getProcessDefinitionId()))));
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId())));
     
     // Check result after tenant has been changed
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
-    response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())), HttpStatus.SC_OK);
     
     // Check resulting instance tenant id
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals("myTenant", responseNode.get("tenantId").textValue());
   }
@@ -72,14 +74,8 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
    * Test getting an unexisting process instance.
    */
   public void testGetUnexistingProcessInstance() {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi"));
-    try {
-      client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a process instance with id 'unexistingpi'.", expected.getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -88,9 +84,8 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
   @Deployment(resources = {"org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
   public void testDeleteProcessInstance() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
-    client.delete();
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())), HttpStatus.SC_NO_CONTENT);
     
     // Check if process-instance is gone
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
@@ -100,14 +95,8 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
    * Test deleting an unexisting process instance.
    */
   public void testDeleteUnexistingProcessInstance() {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi"));
-    try {
-      client.delete();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a process instance with id 'unexistingpi'.", expected.getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -120,27 +109,23 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("action", "suspend");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
-    Representation response = client.put(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+    
     // Check engine id instance is suspended
     assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().processInstanceId(processInstance.getId()).count());
     
     // Check resulting instance is suspended
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("suspended").booleanValue());
     
     // Suspending again should result in conflict
-    try {
-      client.put(requestNode);
-      fail("Expected exception");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-      assertEquals("Process instance with id '" + processInstance.getId() + "' is already suspended.", expected.getStatus().getDescription());
-    }
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_CONFLICT);
   }
   
   /**
@@ -154,26 +139,22 @@ public class ProcessInstanceResourceTest extends BaseRestTestCase {
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("action", "activate");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
-    Representation response = client.put(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+    
     // Check engine id instance is suspended
     assertEquals(1, runtimeService.createProcessInstanceQuery().active().processInstanceId(processInstance.getId()).count());
     
     // Check resulting instance is suspended
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertFalse(responseNode.get("suspended").booleanValue());
     
     // Activating again should result in conflict
-    try {
-      client.put(requestNode);
-      fail("Expected exception");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-      assertEquals("Process instance with id '" + processInstance.getId() + "' is already active.", expected.getStatus().getDescription());
-    }
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_CONFLICT);
   }
 }

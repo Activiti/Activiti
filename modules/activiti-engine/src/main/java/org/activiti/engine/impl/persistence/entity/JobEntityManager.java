@@ -28,7 +28,6 @@ import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.runtime.Job;
 
@@ -63,7 +62,6 @@ public class JobEntityManager extends AbstractManager {
   
   protected void hintJobExecutor(JobEntity job) {  
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
-    JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
 
     // notify job executor:      
     TransactionListener transactionListener = new JobAddedNotification(jobExecutor);
@@ -95,6 +93,10 @@ public class JobEntityManager extends AbstractManager {
   public List<JobEntity> findNextJobsToExecute(Page page) {
     Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
+  }
+  
+  public List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
+  	return getDbSqlSession().selectList("selectJobsByLockOwner", lockOwner, start, maxNrOfJobs);
   }
   
   @SuppressWarnings("unchecked")
@@ -146,5 +148,13 @@ public class JobEntityManager extends AbstractManager {
   	params.put("tenantId", newTenantId);
   	getDbSqlSession().update("updateJobTenantIdForDeployment", params);
   }
-
+  
+  public int updateJobLockForAllJobs(String lockOwner, Date expirationTime) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("lockOwner", lockOwner);
+    params.put("lockExpirationTime", expirationTime);
+    params.put("dueDate", Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    return getDbSqlSession().update("updateJobLockForAllJobs", params);
+  }
+  
 }

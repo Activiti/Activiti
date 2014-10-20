@@ -22,18 +22,18 @@ public class DeploymentResourceResponse {
   private String url;
   private String contentUrl;
   private String mediaType;
-  private DeploymentResourceType type;
+  private String type;
   
   public DeploymentResourceResponse(String resourceId, String url, String contentUrl, 
-          String mediaType, DeploymentResourceType type) {
+          String mediaType, String type) {
     setId(resourceId);
     setUrl(url);
     setContentUrl(contentUrl);
     setMediaType(mediaType);
     
     this.type = type;
-    if(type == null) {
-      this.type = DeploymentResourceType.RESOURCE;
+    if (type == null) {
+      this.type = "resource";
     }
   }
   
@@ -61,35 +61,10 @@ public class DeploymentResourceResponse {
   public String getMediaType() {
     return mediaType;
   } 
-  public String getType() {
-    switch (type) {
-    case PROCESS_DEFINITION:
-      return "processDefinition";
-    case PROCESS_IMAGE:
-      return "processImage";
-    default:
-      return "resource";
-    }
+  public void setType(String type) {
+    this.type = type;
   }
-  
-  /**
-   * Possible types of resources in a deployment.
-   * TODO: move to activiti API
-   * 
-   * @author Frederik Heremans
-   */
-  public enum DeploymentResourceType {
-    /**
-     * A simple resource in a deployment.
-     */
-    RESOURCE,
-    /**
-     * A resource that contains a process-definition.
-     */
-    PROCESS_DEFINITION,
-    /**
-     * A resource that is a process-definition image.
-     */
-    PROCESS_IMAGE;
+  public String getType() {
+    return type;
   }
 }

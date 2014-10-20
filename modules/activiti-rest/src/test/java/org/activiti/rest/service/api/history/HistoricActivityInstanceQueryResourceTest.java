@@ -23,12 +23,12 @@ import java.util.List;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Tijs Rademakers
  */
-public class HistoricActivityInstanceQueryResourceTest extends BaseRestTestCase {
+public class HistoricActivityInstanceQueryResourceTest extends BaseSpringRestTestCase {
   
   /**
    * Test querying historic activity instance. 
@@ -135,12 +135,12 @@ public class HistoricActivityInstanceQueryResourceTest extends BaseRestTestCase 
   protected void assertResultsPresentInDataResponse(String url, ObjectNode body, int numberOfResultsExpected, String... expectedActivityIds) throws JsonProcessingException, IOException {
     
     // Do the actual call
-    ClientResource client = getAuthenticatedClient(url);
-    Representation response = client.post(body);
+    HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
+    post.setEntity(new StringEntity(body.toString()));
+    HttpResponse response = executeHttpRequest(post, 200);
     
     // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's
@@ -153,7 +153,5 @@ public class HistoricActivityInstanceQueryResourceTest extends BaseRestTestCase 
       }
       assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
     }
-    
-    client.release();
   }
 }

@@ -2638,6 +2638,36 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
   	}
   }
   
+  // Test for https://jira.codehaus.org/browse/ACT-2103
+  public void testTaskLocalAndProcessInstanceVariableEqualsInOr() {
+  	
+  	deployOneTaskTestProcess();
+  	for (int i=0; i<10; i++) {
+  		runtimeService.startProcessInstanceByKey("oneTaskProcess");
+  	}
+  	
+  	List<Task> allTasks = taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").list();
+  	assertEquals(10, allTasks.size());
+  	
+  	// Give two tasks a task local variable
+  	taskService.setVariableLocal(allTasks.get(0).getId(), "localVar", "someValue");
+  	taskService.setVariableLocal(allTasks.get(1).getId(), "localVar", "someValue");
+  	
+  	// Give three tasks a proc inst var
+  	runtimeService.setVariable(allTasks.get(2).getProcessInstanceId(), "var", "theValue");
+  	runtimeService.setVariable(allTasks.get(3).getProcessInstanceId(), "var", "theValue");
+  	runtimeService.setVariable(allTasks.get(4).getProcessInstanceId(), "var", "theValue");
+  	
+  	assertEquals(2, taskService.createTaskQuery().taskVariableValueEquals("localVar", "someValue").list().size());
+  	assertEquals(3, taskService.createTaskQuery().processVariableValueEquals("var", "theValue").list().size());
+  	
+  	assertEquals(5, taskService.createTaskQuery().or()
+  			.taskVariableValueEquals("localVar", "someValue")
+  			.processVariableValueEquals("var", "theValue")
+  			.endOr().list().size());
+  	
+  }
+  
   /**
    * Generates some test tasks. - 6 tasks where kermit is a candidate - 1 tasks
    * where gonzo is assignee - 2 tasks assigned to management group - 2 tasks
