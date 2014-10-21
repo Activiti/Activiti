@@ -1108,7 +1108,14 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
               </row>
               <row>
-                <entry>ACTIVITY_TIMOUT</entry>
+                <entry>ACTIVITY_CANCELLED</entry>
+                <entry>An activity is going to be cancelled</entry>
+                <entry>
+                  <literal>org.activiti...ActivitiActivityCancelledEvent</literal>
+                </entry>
+              </row>
+              <row>
+                <entry>ACTIVITY_TIMEOUT</entry>
                 <entry>An activity is interupted due to an interrupting timer boundary event.</entry>
                 <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
               </row>

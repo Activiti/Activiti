@@ -17,15 +17,12 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
-import org.activiti.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti.engine.delegate.event.ActivitiErrorEvent;
-import org.activiti.engine.delegate.event.ActivitiEvent;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiMessageEvent;
-import org.activiti.engine.delegate.event.ActivitiSignalEvent;
+import org.activiti.engine.delegate.event.*;
 import org.activiti.engine.delegate.event.impl.ActivitiActivityEventImpl;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.event.logger.EventLogger;
+import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -544,6 +541,138 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertTrue(eventIdList.indexOf("innerTask2") >= 0);
     assertTrue(eventIdList.indexOf("innerFork") >= 0);
     assertTrue(eventIdList.indexOf("callActivity") >= 0);
+  }
+
+  /**
+   * Test events related to message events, called from the API.
+   */
+  @Deployment
+  public void testActivityMessageBoundaryEventsOnUserTask() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageOnUserTaskProcess");
+    assertNotNull(processInstance);
+
+    Execution executionWithMessage = runtimeService.createExecutionQuery().activityId("cloudformtask1").singleResult();
+    assertNotNull(executionWithMessage);
+
+    runtimeService.messageEventReceived("message_1", executionWithMessage.getId());
+    assertEquals(2, listener.getEventsReceived().size());
+
+    // First, a message-event is expected
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
+    ActivitiMessageEvent messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
+    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
+    assertEquals("message_1", messageEvent.getMessageName());
+    assertNull(messageEvent.getMessageData());
+
+    // Next, an signal-event is expected, as a result of the message
+    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiActivityCancelledEvent);
+    ActivitiActivityCancelledEvent signalEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, signalEvent.getType());
+    assertEquals("cloudformtask1", signalEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), signalEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), signalEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
+    assertNotNull(signalEvent.getCause());
+    assertTrue(signalEvent.getCause() instanceof MessageEventSubscriptionEntity);
+    MessageEventSubscriptionEntity cause = (MessageEventSubscriptionEntity) signalEvent.getCause();
+    assertEquals("message_1", cause.getEventName());
+
+    assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+  }
+
+  /**
+   * Test events related to message events, called from the API.
+   */
+  @Deployment
+  public void testActivityMessageBoundaryEventsOnSubProcess() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("messageOnSubProcess");
+    assertNotNull(processInstance);
+
+    Execution executionWithMessage = runtimeService.createExecutionQuery().activityId("cloudformtask1").singleResult();
+    assertNotNull(executionWithMessage);
+
+    runtimeService.messageEventReceived("message_1", executionWithMessage.getId());
+    assertEquals(2, listener.getEventsReceived().size());
+
+    // First, a message-event is expected
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiMessageEvent);
+    ActivitiMessageEvent messageEvent = (ActivitiMessageEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, messageEvent.getType());
+    assertEquals("boundaryMessageEventCatching", messageEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), messageEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), messageEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), messageEvent.getProcessDefinitionId());
+    assertEquals("message_1", messageEvent.getMessageName());
+    assertNull(messageEvent.getMessageData());
+
+    // Next, an signal-event is expected, as a result of the message
+    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiActivityCancelledEvent);
+    ActivitiActivityCancelledEvent signalEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, signalEvent.getType());
+    assertEquals("cloudformtask1", signalEvent.getActivityId());
+    assertEquals(executionWithMessage.getId(), signalEvent.getExecutionId());
+    assertEquals(executionWithMessage.getProcessInstanceId(), signalEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
+    assertNotNull(signalEvent.getCause());
+    assertTrue(signalEvent.getCause() instanceof MessageEventSubscriptionEntity);
+    MessageEventSubscriptionEntity cause = (MessageEventSubscriptionEntity) signalEvent.getCause();
+    assertEquals("message_1", cause.getEventName());
+
+    assertDatabaseEventPresent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED);
+  }
+
+  @Deployment
+  public void testActivitySignalBoundaryEventsOnSubProcess() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalOnSubProcess");
+    assertNotNull(processInstance);
+
+    Execution executionWithSignal = runtimeService.createExecutionQuery().activityId("userTaskInsideProcess").singleResult();
+    assertNotNull(executionWithSignal);
+
+    runtimeService.signalEventReceived("signalName");
+    assertEquals(1, listener.getEventsReceived().size());
+
+    // Next, an signal-event is expected, as a result of the message
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiActivityCancelledEvent);
+    ActivitiActivityCancelledEvent signalEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, signalEvent.getType());
+    assertEquals("userTaskInsideProcess", signalEvent.getActivityId());
+    assertEquals(executionWithSignal.getId(), signalEvent.getExecutionId());
+    assertEquals(executionWithSignal.getProcessInstanceId(), signalEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
+    assertNotNull(signalEvent.getCause());
+    assertTrue(signalEvent.getCause() instanceof SignalEventSubscriptionEntity);
+    SignalEventSubscriptionEntity cause = (SignalEventSubscriptionEntity) signalEvent.getCause();
+    assertEquals("signalName", cause.getEventName());
+  }
+
+  @Deployment
+  public void testActivitySignalBoundaryEventsOnUserTask() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("signalOnUserTask");
+    assertNotNull(processInstance);
+
+    Execution executionWithSignal = runtimeService.createExecutionQuery().activityId("userTask").singleResult();
+    assertNotNull(executionWithSignal);
+
+    runtimeService.signalEventReceived("signalName");
+    assertEquals(1, listener.getEventsReceived().size());
+
+    // Next, an signal-event is expected, as a result of the message
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiActivityCancelledEvent);
+    ActivitiActivityCancelledEvent signalEvent = (ActivitiActivityCancelledEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, signalEvent.getType());
+    assertEquals("userTask", signalEvent.getActivityId());
+    assertEquals(executionWithSignal.getId(), signalEvent.getExecutionId());
+    assertEquals(executionWithSignal.getProcessInstanceId(), signalEvent.getProcessInstanceId());
+    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
+    assertNotNull(signalEvent.getCause());
+    assertTrue(signalEvent.getCause() instanceof SignalEventSubscriptionEntity);
+    SignalEventSubscriptionEntity cause = (SignalEventSubscriptionEntity) signalEvent.getCause();
+    assertEquals("signalName", cause.getEventName());
   }
 
   protected void assertDatabaseEventPresent(ActivitiEventType eventType) {

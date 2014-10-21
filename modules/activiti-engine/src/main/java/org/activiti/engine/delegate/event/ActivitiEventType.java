@@ -107,7 +107,12 @@ public enum ActivitiEventType {
    * An activity has been completed successfully.
    */
   ACTIVITY_COMPLETED,
-  
+
+  /**
+   * An activity has been cancelled because of boundary event.
+   */
+  ACTIVITY_CANCELLED,
+
   /**
    * An activity has received a signal. Dispatched after the activity has responded to the signal.
    */
