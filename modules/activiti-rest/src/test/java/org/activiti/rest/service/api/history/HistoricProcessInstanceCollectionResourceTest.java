@@ -24,12 +24,12 @@ import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * 
  * @author Tijs Rademakers
  */
-public class HistoricProcessInstanceCollectionResourceTest extends BaseRestTestCase {
+public class HistoricProcessInstanceCollectionResourceTest extends BaseSpringRestTestCase {
   
   /**
    * Test querying historic process instance based on variables. 
@@ -91,12 +91,12 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseRestTestC
     assertResultsPresentInDataResponse(url + "?tenantIdLike=" + encode("%enant"), processInstance3.getId());
     assertResultsPresentInDataResponse(url + "?tenantIdLike=anotherTenant");
     
-    ClientResource client = getAuthenticatedClient(url + "?processDefinitionKey=oneTaskProcess&sort=startTime");
-    Representation response = client.get();
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url + 
+        "?processDefinitionKey=oneTaskProcess&sort=startTime"), 200);
     
     // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     assertEquals(3, dataNode.size());
     assertEquals(processInstance.getId(), dataNode.get(0).get("id").asText());
     assertEquals(processInstance2.getId(), dataNode.get(1).get("id").asText());
@@ -107,23 +107,20 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseRestTestC
     int numberOfResultsExpected = expectedResourceIds.length;
     
     // Do the actual call
-    ClientResource client = getAuthenticatedClient(url);
-    Representation response = client.get();
-    
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), 200);
+   
     // Check status and size
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode dataNode = objectMapper.readTree(response.getStream()).get("data");
+    assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's
     List<String> toBeFound = new ArrayList<String>(Arrays.asList(expectedResourceIds));
     Iterator<JsonNode> it = dataNode.iterator();
-    while(it.hasNext()) {
+    while (it.hasNext()) {
       String id = it.next().get("id").textValue();
       toBeFound.remove(id);
     }
     assertTrue("Not all process instances have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
-    
-    client.release();
   }
 }

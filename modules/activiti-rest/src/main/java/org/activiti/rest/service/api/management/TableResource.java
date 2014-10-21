@@ -16,41 +16,46 @@ package org.activiti.rest.service.api.management;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.resource.Get;
+import org.activiti.engine.ManagementService;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
-public class TableResource extends SecuredResource {
+@RestController
+public class TableResource {
   
-  @Get
-  public TableResponse getTable() {
-    if(authenticate() == false) return null;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected ManagementService managementService;
+  
+  @RequestMapping(value="/management/tables/{tableName}", method = RequestMethod.GET, produces = "application/json")
+  public TableResponse getTable(@PathVariable String tableName, HttpServletRequest request) {
+    Map<String, Long> tableCounts = managementService.getTableCount();
 
-    String tableName = getAttribute("tableName");
-    if(tableName == null) {
-      throw new ActivitiIllegalArgumentException("The tableName cannot be null");
+    TableResponse response = null;
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/management/tables/"));
+    for (Entry<String, Long> entry : tableCounts.entrySet()) {
+      if (entry.getKey().equals(tableName)) {
+        response = restResponseFactory.createTableResponse(entry.getKey(), entry.getValue(), serverRootUrl);
+        break;
+      }
     }
-    
-   Map<String, Long> tableCounts = ActivitiUtil.getManagementService().getTableCount();
-
-   TableResponse response = null;
-   for(Entry<String, Long> entry : tableCounts.entrySet()) {
-     if(entry.getKey().equals(tableName)) {
-       response = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-               .createTableResponse(this, entry.getKey(), entry.getValue());
-       break;
-     }
-   }
    
-   if(response == null) {
-     throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
-   }
-   return response;
+    if (response == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
+    }
+    return response;
   }
 }

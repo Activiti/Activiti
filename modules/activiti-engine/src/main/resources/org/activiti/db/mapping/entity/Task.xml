@@ -300,10 +300,10 @@
       <foreach collection="orQueryObject.queryVariableValues" index="index" item="var">
         <choose>
           <when test="var.local">
-            inner join ${prefix}ACT_RU_VARIABLE A_OR${index} on RES.ID_ = A_OR${index}.TASK_ID_ 
+            left outer join ${prefix}ACT_RU_VARIABLE A_OR${index} on RES.ID_ = A_OR${index}.TASK_ID_ 
           </when>
           <otherwise>
-            inner join ${prefix}ACT_RU_VARIABLE A_OR${index} on RES.PROC_INST_ID_ = A_OR${index}.PROC_INST_ID_ 
+            left outer join ${prefix}ACT_RU_VARIABLE A_OR${index} on RES.PROC_INST_ID_ = A_OR${index}.PROC_INST_ID_ 
           </otherwise>
         </choose>       
       </foreach>
@@ -505,9 +505,13 @@
           <!-- Match-all variable-names when name is null -->
           and A${index}.NAME_= #{var.name}
         </if>
+        <if test="var.name == null">
+          and A${index}.NAME_ is not null
+        </if>
         <if test="!var.type.equals('null')">
           and A${index}.TYPE_ = #{var.type}
         </if>
+        
         <!-- Variable value -->
         <if test="var.textValue != null &amp;&amp; var.longValue == null &amp;&amp; var.doubleValue == null">
           <choose>
@@ -785,6 +789,9 @@
                 <!-- Match-all variable-names when name is null -->
                 and A_OR${index}.NAME_= #{var.name}
               </if>
+              <if test="var.name == null">
+          		and A_OR${index}.NAME_ is not null
+        	  </if>
               <if test="!var.type.equals('null')">
                 and A_OR${index}.TYPE_ = #{var.type}
               </if>

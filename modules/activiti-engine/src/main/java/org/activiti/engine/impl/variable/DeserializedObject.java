@@ -35,10 +35,17 @@ public class DeserializedObject {
 
   public void flush() {
     // this first check verifies if the variable value was not overwritten with another object
-    if (deserializedObject==variableInstanceEntity.getCachedValue() && !variableInstanceEntity.isDeleted()) {
+    if (deserializedObject == variableInstanceEntity.getCachedValue() && !variableInstanceEntity.isDeleted()) {
       byte[] bytes = type.serialize(deserializedObject, variableInstanceEntity);
       if (!Arrays.equals(originalBytes, bytes)) {
-        variableInstanceEntity.setBytes(bytes);
+        
+        // Add an additional check to prevent byte differences due to JDK changes etc
+        Object originalObject = type.deserialize(originalBytes, variableInstanceEntity);
+        byte[] refreshedOriginalBytes = type.serialize(originalObject, variableInstanceEntity);
+        
+        if (!Arrays.equals(refreshedOriginalBytes, bytes)) {
+          variableInstanceEntity.setBytes(bytes);
+        }
       }
     }
   }

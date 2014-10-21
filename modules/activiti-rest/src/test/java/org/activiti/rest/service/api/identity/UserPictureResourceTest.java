@@ -19,21 +19,21 @@ import java.util.Map;
 
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.BaseRestTestCase;
-import org.activiti.rest.service.HttpMultipartRepresentation;
+import org.activiti.rest.service.BaseSpringRestTestCase;
+import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.springframework.http.MediaType;
 
 
 /**
  * @author Frederik Heremans
  */
-public class UserPictureResourceTest extends BaseRestTestCase {
+public class UserPictureResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting the picture for a user.
@@ -48,20 +48,17 @@ public class UserPictureResourceTest extends BaseRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      MediaType mediaType = MediaType.IMAGE_PNG;
       // Create picture for user
-      Picture thePicture = new Picture("this is the picture raw byte stream".getBytes(), mediaType.toString());
+      Picture thePicture = new Picture("this is the picture raw byte stream".getBytes(), "image/png");
       identityService.setUserPicture(newUser.getId(), thePicture);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE,
-              newUser.getId()));
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      assertEquals("this is the picture raw byte stream", response.getText());
+      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_OK);
+      
+      assertEquals("this is the picture raw byte stream", IOUtils.toString(response.getEntity().getContent()));
       
       // Check if media-type is correct
-      String typeFromResponse = getMediaType(client);
-      assertEquals(mediaType.toString(), typeFromResponse);
+      assertEquals("image/png", response.getEntity().getContentType().getValue());
       
     } finally {
       
@@ -76,15 +73,8 @@ public class UserPictureResourceTest extends BaseRestTestCase {
    * Test getting the picture for an unexisting user.
    */
   public void testGetPictureForUnexistingUser() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, "unexisting"));
-    
-    try {
-      client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a user with id 'unexisting'.", expected.getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, "unexisting")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -100,15 +90,8 @@ public class UserPictureResourceTest extends BaseRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE,
-              newUser.getId()));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("The user with id '" + newUser.getId() + "' does not have a picture.", expected.getStatus().getDescription());
-      }
+      executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_NOT_FOUND);
       
     } finally {
       
@@ -129,25 +112,21 @@ public class UserPictureResourceTest extends BaseRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE,
-              newUser.getId()));
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId()));
+      httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("myPicture.png", "image/png",
+              new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), null));
+      executeBinaryHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
       
-      HttpMultipartRepresentation request = new HttpMultipartRepresentation("myPicture.png", 
-              new ByteArrayInputStream("this is the picture raw byte stream".getBytes())); 
-      
-      Representation response = client.put(request);
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-      assertNotNull(response);
-      
-      Picture picture = ActivitiUtil.getIdentityService().getUserPicture(newUser.getId());
+      Picture picture = identityService.getUserPicture(newUser.getId());
       assertNotNull(picture);
-      assertEquals(MediaType.IMAGE_JPEG.toString(), picture.getMimeType());
+      assertEquals("image/png", picture.getMimeType());
       assertEquals("this is the picture raw byte stream", new String(picture.getBytes()));
       
     } finally {
       
       // Delete user after test passes or fails
-      if(savedUser != null) {
+      if (savedUser != null) {
         identityService.deleteUser(savedUser.getId());
       }
     }
@@ -163,21 +142,18 @@ public class UserPictureResourceTest extends BaseRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE,
-              newUser.getId()));
-      
       Map<String, String> additionalFields = new HashMap<String, String>();
       additionalFields.put("mimeType", MediaType.IMAGE_PNG.toString());
-      HttpMultipartRepresentation request = new HttpMultipartRepresentation("myPicture.png", 
-              new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), additionalFields); 
       
-      Representation response = client.put(request);
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-      assertNotNull(response);
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId()));
+      httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("myPicture.png", "image/png",
+              new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), additionalFields));
+      executeBinaryHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
       
-      Picture picture = ActivitiUtil.getIdentityService().getUserPicture(newUser.getId());
+      Picture picture = identityService.getUserPicture(newUser.getId());
       assertNotNull(picture);
-      assertEquals(MediaType.IMAGE_PNG.toString(), picture.getMimeType());
+      assertEquals("image/png", picture.getMimeType());
       assertEquals("this is the picture raw byte stream", new String(picture.getBytes()));
       
     } finally {

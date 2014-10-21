@@ -17,12 +17,13 @@ import java.util.Map;
 
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -33,7 +34,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * 
  * @author Frederik Heremans
  */
-public class ExecutionResourceTest extends BaseRestTestCase {
+public class ExecutionResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting a single execution.
@@ -44,12 +45,11 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     Execution childExecution = runtimeService.createExecutionQuery().activityId("processTask").singleResult();
     assertNotNull(childExecution);
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, parentExecution.getId()));
-    Representation response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, parentExecution.getId())), HttpStatus.SC_OK);
     
     // Check resulting parent execution
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(parentExecution.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("activityId").isNull());
@@ -63,14 +63,11 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, parentExecution.getId())));
     
-    client.release();
-    
     // Check resulting child execution
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, childExecution.getId()));
-    response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, childExecution.getId())), HttpStatus.SC_OK);
     
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertNotNull(responseNode);
     assertEquals(childExecution.getId(), responseNode.get("id").textValue());
     assertEquals("processTask", responseNode.get("activityId").textValue());
@@ -85,22 +82,14 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     
     assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, parentExecution.getId())));
-    client.release();
   }
   
   /**
    * Test getting an unexisting execution.
    */
   public void testGetUnexistingExecution() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, "unexisting"));
-    try {
-      client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find an execution with id 'unexisting'.", expected.getStatus().getDescription());
-    }
-    client.release();
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, "unexisting")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -116,23 +105,20 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     requestNode.put("action", "signal");
 
     // Signalling one causes process to move on to second signal and execution is not finished yet
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, signalExecution.getId()));
-    Representation response = client.put(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, signalExecution.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+    
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
     assertEquals("anotherWaitState", responseNode.get("activityId").textValue());
     assertEquals("anotherWaitState", runtimeService.createExecutionQuery().executionId(signalExecution.getId()).singleResult().getActivityId());
     
-    client.release();
-    
     // Signalling again causes process to end
-    client.put(requestNode);
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
     
     // Check if process is actually ended
     assertNull(runtimeService.createExecutionQuery().executionId(signalExecution.getId()).singleResult());
-    client.release();
-
   }
   
   /**
@@ -150,24 +136,16 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     Execution waitingExecution = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
     assertNotNull(waitingExecution);
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
-    
-    // Try signal event with wrong name, should result in error
-    try {
-      client.put(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.SERVER_ERROR_INTERNAL, expected.getStatus());
-      assertEquals("Execution '"+ waitingExecution.getId() +"' has not subscribed to a signal event with name 'unexisting'.", expected.getStatus().getDescription());
-    }
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_INTERNAL_SERVER_ERROR);
     
     requestNode.put("signalName", "alert");
     
     // Sending signal event causes the execution to end (scope-execution for the catching event)
-    client.put(requestNode);
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    
-    client.release();
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -199,11 +177,10 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     assertNotNull(waitingExecution);
     
     // Sending signal event causes the execution to end (scope-execution for the catching event)
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
-    client.put(requestNode);
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    
-    client.release();
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -230,24 +207,16 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     Execution waitingExecution = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
     assertNotNull(waitingExecution);
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
-    // Try signal event with wrong name, should result in error
-    
-    try {
-      client.put(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.SERVER_ERROR_INTERNAL, expected.getStatus());
-      assertEquals("Execution with id '"+ waitingExecution.getId() +"' does not have a subscription to a message event with name 'unexisting'", expected.getStatus().getDescription());
-    }
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_INTERNAL_SERVER_ERROR);
     
     requestNode.put("messageName", "paymentMessage");
     
     // Sending signal event causes the execution to end (scope-execution for the catching event)
-    client.put(requestNode);
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    
-    client.release();
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -278,11 +247,10 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     assertNotNull(waitingExecution);
     
     // Sending signal event causes the execution to end (scope-execution for the catching event)
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
-    client.put(requestNode);
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    
-    client.release();
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -306,16 +274,9 @@ public class ExecutionResourceTest extends BaseRestTestCase {
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("action", "badaction");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, execution.getId()));
-    
-    try {
-      client.put(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Invalid action: 'badaction'.", expected.getStatus().getDescription());
-    }
-    client.release();
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, execution.getId()));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_BAD_REQUEST);
   }
-  
 }

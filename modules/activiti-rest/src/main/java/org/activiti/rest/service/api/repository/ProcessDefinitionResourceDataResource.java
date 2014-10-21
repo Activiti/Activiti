@@ -13,42 +13,39 @@
 
 package org.activiti.rest.service.api.repository;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ProcessDefinitionResourceDataResource extends BaseDeploymentResourceDataResource {
 
-  @Get
-  public InputRepresentation getProcessDefinitionResource() {
-    if (authenticate() == false)
-      return null;
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
-    return getDeploymentResource(processDefinition.getDeploymentId(), processDefinition.getResourceName());
+  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/resourcedata", method = RequestMethod.GET)
+  public @ResponseBody byte[] getProcessDefinitionResource(@PathVariable String processDefinitionId, HttpServletResponse response) {
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
+    return getDeploymentResourceData(processDefinition.getDeploymentId(), processDefinition.getResourceName(), response);
   }
   
   /**
    * Returns the {@link ProcessDefinition} that is requested. Throws the right exceptions
    * when bad request was made or definition is not found.
    */
-  protected ProcessDefinition getProcessDefinitionFromRequest() {
-    String processDefinitionId = getAttribute("processDefinitionId");
-    if(processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("The processDefinitionId cannot be null");
-    }
-    
-    ProcessDefinition processDefinition = ActivitiUtil.getRepositoryService().createProcessDefinitionQuery()
+  protected ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
             .processDefinitionId(processDefinitionId).singleResult();
    
-   if(processDefinition == null) {
-     throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
-   }
-   return processDefinition;
+    if (processDefinition == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
+    }
+    return processDefinition;
   }
 }

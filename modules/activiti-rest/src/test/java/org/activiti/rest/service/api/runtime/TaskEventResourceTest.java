@@ -18,12 +18,12 @@ import java.util.List;
 
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * @author Frederik Heremans
  */
-public class TaskEventResourceTest extends BaseRestTestCase {
+public class TaskEventResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting all events for a task.
@@ -44,13 +44,11 @@ public class TaskEventResourceTest extends BaseRestTestCase {
       taskService.setAssignee(task.getId(), "kermit");
       taskService.addUserIdentityLink(task.getId(), "gonzo", "someType");
 
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_EVENT_COLLECTION, task.getId()));
-      
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT_COLLECTION, task.getId()));
+      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
+     
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertTrue(responseNode.isArray());
       
@@ -81,13 +79,12 @@ public class TaskEventResourceTest extends BaseRestTestCase {
       taskService.addUserIdentityLink(task.getId(), "gonzo", "someType");
 
       Event event = taskService.getTaskEvents(task.getId()).get(0);
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_EVENT, task.getId(), event.getId()));
       
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, task.getId(), event.getId()));
+      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertEquals(event.getId(), responseNode.get("id").textValue());
       assertEquals(event.getAction(), responseNode.get("action").textValue());
@@ -117,27 +114,14 @@ public class TaskEventResourceTest extends BaseRestTestCase {
       taskService.saveTask(task);
       taskService.addUserIdentityLink(task.getId(), "gonzo", "someType");
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_EVENT, task.getId(), "unexisting"));
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, task.getId(), "unexisting"));
+      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
       
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Task '" + task.getId() +"' doesn't have an event with id 'unexisting'.", expected.getStatus().getDescription());
-      }
+      httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, "unexisting", "unexistingEvent"));
+      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
       
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_EVENT, "unexisting", "unexistingEvent"));
-      
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexisting'.", expected.getStatus().getDescription());
-      }
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -161,11 +145,9 @@ public class TaskEventResourceTest extends BaseRestTestCase {
       List<Event> events = taskService.getTaskEvents(task.getId());
       assertEquals(2, events.size());
       for (Event event : events) {
-        ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-                RestUrls.URL_TASK_EVENT, task.getId(), event.getId()));
-        
-        client.delete();
-        assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
+        HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+            RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, task.getId(), event.getId()));
+        executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
       }
       
       events = taskService.getTaskEvents(task.getId());

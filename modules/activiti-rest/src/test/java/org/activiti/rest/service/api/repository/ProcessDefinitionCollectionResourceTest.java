@@ -4,18 +4,17 @@ import java.util.List;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpGet;
 
 /**
  * Test for all REST-operations related to the Deployment collection.
  * 
  * @author Frederik Heremans
  */
-public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
+public class ProcessDefinitionCollectionResourceTest extends BaseSpringRestTestCase {
   
   /**
   * Test getting process definitions.
@@ -47,7 +46,7 @@ public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(baseUrl, oneTaskProcess.getId(), twoTaskprocess.getId(), latestOneTaskProcess.getId());
       
       // Test name filtering
-      String url = baseUrl + "?name=The Two Task Process";
+      String url = baseUrl + "?name=" + encode("The Two Task Process");
       assertResultsPresentInDataResponse(url, twoTaskprocess.getId());
       
       // Test nameLike filtering
@@ -63,7 +62,7 @@ public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, oneTaskProcess.getId(), latestOneTaskProcess.getId());
       
       // Test keyLike filtering
-      url = baseUrl + "?keyLike=two%";
+      url = baseUrl + "?keyLike=" + encode("two%");
       assertResultsPresentInDataResponse(url, twoTaskprocess.getId());
       
       // Test category filtering
@@ -115,14 +114,8 @@ public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
       
       // Test using latest without key -> not allowed
       url = baseUrl + "?latest=true&name=anyname";
-      try {
-        ClientResource client = getAuthenticatedClient(url);
-        client.get();
-        fail("400 status expected, but was: " + client.getResponse().getStatus());
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("Calling latest() can only be used in combination with key(String) and keyLike(String)", expected.getStatus().getDescription());
-      }
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + url);
+      executeHttpRequest(httpGet, HttpStatus.SC_BAD_REQUEST);
       
     } finally {
       // Always cleanup any created deployments, even if the test failed

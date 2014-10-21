@@ -16,34 +16,40 @@ package org.activiti.rest.service.api.form;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.FormService;
 import org.activiti.engine.form.FormData;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
+import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.runtime.process.ProcessInstanceResponse;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Form;
-import org.restlet.data.Status;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
-import org.restlet.resource.ResourceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Tijs Rademakers
  */
-public class FormDataResource extends SecuredResource {
+@RestController
+public class FormDataResource {
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected FormService formService;
 
-  @Get("json")
-  public FormDataResponse getFormData() {
-    if (authenticate() == false)
-      return null;
-
-    Form urlQuery = getQuery();
-    
-    String taskId = getQueryParameter("taskId", urlQuery);
-    String processDefinitionId = getQueryParameter("processDefinitionId", urlQuery);
+  @RequestMapping(value="/form/form-data", method = RequestMethod.GET, produces="application/json")
+  public FormDataResponse getFormData(@RequestParam(value="taskId", required=false) String taskId,
+      @RequestParam(value="processDefinitionId", required=false) String processDefinitionId, HttpServletRequest request) {
     
     if (taskId == null && processDefinitionId == null) {
       throw new ActivitiIllegalArgumentException("The taskId or processDefinitionId parameter has to be provided");
@@ -56,10 +62,10 @@ public class FormDataResource extends SecuredResource {
     FormData formData = null;
     String id = null;
     if (taskId != null) {
-      formData = ActivitiUtil.getFormService().getTaskFormData(taskId);
+      formData = formService.getTaskFormData(taskId);
       id = taskId;
     } else {
-      formData = ActivitiUtil.getFormService().getStartFormData(processDefinitionId);
+      formData = formService.getStartFormData(processDefinitionId);
       id = processDefinitionId;
     }
     
@@ -67,19 +73,15 @@ public class FormDataResource extends SecuredResource {
       throw new ActivitiObjectNotFoundException("Could not find a form data with id '" + id + "'.", FormData.class);
     }
     
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-        .createFormDataResponse(this, formData);
+    return restResponseFactory.createFormDataResponse(formData, request.getRequestURL().toString().replace("/form/form-data", ""));
   }
   
-  @Post
-  public ProcessInstanceResponse submitForm(SubmitFormRequest submitRequest) {
-    if (!authenticate()) {
-      return null;
-    }
-
+  @RequestMapping(value="/form/form-data", method = RequestMethod.POST, produces="application/json")
+  public ProcessInstanceResponse submitForm(@RequestBody SubmitFormRequest submitRequest, 
+      HttpServletRequest request, HttpServletResponse response) {
+    
     if (submitRequest == null) {
-      throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(), 
-          "A request body was expected when executing the form submit.", null, null));
+      throw new ActivitiException("A request body was expected when executing the form submit.");
     }
 
     if (submitRequest.getTaskId() == null && submitRequest.getProcessDefinitionId() == null) {
@@ -94,17 +96,20 @@ public class FormDataResource extends SecuredResource {
     }
     
     if (submitRequest.getTaskId() != null) {
-      ActivitiUtil.getFormService().submitTaskFormData(submitRequest.getTaskId(), propertyMap);
+      formService.submitTaskFormData(submitRequest.getTaskId(), propertyMap);
+      response.setStatus(HttpStatus.NO_CONTENT.value());
       return null;
+      
     } else {
       ProcessInstance processInstance = null;
       if (submitRequest.getBusinessKey() != null) {
-        processInstance = ActivitiUtil.getFormService().submitStartFormData(submitRequest.getProcessDefinitionId(), submitRequest.getBusinessKey(), propertyMap);
+        processInstance = formService.submitStartFormData(submitRequest.getProcessDefinitionId(), 
+            submitRequest.getBusinessKey(), propertyMap);
       } else {
-        processInstance = ActivitiUtil.getFormService().submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
+        processInstance = formService.submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
       }
-      return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-          .createProcessInstanceResponse(this, processInstance);
+      return restResponseFactory.createProcessInstanceResponse(processInstance, 
+          request.getRequestURL().toString().replace("/form/form-data", ""));
     }
   }
 }

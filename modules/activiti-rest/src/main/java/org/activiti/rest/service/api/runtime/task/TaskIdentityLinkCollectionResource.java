@@ -16,66 +16,72 @@ package org.activiti.rest.service.api.runtime.task;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
 
-  @Get
-  public List<RestIdentityLink> getIdentityLinks() {
-    if(!authenticate())
-      return null;
-    
+  @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks", method = RequestMethod.GET, produces="application/json")
+  public List<RestIdentityLink> getIdentityLinks(@PathVariable("taskId") String taskId, HttpServletRequest request) {
     List<RestIdentityLink> result = new ArrayList<RestIdentityLink>();
-    Task task = getTaskFromRequest();
+    Task task = getTaskFromRequest(taskId);
     
-    List<IdentityLink> identityLinks = ActivitiUtil.getTaskService().getIdentityLinksForTask(task.getId());
-    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    for(IdentityLink link : identityLinks) {
-      result.add(responseFactory.createRestIdentityLink(this, link));
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
+    List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(task.getId());
+    for (IdentityLink link : identityLinks) {
+      result.add(restResponseFactory.createRestIdentityLink(link, serverRootUrl));
     }
     return result;
   }
   
-  @Post
-  public RestIdentityLink createIdentityLink(RestIdentityLink identityLink) {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks", method = RequestMethod.POST, produces="application/json")
+  public RestIdentityLink createIdentityLink(@PathVariable("taskId") String taskId, 
+      @RequestBody RestIdentityLink identityLink, HttpServletRequest request, HttpServletResponse response) {
     
-    Task task = getTaskFromRequest();
+    Task task = getTaskFromRequest(taskId);
     
-    if(identityLink.getGroup() == null && identityLink.getUser() == null) {
+    if (identityLink.getGroup() == null && identityLink.getUser() == null) {
       throw new ActivitiIllegalArgumentException("A group or a user is required to create an identity link.");
     }
     
-    if(identityLink.getGroup() != null && identityLink.getUser() != null) {
+    if (identityLink.getGroup() != null && identityLink.getUser() != null) {
       throw new ActivitiIllegalArgumentException("Only one of user or group can be used to create an identity link.");
     }
     
-    if(identityLink.getType() == null) {
+    if (identityLink.getType() == null) {
       throw new ActivitiIllegalArgumentException("The identity link type is required.");
     }
 
-    if(identityLink.getGroup() != null) {
-      ActivitiUtil.getTaskService().addGroupIdentityLink(task.getId(), identityLink.getGroup(), identityLink.getType());
+    if (identityLink.getGroup() != null) {
+      taskService.addGroupIdentityLink(task.getId(), identityLink.getGroup(), identityLink.getType());
     } else {
-      ActivitiUtil.getTaskService().addUserIdentityLink(task.getId(), identityLink.getUser(), identityLink.getType());
+      taskService.addUserIdentityLink(task.getId(), identityLink.getUser(), identityLink.getType());
     }
     
-    setStatus(Status.SUCCESS_CREATED);
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestIdentityLink(this, identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), task.getId(), null, null);
+    response.setStatus(HttpStatus.CREATED.value());
+    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
+    return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), 
+        identityLink.getGroup(), task.getId(), null, null, serverRootUrl);
   }
 }

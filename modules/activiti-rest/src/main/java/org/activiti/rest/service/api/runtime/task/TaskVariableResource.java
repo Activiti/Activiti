@@ -13,102 +13,112 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
-import org.restlet.resource.Put;
-import org.restlet.resource.ResourceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class TaskVariableResource extends TaskVariableBaseResource {
+  
+  @Autowired
+  protected ObjectMapper objectMapper;
 
-  @Get
-  public RestVariable getVariable() {
-    if (authenticate() == false)
-      return null;
+  @RequestMapping(value="/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.GET, produces="application/json")
+  public RestVariable getVariable(@PathVariable("taskId") String taskId, 
+      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
+      HttpServletRequest request, HttpServletResponse response) {
     
-    return getVariableFromRequest(false);
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
+    return getVariableFromRequest(taskId, variableName, scope, false, serverRootUrl);
   }
   
-  @Put
-  public RestVariable updateVariable(Representation representation) {
-    if (authenticate() == false)
-      return null;
+  @RequestMapping(value="/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.PUT, produces="application/json")
+  public RestVariable updateVariable(@PathVariable("taskId") String taskId, 
+      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
+      HttpServletRequest request) {
     
-    String variableName = getAttribute("variableName");
-    if (variableName == null) {
-      throw new ActivitiIllegalArgumentException("The variableName cannot be null");
-    }
+    Task task = getTaskFromRequest(taskId);
     
-    Task task = getTaskFromRequest();
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
     RestVariable result = null;
-    if(representation.getMediaType() != null && MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
-      result = setBinaryVariable(representation, task, false);
+    if (request instanceof MultipartHttpServletRequest) {
+      result = setBinaryVariable((MultipartHttpServletRequest) request, task, false, serverRootUrl);
       
-      if(!result.getName().equals(variableName)) {
+      if (!result.getName().equals(variableName)) {
         throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
       }
+      
     } else {
+      
+      RestVariable restVariable = null;
+      
       try {
-        RestVariable restVariable = getConverterService().toObject(representation, RestVariable.class, this);
-        if(restVariable == null) {
-          throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(), "Invalid body was supplied", null, null));
-        }
-        if(!restVariable.getName().equals(variableName)) {
-          throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
-        }
-        
-        result = setSimpleVariable(restVariable, task, false);
-      } catch(IOException ioe) {
-        throw new ResourceException(Status.SERVER_ERROR_INTERNAL, ioe);
+        restVariable = objectMapper.readValue(request.getInputStream(), RestVariable.class);
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
       }
+      
+      if (restVariable == null) {
+        throw new ActivitiException("Invalid body was supplied");
+      }
+      if (!restVariable.getName().equals(variableName)) {
+        throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+      }
+      
+      result = setSimpleVariable(restVariable, task, false, serverRootUrl);
     }
     return result;
   }
   
-  @Delete
-  public void deleteVariable() {
-    if (authenticate() == false)
-      return;
+  @RequestMapping(value="/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.DELETE)
+  public void deleteVariable(@PathVariable("taskId") String taskId, 
+      @PathVariable("variableName") String variableName, 
+      @RequestParam(value="scope", required=false) String scopeString, HttpServletResponse response) {
     
-    Task task = getTaskFromRequest();
-    
-    String variableName = getAttribute("variableName");
-    if (variableName == null) {
-      throw new ActivitiIllegalArgumentException("The variableName cannot be null");
-    }
+    Task task = getTaskFromRequest(taskId);
     
     // Determine scope
-    String scopeString = getQueryParameter("scope", getQuery());
     RestVariableScope scope = RestVariableScope.LOCAL;
-    if(scopeString != null) {
+    if (scopeString != null) {
       scope = RestVariable.getScopeFromString(scopeString);
     }
 
-    if(!hasVariableOnScope(task, variableName, scope)) {
-      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a variable '" + variableName + "' in scope " + scope.name().toLowerCase(), VariableInstanceEntity.class);
+    if (!hasVariableOnScope(task, variableName, scope)) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a variable '" + 
+          variableName + "' in scope " + scope.name().toLowerCase(), VariableInstanceEntity.class);
     }
     
-    if(scope == RestVariableScope.LOCAL) {
-      ActivitiUtil.getTaskService().removeVariableLocal(task.getId(), variableName);
+    if (scope == RestVariableScope.LOCAL) {
+      taskService.removeVariableLocal(task.getId(), variableName);
     } else {
       // Safe to use executionId, as the hasVariableOnScope whould have stopped a global-var update on standalone task
-      ActivitiUtil.getRuntimeService().removeVariable(task.getExecutionId(), variableName);
+      runtimeService.removeVariable(task.getExecutionId(), variableName);
     }
-    setStatus(Status.SUCCESS_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

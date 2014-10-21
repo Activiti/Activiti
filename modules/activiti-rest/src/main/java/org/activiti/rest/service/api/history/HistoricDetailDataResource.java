@@ -13,82 +13,83 @@
 
 package org.activiti.rest.service.api.history;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.ObjectOutputStream;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.history.HistoricVariableUpdate;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.MediaType;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Tijs Rademakers
  */
-public class HistoricDetailDataResource extends SecuredResource {
-
-  @Get
-  public InputRepresentation getVariableData() {
-    if (authenticate() == false)
-      return null;
-
+@RestController
+public class HistoricDetailDataResource {
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected HistoryService historyService;
+  
+  @RequestMapping(value="/history/historic-detail/{detailId}/data", method = RequestMethod.GET)
+  public @ResponseBody byte[] getVariableData(@PathVariable("detailId") String detailId, HttpServletRequest request, HttpServletResponse response) {
     try {
-      InputStream dataStream = null;
-      MediaType mediaType = null;
-      RestVariable variable = getVariableFromRequest(true);
-      if(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
-        dataStream = new ByteArrayInputStream((byte[]) variable.getValue());
-        mediaType = MediaType.APPLICATION_OCTET_STREAM;
+      byte[] result = null;
+      RestVariable variable = getVariableFromRequest(true, detailId, request);
+      if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
+        result = (byte[]) variable.getValue();
+        response.setContentType("application/octet-stream");
+      
       } else if(RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
         ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
         outputStream.writeObject(variable.getValue());
         outputStream.close();
-        dataStream = new ByteArrayInputStream(buffer.toByteArray());
-        mediaType = MediaType.APPLICATION_JAVA_OBJECT;
+        result = buffer.toByteArray();
+        response.setContentType("application/x-java-serialized-object");
         
       } else {
         throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
       }
-      return new InputRepresentation(dataStream, mediaType);
+      return result;
+      
     } catch(IOException ioe) {
       // Re-throw IOException
       throw new ActivitiException("Unexpected exception getting variable data", ioe);
     }
   }
   
-  public RestVariable getVariableFromRequest(boolean includeBinary) {
-    String detailId = getAttribute("detailId");
-    if (detailId == null) {
-      throw new ActivitiIllegalArgumentException("The detailId cannot be null");
-    }
-    
+  public RestVariable getVariableFromRequest(boolean includeBinary, String detailId, HttpServletRequest request) {
     Object value = null;
     HistoricVariableUpdate variableUpdate = null;
-    HistoricDetail detailObject = ActivitiUtil.getHistoryService().createHistoricDetailQuery().id(detailId).singleResult();
+    HistoricDetail detailObject = historyService.createHistoricDetailQuery().id(detailId).singleResult();
     if (detailObject instanceof HistoricVariableUpdate) {
       variableUpdate = (HistoricVariableUpdate) detailObject;
       value = variableUpdate.getValue();
     }
     
-    if(value == null) {
-        throw new ActivitiObjectNotFoundException("Historic detail '" + detailId + "' doesn't have a variable value.", VariableInstanceEntity.class);
+    if (value == null) {
+      throw new ActivitiObjectNotFoundException("Historic detail '" + detailId + "' doesn't have a variable value.", VariableInstanceEntity.class);
     } else {
-      RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-      return responseFactory.createRestVariable(this, variableUpdate.getVariableName(), value, null, detailId, 
-          RestResponseFactory.VARIABLE_HISTORY_DETAIL, includeBinary);
+      String serverRootUrl = request.getRequestURL().toString();
+      return restResponseFactory.createRestVariable(variableUpdate.getVariableName(), value, null, detailId, 
+          RestResponseFactory.VARIABLE_HISTORY_DETAIL, includeBinary, serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-detail/")));
     }
   }
 }

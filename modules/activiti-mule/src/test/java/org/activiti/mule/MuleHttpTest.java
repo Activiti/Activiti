@@ -43,6 +43,7 @@ public class MuleHttpTest extends AbstractMuleTest {
     processEngine.getHistoryService().deleteHistoricProcessInstance(processInstance.getId());
     processEngine.getRepositoryService().deleteDeployment(deployment.getId());
     assertAndEnsureCleanDb(processEngine);
+    ProcessEngines.destroy();
   }
   
   @Override

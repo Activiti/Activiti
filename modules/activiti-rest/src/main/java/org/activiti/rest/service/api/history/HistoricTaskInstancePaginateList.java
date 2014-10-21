@@ -18,28 +18,27 @@ import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.rest.common.api.AbstractPaginateList;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 
 /**
  * @author Tijs Rademakers
  */
 public class HistoricTaskInstancePaginateList extends AbstractPaginateList {
 
-  private SecuredResource resource;
+  protected RestResponseFactory restResponseFactory;
+  protected String serverRootUrl;
   
-  public HistoricTaskInstancePaginateList(SecuredResource resource) {
-    this.resource = resource;
+  public HistoricTaskInstancePaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
+    this.restResponseFactory = restResponseFactory;
+    this.serverRootUrl = serverRootUrl;
   }
   
   @SuppressWarnings("rawtypes")
   @Override
   protected List processList(List list) {
     List<HistoricTaskInstanceResponse> responseList = new ArrayList<HistoricTaskInstanceResponse>();
-    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     for (Object instance : list) {
-      responseList.add(restResponseFactory.createHistoricTaskInstanceResponse(resource, (HistoricTaskInstance) instance));
+      responseList.add(restResponseFactory.createHistoricTaskInstanceResponse((HistoricTaskInstance) instance, serverRootUrl));
     }
     return responseList;
   }

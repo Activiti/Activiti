@@ -13,58 +13,57 @@
 
 package org.activiti.rest.service.api.identity;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.identity.User;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
-import org.restlet.resource.Put;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class UserResource extends BaseUserResource {
 
-  @Get
-  public UserResponse getUser() {
-    if(!authenticate())
-      return null;
-    
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createUserResponse(this, getUserFromRequest(), false);
+  @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.GET, produces = "application/json")
+  public UserResponse getUser(@PathVariable String userId, HttpServletRequest request) {
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
+    return restResponseFactory.createUserResponse(getUserFromRequest(userId), false, serverRootUrl);
   }
   
-  @Put
-  public UserResponse updateUser(UserRequest request) {
-  	if(authenticate() == false) return null;
-  	
-    User user = getUserFromRequest();
-    if(request.isEmailChanged()) {
-      user.setEmail(request.getEmail());
+  @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.PUT, produces = "application/json")
+  public UserResponse updateUser(@PathVariable String userId, @RequestBody UserRequest userRequest, HttpServletRequest request) {
+    User user = getUserFromRequest(userId);
+    if (userRequest.isEmailChanged()) {
+      user.setEmail(userRequest.getEmail());
     }
-    if(request.isFirstNameChanged()) {
-      user.setFirstName(request.getFirstName());
+    if (userRequest.isFirstNameChanged()) {
+      user.setFirstName(userRequest.getFirstName());
     }
-    if(request.isLastNameChanged()) {
-      user.setLastName(request.getLastName());
+    if (userRequest.isLastNameChanged()) {
+      user.setLastName(userRequest.getLastName());
     }
-    if(request.isPasswordChanged()) {
-      user.setPassword(request.getPassword());
+    if (userRequest.isPasswordChanged()) {
+      user.setPassword(userRequest.getPassword());
     }
     
-    ActivitiUtil.getIdentityService().saveUser(user);
+    identityService.saveUser(user);
     
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createUserResponse(this, user, false);
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
+    return restResponseFactory.createUserResponse(user, false, serverRootUrl);
   }
   
-  @Delete
-  public void deleteUser() {
-  	if(authenticate() == false) return;
-  	
-    User user = getUserFromRequest();
-    ActivitiUtil.getIdentityService().deleteUser(user.getId());
-    setStatus(Status.SUCCESS_NO_CONTENT);
+  @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.DELETE)
+  public void deleteUser(@PathVariable String userId, HttpServletResponse response) {
+    User user = getUserFromRequest(userId);
+    identityService.deleteUser(user.getId());
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

@@ -2,12 +2,8 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:activiti="http://www.activiti.org/schema/spring/components"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd
-                           http://www.activiti.org/schema/spring/components http://www.activiti.org/schema/spring/components/activiti.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-
-    <activiti:annotation-driven process-engine="processEngine" />
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
         <property name="targetDataSource">
@@ -29,13 +25,13 @@
         <property name="transactionManager" ref="transactionManager"/>
         <property name="databaseSchemaUpdate" value="true"/>
         <property name="jobExecutorActivate" value="true"/>
-        <property name="jobExecutor" ref="springJobExecutor" />
-		<property name="deploymentResources">
+        <property name="jobExecutor" ref="springJobExecutor"/>
+        <property name="deploymentResources">
             <list>
                 <value>classpath:/org/activiti/spring/test/components/SpringTimersProcess.bpmn20.xml</value>
                 <value>classpath:/org/activiti/spring/test/components/SpringJobExecutorRollBack.bpmn20.xml</value>
             </list>
-        </property>	
+        </property>
     </bean>
 
     <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
@@ -47,11 +43,11 @@
     <bean id="taskService" factory-bean="processEngine" factory-method="getTaskService"/>
     <bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService"/>
     <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
-    
+
     <bean id="springJobExecutor" class="org.activiti.spring.SpringJobExecutor">
-    	<property name="taskExecutor">
-    		<bean class="org.springframework.core.task.SyncTaskExecutor" />
-    	</property>
+        <property name="taskExecutor">
+            <bean class="org.springframework.core.task.SyncTaskExecutor"/>
+        </property>
     </bean>
 
 </beans>

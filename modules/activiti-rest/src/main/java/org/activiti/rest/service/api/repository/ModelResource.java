@@ -13,69 +13,69 @@
 
 package org.activiti.rest.service.api.repository;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.repository.Model;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
-import org.restlet.resource.Put;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ModelResource extends BaseModelResource {
 
-  @Get
-  public ModelResponse getModel() {
-  	if(authenticate() == false) return null;
-  	
-    Model model = getModelFromRequest();
+  @RequestMapping(value="/repository/models/{modelId}", method = RequestMethod.GET, produces = "application/json")
+  public ModelResponse getModel(@PathVariable String modelId, HttpServletRequest request) {
+    Model model = getModelFromRequest(modelId);
     
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createModelResponse(this, model);
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/models/"));
+    return restResponseFactory.createModelResponse(model, serverRootUrl);
   }
   
-  @Put
-  public ModelResponse updateModel(ModelRequest request) {
-  	if(authenticate() == false) return null;
-  	
-    Model model = getModelFromRequest();
+  @RequestMapping(value="/repository/models/{modelId}", method = RequestMethod.PUT, produces = "application/json")
+  public ModelResponse updateModel(@PathVariable String modelId, @RequestBody ModelRequest modelRequest, HttpServletRequest request) {
+    Model model = getModelFromRequest(modelId);
     
-    if(request.isCategoryChanged()) {
-      model.setCategory(request.getCategory());
+    if (modelRequest.isCategoryChanged()) {
+      model.setCategory(modelRequest.getCategory());
     }
-    if(request.isDeploymentChanged()) {
-      model.setDeploymentId(request.getDeploymentId());
+    if (modelRequest.isDeploymentChanged()) {
+      model.setDeploymentId(modelRequest.getDeploymentId());
     }
-    if(request.isKeyChanged()) {
-      model.setKey(request.getKey());
+    if (modelRequest.isKeyChanged()) {
+      model.setKey(modelRequest.getKey());
     }
-    if(request.isMetaInfoChanged()) {
-      model.setMetaInfo(request.getMetaInfo());
+    if (modelRequest.isMetaInfoChanged()) {
+      model.setMetaInfo(modelRequest.getMetaInfo());
     }
-    if(request.isNameChanged()) {
-      model.setName(request.getName());
+    if (modelRequest.isNameChanged()) {
+      model.setName(modelRequest.getName());
     }
-    if(request.isVersionChanged()) {
-      model.setVersion(request.getVersion());
+    if (modelRequest.isVersionChanged()) {
+      model.setVersion(modelRequest.getVersion());
     }
-    if(request.isTenantIdChanged()) {
-    	model.setTenantId(request.getTenantId());
+    if (modelRequest.isTenantIdChanged()) {
+    	model.setTenantId(modelRequest.getTenantId());
     }
     
-    ActivitiUtil.getRepositoryService().saveModel(model);
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createModelResponse(this, model);
+    repositoryService.saveModel(model);
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/models/"));
+    return restResponseFactory.createModelResponse(model, serverRootUrl);
   }
 
-  @Delete
-  public void deleteModel() {
-  	if(authenticate() == false) return;
-  	
-    Model model = getModelFromRequest();
-    ActivitiUtil.getRepositoryService().deleteModel(model.getId());
-    setStatus(Status.SUCCESS_NO_CONTENT);
+  @RequestMapping(value="/repository/models/{modelId}", method = RequestMethod.DELETE)
+  public void deleteModel(@PathVariable String modelId, HttpServletResponse response) {
+    Model model = getModelFromRequest(modelId);
+    repositoryService.deleteModel(model.getId());
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

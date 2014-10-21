@@ -15,76 +15,74 @@ package org.activiti.rest.service.api.runtime.task;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.RestUrls;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class TaskIdentityLinkResource extends TaskBaseResource {
 
-  @Get
-  public RestIdentityLink getIdentityLink() {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", method = RequestMethod.GET, produces="application/json")
+  public RestIdentityLink getIdentityLink(@PathVariable("taskId") String taskId, 
+      @PathVariable("family") String family, @PathVariable("identityId") String identityId, 
+      @PathVariable("type") String type, HttpServletRequest request) {
     
-    Task task = getTaskFromRequest();
-
-    // Extract and validate identity link from URL
-    String family = getAttribute("family");
-    String identityId = getAttribute("identityId");
-    String type = getAttribute("type");
+    Task task = getTaskFromRequest(taskId);
     validateIdentityLinkArguments(family, identityId, type);
     
     IdentityLink link = getIdentityLink(family, identityId, type, task.getId());
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestIdentityLink(this, link);
+    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
+    return restResponseFactory.createRestIdentityLink(link, serverRootUrl);
   }
   
-  @Delete
-  public void deleteIdentityLink() {
-    if(!authenticate())
-      return;
+  @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", method = RequestMethod.DELETE)
+  public void deleteIdentityLink(@PathVariable("taskId") String taskId, 
+      @PathVariable("family") String family, @PathVariable("identityId") String identityId, 
+      @PathVariable("type") String type, HttpServletResponse response) {
     
-    Task task = getTaskFromRequest();
+    Task task = getTaskFromRequest(taskId);
 
-    // Extract and validate identity link from URL
-    String family = getAttribute("family");
-    String identityId = getAttribute("identityId");
-    String type = getAttribute("type");
     validateIdentityLinkArguments(family, identityId, type);
     
     // Check if identitylink to delete exists
     getIdentityLink(family, identityId, type, task.getId());
     
-    if(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family)) {
-      ActivitiUtil.getTaskService().deleteUserIdentityLink(task.getId(), identityId, type);
+    if (RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family)) {
+      taskService.deleteUserIdentityLink(task.getId(), identityId, type);
     } else {
-      ActivitiUtil.getTaskService().deleteGroupIdentityLink(task.getId(), identityId, type);
+      taskService.deleteGroupIdentityLink(task.getId(), identityId, type);
     }
     
-    setStatus(Status.SUCCESS_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
   protected void validateIdentityLinkArguments(String family, String identityId, String type) {
-    if(family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family)
+    if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family)
             && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
       throw new ActivitiIllegalArgumentException("Identity link family should be 'users' or 'groups'.");
     }
-    if(identityId == null) {
+    if (identityId == null) {
       throw new ActivitiIllegalArgumentException("IdentityId is required.");
     }
-    if(type == null) {
+    if (type == null) {
       throw new ActivitiIllegalArgumentException("Type is required.");
     }
   }
@@ -93,16 +91,16 @@ public class TaskIdentityLinkResource extends TaskBaseResource {
     boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
     
     // Perhaps it would be better to offer getting a single identitylink from the API
-    List<IdentityLink> allLinks = ActivitiUtil.getTaskService().getIdentityLinksForTask(taskId);
-    for(IdentityLink link : allLinks) {
+    List<IdentityLink> allLinks = taskService.getIdentityLinksForTask(taskId);
+    for (IdentityLink link : allLinks) {
       boolean rightIdentity = false;
-      if(isUser) {
+      if (isUser) {
         rightIdentity = identityId.equals(link.getUserId());
       } else {
         rightIdentity = identityId.equals(link.getGroupId());
       }
       
-      if(rightIdentity && link.getType().equals(type)) {
+      if (rightIdentity && link.getType().equals(type)) {
         return link;
       }
     }

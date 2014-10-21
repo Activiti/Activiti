@@ -13,64 +13,57 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.engine.EventResponse;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class TaskEventResource extends TaskBaseResource {
 
-  @Get
-  public EventResponse getEvent() {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/runtime/tasks/{taskId}/events/{eventId}", method = RequestMethod.GET, produces="application/json")
+  public EventResponse getEvent(@PathVariable("taskId") String taskId, 
+      @PathVariable("eventId") String eventId, HttpServletRequest request) {
     
-    HistoricTaskInstance task = getHistoricTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
     
-    String eventId = getAttribute("eventId");
-    if(eventId == null) {
-      throw new ActivitiIllegalArgumentException("EventId is required.");
-    }
-    
-    Event event = ActivitiUtil.getTaskService().getEvent(eventId);
-    if(event == null || !task.getId().equals(event.getTaskId())) {
+    Event event = taskService.getEvent(eventId);
+    if (event == null || !task.getId().equals(event.getTaskId())) {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an event with id '" + eventId + "'.", Event.class);
     }
     
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createEventResponse(this, event);
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
+    
+    return restResponseFactory.createEventResponse(event, serverRootUrl);
   }
   
-  @Delete
-  public void deleteEvent() {
-    if(!authenticate())
-      return;
+  @RequestMapping(value="/runtime/tasks/{taskId}/events/{eventId}", method = RequestMethod.DELETE)
+  public void deleteEvent(@PathVariable("taskId") String taskId, 
+      @PathVariable("eventId") String eventId, HttpServletResponse response) {
     
     // Check if task exists
-    Task task = getTaskFromRequest();
+    Task task = getTaskFromRequest(taskId);
     
-    String eventId = getAttribute("eventId");
-    if(eventId == null) {
-      throw new ActivitiIllegalArgumentException("EventId is required.");
-    }
-    
-    Event event = ActivitiUtil.getTaskService().getEvent(eventId);
-    if(event == null || event.getTaskId() == null || !event.getTaskId().equals(task.getId())) {
+    Event event = taskService.getEvent(eventId);
+    if (event == null || event.getTaskId() == null || !event.getTaskId().equals(task.getId())) {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an event with id '" + event + "'.", Event.class);
     }
     
-    ActivitiUtil.getTaskService().deleteComment(eventId);
-    setStatus(Status.SUCCESS_NO_CONTENT);
+    taskService.deleteComment(eventId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

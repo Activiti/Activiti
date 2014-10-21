@@ -14,74 +14,76 @@
 package org.activiti.rest.service.api.history;
 
 
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.activiti.rest.common.api.DataResponse;
-import org.restlet.data.Form;
-import org.restlet.resource.Get;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Tijs Rademakers
  */
+@RestController
 public class HistoricActivityInstanceCollectionResource extends HistoricActivityInstanceBaseResource {
 
-  @Get("json")
-  public DataResponse getHistoricActivityInstances() {
-    if(!authenticate()) {
-      return null;
-    }
-    Form urlQuery = getQuery();
-    
+  @RequestMapping(value="/history/historic-activity-instances", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getHistoricActivityInstances(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
     HistoricActivityInstanceQueryRequest query = new HistoricActivityInstanceQueryRequest();
 
     // Populate query based on request
-    if (getQueryParameter("activityId", urlQuery) != null) {
-      query.setActivityId(getQueryParameter("activityId", urlQuery));
+    if (allRequestParams.get("activityId") != null) {
+      query.setActivityId(allRequestParams.get("activityId"));
     }
     
-    if (getQueryParameter("activityInstanceId", urlQuery) != null) {
-      query.setActivityInstanceId(getQueryParameter("activityInstanceId", urlQuery));
+    if (allRequestParams.get("activityInstanceId") != null) {
+      query.setActivityInstanceId(allRequestParams.get("activityInstanceId"));
     }
     
-    if (getQueryParameter("activityName", urlQuery) != null) {
-      query.setActivityName(getQueryParameter("activityName", urlQuery));
+    if (allRequestParams.get("activityName") != null) {
+      query.setActivityName(allRequestParams.get("activityName"));
     }
     
-    if (getQueryParameter("activityType", urlQuery) != null) {
-      query.setActivityType(getQueryParameter("activityType", urlQuery));
+    if (allRequestParams.get("activityType") != null) {
+      query.setActivityType(allRequestParams.get("activityType"));
     }
     
-    if (getQueryParameter("executionId", urlQuery) != null) {
-      query.setExecutionId(getQueryParameter("executionId", urlQuery));
+    if (allRequestParams.get("executionId") != null) {
+      query.setExecutionId(allRequestParams.get("executionId"));
     }
     
-    if (getQueryParameter("finished", urlQuery) != null) {
-      query.setFinished(getQueryParameterAsBoolean("finished", urlQuery));
+    if (allRequestParams.get("finished") != null) {
+      query.setFinished(Boolean.valueOf(allRequestParams.get("finished")));
     }
     
-    if (getQueryParameter("taskAssignee", urlQuery) != null) {
-      query.setTaskAssignee(getQueryParameter("taskAssignee", urlQuery));
+    if (allRequestParams.get("taskAssignee") != null) {
+      query.setTaskAssignee(allRequestParams.get("taskAssignee"));
     }
     
-    if (getQueryParameter("processInstanceId", urlQuery) != null) {
-      query.setProcessInstanceId(getQueryParameter("processInstanceId", urlQuery));
+    if (allRequestParams.get("processInstanceId") != null) {
+      query.setProcessInstanceId(allRequestParams.get("processInstanceId"));
     }
     
-    if (getQueryParameter("processDefinitionId", urlQuery) != null) {
-      query.setProcessDefinitionId(getQueryParameter("processDefinitionId", urlQuery));
+    if (allRequestParams.get("processDefinitionId") != null) {
+      query.setProcessDefinitionId(allRequestParams.get("processDefinitionId"));
     }
     
-    if(getQueryParameter("tenantId", urlQuery) != null) {
-    	query.setTenantId(getQueryParameter("tenantId", urlQuery));
+    if (allRequestParams.get("tenantId") != null) {
+    	query.setTenantId(allRequestParams.get("tenantId"));
     }
     
-    if(getQueryParameter("tenantIdLike", urlQuery) != null) {
-    	query.setTenantIdLike(getQueryParameter("tenantIdLike", urlQuery));
+    if (allRequestParams.get("tenantIdLike") != null) {
+    	query.setTenantIdLike(allRequestParams.get("tenantIdLike"));
     }
     
-    if(getQueryParameter("withoutTenantId", urlQuery) != null) {
-    	query.setWithoutTenantId(getQueryParameterAsBoolean("withoutTenantId", urlQuery));
+    if(allRequestParams.get("withoutTenantId") != null) {
+    	query.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
     }
 
-    return getQueryResponse(query, urlQuery);
+    return getQueryResponse(query, allRequestParams, request.getRequestURL().toString().replace("/history/historic-activity-instances", ""));
   }
 }

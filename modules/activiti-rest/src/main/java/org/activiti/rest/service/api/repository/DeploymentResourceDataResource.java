@@ -13,19 +13,24 @@
 
 package org.activiti.rest.service.api.repository;
 
-import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class DeploymentResourceDataResource extends BaseDeploymentResourceDataResource {
 
-  @Get
-  public InputRepresentation getDeploymentResource() {
-    if (authenticate() == false)
-      return null;
-
-    return getDeploymentResource(getAttribute("deploymentId"), getAttribute("resourceId"));
+  @RequestMapping(value="/repository/deployments/{deploymentId}/resourcedata/{resourceId}", method = RequestMethod.GET)
+  public @ResponseBody byte[] getDeploymentResource(@PathVariable("deploymentId") String deploymentId, 
+      @PathVariable("resourceId") String resourceId, HttpServletResponse response) {
+    
+    return getDeploymentResourceData(deploymentId, resourceId, response);
   }
 }

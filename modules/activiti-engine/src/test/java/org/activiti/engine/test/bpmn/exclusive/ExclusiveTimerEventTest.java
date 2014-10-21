@@ -39,9 +39,5 @@ public class ExclusiveTimerEventTest extends PluggableActivitiTestCase {
 
     assertEquals(0, jobQuery.count());
     assertProcessEnded(pi.getProcessInstanceId());
-
-
   }
-
-
 }

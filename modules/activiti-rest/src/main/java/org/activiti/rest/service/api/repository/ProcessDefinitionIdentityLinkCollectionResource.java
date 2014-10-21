@@ -16,67 +16,73 @@ package org.activiti.rest.service.api.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ProcessDefinitionIdentityLinkCollectionResource extends BaseProcessDefinitionResource {
 
-  @Get
-  public List<RestIdentityLink> getIdentityLinks() {
-    if(!authenticate())
-      return null;
-    
+  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
+  public List<RestIdentityLink> getIdentityLinks(@PathVariable String processDefinitionId, HttpServletRequest request) {
     List<RestIdentityLink> result = new ArrayList<RestIdentityLink>();
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
     
-    List<IdentityLink> identityLinks = ActivitiUtil.getRepositoryService().getIdentityLinksForProcessDefinition(processDefinition.getId());
-    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    for(IdentityLink link : identityLinks) {
-      result.add(responseFactory.createRestIdentityLink(this, link));
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/process-definitions/"));
+    
+    List<IdentityLink> identityLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
+    for (IdentityLink link : identityLinks) {
+      result.add(restResponseFactory.createRestIdentityLink(link, serverRootUrl));
     }
     return result;
   }
   
-  @Post
-  public RestIdentityLink createIdentityLink(RestIdentityLink identityLink) {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks", method = RequestMethod.POST, produces = "application/json")
+  public RestIdentityLink createIdentityLink(@PathVariable String processDefinitionId, @RequestBody RestIdentityLink identityLink, 
+      HttpServletRequest request, HttpServletResponse response) {
     
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
     
-    if(identityLink.getGroup() == null && identityLink.getUser() == null) {
+    if (identityLink.getGroup() == null && identityLink.getUser() == null) {
       throw new ActivitiIllegalArgumentException("A group or a user is required to create an identity link.");
     }
     
-    if(identityLink.getGroup() != null && identityLink.getUser() != null) {
+    if (identityLink.getGroup() != null && identityLink.getUser() != null) {
       throw new ActivitiIllegalArgumentException("Only one of user or group can be used to create an identity link.");
     }
     
-    if(identityLink.getGroup() != null) {
-      ActivitiUtil.getRepositoryService().addCandidateStarterGroup(processDefinition.getId(), identityLink.getGroup());
+    if (identityLink.getGroup() != null) {
+      repositoryService.addCandidateStarterGroup(processDefinition.getId(), identityLink.getGroup());
     } else {
-      ActivitiUtil.getRepositoryService().addCandidateStarterUser(processDefinition.getId(), identityLink.getUser());
+      repositoryService.addCandidateStarterUser(processDefinition.getId(), identityLink.getUser());
     }
     
     // Always candidate for process-definition. User-provided value is ignored
     identityLink.setType(IdentityLinkType.CANDIDATE);
     
-    setStatus(Status.SUCCESS_CREATED);
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createRestIdentityLink(this, identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, processDefinition.getId(), null);
+    response.setStatus(HttpStatus.CREATED.value());
+    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/process-definitions/"));
+    
+    return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, 
+        processDefinition.getId(), null, serverRootUrl);
   }
   
 }

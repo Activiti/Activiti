@@ -14,12 +14,15 @@
 package org.activiti.rest.service.api.identity;
 
 import org.activiti.engine.identity.User;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -28,7 +31,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @author Frederik Heremans
  */
-public class UserInfoResourceTest extends BaseRestTestCase {
+public class UserInfoResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting the collection of info for a user.
@@ -46,13 +49,10 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       identityService.setUserInfo(newUser.getId(), "key1", "Value 1");
       identityService.setUserInfo(newUser.getId(), "key2", "Value 2");
       
+      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO_COLLECTION, newUser.getId())), HttpStatus.SC_OK);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO_COLLECTION,
-              newUser.getId()));
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertNotNull(responseNode);
       assertTrue(responseNode.isArray());
       assertEquals(2, responseNode.size());
@@ -60,16 +60,16 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       boolean foundFirst = false;
       boolean foundSecond = false;
       
-      for(int i=0; i<responseNode.size(); i++) {
+      for (int i=0; i<responseNode.size(); i++) {
         ObjectNode info = (ObjectNode) responseNode.get(i);
         assertNotNull(info.get("key").textValue());
         assertNotNull(info.get("url").textValue());
         
-        if(info.get("key").textValue().equals("key1")) {
+        if (info.get("key").textValue().equals("key1")) {
           foundFirst = true;
           assertTrue(info.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
                   RestUrls.URL_USER_INFO, newUser.getId(), "key1")));
-        } else if(info.get("key").textValue().equals("key2")) {
+        } else if (info.get("key").textValue().equals("key2")) {
           assertTrue(info.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
                   RestUrls.URL_USER_INFO, newUser.getId(), "key2")));
           foundSecond = true;
@@ -102,13 +102,10 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       
       identityService.setUserInfo(newUser.getId(), "key1", "Value 1");
       
+      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, newUser.getId(), "key1")), HttpStatus.SC_OK);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO,
-              newUser.getId(), "key1"));
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertEquals("key1", responseNode.get("key").textValue());
       assertEquals("Value 1", responseNode.get("value").textValue());
       
@@ -118,7 +115,7 @@ public class UserInfoResourceTest extends BaseRestTestCase {
     } finally {
       
       // Delete user after test passes or fails
-      if(savedUser != null) {
+      if (savedUser != null) {
         identityService.deleteUser(savedUser.getId());
       }
     }
@@ -128,15 +125,8 @@ public class UserInfoResourceTest extends BaseRestTestCase {
    * Test getting the info for an unexisting user.
    */
   public void testGetInfoForUnexistingUser() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "unexisting", "key1"));
-    
-    try {
-      client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a user with id 'unexisting'.", expected.getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "unexisting", "key1")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -152,14 +142,8 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "testuser", "key1"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("User info with key 'key1' does not exists for user 'testuser'.", expected.getStatus().getDescription());
-      }
+      executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "testuser", "key1")), HttpStatus.SC_NOT_FOUND);
       
     } finally {
       
@@ -185,12 +169,8 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       
       identityService.setUserInfo(newUser.getId(), "key1", "Value 1");
       
-      
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO,
-              newUser.getId(), "key1"));
-      Representation response = client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-      assertEquals(0, response.getSize());
+      executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, newUser.getId(), "key1")), HttpStatus.SC_NO_CONTENT);
       
       // Check if info is actually deleted
       assertNull(identityService.getUserInfo(newUser.getId(), "key1"));
@@ -220,12 +200,13 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("value", "Updated value");
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO,
-              newUser.getId(), "key1"));
-      Representation response = client.put(requestNode);
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, newUser.getId(), "key1"));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+      
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertEquals("key1", responseNode.get("key").textValue());
       assertEquals("Updated value", responseNode.get("value").textValue());
       
@@ -234,6 +215,7 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       
       // Check if info is actually updated
       assertEquals("Updated value", identityService.getUserInfo(newUser.getId(), "key1"));
+      
     } finally {
       
       // Delete user after test passes or fails
@@ -247,19 +229,13 @@ public class UserInfoResourceTest extends BaseRestTestCase {
    * Test update the info for an unexisting user.
    */
   public void testUpdateInfoForUnexistingUser() throws Exception {
-    
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("value", "Updated value");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "unexisting", "key1"));
-    
-    try {
-      client.put(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a user with id 'unexisting'.", expected.getStatus().getDescription());
-    }
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "unexisting", "key1"));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    executeHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -277,14 +253,11 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("value", "Updated value");
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "testuser", "key1"));
-      try {
-        client.put(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("User info with key 'key1' does not exists for user 'testuser'.", expected.getStatus().getDescription());
-      }
+     
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "testuser", "key1"));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
       
     } finally {
       
@@ -299,15 +272,8 @@ public class UserInfoResourceTest extends BaseRestTestCase {
    * Test deleting the info for an unexisting user.
    */
   public void testDeleteInfoForUnexistingUser() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "unexisting", "key1"));
-    
-    try {
-      client.delete();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a user with id 'unexisting'.", expected.getStatus().getDescription());
-    }
+    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "unexisting", "key1")), HttpStatus.SC_NOT_FOUND);
   }
   
   /**
@@ -323,14 +289,8 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "testuser", "key1"));
-      try {
-        client.delete();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("User info with key 'key1' does not exists for user 'testuser'.", expected.getStatus().getDescription());
-      }
+      executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO, "testuser", "key1")), HttpStatus.SC_NOT_FOUND);
       
     } finally {
       
@@ -355,11 +315,12 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       requestNode.put("value", "Value 1");
       requestNode.put("key", "key1");
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO_COLLECTION, "testuser"));
-      Representation response = client.post(requestNode);
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO_COLLECTION, "testuser"));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       assertEquals("key1", responseNode.get("key").textValue());
       assertEquals("Value 1", responseNode.get("value").textValue());
       
@@ -389,28 +350,17 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("key", "key1");
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO_COLLECTION, "testuser"));
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("The value cannot be null.", expected.getStatus().getDescription());
-      }
-      client.release();
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO_COLLECTION, "testuser"));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
       
       // Test creating without key
       requestNode = objectMapper.createObjectNode();
       requestNode.put("value", "The value");
       
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("The key cannot be null.", expected.getStatus().getDescription());
-      }
-      client.release();
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
       
       // Test creating an already existing info 
       identityService.setUserInfo(newUser.getId(), "key1", "The value");
@@ -418,29 +368,19 @@ public class UserInfoResourceTest extends BaseRestTestCase {
       requestNode.put("key", "key1");
       requestNode.put("value", "The value");
       
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-        assertEquals("User info with key 'key1' already exists for this user.", expected.getStatus().getDescription());
-      }
-      client.release();
-            
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_CONFLICT);
       
       // Test creating info for unexisting user
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO_COLLECTION, "unexistinguser"));
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a user with id 'unexistinguser'.", expected.getStatus().getDescription());
-      }
+      httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_INFO_COLLECTION, "unexistinguser"));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+      
     } finally {
       
       // Delete user after test passes or fails
-      if(savedUser != null) {
+      if (savedUser != null) {
         identityService.deleteUser(savedUser.getId());
       }
     }

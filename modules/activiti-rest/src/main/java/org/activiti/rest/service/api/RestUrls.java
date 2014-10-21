@@ -88,7 +88,7 @@ public final class RestUrls {
   public static final String[] URL_DEPLOYMENT = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_DEPLOYMENT_RESOURCE, "{0}"};
   
   /**
-   * URL template listing deployment resources: <i>repository/deployments/{0:deploymentId}/resources/{1}:resourceId</i>
+   * URL template listing deployment resources: <i>repository/deployments/{0:deploymentId}/resources</i>
    */
   public static final String[] URL_DEPLOYMENT_RESOURCES = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_DEPLOYMENT_RESOURCE, 
     "{0}", SEGMENT_DEPLOYMENT_ARTIFACT_RESOURCE};

@@ -113,7 +113,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String databaseType;
   protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_FALSE;
   protected String jdbcDriver = "org.h2.Driver";
-  protected String jdbcUrl = "jdbc:h2:tcp://localhost/activiti";
+  protected String jdbcUrl = "jdbc:h2:tcp://localhost/~/activiti";
   protected String jdbcUsername = "sa";
   protected String jdbcPassword = "";
   protected String dataSourceJndiName = null;
