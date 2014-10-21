@@ -1109,15 +1109,10 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
               </row>
               <row>
                 <entry>ACTIVITY_CANCELLED</entry>
-                <entry>An activity is going to be cancelled</entry>
+                <entry>An activity is going to be cancelled. There can be three reasons for activity cancellation (MessageEventSubscriptionEntity, SignalEventSubscriptionEntity, TimerEntity).</entry>
                 <entry>
                   <literal>org.activiti...ActivitiActivityCancelledEvent</literal>
                 </entry>
-              </row>
-              <row>
-                <entry>ACTIVITY_TIMEOUT</entry>
-                <entry>An activity is interupted due to an interrupting timer boundary event.</entry>
-                <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
               </row>
               <row>
                 <entry>ACTIVITY_SIGNALED</entry>

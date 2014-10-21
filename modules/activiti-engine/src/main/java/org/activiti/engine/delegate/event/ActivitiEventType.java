@@ -137,12 +137,7 @@ public enum ActivitiEventType {
    * for the involved activity, if the error was delivered successfully.
    */
   ACTIVITY_ERROR_RECEIVED,
-  
-  /**
-   * An activity was interrupted by an interrupting timer boundary event.
-   */
-  ACTIVITY_TIMEOUT,
-  
+
   /**
    * Indicates the engine has taken (ie. followed) a sequenceflow from a source activity to a target activity.
    */

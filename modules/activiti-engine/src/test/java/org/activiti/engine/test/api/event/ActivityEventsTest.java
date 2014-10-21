@@ -23,6 +23,7 @@ import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.event.logger.EventLogger;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -488,8 +489,10 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
 
     // Check timeout has been dispatched
     assertEquals(1, listener.getEventsReceived().size());
-    ActivitiEvent timeOutEvent = listener.getEventsReceived().get(0);
-    assertEquals("ACTIVITY_TIMEOUT evet expected", ActivitiEventType.ACTIVITY_TIMEOUT, timeOutEvent.getType());
+    ActivitiEvent activitiEvent = listener.getEventsReceived().get(0);
+    assertEquals("ACTIVITY_CANCELLED event expected", ActivitiEventType.ACTIVITY_CANCELLED, activitiEvent.getType());
+    ActivitiActivityCancelledEvent cancelledEvent = (ActivitiActivityCancelledEvent) activitiEvent;
+    assertTrue("TIMER is the cause of the cancellation", cancelledEvent.getCause() instanceof TimerEntity);
   }
 
   @Deployment(resources = "org/activiti/engine/test/bpmn/event/timer/BoundaryTimerEventTest.testTimerOnNestingOfSubprocesses.bpmn20.xml")
@@ -509,7 +512,8 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertEquals(3, listener.getEventsReceived().size());
     List<String> eventIdList = new ArrayList<String>();
     for (ActivitiEvent event : listener.getEventsReceived()) {
-      assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, event.getType());
+      assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, event.getType());
+      assertTrue("TIMER is the cause of the cancellation", ((ActivitiActivityCancelledEvent) event).getCause() instanceof TimerEntity);
       eventIdList.add(((ActivitiActivityEventImpl) event).getActivityId());
     }
     assertTrue(eventIdList.indexOf("innerTask1") >= 0);
@@ -534,7 +538,8 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertEquals(4, listener.getEventsReceived().size());
     List<String> eventIdList = new ArrayList<String>();
     for (ActivitiEvent event : listener.getEventsReceived()) {
-      assertEquals(ActivitiEventType.ACTIVITY_TIMEOUT, event.getType());
+      assertEquals(ActivitiEventType.ACTIVITY_CANCELLED, event.getType());
+      assertTrue("TIMER is the cause of the cancellation", ((ActivitiActivityCancelledEvent) event).getCause() instanceof TimerEntity);
       eventIdList.add(((ActivitiActivityEventImpl) event).getActivityId());
     }
     assertTrue(eventIdList.indexOf("innerTask1") >= 0);
