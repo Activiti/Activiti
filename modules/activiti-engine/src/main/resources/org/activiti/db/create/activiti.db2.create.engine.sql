@@ -103,6 +103,7 @@ create table ACT_RE_PROCDEF (
     DGRM_RESOURCE_NAME_ varchar(4000),
     DESCRIPTION_ varchar(4000),
     HAS_START_FORM_KEY_ smallint check(HAS_START_FORM_KEY_ in (1,0)),
+    HAS_GRAPHICAL_NOTATION_ smallint check(HAS_START_FORM_KEY_ in (1,0)),
     SUSPENSION_STATE_ integer,
     TENANT_ID_ varchar(255) not null default '',
     primary key (ID_)

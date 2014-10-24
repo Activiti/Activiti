@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20141024111747065" modeler:modelId="921016" modeler:modelVersion="1" modeler:modelLastUpdated="1414145863925">
+  <process id="processWithoutDi" isExecutable="true">
+    <startEvent id="startEvent1"/>
+    <userTask id="sid-2E72B5B8-A37E-4D23-A0F6-2E8D5716F2B5" name="Task1"/>
+    <sequenceFlow id="sid-4EC26AAA-BF7C-44D0-ABF2-2B7AD67B3D1F" sourceRef="startEvent1" targetRef="sid-2E72B5B8-A37E-4D23-A0F6-2E8D5716F2B5"/>
+    <userTask id="sid-5D7CF8E0-46EF-4C52-B8BF-84B40C143D8B" name="Task2"/>
+    <sequenceFlow id="sid-7F603AB5-8C03-4C74-9593-58B0D1807B5D" sourceRef="sid-2E72B5B8-A37E-4D23-A0F6-2E8D5716F2B5" targetRef="sid-5D7CF8E0-46EF-4C52-B8BF-84B40C143D8B"/>
+    <endEvent id="sid-44ADCCC1-565F-478F-9744-48F1BEF60E0B"/>
+    <sequenceFlow id="sid-CA6ED28E-81E0-44DB-94BF-FA3CDD74836D" sourceRef="sid-5D7CF8E0-46EF-4C52-B8BF-84B40C143D8B" targetRef="sid-44ADCCC1-565F-478F-9744-48F1BEF60E0B"/>
+  </process>
+</definitions>
