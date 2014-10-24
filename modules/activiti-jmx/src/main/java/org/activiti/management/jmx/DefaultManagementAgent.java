@@ -16,11 +16,13 @@ package org.activiti.management.jmx;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.management.JMException;
 import javax.management.MBeanServer;
+import javax.management.MBeanServerFactory;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
@@ -33,6 +35,7 @@ import org.slf4j.LoggerFactory;
  */
 
 public class DefaultManagementAgent implements ManagementAgent {
+
   private final String DEFAULT_HOST = "localhost";
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementAgent.class);
@@ -42,9 +45,8 @@ public class DefaultManagementAgent implements ManagementAgent {
 
   public DefaultManagementAgent(JMXConfigurator jmxConfigurator) {
     this.jmxConfigurator = jmxConfigurator;
-    
-  }
 
+  }
 
   public void register(Object obj, ObjectName name) throws JMException {
     register(obj, name, false);
@@ -97,60 +99,77 @@ public class DefaultManagementAgent implements ManagementAgent {
 
   public void unregister(ObjectName name) throws JMException {
     if (isRegistered(name)) {
-        ObjectName on = mbeansRegistered.remove(name);
-        server.unregisterMBean(on);
-        LOG.debug("Unregistered MBean with ObjectName: {}", name);
+      ObjectName on = mbeansRegistered.remove(name);
+      server.unregisterMBean(on);
+      LOG.debug("Unregistered MBean with ObjectName: {}", name);
     } else {
-        mbeansRegistered.remove(name);
+      mbeansRegistered.remove(name);
     }
-}
-
+  }
 
   @Override
   public MBeanServer getMBeanServer() {
     return server;
   }
 
-
   @Override
   public void setMBeanServer(MBeanServer mbeanServer) {
-    this.server  = mbeanServer;
+    this.server = mbeanServer;
   }
-  
+
   protected void createMBeanServer() {
     String hostName;
     boolean canAccessSystemProps = true;
     try {
-        // we'll do it this way mostly to determine if we should lookup the hostName
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPropertiesAccess();
-        }
+      // we'll do it this way mostly to determine if we should lookup the
+      // hostName
+      SecurityManager sm = System.getSecurityManager();
+      if (sm != null) {
+        sm.checkPropertiesAccess();
+      }
     } catch (SecurityException se) {
-        canAccessSystemProps = false;
+      canAccessSystemProps = false;
     }
 
     if (canAccessSystemProps) {
-        try {
-            hostName = InetAddress.getLocalHost().getHostName();
-        } catch (UnknownHostException uhe) {
-            LOG.info("Cannot determine localhost name. Fallback to: " + DEFAULT_HOST , uhe);
-            hostName = DEFAULT_HOST;
-        }
-    } else {
+      try {
+        hostName = InetAddress.getLocalHost().getHostName();
+      } catch (UnknownHostException uhe) {
+        LOG.info("Cannot determine localhost name. Fallback to: " + DEFAULT_HOST, uhe);
         hostName = DEFAULT_HOST;
+      }
+    } else {
+      hostName = DEFAULT_HOST;
     }
 
     server = findOrCreateMBeanServer();
 
     try {
-        // Create the connector if we need
-        if (createConnector) {
-            createJmxConnector(hostName);
-        }
+      // Create the connector if we need
+      if (createConnector) {
+        createJmxConnector(hostName);
+      }
     } catch (IOException ioe) {
-        LOG.warn("Could not create and start JMX connector.", ioe);
+      LOG.warn("Could not create and start JMX connector.", ioe);
     }
-}
+  }
+
+  protected MBeanServer findOrCreateMBeanServer() {
+
+
+    // look for the first mbean server that has match default domain name
+    List<MBeanServer> servers = MBeanServerFactory.findMBeanServer(null);
+
+    for (MBeanServer server : servers) {
+      LOG.debug("Found MBeanServer with default domain {}", server.getDefaultDomain());
+
+      if (mBeanServerDefaultDomain.equals(server.getDefaultDomain())) {
+        return server;
+      }
+    }
+
+    // create a mbean server with the given default domain name
+    return MBeanServerFactory.createMBeanServer(mBeanServerDefaultDomain);
+  }
 
 }
