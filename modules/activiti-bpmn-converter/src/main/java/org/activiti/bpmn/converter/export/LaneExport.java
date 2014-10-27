@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 public class LaneExport implements BpmnXMLConstants {
 
   public static void writeLanes(Process process, XMLStreamWriter xtw) throws Exception {
-    if(!process.getLanes().isEmpty()) {
+    if (!process.getLanes().isEmpty()) {
       xtw.writeStartElement(ELEMENT_LANESET);
       xtw.writeAttribute(ATTRIBUTE_ID, "laneSet_" + process.getId());
       for (Lane lane : process.getLanes()) {
@@ -33,7 +33,7 @@ public class LaneExport implements BpmnXMLConstants {
         }
         
         for (String flowNodeRef : lane.getFlowReferences()) {
-          xtw.writeStartElement(ATTRIBUTE_FLOWNODE_REF);
+          xtw.writeStartElement(ELEMENT_FLOWNODE_REF);
           xtw.writeCharacters(flowNodeRef);
           xtw.writeEndElement();
         }

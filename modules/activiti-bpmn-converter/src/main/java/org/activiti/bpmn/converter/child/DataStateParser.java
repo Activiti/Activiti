@@ -16,21 +16,24 @@ import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.Lane;
+import org.activiti.bpmn.model.DataStore;
+import org.activiti.bpmn.model.DataStoreReference;
 
 /**
  * @author Tijs Rademakers
  */
-public class FlowNodeRefParser extends BaseChildElementParser {
+public class DataStateParser extends BaseChildElementParser {
 
   public String getElementName() {
-    return ELEMENT_FLOWNODE_REF;
+    return ELEMENT_DATA_STATE;
   }
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof Lane == false) return;
+    if (parentElement instanceof DataStore) {
+      ((DataStore) parentElement).setDataState(xtr.getElementText());
     
-    Lane lane = (Lane) parentElement;
-    lane.getFlowReferences().add(xtr.getElementText());
+    } else if (parentElement instanceof DataStoreReference) {
+      ((DataStoreReference) parentElement).setDataState(xtr.getElementText());
+    }
   }
 }

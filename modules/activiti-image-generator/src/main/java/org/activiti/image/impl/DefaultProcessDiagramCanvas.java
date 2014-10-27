@@ -1146,34 +1146,36 @@ public class DefaultProcessDiagramCanvas {
     Shape shapeFirst = createShape(sourceShapeType, sourceGraphicInfo);
     Shape shapeLast = createShape(targetShapeType, targetGraphicInfo);
 
-    GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
-    GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size()-1);
-    if (shapeFirst != null) {
-      graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
-      graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());
-    }
-    if (shapeLast != null) {
-      graphicInfoLast.setX(shapeLast.getBounds2D().getCenterX());
-      graphicInfoLast.setY(shapeLast.getBounds2D().getCenterY());
-    }
-
-    Point p = null;
-    
-    if (shapeFirst != null) {
-      Line2D.Double lineFirst = new Line2D.Double(graphicInfoFirst.getX(), graphicInfoFirst.getY(), graphicInfoList.get(1).getX(), graphicInfoList.get(1).getY());
-      p = getIntersection(shapeFirst, lineFirst);
-      if (p != null) {
-        graphicInfoFirst.setX(p.getX());
-        graphicInfoFirst.setY(p.getY());
+    if (graphicInfoList != null && graphicInfoList.size() > 0) {
+      GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
+      GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size()-1);
+      if (shapeFirst != null) {
+        graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
+        graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());
       }
-    }
-
-    if (shapeLast != null) {
-      Line2D.Double lineLast = new Line2D.Double(graphicInfoLast.getX(), graphicInfoLast.getY(), graphicInfoList.get(graphicInfoList.size()-2).getX(), graphicInfoList.get(graphicInfoList.size()-2).getY());
-      p = getIntersection(shapeLast, lineLast);
-      if (p != null) {
-        graphicInfoLast.setX(p.getX());
-        graphicInfoLast.setY(p.getY());
+      if (shapeLast != null) {
+        graphicInfoLast.setX(shapeLast.getBounds2D().getCenterX());
+        graphicInfoLast.setY(shapeLast.getBounds2D().getCenterY());
+      }
+  
+      Point p = null;
+      
+      if (shapeFirst != null) {
+        Line2D.Double lineFirst = new Line2D.Double(graphicInfoFirst.getX(), graphicInfoFirst.getY(), graphicInfoList.get(1).getX(), graphicInfoList.get(1).getY());
+        p = getIntersection(shapeFirst, lineFirst);
+        if (p != null) {
+          graphicInfoFirst.setX(p.getX());
+          graphicInfoFirst.setY(p.getY());
+        }
+      }
+  
+      if (shapeLast != null) {
+        Line2D.Double lineLast = new Line2D.Double(graphicInfoLast.getX(), graphicInfoLast.getY(), graphicInfoList.get(graphicInfoList.size()-2).getX(), graphicInfoList.get(graphicInfoList.size()-2).getY());
+        p = getIntersection(shapeLast, lineLast);
+        if (p != null) {
+          graphicInfoLast.setX(p.getX());
+          graphicInfoLast.setY(p.getY());
+        }
       }
     }
 

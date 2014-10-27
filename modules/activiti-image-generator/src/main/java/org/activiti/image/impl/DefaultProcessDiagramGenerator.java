@@ -542,30 +542,32 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
       FlowElement sourceElement = bpmnModel.getFlowElement(sourceRef);
       FlowElement targetElement = bpmnModel.getFlowElement(targetRef);
       List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(sequenceFlow.getId());
-      graphicInfoList = connectionPerfectionizer(processDiagramCanvas, bpmnModel, sourceElement, targetElement, graphicInfoList);
-      int xPoints[]= new int[graphicInfoList.size()];
-      int yPoints[]= new int[graphicInfoList.size()];
-      
-      for (int i=1; i<graphicInfoList.size(); i++) {
-        GraphicInfo graphicInfo = graphicInfoList.get(i);
-        GraphicInfo previousGraphicInfo = graphicInfoList.get(i-1);
+      if (graphicInfoList != null && graphicInfoList.size() > 0) {
+        graphicInfoList = connectionPerfectionizer(processDiagramCanvas, bpmnModel, sourceElement, targetElement, graphicInfoList);
+        int xPoints[]= new int[graphicInfoList.size()];
+        int yPoints[]= new int[graphicInfoList.size()];
         
-        if (i == 1) {
-          xPoints[0] = (int) previousGraphicInfo.getX();
-          yPoints[0] = (int) previousGraphicInfo.getY();
+        for (int i=1; i<graphicInfoList.size(); i++) {
+          GraphicInfo graphicInfo = graphicInfoList.get(i);
+          GraphicInfo previousGraphicInfo = graphicInfoList.get(i-1);
+          
+          if (i == 1) {
+            xPoints[0] = (int) previousGraphicInfo.getX();
+            yPoints[0] = (int) previousGraphicInfo.getY();
+          }
+          xPoints[i] = (int) graphicInfo.getX();
+          yPoints[i] = (int) graphicInfo.getY();
+          
         }
-        xPoints[i] = (int) graphicInfo.getX();
-        yPoints[i] = (int) graphicInfo.getY();
-        
-      }
-
-      processDiagramCanvas.drawSequenceflow(xPoints, yPoints, drawConditionalIndicator, isDefault, highLighted, scaleFactor);
-
-      // Draw sequenceflow label
-      GraphicInfo labelGraphicInfo = bpmnModel.getLabelGraphicInfo(sequenceFlow.getId());
-      if (labelGraphicInfo != null) {
-        GraphicInfo lineCenter = getLineCenter(graphicInfoList);
-        processDiagramCanvas.drawLabel(sequenceFlow.getName(), lineCenter, false);
+  
+        processDiagramCanvas.drawSequenceflow(xPoints, yPoints, drawConditionalIndicator, isDefault, highLighted, scaleFactor);
+  
+        // Draw sequenceflow label
+        GraphicInfo labelGraphicInfo = bpmnModel.getLabelGraphicInfo(sequenceFlow.getId());
+        if (labelGraphicInfo != null) {
+          GraphicInfo lineCenter = getLineCenter(graphicInfoList);
+          processDiagramCanvas.drawLabel(sequenceFlow.getName(), lineCenter, false);
+        }
       }
     }
 
@@ -726,20 +728,22 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
       for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
         List<GraphicInfo> graphicInfoList = bpmnModel.getFlowLocationGraphicInfo(sequenceFlow.getId());
-        for (GraphicInfo graphicInfo : graphicInfoList) {
-          // width
-          if (graphicInfo.getX() > maxX) {
-            maxX = graphicInfo.getX();
-          }
-          if (graphicInfo.getX() < minX) {
-            minX = graphicInfo.getX();
-          }
-          // height
-          if (graphicInfo.getY() > maxY) {
-            maxY = graphicInfo.getY();
-          }
-          if (graphicInfo.getY()< minY) {
-            minY = graphicInfo.getY();
+        if (graphicInfoList != null) {
+          for (GraphicInfo graphicInfo : graphicInfoList) {
+            // width
+            if (graphicInfo.getX() > maxX) {
+              maxX = graphicInfo.getX();
+            }
+            if (graphicInfo.getX() < minX) {
+              minX = graphicInfo.getX();
+            }
+            // height
+            if (graphicInfo.getY() > maxY) {
+              maxY = graphicInfo.getY();
+            }
+            if (graphicInfo.getY()< minY) {
+              minY = graphicInfo.getY();
+            }
           }
         }
       }
