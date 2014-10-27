@@ -6,8 +6,8 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -36,11 +36,12 @@ public class TableDataResourceTest extends BaseSpringRestTestCase {
       // We use variable-table as a reference
       String tableName = managementService.getTableName(VariableInstanceEntity.class);
 
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName)), HttpStatus.SC_OK);
       
       // Check paging result
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals(3, responseNode.get("total").intValue());
       assertEquals(3, responseNode.get("size").intValue());
@@ -55,10 +56,10 @@ public class TableDataResourceTest extends BaseSpringRestTestCase {
       
       
       // Check sorting, ascending
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=LONG_"), HttpStatus.SC_OK);
-
       responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals(3, responseNode.get("total").intValue());
       assertEquals(3, responseNode.get("size").intValue());
@@ -74,10 +75,10 @@ public class TableDataResourceTest extends BaseSpringRestTestCase {
       assertEquals("var3", rows.get(2).get("NAME_").textValue());
       
       // Check sorting, descending
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderDescendingColumn=LONG_"), HttpStatus.SC_OK);
-      
       responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals(3, responseNode.get("total").intValue());
       assertEquals(3, responseNode.get("size").intValue());
@@ -94,10 +95,10 @@ public class TableDataResourceTest extends BaseSpringRestTestCase {
       
       
       // Finally, check result limiting
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=LONG_&start=1&size=1"), HttpStatus.SC_OK);
-
       responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals(3, responseNode.get("total").intValue());
       assertEquals(1, responseNode.get("size").intValue());
@@ -117,14 +118,14 @@ public class TableDataResourceTest extends BaseSpringRestTestCase {
   }
 
   public void testGetDataForUnexistingTable() throws Exception {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, "unexisting")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, "unexisting")), HttpStatus.SC_NOT_FOUND));
   }
   
   public void testGetDataSortByIllegalColumn() throws Exception {
     // We use variable-table as a reference
     String tableName = managementService.getTableName(VariableInstanceEntity.class);
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=unexistingColumn"), HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE_DATA, tableName) + "?orderAscendingColumn=unexistingColumn"), HttpStatus.SC_INTERNAL_SERVER_ERROR));
   }
 }

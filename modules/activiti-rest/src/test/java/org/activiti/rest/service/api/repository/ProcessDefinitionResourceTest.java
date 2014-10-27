@@ -8,8 +8,8 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
@@ -37,9 +37,9 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
     
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-    
+    CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertEquals(processDefinition.getId(), responseNode.get("id").textValue());
     assertEquals(processDefinition.getKey(), responseNode.get("key").textValue());
     assertEquals(processDefinition.getCategory(), responseNode.get("category").textValue());
@@ -68,9 +68,9 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
      
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
-    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-     
+    CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertEquals(processDefinition.getId(), responseNode.get("id").textValue());
     assertEquals(processDefinition.getKey(), responseNode.get("key").textValue());
     assertEquals(processDefinition.getCategory(), responseNode.get("category").textValue());
@@ -96,7 +96,8 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
    public void testGetUnexistingProcessDefinition() throws Exception {
      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
          RestUrls.URL_PROCESS_DEFINITION, "unexisting"));
-     executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+     CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+     closeResponse(response);
    }
   
    /**
@@ -114,10 +115,11 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
          RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
      httpPut.setEntity(new StringEntity(requestNode.toString()));
-     HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+     CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       
      // Check "OK" status
      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+     closeResponse(response);
      assertTrue(responseNode.get("suspended").booleanValue());
       
      // Check if process-definitoin is suspended
@@ -149,10 +151,11 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
          RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
      httpPut.setEntity(new StringEntity(requestNode.toString()));
-     HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+     CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
      
      // Check "OK" status
      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+     closeResponse(response);
      assertTrue(responseNode.get("suspended").booleanValue());
      
      // Check if process-definition is not yet suspended
@@ -187,7 +190,8 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
          RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
      httpPut.setEntity(new StringEntity(requestNode.toString()));
-     executeHttpRequest(httpPut, HttpStatus.SC_CONFLICT);
+     CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_CONFLICT);
+     closeResponse(response);
    }
    
   
@@ -209,10 +213,11 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
          RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
      httpPut.setEntity(new StringEntity(requestNode.toString()));
-     HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+     CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
      
      // Check "OK" status
      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+     closeResponse(response);
      assertFalse(responseNode.get("suspended").booleanValue());
      
      // Check if process-definitoin is suspended
@@ -247,10 +252,11 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
     
     // Check "OK" status
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertFalse(responseNode.get("suspended").booleanValue());
     
     // Check if process-definition is not yet active
@@ -282,7 +288,8 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_CONFLICT);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_CONFLICT);
+    closeResponse(response);
   }
   
   /**
@@ -301,7 +308,8 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
          RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
      httpPut.setEntity(new StringEntity(requestNode.toString()));
-     executeHttpRequest(httpPut, HttpStatus.SC_BAD_REQUEST);
+     CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_BAD_REQUEST);
+     closeResponse(response);
    }
    
    @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
@@ -310,10 +318,11 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
      
      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
          RestUrls.URL_PROCESS_DEFINITION_RESOURCE_CONTENT, processDefinition.getId()));
-     HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
+     CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
      
      // Check "OK" status
      String content = IOUtils.toString(response.getEntity().getContent());
+     closeResponse(response);
      assertNotNull(content);
      assertTrue(content.contains("The One Task Process"));
    }
@@ -324,10 +333,11 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
      
      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
          RestUrls.URL_PROCESS_DEFINITION_MODEL, processDefinition.getId()));
-     HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
+     CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
      
      // Check "OK" status
      JsonNode resultNode = objectMapper.readTree(response.getEntity().getContent());
+     closeResponse(response);
      assertNotNull(resultNode);
      JsonNode processes = resultNode.get("processes");
      assertNotNull(processes);
@@ -342,7 +352,8 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
     public void testGetModelForUnexistingProcessDefinition() throws Exception {
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
           RestUrls.URL_PROCESS_DEFINITION_MODEL, "unexisting"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(response);
     }
     
     /**
@@ -351,7 +362,8 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
     public void testGetResourceContentForUnexistingProcessDefinition() throws Exception {
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
           RestUrls.URL_PROCESS_DEFINITION_RESOURCE_CONTENT, "unexisting"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(response);
     }
      
      /**
@@ -369,10 +381,11 @@ public class ProcessDefinitionResourceTest extends BaseSpringRestTestCase {
         HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
             RestUrls.URL_PROCESS_DEFINITION, processDefinition.getId()));
         httpPut.setEntity(new StringEntity(requestNode.toString()));
-        HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+        CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
         
         // Check "OK" status
         JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+        closeResponse(response);
         assertEquals("updatedcategory", responseNode.get("category").textValue());
         
         // Check actual entry in DB

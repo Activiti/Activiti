@@ -23,8 +23,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -53,11 +53,12 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variableMap);
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?taskId=" + task.getId()), HttpStatus.SC_OK);
     
     // Check resulting task
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertEquals(7, responseNode.get("formProperties").size());
     Map<String, JsonNode> mappedProperties = new HashMap<String, JsonNode>();
     for (JsonNode propNode : responseNode.get("formProperties")) {
@@ -146,11 +147,12 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertEquals("Go Up", mappedEnums.get("up"));
     assertEquals("Go Down", mappedEnums.get("down"));
     
-    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=" + processInstance.getProcessDefinitionId()), HttpStatus.SC_OK);
     
     // Check resulting task
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertEquals(2, responseNode.get("formProperties").size());
     mappedProperties.clear();
     for (JsonNode propertyNode : responseNode.get("formProperties")) {
@@ -177,11 +179,11 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     assertTrue(propNode.get("writable").asBoolean());
     assertTrue(propNode.get("required").asBoolean() == false);
     
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=123"), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=123"), HttpStatus.SC_NOT_FOUND));
     
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId2=123"), HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId2=123"), HttpStatus.SC_BAD_REQUEST));
   }
   
   @Deployment
@@ -207,7 +209,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_INTERNAL_SERVER_ERROR));
     
     propNode = objectMapper.createObjectNode();
     propNode.put("id", "street");
@@ -215,7 +217,7 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     propertyArray.add(propNode);
     
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
     
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     assertNull(task);
@@ -240,11 +242,11 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     propNode.put("value", "nowhere");
     propertyArray.add(propNode);
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
     
     propNode.put("value", "up");
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
     
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     assertNull(task);
@@ -270,8 +272,9 @@ public class FormDataResourceTest extends BaseSpringRestTestCase {
     propertyArray.add(propNode);
     
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode.get("id").asText());
     assertEquals(processDefinitionId, responseNode.get("processDefinitionId").asText());
     task = taskService.createTaskQuery().processInstanceId(responseNode.get("id").asText()).singleResult();

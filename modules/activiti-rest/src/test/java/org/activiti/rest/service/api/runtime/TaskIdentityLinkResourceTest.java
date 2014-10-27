@@ -22,6 +22,7 @@ import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -55,9 +56,9 @@ public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
     // Execute the request
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, task.getId()));
-    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-   
+    CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(3, responseNode.size());
@@ -112,9 +113,9 @@ public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-      
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("kermit", responseNode.get("user").textValue());
       assertEquals("myType", responseNode.get("type").textValue());
@@ -128,9 +129,9 @@ public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
       requestNode.put("type", "myType");
       
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-      
+      response = executeRequest(httpPost, HttpStatus.SC_CREATED);
       responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("sales", responseNode.get("group").textValue());
       assertEquals("myType", responseNode.get("type").textValue());
@@ -142,7 +143,7 @@ public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, "unexistingtask"));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_NOT_FOUND));
       
       // Test with no user/group task
       requestNode = objectMapper.createObjectNode();
@@ -150,7 +151,7 @@ public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
       
       // Test with no user/group task
       requestNode = objectMapper.createObjectNode();
@@ -159,14 +160,14 @@ public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
       requestNode.put("group", "sales");
       
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
       
       // Test with no type
       requestNode = objectMapper.createObjectNode();
       requestNode.put("group", "sales");
       
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -189,9 +190,9 @@ public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "myType"));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("kermit", responseNode.get("user").textValue());
       assertEquals("myType", responseNode.get("type").textValue());
@@ -202,7 +203,7 @@ public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
       // Test with unexisting task
       httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, "unexistingtask", RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -225,17 +226,17 @@ public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
       
       HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "myType"));
-      executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
       
       // Test with unexisting identitylink
       httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "unexistingtype"));
-      executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
       
       // Test with unexisting task
       httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, "unexistingtask", RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType"));
-      executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
       
     } finally {
       // Clean adhoc-tasks even if test fails

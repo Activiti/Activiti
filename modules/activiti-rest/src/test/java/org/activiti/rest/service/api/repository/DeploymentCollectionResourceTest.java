@@ -6,8 +6,8 @@ import java.util.List;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -79,37 +79,37 @@ public class DeploymentCollectionResourceTest extends BaseSpringRestTestCase {
       assertResultsPresentInDataResponse(url, firstDeployment.getId());
       
       // Check ordering by name
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION) + "?sort=name&order=asc"), HttpStatus.SC_OK);
-      
       JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+      closeResponse(response);
       assertEquals(2L, dataNode.size());
       assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").textValue());
       assertEquals(secondDeployment.getId(), dataNode.get(1).get("id").textValue());
       
       // Check ordering by deploy time
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION) + "?sort=deployTime&order=asc"), HttpStatus.SC_OK);
-      
       dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+      closeResponse(response);
       assertEquals(2L, dataNode.size());
       assertEquals(firstDeployment.getId(), dataNode.get(0).get("id").textValue());
       assertEquals(secondDeployment.getId(), dataNode.get(1).get("id").textValue());
       
       // Check ordering by tenantId
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION) + "?sort=tenantId&order=desc"), HttpStatus.SC_OK);
-      
       dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+      closeResponse(response);
       assertEquals(2L, dataNode.size());
       assertEquals(secondDeployment.getId(), dataNode.get(0).get("id").textValue());
       assertEquals(firstDeployment.getId(), dataNode.get(1).get("id").textValue());
       
       // Check paging
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION) + "?sort=deployTime&order=asc&start=1&size=1"), HttpStatus.SC_OK);
-     
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       dataNode = responseNode.get("data");
       assertEquals(1L, dataNode.size());
       assertEquals(secondDeployment.getId(), dataNode.get(0).get("id").textValue());

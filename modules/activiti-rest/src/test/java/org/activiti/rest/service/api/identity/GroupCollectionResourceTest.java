@@ -20,8 +20,8 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 
@@ -105,9 +105,9 @@ public class GroupCollectionResourceTest extends BaseSpringRestTestCase {
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-      
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testgroup", responseNode.get("id").textValue());
       assertEquals("Test group", responseNode.get("name").textValue());
@@ -133,13 +133,13 @@ public class GroupCollectionResourceTest extends BaseSpringRestTestCase {
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
     
     // Create when group already exists
     requestNode = objectMapper.createObjectNode();
     requestNode.put("id", "admin");
     
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_CONFLICT);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_CONFLICT));
   }
 }

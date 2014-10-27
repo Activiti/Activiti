@@ -17,8 +17,8 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -48,9 +48,9 @@ public class GroupMembershipResourceTest extends BaseSpringRestTestCase {
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "testgroup"));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-      
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testuser", responseNode.get("userId").textValue());
       assertEquals("testgroup", responseNode.get("groupId").textValue());
@@ -99,7 +99,7 @@ public class GroupMembershipResourceTest extends BaseSpringRestTestCase {
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "testgroup"));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_CONFLICT);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_CONFLICT));
       
     } finally {
       try {
@@ -132,7 +132,8 @@ public class GroupMembershipResourceTest extends BaseSpringRestTestCase {
       
       HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP, "testgroup", "testuser"));
-      executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+      CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+      closeResponse(response);
       
       // Check if membership is actually deleted
       assertNull(identityService.createUserQuery().memberOfGroup("testgroup").singleResult());
@@ -168,7 +169,7 @@ public class GroupMembershipResourceTest extends BaseSpringRestTestCase {
       
       HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP, "testgroup", "testuser"));
-      executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
       
     } finally {
       try {
@@ -193,7 +194,7 @@ public class GroupMembershipResourceTest extends BaseSpringRestTestCase {
   public void testDeleteMemberfromUnexistingGroup() throws Exception {
     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP, "unexisting", "kermit"));
-    executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
   }
   
    /**
@@ -203,7 +204,7 @@ public class GroupMembershipResourceTest extends BaseSpringRestTestCase {
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "unexisting"));
     httpPost.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -213,6 +214,6 @@ public class GroupMembershipResourceTest extends BaseSpringRestTestCase {
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_MEMBERSHIP_COLLECTION, "admin"));
     httpPost.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
   }
 }

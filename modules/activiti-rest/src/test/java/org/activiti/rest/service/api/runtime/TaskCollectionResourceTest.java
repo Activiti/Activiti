@@ -24,8 +24,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 
@@ -69,9 +69,9 @@ public class TaskCollectionResourceTest extends BaseSpringRestTestCase {
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-      
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       String createdTaskId =  responseNode.get("id").asText();
       
       // Check if task is created with right arguments
@@ -105,7 +105,7 @@ public class TaskCollectionResourceTest extends BaseSpringRestTestCase {
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COLLECTION));
       httpPost.setEntity(null);
-      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
       
     } finally {
       // Clean adhoc-tasks even if test fails

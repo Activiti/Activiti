@@ -21,8 +21,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -58,10 +58,11 @@ public class HistoricTaskInstanceIdentityLinkCollectionResourceTest extends Base
     String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_TASK_INSTANCE_IDENTITY_LINKS, task.getId());
     
     // Do the actual call
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
     
     // Check status and size
     JsonNode linksArray = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertEquals(2, linksArray.size());
     Map<String, JsonNode> linksMap = new HashMap<String, JsonNode>();
     for (JsonNode linkNode : linksArray) {

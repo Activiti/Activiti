@@ -18,6 +18,7 @@ import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
@@ -45,10 +46,11 @@ public class UserResourceTest extends BaseSpringRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())), HttpStatus.SC_OK);
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testuser", responseNode.get("id").textValue());
       assertEquals("Fred", responseNode.get("firstName").textValue());
@@ -69,8 +71,8 @@ public class UserResourceTest extends BaseSpringRestTestCase {
    * Test getting an unexisting user.
    */
   public void testGetUnexistingUser() throws Exception {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, "unexisting")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, "unexisting")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -86,8 +88,8 @@ public class UserResourceTest extends BaseSpringRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())), HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId())), HttpStatus.SC_NO_CONTENT));
       
       // Check if user is deleted
       assertEquals(0, identityService.createUserQuery().userId(newUser.getId()).count());
@@ -106,8 +108,8 @@ public class UserResourceTest extends BaseSpringRestTestCase {
    * Test deleting an unexisting user.
    */
   public void testDeleteUnexistingUser() throws Exception {
-    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, "unexisting")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, "unexisting")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -132,9 +134,9 @@ public class UserResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId()));
       httpPut.setEntity(new StringEntity(taskUpdateRequest.toString()));
-      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testuser", responseNode.get("id").textValue());
       assertEquals("Tijs", responseNode.get("firstName").textValue());
@@ -176,9 +178,9 @@ public class UserResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId()));
       httpPut.setEntity(new StringEntity(taskUpdateRequest.toString()));
-      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testuser", responseNode.get("id").textValue());
       assertEquals("Fred", responseNode.get("firstName").textValue());
@@ -224,9 +226,9 @@ public class UserResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, newUser.getId()));
       httpPut.setEntity(new StringEntity(taskUpdateRequest.toString()));
-      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testuser", responseNode.get("id").textValue());
       assertTrue(responseNode.get("firstName").isNull());
@@ -256,6 +258,6 @@ public class UserResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_USER, "unexisting"));
     httpPut.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_NOT_FOUND));
   }
 }
