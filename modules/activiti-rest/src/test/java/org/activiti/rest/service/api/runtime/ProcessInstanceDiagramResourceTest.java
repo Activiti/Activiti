@@ -17,8 +17,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 
@@ -31,23 +31,24 @@ public class ProcessInstanceDiagramResourceTest extends BaseSpringRestTestCase {
   public void testGetProcessDiagram() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleProcess");
     
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_DIAGRAM, processInstance.getId())), HttpStatus.SC_OK);
     assertNotNull(response.getEntity().getContent());
+    closeResponse(response);
   }
   
   @Deployment
   public void testGetProcessDiagramWithoutDiagram() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_DIAGRAM, processInstance.getId())), HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_DIAGRAM, processInstance.getId())), HttpStatus.SC_BAD_REQUEST));
   }
   
   /**
    * Test getting an unexisting process instance.
    */
   public void testGetUnexistingProcessInstance() {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_DIAGRAM, "unexistingpi")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_DIAGRAM, "unexistingpi")), HttpStatus.SC_NOT_FOUND));
   }
 }

@@ -138,7 +138,7 @@ public class ExecutionCollectionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_NO_CONTENT));
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -172,7 +172,7 @@ public class ExecutionCollectionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_NO_CONTENT));
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();

@@ -30,6 +30,7 @@ import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -84,10 +85,11 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     taskService.setVariablesLocal(task.getId(), taskVariables);
 
     // Request all variables (no scope provides) which include global an local
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId())), HttpStatus.SC_OK);
     
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(17, responseNode.size());
@@ -106,10 +108,11 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     assertTrue(foundOverlapping);
     
     // Check local variables filtering
-    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()) + "?scope=local"), HttpStatus.SC_OK);
     
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(9, responseNode.size());
@@ -120,10 +123,11 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     }
     
     // Check global variables filtering
-    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()) + "?scope=global"), HttpStatus.SC_OK);
     
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(9, responseNode.size());
@@ -160,9 +164,10 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
     
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent()).get(0);
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("myVariable", responseNode.get("name").asText());
     assertEquals("simple string value", responseNode.get("value").asText());
@@ -182,9 +187,9 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-    
+    response = executeRequest(httpPost, HttpStatus.SC_CREATED);
     responseNode = objectMapper.readTree(response.getEntity().getContent()).get(0);
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("myVariable", responseNode.get("name").asText());
     assertEquals("Another simple string value", responseNode.get("value").asText());
@@ -205,9 +210,9 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
     httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-    
+    response = executeRequest(httpPost, HttpStatus.SC_CREATED);
     responseNode = objectMapper.readTree(response.getEntity().getContent()).get(0);
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("scopelessVariable", responseNode.get("name").asText());
     assertEquals("simple string value", responseNode.get("value").asText());
@@ -239,9 +244,9 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/octet-stream", binaryContent, additionalFields));
-      HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
-      
+      CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("binaryVariable", responseNode.get("name").asText());
       assertTrue(responseNode.get("value").isNull());
@@ -294,10 +299,11 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/x-java-serialized-object", 
           binaryContent, additionalFields));
-      HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
+      CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
       
       // Check "CREATED" status
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("serializableVariable", responseNode.get("name").asText());
       assertTrue(responseNode.get("value").isNull());
@@ -338,7 +344,7 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, "unexisting"));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_NOT_FOUND));
 
       // Test trying to create already existing variable
       Task task = taskService.newTask();
@@ -348,7 +354,7 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_CONFLICT);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_CONFLICT));
 
       // Test setting global variable on standalone task
       variableNode.put("name", "myVariable");
@@ -359,7 +365,7 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
 
       // Test creating nameless variable
       variableNode.removeAll();
@@ -368,20 +374,20 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
       
       // Test passing in empty array
       requestNode.removeAll();
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
       
       // Test passing in object instead of array
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -411,7 +417,7 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_CREATED));
       
       assertEquals("String value", taskService.getVariable(task.getId(), "stringVar"));
       
@@ -423,7 +429,7 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_CREATED));
       
       assertEquals(123, taskService.getVariable(task.getId(), "integerVar"));
       
@@ -435,7 +441,7 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_CREATED));
       
       assertEquals(123.456, taskService.getVariable(task.getId(), "doubleVar"));
       
@@ -447,7 +453,7 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_CREATED));
       
       assertEquals(Boolean.TRUE, taskService.getVariable(task.getId(), "booleanVar"));
       
@@ -527,9 +533,9 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
-      
+      CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertTrue(responseNode.isArray());
       assertEquals(7, responseNode.size());
@@ -577,7 +583,7 @@ public class TaskVariablesCollectionResourceTest extends BaseSpringRestTestCase 
 
     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLES_COLLECTION, task.getId()));
-    executeBinaryHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeBinaryRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
     
     // Check if local variables are gone and global remain unchanged
     assertEquals(0, taskService.getVariablesLocal(task.getId()).size());

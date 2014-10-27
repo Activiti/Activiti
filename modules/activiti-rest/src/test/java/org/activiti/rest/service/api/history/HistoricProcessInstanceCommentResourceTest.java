@@ -22,6 +22,7 @@ import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -52,12 +53,13 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       Comment comment = taskService.addComment(null, pi.getId(), "This is a comment...");
       identityService.setAuthenticatedUserId(null);
       
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
           RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT_COLLECTION, pi.getId())), HttpStatus.SC_OK);
       
       assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertTrue(responseNode.isArray());
       assertEquals(1, responseNode.size());
@@ -72,8 +74,8 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       assertTrue(commentNode.get("taskId").isNull());
       
       // Test with unexisting task
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
-          RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask")), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask")), HttpStatus.SC_NOT_FOUND));
       
 		} finally {
 			if (pi != null) {
@@ -102,7 +104,7 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       requestNode.put("message", "This is a comment...");
       httpPost.setEntity(new StringEntity(requestNode.toString()));
       
-    	HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
     	
       assertEquals(HttpStatus.SC_CREATED, response.getStatusLine().getStatusCode());
 
@@ -111,6 +113,7 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       assertEquals(1, commentsOnProcess.size());
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("kermit", responseNode.get("author").textValue());
       assertEquals("This is a comment...", responseNode.get("message").textValue());
@@ -146,12 +149,13 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       Comment comment = taskService.addComment(null, pi.getId(), "This is a comment...");
       identityService.setAuthenticatedUserId(null);
       
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
           RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())), 200);
       
       assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       
       assertEquals("kermit", responseNode.get("author").textValue());
@@ -163,11 +167,11 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       assertTrue(responseNode.get("taskId").isNull());
       
       // Test with unexisting process-instance
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
-          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, "unexistinginstance", "123")), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, "unexistinginstance", "123")), HttpStatus.SC_NOT_FOUND));
       
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
-          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), "unexistingcomment")), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), "unexistingcomment")), HttpStatus.SC_NOT_FOUND));
       
     } finally {
     	if(pi != null) {
@@ -195,16 +199,16 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTe
       Comment comment = taskService.addComment(null, pi.getId(), "This is a comment...");
       identityService.setAuthenticatedUserId(null);
       
-      executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
-          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())), HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())), HttpStatus.SC_NO_CONTENT));
       
       // Test with unexisting instance
-      executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
-          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, "unexistinginstance", "123")), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, "unexistinginstance", "123")), HttpStatus.SC_NOT_FOUND));
       
       // Test with unexisting comment
-      executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
-          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), "unexistingcomment")), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), "unexistingcomment")), HttpStatus.SC_NOT_FOUND));
       
     } finally {
     	if(pi != null) {

@@ -8,8 +8,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -39,10 +39,10 @@ public class JobResourceTest extends BaseSpringRestTestCase {
     now.set(Calendar.MILLISECOND, 0);
     processEngineConfiguration.getClock().setCurrentTime(now.getTime());
     
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId())), HttpStatus.SC_OK);
-    
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(timerJob.getId(), responseNode.get("id").textValue());
     assertEquals(timerJob.getExceptionMessage(), responseNode.get("exceptionMessage").textValue());
@@ -56,10 +56,10 @@ public class JobResourceTest extends BaseSpringRestTestCase {
     // Set tenant on deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
     
-    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId())), HttpStatus.SC_OK);
-    
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("myTenant", responseNode.get("tenantId").textValue());
   }
@@ -68,8 +68,9 @@ public class JobResourceTest extends BaseSpringRestTestCase {
    * Test getting an unexisting job.
    */
   public void testGetUnexistingJob() throws Exception {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+  	CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, "unexistingjob")), HttpStatus.SC_NOT_FOUND);
+  	closeResponse(response);
   }
   
   /**
@@ -87,7 +88,8 @@ public class JobResourceTest extends BaseSpringRestTestCase {
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_NO_CONTENT);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Job should be executed
     assertNull(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult());
@@ -108,7 +110,8 @@ public class JobResourceTest extends BaseSpringRestTestCase {
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, "unexistingjob"));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    closeResponse(response);
   }
   
   /**
@@ -126,7 +129,8 @@ public class JobResourceTest extends BaseSpringRestTestCase {
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(response);
   }
   
   /**
@@ -140,7 +144,8 @@ public class JobResourceTest extends BaseSpringRestTestCase {
     
     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
-    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Job should be deleted
     assertNull(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult());
@@ -152,6 +157,7 @@ public class JobResourceTest extends BaseSpringRestTestCase {
   public void testDeleteUnexistingJob() throws Exception {
     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, "unexistingjob"));
-    executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+    CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+    closeResponse(response);
   }
 }

@@ -1,5 +1,6 @@
 package org.activiti.rest.service.api.management;
 
+import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collections;
 
@@ -10,8 +11,8 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 /**
@@ -46,7 +47,7 @@ public class JobExceptionStacktraceResourceTest extends BaseSpringRestTestCase {
     now.set(Calendar.MILLISECOND, 0);
     processEngineConfiguration.getClock().setCurrentTime(now.getTime());
     
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_OK);
     
     String stack = IOUtils.toString(response.getEntity().getContent());
@@ -55,15 +56,15 @@ public class JobExceptionStacktraceResourceTest extends BaseSpringRestTestCase {
     
     // Also check content-type
     assertEquals("text/plain", response.getEntity().getContentType().getValue());
-   
+    closeResponse(response);
   }
   
   /**
    * Test getting the stacktrace for an unexisting job.
    */
   public void testGetStrackForUnexistingJob() throws Exception {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, "unexistingjob")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, "unexistingjob")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -76,7 +77,7 @@ public class JobExceptionStacktraceResourceTest extends BaseSpringRestTestCase {
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
     
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_NOT_FOUND));
   }
 }

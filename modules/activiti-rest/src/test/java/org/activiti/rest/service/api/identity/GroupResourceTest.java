@@ -16,8 +16,8 @@ package org.activiti.rest.service.api.identity;
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
@@ -42,10 +42,11 @@ public class GroupResourceTest extends BaseSpringRestTestCase {
       testGroup.setType("Test type");
       identityService.saveGroup(testGroup);
       
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup")), HttpStatus.SC_OK);
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testgroup", responseNode.get("id").textValue());
       assertEquals("Test group", responseNode.get("name").textValue());
@@ -72,8 +73,8 @@ public class GroupResourceTest extends BaseSpringRestTestCase {
    * Test getting an unexisting group.
    */
   public void testGetUnexistingGroup() throws Exception {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -86,8 +87,8 @@ public class GroupResourceTest extends BaseSpringRestTestCase {
       testGroup.setType("Test type");
       identityService.saveGroup(testGroup);
       
-      executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup")), HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup")), HttpStatus.SC_NO_CONTENT));
       
       assertNull(identityService.createGroupQuery().groupId("testgroup").singleResult());
       
@@ -105,8 +106,8 @@ public class GroupResourceTest extends BaseSpringRestTestCase {
    * Test deleting an unexisting group.
    */
   public void testDeleteUnexistingGroup() throws Exception {
-    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -126,9 +127,10 @@ public class GroupResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
       httpPut.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testgroup", responseNode.get("id").textValue());
       assertEquals("Updated group", responseNode.get("name").textValue());
@@ -166,9 +168,10 @@ public class GroupResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
       httpPut.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testgroup", responseNode.get("id").textValue());
       assertEquals("Test group", responseNode.get("name").textValue());
@@ -208,9 +211,9 @@ public class GroupResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup"));
       httpPut.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("testgroup", responseNode.get("id").textValue());
       assertNull(responseNode.get("name").textValue());
@@ -240,6 +243,6 @@ public class GroupResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "unexisting"));
     httpPut.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_NOT_FOUND));
   }
 }

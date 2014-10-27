@@ -4,8 +4,8 @@ import java.util.Map;
 
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -25,11 +25,12 @@ public class TableResourceTest extends BaseSpringRestTestCase {
   public void testGetTables() throws Exception {
     Map<String, Long> tableCounts = managementService.getTableCount();
 
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLES_COLLECTION)), HttpStatus.SC_OK);
     
     // Check table array
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(tableCounts.size(), responseNode.size());
@@ -52,11 +53,12 @@ public class TableResourceTest extends BaseSpringRestTestCase {
 
     String tableNameToGet = tableCounts.keySet().iterator().next();
 
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE, tableNameToGet)), HttpStatus.SC_OK);
     
     // Check table
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(tableNameToGet, responseNode.get("name").textValue());
     assertEquals(((Long) tableCounts.get(responseNode.get("name").textValue())).longValue(), responseNode.get("count").longValue());
@@ -64,7 +66,7 @@ public class TableResourceTest extends BaseSpringRestTestCase {
   }
   
   public void testGetUnexistingTable() throws Exception {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE, "unexisting")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TABLE, "unexisting")), HttpStatus.SC_NOT_FOUND));
   }
 }

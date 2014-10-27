@@ -27,8 +27,8 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -91,12 +91,13 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseSpringRes
     assertResultsPresentInDataResponse(url + "?tenantIdLike=" + encode("%enant"), processInstance3.getId());
     assertResultsPresentInDataResponse(url + "?tenantIdLike=anotherTenant");
     
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url + 
         "?processDefinitionKey=oneTaskProcess&sort=startTime"), 200);
     
     // Check status and size
     assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
     assertEquals(3, dataNode.size());
     assertEquals(processInstance.getId(), dataNode.get(0).get("id").asText());
     assertEquals(processInstance2.getId(), dataNode.get(1).get("id").asText());
@@ -107,11 +108,12 @@ public class HistoricProcessInstanceCollectionResourceTest extends BaseSpringRes
     int numberOfResultsExpected = expectedResourceIds.length;
     
     // Do the actual call
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), 200);
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), 200);
    
     // Check status and size
     assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's

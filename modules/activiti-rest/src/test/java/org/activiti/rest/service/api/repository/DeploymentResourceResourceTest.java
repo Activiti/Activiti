@@ -10,6 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.message.BasicHeader;
 
@@ -39,9 +40,9 @@ public class DeploymentResourceResourceTest extends BaseSpringRestTestCase {
           RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, deployment.getId(), 
           encode(rawResourceName)));
       httpGet.addHeader(new BasicHeader(HttpHeaders.ACCEPT, "application/json"));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       
       // Check URL's for the resource
       assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
@@ -68,7 +69,7 @@ public class DeploymentResourceResourceTest extends BaseSpringRestTestCase {
      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, "unexisting", "resource.png"));
      httpGet.addHeader(new BasicHeader(HttpHeaders.ACCEPT, "image/png,application/json"));
-     executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+     closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
    }
    
    /**
@@ -84,7 +85,7 @@ public class DeploymentResourceResourceTest extends BaseSpringRestTestCase {
        HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
            RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, deployment.getId(), "unexisting-resource.png"));
        httpGet.addHeader(new BasicHeader(HttpHeaders.ACCEPT, "image/png,application/json"));
-       executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+       closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
        
      } finally {
        // Always cleanup any created deployments, even if the test failed
@@ -108,9 +109,9 @@ public class DeploymentResourceResourceTest extends BaseSpringRestTestCase {
        HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
            RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deployment.getId(), "test.txt"));
        httpGet.addHeader(new BasicHeader(HttpHeaders.ACCEPT, "text/plain"));
-       HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-       
+       CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
        String responseAsString = IOUtils.toString(response.getEntity().getContent());
+       closeResponse(response);
        assertNotNull(responseAsString);
        assertEquals("Test content", responseAsString);
        

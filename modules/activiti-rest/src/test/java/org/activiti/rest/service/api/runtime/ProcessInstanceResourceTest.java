@@ -18,8 +18,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
@@ -42,11 +42,12 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
   public void testGetProcessInstance() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
     
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())), HttpStatus.SC_OK);
     
     // Check resulting instance
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertEquals("myBusinessKey", responseNode.get("businessKey").textValue());
@@ -61,11 +62,12 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
     
     // Check result after tenant has been changed
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
-    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())), HttpStatus.SC_OK);
     
     // Check resulting instance tenant id
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("myTenant", responseNode.get("tenantId").textValue());
   }
@@ -74,8 +76,8 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
    * Test getting an unexisting process instance.
    */
   public void testGetUnexistingProcessInstance() {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -84,8 +86,8 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
   @Deployment(resources = {"org/activiti/rest/service/api/runtime/ProcessInstanceResourceTest.process-one.bpmn20.xml"})
   public void testDeleteProcessInstance() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
-    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())), HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())), HttpStatus.SC_NO_CONTENT));
     
     // Check if process-instance is gone
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
@@ -95,8 +97,8 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
    * Test deleting an unexisting process instance.
    */
   public void testDeleteUnexistingProcessInstance() {
-    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, "unexistingpi")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -112,20 +114,21 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
     
     // Check engine id instance is suspended
     assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().processInstanceId(processInstance.getId()).count());
     
     // Check resulting instance is suspended
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("suspended").booleanValue());
     
     // Suspending again should result in conflict
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_CONFLICT);
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_CONFLICT));
   }
   
   /**
@@ -142,19 +145,20 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
     
     // Check engine id instance is suspended
     assertEquals(1, runtimeService.createProcessInstanceQuery().active().processInstanceId(processInstance.getId()).count());
     
     // Check resulting instance is suspended
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("id").textValue());
     assertFalse(responseNode.get("suspended").booleanValue());
     
     // Activating again should result in conflict
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_CONFLICT);
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_CONFLICT));
   }
 }
