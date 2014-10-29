@@ -1129,12 +1129,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // async executor /////////////////////////////////////////////////////////////
   
   protected void initAsyncExecutor() {
-    if (asyncExecutor == null) {
-      asyncExecutor = new DefaultAsyncJobExecutor();
+    if (isAsyncExecutorEnabled()) {
+      if (asyncExecutor == null) {
+        asyncExecutor = new DefaultAsyncJobExecutor();
+      }
+  
+      asyncExecutor.setCommandExecutor(commandExecutor);
+      asyncExecutor.setAutoActivate(asyncExecutorActivate);
     }
-
-    asyncExecutor.setCommandExecutor(commandExecutor);
-    jobExecutor.setAutoActivate(asyncExecutorActivate);
   }
   
   // history //////////////////////////////////////////////////////////////////

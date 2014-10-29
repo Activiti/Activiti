@@ -101,6 +101,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected int idBlockSize = 2500;
   protected String history = HistoryLevel.AUDIT.getKey();
   protected boolean jobExecutorActivate;
+  protected boolean asyncExecutorEnabled;
   protected boolean asyncExecutorActivate;
 
   protected String mailServerHost = "localhost";
@@ -518,6 +519,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     return this;
   }
   
+  public boolean isAsyncExecutorEnabled() {
+    return asyncExecutorEnabled;
+  }
+
+  public ProcessEngineConfiguration setAsyncExecutorEnabled(boolean asyncExecutorEnabled) {
+    this.asyncExecutorEnabled = asyncExecutorEnabled;
+    return this;
+  }
+
   public boolean isAsyncExecutorActivate() {
     return asyncExecutorActivate;
   }
