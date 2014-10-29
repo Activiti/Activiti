@@ -116,7 +116,7 @@ public class LockFreeAcquireJobsRunnable implements AcquireJobsRunnable {
 	  long millisToWait = jobExecutor.getWaitTimeInMillis();;
 	  if ((millisToWait > 0) && (!isJobAdded)) {
 	    try {
-	      log.info("job acquisition thread sleeping for {} millis", millisToWait);
+	      log.debug("job acquisition thread sleeping for {} millis", millisToWait);
 	      synchronized (MONITOR) {
 	        if(!isInterrupted) {
 	          isWaiting.set(true);
