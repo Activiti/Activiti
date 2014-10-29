@@ -63,5 +63,9 @@ public interface ManagementAgent {
      * @param mbeanServer the custom mbean server
      */
     void setMBeanServer(MBeanServer mbeanServer);
+    
+    public void findAndRegisterMbeans() throws Exception;
+      
+    public void doStart();    
 
    }

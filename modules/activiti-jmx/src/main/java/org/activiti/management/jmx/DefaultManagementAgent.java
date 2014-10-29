@@ -14,8 +14,12 @@
 package org.activiti.management.jmx;
 
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -26,7 +30,11 @@ import javax.management.MBeanServerFactory;
 import javax.management.NotCompliantMBeanException;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.management.remote.JMXConnectorServer;
+import javax.management.remote.JMXConnectorServerFactory;
+import javax.management.remote.JMXServiceURL;
 
+import org.activiti.management.jmx.mbeans.ProcessDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,9 +50,14 @@ public class DefaultManagementAgent implements ManagementAgent {
   private MBeanServer server;
   private final ConcurrentMap<ObjectName, ObjectName> mbeansRegistered = new ConcurrentHashMap<ObjectName, ObjectName>();
   JMXConfigurator jmxConfigurator;
+  private Registry registry;
+  private JMXConnectorServer cs;
+  ManagementMBeanAssembler assembler;
+  
 
   public DefaultManagementAgent(JMXConfigurator jmxConfigurator) {
     this.jmxConfigurator = jmxConfigurator;
+    this.assembler = new DefaultManagementMBeanAssembler();
 
   }
 
@@ -54,10 +67,17 @@ public class DefaultManagementAgent implements ManagementAgent {
 
   public void register(Object obj, ObjectName name, boolean forceRegistration) throws JMException {
     try {
-      registerMBeanWithServer(obj, name, forceRegistration);
+      Object mbean = assembler.assemble(server, obj, name);
+      if (mbean != null) 
+        // and register the mbean
+        registerMBeanWithServer(mbean, name, forceRegistration);
+      else
+        registerMBeanWithServer(obj, name, forceRegistration);
+        
     } catch (NotCompliantMBeanException e) {
-      LOG.error("Mbean " + name + " is not compliant MBean.");
-
+      LOG.error("Mbean " + name + " is not compliant MBean.", e);
+      registerMBeanWithServer(obj, name, forceRegistration);
+      
     }
 
   }
@@ -117,6 +137,10 @@ public class DefaultManagementAgent implements ManagementAgent {
     this.server = mbeanServer;
   }
 
+  public void doStart() {
+    createMBeanServer();
+  }
+
   protected void createMBeanServer() {
     String hostName;
     boolean canAccessSystemProps = true;
@@ -143,33 +167,96 @@ public class DefaultManagementAgent implements ManagementAgent {
     }
 
     server = findOrCreateMBeanServer();
-
     try {
       // Create the connector if we need
-      if (createConnector) {
+      if (jmxConfigurator.getCreateConnector()) {
         createJmxConnector(hostName);
       }
     } catch (IOException ioe) {
       LOG.warn("Could not create and start JMX connector.", ioe);
     }
+
   }
+
 
   protected MBeanServer findOrCreateMBeanServer() {
 
-
     // look for the first mbean server that has match default domain name
+    if (jmxConfigurator.getMbeanDomain().equals(JMXConfigurator.DEFAUL_JMX_DOMAIN))
+      return ManagementFactory.getPlatformMBeanServer();
+    
     List<MBeanServer> servers = MBeanServerFactory.findMBeanServer(null);
 
     for (MBeanServer server : servers) {
       LOG.debug("Found MBeanServer with default domain {}", server.getDefaultDomain());
+      System.out.println(server.getDefaultDomain());
 
-      if (mBeanServerDefaultDomain.equals(server.getDefaultDomain())) {
+      if (jmxConfigurator.getMbeanDomain().equals(server.getDefaultDomain())) {
         return server;
       }
     }
 
     // create a mbean server with the given default domain name
-    return MBeanServerFactory.createMBeanServer(mBeanServerDefaultDomain);
+    return MBeanServerFactory.createMBeanServer(jmxConfigurator.getMbeanDomain());
+  }
+
+
+  // TODO: make it find the mbeans using annotation
+  @Override
+  public void findAndRegisterMbeans() throws Exception {
+      register(new ProcessDefinitions(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.Deployments:type=Deployments"));
+
+  }
+  protected void createJmxConnector(String host) throws IOException {
+    
+    String serviceUrlPath = jmxConfigurator.getServiceUrlPath();
+    Integer registryPort = jmxConfigurator.getRegistryPort();
+    Integer connectorPort = jmxConfigurator.getConnectorPort();
+    if (serviceUrlPath ==  null) {
+      LOG.warn("Service url path is null. JMX connector creation skipped");
+      return;
+    }
+    if (registryPort ==  null) {
+      LOG.warn("Registery port is null. JMX connector creation skipped.");
+      return;
+    }
+    
+
+    try {
+      registry = LocateRegistry.createRegistry(registryPort);
+      LOG.debug("Created JMXConnector RMI registry on port {}", registryPort);
+    } catch (RemoteException ex) {
+      // The registry may had been created, we could get the registry instead
+    }
+
+    // must start with leading slash
+    String path = serviceUrlPath.startsWith("/") ? serviceUrlPath : "/" + serviceUrlPath;
+    // Create an RMI connector and start it
+    final JMXServiceURL url;
+    if (connectorPort > 0) {
+      url = new JMXServiceURL("service:jmx:rmi://" + host + ":" + connectorPort + "/jndi/rmi://" + host + ":" + registryPort + path);
+    } else {
+      url = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + host + ":" + registryPort + path);
+    }
+
+    cs = JMXConnectorServerFactory.newJMXConnectorServer(url, null, server);
+
+    // use async thread for starting the JMX Connector
+    // (no need to use a thread pool or enlist in JMX as this thread is
+    // terminated when the JMX connector has been started)
+    Thread thread = new Thread(new Runnable() {
+
+      public void run() {
+        try {
+          LOG.debug("Staring JMX Connector thread to listen at: {}", url);
+          cs.start();
+          LOG.info("JMX Connector thread started and listening at: {}", url);
+        } catch (IOException ioe) {
+          LOG.warn("Could not start JMXConnector thread at: " + url + ". JMX Connector not in use.", ioe);
+        }
+      }
+    }, "jmxConnectorStarterThread");
+    thread.start();
   }
 
 }

@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.management;
+package org.activiti.management.jmx;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -26,13 +26,10 @@ import javax.management.MalformedObjectNameException;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
 
-import org.activiti.management.jmx.DefaultManagementAgent;
-import org.activiti.management.jmx.ManagementAgent;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-
 
 /**
  * @author Saeid Mirzaei
@@ -48,15 +45,17 @@ public class DefaultManagementAgentTest {
   Object object = "object";
   ObjectName sourceObjectName;
   ObjectName registeredObjectName;
-  ManagementAgent agent = new DefaultManagementAgent();
+  ManagementAgent agent;
 
   @Before
   public void initMocks() throws MalformedObjectNameException {
     MockitoAnnotations.initMocks(this);
     sourceObjectName = new ObjectName("domain", "key", "value");
     registeredObjectName = new ObjectName("domain", "key", "otherValue");
+    JMXConfigurator jmxConfigurator = new JMXConfigurator();
+    agent = new DefaultManagementAgent(jmxConfigurator);
     agent.setMBeanServer(mbeanServer);
-
+    
   }
 
   @Test
