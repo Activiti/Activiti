@@ -17,6 +17,7 @@ import java.io.InputStream;
 
 import javax.sql.DataSource;
 
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
@@ -100,6 +101,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected int idBlockSize = 2500;
   protected String history = HistoryLevel.AUDIT.getKey();
   protected boolean jobExecutorActivate;
+  protected boolean asyncExecutorActivate;
 
   protected String mailServerHost = "localhost";
   protected String mailServerUsername; // by default no name and password are provided, which 
@@ -138,6 +140,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
 
   protected Clock clock;
   protected JobExecutor jobExecutor;
+  protected AsyncExecutor asyncExecutor;
   /** define the default wait time for a failed job in seconds */
   protected int defaultFailedJobWaitTime = 10;
   /** define the default wait time for a failed async job in seconds */
@@ -515,6 +518,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     return this;
   }
   
+  public boolean isAsyncExecutorActivate() {
+    return asyncExecutorActivate;
+  }
+  
+  public ProcessEngineConfiguration setAsyncExecutorActivate(boolean asyncExecutorActivate) {
+    this.asyncExecutorActivate = asyncExecutorActivate;
+    return this;
+  }
+  
   public ClassLoader getClassLoader() {
     return classLoader;
   }
@@ -683,6 +695,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public ProcessEngineConfiguration setJobExecutor(JobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;
+    return this;
+  }
+  
+  public AsyncExecutor getAsyncExecutor() {
+    return asyncExecutor;
+  }
+  
+  public ProcessEngineConfiguration setAsyncExecutor(AsyncExecutor asyncExecutor) {
+    this.asyncExecutor = asyncExecutor;
     return this;
   }
 

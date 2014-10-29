@@ -59,6 +59,7 @@ import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.RuntimeServiceImpl;
 import org.activiti.engine.impl.ServiceImpl;
 import org.activiti.engine.impl.TaskServiceImpl;
+import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseHandlers;
@@ -431,6 +432,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initIdGenerator();
     initDeployers();
     initJobExecutor();
+    initAsyncExecutor();
     initDataSource();
     initTransactionFactory();
     initSqlSessionFactory();
@@ -1122,6 +1124,17 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
     }
     
+  }
+  
+  // async executor /////////////////////////////////////////////////////////////
+  
+  protected void initAsyncExecutor() {
+    if (asyncExecutor == null) {
+      asyncExecutor = new DefaultAsyncJobExecutor();
+    }
+
+    asyncExecutor.setCommandExecutor(commandExecutor);
+    jobExecutor.setAutoActivate(asyncExecutorActivate);
   }
   
   // history //////////////////////////////////////////////////////////////////

@@ -23,9 +23,11 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -40,7 +42,7 @@ public class JobEntityManager extends AbstractManager {
 
   public void send(MessageEntity message) {
     message.insert();
-    hintJobExecutor(message);    
+    hintAsyncExecutor(message);    
   }
  
   public void schedule(TimerEntity timer) {
@@ -50,14 +52,19 @@ public class JobEntityManager extends AbstractManager {
     }
 
     timer.insert();
-    pokeJobExecutor(timer);
-  }
-    
-  // Check if this timer is before the current process engine time
-  public void pokeJobExecutor(JobEntity job) {
-    if (job.getDuedate().getTime() <= (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime())) {
-      hintJobExecutor(job);
+    if (timer.getDuedate().getTime() <= (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime())) {
+      hintJobExecutor(timer);
     }
+  }
+  
+  protected void hintAsyncExecutor(JobEntity job) {  
+    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
+
+    // notify job executor:      
+    TransactionListener transactionListener = new AsyncJobAddedNotification(job, asyncExecutor);
+    Context.getCommandContext()
+      .getTransactionContext()
+      .addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
   
   protected void hintJobExecutor(JobEntity job) {  
@@ -95,6 +102,7 @@ public class JobEntityManager extends AbstractManager {
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
   }
   
+  @SuppressWarnings("unchecked")
   public List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
   	return getDbSqlSession().selectList("selectJobsByLockOwner", lockOwner, start, maxNrOfJobs);
   }
