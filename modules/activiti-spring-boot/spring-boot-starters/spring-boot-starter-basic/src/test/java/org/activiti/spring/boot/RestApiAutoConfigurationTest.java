@@ -87,8 +87,8 @@ public class RestApiAutoConfigurationTest {
     String authenticationChallenge = "http://localhost:" + this.context.getEmbeddedServletContainer().getPort() + 
         "/repository/process-definitions" ;
 
-    final AtomicBoolean received403 = new AtomicBoolean();
-    received403.set(false);
+    final AtomicBoolean received401 = new AtomicBoolean();
+    received401.set(false);
     restTemplate.setErrorHandler(new ResponseErrorHandler() {
         @Override
         public boolean hasError(ClientHttpResponse clientHttpResponse) throws IOException {
@@ -97,11 +97,12 @@ public class RestApiAutoConfigurationTest {
 
         @Override
         public void handleError(ClientHttpResponse clientHttpResponse) throws IOException {
-          if (clientHttpResponse.getStatusCode().equals(HttpStatus.FORBIDDEN))
-            received403.set(true);
+          if (clientHttpResponse.getStatusCode().equals(HttpStatus.UNAUTHORIZED))
+            received401.set(true);
         }
     });
+    
     ResponseEntity<String> response = restTemplate.getForEntity(authenticationChallenge, String.class);
-    org.junit.Assert.assertTrue(received403.get());
+    org.junit.Assert.assertTrue(received401.get());
   }
 }

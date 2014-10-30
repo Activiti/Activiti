@@ -40,7 +40,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Configuration
 @AutoConfigureAfter(SecurityAutoConfiguration.class)
-@ConditionalOnClass(name = {"org.springframework.web.servlet.DispatcherServlet"})
+@ConditionalOnClass(name = {"org.activiti.rest.service.api.RestUrls", "org.springframework.web.servlet.DispatcherServlet"})
 public class RestApiAutoConfiguration {
 
   @Bean()
