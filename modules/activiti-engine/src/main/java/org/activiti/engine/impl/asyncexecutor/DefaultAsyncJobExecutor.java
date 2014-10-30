@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -33,19 +35,16 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
    * destroyed. Default setting is 0. Having a non-default setting of 0 takes resources,
    * but in the case of many job executions it avoids creating new threads all the time. 
    */
-  protected long keepAliveTime = 0L;
+  protected long keepAliveTime = 5000L;
 
 	/** The size of the queue on which jobs to be executed are placed */
   protected int queueSize = 100;
   
-  /** The number of jobs fetched in one query after they are already acquired */
-  protected int jobFetchBatchSize = 100;
-  
   /** The queue used for job execution work */
   protected BlockingQueue<Runnable> threadPoolQueue;
   
-  /** The thread pool used for job execution */
-  protected ThreadPoolExecutor threadPoolExecutor;
+  /** The executor service used for job execution */
+  protected ExecutorService executorService;
   
   /** The time (in seconds) that is waited to gracefully shut down the threadpool used for job execution */
   protected long secondsToWaitOnShutdown = 60L;
@@ -64,8 +63,8 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   }
   
   public void executeAsyncJob(JobEntity job) {
-    if (threadPoolExecutor != null) {
-      threadPoolExecutor.execute(new ExecuteAsyncRunnable(job, commandExecutor));
+    if (executorService != null) {
+    	executorService.execute(new ExecuteAsyncRunnable(job, commandExecutor));
     } else {
       temporaryJobQueue.add(job);
     }
@@ -101,21 +100,24 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
       threadPoolQueue = new ArrayBlockingQueue<Runnable>(queueSize);
     }
     
-    if (threadPoolExecutor==null) {
-    	log.info("Creating thread pool executor with corePoolSize {}, maxPoolSize {} and keepAliveTime {}",
+    if (executorService==null) {
+    	log.info("Creating executor service with corePoolSize {}, maxPoolSize {} and keepAliveTime {}",
     			corePoolSize, maxPoolSize, keepAliveTime);
-      threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);      
-      threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+    	
+    	ThreadPoolExecutor threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);      
+    	threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+    	executorService = threadPoolExecutor;
+    	
     }
   }
     
   protected void stopExecutingAyncJobs() {
     // Ask the thread pool to finish and exit
-    threadPoolExecutor.shutdown();
+  	executorService.shutdown();
 
     // Waits for 1 minute to finish all currently executing jobs
     try {
-      if(!threadPoolExecutor.awaitTermination(secondsToWaitOnShutdown, TimeUnit.SECONDS)) {
+      if(!executorService.awaitTermination(secondsToWaitOnShutdown, TimeUnit.SECONDS)) {
         log.warn("Timeout during shutdown of async job executor. "
             + "The current running jobs could not end within " 
         		+ secondsToWaitOnShutdown + " seconds after shutdown operation.");        
@@ -124,7 +126,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
       log.warn("Interrupted while shutting down the async job executor. ", e);
     }
 
-    threadPoolExecutor = null;
+    executorService = null;
   }
 	
   /* getters and setters */ 
@@ -189,19 +191,12 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     this.threadPoolQueue = threadPoolQueue;
   }
 
-  public ThreadPoolExecutor getThreadPoolExecutor() {
-    return threadPoolExecutor;
-  }
-  
-  public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
-    this.threadPoolExecutor = threadPoolExecutor;
-  }
-
-	public int getJobFetchBatchSize() {
-		return jobFetchBatchSize;
+	public ExecutorService getExecutorService() {
+		return executorService;
 	}
 
-	public void setJobFetchBatchSize(int jobFetchBatchSize) {
-		this.jobFetchBatchSize = jobFetchBatchSize;
+	public void setExecutorService(ExecutorService executorService) {
+		this.executorService = executorService;
 	}
+
 }

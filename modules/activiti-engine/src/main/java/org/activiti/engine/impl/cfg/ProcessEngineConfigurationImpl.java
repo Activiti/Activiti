@@ -1134,7 +1134,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     }
 
     asyncExecutor.setCommandExecutor(commandExecutor);
-    jobExecutor.setAutoActivate(asyncExecutorActivate);
+    asyncExecutor.setAutoActivate(asyncExecutorActivate);
   }
   
   // history //////////////////////////////////////////////////////////////////
