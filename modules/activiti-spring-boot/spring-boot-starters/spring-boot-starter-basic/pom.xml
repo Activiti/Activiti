@@ -13,8 +13,6 @@
 
 
     <dependencies>
-
-
         <!-- common -->
         <dependency>
             <groupId>org.activiti</groupId>
