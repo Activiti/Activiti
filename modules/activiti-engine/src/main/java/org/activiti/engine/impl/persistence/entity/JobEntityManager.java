@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
@@ -42,7 +43,11 @@ public class JobEntityManager extends AbstractManager {
 
   public void send(MessageEntity message) {
     message.insert();
-    hintAsyncExecutor(message);    
+    if (Context.getProcessEngineConfiguration().isAsyncExecutorEnabled()) {
+      hintAsyncExecutor(message);
+    } else {
+      hintJobExecutor(message);
+    }
   }
  
   public void schedule(TimerEntity timer) {
@@ -98,8 +103,13 @@ public class JobEntityManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
-    Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
+    if (processEngineConfig.isAsyncExecutorEnabled()) {
+      return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
+    } else {
+      return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
+    }
   }
   
   @SuppressWarnings("unchecked")

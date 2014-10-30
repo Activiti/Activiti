@@ -275,7 +275,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   public boolean areJobsAvailable() {
     return !managementService
       .createJobQuery()
-      .executable()
+      //.executable()
       .list()
       .isEmpty();
   }

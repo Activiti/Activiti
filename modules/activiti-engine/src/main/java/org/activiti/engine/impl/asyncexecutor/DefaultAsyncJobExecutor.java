@@ -1,11 +1,9 @@
 package org.activiti.engine.impl.asyncexecutor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -54,7 +52,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   
   // Job queue used when async executor is not yet started and jobs are already added.
   // This is mainly used for testing purpose.
-  protected List<JobEntity> temporaryJobQueue = new ArrayList<JobEntity>();
+  protected LinkedList<JobEntity> temporaryJobQueue = new LinkedList<JobEntity>();
   
   protected CommandExecutor commandExecutor;
   
@@ -63,7 +61,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   }
   
   public void executeAsyncJob(JobEntity job) {
-    if (executorService != null) {
+    if (isActive) {
     	executorService.execute(new ExecuteAsyncRunnable(job, commandExecutor));
     } else {
       temporaryJobQueue.add(job);
@@ -78,7 +76,11 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     
     log.info("Starting up the default async job executor [{}].", getClass().getName());
     startExecutingAsyncJobs();
-    for (JobEntity job : temporaryJobQueue) {
+    
+    isActive = true;
+        
+    while (temporaryJobQueue.isEmpty() == false) {
+    	JobEntity job = temporaryJobQueue.pop();
       executeAsyncJob(job);
     }
     isActive = true;

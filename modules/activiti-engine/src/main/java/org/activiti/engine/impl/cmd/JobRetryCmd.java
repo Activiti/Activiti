@@ -79,7 +79,9 @@ public class JobRetryCmd implements Command<Object> {
       String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
       try {
         DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycle, commandContext.getProcessEngineConfiguration().getClock());
-        job.setLockExpirationTime(durationHelper.getDateAfter());
+        job.setLockOwner(null);
+        job.setLockExpirationTime(null);
+        job.setDuedate(durationHelper.getDateAfter());
 	       
         if (job.getExceptionMessage() == null) {  // is it the first exception 
           log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycle+ "' the first time for job " + job.getId() + " with "+ durationHelper.getTimes()+" retries");
