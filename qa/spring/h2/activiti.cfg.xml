@@ -24,6 +24,8 @@
     <property name="transactionManager" ref="transactionManager" />
     <property name="databaseSchemaUpdate" value="true" />
     <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutorEnabled" value="true" />
+    <property name="asyncExecutorActivate" value="false" />
     <property name="mailServerHost" value="localhost" />
     <property name="mailServerPort" value="5025" />
   </bean>
