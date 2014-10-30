@@ -434,7 +434,7 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           </row>
           <row>
             <entry>mssql</entry>
-            <entry>jdbc:sqlserver://localhost:1433/activiti</entry>
+            <entry>jdbc:sqlserver://localhost:1433;databaseName=activiti</entry>
             <entry></entry>
           </row>
         </tbody>
