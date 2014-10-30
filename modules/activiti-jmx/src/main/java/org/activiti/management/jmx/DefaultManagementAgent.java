@@ -202,7 +202,6 @@ public class DefaultManagementAgent implements ManagementAgent {
   }
 
 
-  // TODO: make it find the mbeans using annotation
   @Override
   public void findAndRegisterMbeans() throws Exception {
       register(new ProcessDefinitions(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.jmx.Mbeans:type=Deployments"));
