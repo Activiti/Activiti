@@ -1,5 +1,7 @@
 package org.activiti.spring.boot;
 
+import java.util.Map;
+
 import org.activiti.engine.ProcessEngine;
 import org.activiti.spring.boot.actuate.endpoint.ProcessEngineEndpoint;
 import org.junit.Test;
@@ -8,15 +10,20 @@ import org.springframework.boot.actuate.autoconfigure.ManagementServerProperties
 import org.springframework.boot.actuate.autoconfigure.MetricFilterAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.MetricRepositoryAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.*;
+import org.springframework.boot.autoconfigure.web.DispatcherServletAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.EmbeddedServletContainerAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.HttpMessageConvertersAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.ServerPropertiesAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.WebMvcAutoConfiguration;
 import org.springframework.boot.context.embedded.AnnotationConfigEmbeddedWebApplicationContext;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-
-import java.util.Map;
 
 /**
  * @author Josh Long
@@ -50,9 +57,8 @@ public class EndpointAutoConfigurationTest {
     @Test
     public void mvcEndpoint() throws Throwable {
 
-        AnnotationConfigEmbeddedWebApplicationContext applicationContext = new AnnotationConfigEmbeddedWebApplicationContext();
-        applicationContext.register(EmbeddedContainerConfiguration.class, EndpointConfiguration.class);
-        applicationContext.refresh();
+        AnnotationConfigEmbeddedWebApplicationContext applicationContext = 
+            new AnnotationConfigEmbeddedWebApplicationContext(CallbackEmbeddedContainerCustomizer.class, EmbeddedContainerConfiguration.class, EndpointConfiguration.class);
 
         ProcessEngine processEngine = applicationContext.getBean(ProcessEngine.class);
         org.junit.Assert.assertNotNull("the processEngine should not be null", processEngine);
@@ -64,7 +70,7 @@ public class EndpointAutoConfigurationTest {
         RestTemplate restTemplate = applicationContext.getBean(RestTemplate.class);
 
         ResponseEntity<Map> mapResponseEntity =
-                restTemplate.getForEntity("http://localhost:8080/activiti/", Map.class);
+                restTemplate.getForEntity("http://localhost:9091/activiti/", Map.class);
 
         Map map = mapResponseEntity.getBody();
 
@@ -75,5 +81,13 @@ public class EndpointAutoConfigurationTest {
             org.junit.Assert.assertTrue(map.containsKey(k));
             org.junit.Assert.assertEquals(((Number) map.get(k)).longValue(), ((Number) invokedResults.get(k)).longValue());
         }
+    }
+    
+    @Component
+    public static class CallbackEmbeddedContainerCustomizer implements EmbeddedServletContainerCustomizer {
+      @Override
+      public void customize(ConfigurableEmbeddedServletContainer container) {
+        container.setPort(9091);
+      }
     }
 }
