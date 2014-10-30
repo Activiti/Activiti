@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.17.0.0', 1);
+values ('schema.version', '5.17.0.1', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.17.0.0)', 1);
+values ('schema.history', 'create(5.17.0.1)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -67,6 +67,7 @@ create table ACT_RU_EXECUTION (
     CACHED_ENT_STATE_ integer,
     TENANT_ID_ varchar(255) default '',
     NAME_ varchar(255),
+    LOCK_TIME_ timestamp,
     primary key (ID_)
 );
 

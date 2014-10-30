@@ -16,7 +16,7 @@ import java.io.Serializable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.TransactionState;
@@ -25,56 +25,57 @@ import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.FailedJobListener;
-import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 /**
- * @author Tom Baeyens
- * @author Joram Barrez
+ * @author Tijs Rademakers
  */
-public class ExecuteJobsCmd implements Command<Object>, Serializable {
+public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static Logger log = LoggerFactory.getLogger(ExecuteJobsCmd.class);
+  private static Logger log = LoggerFactory.getLogger(ExecuteAsyncJobCmd.class);
   
-  protected String jobId;
   protected JobEntity job;
  
-  public ExecuteJobsCmd(String jobId) {
-    this.jobId = jobId;
-  }
-  
-  public ExecuteJobsCmd(JobEntity job) {
+  public ExecuteAsyncJobCmd(JobEntity job) {
   	this.job = job;
   }
 
   public Object execute(CommandContext commandContext) {
     
-    if (jobId == null && job == null) {
-      throw new ActivitiIllegalArgumentException("jobId and job is null");
-    }
-    
     if (job == null) {
-    	job = commandContext
-    	  .getJobEntityManager()
-    		.findJobById(jobId);
-    }
-    
-    if (job == null) {
-      throw new JobNotFoundException(jobId);
+      throw new ActivitiIllegalArgumentException("job is null");
     }
     
     if (log.isDebugEnabled()) {
-      log.debug("Executing job {}", job.getId());
+      log.debug("Executing async job {}", job.getId());
     }
     
-    JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
-    if (jobExecutorContext != null) { // if null, then we are not called by the job executor     
-      jobExecutorContext.setCurrentJob(job);
+    String processInstanceId = null;
+    if (job.isExclusive()) {
+      try {
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(job.getExecutionId());
+        if (execution != null) {
+          processInstanceId = execution.getProcessInstanceId();
+          commandContext.getExecutionEntityManager().updateProcessInstanceLockTime(processInstanceId);
+        }
+        
+      } catch (ActivitiOptimisticLockingException optimisticLockingException) { 
+        if (log.isDebugEnabled()) {
+          log.debug("Optimistic locking exception during exclusive job acquisition. If you have multiple job executors running against the same database, " +
+              "this exception means that this thread tried to acquire an exclusive job, which already was changed by another async executor thread." +
+              "This is expected behavior in a clustered environment. " +
+              "You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. " +
+              "Exception message: {}", optimisticLockingException.getMessage());
+        }
+        
+        commandContext.getJobEntityManager().retryAsyncJob(job);
+      }
     }
     
     try {
@@ -85,6 +86,16 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       			ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
       }
       
+      if (job.isExclusive() && processInstanceId != null) {
+        try {
+          commandContext.getExecutionEntityManager().clearProcessInstanceLockTime(processInstanceId);
+          
+        } catch (Throwable t) { 
+          log.error("Process instance lock could not be released!" +
+                "Exception message: {}", t.getMessage());
+        }
+      }
+      
     } catch (Throwable exception) {
       // When transaction is rolled back, decrement retries
       CommandExecutor commandExecutor = Context
@@ -93,7 +104,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       
       commandContext.getTransactionContext().addTransactionListener(
         TransactionState.ROLLED_BACK, 
-        new FailedJobListener(commandExecutor, jobId, exception));
+        new FailedJobListener(commandExecutor, job.getId(), exception));
       
       // Dispatch an event, indicating job execution failed in a try-catch block, to prevent the original
       // exception to be swallowed
@@ -107,17 +118,8 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       }
        
       // Finally, Throw the exception to indicate the ExecuteJobCmd failed
-      throw new ActivitiException("Job " + jobId + " failed", exception);
-    } finally {
-      if (jobExecutorContext != null) {
-        jobExecutorContext.setCurrentJob(null);
-      }
+      throw new ActivitiException("Job " + job.getId() + " failed", exception);
     }
     return null;
   }
-  
-  public String getJobId() {
-		return jobId;
-	}
-
 }

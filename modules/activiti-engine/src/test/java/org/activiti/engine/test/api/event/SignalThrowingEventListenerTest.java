@@ -147,7 +147,16 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
 			assertNotNull(processInstance);
 			
-			waitForJobExecutorToProcessAllJobs(2000, 100);
+			Job signalJob = managementService.createJobQuery()
+          .processInstanceId(processInstance.getId())
+          .singleResult();
+			
+			try {
+        managementService.executeJob(signalJob.getId());
+        fail("Exception expected");
+      } catch(ActivitiException ae) {
+        // Ignore, expected exception
+      }
 			
 			Job failedJob = managementService.createJobQuery()
 					.withException()
@@ -189,7 +198,16 @@ public class SignalThrowingEventListenerTest extends PluggableActivitiTestCase {
 			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testSignal");
 			assertNotNull(processInstance);
 			
-			waitForJobExecutorToProcessAllJobs(2000, 100);
+			Job signalJob = managementService.createJobQuery()
+          .processInstanceId(processInstance.getId())
+          .singleResult();
+			
+			try {
+        managementService.executeJob(signalJob.getId());
+        fail("Exception expected");
+      } catch(ActivitiException ae) {
+        // Ignore, expected exception
+      }
 			
 			Job failedJob = managementService.createJobQuery()
 					.withException()

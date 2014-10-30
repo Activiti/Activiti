@@ -38,6 +38,7 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
@@ -204,6 +205,9 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
     jobExecutor.start();
+    
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
 
     try {
       Timer timer = new Timer();
@@ -231,12 +235,16 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
     } finally {
       jobExecutor.shutdown();
+      asyncExecutor.shutdown();
     }
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
     JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
     jobExecutor.start();
+    
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
 
     try {
       Timer timer = new Timer();
@@ -260,13 +268,41 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
     } finally {
       jobExecutor.shutdown();
+      asyncExecutor.shutdown();
+    }
+  }
+  
+  public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    jobExecutor.start();
+    
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
+
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      try {
+        while (!task.isTimeLimitExceeded()) {
+          Thread.sleep(intervalMillis);
+        }
+      } catch (InterruptedException e) {
+        // ignore
+      } finally {
+        timer.cancel();
+      }
+
+    } finally {
+      jobExecutor.shutdown();
+      asyncExecutor.shutdown();
     }
   }
 
   public boolean areJobsAvailable() {
     return !managementService
       .createJobQuery()
-      .executable()
+      //.executable()
       .list()
       .isEmpty();
   }
