@@ -54,6 +54,9 @@ public class MBeanInfoAssembler {
   }
 
   public ModelMBeanInfo getMBeanInfo(Object defaultManagedBean, Object customManagedBean, String objectName) throws JMException {
+    
+    if ((defaultManagedBean == null && customManagedBean == null) || objectName == null)
+      return null;
     // skip proxy classes
     if (defaultManagedBean != null && Proxy.isProxyClass(defaultManagedBean.getClass())) {
       LOG.trace("Skip creating ModelMBeanInfo due proxy class {}", defaultManagedBean.getClass());
@@ -208,7 +211,8 @@ public class MBeanInfoAssembler {
         }
 
         attributes.put(key, info);
-      }
+        continue;
+      } 
 
       // operations
       ManagedOperation mo = method.getAnnotation(ManagedOperation.class);
@@ -232,17 +236,9 @@ public class MBeanInfoAssembler {
 
       if (info.getGetter() != null) {
         desc.setField("getMethod", info.getGetter().getName());
-        // attribute must also be added as mbean operation
-        ModelMBeanOperationInfo mbeanOperation = new ModelMBeanOperationInfo(info.getKey(), info.getGetter());
-        Descriptor opDesc = mbeanOperation.getDescriptor();
-        mbeanOperation.setDescriptor(opDesc);
-        mBeanOperations.add(mbeanOperation);
       }
       if (info.getSetter() != null) {
         desc.setField("setMethod", info.getSetter().getName());
-        // attribute must also be added as mbean operation
-        ModelMBeanOperationInfo mbeanOperation = new ModelMBeanOperationInfo(info.getKey(), info.getSetter());
-        mBeanOperations.add(mbeanOperation);
       }
       mbeanAttribute.setDescriptor(desc);
 
@@ -278,7 +274,8 @@ public class MBeanInfoAssembler {
   }
 
   private String getName(Object managedBean, String objectName) {
-    return managedBean.getClass().getName();
+    
+    return managedBean == null ? null : managedBean.getClass().getName();
   }
 
   private static final class ManagedAttributeInfo {
