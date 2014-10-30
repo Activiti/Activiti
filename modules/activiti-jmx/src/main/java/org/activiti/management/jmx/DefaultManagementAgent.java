@@ -34,6 +34,7 @@ import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
+import org.activiti.management.jmx.mbeans.JobExecutor;
 import org.activiti.management.jmx.mbeans.ProcessDefinitions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,7 +205,8 @@ public class DefaultManagementAgent implements ManagementAgent {
   // TODO: make it find the mbeans using annotation
   @Override
   public void findAndRegisterMbeans() throws Exception {
-      register(new ProcessDefinitions(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.Deployments:type=Deployments"));
+      register(new ProcessDefinitions(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.jmx.Mbeans:type=Deployments"));
+      register(new JobExecutor(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.jmx.Mbeans:type=Runtime"));
 
   }
   protected void createJmxConnector(String host) throws IOException {

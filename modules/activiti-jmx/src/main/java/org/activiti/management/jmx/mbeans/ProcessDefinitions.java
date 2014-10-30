@@ -1,5 +1,7 @@
 package org.activiti.management.jmx.mbeans;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +17,7 @@ import org.activiti.management.jmx.annotations.ManagedResource;
 public class ProcessDefinitions {
 
   RepositoryService repositoryService;
-  int counter = 0;
+  
 
   public ProcessDefinitions(ProcessEngineConfiguration processEngineConfig) {
     if (processEngineConfig != null)
@@ -87,4 +89,9 @@ public class ProcessDefinitions {
     repositoryService.activateProcessDefinitionByKey(processDefinitionKey);
   }
 
+  @ManagedOperation(description = "Deploy Process Definition")
+  public void deployProcessDefinition(String resourceName, String processDefinitionFile) throws FileNotFoundException {
+    Deployment deployment =  repositoryService.createDeployment().addInputStream(resourceName, new FileInputStream(processDefinitionFile)).deploy();
+  }
+  
 }
