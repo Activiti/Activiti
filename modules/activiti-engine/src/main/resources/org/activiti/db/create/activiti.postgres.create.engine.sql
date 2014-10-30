@@ -67,6 +67,7 @@ create table ACT_RU_EXECUTION (
     CACHED_ENT_STATE_ integer,
     TENANT_ID_ varchar(255) default '',
     NAME_ varchar(255),
+    LOCK_TIME_ timestamp,
     primary key (ID_)
 );
 

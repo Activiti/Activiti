@@ -62,6 +62,11 @@ public class JobEntityManager extends AbstractManager {
     }
   }
   
+  public void retryAsyncJob(JobEntity job) {
+    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
+    asyncExecutor.executeAsyncJob(job);
+  }
+  
   protected void hintAsyncExecutor(JobEntity job) {  
     AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
 
@@ -110,6 +115,13 @@ public class JobEntityManager extends AbstractManager {
     } else {
       return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
     }
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findAsyncJobsDueToExecute(Page page) {
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
+    return getDbSqlSession().selectList("selectAsyncJobsDueToExecute", now, page);
   }
   
   @SuppressWarnings("unchecked")

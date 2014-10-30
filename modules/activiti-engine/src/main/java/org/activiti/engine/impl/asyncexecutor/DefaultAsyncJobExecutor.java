@@ -49,6 +49,9 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   /** The time (in seconds) that is waited to gracefully shut down the threadpool used for job execution */
   protected long secondsToWaitOnShutdown = 60L;
   
+  protected Thread jobAcquisitionThread;
+  protected AcquireAsyncJobsDueRunnable asyncJobsDueRunnable;
+  
   protected boolean isAutoActivate = false;
   protected boolean isActive = false;
   
@@ -57,10 +60,6 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   protected LinkedList<JobEntity> temporaryJobQueue = new LinkedList<JobEntity>();
   
   protected CommandExecutor commandExecutor;
-  
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
   
   public void executeAsyncJob(JobEntity job) {
     if (isActive) {
@@ -77,6 +76,9 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     }
     
     log.info("Starting up the default async job executor [{}].", getClass().getName());
+    if (asyncJobsDueRunnable == null) {
+      asyncJobsDueRunnable = new AcquireAsyncJobsDueRunnable(this);
+    }
     startExecutingAsyncJobs();
     isActive = true;
     
@@ -92,7 +94,9 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
       return;
     }
     log.info("Shutting down the default async job executor [{}].", getClass().getName());
+    asyncJobsDueRunnable.stop();
     stopExecutingAyncJobs();
+    asyncJobsDueRunnable = null;
     isActive = false;
   }
 
@@ -108,9 +112,13 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
       threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);      
       threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
     }
+    
+    startJobAcquisitionThread();
   }
     
   protected void stopExecutingAyncJobs() {
+    stopJobAcquisitionThread();
+    
     // Ask the thread pool to finish and exit
     threadPoolExecutor.shutdown();
 
@@ -127,8 +135,34 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
 
     threadPoolExecutor = null;
   }
+  
+  /** Starts the acquisition thread */
+  protected void startJobAcquisitionThread() {
+    if (jobAcquisitionThread == null) {
+      jobAcquisitionThread = new Thread(asyncJobsDueRunnable);
+    }
+    jobAcquisitionThread.start();
+  }
+  
+  /** Stops the acquisition thread */
+  protected void stopJobAcquisitionThread() {
+    try {
+      jobAcquisitionThread.join();
+    } catch (InterruptedException e) {
+      log.warn("Interrupted while waiting for the job Acquisition thread to terminate", e);
+    } 
+    jobAcquisitionThread = null;
+  }
 	
   /* getters and setters */ 
+  
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
+  }
+  
+  public void setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+  }
   
   public boolean isAutoActivate() {
     return isAutoActivate;

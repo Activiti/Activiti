@@ -67,12 +67,13 @@ create table ACT_RU_EXECUTION (
     CACHED_ENT_STATE_ integer,
     TENANT_ID_ varchar(255) default '',
     NAME_ varchar(255),
+    LOCK_TIME_ timestamp(3) NULL,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create table ACT_RU_JOB (
     ID_ varchar(64) NOT NULL,
-  REV_ integer,
+    REV_ integer,
     TYPE_ varchar(255) NOT NULL,
     LOCK_EXP_TIME_ timestamp(3) NULL,
     LOCK_OWNER_ varchar(255),

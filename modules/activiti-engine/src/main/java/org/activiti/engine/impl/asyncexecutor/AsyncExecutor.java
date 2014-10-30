@@ -9,6 +9,8 @@ public interface AsyncExecutor {
   
   public void setCommandExecutor(CommandExecutor commandExecutor);
   
+  public CommandExecutor getCommandExecutor();
+  
   public boolean isAutoActivate();
 
   public void setAutoActivate(boolean isAutoActivate);

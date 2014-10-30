@@ -271,6 +271,33 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       asyncExecutor.shutdown();
     }
   }
+  
+  public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
+    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    jobExecutor.start();
+    
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
+
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      try {
+        while (!task.isTimeLimitExceeded()) {
+          Thread.sleep(intervalMillis);
+        }
+      } catch (InterruptedException e) {
+        // ignore
+      } finally {
+        timer.cancel();
+      }
+
+    } finally {
+      jobExecutor.shutdown();
+      asyncExecutor.shutdown();
+    }
+  }
 
   public boolean areJobsAvailable() {
     return !managementService
