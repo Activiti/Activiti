@@ -43,20 +43,24 @@ import org.activiti.bpmn.converter.child.IOSpecificationParser;
 import org.activiti.bpmn.converter.child.MultiInstanceParser;
 import org.activiti.bpmn.converter.export.ActivitiListenerExport;
 import org.activiti.bpmn.converter.export.BPMNDIExport;
+import org.activiti.bpmn.converter.export.CollaborationExport;
+import org.activiti.bpmn.converter.export.DataStoreExport;
 import org.activiti.bpmn.converter.export.DefinitionsRootExport;
 import org.activiti.bpmn.converter.export.MultiInstanceExport;
-import org.activiti.bpmn.converter.export.PoolExport;
 import org.activiti.bpmn.converter.export.ProcessExport;
 import org.activiti.bpmn.converter.export.SignalAndMessageDefinitionExport;
 import org.activiti.bpmn.converter.parser.BpmnEdgeParser;
 import org.activiti.bpmn.converter.parser.BpmnShapeParser;
+import org.activiti.bpmn.converter.parser.DataStoreParser;
 import org.activiti.bpmn.converter.parser.DefinitionsParser;
 import org.activiti.bpmn.converter.parser.ExtensionElementsParser;
 import org.activiti.bpmn.converter.parser.ImportParser;
 import org.activiti.bpmn.converter.parser.InterfaceParser;
 import org.activiti.bpmn.converter.parser.ItemDefinitionParser;
 import org.activiti.bpmn.converter.parser.LaneParser;
+import org.activiti.bpmn.converter.parser.MessageFlowParser;
 import org.activiti.bpmn.converter.parser.MessageParser;
+import org.activiti.bpmn.converter.parser.ParticipantParser;
 import org.activiti.bpmn.converter.parser.PotentialStarterParser;
 import org.activiti.bpmn.converter.parser.ProcessParser;
 import org.activiti.bpmn.converter.parser.SignalParser;
@@ -111,11 +115,18 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 	protected BpmnEdgeParser bpmnEdgeParser = new BpmnEdgeParser();
 	protected BpmnShapeParser bpmnShapeParser = new BpmnShapeParser();
 	protected DefinitionsParser definitionsParser = new DefinitionsParser();
+	protected DocumentationParser documentationParser = new DocumentationParser();
+	protected ExtensionElementsParser extensionElementsParser = new ExtensionElementsParser();
 	protected ImportParser importParser = new ImportParser();
 	protected InterfaceParser interfaceParser = new InterfaceParser();
   protected ItemDefinitionParser itemDefinitionParser = new ItemDefinitionParser();
+  protected IOSpecificationParser ioSpecificationParser = new IOSpecificationParser();
+  protected DataStoreParser dataStoreParser = new DataStoreParser();
   protected LaneParser laneParser = new LaneParser();
   protected MessageParser messageParser = new MessageParser();
+  protected MessageFlowParser messageFlowParser = new MessageFlowParser();
+  protected MultiInstanceParser multiInstanceParser = new MultiInstanceParser();
+  protected ParticipantParser participantParser = new ParticipantParser();
   protected PotentialStarterParser potentialStarterParser = new PotentialStarterParser();
   protected ProcessParser processParser = new ProcessParser();
   protected SignalParser signalParser = new SignalParser();
@@ -142,17 +153,10 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     addConverter(new ExclusiveGatewayXMLConverter());
     addConverter(new InclusiveGatewayXMLConverter());
     addConverter(new ParallelGatewayXMLConverter());
+    addConverter(new ComplexGatewayXMLConverter());
     
     // connectors
     addConverter(new SequenceFlowXMLConverter());
-    
-    // data objects
-    addConverter(new ValuedDataObjectXMLConverter(), StringDataObject.class);
-    addConverter(new ValuedDataObjectXMLConverter(), BooleanDataObject.class);
-    addConverter(new ValuedDataObjectXMLConverter(), IntegerDataObject.class);
-    addConverter(new ValuedDataObjectXMLConverter(), LongDataObject.class);
-    addConverter(new ValuedDataObjectXMLConverter(), DoubleDataObject.class);
-    addConverter(new ValuedDataObjectXMLConverter(), DateDataObject.class);
     
     // catch, throw and boundary event
     addConverter(new CatchEventXMLConverter());
@@ -162,6 +166,17 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
     // artifacts
     addConverter(new TextAnnotationXMLConverter());
     addConverter(new AssociationXMLConverter());
+    
+    // data store reference
+    addConverter(new DataStoreReferenceXMLConverter());
+    
+    // data objects
+    addConverter(new ValuedDataObjectXMLConverter(), StringDataObject.class);
+    addConverter(new ValuedDataObjectXMLConverter(), BooleanDataObject.class);
+    addConverter(new ValuedDataObjectXMLConverter(), IntegerDataObject.class);
+    addConverter(new ValuedDataObjectXMLConverter(), LongDataObject.class);
+    addConverter(new ValuedDataObjectXMLConverter(), DoubleDataObject.class);
+    addConverter(new ValuedDataObjectXMLConverter(), DateDataObject.class);
     
     // Alfresco types
     addConverter(new AlfrescoStartEventXMLConverter());
@@ -327,22 +342,20 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 				} else if (ELEMENT_ITEM_DEFINITION.equals(xtr.getLocalName())) {
 				  itemDefinitionParser.parse(xtr, model);
           
+				} else if (ELEMENT_DATA_STORE.equals(xtr.getLocalName())) {
+				  dataStoreParser.parse(xtr, model);
+				  
 				} else if (ELEMENT_INTERFACE.equals(xtr.getLocalName())) {
 				  interfaceParser.parse(xtr, model);
 				  
 				} else if (ELEMENT_IOSPECIFICATION.equals(xtr.getLocalName())) {
-          new IOSpecificationParser().parseChildElement(xtr, activeProcess, model);
+				  ioSpecificationParser.parseChildElement(xtr, activeProcess, model);
 					
 				} else if (ELEMENT_PARTICIPANT.equals(xtr.getLocalName())) {
+				  participantParser.parse(xtr, model);
 				  
-				  if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-				    Pool pool = new Pool();
-				    pool.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
-				    pool.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
-				    pool.setProcessRef(xtr.getAttributeValue(null, ATTRIBUTE_PROCESS_REF));
-				    BpmnXMLUtil.parseChildElements(ELEMENT_PARTICIPANT, pool, xtr, model);
-				    model.getPools().add(pool);
-				  }
+				} else if (ELEMENT_MESSAGE_FLOW.equals(xtr.getLocalName())) {
+          messageFlowParser.parse(xtr, model);
 
 				} else if (ELEMENT_PROCESS.equals(xtr.getLocalName())) {
 					
@@ -358,14 +371,14 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           laneParser.parse(xtr, activeProcess, model);
 					
 				} else if (ELEMENT_DOCUMENTATION.equals(xtr.getLocalName())) {
-					
+				  
 					BaseElement parentElement = null;
-					if(!activeSubProcessList.isEmpty()) {
+					if (!activeSubProcessList.isEmpty()) {
 						parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
-					} else if(activeProcess != null) {
+					} else if (activeProcess != null) {
 						parentElement = activeProcess;
 					}
-					new DocumentationParser().parseChildElement(xtr, parentElement, model);
+					documentationParser.parseChildElement(xtr, parentElement, model);
 				
 				} else if (activeProcess == null && ELEMENT_TEXT_ANNOTATION.equals(xtr.getLocalName())) {
 				  String elementId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
@@ -380,7 +393,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
           model.getGlobalArtifacts().add(association);
 				
 				} else if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
-          new ExtensionElementsParser().parse(xtr, activeSubProcessList, activeProcess, model);
+				  extensionElementsParser.parse(xtr, activeSubProcessList, activeProcess, model);
 				
 				} else if (ELEMENT_SUBPROCESS.equals(xtr.getLocalName())) {
           subProcessParser.parse(xtr, activeSubProcessList, activeProcess);
@@ -398,7 +411,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
 					if (!activeSubProcessList.isEmpty() && ELEMENT_MULTIINSTANCE.equalsIgnoreCase(xtr.getLocalName())) {
 						
-						new MultiInstanceParser().parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1), model);
+					  multiInstanceParser.parseChildElement(xtr, activeSubProcessList.get(activeSubProcessList.size() - 1), model);
 					  
 					} else if (convertersToBpmnMap.containsKey(xtr.getLocalName())) {
 					  if (activeProcess != null) {
@@ -482,12 +495,13 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
       XMLStreamWriter xtw = new IndentingXMLStreamWriter(writer);
 
       DefinitionsRootExport.writeRootElement(model, xtw, encoding);
+      CollaborationExport.writePools(model, xtw);
+      DataStoreExport.writeDataStores(model, xtw);
       SignalAndMessageDefinitionExport.writeSignalsAndMessages(model, xtw);
-      PoolExport.writePools(model, xtw);
       
       for (Process process : model.getProcesses()) {
         
-        if(process.getFlowElements().isEmpty() && process.getLanes().isEmpty()) {
+        if (process.getFlowElements().isEmpty() && process.getLanes().isEmpty()) {
           // empty process, ignore it 
           continue;
         }

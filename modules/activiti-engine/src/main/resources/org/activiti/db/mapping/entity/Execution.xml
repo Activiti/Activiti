@@ -44,7 +44,8 @@
       SUPER_EXEC_ = #{superExecutionId, jdbcType=VARCHAR},
       SUSPENSION_STATE_ = #{suspensionState, jdbcType=INTEGER},
       CACHED_ENT_STATE_ = #{cachedEntityState, jdbcType=INTEGER},
-      NAME_ = #{name, jdbcType=VARCHAR}
+      NAME_ = #{name, jdbcType=VARCHAR},
+      LOCK_TIME_ = #{lockTime, jdbcType=TIMESTAMP}
     where ID_ = #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>
@@ -80,6 +81,21 @@
         ) AS tempExecution 
 
     )
+  </update>
+  
+  <update id="updateProcessInstanceLockTime" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_EXECUTION 
+    set
+      LOCK_TIME_ = #{lockTime, jdbcType=TIMESTAMP}
+    where ID_ = #{id}
+      and LOCK_TIME_ is null
+  </update>
+  
+  <update id="clearProcessInstanceLockTime" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_EXECUTION 
+    set
+      LOCK_TIME_ = null
+    where ID_ = #{id}
   </update>
   
   <!-- EXECUTION DELETE -->
@@ -130,6 +146,7 @@
     <result property="cachedEntityState" column="CACHED_ENT_STATE_" jdbcType="INTEGER"/>
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
   </resultMap>
   
   <resultMap id="executionAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
@@ -186,6 +203,7 @@
     <result property="cachedEntityState" column="CACHED_ENT_STATE_" jdbcType="INTEGER"/>
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
     <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />

@@ -135,13 +135,50 @@
     where (RES.RETRIES_ &gt; 0)
       and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
       and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
-	  and (
+	    and (
 	  	    (RES.EXECUTION_ID_ is null)
-	  		or 
-	  		(PI.SUSPENSION_STATE_ = 1)
+	  		  or 
+	  		  (PI.SUSPENSION_STATE_ = 1)
       )  
     ${limitAfter}	    
-  </select>    
+  </select>
+  
+  <select id="selectNextTimerJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    ${limitBefore}
+    select 
+      RES.* ${limitBetween}       
+    from ${prefix}ACT_RU_JOB RES    
+      LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    where (RES.RETRIES_ &gt; 0)
+      and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and TYPE_ = 'timer'
+      and (
+          (RES.EXECUTION_ID_ is null)
+          or 
+          (PI.SUSPENSION_STATE_ = 1)
+      )  
+    ${limitAfter}     
+  </select>
+  
+  <select id="selectAsyncJobsDueToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    ${limitBefore}
+    select 
+      RES.* ${limitBetween}       
+    from ${prefix}ACT_RU_JOB RES    
+      LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    where RES.RETRIES_ &gt; 0
+      and RES.DUEDATE_ is not null
+      and RES.DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP}
+      and (RES.LOCK_EXP_TIME_ is null or RES.LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and TYPE_ = 'message'
+      and (
+          (RES.EXECUTION_ID_ is null)
+          or 
+          (PI.SUSPENSION_STATE_ = 1)
+      )  
+    ${limitAfter}     
+  </select>
   
   <select id="selectJobsByLockOwner" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
   	${limitBefore}

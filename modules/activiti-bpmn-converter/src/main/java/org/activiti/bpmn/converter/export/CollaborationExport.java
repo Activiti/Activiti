@@ -16,10 +16,11 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.MessageFlow;
 import org.activiti.bpmn.model.Pool;
 import org.apache.commons.lang3.StringUtils;
 
-public class PoolExport implements BpmnXMLConstants {
+public class CollaborationExport implements BpmnXMLConstants {
 
   public static void writePools(BpmnModel model, XMLStreamWriter xtw) throws Exception {
     if (!model.getPools().isEmpty()) {
@@ -36,6 +37,25 @@ public class PoolExport implements BpmnXMLConstants {
         }
         xtw.writeEndElement();
       }
+      
+      for (MessageFlow messageFlow : model.getMessageFlows().values()) {
+        xtw.writeStartElement(ELEMENT_MESSAGE_FLOW);
+        xtw.writeAttribute(ATTRIBUTE_ID, messageFlow.getId());
+        if (StringUtils.isNotEmpty(messageFlow.getName())) {
+          xtw.writeAttribute(ATTRIBUTE_NAME, messageFlow.getName());
+        }
+        if (StringUtils.isNotEmpty(messageFlow.getSourceRef())) {
+          xtw.writeAttribute(ATTRIBUTE_FLOW_SOURCE_REF, messageFlow.getSourceRef());
+        }
+        if (StringUtils.isNotEmpty(messageFlow.getTargetRef())) {
+          xtw.writeAttribute(ATTRIBUTE_FLOW_TARGET_REF, messageFlow.getTargetRef());
+        }
+        if (StringUtils.isNotEmpty(messageFlow.getMessageRef())) {
+          xtw.writeAttribute(ATTRIBUTE_MESSAGE_REF, messageFlow.getMessageRef());
+        }
+        xtw.writeEndElement();
+      }
+      
       xtw.writeEndElement();
     }
   }

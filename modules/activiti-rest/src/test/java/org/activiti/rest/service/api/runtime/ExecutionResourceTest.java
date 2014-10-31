@@ -21,6 +21,7 @@ import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
@@ -45,11 +46,12 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     Execution childExecution = runtimeService.createExecutionQuery().activityId("processTask").singleResult();
     assertNotNull(childExecution);
     
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, parentExecution.getId())), HttpStatus.SC_OK);
     
     // Check resulting parent execution
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(parentExecution.getId(), responseNode.get("id").textValue());
     assertTrue(responseNode.get("activityId").isNull());
@@ -64,10 +66,11 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
             RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, parentExecution.getId())));
     
     // Check resulting child execution
-    response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, childExecution.getId())), HttpStatus.SC_OK);
     
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(childExecution.getId(), responseNode.get("id").textValue());
     assertEquals("processTask", responseNode.get("activityId").textValue());
@@ -88,8 +91,9 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
    * Test getting an unexisting execution.
    */
   public void testGetUnexistingExecution() throws Exception {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+  	CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, "unexisting")), HttpStatus.SC_NOT_FOUND);
+  	closeResponse(response);
   }
   
   /**
@@ -108,14 +112,15 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, signalExecution.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-    
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertEquals("anotherWaitState", responseNode.get("activityId").textValue());
     assertEquals("anotherWaitState", runtimeService.createExecutionQuery().executionId(signalExecution.getId()).singleResult().getActivityId());
     
     // Signalling again causes process to end
-    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    response = executeRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Check if process is actually ended
     assertNull(runtimeService.createExecutionQuery().executionId(signalExecution.getId()).singleResult());
@@ -139,13 +144,15 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    closeResponse(response);
     
     requestNode.put("signalName", "alert");
     
     // Sending signal event causes the execution to end (scope-execution for the catching event)
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    response = executeRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -180,7 +187,8 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -210,13 +218,15 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_INTERNAL_SERVER_ERROR);
+    closeResponse(response);
     
     requestNode.put("messageName", "paymentMessage");
     
     // Sending signal event causes the execution to end (scope-execution for the catching event)
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    response = executeRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -250,7 +260,8 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, waitingExecution.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -277,6 +288,7 @@ public class ExecutionResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, execution.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_BAD_REQUEST);
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(response);
   }
 }

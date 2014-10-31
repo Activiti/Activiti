@@ -26,8 +26,8 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -70,10 +70,11 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
     
     // Request all variables (no scope provides) which include global an local
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId())), HttpStatus.SC_OK);
     
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(9, responseNode.size());
@@ -97,9 +98,9 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
-    
+    CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent()).get(0);
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("myVariable", responseNode.get("name").asText());
     assertEquals("simple string value", responseNode.get("value").asText());
@@ -129,9 +130,9 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/octet-stream", binaryContent, additionalFields));
-    HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
-    
+    CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("binaryVariable", responseNode.get("name").asText());
     assertTrue(responseNode.get("value").isNull());
@@ -175,9 +176,9 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/x-java-serialized-object", binaryContent, additionalFields));
-    HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
-    
+    CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("serializableVariable", responseNode.get("name").asText());
     assertTrue(responseNode.get("value").isNull());
@@ -210,7 +211,7 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, "unexisting"));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_NOT_FOUND));
 
     // Test trying to create already existing variable
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
@@ -219,7 +220,7 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_CONFLICT);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_CONFLICT));
 
     // Test creating nameless variable
     variableNode.removeAll();
@@ -228,20 +229,20 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
     
     // Test passing in empty array
     requestNode.removeAll();
     httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
     
     // Test passing in object instead of array
     httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPost.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
   }
   
   /**
@@ -261,7 +262,7 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_CREATED));
     
     assertEquals("String value", runtimeService.getVariable(processInstance.getId(), "stringVar"));
     
@@ -270,7 +271,7 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     varNode.put("value", 123);
     
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_CREATED));
     
     assertEquals(123, runtimeService.getVariable(processInstance.getId(), "integerVar"));
     
@@ -279,7 +280,7 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     varNode.put("value", 123.456);
     
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_CREATED));
     
     assertEquals(123.456, runtimeService.getVariable(processInstance.getId(), "doubleVar"));
    
@@ -288,7 +289,7 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     varNode.put("value", Boolean.TRUE);
     
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_CREATED));
     
     assertEquals(Boolean.TRUE, runtimeService.getVariable(processInstance.getId(), "booleanVar"));
   }
@@ -353,9 +354,9 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-    
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(7, responseNode.size());
@@ -399,9 +400,9 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_CREATED);
-    
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_CREATED);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(2, responseNode.size());
@@ -428,7 +429,7 @@ public class ProcessInstanceVariablesCollectionResourceTest extends BaseSpringRe
 
     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_VARIABLE_COLLECTION, processInstance.getId()));
-    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
     
     // Check if local variables are gone and global remain unchanged
     assertEquals(0, runtimeService.getVariablesLocal(processInstance.getId()).size());

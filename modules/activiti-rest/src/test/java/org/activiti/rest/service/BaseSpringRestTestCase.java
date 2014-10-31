@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
@@ -46,12 +47,13 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CredentialsProvider;
-import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicHeader;
 import org.eclipse.jetty.server.Server;
@@ -101,6 +103,9 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   protected static IdentityService identityService;
   protected static ManagementService managementService;
   
+  protected static CloseableHttpClient client;
+  protected static LinkedList<CloseableHttpResponse> httpResponses = new LinkedList<CloseableHttpResponse>();
+  
   protected ISO8601DateFormat dateFormat = new ISO8601DateFormat();
   
   static {
@@ -117,10 +122,26 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     identityService = appContext.getBean(IdentityService.class);
     managementService = appContext.getBean(ManagementService.class);
     
+    // Create http client for all tests
+    CredentialsProvider provider = new BasicCredentialsProvider();
+    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("kermit", "kermit");
+    provider.setCredentials(AuthScope.ANY, credentials);
+    client = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build();
+    
+    // Clean shutdown
     Runtime.getRuntime().addShutdownHook(new Thread() {
 
       @Override
       public void run() {
+      	
+      	if (client != null) {
+      		try {
+	          client.close();
+          } catch (IOException e) {
+          	log.error("Could not close http client", e);
+          }
+      	}
+      	
         if (server != null && server.isRunning()) {
           try {
             server.stop();
@@ -162,6 +183,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       dropUsers();
       assertAndEnsureCleanDb();
       processEngineConfiguration.getClock().reset();
+      closeHttpConnections();
     }
   }
   
@@ -213,46 +235,49 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     return contextHandler;
   }
   
-  public HttpResponse executeHttpRequest(HttpUriRequest request, int expectedStatusCode) {
-    CredentialsProvider provider = new BasicCredentialsProvider();
-    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("kermit", "kermit");
-    provider.setCredentials(AuthScope.ANY, credentials);
-    HttpClient client = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build();
+  /**
+   * IMPORTANT: calling method is responsible for calling close() on returned {@link HttpResponse} to free the connection. 
+   */
+  public CloseableHttpResponse executeRequest(HttpUriRequest request, int expectedStatusCode) {
+  	return internalExecuteRequest(request, expectedStatusCode, true);
+  }
+
+  /**
+   * IMPORTANT: calling method is responsible for calling close() on returned {@link HttpResponse} to free the connection. 
+   */
+  public CloseableHttpResponse executeBinaryRequest(HttpUriRequest request, int expectedStatusCode) {
+  	return internalExecuteRequest(request, expectedStatusCode, false);
+  }
+  
+  protected CloseableHttpResponse internalExecuteRequest(HttpUriRequest request, int expectedStatusCode, boolean addJsonContentType) {
+	  CloseableHttpResponse response = null;
     try {
-      if (request.getFirstHeader(HttpHeaders.CONTENT_TYPE) == null) {
+      if (addJsonContentType && request.getFirstHeader(HttpHeaders.CONTENT_TYPE) == null) {
         // Revert to default content-type 
         request.addHeader(new BasicHeader(HttpHeaders.CONTENT_TYPE, "application/json"));
       }
-      HttpResponse response = client.execute(request);
+      response = client.execute(request);
       Assert.assertNotNull(response.getStatusLine());
       Assert.assertEquals(expectedStatusCode, response.getStatusLine().getStatusCode());
+      httpResponses.add(response);
       return response;
       
     } catch (ClientProtocolException e) {
       Assert.fail(e.getMessage());
     } catch (IOException e) {
       Assert.fail(e.getMessage());
-    }
+    } 
     return null;
   }
   
-  public HttpResponse executeBinaryHttpRequest(HttpUriRequest request, int expectedStatusCode) {
-    CredentialsProvider provider = new BasicCredentialsProvider();
-    UsernamePasswordCredentials credentials = new UsernamePasswordCredentials("kermit", "kermit");
-    provider.setCredentials(AuthScope.ANY, credentials);
-    HttpClient client = HttpClientBuilder.create().setDefaultCredentialsProvider(provider).build();
-    try {
-      HttpResponse response = client.execute(request);
-      Assert.assertNotNull(response.getStatusLine());
-      Assert.assertEquals(expectedStatusCode, response.getStatusLine().getStatusCode());
-      return response;
-      
-    } catch (ClientProtocolException e) {
-      Assert.fail(e.getMessage());
-    } catch (IOException e) {
-      Assert.fail(e.getMessage());
-    }
-    return null;
+  public void closeResponse(CloseableHttpResponse response) {
+  	if (response != null) {
+  		try {
+  			response.close();
+	    } catch (IOException e) {
+	      fail("Could not close http connection");
+	    }
+	  }
   }
   
   protected void dropUsers() {
@@ -305,6 +330,19 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     } else {
       log.info("database was clean");
     }
+  }
+  
+  protected void closeHttpConnections() {
+  	for (CloseableHttpResponse response : httpResponses) {
+  		if (response != null) {
+  			try {
+	        response.close();
+        } catch (IOException e) {
+        	log.error("Could not close http connection", e);
+        }
+  		}
+  	}
+  	httpResponses.clear();
   }
   
   protected String encode(String string) {
@@ -417,10 +455,11 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     int numberOfResultsExpected = expectedResourceIds.length;
     
     // Do the actual call
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
     
     // Check status and size
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's
@@ -450,7 +489,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     // Do the actual call
     HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
     post.setEntity(new StringEntity(body.toString()));
-    HttpResponse response = executeHttpRequest(post, expectedStatusCode);
+    CloseableHttpResponse response = executeRequest(post, expectedStatusCode);
     
     if (expectedStatusCode == HttpStatus.SC_OK) {
       // Check status and size
@@ -469,6 +508,8 @@ public class BaseSpringRestTestCase extends PvmTestCase {
         assertTrue("Not all entries have been found in result, missing: " + StringUtils.join(toBeFound, ", "), toBeFound.isEmpty());
       }
     }
+    
+    closeResponse(response);
   }
   
   /**
@@ -479,7 +520,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
     // Do the actual call
     HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
     post.setEntity(new StringEntity(body.toString()));
-    executeHttpRequest(post, statusCode);
+    closeResponse(executeRequest(post, statusCode));
   }
   
   /**

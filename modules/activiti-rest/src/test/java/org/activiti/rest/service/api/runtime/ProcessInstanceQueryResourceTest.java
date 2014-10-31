@@ -19,8 +19,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 
@@ -145,10 +145,11 @@ public class ProcessInstanceQueryResourceTest extends BaseSpringRestTestCase {
   	String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_QUERY);
   	HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + url);
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_OK);
     
     // Check order
     JsonNode rootNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     JsonNode dataNode = rootNode.get("data");
     assertEquals(3, dataNode.size());
     
@@ -162,9 +163,9 @@ public class ProcessInstanceQueryResourceTest extends BaseSpringRestTestCase {
   	requestNode.put("size", 1);
   	
   	httpPost.setEntity(new StringEntity(requestNode.toString()));
-    response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
-    
+    response = executeRequest(httpPost, HttpStatus.SC_OK);
     rootNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     dataNode = rootNode.get("data");
     assertEquals(1, dataNode.size());
     
@@ -176,9 +177,9 @@ public class ProcessInstanceQueryResourceTest extends BaseSpringRestTestCase {
   	requestNode.put("sort", "processDefinitionKey");
     
   	httpPost.setEntity(new StringEntity(requestNode.toString()));
-    response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
-    
+    response = executeRequest(httpPost, HttpStatus.SC_OK);
     rootNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     dataNode = rootNode.get("data");
     assertEquals(1, dataNode.size());
     assertEquals(processInstance2.getId(), dataNode.get(0).get("id").asText());

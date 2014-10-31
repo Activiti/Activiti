@@ -20,8 +20,8 @@ import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
@@ -45,11 +45,12 @@ public class ModelResourceSourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       
       // Check "OK" status
       assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
       assertEquals("This is the editor source", IOUtils.toString(response.getEntity().getContent()));
+      closeResponse(response);
       
     } finally {
       try {
@@ -70,7 +71,7 @@ public class ModelResourceSourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
     } finally {
       try {
@@ -94,11 +95,12 @@ public class ModelResourceSourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       
       // Check "OK" status
       assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
       assertEquals("This is the extra editor source", IOUtils.toString(response.getEntity().getContent()));
+      closeResponse(response);
       
     } finally {
       try {
@@ -119,7 +121,7 @@ public class ModelResourceSourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
     } finally {
       try {
@@ -134,13 +136,13 @@ public class ModelResourceSourceTest extends BaseSpringRestTestCase {
   public void testGetModelSourceUnexistingModel() throws Exception {
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
-    executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
   }
   
   public void testGetModelSourceExtraUnexistingModel() throws Exception {
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
-    executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
   }
   
   public void testSetModelEditorSource() throws Exception {
@@ -156,7 +158,7 @@ public class ModelResourceSourceTest extends BaseSpringRestTestCase {
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
       httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("sourcefile", "application/octet-stream", 
           new ByteArrayInputStream("This is the new editor source".getBytes()), null));
-      executeBinaryHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
       
       assertEquals("This is the new editor source", new String(repositoryService.getModelEditorSource(model.getId())));
   
@@ -182,7 +184,7 @@ public class ModelResourceSourceTest extends BaseSpringRestTestCase {
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
       httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("sourcefile", "application/octet-stream", 
           new ByteArrayInputStream("This is the new extra editor source".getBytes()), null));
-      executeBinaryHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
       
       assertEquals("This is the new extra editor source", new String(repositoryService.getModelEditorSourceExtra(model.getId())));
       
@@ -199,13 +201,13 @@ public class ModelResourceSourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
     httpPut.setEntity(new StringEntity(""));
-    executeBinaryHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NOT_FOUND));
   }
   
   public void testSetModelSourceExtraUnexistingModel() throws Exception {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
     httpPut.setEntity(new StringEntity(""));
-    executeBinaryHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NOT_FOUND));
   }
 }

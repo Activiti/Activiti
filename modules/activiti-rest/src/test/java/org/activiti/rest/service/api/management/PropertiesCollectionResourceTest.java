@@ -5,8 +5,8 @@ import java.util.Map;
 
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -24,12 +24,13 @@ public class PropertiesCollectionResourceTest extends BaseSpringRestTestCase {
    * Test getting the engine properties.
    */
   public void testGetProperties() throws Exception {
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+  	CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROPERTIES_COLLECTION)), HttpStatus.SC_OK);
     
     Map<String, String> properties = managementService.getProperties();
     
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(properties.size(), responseNode.size());
     

@@ -7,8 +7,8 @@ import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -36,9 +36,9 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
     
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, processDefinition.getId()));
-    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-    
+    CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(2, responseNode.size());
@@ -73,7 +73,8 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
   public void testGetIdentityLinksForUnexistingProcessDefinition() throws Exception {
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, "unexisting"));
-    executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+    CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+    closeResponse(response);
   }
   
   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
@@ -87,9 +88,9 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, processDefinition.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-    
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("kermit", responseNode.get("user").textValue());
     assertEquals("candidate", responseNode.get("type").textValue());
@@ -108,9 +109,9 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
     requestNode.put("group", "admin");
     
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-
+    response = executeRequest(httpPost, HttpStatus.SC_CREATED);
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("admin", responseNode.get("group").textValue());
     assertEquals("candidate", responseNode.get("type").textValue());
@@ -133,7 +134,8 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINKS_COLLECTION, "unexisting"));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    closeResponse(response);
   }
   
   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
@@ -145,9 +147,9 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
     // Get user candidate
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "users", "kermit"));
-    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-
+    CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("kermit", responseNode.get("user").textValue());
     assertEquals("candidate", responseNode.get("type").textValue());
@@ -158,9 +160,9 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
     // Get group candidate
     httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "groups", "admin"));
-    response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-    
+    response = executeRequest(httpGet, HttpStatus.SC_OK);
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("admin", responseNode.get("group").textValue());
     assertEquals("candidate", responseNode.get("type").textValue());
@@ -178,7 +180,8 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
     // Delete user candidate
     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "users", "kermit"));
-    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Check if group-link remains
     List<IdentityLink> remainingLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
@@ -189,7 +192,8 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
     // Delete group candidate
     httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, processDefinition.getId(), "groups", "admin"));
-    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    response = executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Check if all links are removed
     remainingLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
@@ -199,12 +203,14 @@ public class ProcessDefinitionIdentityLinksResourceTest extends BaseSpringRestTe
   public void testDeleteCandidateStarterFromUnexistingProcessDefinition() throws Exception {
     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, "unexisting", "groups", "admin"));
-    executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+    CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+    closeResponse(response);
   }
   
   public void testGetCandidateStarterFromUnexistingProcessDefinition() throws Exception {
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
         RestUrls.URL_PROCESS_DEFINITION_IDENTITYLINK, "unexisting", "groups", "admin"));
-    executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+    CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+    closeResponse(response);
   }
 }

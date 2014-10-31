@@ -6,8 +6,8 @@ import java.util.List;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,9 +33,9 @@ public class DeploymentResourcesResourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCES, deployment.getId()));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertTrue(responseNode.isArray());
       assertEquals(2, responseNode.size());
       
@@ -73,6 +73,6 @@ public class DeploymentResourcesResourceTest extends BaseSpringRestTestCase {
    public void testGetDeploymentResourcesUnexistingDeployment() throws Exception {
      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCES, "unexisting"));
-     executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+     closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
    }
 }

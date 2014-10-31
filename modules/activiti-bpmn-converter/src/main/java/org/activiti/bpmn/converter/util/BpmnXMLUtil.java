@@ -22,6 +22,7 @@ import org.activiti.bpmn.converter.child.CompensateEventDefinitionParser;
 import org.activiti.bpmn.converter.child.ConditionExpressionParser;
 import org.activiti.bpmn.converter.child.DataInputAssociationParser;
 import org.activiti.bpmn.converter.child.DataOutputAssociationParser;
+import org.activiti.bpmn.converter.child.DataStateParser;
 import org.activiti.bpmn.converter.child.DocumentationParser;
 import org.activiti.bpmn.converter.child.ErrorEventDefinitionParser;
 import org.activiti.bpmn.converter.child.ExecutionListenerParser;
@@ -50,15 +51,16 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   private static Map<String, BaseChildElementParser> genericChildParserMap = new HashMap<String, BaseChildElementParser>();
   
   static {
+    addGenericParser(new ActivitiEventListenerParser());
     addGenericParser(new CancelEventDefinitionParser());
     addGenericParser(new CompensateEventDefinitionParser());
     addGenericParser(new ConditionExpressionParser());
     addGenericParser(new DataInputAssociationParser());
     addGenericParser(new DataOutputAssociationParser());
+    addGenericParser(new DataStateParser());
     addGenericParser(new DocumentationParser());
     addGenericParser(new ErrorEventDefinitionParser());
     addGenericParser(new ExecutionListenerParser());
-    addGenericParser(new ActivitiEventListenerParser());
     addGenericParser(new FieldExtensionParser());
     addGenericParser(new FormPropertyParser());
     addGenericParser(new IOSpecificationParser());

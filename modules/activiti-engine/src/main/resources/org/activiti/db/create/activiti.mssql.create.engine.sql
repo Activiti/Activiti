@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.17.0.0', 1);
+values ('schema.version', '5.17.0.1', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.17.0.0)', 1);
+values ('schema.history', 'create(5.17.0.1)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -67,6 +67,7 @@ create table ACT_RU_EXECUTION (
     CACHED_ENT_STATE_ int,
     TENANT_ID_ nvarchar(255) default '',
     NAME_ nvarchar(255),
+    LOCK_TIME_ datetime,
     primary key (ID_)
 );
 
@@ -103,6 +104,7 @@ create table ACT_RE_PROCDEF (
     DGRM_RESOURCE_NAME_ nvarchar(4000),
     DESCRIPTION_ nvarchar(4000),
     HAS_START_FORM_KEY_ tinyint,
+    HAS_GRAPHICAL_NOTATION_ tinyint,
     SUSPENSION_STATE_ tinyint,
     TENANT_ID_ nvarchar(255) default '',
     primary key (ID_)

@@ -20,6 +20,7 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.MessageFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.apache.commons.lang3.StringUtils;
 
@@ -70,7 +71,8 @@ public class BPMNDIExport implements BpmnXMLConstants {
     
     for (String elementId : model.getFlowLocationMap().keySet()) {
       
-      if (model.getFlowElement(elementId) != null || model.getArtifact(elementId) != null) {
+      if (model.getFlowElement(elementId) != null || model.getArtifact(elementId) != null || 
+          model.getMessageFlow(elementId) != null) {
       
         xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_EDGE, BPMNDI_NAMESPACE);
         xtw.writeAttribute(ATTRIBUTE_DI_BPMNELEMENT, elementId);
@@ -86,7 +88,20 @@ public class BPMNDIExport implements BpmnXMLConstants {
         
         GraphicInfo labelGraphicInfo = model.getLabelGraphicInfo(elementId);
         FlowElement flowElement = model.getFlowElement(elementId);
-        if (labelGraphicInfo != null && flowElement != null && StringUtils.isNotEmpty(flowElement.getName())) {
+        MessageFlow messageFlow = null;
+        if (flowElement == null) {
+          messageFlow = model.getMessageFlow(elementId);
+        }
+        
+        boolean hasName = false;
+        if (flowElement != null && StringUtils.isNotEmpty(flowElement.getName())) {
+          hasName = true;
+        
+        } else if (messageFlow != null && StringUtils.isNotEmpty(messageFlow.getName())) {
+          hasName = true;
+        }
+        
+        if (labelGraphicInfo != null && hasName) {
           xtw.writeStartElement(BPMNDI_PREFIX, ELEMENT_DI_LABEL, BPMNDI_NAMESPACE);
           xtw.writeStartElement(OMGDC_PREFIX, ELEMENT_DI_BOUNDS, OMGDC_NAMESPACE);
           xtw.writeAttribute(ATTRIBUTE_DI_HEIGHT, "" + labelGraphicInfo.getHeight());

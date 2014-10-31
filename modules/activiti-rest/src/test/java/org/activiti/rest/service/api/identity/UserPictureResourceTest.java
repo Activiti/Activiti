@@ -23,8 +23,8 @@ import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
 import org.springframework.http.MediaType;
@@ -52,13 +52,14 @@ public class UserPictureResourceTest extends BaseSpringRestTestCase {
       Picture thePicture = new Picture("this is the picture raw byte stream".getBytes(), "image/png");
       identityService.setUserPicture(newUser.getId(), thePicture);
       
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_OK);
       
       assertEquals("this is the picture raw byte stream", IOUtils.toString(response.getEntity().getContent()));
       
       // Check if media-type is correct
       assertEquals("image/png", response.getEntity().getContentType().getValue());
+      closeResponse(response);
       
     } finally {
       
@@ -73,8 +74,8 @@ public class UserPictureResourceTest extends BaseSpringRestTestCase {
    * Test getting the picture for an unexisting user.
    */
   public void testGetPictureForUnexistingUser() throws Exception {
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, "unexisting")), HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, "unexisting")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -90,8 +91,8 @@ public class UserPictureResourceTest extends BaseSpringRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_NOT_FOUND));
       
     } finally {
       
@@ -116,7 +117,7 @@ public class UserPictureResourceTest extends BaseSpringRestTestCase {
           RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId()));
       httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("myPicture.png", "image/png",
               new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), null));
-      executeBinaryHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
       
       Picture picture = identityService.getUserPicture(newUser.getId());
       assertNotNull(picture);
@@ -149,7 +150,7 @@ public class UserPictureResourceTest extends BaseSpringRestTestCase {
           RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId()));
       httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("myPicture.png", "image/png",
               new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), additionalFields));
-      executeBinaryHttpRequest(httpPut, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
       
       Picture picture = identityService.getUserPicture(newUser.getId());
       assertNotNull(picture);

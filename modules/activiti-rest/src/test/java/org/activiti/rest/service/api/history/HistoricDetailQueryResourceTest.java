@@ -23,8 +23,8 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
@@ -89,11 +89,12 @@ public class HistoricDetailQueryResourceTest extends BaseSpringRestTestCase {
     requestNode.put("processInstanceId", processInstance2.getId());
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + url);
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, 200);
+    CloseableHttpResponse response = executeRequest(httpPost, 200);
     
     // Check status and size
     assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
     
     boolean byteVarFound = false;
     Iterator<JsonNode> it = dataNode.iterator();
@@ -103,9 +104,10 @@ public class HistoricDetailQueryResourceTest extends BaseSpringRestTestCase {
       if ("byteVar".equals(name)) {
         byteVarFound = true;
         String valueUrl = variableNode.get("valueUrl").textValue();
-        response = executeHttpRequest(new HttpGet(valueUrl), 200);
+        response = executeRequest(new HttpGet(valueUrl), 200);
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         byte[] varInput = IOUtils.toByteArray(response.getEntity().getContent());
+        closeResponse(response);
         assertEquals("test", new String(varInput));
         break;
       }
@@ -119,11 +121,12 @@ public class HistoricDetailQueryResourceTest extends BaseSpringRestTestCase {
     // Do the actual call
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + url);
     httpPost.setEntity(new StringEntity(body.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, 200);
+    CloseableHttpResponse response = executeRequest(httpPost, 200);
     
     // Check status and size
     assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's

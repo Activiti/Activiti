@@ -15,6 +15,7 @@ import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -39,10 +40,11 @@ public class DeploymentResourceTest extends BaseSpringRestTestCase {
           RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
       httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("oneTaskProcess.bpmn20.xml", "application/xml", 
           ReflectUtil.getResourceAsStream("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"), null));
-      HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
+      CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
       
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       
       String deploymentId = responseNode.get("id").textValue();
       String name = responseNode.get("name").textValue();
@@ -108,10 +110,11 @@ public class DeploymentResourceTest extends BaseSpringRestTestCase {
           RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
       httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("test-deployment.bar", "application/zip", 
           new ByteArrayInputStream(zipOutput.toByteArray()), null));
-      HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
+      CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
       
       // Check deployment
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       
       String deploymentId = responseNode.get("id").textValue();
       String name = responseNode.get("name").textValue();
@@ -172,10 +175,11 @@ public class DeploymentResourceTest extends BaseSpringRestTestCase {
          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
      httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("test-deployment.bar", "application/zip", 
          new ByteArrayInputStream(zipOutput.toByteArray()), Collections.singletonMap("tenantId", "myTenant")));
-     HttpResponse response = executeBinaryHttpRequest(httpPost, HttpStatus.SC_CREATED);
+     CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
      
      // Check deployment
      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+     closeResponse(response);
      
      String tenantId = responseNode.get("tenantId").textValue();
      assertEquals("myTenant", tenantId);
@@ -204,7 +208,7 @@ public class DeploymentResourceTest extends BaseSpringRestTestCase {
         RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_COLLECTION));
     httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("oneTaskProcess.invalidfile", "application/xml", 
         ReflectUtil.getResourceAsStream("org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"), null));
-    executeBinaryHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
   }
   
   /**
@@ -217,7 +221,8 @@ public class DeploymentResourceTest extends BaseSpringRestTestCase {
      
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, existingDeployment.getId()));
-    HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
+    closeResponse(response);
     
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
      
@@ -250,7 +255,8 @@ public class DeploymentResourceTest extends BaseSpringRestTestCase {
    public void testGetUnexistingDeployment() throws Exception {
      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, "unexisting"));
-     executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+     CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+     closeResponse(response);
    }
   
   /**
@@ -265,7 +271,8 @@ public class DeploymentResourceTest extends BaseSpringRestTestCase {
      // Delete the deployment
      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, existingDeployment.getId()));
-     executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+     CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+     closeResponse(response);
      
      existingDeployment = repositoryService.createDeploymentQuery().singleResult();
      assertNull(existingDeployment);
@@ -278,6 +285,7 @@ public class DeploymentResourceTest extends BaseSpringRestTestCase {
     public void testDeleteUnexistingDeployment() throws Exception {
       HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, "unexisting"));
-      executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+      CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+      closeResponse(response);
     }
 }

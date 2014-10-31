@@ -80,10 +80,11 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     try {
       job.execute(commandContext);
       
-      if(commandContext.getEventDispatcher().isEnabled()) {
+      if (commandContext.getEventDispatcher().isEnabled()) {
       	commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(
       			ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
       }
+      
     } catch (Throwable exception) {
       // When transaction is rolled back, decrement retries
       CommandExecutor commandExecutor = Context

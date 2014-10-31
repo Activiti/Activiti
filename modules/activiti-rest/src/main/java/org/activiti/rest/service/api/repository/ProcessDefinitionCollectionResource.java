@@ -110,6 +110,12 @@ public class ProcessDefinitionCollectionResource {
     if (allRequestParams.containsKey("startableByUser")) {
       processDefinitionQuery.startableByUser(allRequestParams.get("startableByUser"));
     }
+    if (allRequestParams.containsKey("tenantId")) {
+      processDefinitionQuery.processDefinitionTenantId(allRequestParams.get("tenantId"));
+    }
+    if (allRequestParams.containsKey("tenantIdLike")) {
+      processDefinitionQuery.processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
+    }
     
     return new ProcessDefinitionsPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/repository/process-definitions", ""))
         .paginateList(allRequestParams, processDefinitionQuery, "name", properties);

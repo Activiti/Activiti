@@ -110,6 +110,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
 
   public boolean activeConcurrentExecutionsExist(ActivityExecution execution) {
     PvmActivity activity = execution.getActivity();
+    System.out.println("!!!!! execution.isConcurrent() " + execution.isConcurrent());
     if (execution.isConcurrent()) {
       for (ActivityExecution concurrentExecution : getLeaveExecutions(execution.getParent())) {
         if (concurrentExecution.isActive() && concurrentExecution.getId().equals(execution.getId()) == false) {
