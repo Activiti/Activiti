@@ -21,9 +21,9 @@ public interface NotificationSender {
 
   /**
    * Send notification
-   *
-   * @param notification notification to send
+   * 
+   * @param notification
+   *          notification to send
    */
   void sendNotification(Notification notification);
 }
-

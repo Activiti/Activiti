@@ -34,8 +34,8 @@ import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 
-import org.activiti.management.jmx.mbeans.JobExecutor;
-import org.activiti.management.jmx.mbeans.ProcessDefinitions;
+import org.activiti.management.jmx.mbeans.JobExecutorMBean;
+import org.activiti.management.jmx.mbeans.ProcessDefinitionsMBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,6 @@ public class DefaultManagementAgent implements ManagementAgent {
   private Registry registry;
   private JMXConnectorServer cs;
   ManagementMBeanAssembler assembler;
-  
 
   public DefaultManagementAgent(JMXConfigurator jmxConfigurator) {
     this.jmxConfigurator = jmxConfigurator;
@@ -68,17 +67,17 @@ public class DefaultManagementAgent implements ManagementAgent {
 
   public void register(Object obj, ObjectName name, boolean forceRegistration) throws JMException {
     try {
-      Object mbean = assembler.assemble(server, obj, name);
-      if (mbean != null) 
+      Object mbean = assembler.assemble(obj, name);
+      if (mbean != null)
         // and register the mbean
         registerMBeanWithServer(mbean, name, forceRegistration);
       else
         registerMBeanWithServer(obj, name, forceRegistration);
-        
+
     } catch (NotCompliantMBeanException e) {
       LOG.error("Mbean " + name + " is not compliant MBean.", e);
       registerMBeanWithServer(obj, name, forceRegistration);
-      
+
     }
 
   }
@@ -179,13 +178,12 @@ public class DefaultManagementAgent implements ManagementAgent {
 
   }
 
-
   protected MBeanServer findOrCreateMBeanServer() {
 
     // look for the first mbean server that has match default domain name
     if (jmxConfigurator.getMbeanDomain().equals(JMXConfigurator.DEFAUL_JMX_DOMAIN))
       return ManagementFactory.getPlatformMBeanServer();
-    
+
     List<MBeanServer> servers = MBeanServerFactory.findMBeanServer(null);
 
     for (MBeanServer server : servers) {
@@ -201,27 +199,25 @@ public class DefaultManagementAgent implements ManagementAgent {
     return MBeanServerFactory.createMBeanServer(jmxConfigurator.getMbeanDomain());
   }
 
-
   @Override
   public void findAndRegisterMbeans() throws Exception {
-      register(new ProcessDefinitions(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.jmx.Mbeans:type=Deployments"));
-      register(new JobExecutor(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.jmx.Mbeans:type=Runtime"));
+    register(new ProcessDefinitionsMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.jmx.Mbeans:type=Deployments"));
+    register(new JobExecutorMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.jmx.Mbeans:type=Runtime"));
 
   }
   protected void createJmxConnector(String host) throws IOException {
-    
+
     String serviceUrlPath = jmxConfigurator.getServiceUrlPath();
     Integer registryPort = jmxConfigurator.getRegistryPort();
     Integer connectorPort = jmxConfigurator.getConnectorPort();
-    if (serviceUrlPath ==  null) {
+    if (serviceUrlPath == null) {
       LOG.warn("Service url path is null. JMX connector creation skipped");
       return;
     }
-    if (registryPort ==  null) {
+    if (registryPort == null) {
       LOG.warn("Registery port is null. JMX connector creation skipped.");
       return;
     }
-    
 
     try {
       registry = LocateRegistry.createRegistry(registryPort);

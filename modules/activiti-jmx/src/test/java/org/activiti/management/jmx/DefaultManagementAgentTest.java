@@ -15,6 +15,7 @@ package org.activiti.management.jmx;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
@@ -25,6 +26,7 @@ import javax.management.MBeanServer;
 import javax.management.MalformedObjectNameException;
 import javax.management.ObjectInstance;
 import javax.management.ObjectName;
+import javax.management.modelmbean.RequiredModelMBean;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,6 +36,7 @@ import org.mockito.MockitoAnnotations;
 /**
  * @author Saeid Mirzaei
  */
+
 public class DefaultManagementAgentTest {
 
   @Mock
@@ -55,7 +58,7 @@ public class DefaultManagementAgentTest {
     JMXConfigurator jmxConfigurator = new JMXConfigurator();
     agent = new DefaultManagementAgent(jmxConfigurator);
     agent.setMBeanServer(mbeanServer);
-    
+
   }
 
   @Test
@@ -64,7 +67,7 @@ public class DefaultManagementAgentTest {
 
     // Register MBean and return different ObjectName
     when(mbeanServer.isRegistered(sourceObjectName)).thenReturn(false);
-    when(mbeanServer.registerMBean(object, sourceObjectName)).thenReturn(instance);
+    when(mbeanServer.registerMBean(any(RequiredModelMBean.class), any(ObjectName.class))).thenReturn(instance);
 
     when(instance.getObjectName()).thenReturn(registeredObjectName);
     when(mbeanServer.isRegistered(registeredObjectName)).thenReturn(true);
@@ -72,16 +75,13 @@ public class DefaultManagementAgentTest {
     agent.register(object, sourceObjectName);
 
     verify(mbeanServer).isRegistered(sourceObjectName);
-    verify(mbeanServer).registerMBean(object, sourceObjectName);
-
-    verify(instance).getObjectName();
+    verify(mbeanServer).registerMBean(any(RequiredModelMBean.class), any(ObjectName.class));
 
     assertTrue(agent.isRegistered(sourceObjectName));
-    
+
     agent.unregister(sourceObjectName);
     verify(mbeanServer).unregisterMBean(registeredObjectName);
     assertFalse(agent.isRegistered(sourceObjectName));
-
 
   }
 
@@ -102,7 +102,7 @@ public class DefaultManagementAgentTest {
     // ... do not unregister if it does not exist
     when(mbeanServer.isRegistered(sourceObjectName)).thenReturn(false);
     when(instance.getObjectName()).thenReturn(registeredObjectName);
-    
+
     agent.unregister(sourceObjectName);
     verify(mbeanServer).isRegistered(sourceObjectName);
     verify(mbeanServer, never()).unregisterMBean(registeredObjectName);

@@ -21,27 +21,23 @@ import org.activiti.management.jmx.annotations.ManagedResource;
  * @author Saeid Mirzaei
  */
 @ManagedResource(description = "Process definition MBean")
-public class JobExecutor {
-  
- 
+public class JobExecutorMBean {
+
   ProcessEngineConfiguration processEngineConfig;
-  
-  public JobExecutor(ProcessEngineConfiguration processEngineConfig) {
-     this.processEngineConfig = processEngineConfig;
+
+  public JobExecutorMBean(ProcessEngineConfiguration processEngineConfig) {
+    this.processEngineConfig = processEngineConfig;
   }
-  
-  
+
   @ManagedAttribute(description = "check if the job executor is activated")
   public boolean isJobExecutorActivated() {
     return processEngineConfig.isJobExecutorActivate();
   }
-  
+
   @ManagedOperation(description = "set job executor activate")
   public void setJobExecutorActivate(Boolean active) {
     processEngineConfig.setJobExecutorActivate(active);
-    
-  }
-  
 
+  }
 
 }

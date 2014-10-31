@@ -23,7 +23,6 @@ import java.lang.annotation.Target;
  * @author Saeid Mirzaei
  */
 
-
 /**
  * A method level annotation to mark the method as being a JMX operation.
  */
@@ -33,8 +32,8 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ManagedOperation {
 
-    String description() default "";
+  String description() default "";
 
-    boolean mask() default false;
+  boolean mask() default false;
 
 }

@@ -39,10 +39,9 @@ import org.activiti.management.jmx.annotations.ManagedResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Saeid Mirzaei
- */ 
+ */
 
 public class MBeanInfoAssembler {
 
@@ -54,7 +53,7 @@ public class MBeanInfoAssembler {
   }
 
   public ModelMBeanInfo getMBeanInfo(Object defaultManagedBean, Object customManagedBean, String objectName) throws JMException {
-    
+
     if ((defaultManagedBean == null && customManagedBean == null) || objectName == null)
       return null;
     // skip proxy classes
@@ -212,7 +211,7 @@ public class MBeanInfoAssembler {
 
         attributes.put(key, info);
         continue;
-      } 
+      }
 
       // operations
       ManagedOperation mo = method.getAnnotation(ManagedOperation.class);
@@ -274,7 +273,7 @@ public class MBeanInfoAssembler {
   }
 
   private String getName(Object managedBean, String objectName) {
-    
+
     return managedBean == null ? null : managedBean.getClass().getName();
   }
 

@@ -20,27 +20,26 @@ import java.util.List;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.management.jmx.annotations.ManagedAttribute;
 import org.activiti.management.jmx.annotations.ManagedOperation;
 import org.activiti.management.jmx.annotations.ManagedResource;
 
-
 /**
  * @author Saeid Mirzaei
  */
 @ManagedResource(description = "Process definition MBean")
-public class ProcessDefinitions {
+public class ProcessDefinitionsMBean {
 
   RepositoryService repositoryService;
-  
 
-  public ProcessDefinitions(ProcessEngineConfiguration processEngineConfig) {
+  public ProcessDefinitionsMBean(ProcessEngineConfiguration processEngineConfig) {
     if (processEngineConfig != null)
       repositoryService = processEngineConfig.getRepositoryService();
   }
 
-  @ManagedAttribute(description = "List of deployed Processes")
+  @ManagedAttribute(description = "List of Process definitions")
   public List<List<String>> getProcessDefinitions() {
     List<ProcessDefinition> deployments = repositoryService.createProcessDefinitionQuery().list();
     List<List<String>> result = new ArrayList<List<String>>(deployments.size());
@@ -58,7 +57,7 @@ public class ProcessDefinitions {
   }
 
   @ManagedAttribute(description = "List of deployed Processes")
-  public List<List<String>> getDepoymentd() {
+  public List<List<String>> getDeployments() {
     List<Deployment> deployments = repositoryService.createDeploymentQuery().list();
     List<List<String>> result = new ArrayList<List<String>>(deployments.size());
     for (Deployment deployment : deployments) {
@@ -73,21 +72,13 @@ public class ProcessDefinitions {
   }
 
   @ManagedOperation(description = "undeploy given process ID")
-  public void undeployProcessDefinitionById(String processId) {
-    try {
-      repositoryService.deleteDeployment(processId);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+  public void deleteDeployment(String processId) {
+    repositoryService.deleteDeployment(processId);
   }
 
   @ManagedOperation(description = "Suspend given process ID")
   public void suspendProcessDefinitionById(String processId) {
-    try {
-      repositoryService.suspendProcessDefinitionById(processId);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    repositoryService.suspendProcessDefinitionById(processId);
   }
 
   @ManagedOperation(description = "Activate given process ID")
@@ -107,7 +98,8 @@ public class ProcessDefinitions {
 
   @ManagedOperation(description = "Deploy Process Definition")
   public void deployProcessDefinition(String resourceName, String processDefinitionFile) throws FileNotFoundException {
-    Deployment deployment =  repositoryService.createDeployment().addInputStream(resourceName, new FileInputStream(processDefinitionFile)).deploy();
+    DeploymentBuilder test =  repositoryService.createDeployment();
+    Deployment deployment =test.addInputStream(resourceName, new FileInputStream(processDefinitionFile)).deploy();
   }
-  
+
 }

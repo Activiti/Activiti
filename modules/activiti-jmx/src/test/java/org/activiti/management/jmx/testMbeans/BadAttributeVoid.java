@@ -10,28 +10,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.management.jmx;
 
-import javax.management.Notification;
-import javax.management.modelmbean.ModelMBeanNotificationBroadcaster;
+package org.activiti.management.jmx.testMbeans;
+
+import org.activiti.management.jmx.annotations.ManagedAttribute;
 
 /**
  * @author Saeid Mirzaei
  */
-public final class NotificationSenderAdapter implements NotificationSender {
 
-  ModelMBeanNotificationBroadcaster broadcaster;
+public class BadAttributeVoid {
 
-  public NotificationSenderAdapter(ModelMBeanNotificationBroadcaster broadcaster) {
-    this.broadcaster = broadcaster;
+  @ManagedAttribute(description = "test non public attribute description1")
+  public String getestAttribute1() {
+    return null;
   }
 
-  @Override
-  public void sendNotification(Notification notification) {
-    try {
-      broadcaster.sendNotification(notification);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
 }

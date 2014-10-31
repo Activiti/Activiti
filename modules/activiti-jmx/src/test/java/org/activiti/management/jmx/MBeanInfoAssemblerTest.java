@@ -1,3 +1,16 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.activiti.management.jmx;
 
 import static org.junit.Assert.assertEquals;
@@ -11,11 +24,20 @@ import javax.management.MBeanAttributeInfo;
 import javax.management.MBeanOperationInfo;
 import javax.management.modelmbean.ModelMBeanInfo;
 
-import org.activiti.management.jmx.mbeans.BadAttributeNameNotCaptal;
-import org.activiti.management.jmx.mbeans.BadAttributeVoid;
-import org.activiti.management.jmx.mbeans.NotManagedMBean;
-import org.activiti.management.jmx.mbeans.TestMbean;
+import org.activiti.management.jmx.testMbeans.BadAttributeGetterHavinParameter;
+import org.activiti.management.jmx.testMbeans.BadAttributeGetterNameNotCapital;
+import org.activiti.management.jmx.testMbeans.BadAttributeNameNoGetterSetter;
+import org.activiti.management.jmx.testMbeans.BadAttributeSetterHavinReturn;
+import org.activiti.management.jmx.testMbeans.BadAttributeSetterNameNotCapital;
+import org.activiti.management.jmx.testMbeans.BadAttributeVoid;
+import org.activiti.management.jmx.testMbeans.BadInherited;
+import org.activiti.management.jmx.testMbeans.NotManagedMBean;
+import org.activiti.management.jmx.testMbeans.TestMbean;
 import org.junit.Test;
+
+/**
+ * @author Saeid Mirzaei
+ */
 
 public class MBeanInfoAssemblerTest {
 
@@ -71,29 +93,53 @@ public class MBeanInfoAssemblerTest {
     assertNotNull(beanInfo.getOperations());
     assertEquals(1, beanInfo.getOperations().length);
     MBeanOperationInfo operation = beanInfo.getOperations()[0];
-    
-      
+
     assertEquals("getTestOperation", operation.getName());
     assertEquals("test operation description", operation.getDescription());
     assertEquals("void", operation.getReturnType());
 
-
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testAttributePOJONamingNotCaptial() throws JMException {
-    mbeanInfoAssembler.getMBeanInfo(new BadAttributeNameNotCaptal(), null, "someName");
+  public void testAttributeGetterNameNotCaptial() throws JMException {
+    mbeanInfoAssembler.getMBeanInfo(new BadAttributeGetterNameNotCapital(), null, "someName");
 
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testAttributePOJONamingNoGetter() throws JMException {
-    mbeanInfoAssembler.getMBeanInfo(new BadAttributeNameNotCaptal(), null, "someName");
+    mbeanInfoAssembler.getMBeanInfo(new BadAttributeNameNoGetterSetter(), null, "someName");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testAttributeSetterNameNotCaptial() throws JMException {
+    mbeanInfoAssembler.getMBeanInfo(new BadAttributeSetterNameNotCapital(), null, "someName");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testAttributeHavingParameter() throws JMException {
+    mbeanInfoAssembler.getMBeanInfo(new BadAttributeGetterHavinParameter(), null, "someName");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void testAttributeSetterHavingResult() throws JMException {
+    mbeanInfoAssembler.getMBeanInfo(new BadAttributeSetterHavinReturn(), null, "someName");
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void testAttributeVoid() throws JMException {
     mbeanInfoAssembler.getMBeanInfo(new BadAttributeVoid(), null, "someName");
+  }
+
+  @Test
+  public void testInherited() throws JMException {
+    ModelMBeanInfo beanInfo = mbeanInfoAssembler.getMBeanInfo(new BadInherited(), null, "someName");
+    assertNotNull(beanInfo);
+    assertNotNull(beanInfo.getAttributes());
+    assertEquals(0, beanInfo.getAttributes().length);
+    assertNotNull(beanInfo.getOperations());
+    assertEquals(0, beanInfo.getOperations().length);
+
   }
 
 }
