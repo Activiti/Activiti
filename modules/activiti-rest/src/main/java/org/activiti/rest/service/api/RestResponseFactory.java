@@ -826,6 +826,14 @@ public class RestResponseFactory {
       response.setDeploymentUrl(formatUrl(serverRootUrl, RestUrls.URL_DEPLOYMENT, model.getDeploymentId()));
     }
     
+    if(model.hasEditorSource()) {
+      response.setSourceUrl(formatUrl(serverRootUrl, RestUrls.URL_MODEL_SOURCE, model.getId()));
+    }
+    
+    if(model.hasEditorSourceExtra()) {
+      response.setSourceExtraUrl(formatUrl(serverRootUrl, RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
+    }
+    
     return response;
   }
   
