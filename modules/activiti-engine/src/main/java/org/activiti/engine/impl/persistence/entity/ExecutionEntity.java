@@ -14,7 +14,9 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -633,6 +635,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
     // At the moment, only AtomicOperationTransitionCreateScope can be performed asynchronously,
     // so there is no need to pass it to the handler
+    
+    GregorianCalendar expireCal = new GregorianCalendar();
+    ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
+    expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
+    expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
+    message.setLockExpirationTime(expireCal.getTime());
     
     // Inherit tenant id (if applicable)
     if (getTenantId() != null) {

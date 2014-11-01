@@ -28,6 +28,7 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
@@ -369,8 +370,16 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
+    JobExecutor jobExecutor = null;
+    AsyncExecutor asyncExecutor = null;
+    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      jobExecutor = processEngineConfiguration.getJobExecutor();
+      jobExecutor.start();
+      
+    } else {
+      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+      asyncExecutor.start();
+    }
 
     try {
       Timer timer = new Timer();
@@ -391,13 +400,25 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       }
 
     } finally {
-      jobExecutor.shutdown();
+      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+        jobExecutor.shutdown();
+      } else {
+        asyncExecutor.shutdown();
+      }
     }
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
+    JobExecutor jobExecutor = null;
+    AsyncExecutor asyncExecutor = null;
+    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      jobExecutor = processEngineConfiguration.getJobExecutor();
+      jobExecutor.start();
+      
+    } else {
+      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+      asyncExecutor.start();
+    }
 
     try {
       Timer timer = new Timer();
@@ -420,14 +441,17 @@ public class BaseSpringRestTestCase extends PvmTestCase {
       }
 
     } finally {
-      jobExecutor.shutdown();
+      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+        jobExecutor.shutdown();
+      } else {
+        asyncExecutor.shutdown();
+      }
     }
   }
 
   public boolean areJobsAvailable() {
     return !managementService
       .createJobQuery()
-      .executable()
       .list()
       .isEmpty();
   }

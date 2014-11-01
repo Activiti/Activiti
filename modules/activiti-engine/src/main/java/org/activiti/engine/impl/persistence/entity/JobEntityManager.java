@@ -57,7 +57,11 @@ public class JobEntityManager extends AbstractManager {
     }
 
     timer.insert();
-    if (timer.getDuedate().getTime() <= (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime())) {
+    
+    ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
+    if (engineConfiguration.isAsyncExecutorEnabled() == false && 
+        timer.getDuedate().getTime() <= (engineConfiguration.getClock().getCurrentTime().getTime())) {
+      
       hintJobExecutor(timer);
     }
   }
@@ -110,11 +114,14 @@ public class JobEntityManager extends AbstractManager {
   public List<JobEntity> findNextJobsToExecute(Page page) {
     ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
     Date now = processEngineConfig.getClock().getCurrentTime();
-    if (processEngineConfig.isAsyncExecutorEnabled()) {
-      return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
-    } else {
-      return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
-    }
+    return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findNextTimerJobsToExecute(Page page) {
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
+    return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
   }
   
   @SuppressWarnings("unchecked")

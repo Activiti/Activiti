@@ -9,122 +9,142 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties("spring.activiti")
 public class ActivitiProperties {
 
-    private boolean checkProcessDefinitions = true ;
-    private boolean restApiEnabled;
-    private String deploymentName;
-    private String mailServerHost = "localhost";
-    private int mailServerPort = 1025;
+  private boolean checkProcessDefinitions = true;
+  private boolean jobExecutorActivate = false;
+  private boolean asyncExecutorEnabled = true;
+  private boolean asyncExecutorActivate = true;
+  private boolean restApiEnabled;
+  private String deploymentName;
+  private String mailServerHost = "localhost";
+  private int mailServerPort = 1025;
+  private String databaseSchemaUpdate = "true";
+  private String databaseSchema;
+  private String processDefinitionLocationPrefix = "classpath:/processes/";
+  private String processDefinitionLocationSuffix = "**.bpmn20.xml";
+  private String restApiMapping = "/api/*";
+  private String restApiServletName = "activitiRestApi";
+  private boolean jpaEnabled = true; // true by default
 
-    public boolean isRestApiEnabled() {
-        return restApiEnabled;
-    }
+  public boolean isJobExecutorActivate() {
+    return jobExecutorActivate;
+  }
 
-    public void setRestApiEnabled(boolean restApiEnabled) {
-        this.restApiEnabled = restApiEnabled;
-    }
+  public void setJobExecutorActivate(boolean jobExecutorActivate) {
+    this.jobExecutorActivate = jobExecutorActivate;
+  }
 
-    public boolean isJpaEnabled() {
-        return jpaEnabled;
-    }
+  public boolean isAsyncExecutorEnabled() {
+    return asyncExecutorEnabled;
+  }
 
-    public void setJpaEnabled(boolean jpaEnabled) {
-        this.jpaEnabled = jpaEnabled;
-    }
+  public void setAsyncExecutorEnabled(boolean asyncExecutorEnabled) {
+    this.asyncExecutorEnabled = asyncExecutorEnabled;
+  }
 
-    private String databaseSchemaUpdate  = "true" ;
+  public boolean isAsyncExecutorActivate() {
+    return asyncExecutorActivate;
+  }
 
-    private String databaseSchema;
+  public void setAsyncExecutorActivate(boolean asyncExecutorActivate) {
+    this.asyncExecutorActivate = asyncExecutorActivate;
+  }
 
-    private String processDefinitionLocationPrefix = "classpath:/processes/";
+  public boolean isRestApiEnabled() {
+    return restApiEnabled;
+  }
 
-    private String processDefinitionLocationSuffix = "**.bpmn20.xml";
+  public void setRestApiEnabled(boolean restApiEnabled) {
+    this.restApiEnabled = restApiEnabled;
+  }
 
-    private String restApiMapping  = "/api/*";
+  public boolean isJpaEnabled() {
+    return jpaEnabled;
+  }
 
-    public String getRestApiMapping() {
-        return restApiMapping;
-    }
+  public void setJpaEnabled(boolean jpaEnabled) {
+    this.jpaEnabled = jpaEnabled;
+  }
 
-    public void setRestApiMapping(String restApiMapping) {
-        this.restApiMapping = restApiMapping;
-    }
+  public String getRestApiMapping() {
+    return restApiMapping;
+  }
 
-    public String getRestApiServletName() {
-        return restApiServletName;
-    }
+  public void setRestApiMapping(String restApiMapping) {
+    this.restApiMapping = restApiMapping;
+  }
 
-    public void setRestApiServletName(String restApiServletName) {
-        this.restApiServletName = restApiServletName;
-    }
+  public String getRestApiServletName() {
+    return restApiServletName;
+  }
 
-    private String restApiServletName = "activitiRestApi";
+  public void setRestApiServletName(String restApiServletName) {
+    this.restApiServletName = restApiServletName;
+  }
 
-    private boolean jpaEnabled = true; // true by default
+  public boolean isCheckProcessDefinitions() {
+    return checkProcessDefinitions;
+  }
 
-    public boolean isCheckProcessDefinitions() {
-        return checkProcessDefinitions;
-    }
+  public void setCheckProcessDefinitions(boolean checkProcessDefinitions) {
+    this.checkProcessDefinitions = checkProcessDefinitions;
+  }
 
-    public void setCheckProcessDefinitions(boolean checkProcessDefinitions) {
-        this.checkProcessDefinitions = checkProcessDefinitions;
-    }
+  public String getDeploymentName() {
+    return deploymentName;
+  }
 
-    public String getDeploymentName() {
-        return deploymentName;
-    }
+  public void setDeploymentName(String deploymentName) {
+    this.deploymentName = deploymentName;
+  }
 
-    public void setDeploymentName(String deploymentName) {
-        this.deploymentName = deploymentName;
-    }
+  public String getDatabaseSchemaUpdate() {
+    return databaseSchemaUpdate;
+  }
 
-    public String getDatabaseSchemaUpdate() {
-        return databaseSchemaUpdate;
-    }
+  public void setDatabaseSchemaUpdate(String databaseSchemaUpdate) {
+    this.databaseSchemaUpdate = databaseSchemaUpdate;
+  }
 
-    public void setDatabaseSchemaUpdate(String databaseSchemaUpdate) {
-        this.databaseSchemaUpdate = databaseSchemaUpdate;
-    }
+  public String getDatabaseSchema() {
+    return databaseSchema;
+  }
 
-    public String getDatabaseSchema() {
-        return databaseSchema;
-    }
+  public void setDatabaseSchema(String databaseSchema) {
+    this.databaseSchema = databaseSchema;
+  }
 
-    public void setDatabaseSchema(String databaseSchema) {
-        this.databaseSchema = databaseSchema;
-    }
+  public String getProcessDefinitionLocationPrefix() {
+    return processDefinitionLocationPrefix;
+  }
 
-    public String getProcessDefinitionLocationPrefix() {
-        return processDefinitionLocationPrefix;
-    }
+  public void setProcessDefinitionLocationPrefix(
+      String processDefinitionLocationPrefix) {
+    this.processDefinitionLocationPrefix = processDefinitionLocationPrefix;
+  }
 
-    public void setProcessDefinitionLocationPrefix(
-            String processDefinitionLocationPrefix) {
-        this.processDefinitionLocationPrefix = processDefinitionLocationPrefix;
-    }
+  public String getProcessDefinitionLocationSuffix() {
+    return processDefinitionLocationSuffix;
+  }
 
-    public String getProcessDefinitionLocationSuffix() {
-        return processDefinitionLocationSuffix;
-    }
+  public void setProcessDefinitionLocationSuffix(
+      String processDefinitionLocationSuffix) {
+    this.processDefinitionLocationSuffix = processDefinitionLocationSuffix;
+  }
 
-    public void setProcessDefinitionLocationSuffix(
-            String processDefinitionLocationSuffix) {
-        this.processDefinitionLocationSuffix = processDefinitionLocationSuffix;
-    }
+  public String getMailServerHost() {
+    return mailServerHost;
+  }
 
-	public String getMailServerHost() {
-		return mailServerHost;
-	}
+  public void setMailServerHost(String mailServerHost) {
+    this.mailServerHost = mailServerHost;
+  }
 
-	public void setMailServerHost(String mailServerHost) {
-		this.mailServerHost = mailServerHost;
-	}
+  public int getMailServerPort() {
+    return mailServerPort;
+  }
 
-	public int getMailServerPort() {
-		return mailServerPort;
-	}
+  public void setMailServerPort(int mailServerPort) {
+    this.mailServerPort = mailServerPort;
+  }
 
-	public void setMailServerPort(int mailServerPort) {
-		this.mailServerPort = mailServerPort;
-	}
-    
 }
