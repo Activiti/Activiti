@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.runtime.Execution;
@@ -434,7 +433,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   @Deployment
   public void testAsyncBehavior() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
-    waitForJobExecutorToProcessAllJobs(5000, 500);
+    waitForJobExecutorToProcessAllJobs(10000, 500);
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
   }
   

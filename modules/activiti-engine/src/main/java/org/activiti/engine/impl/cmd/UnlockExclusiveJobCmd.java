@@ -15,10 +15,9 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,15 +26,15 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Tijs Rademakers
  */
-public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
+public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  private static Logger log = LoggerFactory.getLogger(ExecuteAsyncJobCmd.class);
+  private static Logger log = LoggerFactory.getLogger(UnlockExclusiveJobCmd.class);
   
   protected JobEntity job;
  
-  public ExecuteAsyncJobCmd(JobEntity job) {
+  public UnlockExclusiveJobCmd(JobEntity job) {
   	this.job = job;
   }
 
@@ -46,14 +45,15 @@ public class ExecuteAsyncJobCmd implements Command<Object>, Serializable {
     }
     
     if (log.isDebugEnabled()) {
-      log.debug("Executing async job {}", job.getId());
+      log.debug("Unlocking exclusive job {}", job.getId());
     }
     
-    job.execute(commandContext);
-      
-    if (commandContext.getEventDispatcher().isEnabled()) {
-    	commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(
-    			ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
+    if (job.isExclusive()) {
+      ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(job.getExecutionId());
+      if (execution != null) {
+        commandContext.getExecutionEntityManager().clearProcessInstanceLockTime(execution.getProcessInstanceId());
+        System.out.println("!!!!!!!!! release lock " + execution.getProcessInstanceId());
+      }
     }
     
     return null;
