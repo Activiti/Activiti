@@ -13,7 +13,7 @@
 
 package org.activiti.management.jmx.testMbeans;
 
-import org.activiti.examples.bpmn.usertask.taskcandidate.TestBean;
+
 import org.activiti.management.jmx.annotations.ManagedResource;
 
 /**
@@ -21,6 +21,6 @@ import org.activiti.management.jmx.annotations.ManagedResource;
  */
 
 @ManagedResource(description = "test description")
-public class BadInherited extends TestBean {
+public class BadInherited extends TestMbean {
 
 }
