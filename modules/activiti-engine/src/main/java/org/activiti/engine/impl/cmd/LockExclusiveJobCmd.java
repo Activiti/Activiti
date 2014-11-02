@@ -45,7 +45,7 @@ public class LockExclusiveJobCmd implements Command<Object>, Serializable {
     }
     
     if (log.isDebugEnabled()) {
-      log.debug("Executing lock exclusive job {}", job.getId());
+      log.debug("Executing lock exclusive job {} {}", job.getId(), job.getExecutionId());
     }
     
     if (job.isExclusive()) {
