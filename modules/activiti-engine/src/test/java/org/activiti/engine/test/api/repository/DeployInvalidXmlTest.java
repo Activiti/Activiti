@@ -27,7 +27,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
   protected void setUp() throws Exception {
     super.setUp();
     
-    processEngineConfiguration.setEnableSafeBpmnXml(false); // Needs to be enabled to test this
+    processEngineConfiguration.setEnableSafeBpmnXml(true); // Needs to be enabled to test this
   }
   
   @Override
