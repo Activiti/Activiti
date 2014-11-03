@@ -15,8 +15,6 @@ package org.activiti.management.jmx;
 
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -45,7 +43,6 @@ import org.slf4j.LoggerFactory;
 
 public class DefaultManagementAgent implements ManagementAgent {
 
-  private final String DEFAULT_HOST = "localhost";
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementAgent.class);
   private MBeanServer server;
@@ -140,37 +137,15 @@ public class DefaultManagementAgent implements ManagementAgent {
   public void doStart() {
     createMBeanServer();
   }
+  
 
   protected void createMBeanServer() {
-    String hostName;
-    boolean canAccessSystemProps = true;
-    try {
-      // we'll do it this way mostly to determine if we should lookup the
-      // hostName
-      SecurityManager sm = System.getSecurityManager();
-      if (sm != null) {
-        sm.checkPropertiesAccess();
-      }
-    } catch (SecurityException se) {
-      canAccessSystemProps = false;
-    }
-
-    if (canAccessSystemProps) {
-      try {
-        hostName = InetAddress.getLocalHost().getHostName();
-      } catch (UnknownHostException uhe) {
-        LOG.info("Cannot determine localhost name. Fallback to: " + DEFAULT_HOST, uhe);
-        hostName = DEFAULT_HOST;
-      }
-    } else {
-      hostName = DEFAULT_HOST;
-    }
-
+    
     server = findOrCreateMBeanServer();
     try {
       // Create the connector if we need
       if (jmxConfigurator.getCreateConnector()) {
-        createJmxConnector(hostName);
+        createJmxConnector(Utils.getHostName());
       }
     } catch (IOException ioe) {
       LOG.warn("Could not create and start JMX connector.", ioe);
@@ -205,7 +180,7 @@ public class DefaultManagementAgent implements ManagementAgent {
     register(new JobExecutorMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName("org.activiti.jmx.Mbeans:type=Runtime"));
 
   }
-  protected void createJmxConnector(String host) throws IOException {
+  public void createJmxConnector(String host) throws IOException {
 
     String serviceUrlPath = jmxConfigurator.getServiceUrlPath();
     Integer registryPort = jmxConfigurator.getRegistryPort();
@@ -249,7 +224,10 @@ public class DefaultManagementAgent implements ManagementAgent {
           cs.start();
           LOG.info("JMX Connector thread started and listening at: {}", url);
         } catch (IOException ioe) {
-          LOG.warn("Could not start JMXConnector thread at: " + url + ". JMX Connector not in use.", ioe);
+          if (ioe.getCause() instanceof javax.naming.NameAlreadyBoundException) 
+              LOG.warn("JMX connection:" + url + " already exists.");
+          else
+            LOG.warn("Could not start JMXConnector thread at: " + url + ". JMX Connector not in use.", ioe);
         }
       }
     }, "jmxConnectorStarterThread");

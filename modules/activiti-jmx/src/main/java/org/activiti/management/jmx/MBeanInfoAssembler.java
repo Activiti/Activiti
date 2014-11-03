@@ -229,21 +229,28 @@ public class MBeanInfoAssembler {
     for (ManagedAttributeInfo info : attributes.values()) {
       ModelMBeanAttributeInfo mbeanAttribute = new ModelMBeanAttributeInfo(info.getKey(), info.getDescription(), info.getGetter(), info.getSetter());
 
-      // add missing attribute descriptors, this is needed to have attributes
-      // accessible
+      // add missing attribute descriptors, this is needed to have attributes accessible
       Descriptor desc = mbeanAttribute.getDescriptor();
 
       if (info.getGetter() != null) {
-        desc.setField("getMethod", info.getGetter().getName());
+          desc.setField("getMethod", info.getGetter().getName());
+          // attribute must also be added as mbean operation
+          ModelMBeanOperationInfo mbeanOperation = new ModelMBeanOperationInfo(info.getKey(), info.getGetter());
+          Descriptor opDesc = mbeanOperation.getDescriptor();
+          mbeanOperation.setDescriptor(opDesc);
+          mBeanOperations.add(mbeanOperation);
       }
       if (info.getSetter() != null) {
-        desc.setField("setMethod", info.getSetter().getName());
+          desc.setField("setMethod", info.getSetter().getName());
+          // attribute must also be added as mbean operation
+          ModelMBeanOperationInfo mbeanOperation = new ModelMBeanOperationInfo(info.getKey(), info.getSetter());
+          mBeanOperations.add(mbeanOperation);
       }
       mbeanAttribute.setDescriptor(desc);
 
       mBeanAttributes.add(mbeanAttribute);
       LOG.trace("Assembled attribute: {}", mbeanAttribute);
-    }
+  }
   }
 
   private void extractMbeanOperations(Object managedBean, Set<ManagedOperationInfo> operations, Set<ModelMBeanOperationInfo> mBeanOperations) {

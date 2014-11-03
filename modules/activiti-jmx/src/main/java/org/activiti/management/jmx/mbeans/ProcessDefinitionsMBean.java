@@ -55,6 +55,21 @@ public class ProcessDefinitionsMBean {
     return result;
 
   }
+  
+  @ManagedOperation(description = "get a specific process definition")
+  public List<String> getProcessDefinitionById(String id) {
+    ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
+    List<String> item = new ArrayList<String>(3);
+    item.add(pd.getId());
+    item.add(pd.getName());
+    item.add(Integer.toString(pd.getVersion()));
+    item.add(Boolean.toString(pd.isSuspended()));
+    item.add(pd.getDescription());
+    
+    return item;
+
+  }
+
 
   @ManagedAttribute(description = "List of deployed Processes")
   public List<List<String>> getDeployments() {
@@ -71,9 +86,9 @@ public class ProcessDefinitionsMBean {
 
   }
 
-  @ManagedOperation(description = "undeploy given process ID")
-  public void deleteDeployment(String processId) {
-    repositoryService.deleteDeployment(processId);
+  @ManagedOperation(description = "delete deployment")
+  public void deleteDeployment(String deploymentId) {
+    repositoryService.deleteDeployment(deploymentId);
   }
 
   @ManagedOperation(description = "Suspend given process ID")
@@ -98,8 +113,10 @@ public class ProcessDefinitionsMBean {
 
   @ManagedOperation(description = "Deploy Process Definition")
   public void deployProcessDefinition(String resourceName, String processDefinitionFile) throws FileNotFoundException {
-    DeploymentBuilder test =  repositoryService.createDeployment();
-    Deployment deployment =test.addInputStream(resourceName, new FileInputStream(processDefinitionFile)).deploy();
+    DeploymentBuilder deploymentBuilder =  repositoryService.createDeployment();
+    Deployment deployment = deploymentBuilder.addInputStream(resourceName, new FileInputStream(processDefinitionFile)).deploy();
   }
+  
+  
 
 }

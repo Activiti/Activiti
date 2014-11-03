@@ -90,7 +90,7 @@ public class JobExecutorMBeanTest {
     MBeanInfo beanInfo = modelBean.getMBeanInfo();
     assertNotNull(beanInfo);
     assertNotNull(beanInfo.getOperations());
-    assertEquals(1, beanInfo.getOperations().length);
+    assertEquals(2, beanInfo.getOperations().length);
     int counter = 0;
 
     for (MBeanOperationInfo op : beanInfo.getOperations()) {

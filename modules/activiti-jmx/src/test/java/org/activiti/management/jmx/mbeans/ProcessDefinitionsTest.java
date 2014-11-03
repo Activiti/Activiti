@@ -1,5 +1,5 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
+ * you may not use this    except in compliance with the License.
  * You may obtain a copy of the License at
  * 
  *      http://www.apache.org/licenses/LICENSE-2.0
@@ -170,13 +170,13 @@ public class ProcessDefinitionsTest {
     MBeanInfo beanInfo = modelBean.getMBeanInfo();
     assertNotNull(beanInfo);
     assertNotNull(beanInfo.getOperations());
-    assertEquals(6, beanInfo.getOperations().length);
+    assertEquals(9, beanInfo.getOperations().length);
     int counter = 0;
 
     for (MBeanOperationInfo op : beanInfo.getOperations()) {
       if (op.getName().equals("deleteDeployment")) {
         counter++;
-        assertEquals("undeploy given process ID", op.getDescription());
+        assertEquals("delete deployment", op.getDescription());
         assertEquals("void", op.getReturnType());
         assertEquals(1, op.getSignature().length);
         assertEquals("java.lang.String", op.getSignature()[0].getType());

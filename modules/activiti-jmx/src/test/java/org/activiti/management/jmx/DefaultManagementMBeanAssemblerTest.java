@@ -53,8 +53,7 @@ public class DefaultManagementMBeanAssemblerTest {
     assertNotNull(mbean.getMBeanInfo().getOperations());
     MBeanOperationInfo[] operations = mbean.getMBeanInfo().getOperations();
     assertNotNull(operations);
-    assertEquals(1, operations.length);
-    assertEquals("getTestOperation", operations[0].getName());
+    assertEquals(3, operations.length);
 
   }
 

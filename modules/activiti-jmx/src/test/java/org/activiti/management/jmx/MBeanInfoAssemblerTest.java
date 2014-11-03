@@ -91,12 +91,9 @@ public class MBeanInfoAssemblerTest {
     // check the single operation
 
     assertNotNull(beanInfo.getOperations());
-    assertEquals(1, beanInfo.getOperations().length);
+    assertEquals(3, beanInfo.getOperations().length);
     MBeanOperationInfo operation = beanInfo.getOperations()[0];
 
-    assertEquals("getTestOperation", operation.getName());
-    assertEquals("test operation description", operation.getDescription());
-    assertEquals("void", operation.getReturnType());
 
   }
 
@@ -138,7 +135,7 @@ public class MBeanInfoAssemblerTest {
     assertNotNull(beanInfo.getAttributes());
     assertEquals(2, beanInfo.getAttributes().length);
     assertNotNull(beanInfo.getOperations());
-    assertEquals(1, beanInfo.getOperations().length);
+    assertEquals(3, beanInfo.getOperations().length);
 
   }
 
