@@ -437,6 +437,23 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
   }
   
+  @Deployment
+  public void testDirectSequenceFlow() {
+    Map<String, Object> varMap = new HashMap<String, Object>();
+    varMap.put("input", 1);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("inclusiveGwDirectSequenceFlow", varMap);
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    assertEquals("theTask1", task.getTaskDefinitionKey());
+    taskService.complete(task.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+    
+    varMap = new HashMap<String, Object>();
+    varMap.put("input", 3);
+    processInstance = runtimeService.startProcessInstanceByKey("inclusiveGwDirectSequenceFlow", varMap);
+    assertTrue(processInstance.isEnded());
+  }
+  
   /*@Deployment
   public void testAsyncBehavior() {
     for (int i = 0; i < 100; i++) {

@@ -46,8 +46,6 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     execution.inactivate();
     lockConcurrentRoot(execution);
     
-    System.out.println("!!!!!!!!!!!!! inactivate " + execution.getId());
-
     PvmActivity activity = execution.getActivity();
     if (!activeConcurrentExecutionsExist(execution)) {
 
@@ -114,7 +112,6 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     PvmActivity activity = execution.getActivity();
     if (execution.isConcurrent()) {
       for (ActivityExecution concurrentExecution : getLeaveExecutions(execution.getParent())) {
-        System.out.println("!!!!!!!!!!!!! concurrent " + concurrentExecution.isActive() + " " + concurrentExecution.getId() + " " + execution.getId());
         if (concurrentExecution.isActive() && concurrentExecution.getId().equals(execution.getId()) == false) {
           // TODO: when is transitionBeingTaken cleared? Should we clear it?
           boolean reachable = false;
