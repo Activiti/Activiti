@@ -49,6 +49,7 @@ import org.activiti.explorer.ui.custom.UserProfileLink;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.ProcessDefinitionImageStreamResourceBuilder;
 import org.activiti.explorer.ui.variable.VariableRendererManager;
+import org.activiti.explorer.util.XmlUtil;
 import org.activiti.image.ProcessDiagramGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -171,7 +172,7 @@ public class ProcessInstanceDetailPanel extends DetailPanel {
           
           final InputStream definitionStream = repositoryService.getResourceAsStream(
               processDefinition.getDeploymentId(), processDefinition.getResourceName());
-          XMLInputFactory xif = XMLInputFactory.newInstance();
+          XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
           XMLStreamReader xtr = xif.createXMLStreamReader(definitionStream);
           BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
           

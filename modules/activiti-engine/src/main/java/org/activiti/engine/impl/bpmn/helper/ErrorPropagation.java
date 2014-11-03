@@ -65,8 +65,8 @@ public class ErrorPropagation {
 		    	 break;
 		    }
 		    execution = getSuperExecution(execution);
-	  };
-	  if (execution == null) {
+	  }
+    if (execution == null) {
 		  throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '" 
 	                + errorCode + "', neither in same process nor in parent process");		  
 	  }

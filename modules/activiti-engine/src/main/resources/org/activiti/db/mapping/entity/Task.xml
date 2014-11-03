@@ -137,7 +137,7 @@
     <result property="categoryWithoutCascade" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+    <result property="formKeyWithoutCascade" column="FORM_KEY_" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="taskAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntity">
@@ -159,7 +159,7 @@
     <result property="categoryWithoutCascade" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+    <result property="formKeyWithoutCascade" column="FORM_KEY_" jdbcType="VARCHAR" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
