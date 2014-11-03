@@ -16,15 +16,18 @@ package org.activiti.engine.impl.cfg;
 
 /**
  * @author Tom Baeyens
+ * @author Tim Stephenson
  */
 public class MailServerInfo {
 
-  protected String mailServerDefaultFrom;
-  protected String mailServerHost;
-  protected int mailServerPort;
+  protected String mailServerDefaultFrom = "activiti@localhost";
+  protected String mailServerHost = "localhost";
+  protected int mailServerPort = 25;
   protected String mailServerUsername;
   protected String mailServerPassword;
-  
+  protected boolean mailServerUseSSL = false;
+  protected boolean mailServerUseTLS = false;
+
   public String getMailServerDefaultFrom() {
     return mailServerDefaultFrom;
   }
@@ -63,5 +66,21 @@ public class MailServerInfo {
   
   public void setMailServerPassword(String mailServerPassword) {
     this.mailServerPassword = mailServerPassword;
+  }
+
+  public boolean getMailServerUseSSL() {
+    return mailServerUseSSL;
+  }
+
+  public void setMailServerUseSSL(boolean mailServerUseSSL) {
+    this.mailServerUseSSL = mailServerUseSSL;
+  }
+
+  public boolean getMailServerUseTLS() {
+    return mailServerUseTLS;
+  }
+
+  public void setMailServerUseTLS(boolean mailServerUseTLS) {
+    this.mailServerUseTLS = mailServerUseTLS;
   }
 }

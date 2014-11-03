@@ -14,11 +14,14 @@
 package org.activiti.engine;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
+import org.activiti.engine.impl.cfg.MailServerInfo;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -104,14 +107,16 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean asyncExecutorEnabled;
   protected boolean asyncExecutorActivate;
 
-  protected String mailServerHost = "localhost";
-  protected String mailServerUsername; // by default no name and password are provided, which 
-  protected String mailServerPassword; // means no authentication for mail server
-  protected int mailServerPort = 25;
-  protected boolean useSSL = false;
-  protected boolean useTLS = false;
-  protected String mailServerDefaultFrom = "activiti@localhost";
-  protected String mailSessionJndi;
+  //protected String mailServerHost = "localhost";
+  //protected String mailServerUsername; // by default no name and password are provided, which
+  //protected String mailServerPassword; // means no authentication for mail server
+  //protected int mailServerPort = 25;
+  //protected boolean useSSL = false;
+  //protected boolean useTLS = false;
+  //protected String mailServerDefaultFrom = "activiti@localhost";
+  protected Map<String,MailServerInfo> mailServers = new HashMap<String,MailServerInfo>();
+  //protected String mailSessionJndi;
+  protected Map<String, String> mailSessionsJndi = new HashMap<String, String>();
 
   protected String databaseType;
   protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_FALSE;
@@ -266,76 +271,101 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     this.history = history;
     return this;
   }
-  
-  public String getMailServerHost() {
-    return mailServerHost;
+
+  public MailServerInfo getMailServer() {
+    if (mailServers.get("") == null) {
+      mailServers.put("",new MailServerInfo());
+    }
+    return mailServers.get("");
   }
-  
+
+  public MailServerInfo getMailServer(String tenantId) {
+    return mailServers.get(tenantId);
+  }
+
+  public ProcessEngineConfiguration setMailServers(Map<String, MailServerInfo> mailServers) {
+    this.mailServers.putAll(mailServers);
+    return this;
+  }
+
+  public String getMailServerHost() {
+    return mailServers.get(null) == null ? null : mailServers.get(null).getMailServerHost();
+  }
+
   public ProcessEngineConfiguration setMailServerHost(String mailServerHost) {
-    this.mailServerHost = mailServerHost;
+    getMailServer().setMailServerHost(mailServerHost);
     return this;
   }
   
   public String getMailServerUsername() {
-    return mailServerUsername;
+    return mailServers.get(null) == null ? null : mailServers.get(null).getMailServerUsername();
   }
-  
+
   public ProcessEngineConfiguration setMailServerUsername(String mailServerUsername) {
-    this.mailServerUsername = mailServerUsername;
+    getMailServer(null).setMailServerUsername(mailServerUsername);
     return this;
   }
   
   public String getMailServerPassword() {
-    return mailServerPassword;
+    return getMailServer().getMailServerPassword();
   }
-  
+
   public ProcessEngineConfiguration setMailServerPassword(String mailServerPassword) {
-    this.mailServerPassword = mailServerPassword;
+    getMailServer().setMailServerPassword(mailServerPassword);
     return this;
   }
 
   public String getMailSesionJndi() {
-    return mailSessionJndi;
+    return getMailSessionJndi(null);
   }
-  
+
+  public String getMailSessionJndi(String tenantId) {
+    return mailSessionsJndi.get(tenantId);
+  }
+
   public ProcessEngineConfiguration setMailSessionJndi(String mailSessionJndi) {
-    this.mailSessionJndi = mailSessionJndi;
+    mailSessionsJndi.put(null, mailSessionJndi);
+    return this;
+  }
+
+  public ProcessEngineConfiguration setMailSessionJndi(String mailSessionJndi, String tenantId) {
+    mailSessionsJndi.put(tenantId, mailSessionJndi);
     return this;
   }
 
   public int getMailServerPort() {
-    return mailServerPort;
+    return getMailServer().getMailServerPort();
   }
   
   public ProcessEngineConfiguration setMailServerPort(int mailServerPort) {
-    this.mailServerPort = mailServerPort;
+    getMailServer().setMailServerPort(mailServerPort);
     return this;
   }
   
   public boolean getMailServerUseSSL() {
-	  return useSSL;
+	  return getMailServer().getMailServerUseSSL();
   }
   
   public ProcessEngineConfiguration setMailServerUseSSL(boolean useSSL) {
-	  this.useSSL = useSSL;
+	  getMailServer().setMailServerUseSSL(useSSL);
 	  return this;
   }
   
   public boolean getMailServerUseTLS() {
-    return useTLS;
+    return getMailServer().getMailServerUseTLS();
   }
   
   public ProcessEngineConfiguration setMailServerUseTLS(boolean useTLS) {
-    this.useTLS = useTLS;
+    getMailServer().setMailServerUseTLS(useTLS);
     return this;
   }
   
   public String getMailServerDefaultFrom() {
-    return mailServerDefaultFrom;
+    return getMailServer().getMailServerDefaultFrom();
   }
   
   public ProcessEngineConfiguration setMailServerDefaultFrom(String mailServerDefaultFrom) {
-    this.mailServerDefaultFrom = mailServerDefaultFrom;
+    getMailServer().setMailServerDefaultFrom(mailServerDefaultFrom);
     return this;
   }
   
