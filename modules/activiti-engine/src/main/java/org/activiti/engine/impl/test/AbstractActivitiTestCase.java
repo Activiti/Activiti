@@ -203,11 +203,16 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
-    
-    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-    asyncExecutor.start();
+    JobExecutor jobExecutor = null;
+    AsyncExecutor asyncExecutor = null;
+    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      jobExecutor = processEngineConfiguration.getJobExecutor();
+      jobExecutor.start();
+      
+    } else {
+      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+      asyncExecutor.start();
+    }
 
     try {
       Timer timer = new Timer();
@@ -234,17 +239,25 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       }
 
     } finally {
-      jobExecutor.shutdown();
-      asyncExecutor.shutdown();
+      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+        jobExecutor.shutdown();
+      } else {
+        asyncExecutor.shutdown();
+      }
     }
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
-    
-    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-    asyncExecutor.start();
+    JobExecutor jobExecutor = null;
+    AsyncExecutor asyncExecutor = null;
+    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      jobExecutor = processEngineConfiguration.getJobExecutor();
+      jobExecutor.start();
+      
+    } else {
+      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+      asyncExecutor.start();
+    }
 
     try {
       Timer timer = new Timer();
@@ -267,17 +280,25 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       }
 
     } finally {
-      jobExecutor.shutdown();
-      asyncExecutor.shutdown();
+      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+        jobExecutor.shutdown();
+      } else {
+        asyncExecutor.shutdown();
+      }
     }
   }
   
   public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
-    
-    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-    asyncExecutor.start();
+    JobExecutor jobExecutor = null;
+    AsyncExecutor asyncExecutor = null;
+    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      jobExecutor = processEngineConfiguration.getJobExecutor();
+      jobExecutor.start();
+      
+    } else {
+      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+      asyncExecutor.start();
+    }
 
     try {
       Timer timer = new Timer();
@@ -294,8 +315,11 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       }
 
     } finally {
-      jobExecutor.shutdown();
-      asyncExecutor.shutdown();
+      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+        jobExecutor.shutdown();
+      } else {
+        asyncExecutor.shutdown();
+      }
     }
   }
 

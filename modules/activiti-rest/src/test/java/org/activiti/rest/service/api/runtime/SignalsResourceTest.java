@@ -105,8 +105,7 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    	.addClasspathResource("org/activiti/rest/service/api/runtime/SignalsResourceTest.process-signal-start.bpmn20.xml")
 	    	.tenantId("my tenant")
 	    	.deploy();
-	  
-	  
+
 	  try {
 	  	  
 	    // Signal without vars, without tenant
@@ -120,8 +119,7 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    
 	    // Check if job is queued as a result of the signal without tenant ID set
 	    assertEquals(1, managementService.createJobQuery().jobWithoutTenantId().count());
-	    
-	    
+	 
 	    // Signal with tenant
 	    requestNode.put("tenantId", "my tenant");
 	    httpPost.setEntity(new StringEntity(requestNode.toString()));
@@ -129,7 +127,6 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    
 	    // Check if job is queued as a result of the signal, in the right tenant
 	    assertEquals(1, managementService.createJobQuery().jobTenantId("my tenant").count());
-	    
 	    
 	    // Signal with variables and async, should fail as it's not supported
 	    ArrayNode vars = requestNode.putArray("variables");

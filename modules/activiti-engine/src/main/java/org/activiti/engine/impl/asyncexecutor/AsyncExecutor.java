@@ -20,4 +20,30 @@ public interface AsyncExecutor {
   public void start();
   
   public void shutdown();
+  
+  public String getLockOwner();
+  
+  public int getTimerLockTimeInMillis();
+  
+  public void setTimerLockTimeInMillis(int lockTimeInMillis);
+  
+  public int getAsyncJobLockTimeInMillis();
+  
+  public void setAsyncJobLockTimeInMillis(int lockTimeInMillis);
+  
+  public int getDefaultTimerJobAcquireWaitTimeInMillis();
+  
+  public void setDefaultTimerJobAcquireWaitTimeInMillis(int waitTimeInMillis);
+  
+  public int getDefaultAsyncJobAcquireWaitTimeInMillis();
+  
+  public void setDefaultAsyncJobAcquireWaitTimeInMillis(int waitTimeInMillis);
+  
+  public int getMaxAsyncJobsDuePerAcquisition();
+  
+  public void setMaxAsyncJobsDuePerAcquisition(int maxJobs);
+  
+  public int getMaxTimerJobsPerAcquisition();
+  
+  public void setMaxTimerJobsPerAcquisition(int maxJobs);
 }

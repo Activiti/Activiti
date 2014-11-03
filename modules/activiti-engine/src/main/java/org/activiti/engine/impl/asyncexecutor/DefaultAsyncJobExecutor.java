@@ -1,6 +1,7 @@
 package org.activiti.engine.impl.asyncexecutor;
 
 import java.util.LinkedList;
+import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -47,11 +48,22 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   /** The time (in seconds) that is waited to gracefully shut down the threadpool used for job execution */
   protected long secondsToWaitOnShutdown = 60L;
   
-  protected Thread jobAcquisitionThread;
+  protected Thread timerJobAcquisitionThread;
+  protected Thread asyncJobAcquisitionThread;
+  protected AcquireTimerJobsRunnable timerJobRunnable;
   protected AcquireAsyncJobsDueRunnable asyncJobsDueRunnable;
   
   protected boolean isAutoActivate = false;
   protected boolean isActive = false;
+  
+  protected int maxTimerJobsPerAcquisition = 1;
+  protected int maxAsyncJobsDuePerAcquisition = 1;
+  protected int defaultTimerJobAcquireWaitTimeInMillis = 10 * 1000;
+  protected int defaultAsyncJobAcquireWaitTimeInMillis = 10 * 1000;
+  
+  protected String lockOwner = UUID.randomUUID().toString();
+  protected int timerLockTimeInMillis = 5 * 60 * 1000;
+  protected int asyncJobLockTimeInMillis = 5 * 60 * 1000;
   
   // Job queue used when async executor is not yet started and jobs are already added.
   // This is mainly used for testing purpose.
@@ -74,6 +86,9 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     }
     
     log.info("Starting up the default async job executor [{}].", getClass().getName());
+    if (timerJobRunnable == null) {
+      timerJobRunnable = new AcquireTimerJobsRunnable(this);
+    }
     if (asyncJobsDueRunnable == null) {
       asyncJobsDueRunnable = new AcquireAsyncJobsDueRunnable(this);
     }
@@ -94,8 +109,11 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
       return;
     }
     log.info("Shutting down the default async job executor [{}].", getClass().getName());
+    timerJobRunnable.stop();
     asyncJobsDueRunnable.stop();
-    stopExecutingAyncJobs();
+    stopExecutingAsyncJobs();
+    
+    timerJobRunnable = null;
     asyncJobsDueRunnable = null;
     isActive = false;
   }
@@ -119,7 +137,7 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
     startJobAcquisitionThread();
   }
     
-  protected void stopExecutingAyncJobs() {
+  protected void stopExecutingAsyncJobs() {
     stopJobAcquisitionThread();
     
     // Ask the thread pool to finish and exit
@@ -141,20 +159,33 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   
   /** Starts the acquisition thread */
   protected void startJobAcquisitionThread() {
-    if (jobAcquisitionThread == null) {
-      jobAcquisitionThread = new Thread(asyncJobsDueRunnable);
+    if (timerJobAcquisitionThread == null) {
+      timerJobAcquisitionThread = new Thread(timerJobRunnable);
     }
-    jobAcquisitionThread.start();
+    timerJobAcquisitionThread.start();
+    
+    if (asyncJobAcquisitionThread == null) {
+      asyncJobAcquisitionThread = new Thread(asyncJobsDueRunnable);
+    }
+    asyncJobAcquisitionThread.start();
   }
   
   /** Stops the acquisition thread */
   protected void stopJobAcquisitionThread() {
     try {
-      jobAcquisitionThread.join();
+      timerJobAcquisitionThread.join();
     } catch (InterruptedException e) {
-      log.warn("Interrupted while waiting for the job Acquisition thread to terminate", e);
+      log.warn("Interrupted while waiting for the timer job acquisition thread to terminate", e);
+    }
+    
+    try {
+      asyncJobAcquisitionThread.join();
+    } catch (InterruptedException e) {
+      log.warn("Interrupted while waiting for the async job acquisition thread to terminate", e);
     } 
-    jobAcquisitionThread = null;
+    
+    timerJobAcquisitionThread = null;
+    asyncJobAcquisitionThread = null;
   }
 	
   /* getters and setters */ 
@@ -235,4 +266,59 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
 		this.executorService = executorService;
 	}
 
+  public String getLockOwner() {
+    return lockOwner;
+  }
+
+  public void setLockOwner(String lockOwner) {
+    this.lockOwner = lockOwner;
+  }
+
+  public int getTimerLockTimeInMillis() {
+    return timerLockTimeInMillis;
+  }
+
+  public void setTimerLockTimeInMillis(int timerLockTimeInMillis) {
+    this.timerLockTimeInMillis = timerLockTimeInMillis;
+  }
+  
+  public int getAsyncJobLockTimeInMillis() {
+    return asyncJobLockTimeInMillis;
+  }
+
+  public void setAsyncJobLockTimeInMillis(int asyncJobLockTimeInMillis) {
+    this.asyncJobLockTimeInMillis = asyncJobLockTimeInMillis;
+  }
+  
+  public int getMaxTimerJobsPerAcquisition() {
+    return maxTimerJobsPerAcquisition;
+  }
+
+  public void setMaxTimerJobsPerAcquisition(int maxTimerJobsPerAcquisition) {
+    this.maxTimerJobsPerAcquisition = maxTimerJobsPerAcquisition;
+  }
+
+  public int getMaxAsyncJobsDuePerAcquisition() {
+    return maxAsyncJobsDuePerAcquisition;
+  }
+
+  public void setMaxAsyncJobsDuePerAcquisition(int maxAsyncJobsDuePerAcquisition) {
+    this.maxAsyncJobsDuePerAcquisition = maxAsyncJobsDuePerAcquisition;
+  }
+
+  public int getDefaultTimerJobAcquireWaitTimeInMillis() {
+    return defaultTimerJobAcquireWaitTimeInMillis;
+  }
+
+  public void setDefaultTimerJobAcquireWaitTimeInMillis(int defaultTimerJobAcquireWaitTimeInMillis) {
+    this.defaultTimerJobAcquireWaitTimeInMillis = defaultTimerJobAcquireWaitTimeInMillis;
+  }
+
+  public int getDefaultAsyncJobAcquireWaitTimeInMillis() {
+    return defaultAsyncJobAcquireWaitTimeInMillis;
+  }
+
+  public void setDefaultAsyncJobAcquireWaitTimeInMillis(int defaultAsyncJobAcquireWaitTimeInMillis) {
+    this.defaultAsyncJobAcquireWaitTimeInMillis = defaultAsyncJobAcquireWaitTimeInMillis;
+  }
 }

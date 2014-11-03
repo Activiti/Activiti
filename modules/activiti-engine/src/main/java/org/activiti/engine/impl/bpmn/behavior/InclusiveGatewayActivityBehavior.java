@@ -45,6 +45,8 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     
     execution.inactivate();
     lockConcurrentRoot(execution);
+    
+    System.out.println("!!!!!!!!!!!!! inactivate " + execution.getId());
 
     PvmActivity activity = execution.getActivity();
     if (!activeConcurrentExecutionsExist(execution)) {
@@ -110,9 +112,9 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
 
   public boolean activeConcurrentExecutionsExist(ActivityExecution execution) {
     PvmActivity activity = execution.getActivity();
-    System.out.println("!!!!! execution.isConcurrent() " + execution.isConcurrent());
     if (execution.isConcurrent()) {
       for (ActivityExecution concurrentExecution : getLeaveExecutions(execution.getParent())) {
+        System.out.println("!!!!!!!!!!!!! concurrent " + concurrentExecution.isActive() + " " + concurrentExecution.getId() + " " + execution.getId());
         if (concurrentExecution.isActive() && concurrentExecution.getId().equals(execution.getId()) == false) {
           // TODO: when is transitionBeingTaken cleared? Should we clear it?
           boolean reachable = false;
@@ -167,8 +169,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       for (PvmTransition pvmTransition : transitionList) {
         PvmActivity destinationActivity = pvmTransition.getDestination();
         if (destinationActivity != null && !visitedActivities.contains(destinationActivity)) {
-          boolean reachable = isReachable(destinationActivity, targetActivity,
-              visitedActivities);
+          boolean reachable = isReachable(destinationActivity, targetActivity, visitedActivities);
 
           // If false, we should investigate other paths, and not yet return the
           // result

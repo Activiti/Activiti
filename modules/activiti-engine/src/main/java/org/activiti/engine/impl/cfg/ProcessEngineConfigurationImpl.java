@@ -431,6 +431,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initServices();
     initIdGenerator();
     initDeployers();
+    initJobHandlers();
     initJobExecutor();
     initAsyncExecutor();
     initDataSource();
@@ -1074,16 +1075,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       processDiagramGenerator = new DefaultProcessDiagramGenerator();
     }
   }
-
-  // job executor /////////////////////////////////////////////////////////////
   
-  protected void initJobExecutor() {
-    if (jobExecutor==null) {
-      jobExecutor = new DefaultJobExecutor();
-    }
-
-    jobExecutor.setClockReader(this.clock);
-
+  protected void initJobHandlers() {
     jobHandlers = new HashMap<String, JobHandler>();
     TimerExecuteNestedActivityJobHandler timerExecuteNestedActivityJobHandler = new TimerExecuteNestedActivityJobHandler();
     jobHandlers.put(timerExecuteNestedActivityJobHandler.getType(), timerExecuteNestedActivityJobHandler);
@@ -1112,18 +1105,29 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         jobHandlers.put(customJobHandler.getType(), customJobHandler);      
       }
     }
+  }
 
-    jobExecutor.setCommandExecutor(commandExecutor);
-    jobExecutor.setAutoActivate(jobExecutorActivate);
-    
-    if(jobExecutor.getRejectedJobsHandler() == null) {
-      if(customRejectedJobsHandler != null) {
-        jobExecutor.setRejectedJobsHandler(customRejectedJobsHandler);
-      } else {
-        jobExecutor.setRejectedJobsHandler(new CallerRunsRejectedJobsHandler());
+  // job executor /////////////////////////////////////////////////////////////
+  
+  protected void initJobExecutor() {
+    if (isAsyncExecutorEnabled() == false) {
+      if (jobExecutor == null) {
+        jobExecutor = new DefaultJobExecutor();
+      }
+  
+      jobExecutor.setClockReader(this.clock);
+  
+      jobExecutor.setCommandExecutor(commandExecutor);
+      jobExecutor.setAutoActivate(jobExecutorActivate);
+      
+      if (jobExecutor.getRejectedJobsHandler() == null) {
+        if(customRejectedJobsHandler != null) {
+          jobExecutor.setRejectedJobsHandler(customRejectedJobsHandler);
+        } else {
+          jobExecutor.setRejectedJobsHandler(new CallerRunsRejectedJobsHandler());
+        }
       }
     }
-    
   }
   
   // async executor /////////////////////////////////////////////////////////////

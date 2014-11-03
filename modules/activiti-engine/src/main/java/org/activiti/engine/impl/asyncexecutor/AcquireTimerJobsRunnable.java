@@ -15,8 +15,9 @@ package org.activiti.engine.impl.asyncexecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
-import org.activiti.engine.impl.cmd.AcquireAsyncJobsDueCmd;
+import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,9 +25,9 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Tijs Rademakers
  */
-public class AcquireAsyncJobsDueRunnable implements Runnable {
+public class AcquireTimerJobsRunnable implements Runnable {
 
-  private static Logger log = LoggerFactory.getLogger(AcquireAsyncJobsDueRunnable.class);
+  private static Logger log = LoggerFactory.getLogger(AcquireTimerJobsRunnable.class);
 
   protected final AsyncExecutor asyncExecutor;
 
@@ -36,7 +37,7 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
   
   protected long millisToWait = 0;
 
-  public AcquireAsyncJobsDueRunnable(AsyncExecutor asyncExecutor) {
+  public AcquireTimerJobsRunnable(AsyncExecutor asyncExecutor) {
     this.asyncExecutor = asyncExecutor;
   }
 
@@ -48,32 +49,38 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
     while (!isInterrupted) {
       
       try {
-        AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireAsyncJobsDueCmd(asyncExecutor));
+        AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd(
+            asyncExecutor.getLockOwner(), asyncExecutor.getTimerLockTimeInMillis(), 
+            asyncExecutor.getMaxTimerJobsPerAcquisition()));
+        
+        for (JobEntity job : acquiredJobs.getJobs()) {
+          asyncExecutor.executeAsyncJob(job);
+        }
         
         // if all jobs were executed
-        millisToWait = asyncExecutor.getDefaultAsyncJobAcquireWaitTimeInMillis();
+        millisToWait = asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
         int jobsAcquired = acquiredJobs.size();
-        if (jobsAcquired >= asyncExecutor.getMaxAsyncJobsDuePerAcquisition()) {
+        if (jobsAcquired >= asyncExecutor.getMaxTimerJobsPerAcquisition()) {
           millisToWait = 0; 
         }
 
       } catch (ActivitiOptimisticLockingException optimisticLockingException) { 
         if (log.isDebugEnabled()) {
-          log.debug("Optimistic locking exception during async job acquisition. If you have multiple async executors running against the same database, " +
-          		"this exception means that this thread tried to acquire a due async job, which already was acquired by another async executor acquisition thread." +
+          log.debug("Optimistic locking exception during timer job acquisition. If you have multiple timer executors running against the same database, " +
+          		"this exception means that this thread tried to acquire a timer job, which already was acquired by another timer executor acquisition thread." +
           		"This is expected behavior in a clustered environment. " +
-          		"You can ignore this message if you indeed have multiple async executor acquisition threads running against the same database. " +
+          		"You can ignore this message if you indeed have multiple timer executor acquisition threads running against the same database. " +
           		"Exception message: {}", optimisticLockingException.getMessage());
         }
       } catch (Throwable e) {
-        log.error("exception during async job acquisition: {}", e.getMessage(), e);          
-        millisToWait = asyncExecutor.getDefaultAsyncJobAcquireWaitTimeInMillis();
+        log.error("exception during timer job acquisition: {}", e.getMessage(), e);          
+        millisToWait = asyncExecutor.getDefaultTimerJobAcquireWaitTimeInMillis();
       }
 
       if (millisToWait > 0) {
         try {
           if (log.isDebugEnabled()) {
-            log.debug("async job acquisition thread sleeping for {} millis", millisToWait);
+            log.debug("timer job acquisition thread sleeping for {} millis", millisToWait);
           }
           synchronized (MONITOR) {
             if(!isInterrupted) {
@@ -83,11 +90,11 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
           }
           
           if (log.isDebugEnabled()) {
-            log.debug("async job acquisition thread woke up");
+            log.debug("timer job acquisition thread woke up");
           }
         } catch (InterruptedException e) {
           if (log.isDebugEnabled()) {
-            log.debug("async job acquisition wait interrupted");
+            log.debug("timer job acquisition wait interrupted");
           }
         } finally {
           isWaiting.set(false);
