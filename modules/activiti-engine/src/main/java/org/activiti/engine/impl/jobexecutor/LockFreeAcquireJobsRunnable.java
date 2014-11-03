@@ -23,8 +23,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.AcquireJobsRunnable;
-import org.activiti.engine.impl.jobexecutor.ExecuteJobsRunnable;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,8 +111,8 @@ public class LockFreeAcquireJobsRunnable implements AcquireJobsRunnable {
 
 	protected void sleep() {
 	  // TODO: needs to be other property?
-	  long millisToWait = jobExecutor.getWaitTimeInMillis();;
-	  if ((millisToWait > 0) && (!isJobAdded)) {
+	  long millisToWait = jobExecutor.getWaitTimeInMillis();
+    if ((millisToWait > 0) && (!isJobAdded)) {
 	    try {
 	      log.debug("job acquisition thread sleeping for {} millis", millisToWait);
 	      synchronized (MONITOR) {
