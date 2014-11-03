@@ -136,9 +136,9 @@ public class MBeanInfoAssemblerTest {
     ModelMBeanInfo beanInfo = mbeanInfoAssembler.getMBeanInfo(new BadInherited(), null, "someName");
     assertNotNull(beanInfo);
     assertNotNull(beanInfo.getAttributes());
-    assertEquals(0, beanInfo.getAttributes().length);
+    assertEquals(2, beanInfo.getAttributes().length);
     assertNotNull(beanInfo.getOperations());
-    assertEquals(0, beanInfo.getOperations().length);
+    assertEquals(1, beanInfo.getOperations().length);
 
   }
 
