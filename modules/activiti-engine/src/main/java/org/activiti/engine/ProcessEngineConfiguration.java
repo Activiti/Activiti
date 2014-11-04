@@ -202,6 +202,11 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String labelFontName = "Arial";
   
   protected ClassLoader classLoader;
+  /**
+   * Either use Class.forName or ClassLoader.loadClass for class loading.
+   * See http://forums.activiti.org/content/reflectutilloadclass-and-custom-classloader
+   */
+  protected boolean useClassForNameClassLoading = true;
   protected ProcessEngineLifecycleListener processEngineLifecycleListener;
 
   /** use one of the static createXxxx methods instead */
@@ -549,6 +554,15 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public ProcessEngineConfiguration setClassLoader(ClassLoader classLoader) {
     this.classLoader = classLoader;
+    return this;
+  }
+
+  public boolean isUseClassForNameClassLoading() {
+    return useClassForNameClassLoading;
+  }
+
+  public ProcessEngineConfiguration setUseClassForNameClassLoading(boolean useClassForNameClassLoading) {
+    this.useClassForNameClassLoading = useClassForNameClassLoading;
     return this;
   }
 

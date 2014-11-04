@@ -52,7 +52,7 @@ public abstract class ReflectUtil {
    if(classLoader != null) {
      try {
        LOG.trace("Trying to load class with custom classloader: {}", className);
-       clazz = Class.forName(className, true, classLoader);
+       clazz = loadClass(classLoader, className);
      } catch(Throwable t) {
        throwable = t;
      }
@@ -60,7 +60,7 @@ public abstract class ReflectUtil {
    if(clazz == null) {
      try {
        LOG.trace("Trying to load class with current thread context classloader: {}", className);
-       clazz = Class.forName(className, true, Thread.currentThread().getContextClassLoader());
+       clazz = loadClass(Thread.currentThread().getContextClassLoader(), className);
      } catch(Throwable t) {
        if(throwable == null) {
          throwable = t;
@@ -69,7 +69,7 @@ public abstract class ReflectUtil {
      if(clazz == null) {
        try {
          LOG.trace("Trying to load class with local classloader: {}", className);
-         clazz = Class.forName(className, true, ReflectUtil.class.getClassLoader());
+         clazz = loadClass(ReflectUtil.class.getClassLoader(), className);
        } catch(Throwable t) {
          if(throwable == null) {
            throwable = t;
@@ -83,7 +83,7 @@ public abstract class ReflectUtil {
    }
    return clazz;
   }
-  
+
   public static InputStream getResourceAsStream(String name) {
     InputStream resourceStream = null;
     ClassLoader classLoader = getCustomClassLoader();
@@ -278,4 +278,11 @@ public abstract class ReflectUtil {
     }
     return null;
   }
+
+	private static Class loadClass(ClassLoader classLoader, String className) throws ClassNotFoundException {
+		ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+		boolean useClassForName = processEngineConfiguration == null ||
+				processEngineConfiguration.isUseClassForNameClassLoading();
+		return useClassForName ? Class.forName(className, true, classLoader) : classLoader.loadClass(className);
+	}
 }
