@@ -29,6 +29,7 @@ import javax.management.ObjectName;
 import javax.management.modelmbean.ModelMBean;
 
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.management.jmx.DefaultManagementMBeanAssembler;
 import org.activiti.management.jmx.ManagementMBeanAssembler;
 import org.junit.Before;
@@ -46,37 +47,42 @@ public class JobExecutorMBeanTest {
 
   @Mock
   ProcessEngineConfiguration processEngineConfiguration;
+  
+  @Mock
+  JobExecutor jobExecutor;
 
   @Before
   public void initMocks() throws MalformedObjectNameException {
     MockitoAnnotations.initMocks(this);
+    when(processEngineConfiguration.getJobExecutor()).thenReturn(jobExecutor);
     jobExecutorMbean = new JobExecutorMBean(processEngineConfiguration);
   }
 
   @Test
   public void TestIsJobExecutorActivatedFalse() {
-    when(processEngineConfiguration.isJobExecutorActivate()).thenReturn(false);
+    when(jobExecutor.isActive()).thenReturn(false);
+   
     boolean result = jobExecutorMbean.isJobExecutorActivated();
-    verify(processEngineConfiguration).isJobExecutorActivate();
+    verify(jobExecutor).isActive();
     assertFalse(result);
 
   }
 
   @Test
   public void TestIsJobExecutorActivatedTrue() {
-    when(processEngineConfiguration.isJobExecutorActivate()).thenReturn(true);
+    when(jobExecutor.isActive()).thenReturn(true);
     boolean result = jobExecutorMbean.isJobExecutorActivated();
-    verify(processEngineConfiguration).isJobExecutorActivate();
+    verify(jobExecutor).isActive();
     assertTrue(result);
   }
 
   @Test
   public void setJobExecutorActivateTrue() {
     jobExecutorMbean.setJobExecutorActivate(true);
-    verify(processEngineConfiguration).setJobExecutorActivate(true);
+    verify(jobExecutor).start();
 
     jobExecutorMbean.setJobExecutorActivate(false);
-    verify(processEngineConfiguration).setJobExecutorActivate(false);
+    verify(jobExecutor).shutdown();
 
   }
 

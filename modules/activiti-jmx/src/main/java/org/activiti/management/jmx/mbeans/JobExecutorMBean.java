@@ -13,6 +13,7 @@
 package org.activiti.management.jmx.mbeans;
 
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.management.jmx.annotations.ManagedAttribute;
 import org.activiti.management.jmx.annotations.ManagedOperation;
 import org.activiti.management.jmx.annotations.ManagedResource;
@@ -23,20 +24,26 @@ import org.activiti.management.jmx.annotations.ManagedResource;
 @ManagedResource(description = "Process definition MBean")
 public class JobExecutorMBean {
 
-  ProcessEngineConfiguration processEngineConfig;
+  JobExecutor jobExecutor;
 
   public JobExecutorMBean(ProcessEngineConfiguration processEngineConfig) {
-    this.processEngineConfig = processEngineConfig;
+    jobExecutor = processEngineConfig.getJobExecutor();
+    
+    
   }
 
   @ManagedAttribute(description = "check if the job executor is activated")
   public boolean isJobExecutorActivated() {
-    return processEngineConfig.isJobExecutorActivate();
+    return jobExecutor == null || jobExecutor.isActive();
   }
 
   @ManagedOperation(description = "set job executor activate")
   public void setJobExecutorActivate(Boolean active) {
-    processEngineConfig.setJobExecutorActivate(active);
+    if (active)
+      jobExecutor.start();
+    else
+      jobExecutor.shutdown();
+
 
   }
 

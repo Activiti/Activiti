@@ -13,11 +13,9 @@
 
 package org.activiti.management.jmx;
 
-import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -48,11 +46,11 @@ import org.junit.Test;
  * @author Saeid Mirzaei
  */
 
-public class JMXClientTest {
+public class DeploymentsJMXClientTest {
   
   @SuppressWarnings("unchecked")
   @Test
-  public void testJmxClient() throws IOException, InterruptedException, MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException, IntrospectionException {
+  public void testDeploymentsJmxClient() throws IOException, InterruptedException, MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException, IntrospectionException {
     JMXServiceURL url = 
             new JMXServiceURL("service:jmx:rmi://DEACN458:10111/jndi/rmi://" + Utils.getHostName() + ":1099/jmxrmi/activiti");
    
@@ -68,25 +66,25 @@ public class JMXClientTest {
     MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
     
     
-    ObjectName mbeanName = new ObjectName("org.activiti.jmx.Mbeans:type=Deployments");
+    ObjectName deploymentsBeanName = new ObjectName("org.activiti.jmx.Mbeans:type=Deployments");
     
     
     Thread.sleep(500);
     
     // no process deployed yet
     @SuppressWarnings("unchecked")
-    List<List<String>> deployments = (List<List<String>>) mbsc.getAttribute(mbeanName, "Deployments");
+    List<List<String>> deployments = (List<List<String>>) mbsc.getAttribute(deploymentsBeanName, "Deployments");
     assertEquals(0, deployments.size());
     
     
     // deploy process remotely
     
     URL fileName = Thread.currentThread().getContextClassLoader().getResource( "org/activiti/management/jmx/trivialProcess.bpmn");
-    mbsc.invoke(mbeanName, "deployProcessDefinition", new String[]{"trivialProcess.bpmn", fileName.getFile()}, new String[]{String.class.getName(), String.class.getName()});
+    mbsc.invoke(deploymentsBeanName, "deployProcessDefinition", new String[]{"trivialProcess.bpmn", fileName.getFile()}, new String[]{String.class.getName(), String.class.getName()});
 
 
     // one process is there now, test remote deployments
-    deployments = (List<List<String>>) mbsc.getAttribute(mbeanName, "Deployments");
+    deployments = (List<List<String>>) mbsc.getAttribute(deploymentsBeanName, "Deployments");
     assertNotNull(deployments);
     assertEquals(1, deployments.size());
     assertEquals(3, deployments.get(0).size());
@@ -94,7 +92,7 @@ public class JMXClientTest {
     
     
     // test remote process definition
-    List<List<String>> pdList = (List<List<String>>) mbsc.getAttribute(mbeanName, "ProcessDefinitions");
+    List<List<String>> pdList = (List<List<String>>) mbsc.getAttribute(deploymentsBeanName, "ProcessDefinitions");
     assertNotNull(pdList);
     assertEquals(1, pdList.size());
     assertEquals(5, pdList.get(0).size());
@@ -105,18 +103,18 @@ public class JMXClientTest {
     assertEquals("This process to test JMX", pdList.get(0).get(4));
     
     // redeploy the same process
-    mbsc.invoke(mbeanName, "deployProcessDefinition", new String[]{"trivialProcess.bpmn", fileName.getFile()}, new String[]{String.class.getName(), String.class.getName()});
+    mbsc.invoke(deploymentsBeanName, "deployProcessDefinition", new String[]{"trivialProcess.bpmn", fileName.getFile()}, new String[]{String.class.getName(), String.class.getName()});
 
    
     // now there should be two deployments
-    deployments = (List<List<String>>) mbsc.getAttribute(mbeanName, "Deployments");
+    deployments = (List<List<String>>) mbsc.getAttribute(deploymentsBeanName, "Deployments");
     assertNotNull(deployments);
     assertEquals(2, deployments.size());
     assertEquals(3, deployments.get(0).size());
     assertEquals(3, deployments.get(1).size());
     
     // there should be two process definitions, one with version equals to two
-    pdList = (List<List<String>>) mbsc.getAttribute(mbeanName, "ProcessDefinitions");
+    pdList = (List<List<String>>) mbsc.getAttribute(deploymentsBeanName, "ProcessDefinitions");
     assertNotNull(pdList);
     assertEquals(2, pdList.size());
     assertEquals(5, pdList.get(0).size());
@@ -145,7 +143,7 @@ public class JMXClientTest {
     assertEquals("This process to test JMX", pdList.get(1).get(4));
     
     //suspend the one with version == 2    
-    mbsc.invoke(mbeanName, "suspendProcessDefinitionById", new String[]{pidV2}, new String[]{String.class.getName()});
+    mbsc.invoke(deploymentsBeanName, "suspendProcessDefinitionById", new String[]{pidV2}, new String[]{String.class.getName()});
     RepositoryService repositoryService = processEngine.getRepositoryService();
     
     // test if it is realy suspended and not the other one
@@ -153,20 +151,20 @@ public class JMXClientTest {
     assertFalse(repositoryService.getProcessDefinition(pidV1).isSuspended());
     
     // test if it is reported as suspended and not the other one
-    List<String> pd = (List<String>) mbsc.invoke(mbeanName, "getProcessDefinitionById", new String[]{pidV2}, new String[]{String.class.getName()});
+    List<String> pd = (List<String>) mbsc.invoke(deploymentsBeanName, "getProcessDefinitionById", new String[]{pidV2}, new String[]{String.class.getName()});
     assertNotNull(pd);
     assertEquals(5, pd.size());
     assertEquals("true", pd.get(3));
     
 
-    pd = (List<String>) mbsc.invoke(mbeanName, "getProcessDefinitionById", new String[]{pidV1}, new String[]{String.class.getName()});
+    pd = (List<String>) mbsc.invoke(deploymentsBeanName, "getProcessDefinitionById", new String[]{pidV1}, new String[]{String.class.getName()});
     assertNotNull(pd);
     assertEquals(5, pd.size());
     assertEquals("false", pd.get(3));
     
     
     // now reactivate the same suspended process 
-    mbsc.invoke(mbeanName, "activatedProcessDefinitionById", new String[]{pidV2}, new String[]{String.class.getName()});
+    mbsc.invoke(deploymentsBeanName, "activatedProcessDefinitionById", new String[]{pidV2}, new String[]{String.class.getName()});
 
     // test if both processes are active again
     assertFalse(repositoryService.getProcessDefinition(pidV2).isSuspended());
@@ -174,13 +172,13 @@ public class JMXClientTest {
     
     // test if they are properly reported as activated
     
-    pd = (List<String>) mbsc.invoke(mbeanName, "getProcessDefinitionById", new String[]{pidV2}, new String[]{String.class.getName()});
+    pd = (List<String>) mbsc.invoke(deploymentsBeanName, "getProcessDefinitionById", new String[]{pidV2}, new String[]{String.class.getName()});
     assertNotNull(pd);
     assertEquals(5, pd.size());
     assertEquals("false", pd.get(3));
     
 
-    pd = (List<String>) mbsc.invoke(mbeanName, "getProcessDefinitionById", new String[]{pidV1}, new String[]{String.class.getName()});
+    pd = (List<String>) mbsc.invoke(deploymentsBeanName, "getProcessDefinitionById", new String[]{pidV1}, new String[]{String.class.getName()});
     assertNotNull(pd);
     assertEquals(5, pd.size());
     assertEquals("false", pd.get(3));
@@ -188,21 +186,21 @@ public class JMXClientTest {
 
 
     // now undeploy the one with version == 1
-    mbsc.invoke(mbeanName, "deleteDeployment", new String[]{firstDeploymentId}, new String[]{String.class.getName()});
+    mbsc.invoke(deploymentsBeanName, "deleteDeployment", new String[]{firstDeploymentId}, new String[]{String.class.getName()});
     
     // now there should be only one deployment and only one process definition with version 2, first check it with API
     assertEquals(1, repositoryService.createDeploymentQuery().count());
     
-    assertThat(repositoryService.createDeploymentQuery().singleResult().getId(), not(firstDeploymentId));
+    assertTrue(!repositoryService.createDeploymentQuery().singleResult().getId().equals(firstDeploymentId));
 
 
     // check if it is also affected in returned results.
     
-    deployments = (List<List<String>>) mbsc.getAttribute(mbeanName, "Deployments");
+    deployments = (List<List<String>>) mbsc.getAttribute(deploymentsBeanName, "Deployments");
     assertNotNull(deployments);
     assertEquals(1, deployments.size());
     assertEquals(3, deployments.get(0).size());
-    assertThat(deployments.get(0).get(0), not(firstDeploymentId));
+    assertTrue(!deployments.get(0).get(0).equals(firstDeploymentId));
     
   }
 
