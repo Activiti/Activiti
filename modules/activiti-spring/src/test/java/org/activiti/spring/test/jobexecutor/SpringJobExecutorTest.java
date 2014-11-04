@@ -1,5 +1,7 @@
 package org.activiti.spring.test.jobexecutor;
 
+import java.util.List;
+
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -12,8 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.List;
 
 /**
  * @author Pablo Ganga
@@ -30,6 +30,7 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase {
     @Autowired
     protected TaskService taskService;
 
+    @Test
     public void testHappyJobExecutorPath() throws Exception {
 
         ProcessInstance instance = runtimeService.startProcessInstanceByKey("process1");
@@ -40,6 +41,7 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase {
         assertTrue(activeTasks.isEmpty());
     }
 
+    @Test
     public void testRollbackJobExecutorPath() throws Exception {
 
         ProcessInstance instance = runtimeService.startProcessInstanceByKey("errorProcess1");
