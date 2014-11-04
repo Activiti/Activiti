@@ -133,7 +133,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertNotNull(processInstance);
 
     // Check create-event one main process the second one Scope execution, and the third one subprocess
-    assertEquals(5, listener.getEventsReceived().size());
+    assertEquals(6, listener.getEventsReceived().size());
     assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
@@ -156,6 +156,10 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertEquals(processInstance.getId(), ((ProcessInstance) event.getEntity()).getParentId());
 
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(4);
+    assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+    assertEquals("simpleSubProcess", ((ExecutionEntity) event.getEntity()).getProcessDefinition().getKey());
+
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(5);
     assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
     assertEquals("simpleSubProcess", ((ExecutionEntity) event.getEntity()).getProcessDefinition().getKey());
 
