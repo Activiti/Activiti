@@ -30,7 +30,6 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase {
     @Autowired
     protected TaskService taskService;
 
-    @Test
     public void testHappyJobExecutorPath() throws Exception {
 
         ProcessInstance instance = runtimeService.startProcessInstanceByKey("process1");
@@ -41,7 +40,6 @@ public class SpringJobExecutorTest extends SpringActivitiTestCase {
         assertTrue(activeTasks.isEmpty());
     }
 
-    @Test
     public void testRollbackJobExecutorPath() throws Exception {
 
         ProcessInstance instance = runtimeService.startProcessInstanceByKey("errorProcess1");
