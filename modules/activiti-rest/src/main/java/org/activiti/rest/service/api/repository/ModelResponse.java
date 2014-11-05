@@ -33,6 +33,8 @@ public class ModelResponse extends ModelRequest {
   protected Date lastUpdateTime;
   protected String deploymentUrl;
   protected String tenantId;
+  protected String sourceUrl;
+  protected String sourceExtraUrl;
   
   public String getId() {
     return id;
@@ -80,5 +82,18 @@ public class ModelResponse extends ModelRequest {
   
   public void setTenantId(String tenantId) {
 	  this.tenantId = tenantId;
+  }
+  
+  public String getSourceUrl() {
+    return sourceUrl;
+  }
+  public void setSourceUrl(String sourceUrl) {
+    this.sourceUrl = sourceUrl;
+  }
+  public String getSourceExtraUrl() {
+    return sourceExtraUrl;
+  }
+  public void setSourceExtraUrl(String sourceExtraUrl) {
+    this.sourceExtraUrl = sourceExtraUrl;
   }
 }

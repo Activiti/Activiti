@@ -54,6 +54,9 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       model.setTenantId("myTenant");
       repositoryService.saveModel(model);
       
+      repositoryService.addModelEditorSource(model.getId(), "This is the editor source".getBytes());
+      repositoryService.addModelEditorSourceExtra(model.getId(), "This is the extra editor source".getBytes());
+      
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
       CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
@@ -75,6 +78,9 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       
       assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
       assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
+      
+      assertTrue(responseNode.get("sourceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId())));
+      assertTrue(responseNode.get("sourceExtraUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId())));
       
     } finally
     {

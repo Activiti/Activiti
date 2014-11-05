@@ -33,6 +33,7 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ViewManager;
+import org.activiti.explorer.util.XmlUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -88,7 +89,7 @@ public class ImportUploadReceiver implements Receiver, FinishedListener, ModelDa
         if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
           validFile = true;
           BpmnXMLConverter xmlConverter = new BpmnXMLConverter();
-          XMLInputFactory xif = XMLInputFactory.newInstance();
+          XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
           InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray()), "UTF-8");
           XMLStreamReader xtr = xif.createXMLStreamReader(in);
           BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);

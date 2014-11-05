@@ -1,6 +1,7 @@
 package org.activiti.async.executor.hazelcast;
 
 import java.io.Serializable;
+import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -57,11 +58,20 @@ public class HazelCastDistributedAsyncExecutor implements AsyncExecutor {
 	// Injecteable
 	protected boolean isAutoActivate;
 	protected CommandExecutor commandExecutor;
+	protected int maxTimerJobsPerAcquisition = 1;
+	protected int maxAsyncJobsDuePerAcquisition = 1;
+	protected int defaultTimerJobAcquireWaitTimeInMillis = 10 * 1000;
+	protected int defaultAsyncJobAcquireWaitTimeInMillis = 10 * 1000;
+	  
+	protected String lockOwner = UUID.randomUUID().toString();
+	protected int timerLockTimeInMillis = 5 * 60 * 1000;
+	protected int asyncJobLockTimeInMillis = 5 * 60 * 1000;
 	
 	// Runtime
 	protected boolean isActive;
 	private HazelcastInstance hazelcastInstance;
 	private IExecutorService executorService;
+	
 	
 	@Override
   public void start() {
@@ -148,6 +158,64 @@ public class HazelCastDistributedAsyncExecutor implements AsyncExecutor {
 			commandExecutor.execute(new ExecuteAsyncJobCmd(job));
 		}
 		
+	}
+
+	public String getLockOwner() {
+		return lockOwner;
+	}
+
+	public void setLockOwner(String lockOwner) {
+		this.lockOwner = lockOwner;
+	}
+
+	public int getTimerLockTimeInMillis() {
+		return timerLockTimeInMillis;
+	}
+
+	public void setTimerLockTimeInMillis(int timerLockTimeInMillis) {
+		this.timerLockTimeInMillis = timerLockTimeInMillis;
+	}
+
+	public int getAsyncJobLockTimeInMillis() {
+		return asyncJobLockTimeInMillis;
+	}
+
+	public void setAsyncJobLockTimeInMillis(int asyncJobLockTimeInMillis) {
+		this.asyncJobLockTimeInMillis = asyncJobLockTimeInMillis;
+	}
+
+	public int getMaxTimerJobsPerAcquisition() {
+		return maxTimerJobsPerAcquisition;
+	}
+
+	public void setMaxTimerJobsPerAcquisition(int maxTimerJobsPerAcquisition) {
+		this.maxTimerJobsPerAcquisition = maxTimerJobsPerAcquisition;
+	}
+
+	public int getMaxAsyncJobsDuePerAcquisition() {
+		return maxAsyncJobsDuePerAcquisition;
+	}
+
+	public void setMaxAsyncJobsDuePerAcquisition(int maxAsyncJobsDuePerAcquisition) {
+		this.maxAsyncJobsDuePerAcquisition = maxAsyncJobsDuePerAcquisition;
+	}
+
+	public int getDefaultTimerJobAcquireWaitTimeInMillis() {
+		return defaultTimerJobAcquireWaitTimeInMillis;
+	}
+
+	public void setDefaultTimerJobAcquireWaitTimeInMillis(
+	    int defaultTimerJobAcquireWaitTimeInMillis) {
+		this.defaultTimerJobAcquireWaitTimeInMillis = defaultTimerJobAcquireWaitTimeInMillis;
+	}
+
+	public int getDefaultAsyncJobAcquireWaitTimeInMillis() {
+		return defaultAsyncJobAcquireWaitTimeInMillis;
+	}
+
+	public void setDefaultAsyncJobAcquireWaitTimeInMillis(
+	    int defaultAsyncJobAcquireWaitTimeInMillis) {
+		this.defaultAsyncJobAcquireWaitTimeInMillis = defaultAsyncJobAcquireWaitTimeInMillis;
 	}
 
 }

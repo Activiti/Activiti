@@ -49,9 +49,11 @@ public class UnlockExclusiveJobCmd implements Command<Object>, Serializable {
     }
     
     if (job.isExclusive()) {
-      ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(job.getExecutionId());
-      if (execution != null) {
-        commandContext.getExecutionEntityManager().clearProcessInstanceLockTime(execution.getProcessInstanceId());
+      if (job.getExecutionId() != null) {
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(job.getExecutionId());
+        if (execution != null) {
+          commandContext.getExecutionEntityManager().clearProcessInstanceLockTime(execution.getProcessInstanceId());
+        }
       }
     }
     

@@ -17,6 +17,7 @@ import java.util.Date;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -106,6 +107,8 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 		event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
 		assertEquals(ActivitiEventType.TASK_COMPLETED, event.getType());
 		assertExecutionDetails(event, processInstance);
+		TaskEntity taskEntity = (TaskEntity) event.getEntity();
+		assertNotNull(taskEntity.getDueDate());
 		event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
 		assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
 		assertExecutionDetails(event, processInstance);
