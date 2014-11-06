@@ -186,6 +186,7 @@ public class RestResponseFactory {
     response.setSuspended(processDefinition.isSuspended());
     response.setStartFormDefined(processDefinition.hasStartFormKey());
     response.setGraphicalNotationDefined(graphicalNotationDefined);
+    response.setTenantId(processDefinition.getTenantId());
     
     // Links to other resources
     response.setDeploymentId(processDefinition.getDeploymentId());

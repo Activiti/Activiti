@@ -45,6 +45,7 @@ public class ProcessDefinitionCollectionResource {
     properties.put("name", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_NAME);
     properties.put("version", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION);
     properties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
+    properties.put("tenantId", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_TENANT_ID);
   }
   
   @Autowired
