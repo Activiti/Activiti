@@ -434,8 +434,8 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           </row>
           <row>
             <entry>mssql</entry>
-            <entry>jdbc:sqlserver://localhost:1433;databaseName=activiti <emphasis>OR</emphasis> jdbc:jtds:sqlserver://localhost:1433/activiti</entry>
-            <entry>Tested using Microsoft JDBC Driver 4.0 for SQL Server (sqljdbc4.jar) and JTDS Driver (jtds.jar)</entry>
+            <entry>jdbc:sqlserver://localhost:1433;databaseName=activiti (jdbc.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver) <emphasis>OR</emphasis> jdbc:jtds:sqlserver://localhost:1433/activiti (jdbc.driver=net.sourceforge.jtds.jdbc.Driver)</entry>
+            <entry>Tested using Microsoft JDBC Driver 4.0 (sqljdbc4.jar) and JTDS Driver</entry>
           </row>
         </tbody>
       </tgroup>
