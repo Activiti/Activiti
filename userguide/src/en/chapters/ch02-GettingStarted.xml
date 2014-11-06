@@ -114,16 +114,15 @@
     should be changed.
     </para>
     <para>In addition, be aware that the Activiti Explorer generates demo user and groups, process definitions and models by default.
-    To disable this, the activiti-standalone-context.xml file in the WEB-INF folder should be changed. To disable the demo setup fully you can use the following snippet
-    of the <literal>demoDataGenerator</literal> bean definition. But as you can see you can also enable and disable items individually.
+    To disable this, the engine.properties file in the WEB-INF/classes folder should be changed. To disable the demo setup fully you can
+    set all of these properties to false. But as you can see you can also enable and disable items individually.
     </para>
     <programlisting>
-      &lt;bean id="demoDataGenerator" class="org.activiti.explorer.demo.DemoDataGenerator">
-        &lt;property name="processEngine" ref="processEngine" />
-        &lt;property name="createDemoUsersAndGroups" value="false" />
-        &lt;property name="createDemoProcessDefinitions" value="false" />
-        &lt;property name="createDemoModels" value="false" />
-      &lt;/bean>
+      # demo data properties
+      create.demo.users=true
+      create.demo.definitions=true
+      create.demo.models=true
+      create.demo.reports=true
     </programlisting>
   </section>
   

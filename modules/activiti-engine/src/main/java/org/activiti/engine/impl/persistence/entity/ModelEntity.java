@@ -170,5 +170,13 @@ public class ModelEntity implements Model, HasRevision, PersistentObject, Serial
 	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
+	
+	public boolean hasEditorSource() {
+	  return this.editorSourceValueId != null;
+	}
+	
+	public boolean hasEditorSourceExtra() {
+	  return this.editorSourceExtraValueId != null;
+	}
   
 }
