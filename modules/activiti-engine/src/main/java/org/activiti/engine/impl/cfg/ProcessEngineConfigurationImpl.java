@@ -64,6 +64,7 @@ import org.activiti.engine.impl.bpmn.data.ItemInstance;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.parser.BpmnParseHandlers;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
+import org.activiti.engine.impl.bpmn.parser.factory.AbstractBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultActivityBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.DefaultListenerFactory;
@@ -942,17 +943,23 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       bpmnParseFactory = new DefaultBpmnParseFactory();
     }
     
-    if (activityBehaviorFactory == null) {
-      DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
-      defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
-      activityBehaviorFactory = defaultActivityBehaviorFactory;
-    }
-    
-    if (listenerFactory == null) {
-      DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
-      defaultListenerFactory.setExpressionManager(expressionManager);
-      listenerFactory = defaultListenerFactory;
-    }
+	if (activityBehaviorFactory == null) {
+	  DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
+	  defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
+	  activityBehaviorFactory = defaultActivityBehaviorFactory;
+	} else if ((activityBehaviorFactory instanceof AbstractBehaviorFactory)
+			&& ((AbstractBehaviorFactory) activityBehaviorFactory).getExpressionManager() == null) {
+		((AbstractBehaviorFactory) activityBehaviorFactory).setExpressionManager(expressionManager);
+	}
+
+	if (listenerFactory == null) {
+	  DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
+	  defaultListenerFactory.setExpressionManager(expressionManager);
+	  listenerFactory = defaultListenerFactory;
+	} else if ((listenerFactory instanceof AbstractBehaviorFactory)
+			&& ((AbstractBehaviorFactory) listenerFactory).getExpressionManager() == null) {
+		((AbstractBehaviorFactory) listenerFactory).setExpressionManager(expressionManager);
+	}
     
     if (bpmnParser == null) {
       bpmnParser = new BpmnParser();
