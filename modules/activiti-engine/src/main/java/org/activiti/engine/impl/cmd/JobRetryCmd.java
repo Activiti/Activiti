@@ -60,6 +60,9 @@ public class JobRetryCmd implements Command<Object> {
 
   public Object execute(CommandContext commandContext)  {
     JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
+    if (job == null) {
+      return null;
+    }
      
     ActivityImpl activity = getCurrentActivity(commandContext, job);
     ProcessEngineConfiguration processEngineConfig = commandContext.getProcessEngineConfiguration();
