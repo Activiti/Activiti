@@ -51,8 +51,9 @@ public class DeploymentsJMXClientTest {
   @SuppressWarnings("unchecked")
   @Test
   public void testDeploymentsJmxClient() throws IOException, InterruptedException, MalformedObjectNameException, AttributeNotFoundException, MBeanException, ReflectionException, InstanceNotFoundException, IntrospectionException {
+    String hostName = Utils.getHostName();
     JMXServiceURL url = 
-            new JMXServiceURL("service:jmx:rmi://DEACN458:10111/jndi/rmi://" + Utils.getHostName() + ":1099/jmxrmi/activiti");
+            new JMXServiceURL("service:jmx:rmi://" + hostName + ":10111/jndi/rmi://" + hostName + ":1099/jmxrmi/activiti");
    
     
     ProcessEngineConfiguration processEngineConfig = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti.cfg.xml");

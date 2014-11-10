@@ -40,7 +40,8 @@ public class JobExecutorJMXClientTest {
 
   @Test
   public void testJobExecutorJMXClient() throws InterruptedException, IOException, MalformedObjectNameException, AttributeNotFoundException, InstanceNotFoundException, MBeanException, ReflectionException {
-    JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://DEACN458:10111/jndi/rmi://" + Utils.getHostName() + ":1099/jmxrmi/activiti");
+    String hostName = Utils.getHostName();
+    JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://" + hostName + ":10111/jndi/rmi://" + hostName + ":1099/jmxrmi/activiti");
     ProcessEngineConfiguration processEngineConfig = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti.cfg.xml");
     ProcessEngine processEngine = processEngineConfig.buildProcessEngine();
 
