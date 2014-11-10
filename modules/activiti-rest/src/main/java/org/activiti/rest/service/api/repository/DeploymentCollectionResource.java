@@ -14,37 +14,37 @@
 package org.activiti.rest.service.api.repository;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.ZipInputStream;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.DeploymentQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.SecuredResource;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
-import org.restlet.data.Form;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-import org.restlet.ext.fileupload.RestletFileUpload;
-import org.restlet.representation.Representation;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 /**
  * @author Tijs Rademakers
  * @author Frederik Heremans
  */
-public class DeploymentCollectionResource extends SecuredResource {
+@RestController
+public class DeploymentCollectionResource {
   
   protected static final String DEPRECATED_API_DEPLOYMENT_SEGMENT = "deployment";
   
@@ -57,82 +57,70 @@ public class DeploymentCollectionResource extends SecuredResource {
     allowedSortProperties.put("tenantId", DeploymentQueryProperty.DEPLOYMENT_TENANT_ID);
   }
   
-  @Get("json")
-  public DataResponse getDeployments() {
-  	if(!authenticate()) { return null; }
-  	
-    DeploymentQuery deploymentQuery = ActivitiUtil.getRepositoryService().createDeploymentQuery();
-    
-    Form query = getQuery();
-    Set<String> names = query.getNames();
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected RepositoryService repositoryService;
+  
+  @RequestMapping(value="/repository/deployments", method = RequestMethod.GET, produces = "application/json")
+  public DataResponse getDeployments(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
+    DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
     
     // Apply filters
-    if(names.contains("name")) {
-      deploymentQuery.deploymentName(getQueryParameter("name", query));
+    if (allRequestParams.containsKey("name")) {
+      deploymentQuery.deploymentName(allRequestParams.get("name"));
     }
-    if(names.contains("nameLike")) {
-      deploymentQuery.deploymentNameLike(getQueryParameter("nameLike", query));
+    if (allRequestParams.containsKey("nameLike")) {
+      deploymentQuery.deploymentNameLike(allRequestParams.get("nameLike"));
     }
-    if(names.contains("category")) {
-      deploymentQuery.deploymentCategory(getQueryParameter("category", query));
+    if (allRequestParams.containsKey("category")) {
+      deploymentQuery.deploymentCategory(allRequestParams.get("category"));
     }
-    if(names.contains("categoryNotEquals")) {
-      deploymentQuery.deploymentCategoryNotEquals(getQueryParameter("categoryNotEquals", query));
+    if (allRequestParams.containsKey("categoryNotEquals")) {
+      deploymentQuery.deploymentCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
     }
-    if(names.contains("tenantId")) {
-      deploymentQuery.deploymentTenantId(getQueryParameter("tenantId", query));
+    if (allRequestParams.containsKey("tenantId")) {
+      deploymentQuery.deploymentTenantId(allRequestParams.get("tenantId"));
     }
-    if(names.contains("tenantIdLike")) {
-      deploymentQuery.deploymentTenantIdLike(getQueryParameter("tenantIdLike", query));
+    if (allRequestParams.containsKey("tenantIdLike")) {
+      deploymentQuery.deploymentTenantIdLike(allRequestParams.get("tenantIdLike"));
     }
-    if(names.contains("withoutTenantId")) {
-    	Boolean withoutTenantId = getQueryParameterAsBoolean("withoutTenantId", query);
-    	if(Boolean.TRUE == withoutTenantId) {
+    if (allRequestParams.containsKey("withoutTenantId")) {
+    	Boolean withoutTenantId = Boolean.valueOf(allRequestParams.get("withoutTenantId"));
+    	if (withoutTenantId) {
     		deploymentQuery.deploymentWithoutTenantId();
     	}
     }
 
-    DataResponse response = new DeploymentsPaginateList(this).paginateList(getQuery(), 
-        deploymentQuery, "id", allowedSortProperties);
+    DataResponse response = new DeploymentsPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/repository/deployments", ""))
+        .paginateList(allRequestParams, deploymentQuery, "id", allowedSortProperties);
     return response;
   }
   
-  @Post
-  public DeploymentResponse uploadDeployment(Representation entity) {
-  	if(!authenticate()) { return null; }
-  	
+  @RequestMapping(value="/repository/deployments", method = RequestMethod.POST, produces = "application/json")
+  public DeploymentResponse uploadDeployment(@RequestParam(value="tenantId", required=false) String tenantId, 
+      HttpServletRequest request, HttpServletResponse response) {
+    
+    if (request instanceof MultipartHttpServletRequest == false) {
+      throw new ActivitiIllegalArgumentException("Multipart request is required");
+    }
+    
+    MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+    
+    if (multipartRequest.getFileMap().size() == 0) {
+      throw new ActivitiIllegalArgumentException("Multipart request with file content is required");
+    }
+    
+    MultipartFile file = multipartRequest.getFileMap().values().iterator().next();
+    
     try {
-
-      if(entity == null || entity.getMediaType() == null || !MediaType.MULTIPART_FORM_DATA.isCompatible(entity.getMediaType())) {
-        throw new ActivitiIllegalArgumentException("The request should be of type" + MediaType.MULTIPART_FORM_DATA  +".");
-      }
-      
-      RestletFileUpload upload = new RestletFileUpload(new DiskFileItemFactory());
-      List<FileItem> items = upload.parseRepresentation(entity);
-      
-      String tenantId = null;
-      
-      FileItem uploadItem = null;
-      for (FileItem fileItem : items) {
-      	if(fileItem.isFormField()) {
-      		if("tenantId".equals(fileItem.getFieldName())) {
-      			tenantId = fileItem.getString("UTF-8");
-      		}
-      	} else if(fileItem.getName() != null) {
-          uploadItem = fileItem;
-        }
-      }
-      
-      if(uploadItem == null) {
-        throw new ActivitiIllegalArgumentException("No file content was found in request body.");
-      }
-      
-      DeploymentBuilder deploymentBuilder = ActivitiUtil.getRepositoryService().createDeployment();
-      String fileName = uploadItem.getName();
+      DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
+      String fileName = file.getName();
       if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
-        deploymentBuilder.addInputStream(fileName, uploadItem.getInputStream());
+        deploymentBuilder.addInputStream(fileName, file.getInputStream());
       } else if (fileName.toLowerCase().endsWith(".bar") || fileName.toLowerCase().endsWith(".zip")) {
-        deploymentBuilder.addZipInputStream(new ZipInputStream(uploadItem.getInputStream()));
+        deploymentBuilder.addZipInputStream(new ZipInputStream(file.getInputStream()));
       } else {
         throw new ActivitiIllegalArgumentException("File must be of type .bpmn20.xml, .bpmn, .bar or .zip");
       }
@@ -144,13 +132,12 @@ public class DeploymentCollectionResource extends SecuredResource {
       
       Deployment deployment = deploymentBuilder.deploy();
       
-      setStatus(Status.SUCCESS_CREATED);
+      response.setStatus(HttpStatus.CREATED.value());
       
-      return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-              .createDeploymentResponse(this, deployment);
+      return restResponseFactory.createDeploymentResponse(deployment, request.getRequestURL().toString().replace("/repository/deployments", ""));
       
     } catch (Exception e) {
-      if(e instanceof ActivitiException) {
+      if (e instanceof ActivitiException) {
         throw (ActivitiException) e;
       }
       throw new ActivitiException(e.getMessage(), e);

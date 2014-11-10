@@ -21,6 +21,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.engine.task.Task;
@@ -581,7 +582,9 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     
     // The jobs should not be executed now
     processEngineConfiguration.getClock().setCurrentTime(new Date(now.getTime() + (60 * 60 * 1000))); // Timer is set to fire on 5 minutes
-    waitForJobExecutorToProcessAllJobs(1000L, 100L);
+    Job job = managementService.createJobQuery().executable().singleResult();
+    assertNull(job);
+    
     assertEquals(1, managementService.createJobQuery().count());
     
     // Activation of the process instance should now allow for job execution

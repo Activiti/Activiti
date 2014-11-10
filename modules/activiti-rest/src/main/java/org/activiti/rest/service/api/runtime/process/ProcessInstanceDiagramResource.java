@@ -16,42 +16,62 @@ package org.activiti.rest.service.api.runtime.process;
 import java.io.InputStream;
 import java.util.Collections;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.image.ProcessDiagramGenerator;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.restlet.data.MediaType;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get;
+import org.apache.commons.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource {
   
-  @Get
-  public InputRepresentation getProcessInstanceDiagram() {
-    ProcessInstance processInstance = getProcessInstanceFromRequest();
+  @Autowired
+  protected RepositoryService repositoryService;
+  
+  @Autowired
+  protected ProcessEngineConfiguration processEngineConfiguration;
+  
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/diagram", method = RequestMethod.GET)
+  public @ResponseBody byte[] getProcessInstanceDiagram(@PathVariable String processInstanceId, HttpServletResponse response) {
+    ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
     
-    ProcessDefinitionEntity pde = (ProcessDefinitionEntity) ((RepositoryServiceImpl) 
-            ActivitiUtil.getRepositoryService()).getDeployedProcessDefinition(processInstance.getProcessDefinitionId());
+    ProcessDefinitionEntity pde = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService)
+        .getDeployedProcessDefinition(processInstance.getProcessDefinitionId());
 
     if (pde != null && pde.isGraphicalNotationDefined()) {
-      BpmnModel bpmnModel = ActivitiUtil.getRepositoryService().getBpmnModel(pde.getId());
-      ProcessEngineConfiguration processEngineConfiguration = ActivitiUtil.getProcessEngine().getProcessEngineConfiguration();
+      BpmnModel bpmnModel = repositoryService.getBpmnModel(pde.getId());
       ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
-      InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", ActivitiUtil.getRuntimeService().getActiveActivityIds(processInstance.getId()),
+      InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()),
           Collections.<String>emptyList(), processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(),
           processEngineConfiguration.getClassLoader(), 1.0);
 
-      InputRepresentation output = new InputRepresentation(resource, MediaType.IMAGE_PNG);
-      return output;
+      try {
+        byte[] responseBytes = IOUtils.toByteArray(resource);
+        response.setContentType("image/png");
+        return responseBytes;
+        
+      } catch(Exception e) {
+        response.setContentType("application/json");
+        throw new ActivitiIllegalArgumentException("Error exporting diagram", e);
+      }
       
     } else {
+      response.setContentType("application/json");
       throw new ActivitiIllegalArgumentException("Process instance with id '" + processInstance.getId() + "' has no graphical notation defined.");
     }
   }

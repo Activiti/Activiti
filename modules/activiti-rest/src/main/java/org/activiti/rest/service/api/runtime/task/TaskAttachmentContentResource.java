@@ -15,54 +15,62 @@ package org.activiti.rest.service.api.runtime.task;
 
 import java.io.InputStream;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletResponse;
+
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Attachment;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.restlet.data.MediaType;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get;
+import org.apache.commons.io.IOUtils;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class TaskAttachmentContentResource extends TaskBaseResource {
 
-  @Get
-  public InputRepresentation getAttachmentContent() {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/runtime/tasks/{taskId}/attachments/{attachmentId}/content", method = RequestMethod.GET, produces="application/json")
+  public @ResponseBody byte[] getAttachmentContent(@PathVariable("taskId") String taskId, 
+      @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
     
-    HistoricTaskInstance task = getHistoricTaskFromRequest();
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+    Attachment attachment = taskService.getAttachment(attachmentId);
     
-    String attachmentId = getAttribute("attachmentId");
-    if(attachmentId == null) {
-      throw new ActivitiIllegalArgumentException("AttachmentId is required.");
-    }
-    
-    Attachment attachment = ActivitiUtil.getTaskService().getAttachment(attachmentId);
-    
-    if(attachment == null || !task.getId().equals(attachment.getTaskId())) {
+    if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Attachment.class);
     }
     
-    InputStream attachmentStream = ActivitiUtil.getTaskService().getAttachmentContent(attachmentId);
-    if(attachmentStream == null) {
-      throw new ActivitiObjectNotFoundException("Attachment with id '" + attachmentId + "' doesn't have content associated with it.", Attachment.class);
+    InputStream attachmentStream = taskService.getAttachmentContent(attachmentId);
+    if (attachmentStream == null) {
+      throw new ActivitiObjectNotFoundException("Attachment with id '" + attachmentId + 
+          "' doesn't have content associated with it.", Attachment.class);
     }
     
-    // Try extracting media-type is type is set and is a valid type
-    MediaType type = null;
-    if(attachment.getType() != null && MediaType.valueOf(attachment.getType()) != null) {
-      type = MediaType.valueOf(attachment.getType());
+    MediaType mediaType = null;
+    if (attachment.getType() != null) {
+      try {
+        mediaType = MediaType.valueOf(attachment.getType());
+        response.setContentType(attachment.getType());
+      } catch (Exception e) {
+        // ignore if unknown media type
+      }
     }
     
-    if(type == null || !type.isConcrete()) {
-      type = MediaType.APPLICATION_OCTET_STREAM;
+    if (mediaType == null) {
+      response.setContentType("application/octet-stream");
     }
     
-    return new InputRepresentation(attachmentStream, type);
+    try {
+      return IOUtils.toByteArray(attachmentStream);
+    } catch (Exception e) {
+      throw new ActivitiException("Error creating attachment data", e);
+    }
   }
 }

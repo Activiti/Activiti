@@ -47,7 +47,7 @@ public class ValidatorSet {
 		}
 	}
 	
-	public void removeValidator(Class<Validator> validatorClass) {
+	public void removeValidator(Class<? extends Validator> validatorClass) {
 		validators.remove(validatorClass);
 	}
 

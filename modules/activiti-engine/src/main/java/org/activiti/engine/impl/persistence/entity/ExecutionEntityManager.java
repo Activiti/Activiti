@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -174,6 +175,24 @@ public class ExecutionEntityManager extends AbstractManager {
   	params.put("deploymentId", deploymentId);
   	params.put("tenantId", newTenantId);
   	getDbSqlSession().update("updateExecutionTenantIdForDeployment", params);
+  }
+  
+  public void updateProcessInstanceLockTime(String processInstanceId) {
+    CommandContext commandContext = Context.getCommandContext();
+    Date lockTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
+    
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("id", processInstanceId);
+    params.put("lockTime", lockTime);
+    
+    getDbSqlSession().update("updateProcessInstanceLockTime", params);
+  }
+  
+  public void clearProcessInstanceLockTime(String processInstanceId) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("id", processInstanceId);
+    
+    getDbSqlSession().update("clearProcessInstanceLockTime", params);
   }
 
 }

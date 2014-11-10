@@ -18,30 +18,35 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
+import javax.servlet.http.HttpServletRequest;
+
+import org.activiti.engine.ManagementService;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.resource.Get;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
-public class TableCollectionResource extends SecuredResource {
+@RestController
+public class TableCollectionResource {
   
-  @Get
-  public List<TableResponse> getTables() {
-    if(authenticate() == false) return null;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected ManagementService managementService;
 
-   List<TableResponse> tables = new ArrayList<TableResponse>();
-   
-   Map<String, Long> tableCounts = ActivitiUtil.getManagementService().getTableCount();
-   
-   RestResponseFactory factory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-   
-   for(Entry<String, Long> entry : tableCounts.entrySet()) {
-     tables.add(factory.createTableResponse(this, entry.getKey(), entry.getValue()));
-   }
-   return tables;
+  @RequestMapping(value="/management/tables", method = RequestMethod.GET, produces = "application/json")
+  public List<TableResponse> getTables(HttpServletRequest request) {
+    List<TableResponse> tables = new ArrayList<TableResponse>();
+    Map<String, Long> tableCounts = managementService.getTableCount();
+    for (Entry<String, Long> entry : tableCounts.entrySet()) {
+      tables.add(restResponseFactory.createTableResponse(entry.getKey(), entry.getValue(),
+          request.getRequestURL().toString().replace("/management/tables", "")));
+    }
+    return tables;
   }
 }

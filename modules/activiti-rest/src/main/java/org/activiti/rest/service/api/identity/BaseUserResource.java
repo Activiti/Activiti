@@ -13,25 +13,26 @@
 
 package org.activiti.rest.service.api.identity;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.User;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
  * @author Frederik Heremans
  */
-public class BaseUserResource extends SecuredResource {
+public class BaseUserResource {
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected IdentityService identityService;
 
-  protected User getUserFromRequest() {
-    String userId = getAttribute("userId");
-    if (userId == null) {
-      throw new ActivitiIllegalArgumentException("The userId cannot be null");
-    }
-
-    User user = ActivitiUtil.getIdentityService().createUserQuery().userId(userId).singleResult();
+  protected User getUserFromRequest(String userId) {
+    User user = identityService.createUserQuery().userId(userId).singleResult();
 
     if (user == null) {
       throw new ActivitiObjectNotFoundException("Could not find a user with id '" + userId + "'.", User.class);

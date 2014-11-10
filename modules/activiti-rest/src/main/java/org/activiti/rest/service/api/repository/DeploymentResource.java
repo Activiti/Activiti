@@ -13,55 +13,58 @@
 
 package org.activiti.rest.service.api.repository;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.Deployment;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.RequestUtil;
-import org.activiti.rest.common.api.SecuredResource;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
-public class DeploymentResource extends SecuredResource {
+@RestController
+public class DeploymentResource {
   
-  @Get
-  public DeploymentResponse getDeployment() {
-    if(authenticate() == false) return null;
-
-    String deploymentId = getAttribute("deploymentId");
-    if(deploymentId == null) {
-      throw new ActivitiIllegalArgumentException("The deploymentId cannot be null");
-    }
-    
-    Deployment deployment = ActivitiUtil.getRepositoryService().createDeploymentQuery()
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected RepositoryService repositoryService;
+  
+  @RequestMapping(value="/repository/deployments/{deploymentId}", method = RequestMethod.GET, produces = "application/json")
+  public DeploymentResponse getDeployment(@PathVariable String deploymentId, HttpServletRequest request) {
+    Deployment deployment = repositoryService.createDeploymentQuery()
             .deploymentId(deploymentId)
             .singleResult();
     
-    if(deployment == null) {
+    if (deployment == null) {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
     }
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-      .createDeploymentResponse(this, deployment);
+    
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/deployments/"));
+    return restResponseFactory.createDeploymentResponse(deployment, serverRootUrl);
   }
   
-  @Delete
-  public void deleteDeployment() {
-    if(authenticate() == false) return;
+  @RequestMapping(value="/repository/deployments/{deploymentId}", method = RequestMethod.DELETE, produces = "application/json")
+  public void deleteDeployment(@PathVariable String deploymentId, @RequestParam(value="cascade", required=false, defaultValue="false") 
+      Boolean cascade, HttpServletResponse response) {
     
-    String deploymentId = getAttribute("deploymentId");
-    
-    Boolean cascade = RequestUtil.getBoolean(getQuery(), "cascade", false);
     if (cascade) {
-      ActivitiUtil.getRepositoryService().deleteDeployment(deploymentId, true);
+      repositoryService.deleteDeployment(deploymentId, true);
     }
     else {
-      ActivitiUtil.getRepositoryService().deleteDeployment(deploymentId);
+      repositoryService.deleteDeployment(deploymentId);
     }
-    getResponse().setStatus(Status.SUCCESS_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

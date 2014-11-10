@@ -13,6 +13,7 @@
 package org.activiti.mule;
 
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.repository.Deployment;
@@ -27,23 +28,26 @@ import org.junit.Test;
 public class MuleVMTest extends AbstractMuleTest {
 
   @Test
-  public void testSend() throws Exception {
+  public void send() throws Exception {
     Assert.assertTrue(muleContext.isStarted());
     
-    RepositoryService repositoryService = muleContext.getRegistry().get("repositoryService");
+    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+    RepositoryService repositoryService = processEngine.getRepositoryService();
     Deployment deployment = repositoryService.createDeployment()
         .addClasspathResource("org/activiti/mule/testVM.bpmn20.xml")
         .deploy();
-    RuntimeService runtimeService = muleContext.getRegistry().get("runtimeService");
+    
+    RuntimeService runtimeService = processEngine.getRuntimeService();
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("muleProcess");
     Assert.assertFalse(processInstance.isEnded());
     Object result = runtimeService.getVariable(processInstance.getProcessInstanceId(), "theVariable");
     Assert.assertEquals(30, result);
     runtimeService.deleteProcessInstance(processInstance.getId(), "test");
-    ProcessEngine processEngine = muleContext.getRegistry().get("processEngine");
+    
     processEngine.getHistoryService().deleteHistoricProcessInstance(processInstance.getId());
     repositoryService.deleteDeployment(deployment.getId());
     assertAndEnsureCleanDb(processEngine);
+    ProcessEngines.destroy();
   }
 
   @Override

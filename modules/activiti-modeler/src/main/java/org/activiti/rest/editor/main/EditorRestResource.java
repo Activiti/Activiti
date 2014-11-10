@@ -14,21 +14,26 @@ package org.activiti.rest.editor.main;
 
 import java.io.InputStream;
 
-import org.restlet.data.MediaType;
-import org.restlet.representation.InputRepresentation;
-import org.restlet.resource.Get;
-import org.restlet.resource.ServerResource;
+import org.activiti.engine.ActivitiException;
+import org.apache.commons.io.IOUtils;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Tijs Rademakers
  */
-public class EditorRestResource extends ServerResource {
+@RestController
+public class EditorRestResource {
   
-  @Get
-  public InputRepresentation getEditorPage() {
+  @RequestMapping(value="/editor", method = RequestMethod.GET, produces = "application/xhtml+xml")
+  public @ResponseBody String getEditorPage() {
     InputStream editorStream = this.getClass().getClassLoader().getResourceAsStream("editor.html");
-    InputRepresentation editorResultRepresentation = new InputRepresentation(editorStream);
-    editorResultRepresentation.setMediaType(MediaType.APPLICATION_XHTML);
-    return editorResultRepresentation;
+    try {
+      return IOUtils.toString(editorStream);
+    } catch (Exception e) {
+      throw new ActivitiException("Error while loading editor page", e);
+    }
   }
 }

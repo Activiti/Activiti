@@ -311,6 +311,10 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     return isGraphicalNotationDefined;
   }
   
+  public boolean hasGraphicalNotation() {
+  	return isGraphicalNotationDefined;
+  }
+  
   public void setGraphicalNotationDefined(boolean isGraphicalNotationDefined) {
     this.isGraphicalNotationDefined = isGraphicalNotationDefined;
   }

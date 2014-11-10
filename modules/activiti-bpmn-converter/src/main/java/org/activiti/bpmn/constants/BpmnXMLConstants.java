@@ -49,10 +49,11 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_ERROR = "error";
   public static final String ELEMENT_COLLABORATION = "collaboration";
   public static final String ELEMENT_PARTICIPANT = "participant";
+  public static final String ELEMENT_MESSAGE_FLOW = "messageFlow";
   public static final String ELEMENT_LANESET = "laneSet";
   public static final String ELEMENT_LANE = "lane";
+  public static final String ELEMENT_FLOWNODE_REF = "flowNodeRef";
   public static final String ATTRIBUTE_PROCESS_REF = "processRef";
-  public static final String ATTRIBUTE_FLOWNODE_REF = "flowNodeRef";
   
   public static final String ELEMENT_PROCESS = "process";
   public static final String ATTRIBUTE_PROCESS_EXECUTABLE = "isExecutable";
@@ -62,6 +63,8 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_SUBPROCESS = "subProcess";
   public static final String ATTRIBUTE_TRIGGERED_BY = "triggeredByEvent";
   public static final String ELEMENT_TRANSACTION = "transaction";
+  
+  public static final String ELEMENT_DATA_STATE = "dataState";
   
   public static final String ELEMENT_EXTENSIONS = "extensionElements";
   
@@ -106,12 +109,16 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_STRUCTURE_REF = "structureRef";
   public static final String ATTRIBUTE_ITEM_KIND = "itemKind";
   
+  public static final String ELEMENT_DATA_STORE = "dataStore";
+  public static final String ELEMENT_DATA_STORE_REFERENCE = "dataStoreReference";
+  public static final String ATTRIBUTE_ITEM_SUBJECT_REF = "itemSubjectRef";
+  public static final String ATTRIBUTE_DATA_STORE_REF = "dataStoreRef";
+  
   public static final String ELEMENT_IOSPECIFICATION = "ioSpecification";
   public static final String ELEMENT_DATA_INPUT = "dataInput";
   public static final String ELEMENT_DATA_OUTPUT = "dataOutput";
   public static final String ELEMENT_DATA_INPUT_REFS = "dataInputRefs";
   public static final String ELEMENT_DATA_OUTPUT_REFS = "dataOutputRefs";
-  public static final String ATTRIBUTE_DATA_SUBJECT_REF = "itemSubjectRef";
   
   public static final String ELEMENT_INPUT_ASSOCIATION = "dataInputAssociation";
   public static final String ELEMENT_OUTPUT_ASSOCIATION = "dataOutputAssociation";
@@ -198,6 +205,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_GATEWAY_EVENT = "eventBasedGateway";
   public static final String ELEMENT_GATEWAY_INCLUSIVE = "inclusiveGateway";
   public static final String ELEMENT_GATEWAY_PARALLEL = "parallelGateway";
+  public static final String ELEMENT_GATEWAY_COMPLEX = "complexGateway";
   
   public static final String ELEMENT_EVENT_START = "startEvent";
   public static final String ELEMENT_EVENT_END = "endEvent";

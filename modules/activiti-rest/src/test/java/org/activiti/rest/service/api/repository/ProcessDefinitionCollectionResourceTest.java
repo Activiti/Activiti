@@ -4,18 +4,21 @@ import java.util.List;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.restlet.data.Status;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * Test for all REST-operations related to the Deployment collection.
  * 
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
+public class ProcessDefinitionCollectionResourceTest extends BaseSpringRestTestCase {
   
   /**
   * Test getting process definitions.
@@ -33,6 +36,10 @@ public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
               .addClasspathResource("org/activiti/rest/service/api/repository/twoTaskProcess.bpmn20.xml")
               .deploy();
       
+      Deployment thirdDeployment = repositoryService.createDeployment().name("Deployment 3")
+          .addClasspathResource("org/activiti/rest/service/api/repository/oneTaskProcessWithDi.bpmn20.xml")
+          .deploy();
+      
       ProcessDefinition oneTaskProcess = repositoryService.createProcessDefinitionQuery()
               .processDefinitionKey("oneTaskProcess").deploymentId(firstDeployment.getId()).singleResult();
       
@@ -41,13 +48,36 @@ public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
       
       ProcessDefinition twoTaskprocess = repositoryService.createProcessDefinitionQuery()
               .processDefinitionKey("twoTaskProcess").deploymentId(secondDeployment.getId()).singleResult();
+      
+      ProcessDefinition oneTaskWithDiProcess = repositoryService.createProcessDefinitionQuery()
+          .processDefinitionKey("oneTaskProcessWithDi").deploymentId(thirdDeployment.getId()).singleResult();
+      
 
       // Test parameterless call
       String baseUrl = RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION_COLLECTION);
-      assertResultsPresentInDataResponse(baseUrl, oneTaskProcess.getId(), twoTaskprocess.getId(), latestOneTaskProcess.getId());
+      assertResultsPresentInDataResponse(baseUrl, oneTaskProcess.getId(), twoTaskprocess.getId(), latestOneTaskProcess.getId(), oneTaskWithDiProcess.getId());
+      
+      // Verify ACT-2141 Persistent isGraphicalNotation flag for process definitions
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + baseUrl), HttpStatus.SC_OK);
+      JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+      closeResponse(response);
+      for (int i=0; i<dataNode.size(); i++) {
+      	JsonNode processDefinitionJson = dataNode.get(i);
+      	
+      	String key = processDefinitionJson.get("key").asText();
+      	JsonNode graphicalNotationNode = processDefinitionJson.get("graphicalNotationDefined");
+      	if (key.equals("oneTaskProcessWithDi")) {
+      		assertTrue(graphicalNotationNode.asBoolean());
+      	} else {
+      		assertFalse(graphicalNotationNode.asBoolean());
+      	}
+      	
+      }
+      
+      // Verify
       
       // Test name filtering
-      String url = baseUrl + "?name=The Two Task Process";
+      String url = baseUrl + "?name=" + encode("The Two Task Process");
       assertResultsPresentInDataResponse(url, twoTaskprocess.getId());
       
       // Test nameLike filtering
@@ -63,7 +93,7 @@ public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, oneTaskProcess.getId(), latestOneTaskProcess.getId());
       
       // Test keyLike filtering
-      url = baseUrl + "?keyLike=two%";
+      url = baseUrl + "?keyLike=" + encode("two%");
       assertResultsPresentInDataResponse(url, twoTaskprocess.getId());
       
       // Test category filtering
@@ -76,7 +106,7 @@ public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
       
       // Test categoryNotEquals filtering
       url = baseUrl + "?categoryNotEquals=OneTaskCategory";
-      assertResultsPresentInDataResponse(url, twoTaskprocess.getId());
+      assertResultsPresentInDataResponse(url, twoTaskprocess.getId(), oneTaskWithDiProcess.getId());
       
       // Test resourceName filtering
       url = baseUrl + "?resourceName=org/activiti/rest/service/api/repository/twoTaskProcess.bpmn20.xml";
@@ -92,9 +122,9 @@ public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
       
       // Test latest filtering
       url = baseUrl + "?latest=true";
-      assertResultsPresentInDataResponse(url, latestOneTaskProcess.getId(), twoTaskprocess.getId());
+      assertResultsPresentInDataResponse(url, latestOneTaskProcess.getId(), twoTaskprocess.getId(), oneTaskWithDiProcess.getId());
       url = baseUrl + "?latest=false";
-      assertResultsPresentInDataResponse(baseUrl, oneTaskProcess.getId(), twoTaskprocess.getId(), latestOneTaskProcess.getId());
+      assertResultsPresentInDataResponse(baseUrl, oneTaskProcess.getId(), twoTaskprocess.getId(), latestOneTaskProcess.getId(), oneTaskWithDiProcess.getId());
       
       // Test deploymentId
       url = baseUrl + "?deploymentId=" + secondDeployment.getId();
@@ -111,18 +141,12 @@ public class ProcessDefinitionCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, twoTaskprocess.getId());
       
       url = baseUrl + "?suspended=false";
-      assertResultsPresentInDataResponse(url, latestOneTaskProcess.getId(), oneTaskProcess.getId());
+      assertResultsPresentInDataResponse(url, latestOneTaskProcess.getId(), oneTaskProcess.getId(), oneTaskWithDiProcess.getId());
       
       // Test using latest without key -> not allowed
       url = baseUrl + "?latest=true&name=anyname";
-      try {
-        ClientResource client = getAuthenticatedClient(url);
-        client.get();
-        fail("400 status expected, but was: " + client.getResponse().getStatus());
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("Calling latest() can only be used in combination with key(String) and keyLike(String)", expected.getStatus().getDescription());
-      }
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + url);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_BAD_REQUEST));
       
     } finally {
       // Always cleanup any created deployments, even if the test failed

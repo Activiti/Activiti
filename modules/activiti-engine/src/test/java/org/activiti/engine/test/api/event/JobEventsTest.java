@@ -12,6 +12,10 @@
  */
 package org.activiti.engine.test.api.event;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -22,11 +26,6 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import java.util.Calendar;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to jobs.
@@ -265,7 +264,12 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
 		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-		waitForJobExecutorToProcessAllJobs(2000, 100);
+		try {
+		  managementService.executeJob(theJob.getId());
+		  fail("Expected exception");
+		} catch (Exception e) {
+		  // exception expected
+		}
 		
 		// Check delete-event has been dispatched
 		assertEquals(5, listener.getEventsReceived().size());

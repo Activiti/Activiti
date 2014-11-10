@@ -4,7 +4,7 @@
 
 	<property file="${user.home}/.activiti/build.properties" />
 
-	<property name="activiti.version" value="5.16.4-SNAPSHOT" />
+	<property name="activiti.version" value="5.17.0-SNAPSHOT" />
 	<property name="target.distro.root" value="target/zip/activiti-${activiti.version}" />
 	<property name="activiti.website" value="../../activiti-website" />
 
@@ -56,9 +56,6 @@
 			</fileset>
 			<fileset dir="../modules/activiti-spring/target">
 				<include name="activiti-spring-*.jar" />
-			</fileset>
-			<fileset dir="../modules/activiti-spring-boot/target">
-				<include name="activiti-spring-boot-*.jar" />
 			</fileset>
 			<fileset dir="../modules/activiti-bpmn-model/target">
 				<include name="activiti-bpmn-model-*.jar" />

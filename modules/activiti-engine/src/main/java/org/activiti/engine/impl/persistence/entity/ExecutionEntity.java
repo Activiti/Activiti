@@ -14,6 +14,9 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -112,6 +115,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   /** The tenant identifier (if any) */
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected String name;
+  
+  protected Date lockTime;
   
   // state/type of execution ////////////////////////////////////////////////// 
   
@@ -229,7 +234,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    * persisted reference to the parent of this execution.
    * 
    * @see #getParent()
-   * @see #setParent(ExecutionEntity)
+   * @see #setParentId(String)
    */
   protected String parentId;
   
@@ -280,7 +285,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     return createdExecution;
   }
-  
+
   public PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition) {
     ExecutionEntity subProcessInstance = newExecution();
     
@@ -295,6 +300,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     Context.getCommandContext().getHistoryManager()
       .recordSubProcessInstanceStart(this, subProcessInstance);
 
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+        ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, subProcessInstance));
+    }
     return subProcessInstance;
   }
 
@@ -630,6 +639,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
     // At the moment, only AtomicOperationTransitionCreateScope can be performed asynchronously,
     // so there is no need to pass it to the handler
+    
+    GregorianCalendar expireCal = new GregorianCalendar();
+    ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
+    expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
+    expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
+    message.setLockExpirationTime(expireCal.getTime());
     
     // Inherit tenant id (if applicable)
     if (getTenantId() != null) {
@@ -1197,6 +1212,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     persistentState.put("isEventScope", this.isEventScope);
     persistentState.put("parentId", parentId);
     persistentState.put("name", name);
+    persistentState.put("lockTime", lockTime);
     persistentState.put("superExecution", this.superExecutionId);
     if (forcedUpdate) {
       persistentState.put("forcedUpdate", Boolean.TRUE);
@@ -1386,7 +1402,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    **/
   public IdentityLinkEntity involveUser(String userId, String type) {
     for (IdentityLinkEntity identityLink : getIdentityLinks()) {
-      if (identityLink.getUserId().equals(userId)) {
+      if (identityLink.isUser() && identityLink.getUserId().equals(userId)) {
         return identityLink;
       }
     }
@@ -1571,7 +1587,15 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 		this.tenantId = tenantId;
 	}
 
-	public Map<String, Object> getProcessVariables() {
+	public Date getLockTime() {
+    return lockTime;
+  }
+
+  public void setLockTime(Date lockTime) {
+    this.lockTime = lockTime;
+  }
+
+  public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {
       for (VariableInstanceEntity variableInstance: queryVariables) {

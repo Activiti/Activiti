@@ -13,186 +13,63 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.runtime.Execution;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
-import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
-import org.restlet.resource.Put;
-import org.restlet.resource.ResourceException;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
-public class ExecutionVariableCollectionResource extends BaseExecutionVariableResource {
+@RestController
+public class ExecutionVariableCollectionResource extends BaseVariableCollectionResource {
 
-  @Get
-  public List<RestVariable> getVariables() {
-    if (authenticate() == false)
-      return null;
+  @RequestMapping(value="/runtime/executions/{executionId}/variables", method = RequestMethod.GET, produces="application/json")
+  public List<RestVariable> getVariables(@PathVariable String executionId, 
+      @RequestParam(value="scope", required=false) String scope, HttpServletRequest request) {
     
-    Execution execution = getExecutionFromRequest();
-    
-    List<RestVariable> result = new ArrayList<RestVariable>();
-    Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
-    
-    // Check if it's a valid execution to get the variables for
-    RestVariableScope variableScope = RestVariable.getScopeFromString(getQueryParameter("scope", getQuery()));
-    
-    if(variableScope == null) {
-      // Use both local and global variables
-      addLocalVariables(execution, variableMap);
-      addGlobalVariables(execution, variableMap);
-    } else if(variableScope == RestVariableScope.GLOBAL) {
-      addGlobalVariables(execution, variableMap);
-    } else if(variableScope == RestVariableScope.LOCAL) {
-      addLocalVariables(execution, variableMap);
-    }
-    
-    // Get unique variables from map
-    result.addAll(variableMap.values());
-    return result;
+    Execution execution = getExecutionFromRequest(executionId);
+    return processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION, getServerRootUrl(request));
   }
   
-  @Put
-  public Object createOrUpdateExecutionVariable(Representation representation) {
-  	if(!authenticate()) { return null; }
-  	
-    return createExecutionVariable(representation, true);
+  @RequestMapping(value="/runtime/executions/{executionId}/variables", method = RequestMethod.PUT, produces="application/json")
+  public Object createOrUpdateExecutionVariable(@PathVariable String executionId,
+      HttpServletRequest request, HttpServletResponse response) {
+    
+    Execution execution = getExecutionFromRequest(executionId);
+    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, 
+        getServerRootUrl(request), request, response);
   }
   
   
-  @Post
-  public Object createExecutionVariable(Representation representation) {
-  	if(!authenticate()) { return null; }
-  	
-   return createExecutionVariable(representation, false);
+  @RequestMapping(value="/runtime/executions/{executionId}/variables", method = RequestMethod.POST, produces="application/json")
+  public Object createExecutionVariable(@PathVariable String executionId,
+      HttpServletRequest request, HttpServletResponse response) {
+    
+    Execution execution = getExecutionFromRequest(executionId);
+  	return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, 
+  	    getServerRootUrl(request), request, response);
   }
   
-  @Delete
-  public void deleteAllLocalVariables() {
-  	if(!authenticate()) { return; }
-  	
-    Execution execution = getExecutionFromRequest();
-    Collection<String> currentVariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId()).keySet();
-    ActivitiUtil.getRuntimeService().removeVariablesLocal(execution.getId(), currentVariables);
-    
-    setStatus(Status.SUCCESS_NO_CONTENT);
+  @RequestMapping(value="/runtime/executions/{executionId}/variables", method = RequestMethod.DELETE)
+  public void deleteLocalVariables(@PathVariable String executionId, HttpServletResponse response) {
+    Execution execution = getExecutionFromRequest(executionId);
+    deleteAllLocalVariables(execution, response);
   }
   
-  protected Object createExecutionVariable(Representation representation, boolean override) {
-    if (authenticate() == false)
-      return null;
-    
-    Execution execution = getExecutionFromRequest();
-    
-    Object result = null;
-    if(MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
-      result = setBinaryVariable(representation, execution, true);
-    } else {
-      // Since we accept both an array of RestVariables and a single RestVariable, we need to inspect the
-      // body before passing on to the converterService
-      try {
-        
-        List<RestVariable> variables = new ArrayList<RestVariable>();
-        result = variables;
-        
-        RestVariable[] restVariables = getConverterService().toObject(representation, RestVariable[].class, this);
-        if(restVariables == null || restVariables.length == 0) {
-          throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
-        }
-        
-        RestVariableScope sharedScope = null;
-        RestVariableScope varScope = null;
-        Map<String, Object> variablesToSet = new HashMap<String, Object>();
-        
-        RestResponseFactory factory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-        for(RestVariable var : restVariables) {
-          // Validate if scopes match
-          varScope = var.getVariableScope();
-          if(var.getName() == null) {
-            throw new ActivitiIllegalArgumentException("Variable name is required");
-          }
-          
-          if(varScope == null) {
-            varScope = RestVariableScope.LOCAL;
-          }
-          if(sharedScope == null) {
-            sharedScope = varScope;
-          }
-          if(varScope != sharedScope) {
-            throw new ActivitiIllegalArgumentException("Only allowed to update multiple variables in the same scope.");
-          }
-          
-          if(!override && hasVariableOnScope(execution, var.getName(), varScope)) {
-            throw new ResourceException(new Status(Status.CLIENT_ERROR_CONFLICT.getCode(), "Variable '" + var.getName() + "' is already present on execution '" + execution.getId() + "'.", null, null));
-          }
-          
-          Object actualVariableValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-                  .getVariableValue(var);
-          variablesToSet.put(var.getName(), actualVariableValue);
-          variables.add(factory.createRestVariable(this, var.getName(), actualVariableValue, varScope, execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, false));
-        }
-        
-        if(!variablesToSet.isEmpty()) {
-          if(sharedScope == RestVariableScope.LOCAL) {
-            ActivitiUtil.getRuntimeService().setVariablesLocal(execution.getId(), variablesToSet);
-          } else {
-            if(execution.getParentId() != null) {
-              // Explicitly set on parent, setting non-local variables on execution itself will override local-variables if exists
-              ActivitiUtil.getRuntimeService().setVariables(execution.getParentId(), variablesToSet);
-            } else {
-              // Standalone task, no global variables possible
-              throw new ActivitiIllegalArgumentException("Cannot set global variables on execution '" + execution.getId() +"', task is not part of process.");
-            }
-          }
-        }
-      } catch (IOException ioe) {
-        throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, ioe);
-      }
-    }
-    setStatus(Status.SUCCESS_CREATED);
-    return result;
-  }
-  
-  protected void addGlobalVariables(Execution execution, Map<String, RestVariable> variableMap) {
-    Map<String, Object> rawVariables = ActivitiUtil.getRuntimeService().getVariables(execution.getId());
-    List<RestVariable> globalVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawVariables, execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, RestVariableScope.GLOBAL);
-    
-    // Overlay global variables over local ones. In case they are present the values are not overridden, 
-    // since local variables get precedence over global ones at all times.
-    for(RestVariable var : globalVariables) {
-      if(!variableMap.containsKey(var.getName())) {
-        variableMap.put(var.getName(), var);
-      }
-    }
-  }
-
-  
-  protected void addLocalVariables(Execution execution, Map<String, RestVariable> variableMap) {
-    Map<String, Object> rawLocalvariables = ActivitiUtil.getRuntimeService().getVariablesLocal(execution.getId());
-    List<RestVariable> localVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawLocalvariables, execution.getId(), RestResponseFactory.VARIABLE_EXECUTION, RestVariableScope.LOCAL);
-    
-    for(RestVariable var : localVariables) {
-      variableMap.put(var.getName(), var);
-    }
+  protected String getServerRootUrl(HttpServletRequest request) {
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/executions/"));
+    return serverRootUrl;
   }
 }

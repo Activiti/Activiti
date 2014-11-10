@@ -5,11 +5,11 @@ import java.util.Date;
 import java.util.List;
 
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.cmd.AcquireJobsCmd;
+import org.activiti.engine.impl.asyncexecutor.AcquiredJobEntities;
+import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
 import org.activiti.engine.impl.jobexecutor.GetUnlockedTimersByDuedateCmd;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -32,14 +32,13 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     
     // now there is one job:
     // now there is one job:
-    Job job = managementService.createJobQuery()
-      .singleResult();
+    Job job = managementService.createJobQuery().singleResult();
     assertNotNull(job);
     
     makeSureJobDue(job);
     
     // the acquirejobs command sees the job:
-    AcquiredJobs acquiredJobs = executeAcquireJobsCommand();
+    AcquiredJobEntities acquiredJobs = executeAcquireJobsCommand();
     assertEquals(1, acquiredJobs.size());
     
     // suspend the process instance:
@@ -63,7 +62,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     makeSureJobDue(job);
         
     // the acquirejobs command sees the job:
-    AcquiredJobs acquiredJobs = executeAcquireJobsCommand();
+    AcquiredJobEntities acquiredJobs = executeAcquireJobsCommand();
     assertEquals(1, acquiredJobs.size());
     
     // suspend the process instance:
@@ -81,12 +80,6 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     assertNotNull(procInst);
     assertEquals(1, managementService.createJobQuery().processInstanceId(procInst.getId()).count());
     
-    // Shutdown the job-executor so timer's won't be executed
-    boolean wasJobExecutorActive = processEngineConfiguration.getJobExecutor().isActive();
-    if(wasJobExecutorActive) {
-      processEngineConfiguration.getJobExecutor().shutdown();
-    }
-    
     // Roll time ahead to be sure timer is due to fire
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DAY_OF_YEAR, 1);
@@ -103,11 +96,6 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     // Check if the timer is NOT aquired, even though the duedate is reached
     jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
     assertEquals(0, jobs.size());
-    
-    // Start job-executor again, if needed
-    if(wasJobExecutorActive) {
-      processEngineConfiguration.getJobExecutor().start();
-    }
   }
 
   protected void makeSureJobDue(final Job job) {
@@ -124,9 +112,9 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
       });
   }
 
-  private AcquiredJobs executeAcquireJobsCommand() {
+  private AcquiredJobEntities executeAcquireJobsCommand() {
     return processEngineConfiguration.getCommandExecutor()
-      .execute(new AcquireJobsCmd(processEngineConfiguration.getJobExecutor()));
+      .execute(new AcquireTimerJobsCmd("testLockOwner", 60000, 5));
   }
     
 }

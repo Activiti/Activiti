@@ -3,7 +3,6 @@ package org.activiti.examples.bpmn.shell;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.junit.Test;
 
 public class ShellTaskTest extends PluggableActivitiTestCase {
 
@@ -31,7 +30,6 @@ public class ShellTaskTest extends PluggableActivitiTestCase {
     osType = getSystemOsType();
   }
 
-  @Test //TODO JUnit 3 or 4???
   public void testOsDetection() throws Exception {
     assertTrue(osType != OsType.UNKOWN);
   }

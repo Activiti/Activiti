@@ -16,60 +16,83 @@ package org.activiti.rest.service.api.runtime.process;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
- * @author Frederik Heremans
+ * @author Tijs Rademakers
  */
-public class ProcessInstanceVariableCollectionResource extends ExecutionVariableCollectionResource {
-
-  /**
-   * Get valid execution from request, in this case a {@link ProcessInstance}.
-   */
-  protected Execution getExecutionFromRequest() {
-    String processInstanceId = getAttribute("processInstanceId");
+@RestController
+public class ProcessInstanceVariableCollectionResource extends BaseVariableCollectionResource {
+  
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.GET, produces="application/json")
+  public List<RestVariable> getVariables(@PathVariable String processInstanceId, 
+      @RequestParam(value="scope", required=false) String scope, HttpServletRequest request) {
     
-    if (processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("The processInstanceId cannot be null");
-    }
-    
-    Execution execution = ActivitiUtil.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-    if (execution == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", ProcessInstance.class);
-    }
-    return execution;
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    return processVariables(execution, scope, RestResponseFactory.VARIABLE_PROCESS, getServerRootUrl(request));
   }
   
-  protected void addGlobalVariables(Execution execution, Map<String, RestVariable> variableMap) {
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.PUT, produces="application/json")
+  public Object createOrUpdateExecutionVariable(@PathVariable String processInstanceId, 
+      HttpServletRequest request, HttpServletResponse response) {
+    
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_PROCESS, 
+        getServerRootUrl(request), request, response);
+  }
+  
+  
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.POST, produces="application/json")
+  public Object createExecutionVariable(@PathVariable String processInstanceId, 
+      HttpServletRequest request, HttpServletResponse response) {
+    
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_PROCESS, 
+        getServerRootUrl(request), request, response);
+  }
+  
+  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.DELETE)
+  public void deleteLocalVariables(@PathVariable String processInstanceId, HttpServletResponse response) {
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    deleteAllLocalVariables(execution, response);
+  }
+  
+  protected String getServerRootUrl(HttpServletRequest request) {
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
+    return serverRootUrl;
+  }
+  
+  @Override
+  protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, String serverRootUrl) {
     // no global variables
   }
 
   //For process instance there's only one scope. Using the local variables method for that
-  protected void addLocalVariables(Execution execution, Map<String, RestVariable> variableMap) {
-    Map<String, Object> rawVariables = ActivitiUtil.getRuntimeService().getVariables(execution.getId());
-    List<RestVariable> globalVariables = getApplication(ActivitiRestServicesApplication.class)
-            .getRestResponseFactory().createRestVariables(this, rawVariables, execution.getId(), RestResponseFactory.VARIABLE_PROCESS, RestVariableScope.LOCAL);
+  @Override
+  protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, String serverRootUrl) {
+    Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
+    List<RestVariable> globalVariables = restResponseFactory.createRestVariables(rawVariables, 
+        execution.getId(), variableType, RestVariableScope.LOCAL, serverRootUrl);
     
     // Overlay global variables over local ones. In case they are present the values are not overridden, 
     // since local variables get precedence over global ones at all times.
-    for(RestVariable var : globalVariables) {
-      if(!variableMap.containsKey(var.getName())) {
+    for (RestVariable var : globalVariables) {
+      if (!variableMap.containsKey(var.getName())) {
         variableMap.put(var.getName(), var);
       }
     }
-  }
-  
-  @Override
-  protected boolean allowProcessInstanceUrl() {
-    return true;
   }
 }

@@ -13,51 +13,48 @@
 
 package org.activiti.rest.service.api.history;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Tijs Rademakers
  */
-public class HistoricTaskInstanceResource extends SecuredResource {
+@RestController
+public class HistoricTaskInstanceResource {
 
-  @Get
-  public HistoricTaskInstanceResponse getTaskInstance() {
-    if(!authenticate()) {
-      return null;
-    }
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .createHistoricTaskInstanceResponse(this, getHistoricTaskInstanceFromRequest());
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected HistoryService historyService;
+
+  @RequestMapping(value="/history/historic-task-instances/{taskId}", method = RequestMethod.GET, produces = "application/json")
+  public HistoricTaskInstanceResponse getTaskInstance(@PathVariable String taskId, HttpServletRequest request) {
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-task-instances/"));
+    return restResponseFactory.createHistoricTaskInstanceResponse(getHistoricTaskInstanceFromRequest(taskId), serverRootUrl);
   }
   
-  @Delete
-  public void deleteTaskInstance() {
-    if(!authenticate()) {
-      return;
-    }
-    
-    String taskId = getAttribute("taskId");
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
-    }
-    
-    ActivitiUtil.getHistoryService().deleteHistoricTaskInstance(taskId);
+  @RequestMapping(value="/history/historic-task-instances/{taskId}", method = RequestMethod.DELETE)
+  public void deleteTaskInstance(@PathVariable String taskId, HttpServletResponse response) {
+    historyService.deleteHistoricTaskInstance(taskId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
-  protected HistoricTaskInstance getHistoricTaskInstanceFromRequest() {
-    String taskId = getAttribute("taskId");
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
-    }
-    
-    HistoricTaskInstance taskInstance = ActivitiUtil.getHistoryService().createHistoricTaskInstanceQuery()
+  protected HistoricTaskInstance getHistoricTaskInstanceFromRequest(String taskId) {
+    HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery()
            .taskId(taskId).singleResult();
     if (taskInstance == null) {
       throw new ActivitiObjectNotFoundException("Could not find a task instance with id '" + taskId + "'.", HistoricTaskInstance.class);

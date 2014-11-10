@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author martin.grofcik
  */
-public class SimulationAcquireJobsRunnable extends AcquireJobsRunnable {
+public class SimulationAcquireJobsRunnable extends AcquireJobsRunnableImpl {
 	
 	private static Logger log = LoggerFactory.getLogger(SimulationAcquireJobsRunnable.class.getName());
 

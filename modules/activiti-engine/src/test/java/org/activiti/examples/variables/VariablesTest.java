@@ -31,7 +31,6 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
-import org.junit.Test;
 
 /**
  * @author Tom Baeyens
@@ -153,7 +152,6 @@ public class VariablesTest extends PluggableActivitiTestCase {
  
   
   // Test case for ACT-1839
-  @Test //TODO JUnit 3 or 4???
   @Deployment(resources = {"org/activiti/examples/variables/VariablesTest.testChangeTypeSerializable.bpmn20.xml"})
   public void testChangeTypeSerializable() {
 	  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("variable-type-change-test");

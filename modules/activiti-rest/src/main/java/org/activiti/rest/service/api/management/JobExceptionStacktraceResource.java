@@ -13,45 +13,43 @@
 
 package org.activiti.rest.service.api.management;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.runtime.Job;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
-import org.restlet.data.MediaType;
-import org.restlet.representation.Representation;
-import org.restlet.representation.StringRepresentation;
-import org.restlet.resource.Get;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
-public class JobExceptionStacktraceResource extends SecuredResource {
+@RestController
+public class JobExceptionStacktraceResource {
+  
+  @Autowired
+  protected ManagementService managementService;
 
-  @Get
-  public Representation getJobStacktrace() {
-    if (authenticate() == false)
-      return null;
-
-    Job job = getJobFromResponse();
+  @RequestMapping(value="/management/jobs/{jobId}/exception-stacktrace", method = RequestMethod.GET)
+  public String getJobStacktrace(@PathVariable String jobId, HttpServletResponse response) {
+    Job job = getJobFromResponse(jobId);
     
-    String stackTrace = ActivitiUtil.getManagementService().getJobExceptionStacktrace(job.getId());
+    String stackTrace = managementService.getJobExceptionStacktrace(job.getId());
     
-    if(stackTrace == null) {
+    if (stackTrace == null) {
       throw new ActivitiObjectNotFoundException("Job with id '" + job.getId() + "' doesn't have an exception stacktrace.", String.class);
     }
     
-    return new StringRepresentation(stackTrace, MediaType.TEXT_PLAIN);
+    response.setContentType("text/plain");
+    return stackTrace;
   }
 
   
-  protected Job getJobFromResponse() {
-    String jobId = getAttribute("jobId");
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("The jobId cannot be null");
-    }
-
-    Job job = ActivitiUtil.getManagementService().createJobQuery().jobId(jobId).singleResult();
+  protected Job getJobFromResponse(String jobId) {
+    Job job = managementService.createJobQuery().jobId(jobId).singleResult();
 
     if (job == null) {
       throw new ActivitiObjectNotFoundException("Could not find a job with id '" + jobId + "'.", Job.class);

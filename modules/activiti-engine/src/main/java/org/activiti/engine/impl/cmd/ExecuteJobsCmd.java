@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class ExecuteJobsCmd implements Command<Object>, Serializable {
 
@@ -41,27 +42,34 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
   private static Logger log = LoggerFactory.getLogger(ExecuteJobsCmd.class);
   
   protected String jobId;
+  protected JobEntity job;
  
   public ExecuteJobsCmd(String jobId) {
     this.jobId = jobId;
   }
+  
+  public ExecuteJobsCmd(JobEntity job) {
+  	this.job = job;
+  }
 
   public Object execute(CommandContext commandContext) {
     
-    if (jobId == null) {
-      throw new ActivitiIllegalArgumentException("jobId is null");
+    if (jobId == null && job == null) {
+      throw new ActivitiIllegalArgumentException("jobId and job is null");
     }
     
-    if (log.isDebugEnabled()) {
-      log.debug("Executing job {}", jobId);
+    if (job == null) {
+    	job = commandContext
+    	  .getJobEntityManager()
+    		.findJobById(jobId);
     }
-    
-    JobEntity job = commandContext
-      .getJobEntityManager()
-      .findJobById(jobId);
     
     if (job == null) {
       throw new JobNotFoundException(jobId);
+    }
+    
+    if (log.isDebugEnabled()) {
+      log.debug("Executing job {}", job.getId());
     }
     
     JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
@@ -72,10 +80,11 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     try {
       job.execute(commandContext);
       
-      if(commandContext.getEventDispatcher().isEnabled()) {
+      if (commandContext.getEventDispatcher().isEnabled()) {
       	commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(
       			ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
       }
+      
     } catch (Throwable exception) {
       // When transaction is rolled back, decrement retries
       CommandExecutor commandExecutor = Context

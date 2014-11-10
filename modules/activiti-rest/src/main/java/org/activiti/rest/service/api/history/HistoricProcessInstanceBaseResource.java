@@ -19,22 +19,20 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import org.activiti.rest.service.api.engine.variable.QueryVariable.QueryVariableOperation;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Form;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Tijs Rademakers
  */
-public class HistoricProcessInstanceBaseResource extends SecuredResource {
+public class HistoricProcessInstanceBaseResource {
 
   private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 
@@ -47,9 +45,15 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
     allowedSortProperties.put("duration", HistoricProcessInstanceQueryProperty.DURATION);
     allowedSortProperties.put("tenantId", HistoricProcessInstanceQueryProperty.TENANT_ID);
   }
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected HistoryService historyService;
 
-  protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest, Form urlQuery) {
-    HistoricProcessInstanceQuery query = ActivitiUtil.getHistoryService().createHistoricProcessInstanceQuery();
+  protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest, Map<String,String> allRequestParams, String serverRootUrl) {
+    HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
 
     // Populate query based on request
     if (queryRequest.getProcessInstanceId() != null) {
@@ -107,24 +111,23 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
       addVariables(query, queryRequest.getVariables());
     }
     
-    if(queryRequest.getTenantId() != null) {
+    if (queryRequest.getTenantId() != null) {
     	query.processInstanceTenantId(queryRequest.getTenantId());
     }
     
-    if(queryRequest.getTenantIdLike() != null) {
+    if (queryRequest.getTenantIdLike() != null) {
     	query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
     }
     
-    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+    if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
     	query.processInstanceWithoutTenantId();
     }
 
-    return new HistoricProcessInstancePaginateList(this).paginateList(urlQuery, queryRequest, query, "processInstanceId", allowedSortProperties);
+    return new HistoricProcessInstancePaginateList(restResponseFactory, serverRootUrl).paginateList(
+        allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 
   protected void addVariables(HistoricProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {
-    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    
     for (QueryVariable variable : variables) {
       if (variable.getVariableOperation() == null) {
         throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
@@ -135,7 +138,7 @@ public class HistoricProcessInstanceBaseResource extends SecuredResource {
 
       boolean nameLess = variable.getName() == null;
 
-      Object actualValue = responseFactory.getVariableValue(variable);
+      Object actualValue = restResponseFactory.getVariableValue(variable);
 
       // A value-only query is only possible using equals-operator
       if (nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {

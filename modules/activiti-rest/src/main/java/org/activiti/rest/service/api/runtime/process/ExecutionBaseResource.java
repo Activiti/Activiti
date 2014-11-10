@@ -19,24 +19,22 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.ExecutionQueryProperty;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import org.activiti.rest.service.api.engine.variable.QueryVariable.QueryVariableOperation;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Form;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Frederik Heremans
  */
-public class ExecutionBaseResource extends SecuredResource {
+public class ExecutionBaseResource {
 
   private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 
@@ -46,9 +44,17 @@ public class ExecutionBaseResource extends SecuredResource {
     allowedSortProperties.put("processInstanceId", ExecutionQueryProperty.PROCESS_INSTANCE_ID);
     allowedSortProperties.put("tenantId", ExecutionQueryProperty.TENANT_ID);
   }
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected RuntimeService runtimeService;
 
-  protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest, Form urlQuery) {
-    ExecutionQuery query = ActivitiUtil.getRuntimeService().createExecutionQuery();
+  protected DataResponse getQueryResponse(ExecutionQueryRequest queryRequest, 
+      Map<String, String> requestParams, String serverRootUrl) {
+    
+    ExecutionQuery query = runtimeService.createExecutionQuery();
 
     // Populate query based on request
     if (queryRequest.getId() != null) {
@@ -99,13 +105,11 @@ public class ExecutionBaseResource extends SecuredResource {
     	query.executionWithoutTenantId();
     }
     
-    return new ExecutionPaginateList(this).paginateList(urlQuery ,queryRequest, query, "processInstanceId", allowedSortProperties);
+    return new ExecutionPaginateList(restResponseFactory, serverRootUrl)
+        .paginateList(requestParams ,queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 
   protected void addVariables(ExecutionQuery processInstanceQuery, List<QueryVariable> variables, boolean process) {
-
-    RestResponseFactory responseFacory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    
     for (QueryVariable variable : variables) {
       if (variable.getVariableOperation() == null) {
         throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
@@ -116,7 +120,7 @@ public class ExecutionBaseResource extends SecuredResource {
 
       boolean nameLess = variable.getName() == null;
 
-      Object actualValue = responseFacory.getVariableValue(variable);
+      Object actualValue = restResponseFactory.getVariableValue(variable);
 
       // A value-only query is only possible using equals-operator
       if (nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
@@ -180,13 +184,8 @@ public class ExecutionBaseResource extends SecuredResource {
     }
   }
 
-  protected Execution getExecutionFromRequest() {
-    String executionId = getAttribute("executionId");
-    if (executionId == null) {
-      throw new ActivitiIllegalArgumentException("The executionId cannot be null");
-    }
-    
-   Execution execution = ActivitiUtil.getRuntimeService().createExecutionQuery().executionId(executionId).singleResult();
+  protected Execution getExecutionFromRequest(String executionId) {
+    Execution execution = runtimeService.createExecutionQuery().executionId(executionId).singleResult();
     if (execution == null) {
       throw new ActivitiObjectNotFoundException("Could not find an execution with id '" + executionId + "'.", Execution.class);
     }
@@ -195,13 +194,12 @@ public class ExecutionBaseResource extends SecuredResource {
 
   protected Map<String, Object> getVariablesToSet(ExecutionActionRequest actionRequest) {
     Map<String, Object> variablesToSet = new HashMap<String, Object>(); 
-    RestResponseFactory factory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    for(RestVariable var : actionRequest.getVariables()) {
-      if(var.getName() == null) {
+    for (RestVariable var : actionRequest.getVariables()) {
+      if (var.getName() == null) {
         throw new ActivitiIllegalArgumentException("Variable name is required");
       }
       
-      Object actualVariableValue = factory.getVariableValue(var);
+      Object actualVariableValue = restResponseFactory.getVariableValue(var);
       
       variablesToSet.put(var.getName(), actualVariableValue);
     }

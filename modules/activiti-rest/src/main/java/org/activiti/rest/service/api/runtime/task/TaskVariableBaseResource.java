@@ -13,28 +13,24 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.util.List;
+import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.RuntimeService;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
+import org.activiti.rest.exception.ActivitiContentNotSupportedException;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadException;
-import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.io.IOUtils;
-import org.restlet.data.Status;
-import org.restlet.ext.fileupload.RestletFileUpload;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ResourceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 
 /**
@@ -42,109 +38,113 @@ import org.restlet.resource.ResourceException;
  */
 public class TaskVariableBaseResource extends TaskBaseResource {
   
-  public RestVariable getVariableFromRequest(boolean includeBinary) {
-    String taskId = getAttribute("taskId");
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
-    }
-    
-    String variableName = getAttribute("variableName");
-    if (variableName == null) {
-      throw new ActivitiIllegalArgumentException("The variableName cannot be null");
-    }
+  @Autowired
+  protected RuntimeService runtimeService;
+  
+  public RestVariable getVariableFromRequest(String taskId, String variableName, 
+      String scope, boolean includeBinary, String serverRootUrl) {
     
     boolean variableFound = false;
     Object value = null;
-    RestVariableScope variableScope = RestVariable.getScopeFromString(getQueryParameter("scope", getQuery()));
-    if(variableScope == null) {
+    RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
+    if (variableScope == null) {
       // First, check local variables (which have precedence when no scope is supplied)
-      if(ActivitiUtil.getTaskService().hasVariableLocal(taskId, variableName)) {
-        value = ActivitiUtil.getTaskService().getVariableLocal(taskId, variableName);
+      if (taskService.hasVariableLocal(taskId, variableName)) {
+        value = taskService.getVariableLocal(taskId, variableName);
         variableScope = RestVariableScope.LOCAL;
         variableFound = true;
       } else {
         // Revert to execution-variable when not present local on the task
-        Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
-        if(task.getExecutionId() != null && ActivitiUtil.getRuntimeService().hasVariable(task.getExecutionId(), variableName)) {
-          value = ActivitiUtil.getRuntimeService().getVariable(task.getExecutionId(), variableName);
+        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+        if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
+          value = runtimeService.getVariable(task.getExecutionId(), variableName);
           variableScope = RestVariableScope.GLOBAL;
           variableFound = true;
         }
       }
       
     } else if(variableScope == RestVariableScope.GLOBAL) {
-      Task task = ActivitiUtil.getTaskService().createTaskQuery().taskId(taskId).singleResult();
-      if(task.getExecutionId() != null && ActivitiUtil.getRuntimeService().hasVariable(task.getExecutionId(), variableName)) {
-        value = ActivitiUtil.getRuntimeService().getVariable(task.getExecutionId(), variableName);
+      Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+      if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
+        value = runtimeService.getVariable(task.getExecutionId(), variableName);
         variableFound = true;
       }
       
-    } else if(variableScope == RestVariableScope.LOCAL) {
-      if(ActivitiUtil.getTaskService().hasVariableLocal(taskId, variableName)) {
-        value = ActivitiUtil.getTaskService().getVariableLocal(taskId, variableName);
+    } else if (variableScope == RestVariableScope.LOCAL) {
+      if (taskService.hasVariableLocal(taskId, variableName)) {
+        value = taskService.getVariableLocal(taskId, variableName);
         variableFound = true;
       }
     }
     
-    if(!variableFound) {
+    if (!variableFound) {
         throw new ActivitiObjectNotFoundException("Task '" + taskId + "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
     } else {
-      RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-      return responseFactory.createRestVariable(this, variableName, value, variableScope, taskId, RestResponseFactory.VARIABLE_TASK, includeBinary);
+      return restResponseFactory.createRestVariable(variableName, value, variableScope, 
+          taskId, RestResponseFactory.VARIABLE_TASK, includeBinary, serverRootUrl);
     }
   }
   
   protected boolean hasVariableOnScope(Task task, String variableName, RestVariableScope scope) {
     boolean variableFound = false;
       
-    if(scope == RestVariableScope.GLOBAL) {
-      if(task.getExecutionId() != null && ActivitiUtil.getRuntimeService().hasVariable(task.getExecutionId(), variableName)) {
+    if (scope == RestVariableScope.GLOBAL) {
+      if(task.getExecutionId() != null && runtimeService.hasVariable(task.getExecutionId(), variableName)) {
         variableFound = true;
       }
       
-    } else if(scope == RestVariableScope.LOCAL) {
-      if(ActivitiUtil.getTaskService().hasVariableLocal(task.getId(), variableName)) {
+    } else if (scope == RestVariableScope.LOCAL) {
+      if (taskService.hasVariableLocal(task.getId(), variableName)) {
         variableFound = true;
       }
     }
     return variableFound;
   }
   
-  protected RestVariable setBinaryVariable(Representation representation, Task task, boolean isNew) {
-    try {
-      RestletFileUpload upload = new RestletFileUpload(new DiskFileItemFactory());
-      List<FileItem> items = upload.parseRepresentation(representation);
+  protected RestVariable setBinaryVariable(MultipartHttpServletRequest request, Task task, 
+      boolean isNew, String serverRootUrl) {
+    
+    // Validate input and set defaults
+    if (request.getFileMap().size() == 0) {
+      throw new ActivitiIllegalArgumentException("No file content was found in request body.");
+    }
+    
+    // Get first file in the map, ignore possible other files
+    MultipartFile file = request.getFile(request.getFileMap().keySet().iterator().next());
+    
+    if (file == null) {
+      throw new ActivitiIllegalArgumentException("No file content was found in request body.");
+    }
+    
+    String variableScope = null;
+    String variableName = null;
+    String variableType = null;
+    
+    Map<String, String[]> paramMap = request.getParameterMap();
+    for (String parameterName : paramMap.keySet()) {
       
-      String variableScope = null;
-      String variableName = null;
-      String variableType = null;
-      FileItem uploadItem = null;
+      if (paramMap.get(parameterName).length > 0) {
       
-      for (FileItem fileItem : items) {
-        if(fileItem.isFormField()) {
-          if("scope".equals(fileItem.getFieldName())) {
-            variableScope = fileItem.getString("UTF-8");
-          } else if("name".equals(fileItem.getFieldName())) {
-            variableName = fileItem.getString("UTF-8");
-          } else if("type".equals(fileItem.getFieldName())) {
-            variableType = fileItem.getString("UTF-8");
-          }
-        } else  if(fileItem.getName() != null) {
-          uploadItem = fileItem;
+        if (parameterName.equalsIgnoreCase("scope")) {
+          variableScope = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("name")) {
+          variableName = paramMap.get(parameterName)[0];
+          
+        } else if (parameterName.equalsIgnoreCase("type")) {
+          variableType = paramMap.get(parameterName)[0];
         }
       }
+    }
+    
+    try {
       
-      // Validate input and set defaults
-      if(uploadItem == null) {
-        throw new ActivitiIllegalArgumentException("No file content was found in request body.");
-      }
-      
-      if(variableName == null) {
+      if (variableName == null) {
         throw new ActivitiIllegalArgumentException("No variable name was found in request body.");
       }
       
-      if(variableType != null) {
-        if(!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) && !RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
+      if (variableType != null) {
+        if (!RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variableType) && !RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variableType)) {
           throw new ActivitiIllegalArgumentException("Only 'binary' and 'serializable' are supported as variable type.");
         }
       } else {
@@ -152,75 +152,72 @@ public class TaskVariableBaseResource extends TaskBaseResource {
       }
       
       RestVariableScope scope = RestVariableScope.LOCAL;
-      if(variableScope != null) {
+      if (variableScope != null) {
         scope = RestVariable.getScopeFromString(variableScope);
       }
       
-      if(variableType.equals(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE)) {
+      if (variableType.equals(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE)) {
         // Use raw bytes as variable value
-        ByteArrayOutputStream variableOutput = new ByteArrayOutputStream(((Long)uploadItem.getSize()).intValue());
-        IOUtils.copy(uploadItem.getInputStream(), variableOutput);
-        setVariable(task, variableName, variableOutput.toByteArray(), scope, isNew);
+        byte[] variableBytes = IOUtils.toByteArray(file.getInputStream());
+        setVariable(task, variableName, variableBytes, scope, isNew);
+        
       } else {
         // Try deserializing the object
-        ObjectInputStream stream = new ObjectInputStream(uploadItem.getInputStream());
+        ObjectInputStream stream = new ObjectInputStream(file.getInputStream());
         Object value = stream.readObject();
         setVariable(task, variableName, value, scope, isNew);
         stream.close();
       }
       
-      return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-                .createBinaryRestVariable(this, variableName, scope, variableType, task.getId(), null, null);
+      return restResponseFactory.createBinaryRestVariable(variableName, scope, variableType, task.getId(), null, null, serverRootUrl);
       
-    } catch(FileUploadException fue) {
-      throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, fue);
     } catch (IOException ioe) {
-      throw new ResourceException(Status.CLIENT_ERROR_BAD_REQUEST, ioe);
+      throw new ActivitiIllegalArgumentException("Error getting binary variable", ioe);
     } catch (ClassNotFoundException ioe) {
-      throw new ResourceException(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(), "The provided body contains a serialized object for which the class is nog found: " + ioe.getMessage(), null, null);
+      throw new ActivitiContentNotSupportedException("The provided body contains a serialized object for which the class is nog found: " + ioe.getMessage());
     }
     
   }
   
-  protected RestVariable setSimpleVariable(RestVariable restVariable, Task task, boolean isNew) {
-    if(restVariable.getName() == null) {
+  protected RestVariable setSimpleVariable(RestVariable restVariable, Task task, boolean isNew, String serverRootUrl) {
+    if (restVariable.getName() == null) {
       throw new ActivitiIllegalArgumentException("Variable name is required");
     }
 
     // Figure out scope, revert to local is omitted
     RestVariableScope scope = restVariable.getVariableScope();
-    if(scope == null) {
+    if (scope == null) {
       scope = RestVariableScope.LOCAL;
     }
     
-    Object actualVariableValue = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-            .getVariableValue(restVariable);
+    Object actualVariableValue = restResponseFactory.getVariableValue(restVariable);
     setVariable(task, restVariable.getName(), actualVariableValue, scope, isNew);
     
-    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    return responseFactory.createRestVariable(this, restVariable.getName(), actualVariableValue, scope, task.getId(), RestResponseFactory.VARIABLE_TASK, false);
+    return restResponseFactory.createRestVariable(restVariable.getName(), actualVariableValue, scope, 
+        task.getId(), RestResponseFactory.VARIABLE_TASK, false, serverRootUrl);
   }
   
   protected void setVariable(Task task, String name, Object value, RestVariableScope scope, boolean isNew) {
     // Create can only be done on new variables. Existing variables should be updated using PUT
     boolean hasVariable = hasVariableOnScope(task, name, scope);
-    if(isNew && hasVariable) {
-      throw new ResourceException(new Status(Status.CLIENT_ERROR_CONFLICT.getCode(), "Variable '" + name + "' is already present on task '" + task.getId() + "'.", null, null));
+    if (isNew && hasVariable) {
+      throw new ActivitiException("Variable '" + name + "' is already present on task '" + task.getId() + "'.");
     }
     
-    if(!isNew && !hasVariable) {
+    if (!isNew && !hasVariable) {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a variable with name: '"+ name + "'.", null);
     }
     
-    if(scope == RestVariableScope.LOCAL) {
-      ActivitiUtil.getTaskService().setVariableLocal(task.getId(), name, value);
+    if (scope == RestVariableScope.LOCAL) {
+      taskService.setVariableLocal(task.getId(), name, value);
     } else {
-      if(task.getExecutionId() != null) {
+      if (task.getExecutionId() != null) {
         // Explicitly set on execution, setting non-local variable on task will override local-variable if exists
-        ActivitiUtil.getRuntimeService().setVariable(task.getExecutionId(), name, value);
+        runtimeService.setVariable(task.getExecutionId(), name, value);
       } else {
         // Standalone task, no global variables possible
-        throw new ActivitiIllegalArgumentException("Cannot set global variable '" + name + "' on task '" + task.getId() +"', task is not part of process.");
+        throw new ActivitiIllegalArgumentException("Cannot set global variable '" + name + "' on task '" + 
+            task.getId() +"', task is not part of process.");
       }
     }
   }

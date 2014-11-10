@@ -349,13 +349,13 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				
 				assertEquals(testTenant, data.get(Fields.TENANT_ID));
 				
-				if (i == 1) {
+				if (i == 2) {
 					assertEquals("userTask", data.get(Fields.ACTIVITY_TYPE));
-				} else if (i == 5) {
+				} else if (i == 7) {
 					assertEquals("userTask", data.get(Fields.ACTIVITY_TYPE));
-				} else if (i == 8) {
+				} else if (i == 10) {
 					assertEquals("parallelGateway", data.get(Fields.ACTIVITY_TYPE));
-				} else if (i == 11) {
+				} else if (i == 13) {
 					assertEquals("endEvent", data.get(Fields.ACTIVITY_TYPE));
 				}
 				

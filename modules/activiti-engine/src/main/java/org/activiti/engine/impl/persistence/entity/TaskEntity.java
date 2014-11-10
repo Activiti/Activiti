@@ -151,6 +151,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     setCreateTime(this.getCreateTime());
     setDueDate(this.getDueDate());
     setParentTaskId(this.getParentTaskId());
+    setFormKey(formKey);
     
     CommandContext commandContext = Context.getCommandContext();
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
@@ -702,6 +703,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
         .getHistoryManager()
         .recordTaskFormKeyChange(id, formKey);
     }
+	}
+	
+	public void setFormKeyWithoutCascade(String formKey) {
+		this.formKey = formKey;
 	}
 
 	public void fireEvent(String taskEventName) {

@@ -16,30 +16,31 @@ package org.activiti.rest.service.api.repository;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.repository.ProcessDefinition;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.rest.common.api.AbstractPaginateList;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 
 /**
  * @author Frederik Heremans
  */
 public class ProcessDefinitionsPaginateList extends AbstractPaginateList {
 
-  private SecuredResource resource;
+  protected RestResponseFactory restResponseFactory;
+  protected String serverRootUrl;
   
-  public ProcessDefinitionsPaginateList(SecuredResource resource) {
-    this.resource = resource;
+  public ProcessDefinitionsPaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
+    this.restResponseFactory = restResponseFactory;
+    this.serverRootUrl = serverRootUrl;
   }
   
   @SuppressWarnings("rawtypes")
   @Override
   protected List processList(List list) {
     List<ProcessDefinitionResponse> responseList = new ArrayList<ProcessDefinitionResponse>();
-    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    for (Object deployment : list) {
-      responseList.add(restResponseFactory.createProcessDefinitionResponse(resource, (ProcessDefinition) deployment));
+    for (Object definition : list) {
+      ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) definition;
+      responseList.add(restResponseFactory.createProcessDefinitionResponse(
+          processDefinition, processDefinition.isGraphicalNotationDefined(), serverRootUrl));
     }
     return responseList;
   }

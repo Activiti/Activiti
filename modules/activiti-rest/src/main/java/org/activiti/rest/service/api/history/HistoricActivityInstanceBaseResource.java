@@ -17,20 +17,19 @@ package org.activiti.rest.service.api.history;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricActivityInstanceQuery;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryProperty;
 import org.activiti.engine.query.QueryProperty;
-import org.activiti.rest.common.api.ActivitiUtil;
 import org.activiti.rest.common.api.DataResponse;
-import org.activiti.rest.common.api.SecuredResource;
-import org.restlet.data.Form;
-import org.restlet.resource.Get;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
  * @author Tijs Rademakers
  */
-public class HistoricActivityInstanceBaseResource extends SecuredResource {
+public class HistoricActivityInstanceBaseResource {
 
   private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 
@@ -48,13 +47,14 @@ public class HistoricActivityInstanceBaseResource extends SecuredResource {
     allowedSortProperties.put("tenantId", HistoricActivityInstanceQueryProperty.TENANT_ID);
   }
   
-  @Get("json")
-  protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest, Form urlQuery) {
-    if(!authenticate()) {
-      return null;
-    }
-    
-    HistoricActivityInstanceQuery query = ActivitiUtil.getHistoryService().createHistoricActivityInstanceQuery();
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected HistoryService historyService;
+  
+  protected DataResponse getQueryResponse(HistoricActivityInstanceQueryRequest queryRequest, Map<String,String> allRequestParams, String serverRootUrl) {
+    HistoricActivityInstanceQuery query = historyService.createHistoricActivityInstanceQuery();
 
     // Populate query based on request
     if (queryRequest.getActivityId() != null) {
@@ -110,6 +110,7 @@ public class HistoricActivityInstanceBaseResource extends SecuredResource {
     	query.activityWithoutTenantId();
     }
 
-    return new HistoricActivityInstancePaginateList(this).paginateList(urlQuery, queryRequest, query, "startTime", allowedSortProperties);
+    return new HistoricActivityInstancePaginateList(restResponseFactory, serverRootUrl).paginateList(
+        allRequestParams, queryRequest, query, "startTime", allowedSortProperties);
   }
 }

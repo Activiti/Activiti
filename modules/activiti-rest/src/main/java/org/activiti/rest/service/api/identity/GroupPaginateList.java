@@ -18,28 +18,27 @@ import java.util.List;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.rest.common.api.AbstractPaginateList;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 
 /**
  * @author Frederik Heremans
  */
 public class GroupPaginateList extends AbstractPaginateList {
 
-  private SecuredResource resource;
+  protected RestResponseFactory restResponseFactory;
+  protected String serverRootUrl;
   
-  public GroupPaginateList(SecuredResource resource) {
-    this.resource = resource;
+  public GroupPaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
+    this.restResponseFactory = restResponseFactory;
+    this.serverRootUrl = serverRootUrl;
   }
   
   @SuppressWarnings("rawtypes")
   @Override
   protected List processList(List list) {
     List<GroupResponse> responseList = new ArrayList<GroupResponse>();
-    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
     for (Object entity : list) {
-      responseList.add(restResponseFactory.createGroupResponse(resource, (Group) entity));
+      responseList.add(restResponseFactory.createGroupResponse((Group) entity, serverRootUrl));
     }
     return responseList;
   }

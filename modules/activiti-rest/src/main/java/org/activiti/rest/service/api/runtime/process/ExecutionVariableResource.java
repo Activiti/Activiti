@@ -13,103 +13,114 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
-import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.rest.common.api.ActivitiUtil;
+import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.activiti.rest.service.api.engine.variable.RestVariable.RestVariableScope;
-import org.restlet.data.MediaType;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.Delete;
-import org.restlet.resource.Get;
-import org.restlet.resource.Put;
-import org.restlet.resource.ResourceException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ExecutionVariableResource extends BaseExecutionVariableResource {
+  
+  @Autowired
+  protected ObjectMapper objectMapper;
 
-  @Get
-  public RestVariable getVariable() {
-    if (authenticate() == false)
-      return null;
+  @RequestMapping(value="/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.GET, produces="application/json")
+  public RestVariable getVariable(@PathVariable("executionId") String executionId, 
+      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
+      HttpServletRequest request) {
     
-    return getVariableFromRequest(false);
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/executions/"));
+    
+    Execution execution = getExecutionFromRequest(executionId);
+    return getVariableFromRequest(execution, variableName, scope, false, serverRootUrl);
   }
   
-  @Put
-  public RestVariable updateVariable(Representation representation) {
-    if (authenticate() == false)
-      return null;
+  @RequestMapping(value="/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.PUT, produces="application/json")
+  public RestVariable updateVariable(@PathVariable("executionId") String executionId, 
+      @PathVariable("variableName") String variableName,
+      HttpServletRequest request) {
     
-    String variableName = getAttribute("variableName");
-    if (variableName == null) {
-      throw new ActivitiIllegalArgumentException("The variableName cannot be null");
-    }
+    Execution execution = getExecutionFromRequest(executionId);
     
-    Execution execution = getExecutionFromRequest();
+    String serverRootUrl = request.getRequestURL().toString();
+    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/executions/"));
     
     RestVariable result = null;
-    if(representation.getMediaType() != null && MediaType.MULTIPART_FORM_DATA.isCompatible(representation.getMediaType())) {
-      result = setBinaryVariable(representation, execution, false);
+    if (request instanceof MultipartHttpServletRequest) {
+      result = setBinaryVariable((MultipartHttpServletRequest) request, execution, 
+          RestResponseFactory.VARIABLE_EXECUTION, false, serverRootUrl);
       
-      if(!result.getName().equals(variableName)) {
+      if (!result.getName().equals(variableName)) {
         throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
       }
+      
     } else {
+      
+      RestVariable restVariable = null;
+      
       try {
-        RestVariable restVariable = getConverterService().toObject(representation, RestVariable.class, this);
-        if(restVariable == null) {
-          throw new ResourceException(new Status(Status.CLIENT_ERROR_UNSUPPORTED_MEDIA_TYPE.getCode(), "Invalid body was supplied", null, null));
-        }
-        if(!restVariable.getName().equals(variableName)) {
-          throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
-        }
-        
-        result = setSimpleVariable(restVariable, execution, false);
-      } catch(IOException ioe) {
-        throw new ResourceException(Status.SERVER_ERROR_INTERNAL, ioe);
+        restVariable = objectMapper.readValue(request.getInputStream(), RestVariable.class);
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
       }
+      
+      if (restVariable == null) {
+        throw new ActivitiException("Invalid body was supplied");
+      }
+      if (!restVariable.getName().equals(variableName)) {
+        throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+      }
+      
+      result = setSimpleVariable(restVariable, execution, false, serverRootUrl);
     }
     return result;
   }
   
-  @Delete
-  public void deleteVariable() {
-    if (authenticate() == false)
-      return;
-
-    Execution execution = getExecutionFromRequest();
+  @RequestMapping(value="/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.DELETE)
+  public void deleteVariable(@PathVariable("executionId") String executionId, 
+      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
+      HttpServletResponse response) {
     
-    String variableName = getAttribute("variableName");
-    if (variableName == null) {
-      throw new ActivitiIllegalArgumentException("The variableName cannot be null");
-    }
-    
+    Execution execution = getExecutionFromRequest(executionId);
     // Determine scope
-    String scopeString = getQueryParameter("scope", getQuery());
-    RestVariableScope scope = RestVariableScope.LOCAL;
-    if(scopeString != null) {
-      scope = RestVariable.getScopeFromString(scopeString);
+    RestVariableScope variableScope = RestVariableScope.LOCAL;
+    if (scope != null) {
+      variableScope = RestVariable.getScopeFromString(scope);
     }
 
-    if(!hasVariableOnScope(execution, variableName, scope)) {
-      throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable '" + variableName + "' in scope " + scope.name().toLowerCase(), VariableInstanceEntity.class);
+    if (!hasVariableOnScope(execution, variableName, variableScope)) {
+      throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable '" + 
+          variableName + "' in scope " + variableScope.name().toLowerCase(), VariableInstanceEntity.class);
     }
     
-    if(scope == RestVariableScope.LOCAL) {
-      ActivitiUtil.getRuntimeService().removeVariableLocal(execution.getId(), variableName);
+    if (variableScope == RestVariableScope.LOCAL) {
+      runtimeService.removeVariableLocal(execution.getId(), variableName);
     } else {
       // Safe to use parentId, as the hasVariableOnScope would have stopped a global-var update on a root-execution
-      ActivitiUtil.getRuntimeService().removeVariable(execution.getParentId(), variableName);
+      runtimeService.removeVariable(execution.getParentId(), variableName);
     }
-    setStatus(Status.SUCCESS_NO_CONTENT);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
   }
 }

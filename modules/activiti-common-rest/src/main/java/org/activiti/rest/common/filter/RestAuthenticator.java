@@ -13,7 +13,7 @@
 
 package org.activiti.rest.common.filter;
 
-import org.restlet.Request;
+import javax.servlet.http.HttpServletRequest;
 
 
 /**
@@ -29,10 +29,10 @@ public interface RestAuthenticator {
    * Allows disabling authentication and authorisation for certain requests.
    * 
    * @return true, if the request requires a valid and authorised user. Return false, if the request
-   * can be executed without authentication or authorisation. If false is returned, the {@link #isRequestAuthorized(Request)}
+   * can be executed without authentication or authorisation. If false is returned, the {@link #isRequestAuthorized(HttpServletRequest)}
    * won't be called for this request.
    */
-  boolean requestRequiresAuthentication(Request request);
+  boolean requestRequiresAuthentication(HttpServletRequest request);
   
   
   /**
@@ -42,6 +42,6 @@ public interface RestAuthenticator {
    * @return true, if the user is authorised to perform the request. Return false, if the request is not authorised
    * for the given user.
    */
-  boolean isRequestAuthorized(Request request);
+  boolean isRequestAuthorized(HttpServletRequest request);
   
 }

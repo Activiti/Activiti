@@ -23,6 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEntity;
 
 
 /**
@@ -51,7 +52,7 @@ public class AcquireJobsCmd implements Command<AcquiredJobs> {
     for (JobEntity job: jobs) {
       List<String> jobIds = new ArrayList<String>();
       if (job != null && !acquiredJobs.contains(job.getId())) {
-        if (job.isExclusive() && job.getProcessInstanceId() != null) {
+        if (job instanceof MessageEntity && job.isExclusive() && job.getProcessInstanceId() != null) {
           // wait to get exclusive jobs within 100ms
           try {
             Thread.sleep(100);

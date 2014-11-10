@@ -145,7 +145,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     		.processInstanceId(pi.getId()). list();
     
     for (HistoricActivityInstance h: history) {
-    	if (h.getActivityId().equals("parallelgateway2") || h.getActivityId().equals("parallelgateway2")) {
+    	if (h.getActivityId().equals("parallelgateway2")) {
     		  assertNotNull(h.getEndTime());
     	}
     }
@@ -155,7 +155,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
   @Deployment
   public void testAsyncBehavior() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
-    waitForJobExecutorToProcessAllJobs(3000, 500);
+    waitForJobExecutorToProcessAllJobs(5000, 500);
     assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
   }
   
