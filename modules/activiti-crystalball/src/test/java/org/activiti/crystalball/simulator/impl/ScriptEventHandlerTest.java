@@ -1,9 +1,6 @@
 package org.activiti.crystalball.simulator.impl;
 
-import org.activiti.crystalball.examples.tutorial.step01.Counter;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
-import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 
@@ -24,7 +21,7 @@ public class ScriptEventHandlerTest extends ResourceActivitiTestCase {
   @Deployment
   public void testSimpleScriptExecution() throws Exception {
     ProcessInstance simulationExperiment = runtimeService.startProcessInstanceByKey("resultVariableSimulationRun");
-    // all simulationManager executions are finished
+    // one process instance (simulation experiment) is running
     assertEquals(1, runtimeService.createExecutionQuery().count());
 
     String simulationRunResult = (String) runtimeService.getVariable(simulationExperiment.getProcessInstanceId(), "simulationRunResult");
