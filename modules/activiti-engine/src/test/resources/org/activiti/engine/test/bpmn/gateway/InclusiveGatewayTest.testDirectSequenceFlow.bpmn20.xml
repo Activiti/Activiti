@@ -20,9 +20,7 @@
     <sequenceFlow id="flow4" sourceRef="inclusiveGw" targetRef="theTask3">
       <conditionExpression xsi:type="tFormalExpression">${input == 3}</conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow5" sourceRef="inclusiveGw" targetRef="joinInclusiveGw">
-      <conditionExpression xsi:type="tFormalExpression">${false}</conditionExpression>
-    </sequenceFlow>
+    <sequenceFlow id="flow5" sourceRef="inclusiveGw" targetRef="joinInclusiveGw" />
 
     <userTask id="theTask1" name="Input is one" />
     <sequenceFlow id="flow6" sourceRef="theTask1" targetRef="joinInclusiveGw" />
