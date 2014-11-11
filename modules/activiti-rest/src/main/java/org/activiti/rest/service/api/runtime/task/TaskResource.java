@@ -40,9 +40,7 @@ public class TaskResource extends TaskBaseResource {
 
   @RequestMapping(value="/runtime/tasks/{taskId}", method = RequestMethod.GET, produces="application/json")
   public TaskResponse getTask(@PathVariable String taskId, HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    return restResponseFactory.createTaskResponse(getTaskFromRequest(taskId), serverRootUrl);
+    return restResponseFactory.createTaskResponse(getTaskFromRequest(taskId));
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}", method = RequestMethod.PUT, produces="application/json")
@@ -63,10 +61,7 @@ public class TaskResource extends TaskBaseResource {
     taskService.saveTask(task);
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    return restResponseFactory.createTaskResponse(task, serverRootUrl);
+    return restResponseFactory.createTaskResponse(task);
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}", method = RequestMethod.POST)

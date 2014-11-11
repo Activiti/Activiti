@@ -35,7 +35,6 @@ public class TaskQueryResource extends TaskBaseResource {
   public DataResponse getQueryResult(@RequestBody TaskQueryRequest request, 
       @RequestParam Map<String, String> requestParams, HttpServletRequest httpRequest) {
     
-    return getTasksFromQueryRequest(request, requestParams, 
-        httpRequest.getRequestURL().toString().replace("/query/tasks", ""));
+    return getTasksFromQueryRequest(request, requestParams);
   }
 }

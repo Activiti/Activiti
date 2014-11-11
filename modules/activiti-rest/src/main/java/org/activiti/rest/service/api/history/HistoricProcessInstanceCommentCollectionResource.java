@@ -12,7 +12,6 @@
  */
 package org.activiti.rest.service.api.history;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,17 +47,8 @@ public class HistoricProcessInstanceCommentCollectionResource {
   
   @RequestMapping(value="/history/historic-process-instances/{processInstanceId}/comments", method = RequestMethod.GET, produces = "application/json")
   public List<CommentResponse> getComments(@PathVariable String processInstanceId, HttpServletRequest request) {
-    List<CommentResponse> result = new ArrayList<CommentResponse>();
-    
     HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
-    
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-process-instances/"));
-    for (Comment comment : taskService.getProcessInstanceComments(instance.getId())) {
-      result.add(restResponseFactory.createRestComment(comment, serverRootUrl));
-    }
-    
-    return result;
+    return restResponseFactory.createRestCommentList(taskService.getProcessInstanceComments(instance.getId()));
   }
 	
   @RequestMapping(value="/history/historic-process-instances/{processInstanceId}/comments", method = RequestMethod.POST, produces = "application/json")
@@ -74,9 +64,7 @@ public class HistoricProcessInstanceCommentCollectionResource {
     Comment createdComment = taskService.addComment(null, instance.getId(), comment.getMessage());
     response.setStatus(HttpStatus.CREATED.value());
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-process-instances/"));
-    return restResponseFactory.createRestComment(createdComment, serverRootUrl);
+    return restResponseFactory.createRestComment(createdComment);
   }
 	 
 	 protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {

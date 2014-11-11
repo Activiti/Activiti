@@ -118,7 +118,7 @@ public class ProcessDefinitionCollectionResource {
       processDefinitionQuery.processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
     }
     
-    return new ProcessDefinitionsPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/repository/process-definitions", ""))
+    return new ProcessDefinitionsPaginateList(restResponseFactory)
         .paginateList(allRequestParams, processDefinitionQuery, "name", properties);
   }
 }

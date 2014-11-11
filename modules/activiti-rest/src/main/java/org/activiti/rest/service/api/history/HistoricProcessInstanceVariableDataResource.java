@@ -91,9 +91,8 @@ public class HistoricProcessInstanceVariableDataResource {
     if (value == null) {
         throw new ActivitiObjectNotFoundException("Historic process instance '" + processInstanceId + "' variable value for " + variableName + " couldn't be found.", VariableInstanceEntity.class);
     } else {
-      String serverRootUrl = request.getRequestURL().toString();
       return restResponseFactory.createRestVariable(variableName, value, null, processInstanceId, 
-          RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary, serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-process-instances/")));
+          RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary);
     }
   }
 }

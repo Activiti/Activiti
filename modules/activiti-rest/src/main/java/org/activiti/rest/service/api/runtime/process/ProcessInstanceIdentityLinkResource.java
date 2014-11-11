@@ -44,11 +44,8 @@ public class ProcessInstanceIdentityLinkResource extends BaseProcessInstanceReso
     
     validateIdentityLinkArguments(identityId, type);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
-    
     IdentityLink link = getIdentityLink(identityId, type, processInstance.getId());
-    return restResponseFactory.createRestIdentityLink(link, serverRootUrl);
+    return restResponseFactory.createRestIdentityLink(link);
   }
   
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}/identitylinks/users/{identityId}/{type}", method = RequestMethod.DELETE)

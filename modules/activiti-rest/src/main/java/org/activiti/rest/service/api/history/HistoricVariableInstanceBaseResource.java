@@ -45,7 +45,7 @@ public class HistoricVariableInstanceBaseResource {
   @Autowired
   protected HistoryService historyService;
 
-  protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest, Map<String,String> allRequestParams, String serverRootUrl) {
+  protected DataResponse getQueryResponse(HistoricVariableInstanceQueryRequest queryRequest, Map<String,String> allRequestParams) {
     HistoricVariableInstanceQuery query = historyService.createHistoricVariableInstanceQuery();
 
     // Populate query based on request
@@ -75,7 +75,7 @@ public class HistoricVariableInstanceBaseResource {
       addVariables(query, queryRequest.getVariables());
     }
     
-    return new HistoricVariableInstancePaginateList(restResponseFactory, serverRootUrl).paginateList(
+    return new HistoricVariableInstancePaginateList(restResponseFactory).paginateList(
         allRequestParams, query, "variableName", allowedSortProperties);
   }
   

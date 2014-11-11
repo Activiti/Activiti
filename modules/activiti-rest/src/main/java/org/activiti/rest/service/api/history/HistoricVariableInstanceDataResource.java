@@ -82,9 +82,8 @@ public class HistoricVariableInstanceDataResource {
     if (varObject == null) {
       throw new ActivitiObjectNotFoundException("Historic variable instance '" + varInstanceId + "' couldn't be found.", VariableInstanceEntity.class);
     } else {
-      String serverRootUrl = request.getRequestURL().toString();
       return restResponseFactory.createRestVariable(varObject.getVariableName(), varObject.getValue(), null, varInstanceId, 
-          RestResponseFactory.VARIABLE_HISTORY_VARINSTANCE, includeBinary, serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-variable-instances/")));
+          RestResponseFactory.VARIABLE_HISTORY_VARINSTANCE, includeBinary);
     }
   }
 }

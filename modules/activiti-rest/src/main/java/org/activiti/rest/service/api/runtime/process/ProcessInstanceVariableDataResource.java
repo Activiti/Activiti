@@ -36,10 +36,7 @@ public class ProcessInstanceVariableDataResource extends BaseExecutionVariableRe
       @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
       HttpServletRequest request, HttpServletResponse response) {
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
-    
     Execution execution = getProcessInstanceFromRequest(processInstanceId);
-    return getVariableDataByteArray(execution, variableName, scope, response, serverRootUrl);
+    return getVariableDataByteArray(execution, variableName, scope, response);
   }
 }

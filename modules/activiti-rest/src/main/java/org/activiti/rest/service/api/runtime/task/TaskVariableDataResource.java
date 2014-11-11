@@ -45,10 +45,7 @@ public class TaskVariableDataResource extends TaskVariableBaseResource {
     try {
       byte[] result = null;
       
-      String serverRootUrl = request.getRequestURL().toString();
-      serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-      
-      RestVariable variable = getVariableFromRequest(taskId, variableName, scope, true, serverRootUrl);
+      RestVariable variable = getVariableFromRequest(taskId, variableName, scope, true);
       if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
         result = (byte[]) variable.getValue();
         response.setContentType("application/octet-stream");

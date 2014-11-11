@@ -44,11 +44,9 @@ public class TableResource {
     Map<String, Long> tableCounts = managementService.getTableCount();
 
     TableResponse response = null;
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/management/tables/"));
     for (Entry<String, Long> entry : tableCounts.entrySet()) {
       if (entry.getKey().equals(tableName)) {
-        response = restResponseFactory.createTableResponse(entry.getKey(), entry.getValue(), serverRootUrl);
+        response = restResponseFactory.createTableResponse(entry.getKey(), entry.getValue());
         break;
       }
     }

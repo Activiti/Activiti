@@ -107,7 +107,7 @@ public class ModelCollectionResource extends BaseModelResource {
       	modelQuery.modelWithoutTenantId();
       }
     }
-    return new ModelsPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/repository/models", ""))
+    return new ModelsPaginateList(restResponseFactory)
         .paginateList(allRequestParams, modelQuery, "id", allowedSortProperties);
   }
   
@@ -124,6 +124,6 @@ public class ModelCollectionResource extends BaseModelResource {
 
     repositoryService.saveModel(model);
     response.setStatus(HttpStatus.CREATED.value());
-    return restResponseFactory.createModelResponse(model, request.getRequestURL().toString().replace("/repository/models", ""));
+    return restResponseFactory.createModelResponse(model);
   }
 }

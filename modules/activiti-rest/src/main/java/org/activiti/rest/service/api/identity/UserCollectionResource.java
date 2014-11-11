@@ -89,7 +89,7 @@ public class UserCollectionResource {
       query.potentialStarter(allRequestParams.get("potentialStarter"));
     }
 
-    return new UserPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/identity/users", ""))
+    return new UserPaginateList(restResponseFactory)
         .paginateList(allRequestParams, query, "id", properties);
   }
   
@@ -113,7 +113,7 @@ public class UserCollectionResource {
     
     response.setStatus(HttpStatus.CREATED.value());
     
-    return restResponseFactory.createUserResponse(created, true, request.getRequestURL().toString().replace("/identity/users", ""));
+    return restResponseFactory.createUserResponse(created, true);
   }
   
 }

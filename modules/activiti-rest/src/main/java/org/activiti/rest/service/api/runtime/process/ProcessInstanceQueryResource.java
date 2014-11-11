@@ -36,7 +36,6 @@ public class ProcessInstanceQueryResource extends BaseProcessInstanceResource {
   public DataResponse queryProcessInstances(@RequestBody ProcessInstanceQueryRequest queryRequest, 
       @RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
     
-    return getQueryResponse(queryRequest, allRequestParams, 
-        request.getRequestURL().toString().replace("/query/process-instances", ""));
+    return getQueryResponse(queryRequest, allRequestParams);
   }
 }

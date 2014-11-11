@@ -50,9 +50,7 @@ public class UserInfoResource extends BaseUserResource {
       throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
     }
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
-    return restResponseFactory.createUserInfoResponse(key, existingValue, user.getId(), serverRootUrl);
+    return restResponseFactory.createUserInfoResponse(key, existingValue, user.getId());
   }
   
   
@@ -73,9 +71,7 @@ public class UserInfoResource extends BaseUserResource {
       throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
     }
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
-    return restResponseFactory.createUserInfoResponse(key, userRequest.getValue(), user.getId(), serverRootUrl);
+    return restResponseFactory.createUserInfoResponse(key, userRequest.getValue(), user.getId());
   }
   
   @RequestMapping(value="/identity/users/{userId}/info/{key}", method = RequestMethod.DELETE)

@@ -42,10 +42,7 @@ public class HistoricProcessInstanceResource {
 
   @RequestMapping(value="/history/historic-process-instances/{processInstanceId}", method = RequestMethod.GET, produces = "application/json")
   public HistoricProcessInstanceResponse getProcessInstance(@PathVariable String processInstanceId, HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-process-instances/"));
-    return restResponseFactory.createHistoricProcessInstanceResponse(
-        getHistoricProcessInstanceFromRequest(processInstanceId), serverRootUrl);
+    return restResponseFactory.createHistoricProcessInstanceResponse(getHistoricProcessInstanceFromRequest(processInstanceId));
   }
   
   @RequestMapping(value="/history/historic-process-instances/{processInstanceId}", method = RequestMethod.DELETE)

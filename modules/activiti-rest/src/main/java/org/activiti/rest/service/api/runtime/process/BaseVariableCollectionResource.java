@@ -42,7 +42,7 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
   @Autowired
   protected ObjectMapper objectMapper;
 
-  protected List<RestVariable> processVariables(Execution execution, String scope, int variableType, String serverRootUrl) {
+  protected List<RestVariable> processVariables(Execution execution, String scope, int variableType) {
     List<RestVariable> result = new ArrayList<RestVariable>();
     Map<String, RestVariable> variableMap = new HashMap<String, RestVariable>();
     
@@ -51,14 +51,14 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
     
     if (variableScope == null) {
       // Use both local and global variables
-      addLocalVariables(execution, variableType, variableMap, serverRootUrl);
-      addGlobalVariables(execution, variableType, variableMap, serverRootUrl);
+      addLocalVariables(execution, variableType, variableMap);
+      addGlobalVariables(execution, variableType, variableMap);
       
     } else if (variableScope == RestVariableScope.GLOBAL) {
-      addGlobalVariables(execution, variableType, variableMap, serverRootUrl);
+      addGlobalVariables(execution, variableType, variableMap);
       
     } else if (variableScope == RestVariableScope.LOCAL) {
-      addLocalVariables(execution, variableType, variableMap, serverRootUrl);
+      addLocalVariables(execution, variableType, variableMap);
     }
     
     // Get unique variables from map
@@ -73,12 +73,12 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
-  protected Object createExecutionVariable(Execution execution, boolean override, int variableType, String serverRootUrl, 
+  protected Object createExecutionVariable(Execution execution, boolean override, int variableType, 
       HttpServletRequest request, HttpServletResponse response) {
     
     Object result = null;
     if (request instanceof MultipartHttpServletRequest) {
-      result = setBinaryVariable((MultipartHttpServletRequest) request, execution, variableType, true, serverRootUrl);
+      result = setBinaryVariable((MultipartHttpServletRequest) request, execution, variableType, true);
     } else {
       
       List<RestVariable> inputVariables = new ArrayList<RestVariable>();
@@ -128,7 +128,7 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
         Object actualVariableValue = restResponseFactory.getVariableValue(var);
         variablesToSet.put(var.getName(), actualVariableValue);
         resultVariables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope, 
-            execution.getId(), variableType, false, serverRootUrl));
+            execution.getId(), variableType, false));
       }
       
       if (!variablesToSet.isEmpty()) {
@@ -149,10 +149,10 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
     return result;
   }
   
-  protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, String serverRootUrl) {
+  protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
     Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
     List<RestVariable> globalVariables = restResponseFactory.createRestVariables(rawVariables, 
-        execution.getId(), variableType, RestVariableScope.GLOBAL, serverRootUrl);
+        execution.getId(), variableType, RestVariableScope.GLOBAL);
     
     // Overlay global variables over local ones. In case they are present the values are not overridden, 
     // since local variables get precedence over global ones at all times.
@@ -163,10 +163,10 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
     }
   }
 
-  protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, String serverRootUrl) {
+  protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
     Map<String, Object> rawLocalvariables = runtimeService.getVariablesLocal(execution.getId());
     List<RestVariable> localVariables = restResponseFactory.createRestVariables(rawLocalvariables, 
-        execution.getId(), variableType, RestVariableScope.LOCAL, serverRootUrl);
+        execution.getId(), variableType, RestVariableScope.LOCAL);
     
     for (RestVariable var : localVariables) {
       variableMap.put(var.getName(), var);

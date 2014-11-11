@@ -62,8 +62,8 @@ public class TaskResourceTest extends BaseSpringRestTestCase {
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
 
-    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())), HttpStatus.SC_OK);
+    String url = buildUrl(RestUrls.URL_TASK, task.getId());
+    CloseableHttpResponse response = executeRequest(new HttpGet(url), HttpStatus.SC_OK);
     
     // Check resulting task
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
@@ -80,18 +80,15 @@ public class TaskResourceTest extends BaseSpringRestTestCase {
     assertTrue(responseNode.get("delegationState").isNull());
     assertEquals("", responseNode.get("tenantId").textValue());
     
-    assertTrue(responseNode.get("executionUrl").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION, task.getExecutionId())));
-    assertTrue(responseNode.get("processInstanceUrl").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, task.getProcessInstanceId())));
-    assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, task.getProcessDefinitionId())));
+    assertTrue(responseNode.get("executionUrl").asText().equals(buildUrl(RestUrls.URL_EXECUTION, task.getExecutionId())));
+    assertTrue(responseNode.get("processInstanceUrl").asText().equals(buildUrl(RestUrls.URL_PROCESS_INSTANCE, task.getProcessInstanceId())));
+    assertTrue(responseNode.get("processDefinitionUrl").asText().equals(buildUrl(RestUrls.URL_PROCESS_DEFINITION, task.getProcessDefinitionId())));
+    assertTrue(responseNode.get("url").asText().equals(url));
     
     // Set tenant on deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
     
-    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())), HttpStatus.SC_OK);
+    response = executeRequest(new HttpGet(url), HttpStatus.SC_OK);
     
     responseNode = objectMapper.readTree(response.getEntity().getContent());
     closeResponse(response);
@@ -123,8 +120,8 @@ public class TaskResourceTest extends BaseSpringRestTestCase {
       task.setPriority(20);
       taskService.saveTask(task);
 
-      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())), HttpStatus.SC_OK);
+      String url = buildUrl(RestUrls.URL_TASK, task.getId());
+      CloseableHttpResponse response = executeRequest(new HttpGet(url), HttpStatus.SC_OK);
       
       // Check resulting task
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
@@ -143,8 +140,8 @@ public class TaskResourceTest extends BaseSpringRestTestCase {
       assertTrue(responseNode.get("processDefinitionId").isNull());
       assertEquals("", responseNode.get("tenantId").textValue());
       
-      assertTrue(responseNode.get("parentTaskUrl").asText().endsWith(
-              RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, parentTask.getId())));
+      assertTrue(responseNode.get("parentTaskUrl").asText().equals(buildUrl(RestUrls.URL_TASK, parentTask.getId())));
+      assertTrue(responseNode.get("url").asText().equals(url));
       
     } finally {
       

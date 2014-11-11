@@ -93,7 +93,7 @@ public class DeploymentCollectionResource {
     	}
     }
 
-    DataResponse response = new DeploymentsPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/repository/deployments", ""))
+    DataResponse response = new DeploymentsPaginateList(restResponseFactory)
         .paginateList(allRequestParams, deploymentQuery, "id", allowedSortProperties);
     return response;
   }
@@ -134,7 +134,7 @@ public class DeploymentCollectionResource {
       
       response.setStatus(HttpStatus.CREATED.value());
       
-      return restResponseFactory.createDeploymentResponse(deployment, request.getRequestURL().toString().replace("/repository/deployments", ""));
+      return restResponseFactory.createDeploymentResponse(deployment);
       
     } catch (Exception e) {
       if (e instanceof ActivitiException) {

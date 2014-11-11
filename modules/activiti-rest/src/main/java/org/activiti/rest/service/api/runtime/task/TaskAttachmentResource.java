@@ -46,10 +46,7 @@ public class TaskAttachmentResource extends TaskBaseResource {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
     }
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    return restResponseFactory.createAttachmentResponse(attachment, serverRootUrl);
+    return restResponseFactory.createAttachmentResponse(attachment);
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.DELETE)

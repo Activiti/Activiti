@@ -36,6 +36,6 @@ public class HistoricDetailQueryResource extends HistoricDetailBaseResource {
   public DataResponse queryHistoricDetail(@RequestBody HistoricDetailQueryRequest queryRequest, 
       @RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
   
-    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/query/historic-detail", ""));
+    return getQueryResponse(queryRequest, allRequestParams);
   }
 }

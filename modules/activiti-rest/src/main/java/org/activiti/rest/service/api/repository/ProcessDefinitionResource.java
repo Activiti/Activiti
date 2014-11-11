@@ -18,7 +18,6 @@ import java.util.Date;
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.exception.ActivitiConflictException;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,10 +36,7 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
   public ProcessDefinitionResponse getProcessDefinition(@PathVariable String processDefinitionId, HttpServletRequest request) {
     ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
    
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/process-definitions/"));
-    return restResponseFactory.createProcessDefinitionResponse(processDefinition, 
-        ((ProcessDefinitionEntity) processDefinition).isGraphicalNotationDefined(), serverRootUrl);
+    return restResponseFactory.createProcessDefinitionResponse(processDefinition);
   }
   
   @RequestMapping(value="/repository/process-definitions/{processDefinitionId}", method = RequestMethod.PUT, produces = "application/json")
@@ -52,18 +48,13 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
     }
     
     ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-    boolean isGraphicalNotationDefined = ((ProcessDefinitionEntity) processDefinition).isGraphicalNotationDefined();
-    
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/process-definitions/"));
     
     if (actionRequest.getCategory() != null) {
       // Update of category required
       repositoryService.setProcessDefinitionCategory(processDefinition.getId(), actionRequest.getCategory());
       
       // No need to re-fetch the ProcessDefinition entity, just update category in response
-      ProcessDefinitionResponse response = restResponseFactory.createProcessDefinitionResponse(
-          processDefinition, isGraphicalNotationDefined, serverRootUrl);
+      ProcessDefinitionResponse response = restResponseFactory.createProcessDefinitionResponse(processDefinition);
       response.setCategory(actionRequest.getCategory());
       return response;
       
@@ -71,12 +62,10 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
       // Actual action
       if (actionRequest.getAction() != null) {
         if (ProcessDefinitionActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
-          return suspendProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate(),
-              isGraphicalNotationDefined, serverRootUrl);
+          return suspendProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
           
         } else if (ProcessDefinitionActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
-          return activateProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate(),
-              isGraphicalNotationDefined, serverRootUrl);
+          return activateProcessDefinition(processDefinition, actionRequest.isIncludeProcessInstances(), actionRequest.getDate());
         }
       }
       
@@ -84,30 +73,28 @@ public class ProcessDefinitionResource extends BaseProcessDefinitionResource {
     }
   }
   
-  protected ProcessDefinitionResponse activateProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, 
-      Date date, boolean isGraphicalNotationDefined, String serverRootUrl) {
+  protected ProcessDefinitionResponse activateProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
     
     if (!processDefinition.isSuspended()) {
       throw new ActivitiConflictException("Process definition with id '" + processDefinition.getId() + " ' is already active");
     }
     repositoryService.activateProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
    
-    ProcessDefinitionResponse response = restResponseFactory.createProcessDefinitionResponse(processDefinition, isGraphicalNotationDefined, serverRootUrl);
+    ProcessDefinitionResponse response = restResponseFactory.createProcessDefinitionResponse(processDefinition);
     
     // No need to re-fetch the ProcessDefinition, just alter the suspended state of the result-object
     response.setSuspended(false);
     return response;
   }
 
-  protected ProcessDefinitionResponse suspendProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, 
-      Date date, boolean isGraphicalNotationDefined, String serverRootUrl) {
+  protected ProcessDefinitionResponse suspendProcessDefinition(ProcessDefinition processDefinition, boolean suspendInstances, Date date) {
     
     if (processDefinition.isSuspended()) {
       throw new ActivitiConflictException("Process definition with id '" + processDefinition.getId() + " ' is already suspended");
     }
     repositoryService.suspendProcessDefinitionById(processDefinition.getId(), suspendInstances, date);
     
-    ProcessDefinitionResponse response = restResponseFactory.createProcessDefinitionResponse(processDefinition, isGraphicalNotationDefined, serverRootUrl);
+    ProcessDefinitionResponse response = restResponseFactory.createProcessDefinitionResponse(processDefinition);
     
     // No need to re-fetch the ProcessDefinition, just alter the suspended state of the result-object
     response.setSuspended(true);

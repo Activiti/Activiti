@@ -105,7 +105,7 @@ public class ExecutionBaseResource {
     	query.executionWithoutTenantId();
     }
     
-    return new ExecutionPaginateList(restResponseFactory, serverRootUrl)
+    return new ExecutionPaginateList(restResponseFactory)
         .paginateList(requestParams ,queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 

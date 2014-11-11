@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,17 +40,8 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
 
   @RequestMapping(value="/runtime/tasks/{taskId}/comments", method = RequestMethod.GET, produces="application/json")
   public List<CommentResponse> getComments(@PathVariable String taskId, HttpServletRequest request) {
-    List<CommentResponse> result = new ArrayList<CommentResponse>();
     HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
-    
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    for (Comment comment : taskService.getTaskComments(task.getId())) {
-      result.add(restResponseFactory.createRestComment(comment, serverRootUrl));
-    }
-    
-    return result;
+    return restResponseFactory.createRestCommentList(taskService.getTaskComments(task.getId()));
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}/comments", method = RequestMethod.POST, produces="application/json")
@@ -72,9 +62,6 @@ public class TaskCommentCollectionResource extends TaskBaseResource {
     Comment createdComment = taskService.addComment(task.getId(), processInstanceId, comment.getMessage());
     response.setStatus(HttpStatus.CREATED.value());
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    return restResponseFactory.createRestComment(createdComment, serverRootUrl);
+    return restResponseFactory.createRestComment(createdComment);
   }
 }

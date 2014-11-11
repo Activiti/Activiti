@@ -35,9 +35,7 @@ public class ExecutionResource extends ExecutionBaseResource {
 
   @RequestMapping(value="/runtime/executions/{executionId}", method = RequestMethod.GET, produces="application/json")
   public ExecutionResponse getExecution(@PathVariable String executionId, HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/executions/"));
-    return restResponseFactory.createExecutionResponse(getExecutionFromRequest(executionId), serverRootUrl);
+    return restResponseFactory.createExecutionResponse(getExecutionFromRequest(executionId));
   }
   
   @RequestMapping(value="/runtime/executions/{executionId}", method = RequestMethod.PUT, produces="application/json")
@@ -81,9 +79,7 @@ public class ExecutionResource extends ExecutionBaseResource {
       response.setStatus(HttpStatus.NO_CONTENT.value());
       return null;
     } else {
-      String serverRootUrl = request.getRequestURL().toString();
-      serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/executions/"));
-      return restResponseFactory.createExecutionResponse(execution, serverRootUrl);
+      return restResponseFactory.createExecutionResponse(execution);
     }
   }
 }

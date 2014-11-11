@@ -46,11 +46,8 @@ public class ExecutionVariableDataResource extends BaseExecutionVariableResource
     try {
       byte[] result = null;
       
-      String serverRootUrl = request.getRequestURL().toString();
-      serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/executions/"));
-      
       Execution execution = getExecutionFromRequest(executionId);
-      RestVariable variable = getVariableFromRequest(execution, variableName, scope, true, serverRootUrl);
+      RestVariable variable = getVariableFromRequest(execution, variableName, scope, true);
       if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
         result = (byte[]) variable.getValue();
         response.setContentType("application/octet-stream");

@@ -50,11 +50,8 @@ public class ExecutionVariableResource extends BaseExecutionVariableResource {
       @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
       HttpServletRequest request) {
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/executions/"));
-    
     Execution execution = getExecutionFromRequest(executionId);
-    return getVariableFromRequest(execution, variableName, scope, false, serverRootUrl);
+    return getVariableFromRequest(execution, variableName, scope, false);
   }
   
   @RequestMapping(value="/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.PUT, produces="application/json")
@@ -64,13 +61,10 @@ public class ExecutionVariableResource extends BaseExecutionVariableResource {
     
     Execution execution = getExecutionFromRequest(executionId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/executions/"));
-    
     RestVariable result = null;
     if (request instanceof MultipartHttpServletRequest) {
       result = setBinaryVariable((MultipartHttpServletRequest) request, execution, 
-          RestResponseFactory.VARIABLE_EXECUTION, false, serverRootUrl);
+          RestResponseFactory.VARIABLE_EXECUTION, false);
       
       if (!result.getName().equals(variableName)) {
         throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
@@ -93,7 +87,7 @@ public class ExecutionVariableResource extends BaseExecutionVariableResource {
         throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
       }
       
-      result = setSimpleVariable(restVariable, execution, false, serverRootUrl);
+      result = setSimpleVariable(restVariable, execution, false);
     }
     return result;
   }
