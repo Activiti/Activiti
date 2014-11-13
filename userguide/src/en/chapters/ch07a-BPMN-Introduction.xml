@@ -547,7 +547,7 @@ public class TenMinuteTutorial {
     // Retrieve and claim the second task
     tasks = taskService.createTaskQuery().taskCandidateGroup(&quot;management&quot;).list();
     for (Task task : tasks) {
-      System.out.println(&quot;Following task is available for accountancy group: &quot; + task.getName());
+      System.out.println(&quot;Following task is available for management group: &quot; + task.getName());
       taskService.claim(task.getId(), &quot;kermit&quot;);
     }
     
