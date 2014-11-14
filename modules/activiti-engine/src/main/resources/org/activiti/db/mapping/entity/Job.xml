@@ -260,6 +260,9 @@
       <if test="retriesLeft">
         and RES.RETRIES_ &gt; 0
       </if>
+      <if test="noRetriesLeft">
+        and RES.RETRIES_ &lt;= 0
+      </if>
       <if test="executable">
         and (RES.RETRIES_ &gt; 0)
         and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
