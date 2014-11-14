@@ -46,7 +46,7 @@
   
    <section>
   
-    <title>Convert deployed definitions to a editeable model</title>
+    <title>Convert deployed definitions to a editable model</title>
     
     <para>
       Deployed process definition can be converted into models that can be edited by the Activiti Modeler.
