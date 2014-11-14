@@ -1,9 +1,9 @@
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public abstract class BaseElement implements HasExtensionAttributes {
-  
+
   protected String id;
   protected int xmlRowNumber;
   protected int xmlColumnNumber;
@@ -58,7 +58,7 @@ public abstract class BaseElement implements HasExtensionAttributes {
   public Map<String, List<ExtensionElement>> getExtensionElements() {
     return extensionElements;
   }
-  
+
   public void addExtensionElement(ExtensionElement extensionElement) {
     if (extensionElement != null && StringUtils.isNotEmpty(extensionElement.getName())) {
       List<ExtensionElement> elementList = null;
@@ -84,7 +84,8 @@ public abstract class BaseElement implements HasExtensionAttributes {
     List<ExtensionAttribute> attributes = getAttributes().get(name);
     if (attributes != null && !attributes.isEmpty()) {
       for (ExtensionAttribute attribute : attributes) {
-        if ( namespace.equals(attribute.getNamespace()))
+        if ( (namespace == null && attribute.getNamespace() == null)
+            || namespace.equals(attribute.getNamespace()) )
           return attribute.getValue();
       }
     }
@@ -107,10 +108,10 @@ public abstract class BaseElement implements HasExtensionAttributes {
   public void setAttributes(Map<String, List<ExtensionAttribute>> attributes) {
     this.attributes = attributes;
   }
-  
+
   public void setValues(BaseElement otherElement) {
     setId(otherElement.getId());
-    
+
     extensionElements = new LinkedHashMap<String, List<ExtensionElement>>();
     if (otherElement.getExtensionElements() != null && !otherElement.getExtensionElements().isEmpty()) {
       for (String key : otherElement.getExtensionElements().keySet()) {
@@ -124,7 +125,7 @@ public abstract class BaseElement implements HasExtensionAttributes {
         }
       }
     }
-    
+
     attributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
     if (otherElement.getAttributes() != null && !otherElement.getAttributes().isEmpty()) {
       for (String key : otherElement.getAttributes().keySet()) {
@@ -139,6 +140,6 @@ public abstract class BaseElement implements HasExtensionAttributes {
       }
     }
   }
-  
+
   public abstract BaseElement clone();
 }
