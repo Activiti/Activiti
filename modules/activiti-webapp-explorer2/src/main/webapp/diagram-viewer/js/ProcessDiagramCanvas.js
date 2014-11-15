@@ -968,6 +968,19 @@ ProcessDiagramCanvas.prototype = {
 		if (conditional) {
 			conditionalSequenceFlowIndicator = this._drawConditionalSequenceFlowIndicator(firstLine);
 		}
+
+        // draw flow name
+        var flowName = contextObject.name;
+        if (flowName) {
+            var xPointArray = contextObject.xPointArray;
+            var yPointArray = contextObject.yPointArray;
+            var textX = xPointArray[0] < xPointArray[1] ? xPointArray[0] : xPointArray[1];
+            var textY = yPointArray[0] < yPointArray[1] ? yPointArray[1] : yPointArray[0];
+            // fix xy
+            textX += 20;
+            textY -= 10;
+            this.g.text(textX, textY, flowName).attr(LABEL_FONT);
+        }
 		
 		var st = this.g.set();
 		st.push(polyline.element, arrowHead, circleTail, conditionalSequenceFlowIndicator);
