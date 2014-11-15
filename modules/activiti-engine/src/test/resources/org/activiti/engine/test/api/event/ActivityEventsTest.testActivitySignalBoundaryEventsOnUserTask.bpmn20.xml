@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" exporter="edoras vis" exporterVersion="DEVELOPER"
+             targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+  <signal id="signal" name="signalName"/>
+  <process id="signalOnUserTask" isExecutable="true" name="signal boundary event">
+    <startEvent id="cloudstartnoneevent1">
+    </startEvent>
+      <userTask id="userTask" name="User Task"/>
+    <endEvent id="cloudendnoneevent2">
+    </endEvent>
+    <boundaryEvent attachedToRef="userTask" cancelActivity="true" id="boundarySignalEventCatching"
+                   parallelMultiple="false">
+      <signalEventDefinition id="signalEventDefinition1" signalRef="signal"/>
+    </boundaryEvent>
+    <userTask id="cloudformtask2" name="signalled event">
+    </userTask>
+    <endEvent id="cloudendnoneevent1">
+    </endEvent>
+    <sequenceFlow id="cloudsequenceflow1" isImmediate="false" sourceRef="cloudstartnoneevent1"
+                  targetRef="userTask">
+    </sequenceFlow>
+    <sequenceFlow id="cloudsequenceflow2" isImmediate="false" sourceRef="boundarySignalEventCatching"
+                  targetRef="cloudformtask2">
+    </sequenceFlow>
+    <sequenceFlow id="cloudsequenceflow3" isImmediate="false" sourceRef="cloudformtask2" targetRef="cloudendnoneevent1">
+    </sequenceFlow>
+    <sequenceFlow id="cloudsequenceflow4" isImmediate="false" sourceRef="userTask" targetRef="cloudendnoneevent2">
+    </sequenceFlow>
+  </process>
+</definitions>
