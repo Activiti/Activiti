@@ -315,6 +315,10 @@ public class DefaultProcessDiagramCanvas {
   public void drawSignalStartEvent(GraphicInfo graphicInfo, double scaleFactor) {
     drawStartEvent(graphicInfo, SIGNAL_CATCH_IMAGE, scaleFactor);
   }
+  
+  public void drawMessageStartEvent(GraphicInfo graphicInfo, double scaleFactor) {
+    drawStartEvent(graphicInfo, MESSAGE_CATCH_IMAGE, scaleFactor);
+  }
 
   public void drawStartEvent(GraphicInfo graphicInfo, BufferedImage image, double scaleFactor) {
     Paint originalPaint = g.getPaint();
@@ -326,8 +330,10 @@ public class DefaultProcessDiagramCanvas {
     g.draw(circle);
     g.setPaint(originalPaint);
     if (image != null) {
-      g.drawImage(image, (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4)), 
-          (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 4)), 
+      // calculate coordinates to center image
+      int imageX = (int) Math.round(graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (image.getWidth() / 2 * scaleFactor));
+      int imageY = (int) Math.round(graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (image.getHeight() / 2 * scaleFactor));  
+      g.drawImage(image, imageX, imageY,
           (int) (image.getWidth() / scaleFactor), (int) (image.getHeight() / scaleFactor), null);
     }
 
@@ -404,12 +410,13 @@ public class DefaultProcessDiagramCanvas {
     g.draw(innerCircle);
 
     if (image != null) {
-      int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4));
-      int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 4));
+      // calculate coordinates to center image
+      int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (image.getWidth() / 2 * scaleFactor));
+      int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (image.getHeight() / 2 * scaleFactor));  
       if (scaleFactor == 1.0 && "timer".equals(eventType)) {
         // move image one pixel to center timer image
-        imageX--;
-        imageY--;
+        imageX++;
+        imageY++;
       }
       g.drawImage(image, imageX, imageY, (int) (image.getWidth() / scaleFactor), 
           (int) (image.getHeight() / scaleFactor), null);
@@ -442,7 +449,16 @@ public class DefaultProcessDiagramCanvas {
   public void drawCatchingSignalEvent(GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
     drawCatchingEvent(graphicInfo, isInterrupting, SIGNAL_CATCH_IMAGE, "signal", scaleFactor);
   }
+  
+  public void drawCatchingMessageEvent(GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, isInterrupting, MESSAGE_CATCH_IMAGE, "message", scaleFactor);
+  }
 
+  public void drawCatchingMessageEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, isInterrupting, MESSAGE_CATCH_IMAGE, "message", scaleFactor);
+    drawLabel(name, graphicInfo);
+  }
+  
   public void drawThrowingSignalEvent(GraphicInfo graphicInfo, double scaleFactor) {
     drawCatchingEvent(graphicInfo, true, SIGNAL_THROW_IMAGE, "signal", scaleFactor);
   }
