@@ -14,7 +14,7 @@
 	   <title>Hooking into process parsing</title>
 	
 	   <para>
-	       A bpmn 2.0 xml needs to be parsed to the Activiti internal model to be executed on the Activiti engine. This parsing
+	       A BPMN 2.0 xml needs to be parsed to the Activiti internal model to be executed on the Activiti engine. This parsing
 	       happens during a deployment of the process or when a process is not found in memory, and the
 	       xml is fetched from the database. 
 	   </para>
@@ -227,7 +227,7 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
             <listitem>
                <para>
                     Firing a signal throw event (in the process itself or through the API) can be done whilst providing a tenant identifier.
-                    The signal will only be executed in the tenant context: ie. if there are multiple signal catch events with the same name,
+                    The signal will only be executed in the tenant context: i.e. if there are multiple signal catch events with the same name,
                     only the one with the correct tenant identifier will actually be called.
                </para>
             </listitem>
@@ -245,7 +245,7 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
             </listitem>
             <listitem>
                <para>
-                    As a side note, models can have a tenant identifier too (models are used eg. by the Activiti Modeler to store bpmn 2.0 models) .           
+                    As a side note, models can have a tenant identifier too (models are used eg. by the Activiti Modeler to store BPMN 2.0 models).
                </para>
             </listitem>
 	      </itemizedlist>
@@ -656,7 +656,7 @@ runtimeService.addEventListener(databaseEventLogger);</programlisting>
 	   <para>
 	       It is easy to see how this table data can now be used to feed the JSON into a big data NoSQL store such as MongDb, Elastic Search, etc.
 	       It is also easy to see that the classes used here (org.activiti.engine.impl.event.logger.EventLogger/EventFlusher and many EventHandler classes)
-	       are pluggable and can be tweaked to your own use case (eg not storing the JSON in the database, but firing it straight onto a queueu or big data store).
+	       are pluggable and can be tweaked to your own use case (eg not storing the JSON in the database, but firing it straight onto a queue or big data store).
 	   </para>
 	   
 	   <para>

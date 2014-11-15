@@ -12,7 +12,7 @@
     <title>Installation</title>
     <para>
     	The following installation instructions are verified on <ulink
-        url="http://www.eclipse.org/downloads/">Eclipse Indigo</ulink>. Note that Eclipse Helio is <emphasis role="bold">NOT</emphasis> supported.
+        url="http://www.eclipse.org/downloads/">Eclipse Indigo</ulink>. Note that Eclipse Helios is <emphasis role="bold">NOT</emphasis> supported.
     </para>
     <para>
     	Go to <emphasis role="bold">Help -> Install New Software</emphasis>. In the following

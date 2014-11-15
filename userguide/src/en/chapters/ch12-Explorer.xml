@@ -8,7 +8,7 @@
   <para>
     Activiti Explorer is a web application that is included when you download Activiti from the
     Activiti website. The purpose of Explorer is not a finished, end-user ready application, but 
-    rather to excersise and show the functionality of Activiti. As such, Explorer is meant as a demo,
+    rather to excercise and show the functionality of Activiti. As such, Explorer is meant as a demo,
     or maybe inspiration for people using Activiti in there own applications. Out of the box, Explorer 
     uses an in-memory database, but it is easy to switch to your own database (see the applicationContext files in the WEB-INF folder).
   </para>
@@ -52,12 +52,12 @@
     <title>Process diagram</title>
     
     <para>
-      The Explorer includes functionality to dynamically generate an overview of a process definition using the <ulink url="http://raphaeljs.com/">Raphaël</ulink> Javascript framework.
+      The Explorer includes functionality to dynamically generate an overview of a process definition using the <ulink url="http://raphaeljs.com/">Raphaël</ulink> JavaScript framework.
       This process image can only be generated when the process definition XML contains BPMN DI information. When there's no BPMN DI information in the process definition XML and the deployment contains a process definition image, that image will be shown.
       <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.process.definition.image.png"/></imageobject></mediaobject>
     </para>
     <para>
-      When you don't want to use the Javascript process definition overview you can disable it in the ui.properties file
+      When you don't want to use the JavaScript process definition overview you can disable it in the ui.properties file
       <programlisting>activiti.ui.jsdiagram = false</programlisting>
     </para>
     <para>
@@ -257,7 +257,7 @@
       to be seen in the list of known reports in Explorer. A 'report process' can be as simple or as complex as wanted.
       The only requirement to actually be able to see the report, is that the process produces a variable
       called <emphasis role="bold">reportData</emphasis> is created. This variable must be a byte array representation
-      of a json object. This variable is stored in the history tables of Activiti
+      of a JSON object. This variable is stored in the history tables of Activiti
       (hence the requirement that history must be enabled for the engine) so it can be retrieved later 
       when the report is saved. 
       <mediaobject><imageobject><imagedata align="center" fileref="images/explorer.reporting.explained.png"/></imageobject></mediaobject>
@@ -269,7 +269,7 @@
         
         <para>
           A report process must generate a variable <emphasis>reportData</emphasis> that is a JSON representation
-          of the data that must be displayed to the user. The json should look as follows:
+          of the data that must be displayed to the user. The JSON should look as follows:
           <programlisting>
 {
   &quot;title&quot;: &quot;My Report&quot;,
@@ -290,8 +290,8 @@
   ]
 }          
           </programlisting>
-          This json will be fetched at runtime in Explorer and will be used to generate 
-          charts or lists. The elements in the json are:
+          This JSON will be fetched at runtime in Explorer and will be used to generate
+          charts or lists. The elements in the JSON are:
           <itemizedlist>
             <listitem>
                 <para><emphasis role="bold">title</emphasis>: this is the general title for the whole report</para>
@@ -314,7 +314,7 @@
                 Optional parameter that determines the name of the axes of the chart</para>
             </listitem>
             <listitem>
-                <para><emphasis role="bold">data</emphasis>: this is the actual data. The data is a json 
+                <para><emphasis role="bold">data</emphasis>: this is the actual data. The data is a JSON
                 object with key-value elements.</para>
             </listitem>
           </itemizedlist>
@@ -328,14 +328,14 @@
         
         <para>
             The following example shows a 'process instance overview' report. The process itself is very easy and
-            contains only a script task (besides start and end) that generates the json dataset using javascript. Although all of the 
+            contains only a script task (besides start and end) that generates the JSON dataset using JavaScript. Although all of the
             examples in Explorer use scripting, this can very well be done using Java service tasks. The end result of
             running the process should just be the <emphasis>reportData</emphasis> variable that contains the data.
         </para>
         
         <para>
             <emphasis role="bold">Important note:</emphasis> The following example only works on JDK 7+.
-            The reason for this is that the javascript engine (<emphasis>Rhino</emphasis>) that is shipped
+            The reason for this is that the JavaScript engine (<emphasis>Rhino</emphasis>) that is shipped
             with older JDK versions isn't advanced enough to cope with some constructs needed to write
             scripts like the one below. See below for a JDK 6+ compliant example.
         </para>
@@ -394,7 +394,7 @@
        </para>
        
        <para>    
-            Besides the typical XML linea at the top of the process xml, the main difference is that the 
+            Besides the typical XML line at the top of the process xml, the main difference is that the
             <emphasis>targetNamespace</emphasis> is set to <emphasis role="bold">activiti-report</emphasis>,
             adding the category with the same name to the deployed process definition.
         </para>
@@ -403,21 +403,21 @@
             The first lines of the script are just some imports to avoid having to type the package names
             all the time. The first line of interest is where the <emphasis>ReportingUtil</emphasis> is used
             to query the Activiti database. The result of that call is a regular <emphasis>JDBC Resultset</emphasis>.
-            In the lines following the query, the javascript capabilities to easily create json is used. 
-            The json that is produced matches <link linkend="explorer.reporting.json">the requirements</link>.
+            In the lines following the query, the JavaScript capabilities to easily create JSON is used.
+            The JSON that is produced matches <link linkend="explorer.reporting.json">the requirements</link>.
         </para>
         
         <para>
             The last line of the script may seem a bit odd. The first thing we need to do is to convert
-            the json object to a string by using the javascript function <emphasis>JSON.stringify()</emphasis>.
+            the JSON object to a string by using the JavaScript function <emphasis>JSON.stringify()</emphasis>.
             This string then needs to be stored as a byte array variable. The reason for this is technical:
-            a byte array is unlimited in size while the string is not. That is why the javascript string
+            a byte array is unlimited in size while the string is not. That is why the JavaScript string
             must be converted to a Java string which has the capability to get the byte representation.
         </para>
         
         <para>
             The same process which is compatible with JDK 6 (and higher) looks a bit different. The native
-            json capabilities cannot be used, hence some helper classes (<emphasis>ReportData</emphasis> and <emphasis>Dataset</emphasis>)
+            JSON capabilities cannot be used, hence some helper classes (<emphasis>ReportData</emphasis> and <emphasis>Dataset</emphasis>)
             are provided:
             <programlisting>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;

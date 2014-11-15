@@ -81,7 +81,7 @@
         One of the usecases where simulation can be used is analysis of the history.
         The production environment does not give any chance to repeat and debug bugs. That's why it is almost
         impossible to get process engine into the state which is the same as it was on the production environment
-        on the time when bug occured.
+        on the time when bug occurred.
         The problem is not the hardware but
         <itemizedlist>
           <listitem>
@@ -144,7 +144,7 @@
         and it is crystalball's advantage.
         </para>
         <para>
-          The best way to understand how playback works is to explain step by step an example based on jUnit test
+          The best way to understand how playback works is to explain step by step an example based on JUnit test
           org.activiti.crystalball.simulator.delegate.event.PlaybackRunTest. The process on which simulation
           is tested is the simplest one:
 <programlisting id="crb-playbackDeploy">
