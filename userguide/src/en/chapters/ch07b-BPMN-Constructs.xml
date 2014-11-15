@@ -5857,7 +5857,7 @@ public class MyTaskCreateListener implements TaskListener {
 		   		<itemizedlist>
 		   			<listitem>
 		   				<para>
-		   					The PBMN specification requires that the process engine reacts to events issued by the underlying transaction protocol
+		   					The BPMN specification requires that the process engine reacts to events issued by the underlying transaction protocol
 		   					and for instance that a transaction is cancelled, if a cancel event occurs in the underlying protocol.
 		   					As an embeddable engine, Activiti does currently not support this. (For some ramifications of this, see paragraph on consistency below.)		   					
 		   				</para>
