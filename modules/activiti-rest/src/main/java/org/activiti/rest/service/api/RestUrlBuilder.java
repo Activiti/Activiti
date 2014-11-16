@@ -13,18 +13,13 @@
 
 package org.activiti.rest.service.api;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.text.MessageFormat;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.util.Assert;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 /**
  * Helper class for building URLs based on a base URL.
@@ -52,18 +47,10 @@ public class RestUrlBuilder {
   }
 
   public String buildUrl(String[] fragments, Object ... arguments) {
-    StringBuilder urlBuilder = new StringBuilder(baseUrl);
-    urlBuilder.append("/");
-    urlBuilder.append(MessageFormat.format(StringUtils.join(fragments, '/'), arguments));
-    return urlBuilder.toString();
-  }
-
-  protected static String extractRequestBaseUrl(HttpServletRequest request){
-    String baseUrl = request.getRequestURL().toString();
-    if(StringUtils.isNotBlank(request.getPathInfo())){
-      baseUrl = baseUrl.substring(0, decodeUrl(baseUrl).indexOf(request.getPathInfo()));
-    }
-    return baseUrl;
+    return new StringBuilder(baseUrl)
+      .append("/")
+      .append(MessageFormat.format(StringUtils.join(fragments, '/'), arguments))
+      .toString();
   }
 
   /** Uses baseUrl as the base URL */
@@ -75,28 +62,11 @@ public class RestUrlBuilder {
 
   /** Extracts the base URL from the request */
   public static RestUrlBuilder fromRequest(HttpServletRequest request){
-    return usingBaseUrl(extractRequestBaseUrl(request));
+    return usingBaseUrl(ServletUriComponentsBuilder.fromServletMapping(request).build().toUriString());
   }
 
+  /** Extracts the base URL from current request */
   public static RestUrlBuilder fromCurrentRequest(){
-    return usingBaseUrl(extractRequestBaseUrl(getCurrentRequest()));
-  }
-
-  //from org.springframework.web.servlet.support.ServletUriComponentsBuilder
-  protected static HttpServletRequest getCurrentRequest() {
-    RequestAttributes requestAttributes = RequestContextHolder.getRequestAttributes();
-    Assert.state(requestAttributes != null, "Could not find current request via RequestContextHolder");
-    Assert.isInstanceOf(ServletRequestAttributes.class, requestAttributes);
-    HttpServletRequest servletRequest = ((ServletRequestAttributes) requestAttributes).getRequest();
-    Assert.state(servletRequest != null, "Could not find current HttpServletRequest");
-    return servletRequest;
-  }
-
-  protected static String decodeUrl(String url){
-    try {
-      return URLDecoder.decode(url, "UTF-8");
-    } catch (UnsupportedEncodingException uee) {
-      throw new IllegalStateException("JVM does not support UTF-8 encoding.", uee);
-    }
+    return usingBaseUrl(ServletUriComponentsBuilder.fromCurrentServletMapping().build().toUriString());
   }
 }
