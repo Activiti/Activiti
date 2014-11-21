@@ -30,7 +30,7 @@ public class JMXConfigurator extends AbstractProcessEngineConfigurator {
   protected Integer connectorPort = -1;
 
   // jmx domain name
-  protected String domain = "org.activiti.jmx.mbeanObjectDomainName";
+  protected String domain = "org.activiti.jmx.Mbeans";
   
   // the domain name for the activiti mbeans
   protected String mbeanDomain = DEFAUL_JMX_DOMAIN;
