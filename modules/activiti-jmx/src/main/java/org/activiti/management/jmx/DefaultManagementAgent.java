@@ -176,8 +176,8 @@ public class DefaultManagementAgent implements ManagementAgent {
 
   @Override
   public void findAndRegisterMbeans() throws Exception {
-    register(new ProcessDefinitionsMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName(jmxConfigurator.getDomain(), "type", "Deployments"));  
-    register(new JobExecutorMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName(jmxConfigurator.getDomain(), "type", "JobExecutor"));
+	  register(new ProcessDefinitionsMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName(jmxConfigurator.getDomain(), "type", "Deployments"));
+	  register(new JobExecutorMBean(jmxConfigurator.getProcessEngineConfig()), new ObjectName(jmxConfigurator.getDomain(), "type", "JobExecutor"));
 
   }
   public void createJmxConnector(String host) throws IOException {
