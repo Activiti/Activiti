@@ -168,6 +168,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TASK_SERVICE_DELEGATEEXPRESSION = "delegateExpression";
   public static final String ATTRIBUTE_TASK_SERVICE_RESULTVARIABLE = "resultVariableName";
   public static final String ATTRIBUTE_TASK_SERVICE_EXTENSIONID = "extensionId";
+  public static final String ATTRIBUTE_TASK_SERVICE_SKIP_EXPRESSION = "skipExpression";
   
   public static final String ATTRIBUTE_TASK_USER_ASSIGNEE = "assignee";
   public static final String ATTRIBUTE_TASK_USER_OWNER = "owner";
@@ -176,6 +177,7 @@ public interface BpmnXMLConstants {
   public static final String ATTRIBUTE_TASK_USER_DUEDATE = "dueDate";
   public static final String ATTRIBUTE_TASK_USER_CATEGORY = "category";
   public static final String ATTRIBUTE_TASK_USER_PRIORITY = "priority";
+  public static final String ATTRIBUTE_TASK_USER_SKIP_EXPRESSION = "skipExpression";
   
   public static final String ATTRIBUTE_TASK_RULE_VARIABLES_INPUT = "ruleVariablesInput";
   public static final String ATTRIBUTE_TASK_RULE_RESULT_VARIABLE = "resultVariable";
@@ -194,6 +196,7 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_FLOW_CONDITION = "conditionExpression";
   public static final String ATTRIBUTE_FLOW_SOURCE_REF = "sourceRef";
   public static final String ATTRIBUTE_FLOW_TARGET_REF = "targetRef";
+  public static final String ATTRIBUTE_FLOW_SKIP_EXPRESSION = "skipExpression";
   
   public static final String ELEMENT_TEXT_ANNOTATION = "textAnnotation";
   public static final String ATTRIBUTE_TEXTFORMAT = "textFormat";

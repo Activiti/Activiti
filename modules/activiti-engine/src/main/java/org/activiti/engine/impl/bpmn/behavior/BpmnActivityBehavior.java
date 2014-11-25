@@ -14,9 +14,11 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Condition;
+import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -118,11 +120,18 @@ public class BpmnActivityBehavior implements Serializable {
 
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
     for (PvmTransition outgoingTransition : outgoingTransitions) {
-      if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
-        Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-        if (condition == null || !checkConditions || condition.evaluate(execution)) {
-          transitionsToTake.add(outgoingTransition);
+      Expression skipExpression = outgoingTransition.getSkipExpression();
+      
+      if(! SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
+        if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
+          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+          if (condition == null || !checkConditions || condition.evaluate(execution)) {
+            transitionsToTake.add(outgoingTransition);
+          }
         }
+      }
+      else if(SkipExpressionUtil.skipFlowElement(execution, skipExpression)){
+        transitionsToTake.add(outgoingTransition);
       }
     }
 
