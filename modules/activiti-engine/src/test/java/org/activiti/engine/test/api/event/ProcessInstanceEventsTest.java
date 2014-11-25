@@ -237,10 +237,21 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 
     List<ActivitiEvent> processCancelledEvents = listener.filterEvents(ActivitiEventType.PROCESS_CANCELLED);
     assertEquals("ActivitiEventType.PROCESS_CANCELLED was expected 1 time.", 1, processCancelledEvents.size());
-    assertTrue("The cause has to be the same as deleteProcessInstance method call", ActivitiCancelledEvent.class.isAssignableFrom(processCancelledEvents.get(0).getClass()));
-    assertEquals("The process instance has to be the same as in deleteProcessInstance method call", processInstance.getId(), processCancelledEvents.get(0).getProcessInstanceId());
-    assertEquals("The execution instance has to be the same as in deleteProcessInstance method call", processInstance.getId(), processCancelledEvents.get(0).getExecutionId());
-    assertEquals("The cause has to be the same as in deleteProcessInstance method call", "delete_test", ((ActivitiCancelledEvent) processCancelledEvents.get(0)).getCause());
+    ActivitiCancelledEvent processCancelledEvent = (ActivitiCancelledEvent) processCancelledEvents.get(0);
+    assertTrue("The cause has to be the same as deleteProcessInstance method call", ActivitiCancelledEvent.class.isAssignableFrom(processCancelledEvent.getClass()));
+    assertEquals("The process instance has to be the same as in deleteProcessInstance method call", processInstance.getId(), processCancelledEvent.getProcessInstanceId());
+    assertEquals("The execution instance has to be the same as in deleteProcessInstance method call", processInstance.getId(), processCancelledEvent.getExecutionId());
+    assertEquals("The cause has to be the same as in deleteProcessInstance method call", "delete_test", processCancelledEvent.getCause());
+
+    List<ActivitiEvent> taskCancelledEvents = listener.filterEvents(ActivitiEventType.ACTIVITY_CANCELLED);
+    assertEquals("ActivitiEventType.ACTIVITY_CANCELLED was expected 1 time.", 1, taskCancelledEvents.size());
+    ActivitiActivityCancelledEvent activityCancelledEvent = (ActivitiActivityCancelledEvent) taskCancelledEvents.get(0);
+    assertTrue("The cause has to be the same as deleteProcessInstance method call", ActivitiActivityCancelledEvent.class.isAssignableFrom(activityCancelledEvent.getClass()));
+    assertEquals("The process instance has to be the same as in deleteProcessInstance method call", processInstance.getId(), activityCancelledEvent.getProcessInstanceId());
+    assertEquals("The execution instance has to be the same as in deleteProcessInstance method call", processInstance.getId(), activityCancelledEvent.getExecutionId());
+    assertEquals("The cause has to be the same as in deleteProcessInstance method call", "delete_test", activityCancelledEvent.getCause());
+
+
     listener.clearEventsReceived();
   }
 
@@ -254,6 +265,9 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
 
     List<ActivitiEvent> processCancelledEvents = listener.filterEvents(ActivitiEventType.PROCESS_CANCELLED);
     assertEquals("There should be no ActivitiEventType.PROCESS_CANCELLED event after process complete.", 0, processCancelledEvents.size());
+    List<ActivitiEvent> taskCancelledEvents = listener.filterEvents(ActivitiEventType.ACTIVITY_CANCELLED);
+    assertEquals("There should be no ActivitiEventType.ACTIVITY_CANCELLED event.", 0, taskCancelledEvents.size());
+
   }
 
   @Override
@@ -296,7 +310,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
           // check whether entity in the event is initialized before adding to the list.
           assertNotNull(((ExecutionEntity) ((ActivitiEntityEvent) event).getEntity()).getId());
           eventsReceived.add(event);
-      } else if (ActivitiEventType.PROCESS_CANCELLED.equals(event.getType())) {
+      } else if (ActivitiEventType.PROCESS_CANCELLED.equals(event.getType()) || ActivitiEventType.ACTIVITY_CANCELLED.equals(event.getType())) {
         eventsReceived.add(event);
       }
     }
