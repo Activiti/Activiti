@@ -18,11 +18,6 @@ package org.activiti.engine.delegate.event;
  *
  * @author martin.grofcik
  */
-public interface ActivitiActivityCancelledEvent extends ActivitiActivityEvent {
+public interface ActivitiActivityCancelledEvent extends ActivitiActivityEvent, ActivitiCancelledEvent{
 
-	/**
-	 * @return the cause of the cancel event. Returns null, if no specific cause has been specified.
-	 */
-	public Object getCause();
-	
 }
