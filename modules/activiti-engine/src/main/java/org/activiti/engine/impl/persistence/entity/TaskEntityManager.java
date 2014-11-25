@@ -52,7 +52,7 @@ public class TaskEntityManager extends AbstractManager {
       if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createActivityCancelledEvent(
-            task.getId(),
+            task.getExecution().getActivityId(),
             task.getName(),
             task.getExecutionId(),
             task.getProcessInstanceId(),
