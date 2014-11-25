@@ -32,9 +32,7 @@ public class UserResource extends BaseUserResource {
 
   @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.GET, produces = "application/json")
   public UserResponse getUser(@PathVariable String userId, HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
-    return restResponseFactory.createUserResponse(getUserFromRequest(userId), false, serverRootUrl);
+    return restResponseFactory.createUserResponse(getUserFromRequest(userId), false);
   }
   
   @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.PUT, produces = "application/json")
@@ -55,9 +53,7 @@ public class UserResource extends BaseUserResource {
     
     identityService.saveUser(user);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
-    return restResponseFactory.createUserResponse(user, false, serverRootUrl);
+    return restResponseFactory.createUserResponse(user, false);
   }
   
   @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.DELETE)

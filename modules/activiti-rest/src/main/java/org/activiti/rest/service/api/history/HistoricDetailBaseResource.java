@@ -45,7 +45,7 @@ public class HistoricDetailBaseResource {
   @Autowired
   protected HistoryService historyService;
 
-  protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Map<String,String> allRequestParams, String serverRootUrl) {
+  protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Map<String,String> allRequestParams) {
     HistoricDetailQuery query = historyService.createHistoricDetailQuery();
 
     // Populate query based on request
@@ -72,7 +72,7 @@ public class HistoricDetailBaseResource {
       }
     }
 
-    return new HistoricDetailPaginateList(restResponseFactory, serverRootUrl).paginateList(
+    return new HistoricDetailPaginateList(restResponseFactory).paginateList(
         allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 }

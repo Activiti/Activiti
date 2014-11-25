@@ -49,9 +49,6 @@ public class TaskIdentityLinkFamilyResource extends TaskBaseResource {
     boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
     List<RestIdentityLink> results = new ArrayList<RestIdentityLink>();
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
     List<IdentityLink> allLinks = taskService.getIdentityLinksForTask(task.getId());
     for (IdentityLink link : allLinks) {
       boolean match = false;
@@ -62,7 +59,7 @@ public class TaskIdentityLinkFamilyResource extends TaskBaseResource {
       }
       
       if (match) {
-        results.add(restResponseFactory.createRestIdentityLink(link, serverRootUrl));
+        results.add(restResponseFactory.createRestIdentityLink(link));
       }
     }
     return results;

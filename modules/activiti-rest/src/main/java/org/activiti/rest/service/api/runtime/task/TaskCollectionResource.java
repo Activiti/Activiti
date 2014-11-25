@@ -200,8 +200,7 @@ public class TaskCollectionResource extends TaskBaseResource {
       request.setCandidateOrAssigned(requestParams.get("candidateOrAssigned"));
     }
     
-    return getTasksFromQueryRequest(request, requestParams, 
-        httpRequest.getRequestURL().toString().replace("/runtime/tasks", ""));
+    return getTasksFromQueryRequest(request, requestParams);
   }
   
   @RequestMapping(value="/runtime/tasks", method = RequestMethod.POST, produces="application/json")
@@ -218,6 +217,6 @@ public class TaskCollectionResource extends TaskBaseResource {
     taskService.saveTask(task);
 
     response.setStatus(HttpStatus.CREATED.value());
-    return restResponseFactory.createTaskResponse(task, request.getRequestURL().toString().replace("/runtime/tasks", ""));
+    return restResponseFactory.createTaskResponse(task);
   }
 }

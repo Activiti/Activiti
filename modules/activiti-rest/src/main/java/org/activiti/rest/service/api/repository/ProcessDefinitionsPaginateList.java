@@ -13,10 +13,8 @@
 
 package org.activiti.rest.service.api.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.rest.common.api.AbstractPaginateList;
 import org.activiti.rest.service.api.RestResponseFactory;
 
@@ -26,22 +24,14 @@ import org.activiti.rest.service.api.RestResponseFactory;
 public class ProcessDefinitionsPaginateList extends AbstractPaginateList {
 
   protected RestResponseFactory restResponseFactory;
-  protected String serverRootUrl;
   
-  public ProcessDefinitionsPaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
+  public ProcessDefinitionsPaginateList(RestResponseFactory restResponseFactory) {
     this.restResponseFactory = restResponseFactory;
-    this.serverRootUrl = serverRootUrl;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    List<ProcessDefinitionResponse> responseList = new ArrayList<ProcessDefinitionResponse>();
-    for (Object definition : list) {
-      ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) definition;
-      responseList.add(restResponseFactory.createProcessDefinitionResponse(
-          processDefinition, processDefinition.isGraphicalNotationDefined(), serverRootUrl));
-    }
-    return responseList;
+    return restResponseFactory.createProcessDefinitionResponseList(list);
   }
 }

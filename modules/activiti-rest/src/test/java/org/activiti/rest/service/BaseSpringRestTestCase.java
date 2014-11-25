@@ -40,6 +40,7 @@ import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.rest.WebConfigurer;
 import org.activiti.rest.conf.ApplicationConfiguration;
+import org.activiti.rest.service.api.RestUrlBuilder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
@@ -82,6 +83,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   
   protected static final int HTTP_SERVER_PORT = 9898;
   protected static final String SERVER_URL_PREFIX = "http://localhost:9898/service/";
+  protected static final RestUrlBuilder URL_BUILDER = RestUrlBuilder.usingBaseUrl(SERVER_URL_PREFIX);
   protected static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"
   );
@@ -562,5 +564,9 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   
   protected String getISODateString(Date time) {
     return dateFormat.format(time);
+  }
+  
+  protected String buildUrl(String[] fragments, Object ... arguments){
+    return URL_BUILDER.buildUrl(fragments, arguments);
   }
 }

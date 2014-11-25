@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -55,15 +54,6 @@ public class DeploymentResourceCollectionResource {
     
     List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/deployments/"));
-    
-    // Add additional metadata to the artifact-strings before returning
-    List<DeploymentResourceResponse> responseList = new ArrayList<DeploymentResourceResponse>();
-    for (String resourceId : resourceList) {
-      responseList.add(restResponseFactory.createDeploymentResourceResponse(deploymentId, resourceId, 
-          contentTypeResolver.resolveContentType(resourceId), serverRootUrl));
-    }
-    return responseList;
+    return restResponseFactory.createDeploymentResourceResponseList(deploymentId, resourceList, contentTypeResolver);
   }
 }

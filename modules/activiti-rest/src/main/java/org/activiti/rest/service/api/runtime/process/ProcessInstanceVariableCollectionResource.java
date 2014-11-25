@@ -41,7 +41,7 @@ public class ProcessInstanceVariableCollectionResource extends BaseVariableColle
       @RequestParam(value="scope", required=false) String scope, HttpServletRequest request) {
     
     Execution execution = getProcessInstanceFromRequest(processInstanceId);
-    return processVariables(execution, scope, RestResponseFactory.VARIABLE_PROCESS, getServerRootUrl(request));
+    return processVariables(execution, scope, RestResponseFactory.VARIABLE_PROCESS);
   }
   
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.PUT, produces="application/json")
@@ -49,8 +49,7 @@ public class ProcessInstanceVariableCollectionResource extends BaseVariableColle
       HttpServletRequest request, HttpServletResponse response) {
     
     Execution execution = getProcessInstanceFromRequest(processInstanceId);
-    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_PROCESS, 
-        getServerRootUrl(request), request, response);
+    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_PROCESS, request, response);
   }
   
   
@@ -59,8 +58,7 @@ public class ProcessInstanceVariableCollectionResource extends BaseVariableColle
       HttpServletRequest request, HttpServletResponse response) {
     
     Execution execution = getProcessInstanceFromRequest(processInstanceId);
-    return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_PROCESS, 
-        getServerRootUrl(request), request, response);
+    return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_PROCESS, request, response);
   }
   
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.DELETE)
@@ -69,23 +67,17 @@ public class ProcessInstanceVariableCollectionResource extends BaseVariableColle
     deleteAllLocalVariables(execution, response);
   }
   
-  protected String getServerRootUrl(HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
-    return serverRootUrl;
-  }
-  
   @Override
-  protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, String serverRootUrl) {
+  protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
     // no global variables
   }
 
   //For process instance there's only one scope. Using the local variables method for that
   @Override
-  protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap, String serverRootUrl) {
+  protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
     Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
     List<RestVariable> globalVariables = restResponseFactory.createRestVariables(rawVariables, 
-        execution.getId(), variableType, RestVariableScope.LOCAL, serverRootUrl);
+        execution.getId(), variableType, RestVariableScope.LOCAL);
     
     // Overlay global variables over local ones. In case they are present the values are not overridden, 
     // since local variables get precedence over global ones at all times.

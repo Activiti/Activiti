@@ -56,6 +56,6 @@ public class HistoricVariableInstanceCollectionResource extends HistoricVariable
       query.setVariableNameLike(allRequestParams.get("variableNameLike"));
     }
     
-    return getQueryResponse(query, allRequestParams, request.getRequestURL().toString().replace("/history/historic-variable-instances", ""));
+    return getQueryResponse(query, allRequestParams);
   }
 }

@@ -59,13 +59,10 @@ public class DeploymentResourceResource {
     
     List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/deployments/"));
-
     if (resourceList.contains(resourceName)) {
       // Build resource representation
       DeploymentResourceResponse response = restResponseFactory.createDeploymentResourceResponse(deploymentId, resourceName, 
-          contentTypeResolver.resolveContentType(resourceName), serverRootUrl);
+          contentTypeResolver.resolveContentType(resourceName));
       return response;
       
     } else {

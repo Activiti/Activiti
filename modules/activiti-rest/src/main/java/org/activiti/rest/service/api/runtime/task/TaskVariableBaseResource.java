@@ -42,7 +42,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
   protected RuntimeService runtimeService;
   
   public RestVariable getVariableFromRequest(String taskId, String variableName, 
-      String scope, boolean includeBinary, String serverRootUrl) {
+      String scope, boolean includeBinary) {
     
     boolean variableFound = false;
     Object value = null;
@@ -81,7 +81,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
         throw new ActivitiObjectNotFoundException("Task '" + taskId + "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
     } else {
       return restResponseFactory.createRestVariable(variableName, value, variableScope, 
-          taskId, RestResponseFactory.VARIABLE_TASK, includeBinary, serverRootUrl);
+          taskId, RestResponseFactory.VARIABLE_TASK, includeBinary);
     }
   }
   
@@ -102,7 +102,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
   }
   
   protected RestVariable setBinaryVariable(MultipartHttpServletRequest request, Task task, 
-      boolean isNew, String serverRootUrl) {
+      boolean isNew) {
     
     // Validate input and set defaults
     if (request.getFileMap().size() == 0) {
@@ -169,7 +169,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
         stream.close();
       }
       
-      return restResponseFactory.createBinaryRestVariable(variableName, scope, variableType, task.getId(), null, null, serverRootUrl);
+      return restResponseFactory.createBinaryRestVariable(variableName, scope, variableType, task.getId(), null, null);
       
     } catch (IOException ioe) {
       throw new ActivitiIllegalArgumentException("Error getting binary variable", ioe);
@@ -179,7 +179,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
     
   }
   
-  protected RestVariable setSimpleVariable(RestVariable restVariable, Task task, boolean isNew, String serverRootUrl) {
+  protected RestVariable setSimpleVariable(RestVariable restVariable, Task task, boolean isNew) {
     if (restVariable.getName() == null) {
       throw new ActivitiIllegalArgumentException("Variable name is required");
     }
@@ -194,7 +194,7 @@ public class TaskVariableBaseResource extends TaskBaseResource {
     setVariable(task, restVariable.getName(), actualVariableValue, scope, isNew);
     
     return restResponseFactory.createRestVariable(restVariable.getName(), actualVariableValue, scope, 
-        task.getId(), RestResponseFactory.VARIABLE_TASK, false, serverRootUrl);
+        task.getId(), RestResponseFactory.VARIABLE_TASK, false);
   }
   
   protected void setVariable(Task task, String name, Object value, RestVariableScope scope, boolean isNew) {

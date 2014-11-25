@@ -36,6 +36,6 @@ public class HistoricActivityInstanceQueryResource extends HistoricActivityInsta
   public DataResponse queryActivityInstances(@RequestBody HistoricActivityInstanceQueryRequest queryRequest, 
       @RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
     
-    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/query/historic-activity-instances", ""));
+    return getQueryResponse(queryRequest, allRequestParams);
   }
 }

@@ -48,10 +48,7 @@ public class JobResource {
   public JobResponse getJob(@PathVariable String jobId, HttpServletRequest request) {
     Job job = getJobFromResponse(jobId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/management/jobs/"));
-    JobResponse response = restResponseFactory.createJobResponse(job, serverRootUrl);
-    return response;
+    return restResponseFactory.createJobResponse(job);
   }
 
   @RequestMapping(value="/management/jobs/{jobId}", method = RequestMethod.DELETE)

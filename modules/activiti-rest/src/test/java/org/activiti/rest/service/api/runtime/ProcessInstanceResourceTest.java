@@ -42,8 +42,8 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
   public void testGetProcessInstance() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne", "myBusinessKey");
     
-    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())), HttpStatus.SC_OK);
+    String url = buildUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId());
+    CloseableHttpResponse response = executeRequest(new HttpGet(url), HttpStatus.SC_OK);
     
     // Check resulting instance
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
@@ -55,10 +55,9 @@ public class ProcessInstanceResourceTest extends BaseSpringRestTestCase {
     assertFalse(responseNode.get("suspended").booleanValue());
     assertEquals("", responseNode.get("tenantId").textValue());
     
-    assertTrue(responseNode.get("url").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE, processInstance.getId())));
-    assertTrue(responseNode.get("processDefinitionUrl").asText().endsWith(
-            RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId())));
+    assertTrue(responseNode.get("url").asText().equals(url));
+    assertTrue(responseNode.get("processDefinitionUrl").asText().equals(
+        buildUrl(RestUrls.URL_PROCESS_DEFINITION, processInstance.getProcessDefinitionId())));
     
     // Check result after tenant has been changed
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));

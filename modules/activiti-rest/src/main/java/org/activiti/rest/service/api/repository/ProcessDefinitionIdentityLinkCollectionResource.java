@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
 import org.springframework.http.HttpStatus;
@@ -40,17 +38,8 @@ public class ProcessDefinitionIdentityLinkCollectionResource extends BaseProcess
 
   @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
   public List<RestIdentityLink> getIdentityLinks(@PathVariable String processDefinitionId, HttpServletRequest request) {
-    List<RestIdentityLink> result = new ArrayList<RestIdentityLink>();
     ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-    
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/process-definitions/"));
-    
-    List<IdentityLink> identityLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId());
-    for (IdentityLink link : identityLinks) {
-      result.add(restResponseFactory.createRestIdentityLink(link, serverRootUrl));
-    }
-    return result;
+    return restResponseFactory.createRestIdentityLinks(repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId()));
   }
   
   @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks", method = RequestMethod.POST, produces = "application/json")
@@ -78,11 +67,8 @@ public class ProcessDefinitionIdentityLinkCollectionResource extends BaseProcess
     
     response.setStatus(HttpStatus.CREATED.value());
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/process-definitions/"));
-    
     return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, 
-        processDefinition.getId(), null, serverRootUrl);
+        processDefinition.getId(), null);
   }
   
 }

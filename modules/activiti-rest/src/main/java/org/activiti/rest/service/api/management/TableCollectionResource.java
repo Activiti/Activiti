@@ -13,10 +13,7 @@
 
 package org.activiti.rest.service.api.management;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -41,12 +38,6 @@ public class TableCollectionResource {
 
   @RequestMapping(value="/management/tables", method = RequestMethod.GET, produces = "application/json")
   public List<TableResponse> getTables(HttpServletRequest request) {
-    List<TableResponse> tables = new ArrayList<TableResponse>();
-    Map<String, Long> tableCounts = managementService.getTableCount();
-    for (Entry<String, Long> entry : tableCounts.entrySet()) {
-      tables.add(restResponseFactory.createTableResponse(entry.getKey(), entry.getValue(),
-          request.getRequestURL().toString().replace("/management/tables", "")));
-    }
-    return tables;
+    return restResponseFactory.createTableResponseList(managementService.getTableCount());
   }
 }

@@ -50,11 +50,8 @@ public class ProcessInstanceVariableResource extends BaseExecutionVariableResour
       @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
       HttpServletRequest request) {
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
-    
     Execution execution = getProcessInstanceFromRequest(processInstanceId);
-    return getVariableFromRequest(execution, variableName, scope, false, serverRootUrl);
+    return getVariableFromRequest(execution, variableName, scope, false);
   }
   
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}/variables/{variableName}", method = RequestMethod.PUT, produces="application/json")
@@ -63,13 +60,10 @@ public class ProcessInstanceVariableResource extends BaseExecutionVariableResour
     
     Execution execution = getProcessInstanceFromRequest(processInstanceId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
-    
     RestVariable result = null;
     if (request instanceof MultipartHttpServletRequest) {
       result = setBinaryVariable((MultipartHttpServletRequest) request, execution, 
-          RestResponseFactory.VARIABLE_PROCESS, false, serverRootUrl);
+          RestResponseFactory.VARIABLE_PROCESS, false);
       
       if (!result.getName().equals(variableName)) {
         throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
@@ -90,7 +84,7 @@ public class ProcessInstanceVariableResource extends BaseExecutionVariableResour
         throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
       }
       
-      result = setSimpleVariable(restVariable, execution, false, serverRootUrl);
+      result = setSimpleVariable(restVariable, execution, false);
     }
     return result;
   }
@@ -124,9 +118,9 @@ public class ProcessInstanceVariableResource extends BaseExecutionVariableResour
   
   @Override
   protected RestVariable constructRestVariable(String variableName, Object value,
-      RestVariableScope variableScope, String executionId, boolean includeBinary, String serverRootUrl) {
+      RestVariableScope variableScope, String executionId, boolean includeBinary) {
 
     return restResponseFactory.createRestVariable(variableName, value, null, executionId, 
-        RestResponseFactory.VARIABLE_PROCESS, includeBinary, serverRootUrl);
+        RestResponseFactory.VARIABLE_PROCESS, includeBinary);
   }
 }

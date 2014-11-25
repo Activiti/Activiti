@@ -120,9 +120,8 @@ public class HistoricTaskInstanceVariableDataResource {
     if (value == null) {
       throw new ActivitiObjectNotFoundException("Historic task instance '" + taskId + "' variable value for " + variableName + " couldn't be found.", VariableInstanceEntity.class);
     } else {
-      String serverRootUrl = request.getRequestURL().toString();
       return restResponseFactory.createRestVariable(variableName, value, null, taskId, 
-          RestResponseFactory.VARIABLE_HISTORY_TASK, includeBinary, serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-task-instances/")));
+          RestResponseFactory.VARIABLE_HISTORY_TASK, includeBinary);
     }
   }
 }

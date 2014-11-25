@@ -39,7 +39,7 @@ public class ExecutionVariableCollectionResource extends BaseVariableCollectionR
       @RequestParam(value="scope", required=false) String scope, HttpServletRequest request) {
     
     Execution execution = getExecutionFromRequest(executionId);
-    return processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION, getServerRootUrl(request));
+    return processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION);
   }
   
   @RequestMapping(value="/runtime/executions/{executionId}/variables", method = RequestMethod.PUT, produces="application/json")
@@ -47,8 +47,7 @@ public class ExecutionVariableCollectionResource extends BaseVariableCollectionR
       HttpServletRequest request, HttpServletResponse response) {
     
     Execution execution = getExecutionFromRequest(executionId);
-    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, 
-        getServerRootUrl(request), request, response);
+    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, request, response);
   }
   
   
@@ -57,8 +56,7 @@ public class ExecutionVariableCollectionResource extends BaseVariableCollectionR
       HttpServletRequest request, HttpServletResponse response) {
     
     Execution execution = getExecutionFromRequest(executionId);
-  	return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, 
-  	    getServerRootUrl(request), request, response);
+  	return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, request, response);
   }
   
   @RequestMapping(value="/runtime/executions/{executionId}/variables", method = RequestMethod.DELETE)
@@ -67,9 +65,4 @@ public class ExecutionVariableCollectionResource extends BaseVariableCollectionR
     deleteAllLocalVariables(execution, response);
   }
   
-  protected String getServerRootUrl(HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/executions/"));
-    return serverRootUrl;
-  }
 }

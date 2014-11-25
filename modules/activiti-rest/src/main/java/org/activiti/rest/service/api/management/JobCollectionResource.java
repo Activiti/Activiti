@@ -121,7 +121,7 @@ public class JobCollectionResource {
       }
     }
 
-    return new JobPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/management/jobs", ""))
+    return new JobPaginateList(restResponseFactory)
         .paginateList(allRequestParams, query, "id", properties);
   }
 }

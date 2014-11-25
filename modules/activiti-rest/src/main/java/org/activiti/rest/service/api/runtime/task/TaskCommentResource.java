@@ -45,10 +45,7 @@ public class TaskCommentResource extends TaskBaseResource {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have a comment with id '" + commentId + "'.", Comment.class);
     }
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    return restResponseFactory.createRestComment(comment, serverRootUrl);
+    return restResponseFactory.createRestComment(comment);
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}/comments/{commentId}", method = RequestMethod.DELETE)

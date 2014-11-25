@@ -36,18 +36,16 @@ public class DeploymentResourceResourceTest extends BaseSpringRestTestCase {
               .deploy();
       
       // Build up the URL manually to make sure resource-id gets encoded correctly as one piece
-      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, deployment.getId(), 
-          encode(rawResourceName)));
+      HttpGet httpGet = new HttpGet(buildUrl(RestUrls.URL_DEPLOYMENT_RESOURCE, deployment.getId(), encode(rawResourceName)));
       httpGet.addHeader(new BasicHeader(HttpHeaders.ACCEPT, "application/json"));
       CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
       closeResponse(response);
       
       // Check URL's for the resource
-      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertTrue(responseNode.get("url").textValue().equals(buildUrl(
               RestUrls.URL_DEPLOYMENT_RESOURCE, deployment.getId(), rawResourceName)));
-      assertTrue(responseNode.get("contentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(
+      assertTrue(responseNode.get("contentUrl").textValue().equals(buildUrl(
               RestUrls.URL_DEPLOYMENT_RESOURCE_CONTENT, deployment.getId(), rawResourceName)));
       assertEquals("text/xml", responseNode.get("mediaType").textValue());
       assertEquals("processDefinition", responseNode.get("type").textValue());

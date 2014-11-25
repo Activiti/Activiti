@@ -13,10 +13,8 @@
 
 package org.activiti.rest.service.api.history;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.rest.common.api.AbstractPaginateList;
 import org.activiti.rest.service.api.RestResponseFactory;
 
@@ -26,20 +24,14 @@ import org.activiti.rest.service.api.RestResponseFactory;
 public class HistoricVariableInstancePaginateList extends AbstractPaginateList {
 
   protected RestResponseFactory restResponseFactory;
-  protected String serverRootUrl;
   
-  public HistoricVariableInstancePaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
+  public HistoricVariableInstancePaginateList(RestResponseFactory restResponseFactory) {
     this.restResponseFactory = restResponseFactory;
-    this.serverRootUrl = serverRootUrl;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    List<HistoricVariableInstanceResponse> responseList = new ArrayList<HistoricVariableInstanceResponse>();
-    for (Object instance : list) {
-      responseList.add(restResponseFactory.createHistoricVariableInstanceResponse((HistoricVariableInstance) instance, serverRootUrl));
-    }
-    return responseList;
+    return restResponseFactory.createHistoricVariableInstanceResponseList(list);
   }
 }

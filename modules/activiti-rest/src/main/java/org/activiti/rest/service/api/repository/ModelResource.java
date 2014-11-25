@@ -35,9 +35,7 @@ public class ModelResource extends BaseModelResource {
   public ModelResponse getModel(@PathVariable String modelId, HttpServletRequest request) {
     Model model = getModelFromRequest(modelId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/models/"));
-    return restResponseFactory.createModelResponse(model, serverRootUrl);
+    return restResponseFactory.createModelResponse(model);
   }
   
   @RequestMapping(value="/repository/models/{modelId}", method = RequestMethod.PUT, produces = "application/json")
@@ -67,9 +65,7 @@ public class ModelResource extends BaseModelResource {
     }
     
     repositoryService.saveModel(model);
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/models/"));
-    return restResponseFactory.createModelResponse(model, serverRootUrl);
+    return restResponseFactory.createModelResponse(model);
   }
 
   @RequestMapping(value="/repository/models/{modelId}", method = RequestMethod.DELETE)

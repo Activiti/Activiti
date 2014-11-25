@@ -87,9 +87,8 @@ public class HistoricDetailDataResource {
     if (value == null) {
       throw new ActivitiObjectNotFoundException("Historic detail '" + detailId + "' doesn't have a variable value.", VariableInstanceEntity.class);
     } else {
-      String serverRootUrl = request.getRequestURL().toString();
       return restResponseFactory.createRestVariable(variableUpdate.getVariableName(), value, null, detailId, 
-          RestResponseFactory.VARIABLE_HISTORY_DETAIL, includeBinary, serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-detail/")));
+          RestResponseFactory.VARIABLE_HISTORY_DETAIL, includeBinary);
     }
   }
 }

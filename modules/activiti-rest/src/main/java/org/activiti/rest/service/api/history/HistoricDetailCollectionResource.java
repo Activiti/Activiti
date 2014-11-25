@@ -64,6 +64,6 @@ public class HistoricDetailCollectionResource extends HistoricDetailBaseResource
       queryRequest.setSelectOnlyVariableUpdates(Boolean.valueOf(allRequestParams.get("selectOnlyVariableUpdates")));
     }
     
-    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/history/historic-detail", ""));
+    return getQueryResponse(queryRequest, allRequestParams);
   }
 }

@@ -51,7 +51,7 @@ public class BaseProcessInstanceResource {
   protected RuntimeService runtimeService;
   
   protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest, 
-      Map<String, String> requestParams, String serverRootUrl) {
+      Map<String, String> requestParams) {
     
     ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
 
@@ -108,7 +108,7 @@ public class BaseProcessInstanceResource {
     	query.processInstanceWithoutTenantId();
     }
 
-    return new ProcessInstancePaginateList(restResponseFactory, serverRootUrl)
+    return new ProcessInstancePaginateList(restResponseFactory)
         .paginateList(requestParams, queryRequest, query, "id", allowedSortProperties);
   }
 

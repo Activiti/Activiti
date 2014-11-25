@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.IdentityLink;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,17 +37,8 @@ public class ProcessInstanceIdentityLinkCollectionResource extends BaseProcessIn
 
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}/identitylinks", method = RequestMethod.GET, produces="application/json")
   public List<RestIdentityLink> getIdentityLinks(@PathVariable String processInstanceId, HttpServletRequest request) {
-    List<RestIdentityLink> result = new ArrayList<RestIdentityLink>();
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
-    
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
-    
-    List<IdentityLink> identityLinks = runtimeService.getIdentityLinksForProcessInstance(processInstance.getId());
-    for (IdentityLink link : identityLinks) {
-      result.add(restResponseFactory.createRestIdentityLink(link, serverRootUrl));
-    }
-    return result;
+    return restResponseFactory.createRestIdentityLinks(runtimeService.getIdentityLinksForProcessInstance(processInstance.getId()));
   }
   
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}/identitylinks", method = RequestMethod.POST, produces="application/json")
@@ -74,10 +63,7 @@ public class ProcessInstanceIdentityLinkCollectionResource extends BaseProcessIn
     
     response.setStatus(HttpStatus.CREATED.value());
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
-    
     return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), 
-        identityLink.getGroup(), null, null, processInstance.getId(), serverRootUrl);
+        identityLink.getGroup(), null, null, processInstance.getId());
   }
 }

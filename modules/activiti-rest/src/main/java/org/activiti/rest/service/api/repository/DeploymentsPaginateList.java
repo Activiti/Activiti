@@ -13,10 +13,8 @@
 
 package org.activiti.rest.service.api.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.repository.Deployment;
 import org.activiti.rest.common.api.AbstractPaginateList;
 import org.activiti.rest.service.api.RestResponseFactory;
 
@@ -26,20 +24,14 @@ import org.activiti.rest.service.api.RestResponseFactory;
 public class DeploymentsPaginateList extends AbstractPaginateList {
 
   protected RestResponseFactory restResponseFactory;
-  protected String serverRootUrl;
   
-  public DeploymentsPaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
+  public DeploymentsPaginateList(RestResponseFactory restResponseFactory) {
     this.restResponseFactory = restResponseFactory;
-    this.serverRootUrl = serverRootUrl;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    List<DeploymentResponse> responseList = new ArrayList<DeploymentResponse>();
-    for (Object deployment : list) {
-      responseList.add(restResponseFactory.createDeploymentResponse((Deployment) deployment, serverRootUrl));
-    }
-    return responseList;
+    return restResponseFactory.createDeploymentResponseList(list);
   }
 }

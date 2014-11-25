@@ -13,10 +13,8 @@
 
 package org.activiti.rest.service.api.identity;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.identity.User;
 import org.activiti.rest.common.api.AbstractPaginateList;
 import org.activiti.rest.service.api.RestResponseFactory;
 
@@ -26,20 +24,14 @@ import org.activiti.rest.service.api.RestResponseFactory;
 public class UserPaginateList extends AbstractPaginateList {
 
   protected RestResponseFactory restResponseFactory;
-  protected String serverRootUrl;
   
-  public UserPaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
+  public UserPaginateList(RestResponseFactory restResponseFactory) {
     this.restResponseFactory = restResponseFactory;
-    this.serverRootUrl = serverRootUrl;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    List<UserResponse> responseList = new ArrayList<UserResponse>();
-    for (Object user : list) {
-      responseList.add(restResponseFactory.createUserResponse((User) user, false, serverRootUrl));
-    }
-    return responseList;
+    return restResponseFactory.createUserResponseList(list, false);
   }
 }

@@ -45,10 +45,7 @@ public class TaskEventResource extends TaskBaseResource {
       throw new ActivitiObjectNotFoundException("Task '" + task.getId() +"' doesn't have an event with id '" + eventId + "'.", Event.class);
     }
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    return restResponseFactory.createEventResponse(event, serverRootUrl);
+    return restResponseFactory.createEventResponse(event);
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}/events/{eventId}", method = RequestMethod.DELETE)
