@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "../../../target/docbook-tool-1.0/docbook-xml/docbookx.dtd">
+
+
+<chapter>
+  
+  <title>Operation Control</title>
+   
+  <section id="JMX ">
+    <title>JMX</title>
+    <section id="jmxIntroduction">
+      <title>Introduction</title>
+      <para>
+        It is possible to connect to activiti engine using standard Java Management Extensions (JMX) technology in order to get information or do change its behavior. Any standard JMX client can be used for that purpose. Enabling and disabling Job Executor, deploy new process definition files and deleting them are just samples of what could be done using JMX without writing a single line of code. Welcome to operator's heaven.
+      </para>
+    </section>
+    <section id="jmxQuickStart">
+        <title>Quick Start</title>
+        <para>
+            By default JMX is not enabled. To enable JMX in its default configuration, it is enough to add the activiti-jmx jar file in calsspath, using maven or by any other means. In case you are using maven, you can add proper dependency by adding the following lines in your pom.xml:
+            <programlisting>
+&lt;dependency&gt;
+  &lt;groupId&gt;org.activiti&lt;/groupId&gt;
+  &lt;artifactId&gt;activiti-jmx&lt;/artifactId&gt;
+  &lt;version&gt;latest.version&lt;/version&gt;
+&lt;/dependency&gt;            
+            </programlisting> 
+
+
+
+            After adding the dependency and building process engine, JMX connection is ready to be used. Just run jconsole available in standard JDK distribution. In list of local processes, you will see JVM containing activiti. If for any reason the proper JVM is not listed in "local processes" section, try connecting to it using this URL in "Remote Process" section:
+        </para>
+        <programlisting>
+               service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi/activiti
+        </programlisting>
+        <para>
+            You can find the your exact local URL in your log files. After connecting, you can see the standard JVM statistics and Mbeans. You can view activiti specific MBeans by selecting Mbeans tab and select "org.activiti.jmx.Mbeans" on the right panel. By selecting any MBean, you can query information or change configuration. This snapshot shows how the jconsole looks like:
+            <mediaobject><imageobject><imagedata align="center" fileref="images/jmx.jconsole.png"/></imageobject></mediaobject>
+        </para>
+        <para>
+        Any JMX client not limited to Jconsole can be used to access Mbeans. Most of data center monitoring tools have some connectors which enables them to connect to JMX MBeans.
+        </para>
+
+    </section>
+
+    <section>
+        <title>Attributes and operations</title>
+          <para>
+              Here is a list available attributes and operations at this moment. This list may extend in future releases based on needs.
+            <table>
+              <title>Attributes and operations exposed via JMX MBeans</title>
+                <tgroup cols="4">
+                  <thead>
+                    <row>
+                      <entry>MBean</entry>
+                      <entry>Type</entry>
+                      <entry>Name</entry>
+                      <entry>Description</entry>
+                    </row>
+                  </thead>
+                  <tbody>
+                    <row>
+                      <entry>ProcessDefinitionsMBean</entry>
+                      <entry>Attribute</entry>
+                      <entry>processDefinitons</entry>
+                      <entry><literal>Id</literal>, <literal>Name</literal>, <literal>Version</literal>, <literal>IsSuspended</literal> properties of deployed process definitions as a list of list of Strings</entry>
+                    </row>
+                    <row>
+                      <entry></entry>
+                      <entry>Attribute</entry>
+                      <entry>deployments</entry>
+                      <entry><literal>Id</literal>, <literal>Name</literal>, <literal>TenantId</literal> properties of current deployments</entry>
+                    </row>
+                    <row>
+                      <entry></entry>
+                      <entry>method</entry>
+                      <entry>getProcessDefinitionById(String id)</entry>
+                      <entry><literal>Id</literal>, <literal>Name</literal>, <literal>Version</literal> and <literal>IsSuspended</literal> properties of the process definition with given id</entry>
+                    </row>
+                    <row>
+                      <entry></entry>
+                      <entry>method</entry>
+                      <entry>deleteDeployment(String id)</entry>
+                      <entry>Deletes deployment with the given <literal>Id</literal></entry>
+                    </row>
+                    <row>
+                      <entry></entry>
+                      <entry>method</entry>
+                      <entry>suspendProcessDefinitionById(String id)</entry>
+                      <entry>Suspends the process definition with the given <literal>Id</literal></entry>
+                    </row>
+                    <row>
+                      <entry></entry>
+                      <entry>method</entry>
+                      <entry>activatedProcessDefinitionById(String id)</entry>
+                      <entry>Activates the process definition with the given <literal>Id</literal></entry>
+                    </row>
+                    <row>
+                      <entry></entry>
+                      <entry>method</entry>
+                      <entry>suspendProcessDefinitionByKey(String id)</entry>
+                      <entry>Suspends the process definition with the given <literal>key</literal></entry>
+                    </row>
+                    <row>
+                      <entry></entry>
+                      <entry>method</entry>
+                      <entry>activatedProcessDefinitionByKey(String id)</entry>
+                      <entry>Activates the process definition with the given <literal>key</literal></entry>
+                    </row>
+                    <row>
+                      <entry></entry>
+                      <entry>method</entry>
+                      <entry>deployProcessDefinition(String resourceName, String processDefinitionFile)</entry>
+                      <entry>Deploys the process definition file</entry>
+                    </row>
+                    <row>
+                      <entry>JobExecutorMBean</entry>
+                      <entry>attribute</entry>
+                      <entry>isJobExecutorActivated</entry>
+                      <entry>Returns true if job executor is activated, false otherwise</entry>
+                    </row>
+                    <row>
+                      <entry></entry>
+                      <entry>method</entry>
+                      <entry>setJobExecutorActivate(Boolean active)</entry>
+                      <entry>Activates and Deactivates Job executor based on the given boolean</entry>
+                    </row>
+
+                  </tbody>
+              </tgroup>
+            </table>     
+          </para>
+    </section>  
+    <section>
+        <title>Configuration</title>
+        <para>
+          JMX uses default configuration to make it easy to deploy with the most used configuration. However it is easy to change the defaul configuration. You can do it programatically or via configuration file. The following code excerpt shows  how this could be done in the configuration file:
+        <programlisting>
+    &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;...SomeProcessEngineConfigurationClass&quot;&gt;
+        ...
+        &lt;property name=&quot;configurators&quot;&gt;
+          &lt;list&gt;
+              &lt;bean class=&quot;org.activiti.management.jmx.JMXConfigurator&quot;&gt;
+              
+                &lt;property name=&quot;connectorPort&quot; value=&quot;1912&quot; /&gt;
+                &lt;property name=&quot;serviceUrlPath&quot; value=&quot;/jmxrmi/activiti&quot; /&gt;
+
+                ...
+              &lt;/bean&gt;
+          &lt;/list&gt;
+        &lt;/property&gt;
+    &lt;/bean&gt;         
+            </programlisting>
+
+        </para>
+      <para>
+        This table shows what parameters you can configure along with their default values:
+            <table>
+              <title>JMX Configuration parameters</title>
+                <tgroup cols="3">
+                  <thead>
+                    <row>
+                      <entry>Name</entry>
+                      <entry>Default value</entry>
+                      <entry>Description</entry>
+                    </row>
+                  </thead>
+                  <tbody>
+                    <row>
+                      <entry>disabled</entry>
+                      <entry>false</entry>
+                      <entry>if set, JMX will not be started even in presence of the dependency</entry>
+                    </row>
+                    <row>
+                      <entry>domain</entry>
+                      <entry>org.activiti.jmx.Mbeans</entry>
+                      <entry>Domain of MBean</entry>
+                    </row>
+                    <row>
+                      <entry>createConnector</entry>
+                      <entry>true</entry>
+                      <entry>if true, creates a connector for the started MbeanServer</entry>
+                    </row>
+                    <row>
+                      <entry>MBeanDomain</entry>
+                      <entry>DefaultDomain</entry>
+                      <entry>domain of MBean server</entry>
+                    </row>
+                    <row>
+                      <entry>registryPort</entry>
+                      <entry>1099</entry>
+                      <entry>appears in the service URL as registry port</entry>
+                    </row>
+                    <row>
+                      <entry>serviceUrlPath</entry>
+                      <entry>/jmxrmi/activiti</entry>
+                      <entry>appears in the service URL</entry>
+                    </row>
+                    <row>
+                      <entry>connectorPort</entry>
+                      <entry>-1</entry>
+                      <entry>if greater than zero, will appear in service URL as connector port</entry>
+                    </row>
+
+                  </tbody>
+              </tgroup>
+            </table>     
+      </para>
+    </section>
+    <section>
+       <title>JMX Service URL</title>
+       <para>
+          The JMX service URL has the following format:
+
+          <programlisting>
+
+            service:jmx:rmi://&lt;hostName&gt;:&lt;connectorPort&gt;/jndi/rmi://&lt;hostName&gt;:&lt;registryPort&gt;/&lt;serviceUrlPath&gt;
+          </programlisting>
+
+          <literal>hostName</literal> will be automatically set to the network name of the machine.
+          <literal>connectorPort</literal>, <literal>registryPort</literal> and <literal>serviceUrlPath</literal> can be configured.
+        </para>
+        <para>
+          If <literal>connectionPort</literal> is less than zero, the corresponding part of service URL will be dropped and it will be simplified to:
+          <programlisting>
+          
+          service:jmx:rmi:///jndi/rmi://:&lt;hostname&gt;:&lt;registryPort&gt;/&lt;serviceUrlPath&gt;
+          </programlisting>
+          
+
+       </para>
+
+    </section>
+    
+  </section>
+</chapter>

@@ -19,6 +19,9 @@
   <!ENTITY ch16 SYSTEM "chapters/ch16-Ldap.xml">
   <!ENTITY ch17 SYSTEM "chapters/ch17-Advanced.xml">
   <!ENTITY ch18 SYSTEM "chapters/ch18-Simulation.xml">
+  <!ENTITY ch19 SYSTEM "chapters/ch19-operation-control.xml">
+
+
 ]>
 
 <book>
@@ -46,5 +49,5 @@
 &ch16;
 &ch17;
 &ch18;
-
+&ch19;
 </book>

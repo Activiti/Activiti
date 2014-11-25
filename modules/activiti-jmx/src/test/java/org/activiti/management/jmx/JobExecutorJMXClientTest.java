@@ -28,6 +28,7 @@ import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
+import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.junit.Test;
 
@@ -39,12 +40,18 @@ public class JobExecutorJMXClientTest {
 
   @Test
   public void testJobExecutorJMXClient() throws InterruptedException, IOException, MalformedObjectNameException, AttributeNotFoundException, InstanceNotFoundException, MBeanException, ReflectionException {
-    String hostName = Utils.getHostName();
-    JMXServiceURL url = new JMXServiceURL("service:jmx:rmi://" + hostName + ":10111/jndi/rmi://" + hostName + ":1099/jmxrmi/activiti");
-    ProcessEngineConfiguration processEngineConfig = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti.cfg.xml");
-    
-    Thread.sleep(500);
-    JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
+	String hostName = Utils.getHostName();
+	JMXServiceURL url = 
+	            new JMXServiceURL("service:jmx:rmi://" + hostName + ":10111/jndi/rmi://" + hostName + ":1099/jmxrmi/activiti");
+	   
+	    
+	ProcessEngineConfiguration processEngineConfig = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti.cfg.xml");
+	processEngineConfig.buildProcessEngine();
+	    
+	    
+	// wait for jmx server to come up
+	Thread.sleep(500);
+	JMXConnector jmxc = JMXConnectorFactory.connect(url, null);
 
     MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
     ObjectName jobExecutorBeanName = new ObjectName("org.activiti.jmx.Mbeans:type=JobExecutor");
