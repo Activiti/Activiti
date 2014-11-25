@@ -13,7 +13,6 @@ import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
