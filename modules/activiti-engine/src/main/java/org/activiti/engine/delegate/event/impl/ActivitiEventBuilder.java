@@ -172,7 +172,17 @@ public class ActivitiEventBuilder {
     return newEvent;
   }
 
-  public static ActivitiSignalEvent createSignalEvent(ActivitiEventType type, String activityId, String signalName, Object signalData,
+	public static ActivitiCancelledEvent createCancelledEvent(String executionId, String processInstanceId,
+	                                                          String processDefinitionId, Object cause) {
+		ActivitiProcessCancelledEventImpl newEvent = new ActivitiProcessCancelledEventImpl();
+		newEvent.setExecutionId(executionId);
+		newEvent.setProcessDefinitionId(processDefinitionId);
+		newEvent.setProcessInstanceId(processInstanceId);
+		newEvent.setCause(cause);
+		return newEvent;
+	}
+
+	public static ActivitiSignalEvent createSignalEvent(ActivitiEventType type, String activityId, String signalName, Object signalData,
 			String executionId, String processInstanceId, String processDefinitionId) {
 		ActivitiSignalEventImpl newEvent = new ActivitiSignalEventImpl(type);
 		newEvent.setActivityId(activityId);

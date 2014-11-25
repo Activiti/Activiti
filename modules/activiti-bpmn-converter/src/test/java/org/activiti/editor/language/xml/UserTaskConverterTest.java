@@ -43,6 +43,7 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     UserTask userTask = (UserTask) flowElement;
     assertEquals("usertask", userTask.getId());
     assertEquals("User task", userTask.getName());
+    assertEquals("Test Category", userTask.getCategory());
     assertEquals("testKey", userTask.getFormKey());
     assertEquals("40", userTask.getPriority());
     assertEquals("2012-11-01", userTask.getDueDate());
