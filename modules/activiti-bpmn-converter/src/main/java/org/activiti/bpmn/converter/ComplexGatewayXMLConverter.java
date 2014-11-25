@@ -18,6 +18,7 @@ import javax.xml.stream.XMLStreamWriter;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ComplexGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
 
 /**
@@ -27,7 +28,7 @@ public class ComplexGatewayXMLConverter extends BaseBpmnXMLConverter {
   
   public Class<? extends BaseElement> getBpmnElementType() {
     // complex gateway is not supported so transform it to exclusive gateway
-    return ExclusiveGateway.class;
+    return ComplexGateway.class;
   }
   
   @Override
