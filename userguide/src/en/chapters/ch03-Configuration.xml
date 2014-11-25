@@ -1108,9 +1108,11 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
               </row>
               <row>
-                <entry>ACTIVITY_TIMOUT</entry>
-                <entry>An activity is interupted due to an interrupting timer boundary event.</entry>
-                <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
+                <entry>ACTIVITY_CANCELLED</entry>
+                <entry>An activity is going to be cancelled. There can be three reasons for activity cancellation (MessageEventSubscriptionEntity, SignalEventSubscriptionEntity, TimerEntity).</entry>
+                <entry>
+                  <literal>org.activiti...ActivitiActivityCancelledEvent</literal>
+                </entry>
               </row>
               <row>
                 <entry>ACTIVITY_SIGNALED</entry>
@@ -1231,7 +1233,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
           they are running in the same JVM or not. 
         </para>
         <para>
-          Certain event-types (related to entities) expose the targetted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). If possible, use the <literal>EngineServices</literal> exposed by the event to interact in a safe way with the engine. Even then, you need to 
+          Certain event-types (related to entities) expose the targeted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). If possible, use the <literal>EngineServices</literal> exposed by the event to interact in a safe way with the engine. Even then, you need to
           be cautious with updates/operations on entities that are involved in the dispatched event.
         </para>
         <para>

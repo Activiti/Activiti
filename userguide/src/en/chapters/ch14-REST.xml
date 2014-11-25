@@ -831,7 +831,7 @@
       </itemizedlist>
     </para>
     <para>
-      <emphasis>The dataUrl property in the resulting json for a single resource contains the actual URL to use for retrieving the binary resource.</emphasis>
+      <emphasis>The dataUrl property in the resulting JSON for a single resource contains the actual URL to use for retrieving the binary resource.</emphasis>
     </para>
   </section>
   <section>
@@ -5273,7 +5273,7 @@ In case the variable is a binary variable or serializable, the <literal>valueUrl
         </para>
         <para>
           All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restTasksGet">getting a collection of tasks</link> (except for candidateGroupIn which is only available in this POST task query REST service), but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processInstanceVariables</literal> are both json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+          for filtering based on task and process variables. The <literal>taskVariables</literal> and <literal>processInstanceVariables</literal> are both JSON-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
         </para>
         <para>
           <table>
@@ -6358,7 +6358,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>family</entry>
                   <entry>Yes</entry>
                   <entry>String</entry>
-                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targetted.</entry>
+                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targeted.</entry>
                 </row>
                 <row>
                   <entry>identityId</entry>
@@ -6519,7 +6519,7 @@ GET runtime/tasks/{taskId}/identitylinks/groups</programlisting>
                   <entry>family</entry>
                   <entry>Yes</entry>
                   <entry>String</entry>
-                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targetted.</entry>
+                  <entry>Either <literal>groups</literal> or <literal>users</literal>, depending on what kind of identity is targeted.</entry>
                 </row>
                 <row>
                   <entry>identityId</entry>
@@ -7702,7 +7702,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricProcessInstancesGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-        for filtering based on process variables. The <literal>variables</literal> property is a json-array containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+        for filtering based on process variables. The <literal>variables</literal> property is a JSON-array containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
       </para>
       <para>
         <table>
@@ -8581,7 +8581,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricTaskInstancesGet">getting a collection of historic task instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-        for filtering based on process variables. The <literal>taskVariables</literal> and <literal>processVariables</literal> properties are json-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+        for filtering based on process variables. The <literal>taskVariables</literal> and <literal>processVariables</literal> properties are JSON-arrays containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
       </para>
       <para>
         <table>
@@ -9114,7 +9114,7 @@ Only the attachment name is required to create a new attachment.
       </para>
       <para>
         All supported JSON parameter fields allowed are exactly the same as the parameters found for <link linkend="restHistoricVariableInstancesGet">getting a collection of historic process instances</link>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-        for filtering based on process variables. The <literal>variables</literal> property is a json-array containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
+        for filtering based on process variables. The <literal>variables</literal> property is a JSON-array containing objects with the format <link linkend="restQueryVariable"> as described here.</link>
       </para>
       <para>
         <table>
@@ -10042,7 +10042,7 @@ Only the attachment name is required to create a new attachment.
                 <tbody>
                   <row>
                     <entry>200</entry>
-                    <entry>Indicated signal has been processed and no errors occured.</entry>
+                    <entry>Indicated signal has been processed and no errors occurred.</entry>
                   </row>
                   <row>
                     <entry>202</entry>

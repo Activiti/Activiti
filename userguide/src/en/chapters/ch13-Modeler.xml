@@ -8,7 +8,6 @@
   <para>
     Activiti Modeler is a BPMN web modeler component that's available as part of the <link linkend="activitiExplorer">Activiti Explorer</link> web application. 
     The Modeler is a fork of the <ulink url="http://code.google.com/p/signavio-core-components/">Signavio Core Components</ulink> project.
-    The initial development of the new Activiti Modeler is donated to the Activiti project by <ulink url="http://kisbpm.com">KIS BPM</ulink>.
     A main difference with the previous Activiti Modeler (Signavio Core Components) is that that the new modeler is maintained and developed as part of the Activiti project.
     The goal of the Activiti Modeler is to support all the BPMN elements and extension supported by the Activiti Engine.
   </para>
@@ -46,7 +45,7 @@
   
    <section>
   
-    <title>Convert deployed definitions to a editeable model</title>
+    <title>Convert deployed definitions to a editable model</title>
     
     <para>
       Deployed process definition can be converted into models that can be edited by the Activiti Modeler.

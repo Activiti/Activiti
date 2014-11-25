@@ -12,7 +12,7 @@
     <title>Installation</title>
     <para>
     	The following installation instructions are verified on <ulink
-        url="http://www.eclipse.org/downloads/">Eclipse Indigo</ulink>. Note that Eclipse Helio is <emphasis role="bold">NOT</emphasis> supported.
+        url="http://www.eclipse.org/downloads/">Eclipse Kepler and Indigo</ulink>. Note that Eclipse Helios is <emphasis role="bold">NOT</emphasis> supported.
     </para>
     <para>
     	Go to <emphasis role="bold">Help -> Install New Software</emphasis>. In the following
@@ -364,7 +364,7 @@
         <note>
           <para>You can setup your project in whichever tool you prefer and build the JAR with your
             build tool of choice. For the instructions below, a setup is assumed with Eclipse
-            Helios, using Maven (3.x) as build tool, but any setup should enable you to create the
+            Kepler or Indigo, using Maven (3.x) as build tool, but any setup should enable you to create the
             same results.</para>
         </note>
       </para>

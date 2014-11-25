@@ -424,7 +424,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 	        </para>
 	        <para>
 	        	If the message needs to be received by an existing process instance, you first have to correlate the message to 
-	        	a specific process instance (see next section) and then trigger the continuation of the wating execution.
+	        	a specific process instance (see next section) and then trigger the continuation of the waiting execution.
 	        	The runtime service offers the following methods for triggering an execution based on a message event subscription:
 	        	 	<programlisting>
 void messageEventReceived(String messageName, String executionId);
@@ -1215,7 +1215,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
         </para>        
 
         <para>
-          Since BPMn 2.0 there is the difference between the interrupting and non interrupting timer event. The 
+          Since BPMN 2.0 there is the difference between the interrupting and non interrupting timer event. The
           interrupting is the default. The non-interrupting leads to the original activity is <emphasis role="bold">not</emphasis>
           interrupted but the activity stays there. Instead an additional executions is created and send over the
           outgoing transition of the event. In the XML representation, the <emphasis>cancelActivity</emphasis> attribute
@@ -1961,7 +1961,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 		   			</listitem>
 		   			<listitem>
 		   				<para>
-					   		If compensation is thrown for the current scope, all activities withing the current scope are compensated, 
+					   		If compensation is thrown for the current scope, all activities within the current scope are compensated,
 					   		which includes activities on concurrent branches.  
 					   	</para>
 		   			</listitem>
@@ -1971,7 +1971,7 @@ ProcessInstance startProcessInstanceByMessage(String messageName, String busines
 							triggered for all activities contained in the subprocess. If the subprocess has nested activities, compensation 
 							is thrown recursively. However, compensation is not propagated to the "upper levels" of the process: if compensation 
 							is triggered within a subprocess, it is not propagated to activities outside of the subprocess scope. 
-							The bpmn specification states that compensation is triggered for activities at "the same level of subprocess". 
+							The BPMN specification states that compensation is triggered for activities at "the same level of subprocess".
 						</para>
 		   			</listitem>
 		   			<listitem>
@@ -5857,7 +5857,7 @@ public class MyTaskCreateListener implements TaskListener {
 		   		<itemizedlist>
 		   			<listitem>
 		   				<para>
-		   					The bpmn specification requires that the process engine reacts to events issued by the underlying transaction protocol 
+		   					The BPMN specification requires that the process engine reacts to events issued by the underlying transaction protocol
 		   					and for instance that a transaction is cancelled, if a cancel event occurs in the underlying protocol.
 		   					As an embeddable engine, Activiti does currently not support this. (For some ramifications of this, see paragraph on consistency below.)		   					
 		   				</para>
@@ -6118,7 +6118,7 @@ public class MyTaskCreateListener implements TaskListener {
         <programlisting>
 &lt;serviceTask id=&quot;service1&quot; name=&quot;Generate Invoice&quot; activiti:class=&quot;my.custom.Delegate&quot; activiti:async=&quot;true&quot; /&gt; 
         </programlisting>
-        activiti:async ca be specified on the following bpmn task types:
+        activiti:async can be specified on the following BPMN task types:
         task, serviceTask, scriptTask, businessRuleTask, sendTask, receiveTask, userTask, subProcess, callActivity
     </para>
     

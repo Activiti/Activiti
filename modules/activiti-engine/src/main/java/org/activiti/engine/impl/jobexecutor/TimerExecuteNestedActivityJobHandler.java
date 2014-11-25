@@ -72,38 +72,40 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
     if (boundaryActivityBehavior instanceof BoundaryEventActivityBehavior) {
       BoundaryEventActivityBehavior boundaryEventActivityBehavior = (BoundaryEventActivityBehavior) boundaryActivityBehavior;
       if (boundaryEventActivityBehavior.isInterrupting()) {
-        dispatchExecutionTimeOut(execution, commandContext);
+        dispatchExecutionTimeOut(timerEntity, execution, commandContext);
       }
     }
   }
 
-  protected void dispatchExecutionTimeOut(ExecutionEntity execution, CommandContext commandContext) {
+  protected void dispatchExecutionTimeOut(JobEntity timerEntity, ExecutionEntity execution, CommandContext commandContext) {
     // subprocesses
     for (ExecutionEntity subExecution : execution.getExecutions()) {
-      dispatchExecutionTimeOut(subExecution, commandContext);
+      dispatchExecutionTimeOut(timerEntity, subExecution, commandContext);
     }
 
     // call activities
     ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
     if (subProcessInstance != null) {
-      dispatchExecutionTimeOut(subProcessInstance, commandContext);
+      dispatchExecutionTimeOut(timerEntity, subProcessInstance, commandContext);
     }
 
     // activity with timer boundary event
     ActivityImpl activity = execution.getActivity();
     if (activity != null && activity.getActivityBehavior() != null) {
-      dispatchActivityTimeOut(activity, execution, commandContext);
+      dispatchActivityTimeOut(timerEntity, activity, execution, commandContext);
     }
   }
 
-  protected void dispatchActivityTimeOut(ActivityImpl activity, ExecutionEntity execution, CommandContext commandContext) {
+  protected void dispatchActivityTimeOut(JobEntity timerEntity, ActivityImpl activity, ExecutionEntity execution, CommandContext commandContext) {
     commandContext.getEventDispatcher().dispatchEvent(
-      ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_TIMEOUT, activity.getId(),
+      ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(),
         (String) activity.getProperties().get("name"),
         execution.getId(),
         execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
         (String) activity.getProperties().get("type"),
-        activity.getActivityBehavior().getClass().getCanonicalName())
+        activity.getActivityBehavior().getClass().getCanonicalName(),
+        timerEntity
+        )
     );
   }
 
