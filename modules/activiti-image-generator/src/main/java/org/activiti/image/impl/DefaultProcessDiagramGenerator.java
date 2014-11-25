@@ -136,6 +136,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         if (throwEvent.getEventDefinitions() != null && !throwEvent.getEventDefinitions().isEmpty()) {
           if (throwEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
             processDiagramCanvas.drawThrowingSignalEvent(graphicInfo, scaleFactor);
+          } else {
+            processDiagramCanvas.drawThrowingNoneEvent(graphicInfo, scaleFactor);
           }
         } else {
           processDiagramCanvas.drawThrowingNoneEvent(graphicInfo, scaleFactor);
@@ -152,6 +154,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         if (endEvent.getEventDefinitions() != null && !endEvent.getEventDefinitions().isEmpty()) {
           if (endEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
             processDiagramCanvas.drawErrorEndEvent(flowNode.getName(), graphicInfo, scaleFactor);
+          } else {
+            processDiagramCanvas.drawNoneEndEvent(graphicInfo, scaleFactor);
           }
         } else {
           processDiagramCanvas.drawNoneEndEvent(graphicInfo, scaleFactor);
