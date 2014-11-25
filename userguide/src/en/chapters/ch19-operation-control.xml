@@ -11,13 +11,13 @@
     <section id="jmxIntroduction">
       <title>Introduction</title>
       <para>
-        It is possible to connect to activiti engine using standard Java Management Extensions (JMX) technology in order to get information or do change its behavior. Any standard JMX client can be used for that purpose. Enabling and disabling Job Executor, deploy new process definition files and deleting them are just samples of what could be done using JMX without writing a single line of code. Welcome to operator's heaven.
+        It is possible to connect to activiti engine using standard Java Management Extensions (JMX) technology in order to get information or to change its behavior. Any standard JMX client can be used for that purpose. Enabling and disabling Job Executor, deploy new process definition files and deleting them are just samples of what could be done using JMX without writing a single line of code.
       </para>
     </section>
     <section id="jmxQuickStart">
         <title>Quick Start</title>
         <para>
-            By default JMX is not enabled. To enable JMX in its default configuration, it is enough to add the activiti-jmx jar file in calsspath, using maven or by any other means. In case you are using maven, you can add proper dependency by adding the following lines in your pom.xml:
+            By default JMX is not enabled. To enable JMX in its default configuration, it is enough to add the activiti-jmx jar file to your classpath, using Maven or by any other means. In case you are using Maven, you can add proper dependency by adding the following lines in your pom.xml:
             <programlisting>
 &lt;dependency&gt;
   &lt;groupId&gt;org.activiti&lt;/groupId&gt;
@@ -34,11 +34,11 @@
                service:jmx:rmi:///jndi/rmi://localhost:1099/jmxrmi/activiti
         </programlisting>
         <para>
-            You can find the your exact local URL in your log files. After connecting, you can see the standard JVM statistics and Mbeans. You can view activiti specific MBeans by selecting Mbeans tab and select "org.activiti.jmx.Mbeans" on the right panel. By selecting any MBean, you can query information or change configuration. This snapshot shows how the jconsole looks like:
+            You can find the your exact local URL in your log files. After connecting, you can see the standard JVM statistics and Mbeans. You can view Activiti specific MBeans by selecting Mbeans tab and select "org.activiti.jmx.Mbeans" on the right panel. By selecting any MBean, you can query information or change configuration. This snapshot shows how the jconsole looks like:
             <mediaobject><imageobject><imagedata align="center" fileref="images/jmx.jconsole.png"/></imageobject></mediaobject>
         </para>
         <para>
-        Any JMX client not limited to Jconsole can be used to access Mbeans. Most of data center monitoring tools have some connectors which enables them to connect to JMX MBeans.
+        Any JMX client not limited to jconsole can be used to access Mbeans. Most of data center monitoring tools have some connectors which enables them to connect to JMX MBeans.
         </para>
 
     </section>
@@ -134,7 +134,7 @@
     <section>
         <title>Configuration</title>
         <para>
-          JMX uses default configuration to make it easy to deploy with the most used configuration. However it is easy to change the defaul configuration. You can do it programatically or via configuration file. The following code excerpt shows  how this could be done in the configuration file:
+          JMX uses default configuration to make it easy to deploy with the most used configuration. However it is easy to change the default configuration. You can do it programmatically or via configuration file. The following code excerpt shows  how this could be done in the configuration file:
         <programlisting>
     &lt;bean id=&quot;processEngineConfiguration&quot; class=&quot;...SomeProcessEngineConfigurationClass&quot;&gt;
         ...
@@ -226,8 +226,6 @@
           
           service:jmx:rmi:///jndi/rmi://:&lt;hostname&gt;:&lt;registryPort&gt;/&lt;serviceUrlPath&gt;
           </programlisting>
-          
-
        </para>
 
     </section>
