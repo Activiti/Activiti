@@ -229,8 +229,19 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
   
   public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
-    BusinessRuleTaskActivityBehavior ruleActivity = new BusinessRuleTaskActivityBehavior();
-    
+    BusinessRuleTaskActivityBehavior ruleActivity = null;
+	if(StringUtils.isNotEmpty(businessRuleTask.getClassName())){
+		try {
+			Class<?> clazz=Class.forName(businessRuleTask.getClassName());
+			ruleActivity=(BusinessRuleTaskActivityBehavior)clazz.newInstance();
+		} catch (Exception e) {
+			throw new ActivitiException(
+					"Could not instiate businessRuleTask class: ", e);
+		}
+	}else{
+		ruleActivity=new BusinessRuleTaskActivityBehavior();
+	}
+	
     for (String ruleVariableInputObject : businessRuleTask.getInputVariables()) {
       ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
     }
