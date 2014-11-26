@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="job" >
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="javaService" />
+    
+    <serviceTask id="javaService" 
+                 name="Java service invocation"
+                 activiti:async="true" activiti:exclusive="false"
+                 activiti:class="org.activiti.test.async.executor.hazelcast.SleepDelegate">
+      <extensionElements>
+        <activiti:field name="sleepTime" stringValue="200" />
+      </extensionElements>             
+    </serviceTask>
+    
+    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

@@ -1,6 +1,5 @@
 package org.activiti.async.executor.hazelcast;
 
-import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ExecutorService;
@@ -8,8 +7,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
+import org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor;
 import org.activiti.engine.impl.asyncexecutor.ExecuteAsyncRunnable;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +20,8 @@ import com.hazelcast.core.IQueue;
 import com.hazelcast.monitor.LocalQueueStats;
 
 /**
+ * Note: very experimental and untested!
+ * 
  * Implementation of the Activiti {@link AsyncExecutor} using a distributed queue where the jobs
  * to be executed are put on. One of the distributed nodes will take the job off the queue, 
  * and hand it off the local thread pool.
@@ -70,45 +71,14 @@ import com.hazelcast.monitor.LocalQueueStats;
  * 
  * @author Joram Barrez
  */
-public class HazelCastDistributedQueueBasedAsyncExecutor implements AsyncExecutor {
+public class HazelCastDistributedQueueBasedAsyncExecutor extends DefaultAsyncJobExecutor {
 	
 	private static final Logger logger = LoggerFactory.getLogger(HazelCastDistributedQueueBasedAsyncExecutor.class);
 	
 	private static final String QUEUE_NAME = "activiti";
 	
-	// Injecteable
-	protected boolean isAutoActivate;
-	protected CommandExecutor commandExecutor;
-	protected int maxTimerJobsPerAcquisition = 1;
-	protected int maxAsyncJobsDuePerAcquisition = 1;
-	protected int defaultTimerJobAcquireWaitTimeInMillis = 10 * 1000;
-	protected int defaultAsyncJobAcquireWaitTimeInMillis = 10 * 1000;
-	  
-	protected String lockOwner = UUID.randomUUID().toString();
-	protected int timerLockTimeInMillis = 5 * 60 * 1000;
-	protected int asyncJobLockTimeInMillis = 5 * 60 * 1000;
-	
-	 /** The minimal number of threads that are kept alive in the threadpool for job execution */
-  protected int corePoolSize = 2;
-  
-  /** The maximum number of threads that are kept alive in the threadpool for job execution */
-  protected int maxPoolSize = 10;
-  
-  /** 
-   * The time (in milliseconds) a thread used for job execution must be kept alive before it is
-   * destroyed. Default setting is 0. Having a non-default setting of 0 takes resources,
-   * but in the case of many job executions it avoids creating new threads all the time. 
-   */
-  protected long keepAliveTime = 60000L;
-
-	/** The size of the queue on which jobs to be executed are placed */
-  protected int queueSize = 100;
-  
-  /** The time (in seconds) that is waited to gracefully shut down the threadpool used for job execution */
-  protected long secondsToWaitOnShutdown = 60L;
 	
 	// Runtime
-	protected boolean isActive;
 	protected HazelcastInstance hazelcastInstance;
 	protected IQueue<JobEntity> jobQueue;
 	
@@ -132,7 +102,9 @@ public class HazelCastDistributedQueueBasedAsyncExecutor implements AsyncExecuto
 		threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
 		executorService = threadPoolExecutor;
 		
-		isActive = true;
+		super.start();
+		
+		// Needs to be done afterwards, since it depends on isActive
 		initJobQueueListener();
 	}
 	
@@ -145,7 +117,10 @@ public class HazelCastDistributedQueueBasedAsyncExecutor implements AsyncExecuto
 					try {
 				    job = jobQueue.take(); // Blocking
 			    } catch (InterruptedException e1) {
+			    	logger.info("jobQueueListenerThread interrupted. This is fine if the job executor is shutting down");
 				    // Do nothing, this can happen when shutting down
+			    } catch (HazelcastInstanceNotActiveException notActiveException) {
+			    	logger.info("Hazel cast not active exception caught. This is fine if the job executor is shutting down");
 			    }
 					
 					if (job != null) {
@@ -161,26 +136,36 @@ public class HazelCastDistributedQueueBasedAsyncExecutor implements AsyncExecuto
 	@Override
   public void shutdown() {
 		
+		super.shutdown();
+		
 		// Shut down local execution service
 		try {
+			logger.info("Shutting down local executor service");
 			executorService.shutdown();
 	    executorService.awaitTermination(secondsToWaitOnShutdown, TimeUnit.SECONDS);
     } catch (InterruptedException e) {
     	logger.warn("Exception while waiting for executor service shutdown", e);
     }
 		
-		// Shut down listener thread
-		isActive = false;
-		
-		LocalQueueStats localQueueStats = jobQueue.getLocalQueueStats();
-		logger.info("This async job executor has processed " + localQueueStats.getPollOperationCount());
-
 		// Shut down hazelcast
 		try {
+			LocalQueueStats localQueueStats = jobQueue.getLocalQueueStats();
+			logger.info("This async job executor has processed " + localQueueStats.getPollOperationCount());
 			hazelcastInstance.shutdown();
 		} catch (HazelcastInstanceNotActiveException e) {
 			// Nothing to do
 		}
+		
+		// Shut down listener thread
+		isActive = false;
+		try {
+			logger.info("Shutting down jobQueueListenerThread");
+			jobQueueListenerThread.interrupt();
+	    jobQueueListenerThread.join();
+    } catch (InterruptedException e) {
+    	logger.warn("jobQueueListenerThread join was interrupted", e);
+    }
+		
   }
 	
 	@Override
@@ -191,134 +176,5 @@ public class HazelCastDistributedQueueBasedAsyncExecutor implements AsyncExecuto
 	    // Nothing to do about it, can happen at shutdown for example
     }
   }
-	
-	@Override
-  public boolean isActive() {
-		return isActive;
-  }
-	
-	@Override
-	public CommandExecutor getCommandExecutor() {
-		return commandExecutor;
-	}
-
-
-	@Override
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-	  this.commandExecutor = commandExecutor;
-  }
-
-	@Override
-  public boolean isAutoActivate() {
-		return isAutoActivate;
-  }
-
-	@Override
-  public void setAutoActivate(boolean isAutoActivate) {
-		this.isAutoActivate = isAutoActivate;
-  }
-
-	public int getCorePoolSize() {
-		return corePoolSize;
-	}
-
-	public void setCorePoolSize(int corePoolSize) {
-		this.corePoolSize = corePoolSize;
-	}
-
-	public int getMaxPoolSize() {
-		return maxPoolSize;
-	}
-
-	public void setMaxPoolSize(int maxPoolSize) {
-		this.maxPoolSize = maxPoolSize;
-	}
-
-	public long getKeepAliveTime() {
-		return keepAliveTime;
-	}
-
-	public void setKeepAliveTime(long keepAliveTime) {
-		this.keepAliveTime = keepAliveTime;
-	}
-
-	public int getQueueSize() {
-		return queueSize;
-	}
-
-	public void setQueueSize(int queueSize) {
-		this.queueSize = queueSize;
-	}
-
-	public long getSecondsToWaitOnShutdown() {
-		return secondsToWaitOnShutdown;
-	}
-
-	public void setSecondsToWaitOnShutdown(long secondsToWaitOnShutdown) {
-		this.secondsToWaitOnShutdown = secondsToWaitOnShutdown;
-	}
-
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
-	
-
-	public String getLockOwner() {
-		return lockOwner;
-	}
-
-	public void setLockOwner(String lockOwner) {
-		this.lockOwner = lockOwner;
-	}
-
-	public int getTimerLockTimeInMillis() {
-		return timerLockTimeInMillis;
-	}
-
-	public void setTimerLockTimeInMillis(int timerLockTimeInMillis) {
-		this.timerLockTimeInMillis = timerLockTimeInMillis;
-	}
-
-	public int getAsyncJobLockTimeInMillis() {
-		return asyncJobLockTimeInMillis;
-	}
-
-	public void setAsyncJobLockTimeInMillis(int asyncJobLockTimeInMillis) {
-		this.asyncJobLockTimeInMillis = asyncJobLockTimeInMillis;
-	}
-
-	public int getMaxTimerJobsPerAcquisition() {
-		return maxTimerJobsPerAcquisition;
-	}
-
-	public void setMaxTimerJobsPerAcquisition(int maxTimerJobsPerAcquisition) {
-		this.maxTimerJobsPerAcquisition = maxTimerJobsPerAcquisition;
-	}
-
-	public int getMaxAsyncJobsDuePerAcquisition() {
-		return maxAsyncJobsDuePerAcquisition;
-	}
-
-	public void setMaxAsyncJobsDuePerAcquisition(int maxAsyncJobsDuePerAcquisition) {
-		this.maxAsyncJobsDuePerAcquisition = maxAsyncJobsDuePerAcquisition;
-	}
-
-	public int getDefaultTimerJobAcquireWaitTimeInMillis() {
-		return defaultTimerJobAcquireWaitTimeInMillis;
-	}
-
-	public void setDefaultTimerJobAcquireWaitTimeInMillis(
-	    int defaultTimerJobAcquireWaitTimeInMillis) {
-		this.defaultTimerJobAcquireWaitTimeInMillis = defaultTimerJobAcquireWaitTimeInMillis;
-	}
-
-	public int getDefaultAsyncJobAcquireWaitTimeInMillis() {
-		return defaultAsyncJobAcquireWaitTimeInMillis;
-	}
-
-	public void setDefaultAsyncJobAcquireWaitTimeInMillis(
-	    int defaultAsyncJobAcquireWaitTimeInMillis) {
-		this.defaultAsyncJobAcquireWaitTimeInMillis = defaultAsyncJobAcquireWaitTimeInMillis;
-	}
 	
 }
