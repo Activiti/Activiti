@@ -22,9 +22,9 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
@@ -62,8 +62,16 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
     this.fieldDeclarations = fieldDeclarations;
     this.skipExpression = skipExpression;
   }
+  
+  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+    this(className, fieldDeclarations, null);
+  }
+  
+  public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
+    this(clazz.getName(), fieldDeclarations, null);
+  }
 
-  public ClassDelegate(Class< ? > clazz, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
+  public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
     this(clazz.getName(), fieldDeclarations, skipExpression);
   }
 
@@ -115,10 +123,12 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   public void execute(ActivityExecution execution) throws Exception {
     boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
     if (!isSkipExpressionEnabled || 
-            (isSkipExpressionEnabled && !SkipExpressionUtil.skipFlowElement(execution, skipExpression))) {
+            (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+      
       if (activityBehaviorInstance == null) {
         activityBehaviorInstance = getActivityBehaviorInstance(execution);
       }
+      
       try {
         activityBehaviorInstance.execute(execution);
       } catch (BpmnError error) {

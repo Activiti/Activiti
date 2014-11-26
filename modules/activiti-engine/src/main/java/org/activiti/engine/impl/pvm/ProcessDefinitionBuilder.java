@@ -81,7 +81,7 @@ public class ProcessDefinitionBuilder {
       throw new PvmException("destinationActivityId is null");
     }
     ActivityImpl activity = getActivity();
-    transition = activity.createOutgoingTransition(transitionId, null);
+    transition = activity.createOutgoingTransition(transitionId);
     unresolvedTransitions.add(new Object[]{transition, destinationActivityId});
     processElement = transition;
     return this;

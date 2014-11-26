@@ -97,8 +97,7 @@ public class ServiceTaskXMLConverter extends BaseBpmnXMLConverter {
     if (StringUtils.isNotEmpty(serviceTask.getExtensionId())) {
       writeQualifiedAttribute(ATTRIBUTE_TASK_SERVICE_EXTENSIONID, serviceTask.getExtensionId(), xtw);
     }
-    if(StringUtils.isNotEmpty(serviceTask.getSkipExpression()))
-    {
+    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
       writeQualifiedAttribute(ATTRIBUTE_TASK_SERVICE_SKIP_EXPRESSION, serviceTask.getSkipExpression(), xtw);
     }
   }

@@ -13,7 +13,6 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
@@ -47,7 +46,7 @@ public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior 
     try {
       boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
       if (!isSkipExpressionEnabled || 
-              (isSkipExpressionEnabled && !SkipExpressionUtil.skipFlowElement(execution, skipExpression))) {
+              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
         value = expression.getValue(execution);
         if (resultVariable != null) {
           execution.setVariable(resultVariable, value);

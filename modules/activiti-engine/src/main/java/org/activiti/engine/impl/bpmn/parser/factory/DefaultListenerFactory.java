@@ -65,7 +65,7 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
 	}
 
   public TaskListener createClassDelegateTaskListener(ActivitiListener activitiListener) {
-    return new ClassDelegate(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()), null);
+    return new ClassDelegate(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
   
   public TaskListener createExpressionTaskListener(ActivitiListener activitiListener) {
@@ -78,7 +78,7 @@ public class DefaultListenerFactory extends AbstractBehaviorFactory implements L
   }
 
   public ExecutionListener createClassDelegateExecutionListener(ActivitiListener activitiListener) {
-    return new ClassDelegate(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()), null);
+    return new ClassDelegate(activitiListener.getImplementation(), createFieldDeclarations(activitiListener.getFieldExtensions()));
   }
   
   public ExecutionListener createExpressionExecutionListener(ActivitiListener activitiListener) {

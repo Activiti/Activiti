@@ -165,7 +165,7 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
 		} else if (serviceTask.getImplementation() != null && mockedClassDelegatesMapping.containsKey(serviceTask.getImplementation())) {
 				
 			return new ClassDelegate(mockedClassDelegatesMapping.get(serviceTask.getImplementation()),
-					createFieldDeclarations(serviceTask.getFieldExtensions()), null);
+					createFieldDeclarations(serviceTask.getFieldExtensions()));
 			
 		}
 		
@@ -176,7 +176,7 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
 	  List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
 	  fieldDeclarations.add(new FieldDeclaration("name", 
 	  		Expression.class.getName(), new FixedValue(serviceTask.getImplementation())));
-	  return new ClassDelegate(NoOpServiceTask.class, fieldDeclarations, null);
+	  return new ClassDelegate(NoOpServiceTask.class, fieldDeclarations);
   }
 
 	@Override

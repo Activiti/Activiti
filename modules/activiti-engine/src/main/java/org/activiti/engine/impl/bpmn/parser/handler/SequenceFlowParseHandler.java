@@ -44,13 +44,10 @@ public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceF
     ActivityImpl destinationActivity = scope.findActivity(sequenceFlow.getTargetRef());
 
     Expression skipExpression;
-    if(StringUtils.isNotEmpty(sequenceFlow.getSkipExpression()))
-    {
+    if (StringUtils.isNotEmpty(sequenceFlow.getSkipExpression())) {
       ExpressionManager expressionManager = bpmnParse.getExpressionManager();
       skipExpression = expressionManager.createExpression(sequenceFlow.getSkipExpression());
-    }
-    else
-    {
+    } else {
       skipExpression = null;
     }
     

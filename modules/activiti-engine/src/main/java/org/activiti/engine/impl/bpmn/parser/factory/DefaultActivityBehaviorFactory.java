@@ -129,12 +129,9 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   
   public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask) {
     Expression skipExpression;
-    if(StringUtils.isNotEmpty(serviceTask.getSkipExpression()))
-    {
+    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
       skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
-    }
-    else
-    {
+    } else {
       skipExpression = null;
     }
     return new ClassDelegate(serviceTask.getImplementation(), createFieldDeclarations(serviceTask.getFieldExtensions()), skipExpression);
@@ -143,12 +140,9 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask) {
     Expression delegateExpression = expressionManager.createExpression(serviceTask.getImplementation());
     Expression skipExpression;
-    if(StringUtils.isNotEmpty(serviceTask.getSkipExpression()))
-    {
+    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
       skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
-    }
-    else
-    {
+    } else {
       skipExpression = null;
     }
     return new ServiceTaskDelegateExpressionActivityBehavior(delegateExpression, skipExpression, createFieldDeclarations(serviceTask.getFieldExtensions()));
@@ -159,9 +153,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     Expression skipExpression;
     if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
       skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
-    }
-    else
-    {
+    } else {
       skipExpression = null;
     }
     return new ServiceTaskExpressionActivityBehavior(expression, skipExpression, serviceTask.getResultVariableName());

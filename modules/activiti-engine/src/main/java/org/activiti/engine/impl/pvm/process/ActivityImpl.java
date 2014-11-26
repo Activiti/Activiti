@@ -51,15 +51,21 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   public ActivityImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
   }
-
-  public TransitionImpl createOutgoingTransition() {
-    return createOutgoingTransition(null, null);
-  }
+  
   public String getFailedJobRetryTimeCycleValue() {
 		return failedJobRetryTimeCycleValue;
   }
+  
   public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
 	  this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
+  }
+  
+  public TransitionImpl createOutgoingTransition() {
+    return createOutgoingTransition(null);
+  }
+  
+  public TransitionImpl createOutgoingTransition(String transitionId) {
+    return createOutgoingTransition(transitionId, null);
   }
 
   public TransitionImpl createOutgoingTransition(String transitionId, Expression skipExpression) {
@@ -67,7 +73,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
     transition.setSource(this);
     outgoingTransitions.add(transition);
     
-    if (transitionId!=null) {
+    if (transitionId != null) {
       if (namedOutgoingTransitions.containsKey(transitionId)) {
         throw new PvmException("activity '"+id+" has duplicate transition '"+transitionId+"'");
       }

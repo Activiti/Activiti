@@ -54,8 +54,7 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
     SequenceFlow sequenceFlow = (SequenceFlow) element;
     writeDefaultAttribute(ATTRIBUTE_FLOW_SOURCE_REF, sequenceFlow.getSourceRef(), xtw);
     writeDefaultAttribute(ATTRIBUTE_FLOW_TARGET_REF, sequenceFlow.getTargetRef(), xtw);
-    if(StringUtils.isNotEmpty(sequenceFlow.getSkipExpression()))
-    {
+    if (StringUtils.isNotEmpty(sequenceFlow.getSkipExpression())) {
       writeDefaultAttribute(ATTRIBUTE_FLOW_SKIP_EXPRESSION, sequenceFlow.getSkipExpression(), xtw);
     }
   }
