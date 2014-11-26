@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.pvm.PvmTransition;
 
 
@@ -31,12 +32,14 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
   protected ActivityImpl source;
   protected ActivityImpl destination;
   protected List<ExecutionListener> executionListeners;
+  protected Expression skipExpression;
   
   /** Graphical information: a list of waypoints: x1, y1, x2, y2, x3, y3, .. */
   protected List<Integer> waypoints = new ArrayList<Integer>();
 
-  public TransitionImpl(String id, ProcessDefinitionImpl processDefinition) {
+  public TransitionImpl(String id, Expression skipExpression, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
+    this.skipExpression = skipExpression;
   }
 
   public ActivityImpl getSource() {
@@ -88,5 +91,12 @@ public class TransitionImpl extends ProcessElementImpl implements PvmTransition 
   public void setWaypoints(List<Integer> waypoints) {
     this.waypoints = waypoints;
   }
+
+  public Expression getSkipExpression() {
+    return skipExpression;
+  }
   
+  public void setSkipExpression(Expression skipExpression) {
+    this.skipExpression = skipExpression;
+  }
 }

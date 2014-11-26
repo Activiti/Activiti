@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -52,7 +53,7 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   }
 
   public TransitionImpl createOutgoingTransition() {
-    return createOutgoingTransition(null);
+    return createOutgoingTransition(null, null);
   }
   public String getFailedJobRetryTimeCycleValue() {
 		return failedJobRetryTimeCycleValue;
@@ -61,8 +62,8 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
 	  this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
   }
 
-  public TransitionImpl createOutgoingTransition(String transitionId) {
-    TransitionImpl transition = new TransitionImpl(transitionId, processDefinition);
+  public TransitionImpl createOutgoingTransition(String transitionId, Expression skipExpression) {
+    TransitionImpl transition = new TransitionImpl(transitionId, skipExpression, processDefinition);
     transition.setSource(this);
     outgoingTransitions.add(transition);
     

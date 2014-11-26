@@ -21,7 +21,7 @@ import java.util.List;
 public class ServiceTask extends Task {
 
   public static final String MAIL_TASK = "mail";
-  
+
   protected String implementation;
   protected String implementationType;
   protected String resultVariableName;
@@ -30,6 +30,7 @@ public class ServiceTask extends Task {
   protected String extensionId;
   protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
   protected List<CustomProperty> customProperties = new ArrayList<CustomProperty>();
+  protected String skipExpression;
 
   public String getImplementation() {
     return implementation;
@@ -83,12 +84,20 @@ public class ServiceTask extends Task {
     return extensionId != null && !extensionId.isEmpty();
   }
   
+  public String getSkipExpression() {
+    return skipExpression;
+  }
+
+  public void setSkipExpression(String skipExpression) {
+    this.skipExpression = skipExpression;
+  }
+
   public ServiceTask clone() {
     ServiceTask clone = new ServiceTask();
     clone.setValues(this);
     return clone;
   }
-  
+
   public void setValues(ServiceTask otherElement) {
     super.setValues(otherElement);
     setImplementation(otherElement.getImplementation());
@@ -97,14 +106,14 @@ public class ServiceTask extends Task {
     setType(otherElement.getType());
     setOperationRef(otherElement.getOperationRef());
     setExtensionId(otherElement.getExtensionId());
-    
+
     fieldExtensions = new ArrayList<FieldExtension>();
     if (otherElement.getFieldExtensions() != null && !otherElement.getFieldExtensions().isEmpty()) {
       for (FieldExtension extension : otherElement.getFieldExtensions()) {
         fieldExtensions.add(extension.clone());
       }
     }
-    
+
     customProperties = new ArrayList<CustomProperty>();
     if (otherElement.getCustomProperties() != null && !otherElement.getCustomProperties().isEmpty()) {
       for (CustomProperty property : otherElement.getCustomProperties()) {

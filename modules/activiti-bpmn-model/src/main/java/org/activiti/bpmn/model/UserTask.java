@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -35,7 +34,8 @@ public class UserTask extends Task {
   protected List<String> candidateGroups = new ArrayList<String>();
   protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
   protected List<ActivitiListener> taskListeners = new ArrayList<ActivitiListener>();
-  
+  protected String skipExpression;
+
   protected Map<String, Set<String>> customUserIdentityLinks = new HashMap<String, Set<String>>(); 
   protected Map<String, Set<String>> customGroupIdentityLinks = new HashMap<String, Set<String>>(); 
 
@@ -135,11 +135,17 @@ public class UserTask extends Task {
 	return customGroupIdentityLinks;
   }
   
-  public void setCustomGroupIdentityLinks(
-		Map<String, Set<String>> customGroupIdentityLinks) {
-	this.customGroupIdentityLinks = customGroupIdentityLinks;
+  public void setCustomGroupIdentityLinks(Map<String, Set<String>> customGroupIdentityLinks) {
+    this.customGroupIdentityLinks = customGroupIdentityLinks;
   }
   
+  public String getSkipExpression() {
+    return skipExpression;
+  }
+  
+  public void setSkipExpression(String skipExpression) {
+    this.skipExpression = skipExpression;
+  }
   public UserTask clone() {
     UserTask clone = new UserTask();
     clone.setValues(this);

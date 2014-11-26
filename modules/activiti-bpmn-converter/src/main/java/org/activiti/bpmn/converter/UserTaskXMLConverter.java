@@ -48,7 +48,8 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_PRIORITY), 
       new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEUSERS), 
       new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CANDIDATEGROUPS),
-      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CATEGORY)
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_CATEGORY),
+      new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_SKIP_EXPRESSION)
   );
 
   public UserTaskXMLConverter() {
@@ -100,6 +101,11 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
       userTask.getCandidateGroups().addAll(parseDelimitedList(expression));
     }
 
+    if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_SKIP_EXPRESSION))) {
+      String expression = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_TASK_USER_SKIP_EXPRESSION);
+      userTask.setSkipExpression(expression);
+    }
+
     BpmnXMLUtil.addCustomAttributes(xtr, userTask, defaultElementAttributes, 
         defaultActivityAttributes, defaultUserTaskAttributes);
 
@@ -121,6 +127,10 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     writeQualifiedAttribute(ATTRIBUTE_FORM_FORMKEY, userTask.getFormKey(), xtw);
     if (userTask.getPriority() != null) {
       writeQualifiedAttribute(ATTRIBUTE_TASK_USER_PRIORITY, userTask.getPriority().toString(), xtw);
+    }
+    if(null != userTask.getSkipExpression())
+    {
+      writeQualifiedAttribute(ATTRIBUTE_TASK_USER_SKIP_EXPRESSION, userTask.getSkipExpression(), xtw);
     }
     // write custom attributes
     BpmnXMLUtil.writeCustomAttributes(userTask.getAttributes().values(), xtw, defaultElementAttributes, 
