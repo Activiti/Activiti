@@ -88,7 +88,7 @@
     set
       LOCK_TIME_ = #{lockTime, jdbcType=TIMESTAMP}
     where ID_ = #{id}
-      and LOCK_TIME_ is null
+      and (LOCK_TIME_ is null OR LOCK_TIME_ &lt;= #{expirationTime, jdbcType=TIMESTAMP})
   </update>
   
   <update id="clearProcessInstanceLockTime" parameterType="java.util.Map">
