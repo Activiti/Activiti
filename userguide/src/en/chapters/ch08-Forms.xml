@@ -463,7 +463,7 @@
     
     <para>Submitting form properties can be done with 
     <literal>ProcessInstance FormService.submitStartFormData(String processDefinitionId, Map&lt;String,String&gt; properties)</literal>
-    and <literal>void FormService.submitStartFormData(String taskId, Map&lt;String,String&gt; properties)</literal></para>
+    and <literal>void FormService.submitTaskFormData(String taskId, Map&lt;String,String&gt; properties)</literal></para>
     
     <para>To learn about how form properties map to process variables, see <xref linkend="formProperties"/> </para>
     
