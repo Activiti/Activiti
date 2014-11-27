@@ -295,7 +295,7 @@ public class Extender implements BundleTrackerCustomizer, ServiceTrackerCustomiz
   //remove bundle protocol specific part, so that resource can be accessed by path relative to bundle root
   private static String getPath(URL url) {
       String path = url.toExternalForm();
-      return path.replaceAll("bundle://[^/]*/","");
+      return path.replaceAll(url.getProtocol() + "://[^/]*/", "");
   }
 
   // script engine part
