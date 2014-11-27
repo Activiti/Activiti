@@ -16,6 +16,8 @@
 <definitions id="definitions"
   xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:activiti="http://activiti.org/bpmn"
+  xmlns:modeler="http://activiti.com/modeler"
+  modeler:version="2.0"
   targetNamespace="Examples">
   
   <process id="setScriptResultToProcessVariable">

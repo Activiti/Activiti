@@ -12,16 +12,19 @@
  */
 package org.activiti.engine.impl;
 
-import java.lang.reflect.ParameterizedType;
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ManagementService;
+import org.activiti.engine.event.EventLogEntry;
+import org.activiti.engine.impl.cmd.CancelJobCmd;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
-import org.activiti.engine.impl.cmd.DeleteJobCmd;
+import org.activiti.engine.impl.cmd.DeleteEventLogEntry;
 import org.activiti.engine.impl.cmd.ExecuteCustomSqlCmd;
 import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
+import org.activiti.engine.impl.cmd.GetEventLogEntriesCmd;
 import org.activiti.engine.impl.cmd.GetJobExceptionStacktraceCmd;
 import org.activiti.engine.impl.cmd.GetPropertiesCmd;
 import org.activiti.engine.impl.cmd.GetTableCountCmd;
@@ -63,7 +66,7 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   }
   
   public void deleteJob(String jobId) {
-    commandExecutor.execute(new DeleteJobCmd(jobId));
+    commandExecutor.execute(new CancelJobCmd(jobId));
   }
 
   public void setJobRetries(String jobId, int retries) {
@@ -120,5 +123,20 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   	Class<MapperType> mapperClass = customSqlExecution.getMapperClass();
   	return commandExecutor.execute(new ExecuteCustomSqlCmd<MapperType, ResultType>(mapperClass, customSqlExecution));
 	}
+  
+  @Override
+  public List<EventLogEntry> getEventLogEntries(Long startLogNr, Long pageSize) {
+  	return commandExecutor.execute(new GetEventLogEntriesCmd(startLogNr, pageSize));
+  }
+  
+  @Override
+  public List<EventLogEntry> getEventLogEntriesByProcessInstanceId(String processInstanceId) {
+    return commandExecutor.execute(new GetEventLogEntriesCmd(processInstanceId));
+  }
+  
+  @Override
+  public void deleteEventLogEntry(long logNr) {
+  	commandExecutor.execute(new DeleteEventLogEntry(logNr));
+  }
 
 }

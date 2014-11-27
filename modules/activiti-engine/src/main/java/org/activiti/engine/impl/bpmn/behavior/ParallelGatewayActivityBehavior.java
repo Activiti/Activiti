@@ -15,13 +15,13 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * Implementation of the Parallel Gateway/AND gateway as definined in the BPMN
@@ -53,6 +53,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
   
+  private static final long serialVersionUID = 1L;
+  
   private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
 
   public void execute(ActivityExecution execution) throws Exception { 
@@ -60,7 +62,6 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     // Join
     PvmActivity activity = execution.getActivity();
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    
     execution.inactivate();
     lockConcurrentRoot(execution);
     

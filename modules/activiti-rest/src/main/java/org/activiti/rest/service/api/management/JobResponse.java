@@ -15,6 +15,10 @@ package org.activiti.rest.service.api.management;
 
 import java.util.Date;
 
+import org.activiti.rest.common.util.DateToStringSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 
 /**
  * @author Frederik Heremans
@@ -31,6 +35,7 @@ public class JobResponse {
   protected String executionUrl;
   protected Integer retries;
   protected String exceptionMessage;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   protected Date dueDate;
   protected String tenantId;
   

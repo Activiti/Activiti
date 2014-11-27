@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions id="definitions" targetNamespace="http://activiti.org/bpmn20"
+    xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:activiti="http://activiti.org/bpmn" xmlns:cell="http://khaos.eu/cell">
+
+    <error id="error" name="error"></error>
+    <process id="testBatchDeleteOfTask">
+
+        <startEvent id="start"></startEvent>
+
+        <sequenceFlow sourceRef="start" targetRef="subProcess"></sequenceFlow>
+
+        <subProcess id="subProcess">
+            <startEvent id="innerStart"></startEvent>
+            
+            <sequenceFlow sourceRef="innerStart" targetRef="fork"></sequenceFlow>
+            <parallelGateway id="fork"></parallelGateway>
+            
+            <sequenceFlow sourceRef="fork" targetRef="taskOne"></sequenceFlow>
+            <userTask id="taskOne" />
+            
+            <sequenceFlow sourceRef="fork" targetRef="taskTwo"></sequenceFlow>
+            <userTask id="taskTwo" activiti:candidateGroups="sales" />
+
+
+            <sequenceFlow sourceRef="taskOne" targetRef="join"></sequenceFlow>
+            <sequenceFlow sourceRef="taskTwo" targetRef="join"></sequenceFlow>
+            <exclusiveGateway id="join"></exclusiveGateway>
+
+            <sequenceFlow sourceRef="join" targetRef="innerEnd"></sequenceFlow>
+            <endEvent id="innerEnd">
+                <errorEventDefinition errorRef="error" />
+            </endEvent>
+
+        </subProcess>
+
+        <boundaryEvent id="subProcessCancelled"
+            attachedToRef="subProcess">
+            <errorEventDefinition errorRef="error" />
+        </boundaryEvent>
+
+
+        <sequenceFlow sourceRef="subProcessCancelled" targetRef="end"></sequenceFlow>
+        <sequenceFlow sourceRef="subProcess" targetRef="end"></sequenceFlow>
+        <endEvent id="end"></endEvent>
+    </process>
+</definitions>

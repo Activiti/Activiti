@@ -10,7 +10,7 @@ import com.vaadin.ui.AbstractComponent;
  * Server side component for the VUsemapImage widget.
  */
 @SuppressWarnings("serial")
-@com.vaadin.ui.ClientWidget(org.activiti.explorer.ui.component.diagram.client.ui.VProcessDiagram.class)
+@com.vaadin.ui.ClientWidget(VProcessDiagram.class)
 public class ProcessDiagramComponent extends AbstractComponent {
   
 	private String processDefinitionKey;

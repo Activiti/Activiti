@@ -15,25 +15,27 @@ package org.activiti.rest.service.api.history;
 
 import java.util.List;
 
-import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
-import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
  * @author Frederik Heremans
  */
-public class HistoricProcessInstanceCommentResourceTest extends BaseRestTestCase {
+public class HistoricProcessInstanceCommentResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting all comments for a historic process instance.
@@ -51,36 +53,34 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseRestTestCase
       Comment comment = taskService.addComment(null, pi.getId(), "This is a comment...");
       identityService.setAuthenticatedUserId(null);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT_COLLECTION, pi.getId()));
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT_COLLECTION, pi.getId())), HttpStatus.SC_OK);
       
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertTrue(responseNode.isArray());
       assertEquals(1, responseNode.size());
       
       ObjectNode commentNode = (ObjectNode) responseNode.get(0);
-      assertEquals("kermit", commentNode.get("author").getTextValue());
-      assertEquals("This is a comment...", commentNode.get("message").getTextValue());
-      assertEquals(comment.getId(), commentNode.get("id").getTextValue());
-      assertTrue(commentNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())));
+      assertEquals("kermit", commentNode.get("author").textValue());
+      assertEquals("This is a comment...", commentNode.get("message").textValue());
+      assertEquals(comment.getId(), commentNode.get("id").textValue());
+      assertTrue(commentNode.get("processInstanceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())));
+      assertEquals(pi.getProcessInstanceId(), commentNode.get("processInstanceId").asText());
+      assertTrue(commentNode.get("taskUrl").isNull());
+      assertTrue(commentNode.get("taskId").isNull());
       
       // Test with unexisting task
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
-      }
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask")), HttpStatus.SC_NOT_FOUND));
+      
 		} finally {
-			if(pi != null) {
+			if (pi != null) {
 				List<Comment> comments = taskService.getProcessInstanceComments(pi.getId());
-				for(Comment c : comments) {
+				for (Comment c : comments) {
 					taskService.deleteComment(c.getId());
 				}
 			}
@@ -98,28 +98,35 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseRestTestCase
     try {
     	pi = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     	
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT_COLLECTION, pi.getId()));
-      ObjectNode requestNode = objectMapper.createObjectNode();
+    	HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT_COLLECTION, pi.getId()));
+    	ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("message", "This is a comment...");
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
       
-      Representation response = client.post(requestNode);
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
+    	
+      assertEquals(HttpStatus.SC_CREATED, response.getStatusLine().getStatusCode());
 
       List<Comment> commentsOnProcess = taskService.getProcessInstanceComments(pi.getId());
       assertNotNull(commentsOnProcess);
       assertEquals(1, commentsOnProcess.size());
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
-      assertEquals("kermit", responseNode.get("author").getTextValue());
-      assertEquals("This is a comment...", responseNode.get("message").getTextValue());
-      assertEquals(commentsOnProcess.get(0).getId(), responseNode.get("id").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), commentsOnProcess.get(0).getId())));
+      assertEquals("kermit", responseNode.get("author").textValue());
+      assertEquals("This is a comment...", responseNode.get("message").textValue());
+      assertEquals(commentsOnProcess.get(0).getId(), responseNode.get("id").textValue());
+      assertTrue(responseNode.get("processInstanceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), commentsOnProcess.get(0).getId())));
+      assertEquals(pi.getProcessInstanceId(), responseNode.get("processInstanceId").asText());
+      assertTrue(responseNode.get("taskUrl").isNull());
+      assertTrue(responseNode.get("taskId").isNull());
+      
     } finally {
-    	if(pi != null) {
+    	if (pi != null) {
 				List<Comment> comments = taskService.getProcessInstanceComments(pi.getId());
-				for(Comment c : comments) {
+				for (Comment c : comments) {
 					taskService.deleteComment(c.getId());
 				}
 			}
@@ -142,39 +149,30 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseRestTestCase
       Comment comment = taskService.addComment(null, pi.getId(), "This is a comment...");
       identityService.setAuthenticatedUserId(null);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId()));
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())), 200);
       
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       
-      assertEquals("kermit", responseNode.get("author").getTextValue());
-      assertEquals("This is a comment...", responseNode.get("message").getTextValue());
-      assertEquals(comment.getId(), responseNode.get("id").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())));
+      assertEquals("kermit", responseNode.get("author").textValue());
+      assertEquals("This is a comment...", responseNode.get("message").textValue());
+      assertEquals(comment.getId(), responseNode.get("id").textValue());
+      assertTrue(responseNode.get("processInstanceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())));
+      assertEquals(pi.getProcessInstanceId(), responseNode.get("processInstanceId").asText());
+      assertTrue(responseNode.get("taskUrl").isNull());
+      assertTrue(responseNode.get("taskId").isNull());
       
       // Test with unexisting process-instance
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, "unexistinginstance", "123"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a process instance with id 'unexistinginstance'.", expected.getStatus().getDescription());
-      }
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, "unexistinginstance", "123")), HttpStatus.SC_NOT_FOUND));
       
-      // Test with unexisting comment
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), "unexistingcomment"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Process instance '" + pi.getId() +"' doesn't have a comment with id 'unexistingcomment'.", expected.getStatus().getDescription());
-      }
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), "unexistingcomment")), HttpStatus.SC_NOT_FOUND));
+      
     } finally {
     	if(pi != null) {
 				List<Comment> comments = taskService.getProcessInstanceComments(pi.getId());
@@ -201,32 +199,17 @@ public class HistoricProcessInstanceCommentResourceTest extends BaseRestTestCase
       Comment comment = taskService.addComment(null, pi.getId(), "This is a comment...");
       identityService.setAuthenticatedUserId(null);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId()));
-      
-      Representation response = client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-      assertEquals(0, response.getSize());
+      closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), comment.getId())), HttpStatus.SC_NO_CONTENT));
       
       // Test with unexisting instance
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, "unexistinginstance", "123"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a process instance with id 'unexistinginstance'.", expected.getStatus().getDescription());
-      }
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, "unexistinginstance", "123")), HttpStatus.SC_NOT_FOUND));
       
       // Test with unexisting comment
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), "unexistingcomment"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Process instance '" + pi.getId() +"' doesn't have a comment with id 'unexistingcomment'.", expected.getStatus().getDescription());
-      }
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(
+          RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, pi.getId(), "unexistingcomment")), HttpStatus.SC_NOT_FOUND));
+      
     } finally {
     	if(pi != null) {
 				List<Comment> comments = taskService.getProcessInstanceComments(pi.getId());

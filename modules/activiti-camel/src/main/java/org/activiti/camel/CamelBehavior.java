@@ -24,7 +24,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
@@ -60,7 +60,7 @@ import org.apache.commons.lang3.StringUtils;
 * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Saeid Mirzaei
 * @version 5.12
 */
-public abstract class CamelBehavior extends BpmnActivityBehavior implements ActivityBehavior {
+public abstract class CamelBehavior extends AbstractBpmnActivityBehavior implements ActivityBehavior {
 
   private static final long serialVersionUID = 1L;
   protected Expression camelContext;
@@ -131,7 +131,7 @@ public abstract class CamelBehavior extends BpmnActivityBehavior implements Acti
       execution.setVariables(ExchangeUtils.prepareVariables(exchange, endpoint));
     }
   
-    performDefaultOutgoingBehavior(execution);
+    leave(execution);
   }
 
   protected ActivitiEndpoint createEndpoint(ActivityExecution execution) {

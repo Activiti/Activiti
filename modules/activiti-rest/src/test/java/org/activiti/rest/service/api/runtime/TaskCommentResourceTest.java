@@ -16,22 +16,27 @@ package org.activiti.rest.service.api.runtime;
 import java.util.List;
 
 import org.activiti.engine.history.HistoricTaskInstance;
+import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.engine.test.Deployment;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
  * @author Frederik Heremans
  */
-public class TaskCommentResourceTest extends BaseRestTestCase {
+public class TaskCommentResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting all comments for a task.
@@ -47,32 +52,29 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       Comment comment = taskService.addComment(task.getId(), null, "This is a comment...");
       identityService.setAuthenticatedUserId(null);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
-      
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertTrue(responseNode.isArray());
       assertEquals(1, responseNode.size());
       
       ObjectNode commentNode = (ObjectNode) responseNode.get(0);
-      assertEquals("kermit", commentNode.get("author").getTextValue());
-      assertEquals("This is a comment...", commentNode.get("message").getTextValue());
-      assertEquals(comment.getId(), commentNode.get("id").getTextValue());
-      assertTrue(commentNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertEquals("kermit", commentNode.get("author").textValue());
+      assertEquals("This is a comment...", commentNode.get("message").textValue());
+      assertEquals(comment.getId(), commentNode.get("id").textValue());
+      assertTrue(commentNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertEquals(task.getId(), commentNode.get("taskId").asText());
+      assertTrue(commentNode.get("processInstanceUrl").isNull());
+      assertTrue(commentNode.get("processInstanceId").isNull());
       
       // Test with unexisting task
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
-      }
+      httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask"));
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -91,24 +93,28 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       Task task = taskService.newTask();
       taskService.saveTask(task);
 
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("message", "This is a comment...");
       
-      Representation response = client.post(requestNode);
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
-
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
       List<Comment> commentsOnTask = taskService.getTaskComments(task.getId());
       assertNotNull(commentsOnTask);
       assertEquals(1, commentsOnTask.size());
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
-      assertEquals("kermit", responseNode.get("author").getTextValue());
-      assertEquals("This is a comment...", responseNode.get("message").getTextValue());
-      assertEquals(commentsOnTask.get(0).getId(), responseNode.get("id").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), commentsOnTask.get(0).getId())));
+      assertEquals("kermit", responseNode.get("author").textValue());
+      assertEquals("This is a comment...", responseNode.get("message").textValue());
+      assertEquals(commentsOnTask.get(0).getId(), responseNode.get("id").textValue());
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), commentsOnTask.get(0).getId())));
+      assertEquals(task.getId(), responseNode.get("taskId").asText());
+      assertTrue(responseNode.get("processInstanceUrl").isNull());
+      assertTrue(responseNode.get("processInstanceId").isNull());
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -116,6 +122,37 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
         taskService.deleteTask(task.getId(), true);
       }
     }
+  }
+  
+  @Deployment(resources = {"org/activiti/rest/service/api/oneTaskProcess.bpmn20.xml"})
+  public void testCreateCommentWithProcessInstanceId() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    Task task = taskService.createTaskQuery().singleResult();
+
+    ObjectNode requestNode = objectMapper.createObjectNode();
+    String message = "test";
+    requestNode.put("message", message);
+    requestNode.put("saveProcessInstanceId", true);
+
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
+
+    List<Comment> commentsOnTask = taskService.getTaskComments(task.getId());
+    assertNotNull(commentsOnTask);
+    assertEquals(1, commentsOnTask.size());
+
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
+    assertNotNull(responseNode);
+    assertEquals(processInstance.getId(), responseNode.get("processInstanceId").asText());
+    assertEquals(task.getId(), responseNode.get("taskId").asText());
+    assertEquals(message, responseNode.get("message").asText());
+    assertNotNull(responseNode.get("time").asText());
+
+    assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), commentsOnTask.get(0).getId())));
+    assertTrue(responseNode.get("processInstanceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_PROCESS_INSTANCE_COMMENT, processInstance.getId(), commentsOnTask.get(0).getId())));
   }
   
   /**
@@ -132,39 +169,31 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       Comment comment = taskService.addComment(task.getId(), null, "This is a comment...");
       identityService.setAuthenticatedUserId(null);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
-      
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       
-      assertEquals("kermit", responseNode.get("author").getTextValue());
-      assertEquals("This is a comment...", responseNode.get("message").getTextValue());
-      assertEquals(comment.getId(), responseNode.get("id").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertEquals("kermit", responseNode.get("author").textValue());
+      assertEquals("This is a comment...", responseNode.get("message").textValue());
+      assertEquals(comment.getId(), responseNode.get("id").textValue());
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertEquals(task.getId(), responseNode.get("taskId").asText());
+      assertTrue(responseNode.get("processInstanceUrl").isNull());
+      assertTrue(responseNode.get("processInstanceId").isNull());
       
       // Test with unexisting task
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, "unexistingtask", "123"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
-      }
+      httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, "unexistingtask", "123"));
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
       // Test with unexisting comment
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), "unexistingcomment"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Task '" + task.getId() +"' doesn't have a comment with id 'unexistingcomment'.", expected.getStatus().getDescription());
-      }
+      httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), "unexistingcomment"));
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+       
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -188,32 +217,20 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       Comment comment = taskService.addComment(task.getId(), null, "This is a comment...");
       identityService.setAuthenticatedUserId(null);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
-      
-      Representation response = client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-      assertEquals(0, response.getSize());
+      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
       
       // Test with unexisting task
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, "unexistingtask", "123"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
-      }
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, "unexistingtask", "123"));
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
       // Test with unexisting comment
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), "unexistingcomment"));
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Task '" + task.getId() +"' doesn't have a comment with id 'unexistingcomment'.", expected.getStatus().getDescription());
-      }
+      httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), "unexistingcomment"));
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -239,19 +256,20 @@ public class TaskCommentResourceTest extends BaseRestTestCase {
       
       taskService.complete(task.getId());
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
-      
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       
-      assertEquals("kermit", responseNode.get("author").getTextValue());
-      assertEquals("This is a comment...", responseNode.get("message").getTextValue());
-      assertEquals(comment.getId(), responseNode.get("id").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertEquals("kermit", responseNode.get("author").textValue());
+      assertEquals("This is a comment...", responseNode.get("message").textValue());
+      assertEquals(comment.getId(), responseNode.get("id").textValue());
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId())));
+      assertEquals(task.getId(), responseNode.get("taskId").asText());
+      assertTrue(responseNode.get("processInstanceUrl").isNull());
+      assertTrue(responseNode.get("processInstanceId").isNull());
       
     } finally {
       // Clean adhoc-tasks even if test fails

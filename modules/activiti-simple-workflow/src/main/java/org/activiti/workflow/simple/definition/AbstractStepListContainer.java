@@ -15,7 +15,7 @@ package org.activiti.workflow.simple.definition;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Tijs Rademakers

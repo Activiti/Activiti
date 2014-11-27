@@ -64,6 +64,9 @@ public interface ProcessDefinition {
   /** Does this process definition has a {@link FormService#getStartFormData(String) start form key}. */
   boolean hasStartFormKey();
   
+  /** Does this process definition has a graphical notation defined (such that a diagram can be generated)? */
+  boolean hasGraphicalNotation();
+  
   /** Returns true if the process definition is in suspended state. */
   boolean isSuspended();
   

@@ -21,7 +21,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class Printer {
 
-  public void printMessage(ActivityExecution execution) {
-    execution.setVariable("myVar", "Hello from Printer!");
-  }
+    public void printMessage(ActivityExecution execution) {
+        execution.setVariable("myVar", "Hello from Printer!");
+    }
 }

@@ -13,9 +13,6 @@
 
 package org.activiti.spring;
 
-import java.net.URL;
-import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.slf4j.Logger;
@@ -24,30 +21,33 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.core.io.UrlResource;
 
+import java.net.URL;
+import java.util.Map;
+
 
 /**
  * @author Tom Baeyens
  */
-public class SpringConfigurationHelper {
-  
-  private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);
+class SpringConfigurationHelper {
 
-  public static ProcessEngine buildProcessEngine(URL resource) {
-    log.debug("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
-    
-    ApplicationContext applicationContext = new GenericXmlApplicationContext(new UrlResource(resource));
-    Map<String, ProcessEngine> beansOfType = applicationContext.getBeansOfType(ProcessEngine.class);
-    if ( (beansOfType==null)
-         || (beansOfType.isEmpty())
-       ) {
-      throw new ActivitiException("no "+ProcessEngine.class.getName()+" defined in the application context "+resource.toString());
+    private static Logger log = LoggerFactory.getLogger(SpringConfigurationHelper.class);
+
+    private static ProcessEngine buildProcessEngine(URL resource) {
+        log.debug("==== BUILDING SPRING APPLICATION CONTEXT AND PROCESS ENGINE =========================================");
+
+        ApplicationContext applicationContext = new GenericXmlApplicationContext(new UrlResource(resource));
+        Map<String, ProcessEngine> beansOfType = applicationContext.getBeansOfType(ProcessEngine.class);
+        if ((beansOfType == null)
+                || (beansOfType.isEmpty())
+                ) {
+            throw new ActivitiException("no " + ProcessEngine.class.getName() + " defined in the application context " + resource.toString());
+        }
+
+        ProcessEngine processEngine = beansOfType.values().iterator().next();
+
+        log.debug("==== SPRING PROCESS ENGINE CREATED ==================================================================");
+        return processEngine;
     }
-    
-    ProcessEngine processEngine = beansOfType.values().iterator().next();
-
-    log.debug("==== SPRING PROCESS ENGINE CREATED ==================================================================");
-    return processEngine;
-  }
 
 
 }

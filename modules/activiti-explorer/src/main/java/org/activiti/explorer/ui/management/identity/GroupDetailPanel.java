@@ -317,7 +317,7 @@ public class GroupDetailPanel extends DetailPanel implements MemberShipChangeLis
         selectUsersPopup.addListener(new SubmitEventListener() {
           protected void submitted(SubmitEvent event) {
             Collection<String> userIds = selectUsersPopup.getSelectedUserIds();
-            if (userIds.size() > 0) {
+            if (!userIds.isEmpty()) {
               for (String userId : userIds) {
                 identityService.createMembership(userId, group.getId());
               }

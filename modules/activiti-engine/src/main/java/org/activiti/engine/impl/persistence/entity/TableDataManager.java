@@ -247,7 +247,7 @@ public class TableDataManager extends AbstractManager {
       throw new ActivitiException("Could not retrieve database metadata: " + e.getMessage());
     }
 
-    if(result.getColumnNames().size() == 0) {
+    if(result.getColumnNames().isEmpty()) {
       // According to API, when a table doesn't exist, null should be returned
       result = null;
     }

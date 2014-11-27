@@ -14,9 +14,9 @@ package org.activiti.workflow.simple.definition;
 
 import java.util.Map;
 
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.annotate.JsonTypeInfo.As;
-import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 /**
  * Marker interface for all 'patterns' that are known by the simple workflow

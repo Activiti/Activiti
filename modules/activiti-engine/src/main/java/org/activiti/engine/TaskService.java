@@ -21,7 +21,6 @@ import java.util.Map;
 import org.activiti.engine.query.NativeQuery;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Comment;
-import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
@@ -346,12 +345,18 @@ public interface TaskService {
 
   /** get a variables and search in the task scope and if available also the execution scopes. */
   Object getVariable(String taskId, String variableName);
+
+  /** get a variables and search in the task scope and if available also the execution scopes. */
+  <T> T getVariable(String taskId, String variableName, Class<T> variableClass);
   
   /** checks whether or not the task has a variable defined with the given name, in the task scope and if available also the execution scopes. */
   boolean hasVariable(String taskId, String variableName);
 
   /** checks whether or not the task has a variable defined with the given name. */
   Object getVariableLocal(String taskId, String variableName);
+
+  /** checks whether or not the task has a variable defined with the given name. */
+  <T> T getVariableLocal(String taskId, String variableName, Class<T> variableClass);
   
   /** checks whether or not the task has a variable defined with the given name, local task scope only. */
   boolean hasVariableLocal(String taskId, String variableName);
@@ -433,6 +438,9 @@ public interface TaskService {
 
   /** The comments related to the given process instance. */
   List<Comment> getProcessInstanceComments(String processInstanceId);
+
+  /** The comments related to the given process instance. */
+  List<Comment> getProcessInstanceComments(String processInstanceId, String type);
 
   /** Add a new attachment to a task and/or a process instance and use an input stream to provide the content */
   Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content);

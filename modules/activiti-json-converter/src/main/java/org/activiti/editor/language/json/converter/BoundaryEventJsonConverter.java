@@ -21,10 +21,12 @@ import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -42,6 +44,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_TIMER, BoundaryEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_ERROR, BoundaryEventJsonConverter.class);
     convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_SIGNAL, BoundaryEventJsonConverter.class);
+    convertersToBpmnMap.put(STENCIL_EVENT_BOUNDARY_MESSAGE, BoundaryEventJsonConverter.class);
   }
   
   public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
@@ -61,6 +64,8 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
       return STENCIL_EVENT_BOUNDARY_ERROR;
     } else if (eventDefinition instanceof SignalEventDefinition) {
       return STENCIL_EVENT_BOUNDARY_SIGNAL;
+    } else if (eventDefinition instanceof MessageEventDefinition) {
+      return STENCIL_EVENT_BOUNDARY_MESSAGE;
     } else {
       return STENCIL_EVENT_BOUNDARY_TIMER;
     }
@@ -77,26 +82,27 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
     dockersArrayNode.add(dockNode);
     flowElementNode.put("dockers", dockersArrayNode);
     
-    if (boundaryEvent.isCancelActivity() == false) {
-      propertiesNode.put(PROPERTY_CANCEL_ACTIVITY, PROPERTY_VALUE_NO);
-    }
+    propertiesNode.put(PROPERTY_CANCEL_ACTIVITY, boundaryEvent.isCancelActivity() ? PROPERTY_VALUE_YES : PROPERTY_VALUE_NO);
     
     addEventProperties(boundaryEvent, propertiesNode);
   }
   
   protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
     BoundaryEvent boundaryEvent = new BoundaryEvent();
+    boundaryEvent.setAttachedToRefId(lookForAttachedRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES)));
+    boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode, true));
+    
     String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
     if (STENCIL_EVENT_BOUNDARY_TIMER.equals(stencilId)) {
-      boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
       convertJsonToTimerDefinition(elementNode, boundaryEvent);
     } else if (STENCIL_EVENT_BOUNDARY_ERROR.equals(stencilId)) {
+      boundaryEvent.setCancelActivity(true); //always true
       convertJsonToErrorDefinition(elementNode, boundaryEvent);
     } else if (STENCIL_EVENT_BOUNDARY_SIGNAL.equals(stencilId)) {
-      boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
       convertJsonToSignalDefinition(elementNode, boundaryEvent);
+    } else if (STENCIL_EVENT_BOUNDARY_MESSAGE.equals(stencilId)) {
+      convertJsonToMessageDefinition(elementNode, boundaryEvent);
     }
-    boundaryEvent.setAttachedToRefId(lookForAttachedRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES)));
     return boundaryEvent;
   }
   

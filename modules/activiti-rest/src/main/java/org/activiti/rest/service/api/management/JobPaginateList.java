@@ -13,34 +13,25 @@
 
 package org.activiti.rest.service.api.management;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.runtime.Job;
 import org.activiti.rest.common.api.AbstractPaginateList;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 
 /**
  * @author Frederik Heremans
  */
 public class JobPaginateList extends AbstractPaginateList {
 
-  private SecuredResource resource;
+  protected RestResponseFactory restResponseFactory;
   
-  public JobPaginateList(SecuredResource resource) {
-    this.resource = resource;
+  public JobPaginateList(RestResponseFactory restResponseFactory) {
+    this.restResponseFactory = restResponseFactory;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    List<JobResponse> responseList = new ArrayList<JobResponse>();
-    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    for (Object job : list) {
-      responseList.add(restResponseFactory.createJobResponse(resource, (Job) job));
-    }
-    return responseList;
+    return restResponseFactory.createJobResponseList(list);
   }
 }

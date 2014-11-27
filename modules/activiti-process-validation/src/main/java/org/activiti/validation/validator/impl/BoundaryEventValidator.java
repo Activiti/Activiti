@@ -1,3 +1,15 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.validation.validator.impl;
 
 import java.util.HashMap;
@@ -7,6 +19,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.MessageEventDefinition;
@@ -38,15 +51,15 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
 			BoundaryEvent boundaryEvent = boundaryEvents.get(i);
 
 			if (boundaryEvent.getEventDefinitions() != null
-			    && boundaryEvent.getEventDefinitions().size() > 0) {
+			    && !boundaryEvent.getEventDefinitions().isEmpty()) {
 
 				EventDefinition eventDefinition = boundaryEvent.getEventDefinitions().get(0);
 				if (!(eventDefinition instanceof TimerEventDefinition)
-				    && !(eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition)
+				    && !(eventDefinition instanceof ErrorEventDefinition)
 				    && !(eventDefinition instanceof SignalEventDefinition)
 				    && !(eventDefinition instanceof CancelEventDefinition)
 				    && !(eventDefinition instanceof MessageEventDefinition)
-				    && !(eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition)) {
+				    && !(eventDefinition instanceof CompensateEventDefinition)) {
 
 					addError(errors, Problems.BOUNDARY_EVENT_INVALID_EVENT_DEFINITION, process,
 					    boundaryEvent, "Invalid or unsupported event definition");
@@ -80,7 +93,8 @@ public class BoundaryEventValidator extends ProcessLevelValidator {
 						if (j != i) {
 							BoundaryEvent otherBoundaryEvent = boundaryEvents.get(j);
 							if (otherBoundaryEvent.getAttachedToRefId() != null && otherBoundaryEvent.getAttachedToRefId().equals(boundaryEvent.getAttachedToRefId())) {
-								if (otherBoundaryEvent.getEventDefinitions() != null && otherBoundaryEvent.getEventDefinitions().size() > 0) {
+								if (otherBoundaryEvent.getEventDefinitions() != null && !otherBoundaryEvent
+                                        .getEventDefinitions().isEmpty()) {
 									EventDefinition otherEventDefinition = otherBoundaryEvent.getEventDefinitions().get(0);
 									if (otherEventDefinition instanceof MessageEventDefinition) {
 										MessageEventDefinition currentMessageEventDefinition = (MessageEventDefinition) eventDefinition;

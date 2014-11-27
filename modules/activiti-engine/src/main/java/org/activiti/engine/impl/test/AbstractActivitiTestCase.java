@@ -13,12 +13,33 @@
 
 package org.activiti.engine.impl.test;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.Callable;
+
 import junit.framework.AssertionFailedError;
-import org.activiti.bpmn.model.*;
-import org.activiti.engine.*;
+
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.UserTask;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.FormService;
+import org.activiti.engine.HistoryService;
+import org.activiti.engine.IdentityService;
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.activiti.engine.TaskService;
 import org.activiti.engine.impl.ProcessEngineImpl;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
@@ -29,9 +50,6 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Assert;
-
-import java.util.*;
-import java.util.concurrent.Callable;
 
 
 /**
@@ -78,7 +96,6 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       initializeServices();
     }
 
-    String deploymentId = null;
     try {
       
     	deploymentIdFromDeploymentAnnotation = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName()); 
@@ -129,7 +146,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableNameWithoutPrefix)) {
         Long count = tableCounts.get(tableName);
         if (count!=0L) {
-          outputMessage.append("  "+tableName + ": " + count + " record(s) ");
+          outputMessage.append("  ").append(tableName).append(": ").append(count).append(" record(s) ");
         }
       }
     }
@@ -186,8 +203,16 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
   }
 
   public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
+    JobExecutor jobExecutor = null;
+    AsyncExecutor asyncExecutor = null;
+    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      jobExecutor = processEngineConfiguration.getJobExecutor();
+      jobExecutor.start();
+      
+    } else {
+      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+      asyncExecutor.start();
+    }
 
     try {
       Timer timer = new Timer();
@@ -214,13 +239,25 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       }
 
     } finally {
-      jobExecutor.shutdown();
+      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+        jobExecutor.shutdown();
+      } else {
+        asyncExecutor.shutdown();
+      }
     }
   }
 
   public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
+    JobExecutor jobExecutor = null;
+    AsyncExecutor asyncExecutor = null;
+    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      jobExecutor = processEngineConfiguration.getJobExecutor();
+      jobExecutor.start();
+      
+    } else {
+      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+      asyncExecutor.start();
+    }
 
     try {
       Timer timer = new Timer();
@@ -243,14 +280,53 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
       }
 
     } finally {
-      jobExecutor.shutdown();
+      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+        jobExecutor.shutdown();
+      } else {
+        asyncExecutor.shutdown();
+      }
+    }
+  }
+  
+  public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
+    JobExecutor jobExecutor = null;
+    AsyncExecutor asyncExecutor = null;
+    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+      jobExecutor = processEngineConfiguration.getJobExecutor();
+      jobExecutor.start();
+      
+    } else {
+      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+      asyncExecutor.start();
+    }
+
+    try {
+      Timer timer = new Timer();
+      InteruptTask task = new InteruptTask(Thread.currentThread());
+      timer.schedule(task, maxMillisToWait);
+      try {
+        while (!task.isTimeLimitExceeded()) {
+          Thread.sleep(intervalMillis);
+        }
+      } catch (InterruptedException e) {
+        // ignore
+      } finally {
+        timer.cancel();
+      }
+
+    } finally {
+      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+        jobExecutor.shutdown();
+      } else {
+        asyncExecutor.shutdown();
+      }
     }
   }
 
   public boolean areJobsAvailable() {
     return !managementService
       .createJobQuery()
-      .executable()
+      //.executable()
       .list()
       .isEmpty();
   }
@@ -279,7 +355,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
     
     EndEvent endEvent = new EndEvent();
     endEvent.setId("theEnd");
-    process.addFlowElement(endEvent);;
+    process.addFlowElement(endEvent);
     
     process.addFlowElement(new SequenceFlow("start", "theTask"));
     process.addFlowElement(new SequenceFlow("theTask", "theEnd"));
@@ -312,7 +388,7 @@ public abstract class AbstractActivitiTestCase extends PvmTestCase {
     
     EndEvent endEvent = new EndEvent();
     endEvent.setId("theEnd");
-    process.addFlowElement(endEvent);;
+    process.addFlowElement(endEvent);
     
     process.addFlowElement(new SequenceFlow("start", "task1"));
     process.addFlowElement(new SequenceFlow("start", "task2"));

@@ -101,6 +101,18 @@ public void recordProcessInstanceEnd(String processInstanceId, String deleteReas
     }
   }
   
+  @Override
+  public void recordProcessInstanceNameChange(String processInstanceId, String newName) {
+    if(isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricProcessInstanceEntity historicProcessInstance = getHistoricProcessInstanceManager()
+              .findHistoricProcessInstance(processInstanceId);
+      
+      if (historicProcessInstance!=null) {
+        historicProcessInstance.setName(newName);
+      }
+    }
+  }
+  
   /* (non-Javadoc)
  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordProcessInstanceStart(org.activiti.engine.impl.persistence.entity.ExecutionEntity)
  */
@@ -486,17 +498,27 @@ public void recordTaskPriorityChange(String taskId, int priority) {
     }
   }
   
-  /* (non-Javadoc)
- * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskCategoryChange(java.lang.String, java.lang.String)
- */
+ /* (non-Javadoc)
+  * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordTaskCategoryChange(java.lang.String, java.lang.String)
+  */
   @Override
-public void recordTaskCategoryChange(String taskId, String category) {
+  public void recordTaskCategoryChange(String taskId, String category) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
       if (historicTaskInstance!=null) {
         historicTaskInstance.setCategory(category);
       }
     }
+  }
+  
+  @Override
+  public void recordTaskFormKeyChange(String taskId, String formKey) {
+    if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
+      HistoricTaskInstanceEntity historicTaskInstance = getDbSqlSession().selectById(HistoricTaskInstanceEntity.class, taskId);
+      if (historicTaskInstance!=null) {
+        historicTaskInstance.setFormKey(formKey);
+      }
+    }	
   }
 
 
@@ -628,6 +650,39 @@ public void createIdentityLinkComment(String taskId, String userId, String group
       comment.setType(CommentEntity.TYPE_EVENT);
       comment.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
       comment.setTaskId(taskId);
+      if (userId!=null || forceNullUserId) {
+        if(create) {
+          comment.setAction(Event.ACTION_ADD_USER_LINK);
+        } else {
+          comment.setAction(Event.ACTION_DELETE_USER_LINK);
+        }
+        comment.setMessage(new String[]{userId, type});
+      } else {
+        if(create) {
+          comment.setAction(Event.ACTION_ADD_GROUP_LINK);
+        } else {
+          comment.setAction(Event.ACTION_DELETE_GROUP_LINK);
+        }
+        comment.setMessage(new String[]{groupId, type});
+      }
+      getSession(CommentEntityManager.class).insert(comment);
+    }
+  }
+  
+  @Override
+  public void createProcessInstanceIdentityLinkComment(String processInstanceId, String userId, String groupId, String type, boolean create) {
+    createProcessInstanceIdentityLinkComment(processInstanceId, userId, groupId, type, create, false);
+  }
+
+  @Override
+  public void createProcessInstanceIdentityLinkComment(String processInstanceId, String userId, String groupId, String type, boolean create, boolean forceNullUserId) {
+    if(isHistoryEnabled()) {
+      String authenticatedUserId = Authentication.getAuthenticatedUserId();
+      CommentEntity comment = new CommentEntity();
+      comment.setUserId(authenticatedUserId);
+      comment.setType(CommentEntity.TYPE_EVENT);
+      comment.setTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+      comment.setProcessInstanceId(processInstanceId);
       if (userId!=null || forceNullUserId) {
         if(create) {
           comment.setAction(Event.ACTION_ADD_USER_LINK);

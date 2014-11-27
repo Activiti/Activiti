@@ -15,16 +15,20 @@ package org.activiti.camel;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.apache.camel.Exchange;
+import org.apache.camel.TypeConversionException;
+import org.springframework.util.StringUtils;
 
 /**
  * This class contains one method - prepareVariables - that is used to copy variables from Camel into Activiti.
  * 
- * @author Ryan Johnston (@rjfsu), Tijs Rademakers
+ * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Arnold Schrijver
  */
 public class ExchangeUtils {
 
   public static final String CAMELBODY = "camelBody";
+  protected static final String IGNORE_MESSAGE_PROPERTY = "CamelMessageHistory";
 	
   /**
    * Copies variables from Camel into Activiti.
@@ -49,6 +53,15 @@ public class ExchangeUtils {
     
     if (shouldReadFromProperties) {
       camelVarMap = exchange.getProperties();
+      // filter camel property that can't be serializable for camel version after 2.12.x+
+      Map<String, Object> newCamelVarMap = new HashMap<String, Object>();
+      for (String s : camelVarMap.keySet()) {
+        if (IGNORE_MESSAGE_PROPERTY.equalsIgnoreCase(s) == false) {
+          newCamelVarMap.put(s, camelVarMap.get(s));
+        }
+      }
+      camelVarMap = newCamelVarMap;
+      
     } else {
       camelVarMap = new HashMap<String, Object>();
       Object camelBody = null;
@@ -73,12 +86,45 @@ public class ExchangeUtils {
       }
 
       if(activitiEndpoint.isCopyVariablesFromHeader()) {
+        boolean isSetProcessInitiator = activitiEndpoint.isSetProcessInitiator();
         for(Map.Entry<String, Object> header : exchange.getIn().getHeaders().entrySet()) {
+          // Don't pass the process initiator header as a variable.
+          if (isSetProcessInitiator && activitiEndpoint.getProcessInitiatorHeaderName().equals(header.getKey())) {
+              continue;
+          }
     	  camelVarMap.put(header.getKey(), header.getValue());
         }
       }
     }
     
     return camelVarMap;
+  }
+  
+  /**
+   * Gets the value of the Camel header that contains the userId to be set as the process initiator.
+   * Returns null if no header name was specified on the Camel route.
+   * 
+   * @param exchange The Camel Exchange object
+   * @param activitiEndpoint The ActivitiEndpoint implementation
+   * @return The userId of the user to be set as the process initiator
+   */
+  public static String prepareInitiator(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
+     
+      String initiator = null;
+      if (activitiEndpoint.isSetProcessInitiator()) {
+          try {
+              initiator = exchange.getIn().getHeader(activitiEndpoint.getProcessInitiatorHeaderName(), String.class);
+          }
+          catch (TypeConversionException e) {
+              throw new ActivitiException("Initiator header '" + 
+                      activitiEndpoint.getProcessInitiatorHeaderName() + "': Value must be of type String.", e);
+          }
+          
+          if (!StringUtils.hasText(initiator)) {
+              throw new RuntimeException("Initiator header '" + 
+                      activitiEndpoint.getProcessInitiatorHeaderName() + "': Value must be provided");
+          }
+      }
+      return initiator;
   }
 }

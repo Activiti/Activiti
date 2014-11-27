@@ -37,7 +37,7 @@ public class MockSupportWithActivitiRuleTest {
 			activitiRule.mockSupport().mockServiceTaskWithClassDelegate("com.yourcompany.delegate", ServiceTaskTestMock.class);
 			activitiRule.mockSupport().mockServiceTaskWithClassDelegate("com.yourcompany.anotherDelegate",
 			    "org.activiti.standalone.testing.helpers.ServiceTaskTestMock");
-		};
+		}
 		
 	};
 

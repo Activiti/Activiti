@@ -46,7 +46,7 @@ public class DataGridRow {
     setIndex(otherRow.getIndex());
     
     fields = new ArrayList<DataGridField>();
-    if (otherRow.getFields() != null && otherRow.getFields().size() > 0) {
+    if (otherRow.getFields() != null && !otherRow.getFields().isEmpty()) {
       for (DataGridField field : otherRow.getFields()) {
         fields.add(field.clone());
       }

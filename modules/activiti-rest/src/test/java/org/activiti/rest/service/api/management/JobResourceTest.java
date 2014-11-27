@@ -6,14 +6,17 @@ import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Test for all REST-operations related to the Job collection and a single
@@ -21,9 +24,8 @@ import org.restlet.resource.ResourceException;
  * 
  * @author Frederik Heremans
  */
-public class JobResourceTest extends BaseRestTestCase {
+public class JobResourceTest extends BaseSpringRestTestCase {
 
-  
   /**
    * Test getting a single job. 
    */
@@ -37,46 +39,38 @@ public class JobResourceTest extends BaseRestTestCase {
     now.set(Calendar.MILLISECOND, 0);
     processEngineConfiguration.getClock().setCurrentTime(now.getTime());
     
-    
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
-    Representation response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId())), HttpStatus.SC_OK);
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
-    assertEquals(timerJob.getId(), responseNode.get("id").getTextValue());
-    assertEquals(timerJob.getExceptionMessage(), responseNode.get("exceptionMessage").getTextValue());
-    assertEquals(timerJob.getExecutionId(), responseNode.get("executionId").getTextValue());
-    assertEquals(timerJob.getProcessDefinitionId(), responseNode.get("processDefinitionId").getTextValue());
-    assertEquals(timerJob.getProcessInstanceId(), responseNode.get("processInstanceId").getTextValue());
-    assertEquals(timerJob.getRetries(), responseNode.get("retries").getIntValue());
-    assertEquals(timerJob.getDuedate(), getDateFromISOString(responseNode.get("dueDate").getTextValue()));
-    assertEquals(responseNode.get("tenantId").getTextValue(), "");
-    response.release();
+    assertEquals(timerJob.getId(), responseNode.get("id").textValue());
+    assertEquals(timerJob.getExceptionMessage(), responseNode.get("exceptionMessage").textValue());
+    assertEquals(timerJob.getExecutionId(), responseNode.get("executionId").textValue());
+    assertEquals(timerJob.getProcessDefinitionId(), responseNode.get("processDefinitionId").textValue());
+    assertEquals(timerJob.getProcessInstanceId(), responseNode.get("processInstanceId").textValue());
+    assertEquals(timerJob.getRetries(), responseNode.get("retries").intValue());
+    assertEquals(timerJob.getDuedate(), getDateFromISOString(responseNode.get("dueDate").textValue()));
+    assertEquals(responseNode.get("tenantId").textValue(), "");
     
     // Set tenant on deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
     
-    response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    responseNode = objectMapper.readTree(response.getStream());
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId())), HttpStatus.SC_OK);
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
-    assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
+    assertEquals("myTenant", responseNode.get("tenantId").textValue());
   }
   
   /**
    * Test getting an unexisting job.
    */
   public void testGetUnexistingJob() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, "unexistingjob"));
-    
-    try {
-      client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a job with id 'unexistingjob'.", expected.getStatus().getDescription());
-    }
+  	CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, "unexistingjob")), HttpStatus.SC_NOT_FOUND);
+  	closeResponse(response);
   }
   
   /**
@@ -91,10 +85,11 @@ public class JobResourceTest extends BaseRestTestCase {
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("action", "execute");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
-    Representation response = client.post(requestNode);
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    assertEquals(0L, response.getSize());
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Job should be executed
     assertNull(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult());
@@ -112,14 +107,11 @@ public class JobResourceTest extends BaseRestTestCase {
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("action", "execute");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, "unexistingjob"));
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a job with id 'unexistingjob'.", expected.getStatus().getDescription());
-    }
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, "unexistingjob"));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    closeResponse(response);
   }
   
   /**
@@ -134,14 +126,11 @@ public class JobResourceTest extends BaseRestTestCase {
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("action", "unexistinAction");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Invalid action, only 'execute' is supported.", expected.getStatus().getDescription());
-    }
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(response);
   }
   
   /**
@@ -153,11 +142,10 @@ public class JobResourceTest extends BaseRestTestCase {
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(timerJob);
     
-    
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
-    Representation response = client.delete();
-    assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-    assertEquals(0L, response.getSize());
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, timerJob.getId()));
+    CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    closeResponse(response);
     
     // Job should be deleted
     assertNull(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult());
@@ -167,14 +155,9 @@ public class JobResourceTest extends BaseRestTestCase {
    * Test getting an unexisting job.
    */
   public void testDeleteUnexistingJob() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, "unexistingjob"));
-    
-    try {
-      client.delete();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a job with id 'unexistingjob'.", expected.getStatus().getDescription());
-    }
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB, "unexistingjob"));
+    CloseableHttpResponse response = executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+    closeResponse(response);
   }
 }

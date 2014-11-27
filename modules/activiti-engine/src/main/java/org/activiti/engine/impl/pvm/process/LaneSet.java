@@ -62,7 +62,7 @@ public class LaneSet implements Serializable {
   }
   
   public Lane getLaneForId(String id) {
-    if(lanes != null && lanes.size() > 0) {
+    if(lanes != null && !lanes.isEmpty()) {
       for(Lane lane : lanes) {
         if(id.equals(lane.getId())) {
           return lane;

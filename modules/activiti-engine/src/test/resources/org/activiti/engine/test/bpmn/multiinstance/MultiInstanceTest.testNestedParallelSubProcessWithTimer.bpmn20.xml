@@ -59,7 +59,7 @@
         </boundaryEvent>
         <sequenceFlow id="flow6" sourceRef="timer" targetRef="taskAfterTimer" />
         <userTask id="taskAfterTimer" />
-        <sequenceFlow id="flow7" sourceRef="taskAfterTimer" targetRef="subProcessEnd3" />
+        <sequenceFlow id="flow7" sourceRef="taskAfterTimer" targetRef="subProcessEnd2" />
         
         <sequenceFlow id="flow8" sourceRef="nesting3" targetRef="subProcessEnd2" />
         <endEvent id="subProcessEnd2" />

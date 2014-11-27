@@ -22,25 +22,25 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.service.BaseRestTestCase;
-import org.activiti.rest.service.HttpMultipartRepresentation;
+import org.activiti.rest.service.BaseSpringRestTestCase;
+import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Status;
-import org.restlet.engine.header.Header;
-import org.restlet.engine.header.HeaderConstants;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
-import org.restlet.util.Series;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
  * @author Frederik Heremans
  */
-public class TaskAttachmentResourceTest extends BaseRestTestCase {
+public class TaskAttachmentResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting all attachments for a task.
@@ -61,20 +61,17 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
               "Binary attachment description", new ByteArrayInputStream("This is binary content".getBytes()));
       taskService.saveAttachment(binaryAttachment);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_TASK_ATTACHMENT_COLLECTION, task.getId()));
-      
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_COLLECTION, task.getId())), HttpStatus.SC_OK);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertTrue(responseNode.isArray());
       assertEquals(2, responseNode.size());
       
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
-      for(Task task : tasks) {
+      for (Task task : tasks) {
         taskService.deleteTask(task.getId(), true);
       }
     }
@@ -85,15 +82,8 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
    * GET runtime/tasks/{taskId}/attachments
    */
   public void testGetAttachmentsUnexistingTask() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_COLLECTION, "unexistingtask"));
-    
-    try {
-      client.get();
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-      assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
-    }
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_COLLECTION, "unexistingtask")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -116,44 +106,41 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       taskService.saveAttachment(binaryAttachment);
 
       // Get external url attachment
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId()));
-
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(urlAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("simpleType", responseNode.get("type").getTextValue());
-      assertEquals("Simple attachment", responseNode.get("name").getTextValue());
-      assertEquals("Simple attachment description", responseNode.get("description").getTextValue());
-      assertEquals("http://activiti.org", responseNode.get("externalUrl").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId())), HttpStatus.SC_OK);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertEquals(urlAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("simpleType", responseNode.get("type").textValue());
+      assertEquals("Simple attachment", responseNode.get("name").textValue());
+      assertEquals("Simple attachment description", responseNode.get("description").textValue());
+      assertEquals("http://activiti.org", responseNode.get("externalUrl").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("contentUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
       
       
       // Get binary attachment
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId()));
-
-      response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
-      responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(binaryAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("binaryType", responseNode.get("type").getTextValue());
-      assertEquals("Binary attachment", responseNode.get("name").getTextValue());
-      assertEquals("Binary attachment description", responseNode.get("description").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId())), HttpStatus.SC_OK);
+      responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertEquals(binaryAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("binaryType", responseNode.get("type").textValue());
+      assertEquals("Binary attachment", responseNode.get("name").textValue());
+      assertEquals("Binary attachment description", responseNode.get("description").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("contentUrl").getTextValue()
+      assertTrue(responseNode.get("contentUrl").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("externalUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -177,30 +164,14 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
               "http://activiti.org");
       taskService.saveAttachment(urlAttachment);
 
-
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, 
-              "unexistingtask", urlAttachment.getId()));
-
       // Get attachment for unexisting task
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Could not find a task with id 'unexistingtask'.", expected.getStatus().getDescription());
-      }
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, "unexistingtask", urlAttachment.getId())), HttpStatus.SC_NOT_FOUND));
       
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, 
-              task.getId(), "unexistingattachment"));
-
       // Get attachment for task attachment
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Task '" + task.getId() +"' doesn't have an attachment with id 'unexistingattachment'.", expected.getStatus().getDescription());
-      }
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), "unexistingattachment")), HttpStatus.SC_NOT_FOUND));
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -214,7 +185,6 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
    * Test getting the content for a single attachments for a task.
    * GET runtime/tasks/{taskId}/attachments/{attachmentId}/content
    */
-  @SuppressWarnings("unchecked")
   public void testGetAttachmentContent() throws Exception {
     try {
       Task task = taskService.newTask();
@@ -226,18 +196,16 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       taskService.saveAttachment(binaryAttachment);
 
       // Get external url attachment
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId()));
-
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId())), HttpStatus.SC_OK);
       
       // Check response body
-      String responseBodyString = response.getText();
+      String responseBodyString = IOUtils.toString(response.getEntity().getContent());
       assertEquals("This is binary content", responseBodyString);
       
       // Check response headers
-      Series<Header> headers = (Series<Header>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
-      assertEquals("application/octet-stream", headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE));
+      assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
+      closeResponse(response);
 
     
     } finally {
@@ -253,7 +221,6 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
    * Test getting the content for a single attachments for a task, with a mime-type set.
    * GET runtime/tasks/{taskId}/attachments/{attachmentId}/content
    */
-  @SuppressWarnings("unchecked")
   public void testGetAttachmentContentWithMimeType() throws Exception {
     try {
       Task task = taskService.newTask();
@@ -265,14 +232,12 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       taskService.saveAttachment(binaryAttachment);
 
       // Get external url attachment
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId()));
-
-      client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId())), HttpStatus.SC_OK);
       
       // Check response headers
-      Series<Header> headers = (Series<Header>) client.getResponseAttributes().get(HeaderConstants.ATTRIBUTE_HEADERS);
-      assertEquals("application/xml", headers.getFirstValue(HeaderConstants.HEADER_CONTENT_TYPE));
+      assertEquals("application/xml", response.getEntity().getContentType().getValue());
+      closeResponse(response);
     
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -297,18 +262,10 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
               "http://activiti.org");
       taskService.saveAttachment(urlAttachment);
 
-
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, 
-              task.getId(), urlAttachment.getId()));
-
-      // Get attachment content for non-binary attachment 
-      try {
-        client.get();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Attachment with id '" + urlAttachment.getId() + "' doesn't have content associated with it.", expected.getStatus().getDescription());
-      }
+      // Get attachment content for non-binary attachment
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), urlAttachment.getId())), HttpStatus.SC_NOT_FOUND));
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -327,37 +284,36 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       Task task = taskService.newTask();
       taskService.saveTask(task);
 
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_COLLECTION, 
-              task.getId()));
-
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("name", "Simple attachment");
       requestNode.put("description", "Simple attachment description");
       requestNode.put("type", "simpleType");
       requestNode.put("externalUrl", "http://activiti.org");
-
-      Representation response = client.post(requestNode);
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
-
+      
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_COLLECTION, task.getId()));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
+      
       // Check if attachment is created
       List<Attachment> attachments = taskService.getTaskAttachments(task.getId());
       assertEquals(1, attachments.size());
       
       Attachment urlAttachment = attachments.get(0);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(urlAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("simpleType", responseNode.get("type").getTextValue());
-      assertEquals("Simple attachment", responseNode.get("name").getTextValue());
-      assertEquals("Simple attachment description", responseNode.get("description").getTextValue());
-      assertEquals("http://activiti.org", responseNode.get("externalUrl").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertEquals(urlAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("simpleType", responseNode.get("type").textValue());
+      assertEquals("Simple attachment", responseNode.get("name").textValue());
+      assertEquals("Simple attachment description", responseNode.get("description").textValue());
+      assertEquals("http://activiti.org", responseNode.get("externalUrl").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("contentUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
-      
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -386,15 +342,11 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       additionalFields.put("description", "An attachment description");
       additionalFields.put("type", "myType");
       
-      // Upload a valid BPMN-file using multipart-data
-      Representation uploadRepresentation = new HttpMultipartRepresentation("value",
-              binaryContent, additionalFields);
-      
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_COLLECTION, 
-              task.getId()));
-      
-      Representation response = client.post(uploadRepresentation);
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_COLLECTION, task.getId()));
+      httpPost.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/octet-stream", 
+          binaryContent, additionalFields));
+      CloseableHttpResponse response = executeBinaryRequest(httpPost, HttpStatus.SC_CREATED);
       
       // Check if attachment is created
       List<Attachment> attachments = taskService.getTaskAttachments(task.getId());
@@ -403,16 +355,17 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       Attachment binaryAttachment = attachments.get(0);
       assertEquals("This is binary content", IOUtils.toString(taskService.getAttachmentContent(binaryAttachment.getId())));
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(binaryAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("myType", responseNode.get("type").getTextValue());
-      assertEquals("An attachment", responseNode.get("name").getTextValue());
-      assertEquals("An attachment description", responseNode.get("description").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertEquals(binaryAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("myType", responseNode.get("type").textValue());
+      assertEquals("An attachment", responseNode.get("name").textValue());
+      assertEquals("An attachment description", responseNode.get("description").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("contentUrl").getTextValue()
+      assertTrue(responseNode.get("contentUrl").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("externalUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
@@ -437,22 +390,17 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       Task task = taskService.newTask();
       taskService.saveTask(task);
 
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_COLLECTION, 
-              task.getId()));
-      
       ObjectNode requestNode = objectMapper.createObjectNode();
       requestNode.put("description", "Simple attachment description");
       requestNode.put("type", "simpleType");
       requestNode.put("externalUrl", "http://activiti.org");
 
       // Post JSON without name
-      try {
-        client.post(requestNode);
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-        assertEquals("Attachment name is required.", expected.getStatus().getDescription());
-      }
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_COLLECTION, task.getId()));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      closeResponse(executeBinaryRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
+     
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -476,26 +424,17 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
               "http://activiti.org");
       taskService.saveAttachment(urlAttachment);
 
-
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, 
-              task.getId(), urlAttachment.getId()));
-
       // Delete the attachment
-      Representation response = client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-      assertTrue(response.getSize() == 0L);
-
+      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId()));
+      closeResponse(executeBinaryRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
+      
       // Check if attachment is really deleted
       assertNull(taskService.getAttachment(urlAttachment.getId()));
       
       // Deleting again should result in 404
-      try {
-        client.delete();
-        fail("Exception expected");
-      } catch(ResourceException expected) {
-        assertEquals(Status.CLIENT_ERROR_NOT_FOUND, expected.getStatus());
-        assertEquals("Task '" + task.getId() +"' doesn't have an attachment with id '" + urlAttachment.getId() + "'.", expected.getStatus().getDescription());
-      }
+      closeResponse(executeBinaryRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<Task> tasks = taskService.createTaskQuery().list();
@@ -527,44 +466,42 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
       taskService.complete(task.getId());
 
       // Get external url attachment
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId()));
-
-      Representation response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(urlAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("simpleType", responseNode.get("type").getTextValue());
-      assertEquals("Simple attachment", responseNode.get("name").getTextValue());
-      assertEquals("Simple attachment description", responseNode.get("description").getTextValue());
-      assertEquals("http://activiti.org", responseNode.get("externalUrl").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId())), HttpStatus.SC_OK);
+      
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertEquals(urlAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("simpleType", responseNode.get("type").textValue());
+      assertEquals("Simple attachment", responseNode.get("name").textValue());
+      assertEquals("Simple attachment description", responseNode.get("description").textValue());
+      assertEquals("http://activiti.org", responseNode.get("externalUrl").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), urlAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("contentUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
       
       
       // Get binary attachment
-      client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId()));
-
-      response = client.get();
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-
-      responseNode = objectMapper.readTree(response.getStream());
-      assertEquals(binaryAttachment.getId(), responseNode.get("id").getTextValue());
-      assertEquals("binaryType", responseNode.get("type").getTextValue());
-      assertEquals("Binary attachment", responseNode.get("name").getTextValue());
-      assertEquals("Binary attachment description", responseNode.get("description").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue()
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId())), HttpStatus.SC_OK);
+      responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertEquals(binaryAttachment.getId(), responseNode.get("id").textValue());
+      assertEquals("binaryType", responseNode.get("type").textValue());
+      assertEquals("Binary attachment", responseNode.get("name").textValue());
+      assertEquals("Binary attachment description", responseNode.get("description").textValue());
+      assertTrue(responseNode.get("url").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("contentUrl").getTextValue()
+      assertTrue(responseNode.get("contentUrl").textValue()
               .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_ATTACHMENT_DATA, task.getId(), binaryAttachment.getId())));
-      assertTrue(responseNode.get("taskUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
+      assertTrue(responseNode.get("taskUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK, task.getId())));
 
       assertTrue(responseNode.get("externalUrl").isNull());
       assertTrue(responseNode.get("processInstanceUrl").isNull());
+      
     } finally {
       // Clean adhoc-tasks even if test fails
       List<HistoricTaskInstance> tasks = historyService.createHistoricTaskInstanceQuery().list();
@@ -574,4 +511,3 @@ public class TaskAttachmentResourceTest extends BaseRestTestCase {
     }
   }
 }
-

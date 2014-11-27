@@ -37,7 +37,7 @@ class ProcessScopeTestEngine {
 
         String statefulObjectVariableKey = keyForObjectType(runtimeVars, StatefulObject.class);
 
-        assertTrue(runtimeVars.size() > 0);
+        assertTrue(!runtimeVars.isEmpty());
         assertTrue(StringUtils.hasText(statefulObjectVariableKey));
 
         StatefulObject scopedObject = (StatefulObject) runtimeService.getVariable(processInstance.getId(), statefulObjectVariableKey);

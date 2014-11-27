@@ -62,6 +62,13 @@
     delete from ${prefix}ACT_HI_VARINST where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
+  <delete id="bulkDeleteHistoricVariableInstance" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_HI_VARINST where 
+    <foreach item="variable" collection="list" index="index" separator=" or ">
+        ID_ = #{variable.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
   <!-- HISTORIC PROCESS VARIABLE RESULTMAP -->
   <resultMap id="historicProcessVariableResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />

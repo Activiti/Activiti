@@ -19,19 +19,21 @@ import org.activiti.engine.impl.cmd.ChangeDeploymentTenantIdCmd;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Status;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Test for all REST-operations related to the execution collection.
  * 
  * @author Frederik Heremans
  */
-public class ExecutionCollectionResourceTest extends BaseRestTestCase {
+public class ExecutionCollectionResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting a list of executions, using all possible filters.
@@ -133,15 +135,15 @@ public class ExecutionCollectionResourceTest extends BaseRestTestCase {
     assertNotNull(waitingExecution);
     
     // Sending signal event causes the execution to end (scope-execution for the catching event)
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION));
-    client.put(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_NO_CONTENT));
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
     assertNotNull(waitingExecution);
     assertEquals(signalExecution.getId(), waitingExecution.getId());
-    client.release();
   }
   
   /**
@@ -167,11 +169,10 @@ public class ExecutionCollectionResourceTest extends BaseRestTestCase {
     assertNotNull(waitingExecution);
     
     // Sending signal event causes the execution to end (scope-execution for the catching event)
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION));
-    client.put(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    
-    client.release();
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_COLLECTION));
+    httpPut.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_NO_CONTENT));
     
     // Check if process is moved on to the other wait-state
     waitingExecution = runtimeService.createExecutionQuery().activityId("anotherWaitState").singleResult();
@@ -182,6 +183,5 @@ public class ExecutionCollectionResourceTest extends BaseRestTestCase {
     assertEquals(1, vars.size());
     
     assertEquals("Variable set when signal event is receieved", vars.get("myVar"));
-    client.release();
   }
 }

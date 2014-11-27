@@ -64,15 +64,16 @@ public class ExtensionElement extends BaseElement {
   
   public void setValues(ExtensionElement otherElement) {
     setName(otherElement.getName());
-    setNamespace(otherElement.getNamespacePrefix());
+    setNamespacePrefix(otherElement.getNamespacePrefix());
     setNamespace(otherElement.getNamespace());
     setElementText(otherElement.getElementText());
+    setAttributes(otherElement.getAttributes());
     
     childElements = new LinkedHashMap<String, List<ExtensionElement>>();
-    if (otherElement.getChildElements() != null && otherElement.getChildElements().size() > 0) {
+    if (otherElement.getChildElements() != null && !otherElement.getChildElements().isEmpty()) {
       for (String key : otherElement.getChildElements().keySet()) {
         List<ExtensionElement> otherElementList = otherElement.getChildElements().get(key);
-        if (otherElementList != null && otherElementList.size() > 0) {
+        if (otherElementList != null && !otherElementList.isEmpty()) {
           List<ExtensionElement> elementList = new ArrayList<ExtensionElement>();
           for (ExtensionElement extensionElement : otherElementList) {
             elementList.add(extensionElement.clone());

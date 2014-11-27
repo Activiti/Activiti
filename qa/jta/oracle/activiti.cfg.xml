@@ -5,47 +5,57 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <bean id="dataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" destroy-method="close">
-        <property name="className" value="oracle.jdbc.xa.client.OracleXADataSource" />
-        <property name="uniqueName" value="xaOracle" />
-        <property name="maxPoolSize" value="20" />
-        <property name="allowLocalTransactions" value="true" />
-        <property name="driverProperties">
-            <!-- Oracle -->
-            <props>
-                <prop key="user">@jdbc.username@</prop>
-                <prop key="password">@jdbc.password@</prop>
-                <prop key="URL">@jdbc.url@</prop>
-            </props>
-            
-        </property>
-    </bean>
-
-    <!-- Bitronix Transaction Manager embedded configuration -->
-    <bean id="btmConfig" factory-method="getConfiguration" class="bitronix.tm.TransactionManagerServices">
-        <property name="serverId" value="spring-btm" />
-        <property name="logPart1Filename" value="target/btm1.log"/>
-        <property name="logPart2Filename" value="target/btm2.log"/>
-    </bean>
-    
-    <!-- Listener to close datasource when engine is closed, spring's destroy-method is never called... -->
-    <bean id="lifecycleListener" class="org.activiti.standalone.jta.CloseXADataSourceLifecycleListener" depends-on="btmConfig">
-      <property name="dataSource" ref="dataSource" />
-      <property name="transactionManager" ref="transactionManager" />
-    </bean>
-
-    <!-- create BTM transaction manager -->
-    <bean id="transactionManager" factory-method="getTransactionManager" class="bitronix.tm.TransactionManagerServices" 
-       depends-on="btmConfig" destroy-method="shutdown" />
-
-    <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration">
-        <property name="dataSource" ref="dataSource" />
-        <property name="transactionManager" ref="transactionManager" />
-        <property name="databaseSchemaUpdate" value="true" />
-        <property name="jobExecutorActivate" value="false" />
-        <property name="mailServerPort" value="5025" />
-        <property name="processEngineLifecycleListener" ref="lifecycleListener" />
+  <bean id="dataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" destroy-method="close">
+    <property name="className" value="oracle.jdbc.xa.client.OracleXADataSource" />
+    <property name="uniqueName" value="xaOracle" />
+    <property name="maxPoolSize" value="20" />
+    <property name="allowLocalTransactions" value="true" />
+    <property name="driverProperties">
+      <!-- Oracle -->
+      <props>
+        <prop key="user">@jdbc.username@</prop>
+        <prop key="password">@jdbc.password@</prop>
+        <prop key="URL">@jdbc.url@</prop>
+      </props>
         
-    </bean>
+    </property>
+  </bean>
+
+  <!-- Bitronix Transaction Manager embedded configuration -->
+  <bean id="btmConfig" factory-method="getConfiguration" class="bitronix.tm.TransactionManagerServices">
+    <property name="serverId" value="spring-btm" />
+    <property name="logPart1Filename" value="target/btm1.log"/>
+    <property name="logPart2Filename" value="target/btm2.log"/>
+  </bean>
+  
+  <!-- Listener to close datasource when engine is closed, spring's destroy-method is never called... -->
+  <bean id="lifecycleListener" class="org.activiti.standalone.jta.CloseXADataSourceLifecycleListener" depends-on="btmConfig">
+    <property name="dataSource" ref="dataSource" />
+    <property name="transactionManager" ref="transactionManager" />
+  </bean>
+
+  <!-- create BTM transaction manager -->
+  <bean id="transactionManager" factory-method="getTransactionManager" class="bitronix.tm.TransactionManagerServices" 
+     depends-on="btmConfig" destroy-method="shutdown" />
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration">
+    <property name="dataSource" ref="dataSource" />
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="databaseSchemaUpdate" value="true" />
+    <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutor" ref="asyncExecutor" />
+    <property name="asyncExecutorEnabled" value="true" />
+    <property name="asyncExecutorActivate" value="false" />
+    
+    <property name="defaultFailedJobWaitTime" value="1" />
+    <property name="asyncFailedJobWaitTime" value="1" />
+    <property name="mailServerPort" value="5025" />
+    <property name="processEngineLifecycleListener" ref="lifecycleListener" />   
+  </bean>
+    
+  <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
+    <property name="defaultAsyncJobAcquireWaitTimeInMillis" value="1000" />
+    <property name="defaultTimerJobAcquireWaitTimeInMillis" value="1000" />
+  </bean>
 
 </beans>

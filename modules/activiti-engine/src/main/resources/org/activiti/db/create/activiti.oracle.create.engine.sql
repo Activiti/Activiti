@@ -6,10 +6,10 @@ create table ACT_GE_PROPERTY (
 );
 
 insert into ACT_GE_PROPERTY
-values ('schema.version', '5.16-SNAPSHOT', 1);
+values ('schema.version', '5.17.0.1', 1);
 
 insert into ACT_GE_PROPERTY
-values ('schema.history', 'create(5.16-SNAPSHOT)', 1);
+values ('schema.history', 'create(5.17.0.1)', 1);
 
 insert into ACT_GE_PROPERTY
 values ('next.dbid', '1', 1);
@@ -66,6 +66,8 @@ create table ACT_RU_EXECUTION (
     SUSPENSION_STATE_ INTEGER,
     CACHED_ENT_STATE_ INTEGER,
     TENANT_ID_ NVARCHAR2(255) DEFAULT '',
+    NAME_ NVARCHAR2(255),
+    LOCK_TIME_ TIMESTAMP(6),
     primary key (ID_)
 );
 
@@ -102,6 +104,7 @@ create table ACT_RE_PROCDEF (
     DGRM_RESOURCE_NAME_ varchar(4000),
     DESCRIPTION_ NVARCHAR2(2000),
     HAS_START_FORM_KEY_ NUMBER(1,0) CHECK (HAS_START_FORM_KEY_ IN (1,0)),
+    HAS_GRAPHICAL_NOTATION_ NUMBER(1,0) CHECK (HAS_GRAPHICAL_NOTATION_ IN (1,0)),
     SUSPENSION_STATE_ INTEGER,
     TENANT_ID_ NVARCHAR2(255) DEFAULT '',
     primary key (ID_)
@@ -126,6 +129,7 @@ create table ACT_RU_TASK (
     CATEGORY_ NVARCHAR2(255),
     SUSPENSION_STATE_ INTEGER,
     TENANT_ID_ NVARCHAR2(255) DEFAULT '',
+    FORM_KEY_ NVARCHAR2(255),
     primary key (ID_)
 );
 
@@ -171,6 +175,24 @@ create table ACT_RU_EVENT_SUBSCR (
     TENANT_ID_ NVARCHAR2(255) DEFAULT '',
     primary key (ID_)
 );
+
+create table ACT_EVT_LOG (
+    LOG_NR_ NUMBER(19),
+    TYPE_ NVARCHAR2(64),
+    PROC_DEF_ID_ NVARCHAR2(64),
+    PROC_INST_ID_ NVARCHAR2(64),
+    EXECUTION_ID_ NVARCHAR2(64),
+    TASK_ID_ NVARCHAR2(64),
+    TIME_STAMP_ TIMESTAMP(6) not null,
+    USER_ID_ NVARCHAR2(255),
+    DATA_ BLOB,
+    LOCK_OWNER_ NVARCHAR2(255),
+    LOCK_TIME_ TIMESTAMP(6) null,
+    IS_PROCESSED_ NUMBER(3) default 0,
+    primary key (LOG_NR_)
+);
+
+create sequence act_evt_log_seq;
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);

@@ -46,12 +46,13 @@ import org.activiti.editor.constants.EditorJsonConstants;
 import org.activiti.editor.constants.StencilConstants;
 import org.activiti.editor.language.json.converter.util.JsonConverterUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * @author Tijs Rademakers
@@ -313,6 +314,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       
       if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType())) {
         propertyItemNode.put(listenerClass, listener.getImplementation());
+        addFieldExtensions(listener.getFieldExtensions(), propertyItemNode, isExecutionListener);
+        
       } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType())) {
         propertyItemNode.put(listenerExpression, listener.getImplementation());
       } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType())) {
@@ -326,7 +329,44 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     listenersNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
     propertiesNode.put(propertyName, listenersNode);
   }
-  
+
+  protected void addFieldExtensions(List<FieldExtension> extensions, ObjectNode propertiesNode, boolean isExecutionListener) {
+    String fieldNameProperty = null;
+    String fieldValueProperty = null;
+    String fieldExpressionProperty = null;
+    String fieldProperty = null;
+    if (isExecutionListener) {
+      fieldNameProperty = PROPERTY_EXECUTION_LISTENER_FIELD_NAME;
+      fieldValueProperty = PROPERTY_EXECUTION_LISTENER_FIELD_VALUE;
+      fieldExpressionProperty = PROPERTY_EXECUTION_LISTENER_FIELD_EXPRESSION;
+      fieldProperty = PROPERTY_EXECUTION_LISTENER_FIELDS;
+      
+    } else {
+      fieldNameProperty = PROPERTY_TASK_LISTENER_FIELD_NAME;
+      fieldValueProperty = PROPERTY_TASK_LISTENER_FIELD_VALUE;
+      fieldExpressionProperty = PROPERTY_TASK_LISTENER_FIELD_EXPRESSION;
+      fieldProperty = PROPERTY_TASK_LISTENER_FIELDS;
+    }
+    
+    ObjectNode fieldExtensionsNode = objectMapper.createObjectNode();
+    ArrayNode itemsNode = objectMapper.createArrayNode();
+    for (FieldExtension extension : extensions) {
+      ObjectNode propertyItemNode = objectMapper.createObjectNode();
+      propertyItemNode.put(fieldNameProperty, extension.getFieldName());
+      if (StringUtils.isNotEmpty(extension.getStringValue())) {
+        propertyItemNode.put(fieldValueProperty, extension.getStringValue());
+      }
+      if (StringUtils.isNotEmpty(extension.getExpression())) {
+        propertyItemNode.put(fieldExpressionProperty, extension.getExpression());
+      }
+      itemsNode.add(propertyItemNode);
+    }
+
+    fieldExtensionsNode.put("totalCount", itemsNode.size());
+    fieldExtensionsNode.put(EDITOR_PROPERTIES_GENERAL_ITEMS, itemsNode);
+    propertiesNode.put(fieldProperty, fieldExtensionsNode.toString());
+  }
+
   protected void addFieldExtensions(List<FieldExtension> extensions, ObjectNode propertiesNode) {
     ObjectNode fieldExtensionsNode = objectMapper.createObjectNode();
     ArrayNode itemsNode = objectMapper.createArrayNode();
@@ -361,7 +401,21 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
       } else if (eventDefinition instanceof MessageEventDefinition) {
         MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
         if (StringUtils.isNotEmpty(messageDefinition.getMessageRef())) {
-          propertiesNode.put(PROPERTY_MESSAGEREF, messageDefinition.getMessageRef());
+          String messageRef = messageDefinition.getMessageRef();
+          // remove the namespace from the message id if set
+          if (messageRef.startsWith(model.getTargetNamespace())) {
+            messageRef = messageRef.replace(model.getTargetNamespace(), "");
+            messageRef = messageRef.replaceFirst(":", "");
+          } else {
+            for (String prefix : model.getNamespaces().keySet()) {
+              String namespace = model.getNamespace(prefix);
+              if (messageRef.startsWith(namespace)) {
+                messageRef = messageRef.replace(model.getTargetNamespace(), "");
+                messageRef = prefix + messageRef;
+              }
+            }
+          }
+          propertiesNode.put(PROPERTY_MESSAGEREF, messageRef);
         }
         
       } else if (eventDefinition instanceof SignalEventDefinition) {
@@ -650,6 +704,10 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode);
   }
   
+  protected boolean getPropertyValueAsBoolean(String name, JsonNode objectNode, boolean defaultValue) {
+    return JsonConverterUtil.getPropertyValueAsBoolean(name, objectNode, defaultValue);
+  }
+  
   protected List<String> getPropertyValueAsList(String name, JsonNode objectNode) {
     return JsonConverterUtil.getPropertyValueAsList(name, objectNode);
   }
@@ -660,7 +718,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
   
   protected String convertListToCommaSeparatedString(List<String> stringList) {
     String resultString = null;
-    if (stringList  != null && stringList.size() > 0) {
+    if (stringList  != null && !stringList.isEmpty()) {
       StringBuilder expressionBuilder = new StringBuilder();
       for (String singleItem : stringList) {
         if (expressionBuilder.length() > 0) {

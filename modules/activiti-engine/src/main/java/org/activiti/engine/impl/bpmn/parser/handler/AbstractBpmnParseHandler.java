@@ -73,10 +73,7 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
     return types;
   }
   
-  protected Class<? extends BaseElement> getHandledType() {
-    // Subclasses should override
-    return null;
-  }
+  protected abstract Class<? extends BaseElement> getHandledType();
   
   @SuppressWarnings("unchecked")
   public void parse(BpmnParse bpmnParse, BaseElement element) {

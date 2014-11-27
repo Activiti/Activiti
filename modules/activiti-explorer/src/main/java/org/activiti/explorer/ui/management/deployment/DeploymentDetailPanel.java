@@ -134,7 +134,7 @@ public class DeploymentDetailPanel extends DetailPanel {
       .orderByProcessDefinitionName().asc()
       .list();
     
-    if (processDefinitions.size() > 0) {
+    if (!processDefinitions.isEmpty()) {
       
       // Header
       Label processDefinitionHeader = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_HEADER_DEFINITIONS));
@@ -174,7 +174,7 @@ public class DeploymentDetailPanel extends DetailPanel {
     List<String> resourceNames = repositoryService.getDeploymentResourceNames(deployment.getId());
     Collections.sort(resourceNames); // small nr of elements, so we can do it in-memory
     
-    if (resourceNames.size() > 0) {
+    if (!resourceNames.isEmpty()) {
       Label resourceHeader = new Label(i18nManager.getMessage(Messages.DEPLOYMENT_HEADER_RESOURCES));
       resourceHeader.setWidth("95%");
       resourceHeader.addStyleName(ExplorerLayout.STYLE_H3);

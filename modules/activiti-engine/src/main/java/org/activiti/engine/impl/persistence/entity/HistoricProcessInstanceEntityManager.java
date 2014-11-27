@@ -71,9 +71,14 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
         .getHistoricTaskInstanceEntityManager()
         .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
       
-      commandContext.getHistoricIdentityLinkEntityManager()
+      commandContext
+      	.getHistoricIdentityLinkEntityManager()
         .deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
-
+      
+      commandContext
+        .getCommentEntityManager()
+        .deleteCommentsByProcessInstanceId(historicProcessInstanceId);
+      
       getDbSqlSession().delete(historicProcessInstance);
       
       // Also delete any sub-processes that may be active (ACT-821)
@@ -120,7 +125,7 @@ public class HistoricProcessInstanceEntityManager extends AbstractManager {
       List<HistoricProcessInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricProcessInstancesWithVariablesByQueryCriteria", 
           historicProcessInstanceQuery, historicProcessInstanceQuery.getFirstResult(), historicProcessInstanceQuery.getMaxResults());
       
-      if (instanceList != null && instanceList.size() > 0) {
+      if (instanceList != null && !instanceList.isEmpty()) {
         if (firstResult > 0) {
           if (firstResult <= instanceList.size()) {
             int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);

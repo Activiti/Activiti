@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -48,7 +48,9 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    Job job = managementService.createJobQuery().executable().singleResult();
+    assertNotNull(job);
+    managementService.executeJob(job.getId());
     
     // we still have one timer more to fire
     assertEquals(1L, jobQuery.count());
@@ -314,10 +316,10 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
   //we cannot use waitForExecutor... method since there will always be one job left
   private void moveByHours(int hours) throws Exception {
     processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((hours * 60 * 1000 * 60) + 5000)));
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
+    AsyncExecutor asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+    asyncExecutor.start();
     Thread.sleep(1000);
-    jobExecutor.shutdown();
+    asyncExecutor.shutdown();
   }
 
 

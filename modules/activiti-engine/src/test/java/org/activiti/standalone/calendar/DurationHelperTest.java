@@ -15,8 +15,6 @@
 package org.activiti.standalone.calendar;
 
 import static groovy.util.GroovyTestCase.assertEquals;
-import static junit.framework.TestCase.assertEquals;
-import static org.junit.Assert.assertNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -42,7 +40,7 @@ public class DurationHelperTest {
     assertEquals(20000, dh.getDateAfter().getTime());
 
     testingClock.setCurrentTime(new Date(30000));
-    assertNull(dh.getDateAfter());
+    assertEquals(30000, dh.getDateAfter().getTime());
   }
 
   @Test
@@ -56,7 +54,7 @@ public class DurationHelperTest {
 
 
     testingClock.setCurrentTime(parse("19700101-00:00:30"));
-    assertNull(dh.getDateAfter());
+    assertEquals(parse("19700101-00:00:30"), dh.getDateAfter());
   }
 
   @Test
@@ -110,7 +108,7 @@ public class DurationHelperTest {
     assertEquals(parseCalendar("20131103-07:45:00", TimeZone.getTimeZone("UTC")), dh.getCalendarAfter(easternTime));
   }
 
-  
+
   @Test
   public void daylightSavingFallObservedFirstHour() throws Exception {
     Clock testingClock = new DefaultClockImpl();
@@ -121,7 +119,7 @@ public class DurationHelperTest {
 
     assertEquals(expected, dh.getCalendarAfter());
   }
-  
+
   @Test
   public void daylightSavingFallObservedSecondHour() throws Exception {
     Clock testingClock = new DefaultClockImpl();
@@ -173,7 +171,7 @@ public class DurationHelperTest {
 
     assertEquals(parseCalendar("20140310-00:00:00", TimeZone.getTimeZone("US/Eastern")), dh.getCalendarAfter(testingClock.getCurrentCalendar()));
   }
-  
+
   @Test
   public void daylightSaving25HourDayEurope() throws Exception {
     Clock testingClock = new DefaultClockImpl();
@@ -193,19 +191,19 @@ public class DurationHelperTest {
 
     assertEquals(parseCalendar("20140331-00:00:00", TimeZone.getTimeZone("Europe/Amsterdam")), dh.getCalendarAfter(testingClock.getCurrentCalendar()));
   }
-  
+
   private Date parse(String str) throws Exception {
     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
     return simpleDateFormat.parse(str);
   }
 
   private Calendar parseCalendarWithOffset(String str, TimeZone timeZone) throws Exception {
-  	
+
     Calendar cal = Calendar.getInstance();
-    cal.setTime(DateUtils.parseDate(str, new String[]{ "yyyyMMdd-HH:mm:ssZZ" }));
+      cal.setTime(DateUtils.parseDate(str, "yyyyMMdd-HH:mm:ssZZ" ));
     return cal;
   }
-  
+
   private Calendar parseCalendar(String str, TimeZone timeZone) throws Exception {
     return parseCalendar(str, timeZone, "yyyyMMdd-HH:mm:ss");
   }

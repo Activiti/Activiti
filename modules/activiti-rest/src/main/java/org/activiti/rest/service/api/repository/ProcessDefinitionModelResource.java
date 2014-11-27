@@ -15,20 +15,21 @@ package org.activiti.rest.service.api.repository;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.restlet.resource.Get;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class ProcessDefinitionModelResource extends BaseProcessDefinitionResource {
 
-  @Get
-  public BpmnModel getModelResource() {
-    if (authenticate() == false)
-      return null;
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest();
-    return ActivitiUtil.getRepositoryService().getBpmnModel(processDefinition.getId());
+  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/model", method = RequestMethod.GET, produces = "application/json")
+  public BpmnModel getModelResource(@PathVariable String processDefinitionId) {
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
+    return repositoryService.getBpmnModel(processDefinition.getId());
   }
   
 }

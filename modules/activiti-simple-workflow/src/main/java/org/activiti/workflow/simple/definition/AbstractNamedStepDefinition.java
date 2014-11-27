@@ -15,8 +15,8 @@ package org.activiti.workflow.simple.definition;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
 /**
  * Superclass for all {@link StepDefinition} classes that have a name or description.

@@ -74,7 +74,7 @@ public class HistoricTaskInstanceEntityManager extends AbstractManager {
       List<HistoricTaskInstance> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter("selectHistoricTaskInstancesWithVariablesByQueryCriteria", 
           historicTaskInstanceQuery, historicTaskInstanceQuery.getFirstResult(), historicTaskInstanceQuery.getMaxResults());
       
-      if (instanceList != null && instanceList.size() > 0) {
+      if (instanceList != null && !instanceList.isEmpty()) {
         if (firstResult > 0) {
           if (firstResult <= instanceList.size()) {
             int toIndex = firstResult + Math.min(maxResults, instanceList.size() - firstResult);

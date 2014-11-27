@@ -29,6 +29,8 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
 public interface InterpretableExecution extends ActivityExecution, ExecutionListenerExecution, PvmProcessInstance {
 
   void take(PvmTransition transition);
+  
+  void take(PvmTransition transition, boolean fireActivityCompletedEvent);
 
   void setEventName(String eventName);
 

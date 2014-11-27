@@ -5,48 +5,59 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
 
 
-    <bean id="dataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init" destroy-method="close">
-        <property name="className" value="org.postgresql.xa.PGXADataSource" />
-        <property name="uniqueName" value="xaDataSource" />
-        <property name="maxPoolSize" value="20" />
-        <property name="allowLocalTransactions" value="true" />
-        <property name="driverProperties">
+  <bean id="dataSource" class="bitronix.tm.resource.jdbc.PoolingDataSource" init-method="init" destroy-method="close">
+    <property name="className" value="org.postgresql.xa.PGXADataSource" />
+    <property name="uniqueName" value="xaDataSource" />
+    <property name="maxPoolSize" value="20" />
+    <property name="allowLocalTransactions" value="true" />
+    <property name="driverProperties">
+    
+     <!-- This is for H2 -->
+     <!--  <props>
+          <prop key="URL">@jdbc.url@</prop>
+          <prop key="user">@jdbc.username@</prop>
+          <prop key="password">@jdbc.password@</prop>
+      </props> -->
+      
+      <!-- Postgres -->
+      <props>
+          <prop key="serverName">@jdbc.servername@</prop>
+          <prop key="databaseName">@jdbc.databasename@</prop>
+          <prop key="user">@jdbc.username@</prop>
+          <prop key="password">@jdbc.password@</prop>
+      </props>
         
-            <!-- This is for H2 -->
-           <!--  <props>
-                <prop key="URL">@jdbc.url@</prop>
-                <prop key="user">@jdbc.username@</prop>
-                <prop key="password">@jdbc.password@</prop>
-            </props> -->
-            
-            <!-- Postgres -->
-            <props>
-                <prop key="serverName">@jdbc.servername@</prop>
-                <prop key="databaseName">@jdbc.databasename@</prop>
-                <prop key="user">@jdbc.username@</prop>
-                <prop key="password">@jdbc.password@</prop>
-            </props>
-            
-        </property>
-    </bean>
+    </property>
+  </bean>
 
-    <!-- Bitronix Transaction Manager embedded configuration -->
-    <bean id="btmConfig" factory-method="getConfiguration" class="bitronix.tm.TransactionManagerServices">
-        <property name="serverId" value="spring-btm" />
-        <property name="logPart1Filename" value="target/btm1.log"/>
-        <property name="logPart2Filename" value="target/btm2.log"/>
-    </bean>
+  <!-- Bitronix Transaction Manager embedded configuration -->
+  <bean id="btmConfig" factory-method="getConfiguration" class="bitronix.tm.TransactionManagerServices">
+    <property name="serverId" value="spring-btm" />
+    <property name="logPart1Filename" value="target/btm1.log"/>
+    <property name="logPart2Filename" value="target/btm2.log"/>
+  </bean>
 
-    <!-- create BTM transaction manager -->
-    <bean id="transactionManager" factory-method="getTransactionManager" class="bitronix.tm.TransactionManagerServices" 
-       depends-on="btmConfig" destroy-method="shutdown" />
+  <!-- create BTM transaction manager -->
+  <bean id="transactionManager" factory-method="getTransactionManager" class="bitronix.tm.TransactionManagerServices" 
+     depends-on="btmConfig" destroy-method="shutdown" />
 
-    <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration">
-        <property name="dataSource" ref="dataSource" />
-        <property name="transactionManager" ref="transactionManager" />
-        <property name="databaseSchemaUpdate" value="true" />
-        <property name="jobExecutorActivate" value="false" />
-        <property name="mailServerPort" value="5025" />
-    </bean>
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration">
+    <property name="dataSource" ref="dataSource" />
+    <property name="transactionManager" ref="transactionManager" />
+    <property name="databaseSchemaUpdate" value="true" />
+    <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutor" ref="asyncExecutor" />
+    <property name="asyncExecutorEnabled" value="true" />
+    <property name="asyncExecutorActivate" value="false" />
+    
+    <property name="defaultFailedJobWaitTime" value="1" />
+    <property name="asyncFailedJobWaitTime" value="1" />
+    <property name="mailServerPort" value="5025" />
+  </bean>
+  
+  <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
+    <property name="defaultAsyncJobAcquireWaitTimeInMillis" value="1000" />
+    <property name="defaultTimerJobAcquireWaitTimeInMillis" value="1000" />
+  </bean>
 
 </beans>

@@ -13,8 +13,8 @@
 
 package org.activiti.rest.service.api.identity;
 
-import org.codehaus.jackson.map.annotate.JsonSerialize;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
 
 /**
@@ -28,7 +28,7 @@ public class UserResponse {
   protected String passWord;
   protected String url;
   protected String email;
-  
+  protected String pictureUrl;
   
   public String getEmail() {
     return email;
@@ -77,5 +77,13 @@ public class UserResponse {
   
   public void setPassword(String passWord) {
     this.passWord = passWord;
+  }
+  
+  public String getPictureUrl() {
+    return pictureUrl;
+  }
+  
+  public void setPictureUrl(String pictureUrl) {
+    this.pictureUrl = pictureUrl;
   }
 }

@@ -16,9 +16,10 @@ import java.util.List;
 
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.annotate.JsonIgnore;
-import org.codehaus.jackson.annotate.JsonTypeInfo;
-import org.codehaus.jackson.annotate.JsonTypeInfo.Id;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 public class SignalEventReceivedRequest {
 

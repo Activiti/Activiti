@@ -6,10 +6,12 @@ import static org.junit.Assert.assertTrue;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.bpmn.model.UserTask;
 import org.junit.Test;
 
 public class SimpleConverterTest extends AbstractConverterTest {
@@ -33,8 +35,13 @@ public class SimpleConverterTest extends AbstractConverterTest {
   }
   
   private void validateModel(BpmnModel model) {
+    assertEquals(2, model.getDefinitionsAttributes().size());
+    assertEquals("2.2A", model.getDefinitionsAttributeValue("http://activiti.com/modeler", "version"));
+    assertEquals("20140312T10:45:23", model.getDefinitionsAttributeValue("http://activiti.com/modeler", "exportDate"));
+    
     assertEquals("simpleProcess", model.getMainProcess().getId());
     assertEquals("Simple process", model.getMainProcess().getName());
+    assertEquals("simple doc", model.getMainProcess().getDocumentation());
     assertEquals(true, model.getMainProcess().isExecutable());
     
     FlowElement flowElement = model.getMainProcess().getFlowElement("flow1");
@@ -53,11 +60,21 @@ public class SimpleConverterTest extends AbstractConverterTest {
     TimerEventDefinition timerDefinition = (TimerEventDefinition) eventDefinition;
     assertEquals("PT5M", timerDefinition.getTimeDuration());
     
+    flowElement = model.getMainProcess().getFlowElement("userTask1");
+    assertNotNull(flowElement);
+    assertTrue(flowElement instanceof UserTask);
+    UserTask task = (UserTask) flowElement;
+    assertEquals("task doc", task.getDocumentation());
+    
     flowElement = model.getMainProcess().getFlowElement("flow1Condition");
     assertNotNull(flowElement);
     assertTrue(flowElement instanceof SequenceFlow);
     assertEquals("flow1Condition", flowElement.getId());
     SequenceFlow flow = (SequenceFlow) flowElement;
     assertEquals("${number <= 1}", flow.getConditionExpression());
+    
+    flowElement = model.getMainProcess().getFlowElement("gateway1");
+    assertNotNull(flowElement);
+    assertTrue(flowElement instanceof ExclusiveGateway);
   }
 }

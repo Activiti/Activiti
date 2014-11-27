@@ -55,7 +55,7 @@ public class ProcessVariableMap implements Map<String, Object> {
   
   @Override
   public void putAll(Map< ? extends String, ? extends Object> m) {
-    for (java.util.Map.Entry< ? extends String, ? extends Object> newEntry : m.entrySet()) {
+    for (Map.Entry< ? extends String, ? extends Object> newEntry : m.entrySet()) {
       businessProcess.setVariable(newEntry.getKey(), newEntry.getValue());      
     }
   }
@@ -101,7 +101,7 @@ public class ProcessVariableMap implements Map<String, Object> {
   }
 
   @Override
-  public Set<java.util.Map.Entry<String, Object>> entrySet() {
+  public Set<Map.Entry<String, Object>> entrySet() {
     throw new UnsupportedOperationException(ProcessVariableMap.class.getName()+".entrySet() is not supported.");
   }
 

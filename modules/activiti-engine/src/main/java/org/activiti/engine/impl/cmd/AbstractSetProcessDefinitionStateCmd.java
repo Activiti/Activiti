@@ -23,7 +23,6 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
@@ -114,7 +113,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       }
       
       List<ProcessDefinition> processDefinitions = query.list();
-      if(processDefinitions.size() == 0) {
+      if(processDefinitions.isEmpty()) {
         throw new ActivitiException("Cannot find process definition for key '"+processDefinitionKey+"'");
       }
       
@@ -150,7 +149,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
       SuspensionStateUtil.setSuspensionState(processDefinition, getProcessDefinitionSuspensionState());
       
       // Evict cache
-      Context
+      commandContext
         .getProcessEngineConfiguration()
         .getDeploymentManager()
         .getProcessDefinitionCache()
@@ -161,7 +160,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
         
         int currentStartIndex = 0;
         List<ProcessInstance> processInstances = fetchProcessInstancesPage(commandContext, processDefinition, currentStartIndex);
-        while (processInstances.size() > 0) {
+        while (!processInstances.isEmpty()) {
           
           for (ProcessInstance processInstance : processInstances) {
             AbstractSetProcessInstanceStateCmd processInstanceCmd = getProcessInstanceChangeStateCmd(processInstance);
@@ -178,16 +177,17 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   
   protected List<ProcessInstance> fetchProcessInstancesPage(CommandContext commandContext, 
           ProcessDefinition processDefinition, int currentPageStartIndex) {
-      if(SuspensionState.ACTIVE.equals(getProcessDefinitionSuspensionState())){
+    
+      if (SuspensionState.ACTIVE.equals(getProcessDefinitionSuspensionState())){
   	      return new ProcessInstanceQueryImpl(commandContext)
-		      .processDefinitionId(processDefinition.getId())
-		      .suspended()
-		      .listPage(currentPageStartIndex, Context.getProcessEngineConfiguration().getBatchSizeProcessInstances());
-	    }else{
+		        .processDefinitionId(processDefinition.getId())
+		        .suspended()
+		        .listPage(currentPageStartIndex, commandContext.getProcessEngineConfiguration().getBatchSizeProcessInstances());
+	    } else {
 		      return new ProcessInstanceQueryImpl(commandContext)
-	        .processDefinitionId(processDefinition.getId())
-	        .active()
-	        .listPage(currentPageStartIndex, Context.getProcessEngineConfiguration().getBatchSizeProcessInstances());
+	          .processDefinitionId(processDefinition.getId())
+	          .active()
+	          .listPage(currentPageStartIndex, commandContext.getProcessEngineConfiguration().getBatchSizeProcessInstances());
 	     }
   }
   

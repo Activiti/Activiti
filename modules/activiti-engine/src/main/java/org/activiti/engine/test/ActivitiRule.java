@@ -23,10 +23,10 @@ import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
-import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.test.mock.ActivitiMockSupport;
@@ -88,7 +88,7 @@ public class ActivitiRule implements TestRule {
 	protected String configurationResource = "activiti.cfg.xml";
 	protected String deploymentId = null;
 
-    protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected ProcessEngineConfiguration processEngineConfiguration;
 	protected ProcessEngine processEngine;
 	protected RepositoryService repositoryService;
 	protected RuntimeService runtimeService;
@@ -108,7 +108,7 @@ public class ActivitiRule implements TestRule {
 	}
 
 	public ActivitiRule(ProcessEngine processEngine) {
-		this.processEngine = processEngine;
+	  setProcessEngine(processEngine);
 	}
 
 	/**
@@ -203,8 +203,11 @@ public class ActivitiRule implements TestRule {
 	protected void starting(Description description) {
 		if (processEngine == null) {
 			initializeProcessEngine();
-            initializeServices();
-        }
+    }
+		
+		if (processEngineConfiguration == null) {
+		  initializeServices();
+		}
 
 		if (mockSupport == null) {
 			initializeMockSupport();
@@ -235,7 +238,7 @@ public class ActivitiRule implements TestRule {
 	}
 
 	protected void initializeServices() {
-        processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+    processEngineConfiguration = processEngine.getProcessEngineConfiguration();
 		repositoryService = processEngine.getRepositoryService();
 		runtimeService = processEngine.getRuntimeService();
 		taskService = processEngine.getTaskService();
@@ -348,9 +351,9 @@ public class ActivitiRule implements TestRule {
 		this.managementService = managementService;
 	}
 
-    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
-        this.processEngineConfiguration = processEngineConfiguration;
-    }
+  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
 
   public ActivitiMockSupport getMockSupport() {
 		return mockSupport;

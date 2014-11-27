@@ -18,10 +18,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamReader;
-
-import org.activiti.bpmn.model.parse.Problem;
-import org.activiti.bpmn.model.parse.Warning;
 import org.apache.commons.lang3.StringUtils;
 
 
@@ -30,24 +26,60 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class BpmnModel {
   
+  protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
 	protected List<Process> processes = new ArrayList<Process>();
 	protected Map<String, GraphicInfo> locationMap = new LinkedHashMap<String, GraphicInfo>();
 	protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<String, GraphicInfo>();
 	protected Map<String, List<GraphicInfo>> flowLocationMap = new LinkedHashMap<String, List<GraphicInfo>>();
 	protected List<Signal> signals = new ArrayList<Signal>();
+	protected Map<String, MessageFlow> messageFlowMap = new LinkedHashMap<String, MessageFlow>();
 	protected Map<String, Message> messageMap = new LinkedHashMap<String, Message>();
 	protected Map<String, String> errorMap = new LinkedHashMap<String, String>();
 	protected Map<String, ItemDefinition> itemDefinitionMap = new LinkedHashMap<String, ItemDefinition>();
+	protected Map<String, DataStore> dataStoreMap = new LinkedHashMap<String, DataStore>();
 	protected List<Pool> pools = new ArrayList<Pool>();
 	protected List<Import> imports = new ArrayList<Import>();
 	protected List<Interface> interfaces = new ArrayList<Interface>();
 	protected List<Artifact> globalArtifacts = new ArrayList<Artifact>();
 	protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
 	protected String targetNamespace;
+	protected List<String> userTaskFormTypes;
+  protected List<String> startEventFormTypes;
 	protected int nextFlowIdCounter = 1;
+	
+	
+	public Map<String, List<ExtensionAttribute>> getDefinitionsAttributes() {
+    return definitionsAttributes;
+  }
+
+  public String getDefinitionsAttributeValue(String namespace, String name) {
+    List<ExtensionAttribute> attributes = getDefinitionsAttributes().get(name);
+    if (attributes != null && !attributes.isEmpty()) {
+      for (ExtensionAttribute attribute : attributes) {
+        if ( namespace.equals(attribute.getNamespace()))
+          return attribute.getValue();
+      }
+    }
+    return null;
+  }
+
+  public void addDefinitionsAttribute(ExtensionAttribute attribute) {
+    if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
+      List<ExtensionAttribute> attributeList = null;
+      if (this.definitionsAttributes.containsKey(attribute.getName()) == false) {
+        attributeList = new ArrayList<ExtensionAttribute>();
+        this.definitionsAttributes.put(attribute.getName(), attributeList);
+      }
+      this.definitionsAttributes.get(attribute.getName()).add(attribute);
+    }
+  }
+
+  public void setDefinitionsAttributes(Map<String, List<ExtensionAttribute>> attributes) {
+    this.definitionsAttributes = attributes;
+  }
 
 	public Process getMainProcess() {
-	  if (getPools().size() > 0) {
+	  if (!getPools().isEmpty()) {
 	    return getProcess(getPools().get(0).getId());
 	  } else {
 	    return getProcess(null);
@@ -278,6 +310,28 @@ public class BpmnModel {
     }
     return null;
   }
+  
+  public Map<String, MessageFlow> getMessageFlows() {
+    return messageFlowMap;
+  }
+  
+  public void setMessageFlows(Map<String, MessageFlow> messageFlows) {
+    this.messageFlowMap = messageFlows;
+  }
+
+  public void addMessageFlow(MessageFlow messageFlow) {
+    if (messageFlow != null && StringUtils.isNotEmpty(messageFlow.getId())) {
+      messageFlowMap.put(messageFlow.getId(), messageFlow);
+    }
+  }
+  
+  public MessageFlow getMessageFlow(String id) {
+    return messageFlowMap.get(id);
+  }
+  
+  public boolean containsMessageFlowId(String messageFlowId) {
+    return messageFlowMap.containsKey(messageFlowId);
+  }
 
   public Collection<Message> getMessages() {
     return messageMap.values();
@@ -341,6 +395,32 @@ public class BpmnModel {
   public boolean containsItemDefinitionId(String id) {
     return itemDefinitionMap.containsKey(id);
   }
+  
+  public Map<String, DataStore> getDataStores() {
+    return dataStoreMap;
+  }
+  
+  public void setDataStores(Map<String, DataStore> dataStoreMap) {
+    this.dataStoreMap = dataStoreMap;
+  }
+  
+  public DataStore getDataStore(String id) {
+    DataStore dataStore = null;
+    if (dataStoreMap.containsKey(id)) {
+      dataStore = dataStoreMap.get(id);
+    }
+    return dataStore;
+  }
+
+  public void addDataStore(String id, DataStore dataStore) {
+    if (StringUtils.isNotEmpty(id)) {
+      dataStoreMap.put(id, dataStore);
+    }
+  }
+  
+  public boolean containsDataStore(String id) {
+    return dataStoreMap.containsKey(id);
+  }
 
   public List<Pool> getPools() {
     return pools;
@@ -398,4 +478,19 @@ public class BpmnModel {
     this.targetNamespace = targetNamespace;
   }
   
+  public List<String> getUserTaskFormTypes() {
+    return userTaskFormTypes;
+  }
+  
+  public void setUserTaskFormTypes(List<String> userTaskFormTypes) {
+    this.userTaskFormTypes = userTaskFormTypes;
+  }
+  
+  public List<String> getStartEventFormTypes() {
+    return startEventFormTypes;
+  }
+  
+  public void setStartEventFormTypes(List<String> startEventFormTypes) {
+    this.startEventFormTypes = startEventFormTypes;
+  }
 }

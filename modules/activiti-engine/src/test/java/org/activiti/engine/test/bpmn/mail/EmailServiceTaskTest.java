@@ -26,6 +26,8 @@ import javax.activation.DataHandler;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.subethamail.wiser.WiserMessage;
@@ -128,6 +130,34 @@ public class EmailServiceTaskTest extends EmailTestCase {
     assertEmailSend(messages.get(0), true, "Test", "Mr. <b>Kermit</b>", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
   }
   
+  @Deployment
+  public void testInvalidAddress() throws Exception {
+    try {
+      runtimeService.startProcessInstanceByKey("invalidAddress").getId();
+      fail("An Invalid email address should not execute");
+    } catch(ActivitiException e) {
+      // fine
+    } catch(Exception e) {
+      fail("Only an ActivitiException is expected here but not: " + e);
+    }
+  }
+ 
+  @Deployment
+  public void testInvalidAddressWithoutException() throws Exception {
+    String piId = runtimeService.startProcessInstanceByKey("invalidAddressWithoutException").getId();
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      assertNotNull(historyService.createHistoricVariableInstanceQuery().processInstanceId(piId).variableName("emailError").singleResult());
+    }
+  }
+  
+  @Deployment
+  public void testInvalidAddressWithoutExceptionVariableName() throws Exception {
+    String piId = runtimeService.startProcessInstanceByKey("invalidAddressWithoutException").getId();
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      assertNull(historyService.createHistoricVariableInstanceQuery().processInstanceId(piId).variableName("emailError").singleResult());
+    }
+  }
+  
   // Helper 
   
   public static void assertEmailSend(WiserMessage emailMessage, boolean htmlMail, String subject, String message, 
@@ -142,7 +172,7 @@ public class EmailServiceTaskTest extends EmailTestCase {
       }
       
       assertEquals(subject, mimeMessage.getHeader("Subject", null));
-      assertEquals("\"" + from + "\" <" +from.toString() + ">" , mimeMessage.getHeader("From", null));
+      assertEquals("\"" + from + "\" <" +from + ">" , mimeMessage.getHeader("From", null));
       assertTrue(getMessage(mimeMessage).contains(message));
       
       for (String t : to) {

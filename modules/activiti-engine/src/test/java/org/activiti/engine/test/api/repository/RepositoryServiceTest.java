@@ -29,7 +29,6 @@ import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
-import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -312,7 +311,7 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
   public void testProcessDefinitionEntitySerializable() {
     String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
-    ProcessDefinition processDefinition = ((RepositoryServiceImpl) repositoryService).getProcessDefinition(procDefId);
+    ProcessDefinition processDefinition = repositoryService.getProcessDefinition(procDefId);
     
     try {
       ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -334,8 +333,8 @@ public class RepositoryServiceTest extends PluggableActivitiTestCase {
     BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
     assertNotNull(bpmnModel);
     assertEquals(1, bpmnModel.getProcesses().size());
-    assertTrue(bpmnModel.getLocationMap().size() > 0);
-    assertTrue(bpmnModel.getFlowLocationMap().size() > 0);
+    assertTrue(!bpmnModel.getLocationMap().isEmpty());
+    assertTrue(!bpmnModel.getFlowLocationMap().isEmpty());
     
     // Test the flow
     org.activiti.bpmn.model.Process process = bpmnModel.getProcesses().get(0);

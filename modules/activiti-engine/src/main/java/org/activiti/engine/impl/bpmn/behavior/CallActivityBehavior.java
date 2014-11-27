@@ -16,6 +16,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
@@ -63,10 +64,19 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       processDefinitonKey = (String) processDefinitionExpression.getValue(execution);
     }
     
-    ProcessDefinitionImpl processDefinition = Context
-      .getProcessEngineConfiguration()
-      .getDeploymentManager()
-      .findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
+    ProcessDefinitionImpl processDefinition = null;
+    if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
+    	processDefinition = Context
+    			.getProcessEngineConfiguration()
+    			.getDeploymentManager()
+    			.findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
+    } else {
+    	processDefinition = Context
+          .getProcessEngineConfiguration()
+          .getDeploymentManager()
+          .findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitonKey, execution.getTenantId());
+    }
+    		
     
     PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
     

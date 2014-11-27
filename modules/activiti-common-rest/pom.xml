@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.16-SNAPSHOT</version>
+    <version>5.17.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -118,37 +118,12 @@
 
     <!-- Editor -->
     <dependency>
-      <groupId>org.restlet.jee</groupId>
-      <artifactId>org.restlet</artifactId>
-      <version>${restlet.version}</version>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.restlet.jee</groupId>
-      <artifactId>org.restlet.ext.servlet</artifactId>
-      <version>${restlet.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.restlet.jee</groupId>
-      <artifactId>org.restlet.ext.jackson</artifactId>
-      <version>${restlet.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-core-asl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.codehaus.jackson</groupId>
-          <artifactId>jackson-mapper-asl</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
     </dependency>
 
     <!-- Testing -->

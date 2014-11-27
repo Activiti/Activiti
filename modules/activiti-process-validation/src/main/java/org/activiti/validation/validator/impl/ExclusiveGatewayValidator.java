@@ -1,3 +1,15 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.validation.validator.impl;
 
 import java.util.ArrayList;
@@ -26,7 +38,7 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
 	}
 	
   public void validateExclusiveGateway(Process process, ExclusiveGateway exclusiveGateway, List<ValidationError> errors) {
-    if (exclusiveGateway.getOutgoingFlows().size() == 0) {
+    if (exclusiveGateway.getOutgoingFlows().isEmpty()) {
     	addError(errors, Problems.EXCLUSIVE_GATEWAY_NO_OUTGOING_SEQ_FLOW, process, exclusiveGateway, 
     			"Exclusive gateway has no outgoing sequence flow");
     } else if (exclusiveGateway.getOutgoingFlows().size() == 1) {
@@ -53,7 +65,7 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
         }
       }
       
-      if (flowsWithoutCondition.size() > 0) {
+      if (!flowsWithoutCondition.isEmpty()) {
       	addWarning(errors, Problems.EXCLUSIVE_GATEWAY_SEQ_FLOW_WITHOUT_CONDITIONS, process, exclusiveGateway,
     				"Exclusive gateway has at least one outgoing sequence flow without a condition (which isn't the default one)");
     	}

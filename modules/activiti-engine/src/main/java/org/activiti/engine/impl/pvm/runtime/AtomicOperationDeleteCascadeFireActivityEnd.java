@@ -13,12 +13,8 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
-
 
 /**
  * @author Tom Baeyens
@@ -50,7 +46,6 @@ public class AtomicOperationDeleteCascadeFireActivityEnd extends AbstractEventAt
     ActivityImpl activity = (ActivityImpl) execution.getActivity();
     if ( (execution.isScope())
             && (activity!=null)
-            && (!activity.isScope())
           )  {
       execution.setActivity(activity.getParentActivity());
       execution.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
@@ -62,11 +57,6 @@ public class AtomicOperationDeleteCascadeFireActivityEnd extends AbstractEventAt
  
       execution.remove();
       
-      if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, execution));
-      }
-
       if (!execution.isDeleteRoot()) {
         InterpretableExecution parent = (InterpretableExecution) execution.getParent();
         if (parent!=null) {

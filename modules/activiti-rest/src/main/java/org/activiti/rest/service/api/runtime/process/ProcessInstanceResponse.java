@@ -19,18 +19,27 @@ import java.util.List;
 import org.activiti.rest.service.api.engine.variable.RestVariable;
 
 /**
+ * Modified to add a "completed" flag, which lets the caller know if the process instance
+ *   has run to completion without encountering a wait state or experiencing an error/
+ *   exception.
+ * 
  * @author Frederik Heremans
+ * @author Ryan Johnston (@rjfsu)
  */
 public class ProcessInstanceResponse {
   protected String id;
   protected String url;
   protected String businessKey;
   protected boolean suspended;
+  protected boolean ended;
   protected String processDefinitionId;
   protected String processDefinitionUrl;
   protected String activityId;
   protected List<RestVariable> variables = new ArrayList<RestVariable>();
   protected String tenantId;
+  
+  //Added by Ryan Johnston
+  protected boolean completed;
   
   public String getId() {
     return id;
@@ -64,6 +73,14 @@ public class ProcessInstanceResponse {
     this.suspended = suspended;
   }
   
+  public boolean isEnded() {
+    return ended;
+  }
+
+  public void setEnded(boolean ended) {
+    this.ended = ended;
+  }
+
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
@@ -106,5 +123,15 @@ public class ProcessInstanceResponse {
   
   public String getTenantId() {
 	  return tenantId;
+  }
+  
+  //Added by Ryan Johnston
+  public boolean isCompleted() {
+	  return completed;
+  }
+  
+  //Added by Ryan Johnston
+  public void setCompleted(boolean completed) {
+	  this.completed = completed;
   }
 }

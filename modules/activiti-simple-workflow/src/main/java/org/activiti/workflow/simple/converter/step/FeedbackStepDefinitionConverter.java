@@ -35,6 +35,7 @@ import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.FeedbackStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
+import org.activiti.workflow.simple.util.JvmUtil;
 
 
 /**
@@ -127,7 +128,8 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
     
     // When the list of feedback providers is fixed up front, we need to add a script listener
     // that injects these variables into the process (instead of having it provided by the end user in a form)
-    if (feedbackStepDefinition.getFeedbackProviders() != null && feedbackStepDefinition.getFeedbackProviders().size() > 0) {
+    if (feedbackStepDefinition.getFeedbackProviders() != null && !feedbackStepDefinition.getFeedbackProviders()
+                                                                                        .isEmpty()) {
       if (selectPeopleUserTask.getTaskListeners() == null) 
       {
         selectPeopleUserTask.setTaskListeners(new ArrayList<ActivitiListener>());
@@ -146,6 +148,9 @@ public class FeedbackStepDefinitionConverter extends BaseStepDefinitionConverter
       scriptField.setFieldName("script");
       
       StringBuilder script = new StringBuilder();
+      if (JvmUtil.isJDK8()) {
+      	script.append("load(\"nashorn:mozilla_compat.js\");");
+      }
       script.append("importPackage (java.util); var feedbackProviders = new ArrayList();" + System.getProperty("line.separator"));
       for (String feedbackProvider : feedbackStepDefinition.getFeedbackProviders()) {
         script.append("feedbackProviders.add('" + feedbackProvider + "');" + System.getProperty("line.separator"));

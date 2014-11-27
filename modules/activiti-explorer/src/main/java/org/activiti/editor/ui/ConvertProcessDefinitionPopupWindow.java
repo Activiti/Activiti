@@ -14,7 +14,6 @@ package org.activiti.editor.ui;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
 import java.net.URL;
 
 import javax.xml.stream.XMLInputFactory;
@@ -34,10 +33,11 @@ import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ui.custom.PopupWindow;
+import org.activiti.explorer.util.XmlUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ObjectNode;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.terminal.ExternalResource;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -122,7 +122,7 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
         
         try {
           InputStream bpmnStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
-          XMLInputFactory xif = XMLInputFactory.newInstance();
+          XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
           InputStreamReader in = new InputStreamReader(bpmnStream, "UTF-8");
           XMLStreamReader xtr = xif.createXMLStreamReader(in);
           BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
@@ -132,7 +132,7 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
                 i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMN_EXPLANATION));
           } else {
           
-            if (bpmnModel.getLocationMap().size() == 0) {
+            if (bpmnModel.getLocationMap().isEmpty()) {
               notificationManager.showErrorNotification(Messages.MODEL_IMPORT_INVALID_BPMNDI,
                   i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMNDI_EXPLANATION));
             } else {

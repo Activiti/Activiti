@@ -2,16 +2,17 @@ package org.activiti.editor.language.xml;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
@@ -50,7 +51,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
 
     // verify the main process data objects
     List<ValuedDataObject> dataObjects = model.getProcess(null).getDataObjects();
-    assertEquals(6, dataObjects.size());
+    assertEquals(7, dataObjects.size());
     
     Map<String, ValuedDataObject> objectMap = new HashMap<String, ValuedDataObject>();
     for (ValuedDataObject valueObj : dataObjects) {
@@ -62,7 +63,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals("StringTest", dataObj.getName());
     assertEquals("xsd:string", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof String);
-    assertEquals("Testing123", dataObj.getValue());
+    assertEquals("Testing1&2&3", dataObj.getValue());
     
     dataObj = objectMap.get("dObj2");
     assertEquals("dObj2", dataObj.getId());
@@ -76,13 +77,8 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals("DateTest", dataObj.getName());
     assertEquals("xsd:datetime", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof Date);
-    GregorianCalendar dateCal = new GregorianCalendar();
-    dateCal.setTime((Date) dataObj.getValue());
-    assertEquals(2013, dateCal.get(Calendar.YEAR));
-    assertEquals(8, dateCal.get(Calendar.MONTH));
-    assertEquals(16, dateCal.get(Calendar.DAY_OF_MONTH));
-    assertEquals(11, dateCal.get(Calendar.HOUR_OF_DAY));
-    assertEquals(23, dateCal.get(Calendar.MINUTE));
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+    assertEquals("2013-09-16T11:23:00", sdf.format(dataObj.getValue()));
     
     dataObj = objectMap.get("dObj4");
     assertEquals("dObj4", dataObj.getId());
@@ -104,6 +100,18 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals("xsd:long", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof Long);
     assertEquals(new Long(-123456), dataObj.getValue());
+    assertEquals(1, dataObj.getExtensionElements().size());
+    List<ExtensionElement> testValues = dataObj.getExtensionElements().get("testvalue");
+    assertNotNull(testValues);
+    assertEquals(1, testValues.size());
+    assertEquals("testvalue", testValues.get(0).getName());
+    assertEquals("test", testValues.get(0).getElementText());
+    
+    dataObj = objectMap.get("NoData");
+    assertEquals("NoData", dataObj.getId());
+    assertEquals("NoData", dataObj.getName());
+    assertEquals("xsd:datetime", dataObj.getItemSubjectRef().getStructureRef());
+    assertNull(dataObj.getValue());
    
     flowElement = model.getMainProcess().getFlowElement("userTask1");
     assertNotNull(flowElement);
@@ -147,11 +155,7 @@ public class ValuedDataObjectConverterTest extends AbstractConverterTest {
     assertEquals("DateSubTest", dataObj.getName());
     assertEquals("xsd:datetime", dataObj.getItemSubjectRef().getStructureRef());
     assertTrue(dataObj.getValue() instanceof Date);
-    dateCal = new GregorianCalendar();
-    dateCal.setTime((Date) dataObj.getValue());
-    assertEquals(2013, dateCal.get(Calendar.YEAR));
-    assertEquals(10, dateCal.get(Calendar.MONTH));
-    assertEquals(11, dateCal.get(Calendar.DAY_OF_MONTH));
+    assertEquals("2013-11-11T22:00:00", sdf.format(dataObj.getValue()));
       
     dataObj = objectMap.get("dObj10");
     assertEquals("dObj10", dataObj.getId());

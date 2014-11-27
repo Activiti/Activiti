@@ -13,45 +13,45 @@
 
 package org.activiti.rest.common.api;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.restlet.data.Form;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 /**
  * @author Tijs Rademakers
  */
 public class RequestUtil {
   
-  private static final SimpleDateFormat shortDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-  private static final SimpleDateFormat longDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
+  private static final FastDateFormat shortDateFormat = FastDateFormat.getInstance("yyyy-MM-dd");
+  private static final FastDateFormat longDateFormat = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ssz");
 
-  public static boolean getBoolean(Form form, String name, boolean defaultValue) {
+  public static boolean getBoolean(Map<String, String> requestParams, String name, boolean defaultValue) {
     boolean value = defaultValue;
-    if(form.getValues(name) != null) {
-      value = Boolean.valueOf(form.getValues(name));
+    if (requestParams.get(name) != null) {
+      value = Boolean.valueOf(requestParams.get(name));
     }
     return value;
   }
   
-  public static int getInteger(Form form, String name, int defaultValue) {
+  public static int getInteger(Map<String, String> requestParams, String name, int defaultValue) {
     int value = defaultValue;
-    if(form.getValues(name) != null) {
-      value = Integer.valueOf(form.getValues(name));
+    if (requestParams.get(name) != null) {
+      value = Integer.valueOf(requestParams.get(name));
     }
     return value;
   }
   
-  public static Date getDate(Form form, String name) {
+  public static Date getDate(Map<String, String> requestParams, String name) {
     Date value = null;
-    if(form.getValues(name) != null) {
+    if (requestParams.get(name) != null) {
       
-      String input = form.getValues(name);
+      String input = requestParams.get(name).trim();
       
       //this is zero time so we need to add that TZ indicator for 
       if (input.endsWith("Z")) {
-        input = input.substring( 0, input.length() - 1) + "GMT-00:00";
+        input = input.substring(0, input.length() - 1) + "GMT-00:00";
       } else {
         int inset = 6;
     

@@ -21,6 +21,7 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.PersistentObject;
 
 
@@ -28,7 +29,7 @@ import org.activiti.engine.impl.db.PersistentObject;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity implements HistoricTaskInstance, PersistentObject {
+public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity implements HistoricTaskInstance, BulkDeleteable, PersistentObject {
 
   private static final long serialVersionUID = 1L;
   
@@ -67,6 +68,7 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
     
     this.setPriority(task.getPriority());
     this.setDueDate(task.getDueDate());
+    this.setCategory(task.getCategory());
     
     // Inherit tenant id (if applicable)
     if (task.getTenantId() != null) {
@@ -131,6 +133,10 @@ public class HistoricTaskInstanceEntity extends HistoricScopeInstanceEntity impl
   }
   public void setTaskDefinitionKey(String taskDefinitionKey) {
     this.taskDefinitionKey = taskDefinitionKey;
+  }
+  @Override
+  public Date getCreateTime() {
+  	return getStartTime(); // For backwards compatible reason implemented with createTime and startTime
   }
   public String getFormKey() {
     return formKey;

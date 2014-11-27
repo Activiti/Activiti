@@ -13,34 +13,25 @@
 
 package org.activiti.rest.service.api.repository;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.common.api.AbstractPaginateList;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 
 /**
  * @author Frederik Heremans
  */
 public class ProcessDefinitionsPaginateList extends AbstractPaginateList {
 
-  private SecuredResource resource;
+  protected RestResponseFactory restResponseFactory;
   
-  public ProcessDefinitionsPaginateList(SecuredResource resource) {
-    this.resource = resource;
+  public ProcessDefinitionsPaginateList(RestResponseFactory restResponseFactory) {
+    this.restResponseFactory = restResponseFactory;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    List<ProcessDefinitionResponse> responseList = new ArrayList<ProcessDefinitionResponse>();
-    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    for (Object deployment : list) {
-      responseList.add(restResponseFactory.createProcessDefinitionResponse(resource, (ProcessDefinition) deployment));
-    }
-    return responseList;
+    return restResponseFactory.createProcessDefinitionResponseList(list);
   }
 }

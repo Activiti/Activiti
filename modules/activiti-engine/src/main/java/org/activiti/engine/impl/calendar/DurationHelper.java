@@ -129,7 +129,7 @@ public class DurationHelper {
         cur = add(cur, period);
       }
 
-      return cur.before(date) ? null : TimeZoneUtil.convertToTimeZone(cur, clockReader.getCurrentTimeZone());
+      return cur.before(date) ? date : TimeZoneUtil.convertToTimeZone(cur, clockReader.getCurrentTimeZone());
     }
 
     Calendar cur = add(TimeZoneUtil.convertToTimeZone(end, date.getTimeZone()), period.negate());
@@ -140,8 +140,8 @@ public class DurationHelper {
       next = cur;
       cur = add(cur, period.negate());
     }
-
-    return next.before(date) ? null : TimeZoneUtil.convertToTimeZone(next, clockReader.getCurrentTimeZone());
+    
+    return next.before(date) ? date : TimeZoneUtil.convertToTimeZone(next, clockReader.getCurrentTimeZone());
   }
 
   private Calendar add(Calendar date, Duration duration) {

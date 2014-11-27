@@ -14,14 +14,15 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
+import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -35,9 +36,12 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
   
   protected void executeParse(BpmnParse bpmnParse, MessageEventDefinition messageDefinition) {
     
-    if (bpmnParse.getBpmnModel().containsMessageId(messageDefinition.getMessageRef())) {
-      String messageName = bpmnParse.getBpmnModel().getMessage(messageDefinition.getMessageRef()).getName();
-      messageDefinition.setMessageRef(messageName);
+    BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+    String messageRef = messageDefinition.getMessageRef();
+    if (bpmnModel.containsMessageId(messageRef)) {
+      Message message = bpmnModel.getMessage(messageRef);
+      messageDefinition.setMessageRef(message.getName());
+      messageDefinition.setExtensionElements(message.getExtensionElements());
     }
     
     EventSubscriptionDeclaration eventSubscription = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");

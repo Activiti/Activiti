@@ -19,15 +19,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.jobexecutor.ExclusiveJobAddedNotification;
+import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
+import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
-import org.activiti.engine.impl.jobexecutor.MessageAddedNotification;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.runtime.Job;
 
@@ -40,7 +43,11 @@ public class JobEntityManager extends AbstractManager {
 
   public void send(MessageEntity message) {
     message.insert();
-    hintJobExecutor(message);    
+    if (Context.getProcessEngineConfiguration().isAsyncExecutorEnabled()) {
+      hintAsyncExecutor(message);
+    } else {
+      hintJobExecutor(message);
+    }
   }
  
   public void schedule(TimerEntity timer) {
@@ -51,36 +58,37 @@ public class JobEntityManager extends AbstractManager {
 
     timer.insert();
     
-    // Check if this timer fires before the next time the job executor will check for new timers to fire.
-    // This is highly unlikely because normally waitTimeInMillis is 5000 (5 seconds)
-    // and timers are usually set further in the future
-    
-    JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
-    int waitTimeInMillis = jobExecutor.getWaitTimeInMillis();
-    if (duedate.getTime() < (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()+waitTimeInMillis)) {
+    ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
+    if (engineConfiguration.isAsyncExecutorEnabled() == false && 
+        timer.getDuedate().getTime() <= (engineConfiguration.getClock().getCurrentTime().getTime())) {
+      
       hintJobExecutor(timer);
     }
   }
   
+  public void retryAsyncJob(JobEntity job) {
+    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
+    asyncExecutor.executeAsyncJob(job);
+  }
+  
+  protected void hintAsyncExecutor(JobEntity job) {  
+    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
+
+    // notify job executor:      
+    TransactionListener transactionListener = new AsyncJobAddedNotification(job, asyncExecutor);
+    Context.getCommandContext()
+      .getTransactionContext()
+      .addTransactionListener(TransactionState.COMMITTED, transactionListener);
+  }
+  
   protected void hintJobExecutor(JobEntity job) {  
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
-    JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
-    TransactionListener transactionListener = null;
-    if(job.isExclusive() 
-            && jobExecutorContext != null 
-            && jobExecutorContext.isExecutingExclusiveJob()) {
-      // lock job & add to the queue of the current processor
-      Date currentTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-      job.setLockExpirationTime(new Date(currentTime.getTime() + jobExecutor.getLockTimeInMillis()));
-      job.setLockOwner(jobExecutor.getLockOwner());
-      transactionListener = new ExclusiveJobAddedNotification(job.getId());      
-    } else {
-      // notify job executor:      
-      transactionListener = new MessageAddedNotification(jobExecutor);
-    }
+
+    // notify job executor:      
+    TransactionListener transactionListener = new JobAddedNotification(jobExecutor);
     Context.getCommandContext()
-    .getTransactionContext()
-    .addTransactionListener(TransactionState.COMMITTED, transactionListener);
+      .getTransactionContext()
+      .addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
  
   public void cancelTimers(ExecutionEntity execution) {
@@ -90,6 +98,10 @@ public class JobEntityManager extends AbstractManager {
       .findTimersByExecutionId(execution.getId());
     
     for (TimerEntity timer: timers) {
+      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timer));
+      }
       timer.delete();
     }
   }
@@ -100,8 +112,28 @@ public class JobEntityManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
-    Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findNextTimerJobsToExecute(Page page) {
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
+    return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findAsyncJobsDueToExecute(Page page) {
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
+    return getDbSqlSession().selectList("selectAsyncJobsDueToExecute", now, page);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
+  	return getDbSqlSession().selectList("selectJobsByLockOwner", lockOwner, start, maxNrOfJobs);
   }
   
   @SuppressWarnings("unchecked")
@@ -153,5 +185,13 @@ public class JobEntityManager extends AbstractManager {
   	params.put("tenantId", newTenantId);
   	getDbSqlSession().update("updateJobTenantIdForDeployment", params);
   }
-
+  
+  public int updateJobLockForAllJobs(String lockOwner, Date expirationTime) {
+    HashMap<String, Object> params = new HashMap<String, Object>();
+    params.put("lockOwner", lockOwner);
+    params.put("lockExpirationTime", expirationTime);
+    params.put("dueDate", Context.getProcessEngineConfiguration().getClock().getCurrentTime());
+    return getDbSqlSession().update("updateJobLockForAllJobs", params);
+  }
+  
 }

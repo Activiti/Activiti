@@ -30,33 +30,33 @@ import org.springframework.core.task.TaskExecutor;
  * thread pools, for example using the commonj API. The use of unmanaged thread
  * in application servers is discouraged by the Java EE spec.
  * </p>
- * 
+ *
  * @author Pablo Ganga
  */
 public class SpringJobExecutor extends JobExecutor {
 
-	private TaskExecutor taskExecutor;
+  private TaskExecutor taskExecutor;
 
-	public SpringJobExecutor() {
-	}
+  public SpringJobExecutor() {
+  }
 
-	public SpringJobExecutor(TaskExecutor taskExecutor) {
-		this.taskExecutor = taskExecutor;
-	}
+  public SpringJobExecutor(TaskExecutor taskExecutor) {
+    this.taskExecutor = taskExecutor;
+  }
 
-	public TaskExecutor getTaskExecutor() {
-		return taskExecutor;
-	}
+  public TaskExecutor getTaskExecutor() {
+    return taskExecutor;
+  }
 
-	/**
-	 * Required spring injected {@link TaskExecutor} implementation that will be
-	 * used to execute runnable jobs.
-	 * 
-	 * @param taskExecutor
-	 */
-	public void setTaskExecutor(TaskExecutor taskExecutor) {
-		this.taskExecutor = taskExecutor;
-	}
+  /**
+   * Required spring injected {@link TaskExecutor} implementation that will be
+   * used to execute runnable jobs.
+   *
+   * @param taskExecutor
+   */
+  public void setTaskExecutor(TaskExecutor taskExecutor) {
+    this.taskExecutor = taskExecutor;
+  }
 
 	@Override
 	public void executeJobs(List<String> jobIds) {
@@ -67,13 +67,13 @@ public class SpringJobExecutor extends JobExecutor {
 		}
 	}
 
-	@Override
-	protected void startExecutingJobs() {
-		startJobAcquisitionThread();
-	}
+  @Override
+  protected void startExecutingJobs() {
+    startJobAcquisitionThread();
+  }
 
-	@Override
-	protected void stopExecutingJobs() {
-		stopJobAcquisitionThread();
-	}
+  @Override
+  protected void stopExecutingJobs() {
+    stopJobAcquisitionThread();
+  }
 }

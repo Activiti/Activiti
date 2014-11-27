@@ -24,6 +24,7 @@ import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
@@ -35,6 +36,7 @@ import org.activiti.engine.impl.delegate.TaskListenerInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.util.ReflectUtil;
 
 
@@ -46,21 +48,31 @@ import org.activiti.engine.impl.util.ReflectUtil;
  * @author Joram Barrez
  * @author Falko Menge
  */
-public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener {
+public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, SubProcessActivityBehavior {
   
   protected String className;
   protected List<FieldDeclaration> fieldDeclarations;
   protected ExecutionListener executionListenerInstance;
   protected TaskListener taskListenerInstance;
   protected ActivityBehavior activityBehaviorInstance;
-  
-  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+  protected Expression skipExpression;
+
+  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
     this.className = className;
     this.fieldDeclarations = fieldDeclarations;
+    this.skipExpression = skipExpression;
+  }
+  
+  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+    this(className, fieldDeclarations, null);
   }
   
   public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
-    this(clazz.getName(), fieldDeclarations);
+    this(clazz.getName(), fieldDeclarations, null);
+  }
+
+  public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
+    this(clazz.getName(), fieldDeclarations, skipExpression);
   }
 
   // Execution listener
@@ -109,13 +121,19 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
 
   // Activity Behavior
   public void execute(ActivityExecution execution) throws Exception {
-    if (activityBehaviorInstance == null) {
-      activityBehaviorInstance = getActivityBehaviorInstance(execution);
-    }
-    try {
-      activityBehaviorInstance.execute(execution);
-    } catch (BpmnError error) {
-      ErrorPropagation.propagateError(error, execution);
+    boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+    if (!isSkipExpressionEnabled || 
+            (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+      
+      if (activityBehaviorInstance == null) {
+        activityBehaviorInstance = getActivityBehaviorInstance(execution);
+      }
+      
+      try {
+        activityBehaviorInstance.execute(execution);
+      } catch (BpmnError error) {
+        ErrorPropagation.propagateError(error, execution);
+      }
     }
   }
 
@@ -129,6 +147,34 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
       ((SignallableActivityBehavior) activityBehaviorInstance).signal(execution, signalName, signalData);
     } else {
       throw new ActivitiException("signal() can only be called on a " + SignallableActivityBehavior.class.getName() + " instance");
+    }
+  }
+  
+  // Subprocess activityBehaviour
+  
+  @Override
+  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+  	if (activityBehaviorInstance == null) {
+      activityBehaviorInstance = getActivityBehaviorInstance((ActivityExecution) execution);
+    }
+    
+    if (activityBehaviorInstance instanceof SubProcessActivityBehavior) {
+      ((SubProcessActivityBehavior) activityBehaviorInstance).completing(execution, subProcessInstance);
+    } else {
+      throw new ActivitiException("completing() can only be called on a " + SubProcessActivityBehavior.class.getName() + " instance");
+    }
+  }
+  
+  @Override
+  public void completed(ActivityExecution execution) throws Exception {
+  	if (activityBehaviorInstance == null) {
+      activityBehaviorInstance = getActivityBehaviorInstance(execution);
+    }
+    
+    if (activityBehaviorInstance instanceof SubProcessActivityBehavior) {
+      ((SubProcessActivityBehavior) activityBehaviorInstance).completed(execution);
+    } else {
+      throw new ActivitiException("completed() can only be called on a " + SubProcessActivityBehavior.class.getName() + " instance");
     }
   }
 

@@ -265,6 +265,134 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
     </para>
   </section>
   
+  <section id="jndiDatasourceConfig">
+    <title>JNDI Datasource Configuration</title>
+
+    <para>
+        By default, the database configuration for Activiti is contained within the db.properties
+        files in the WEB-INF/classes of each web application. This isn't always ideal because it
+        requires users to either modify the db.properties in the Activiti source and recompile
+        the war file, or explode the war and modify the db.properties on every deployment.
+    </para>
+    
+    <para>
+       By using JNDI (Java Naming and Directory Interface) to obtain the database connection,
+       the connection is fully managed by the Servlet Container and the configuration can be
+       managed outside the war deployment. This also allows more control over the connection
+       parameters than what is provided by the db.properties file.
+    </para>
+    
+    <section id="jndi_usage">
+    
+        <title>Usage</title>
+        
+        <para>
+            To switch the Activiti Explorer and Activiti Rest web apps from db.properties
+            configuration to JNDI datasource configuration, open the primary Spring configuration
+            files (activiti-webapp-explorer2/src/main/webapp/WEB-INF/activiti-standalone-context.xml
+            and activiti-webapp-rest2/src/main/resources/activiti-context.xml), and delete the beans
+            named "dbProperties" and "dataSource". Then, add the following bean:
+            <programlisting>
+&lt;bean id="dataSource" class="org.springframework.jndi.JndiObjectFactoryBean"&gt;
+    &lt;property name="jndiName" value="java:comp/env/jdbc/activitiDB"/&gt;
+&lt;/bean&gt;
+            </programlisting> 
+        </para>
+        
+        <para>
+            Next, we need to add context.xml files that contain the default H2 configuration.
+            These will be overridden by your JNDI configuration, if it exists.  For Activiti
+            Explorer, replace the file at activiti-webapp-explorer2/src/main/webapp/META-INF/context.xml
+            with the following:
+            <programlisting>
+&lt;Context antiJARLocking="true" path="/activiti-explorer2"&gt;
+    &lt;Resource auth="Container"
+              name="jdbc/activitiDB"
+              type="javax.sql.DataSource"
+              scope="Shareable"
+              description="JDBC DataSource"
+              url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"
+              driverClassName="org.h2.Driver"
+              username="sa"
+              password=""
+              defaultAutoCommit="false"
+              initialSize="5"
+              maxWait="5000"
+              maxActive="120"
+              maxIdle="5"/&gt;
+&lt;/Context&gt;
+            </programlisting>
+            
+            For the Activiti REST webapp, add activiti-webapp-rest2/src/main/webapp/META-INF/context.xml
+            containing the following:
+            <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;Context antiJARLocking="true" path="/activiti-rest2"&gt;
+    &lt;Resource auth="Container"
+              name="jdbc/activitiDB"
+              type="javax.sql.DataSource"
+              scope="Shareable"
+              description="JDBC DataSource"
+              url="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=-1"
+              driverClassName="org.h2.Driver"
+              username="sa"
+              password=""
+              defaultAutoCommit="false"
+              initialSize="5"
+              maxWait="5000"
+              maxActive="120"
+              maxIdle="5"/&gt;
+&lt;/Context&gt;
+            </programlisting>
+        </para>
+        
+        <para>
+            As an optional step, you can now delete the unused db.properties files in both the Activiti
+            Explorer and Activiti REST webapp projects.
+        </para>
+    </section>
+    
+    <section id="jndi_configuration">
+
+        <title>Configuration</title>
+
+        <para>
+            Configuration of the JNDI datasource will differ depending on what servlet container
+            application you are using. The instructions below will work for Tomcat, but for other
+            container applications, please refer to the documentation for your container app.
+        </para>
+        
+        <para>
+            If using Tomcat, the JNDI resource is configured within
+            $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for Activiti Explorer this
+            will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-explorer.war). The default
+            context is copied from the Activiti war file when the application is first deployed, so if
+            it already exists, you will need to replace it. To change the JNDI resource so that the
+            application connects to MySql instead of H2, for example, change the file to the following:
+            <programlisting>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    &lt;Context antiJARLocking="true" path="/activiti-explorer2"&gt;
+        &lt;Resource auth="Container"
+            name="jdbc/activitiDB"
+            type="javax.sql.DataSource"
+            description="JDBC DataSource"
+            url="jdbc:mysql://localhost:3306/activiti"
+            driverClassName="com.mysql.jdbc.Driver"
+            username="sa"
+            password=""
+            defaultAutoCommit="false"
+            initialSize="5"
+            maxWait="5000"
+            maxActive="120"
+            maxIdle="5"/&gt;
+        &lt;/Context&gt;
+           </programlisting>
+       </para>
+
+    </section>
+    
+  </section>
+  
   <section id="supporteddatabases">
     <title>Supported databases</title>
     <para>Listed below are the types (case sensitive!) that Activiti uses to refer to databases.</para>
@@ -306,8 +434,8 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           </row>
           <row>
             <entry>mssql</entry>
-            <entry>jdbc:sqlserver://localhost:1433/activiti</entry>
-            <entry></entry>
+            <entry>jdbc:sqlserver://localhost:1433;databaseName=activiti (jdbc.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver) <emphasis>OR</emphasis> jdbc:jtds:sqlserver://localhost:1433/activiti (jdbc.driver=net.sourceforge.jtds.jdbc.Driver)</entry>
+            <entry>Tested using Microsoft JDBC Driver 4.0 (sqljdbc4.jar) and JTDS Driver</entry>
           </row>
         </tbody>
       </tgroup>
@@ -915,7 +1043,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
               <row>
-                <entry>ENTITY_CREATED</entry>
+                <entry>ENTITY_INITIALIZED</entry>
                 <entry>A new entity has been created and is fully initialized. If any children are created as part of the creation of an entity, this event will be fired AFTER the create/initialisation of the child entities as opposed to the <literal>ENTITY_CREATE</literal> event.</entry>
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
@@ -960,6 +1088,16 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
               <row>
+                <entry>JOB_CANCELED</entry>
+                <entry>A job has been canceled. The event contains the job that was canceled. Job can be canceled by
+                  API call, task was completed and associated boundary timer was canceled, on the new process definition
+                  deployment.
+                </entry>
+                <entry>
+                  <literal>org.activiti...ActivitiEntityEvent</literal>
+                </entry>
+              </row>
+              <row>
                 <entry>ACTIVITY_STARTED</entry>
                 <entry>An activity is starting to execute</entry>
                 <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
@@ -968,6 +1106,13 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry>ACTIVITY_COMPLETED</entry>
                 <entry>An activity is completed successfully</entry>
                 <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>ACTIVITY_CANCELLED</entry>
+                <entry>An activity is going to be cancelled. There can be three reasons for activity cancellation (MessageEventSubscriptionEntity, SignalEventSubscriptionEntity, TimerEntity).</entry>
+                <entry>
+                  <literal>org.activiti...ActivitiActivityCancelledEvent</literal>
+                </entry>
               </row>
               <row>
                 <entry>ACTIVITY_SIGNALED</entry>
@@ -1019,10 +1164,37 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
               </row>
               <row>
+                <entry>TASK_CREATED</entry>
+                <entry>A task has been created. This is dispatched after the <literal>ENTITY_CREATE</literal> event. In case the task is part of a process, this event will be
+                  fired before the task listeners are executed.
+                </entry>
+                <entry>
+                  <literal>org.activiti...ActivitiEntityEvent</literal>
+                </entry>
+              </row>
+              <row>
                 <entry>TASK_COMPLETED</entry>
                 <entry>A task has been completed. This is dispatched before the <literal>ENTITY_DELETE</literal> event. In case the task is part of a process, this event will be
                 fired before the process has moved on and will be followed by a <literal>ACTIVITY_COMPLETE</literal> event, targeting the activity that represents the completed task.</entry>
                 <entry><literal>org.activiti...ActivitiEntityEvent</literal></entry>
+              </row>
+              <row>
+                <entry>PROCESS_COMPLETED</entry>
+                <entry> A process has been completed. Dispatched after the last activity <literal>ACTIVITY_COMPLETED
+                  </literal> event. Process is completed when it reaches state in which process instance does not have
+                  any transition to take.
+                </entry>
+                <entry>
+                  <literal>org.activiti...ActivitiEntityEvent</literal>
+                </entry>
+              </row>
+              <row>
+                <entry>PROCESS_CANCELLED</entry>
+                <entry>A process has been cancelled. Dispatched before the process instance is deleted from runtime. Process instance is cancelled by API call <literal>RuntimeService.deleteProcessInstance</entry>literal>.
+                </entry>
+                <entry>
+                  <literal>org.activiti...ActivitiCancelledEvent</literal>
+                </entry>
               </row>
               <row>
                 <entry>MEMBERSHIP_CREATED</entry>
@@ -1069,7 +1241,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
           they are running in the same JVM or not. 
         </para>
         <para>
-          Certain event-types (related to entities) expose the targetted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). If possible, use the <literal>EngineServices</literal> exposed by the event to interact in a safe way with the engine. Even then, you need to 
+          Certain event-types (related to entities) expose the targeted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). If possible, use the <literal>EngineServices</literal> exposed by the event to interact in a safe way with the engine. Even then, you need to
           be cautious with updates/operations on entities that are involved in the dispatched event.
         </para>
         <para>

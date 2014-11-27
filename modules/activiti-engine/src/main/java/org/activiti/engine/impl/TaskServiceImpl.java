@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.AddCommentCmd;
 import org.activiti.engine.impl.cmd.AddIdentityLinkCmd;
 import org.activiti.engine.impl.cmd.ClaimTaskCmd;
@@ -71,6 +72,14 @@ import org.activiti.engine.task.TaskQuery;
  * @author Joram Barrez
  */
 public class TaskServiceImpl extends ServiceImpl implements TaskService {
+	
+	public TaskServiceImpl() {
+		
+	}
+	
+	public TaskServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+		super(processEngineConfiguration);
+	}
 
   public Task newTask() {
     return newTask(null);
@@ -195,7 +204,7 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   }
   
   public TaskQuery createTaskQuery() {
-    return new TaskQueryImpl(commandExecutor);
+    return new TaskQueryImpl(commandExecutor, processEngineConfiguration.getDatabaseType());
   }
  
   public NativeTaskQuery createNativeTaskQuery() {
@@ -221,7 +230,12 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public Object getVariable(String executionId, String variableName) {
     return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, false));
   }
-  
+
+    @Override
+    public <T> T getVariable(String taskId, String variableName, Class<T> variableClass) {
+        return variableClass.cast(getVariable(taskId, variableName));
+    }
+
   public boolean hasVariable(String taskId, String variableName) {
     return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, false));
   }
@@ -229,7 +243,12 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
   public Object getVariableLocal(String executionId, String variableName) {
     return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, true));
   }
-  
+
+    @Override
+    public <T> T getVariableLocal(String taskId, String variableName, Class<T> variableClass) {
+        return variableClass.cast(getVariableLocal(taskId, variableName));
+    }
+
   public boolean hasVariableLocal(String taskId, String variableName) {
     return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, true));
   }
@@ -316,6 +335,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
 
   public List<Comment> getProcessInstanceComments(String processInstanceId) {
     return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId));
+  }
+
+  public List<Comment> getProcessInstanceComments(String processInstanceId, String type) {
+    return commandExecutor.execute(new GetProcessInstanceCommentsCmd(processInstanceId, type));
   }
 
   public Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, InputStream content) {

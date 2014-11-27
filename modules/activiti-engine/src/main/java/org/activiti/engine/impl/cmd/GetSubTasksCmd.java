@@ -16,7 +16,6 @@ package org.activiti.engine.impl.cmd;
 import java.io.Serializable;
 import java.util.List;
 
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.task.Task;
@@ -35,8 +34,7 @@ public class GetSubTasksCmd implements Command<List<Task>>, Serializable {
   }
 
   public List<Task> execute(CommandContext commandContext) {
-    return Context
-      .getCommandContext()
+    return commandContext
       .getTaskEntityManager()
       .findTasksByParentTaskId(parentTaskId);
   }

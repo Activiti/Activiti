@@ -3,34 +3,40 @@
   <process id="valuedDataObjectModel" name="Data Object Model" isExecutable="true">
     <dataObject id="dObj1" name="StringTest" itemSubjectRef="xsd:string">
       <extensionElements>
-        <activiti:value>Testing123</activiti:value>
+        <activiti:value><![CDATA[Testing1&2&3]]></activiti:value>
       </extensionElements>
-	</dataObject>
+    </dataObject>
     <dataObject id="dObj2" name="BooleanTest" itemSubjectRef="xsd:boolean">
       <extensionElements>
         <activiti:value>true</activiti:value>
       </extensionElements>
-	</dataObject>
+    </dataObject>
     <dataObject id="dObj3" name="DateTest" itemSubjectRef="xsd:datetime">
       <extensionElements>
         <activiti:value>2013-09-16T11:23:00</activiti:value>
       </extensionElements>
-	</dataObject>
+    </dataObject>
     <dataObject id="dObj4" name="DoubleTest" itemSubjectRef="xsd:double">
       <extensionElements>
         <activiti:value>123456789</activiti:value>
       </extensionElements>
-	</dataObject>
+    </dataObject>
     <dataObject id="dObj5" name="IntegerTest" itemSubjectRef="xsd:int">
       <extensionElements>
         <activiti:value>123</activiti:value>
       </extensionElements>
-	</dataObject>
+    </dataObject>
     <dataObject id="dObj6" name="LongTest" itemSubjectRef="xsd:long">
       <extensionElements>
         <activiti:value>-123456</activiti:value>
+        <activiti:testvalue>test</activiti:testvalue>
       </extensionElements>
-	</dataObject>
+    </dataObject>
+    <dataObject id="NoData" name="NoData" itemSubjectRef="xsd:datetime">
+      <extensionElements>
+        <activiti:value></activiti:value>
+      </extensionElements>
+    </dataObject>
     <startEvent id="start1"></startEvent>
     <endEvent id="end1"></endEvent>
     <subProcess id="subprocess1" name="subProcess">
@@ -46,7 +52,7 @@
 	  </dataObject>
       <dataObject id="dObj9" name="DateSubTest" itemSubjectRef="xsd:datetime">
       <extensionElements>
-        <activiti:value>2013-11-11</activiti:value>
+        <activiti:value>2013-11-11T22:00:00</activiti:value>
       </extensionElements>
 	  </dataObject>
       <dataObject id="dObj10" name="DoubleSubTest" itemSubjectRef="xsd:double">

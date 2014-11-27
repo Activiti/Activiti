@@ -13,34 +13,25 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.runtime.Execution;
 import org.activiti.rest.common.api.AbstractPaginateList;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 
 /**
  * @author Frederik Heremans
  */
 public class ExecutionPaginateList extends AbstractPaginateList {
 
-  private SecuredResource resource;
+  protected RestResponseFactory restResponseFactory;
   
-  public ExecutionPaginateList(SecuredResource resource) {
-    this.resource = resource;
+  public ExecutionPaginateList(RestResponseFactory restResponseFactory) {
+    this.restResponseFactory = restResponseFactory;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    List<ExecutionResponse> responseList = new ArrayList<ExecutionResponse>();
-    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    for (Object instance : list) {
-      responseList.add(restResponseFactory.createExecutionResponse(resource, (Execution) instance));
-    }
-    return responseList;
+    return restResponseFactory.createExecutionResponseList(list);
   }
 }

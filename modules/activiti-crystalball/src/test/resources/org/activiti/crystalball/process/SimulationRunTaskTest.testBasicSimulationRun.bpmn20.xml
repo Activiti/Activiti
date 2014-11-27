@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
+
+  <process id="basicSimulationRun" name="The basic simulation run">
+    <documentation>This is a process for testing purposes</documentation>
+
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="simulatioRunExecute"/>
+
+    <serviceTask id="simulatioRunExecute" name="Execute Simulation Run" activiti:class="org.activiti.crystalball.process.SimulationRunTask">
+      <extensionElements>
+        <activiti:field name="simulationRun">
+          <activiti:expression>${simulationRun}</activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </serviceTask>
+    <sequenceFlow id="flow2" sourceRef="simulatioRunExecute" targetRef="theEnd"/>
+
+
+    <endEvent id="theEnd"/>
+
+  </process>
+
+</definitions>

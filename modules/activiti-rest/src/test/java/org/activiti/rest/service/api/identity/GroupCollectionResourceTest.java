@@ -18,20 +18,21 @@ import java.util.List;
 
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
  * @author Frederik Heremans
  */
-public class GroupCollectionResourceTest extends BaseRestTestCase {
+public class GroupCollectionResourceTest extends BaseSpringRestTestCase {
 
   /**
    * Test getting all groups.
@@ -60,7 +61,7 @@ public class GroupCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, group1.getId(), group2.getId(), group3.getId());
       
       // Test based on name
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION) + "?name=Test group";
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION) + "?name=" + encode("Test group");
       assertResultsPresentInDataResponse(url, group1.getId());
       
       // Test based on name like
@@ -68,7 +69,7 @@ public class GroupCollectionResourceTest extends BaseRestTestCase {
       assertResultsPresentInDataResponse(url, group2.getId(), group1.getId());
       
       // Test based on type
-      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION) +"?type=Another type";
+      url = RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION) +"?type=" + encode("Another type");
       assertResultsPresentInDataResponse(url, group2.getId());
       
       // Test based on group member
@@ -83,11 +84,10 @@ public class GroupCollectionResourceTest extends BaseRestTestCase {
       url = RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION) + "?potentialStarter=" + processDefinitionId;
       assertResultsPresentInDataResponse(url, group3.getId());
       
-      
     } finally {
       
       // Delete groups after test passes or fails
-      if(savedGroups.size() > 0) {
+      if(!savedGroups.isEmpty()) {
         for(Group group : savedGroups) {
           identityService.deleteGroup(group.getId());
         }
@@ -102,16 +102,17 @@ public class GroupCollectionResourceTest extends BaseRestTestCase {
       requestNode.put("name", "Test group");
       requestNode.put("type", "Test type");
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION));
-      Representation response = client.post(requestNode);
-      assertEquals(Status.SUCCESS_CREATED, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
-      assertEquals("testgroup", responseNode.get("id").getTextValue());
-      assertEquals("Test group", responseNode.get("name").getTextValue());
-      assertEquals("Test type", responseNode.get("type").getTextValue());
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup")));
+      assertEquals("testgroup", responseNode.get("id").textValue());
+      assertEquals("Test group", responseNode.get("name").textValue());
+      assertEquals("Test type", responseNode.get("type").textValue());
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP, "testgroup")));
       
       assertNotNull(identityService.createGroupQuery().groupId("testgroup").singleResult());
     } finally {
@@ -124,31 +125,21 @@ public class GroupCollectionResourceTest extends BaseRestTestCase {
   }
   
   public void testCreateGroupExceptions() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION));
-    
     // Create without ID
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("name", "Test group");
     requestNode.put("type", "Test type");
     
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, expected.getStatus());
-      assertEquals("Id cannot be null.", expected.getStatus().getDescription());
-    }
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_GROUP_COLLECTION));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
     
     // Create when group already exists
     requestNode = objectMapper.createObjectNode();
     requestNode.put("id", "admin");
     
-    try {
-      client.post(requestNode);
-      fail("Exception expected");
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_CONFLICT, expected.getStatus());
-      assertEquals("A group with id 'admin' already exists.", expected.getStatus().getDescription());
-    }
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_CONFLICT));
   }
 }

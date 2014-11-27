@@ -18,14 +18,16 @@ public abstract class ValuedDataObject extends DataObject {
 
   public void setValues(ValuedDataObject otherElement) {
     super.setValues(otherElement);
-    setValue(otherElement.getValue());
+    if (otherElement.getValue() != null) {
+      setValue(otherElement.getValue());
+    }
   }
   
   public boolean equals(ValuedDataObject otherObject) {
     
-    if (otherObject.getItemSubjectRef().getStructureRef() != this.itemSubjectRef.getStructureRef()) return false;
-    if (otherObject.getId() != this.id) return false;
-    if (otherObject.getName() != this.name) return false;
+    if (!otherObject.getItemSubjectRef().getStructureRef().equals(this.itemSubjectRef.getStructureRef())) return false;
+    if (!otherObject.getId().equals(this.id)) return false;
+    if (!otherObject.getName().equals(this.name)) return false;
     if (!otherObject.getValue().equals(this.value.toString())) return false;
     
     return true;

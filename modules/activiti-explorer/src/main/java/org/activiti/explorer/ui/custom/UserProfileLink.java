@@ -73,7 +73,7 @@ public class UserProfileLink extends HorizontalLayout {
         image.setWidth(30, Embedded.UNITS_PIXELS);
         image.addListener(new MouseEvents.ClickListener() {
           private static final long serialVersionUID = 7341560240277898495L;
-          public void click(com.vaadin.event.MouseEvents.ClickEvent event) {
+          public void click(MouseEvents.ClickEvent event) {
             viewManager.showProfilePopup(userName);
           }
         });

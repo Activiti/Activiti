@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.api.task;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -87,4 +88,44 @@ public class TaskVariablesTest extends PluggableActivitiTestCase {
     assertEquals(expectedVariables, runtimeService.getVariables(processInstanceId));
     assertEquals(expectedVariables, runtimeService.getVariablesLocal(processInstanceId));
   }
+  
+  public void testSerializableTaskVariable() {
+  	Task task = taskService.newTask();
+  	task.setName("MyTask");
+  	taskService.saveTask(task);
+  	
+  	// Set variable
+  	Map<String, Object> vars = new HashMap<String, Object>();
+  	MyVariable myVariable = new MyVariable("Hello world");
+  	vars.put("theVar", myVariable);
+  	taskService.setVariables(task.getId(), vars);
+  	
+  	// Fetch variable
+  	MyVariable variable = (MyVariable) taskService.getVariable(task.getId(), "theVar");
+  	assertEquals("Hello world", variable.getValue());
+  	
+  	// Cleanup
+  	taskService.deleteTask(task.getId(), true);
+  }
+  
+  public static class MyVariable implements Serializable {
+  	
+  	private String value;
+  	
+  	public MyVariable(String value) {
+  		this.value = value;
+  	}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+  	
+  	
+  	
+  }
+  
 }

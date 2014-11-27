@@ -35,6 +35,151 @@
 
   <h1>Activiti Release Notes</h1>
   
+  <h3>Release Notes - Activiti - Version 5.17.0</h3>
+  
+  <h4>Highlights</h4>
+   <ul>
+    <li></li>
+   </ul>
+  
+  <h3>Release Notes - Activiti - Version 5.16.4</h3>
+  
+  <h4>Highlights</h4>
+   <ul>
+    <li>First implementation of a new lock free job executor (<a href="https://github.com/Activiti/Activiti/wiki/Notes-on-the-new-Actviti-Jobexecutor-(Oct-2014)">New job executor wiki</a>). Note that exclusive jobs and suspended process instances are not supported yet.</li>
+    <li>Restlet has been replaced with Spring MVC for the REST API</li>
+   </ul>
+  
+  <h4>Implementation changes</h4>
+  
+  <ul>
+    <li>
+    	<a href="https://jira.codehaus.org/browse/ACT-2071">https://jira.codehaus.org/browse/ACT-2071</a>:
+    	A deployment must always contain at least one executable (property 'isExecutable' on the process element) process definition
+    	to be deployable. However, a deployment can now contain process definitions that are not executable.  
+    	Before, any non-executable process definition would result in a validation error.
+    	Now, these are warnings which do not prevent the deployment.
+    </li>
+  </ul>
+  
+  <h3>Release Notes - Activiti - Version 5.16.1</h3>
+  
+   <h4>Highlights</h4>
+   <ul>
+    <li>Bug fix for database constraint issue, introduced in 5.16</li>
+    <li>Basic OR query support for process instances and task. You can now query with one OR statement chain included using the query api</li>
+   </ul>
+  
+  <h3>Release Notes - Activiti - Version 5.16</h3>
+  
+   <h4>Highlights</h4>
+   <ul>
+    <li>Added Spring boot support and more Spring annotation support in general (thanks to Josh Long)</li>
+    <li>Refactoring of the job executor to simplify its logic and prevent possible long wait times.</li>
+    <li>Added new event log table that stores process engine events when wanted, by default this is switched off.</li>
+    <li>Introduction of Crystalball, which is an experimental new project that allows you to replay and simulate process instances (Thanks to Martin)</li>
+    <li>Upgraded to Spring 4.x and Restlet 2.2.x</li>
+    <li>Various fixes and improvements</li>
+   </ul>
+   
+   <h4>Bug fixes and various smaller improvements</h4>
+   
+   <p>Check out the <a href="http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=19620">Release notes</a> for more details</p>
+  
+  <h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1945'>ACT-1945</a>] -         Empty diagram produces xml parse error
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1955'>ACT-1955</a>] -         Can not use table-driven editor (Kickstart) with LDAP-User
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1977'>ACT-1977</a>] -         5.15.1 release missing activiti-process-validation jar file
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1978'>ACT-1978</a>] -         Obsolete signal subscriptions are not being removed, causing signals to be fired in old process definitons
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1988'>ACT-1988</a>] -         Camel routes containing activiti consumers cannot be adviced.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1995'>ACT-1995</a>] -         ExtensionElement does not parse correctly and xml generation contains redundant namespace declarations
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2000'>ACT-2000</a>] -         custom attribute parser fails with empty string for namespace
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2005'>ACT-2005</a>] -         NPE ValuedDataObjectXMLConverter class for empty-valued data objects
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2016'>ACT-2016</a>] -         Tenancy does not work for call activity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2023'>ACT-2023</a>] -         Optimize namespace usage - redundant namespace usage in XML
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2026'>ACT-2026</a>] -         Modeler workspace never opens
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2027'>ACT-2027</a>] -         MessageEventDefinitionParseHandler does not set extension elements.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2033'>ACT-2033</a>] -         Camel component cannot be multi instance
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2042'>ACT-2042</a>] -         runtimeService.deleteProcessInstance does not set process instance end time when current activity is a scope
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2047'>ACT-2047</a>] -         Incorrect self comparison of value with itself
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2048'>ACT-2048</a>] -         Redundant null check in org.activiti.engine.impl.persistence.entity.JobEntity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2049'>ACT-2049</a>] -         Multi tenancy support is not working in case of duplicate filtering while deploying processes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2050'>ACT-2050</a>] -         Suspicious equals() test in org.activiti.engine.impl.persistence.entity.DeploymentEntityManager
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2052'>ACT-2052</a>] -         Subprocess DataObjects created in wrong scope.
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2055'>ACT-2055</a>] -         Subprocess extensions are not getting parsed
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2056'>ACT-2056</a>] -         Incorrect &#39;contains&#39; comparision
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2057'>ACT-2057</a>] -         Equals method for ValuedDataObject should use .equals()
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2058'>ACT-2058</a>] -         Null deference possible
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2059'>ACT-2059</a>] -         Redundant null test in execute method
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2060'>ACT-2060</a>] -         Method uses the same code for two branches
+</li>
+</ul>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1987'>ACT-1987</a>] -         Portuguese brazilian translation of Activiti
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2002'>ACT-2002</a>] -         Upgrade Restlet &amp; Jackson libraries
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2037'>ACT-2037</a>] -         Performance - Bulk deletion of variables at process end
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2051'>ACT-2051</a>] -         Code change: a null check is not needed before using instanceof.
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1996'>ACT-1996</a>] -         DiagramGenerator does not give possibility to change icons for custom service tasks
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2011'>ACT-2011</a>] -         Expose formKey on Task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2038'>ACT-2038</a>] -         Custom IdentityLinkType support
+</li>
+</ul>
+                
+<h2>        Wish
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2013'>ACT-2013</a>] -         support candidateGroupIn for runtime tasks in activiti-rest
+</li>
+</ul>
+  
+  <h3>Release Notes - Activiti - Version 5.15.1</h3>
+  
+   <h4>Highlights</h4>
+   <ul>
+    <li>Bug fix release for a MySQL upgrade issue (more details <a href="http://forums.activiti.org/content/important-activiti-515-and-mysql-56-users">here</a>)</li>
+    <li>Some small improvements from pull requests</li>
+   </ul>
+  
   <h3>Release Notes - Activiti - Version 5.15</h3>
   
    <h4>Highlights</h4>

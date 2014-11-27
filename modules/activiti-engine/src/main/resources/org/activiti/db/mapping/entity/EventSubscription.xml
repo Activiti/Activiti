@@ -159,7 +159,11 @@
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR
     where (EVENT_TYPE_ = #{parameter.eventType})
-    	and (CONFIGURATION_ = #{parameter.configuration})
+    	and ( 
+    	   (CONFIGURATION_ = #{parameter.configuration})
+    	   or
+    	   (PROC_DEF_ID_ = #{parameter.configuration})
+    	)
      <if test="parameter.tenantId != null">
         and TENANT_ID_ = #{parameter.tenantId}
     </if>  

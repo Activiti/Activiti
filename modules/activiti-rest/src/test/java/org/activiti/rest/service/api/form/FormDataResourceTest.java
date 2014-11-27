@@ -21,15 +21,18 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
@@ -37,7 +40,7 @@ import org.restlet.resource.ClientResource;
  * 
  * @author Tijs Rademakers
  */
-public class FormDataResourceTest extends BaseRestTestCase {
+public class FormDataResourceTest extends BaseSpringRestTestCase {
   
   protected ObjectMapper objectMapper = new ObjectMapper();
   
@@ -50,12 +53,12 @@ public class FormDataResourceTest extends BaseRestTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variableMap);
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?taskId=" + task.getId());
-    Representation response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?taskId=" + task.getId()), HttpStatus.SC_OK);
     
     // Check resulting task
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertEquals(7, responseNode.get("formProperties").size());
     Map<String, JsonNode> mappedProperties = new HashMap<String, JsonNode>();
     for (JsonNode propNode : responseNode.get("formProperties")) {
@@ -144,12 +147,12 @@ public class FormDataResourceTest extends BaseRestTestCase {
     assertEquals("Go Up", mappedEnums.get("up"));
     assertEquals("Go Down", mappedEnums.get("down"));
     
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=" + processInstance.getProcessDefinitionId());
-    response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=" + processInstance.getProcessDefinitionId()), HttpStatus.SC_OK);
     
     // Check resulting task
-    responseNode = objectMapper.readTree(response.getStream());
+    responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertEquals(2, responseNode.get("formProperties").size());
     mappedProperties.clear();
     for (JsonNode propertyNode : responseNode.get("formProperties")) {
@@ -176,23 +179,11 @@ public class FormDataResourceTest extends BaseRestTestCase {
     assertTrue(propNode.get("writable").asBoolean());
     assertTrue(propNode.get("required").asBoolean() == false);
     
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=123");
-    try {
-      response = client.get();
-      fail();
-    } catch(Exception e) {
-      // expected
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-    }
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId=123"), HttpStatus.SC_NOT_FOUND));
     
-    client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId2=123");
-    try {
-      response = client.get();
-      fail();
-    } catch(Exception e) {
-      // expected
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, client.getResponse().getStatus());
-    }
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA) + "?processDefinitionId2=123"), HttpStatus.SC_BAD_REQUEST));
   }
   
   @Deployment
@@ -206,7 +197,6 @@ public class FormDataResourceTest extends BaseRestTestCase {
     String processDefinitionId = processInstance.getProcessDefinitionId();
     Task task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
 
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA));
     ObjectNode requestNode = objectMapper.createObjectNode();
     requestNode.put("taskId", task.getId());
     ArrayNode propertyArray = objectMapper.createArrayNode();
@@ -215,21 +205,20 @@ public class FormDataResourceTest extends BaseRestTestCase {
     propNode.put("id", "room");
     propNode.put("value", 123l);
     propertyArray.add(propNode);
-    try {
-      client.post(requestNode);
-    } catch(Exception e) {
-      // expected
-      assertEquals(Status.SERVER_ERROR_INTERNAL, client.getResponse().getStatus());
-    }
+    
+    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_FORM_DATA));
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_INTERNAL_SERVER_ERROR));
     
     propNode = objectMapper.createObjectNode();
     propNode.put("id", "street");
     propNode.put("value", "test");
     propertyArray.add(propNode);
-    client.release();
-    client.post(requestNode);
     
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
+    
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     assertNull(task);
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
@@ -252,18 +241,13 @@ public class FormDataResourceTest extends BaseRestTestCase {
     propNode.put("id", "direction");
     propNode.put("value", "nowhere");
     propertyArray.add(propNode);
-    try {
-      client.release();
-      client.post(requestNode);
-    } catch(Exception e) {
-      // expected
-      assertEquals(Status.CLIENT_ERROR_BAD_REQUEST, client.getResponse().getStatus());
-    }
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
     
     propNode.put("value", "up");
-    client.release();
-    client.post(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
+    
     task = taskService.createTaskQuery().processInstanceId(processInstanceId).singleResult();
     assertNull(task);
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
@@ -286,10 +270,11 @@ public class FormDataResourceTest extends BaseRestTestCase {
     propNode.put("id", "number");
     propNode.put("value", 123);
     propertyArray.add(propNode);
-    client.release();
-    Representation response = client.post(requestNode);
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    
+    httpPost.setEntity(new StringEntity(requestNode.toString()));
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_OK);
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode.get("id").asText());
     assertEquals(processDefinitionId, responseNode.get("processDefinitionId").asText());
     task = taskService.createTaskQuery().processInstanceId(responseNode.get("id").asText()).singleResult();

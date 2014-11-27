@@ -258,7 +258,7 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     // Delete the membership and check members of sales group
     identityService.deleteMembership(johndoe.getId(), sales.getId());
     groups = identityService.createGroupQuery().groupMember(johndoe.getId()).list();
-    assertTrue(groups.size() == 0);
+    assertTrue(groups.isEmpty());
 
     identityService.deleteGroup("sales");
     identityService.deleteUser("johndoe");

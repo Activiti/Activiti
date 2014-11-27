@@ -42,10 +42,10 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   private static Logger log = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
   public void execute(ActivityExecution execution) throws Exception {
-
+    
     execution.inactivate();
     lockConcurrentRoot(execution);
-
+    
     PvmActivity activity = execution.getActivity();
     if (!activeConcurrentExecutionsExist(execution)) {
 
@@ -53,32 +53,26 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
         log.debug("inclusive gateway '{}' activates", activity.getId());
       }
 
-      List<ActivityExecution> joinedExecutions = execution
-          .findInactiveConcurrentExecutions(activity);
-      String defaultSequenceFlow = (String) execution.getActivity()
-          .getProperty("default");
+      List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
+      String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
       List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
 
-      for (PvmTransition outgoingTransition : execution.getActivity()
-          .getOutgoingTransitions()) {
-        if (defaultSequenceFlow == null
-            || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
-          Condition condition = (Condition) outgoingTransition
-              .getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+      for (PvmTransition outgoingTransition : execution.getActivity().getOutgoingTransitions()) {
+        if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
+          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
           if (condition == null || condition.evaluate(execution)) {
             transitionsToTake.add(outgoingTransition);
           }
         }
       }
 
-      if (transitionsToTake.size() > 0) {
+      if (!transitionsToTake.isEmpty()) {
         execution.takeAll(transitionsToTake, joinedExecutions);
 
       } else {
 
         if (defaultSequenceFlow != null) {
-          PvmTransition defaultTransition = execution.getActivity()
-              .findOutgoingTransition(defaultSequenceFlow);
+          PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
           if (defaultTransition != null) {
             execution.take(defaultTransition);
           } else {
@@ -104,7 +98,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   List<? extends ActivityExecution> getLeaveExecutions(ActivityExecution parent) {
     List<ActivityExecution> executionlist = new ArrayList<ActivityExecution>();
     List<? extends ActivityExecution> subExecutions = parent.getExecutions();
-    if (subExecutions.size() == 0) {
+    if (subExecutions.isEmpty()) {
       executionlist.add(parent);
     } else {
       for (ActivityExecution concurrentExecution : subExecutions) {
@@ -118,7 +112,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     PvmActivity activity = execution.getActivity();
     if (execution.isConcurrent()) {
       for (ActivityExecution concurrentExecution : getLeaveExecutions(execution.getParent())) {
-        if (concurrentExecution.isActive() && concurrentExecution.getActivity() != activity) {
+        if (concurrentExecution.isActive() && concurrentExecution.getId().equals(execution.getId()) == false) {
           // TODO: when is transitionBeingTaken cleared? Should we clear it?
           boolean reachable = false;
           PvmTransition pvmTransition = ((ExecutionEntity) concurrentExecution).getTransitionBeingTaken();
@@ -127,7 +121,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
           } else {
             reachable = isReachable(concurrentExecution.getActivity(), activity, new HashSet<PvmActivity>());
           }
-
+          
           if (reachable) {
             if (log.isDebugEnabled()) {
               log.debug("an active concurrent execution found: '{}'", concurrentExecution.getActivity());
@@ -138,8 +132,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       }
     } else if (execution.isActive()) { // is this ever true?
       if (log.isDebugEnabled()) {
-        log.debug("an active concurrent execution found: '{}'",
-            execution.getActivity());
+        log.debug("an active concurrent execution found: '{}'", execution.getActivity());
       }
       return true;
     }
@@ -151,9 +144,9 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       PvmActivity targetActivity, Set<PvmActivity> visitedActivities) {
 
     // if source has no outputs, it is the end of the process, and its parent process should be checked.
-    if (srcActivity.getOutgoingTransitions().size() == 0) {
+    if (srcActivity.getOutgoingTransitions().isEmpty()) {
       visitedActivities.add(srcActivity);
-      if (srcActivity.getParent() == null || !(srcActivity.getParent() instanceof PvmActivity)) {
+      if (!(srcActivity.getParent() instanceof PvmActivity)) {
         return false;
       }
       srcActivity = (PvmActivity) srcActivity.getParent();
@@ -169,12 +162,11 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     visitedActivities.add(srcActivity);
 
     List<PvmTransition> transitionList = srcActivity.getOutgoingTransitions();
-    if (transitionList != null && transitionList.size() > 0) {
+    if (transitionList != null && !transitionList.isEmpty()) {
       for (PvmTransition pvmTransition : transitionList) {
         PvmActivity destinationActivity = pvmTransition.getDestination();
         if (destinationActivity != null && !visitedActivities.contains(destinationActivity)) {
-          boolean reachable = isReachable(destinationActivity, targetActivity,
-              visitedActivities);
+          boolean reachable = isReachable(destinationActivity, targetActivity, visitedActivities);
 
           // If false, we should investigate other paths, and not yet return the
           // result

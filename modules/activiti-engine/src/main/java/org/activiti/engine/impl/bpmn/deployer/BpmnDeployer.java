@@ -24,12 +24,12 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.diagram.ProcessDiagramGenerator;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.cfg.IdGenerator;
-import org.activiti.engine.impl.cmd.DeleteJobsCmd;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.cmd.DeploymentSettings;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BpmnDeployer implements Deployer {
 
-  private static final Logger LOG = LoggerFactory.getLogger(BpmnDeployer.class);;
+  private static final Logger LOG = LoggerFactory.getLogger(BpmnDeployer.class);
 
   public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
   public static final String[] DIAGRAM_SUFFIXES = new String[]{"png", "jpg", "gif", "svg"};
@@ -76,6 +76,7 @@ public class BpmnDeployer implements Deployer {
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
     Map<String, ResourceEntity> resources = deployment.getResources();
 
+    final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     for (String resourceName : resources.keySet()) {
 
       LOG.info("Processing resource {}", resourceName);
@@ -102,6 +103,10 @@ public class BpmnDeployer implements Deployer {
         		bpmnParse.setValidateProcess((Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
         	}
         	
+        } else {
+        	// On redeploy, we assume it is validated at the first deploy
+        	bpmnParse.setValidateSchema(false);
+        	bpmnParse.setValidateProcess(false);
         }
         
         bpmnParse.execute();
@@ -119,10 +124,12 @@ public class BpmnDeployer implements Deployer {
           // after the process-definition is actually deployed. Also to prevent resource-generation failure every
           // time the process definition is added to the deployment-cache when diagram-generation has failed the first time.
           if(deployment.isNew()) {
-            if (Context.getProcessEngineConfiguration().isCreateDiagramOnDeploy() &&
+            if (processEngineConfiguration.isCreateDiagramOnDeploy() &&
                   diagramResourceName==null && processDefinition.isGraphicalNotationDefined()) {
               try {
-                  byte[] diagramBytes = IoUtil.readInputStream(ProcessDiagramGenerator.generatePngDiagram(bpmnParse.getBpmnModel()), null);
+                  byte[] diagramBytes = IoUtil.readInputStream(processEngineConfiguration.
+                    getProcessDiagramGenerator().generateDiagram(bpmnParse.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
+                        processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader()), null);
                   diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                   createResource(diagramResourceName, diagramBytes, deployment);
               } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
@@ -226,8 +233,7 @@ public class BpmnDeployer implements Deployer {
       }
 
       // Add to cache
-      Context
-        .getProcessEngineConfiguration()
+      processEngineConfiguration
         .getDeploymentManager()
         .getProcessDefinitionCache()
         .add(processDefinition.getId(), processDefinition);
@@ -271,7 +277,7 @@ public class BpmnDeployer implements Deployer {
       .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
     
     for (Job job :jobsToDelete) {
-        new DeleteJobsCmd(job.getId()).execute(Context.getCommandContext());
+        new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
     }
   }
   

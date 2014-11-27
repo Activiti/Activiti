@@ -16,6 +16,8 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
@@ -94,7 +96,7 @@ public class DeploymentEntityManager extends AbstractManager {
         .getJobEntityManager()
         .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
       
-      if (timerStartJobs != null && timerStartJobs.size() > 0) {
+      if (timerStartJobs != null && !timerStartJobs.isEmpty()) {
         
         long nrOfVersions = new ProcessDefinitionQueryImpl(Context.getCommandContext())
           .processDefinitionKey(processDefinition.getKey())
@@ -102,13 +104,18 @@ public class DeploymentEntityManager extends AbstractManager {
 
         long nrOfProcessDefinitionsWithSameKey = 0;
         for (ProcessDefinition p : processDefinitions) {
-          if (!p.getId().equals(processDefinition) && p.getKey().equals(processDefinition)) {
+          if (!p.getId().equals(processDefinition.getId()) && p.getKey().equals(processDefinition.getKey())) {
             nrOfProcessDefinitionsWithSameKey++;
           }
         }
         
         if (nrOfVersions - nrOfProcessDefinitionsWithSameKey <= 1) {
           for (Job job : timerStartJobs) {
+            if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+              Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job, null, null, processDefinition.getId()));
+            }
+
             ((JobEntity)job).delete();        
           }
         }

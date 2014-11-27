@@ -153,7 +153,7 @@
     <para> 
       The hidden 
 	    fields provide extra information to the Activiti Explorer client application.
-	    So the Javascript in the browser will use the hidden fields and enhance the corresponding 
+	    So the JavaScript in the browser will use the hidden fields and enhance the corresponding
 	    input fields.  For example, it's possible to specify that a certain text field is a date 
 	    and Activiti Explorer will add a date picker.
       <itemizedlist>

@@ -14,8 +14,10 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.UelExpressionCondition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -41,7 +43,15 @@ public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceF
     ActivityImpl sourceActivity = scope.findActivity(sequenceFlow.getSourceRef());
     ActivityImpl destinationActivity = scope.findActivity(sequenceFlow.getTargetRef());
 
-    TransitionImpl transition = sourceActivity.createOutgoingTransition(sequenceFlow.getId());
+    Expression skipExpression;
+    if (StringUtils.isNotEmpty(sequenceFlow.getSkipExpression())) {
+      ExpressionManager expressionManager = bpmnParse.getExpressionManager();
+      skipExpression = expressionManager.createExpression(sequenceFlow.getSkipExpression());
+    } else {
+      skipExpression = null;
+    }
+    
+    TransitionImpl transition = sourceActivity.createOutgoingTransition(sequenceFlow.getId(), skipExpression);
     bpmnParse.getSequenceFlows().put(sequenceFlow.getId(), transition);
     transition.setProperty("name", sequenceFlow.getName());
     transition.setProperty("documentation", sequenceFlow.getDocumentation());

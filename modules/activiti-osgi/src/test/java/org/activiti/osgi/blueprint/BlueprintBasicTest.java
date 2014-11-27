@@ -79,12 +79,15 @@ public class BlueprintBasicTest {
   @Configuration
   public Option[] createConfiguration() {
     Option[] coreBundles = options(
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("5.16-SNAPSHOT"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("5.16-SNAPSHOT"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("5.16-SNAPSHOT"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("5.16-SNAPSHOT"),
-        mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version("3.1"),
-        mavenBundle().groupId("org.codehaus.jackson").artifactId("jackson-core-asl").version("1.9.9"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("5.17.0-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("5.17.0-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("5.17.0-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version("5.17.0-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("5.17.0-SNAPSHOT"),
+        mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version("3.3.2"),
+        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-core").version("2.2.3"),
+        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-databind").version("2.2.3"),
+        mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-annotations").version("2.2.3"),
         mavenBundle().groupId("log4j").artifactId("log4j").version("1.2.17"),
         mavenBundle().groupId("joda-time").artifactId("joda-time").version("2.1"),
         mavenBundle().groupId("com.h2database").artifactId("h2").version("1.3.170"),
@@ -96,10 +99,11 @@ public class BlueprintBasicTest {
         mavenBundle().groupId("org.apache.aries.proxy").artifactId("org.apache.aries.proxy").version("1.0.0"),
         mavenBundle().groupId("org.apache.aries").artifactId("org.apache.aries.util").version("1.0.0"),
         bundle("reference:file:target/classes"));
-    return OptionUtils.combine(coreBundles, CoreOptions.junitBundles(),
+    Option[] optionArray = OptionUtils.combine(coreBundles, CoreOptions.junitBundles(),
         provision(createTestBundleWithProcessEngineConfiguration(), 
             createTestBundleWithProcessDefinition(), 
             createTestBundleWithTask()));
+    return optionArray;
   }
   
   
@@ -112,7 +116,7 @@ public class BlueprintBasicTest {
           .set(Constants.DYNAMICIMPORT_PACKAGE, "*")
           .build();
     } catch (FileNotFoundException fnfe) {
-      fail(fnfe.toString());
+      fail("Failure in createTestBundleWithProcessEngineConfiguration " + fnfe.toString());
       return null;
     }
   }
@@ -124,7 +128,7 @@ public class BlueprintBasicTest {
           .add("OSGI-INF/activiti/example.bpmn20.xml", new FileInputStream(new File("src/test/resources/processes/example.bpmn20.xml")))
           .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.example").build();
     } catch (FileNotFoundException fnfe) {
-      fail(fnfe.toString());
+      fail("Failure in createTestBundleWithProcessDefinition " + fnfe.toString());
       return null;
     }
   }
@@ -139,7 +143,7 @@ public class BlueprintBasicTest {
           .set(Constants.DYNAMICIMPORT_PACKAGE, "*")
           .build();
     } catch (FileNotFoundException fnfe) {
-      fail(fnfe.toString());
+      fail("Failure in createTestBundleWithTask " + fnfe.toString());
       return null;
     }
   }

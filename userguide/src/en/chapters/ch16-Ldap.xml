@@ -51,7 +51,7 @@
                 <listitem>
                     <para>
                         Fetching the groups of a user. This is important when for example querying tasks
-                        to see which tasks a certain user can see (ie. tasks with a candidate group).
+                        to see which tasks a certain user can see (i.e. tasks with a candidate group).
                     </para>
                 </listitem>
             </itemizedlist>
@@ -98,6 +98,8 @@
                 &lt;property name=&quot;userIdAttribute&quot; value=&quot;uid&quot; /&gt;
                 &lt;property name=&quot;userFirstNameAttribute&quot; value=&quot;cn&quot; /&gt;
                 &lt;property name=&quot;userLastNameAttribute&quot; value=&quot;sn&quot; /&gt;
+                &lt;property name=&quot;userEmailAttribute&quot; value=&quot;mail&quot; /&gt;
+                
                 
                 &lt;property name=&quot;groupIdAttribute&quot; value=&quot;cn&quot; /&gt;
                 &lt;property name=&quot;groupNameAttribute&quot; value=&quot;cn&quot; /&gt;
@@ -359,7 +361,7 @@
                             <entry>Sets the expiration time of the group cache in milliseconds.
                             When groups for a specific user are fetched, and if the group cache exists,
                             the groups will be stored in this cache for the time set in this property.
-                            ie. when the groups were fetched at 00:00 and the expiration time is 30 mins,
+                            I.e. when the groups were fetched at 00:00 and the expiration time is 30 minutes,
                             any fetch of the groups for that user after 00:30 will not come from the cache, but do
                             a fetch again from the LDAP system. Likewise, everything group fetch for that user done
                             between 00:00 - 00:30 will come from the cache.</entry>

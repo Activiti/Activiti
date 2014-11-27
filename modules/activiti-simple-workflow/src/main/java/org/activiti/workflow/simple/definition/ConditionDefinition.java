@@ -1,6 +1,5 @@
 package org.activiti.workflow.simple.definition;
 
-import java.io.Serializable;
 
 public class ConditionDefinition {
 

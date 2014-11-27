@@ -1,6 +1,8 @@
 package org.activiti.bpmn.converter;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -11,27 +13,25 @@ import org.activiti.bpmn.model.BooleanDataObject;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DateDataObject;
 import org.activiti.bpmn.model.DoubleDataObject;
+import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.IntegerDataObject;
 import org.activiti.bpmn.model.ItemDefinition;
 import org.activiti.bpmn.model.LongDataObject;
 import org.activiti.bpmn.model.StringDataObject;
 import org.activiti.bpmn.model.ValuedDataObject;
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * @author Lori Small
+ * @author Tijs Rademakers
  */
 public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   
+  private final Pattern xmlChars = Pattern.compile("[<>&]");
+  private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
   protected boolean didWriteExtensionStartElement = false;
   
-  public static String getXMLType() {
-    return ELEMENT_DATA_OBJECT;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return ValuedDataObject.class;
   }
   
@@ -41,27 +41,34 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     ValuedDataObject dataObject = null;
     ItemDefinition itemSubjectRef = new ItemDefinition();
 
     String structureRef = xtr.getAttributeValue(null, ATTRIBUTE_DATA_ITEM_REF);
-    String dataType = structureRef.substring(structureRef.indexOf(':') + 1);
+    if (StringUtils.isNotEmpty(structureRef) && structureRef.contains(":")) {
+      String dataType = structureRef.substring(structureRef.indexOf(':') + 1);
+      
+      if (dataType.equals("string")) {
+        dataObject = new StringDataObject();
+      } else if (dataType.equals("int")) {
+        dataObject = new IntegerDataObject();
+      } else if (dataType.equals("long")) {
+        dataObject = new LongDataObject();
+      } else if (dataType.equals("double")) {
+        dataObject = new DoubleDataObject();
+      } else if (dataType.equals("boolean")) {
+        dataObject = new BooleanDataObject();
+      } else if (dataType.equals("datetime")) {
+        dataObject = new DateDataObject();
+      } else {
+        LOGGER.error("Error converting {}, invalid data type: " + dataType, xtr.getAttributeValue(null, ATTRIBUTE_DATA_NAME));
+      }
     
-    if (dataType.equals("string")) {
-      dataObject = new StringDataObject();
-    } else if (dataType.equals("int")) {
-      dataObject = new IntegerDataObject();
-    } else if (dataType.equals("long")) {
-      dataObject = new LongDataObject();
-    } else if (dataType.equals("double")) {
-      dataObject = new DoubleDataObject();
-    } else if (dataType.equals("boolean")) {
-      dataObject = new BooleanDataObject();
-    } else if (dataType.equals("datetime")) {
-      dataObject = new DateDataObject();
     } else {
-      // TODO should throw exception here for unsupported data type
+      // use String as default type
+      dataObject = new StringDataObject();
+      structureRef = "xsd:string";
     }
     
     if (dataObject != null) {
@@ -73,34 +80,44 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
       itemSubjectRef.setStructureRef(structureRef);
       dataObject.setItemSubjectRef(itemSubjectRef); 
 
-      parseChildElements(xtr, dataObject);
+      parseChildElements(getXMLElementName(), dataObject, model, xtr);
+      
+      List<ExtensionElement> valuesElement = dataObject.getExtensionElements().get("value");
+      if (valuesElement != null && !valuesElement.isEmpty()) {
+        ExtensionElement valueElement = valuesElement.get(0);
+        if (StringUtils.isNotEmpty(valueElement.getElementText())) {
+          if (dataObject instanceof DateDataObject) {
+            try {
+              dataObject.setValue(sdf.parse(valueElement.getElementText()));
+            } catch (Exception e) {
+              LOGGER.error("Error converting {}", dataObject.getName(), e.getMessage());
+            }
+          } else {
+            dataObject.setValue(valueElement.getElementText());
+          }
+        }
+        
+        // remove value element
+        dataObject.getExtensionElements().remove("value");
+      }
     }
 
     return dataObject;
   }
 
   @Override
-  public void convertToXML(XMLStreamWriter xtw, BaseElement baseElement, BpmnModel model) throws Exception {
-    xtw.writeStartElement(getXMLElementName());
-    didWriteExtensionStartElement = false;
-    writeDefaultAttribute(ATTRIBUTE_DATA_ID, baseElement.getId(), xtw);
-    writeDefaultAttribute(ATTRIBUTE_DATA_NAME, ((ValuedDataObject) baseElement).getName(), xtw);
-    writeDefaultAttribute(ATTRIBUTE_DATA_ITEM_REF, ((ValuedDataObject) baseElement).getItemSubjectRef().getStructureRef(), xtw);
-    
-    writeExtensionChildElements(baseElement, xtw);
-    
-    xtw.writeEndElement();
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+    ValuedDataObject dataObject = (ValuedDataObject) element;
+    if (dataObject.getItemSubjectRef() != null && StringUtils.isNotEmpty(dataObject.getItemSubjectRef().getStructureRef())) {
+      writeDefaultAttribute(ATTRIBUTE_DATA_ITEM_REF, dataObject.getItemSubjectRef().getStructureRef(), xtw);
+    }
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
-  }
+  protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
+    ValuedDataObject dataObject = (ValuedDataObject) element;
 
-  @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-    ValuedDataObject dObj = (ValuedDataObject)element;
-
-    if (StringUtils.isNotEmpty(dObj.getId())) {
+    if (StringUtils.isNotEmpty(dataObject.getId()) && dataObject.getValue() != null) {
 
       if (didWriteExtensionStartElement == false) { 
         xtw.writeStartElement(ELEMENT_EXTENSIONS);
@@ -108,48 +125,30 @@ public class ValuedDataObjectXMLConverter extends BaseBpmnXMLConverter {
       }
 
       xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_DATA_VALUE, ACTIVITI_EXTENSIONS_NAMESPACE);
-      if (dObj.getValue() != null) {
+      if (dataObject.getValue() != null) {
         String value = null;
-        if (dObj instanceof DateDataObject) {
-          DateTime dateTime = new DateTime((Date) dObj.getValue());
-          value = ISODateTimeFormat.dateTimeNoMillis().print(dateTime);
+        if (dataObject instanceof DateDataObject) {
+          value = sdf.format(dataObject.getValue());
         } else {
-          value = dObj.getValue().toString();
+          value = dataObject.getValue().toString();
         }
-        xtw.writeCharacters(value);
+
+        if (dataObject instanceof StringDataObject && xmlChars.matcher(value).find())
+        {
+          xtw.writeCData(value);
+        }
+        else
+        {
+          xtw.writeCharacters(value);
+        }
       }
       xtw.writeEndElement();
-
-      xtw.writeEndElement();
     }
+    
+    return didWriteExtensionStartElement;
   }
 
   @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-  }
-
-  private void parseChildElements(XMLStreamReader xtr, ValuedDataObject dataObject) throws Exception {
-    
-    boolean readyWithDataObject = false;
-    try {
-      while (readyWithDataObject == false && xtr.hasNext()) {
-        xtr.next();
-        if (xtr.isStartElement() && ELEMENT_DATA_VALUE.equalsIgnoreCase(xtr.getLocalName())) {
-          String value = xtr.getElementText();
-          if (StringUtils.isNotEmpty(value)) {
-            if (dataObject instanceof DateDataObject) {
-              dataObject.setValue(DateTime.parse(value, ISODateTimeFormat.dateOptionalTimeParser()).toDate());
-            } else {
-              dataObject.setValue(value);
-            }
-          }
-
-        } else if (xtr.isEndElement() && ELEMENT_DATA_OBJECT.equalsIgnoreCase(xtr.getLocalName())) {
-          readyWithDataObject = true;
-        }
-      }
-    } catch (Exception e) {
-      LOGGER.warn("Error parsing data object child elements", e);
-    }
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
 }

@@ -45,26 +45,28 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     
     List<FieldExtension> fields = serviceTask.getFieldExtensions();
     assertEquals(2, fields.size());
-    FieldExtension field = (FieldExtension) fields.get(0);
+    FieldExtension field = fields.get(0);
     assertEquals("testField", field.getFieldName());
     assertEquals("test", field.getStringValue());
-    field = (FieldExtension) fields.get(1);
+    field = fields.get(1);
     assertEquals("testField2", field.getFieldName());
     assertEquals("${test}", field.getExpression());
     
     List<ActivitiListener> listeners = serviceTask.getExecutionListeners();
     assertEquals(3, listeners.size());
-    ActivitiListener listener = (ActivitiListener) listeners.get(0);
+    ActivitiListener listener = listeners.get(0);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(listener.getImplementationType()));
     assertEquals("org.test.TestClass", listener.getImplementation());
     assertEquals("start", listener.getEvent());
-    listener = (ActivitiListener) listeners.get(1);
+    listener = listeners.get(1);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${testExpression}", listener.getImplementation());
     assertEquals("end", listener.getEvent());
-    listener = (ActivitiListener) listeners.get(2);
+    listener = listeners.get(2);
     assertTrue(ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(listener.getImplementationType()));
     assertEquals("${delegateExpression}", listener.getImplementation());
     assertEquals("start", listener.getEvent());
+    
+    assertEquals("R5/PT5M", serviceTask.getFailedJobRetryTimeCycleValue());
   }
 }

@@ -17,6 +17,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.ExclusiveGateway;
 
 /**
@@ -24,11 +25,7 @@ import org.activiti.bpmn.model.ExclusiveGateway;
  */
 public class ExclusiveGatewayXMLConverter extends BaseBpmnXMLConverter {
   
-  public static String getXMLType() {
-    return ELEMENT_GATEWAY_EXCLUSIVE;
-  }
-  
-  public static Class<? extends BaseElement> getBpmnElementType() {
+  public Class<? extends BaseElement> getBpmnElementType() {
     return ExclusiveGateway.class;
   }
   
@@ -38,23 +35,19 @@ public class ExclusiveGatewayXMLConverter extends BaseBpmnXMLConverter {
   }
   
   @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr) throws Exception {
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
     ExclusiveGateway gateway = new ExclusiveGateway();
     BpmnXMLUtil.addXMLLocation(gateway, xtr);
-    parseChildElements(getXMLElementName(), gateway, xtr);
+    parseChildElements(getXMLElementName(), gateway, model, xtr);
     return gateway;
   }
 
   @Override
-  protected void writeAdditionalAttributes(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
   }
   
   @Override
-  protected void writeExtensionChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
-  }
-
-  @Override
-  protected void writeAdditionalChildElements(BaseElement element, XMLStreamWriter xtw) throws Exception {
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
     
   }
 }

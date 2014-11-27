@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.16-SNAPSHOT</version>
+    <version>5.17.0-SNAPSHOT</version>
   </parent>
 
   <dependencies>
@@ -19,8 +19,12 @@
       <artifactId>activiti-bpmn-converter</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.activiti</groupId>
-        <artifactId>activiti-process-validation</artifactId>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-process-validation</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.activiti</groupId>
+      <artifactId>activiti-image-generator</artifactId>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -133,6 +137,11 @@
       <artifactId>slf4j-log4j12</artifactId>
       <scope>test</scope>
     </dependency>
+      <dependency>
+          <groupId>com.googlecode.catch-exception</groupId>
+          <artifactId>catch-exception</artifactId>
+          <scope>test</scope>
+      </dependency>
     
     <!-- Required for testing JTA -->
     <dependency>
@@ -177,6 +186,7 @@
             <exclude>**/RepeatingServiceTaskTest.java</exclude>
           </excludes>
           <runOrder>alphabetical</runOrder>
+          <argLine>-Duser.language=en</argLine>
         </configuration>
       </plugin>
       <plugin>
@@ -449,6 +459,7 @@
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -514,6 +525,7 @@
 							<exclude>org/activiti/standalone/**</exclude>
 						</excludes>
 						<runOrder>alphabetical</runOrder>
+            <argLine>-Duser.language=en</argLine>
 					</configuration>
 				</plugin>
 			</plugins>
@@ -565,6 +577,7 @@
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -655,6 +668,7 @@
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -701,6 +715,7 @@
                 <exclude>org/activiti/standalone/**</exclude>
               </excludes>
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
         </plugins>
@@ -724,6 +739,7 @@
               </includes>
               <excludes />
               <runOrder>alphabetical</runOrder>
+              <argLine>-Duser.language=en</argLine>
             </configuration>
           </plugin>
           <plugin>

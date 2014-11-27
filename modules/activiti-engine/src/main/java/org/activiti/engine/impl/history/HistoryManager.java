@@ -39,6 +39,12 @@ public interface HistoryManager extends Session {
 			ExecutionEntity processInstance);
 
 	/**
+     * Record a process-instance name change.
+     */
+    public abstract void recordProcessInstanceNameChange(
+        String processInstanceId, String newName);
+	
+	/**
 	 * Record a sub-process-instance started and alters the calledProcessinstanceId
 	 * on the current active activity's historic counterpart. Only effective when activity history is enabled.
 	 */
@@ -145,6 +151,11 @@ public interface HistoryManager extends Session {
 	 * Record task category change, if audit history is enabled.
 	 */
 	public abstract void recordTaskCategoryChange(String taskId, String category);
+	
+	/**
+	 * Record task form key change, if audit history is enabled.
+	 */
+	public abstract void recordTaskFormKeyChange(String taskId, String formKey);
 
 	/**
 	 * Record task parent task id change, if audit history is enabled.
@@ -195,6 +206,21 @@ public interface HistoryManager extends Session {
 	public abstract void createIdentityLinkComment(String taskId,
 			String userId, String groupId, String type, boolean create,
 			boolean forceNullUserId);
+
+	/**
+	 * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 
+	 * if history is enabled. 
+	 */
+	public abstract void createProcessInstanceIdentityLinkComment(String processInstanceId,
+      String userId, String groupId, String type, boolean create);
+
+	/**
+	 * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 
+	 * if history is enabled. 
+	 */
+	public abstract void createProcessInstanceIdentityLinkComment(String processInstanceId,
+      String userId, String groupId, String type, boolean create,
+      boolean forceNullUserId);
 
 	/**
 	 * Creates a new comment to indicate a new attachment has been created or deleted, 

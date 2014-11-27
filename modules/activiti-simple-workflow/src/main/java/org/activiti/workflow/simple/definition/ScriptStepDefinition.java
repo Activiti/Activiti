@@ -15,7 +15,8 @@ package org.activiti.workflow.simple.definition;
 import java.util.HashMap;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
-import org.codehaus.jackson.annotate.JsonTypeName;
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 
 /**

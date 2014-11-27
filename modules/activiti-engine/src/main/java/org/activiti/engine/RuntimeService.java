@@ -27,6 +27,8 @@ import org.activiti.engine.runtime.NativeExecutionQuery;
 import org.activiti.engine.runtime.NativeProcessInstanceQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
+import org.activiti.engine.task.Event;
 import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.IdentityLinkType;
 
@@ -59,12 +61,6 @@ public interface RuntimeService {
    * then be used to easily look up that process instance , see
    * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing
    * such a business key is definitely a best practice.
-   * 
-   * Note that a business key MUST be unique for the given process definition.
-   * Process instance from different process definition are allowed to have the
-   * same business key.
-   * 
-   * The combination of processdefinitionKey-businessKey must be unique.
    * 
    * @param processDefinitionKey
    *          key of process definition, cannot be null.
@@ -99,10 +95,6 @@ public interface RuntimeService {
    * then be used to easily look up that process instance , see
    * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing
    * such a business key is definitely a best practice.
-   * 
-   * Note that a business key MUST be unique for the given process definition.
-   * Process instance from different process definition are allowed to have the
-   * same business key.
    * 
    * The combination of processdefinitionKey-businessKey must be unique.
    * 
@@ -160,10 +152,6 @@ public interface RuntimeService {
    * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing
    * such a business key is definitely a best practice.
    * 
-   * Note that a business key MUST be unique for the given process definition.
-   * Process instance from different process definition are allowed to have the
-   * same business key.
-   * 
    * @param processDefinitionId
    *          the id of the process definition, cannot be null.
    * @param businessKey
@@ -197,10 +185,6 @@ public interface RuntimeService {
    * then be used to easily look up that process instance , see
    * {@link ProcessInstanceQuery#processInstanceBusinessKey(String)}. Providing
    * such a business key is definitely a best practice.
-   * 
-   * Note that a business key MUST be unique for the given process definition.
-   * Process instance from different process definition are allowed to have the
-   * same business key.
    * 
    * @param processDefinitionId
    *          the id of the process definition, cannot be null.
@@ -411,6 +395,66 @@ public interface RuntimeService {
    *           when the process instance doesn't exist.
    */
   void addUserIdentityLink(String processInstanceId, String userId, String identityLinkType);
+  
+  /**
+   * Involves a group with a process instance. The type of identityLink is defined by the
+   * given identityLink.
+   * @param processInstanceId id of the process instance, cannot be null.
+   * @param groupId id of the group to involve, cannot be null.
+   * @param identityLinkType type of identity, cannot be null (@see {@link IdentityLinkType}).
+   * @throws ActivitiObjectNotFoundException when the  process instance or group doesn't exist.
+   */
+  void addGroupIdentityLink(String processInstanceId, String groupId, String identityLinkType);
+  
+  /**
+   * Convenience shorthand for {@link #addUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
+   * @param processInstanceId id of the process instance, cannot be null.
+   * @param userId id of the user to use as candidate, cannot be null.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
+   */
+  void addParticipantUser(String processInstanceId, String userId);
+  
+  /**
+   * Convenience shorthand for {@link #addGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
+   * @param processInstanceId id of the process instance, cannot be null.
+   * @param groupId id of the group to use as candidate, cannot be null.
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
+   */
+  void addParticipantGroup(String processInstanceId, String groupId);
+  
+  /**
+   * Convenience shorthand for {@link #deleteUserIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
+   * @param processInstanceId id of the process instance, cannot be null.
+   * @param userId id of the user to use as candidate, cannot be null.
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
+   */
+  void deleteParticipantUser(String processInstanceId, String userId);
+  
+  /**
+   * Convenience shorthand for {@link #deleteGroupIdentityLink(String, String, String)}; with type {@link IdentityLinkType#CANDIDATE}
+   * @param processInstanceId id of the process instance, cannot be null.
+   * @param groupId id of the group to use as candidate, cannot be null.
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
+   */
+  void deleteParticipantGroup(String processInstanceId, String groupId);
+  
+  /**
+   * Removes the association between a user and a process instance for the given identityLinkType.
+   * @param processInstanceId id of the process instance, cannot be null.
+   * @param userId id of the user involve, cannot be null.
+   * @param identityLinkType type of identityLink, cannot be null (@see {@link IdentityLinkType}).
+   * @throws ActivitiObjectNotFoundException when the task or user doesn't exist.
+   */
+  void deleteUserIdentityLink(String processInstanceId, String userId, String identityLinkType);
+  
+  /**
+   * Removes the association between a group and a process instance for the given identityLinkType.
+   * @param processInstanceId id of the process instance, cannot be null.
+   * @param groupId id of the group to involve, cannot be null.
+   * @param identityLinkType type of identity, cannot be null (@see {@link IdentityLinkType}).
+   * @throws ActivitiObjectNotFoundException when the task or group doesn't exist.
+   */
+  void deleteGroupIdentityLink(String processInstanceId, String groupId, String identityLinkType);
 
   /**
    * Retrieves the {@link IdentityLink}s associated with the given process
@@ -494,6 +538,26 @@ public interface RuntimeService {
    */
   Object getVariable(String executionId, String variableName);
 
+    /**
+     * The variable value. Searching for the variable is done in all scopes that
+     * are visible to the given execution (including parent scopes). Returns null
+     * when no variable value is found with the given name or when the value is
+     * set to null. Throws ClassCastException when cannot cast variable to
+     * given class
+     *
+     * @param executionId
+     *          id of execution, cannot be null.
+     * @param variableName
+     *          name of variable, cannot be null.
+     * @param variableClass
+     *          name of variable, cannot be null.
+     * @return the variable value or null if the variable is undefined or the
+     *         value of the variable is null.
+     * @throws ActivitiObjectNotFoundException
+     *           when no execution is found for the given executionId.
+     */
+    <T> T getVariable(String executionId, String variableName, Class<T> variableClass);
+
   /**
    * Check whether or not this execution has variable set with the given name,
    * Searching for the variable is done in all scopes that are visible to the
@@ -508,6 +572,14 @@ public interface RuntimeService {
    * null.
    */
   Object getVariableLocal(String executionId, String variableName);
+
+    /**
+     * The variable value for an execution. Returns the value casted to given class
+     * when the variable is set for the execution (and not searching parent scopes).
+     * Returns null when no variable value is found with the given name or when the
+     * value is set to null.
+     */
+    <T> T  getVariableLocal(String executionId, String variableName, Class<T> variableClass);
 
   /**
    * Check whether or not this execution has a local variable set with the given
@@ -914,5 +986,20 @@ public interface RuntimeService {
    *           when the given event is not suitable for dispatching.
    */
   void dispatchEvent(ActivitiEvent event);
-
+  
+  /**
+   * Sets the name for the process instance with the given id.
+   * @param processInstanceId id of the process instance to update
+   * @param name new name for the process instance
+   * @throws ActivitiObjectNotFoundException 
+   *    when the given process instance does not exist.
+   */
+  void setProcessInstanceName(String processInstanceId, String name);
+  
+  /** The all events related to the given Process Instance. */
+  List<Event> getProcessInstanceEvents(String processInstanceId);
+  
+  /**Create a ProcessInstanceBuilder*/
+  ProcessInstanceBuilder createProcessInstanceBuilder();
+    
 }

@@ -24,7 +24,7 @@ import org.activiti.bpmn.model.Lane;
 public class FlowNodeRefParser extends BaseChildElementParser {
 
   public String getElementName() {
-    return ATTRIBUTE_FLOWNODE_REF;
+    return ELEMENT_FLOWNODE_REF;
   }
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {

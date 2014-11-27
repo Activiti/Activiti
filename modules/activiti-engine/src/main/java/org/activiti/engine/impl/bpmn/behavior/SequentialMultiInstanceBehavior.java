@@ -36,8 +36,8 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
    */
   protected void createInstances(ActivityExecution execution) throws Exception {
     int nrOfInstances = resolveNrOfInstances(execution);
-    if (nrOfInstances <= 0) {
-      throw new ActivitiIllegalArgumentException("Invalid number of instances: must be positive integer value" 
+    if (nrOfInstances < 0) {
+      throw new ActivitiIllegalArgumentException("Invalid number of instances: must be a non-negative integer value" 
               + ", but was " + nrOfInstances);
     }
     
@@ -47,7 +47,9 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
     logLoopDetails(execution, "initialized", 0, 0, 1, nrOfInstances);
     
-    executeOriginalBehavior(execution, 0);
+    if (nrOfInstances>0) {
+    	executeOriginalBehavior(execution, 0);
+    }
   }
   
   /**
@@ -69,7 +71,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
     logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
     
-    if (loopCounter == nrOfInstances || completionConditionSatisfied(execution)) {
+    if (loopCounter >= nrOfInstances || completionConditionSatisfied(execution)) {
       super.leave(execution);
     } else {
       try {
@@ -89,7 +91,7 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     
     if(innerActivityBehavior instanceof SubProcessActivityBehavior) {
       // ACT-1185: end-event in subprocess may have inactivated execution
-      if(!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().size() == 0)) {
+      if(!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().isEmpty())) {
         execution.setActive(true);
       }
     }

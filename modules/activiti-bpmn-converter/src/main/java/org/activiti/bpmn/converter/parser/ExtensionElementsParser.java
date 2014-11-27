@@ -33,7 +33,7 @@ public class ExtensionElementsParser implements BpmnXMLConstants {
   
   public void parse(XMLStreamReader xtr, List<SubProcess> activeSubProcessList, Process activeProcess, BpmnModel model) throws Exception {
     BaseElement parentElement = null;
-    if (activeSubProcessList.size() > 0) {
+    if (!activeSubProcessList.isEmpty()) {
       parentElement = activeSubProcessList.get(activeSubProcessList.size() - 1);
       
     } else {
@@ -46,8 +46,10 @@ public class ExtensionElementsParser implements BpmnXMLConstants {
       if (xtr.isStartElement()) {
         if (ELEMENT_EXECUTION_LISTENER.equals(xtr.getLocalName())) {
           new ExecutionListenerParser().parseChildElement(xtr, parentElement, model);
-        } else if(ELEMENT_EVENT_LISTENER.equals(xtr.getLocalName())){
+        } else if (ELEMENT_EVENT_LISTENER.equals(xtr.getLocalName())){
         	new ActivitiEventListenerParser().parseChildElement(xtr, parentElement, model);
+        } else if (ELEMENT_POTENTIAL_STARTER.equals(xtr.getLocalName())){
+          new PotentialStarterParser().parse(xtr, activeProcess);
         } else {
           ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
           parentElement.addExtensionElement(extensionElement);

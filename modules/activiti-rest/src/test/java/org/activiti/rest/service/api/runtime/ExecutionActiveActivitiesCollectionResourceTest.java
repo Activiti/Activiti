@@ -18,39 +18,39 @@ import java.util.Set;
 
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 /**
  * @author Frederik Heremans
  */
-public class ExecutionActiveActivitiesCollectionResourceTest extends BaseRestTestCase {
+public class ExecutionActiveActivitiesCollectionResourceTest extends BaseSpringRestTestCase {
 
   @Deployment
   public void testGetActivities() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("processOne");
     
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_ACTIVITIES_COLLECTION, processInstance.getId()));
-    Representation response = client.get();
-    assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_EXECUTION_ACTIVITIES_COLLECTION, processInstance.getId())), HttpStatus.SC_OK);
     
     // Check resulting instance
-    JsonNode responseNode = objectMapper.readTree(response.getStream());
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(2, responseNode.size());
     
     Set<String> states = new HashSet<String>();
-    states.add(responseNode.get(0).getTextValue());
-    states.add(responseNode.get(1).getTextValue());
+    states.add(responseNode.get(0).textValue());
+    states.add(responseNode.get(1).textValue());
     
     assertTrue(states.contains("waitState"));
     assertTrue(states.contains("anotherWaitState"));
-    client.release();
   }
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="testSkipExpression">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1" activiti:skipExpression="${skipLeft}">
+      <conditionExpression xsi:type="tFormalExpression">
+         <![CDATA[${input == 'left'}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow2" sourceRef="theStart" targetRef="task2" activiti:skipExpression="${skipRight}">
+      <conditionExpression xsi:type="tFormalExpression">
+         <![CDATA[${input == 'right'}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <userTask id="task1" name="task left" />
+    
+    <userTask id="task2" name="task right" />
+    
+  </process>
+
+</definitions>

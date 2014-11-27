@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="processDefinitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="processDefinitions">
+
+    <process id="waiter">
+
+        <startEvent id="start"/>
+
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="service1"/>
+
+        <scriptTask id="service1" scriptFormat="groovy" >
+           <script>
+               println 'customerId='+ customerId
+           </script>
+        </scriptTask>
+
+        <sequenceFlow id="flow2" sourceRef="service1" targetRef="theTask"/>
+
+        <userTask name="Test task" id="theTask"></userTask>
+
+        <sequenceFlow id="flow3" sourceRef="theTask" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

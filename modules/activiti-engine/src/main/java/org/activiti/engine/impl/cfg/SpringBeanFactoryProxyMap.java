@@ -60,7 +60,7 @@ public class SpringBeanFactoryProxyMap implements Map<Object, Object> {
     throw new ActivitiException("can't search values in configuration beans");
   }
 
-  public Set<java.util.Map.Entry<Object, Object>> entrySet() {
+  public Set<Map.Entry<Object, Object>> entrySet() {
     throw new ActivitiException("unsupported operation on configuration beans");
   }
 

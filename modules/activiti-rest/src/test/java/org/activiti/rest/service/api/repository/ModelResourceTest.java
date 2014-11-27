@@ -17,20 +17,23 @@ import java.util.Calendar;
 
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.test.Deployment;
-import org.activiti.rest.service.BaseRestTestCase;
+import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.node.ObjectNode;
-import org.restlet.data.Status;
-import org.restlet.representation.Representation;
-import org.restlet.resource.ClientResource;
-import org.restlet.resource.ResourceException;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpDelete;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 
 /**
  * @author Frederik Heremans
  */
-public class ModelResourceTest extends BaseRestTestCase {
+public class ModelResourceTest extends BaseSpringRestTestCase {
 
   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
   public void testGetModel() throws Exception {
@@ -51,29 +54,33 @@ public class ModelResourceTest extends BaseRestTestCase {
       model.setTenantId("myTenant");
       repositoryService.saveModel(model);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL, model.getId()));
-      Representation response = client.get();
+      repositoryService.addModelEditorSource(model.getId(), "This is the editor source".getBytes());
+      repositoryService.addModelEditorSourceExtra(model.getId(), "This is the extra editor source".getBytes());
       
-      // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
-      assertEquals("Model name", responseNode.get("name").getTextValue());
-      assertEquals("Model key", responseNode.get("key").getTextValue());
-      assertEquals("Model category", responseNode.get("category").getTextValue());
-      assertEquals(2, responseNode.get("version").getIntValue());
-      assertEquals("Model metainfo", responseNode.get("metaInfo").getTextValue());
-      assertEquals(deploymentId, responseNode.get("deploymentId").getTextValue());
-      assertEquals(model.getId(), responseNode.get("id").getTextValue());
-      assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
+      assertEquals("Model name", responseNode.get("name").textValue());
+      assertEquals("Model key", responseNode.get("key").textValue());
+      assertEquals("Model category", responseNode.get("category").textValue());
+      assertEquals(2, responseNode.get("version").intValue());
+      assertEquals("Model metainfo", responseNode.get("metaInfo").textValue());
+      assertEquals(deploymentId, responseNode.get("deploymentId").textValue());
+      assertEquals(model.getId(), responseNode.get("id").textValue());
+      assertEquals("myTenant", responseNode.get("tenantId").textValue());
       
-      assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
-      assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
+      assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").textValue()).getTime());
+      assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").textValue()).getTime());
       
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
-      assertTrue(responseNode.get("deploymentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
+      assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
+      
+      assertTrue(responseNode.get("sourceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId())));
+      assertTrue(responseNode.get("sourceExtraUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId())));
       
     } finally
     {
@@ -86,14 +93,9 @@ public class ModelResourceTest extends BaseRestTestCase {
   }
   
   public void testGetUnexistingModel() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
-    try {
-      client.get();
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a model with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
+    closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
   }
   
   public void testDeleteModel() throws Exception {
@@ -111,11 +113,9 @@ public class ModelResourceTest extends BaseRestTestCase {
       model.setVersion(2);
       repositoryService.saveModel(model);
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL, model.getId()));
-      Representation response = client.delete();
-      assertEquals(Status.SUCCESS_NO_CONTENT, client.getResponse().getStatus());
-      assertEquals(0, response.getSize());
+      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
       
       // Check if the model is really gone
       assertNull(repositoryService.createModelQuery().modelId(model.getId()).singleResult());
@@ -133,14 +133,9 @@ public class ModelResourceTest extends BaseRestTestCase {
     }
   }
   public void testDeleteUnexistingModel() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
-    try {
-      client.delete();
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a model with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
+    closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
   }
   
   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
@@ -175,29 +170,29 @@ public class ModelResourceTest extends BaseRestTestCase {
       requestNode.put("deploymentId", deploymentId);
       requestNode.put("version", 3);
       requestNode.put("tenantId", "myTenant");
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL, model.getId()));
-      Representation response = client.put(requestNode);
       
-      // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
-      assertEquals("Updated name", responseNode.get("name").getTextValue());
-      assertEquals("Updated key", responseNode.get("key").getTextValue());
-      assertEquals("Updated category", responseNode.get("category").getTextValue());
-      assertEquals(3, responseNode.get("version").getIntValue());
-      assertEquals("Updated metainfo", responseNode.get("metaInfo").getTextValue());
-      assertEquals(deploymentId, responseNode.get("deploymentId").getTextValue());
-      assertEquals(model.getId(), responseNode.get("id").getTextValue());
-      assertEquals("myTenant", responseNode.get("tenantId").getTextValue());
+      assertEquals("Updated name", responseNode.get("name").textValue());
+      assertEquals("Updated key", responseNode.get("key").textValue());
+      assertEquals("Updated category", responseNode.get("category").textValue());
+      assertEquals(3, responseNode.get("version").intValue());
+      assertEquals("Updated metainfo", responseNode.get("metaInfo").textValue());
+      assertEquals(deploymentId, responseNode.get("deploymentId").textValue());
+      assertEquals(model.getId(), responseNode.get("id").textValue());
+      assertEquals("myTenant", responseNode.get("tenantId").textValue());
       
-      assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
-      assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
+      assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").textValue()).getTime());
+      assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").textValue()).getTime());
       
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
-      assertTrue(responseNode.get("deploymentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
+      assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
       
     } finally
     {
@@ -226,7 +221,6 @@ public class ModelResourceTest extends BaseRestTestCase {
       model.setVersion(2);
       repositoryService.saveModel(model);
       
-      
       Calendar updateTime = Calendar.getInstance();
       updateTime.set(Calendar.MILLISECOND, 0);
       processEngineConfiguration.getClock().setCurrentTime(updateTime.getTime());
@@ -240,28 +234,27 @@ public class ModelResourceTest extends BaseRestTestCase {
       requestNode.put("deploymentId", (String) null);
       requestNode.put("version", (String) null);
       requestNode.put("tenantId", (String) null);
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL, model.getId()));
-      Representation response = client.put(requestNode);
       
-      // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
-      assertNull(responseNode.get("name").getTextValue());
-      assertNull(responseNode.get("key").getTextValue());
-      assertNull(responseNode.get("category").getTextValue());
-      assertNull(responseNode.get("version").getTextValue());
-      assertNull(responseNode.get("metaInfo").getTextValue());
-      assertNull(responseNode.get("deploymentId").getTextValue());
-      assertNull(responseNode.get("tenantId").getTextValue());
-      assertEquals(model.getId(), responseNode.get("id").getTextValue());
+      assertNull(responseNode.get("name").textValue());
+      assertNull(responseNode.get("key").textValue());
+      assertNull(responseNode.get("category").textValue());
+      assertNull(responseNode.get("version").textValue());
+      assertNull(responseNode.get("metaInfo").textValue());
+      assertNull(responseNode.get("deploymentId").textValue());
+      assertNull(responseNode.get("tenantId").textValue());
+      assertEquals(model.getId(), responseNode.get("id").textValue());
       
-      assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
-      assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
+      assertEquals(createTime.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").textValue()).getTime());
+      assertEquals(updateTime.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").textValue()).getTime());
       
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
       
       model = repositoryService.getModel(model.getId());
       assertNull(model.getName());
@@ -271,8 +264,7 @@ public class ModelResourceTest extends BaseRestTestCase {
       assertNull(model.getDeploymentId());
       assertEquals("", model.getTenantId());
       
-    } finally
-    {
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
       } catch(Throwable ignore) {
@@ -302,31 +294,28 @@ public class ModelResourceTest extends BaseRestTestCase {
       // Use empty request-node, nothing should be changed after update
       ObjectNode requestNode = objectMapper.createObjectNode();
       
-      ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(
-              RestUrls.URL_MODEL, model.getId()));
-      Representation response = client.put(requestNode);
-      
-      // Check "OK" status
-      assertEquals(Status.SUCCESS_OK, client.getResponse().getStatus());
-      
-      JsonNode responseNode = objectMapper.readTree(response.getStream());
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
+      httpPut.setEntity(new StringEntity(requestNode.toString()));
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
-      assertEquals("Model name", responseNode.get("name").getTextValue());
-      assertEquals("Model key", responseNode.get("key").getTextValue());
-      assertEquals("Model category", responseNode.get("category").getTextValue());
-      assertEquals(2, responseNode.get("version").getIntValue());
-      assertEquals("Model metainfo", responseNode.get("metaInfo").getTextValue());
-      assertEquals(deploymentId, responseNode.get("deploymentId").getTextValue());
-      assertEquals(model.getId(), responseNode.get("id").getTextValue());
+      assertEquals("Model name", responseNode.get("name").textValue());
+      assertEquals("Model key", responseNode.get("key").textValue());
+      assertEquals("Model category", responseNode.get("category").textValue());
+      assertEquals(2, responseNode.get("version").intValue());
+      assertEquals("Model metainfo", responseNode.get("metaInfo").textValue());
+      assertEquals(deploymentId, responseNode.get("deploymentId").textValue());
+      assertEquals(model.getId(), responseNode.get("id").textValue());
       
-      assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").getTextValue()).getTime());
-      assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").getTextValue()).getTime());
+      assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("createTime").textValue()).getTime());
+      assertEquals(now.getTime().getTime(), getDateFromISOString(responseNode.get("lastUpdateTime").textValue()).getTime());
       
-      assertTrue(responseNode.get("url").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
-      assertTrue(responseNode.get("deploymentUrl").getTextValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
+      assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
+      assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
       
-    } finally
-    {
+    } finally {
       try {
         repositoryService.deleteModel(model.getId());
       } catch(Throwable ignore) {
@@ -336,13 +325,9 @@ public class ModelResourceTest extends BaseRestTestCase {
   }
   
   public void testUpdateUnexistingModel() throws Exception {
-    ClientResource client = getAuthenticatedClient(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
-    try {
-      client.put(objectMapper.createObjectNode());
-      fail("404 expected, but was: " + client.getResponse().getStatus());
-    } catch(ResourceException expected) {
-      assertEquals(Status.CLIENT_ERROR_NOT_FOUND, client.getResponse().getStatus());
-      assertEquals("Could not find a model with id 'unexisting'.", client.getResponse().getStatus().getDescription());
-    }
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
+    httpPut.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_NOT_FOUND));
   }
 }

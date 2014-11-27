@@ -13,7 +13,6 @@
 
 package org.activiti.engine.test.pvm;
 
-import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.pvm.ProcessDefinitionBuilder;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;

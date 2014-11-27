@@ -4,13 +4,12 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 
 /**
- * 
  * @author Pablo Ganga
  */
-public class ForcedRollbackExecutionListener  implements ExecutionListener  {
+public class ForcedRollbackExecutionListener implements ExecutionListener {
 
-	public void notify(DelegateExecution delegateExecution) throws Exception {
-		throw new RuntimeException("Forcing transaction rollback");
-	}
+    public void notify(DelegateExecution delegateExecution) throws Exception {
+        throw new RuntimeException("Forcing transaction rollback");
+    }
 
 }

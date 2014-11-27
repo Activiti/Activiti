@@ -31,6 +31,7 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
@@ -51,7 +52,7 @@ import org.apache.commons.lang3.StringUtils;
  * @author Falko Menge
  * @author Tijs Rademakers
  */ 
-public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject, HasRevision {
+public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask, Serializable, PersistentObject, HasRevision, BulkDeleteable {
 
   public static final String DELETE_REASON_COMPLETED = "completed";
   public static final String DELETE_REASON_DELETED = "deleted";
@@ -88,6 +89,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   protected TaskDefinition taskDefinition;
   protected String taskDefinitionKey;
+  protected String formKey;
   
   protected boolean isDeleted;
   
@@ -149,6 +151,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     setCreateTime(this.getCreateTime());
     setDueDate(this.getDueDate());
     setParentTaskId(this.getParentTaskId());
+    setFormKey(formKey);
     
     CommandContext commandContext = Context.getCommandContext();
     DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
@@ -169,7 +172,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     return task;
   }
 
-  public void complete() {
+  @SuppressWarnings("rawtypes")
+  public void complete(Map variablesMap, boolean localScope) {
   	
   	if (getDelegationState() != null && getDelegationState().equals(DelegationState.PENDING)) {
   		throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
@@ -183,7 +187,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     
     if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    	ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_COMPLETED, this));
+    	    ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.TASK_COMPLETED, this, variablesMap, localScope));
     }
  
     Context
@@ -289,7 +293,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     // Dispatch event, if needed
     if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
   		Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-  				ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getTaskId(), 
+  				ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getType(), result.getTaskId(), 
   						result.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
     }
     return result;
@@ -303,29 +307,8 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     // Dispatch event, if needed
     if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getTaskId(), 
-    					variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
-    }
-  }
-  
-  @Override
-  protected void deleteVariableInstanceForExplicitUserCall(VariableInstanceEntity variableInstance,
-      ExecutionEntity sourceActivityExecution) {
-  	boolean dispatchEvent = Context.getProcessEngineConfiguration().getEventDispatcher()
-  			.isEnabled();
-  	
-  	Object oldValue = null;
-  	if(dispatchEvent) {
-  		oldValue = variableInstance.getValue();
-  	}
-    super.deleteVariableInstanceForExplicitUserCall(variableInstance, sourceActivityExecution);
-    
-    if(dispatchEvent) {
-      if(dispatchEvent) {
-      	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, variableInstance.getName(), oldValue, variableInstance.getTaskId(), 
-      					variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
-      }
+    			ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getType(), 
+    					variableInstance.getTaskId(), variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
     }
   }
 
@@ -392,7 +375,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     for (IdentityLinkEntity identityLinkEntity : this.getIdentityLinks()) {
       if (IdentityLinkType.CANDIDATE.equals(identityLinkEntity.getType())) {
         if ((userId != null && userId.equals(identityLinkEntity.getUserId()))
-          || (groupId != null && identityLinkEntity.getGroupId().equals(groupId))) {
+          || (groupId != null && groupId.equals(identityLinkEntity.getGroupId()))) {
           Context
             .getCommandContext()
             .getIdentityLinkEntityManager()
@@ -705,9 +688,28 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   
   public void setTaskDefinitionKeyWithoutCascade(String taskDefinitionKey) {
        this.taskDefinitionKey = taskDefinitionKey;
-  }       
+  }   
+  
+  public String getFormKey() {
+		return formKey;
+	}
 
-  public void fireEvent(String taskEventName) {
+	public void setFormKey(String formKey) {
+		this.formKey = formKey;
+		
+	  CommandContext commandContext = Context.getCommandContext();
+    if (commandContext!=null) {
+      commandContext
+        .getHistoryManager()
+        .recordTaskFormKeyChange(id, formKey);
+    }
+	}
+	
+	public void setFormKeyWithoutCascade(String formKey) {
+		this.formKey = formKey;
+	}
+
+	public void fireEvent(String taskEventName) {
     TaskDefinition taskDefinition = getTaskDefinition();
     if (taskDefinition != null) {
       List<TaskListener> taskEventListeners = getTaskDefinition().getTaskListener(taskEventName);

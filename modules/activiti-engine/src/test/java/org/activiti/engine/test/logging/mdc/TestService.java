@@ -17,8 +17,7 @@ public class TestService implements JavaDelegate{
 		TestService.executionId = execution.getId();
 		TestService.businessKey = execution.getBusinessKey();
 		
-		Exception a = new Exception("test");
-		throw a;
+		throw new Exception("test");
 		
 	}
 	

@@ -15,7 +15,8 @@ package org.activiti.workflow.simple.definition;
 import java.util.HashMap;
 
 import org.activiti.workflow.simple.exception.SimpleWorkflowException;
-import org.codehaus.jackson.annotate.JsonTypeName;
+
+import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * Step that delays the current process/execution for a certain amount of time. Can be either

@@ -18,9 +18,7 @@ import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.TaskNavigator;
 import org.activiti.explorer.navigation.UriFragment;
-import org.activiti.explorer.ui.custom.TaskListHeader;
 import org.activiti.explorer.ui.task.data.ArchivedListQuery;
-import org.activiti.explorer.ui.task.data.HistoricTaskWrapper;
 
 import com.vaadin.ui.Component;
 

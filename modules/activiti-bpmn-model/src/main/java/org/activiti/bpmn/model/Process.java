@@ -33,6 +33,10 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   protected List<String> candidateStarterUsers = new ArrayList<String>();
   protected List<String> candidateStarterGroups = new ArrayList<String>();
   protected List<EventListener> eventListeners = new ArrayList<EventListener>();
+  
+  public Process() {
+  	
+  }
 
   public String getDocumentation() {
     return documentation;
@@ -87,26 +91,46 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   }
   
   /**
-   * Searches the whole process, including subprocesses (unline {@link getFlowElements(String)}
+   * Searches the whole process, including subprocesses (unlike {@link getFlowElements(String)}
    */
   public FlowElement getFlowElementRecursive(String flowElementId) {
   	 return getFlowElementRecursive(this, flowElementId);
   }
   
   protected FlowElement getFlowElementRecursive(FlowElementsContainer flowElementsContainer, String flowElementId) {
- 	 for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
       if (flowElement.getId() != null && flowElement.getId().equals(flowElementId)) {
-     	 return flowElement;
+        return flowElement;
       } else if (flowElement instanceof FlowElementsContainer) {
-     	 FlowElement result =  getFlowElementRecursive((FlowElementsContainer) flowElement, flowElementId);
-     	 if (result != null) {
-     		 return result;
-     	 }
+        FlowElement result =  getFlowElementRecursive((FlowElementsContainer) flowElement, flowElementId);
+        if (result != null) {
+          return result;
+        }
       }
     }
- 	 return null;
- }
+    return null;
+  }
   
+  /**
+   * Searches the whole process, including subprocesses
+   */
+  public FlowElementsContainer getFlowElementsContainerRecursive(String flowElementId) {
+     return getFlowElementsContainerRecursive(this, flowElementId);
+  }
+  
+  protected FlowElementsContainer getFlowElementsContainerRecursive(FlowElementsContainer flowElementsContainer, String flowElementId) {
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (flowElement.getId() != null && flowElement.getId().equals(flowElementId)) {
+        return flowElementsContainer;
+      } else if (flowElement instanceof FlowElementsContainer) {
+        FlowElementsContainer result =  getFlowElementsContainerRecursive((FlowElementsContainer) flowElement, flowElementId);
+        if (result != null) {
+          return result;
+        }
+      }
+    }
+    return null;
+  }
   
   protected FlowElement findFlowElementInList(String flowElementId) {
     for (FlowElement f : flowElementList) {
@@ -259,19 +283,19 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     }
     
     executionListeners = new ArrayList<ActivitiListener>();
-    if (otherElement.getExecutionListeners() != null && otherElement.getExecutionListeners().size() > 0) {
+    if (otherElement.getExecutionListeners() != null && !otherElement.getExecutionListeners().isEmpty()) {
       for (ActivitiListener listener : otherElement.getExecutionListeners()) {
         executionListeners.add(listener.clone());
       }
     }
     
     candidateStarterUsers = new ArrayList<String>();
-    if (otherElement.getCandidateStarterUsers() != null && otherElement.getCandidateStarterUsers().size() > 0) {
+    if (otherElement.getCandidateStarterUsers() != null && !otherElement.getCandidateStarterUsers().isEmpty()) {
       candidateStarterUsers.addAll(otherElement.getCandidateStarterUsers());
     }
     
     candidateStarterGroups = new ArrayList<String>();
-    if (otherElement.getCandidateStarterGroups() != null && otherElement.getCandidateStarterGroups().size() > 0) {
+    if (otherElement.getCandidateStarterGroups() != null && !otherElement.getCandidateStarterGroups().isEmpty()) {
       candidateStarterGroups.addAll(otherElement.getCandidateStarterGroups());
     }
     
@@ -302,7 +326,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
     }
     
     dataObjects = new ArrayList<ValuedDataObject>();
-    if (otherElement.getDataObjects() != null && otherElement.getDataObjects().size() > 0) {
+    if (otherElement.getDataObjects() != null && !otherElement.getDataObjects().isEmpty()) {
       for (ValuedDataObject dataObject : otherElement.getDataObjects()) {
           ValuedDataObject clone = dataObject.clone();
           dataObjects.add(clone);

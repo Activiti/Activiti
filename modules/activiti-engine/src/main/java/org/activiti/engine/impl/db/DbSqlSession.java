@@ -22,6 +22,7 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +36,9 @@ import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.ActivitiWrongDbException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.GroupQueryImpl;
@@ -78,6 +82,38 @@ public class DbSqlSession implements Session {
   private static final Logger log = LoggerFactory.getLogger(DbSqlSession.class);
   
   private static final Pattern CLEAN_VERSION_REGEX = Pattern.compile("\\d\\.\\d*");
+  
+  private static final List<ActivitiVersion> ACTIVITI_VERSIONS = new ArrayList<ActivitiVersion>();
+  static {
+	  
+	  /* Previous */
+	  
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.7"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.8"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.9"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.10"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.11"));
+	  
+	  // 5.12.1 was a bugfix release on 5.12 and did NOT change the version in ACT_GE_PROPERTY
+	  // On top of that, DB2 create script for 5.12.1 was shipped with a 'T' suffix ...
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.12", Arrays.asList("5.12.1", "5.12T")));
+	  
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.13"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.14"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.15"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.15.1"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.1"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.2-SNAPSHOT"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.2"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.3.0"));
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.16.4.0"));
+
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion("5.17.0.0"));
+	  
+	  /* Current */
+	  ACTIVITI_VERSIONS.add(new ActivitiVersion(ProcessEngine.VERSION));
+  }
 
   protected SqlSession sqlSession;
   protected DbSqlSessionFactory dbSqlSessionFactory;
@@ -87,9 +123,12 @@ public class DbSqlSession implements Session {
   protected List<DeserializedObject> deserializedObjects = new ArrayList<DeserializedObject>();
   protected String connectionMetadataDefaultCatalog;
   protected String connectionMetadataDefaultSchema;
+  
+  protected boolean isOptimizeDeleteOperationsEnabled;
 
   public DbSqlSession(DbSqlSessionFactory dbSqlSessionFactory) {
     this.dbSqlSessionFactory = dbSqlSessionFactory;
+    this.isOptimizeDeleteOperationsEnabled = dbSqlSessionFactory.isOptimizeDeleteOperationsEnabled();
     this.sqlSession = dbSqlSessionFactory
       .getSqlSessionFactory()
       .openSession();
@@ -135,9 +174,9 @@ public class DbSqlSession implements Session {
     cachePut(persistentObject, false);
   }
   
-  public void update(String statement, Object parameters) {
+  public int update(String statement, Object parameters) {
      String updateStatement = dbSqlSessionFactory.mapStatement(statement);
-     getSqlSession().update(updateStatement, parameters);
+     return getSqlSession().update(updateStatement, parameters);
   }
   
   // delete ///////////////////////////////////////////////////////////////////
@@ -257,6 +296,87 @@ public class DbSqlSession implements Session {
     @Override
     public String toString() {
       return "delete " + persistentObject;
+    }
+  }
+  
+  
+  /**
+   * A bulk version of the {@link CheckedDeleteOperation}.
+   */
+  public class BulkCheckedDeleteOperation implements DeleteOperation {
+  	
+  	protected Class<? extends PersistentObject> persistentObjectClass;
+    protected List<PersistentObject> persistentObjects = new ArrayList<PersistentObject>();
+    
+    public BulkCheckedDeleteOperation(Class<? extends PersistentObject> persistentObjectClass) {
+    	this.persistentObjectClass = persistentObjectClass;
+    }
+    
+    public void addPersistentObject(PersistentObject persistentObject) {
+    	persistentObjects.add(persistentObject);
+    }
+    
+    @Override
+    public boolean sameIdentity(PersistentObject other) {
+    	for (PersistentObject persistentObject : persistentObjects) {
+    		if (persistentObject.getClass().equals(other.getClass()) && persistentObject.getId().equals(other.getId())) {
+    			return true;
+    		}
+    	}
+    	return false;
+    }
+
+    @Override
+    public void clearCache() {
+    	for (PersistentObject persistentObject : persistentObjects) {
+    		cacheRemove(persistentObject.getClass(), persistentObject.getId());
+    	}
+    }
+    
+    public void execute() {
+    	
+    	if (persistentObjects.isEmpty()) {
+    		return;
+    	}
+    	
+      String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObjectClass);
+      bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
+      if (bulkDeleteStatement == null) {
+        throw new ActivitiException("no bulk delete statement for " + persistentObjectClass + " in the mapping files");
+      }
+      
+      // It only makes sense to check for optimistic locking exceptions for objects that actually have a revision
+      if (persistentObjects.get(0) instanceof HasRevision) {
+        int nrOfRowsDeleted = sqlSession.delete(bulkDeleteStatement, persistentObjects);
+        if (nrOfRowsDeleted < persistentObjects.size()) {
+          throw new ActivitiOptimisticLockingException("One of the entities " + persistentObjectClass 
+          		+ " was updated by another transaction concurrently while trying to do a bulk delete");
+        }
+      } else {
+        sqlSession.delete(bulkDeleteStatement, persistentObjects);
+      }
+    }
+    
+    public Class<? extends PersistentObject> getPersistentObjectClass() {
+			return persistentObjectClass;
+		}
+
+		public void setPersistentObjectClass(
+		    Class<? extends PersistentObject> persistentObjectClass) {
+			this.persistentObjectClass = persistentObjectClass;
+		}
+
+		public List<PersistentObject> getPersistentObjects() {
+			return persistentObjects;
+		}
+
+		public void setPersistentObjects(List<PersistentObject> persistentObjects) {
+			this.persistentObjects = persistentObjects;
+		}
+
+		@Override
+    public String toString() {
+      return "bulk delete of " + persistentObjects.size() + (!persistentObjects.isEmpty() ? " entities of " + persistentObjects.get(0).getClass() : 0 );
     }
   }
   
@@ -443,10 +563,6 @@ public class DbSqlSession implements Session {
 
   // deserialized objects /////////////////////////////////////////////////////
   
-  public void addDeserializedObject(Object deserializedObject, byte[] serializedBytes, VariableInstanceEntity variableInstanceEntity) {
-    addDeserializedObject(new DeserializedObject(deserializedObject, serializedBytes, variableInstanceEntity));
-  }
-  
   public void addDeserializedObject(DeserializedObject deserializedObject) {
   	deserializedObjects.add(deserializedObject);
   }
@@ -454,7 +570,8 @@ public class DbSqlSession implements Session {
   // flush ////////////////////////////////////////////////////////////////////
 
   public void flush() {
-    removeUnnecessaryOperations();
+    List<DeleteOperation> removedOperations = removeUnnecessaryOperations();
+    
     flushDeserializedObjects();
     List<PersistentObject> updatedObjects = getUpdatedObjects();
     
@@ -474,15 +591,16 @@ public class DbSqlSession implements Session {
 
     flushInserts();
     flushUpdates(updatedObjects);
-    flushDeletes();
+    flushDeletes(removedOperations);
   }
 
   /**
    * Clears all deleted and inserted objects from the cache, 
    * and removes inserts and deletes that cancel each other.
    */
-  protected void removeUnnecessaryOperations() {
-    
+  protected List<DeleteOperation> removeUnnecessaryOperations() {
+    List<DeleteOperation> removedDeleteOperations = new ArrayList<DeleteOperation>();
+
     for (Iterator<DeleteOperation> deleteIt = deleteOperations.iterator(); deleteIt.hasNext();) {
       DeleteOperation deleteOperation = deleteIt.next();
       
@@ -494,6 +612,8 @@ public class DbSqlSession implements Session {
           // remove the insert and the delete, they cancel each other
           insertIt.remove();
           deleteIt.remove();
+          // add removed operations to be able to fire events
+          removedDeleteOperations.add( deleteOperation);
         }
       }
       
@@ -504,7 +624,74 @@ public class DbSqlSession implements Session {
     for (PersistentObject insertedObject: insertedObjects) {
       cacheRemove(insertedObject.getClass(), insertedObject.getId());
     }
-    
+
+    return removedDeleteOperations;
+  }
+  
+  /**
+   * Optimizes the given delete operations:
+   * for example, if there are two deletes for two different variables, merges this into
+   * one bulk delete which improves performance
+   */
+  protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
+  	
+  	// No optimization possible for 0 or 1 operations
+  	if (!isOptimizeDeleteOperationsEnabled || deleteOperations.size() <= 1) {
+  		return deleteOperations;
+  	}
+  	
+  	List<DeleteOperation> optimizedDeleteOperations = new ArrayList<DbSqlSession.DeleteOperation>();
+  	boolean[] checkedIndices = new boolean[deleteOperations.size()];
+  	for (int i=0; i<deleteOperations.size(); i++) {
+  		
+  		if (checkedIndices[i] == true) {
+  			continue;
+  		}
+  		
+  		DeleteOperation deleteOperation = deleteOperations.get(i);
+  		boolean couldOptimize = false;
+  		if (deleteOperation instanceof CheckedDeleteOperation) {
+  			
+  			PersistentObject persistentObject = ((CheckedDeleteOperation) deleteOperation).getPersistentObject();
+  			if (persistentObject instanceof BulkDeleteable) {
+				String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObject.getClass());
+				bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
+				if (bulkDeleteStatement != null) {
+					BulkCheckedDeleteOperation bulkCheckedDeleteOperation = null;
+					
+					// Find all objects of the same type
+					for (int j=0; j<deleteOperations.size(); j++) {
+						DeleteOperation otherDeleteOperation = deleteOperations.get(j);
+						if (j != i && checkedIndices[j] == false && otherDeleteOperation instanceof CheckedDeleteOperation) {
+							PersistentObject otherPersistentObject = ((CheckedDeleteOperation) otherDeleteOperation).getPersistentObject();
+							if (otherPersistentObject.getClass().equals(persistentObject.getClass())) {
+	  							if (bulkCheckedDeleteOperation == null) {
+	  								bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(persistentObject.getClass());
+	  								bulkCheckedDeleteOperation.addPersistentObject(persistentObject);
+	  								optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
+	  							}
+	  							couldOptimize = true;
+	  							bulkCheckedDeleteOperation.addPersistentObject(otherPersistentObject);
+	  							checkedIndices[j] = true;
+							} else {
+							    // We may only optimize subsequent delete operations of the same type, to prevent messing up 
+							    // the order of deletes of related entities which may depend on the referenced entity being deleted before
+							    break;
+							}
+						}
+						
+					}
+				}
+  			}
+  		}
+  		
+   		if (!couldOptimize) {
+  			optimizedDeleteOperations.add(deleteOperation);
+  		}
+  		checkedIndices[i]=true;
+  		
+  	}
+  	return optimizedDeleteOperations;
   }
 
   protected void flushDeserializedObjects() {
@@ -523,7 +710,8 @@ public class DbSqlSession implements Session {
         PersistentObject persistentObject = cachedObject.getPersistentObject();
         if (!isPersistentObjectDeleted(persistentObject)) {
           Object originalState = cachedObject.getPersistentObjectState();
-          if (!persistentObject.getPersistentState().equals(originalState)) {
+          if (persistentObject.getPersistentState() != null && 
+          		!persistentObject.getPersistentState().equals(originalState)) {
             updatedObjects.add(persistentObject);
           } else {
             log.trace("loaded object '{}' was not updated", persistentObject);
@@ -603,12 +791,72 @@ public class DbSqlSession implements Session {
     updatedObjects.clear();
   }
 
-  protected void flushDeletes() {
-    for (DeleteOperation delete: deleteOperations) {
-      log.debug("executing: {}", delete);
-      delete.execute();
+  protected void flushDeletes(List<DeleteOperation> removedOperations) {
+    boolean dispatchEvent = Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled();
+
+    flushRegularDeletes(dispatchEvent);
+
+    if (dispatchEvent) {
+      dispatchEventsForRemovedOperations(removedOperations);
     }
+
     deleteOperations.clear();
+  }
+
+  protected void dispatchEventsForRemovedOperations(List<DeleteOperation> removedOperations) {
+    for (DeleteOperation delete : removedOperations) {
+      // dispatch removed delete events
+      if (delete instanceof CheckedDeleteOperation) {
+        CheckedDeleteOperation checkedDeleteOperation = (CheckedDeleteOperation) delete;
+        PersistentObject persistentObject = checkedDeleteOperation.getPersistentObject();
+        if (persistentObject instanceof VariableInstanceEntity) {
+          VariableInstanceEntity variableInstance = (VariableInstanceEntity) persistentObject;
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+            createVariableDeleteEvent(variableInstance)
+          );
+        }
+      }
+    }
+  }
+
+  protected static ActivitiVariableEvent createVariableDeleteEvent(VariableInstanceEntity variableInstance) {
+    return ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_DELETED, variableInstance.getName(), null, variableInstance.getType(),
+    		variableInstance.getTaskId(), variableInstance.getExecutionId(), variableInstance.getProcessInstanceId(), null);
+  }
+
+  protected void flushRegularDeletes(boolean dispatchEvent) {
+  	List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
+    for (DeleteOperation delete : optimizedDeleteOperations) {
+//  	for (DeleteOperation delete : deleteOperations) {
+      log.debug("executing: {}", delete);
+
+      delete.execute();
+
+      //  fire event for variable delete operation. (BulkDeleteOperation is not taken into account)
+      if (dispatchEvent) {
+        //  prepare delete event to fire for variable delete operation. (BulkDeleteOperation is not taken into account)
+        if (delete instanceof CheckedDeleteOperation) {
+          CheckedDeleteOperation checkedDeleteOperation = (CheckedDeleteOperation) delete;
+          PersistentObject persistentObject = checkedDeleteOperation.getPersistentObject();
+          if (persistentObject instanceof VariableInstanceEntity) {
+            VariableInstanceEntity variableInstance = (VariableInstanceEntity) persistentObject;
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              createVariableDeleteEvent(variableInstance)
+            );
+          }
+        } else if (delete instanceof BulkCheckedDeleteOperation) {
+        	BulkCheckedDeleteOperation bulkCheckedDeleteOperation = (BulkCheckedDeleteOperation) delete;
+        	if (VariableInstanceEntity.class.isAssignableFrom(bulkCheckedDeleteOperation.getPersistentObjectClass())) {
+        		for (PersistentObject persistentObject : bulkCheckedDeleteOperation.getPersistentObjects()) {
+        			 VariableInstanceEntity variableInstance = (VariableInstanceEntity) persistentObject;
+               Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                 createVariableDeleteEvent(variableInstance)
+               );
+        		}
+        	}
+        }
+      }
+    }
   }
 
   public void close() {
@@ -732,50 +980,70 @@ public class DbSqlSession implements Session {
 
   public static String[] JDBC_METADATA_TABLE_TYPES = {"TABLE"};
 
-  public String dbSchemaUpdate() {
-    String feedback = null;
-    String dbVersion = null;
-    boolean isUpgradeNeeded = false;
-      
-    if (isEngineTablePresent()) {
-      // the next piece assumes both DB version and library versions are formatted 5.x
-      PropertyEntity dbVersionProperty = selectById(PropertyEntity.class, "schema.version");
-      dbVersion = dbVersionProperty.getValue();
-      isUpgradeNeeded = isUpgradeNeeded(dbVersion);
-      
-      if (isUpgradeNeeded) {
-        dbVersionProperty.setValue(ProcessEngine.VERSION);
+	public String dbSchemaUpdate() {
 
-        PropertyEntity dbHistoryProperty;
-        if ("5.0".equals(dbVersion)) {
-          dbHistoryProperty = new PropertyEntity("schema.history", "create(5.0)");
-          insert(dbHistoryProperty);
-        } else {
-          dbHistoryProperty = selectById(PropertyEntity.class, "schema.history");
-        }
-        
-        String dbHistoryValue = dbHistoryProperty.getValue()+" upgrade("+dbVersion+"->"+ProcessEngine.VERSION+")";
-        dbHistoryProperty.setValue(dbHistoryValue);
-        
-        dbSchemaUpgrade("engine", dbVersion);
+		String feedback = null;
+		boolean isUpgradeNeeded = false;
+		int matchingVersionIndex = -1;
 
-        feedback = "upgraded Activiti from "+dbVersion+" to "+ProcessEngine.VERSION;
-      }
-    } else {
-      dbSchemaCreateEngine();
-    }
-    
-    if (isHistoryTablePresent()) {
-      if (isUpgradeNeeded) {
-        dbSchemaUpgrade("history", dbVersion);
-      }
-    } else if (dbSqlSessionFactory.isDbHistoryUsed()) {
-      dbSchemaCreateHistory();
-    }
+		if (isEngineTablePresent()) {
+
+			PropertyEntity dbVersionProperty = selectById(PropertyEntity.class,"schema.version");
+			String dbVersion = dbVersionProperty.getValue();
+
+			// Determine index in the sequence of Activiti releases
+			int index = 0;
+			while (matchingVersionIndex < 0 && index < ACTIVITI_VERSIONS.size()) {
+				if (ACTIVITI_VERSIONS.get(index).matches(dbVersion)) {
+					matchingVersionIndex = index;
+				} else {
+					index++;
+				}
+			}
+
+			// Exception when no match was found: unknown/unsupported version
+			if (matchingVersionIndex < 0) {
+				throw new ActivitiException(
+				    "Could not update Activiti database schema: unknown version from database: '"
+				        + dbVersion + "'");
+			}
+
+			isUpgradeNeeded = (matchingVersionIndex != (ACTIVITI_VERSIONS.size() - 1));
+
+			if (isUpgradeNeeded) {
+				dbVersionProperty.setValue(ProcessEngine.VERSION);
+
+				PropertyEntity dbHistoryProperty;
+				if ("5.0".equals(dbVersion)) {
+					dbHistoryProperty = new PropertyEntity("schema.history", "create(5.0)");
+					insert(dbHistoryProperty);
+				} else {
+					dbHistoryProperty = selectById(PropertyEntity.class, "schema.history");
+				}
+
+				// Set upgrade history
+				String dbHistoryValue = dbHistoryProperty.getValue() + " upgrade(" + dbVersion + "->" + ProcessEngine.VERSION + ")";
+				dbHistoryProperty.setValue(dbHistoryValue);
+
+				// Engine upgrade
+				dbSchemaUpgrade("engine", matchingVersionIndex);
+				feedback = "upgraded Activiti from " + dbVersion + " to "+ ProcessEngine.VERSION;
+			}
+
+		} else {
+			dbSchemaCreateEngine();
+		}
+		if (isHistoryTablePresent()) {
+			if (isUpgradeNeeded) {
+				dbSchemaUpgrade("history", matchingVersionIndex);
+			}
+		} else if (dbSqlSessionFactory.isDbHistoryUsed()) {
+			dbSchemaCreateHistory();
+		}
     
     if (isIdentityTablePresent()) {
       if (isUpgradeNeeded) {
-        dbSchemaUpgrade("identity", dbVersion);
+        dbSchemaUpgrade("identity", matchingVersionIndex);
       }
     } else if (dbSqlSessionFactory.isDbIdentityUsed()) {
       dbSchemaCreateIdentity();
@@ -797,7 +1065,7 @@ public class DbSqlSession implements Session {
   public boolean isTablePresent(String tableName) {
   	// ACT-1610: in case the prefix IS the schema itself, we don't add the prefix, since the
   	// check is already aware of the schema
-  	if(!dbSqlSessionFactory.isTablePrefixIsSchema()) {
+  	if (!dbSqlSessionFactory.isTablePrefixIsSchema()) {
   		tableName = prependDatabaseTablePrefix(tableName);
   	}
   	
@@ -806,9 +1074,14 @@ public class DbSqlSession implements Session {
       connection = sqlSession.getConnection();
       DatabaseMetaData databaseMetaData = connection.getMetaData();
       ResultSet tables = null;
-      
+
+      String catalog = this.connectionMetadataDefaultCatalog;
+      if (dbSqlSessionFactory.getDatabaseCatalog() != null && dbSqlSessionFactory.getDatabaseCatalog().length() > 0) {
+        catalog = dbSqlSessionFactory.getDatabaseCatalog();
+      }
+
       String schema = this.connectionMetadataDefaultSchema;
-      if (dbSqlSessionFactory.getDatabaseSchema()!=null) {
+      if (dbSqlSessionFactory.getDatabaseSchema() != null && dbSqlSessionFactory.getDatabaseSchema().length() > 0) {
         schema = dbSqlSessionFactory.getDatabaseSchema();
       }
       
@@ -819,7 +1092,7 @@ public class DbSqlSession implements Session {
       }
       
       try {
-        tables = databaseMetaData.getTables(this.connectionMetadataDefaultCatalog, schema, tableName, JDBC_METADATA_TABLE_TYPES);
+        tables = databaseMetaData.getTables(catalog, schema, tableName, JDBC_METADATA_TABLE_TYPES);
         return tables.next();
       } finally {
         try {
@@ -879,26 +1152,28 @@ public class DbSqlSession implements Session {
     return dbSqlSessionFactory.getDatabaseTablePrefix() + tableName;    
   }
   
-  protected void dbSchemaUpgrade(String component, String dbVersion) {
+  protected void dbSchemaUpgrade(final String component, final int currentDatabaseVersionsIndex) {
+  	ActivitiVersion activitiVersion = ACTIVITI_VERSIONS.get(currentDatabaseVersionsIndex);
+  	String dbVersion = activitiVersion.getMainVersion();
     log.info("upgrading activiti {} schema from {} to {}", component, dbVersion, ProcessEngine.VERSION);
     
-    if (dbVersion.endsWith("-SNAPSHOT")) {
-      dbVersion = dbVersion.substring(0, dbVersion.length()-"-SNAPSHOT".length());
-    }
-    int minorDbVersionNumber = Integer.parseInt(dbVersion.substring(2));
-    
-    String libraryVersion = ProcessEngine.VERSION;
-    if (ProcessEngine.VERSION.endsWith("-SNAPSHOT")) {
-      libraryVersion = ProcessEngine.VERSION.substring(0, ProcessEngine.VERSION.length()-"-SNAPSHOT".length());
-    }
-    int minorLibraryVersionNumber = Integer.parseInt(libraryVersion.substring(2));
-    
-    while (minorDbVersionNumber<minorLibraryVersionNumber) {
-      executeSchemaResource("upgrade", component, getResourceForDbOperation("upgrade", "upgradestep.5"+minorDbVersionNumber+".to.5"+(minorDbVersionNumber+1), component), true);
-      minorDbVersionNumber++;
+    // Actual execution of schema DDL SQL
+    for (int i=currentDatabaseVersionsIndex + 1; i<ACTIVITI_VERSIONS.size(); i++) {
+    	String nextVersion = ACTIVITI_VERSIONS.get(i).getMainVersion();
+    	
+    	// Taking care of -SNAPSHOT version in development
+      if (nextVersion.endsWith("-SNAPSHOT")) {
+      	nextVersion = nextVersion.substring(0, nextVersion.length()-"-SNAPSHOT".length());
+      }
+      
+      dbVersion = dbVersion.replace(".", "");
+      nextVersion = nextVersion.replace(".", "");
+      log.info("Upgrade needed: {} -> {}. Looking for schema update resource for component '{}'", dbVersion, nextVersion, component);
+    	executeSchemaResource("upgrade", component, getResourceForDbOperation("upgrade", "upgradestep." + dbVersion + ".to." + nextVersion, component), true);
+    	dbVersion = nextVersion;
     }
   }
-
+  
   public String getResourceForDbOperation(String directory, String operation, String component) {
     String databaseType = dbSqlSessionFactory.getDatabaseType();
     return "org/activiti/db/" + directory + "/activiti." + databaseType + "." + operation + "."+component+".sql";
@@ -910,7 +1185,7 @@ public class DbSqlSession implements Session {
       inputStream = ReflectUtil.getResourceAsStream(resourceName);
       if (inputStream == null) {
         if (isOptional) {
-          log.debug("no schema resource {} for {}", resourceName, operation);
+          log.info("no schema resource {} for {}", resourceName, operation);
         } else {
           throw new ActivitiException("resource '" + resourceName + "' is not available");
         }
@@ -932,27 +1207,28 @@ public class DbSqlSession implements Session {
       Exception exception = null;
       byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
       String ddlStatements = new String(bytes);
+      String databaseType = dbSqlSessionFactory.getDatabaseType();
       
       // Special DDL handling for certain databases
       try {
-    	String databaseType = dbSqlSessionFactory.getDatabaseType();
-    	if (databaseType.equals("mysql")) {
-	     DatabaseMetaData databaseMetaData = connection.getMetaData();
-	     int majorVersion = databaseMetaData.getDatabaseMajorVersion();
-	     int minorVersion = databaseMetaData.getDatabaseMinorVersion();
-	     log.info("Found MySQL: majorVersion=" + majorVersion + " minorVersion=" + minorVersion);
-	      
-	     // Special care for MySQL < 5.6
-	     if (majorVersion <= 5 && minorVersion < 6) {
-	       ddlStatements = updateDdlForMySqlVersionLowerThan56(ddlStatements);
-	     }
-    	}
+	    	if ("mysql".equals(databaseType)) {
+	    	  DatabaseMetaData databaseMetaData = connection.getMetaData();
+	    	  int majorVersion = databaseMetaData.getDatabaseMajorVersion();
+	    	  int minorVersion = databaseMetaData.getDatabaseMinorVersion();
+	    	  log.info("Found MySQL: majorVersion=" + majorVersion + " minorVersion=" + minorVersion);
+		      
+	    	  // Special care for MySQL < 5.6
+	    	  if (majorVersion <= 5 && minorVersion < 6) {
+	    	    ddlStatements = updateDdlForMySqlVersionLowerThan56(ddlStatements);
+	    	  }
+	    	}
       } catch (Exception e) {
         log.info("Could not get database metadata", e);
       }
       
       BufferedReader reader = new BufferedReader(new StringReader(ddlStatements));
       String line = readNextTrimmedLine(reader);
+      boolean inOraclePlsqlBlock = false;
       while (line != null) {
         if (line.startsWith("# ")) {
           log.debug(line.substring(2));
@@ -977,8 +1253,19 @@ public class DbSqlSession implements Session {
           
         } else if (line.length()>0) {
           
-          if (line.endsWith(";")) {
-            sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
+          if ("oracle".equals(databaseType) && line.startsWith("begin")) {
+            inOraclePlsqlBlock = true;
+            sqlStatement = addSqlStatementPiece(sqlStatement, line);
+            
+          } else if ((line.endsWith(";") && inOraclePlsqlBlock == false) ||
+              (line.startsWith("/") && inOraclePlsqlBlock == true)) {
+            
+            if (inOraclePlsqlBlock) {
+              inOraclePlsqlBlock = false;
+            } else {
+              sqlStatement = addSqlStatementPiece(sqlStatement, line.substring(0, line.length()-1));
+            }
+            
             Statement jdbcStatement = connection.createStatement();
             try {
               // no logging needed as the connection will log it
@@ -1163,5 +1450,12 @@ public class DbSqlSession implements Session {
     return dbSqlSessionFactory;
   }
 
+	public boolean isOptimizeDeleteOperationsEnabled() {
+		return isOptimizeDeleteOperationsEnabled;
+	}
 
+	public void setOptimizeDeleteOperationsEnabled(boolean isOptimizeDeleteOperationsEnabled) {
+		this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
+	}
+  
 }

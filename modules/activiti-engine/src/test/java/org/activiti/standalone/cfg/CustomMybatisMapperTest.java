@@ -3,8 +3,6 @@ package org.activiti.standalone.cfg;
 import java.util.List;
 import java.util.Map;
 
-import javax.net.ssl.HostnameVerifier;
-
 import org.activiti.engine.impl.cmd.AbstractCustomSqlExecution;
 import org.activiti.engine.impl.cmd.CustomSqlExecution;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;

@@ -30,7 +30,7 @@ public class SetRandomVariablesTaskListener implements TaskListener {
 
   @Override
   public void notify(DelegateTask delegateTask) {
-    String varName = null;
+    String varName;
     for(int i=0; i<5; i++) {
       varName = "variable-" + new Random().nextInt(10);
       delegateTask.getExecution().setVariable(varName, getRandomValue());

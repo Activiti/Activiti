@@ -21,6 +21,7 @@ import java.util.Map;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.identity.Authentication;
 
 /**
@@ -28,7 +29,7 @@ import org.activiti.engine.impl.identity.Authentication;
  * @author Christian Stettler
  * @author Joram Barrez
  */
-public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance {
+public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance, BulkDeleteable {
 
   private static final long serialVersionUID = 1L;
   
@@ -38,6 +39,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
   protected String startActivityId;
   protected String superProcessInstanceId;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+  protected String name;
   protected List<HistoricVariableInstanceEntity> queryVariables;
 
   public HistoricProcessInstanceEntity() {
@@ -64,6 +66,7 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
     Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
     persistentState.put("endTime", endTime);
     persistentState.put("businessKey", businessKey);
+    persistentState.put("name", name);
     persistentState.put("durationInMillis", durationInMillis);
     persistentState.put("deleteReason", deleteReason);
     persistentState.put("endStateName", endActivityId);
@@ -117,7 +120,15 @@ public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity i
 	public void setTenantId(String tenantId) {
 		this.tenantId = tenantId;
 	}
-
+	
+	public String getName() {
+      return name;
+    }
+	
+	public void setName(String name) {
+      this.name = name;
+    }
+	
 	public Map<String, Object> getProcessVariables() {
     Map<String, Object> variables = new HashMap<String, Object>();
     if (queryVariables != null) {

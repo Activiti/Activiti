@@ -120,7 +120,7 @@ var CONNECTION_TYPE = {
 var ProcessDiagramCanvas = function(){
 };
 ProcessDiagramCanvas.prototype = {
-// var ProcessDiagramCanvas = {
+// var DefaultProcessDiagramCanvas = {
 	canvasHolder: "holder",
 	canvasWidth: 0, 
 	canvasHeight: 0,
@@ -968,6 +968,19 @@ ProcessDiagramCanvas.prototype = {
 		if (conditional) {
 			conditionalSequenceFlowIndicator = this._drawConditionalSequenceFlowIndicator(firstLine);
 		}
+
+        // draw flow name
+        var flowName = contextObject.name;
+        if (flowName) {
+            var xPointArray = contextObject.xPointArray;
+            var yPointArray = contextObject.yPointArray;
+            var textX = xPointArray[0] < xPointArray[1] ? xPointArray[0] : xPointArray[1];
+            var textY = yPointArray[0] < yPointArray[1] ? yPointArray[1] : yPointArray[0];
+            // fix xy
+            textX += 20;
+            textY -= 10;
+            this.g.text(textX, textY, flowName).attr(LABEL_FONT);
+        }
 		
 		var st = this.g.set();
 		st.push(polyline.element, arrowHead, circleTail, conditionalSequenceFlowIndicator);
@@ -1111,7 +1124,7 @@ ProcessDiagramCanvas.prototype = {
 		//var arrowHead = this.g.path("M-" + ARROW_WIDTH/2 + " -" + doubleArrowWidth + "L0 0" + "L" + ARROW_WIDTH/2 + " -" + doubleArrowWidth + "z");
 		
 		var arrowHead = this.g.path("M0 0L-" + ARROW_WIDTH/1.5 + " -" + doubleArrowWidth + "L" + ARROW_WIDTH/1.5 + " -" + doubleArrowWidth + "z");
-		//var c = ProcessDiagramCanvas.g.ellipse(0, 0, 3, 3);
+		//var c = DefaultProcessDiagramCanvas.g.ellipse(0, 0, 3, 3);
 		//c.transform("t"+targetX+","+targetY+"");
 		
 		var angle = Math.atan2(targetY - srcY, targetX - srcX);

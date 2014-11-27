@@ -14,6 +14,7 @@ package org.activiti.camel;
 
 import java.util.Map;
 
+import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
@@ -25,10 +26,12 @@ import org.apache.camel.impl.DefaultComponent;
  * or you can choose to create your own. Please reference the comments for the "CamelBehavior" class for more information on the 
  * out-of-the-box implementation class options. 
  * 
- * @author Ryan Johnston (@rjfsu), Tijs Rademakers
+ * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Arnold Schrijver
  */
 public class ActivitiComponent extends DefaultComponent {
 
+  private IdentityService identityService;
+    
   private RuntimeService runtimeService;
   
   private boolean copyVariablesToProperties;
@@ -42,6 +45,7 @@ public class ActivitiComponent extends DefaultComponent {
   @Override
   public void setCamelContext(CamelContext context) {
     super.setCamelContext(context);
+    identityService = getByType(context, IdentityService.class);
     runtimeService = getByType(context, RuntimeService.class);
   }
 
@@ -57,6 +61,7 @@ public class ActivitiComponent extends DefaultComponent {
   @Override
   protected Endpoint createEndpoint(String s, String s1, Map<String, Object> stringObjectMap) throws Exception {
     ActivitiEndpoint ae = new ActivitiEndpoint(s, getCamelContext(), runtimeService);
+    ae.setIdentityService(identityService);
     ae.setCopyVariablesToProperties(this.copyVariablesToProperties);
     ae.setCopyVariablesToBodyAsMap(this.copyVariablesToBodyAsMap);
     ae.setCopyCamelBodyToBody(this.copyCamelBodyToBody);

@@ -50,7 +50,7 @@ public class AttachmentEntityManager extends AbstractManager {
     String processDefinitionId = null;
     String executionId = null;
     
-    if(dispatchEvents && attachments != null && attachments.size() > 0) {
+    if(dispatchEvents && attachments != null && !attachments.isEmpty()) {
     	// Forced to fetch the task to get hold of the process definition for event-dispatching, if available
     	Task task = getTaskManager().findTaskById(taskId);
     	if(task != null) {

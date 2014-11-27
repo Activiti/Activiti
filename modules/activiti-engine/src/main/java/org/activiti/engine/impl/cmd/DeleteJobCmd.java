@@ -29,6 +29,13 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
   }
 
   public Object execute(CommandContext commandContext) {
+    JobEntity jobToDelete = getJobToDelete(commandContext);
+
+    jobToDelete.delete();
+    return null;
+  }
+
+  protected JobEntity getJobToDelete(CommandContext commandContext) {
     if (jobId == null) {
       throw new ActivitiIllegalArgumentException("jobId is null");
     }
@@ -40,17 +47,14 @@ public class DeleteJobCmd implements Command<Object>, Serializable {
     if (job == null) {
       throw new ActivitiObjectNotFoundException("No job found with id '" + jobId + "'", Job.class);
     }
-    
+
     // We need to check if the job was locked, ie acquired by the job acquisition thread
     // This happens if the the job was already acquired, but not yet executed.
     // In that case, we can't allow to delete the job.
-    if (job.getLockOwner() != null || job.getLockExpirationTime() != null)
-    {
+    if (job.getLockOwner() != null) {
       throw new ActivitiException("Cannot delete job when the job is being executed. Try again later.");
     }
-
-    job.delete();
-    return null;
+    return job;
   }
 
 }

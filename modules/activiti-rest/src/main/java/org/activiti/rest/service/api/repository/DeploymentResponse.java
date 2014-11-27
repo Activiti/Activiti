@@ -16,6 +16,9 @@ package org.activiti.rest.service.api.repository;
 import java.util.Date;
 
 import org.activiti.engine.repository.Deployment;
+import org.activiti.rest.common.util.DateToStringSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
  * @author Tijs Rademakers
@@ -25,6 +28,7 @@ public class DeploymentResponse {
 
   String id;
   String name;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
   Date deploymentTime;
   String category;
   String url;

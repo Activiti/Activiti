@@ -138,7 +138,8 @@ public class TimerDeclarationImpl implements Serializable {
     if (executionEntity != null) {
       timer.setExecution(executionEntity);
       timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
-      
+      timer.setProcessInstanceId(executionEntity.getProcessInstanceId());
+
       // Inherit tenant identifier (if applicable)
       if (executionEntity != null && executionEntity.getTenantId() != null) {
       	timer.setTenantId(executionEntity.getTenantId());
@@ -150,7 +151,7 @@ public class TimerDeclarationImpl implements Serializable {
     	// See ACT-1427: A boundary timer with a cancelActivity='true', doesn't need to repeat itself
     	boolean repeat = !isInterruptingTimer;
     	
-    	// ACT-1951: intermediate catching timer events shouldn't repeat accoring to spec
+    	// ACT-1951: intermediate catching timer events shouldn't repeat according to spec
     	if(TimerCatchIntermediateEventJobHandler.TYPE.equals(jobHandlerType)) {
     		repeat = false;
     	}

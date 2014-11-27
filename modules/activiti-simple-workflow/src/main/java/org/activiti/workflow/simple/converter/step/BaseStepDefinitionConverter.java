@@ -152,7 +152,7 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
         type = "enum";
         ListPropertyDefinition listDefinition = (ListPropertyDefinition) propertyDefinition;
         
-        if (listDefinition.getEntries().size() > 0) {
+        if (!listDefinition.getEntries().isEmpty()) {
           List<FormValue> formValues = new ArrayList<FormValue>(listDefinition.getEntries().size());
           for (ListPropertyEntry entry : listDefinition.getEntries()) {
             FormValue formValue = new FormValue();
@@ -161,6 +161,7 @@ public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> i
             formValue.setName(entry.getName());
             formValues.add(formValue);
           }
+          formProperty.setFormValues(formValues);
         }
       } else {
       	// Fallback to simple text
