@@ -21,9 +21,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
   public void testSelectOneTask() {
     // Create test data
     for (int i=0; i<5; i++) {
-      Task task = taskService.newTask();
-      task.setName(i + "");
-      taskService.saveTask(task);
+      createTask(i + "", null, null, 0);
     }
     
     Task task = managementService.executeCommand(new Command<Task>() {
@@ -36,18 +34,13 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     assertEquals("2", task.getName());
     
     // Cleanup
-    for (Task taskToDelete : taskService.createTaskQuery().list()) {
-      taskService.deleteTask(taskToDelete.getId());
-      historyService.deleteHistoricTaskInstance(taskToDelete.getId());
-    }
+    deleteTasks(taskService.createTaskQuery().list());
   }
   
   public void testSelectTaskList() {
     // Create test data
     for (int i=0; i<5; i++) {
-      Task task = taskService.newTask();
-      task.setName(i + "");
-      taskService.saveTask(task);
+      createTask(i + "", null, null, 0);
     }
     
     List<Task> tasks = managementService.executeCommand(new Command<List<Task>>() {
@@ -62,23 +55,15 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     assertEquals(5, tasks.size());
     
     // Cleanup
-    for (Task taskToDelete : tasks) {
-      taskService.deleteTask(taskToDelete.getId());
-      historyService.deleteHistoricTaskInstance(taskToDelete.getId());
-    }
+    deleteTasks(tasks);
   }
   
   public void testSelectTasksByCustomQuery() {
     // Create test data
     for (int i=0; i<5; i++) {
-      Task task = taskService.newTask();
-      task.setName(i + "");
-      taskService.saveTask(task);
+      createTask(i + "", null, null, 0);
     }
-    Task task = taskService.newTask();
-    task.setOwner("kermit");
-    task.setName("Owned task");
-    taskService.saveTask(task);
+    createTask("Owned task", "kermit", null, 0);
     
     CommandExecutor commandExecutor = ((ManagementServiceImpl)managementService).getCommandExecutor();
     List<Task> tasks = new CustomTaskQuery(commandExecutor).unOwned().list();
@@ -87,35 +72,89 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     assertEquals(5, new CustomTaskQuery(commandExecutor).unOwned().count());
     
     tasks = new CustomTaskQuery(commandExecutor).list();
+    
     // Cleanup
-    for (Task taskToDelete : tasks) {
-      taskService.deleteTask(taskToDelete.getId());
-      historyService.deleteHistoricTaskInstance(taskToDelete.getId());
-    }
+    deleteTasks(tasks);
   }
   
   public void testSelectTaskByCustomQuery() {
     // Create test data
     for (int i=0; i<5; i++) {
-      Task task = taskService.newTask();
-      task.setName(i + "");
-      taskService.saveTask(task);
+      createTask(i + "", null, null, 0);
     }
-    Task task = taskService.newTask();
-    task.setOwner("kermit");
-    task.setName("Owned task");
-    taskService.saveTask(task);
+    createTask("Owned task", "kermit", null, 0);
     
     CommandExecutor commandExecutor = ((ManagementServiceImpl)managementService).getCommandExecutor();
-    task = new CustomTaskQuery(commandExecutor).taskOwner("kermit").singleResult();
+    Task task = new CustomTaskQuery(commandExecutor).taskOwner("kermit").singleResult();
     
     assertEquals("kermit", task.getOwner());
     
     List<Task> tasks = new CustomTaskQuery(commandExecutor).list();
     // Cleanup
-    for (Task taskToDelete : tasks) {
-      taskService.deleteTask(taskToDelete.getId());
-      historyService.deleteHistoricTaskInstance(taskToDelete.getId());
+    deleteTasks(tasks);
+  }
+  
+  public void testCustomQueryListPage() {
+    // Create test data
+    for (int i=0; i<15; i++) {
+      createTask(i + "", null, null, 0);
     }
+    
+    CommandExecutor commandExecutor = ((ManagementServiceImpl)managementService).getCommandExecutor();
+    List<Task> tasks = new CustomTaskQuery(commandExecutor).listPage(0, 10);
+    
+    assertEquals(10, tasks.size());
+    
+    tasks = new CustomTaskQuery(commandExecutor).list();
+    
+    // Cleanup
+    deleteTasks(tasks);
+  }
+  
+  public void testCustomQueryOrderBy() {
+    // Create test data
+    for (int i=0; i<5; i++) {
+      createTask(i + "", null, null, i*20);
+    }
+    
+    CommandExecutor commandExecutor = ((ManagementServiceImpl)managementService).getCommandExecutor();
+    List<Task> tasks = new CustomTaskQuery(commandExecutor).orderByTaskPriority().desc().list();
+    
+    assertEquals(5, tasks.size());
+    
+    for (int i=0,j=4; i<5; i++,j--) {
+      Task task = tasks.get(i);
+      assertEquals(j*20, task.getPriority());
+    }
+    
+    tasks = new CustomTaskQuery(commandExecutor).orderByTaskPriority().asc().list();
+    
+    assertEquals(5, tasks.size());
+    
+    for (int i=0; i<5; i++) {
+      Task task = tasks.get(i);
+      assertEquals(i*20, task.getPriority());
+    }
+    // Cleanup
+    deleteTasks(tasks);
+  }
+  
+  protected void createTask(String name, String owner, String assignee, int priority){
+    Task task = taskService.newTask();
+    task.setName(name);
+    task.setOwner(owner);
+    task.setAssignee(assignee);
+    task.setPriority(priority);
+    taskService.saveTask(task);
+  }
+  
+  protected void deleteTask(Task task){
+    taskService.deleteTask(task.getId());
+    historyService.deleteHistoricTaskInstance(task.getId());
+  }
+  
+  protected void deleteTasks(List<Task> tasks){
+    for (Task task : tasks) 
+      deleteTask(task);
   }
 }

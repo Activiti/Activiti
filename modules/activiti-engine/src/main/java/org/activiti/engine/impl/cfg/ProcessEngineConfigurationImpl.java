@@ -745,7 +745,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   }
 	
 	protected Configuration parseCustomMybatisXMLMappers(Configuration configuration) {
-	  if (getCustomMybatisXMLMappers() == null) return configuration;
+	  if (getCustomMybatisXMLMappers() != null)
     // see XMLConfigBuilder.mapperElement()
     for(String resource: getCustomMybatisXMLMappers()){
       XMLMapperBuilder mapperParser = new XMLMapperBuilder(getResourceAsStream(resource), 

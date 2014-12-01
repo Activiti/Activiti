@@ -21,6 +21,9 @@ public class CustomTaskQuery extends TaskQueryImpl {
   
   protected boolean unOwned;
   
+  public CustomTaskQuery() {
+  }
+  
   public CustomTaskQuery(CommandExecutor commandExecutor) {
     super(commandExecutor);
   }
