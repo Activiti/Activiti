@@ -63,6 +63,9 @@ public class ChangeOwnershipListener implements ClickListener {
       protected void submitted(SubmitEvent event) {
         // Update owner
         String selectedUser = involvePeoplePopupWindow.getSelectedUserId();
+        if (selectedUser == null) {
+        	return;
+        }
         task.setOwner(selectedUser);
         ProcessEngines.getDefaultProcessEngine().getTaskService().setOwner(task.getId(), selectedUser);
         
