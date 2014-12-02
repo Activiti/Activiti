@@ -74,6 +74,11 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
         ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
 
         if (delegate instanceof ActivityBehavior) {
+
+          if(delegate instanceof AbstractBpmnActivityBehavior){
+            ((AbstractBpmnActivityBehavior) delegate).setMultiInstanceActivityBehavior(getMultiInstanceActivityBehavior());
+          }
+
           Context.getProcessEngineConfiguration().getDelegateInterceptor()
                   .handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
 
