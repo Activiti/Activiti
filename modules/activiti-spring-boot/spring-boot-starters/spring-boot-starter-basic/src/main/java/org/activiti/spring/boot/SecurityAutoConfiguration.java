@@ -21,27 +21,22 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 @AutoConfigureBefore(org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class)
 public class SecurityAutoConfiguration {
 
-    @Configuration
-    @ConditionalOnClass( UserDetailsService.class)
-    public static class UserDetailsServiceConfiguration
-            extends GlobalAuthenticationConfigurerAdapter {
+  @Configuration
+  @ConditionalOnClass( UserDetailsService.class)
+  public static class UserDetailsServiceConfiguration
+          extends GlobalAuthenticationConfigurerAdapter {
 
-        @Override
-        public void init(AuthenticationManagerBuilder auth) throws Exception {
-            auth.userDetailsService( userDetailsService());
-        }
-
-        @Bean
-        public UserDetailsService userDetailsService() {
-            return new IdentityServiceUserDetailsService(this.identityService);
-        }
-
-        @Autowired
-        private IdentityService identityService;
+    @Override
+    public void init(AuthenticationManagerBuilder auth) throws Exception {
+      auth.userDetailsService( userDetailsService());
     }
 
+    @Bean
+    public UserDetailsService userDetailsService() {
+      return new IdentityServiceUserDetailsService(this.identityService);
+    }
 
-
-
-
+    @Autowired
+    private IdentityService identityService;
+  }
 }

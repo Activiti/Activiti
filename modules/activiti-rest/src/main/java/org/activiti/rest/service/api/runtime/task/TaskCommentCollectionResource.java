@@ -13,66 +13,55 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricTaskInstance;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Task;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.CommentRequest;
 import org.activiti.rest.service.api.engine.CommentResponse;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.data.Status;
-import org.restlet.resource.Get;
-import org.restlet.resource.Post;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class TaskCommentCollectionResource extends TaskBaseResource {
 
-  @Get
-  public List<CommentResponse> getComments() {
-    if(!authenticate())
-      return null;
-    
-    List<CommentResponse> result = new ArrayList<CommentResponse>();
-    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    HistoricTaskInstance task = getHistoricTaskFromRequest();
-    
-    for(Comment comment : ActivitiUtil.getTaskService().getTaskComments(task.getId())) {
-      result.add(responseFactory.createRestComment(this, comment));
-    }
-    
-    return result;
+  @RequestMapping(value="/runtime/tasks/{taskId}/comments", method = RequestMethod.GET, produces="application/json")
+  public List<CommentResponse> getComments(@PathVariable String taskId, HttpServletRequest request) {
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+    return restResponseFactory.createRestCommentList(taskService.getTaskComments(task.getId()));
   }
   
-  @Post
-  public CommentResponse createComment(CommentRequest comment) {
-    if(!authenticate())
-      return null;
+  @RequestMapping(value="/runtime/tasks/{taskId}/comments", method = RequestMethod.POST, produces="application/json")
+  public CommentResponse createComment(@PathVariable String taskId, @RequestBody CommentRequest comment, 
+      HttpServletRequest request, HttpServletResponse response) {
     
-    Task task = getTaskFromRequest();
+    Task task = getTaskFromRequest(taskId);
     
-    if(comment.getMessage() == null) {
+    if (comment.getMessage() == null) {
       throw new ActivitiIllegalArgumentException("Comment text is required.");
     }
     
-    TaskService taskService = ActivitiUtil.getTaskService();
     String processInstanceId = null;
     if (comment.isSaveProcessInstanceId()) {
       Task taskEntity = taskService.createTaskQuery().taskId(task.getId()).singleResult();
       processInstanceId = taskEntity.getProcessInstanceId();
     }
     Comment createdComment = taskService.addComment(task.getId(), processInstanceId, comment.getMessage());
-    setStatus(Status.SUCCESS_CREATED);
+    response.setStatus(HttpStatus.CREATED.value());
     
-    return getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory()
-           .createRestComment(this, createdComment);
+    return restResponseFactory.createRestComment(createdComment);
   }
 }

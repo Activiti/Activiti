@@ -23,6 +23,7 @@ public class SequenceFlow extends FlowElement {
   protected String conditionExpression;
   protected String sourceRef;
   protected String targetRef;
+  protected String skipExpression;
   
   public SequenceFlow() {
   	
@@ -50,6 +51,12 @@ public class SequenceFlow extends FlowElement {
   }
   public void setTargetRef(String targetRef) {
     this.targetRef = targetRef;
+  }
+  public String getSkipExpression() {
+    return skipExpression;
+  }
+  public void setSkipExpression(String skipExpression) {
+    this.skipExpression = skipExpression;
   }
   public String toString() {
     return sourceRef + " --> " + targetRef;

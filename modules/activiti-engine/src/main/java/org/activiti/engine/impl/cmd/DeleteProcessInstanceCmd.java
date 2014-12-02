@@ -12,12 +12,12 @@
  */
 package org.activiti.engine.impl.cmd;
 
-import java.io.Serializable;
-
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
+import java.io.Serializable;
 
 /**
  * @author Joram Barrez
@@ -42,7 +42,13 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
     if (deleteReason == null) {
       deleteReason = "ACTIVITI_DELETED";
     }
-    
+
+    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+        ActivitiEventBuilder.createCancelledEvent(this.processInstanceId
+        , this.processInstanceId, null, deleteReason));
+    }
+
     commandContext
       .getExecutionEntityManager()
       .deleteProcessInstance(processInstanceId, deleteReason);

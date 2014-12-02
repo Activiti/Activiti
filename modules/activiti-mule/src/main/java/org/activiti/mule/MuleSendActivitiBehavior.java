@@ -25,15 +25,20 @@ import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.UsernamePasswordCredentials;
-import org.apache.commons.httpclient.auth.AuthScope;
-import org.apache.commons.httpclient.methods.ByteArrayRequestEntity;
-import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.mule.DefaultMuleMessage;
 import org.mule.api.MuleContext;
 import org.mule.api.MuleMessage;
 import org.mule.api.client.LocalMuleClient;
+import org.mule.util.IOUtils;
 
 /**
  * @author Esteban Robles Luna
@@ -73,8 +78,18 @@ public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
       
     } else {
     
-      HttpClient client = new HttpClient();
-      PostMethod request = new PostMethod(endpointUrlValue);
+      HttpClientBuilder clientBuilder = HttpClientBuilder.create();
+      
+      if (usernameValue != null && passwordValue != null) {
+        CredentialsProvider provider = new BasicCredentialsProvider();
+        UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(usernameValue, passwordValue);
+        provider.setCredentials(new AuthScope("localhost", -1, "mule-realm"), credentials);
+        clientBuilder.setDefaultCredentialsProvider(provider);
+      }
+      
+      HttpClient client = clientBuilder.build();
+      
+      HttpPost request = new HttpPost(endpointUrlValue);
       
       try {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -83,33 +98,26 @@ public class MuleSendActivitiBehavior extends AbstractBpmnActivityBehavior {
         oos.flush();
         oos.close();
         
-        request.setRequestEntity(new ByteArrayRequestEntity(baos.toByteArray()));
+        request.setEntity(new ByteArrayEntity(baos.toByteArray()));
         
       } catch (Exception e) {
         throw new ActivitiException("Error setting message payload", e);
       }
       
-      if (usernameValue != null && passwordValue != null) {
-        client.getParams().setAuthenticationPreemptive(true);
-        client.getState().setCredentials(new AuthScope("localhost", -1, "mule-realm"), 
-            new UsernamePasswordCredentials(usernameValue, passwordValue));
-        request.setDoAuthentication(true);
-      }
-      
-      byte[] response = null;
+      byte[] responseBytes = null;
       try {
         // execute the POST request
-        client.executeMethod(request);
-        response = request.getResponseBody();
+        HttpResponse response = client.execute(request);
+        responseBytes = IOUtils.toByteArray(response.getEntity().getContent());
         
       } finally {
         // release any connection resources used by the method
         request.releaseConnection();
       }
   
-      if (response != null) {
+      if (responseBytes != null) {
         try {
-          ByteArrayInputStream in = new ByteArrayInputStream(response);
+          ByteArrayInputStream in = new ByteArrayInputStream(responseBytes);
           ObjectInputStream is = new ObjectInputStream(in);
           Object result = is.readObject();
           if (resultVariableValue != null) {

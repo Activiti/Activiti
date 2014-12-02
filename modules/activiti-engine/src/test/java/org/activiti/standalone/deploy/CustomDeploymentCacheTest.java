@@ -14,7 +14,6 @@ package org.activiti.standalone.deploy;
 
 import java.text.MessageFormat;
 
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.repository.Deployment;
 

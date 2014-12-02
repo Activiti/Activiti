@@ -13,34 +13,25 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.task.Task;
 import org.activiti.rest.common.api.AbstractPaginateList;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
 
 /**
  * @author Frederik Heremans
  */
 public class TaskPaginateList extends AbstractPaginateList {
 
-  private SecuredResource resource;
+  protected RestResponseFactory restResponseFactory;
   
-  public TaskPaginateList(SecuredResource resource) {
-    this.resource = resource;
+  public TaskPaginateList(RestResponseFactory restResponseFactory) {
+    this.restResponseFactory = restResponseFactory;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    List<TaskResponse> responseList = new ArrayList<TaskResponse>();
-    RestResponseFactory restResponseFactory = resource.getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    for (Object task : list) {
-      responseList.add(restResponseFactory.createTaskResponse(resource, (Task) task));
-    }
-    return responseList;
+    return restResponseFactory.createTaskResponseList(list);
   }
 }

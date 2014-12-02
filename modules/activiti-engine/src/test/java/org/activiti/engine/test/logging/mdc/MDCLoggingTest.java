@@ -63,8 +63,7 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
 			// expected exception
 		}
 		String messages = console.toString();
-		System.out.println("---:" + messages);
-
+		
 		assertTrue(messages.contains("ProcessDefinitionId="
 				+ TestService.processDefinitionId));
 		assertTrue(messages.contains("executionId=" + TestService.executionId));

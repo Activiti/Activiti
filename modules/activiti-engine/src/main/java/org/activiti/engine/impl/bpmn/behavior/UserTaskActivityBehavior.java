@@ -26,6 +26,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
@@ -131,6 +132,13 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     }
 
     task.fireEvent(TaskListener.EVENTNAME_CREATE);
+
+    Expression skipExpression = taskDefinition.getSkipExpression();
+    if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) &&
+        SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
+      
+      leave(execution);
+    }
   }
 
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {

@@ -19,13 +19,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -40,7 +43,11 @@ public class JobEntityManager extends AbstractManager {
 
   public void send(MessageEntity message) {
     message.insert();
-    hintJobExecutor(message);    
+    if (Context.getProcessEngineConfiguration().isAsyncExecutorEnabled()) {
+      hintAsyncExecutor(message);
+    } else {
+      hintJobExecutor(message);
+    }
   }
  
   public void schedule(TimerEntity timer) {
@@ -50,14 +57,28 @@ public class JobEntityManager extends AbstractManager {
     }
 
     timer.insert();
-    pokeJobExecutor(timer);
-  }
     
-  // Check if this timer is before the current process engine time
-  public void pokeJobExecutor(JobEntity job) {
-    if (job.getDuedate().getTime() <= (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime())) {
-      hintJobExecutor(job);
+    ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
+    if (engineConfiguration.isAsyncExecutorEnabled() == false && 
+        timer.getDuedate().getTime() <= (engineConfiguration.getClock().getCurrentTime().getTime())) {
+      
+      hintJobExecutor(timer);
     }
+  }
+  
+  public void retryAsyncJob(JobEntity job) {
+    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
+    asyncExecutor.executeAsyncJob(job);
+  }
+  
+  protected void hintAsyncExecutor(JobEntity job) {  
+    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
+
+    // notify job executor:      
+    TransactionListener transactionListener = new AsyncJobAddedNotification(job, asyncExecutor);
+    Context.getCommandContext()
+      .getTransactionContext()
+      .addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
   
   protected void hintJobExecutor(JobEntity job) {  
@@ -91,10 +112,26 @@ public class JobEntityManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
-    Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
   }
   
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findNextTimerJobsToExecute(Page page) {
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
+    return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findAsyncJobsDueToExecute(Page page) {
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
+    return getDbSqlSession().selectList("selectAsyncJobsDueToExecute", now, page);
+  }
+  
+  @SuppressWarnings("unchecked")
   public List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
   	return getDbSqlSession().selectList("selectJobsByLockOwner", lockOwner, start, maxNrOfJobs);
   }

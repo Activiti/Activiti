@@ -11,7 +11,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.16.4-SNAPSHOT</version>
+    <version>5.17.0-SNAPSHOT</version>
   </parent>
 
   <properties>
@@ -58,28 +58,16 @@
         </configuration>
       </plugin>
 
-      <!-- A simple Jetty test server at http://localhost:8080/activiti-webapp-explorer2 
-        can be launched with the Maven goal jetty:run and stopped with jetty:stop -->
       <plugin>
-        <groupId>org.eclipse.jetty</groupId>
-        <artifactId>jetty-maven-plugin</artifactId>
-        <version>9.2.2.v20140723</version>
-        <configuration>
-          <stopPort>9966</stopPort>
-          <stopKey>activiti-webapp-explorer2</stopKey>
-          <!-- Redeploy every x seconds if changes are detected, 0 for no 
-            automatic redeployment -->
-          <scanIntervalSeconds>0</scanIntervalSeconds>
-          <webApp>
-            <contextPath>/activiti-explorer2</contextPath>
-            <!-- make sure Jetty also finds the widgetset -->
-            <baseResource implementation="org.eclipse.jetty.util.resource.ResourceCollection">
-              <!-- Workaround for Maven/Jetty issue http://jira.codehaus.org/browse/JETTY-680 -->
-              <!-- <resources>src/main/webapp,${project.build.directory}/${project.build.finalName}</resources> -->
-              <resourcesAsCSV>src/main/webapp</resourcesAsCSV>
-            </baseResource>
-          </webApp>
-        </configuration>
+	    <groupId>org.apache.tomcat.maven</groupId>
+        <artifactId>tomcat7-maven-plugin</artifactId>
+		<configuration>
+		  <port>8080</port>
+		  <path>/activiti-explorer</path>
+		  <systemProperties>
+		    <com.sun.management.jmxremote.port>4000</com.sun.management.jmxremote.port>
+          </systemProperties>
+		</configuration>
       </plugin>
     </plugins>
     <pluginManagement>
@@ -197,6 +185,13 @@
     <dependency>
       <groupId>org.activiti</groupId>
       <artifactId>activiti-simple-workflow</artifactId>
+    </dependency>
+    
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <scope>provided</scope>
     </dependency>
 
     <!-- Database -->

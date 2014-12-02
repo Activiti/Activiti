@@ -35,7 +35,6 @@ public class ChineseConverterTest extends ResourceActivitiTestCase {
   
   protected BpmnModel exportAndReadXMLFile(BpmnModel bpmnModel) throws Exception {
     byte[] xml = new BpmnXMLConverter().convertToXML(bpmnModel, processEngineConfiguration.getXmlEncoding());
-    System.out.println("xml " + new String(xml, processEngineConfiguration.getXmlEncoding()));
     StreamSource xmlSource = new InputStreamSource(new ByteArrayInputStream(xml));
     BpmnModel parsedModel = new BpmnXMLConverter().convertToBpmnModel(xmlSource, false, false, processEngineConfiguration.getXmlEncoding());
     return parsedModel;

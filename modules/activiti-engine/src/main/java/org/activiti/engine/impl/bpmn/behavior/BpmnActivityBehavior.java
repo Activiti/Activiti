@@ -13,10 +13,17 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Condition;
+import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -27,11 +34,6 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * Helper class for implementing BPMN 2.0 activities, offering convenience
@@ -118,11 +120,18 @@ public class BpmnActivityBehavior implements Serializable {
 
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
     for (PvmTransition outgoingTransition : outgoingTransitions) {
-      if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
-        Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-        if (condition == null || !checkConditions || condition.evaluate(execution)) {
-          transitionsToTake.add(outgoingTransition);
+      Expression skipExpression = outgoingTransition.getSkipExpression();
+      
+      if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
+        if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
+          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+          if (condition == null || !checkConditions || condition.evaluate(execution)) {
+            transitionsToTake.add(outgoingTransition);
+          }
         }
+        
+      } else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)){
+        transitionsToTake.add(outgoingTransition);
       }
     }
 

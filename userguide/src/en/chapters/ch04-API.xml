@@ -81,7 +81,7 @@ FormService formService = processEngine.getFormService();</programlisting>
     </para>
     
     <para>
-        While the <literal>RepositoryService</literal> is rather about static information (ie. data that doesn't change, or at least not a lot),
+        While the <literal>RepositoryService</literal> is rather about static information (i.e. data that doesn't change, or at least not a lot),
         the <emphasis role="bold">RuntimeService</emphasis> is quite the opposite. It deals with starting new process instances of process definitions.
         As said above, a <literal>process definition</literal> defines the structure and behaviour of the different steps in a process.
         A process instance is one execution of such a process definition. For each process definition there typically are many 
@@ -121,7 +121,7 @@ FormService formService = processEngine.getFormService();</programlisting>
         The <emphasis role="bold">IdentityService</emphasis> is pretty simple. It allows the management (creation, update, deletion, querying, ...)
         of groups and users. It is important to understand that Activiti actually doesn't do any checking on users at runtime.
         For example, a task could be assigned to any user, but the engine does not verify if that user is known to the system.
-        This is because the Activiti engine can also used in conjunction with services such as ldap, active directory, etc.
+        This is because the Activiti engine can also used in conjunction with services such as LDAP, Active Directory, etc.
     </para>
     
     <para>
@@ -169,7 +169,7 @@ FormService formService = processEngine.getFormService();</programlisting>
     In the example above, when an id is passed for which no task exists, an exception will be thrown. Also, since the javadoc <emphasis role="bold">explicitly states that taskId cannot be null, an <literal>ActivitiIllegalArgumentException</literal> will be thrown when <literal>null</literal> is passed</emphasis>.
     </para>
     <para>
-      Even though we want to avoid a big exception hierarchy, the following subclasses were added which are thrown in specific cases. All other errors that occur during process-execution or API-invokation that don't fit into the
+      Even though we want to avoid a big exception hierarchy, the following subclasses were added which are thrown in specific cases. All other errors that occur during process-execution or API-invocation that don't fit into the
       possible exceptions below, are throw as regular <literal>ActivitiExceptions</literal>s.
       <itemizedlist>
         <listitem>
@@ -189,7 +189,7 @@ FormService formService = processEngine.getFormService();</programlisting>
           </listitem>
           <listitem>
             <para>
-             <literal>ActivitiObjectNotFoundException: </literal> Thrown when an object that is requested or actioned on does not exist.
+             <literal>ActivitiObjectNotFoundException: </literal> Thrown when an object that is requested or action on does not exist.
             </para>
           </listitem>
           <listitem>
@@ -211,7 +211,7 @@ FormService formService = processEngine.getFormService();</programlisting>
     <para>
         As described above, the way to interact with the Activiti engine is through the services exposed by 
         an instance of the <literal>org.activiti.engine.ProcessEngine</literal> class. The following 
-        code snippets assume you have a working Activiti environment, ie. you have access
+        code snippets assume you have a working Activiti environment, i.e. you have access
         to a valid <literal>org.activiti.engine.ProcessEngine</literal>. If you simply want to try
         out the code below, you can download or clone the 
         <ulink url="https://github.com/Activiti/activiti-unit-test-template">Activiti unit test template</ulink>,
@@ -235,7 +235,7 @@ FormService formService = processEngine.getFormService();</programlisting>
             Create a new xml file <literal>VacationRequest.bpmn20.xml</literal> in the <literal>src/test/resources/org/activiti/test</literal>
             resource folder (or anywhere else if you're not using the unit test template) with the 
             following content. Note that this section won't explain the xml constructs being used in the example above. 
-            Please read <link linkend="bpmn20">the bpmn 2.0 chapter</link> to become familiar
+            Please read <link linkend="bpmn20">the BPMN 2.0 chapter</link> to become familiar
             with these constructs first if needed.
             <programlisting>
 &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;

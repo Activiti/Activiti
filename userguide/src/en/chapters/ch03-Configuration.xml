@@ -434,8 +434,8 @@ ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemPr
           </row>
           <row>
             <entry>mssql</entry>
-            <entry>jdbc:sqlserver://localhost:1433/activiti</entry>
-            <entry></entry>
+            <entry>jdbc:sqlserver://localhost:1433;databaseName=activiti (jdbc.driver=com.microsoft.sqlserver.jdbc.SQLServerDriver) <emphasis>OR</emphasis> jdbc:jtds:sqlserver://localhost:1433/activiti (jdbc.driver=net.sourceforge.jtds.jdbc.Driver)</entry>
+            <entry>Tested using Microsoft JDBC Driver 4.0 (sqljdbc4.jar) and JTDS Driver</entry>
           </row>
         </tbody>
       </tgroup>
@@ -1108,9 +1108,11 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
               </row>
               <row>
-                <entry>ACTIVITY_TIMOUT</entry>
-                <entry>An activity is interupted due to an interrupting timer boundary event.</entry>
-                <entry><literal>org.activiti...ActivitiActivityEvent</literal></entry>
+                <entry>ACTIVITY_CANCELLED</entry>
+                <entry>An activity is going to be cancelled. There can be three reasons for activity cancellation (MessageEventSubscriptionEntity, SignalEventSubscriptionEntity, TimerEntity).</entry>
+                <entry>
+                  <literal>org.activiti...ActivitiActivityCancelledEvent</literal>
+                </entry>
               </row>
               <row>
                 <entry>ACTIVITY_SIGNALED</entry>
@@ -1187,6 +1189,14 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
                 </entry>
               </row>
               <row>
+                <entry>PROCESS_CANCELLED</entry>
+                <entry>A process has been cancelled. Dispatched before the process instance is deleted from runtime. Process instance is cancelled by API call <literal>RuntimeService.deleteProcessInstance</entry>literal>.
+                </entry>
+                <entry>
+                  <literal>org.activiti...ActivitiCancelledEvent</literal>
+                </entry>
+              </row>
+              <row>
                 <entry>MEMBERSHIP_CREATED</entry>
                 <entry>A user has been added to a group. The event contains the id's of the user and group involved.</entry>
                 <entry><literal>org.activiti...ActivitiMembershipEvent</literal></entry>
@@ -1231,7 +1241,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
           they are running in the same JVM or not. 
         </para>
         <para>
-          Certain event-types (related to entities) expose the targetted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). If possible, use the <literal>EngineServices</literal> exposed by the event to interact in a safe way with the engine. Even then, you need to 
+          Certain event-types (related to entities) expose the targeted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). If possible, use the <literal>EngineServices</literal> exposed by the event to interact in a safe way with the engine. Even then, you need to
           be cautious with updates/operations on entities that are involved in the dispatched event.
         </para>
         <para>

@@ -42,6 +42,7 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
     sequenceFlow.setSourceRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SOURCE_REF));
     sequenceFlow.setTargetRef(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_TARGET_REF));
     sequenceFlow.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
+    sequenceFlow.setSkipExpression(xtr.getAttributeValue(null, ATTRIBUTE_FLOW_SKIP_EXPRESSION));
     
     parseChildElements(getXMLElementName(), sequenceFlow, model, xtr);
     
@@ -53,6 +54,9 @@ public class SequenceFlowXMLConverter extends BaseBpmnXMLConverter {
     SequenceFlow sequenceFlow = (SequenceFlow) element;
     writeDefaultAttribute(ATTRIBUTE_FLOW_SOURCE_REF, sequenceFlow.getSourceRef(), xtw);
     writeDefaultAttribute(ATTRIBUTE_FLOW_TARGET_REF, sequenceFlow.getTargetRef(), xtw);
+    if (StringUtils.isNotEmpty(sequenceFlow.getSkipExpression())) {
+      writeDefaultAttribute(ATTRIBUTE_FLOW_SKIP_EXPRESSION, sequenceFlow.getSkipExpression(), xtw);
+    }
   }
   
   @Override

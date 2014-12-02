@@ -6,7 +6,7 @@ STATUS=$?
 if [ $STATUS -eq 0 ] 
 then
     cd modules/activiti-webapp-explorer2
-    mvn clean install jetty:run
+    mvn -Dfile.encoding=UTF-8 clean package tomcat7:run
 else
     echo "Build failure in dependent project. Cannot boot Activiti Explorer."
 fi    

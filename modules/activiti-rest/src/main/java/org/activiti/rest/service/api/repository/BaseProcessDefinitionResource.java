@@ -13,34 +13,34 @@
 
 package org.activiti.rest.service.api.repository;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.repository.ProcessDefinition;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
+import org.activiti.rest.service.api.RestResponseFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 /**
- * @author Frederik Heremans
+ * @author Tijs Rademakers
  */
-public class BaseProcessDefinitionResource extends SecuredResource {
+public class BaseProcessDefinitionResource {
+  
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected RepositoryService repositoryService;
 
   /**
    * Returns the {@link ProcessDefinition} that is requested. Throws the right exceptions
    * when bad request was made or definition is not found.
    */
-  protected ProcessDefinition getProcessDefinitionFromRequest() {
-    String processDefinitionId = getAttribute("processDefinitionId");
-    if(processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("The processDefinitionId cannot be null");
-    }
-    
-    ProcessDefinition processDefinition = ActivitiUtil.getRepositoryService().createProcessDefinitionQuery()
-            .processDefinitionId(processDefinitionId).singleResult();
+  protected ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
+    ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
    
-   if(processDefinition == null) {
-     throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
-   }
-   return processDefinition;
+    if (processDefinition == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
+    }
+    return processDefinition;
   }
 }

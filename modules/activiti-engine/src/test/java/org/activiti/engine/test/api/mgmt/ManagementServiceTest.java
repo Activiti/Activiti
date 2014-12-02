@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.cmd.AcquireJobsCmd;
+import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -227,7 +227,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
 
     // Acquire job by running the acquire command manually
     ProcessEngineImpl processEngineImpl = (ProcessEngineImpl) processEngine;
-    AcquireJobsCmd acquireJobsCmd = new AcquireJobsCmd(processEngineImpl.getProcessEngineConfiguration().getJobExecutor());
+    AcquireTimerJobsCmd acquireJobsCmd = new AcquireTimerJobsCmd("testLockOwner", 60000, 5);
     CommandExecutor commandExecutor = processEngineImpl.getProcessEngineConfiguration().getCommandExecutor();
     commandExecutor.execute(acquireJobsCmd);
     

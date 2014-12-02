@@ -74,11 +74,34 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase{
 		assertFalse(executionJava.isEnded());
 		
 		// Try to execute job 3 times
-		waitForJobExecutorToProcessAllJobs(10000L, 100L);
+		Job jobJava = managementService.createJobQuery().processInstanceId(instanceJava.getId()).singleResult();
+    assertNotNull(jobJava);
+		
+    try {
+      managementService.executeJob(jobJava.getId());
+      fail("Expected exception");
+    } catch (Exception e) {
+      // expected
+    }
+    
+    try {
+      managementService.executeJob(jobJava.getId());
+      fail("Expected exception");
+    } catch (Exception e) {
+      // expected
+    }
+    
+    try {
+      managementService.executeJob(jobJava.getId());
+      fail("Expected exception");
+    } catch (Exception e) {
+      // expected
+    }
 				
 		//Assert that there is a failed job.
-		Job jobJava = managementService.createJobQuery().processInstanceId(instanceJava.getId()).singleResult();
+		jobJava = managementService.createJobQuery().processInstanceId(instanceJava.getId()).singleResult();
 		assertNotNull(jobJava);
+		assertEquals(0, jobJava.getRetries());
 		
 		//Delete the process instance.
 		runtimeService.deleteProcessInstance(instanceJava.getId(), null);

@@ -89,9 +89,9 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Default implementation of the {@link ActivityBehaviorFactory}. 
- * Used when no custom {@link ActivityBehaviorFactory} is injected on 
- * the {@link ProcessEngineConfigurationImpl}.
+ * Default implementation of the {@link ActivityBehaviorFactory}. Used when no
+ * custom {@link ActivityBehaviorFactory} is injected on the
+ * {@link ProcessEngineConfigurationImpl}.
  * 
  * @author Joram Barrez
  */
@@ -128,17 +128,35 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   // Service task
   
   public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask) {
-    return new ClassDelegate(serviceTask.getImplementation(), createFieldDeclarations(serviceTask.getFieldExtensions()));
+    Expression skipExpression;
+    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
+      skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
+    } else {
+      skipExpression = null;
+    }
+    return new ClassDelegate(serviceTask.getImplementation(), createFieldDeclarations(serviceTask.getFieldExtensions()), skipExpression);
   }
   
   public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask) {
     Expression delegateExpression = expressionManager.createExpression(serviceTask.getImplementation());
-    return new ServiceTaskDelegateExpressionActivityBehavior(delegateExpression, createFieldDeclarations(serviceTask.getFieldExtensions()));
+    Expression skipExpression;
+    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
+      skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
+    } else {
+      skipExpression = null;
+    }
+    return new ServiceTaskDelegateExpressionActivityBehavior(delegateExpression, skipExpression, createFieldDeclarations(serviceTask.getFieldExtensions()));
   }
   
   public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask) {
     Expression expression = expressionManager.createExpression(serviceTask.getImplementation());
-    return new ServiceTaskExpressionActivityBehavior(expression, serviceTask.getResultVariableName());
+    Expression skipExpression;
+    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
+      skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
+    } else {
+      skipExpression = null;
+    }
+    return new ServiceTaskExpressionActivityBehavior(expression, skipExpression, serviceTask.getResultVariableName());
   }
   
   public WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask) {
@@ -229,8 +247,19 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
   
   public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
-    BusinessRuleTaskActivityBehavior ruleActivity = new BusinessRuleTaskActivityBehavior();
-    
+    BusinessRuleTaskActivityBehavior ruleActivity = null;
+	if(StringUtils.isNotEmpty(businessRuleTask.getClassName())){
+		try {
+			Class<?> clazz=Class.forName(businessRuleTask.getClassName());
+			ruleActivity=(BusinessRuleTaskActivityBehavior)clazz.newInstance();
+		} catch (Exception e) {
+			throw new ActivitiException(
+					"Could not instiate businessRuleTask class: ", e);
+		}
+	}else{
+		ruleActivity=new BusinessRuleTaskActivityBehavior();
+	}
+	
     for (String ruleVariableInputObject : businessRuleTask.getInputVariables()) {
       ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
     }

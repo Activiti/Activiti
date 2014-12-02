@@ -50,26 +50,19 @@ public class SerializableType extends ByteArrayType {
     
     byte[] bytes = (byte[]) super.getValue(valueFields);
     if (bytes != null) {
-	    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
-	    try {
-	      ObjectInputStream ois = createObjectInputStream(bais);
-	      Object deserializedObject = ois.readObject();
-	      valueFields.setCachedValue(deserializedObject);
-	      
-	      if (valueFields instanceof VariableInstanceEntity) {
-	        // we need to register the deserialized object for dirty checking, 
-	        // so that it can be serialized again if it was changed. 
-	        Context.getCommandContext()
-	          .getDbSqlSession()
-	          .addDeserializedObject(new DeserializedObject(this, deserializedObject, bytes, (VariableInstanceEntity) valueFields));
-	      }
+	    Object deserializedObject = deserialize(bytes, valueFields);
+	    
+      valueFields.setCachedValue(deserializedObject);
+      
+      if (valueFields instanceof VariableInstanceEntity) {
+        // we need to register the deserialized object for dirty checking, 
+        // so that it can be serialized again if it was changed. 
+        Context.getCommandContext()
+          .getDbSqlSession()
+          .addDeserializedObject(new DeserializedObject(this, deserializedObject, bytes, (VariableInstanceEntity) valueFields));
+      }
 
-	      return deserializedObject;
-	    } catch (Exception e) {
-	      throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
-	    } finally {
-	      IoUtil.closeSilently(bais);
-	    }
+      return deserializedObject;
     }
     return null; // byte array is null
   }
@@ -106,6 +99,20 @@ public class SerializableType extends ByteArrayType {
       IoUtil.closeSilently(oos);
     }
     return baos.toByteArray();
+  }
+  
+  public Object deserialize(byte[] bytes, ValueFields valueFields) {
+    ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+    try {
+      ObjectInputStream ois = createObjectInputStream(bais);
+      Object deserializedObject = ois.readObject();
+
+      return deserializedObject;
+    } catch (Exception e) {
+      throw new ActivitiException("Couldn't deserialize object in variable '"+valueFields.getName()+"'", e);
+    } finally {
+      IoUtil.closeSilently(bais);
+    }
   }
 
   public boolean isAbleToStore(Object value) {

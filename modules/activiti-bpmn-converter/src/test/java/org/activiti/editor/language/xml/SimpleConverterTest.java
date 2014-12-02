@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -71,5 +72,9 @@ public class SimpleConverterTest extends AbstractConverterTest {
     assertEquals("flow1Condition", flowElement.getId());
     SequenceFlow flow = (SequenceFlow) flowElement;
     assertEquals("${number <= 1}", flow.getConditionExpression());
+    
+    flowElement = model.getMainProcess().getFlowElement("gateway1");
+    assertNotNull(flowElement);
+    assertTrue(flowElement instanceof ExclusiveGateway);
   }
 }

@@ -45,7 +45,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     
     execution.inactivate();
     lockConcurrentRoot(execution);
-
+    
     PvmActivity activity = execution.getActivity();
     if (!activeConcurrentExecutionsExist(execution)) {
 
@@ -166,8 +166,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       for (PvmTransition pvmTransition : transitionList) {
         PvmActivity destinationActivity = pvmTransition.getDestination();
         if (destinationActivity != null && !visitedActivities.contains(destinationActivity)) {
-          boolean reachable = isReachable(destinationActivity, targetActivity,
-              visitedActivities);
+          boolean reachable = isReachable(destinationActivity, targetActivity, visitedActivities);
 
           // If false, we should investigate other paths, and not yet return the
           // result

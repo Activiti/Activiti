@@ -16,41 +16,38 @@ package org.activiti.rest.service.api.history;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
+import javax.servlet.http.HttpServletRequest;
+
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.history.HistoricIdentityLink;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.common.api.SecuredResource;
 import org.activiti.rest.service.api.RestResponseFactory;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.resource.Get;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Tijs Rademakers
  */
-public class HistoricTaskInstanceIdentityLinkCollectionResource extends SecuredResource {
+@RestController
+public class HistoricTaskInstanceIdentityLinkCollectionResource {
 
-  @Get
-  public List<HistoricIdentityLinkResponse> getTaskIdentityLinks() {
-    if(!authenticate()) {
-      return null;
-    }
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
+  
+  @Autowired
+  protected HistoryService historyService;
+  
+  @RequestMapping(value="/history/historic-task-instances/{taskId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
+  public List<HistoricIdentityLinkResponse> getTaskIdentityLinks(@PathVariable String taskId, HttpServletRequest request) {
+    List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForTask(taskId);
     
-    String taskId = getAttribute("taskId");
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("The taskId cannot be null");
-    }
-    
-    List<HistoricIdentityLink> identityLinks = ActivitiUtil.getHistoryService().getHistoricIdentityLinksForTask(taskId);
-    
-    List<HistoricIdentityLinkResponse> responseList = new ArrayList<HistoricIdentityLinkResponse>();
     if (identityLinks != null) {
-      RestResponseFactory restResponseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-      for (HistoricIdentityLink instance : identityLinks) {
-        responseList.add(restResponseFactory.createHistoricIdentityLinkResponse(this, instance));
-      }
+      return restResponseFactory.createHistoricIdentityLinkResponseList(identityLinks);
     }
     
-    return responseList;
+    return new ArrayList<HistoricIdentityLinkResponse>();
   }
 }

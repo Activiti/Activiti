@@ -14,13 +14,13 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.16.4-SNAPSHOT</version>
+  <version>5.17.0-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.0.6.RELEASE</spring.framework.version>
+    <spring.security.version>3.2.3.RELEASE</spring.security.version>
     <mule.version>3.5.0</mule.version>
     <cxf.version>2.6.14</cxf.version>
-    <restlet.version>2.2.1</restlet.version>
     <batik.version>1.7</batik.version>
 
     <!-- OSGi bundles properties -->
@@ -71,7 +71,7 @@
       <dependency>
         <groupId>com.h2database</groupId>
         <artifactId>h2</artifactId>
-        <version>1.3.170</version>
+        <version>1.4.181</version>
       </dependency>
       <dependency>
         <groupId>commons-dbcp</groupId>
@@ -95,7 +95,6 @@
         <version>1.7.6</version>
       </dependency>
       <dependency>
-        <!-- required by Apache commons httpclient, required by restlet -->
         <groupId>commons-logging</groupId>
         <artifactId>commons-logging</artifactId>
         <version>1.1.1</version>
@@ -116,9 +115,9 @@
         <version>1.2.2</version>
       </dependency>
       <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>3.1</version>
+        <groupId>org.apache.httpcomponents</groupId>
+   	 	<artifactId>httpclient</artifactId>
+    	<version>4.3.5</version>
       </dependency>
       <dependency>
         <groupId>com.oracle.jdbc</groupId>
@@ -259,6 +258,11 @@
       <dependency>
         <groupId>org.activiti</groupId>
         <artifactId>activiti-image-generator</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.activiti</groupId>
+        <artifactId>activiti-jmx</artifactId>
         <version>${project.version}</version>
       </dependency>
       <!-- EMAIL -->
@@ -416,9 +420,44 @@
         <version>${spring.framework.version}</version>
       </dependency>
       <dependency>
+      	<groupId>org.springframework</groupId>
+      	<artifactId>spring-context-support</artifactId>
+      	<version>${spring.framework.version}</version>
+	  </dependency>
+	  <dependency>
+      	<groupId>org.springframework</groupId>
+      	<artifactId>spring-web</artifactId>
+      	<version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.springframework</groupId>
+      	<artifactId>spring-webmvc</artifactId>
+      	<version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-test</artifactId>
         <version>${spring.framework.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.springframework.security</groupId>
+      	<artifactId>spring-security-core</artifactId>
+      	<version>${spring.security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-config</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-crypto</artifactId>
+        <version>${spring.security.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework.security</groupId>
+        <artifactId>spring-security-web</artifactId>
+        <version>${spring.security.version}</version>
       </dependency>
       <dependency>
         <groupId>org.subethamail</groupId>
@@ -717,6 +756,7 @@
         <module>modules/activiti-cdi</module>
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-ldap</module>
+        <module>modules/activiti-jmx</module>
         <module>modules/activiti-crystalball</module>
       </modules>
       <build>
@@ -763,15 +803,15 @@
     <profile>
       <id>check</id>
       <modules>
-        <module>modules/activiti-spring</module>
-        <module>modules/activiti-spring-boot</module>
-        <module>modules/activiti-common-rest</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
         <module>modules/activiti-image-generator</module>
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-spring</module>
+        <module>modules/activiti-spring-boot</module>
+        <module>modules/activiti-common-rest</module>
         <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
@@ -826,8 +866,6 @@
     <profile>
       <id>distro</id>
       <modules>
-        <module>modules/activiti-spring</module>
-        <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-bpmn-model</module>
         <module>modules/activiti-process-validation</module>
         <module>modules/activiti-image-generator</module>
@@ -835,6 +873,8 @@
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-simple-workflow</module>
+        <module>modules/activiti-spring</module>
+        <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
         <module>modules/activiti-diagram-rest</module>
@@ -849,6 +889,8 @@
         <module>modules/activiti-cdi</module>
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-crystalball</module>
+        <module>modules/activiti-jmx</module>
+        <module>modules/activiti-hazelcast-async-executor</module>
       </modules>
     </profile>
     <profile>
@@ -874,7 +916,6 @@
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-engine</module>
         <module>modules/activiti-spring</module>
-        <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-explorer</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>

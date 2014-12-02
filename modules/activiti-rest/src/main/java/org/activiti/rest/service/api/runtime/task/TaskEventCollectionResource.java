@@ -13,36 +13,27 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.task.Event;
-import org.activiti.rest.common.api.ActivitiUtil;
-import org.activiti.rest.service.api.RestResponseFactory;
 import org.activiti.rest.service.api.engine.EventResponse;
-import org.activiti.rest.service.application.ActivitiRestServicesApplication;
-import org.restlet.resource.Get;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 
 /**
  * @author Frederik Heremans
  */
+@RestController
 public class TaskEventCollectionResource extends TaskBaseResource {
 
-  @Get
-  public List<EventResponse> getEvents() {
-    if(!authenticate())
-      return null;
-    
-    List<EventResponse> result = new ArrayList<EventResponse>();
-    RestResponseFactory responseFactory = getApplication(ActivitiRestServicesApplication.class).getRestResponseFactory();
-    HistoricTaskInstance task = getHistoricTaskFromRequest();
-    
-    for(Event event : ActivitiUtil.getTaskService().getTaskEvents(task.getId())) {
-      result.add(responseFactory.createEventResponse(this, event));
-    }
-    
-    return result;
+  @RequestMapping(value="/runtime/tasks/{taskId}/events", method = RequestMethod.GET, produces="application/json")
+  public List<EventResponse> getEvents(@PathVariable String taskId, HttpServletRequest request) {
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+    return restResponseFactory.createEventResponseList(taskService.getTaskEvents(task.getId()));
   }
 }

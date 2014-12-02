@@ -350,8 +350,8 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   protected void updateVariableInstance(VariableInstanceEntity variableInstance, Object value, ExecutionEntity sourceActivityExecution) {
 	
     // Always check if the type should be altered. It's possible that the previous type is lower in the type
-    // checking chain (eg. serializable) and will return true on isAbleToStore(), even though another type
-    // higher in the chain is eligable for storage.
+    // checking chain (e.g. serializable) and will return true on isAbleToStore(), even though another type
+    // higher in the chain is eligible for storage.
     
     VariableTypes variableTypes = Context
         .getProcessEngineConfiguration()
