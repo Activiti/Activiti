@@ -16,18 +16,45 @@ package org.activiti.camel.examples.initiatorCamelCall;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:camel-activiti-context.xml")
+@ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class InitiatorCamelCallTest extends SpringActivitiTestCase {
    
+	
+  @Autowired
+  CamelContext camelContext;
+
+  public void  setUp() throws Exception {
+       camelContext.addRoutes(new RouteBuilder() {
+
+		@Override
+		public void configure() throws Exception {
+		  from("direct:startWithInitiatorHeader")
+      .setHeader("CamelProcessInitiatorHeader", constant("kermit"))
+      .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
+			
+		}
+	});
+  }
+	
   @Deployment
   public void testInitiatorCamelCall() throws Exception {
     CamelContext ctx = applicationContext.getBean(CamelContext.class);
     ProducerTemplate tpl = ctx.createProducerTemplate();
     String body = "body text";
-    String instanceId = (String) tpl.requestBody("direct:startWithInitiatorHeader", body);
+    
+    Exchange exchange = ctx.getEndpoint("direct:startWithInitiatorHeader").createExchange();
+    exchange.getIn().setBody(body);
+    tpl.send("direct:startWithInitiatorHeader", exchange);
+    
+    String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
+
+    
 
     String initiator = (String) runtimeService.getVariable(instanceId, "initiator");
     assertEquals("kermit", initiator);

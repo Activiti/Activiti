@@ -18,6 +18,9 @@ package org.activiti.camel;
  * @author Arnold Schrijver
  */
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.Execution;
@@ -61,12 +64,24 @@ public class ActivitiProducer extends DefaultProducer {
   
   public void process(Exchange exchange) throws Exception {
     if (shouldStartProcess()) {
-      ProcessInstance pi = startProcess(exchange);
-      exchange.setProperty(PROCESS_ID_PROPERTY, pi.getProcessInstanceId());
-      exchange.getOut().setBody(pi.getId());
+      Map<String, Object> camelReturnVar = new HashMap<String, Object>();
+
+      ProcessInstance pi = startProcess(exchange, camelReturnVar);
+      copyResultToCamel(exchange, pi, camelReturnVar);
     } else {
       signal(exchange);
     }
+  }
+
+  private void copyResultToCamel(Exchange exchange, ProcessInstance pi, Map<String, Object> camelReturnVar) {
+    exchange.setProperty(PROCESS_ID_PROPERTY, pi.getProcessInstanceId());
+    
+    for (String key: camelReturnVar.keySet()) {
+         if (key.equals(ExchangeUtils.CAMELBODY)) {             
+           exchange.getOut().setBody(camelReturnVar.get(key));
+         } else 
+           exchange.setProperty(key, camelReturnVar.get(key));
+      }
   }
 
   private boolean shouldStartProcess() {
@@ -119,18 +134,16 @@ public class ActivitiProducer extends DefaultProducer {
   }
 
 
-  private ProcessInstance startProcess(Exchange exchange) {
+  private ProcessInstance startProcess(Exchange exchange, Map<String, Object> camelReturnVar) {
     ActivitiEndpoint endpoint = getActivitiEndpoint();
     String key = exchange.getProperty(PROCESS_KEY_PROPERTY, String.class);
     try {
         if (endpoint.isSetProcessInitiator()) {
             setProcessInitiator(ExchangeUtils.prepareInitiator(exchange, endpoint));
         }
-        if (key == null) {
-          return runtimeService.startProcessInstanceByKey(processKey, ExchangeUtils.prepareVariables(exchange, endpoint));
-        } else {
-          return runtimeService.startProcessInstanceByKey(processKey, key, ExchangeUtils.prepareVariables(exchange, endpoint));
-        }
+        Map<String, Object> variables = ExchangeUtils.prepareVariables(exchange, endpoint);
+        variables.put(ExchangeUtils.CAMELRETURN, camelReturnVar);
+        return runtimeService.startProcessInstanceByKey(processKey, key, variables);
     } finally {
         if (endpoint.isSetProcessInitiator()) {
             setProcessInitiator(null);

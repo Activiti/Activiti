@@ -28,6 +28,7 @@ import org.springframework.util.StringUtils;
 public class ExchangeUtils {
 
   public static final String CAMELBODY = "camelBody";
+  public static final String CAMELRETURN = "camelReturn";
   protected static final String IGNORE_MESSAGE_PROPERTY = "CamelMessageHistory";
 	
   /**
