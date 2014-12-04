@@ -2448,7 +2448,7 @@ public class MyAssignmentHandler implements TaskListener {
 }
 ----
 
-When using Spring it is possible to use the custom assignment attributes as described in the section above, and delegate to a Spring bean using a <<taskListeners,task listener>> with an <<springExpressions,expression>> that listens to task _create_ events. In the following example, the assignee will be set by calling the +findManagerOfEmployee+ on the +ldapService+ Spring bean. The _emp_ parameter that is passed, is a process variable&gt;.
+When using Spring it is possible to use the custom assignment attributes as described in the section above, and delegate to a Spring bean using a <<taskListeners,task listener>> with an <<springExpressions,expression>> that listens to task _create_ events. In the following example, the assignee will be set by calling the +findManagerOfEmployee+ on the +ldapService+ Spring bean. The _emp_ parameter that is passed, is a process variable>.
 
 [source,xml,linenums]
 ----
@@ -2462,7 +2462,7 @@ This also works similar for candidate users and groups:
 <userTask id="task" name="My Task" activiti:candidateUsers="${ldapService.findAllSales()}"/>
 ----
 
-Note that this will only work if the return type of the invoked methods is +String+ or +Collection&lt;String&gt;+ (for candidate users and groups):
+Note that this will only work if the return type of the invoked methods is +String+ or +Collection<String>+ (for candidate users and groups):
 
 [source,java,linenums]
 ----
