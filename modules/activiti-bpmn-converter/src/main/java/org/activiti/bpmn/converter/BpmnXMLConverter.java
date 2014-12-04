@@ -274,15 +274,15 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
         }
   
       } catch (Exception e) {
-        throw new RuntimeException("Could not validate XML with BPMN 2.0 XSD", e);
+        throw new XMLException(e.getMessage(), e);
       }
   
       // XML conversion
       return convertToBpmnModel(xtr);
     } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException("The bpmn 2.0 xml is not UTF8 encoded", e);
+      throw new XMLException("The bpmn 2.0 xml is not UTF8 encoded", e);
     } catch (XMLStreamException e) {
-      throw new RuntimeException("Error while reading the BPMN 2.0 XML", e);
+      throw new XMLException("Error while reading the BPMN 2.0 XML", e);
     } finally {
       if (in != null) {
         try {

@@ -24,6 +24,7 @@ import java.util.Map;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Event;
@@ -229,9 +230,12 @@ public class BpmnParse implements BpmnXMLConstants {
       createMessages();
       createOperations();
       transformProcessDefinitions();
+      
     } catch (Exception e) {
       if (e instanceof ActivitiException) {
         throw (ActivitiException) e;
+      } else if (e instanceof XMLException) {
+        throw (XMLException) e;
       } else {
         throw new ActivitiException("Error parsing XML", e);
       }
@@ -538,12 +542,6 @@ public class BpmnParse implements BpmnXMLConstants {
     } else if (bpmnModel.getArtifact(key) != null) {
       // it's an association, so nothing to do
     } else {
-      GraphicInfo graphicInfo = null;
-      if (graphicList != null && !graphicList.isEmpty()) {
-        graphicInfo = graphicList.get(0);
-      } else {
-        graphicInfo = new GraphicInfo();
-      }
       LOGGER.warn("Invalid reference in 'bpmnElement' attribute, sequenceFlow " + key + " not found");
     }
   }
