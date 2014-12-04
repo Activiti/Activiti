@@ -95,7 +95,8 @@ First the application context is created with any of the Spring ways to do that.
 
 [source,java,linenums]
 ----
-ClassPathXmlApplicationContext applicationContext =  new ClassPathXmlApplicationContext("org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml");
+ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationContext(
+	"org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml");
 ----
 
 or, since it is a test:
@@ -169,7 +170,7 @@ When using the ProcessEngineFactoryBean, by default, all <<apiExpressions,expres
   </property>
 </bean>
 
-  <bean id="printer" class="org.activiti.examples.spring.Printer" />
+<bean id="printer" class="org.activiti.examples.spring.Printer" />
 ----
 
 Now the exposed beans can be used in expressions: for example, the SpringTransactionIntegrationTest +hello.bpmn20.xml+ shows how a method on a Spring bean can be invoked using a UEL method expression:
@@ -177,7 +178,7 @@ Now the exposed beans can be used in expressions: for example, the SpringTransac
 
 [source,xml,linenums]
 ----
-<definitions id="definitions" ...>
+<definitions id="definitions">
 
   <process id="helloProcess">
 

@@ -5,7 +5,7 @@
 
 === License
 
-Activiti is distributed under link:$$../../license.txt$$[the Apache V2 license].
+Activiti is distributed under link:$$http://www.apache.org/licenses/LICENSE-2.0.html$$[the Apache V2 license].
 
 [[download]]
 

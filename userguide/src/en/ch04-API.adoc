@@ -58,12 +58,12 @@ The *HistoryService* exposes all historical data gathered by the Activiti engine
 
 The *ManagementService* is typically not needed when coding custom application using Activiti. It allows to retrieve information about the database tables and table metadata. Furthermore, it exposes query capabilities and management operations for jobs. Jobs are used in Activiti for various things such as timers, asynchronous continuations, delayed suspension/activation, etc. Later on, these topics will be discussed in more detail.
 
-For more detailed information on the service operations and the engine API, see link:$$../javadocs/index.html$$[the javadocs].
+For more detailed information on the service operations and the engine API, see link:$$http://activiti.org/javadocs/index.html$$[the javadocs].
 
 
 === Exception strategy
 
-The base exception in Activiti is the +org.activiti.engine.ActivitiException+, an unchecked exception. This exception can be thrown at all times by the API, but 'expected' exceptions that happen in specific methods are documented in the link:$$../javadocs/index.html$$[ the javadocs]. For example, an extract from ++TaskService++:
+The base exception in Activiti is the +org.activiti.engine.ActivitiException+, an unchecked exception. This exception can be thrown at all times by the API, but 'expected' exceptions that happen in specific methods are documented in the link:$$http://activiti.org/javadocs/index.html$$[ the javadocs]. For example, an extract from ++TaskService++:
 
 [source,java,linenums]
 ----
@@ -82,9 +82,9 @@ Even though we want to avoid a big exception hierarchy, the following subclasses
 * ++ActivitiWrongDbException++: Thrown when the Activiti engine discovers a mismatch between the database schema version and the engine version.
 * ++ActivitiOptimisticLockingException++: Thrown when an optimistic locking occurs in the data store caused by concurrent access of the same data entry.
 * ++ActivitiClassLoadingException++: Thrown when a class requested to load was not found or when an error occurred while loading it (e.g. JavaDelegates, TaskListeners, ...).
-* +ActivitiObjectNotFoundException: + Thrown when an object that is requested or action on does not exist.
-* +ActivitiIllegalArgumentException: + An exception indicating that an illegal argument has been supplied in an Activiti API-call, an illegal value was configured in the engine's configuration or an illegal value has been supplied or an illegal value is used in a process-definition.
-* +ActivitiTaskAlreadyClaimedException: Thrown when a task is already claimed, when the +taskService.claim(...)+ is called.+ .
+* ++ActivitiObjectNotFoundException++: Thrown when an object that is requested or action on does not exist.
+* ++ActivitiIllegalArgumentException++: An exception indicating that an illegal argument has been supplied in an Activiti API-call, an illegal value was configured in the engine's configuration or an illegal value has been supplied or an illegal value is used in a process-definition.
+* ++ActivitiTaskAlreadyClaimedException++: Thrown when a task is already claimed, when the +taskService.claim(...)+ is called.
 
 
 [[api.services]]
@@ -238,6 +238,7 @@ ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("vaca
 
 // Verify that we started a new process instance
 Log.info("Number of process instances: " + runtimeService.createProcessInstanceQuery().count());
+
 ----
 
 
@@ -352,7 +353,6 @@ Expressions can be used in for example <<bpmnJavaServiceTaskXML,Java Service tas
 
 * *Value expression*: resolves to a value. By default, all process variables are available to use. Also all spring-beans (if using Spring) are available to use in expressions.Some examples:
 
-[source,java,linenums]
 ----
 ${myVar}
 ${myBean.myProperty}
@@ -361,7 +361,6 @@ ${myBean.myProperty}
 
 * *Method expression*: invokes a method, with or without parameters. *When invoking a method without parameters, be sure to add empty parentheses after the method-name (as this distinguishes the expression from a value expression).* The passed parameters can be literal values or expressions that are resolved themselves. Examples:
 
-[source,java,linenums]
 ----
 ${printer.print()}
 ${myBean.addNewOrder('orderName')}
@@ -388,7 +387,7 @@ Business processes are an integral part of software projects and they should be 
 
 Activiti supports both JUnit versions 3 and 4 styles of unit testing. In the JUnit 3 style, the +org.activiti.engine.test.ActivitiTestCase+ must be extended. This will make the ProcessEngine and the services available through protected member fields. In the +setup()+ of the test,  the processEngine will be initialized by default with the +activiti.cfg.xml+ resource on the classpath.  To specify a different configuration file, override the _getConfigurationResource()_ method. Process engines are cached statically over multiple unit tests when the configuration resource is the same.
 
-By extending +ActivitiTestCase+, you can annotate test methods with +org.activiti.engine.test.Deployment+. Before the test is run, a resource file of the form +testClassName.testMethod.bpmn20.xml+ in the same package as the test class, will be deployed. At the end of the test, the deployment will be deleted, including all related process instances, tasks, etc. The +Deployment+ annotation also supports setting the resource location explicitly. See link:$$../javadocs/org/activiti/engine/test/Deployment.html$$[the Javadocs] for more details.
+By extending +ActivitiTestCase+, you can annotate test methods with +org.activiti.engine.test.Deployment+. Before the test is run, a resource file of the form +testClassName.testMethod.bpmn20.xml+ in the same package as the test class, will be deployed. At the end of the test, the deployment will be deleted, including all related process instances, tasks, etc. The +Deployment+ annotation also supports setting the resource location explicitly. See the class itself for more information.
 
 Taking all that in account, a JUnit 3 style test looks as follows.
 

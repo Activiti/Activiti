@@ -8,7 +8,7 @@
 
 [[crb-overview]]
 
-====Short overview
+==== Short overview
 
 activiti-crystalball (CrystalBall) is simulation engine for Activiti Business Process Management Platform. CrystalBall allows use of simulation for:
       
@@ -144,6 +144,7 @@ Code snippet above will record ActivitiEventType.ENTITY_CREATED after startProce
               
 * start simulation run
 
+[source,java,linenums]
 ----
 final SimpleSimulationRun.Builder builder = new SimpleSimulationRun.Builder();
 // init simulation run
@@ -258,6 +259,7 @@ Next test part starts simulation debugger on the same process engine as original
           
 * create and close process engine instance.
 * change simulation time. (real time can not be changed)
+[source,java,linenums]
 
 ----
 final SimulationDebugger simRun = new ReplaySimulationRun(processEngine,

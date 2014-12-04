@@ -141,7 +141,7 @@ Activiti explorer supports the form properties and will render the form accordin
 
 [source,xml,linenums]
 ----
-<startEvent ... >
+<startEvent>
   <extensionElements>
     <activiti:formProperty id="numberOfDays" name="Number of days" value="${numberOfDays}" type="long" required="true"/>
     <activiti:formProperty id="startDate" name="First day of holiday (dd-MM-yyy)" value="${startDate}" datePattern="dd-MM-yyyy hh:mm" type="date" required="true" />

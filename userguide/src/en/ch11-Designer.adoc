@@ -24,7 +24,7 @@ Make sure the *"Contact all updates sites.."* checkbox is *checked*, because all
 [[eclipseDesignerEditorFeatures]]
 
 
-===Activiti Designer editor features
+=== Activiti Designer editor features
 
 * Create Activiti projects and diagrams.
 
@@ -133,7 +133,7 @@ When your project contains Java classes, the deployment is a bit more work. In t
 [[eclipseDesignerExtending]]
 
 
-===Extending Activiti Designer
+=== Extending Activiti Designer
 
 You can extend the default functionality offered by Activiti Designer. This section documents which extensions are available, how they can be used and provides some usage examples. Extending Activiti Designer is useful in cases where the default functionality doesn't suit your needs, you require additional capabilities or have domain specific requirements when modeling business processes. Extension of Activiti Designer falls into two distinct categories, extending the palette and extending output formats. Each of these extension ways requires a specific approach and different technical expertise.
 

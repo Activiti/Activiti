@@ -140,7 +140,7 @@ In the default configuration, process instances are associated with the "broades
 	
 When resolving @BusinessProcessScoped beans, or injecting process variables, we rely on an existing association  between an active cdi scope and a process instance. Activiti-cdi provides the +org.activiti.cdi.BusinessProcess+ bean  for controlling the association, most prominently:
 		
-* the ++startProcessBy\*(...)++-methods, mirroring the respective methods exposed by the activiti +RuntimeService+ allowing to start and subsequently associating a business process,
+* the _startProcessBy(...)_ methods, mirroring the respective methods exposed by the activiti +RuntimeService+ allowing to start and subsequently associating a business process,
 * +resumeProcessById(String processInstanceId)+, allowing to associate the process instance with the provided id,
 * +resumeTaskById(String taskId)+, allowing to associate the task with the provided id (and by extension, the corresponding process instance),		  
 
@@ -248,7 +248,7 @@ In order to reference process variables using EL, we have similar options:
 * +@Named @BusinessProcessScoped+ beans can be referenced directly,
 * other process variables can be referenced using the ++ProcessVariables++-bean:
 
-[source,java,linenums]
+
 ----
 #{processVariables['accountNumber']}
 ----

@@ -514,7 +514,7 @@ Example: process will start once, on selected date
 [[bpmnMessageStartEvent]]
 
 
-====Message Start Event
+==== Message Start Event
 
 [[messageStartEventDescription]]
 
@@ -768,7 +768,7 @@ image::images/bpmn.error.end.event.png[align="center"]
 [[bpmnErrorEndEventXml]]
 
 
-=====XML representation
+===== XML representation
 
 And error end event is represented as an end event, with a _errorEventDefinition_ child element.
 
@@ -1023,7 +1023,7 @@ The *errorCode* is used to match the errors that are caught:
 
 Following example process shows how an error end event can be used. When the _'Review profitability'_ user task is completed by stating that not enough information is provided, an error is thrown. When this error is caught on the boundary of the subprocess, all active activities within the _'Review sales lead'_ subprocess are destroyed (even if _'Review customer rating'_ was not yet completed), and the _'Provide additional details'_ user task is created.
 
-image::images/http://activiti.org/userguide/images/bpmn.boundary.error.example.png[align="center"]
+image::images/bpmn.boundary.error.example.png[align="center"]
 
 This process is shipped as example in the demo setup. The process XML and unit test can be found in the _org.activiti.examples.bpmn.event.error_ package.
 
@@ -1091,7 +1091,7 @@ See section on <<bpmnSignalEventDefinition,signal event definitions>>.
 [[bpmnBoundaryMessageEventDescription]]
 
 
-=====Description
+===== Description
 
 An attached intermediate _catching_ <<bpmnMessageEventDefinition,message>> on the boundary of an activity, or *boundary message event* for short, catches messages with the same message name as the referenced message definition.
 
@@ -1376,7 +1376,7 @@ An intermediate _catching_ <<bpmnMessageEventDefinition,message>> event catches 
 [[bpmnIntermediateMessageEventGraphicalNotation]]
 
 
-=====Graphical notation
+===== Graphical notation
 
 An intermediate catching message event is visualized as a typical intermediate event (Circle with smaller circle inside), with the message icon inside. The message icon is white (unfilled), to indicate the _catch_ semantics.
 
@@ -1490,7 +1490,7 @@ image::images/bpmn.intermediate.signal.throw.event.png[align="center"]
 ===== XML representation
 
 
-A signal intermediate event is defined as a <<bpmnIntermediateThrowingEvent,intermediate throwing event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
+A signal intermediate event is defined as a <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
 
 [source,xml,linenums]
 ----
@@ -1530,7 +1530,7 @@ See section on <<bpmnSignalEventDefinition,signal event definitions>>.
 
 ===== Description
 
-An intermediate _throwing_ <<bpmnCompensationEventDefinition,compensation>> event can be used to trigger compensation.
+An intermediate _throwing_ compensation event can be used to trigger compensation.
 
 
 *Triggering compensation:* Compensation can either be triggered for a designated activity or for the scope which hosts the compensation event. Compensation is performed through execution of the compensation handler associated with an activity.
@@ -1577,7 +1577,7 @@ image::images/bpmn.intermediate.compensation.throw.event.png[align="center"]
 ===== Xml representation
 
 
-A compensation intermediate event is defined as a <<bpmnIntermediateThrowingEvent,intermediate throwing event>>. The specific type sub-element is in this case a *compensateEventDefinition* element.
+A compensation intermediate event is defined as a <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *compensateEventDefinition* element.
 
 [source,xml,linenums]
 ----
@@ -1838,7 +1838,7 @@ Which is represented in XML as follows:
 
 Gateways can also be used to model concurrency in a process. The most straightforward gateway to introduce concurrency in a process model, is the *Parallel Gateway*, which allows to _fork_ into multiple paths of execution or _join_ multiple incoming paths of execution.
 
-          The functionality of the parallel gateway is based on the incoming and outgoing sequence flow:
+The functionality of the parallel gateway is based on the incoming and outgoing sequence flow:
 
 * *fork:* all outgoing sequence flow are followed in parallel, creating one concurrent execution for each sequence flow.
 * *join:* all concurrent executions arriving at the parallel gateway wait in the gateway until an execution has arrived for each of the incoming sequence flow. Then the process continues past the joining gateway.
@@ -1856,7 +1856,7 @@ Note that a parallel gateway can have *both fork and join behavior*, if there ar
 
 A parallel gateway is visualized as a gateway (diamond shape) with the 'plus' symbol inside, referring to the 'AND' semantics.
 
-image::images/bpmn.parallel.gateway.pngalign="center"]
+image::images/bpmn.parallel.gateway.png[align="center"]
 
 [[bpmnParallelGatewayyXML]]
 
@@ -2227,7 +2227,7 @@ A user task can be directly assigned to a user. This is done by defining a *huma
 
 [source,xml,linenums]
 ----
-<process ... >
+<process >
 
   ...
 
@@ -2253,7 +2253,7 @@ Tasks can also be put in the so-called *candidate task list* of people. In that 
 
 [source,xml,linenums]
 ----
-<process ... >
+<process >
   
   ...
   
@@ -3786,7 +3786,7 @@ The following XML snippet shows an example of using the shell Task. It runs shel
 [[executionListeners]]
 
 
-====Execution listener
+==== Execution listener
 
 *Compatibility note*: After releasing 5.3, we discovered that execution listeners and task listeners and expressions were still in non-public API. Those classes were in subpackages of +org.activiti.engine.impl...+,  which has +impl+ in it). +org.activiti.engine.impl.pvm.delegate.ExecutionListener+, +org.activiti.engine.impl.pvm.delegate.TaskListener+ and +org.activiti.engine.impl.pvm.el.Expression+ have been deprecated. From now on, you should use +org.activiti.engine.delegate.ExecutionListener+, +org.activiti.engine.delegate.TaskListener+ and +org.activiti.engine.delegate.Expression+. In the new publicly available API, access to +ExecutionListenerExecution.getEventSource()+ has been removed.  Apart from the deprecation compiler warning, the existing code should run fine.  But consider switching to the new public API interfaces (without .impl. in the package name).
 
@@ -4311,7 +4311,7 @@ image::images/bpmn.subprocess.eventSubprocess.png[align="center"]
 
 ===== XML representation
 
-An Event Sub-Process is represented using XML in the same way as a an <<bpmnSubProcessXMLRepresentation,embedded subprocess>>. In addition the attribute +triggeredByEvent+ must have the value ++true++:
+An Event Sub-Process is represented using XML in the same way as a an embedded subprocess. In addition the attribute +triggeredByEvent+ must have the value ++true++:
 
 [source,xml,linenums]
 ----
@@ -4665,7 +4665,7 @@ Is this a good solution? We had some people asking whether this was a good solut
 [[security]]
 
 
-===Process Initiation Authorization
+=== Process Initiation Authorization
 
 By default everyone is allowed to start a new process instance of deployed process definitions. The process initiation authorization functionality allows to define users and groups so that web clients can optionally restrict users to start a new process instance. NOTE that the authorization definition is NOT validated by the Activiti Engine in any way. This functionality is only meant for developers to ease the implementation of authorization rules in a web client. The syntax is similar to the syntax of user assignment for a user task. A user or group can be assigned as potential initiator of a process using <activiti:potentialStarter> tag. Here is an example:
 

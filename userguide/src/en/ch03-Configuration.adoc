@@ -348,7 +348,7 @@ To upgrade, you have to start with putting the following configuration property 
 
 [source,xml,linenums]
 ----
-<beans ... >
+<beans >
 
   <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
     <!-- ... -->

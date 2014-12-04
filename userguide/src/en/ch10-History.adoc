@@ -24,7 +24,7 @@ Later on, this information will be exposed in Activiti Explorer. Also, it will b
 
 In the API, it's possible to query all 5 of the History entities. The HistoryService exposes the the methods  +createHistoricProcessInstanceQuery()+, +createHistoricVariableInstanceQuery()+, +createHistoricActivityInstanceQuery()+,  +createHistoricDetailQuery()+ and +createHistoricTaskInstanceQuery()+.
 
-Below are a couple of examples that show some of the possibilities of the query API for history. Full description of the possibilities can be found in the link:$$../javadocs/index.html$$[the javadocs], in the +org.activiti.engine.history+ package.
+Below are a couple of examples that show some of the possibilities of the query API for history. Full description of the possibilities can be found in the link:$$http://activiti.org/javadocs/index.html$$[the javadocs], in the +org.activiti.engine.history+ package.
 
 [[historyQueryProcessInstance]]
 
@@ -131,7 +131,7 @@ public void notify(DelegateTask delegateTask) {
 [[historyQueryTaskInstance]]
 
 
-====HistoricTaskInstanceQuery
+==== HistoricTaskInstanceQuery
 
 Get 10 ++HistoricTaskInstance++s that are finished and which took the most time to complete (the longest duration) of all tasks.
 
@@ -159,7 +159,7 @@ historyService.createHistoricTaskInstanceQuery()
 
 === History configuration
 
-The history level can be configured programmatically, using the enum org.activiti.engine.impl.history.HistoryLevel (or ++$$HISTORY_\*$$++constants defined on +ProcessEngineConfiguration+ for versions prior to 5.11):
+The history level can be configured programmatically, using the enum org.activiti.engine.impl.history.HistoryLevel (or _HISTORY_ constants defined on +ProcessEngineConfiguration+ for versions prior to 5.11):
 
 [source,java,linenums]
 ----

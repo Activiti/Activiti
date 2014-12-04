@@ -82,18 +82,18 @@ ProcessEngine processEngine = ProcessEngineConfiguration
 
 Configuration properties:
 
-* *+jpaPersistenceUnitName: +*The name of the persistence-unit to use. (Make sure the persistence-unit is available on the classpath. According to the spec, the default location is ++/META-INF/persistence.xml++). Use either +jpaEntityManagerFactory+ or +jpaPersistenceUnitName+.
-* *+jpaEntityManagerFactory: +*An reference to a bean implementing +javax.persistence.EntityManagerFactory+ that will be used to load the Entities and flushing the updates. Use either +jpaEntityManagerFactory+ or +jpaPersistenceUnitName+.
-* *+jpaHandleTransaction: +*Flag indicating that the engine should begin and commit/rollback the transaction on the used +EntityManager+ instances. Set to false when +Java Transaction API (JTA)+ is used.
-* *+jpaCloseEntityManager: +*Flag indicating that the engine should close the +EntityManager+ instance that was obtained from the +EntityManagerFactory+. Set to false when the +EntityManager+ is container-managed (e.g. when using an Extended Persistence Context which isn't scoped to a single transaction').
+* jpaPersistenceUnitName: +*The name of the persistence-unit to use. (Make sure the persistence-unit is available on the classpath. According to the spec, the default location is ++/META-INF/persistence.xml++). Use either +jpaEntityManagerFactory+ or +jpaPersistenceUnitName+.
+* jpaEntityManagerFactory: +*An reference to a bean implementing +javax.persistence.EntityManagerFactory+ that will be used to load the Entities and flushing the updates. Use either _jpaEntityManagerFactory_ or _jpaPersistenceUnitName_.
+* jpaHandleTransaction: +*Flag indicating that the engine should begin and commit/rollback the transaction on the used _EntityManager_ instances. Set to false when _Java Transaction API (JTA)_ is used.
+* jpaCloseEntityManager: +*Flag indicating that the engine should close the +EntityManager+ instance that was obtained from the +EntityManagerFactory+. Set to false when the _EntityManager_ is container-managed (e.g. when using an Extended Persistence Context which isn't scoped to a single transaction').
 
 === Usage
 
 ==== Simple Example
 
-Examples for using JPA variables can be found in +link:$$http://svn.codehaus.org/activiti/activiti/trunk/modules/activiti-engine/src/test/java/org/activiti/standalone/jpa/JPAVariableTest.java$$[JPAVariableTest]+. We'll explain +JPAVariableTest.testUpdateJPAEntityValues+ step by step.
+Examples for using JPA variables can be found in JPAVariableTest in the Activiti source code. We'll explain +JPAVariableTest.testUpdateJPAEntityValues+ step by step.
 
-First of all, we create a +EntityManagerFactory+ for our persistence-unit, which is based on +META-INF/persistence.xml+. This contains classes which should be included in the persistence unit and some vendor-specific configuration.
+First of all, we create a _EntityManagerFactory_ for our persistence-unit, which is based on +META-INF/persistence.xml+. This contains classes which should be included in the persistence unit and some vendor-specific configuration.
 
 We are using a simple entity in the test, having an id and +String+ value property, which is also persisted. Before running the test, we create an entity and save this.
 

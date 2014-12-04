@@ -25,7 +25,7 @@ Due to link:$$http://tomcat.apache.org/tomcat-7.0-doc/security-howto.html$$[ def
 It's a best practice to always set the *Accept* and *Content-Type* (in case of posting/putting JSON) headers to *application/json* on the HTTP requests described below.
       
 
-====Methods and return-codes
+==== Methods and return-codes
 
 .HTTP-methods and corresponding operations
 [options="header"]
@@ -747,10 +747,7 @@ The response body is a JSON representation of the +org.activiti.bpmn.model.BpmnM
          "executable":true,
          "documentation":"One task process description",
          
-         ...
-    ], 
-    
-    ...
+    ] 
 }
 ----
 
@@ -1212,7 +1209,7 @@ POST repository/models
    "version":1,
    "metaInfo":"Model metainfo",
    "deploymentId":"2",
-   "tenantId":"tenant""
+   "tenantId":"tenant"
 }
 ----
 
@@ -1406,7 +1403,7 @@ Response body contains the model's raw editor source. The response's content-typ
 
 === Process Instances
 
-====Get a process instance
+==== Get a process instance
           
 ----
 GET runtime/process-instances/{processInstanceId}
@@ -1538,9 +1535,7 @@ POST runtime/process-instances
       {
         "name":"myVar",
         "value":"This is a variable",
-      },
-      
-      ... 
+      }
    ]
 }
 ----
@@ -1557,9 +1552,7 @@ POST runtime/process-instances
       {
         "name":"myVar",
         "value":"This is a variable",
-      },
-      
-      ... 
+      }
    ]
 }
 ----
@@ -1576,9 +1569,7 @@ POST runtime/process-instances
       {
         "name":"myVar",
         "value":"This is a variable",
-      },
-      
-      ... 
+      }
    ]
 }
 ----
@@ -1669,9 +1660,9 @@ GET runtime/process-instances
          "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
          "activityId":"processTask",
          "tenantId" : null
-      },
+      }
       
-      ...
+      
    ],
    "total":2,
    "start":0,
@@ -1701,10 +1692,8 @@ POST query/process-instances
         "value" : 1234,
         "operation" : "equals",
         "type" : "long"
-    },
-    ...
-  ],
-  ...
+    }
+  ]
 }
 ----
 
@@ -1738,9 +1727,9 @@ The general <<restPagingAndSort,paging and sorting query-parameters>> can be use
          "processDefinitionUrl":"http://localhost:8182/repository/process-definitions/processOne%3A1%3A4",
          "activityId":"processTask",
          "tenantId" : null
-      },
+      }
       
-      ...
+      
    ],
    "total":2,
    "start":0,
@@ -1985,9 +1974,7 @@ GET runtime/process-instances/{processInstanceId}/variables
       "value":null,
       "valueUrl":"http://localhost:8182/runtime/process-instances/5/variables/byteArrayProcVar/data",
       "scope":"local"
-   },
-   
-   ...
+   }
 ]
 ----
 
@@ -2346,7 +2333,7 @@ PUT runtime/executions/{executionId}
 {
   "action":"signalEventReceived",
   "signalName":"mySignal"
-  "variables": [ ... ]
+  "variables": [  ]
 }
 ----
 
@@ -2359,7 +2346,7 @@ Notifies the execution that a signal event has been received, requires a +signal
 {
   "action":"messageEventReceived",
   "messageName":"myMessage"
-  "variables": [ ... ]
+  "variables": [  ]
 }
 ----
 
@@ -2533,8 +2520,7 @@ POST query/executions
         "value" : 1234,
         "operation" : "equals",
         "type" : "long"
-    },
-    ...
+    }
   ],
   "processInstanceVariables": 
   [
@@ -2543,10 +2529,8 @@ POST query/executions
         "value" : "some string",
         "operation" : "equals",
         "type" : "string"
-    },
-    ...
-  ],
-  ...
+    }
+  ]
 }
 ----
 
@@ -2604,7 +2588,7 @@ The general <<restPagingAndSort,paging and sorting query-parameters>> can be use
 
 
 
-====List of variables for an execution
+==== List of variables for an execution
           
 ----
 GET runtime/executions/{executionId}/variables?scope={scope}
@@ -2648,9 +2632,9 @@ GET runtime/executions/{executionId}/variables?scope={scope}
       "value":null,
       "valueUrl":"http://localhost:8182/runtime/process-instances/5/variables/byteArrayProcVar/data",
       "scope":"local"
-   },
+   }
    
-   ...
+   
 ]
 ----
 
@@ -2736,9 +2720,10 @@ When using +POST+, all variables that are passed are created. In case one of the
       "type":"integer"
       "value":123,
       "scope":"local"
-   },
+   }
    
-   ...
+   
+   
 ]
 ----
 
@@ -2766,9 +2751,9 @@ When using +POST+, all variables that are passed are created. In case one of the
       "type":"integer",
       "value":123,
       "scope":"local"
-   },
+   }
    
-   ...
+   
    
 ]
 ----
@@ -3241,7 +3226,7 @@ POST runtime/tasks/{taskId}
 ----
 { 
   "action" : "complete",
-  "variables" : ...
+  "variables" : []
 }
 ----
 
@@ -3376,9 +3361,9 @@ GET runtime/tasks/{taskId}/variables?scope={scope}
     "scope" : "global",
     "type" : "string",
     "value" : "This is a ProcVariable"
-  },
+  }
   
-  ...
+  
   
 ]
 ----
@@ -3495,7 +3480,7 @@ POST runtime/tasks/{taskId}/variables
     "value" : "Hello my friend"
   },
   {
-    ...
+  
   }
 ]
 ----
@@ -3524,7 +3509,7 @@ More information about the variable format can be found in <<restVariables,the R
     "value" : "Hello my friend"
   },
   {
-    ...
+
   }
 ]
 ----
@@ -4175,9 +4160,7 @@ GET runtime/tasks/{taskId}/events
     "time" : "2013-05-17T11:50:50.000+0000",
     "url" : "http://localhost:8182/runtime/tasks/2/events/4",
     "userId" : null
-  },
-  
-  ...
+  }
 
 ]
 ----
@@ -4666,7 +4649,7 @@ POST query/historic-process-instances
 ----
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
-  ...
+
   
   "variables" : [
     {
@@ -5671,8 +5654,8 @@ GET history/historic-detail
         "variableScope", "global",
         "value" : "test"
       },
-      "propertyId", null,
-      "propertyValue", null
+      "propertyId": null,
+      "propertyValue": null
     }
   ],
   "total": 1,
@@ -5733,8 +5716,8 @@ All supported JSON parameter fields allowed are exactly the same as the paramete
         "variableScope", "global",
         "value" : "test"
       },
-      "propertyId", null,
-      "propertyValue", null
+      "propertyId" : null,
+      "propertyValue" : null
     }
   ],
   "total": 1,
@@ -5869,7 +5852,7 @@ POST form/form-data
 ----
 {
   "processDefinitionId" : "5",
-  "businessKey" : "myKey", (optional)
+  "businessKey" : "myKey",
   "properties" : [
     {
       "id" : "room",
@@ -5898,7 +5881,7 @@ POST form/form-data
   "id" : "5",
   "url" : "http://localhost:8182/history/historic-process-instances/5",
   "businessKey" : "myKey",
-  "suspended", false,
+  "suspended": false,
   "processDefinitionId" : "3",
   "processDefinitionUrl" : "http://localhost:8182/repository/process-definition/3",
   "activityId" : "myTask"
@@ -5937,9 +5920,7 @@ GET management/tables
       "name":"ACT_RU_EVENT_SUBSCR",
       "url":"http://localhost:8182/management/tables/ACT_RU_EVENT_SUBSCR",
       "count":3
-   },
-   
-   ...
+   }
    
 ]
 ----
@@ -6011,15 +5992,17 @@ GET management/tables/{tableName}/columns
       "ID_",
       "REV_",
       "TYPE_",
-      "NAME_",
-      ...
+      "NAME_"
+      
+      
    ],
    "columnTypes":[
       "VARCHAR",
       "INTEGER",
       "VARCHAR",
-      "VARCHAR",
-      ...
+      "VARCHAR"
+      
+      
    ]
 }
 ----
@@ -6083,8 +6066,10 @@ GET management/tables/{tableName}/data
          "LONG_":123,
          "ID_":"3",
          "TYPE_":"integer"
-      },
-      ...
+      }
+      
+      
+      
    ]
  
 }
@@ -6102,7 +6087,7 @@ GET management/tables/{tableName}/data
 
 === Engine
 
-====Get engine properties
+==== Get engine properties
           
 ----
 GET management/properties
@@ -6186,8 +6171,8 @@ Notifies the engine that a signal event has been received, not explicitally rela
   "tenantId" : "execute",
   "async": true,
   "variables": [
-      {"name": "testVar", "value": "This is a string"},
-      ...
+      {"name": "testVar", "value": "This is a string"}
+      
   ]
 }
 ----
@@ -6411,9 +6396,10 @@ GET management/jobs
          "exceptionMessage":"Can't find scripting engine for 'unexistinglanguage'",
          "dueDate":"2013-06-07T10:00:24.653+0000",
          "tenantId":null
-      },
+      }
       
-      ...
+      
+      
    ],
    "total":2,
    "start":0,
@@ -7002,9 +6988,7 @@ GET identity/groups
         "url":"http://localhost:8182/identity/groups/testgroup",
         "name":"Test group",
         "type":"Test type"
-     },
-
-      ...
+     }
    ],
    "total":3,
    "start":0,
