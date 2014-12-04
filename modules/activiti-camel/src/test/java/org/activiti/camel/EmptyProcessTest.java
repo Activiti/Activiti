@@ -13,20 +13,52 @@
 
 package org.activiti.camel;
 
+import java.util.List;
+
 import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.Route;
+import org.apache.camel.builder.RouteBuilder;
+import org.junit.BeforeClass;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:camel-activiti-context.xml")
+@ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class EmptyProcessTest extends SpringActivitiTestCase {
 
+  @Autowired
+  CamelContext camelContext;
+  
+  	
+  @BeforeClass
+  public void  setUp() throws Exception {
+	  camelContext.addRoutes(new RouteBuilder() {
+
+		@Override
+		public void configure() throws Exception {
+		      from("direct:startEmpty").to("activiti:emptyProcess");
+		      from("direct:startEmptyWithHeader").setHeader("MyVar", constant("Foo")).to("activiti:emptyProcess?copyVariablesFromHeader=true");
+		      from("direct:startEmptyBodyAsString").to("activiti:emptyProcess?copyBodyToCamelBodyAsString=true");
+		}
+	});
+ }
+  
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r: routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
+    }
+  }
+  
+  
   @Deployment(resources = {"process/empty.bpmn20.xml"})
   public void testRunProcessWithHeader() throws Exception {
-    CamelContext ctx = applicationContext.getBean(CamelContext.class);
-    ProducerTemplate tpl = ctx.createProducerTemplate();
+   
+    ProducerTemplate tpl = camelContext.createProducerTemplate();
     String body = "body text";
     String instanceId = (String) tpl.requestBody("direct:startEmptyWithHeader", body);
     assertProcessEnded(instanceId);
