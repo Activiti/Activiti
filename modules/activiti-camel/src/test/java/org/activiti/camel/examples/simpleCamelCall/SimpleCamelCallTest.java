@@ -15,12 +15,28 @@ package org.activiti.camel.examples.simpleCamelCall;
 
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
+import org.apache.camel.CamelContext;
+import org.apache.camel.builder.RouteBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:camel-activiti-context.xml")
+@ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class SimpleCamelCallTest extends SpringActivitiTestCase {
   
- 
+  @Autowired
+  CamelContext camelContext;
+  
+  public void  setUp() throws Exception {
+      camelContext.addRoutes(new RouteBuilder() {
+
+		@Override
+		public void configure() throws Exception {
+			from("activiti:SimpleCamelCallProcess:simpleCall").to("log: org.activiti.camel.examples.SimpleCamelCall");
+			
+		}
+	});
+ }
+	  
   @Deployment
   public void testSimpleCamelCall() {
 	  runtimeService.startProcessInstanceByKey("SimpleCamelCallProcess");
