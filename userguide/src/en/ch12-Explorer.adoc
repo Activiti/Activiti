@@ -46,7 +46,7 @@ image::images/explorer.tasks.png[align="center"]
 *  *Inbox:* shows the tasks where the logged in user is the assignee.
 *  *My tasks:* shows the tasks where the logged in user is the owner. When you create a standalone task, you are automatically made owner of the task.    
 *  *Queued:* shows the different groups which you are part of. Tasks here must first be claimed before they can be completed.    
-*  *Involved:* shows the tasks where the logged in user is involved with (i.e. not assignee or owner).
+*  *Involved:* shows the tasks where the logged in user is one of the following: (1) the one who is involved with (i.e. candidate user or participant), (2) the assignee, and (3) the owner.
 *  *Archived* contains the past (historical) tasks.
 
 === Start process instances
