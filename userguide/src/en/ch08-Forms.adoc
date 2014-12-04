@@ -166,7 +166,7 @@ The API also allows for you to perform your own task form rendering outside of t
 
 Essentially, all the data that's needed to render a form is assembled in one of these two service methods: +StartFormData FormService.getStartFormData(String processDefinitionId)+ and +TaskFormdata FormService.getTaskFormData(String taskId)+.
 
-Submitting form properties can be done with +ProcessInstance FormService.submitStartFormData(String processDefinitionId, Map&lt;String,String&gt; properties)+ and +void FormService.submitStartFormData(String taskId, Map&lt;String,String&gt; properties)+
+Submitting form properties can be done with +ProcessInstance FormService.submitStartFormData(String processDefinitionId, Map&lt;String,String&gt; properties)+ and +void FormService.submitTaskFormData(String taskId, Map&lt;String,String&gt; properties)+
 
 To learn about how form properties map to process variables, see <<formProperties>>
 
