@@ -95,8 +95,9 @@
         </listitem>
          <listitem>
           <para>
-            <emphasis role="bold">Involved:</emphasis> shows the tasks where the logged in user is
-            involved with (i.e. not assignee or owner).
+            <emphasis role="bold">Involved:</emphasis> shows the tasks where the logged in user is one of 
+            the following: (1) the one who is involved with (i.e. candidate user or participant), (2) the 
+            assignee, and (3) the owner.
           </para>
         </listitem>
          <listitem>
