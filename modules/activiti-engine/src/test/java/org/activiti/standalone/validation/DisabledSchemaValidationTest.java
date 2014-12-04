@@ -13,6 +13,7 @@
 package org.activiti.standalone.validation;
 
 import org.activiti.bpmn.exceptions.XMLException;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
@@ -71,7 +72,7 @@ public class DisabledSchemaValidationTest {
 				.disableSchemaValidation()
 				.deploy();
 			Assert.fail();
-		} catch (XMLException e) {
+		} catch (ActivitiException e) {
 		  // expected exception
 		}
 		
