@@ -193,7 +193,7 @@ Following history levels can be configured:
 
 === History for audit purposes
 
-When <<historyConfig,configuring>> at least +audit+ level for configuration. Then all properties submitted through methods  +FormService.submitStartFormData(String processDefinitionId, Map&lt;String, String&gt; properties)+ and +FormService.submitTaskFormData(String taskId, Map&lt;String, String&gt; properties)+ are recorded.
+When <<historyConfig,configuring>> at least +audit+ level for configuration. Then all properties submitted through methods  +FormService.submitStartFormData(String processDefinitionId, Map<String, String> properties)+ and +FormService.submitTaskFormData(String taskId, Map<String, String> properties)+ are recorded.
 
 Form properties can be retrieved with the query API like this:
 

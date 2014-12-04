@@ -205,7 +205,7 @@ No diagram will be generated now.
 
 === Category
 
-Both deployments and process definitions have user defined categories.  The process definition category is initialized value in attribute in the BPMN file: +&lt;definitions ... targetNamespace="yourCategory" ...+
+Both deployments and process definitions have user defined categories.  The process definition category is initialized value in attribute in the BPMN file: +<definitions ... targetNamespace="yourCategory" ...+
 
 
 The deployment category can be specified in the API like this:
