@@ -31,11 +31,11 @@ import org.springframework.test.context.ContextConfiguration;
 public class SimpleProcessTest extends SpringActivitiTestCase {
 
   @Autowired 
-  CamelContext camelContext;
+  protected CamelContext camelContext;
 	
-  MockEndpoint service1;
+  protected MockEndpoint service1;
 
-  MockEndpoint service2;
+  protected MockEndpoint service2;
 
   public void setUp() throws Exception {
     service1 = (MockEndpoint) camelContext.getEndpoint("mock:service1");
@@ -44,19 +44,17 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
     service2.reset();
     camelContext.addRoutes(new RouteBuilder() {
 
-		@Override
-		public void configure() throws Exception {
-			  from("direct:start").to("activiti:camelProcess");	   	
- 	      from("activiti:camelProcess:serviceTask1").setBody().property("var1")
- 	        .to("mock:service1").setProperty("var2").constant("var2")
- 	        .setBody().properties();
- 	      from("direct:receive").to("activiti:camelProcess:receive");
- 	      from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true")
- 	        .to("mock:service2");
-
-		}
-	});    
-
+  		@Override
+  		public void configure() throws Exception {
+  		  from("direct:start").to("activiti:camelProcess");	   	
+        from("activiti:camelProcess:serviceTask1").setBody().property("var1")
+          .to("mock:service1").setProperty("var2").constant("var2")
+          .setBody().properties();
+        from("direct:receive").to("activiti:camelProcess:receive");
+        from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true")
+          .to("mock:service2");
+  		}
+  	});
   }
   
   public void tearDown() throws Exception {
@@ -67,7 +65,6 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
     }
   }
   
-
   @Deployment(resources = {"process/example.bpmn20.xml"})
   public void testRunProcess() throws Exception {
     CamelContext ctx = applicationContext.getBean(CamelContext.class);
@@ -84,9 +81,7 @@ public class SimpleProcessTest extends SpringActivitiTestCase {
     Map<?, ?> m = service2.getExchanges().get(0).getIn().getBody(Map.class);
     assertEquals("ala", m.get("var1"));
     assertEquals("var2", m.get("var2"));
-
   }
-
 
   @Deployment(resources = {"process/example.bpmn20.xml"})
   public void testRunProcessByKey() throws Exception {

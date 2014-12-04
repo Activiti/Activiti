@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.camel.examples.simpleCamelCall;
+package org.activiti.camel.examples.simple;
 
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
@@ -24,18 +24,17 @@ import org.springframework.test.context.ContextConfiguration;
 public class SimpleCamelCallTest extends SpringActivitiTestCase {
   
   @Autowired
-  CamelContext camelContext;
+  protected CamelContext camelContext;
   
   public void  setUp() throws Exception {
-      camelContext.addRoutes(new RouteBuilder() {
+    camelContext.addRoutes(new RouteBuilder() {
 
-		@Override
-		public void configure() throws Exception {
-			from("activiti:SimpleCamelCallProcess:simpleCall").to("log: org.activiti.camel.examples.SimpleCamelCall");
-			
-		}
-	});
- }
+      @Override
+      public void configure() throws Exception {
+        from("activiti:SimpleCamelCallProcess:simpleCall").to("log: org.activiti.camel.examples.SimpleCamelCall");
+      }
+    });
+  }
 	  
   @Deployment
   public void testSimpleCamelCall() {

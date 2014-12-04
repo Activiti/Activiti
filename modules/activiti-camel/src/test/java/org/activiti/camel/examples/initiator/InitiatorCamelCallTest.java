@@ -11,7 +11,7 @@
  * limitations under the License.
  */
 
-package org.activiti.camel.examples.initiatorCamelCall;
+package org.activiti.camel.examples.initiator;
 
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
@@ -23,22 +23,20 @@ import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class InitiatorCamelCallTest extends SpringActivitiTestCase {
-   
-	
+  
   @Autowired
-  CamelContext camelContext;
+  protected CamelContext camelContext;
 
-  public void  setUp() throws Exception {
-       camelContext.addRoutes(new RouteBuilder() {
+  public void setUp() throws Exception {
+    camelContext.addRoutes(new RouteBuilder() {
 
-		@Override
-		public void configure() throws Exception {
-		  from("direct:startWithInitiatorHeader")
-      .setHeader("CamelProcessInitiatorHeader", constant("kermit"))
-      .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
-			
-		}
-	});
+      @Override
+      public void configure() throws Exception {
+        from("direct:startWithInitiatorHeader")
+          .setHeader("CamelProcessInitiatorHeader", constant("kermit"))
+          .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
+        }
+    });
   }
 	
   @Deployment

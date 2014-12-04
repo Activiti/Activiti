@@ -31,32 +31,32 @@ import org.springframework.test.context.ContextConfiguration;
 public class SimpleSpringProcessTest extends SpringActivitiTestCase {
 
   @Autowired
-  CamelContext camelContext;
+  protected CamelContext camelContext;
 	
-  MockEndpoint service1;
+  protected MockEndpoint service1;
 
-  MockEndpoint service2;
+  protected MockEndpoint service2;
 
   public void setUp() throws Exception {
-     camelContext.addRoutes(new RouteBuilder() {
+    camelContext.addRoutes(new RouteBuilder() {
 
-			@Override
+      @Override
 			public void configure() throws Exception {
-				 from("direct:startWithInitiatorHeader")
-		          .setHeader("CamelProcessInitiatorHeader", constant("kermit"))
-		          .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
-				 from("direct:start").to("activiti:camelProcess");
-				 from("direct:receive").to("activiti:camelProcess:receive");
-				 from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true").to("mock:service2");
-				 from("activiti:camelProcess:serviceTask1").setBody().simple("property[var1]").to("mock:service1").setProperty("var2").constant("var2").setBody().mvel("properties");
-				
+        from("direct:startWithInitiatorHeader")
+          .setHeader("CamelProcessInitiatorHeader", constant("kermit"))
+          .to("activiti:InitiatorCamelCallProcess?processInitiatorHeaderName=CamelProcessInitiatorHeader");
+        
+        from("direct:start").to("activiti:camelProcess");
+        from("direct:receive").to("activiti:camelProcess:receive");
+        from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true").to("mock:service2");
+        from("activiti:camelProcess:serviceTask1").setBody().simple("property[var1]").to("mock:service1").setProperty("var2").constant("var2").setBody().mvel("properties");				
 			}
-     });	  
+    });
+    
     service1 = (MockEndpoint) camelContext.getEndpoint("mock:service1");
     service1.reset();
     service2 = (MockEndpoint) camelContext.getEndpoint("mock:service2");
     service2.reset();
-
   }
   
   public void tearDown() throws Exception {
@@ -67,7 +67,6 @@ public class SimpleSpringProcessTest extends SpringActivitiTestCase {
     }
   }
   
-
   @Deployment(resources = {"process/example.bpmn20.xml"})
   public void testRunProcess() throws Exception {
     CamelContext ctx = applicationContext.getBean(CamelContext.class);
@@ -75,7 +74,6 @@ public class SimpleSpringProcessTest extends SpringActivitiTestCase {
     service1.expectedBodiesReceived("ala");
 
     String instanceId = (String) tpl.requestBody("direct:start", Collections.singletonMap("var1", "ala"));
-
 
     tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
 
@@ -96,7 +94,6 @@ public class SimpleSpringProcessTest extends SpringActivitiTestCase {
     MockEndpoint me = (MockEndpoint) ctx.getEndpoint("mock:service1");
     me.expectedBodiesReceived("ala");
 
-
     tpl.sendBodyAndProperty("direct:start", Collections.singletonMap("var1", "ala"), ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
 
     String instanceId = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("key1")
@@ -107,5 +104,4 @@ public class SimpleSpringProcessTest extends SpringActivitiTestCase {
 
     me.assertIsSatisfied();
   }
-
 }

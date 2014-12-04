@@ -23,21 +23,20 @@ import org.springframework.test.context.ContextConfiguration;
 public class AsyncPingTest extends SpringActivitiTestCase {
 	  
    @Autowired
-   CamelContext camelContext;
+   protected CamelContext camelContext;
    
    @Autowired
-   RuntimeService runtimeService;
+   protected RuntimeService runtimeService;
    
    public void  setUp() throws Exception {
-	   
-       camelContext.addRoutes(new RouteBuilder() {
+	   camelContext.addRoutes(new RouteBuilder() {
 
        @Override
        public void configure() throws Exception {
     	   from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");    	   
-		  }
-		});
-  }
+       }
+	   });
+   }
    
    public void tearDown() throws Exception {
      List<Route> routes = camelContext.getRoutes();

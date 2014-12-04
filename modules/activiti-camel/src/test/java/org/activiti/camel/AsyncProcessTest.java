@@ -33,10 +33,10 @@ import org.springframework.test.context.ContextConfiguration;
 public class AsyncProcessTest extends SpringActivitiTestCase {
 
   @Autowired
-  CamelContext camelContext;
+  protected CamelContext camelContext;
 
-   public void  setUp() throws Exception {
-      camelContext.addRoutes(new RouteBuilder() {
+  public void  setUp() throws Exception {
+    camelContext.addRoutes(new RouteBuilder() {
 
        @Override
        public void configure() throws Exception {
@@ -47,18 +47,17 @@ public class AsyncProcessTest extends SpringActivitiTestCase {
     	    from("seda:asyncQueue2").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
     	    
     	    from("seda:receiveQueue").recipientList(header("destination"));
-    	    
-           }
+       }
 		});
 	}
    
   public void tearDown() throws Exception {
-     List<Route> routes = camelContext.getRoutes();
-     for (Route r: routes) {       
-       camelContext.stopRoute(r.getId());
-       camelContext.removeRoute(r.getId());
-     }
-   }
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r: routes) {       
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
+    }
+  }
 
 
   @Deployment(resources = {"process/async.bpmn20.xml"})

@@ -31,38 +31,35 @@ import org.springframework.test.context.ContextConfiguration;
 public class CustomContextTest extends SpringActivitiTestCase {
 
 	@Autowired
-	CamelContext camelContext;
+	protected CamelContext camelContext;
 	
-	MockEndpoint service1;
+	protected MockEndpoint service1;
 
-	MockEndpoint service2;
+	protected MockEndpoint service2;
 
 	public void setUp() throws Exception {
    
-	      camelContext.addRoutes(new RouteBuilder() {
+    camelContext.addRoutes(new RouteBuilder() {
 
-	   		@Override
-	   		public void configure() throws Exception {	 
-	   		  from("direct:start").to("activiti:camelProcess");	   		
-
-	   	      from("activiti:camelProcess:serviceTask1").setBody().property("var1")
-	   	        .to("mock:service1").setProperty("var2").constant("var2")
-	   	        .setBody().properties();
-
-	   	      from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true")
-	   	        .to("mock:service2");
-
-	   	      from("direct:receive").to("activiti:camelProcess:receive");	   		  
-	   		}
-	   	});
+   		@Override
+   		public void configure() throws Exception {	 
+   		  from("direct:start").to("activiti:camelProcess");	   		
+  
+   		  from("activiti:camelProcess:serviceTask1").setBody().property("var1")
+   	      .to("mock:service1").setProperty("var2").constant("var2")
+   	      .setBody().properties();
+  
+   		  from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true")
+   	      .to("mock:service2");
+  
+   		  from("direct:receive").to("activiti:camelProcess:receive");	   		  
+   		}
+   	});
 	       
-	    
-		
 		service1 = (MockEndpoint) camelContext.getEndpoint("mock:service1");
 		service1.reset();
 		service2 = (MockEndpoint) camelContext.getEndpoint("mock:service2");
 		service2.reset();
-
 	}
 	
   public void tearDown() throws Exception {
@@ -76,8 +73,6 @@ public class CustomContextTest extends SpringActivitiTestCase {
 
 	@Deployment(resources = { "process/custom.bpmn20.xml" })
 	public void testRunProcess() throws Exception {
-	  
-	  
 		CamelContext ctx = applicationContext.getBean(CamelContext.class);
 		ProducerTemplate tpl = ctx.createProducerTemplate();
 		service1.expectedBodiesReceived("ala");
@@ -91,7 +86,9 @@ public class CustomContextTest extends SpringActivitiTestCase {
 		assertProcessEnded(instanceId);
 
 		service1.assertIsSatisfied();
-		Map m = service2.getExchanges().get(0).getIn().getBody(Map.class);
+		
+		@SuppressWarnings("rawtypes")
+    Map m = service2.getExchanges().get(0).getIn().getBody(Map.class);
 		assertEquals("ala", m.get("var1"));
 		assertEquals("var2", m.get("var2"));
 	}

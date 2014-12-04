@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.camel.examples.pingPong;
+package org.activiti.camel.examples.pingpong;
 
 /**
  * @author Saeid Mirzaei  
@@ -30,17 +30,17 @@ import org.springframework.test.context.ContextConfiguration;
 public class PingPongTest extends SpringActivitiTestCase {
 
 	@Autowired
-	CamelContext camelContext;
+	protected CamelContext camelContext;
 
 	public void  setUp() throws Exception {
-	   camelContext.addRoutes(new RouteBuilder() {
+	  camelContext.addRoutes(new RouteBuilder() {
 
-	   @Override
-	   public void configure() throws Exception {
-		   from("activiti:PingPongProcess:ping").transform().simple("${property.input} World");		
-		  }
-		});
-	  }
+	    @Override
+	    public void configure() throws Exception {
+	      from("activiti:PingPongProcess:ping").transform().simple("${property.input} World");		
+	    }
+	  });
+	}
 	
 	@Deployment
 	public void testPingPong() {
@@ -54,7 +54,6 @@ public class PingPongTest extends SpringActivitiTestCase {
 		assertEquals(1, outputMap.size());
 		assertNotNull(outputMap.get("outputValue"));
 		assertEquals("Hello World", outputMap.get("outputValue"));
-		
 	}
 
 }

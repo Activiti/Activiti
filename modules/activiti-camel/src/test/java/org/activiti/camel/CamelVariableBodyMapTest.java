@@ -19,9 +19,10 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class CamelVariableBodyMapTest extends SpringActivitiTestCase {
 	
-   MockEndpoint service1;
-   @Autowired
-   CamelContext camelContext;
+  protected MockEndpoint service1;
+  
+  @Autowired
+  protected CamelContext camelContext;
 	
   public void setUp() throws Exception {
 	  camelContext.addRoutes(new RouteBuilder() {
@@ -29,8 +30,8 @@ public class CamelVariableBodyMapTest extends SpringActivitiTestCase {
 			@Override
 			public void configure() throws Exception {
 				from("activiti:HelloCamel:serviceTask1")
-				.log(LoggingLevel.INFO,"Received message on service task")
-				.to("mock:serviceBehavior");				
+				  .log(LoggingLevel.INFO,"Received message on service task")
+				  .to("mock:serviceBehavior");				
 			}
 		});	
     

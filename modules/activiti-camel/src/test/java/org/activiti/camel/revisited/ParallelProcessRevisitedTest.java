@@ -29,17 +29,16 @@ import org.springframework.test.context.ContextConfiguration;
 public class ParallelProcessRevisitedTest extends SpringActivitiTestCase {
 
   @Autowired
-  CamelContext camelContext;
+  protected CamelContext camelContext;
 	  
   public void  setUp() throws Exception {
-	 camelContext.addRoutes(new RouteBuilder() {
+    camelContext.addRoutes(new RouteBuilder() {
 
-     @Override
+      @Override
       public void configure() throws Exception {
-    	    from("activiti:parallelCamelProcessRevisited:serviceTaskAsync1").to("bean:sleepBean?method=sleep");    	   
-    	    from("activiti:parallelCamelProcessRevisited:serviceTaskAsync2").to("bean:sleepBean?method=sleep");
-    	 				
-         }
+  	    from("activiti:parallelCamelProcessRevisited:serviceTaskAsync1").to("bean:sleepBean?method=sleep");    	   
+  	    from("activiti:parallelCamelProcessRevisited:serviceTaskAsync2").to("bean:sleepBean?method=sleep");
+      }
 	  });
   }
 
