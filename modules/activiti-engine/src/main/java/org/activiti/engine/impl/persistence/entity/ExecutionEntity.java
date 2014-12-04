@@ -336,7 +336,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     // initialize the lists of referenced objects (prevents db queries)
     variableInstances = new HashMap<String, VariableInstanceEntity>();
-    variableInstanceList  = new ArrayList<VariableInstanceEntity>();
     eventSubscriptions = new ArrayList<EventSubscriptionEntity>();
     jobs = new ArrayList<JobEntity>();
     tasks = new ArrayList<TaskEntity>();
@@ -1157,6 +1156,23 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       .findVariableInstancesByExecutionId(id);
   }
 
+  @Override
+  protected Long getVariablesCount() {
+    return (Long) Context
+      .getCommandContext()
+      .getVariableInstanceEntityManager()
+      .variablesCountExecution(id);
+  }
+
+  @Override
+  protected VariableInstanceEntity loadVariableInstance(String variableName) {
+    return Context
+      .getCommandContext()
+      .getVariableInstanceEntityManager()
+      .findVariableInstanceByExecutionAndName(id, variableName);
+  }
+
+  
   @Override
   protected VariableScopeImpl getParentVariableScope() {
     return getParent();
