@@ -324,9 +324,13 @@ public class BpmnDeployer implements Deployer {
                   .getDbSqlSession()
                   .pruneDeletedEntities(subscriptionsForSameMessageName);
                 
-          if(!subscriptionsForSameMessageName.isEmpty()) {
-            throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
-                    + "': there already is a message event subscription for the message with name '" + eventDefinition.getEventName() + "'.");
+          for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsForSameMessageName) {
+            // throw exception only if there's already a subscription as start event
+            if(eventSubscriptionEntity.getProcessInstanceId() == null || eventSubscriptionEntity.getProcessInstanceId().isEmpty()) {
+              // the event subscription has no instance-id, so it's a message start event
+              throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
+                      + "': there already is a message event subscription for the message with name '" + eventDefinition.getEventName() + "'.");
+            }
           }
           
           MessageEventSubscriptionEntity newSubscription = new MessageEventSubscriptionEntity();
