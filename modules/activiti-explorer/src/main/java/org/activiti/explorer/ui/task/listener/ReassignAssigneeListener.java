@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.task.Task;
+import org.activiti.engine.task.IdentityLinkType;
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
@@ -60,8 +61,15 @@ public class ReassignAssigneeListener implements ClickListener {
       protected void submitted(SubmitEvent event) {
         // Update assignee
         String selectedUser = involvePeoplePopupWindow.getSelectedUserId();
+        String originAssignee = task.getAssignee();
         task.setAssignee(selectedUser);
-        ProcessEngines.getDefaultProcessEngine().getTaskService().setAssignee(task.getId(), selectedUser);
+        if (selectedUser != null) {
+          ProcessEngines.getDefaultProcessEngine().getTaskService().setAssignee(task.getId(), selectedUser);
+        } else if (originAssignee != null) {
+          ProcessEngines.getDefaultProcessEngine().getTaskService().deleteUserIdentityLink(task.getId(), originAssignee, IdentityLinkType.ASSIGNEE);
+        } else {
+          return;
+        }
         
         // Update UI
         taskDetailPanel.notifyAssigneeChanged();
