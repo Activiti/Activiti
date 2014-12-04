@@ -1,13 +1,9 @@
 
 == REST API
 
+=== General Activiti REST principles
 
-
-===General Activiti REST principles
-
-
-
-====Installation and Authentication
+==== Installation and Authentication
 
 Activiti includes a REST API to the Activiti Engine that can be installed by deploying the activiti-rest.war file to a servlet container like Apache Tomcat. However, it can also be used in another web-application by including the servlet and it's mapping in your application and add all activiti-rest dependencies to the classpath.
 
@@ -15,25 +11,19 @@ By default the Activiti Engine will connect to an in-memory H2 database. You can
 
 All REST-resources require a valid Activiti-user to be authenticated by default. Basic HTTP access authentication is used, so you should always include a +Authorization: Basic ...==+ HTTP-header when performing requests or include the username and password in the request-url (eg. ++http://username:password@localhost...++).
       
-
 *It's recommended to use Basic Authentication in combination with HTTPS.*
 
 [[restUsageInTomcat]]
 
 
-====Usage in Tomcat
+==== Usage in Tomcat
 
-Due to link:$$http://tomcat.apache.org/tomcat-7.0-doc/security-howto.html$$[ default security properties on Tomcat], *escaped forward slashes (++%2F++ and ++%5C++) are not allowed by default (400-result is returned).*
-      This may have an impact on the deployment resources and their data-URL, as the URL can potentially contain escaped forward slashes.
+Due to link:$$http://tomcat.apache.org/tomcat-7.0-doc/security-howto.html$$[ default security properties on Tomcat], *escaped forward slashes (++%2F++ and ++%5C++) are not allowed by default (400-result is returned).* This may have an impact on the deployment resources and their data-URL, as the URL can potentially contain escaped forward slashes.
       
-      *When issues are experienced with unexpected 400-results, set the following system-property: +$$-Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true.$$+*
+*When issues are experienced with unexpected 400-results, set the following system-property: +$$-Dorg.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH=true.$$+*
 
-
-      	It's a best practice to always set the *Accept* and *Content-Type* 
-      	(in case of posting/putting JSON) headers to *application/json* on the HTTP requests described below.
+It's a best practice to always set the *Accept* and *Content-Type* (in case of posting/putting JSON) headers to *application/json* on the HTTP requests described below.
       
-
-
 
 ====Methods and return-codes
 
@@ -67,19 +57,14 @@ Due to link:$$http://tomcat.apache.org/tomcat-7.0-doc/security-howto.html$$[ def
 |===============
 
 
-
-        The media-type of the HTTP-responses is always +application/json+ unless binary content is requested (eg. deployment resource data), the media-type of the content is used. 
+The media-type of the HTTP-responses is always +application/json+ unless binary content is requested (eg. deployment resource data), the media-type of the content is used. 
         
-
-
-
-====Error response body
+==== Error response body
 
 When an error occurs (both client and server, 4XX and 5XX status-codes) the response body contains an object describing the error that occurred. An example for a 404-status when a task is not found:
 
-
+[source,json,linenums]
 ----
-
 {
   "statusCode" : 404,
   "errorMessage" : "Could not find a task with id '444'."
@@ -87,28 +72,19 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 ----
 
 
+==== Request parameters
 
-====Request parameters
-
-
-
-=====URL fragments
+===== URL fragments
 
 
-            Parameters that are part of the url (eg. the deploymentId parameter in ++http://host/actviti-rest/service/repository/deployments/{deploymentId}++)
-            need to be properly escaped (see link:$$https://en.wikipedia.org/wiki/Percent-encoding$$[URL-encoding or Percent-encoding]) in case the segment contains special characters. Most
-            frameworks have this functionality built in, but it should be taken into account. Especially for segments that can contains forward-slashes (eg. deployment resource), this is required.
-        
+Parameters that are part of the url (eg. the deploymentId parameter in ++http://host/actviti-rest/service/repository/deployments/{deploymentId}++)
+ need to be properly escaped (see link:$$https://en.wikipedia.org/wiki/Percent-encoding$$[URL-encoding or Percent-encoding]) in case the segment contains special characters. Most frameworks have this functionality built in, but it should be taken into account. Especially for segments that can contains forward-slashes (eg. deployment resource), this is required.
 
+===== Rest URL query parameters
 
-
-=====Rest URL query parameters
-
-
-            Parameters added as query-string in the URL (eg. the name parameter used in ++http://host/activiti-rest/service/deployments?name=Deployment++) can have the following types and are
-            mentioned in the corresponding REST-API documentation:
+Parameters added as query-string in the URL (eg. the name parameter used in ++http://host/activiti-rest/service/deployments?name=Deployment++) can have the following types and are mentioned in the corresponding REST-API documentation:
             
-            .URL query parameter types
+.URL query parameter types
 [options="header"]
 |===============
 |Type|Format
@@ -121,16 +97,12 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 |===============
 
 
-
-        
-
 [[restJsonBody]]
 
 
-=====JSON body parameters
+===== JSON body parameters
 
-
-            .JSON parameter types
+.JSON parameter types
 [options="header"]
 |===============
 |Type|Format
@@ -143,17 +115,14 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 |===============
 
 
-
-        
-
 [[restPagingAndSort]]
 
 
-=====Paging and sorting
+===== Paging and sorting
 
+Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in ++http://host/activiti-rest/service/deployments?sort=name++).
 
-            Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in ++http://host/activiti-rest/service/deployments?sort=name++).
-            .Variable query JSON parameters
+.Variable query JSON parameters
 [options="header"]
 |===============
 |Parameter|Default value|Description
@@ -165,16 +134,12 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 |===============
 
 
-
-        
-
 [[restQueryVariable]]
 
 
-=====JSON query variable format
+===== JSON query variable format
 
-
-            
+[source,json,linenums]      
 ----
 
 { 
@@ -186,7 +151,7 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 ----
 
 
-            .Variable query JSON parameters
+.Variable query JSON parameters
 [options="header"]
 |===============
 |Parameter|Required|Description
@@ -199,8 +164,7 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 |===============
 
 
-
-             .Default query JSON types
+.Default query JSON types
 [options="header"]
 |===============
 |Type name|Description
@@ -213,21 +177,16 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 |date|Value is treated as and converted to a +java.util.Date+. The JSON string will be converted using ISO-8601 date format.
 
 |===============
-
-
-
-        
+    
 
 [[restVariables]]
 
+===== Variable representation
 
-=====Variable representation
+When working with variables (execution/process and task), the REST-api uses some common principles and JSON-format for both reading and writing. The JSON representation of a variable looks like this:
 
-
-          When working with variables (execution/process and task), the REST-api uses some common principles and JSON-format for both reading and writing. The JSON representation of a variable looks like this:
-           
+[source,json,linenums]                 
 ----
-
 { 
   "name" : "variableName",
   "value" : "variableValue",
@@ -236,10 +195,8 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
   "type" : "string"
 }
 ----
-
-
-          
-           .Variable JSON attributes
+   
+.Variable JSON attributes
 [options="header"]
 |===============
 |Parameter|Required|Description
@@ -251,9 +208,7 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 
 |===============
 
-
-
-            .Variable Types
+.Variable Types
 [options="header"]
 |===============
 |Type name|Description
@@ -269,33 +224,20 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 
 |===============
 
+It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the +initializeVariableConverters()+ method on +org.activiti.rest.service.api.RestResponseFactory+, you can add additional +org.activiti.rest.service.api.engine.variable.RestVariableConverter+ classes to support converting your POJO's to a format suitable for transferring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
 
 
-            It's possible to support additional variable-types with a custom JSON representation (either simple value or complex/nested JSON object). By extending the +initializeVariableConverters()+ method on +org.activiti.rest.service.api.RestResponseFactory+,
-            you can add additional +org.activiti.rest.service.api.engine.variable.RestVariableConverter+ classes to support converting your POJO's to a format suitable for transferring through REST and converting the REST-value back to your POJO. The actual transformation to JSON is done by Jackson.
-        
-
-
-
-===Deployment
+=== Deployment
 
 *When using tomcat, please read <<restUsageInTomcat,Usage in Tomcat>>.*
 
-
-
-====List of Deployments
-
-
-          
+==== List of Deployments
+     
 ----
 GET repository/deployments
 ----
 
-
-        
-
-
-            .URL query parameters
+.URL query parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -312,11 +254,7 @@ GET repository/deployments
 |===============
 
 
-
-        
-
-
-          .REST Response codes
+.REST Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -324,15 +262,10 @@ GET repository/deployments
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
   "data": [
     {
@@ -352,24 +285,13 @@ GET repository/deployments
 }
 ----
 
-
-    
-
-
-
-====Get a deployment
-
-
-          
+==== Get a deployment
+     
 ----
 GET repository/deployments/{deploymentId}
 ----
 
-
-        
-
-
-            .Get a deployment - URL parameters
+.Get a deployment - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -378,11 +300,7 @@ GET repository/deployments/{deploymentId}
 |===============
 
 
-
-        
-
-
-          .Get a deployment - Response codes
+.Get a deployment - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -391,15 +309,10 @@ GET repository/deployments/{deploymentId}
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
   "id": "10",
   "name": "activiti-examples.bar",
@@ -410,33 +323,19 @@ GET repository/deployments/{deploymentId}
 }
 ----
 
-
-    
-
-
-
-====Create a new deployment
-
-
+==== Create a new deployment
           
 ----
 POST repository/deployments
 ----
 
-
+*Request body:*
         
-
-
-          *Request body:*
-        
-
-The request body should contain data of type _multipart/form-data_. There should be exactly one file in the request, any additional files will be ignored. The deployment name is the name
-        of the file-field passed in. If multiple resources need to be deployed in a single deployment, compress the resources in a zip and make sure the file-name ends with +.bar+ or +.zip+.
+The request body should contain data of type _multipart/form-data_. There should be exactly one file in the request, any additional files will be ignored. The deployment name is the name of the file-field passed in. If multiple resources need to be deployed in a single deployment, compress the resources in a zip and make sure the file-name ends with +.bar+ or +.zip+.
 
 An additional parameter (form-field) can be passed in the request body with name +tenantId+. The value of this field will be used as the id of the tenant this deployment is done in.
 
-
-          .Create a new deployment - Response codes
+.Create a new deployment - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -445,15 +344,11 @@ An additional parameter (form-field) can be passed in the request body with name
 
 |===============
 
+*Success response body:*
 
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
   "id": "10",
   "name": "activiti-examples.bar",
@@ -464,24 +359,13 @@ An additional parameter (form-field) can be passed in the request body with name
 }
 ----
 
-
-    
-
-
-
-====Delete a deployment
-
-
-          
+==== Delete a deployment
+     
 ----
 DELETE repository/deployments/{deploymentId}
 ----
 
-
-        
-
-
-            .Delete a deployment - URL parameters
+.Delete a deployment - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -490,11 +374,7 @@ DELETE repository/deployments/{deploymentId}
 |===============
 
 
-
-        
-
-
-          .Delete a deployment - Response codes
+.Delete a deployment - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -504,24 +384,13 @@ DELETE repository/deployments/{deploymentId}
 |===============
 
 
-
-        
-
-
-
-====List resources in a deployment
-
-
-          
+==== List resources in a deployment
+     
 ----
 GET repository/deployments/{deploymentId}/resources
 ----
 
-
-        
-
-
-            .List resources in a deployment - URL parameters
+.List resources in a deployment - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -529,12 +398,7 @@ GET repository/deployments/{deploymentId}/resources
 
 |===============
 
-
-
-        
-
-
-          .List resources in a deployment - Response codes
+.List resources in a deployment - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -543,15 +407,10 @@ GET repository/deployments/{deploymentId}/resources
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 [
   {
     "id": "diagrams/my-process.bpmn20.xml",
@@ -571,43 +430,22 @@ GET repository/deployments/{deploymentId}/resources
 ----
 
 
-
-       
 * ++mediaType++: Contains the media-type the resource has. This is resolved using a (pluggable) +MediaTypeResolver+ and contains, by default, a limited number of mime-type mappings.
-
-
 * ++type++: Type of resource, possible values:
-
 * ++resource++: Plain old resource.
-
-
 * ++processDefinition++: Resource that contains one or more process-definitions. This resource is picked up by the deployer.
-
-
 * ++processImage++: Resource that represents a deployed process definition's graphical layout.
 
-
+_The dataUrl property in the resulting JSON for a single resource contains the actual URL to use for retrieving the binary resource._
     
 
-
-      _The dataUrl property in the resulting JSON for a single resource contains the actual URL to use for retrieving the binary resource._
-    
-
-
-
-====Get a deployment resource
-
-
-          
+==== Get a deployment resource
+     
 ----
 GET repository/deployments/{deploymentId}/resources/{resourceId}
 ----
 
-
-        
-
-
-            .Get a deployment resource - URL parameters
+.Get a deployment resource - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -617,11 +455,7 @@ GET repository/deployments/{deploymentId}/resources/{resourceId}
 |===============
 
 
-
-        
-
-
-          .Get a deployment resource - Response codes
+.Get a deployment resource - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -631,14 +465,10 @@ GET repository/deployments/{deploymentId}/resources/{resourceId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
   "id": "diagrams/my-process.bpmn20.xml",
   "url": "http://localhost:8081/activiti-rest/service/repository/deployments/10/resources/diagrams%2Fmy-process.bpmn20.xml",
@@ -648,40 +478,21 @@ GET repository/deployments/{deploymentId}/resources/{resourceId}
 }
 ----
 
-
-
-      
+  
 * ++mediaType++: Contains the media-type the resource has. This is resolved using a (pluggable) +MediaTypeResolver+ and contains, by default, a limited number of mime-type mappings.
-
-
 * ++type++: Type of resource, possible values:
-
 * ++resource++: Plain old resource.
-
-
 * ++processDefinition++: Resource that contains one or more process-definitions. This resource is picked up by the deployer.
-
-
 * ++processImage++: Resource that represents a deployed process definition's graphical layout.
 
 
-    
-
-
-
-====Get a deployment resource content
-
-
-          
+==== Get a deployment resource content
+        
 ----
 GET repository/deployments/{deploymentId}/resourcedata/{resourceId}
 ----
 
-
-        
-
-
-            .Get a deployment resource content - URL parameters
+.Get a deployment resource content - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -704,38 +515,23 @@ GET repository/deployments/{deploymentId}/resourcedata/{resourceId}
 
 |===============
 
-
-
-        
-
-
-       *Success response body:*
+*Success response body:*
     
 
-
-      The response body will contain the binary resource-content for the requested resource. The response content-type will be the same as the type returned in the resources 'mimeType' property. Also, a content-disposition header is set,
-      allowing browsers to download the file instead of displaying it.
+The response body will contain the binary resource-content for the requested resource. The response content-type will be the same as the type returned in the resources 'mimeType' property. Also, a content-disposition header is set, allowing browsers to download the file instead of displaying it.
     
 
+=== Process Definitions
 
 
-===Process Definitions
+==== List of process definitions
 
-
-
-====List of process definitions
-
-
-          
+     
 ----
 GET repository/process-definitions
 ----
 
-
-        
-
-
-            .List of process definitions - URL parameters
+.List of process definitions - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -759,11 +555,7 @@ GET repository/process-definitions
 |===============
 
 
-
-        
-
-
-          .List of process definitions - Response codes
+.List of process definitions - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -773,14 +565,10 @@ GET repository/process-definitions
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
   "data": [
     { 
@@ -809,33 +597,18 @@ GET repository/process-definitions
 ----
 
 
-      
 * ++graphicalNotationDefined++: Indicates the process definition contains graphical information (BPMN DI).
-
-
 * ++resource++: Contains the actual deployed BPMN 2.0 xml.
-
-
 * ++diagramResource++: Contains a graphical representation of the process, null when no diagram is available.
 
 
-    
-
-
-
-====Get a process definition
-
-
-          
+==== Get a process definition
+     
 ----
 GET repository/process-definitions/{processDefinitionId}
 ----
 
-
-        
-
-
-            .Get a process definition - URL parameters
+.Get a process definition - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -844,11 +617,7 @@ GET repository/process-definitions/{processDefinitionId}
 |===============
 
 
-
-        
-
-
-          .Get a process definition - Response codes
+.Get a process definition - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -858,14 +627,10 @@ GET repository/process-definitions/{processDefinitionId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 { 
   "id" : "oneTaskProcess:1:4",
   "url" : "http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4",
@@ -883,48 +648,30 @@ GET repository/process-definitions/{processDefinitionId}
   "startFormDefined" : false
 }
 ----
-
-
-      
+ 
 * ++graphicalNotationDefined++: Indicates the process definition contains graphical information (BPMN DI).
-
-
 * ++resource++: Contains the actual deployed BPMN 2.0 xml.
-
-
 * ++diagramResource++: Contains a graphical representation of the process, null when no diagram is available.
 
 
-    
-
-
-
-====Update category for a process definition
-
-
-          
+==== Update category for a process definition
+       
 ----
 PUT repository/process-definitions/{processDefinitionId}
 ----
 
 
-        
+*Body JSON:*
 
-
-         *Body JSON:*
-           
+[source,json,linenums]                 
 ----
-
 { 
   "category" : "updatedcategory"
 }
 ----
 
 
-        
-
-
-          .Update category for a process definition - Response codes
+.Update category for a process definition - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -935,28 +682,16 @@ PUT repository/process-definitions/{processDefinitionId}
 |===============
 
 
-
-        
-
-
-       *Success response body:* see response for +repository/process-definitions/{processDefinitionId}+.
+*Success response body:* see response for +repository/process-definitions/{processDefinitionId}+.
       
 
-
-
-====Get a process definition resource content
-
-
-          
+==== Get a process definition resource content
+     
 ----
 GET repository/process-definitions/{processDefinitionId}/resourcedata
 ----
 
-
-        
-
-
-            .Get a process definition resource content - URL parameters
+.Get a process definition resource content - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -964,33 +699,18 @@ GET repository/process-definitions/{processDefinitionId}/resourcedata
 
 |===============
 
-
-
-        
-
-
-       *Response:*
+*Response:*
     
+Exactly the same response codes/boy as +GET repository/deployment/{deploymentId}/resourcedata/{resourceId}+.
 
 
-      Exactly the same response codes/boy as +GET repository/deployment/{deploymentId}/resourcedata/{resourceId}+.
-    
-
-
-
-====Get a process definition BPMN model
-
-
-          
+==== Get a process definition BPMN model
+     
 ----
 GET repository/process-definitions/{processDefinitionId}/model
 ----
 
-
-        
-
-
-            .Get a process definition BPMN model - URL parameters
+.Get a process definition BPMN model - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -999,11 +719,7 @@ GET repository/process-definitions/{processDefinitionId}/model
 |===============
 
 
-
-        
-
-
-          .Get a process definition BPMN model - Response codes
+.Get a process definition BPMN model - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1013,15 +729,11 @@ GET repository/process-definitions/{processDefinitionId}/model
 |===============
 
 
+*Response body:*
+The response body is a JSON representation of the +org.activiti.bpmn.model.BpmnModel+ and contains the full process definition model.
 
-        
-
-
-       *Response body:*
-       The response body is a JSON representation of the +org.activiti.bpmn.model.BpmnModel+ and contains the full process definition model.
-
+[source,json,linenums]      
 ----
-
 {
    "processes":[
       {
@@ -1040,34 +752,20 @@ GET repository/process-definitions/{processDefinitionId}/model
     
     ...
 }
-
 ----
 
 
-    
-
+==== Suspend a process definition
 
      
-    
-
-
-
-====Suspend a process definition
-
-
-          
 ----
 PUT repository/process-definitions/{processDefinitionId}
 ----
 
+*Body JSON:*
 
-        
-
-
-         *Body JSON:*
-           
+[source,json,linenums]                 
 ----
-
 { 
   "action" : "suspend",
   "includeProcessInstances" : "false",
@@ -1076,7 +774,7 @@ PUT repository/process-definitions/{processDefinitionId}
 ----
 
 
-        [[processDefinitionActionBodyParameters]]
+[[processDefinitionActionBodyParameters]]
 .Suspend a process definition - JSON Body parameters
 [options="header"]
 |===============
@@ -1088,11 +786,7 @@ PUT repository/process-definitions/{processDefinitionId}
 |===============
 
 
-
-        
-
-
-          .Suspend a process definition - Response codes
+.Suspend a process definition - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1102,32 +796,18 @@ PUT repository/process-definitions/{processDefinitionId}
 
 |===============
 
-
-
-        
-
-
-       *Success response body:* see response for +repository/process-definitions/{processDefinitionId}+.
+*Success response body:* see response for +repository/process-definitions/{processDefinitionId}+.
       
-
-
-
-====Activate a process definition
-
-
-          
+==== Activate a process definition
+     
 ----
 PUT repository/process-definitions/{processDefinitionId}
 ----
+    
+*Body JSON:*
 
-
-        
-
-
-         *Body JSON:*
-           
+[source,json,linenums]                 
 ----
-
 { 
   "action" : "activate",
   "includeProcessInstances" : "true",
@@ -1135,13 +815,9 @@ PUT repository/process-definitions/{processDefinitionId}
 }
 ----
 
-
-
-        See suspend process definition <<processDefinitionActionBodyParameters,JSON Body parameters>>.
+See suspend process definition <<processDefinitionActionBodyParameters,JSON Body parameters>>.
         
-
-
-          .Activate a process definition - Response codes
+.Activate a process definition - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1152,28 +828,17 @@ PUT repository/process-definitions/{processDefinitionId}
 |===============
 
 
-
-        
-
-
-       *Success response body:* see response for +repository/process-definitions/{processDefinitionId}+.
+*Success response body:* see response for +repository/process-definitions/{processDefinitionId}+.
+     
       
-
-
-
-====Get all candidate starters for a process-definition
-
-
-          
+==== Get all candidate starters for a process-definition
+      
 ----
 GET repository/process-definitions/{processDefinitionId}/identitylinks
 ----
 
 
-        
-
-
-            .Get all candidate starters for a process-definition - URL parameters
+.Get all candidate starters for a process-definition - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1182,11 +847,7 @@ GET repository/process-definitions/{processDefinitionId}/identitylinks
 |===============
 
 
-
-        
-
-
-          .Get all candidate starters for a process-definition - Response codes
+.Get all candidate starters for a process-definition - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1196,14 +857,10 @@ GET repository/process-definitions/{processDefinitionId}/identitylinks
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 [
    {
       "url":"http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4/identitylinks/groups/admin",
@@ -1221,23 +878,14 @@ GET repository/process-definitions/{processDefinitionId}/identitylinks
 ----
 
 
-    
+==== Add a candidate starter to a process definition
 
-
-
-====Add a candidate starter to a process definition
-
-
-        
+   
 ----
 POST repository/process-definitions/{processDefinitionId}/identitylinks
 ----
 
-
-      
-
-
-          .Add a candidate starter to a process definition - URL parameters
+.Add a candidate starter to a process definition - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1246,37 +894,25 @@ POST repository/process-definitions/{processDefinitionId}/identitylinks
 |===============
 
 
+*Request body (user):*
 
-      
-
-
-       *Request body (user):*
-            
+[source,json,linenums]                  
 ----
-
 {
   "user" : "kermit"
 }
 ----
 
+*Request body (group):*
 
-    
-
-
-       *Request body (group):*
-            
+[source,json,linenums]                  
 ----
-
 {
   "groupId" : "sales"
 }
 ----
 
-
-    
-
-
-        .Add a candidate starter to a process definition - Response codes
+.Add a candidate starter to a process definition - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1286,12 +922,9 @@ POST repository/process-definitions/{processDefinitionId}/identitylinks
 |===============
 
 
+*Success response body:*
 
-      
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
 
 {
@@ -1303,23 +936,14 @@ POST repository/process-definitions/{processDefinitionId}/identitylinks
 ----
 
 
-    
-
-
-
-====Delete a candidate starter from a process definition
-
+==== Delete a candidate starter from a process definition
 
         
 ----
 DELETE repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}
 ----
 
-
-      
-
-
-          .Delete a candidate starter from a process definition - URL parameters
+.Delete a candidate starter from a process definition - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1330,11 +954,7 @@ DELETE repository/process-definitions/{processDefinitionId}/identitylinks/{famil
 |===============
 
 
-
-      
-
-
-        .Delete a candidate starter from a process definition - Response codes
+.Delete a candidate starter from a process definition - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1344,12 +964,9 @@ DELETE repository/process-definitions/{processDefinitionId}/identitylinks/{famil
 |===============
 
 
+*Success response body:*
 
-      
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
 
 {
@@ -1361,23 +978,14 @@ DELETE repository/process-definitions/{processDefinitionId}/identitylinks/{famil
 ----
 
 
-    
-
-
-
-====Get a candidate starter from a process definition
-
-
-        
+==== Get a candidate starter from a process definition
+   
 ----
 GET repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}
 ----
 
 
-      
-
-
-          .Get a candidate starter from a process definition - URL parameters
+.Get a candidate starter from a process definition - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1388,11 +996,7 @@ GET repository/process-definitions/{processDefinitionId}/identitylinks/{family}/
 |===============
 
 
-
-      
-
-
-        .Get a candidate starter from a process definition - Response codes
+.Get a candidate starter from a process definition - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1401,15 +1005,10 @@ GET repository/process-definitions/{processDefinitionId}/identitylinks/{family}/
 
 |===============
 
+*Success response body:*
 
-
-      
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
   "url":"http://localhost:8182/repository/process-definitions/oneTaskProcess%3A1%3A4/identitylinks/users/kermit",
   "user":"kermit",
@@ -1418,28 +1017,17 @@ GET repository/process-definitions/{processDefinitionId}/identitylinks/{family}/
 }
 ----
 
-
-    
-
+=== Models
 
 
-===Models
-
-
-
-====Get a list of models
-
+==== Get a list of models
 
           
 ----
 GET repository/models
 ----
 
-
-        
-
-
-            .Get a list of models - URL query parameters
+.Get a list of models - URL query parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1463,11 +1051,7 @@ GET repository/models
 |===============
 
 
-
-        
-
-
-          .Get a list of models - Response codes
+.Get a list of models - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1477,14 +1061,10 @@ GET repository/models
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
    "data":[
       {
@@ -1514,23 +1094,14 @@ GET repository/models
 ----
 
 
-    
+==== Get a model
 
-
-
-====Get a model
-
-
-          
+     
 ----
 GET repository/models/{modelId}
 ----
 
-
-        
-
-
-            .Get a model - URL parameters
+.Get a model - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1539,11 +1110,7 @@ GET repository/models/{modelId}
 |===============
 
 
-
-        
-
-
-          .Get a model - Response codes
+.Get a model - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1553,14 +1120,10 @@ GET repository/models/{modelId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
    "id":"5",
    "url":"http://localhost:8182/repository/models/5",
@@ -1578,26 +1141,17 @@ GET repository/models/{modelId}
 ----
 
 
-    
 
-
-
-====Update a model
-
-
-          
+==== Update a model
+     
 ----
 PUT repository/models/{modelId}
 ----
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-            
+[source,json,linenums]                  
 ----
-
 {
    "name":"Model name",
    "key":"Model key",
@@ -1609,12 +1163,9 @@ PUT repository/models/{modelId}
 }
 ----
 
-
-   All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the model, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the model-value will be updated to null. Example: +{"metaInfo" : null}+ will clear the metaInfo of the model).
+All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the model, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the model-value will be updated to null. Example: +{"metaInfo" : null}+ will clear the metaInfo of the model).
     
-
-
-          .Update a model - Response codes
+.Update a model - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1623,15 +1174,10 @@ PUT repository/models/{modelId}
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
    "id":"5",
    "url":"http://localhost:8182/repository/models/5",
@@ -1649,26 +1195,16 @@ PUT repository/models/{modelId}
 ----
 
 
-    
-
-
-
-====Create a model
-
-
-          
+==== Create a model
+     
 ----
 POST repository/models
 ----
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-            
+[source,json,linenums]                  
 ----
-
 {
    "name":"Model name",
    "key":"Model key",
@@ -1681,11 +1217,9 @@ POST repository/models
 ----
 
 
-   All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only setting the name of the model, leaving all other fields null.
+All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only setting the name of the model, leaving all other fields null.
     
-
-
-          .Create a model - Response codes
+.Create a model - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1693,15 +1227,10 @@ POST repository/models
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
    "id":"5",
    "url":"http://localhost:8182/repository/models/5",
@@ -1719,23 +1248,14 @@ POST repository/models
 ----
 
 
-    
-
-
-
-====Delete a model
-
-
-          
+==== Delete a model
+     
 ----
 DELETE repository/models/{modelId}
 ----
 
 
-        
-
-
-            .Delete a model - URL parameters
+.Delete a model - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1744,11 +1264,7 @@ DELETE repository/models/{modelId}
 |===============
 
 
-
-        
-
-
-          .Delete a model - Response codes
+.Delete a model - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1758,13 +1274,7 @@ DELETE repository/models/{modelId}
 |===============
 
 
-
-        
-
-
-
-====Get the editor source for a model
-
+==== Get the editor source for a model
 
           
 ----
@@ -1772,10 +1282,7 @@ GET repository/models/{modelId}/source
 ----
 
 
-        
-
-
-            .Get the editor source for a model - URL parameters
+.Get the editor source for a model - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1784,11 +1291,7 @@ GET repository/models/{modelId}/source
 |===============
 
 
-
-        
-
-
-          .Get the editor source for a model - Response codes
+.Get the editor source for a model - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1799,28 +1302,18 @@ GET repository/models/{modelId}/source
 
 
 
-        
+*Success response body:*
 
-
-       *Success response body:*
-       Response body contains the model's raw editor source. The response's content-type is set to +application/octet-stream+, regardless of the content of the source.
+Response body contains the model's raw editor source. The response's content-type is set to +application/octet-stream+, regardless of the content of the source.
     
 
-
-
-====Set the editor source for a model
-
-
-        
+==== Set the editor source for a model
+   
 ----
 PUT repository/models/{modelId}/source
 ----
 
-
-      
-
-
-          .Set the editor source for a model - URL parameters
+.Set the editor source for a model - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1829,16 +1322,11 @@ PUT repository/models/{modelId}/source
 |===============
 
 
+*Request body:*
 
-      
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the source.
 
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the source.
-        
-
-
-          .Set the editor source for a model - Response codes
+.Set the editor source for a model - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1847,30 +1335,18 @@ PUT repository/models/{modelId}/source
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-       *Success response body:*
-       Response body contains the model's raw editor source. The response's content-type is set to +application/octet-stream+, regardless of the content of the source.
+Response body contains the model's raw editor source. The response's content-type is set to +application/octet-stream+, regardless of the content of the source.
     
 
-
-
-====Get the extra editor source for a model
-
-
-          
+==== Get the extra editor source for a model
+     
 ----
 GET repository/models/{modelId}/source-extra
 ----
 
-
-        
-
-
-            .Get the extra editor source for a model - URL parameters
+.Get the extra editor source for a model - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1879,11 +1355,7 @@ GET repository/models/{modelId}/source-extra
 |===============
 
 
-
-        
-
-
-          .Get the extra editor source for a model - Response codes
+.Get the extra editor source for a model - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1893,29 +1365,19 @@ GET repository/models/{modelId}/source-extra
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-       Response body contains the model's raw extra editor source. The response's content-type is set to +application/octet-stream+, regardless of the content of the extra source.
+Response body contains the model's raw extra editor source. The response's content-type is set to +application/octet-stream+, regardless of the content of the extra source.
     
 
+==== Set the extra editor source for a model
 
 
-====Set the extra editor source for a model
-
-
-        
 ----
 PUT repository/models/{modelId}/source-extra
 ----
 
-
-      
-
-
-          .Set the extra editor source for a model - URL parameters
+.Set the extra editor source for a model - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1923,17 +1385,11 @@ PUT repository/models/{modelId}/source-extra
 
 |===============
 
+*Request body:*
 
-
-      
-
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the extra source.
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the extra source.
         
-
-
-          .Set the extra editor source for a model - Response codes
+.Set the extra editor source for a model - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1943,33 +1399,20 @@ PUT repository/models/{modelId}/source-extra
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-       Response body contains the model's raw editor source. The response's content-type is set to +application/octet-stream+, regardless of the content of the source.
-    
+Response body contains the model's raw editor source. The response's content-type is set to +application/octet-stream+, regardless of the content of the source.
 
 
-
-===Process Instances
-
-
+=== Process Instances
 
 ====Get a process instance
-
-
           
 ----
 GET runtime/process-instances/{processInstanceId}
 ----
 
-
-        
-
-
-            .Get a process instance - URL parameters
+.Get a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -1978,11 +1421,7 @@ GET runtime/process-instances/{processInstanceId}
 |===============
 
 
-
-        
-
-
-          .Get a process instance - Response codes
+.Get a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -1992,14 +1431,10 @@ GET runtime/process-instances/{processInstanceId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]                  
 ----
-
 {
    "id":"7",
    "url":"http://localhost:8182/runtime/process-instances/7",
@@ -2012,23 +1447,13 @@ GET runtime/process-instances/{processInstanceId}
 ----
 
 
-    
-
-
-
-====Delete a process instance
-
-
-          
+==== Delete a process instance
+     
 ----
 DELETE runtime/process-instances/{processInstanceId}
 ----
 
-
-        
-
-
-            .Delete a process instance - URL parameters
+.Delete a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2037,11 +1462,7 @@ DELETE runtime/process-instances/{processInstanceId}
 |===============
 
 
-
-        
-
-
-          .Delete a process instance - Response codes
+.Delete a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2051,24 +1472,15 @@ DELETE runtime/process-instances/{processInstanceId}
 |===============
 
 
+==== Activate or suspend a process instance
 
-        
-
-
-
-====Activate or suspend a process instance
-
-
-          
+       
 ----
 PUT runtime/process-instances/{processInstanceId}
 ----
 
 
-        
-
-
-            .Activate or suspend a process instance - URL parameters
+.Activate or suspend a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2077,37 +1489,25 @@ PUT runtime/process-instances/{processInstanceId}
 |===============
 
 
+*Request response body (suspend):*
 
-        
-
-
-       *Request response body (suspend):*
-            
+[source,json,linenums]                  
 ----
-
 {
    "action":"suspend"
 }
 ----
 
+*Request response body (activate):*
 
-    
-
-
-       *Request response body (activate):*
-            
+[source,json,linenums]                  
 ----
-
 {
    "action":"activate"
 }
 ----
 
-
-    
-
-
-          .Activate or suspend a process instance - Response codes
+.Activate or suspend a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2120,26 +1520,17 @@ PUT runtime/process-instances/{processInstanceId}
 
 
 
-        
+==== Start a process instance
 
-
-
-====Start a process instance
-
-
-          
+     
 ----
 POST runtime/process-instances
 ----
 
+*Request body (start by process definition id):*
 
-        
-
-
-       *Request body (start by process definition id):*
-            
+[source,json,linenums]
 ----
-
 {
    "processDefinitionId":"oneTaskProcess:1:158",
    "businessKey":"myBusinessKey",
@@ -2154,14 +1545,10 @@ POST runtime/process-instances
 }
 ----
 
+*Request body (start by process definition key):*
 
-    
-
-
-       *Request body (start by process definition key):*
-            
+[source,json,linenums]            
 ----
-
 {
    "processDefinitionKey":"oneTaskProcess",
    "businessKey":"myBusinessKey",
@@ -2177,14 +1564,10 @@ POST runtime/process-instances
 }
 ----
 
+*Request body (start by message):*
 
-    
-
-
-       *Request body (start by message):*
-            
+[source,json,linenums]            
 ----
-
 {
    "message":"newOrderMessage",
    "businessKey":"myBusinessKey",
@@ -2201,15 +1584,10 @@ POST runtime/process-instances
 ----
 
 
+Only one of +processDefinitionId+, +processDefinitionKey+ or +message+ can be used in the request body. Parameters +businessKey+, +variables+ and +tenantId+ are optional. If +tenantId+ is omitted, the default tenant will be used. More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that the variable-scope that is supplied is ignored, process-variables are always +local+.
     
 
-
-    Only one of +processDefinitionId+, +processDefinitionKey+ or +message+ can be used in the request body. Parameters +businessKey+, +variables+ and +tenantId+ are optional. If +tenantId+ is omitted, the default tenant will be used.
-    More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that the variable-scope that is supplied is ignored, process-variables are always +local+.
-    
-
-
-          .Start a process instance - Response codes
+.Start a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2219,14 +1597,10 @@ POST runtime/process-instances
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "id":"7",
    "url":"http://localhost:8182/runtime/process-instances/7",
@@ -2239,24 +1613,16 @@ POST runtime/process-instances
 ----
 
 
-    
-
 [[restProcessInstancesGet]]
 
 
-====List of process instances
-
-
-          
+==== List of process instances
+     
 ----
 GET runtime/process-instances
 ----
 
-
-        
-
-
-            .List of process instances - URL query parameters
+.List of process instances - URL query parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2279,11 +1645,7 @@ GET runtime/process-instances
 |===============
 
 
-
-        
-
-
-          .List of process instances - Response codes
+.List of process instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2293,14 +1655,10 @@ GET runtime/process-instances
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "data":[
       {
@@ -2324,26 +1682,16 @@ GET runtime/process-instances
 ----
 
 
-    
-
-
-
-====Query process instances
-
-
-          
+==== Query process instances
+     
 ----
 POST query/process-instances
 ----
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-            
+[source,json,linenums]            
 ----
-
 {
   "processDefinitionKey":"oneTaskProcess",
   "variables": 
@@ -2360,8 +1708,6 @@ POST query/process-instances
 }
 ----
 
-
-
 The request body can contain all possible filters that can be used in the <<restProcessInstancesGet,List process instances>> URL query. On top of these, it's possible to provide an array of variables
 to include in the query, with their format <<restQueryVariable, described here>>.
     
@@ -2369,7 +1715,7 @@ to include in the query, with their format <<restQueryVariable, described here>>
 The general <<restPagingAndSort,paging and sorting query-parameters>> can be used for this URL.
 
 
-          .Query process instances - Response codes
+.Query process instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2378,15 +1724,10 @@ The general <<restPagingAndSort,paging and sorting query-parameters>> can be use
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "data":[
       {
@@ -2410,23 +1751,13 @@ The general <<restPagingAndSort,paging and sorting query-parameters>> can be use
 ----
 
 
-    
-
-
-
-====Get diagram for a process instance
-
-
-          
+==== Get diagram for a process instance
+     
 ----
 GET runtime/process-instances/{processInstanceId}/diagram
 ----
 
-
-        
-
-
-            .Get diagram for a process instance - URL parameters
+.Get diagram for a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2435,11 +1766,7 @@ GET runtime/process-instances/{processInstanceId}/diagram
 |===============
 
 
-
-        
-
-
-          .Get diagram for a process instance - Response codes
+.Get diagram for a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2450,14 +1777,10 @@ GET runtime/process-instances/{processInstanceId}/diagram
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "id":"7",
    "url":"http://localhost:8182/runtime/process-instances/7",
@@ -2469,23 +1792,14 @@ GET runtime/process-instances/{processInstanceId}/diagram
 ----
 
 
-    
-
-
-
-====Get involved people for process instance
-
-
-          
+==== Get involved people for process instance
+     
 ----
 GET runtime/process-instances/{processInstanceId}/identitylinks
 ----
 
 
-        
-
-
-            .Get involved people for process instance - URL parameters
+.Get involved people for process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2494,11 +1808,7 @@ GET runtime/process-instances/{processInstanceId}/identitylinks
 |===============
 
 
-
-        
-
-
-          .Get involved people for process instance - Response codes
+.Get involved people for process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2508,14 +1818,10 @@ GET runtime/process-instances/{processInstanceId}/identitylinks
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
    {
       "url":"http://localhost:8182/runtime/process-instances/5/identitylinks/users/john/customType",
@@ -2536,21 +1842,14 @@ GET runtime/process-instances/{processInstanceId}/identitylinks
 Note that the +groupId+ will always be null, as it's only possible to involve users with a process-instance.
     
 
-
-
-====Add an involved user to a process instance
-
+==== Add an involved user to a process instance
 
           
 ----
 POST runtime/process-instances/{processInstanceId}/identitylinks
 ----
 
-
-        
-
-
-            .Add an involved user to a process instance - URL parameters
+.Add an involved user to a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2559,14 +1858,10 @@ POST runtime/process-instances/{processInstanceId}/identitylinks
 |===============
 
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-            
+[source,json,linenums]            
 ----
-
 {
   "userId":"kermit",
   "type":"participant"
@@ -2577,8 +1872,7 @@ POST runtime/process-instances/{processInstanceId}/identitylinks
 Both +userId+ and +type+ are required.
     
 
-
-          .Add an involved user to a process instance - Response codes
+.Add an involved user to a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2589,14 +1883,10 @@ Both +userId+ and +type+ are required.
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "url":"http://localhost:8182/runtime/process-instances/5/identitylinks/users/john/customType",
    "user":"john",
@@ -2609,21 +1899,14 @@ Both +userId+ and +type+ are required.
 Note that the +groupId+ will always be null, as it's only possible to involve users with a process-instance.
     
 
-
-
-====Remove an involved user to from process instance
-
-
-          
+==== Remove an involved user to from process instance
+     
 ----
 DELETE runtime/process-instances/{processInstanceId}/identitylinks/users/{userId}/{type}
 ----
 
 
-        
-
-
-            .Remove an involved user to from process instance - URL parameters
+.Remove an involved user to from process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2634,11 +1917,7 @@ DELETE runtime/process-instances/{processInstanceId}/identitylinks/users/{userId
 |===============
 
 
-
-        
-
-
-          .Remove an involved user to from process instance - Response codes
+.Remove an involved user to from process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2647,15 +1926,10 @@ DELETE runtime/process-instances/{processInstanceId}/identitylinks/users/{userId
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "url":"http://localhost:8182/runtime/process-instances/5/identitylinks/users/john/customType",
    "user":"john",
@@ -2668,21 +1942,13 @@ DELETE runtime/process-instances/{processInstanceId}/identitylinks/users/{userId
 Note that the +groupId+ will always be null, as it's only possible to involve users with a process-instance.
     
 
-
-
-====List of variables for a process instance
-
-
+==== List of variables for a process instance
           
 ----
 GET runtime/process-instances/{processInstanceId}/variables
 ----
 
-
-        
-
-
-            .List of variables for a process instance - URL parameters
+.List of variables for a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2692,10 +1958,7 @@ GET runtime/process-instances/{processInstanceId}/variables
 
 
 
-        
-
-
-          .List of variables for a process instance - Response codes
+.List of variables for a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2705,14 +1968,10 @@ GET runtime/process-instances/{processInstanceId}/variables
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
    {
       "name":"intProcVar",
@@ -2738,19 +1997,15 @@ Note that only +local+ scoped variables are returned, as there is no +global+ sc
 
 
 
-====Get a variable for a process instance
+==== Get a variable for a process instance
 
-
-          
+    
 ----
 GET runtime/process-instances/{processInstanceId}/variables/{variableName}
 ----
 
 
-        
-
-
-            .Get a variable for a process instance - URL parameters
+.Get a variable for a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2760,11 +2015,7 @@ GET runtime/process-instances/{processInstanceId}/variables/{variableName}
 |===============
 
 
-
-        
-
-
-          .Get a variable for a process instance - Response codes
+.Get a variable for a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2775,14 +2026,10 @@ GET runtime/process-instances/{processInstanceId}/variables/{variableName}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
    {
       "name":"intProcVar",
       "type":"integer",
@@ -2792,32 +2039,23 @@ GET runtime/process-instances/{processInstanceId}/variables/{variableName}
 ----
 
 
-    In case the variable is a binary variable or serializable, the +valueUrl+ points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
-    Note that only +local+ scoped variables are returned, as there is no +global+ scope for process-instance variables.
+In case the variable is a binary variable or serializable, the +valueUrl+ points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.  Note that only +local+ scoped variables are returned, as there is no +global+ scope for process-instance variables.
 
 
-
-====Create (or update) variables on a process instance
-
-
-          
+==== Create (or update) variables on a process instance
+     
 ----
 POST runtime/process-instances/{processInstanceId}/variables
 ----
-
-
           
 ----
 PUT runtime/process-instances/{processInstanceId}/variables
 ----
 
 
-        
+When using +POST+, all variables that are passed are created. In case one of the variables already exists on the process instance, the request results in an error (409 - CONFLICT). When +PUT+ is used, unexisting variables are created on the process-instance and existing ones are overridden without any error. 
 
-
-          When using +POST+, all variables that are passed are created. In case one of the variables already exists on the process instance, the request results in an error (409 - CONFLICT). When +PUT+ is used,
-          unexisting variables are created on the process-instance and existing ones are overridden without any error. 
-            .Create (or update) variables on a process instance - URL parameters
+.Create (or update) variables on a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2826,14 +2064,9 @@ PUT runtime/process-instances/{processInstanceId}/variables
 |===============
 
 
-
-        
-
-
-       *Request body:*
+*Request body:*
             
 ----
-
 [
    {
       "name":"intProcVar"
@@ -2846,11 +2079,9 @@ PUT runtime/process-instances/{processInstanceId}/variables
 ----
 
 
-        Any number of variables can be passed into the request body array. More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that scope is ignored, only +local+ variables can be set in a process instance.
+Any number of variables can be passed into the request body array. More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that scope is ignored, only +local+ variables can be set in a process instance.
         
-
-
-          .Create (or update) variables on a process instance - Response codes
+.Create (or update) variables on a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2862,14 +2093,9 @@ PUT runtime/process-instances/{processInstanceId}/variables
 |===============
 
 
-
-        
-
-
-       *Success response body:*
+*Success response body:*
             
 ----
-
 [
    {
       "name":"intProcVar",
@@ -2884,23 +2110,13 @@ PUT runtime/process-instances/{processInstanceId}/variables
 ----
 
 
-  
-
-
-
-====Update a single variable on a process instance
-
-
-          
+==== Update a single variable on a process instance
+     
 ----
 PUT runtime/process-instances/{processInstanceId}/variables/{variableName}
 ----
 
-
-        
-
-
-            .Update a single variable on a process instance - URL parameters
+.Update a single variable on a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2909,15 +2125,10 @@ PUT runtime/process-instances/{processInstanceId}/variables/{variableName}
 
 |===============
 
+*Request body:*
 
-
-        
-
-
-       *Request body:*
-            
+[source,json,linenums]            
 ----
-
  {
     "name":"intProcVar"
     "type":"integer"
@@ -2926,11 +2137,9 @@ PUT runtime/process-instances/{processInstanceId}/variables/{variableName}
 ----
 
 
-        More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that scope is ignored, only +local+ variables can be set in a process instance.
+More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that scope is ignored, only +local+ variables can be set in a process instance.
         
-
-
-          .Update a single variable on a process instance - Response codes
+.Update a single variable on a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -2940,42 +2149,29 @@ PUT runtime/process-instances/{processInstanceId}/variables/{variableName}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
-   {
-      "name":"intProcVar",
-      "type":"integer",
-      "value":123,
-      "scope":"local"
-   }
+{
+  "name":"intProcVar",
+  "type":"integer",
+  "value":123,
+  "scope":"local"
+}
 ----
 
 
-  In case the variable is a binary variable or serializable, the +valueUrl+ points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
-  Note that only +local+ scoped variables are returned, as there is no +global+ scope for process-instance variables.
+In case the variable is a binary variable or serializable, the +valueUrl+ points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. Note that only +local+ scoped variables are returned, as there is no +global+ scope for process-instance variables.
   
-
-
-
-====Create a new binary variable on a process-instance
-
-
-          
+==== Create a new binary variable on a process-instance
+     
 ----
 POST runtime/process-instances/{processInstanceId}/variables
 ----
 
 
-        
-
-
-            .Create a new binary variable on a process-instance - URL parameters
+.Create a new binary variable on a process-instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -2985,25 +2181,18 @@ POST runtime/process-instances/{processInstanceId}/variables
 
 
 
-        
+*Request body:*
 
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       
 * ++name++: Required name of the variable.
-
-
 * ++type++: Type of variable that is created. If omitted, +binary+ is assumed and the binary data in the request will be stored as an array of bytes.
 
 
-        
+*Success response body:*
 
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "name" : "binaryVariable",
   "scope" : "local",
@@ -3014,7 +2203,7 @@ POST runtime/process-instances/{processInstanceId}/variables
 ----
 
 
-          .Create a new binary variable on a process-instance - Response codes
+.Create a new binary variable on a process-instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3028,23 +2217,13 @@ POST runtime/process-instances/{processInstanceId}/variables
 
 
 
-        
-
-
-
-====Update an existing binary variable on a process-instance
-
-
+==== Update an existing binary variable on a process-instance
           
 ----
 PUT runtime/process-instances/{processInstanceId}/variables
 ----
 
-
-        
-
-
-            .Update an existing binary variable on a process-instance - URL parameters
+.Update an existing binary variable on a process-instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3053,26 +2232,16 @@ PUT runtime/process-instances/{processInstanceId}/variables
 |===============
 
 
-
-        
-
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
+*Request body:*
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       
 * ++name++: Required name of the variable.
-
-
 * ++type++: Type of variable that is created. If omitted, +binary+ is assumed and the binary data in the request will be stored as an array of bytes.
 
-
-        
-
-
-          *Success response body:*
+*Success response body:*
             
+[source,json,linenums]
 ----
-
 { 
   "name" : "binaryVariable",
   "scope" : "local",
@@ -3083,7 +2252,7 @@ PUT runtime/process-instances/{processInstanceId}/variables
 ----
 
 
-          .Update an existing binary variable on a process-instance - Response codes
+.Update an existing binary variable on a process-instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3096,27 +2265,17 @@ PUT runtime/process-instances/{processInstanceId}/variables
 
 
 
-        
+=== Executions
 
 
-
-===Executions
-
-
-
-====Get an execution
-
-
-          
+==== Get an execution
+     
 ----
 GET runtime/executions/{executionId}
 ----
 
 
-        
-
-
-            .Get an execution - URL parameters
+.Get an execution - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3125,11 +2284,7 @@ GET runtime/executions/{executionId}
 |===============
 
 
-
-        
-
-
-          .Get an execution - Response codes
+.Get an execution - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3139,14 +2294,10 @@ GET runtime/executions/{executionId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "id":"5",
    "url":"http://localhost:8182/runtime/executions/5",
@@ -3161,23 +2312,15 @@ GET runtime/executions/{executionId}
 ----
 
 
-    
+==== Execute an action on an execution
 
 
-
-====Execute an action on an execution
-
-
-          
 ----
 PUT runtime/executions/{executionId}
 ----
 
 
-        
-
-
-            .Execute an action on an execution - URL parameters
+.Execute an action on an execution - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3186,27 +2329,20 @@ PUT runtime/executions/{executionId}
 |===============
 
 
+*Request body (signal an execution):*
 
-        
-
-
-       *Request body (signal an execution):*
-            
+[source,json,linenums]            
 ----
-
 {
   "action":"signal"
 }
 ----
 
 
-    
+*Request body (signal event received for execution):*
 
-
-       *Request body (signal event received for execution):*
-            
+[source,json,linenums]            
 ----
-
 {
   "action":"signalEventReceived",
   "signalName":"mySignal"
@@ -3214,15 +2350,12 @@ PUT runtime/executions/{executionId}
 }
 ----
 
-
- Notifies the execution that a signal event has been received, requires a +signalName+ parameter. Optional +variables+ can be passed that are set on the execution before the action is executed.
+Notifies the execution that a signal event has been received, requires a +signalName+ parameter. Optional +variables+ can be passed that are set on the execution before the action is executed.
     
+*Request body (signal event received for execution):*
 
-
-       *Request body (signal event received for execution):*
-            
+[source,json,linenums]            
 ----
-
 {
   "action":"messageEventReceived",
   "messageName":"myMessage"
@@ -3231,11 +2364,9 @@ PUT runtime/executions/{executionId}
 ----
 
 
- Notifies the execution that a message event has been received, requires a +messageName+ parameter. Optional +variables+ can be passed that are set on the execution before the action is executed.
+Notifies the execution that a message event has been received, requires a +messageName+ parameter. Optional +variables+ can be passed that are set on the execution before the action is executed.
     
-
-
-          .Execute an action on an execution - Response codes
+.Execute an action on an execution - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3246,15 +2377,10 @@ PUT runtime/executions/{executionId}
 
 |===============
 
+*Success response body (in case execution is not ended due to action):*
 
-
-        
-
-
-       *Success response body (in case execution is not ended due to action):*
-            
+[source,json,linenums]            
 ----
-
 {
    "id":"5",
    "url":"http://localhost:8182/runtime/executions/5",
@@ -3269,27 +2395,15 @@ PUT runtime/executions/{executionId}
 ----
 
 
-    
-
-
-
-====Get active activities in an execution
-
-
-          
+==== Get active activities in an execution
+       
 ----
 GET runtime/executions/{executionId}/activities
 ----
 
-
+Returns all activities which are active in the execution and in all child-executions (and their children, recursively), if any.
         
-
-
-          Returns all activities which are active in the execution and in all child-executions (and their children, recursively), if any.
-        
-
-
-            .Get active activities in an execution - URL parameters
+.Get active activities in an execution - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3298,11 +2412,7 @@ GET runtime/executions/{executionId}/activities
 |===============
 
 
-
-        
-
-
-          .Get active activities in an execution - Response codes
+.Get active activities in an execution - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3312,14 +2422,10 @@ GET runtime/executions/{executionId}/activities
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
   "userTaskForManager",
   "receiveTask"
@@ -3327,24 +2433,17 @@ GET runtime/executions/{executionId}/activities
 ----
 
 
-    
-
 [[restExecutionsGet]]
 
 
-====List of executions
+==== List of executions
 
-
-          
+     
 ----
 GET runtime/executions
 ----
 
-
-        
-
-
-            .List of executions - URL query parameters
+.List of executions - URL query parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3365,11 +2464,7 @@ GET runtime/executions
 |===============
 
 
-
-        
-
-
-          .List of executions - Response codes
+.List of executions - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3379,14 +2474,10 @@ GET runtime/executions
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "data":[
       {
@@ -3421,26 +2512,18 @@ GET runtime/executions
 ----
 
 
-    
 
+==== Query executions
 
-
-====Query executions
-
-
-          
+     
 ----
 POST query/executions
 ----
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-            
+[source,json,linenums]            
 ----
-
 {
   "processDefinitionKey":"oneTaskProcess",
   "variables": 
@@ -3468,15 +2551,12 @@ POST query/executions
 ----
 
 
-
 The request body can contain all possible filters that can be used in the <<restExecutionsGet,List executions>> URL query. On top of these, it's possible to provide an array of +variables+ and +processInstanceVariables+
 to include in the query, with their format <<restQueryVariable, described here>>.
     
-
 The general <<restPagingAndSort,paging and sorting query-parameters>> can be used for this URL.
 
-
-          .Query executions - Response codes
+.Query executions - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3485,15 +2565,10 @@ The general <<restPagingAndSort,paging and sorting query-parameters>> can be use
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "data":[
       {
@@ -3528,23 +2603,15 @@ The general <<restPagingAndSort,paging and sorting query-parameters>> can be use
 ----
 
 
-    
-
-
 
 ====List of variables for an execution
-
-
           
 ----
 GET runtime/executions/{executionId}/variables?scope={scope}
 ----
 
 
-        
-
-
-            .List of variables for an execution - URL parameters
+.List of variables for an execution - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3554,11 +2621,7 @@ GET runtime/executions/{executionId}/variables?scope={scope}
 |===============
 
 
-
-        
-
-
-          .List of variables for an execution - Response codes
+.List of variables for an execution - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3568,14 +2631,10 @@ GET runtime/executions/{executionId}/variables?scope={scope}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
    {
       "name":"intProcVar",
@@ -3599,21 +2658,14 @@ GET runtime/executions/{executionId}/variables?scope={scope}
 In case the variable is a binary variable or serializable, the +valueUrl+ points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
 
 
-
-
-====Get a variable for an execution
-
-
+==== Get a variable for an execution
           
 ----
 GET runtime/executions/{executionId}/variables/{variableName}?scope={scope}
 ----
 
 
-        
-
-
-            .Get a variable for an execution - URL parameters
+.Get a variable for an execution - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3624,11 +2676,7 @@ GET runtime/executions/{executionId}/variables/{variableName}?scope={scope}
 |===============
 
 
-
-        
-
-
-          .Get a variable for an execution - Response codes
+.Get a variable for an execution - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3640,13 +2688,10 @@ GET runtime/executions/{executionId}/variables/{variableName}?scope={scope}
 
 
 
-        
+*Success response body:*
 
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
    {
       "name":"intProcVar",
       "type":"integer",
@@ -3656,32 +2701,22 @@ GET runtime/executions/{executionId}/variables/{variableName}?scope={scope}
 ----
 
 
-    In case the variable is a binary variable or serializable, the +valueUrl+ points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
+In case the variable is a binary variable or serializable, the +valueUrl+ points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response.
     
 
-
-
-====Create (or update) variables on an execution
-
-
-          
+==== Create (or update) variables on an execution
+     
 ----
 POST runtime/executions/{executionId}/variables
 ----
-
-
           
 ----
 PUT runtime/executions/{executionId}/variables
 ----
 
+When using +POST+, all variables that are passed are created. In case one of the variables already exists on the execution in the requested scope, the request results in an error (409 - CONFLICT). When +PUT+ is used, unexisting variables are created on the execution and existing ones are overridden without any error. 
 
-        
-
-
-          When using +POST+, all variables that are passed are created. In case one of the variables already exists on the execution in the requested scope, the request results in an error (409 - CONFLICT). When +PUT+ is used,
-          unexisting variables are created on the execution and existing ones are overridden without any error. 
-            .Create (or update) variables on an execution - URL parameters
+.Create (or update) variables on an execution - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3691,13 +2726,10 @@ PUT runtime/executions/{executionId}/variables
 
 
 
-        
+*Request body:*
 
-
-       *Request body:*
-            
+[source,json,linenums]            
 ----
-
 [
    {
       "name":"intProcVar"
@@ -3710,12 +2742,9 @@ PUT runtime/executions/{executionId}/variables
 ]
 ----
 
-
-        *Note that you can only provide variables that have the same scope. If the request-body array contains variables from mixed scopes, the request results in an error (400 - BAD REQUEST).*Any number of variables can be passed into the request body array. More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that scope is ignored, only +local+ variables can be set in a process instance.
+*Note that you can only provide variables that have the same scope. If the request-body array contains variables from mixed scopes, the request results in an error (400 - BAD REQUEST).*Any number of variables can be passed into the request body array. More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that scope is ignored, only +local+ variables can be set in a process instance.
         
-
-
-          .Create (or update) variables on an execution - Response codes
+.Create (or update) variables on an execution - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3727,14 +2756,10 @@ PUT runtime/executions/{executionId}/variables
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
    {
       "name":"intProcVar",
@@ -3749,23 +2774,16 @@ PUT runtime/executions/{executionId}/variables
 ----
 
 
-  
 
+==== Update a variable on an execution
 
-
-====Update a variable on an execution
-
-
-          
+     
 ----
 PUT runtime/executions/{executionId}/variables/{variableName}
 ----
 
 
-        
-
-
-            .Update a variable on an execution - URL parameters
+.Update a variable on an execution - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3775,14 +2793,10 @@ PUT runtime/executions/{executionId}/variables/{variableName}
 |===============
 
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-            
+[source,json,linenums]            
 ----
-
  {
     "name":"intProcVar"
     "type":"integer"
@@ -3791,12 +2805,9 @@ PUT runtime/executions/{executionId}/variables/{variableName}
  }
 ----
 
-
-        More information about the variable format can be found in <<restVariables,the REST variables section>>.
+More information about the variable format can be found in <<restVariables,the REST variables section>>.
         
-
-
-          .Update a variable on an execution - Response codes
+.Update a variable on an execution - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3806,14 +2817,10 @@ PUT runtime/executions/{executionId}/variables/{variableName}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
    {
       "name":"intProcVar",
       "type":"integer",
@@ -3823,24 +2830,17 @@ PUT runtime/executions/{executionId}/variables/{variableName}
 ----
 
 
-  In case the variable is a binary variable or serializable, the +valueUrl+ points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
+In case the variable is a binary variable or serializable, the +valueUrl+ points to an URL to fetch the raw value. If it's a plain variable, the value is present in the response. 
   
 
-
-
-====Create a new binary variable on an execution
-
-
+==== Create a new binary variable on an execution
           
 ----
 POST runtime/executions/{executionId}/variables
 ----
 
 
-        
-
-
-            .Create a new binary variable on an execution - URL parameters
+.Create a new binary variable on an execution - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3849,29 +2849,18 @@ POST runtime/executions/{executionId}/variables
 |===============
 
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       
 * ++name++: Required name of the variable.
-
-
 * ++type++: Type of variable that is created. If omitted, +binary+ is assumed and the binary data in the request will be stored as an array of bytes.
-
-
 * ++scope++: Scope of variable that is created. If omitted, +local+ is assumed.
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "name" : "binaryVariable",
   "scope" : "local",
@@ -3882,7 +2871,7 @@ POST runtime/executions/{executionId}/variables
 ----
 
 
-          .Create a new binary variable on an execution - Response codes
+.Create a new binary variable on an execution - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3896,23 +2885,13 @@ POST runtime/executions/{executionId}/variables
 
 
 
-        
-
-
-
-====Update an existing binary variable on a process-instance
-
-
-          
+==== Update an existing binary variable on a process-instance
+     
 ----
 PUT runtime/executions/{executionId}/variables/{variableName}
 ----
 
-
-        
-
-
-            .Update an existing binary variable on a process-instance - URL parameters
+.Update an existing binary variable on a process-instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3922,29 +2901,18 @@ PUT runtime/executions/{executionId}/variables/{variableName}
 |===============
 
 
-
-        
-
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
+*Request body:*
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       
 * ++name++: Required name of the variable.
-
-
 * ++type++: Type of variable that is created. If omitted, +binary+ is assumed and the binary data in the request will be stored as an array of bytes.
-
-
 * ++scope++: Scope of variable that is created. If omitted, +local+ is assumed.
 
 
-        
+*Success response body:*
 
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "name" : "binaryVariable",
   "scope" : "local",
@@ -3955,7 +2923,7 @@ PUT runtime/executions/{executionId}/variables/{variableName}
 ----
 
 
-          .Update an existing binary variable on a process-instance - Response codes
+.Update an existing binary variable on a process-instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -3968,27 +2936,16 @@ PUT runtime/executions/{executionId}/variables/{variableName}
 
 
 
-        
+=== Tasks
 
 
-
-===Tasks
-
-
-
-====Get a task
-
-
-          
+==== Get a task
+       
 ----
 GET runtime/tasks/{taskId}
 ----
 
-
-        
-
-
-            .Get a task - URL parameters
+.Get a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3998,10 +2955,7 @@ GET runtime/tasks/{taskId}
 
 
 
-        
-
-
-          .Get a task - Response codes
+.Get a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4011,14 +2965,10 @@ GET runtime/tasks/{taskId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "assignee" : "kermit",
   "createTime" : "2013-04-17T10:17:43.902+0000",
@@ -4040,29 +2990,21 @@ GET runtime/tasks/{taskId}
 }
 ----
 
-
-      
+    
 * ++delegationState++: Delegation-state of the task, can be +null+, +"pending"+ or +"resolved".+
-
-
     
 
 [[restTasksGet]]
 
 
-====List of tasks
-
-
+==== List of tasks
           
 ----
 GET runtime/tasks
 ----
 
 
-        
-
-
-            .List of tasks - URL query parameters
+.List of tasks - URL query parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4114,11 +3056,7 @@ GET runtime/tasks
 |===============
 
 
-
-        
-
-
-          .List of tasks - Response codes
+.List of tasks - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4128,14 +3066,10 @@ GET runtime/tasks
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
   "data": [
     { 
@@ -4167,26 +3101,18 @@ GET runtime/tasks
 ----
 
 
-    
 
-
-
-====Query for tasks
-
-
-          
+==== Query for tasks
+     
 ----
 POST query/tasks
 ----
 
 
-        
+*Request body:*
 
-
-          *Request body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "name" : "My task",
   "description" : "The task description",
@@ -4211,16 +3137,12 @@ POST query/tasks
 }
 ----
 
- 
+
+
+All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restTasksGet,getting a collection of tasks>> (except for candidateGroupIn which is only available in this POST task query REST service), but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows for filtering based on task and process variables. The +taskVariables+ and +processInstanceVariables+ are both JSON-arrays containing objects with the format <<restQueryVariable, as described here.>>
         
 
-
-          All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restTasksGet,getting a collection of tasks>> (except for candidateGroupIn which is only available in this POST task query REST service), but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-          for filtering based on task and process variables. The +taskVariables+ and +processInstanceVariables+ are both JSON-arrays containing objects with the format <<restQueryVariable, as described here.>>
-        
-
-
-          .Query for tasks - Response codes
+.Query for tasks - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4231,13 +3153,10 @@ POST query/tasks
 
 
 
-        
+*Success response body:*
 
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
   "data": [
     { 
@@ -4269,26 +3188,18 @@ POST query/tasks
 ----
 
 
-    
+==== Update a task
 
-
-
-====Update a task
-
-
-          
+     
 ----
 PUT runtime/tasks/{taskId}
 ----
 
 
-        
+*Body JSON:*
 
-
-         *Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 { 
   "assignee" : "assignee",
   "delegationState" : "resolved",
@@ -4301,12 +3212,10 @@ PUT runtime/tasks/{taskId}
 }
 ----
 
-
-      All request values are optional. For example, you can only include the 'assignee' attribute in the request body JSON-object, only updating the assignee of the task, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the task-value will be updated to null. Example: +{"dueDate" : null}+ will clear the duedate of the task).
+All request values are optional. For example, you can only include the 'assignee' attribute in the request body JSON-object, only updating the assignee of the task, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the task-value will be updated to null. Example: +{"dueDate" : null}+ will clear the duedate of the task).
        
 
-
-          .Update a task - Response codes
+.Update a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4317,31 +3226,19 @@ PUT runtime/tasks/{taskId}
 |===============
 
 
-
-        
-
-
-       *Success response body:* see response for +runtime/tasks/{taskId}+.
+*Success response body:* see response for +runtime/tasks/{taskId}+.
+    
+    
+==== Task actions
       
-
-
-
-====Task actions
-
-
-          
 ----
 POST runtime/tasks/{taskId}
 ----
 
+*Complete a task - Body JSON:*
 
-        
-
-
-         *Complete a task - Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 { 
   "action" : "complete",
   "variables" : ...
@@ -4349,29 +3246,24 @@ POST runtime/tasks/{taskId}
 ----
 
 
-       Completes the task. Optional variable array can be passed in using the +variables+ property. More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that the variable-scope that is supplied is ignored and the variables are set on the parent-scope unless a variable exists in a local scope, which is overridden in this case. This is the same behavior as the +TaskService.completeTask(taskId, variables)+ invocation.
-       
+Completes the task. Optional variable array can be passed in using the +variables+ property. More information about the variable format can be found in <<restVariables,the REST variables section>>. Note that the variable-scope that is supplied is ignored and the variables are set on the parent-scope unless a variable exists in a local scope, which is overridden in this case. This is the same behavior as the +TaskService.completeTask(taskId, variables)+ invocation.
 
+*Claim a task - Body JSON:*
 
-         *Claim a task - Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 { 
   "action" : "claim",
   "assignee" : "userWhoClaims"
 }
 ----
 
-
-      Claims the task by the given assignee. If the assignee is +null+, the task is assigned to no-one, claimable agian.
+Claims the task by the given assignee. If the assignee is +null+, the task is assigned to no-one, claimable agian.
        
+*Delegate a task - Body JSON:*
 
-
-         *Delegate a task - Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 { 
   "action" : "delegate",
   "assignee" : "userToDelegateTo"
@@ -4379,12 +3271,11 @@ POST runtime/tasks/{taskId}
 ----
 
 
-      Delegates the task to the given assignee. The assignee is required.
+Delegates the task to the given assignee. The assignee is required.
        
+*Resolve a task - Body JSON:*
 
-
-         *Resolve a task - Body JSON:*
-           
+[source,json,linenums]           
 ----
 
 { 
@@ -4396,8 +3287,7 @@ POST runtime/tasks/{taskId}
 Resolves the task delegation. The task is assigned back to the task owner (if any).
        
 
-
-          .Task actions - Response codes
+.Task actions - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4409,28 +3299,18 @@ Resolves the task delegation. The task is assigned back to the task owner (if an
 |===============
 
 
-
-        
-
-
-       *Success response body:* see response for +runtime/tasks/{taskId}+.
+*Success response body:* see response for +runtime/tasks/{taskId}+.
       
 
+==== Delete a task
 
-
-====Delete a task
-
-
-          
+    
 ----
 DELETE runtime/tasks/{taskId}?cascadeHistory={cascadeHistory}&deleteReason={deleteReason}
 ----
 
 
-        
-
-
-            .&gt;Delete a task - URL parameters
+.&gt;Delete a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4441,11 +3321,7 @@ DELETE runtime/tasks/{taskId}?cascadeHistory={cascadeHistory}&deleteReason={dele
 |===============
 
 
-
-        
-
-
-          .&gt;Delete a task - Response codes
+.&gt;Delete a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4457,23 +3333,14 @@ DELETE runtime/tasks/{taskId}?cascadeHistory={cascadeHistory}&deleteReason={dele
 
 
 
-        
-
-
-
-====Get all variables for a task
-
-
-          
+==== Get all variables for a task
+     
 ----
 GET runtime/tasks/{taskId}/variables?scope={scope}
 ----
 
 
-        
-
-
-            .Get all variables for a task - URL parameters
+.Get all variables for a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4483,11 +3350,7 @@ GET runtime/tasks/{taskId}/variables?scope={scope}
 |===============
 
 
-
-        
-
-
-          .Get all variables for a task - Response codes
+.Get all variables for a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4497,14 +3360,10 @@ GET runtime/tasks/{taskId}/variables?scope={scope}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
   { 
     "name" : "doubleTaskVar",
@@ -4524,26 +3383,17 @@ GET runtime/tasks/{taskId}/variables?scope={scope}
 ]
 ----
 
+The variables are returned as a JSON array. Full response description can be found in the general <<restVariables,REST-variables section>>. 
 
 
-      The variables are returned as a JSON array. Full response description can be found in the general <<restVariables,REST-variables section>>. 
-    
-
-
-
-====Get a variable from a task
-
-
-          
+==== Get a variable from a task
+     
 ----
 GET runtime/tasks/{taskId}/variables/{variableName}?scope={scope}
 ----
 
 
-        
-
-
-            .Get a variable from a task - URL parameters
+.Get a variable from a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4554,11 +3404,7 @@ GET runtime/tasks/{taskId}/variables/{variableName}?scope={scope}
 |===============
 
 
-
-        
-
-
-          .Get a variable from a task - Response codes
+.Get a variable from a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4568,14 +3414,10 @@ GET runtime/tasks/{taskId}/variables/{variableName}?scope={scope}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "name" : "myTaskVariable",
   "scope" : "local",
@@ -4585,24 +3427,17 @@ GET runtime/tasks/{taskId}/variables/{variableName}?scope={scope}
 ----
 
 
-      Full response body description can be found in the general <<restVariables,REST-variables section>>. 
-    
+Full response body description can be found in the general <<restVariables,REST-variables section>>. 
 
 
-
-====Get the binary data for a variable
-
-
+==== Get the binary data for a variable
           
 ----
 GET runtime/tasks/{taskId}/variables/{variableName}/data?scope={scope}
 ----
 
 
-        
-
-
-            .Get the binary data for a variable - URL parameters
+.Get the binary data for a variable - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4614,10 +3449,7 @@ GET runtime/tasks/{taskId}/variables/{variableName}/data?scope={scope}
 
 
 
-        
-
-
-          .Get the binary data for a variable - Response codes
+.Get the binary data for a variable - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4628,28 +3460,21 @@ GET runtime/tasks/{taskId}/variables/{variableName}/data?scope={scope}
 
 
 
-        
+*Success response body:*
 
-
-       *Success response body:*
-      The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
+The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
     
 
 
+==== Create new variables on a task
 
-====Create new variables on a task
-
-
-          
+     
 ----
 POST runtime/tasks/{taskId}/variables
 ----
 
 
-        
-
-
-            .Create new variables on a task - URL parameters
+.Create new variables on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4658,14 +3483,10 @@ POST runtime/tasks/{taskId}/variables
 |===============
 
 
+*Request body for creating simple (non-binary) variables:*
 
-        
-
-
-       *Request body for creating simple (non-binary) variables:*
-            
+[source,json,linenums]            
 ----
-
 [
   { 
     "name" : "myTaskVariable",
@@ -4683,25 +3504,18 @@ POST runtime/tasks/{taskId}/variables
 The request body should be an array containing one or more JSON-objects representing the variables that should be created.
       
 * ++name++: Required name of the variable
-
-
 * ++scope++: Scope of variable that is created. If omitted, +local+ is assumed.
-
-
 * ++type++: Type of variable that is created. If omitted, reverts to raw JSON-value type (string, boolean, integer or double).
-
-
 * ++value++: Variable value.
 
-
-      More information about the variable format can be found in <<restVariables,the REST variables section>>.
+More information about the variable format can be found in <<restVariables,the REST variables section>>.
         
 
 
-        *Success response body:*
-            
-----
+*Success response body:*
 
+[source,json,linenums]            
+----
 [
   { 
     "name" : "myTaskVariable",
@@ -4716,7 +3530,7 @@ The request body should be an array containing one or more JSON-objects represen
 ----
 
 
-          .Create new variables on a task - Response codes
+.Create new variables on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4728,24 +3542,14 @@ The request body should be an array containing one or more JSON-objects represen
 |===============
 
 
-
-        
-
-
-
-====Create a new binary variable on a task
-
-
+==== Create a new binary variable on a task
           
 ----
 POST runtime/tasks/{taskId}/variables
 ----
 
 
-        
-
-
-            .Create a new binary variable on a task - URL parameters
+.Create a new binary variable on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4754,29 +3558,19 @@ POST runtime/tasks/{taskId}/variables
 |===============
 
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       
 * ++name++: Required name of the variable.
-
-
 * ++scope++: Scope of variable that is created. If omitted, +local+ is assumed.
-
-
 * ++type++: Type of variable that is created. If omitted, +binary+ is assumed and the binary data in the request will be stored as an array of bytes.
 
 
-        
+*Success response body:*
 
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "name" : "binaryVariable",
   "scope" : "local",
@@ -4786,8 +3580,7 @@ POST runtime/tasks/{taskId}/variables
 }
 ----
 
-
-          .Create a new binary variable on a task - Response codes
+.Create a new binary variable on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4801,23 +3594,15 @@ POST runtime/tasks/{taskId}/variables
 
 
 
-        
+==== Update an existing variable on a task
 
-
-
-====Update an existing variable on a task
-
-
-          
+     
 ----
 PUT runtime/tasks/{taskId}/variables/{variableName}
 ----
 
 
-        
-
-
-            .Update an existing variable on a task - URL parameters
+.Update an existing variable on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4827,14 +3612,10 @@ PUT runtime/tasks/{taskId}/variables/{variableName}
 |===============
 
 
+*Request body for updating simple (non-binary) variables:*
 
-        
-
-
-       *Request body for updating simple (non-binary) variables:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "name" : "myTaskVariable",
   "scope" : "local",
@@ -4842,29 +3623,21 @@ PUT runtime/tasks/{taskId}/variables/{variableName}
   "value" : "Hello my friend"
 }
 ----
-
 
       
 * ++name++: Required name of the variable
-
-
 * ++scope++: Scope of variable that is updated. If omitted, +local+ is assumed.
-
-
 * ++type++: Type of variable that is updated. If omitted, reverts to raw JSON-value type (string, boolean, integer or double).
-
-
 * ++value++: Variable value.
 
 
-      More information about the variable format can be found in <<restVariables,the REST variables section>>.
+More information about the variable format can be found in <<restVariables,the REST variables section>>.
         
 
+*Success response body:*
 
-        *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "name" : "myTaskVariable",
   "scope" : "local",
@@ -4874,7 +3647,7 @@ PUT runtime/tasks/{taskId}/variables/{variableName}
 ----
 
 
-          .Update an existing variable on a task - Response codes
+.Update an existing variable on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4882,27 +3655,17 @@ PUT runtime/tasks/{taskId}/variables/{variableName}
 |400|Indicates the name of a variable to update was missing or that an attempt is done to update a variable on a standalone task (without a process associated) with scope +global+. Status message provides additional information.
 |404|Indicates the requested task was not found or the task doesn't have a variable with the given name in the given scope. Status message contains additional information about the error.
 
-|===============
+|===============    
 
 
 
-        
-
-
-
-====Updating a binary variable on a task
-
-
-          
+==== Updating a binary variable on a task
+     
 ----
 PUT runtime/tasks/{taskId}/variables/{variableName}
 ----
 
-
-        
-
-
-            .Updating a binary variable on a task - URL parameters
+.Updating a binary variable on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4910,31 +3673,22 @@ PUT runtime/tasks/{taskId}/variables/{variableName}
 |variableName|Yes|String|The name of the variable to update.
 
 |===============
+  
 
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       
 * ++name++: Required name of the variable.
-
-
 * ++scope++: Scope of variable that is updated. If omitted, +local+ is assumed.
-
-
 * ++type++: Type of variable that is updated. If omitted, +binary+ is assumed and the binary data in the request will be stored as an array of bytes.
 
 
-        
+*Success response body:*
 
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "name" : "binaryVariable",
   "scope" : "local",
@@ -4945,7 +3699,7 @@ PUT runtime/tasks/{taskId}/variables/{variableName}
 ----
 
 
-          .Updating a binary variable on a task - Response codes
+.Updating a binary variable on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -4958,23 +3712,14 @@ PUT runtime/tasks/{taskId}/variables/{variableName}
 
 
 
-        
-
-
-
-====Delete a variable on a task
-
-
+==== Delete a variable on a task
           
 ----
 DELETE runtime/tasks/{taskId}/variables/{variableName}?scope={scope}
 ----
 
 
-        
-
-
-            .Delete a variable on a task - URL parameters
+.Delete a variable on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -4985,11 +3730,7 @@ DELETE runtime/tasks/{taskId}/variables/{variableName}?scope={scope}
 |===============
 
 
-
-        
-
-
-          .Delete a variable on a task - Response codes
+.Delete a variable on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5000,23 +3741,13 @@ DELETE runtime/tasks/{taskId}/variables/{variableName}?scope={scope}
 
 
 
-        
-
-
-
-====Delete all local variables on a task
-
-
+==== Delete all local variables on a task
           
 ----
 DELETE runtime/tasks/{taskId}/variables
 ----
 
-
-        
-
-
-            .Delete all local variables on a task - URL parameters
+.Delete all local variables on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5025,11 +3756,7 @@ DELETE runtime/tasks/{taskId}/variables
 |===============
 
 
-
-        
-
-
-          .Delete all local variables on a task - Response codes
+.Delete all local variables on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5040,23 +3767,15 @@ DELETE runtime/tasks/{taskId}/variables
 
 
 
-        
+==== Get all identity links for a task
 
-
-
-====Get all identity links for a task
-
-
-          
+       
 ----
 GET runtime/tasks/{taskId}/identitylinks
 ----
 
 
-        
-
-
-            .Get all identity links for a task - URL parameters
+.Get all identity links for a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5065,11 +3784,7 @@ GET runtime/tasks/{taskId}/identitylinks
 |===============
 
 
-
-        
-
-
-          .Get all identity links for a task - Response codes
+.Get all identity links for a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5079,14 +3794,10 @@ GET runtime/tasks/{taskId}/identitylinks
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
   { 
     "userId" : "kermit",
@@ -5106,41 +3817,28 @@ GET runtime/tasks/{taskId}/identitylinks
 ----
 
 
-    
 
-
-
-====Get all identitylinks for a task for either groups or users
-
-
-          
+==== Get all identitylinks for a task for either groups or users
+     
 ----
 GET runtime/tasks/{taskId}/identitylinks/users
 GET runtime/tasks/{taskId}/identitylinks/groups
 ----
 
 
+Returns only identity links targetting either users or groups. Response body and status-codes are exactly the same as when getting the full list of identity links for a task.
         
 
-
-        Returns only identity links targetting either users or groups. Response body and status-codes are exactly the same as when getting the full list of identity links for a task.
-        
-
-
-
-====Get a single identity link on a task
+==== Get a single identity link on a task
 
 
         
 ----
 GET runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
-----
+----   
 
 
-      
-
-
-          .Get all identitylinks for a task for either groups or users - URL parameters
+.Get all identitylinks for a task for either groups or users - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5152,11 +3850,7 @@ GET runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
 |===============
 
 
-
-      
-
-
-        .Get all identitylinks for a task for either groups or users - Response codes
+.Get all identitylinks for a task for either groups or users - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5166,14 +3860,10 @@ GET runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
 |===============
 
 
+*Success response body:*
 
-      
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
   "userId" : null,
   "groupId" : "sales",
@@ -5183,23 +3873,15 @@ GET runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
 ----
 
 
-  
+==== Create an identity link on a task
 
-
-
-====Create an identity link on a task
-
-
-        
+   
 ----
 POST runtime/tasks/{taskId}/identitylinks
 ----
 
 
-      
-
-
-          .Create an identity link on a task - URL parameters
+.Create an identity link on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5209,13 +3891,10 @@ POST runtime/tasks/{taskId}/identitylinks
 
 
 
-      
+*Request body (user):*
 
-
-       *Request body (user):*
-            
+[source,json,linenums]            
 ----
-
 {
   "userId" : "kermit",
   "type" : "candidate",
@@ -5223,24 +3902,17 @@ POST runtime/tasks/{taskId}/identitylinks
 ----
 
 
-    
+*Request body (group):*
 
-
-       *Request body (group):*
-            
+[source,json,linenums]            
 ----
-
 {
   "groupId" : "sales",
   "type" : "candidate",
 }
 ----
 
-
-    
-
-
-        .Create an identity link on a task - Response codes
+.Create an identity link on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5251,13 +3923,10 @@ POST runtime/tasks/{taskId}/identitylinks
 
 
 
-      
+*Success response body:*
 
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
   "userId" : null,
   "groupId" : "sales",
@@ -5267,23 +3936,13 @@ POST runtime/tasks/{taskId}/identitylinks
 ----
 
 
-    
-
-
-
-====Delete an identity link on a task
-
-
-        
+==== Delete an identity link on a task
+   
 ----
 DELETE runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
 ----
 
-
-      
-
-
-          .Delete an identity link on a task - URL parameters
+.Delete an identity link on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5295,11 +3954,7 @@ DELETE runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
 |===============
 
 
-
-      
-
-
-          .Delete an identity link on a task - Response codes
+.Delete an identity link on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5310,23 +3965,15 @@ DELETE runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
 
 
 
-        
 
+==== Create a new comment on a task
 
-
-====Create a new comment on a task
-
-
-          
+     
 ----
 POST runtime/tasks/{taskId}/comments
 ----
 
-
-        
-
-
-            .Create a new comment on a task - URL parameters
+.Create a new comment on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5335,14 +3982,10 @@ POST runtime/tasks/{taskId}/comments
 |===============
 
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-        
+[source,json,linenums]        
 ----
-
 { 
   "message" : "This is a comment on the task.",
   "saveProcessInstanceId" : true
@@ -5350,17 +3993,12 @@ POST runtime/tasks/{taskId}/comments
 ----
 
 
+Parameter +saveProcessInstanceId+ is optional, if +true+ save process instance id of task with comment.
         
+*Success response body:*
 
-
-          Parameter +saveProcessInstanceId+ is optional, if +true+ save process instance id of task with comment.
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "id" : "123",
   "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
@@ -5374,7 +4012,7 @@ POST runtime/tasks/{taskId}/comments
 ----
 
 
-          .Create a new comment on a task - Response codes
+.Create a new comment on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5386,23 +4024,13 @@ POST runtime/tasks/{taskId}/comments
 
 
 
-        
-
-
-
-====Get all comments on a task
-
-
+==== Get all comments on a task
           
 ----
 GET runtime/tasks/{taskId}/comments
 ----
 
-
-        
-
-
-            .Get all comments on a task - URL parameters
+.Get all comments on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5410,15 +4038,10 @@ GET runtime/tasks/{taskId}/comments
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
   { 
     "id" : "123",
@@ -5444,7 +4067,7 @@ GET runtime/tasks/{taskId}/comments
 ----
 
 
-          .Get all comments on a task - Response codes
+.Get all comments on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5455,23 +4078,14 @@ GET runtime/tasks/{taskId}/comments
 
 
 
-        
-
-
-
-====Get a comment on a task
-
-
-          
+==== Get a comment on a task
+     
 ----
 GET runtime/tasks/{taskId}/comments/{commentId}
 ----
 
 
-        
-
-
-            .Get a comment on a task - URL parameters
+.Get a comment on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5481,14 +4095,10 @@ GET runtime/tasks/{taskId}/comments/{commentId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "id" : "123",
   "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
@@ -5501,8 +4111,7 @@ GET runtime/tasks/{taskId}/comments/{commentId}
 }
 ----
 
-
-          .Get a comment on a task - Response codes
+.Get a comment on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5512,24 +4121,13 @@ GET runtime/tasks/{taskId}/comments/{commentId}
 |===============
 
 
-
-        
-
-
-
-====Delete a comment on a task
-
-
-          
+==== Delete a comment on a task
+     
 ----
 DELETE runtime/tasks/{taskId}/comments/{commentId}
 ----
 
-
-        
-
-
-            .Delete a comment on a task - URL parameters
+.Delete a comment on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5537,10 +4135,7 @@ DELETE runtime/tasks/{taskId}/comments/{commentId}
 |commentId|Yes|String|The id of the comment.
 
 |===============
-
-
-
-        
+      
 
 .Delete a comment on a task - Response codes
 [options="header"]
@@ -5552,21 +4147,13 @@ DELETE runtime/tasks/{taskId}/comments/{commentId}
 |===============
 
 
-
-
-====Get all events for a task
-
-
-          
+==== Get all events for a task
+      
 ----
 GET runtime/tasks/{taskId}/events
 ----
 
-
-        
-
-
-            .Get all events for a task - URL parameters
+.Get all events for a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5575,14 +4162,10 @@ GET runtime/tasks/{taskId}/events
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
   { 
     "action" : "AddUserLink",
@@ -5600,7 +4183,7 @@ GET runtime/tasks/{taskId}/events
 ----
 
 
-          .Get all events for a task - Response codes
+.Get all events for a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5611,23 +4194,13 @@ GET runtime/tasks/{taskId}/events
 
 
 
-        
-
-
-
-====Get an event on a task
-
-
-          
+==== Get an event on a task
+         
 ----
 GET runtime/tasks/{taskId}/events/{eventId}
 ----
 
-
-        
-
-
-            .Get an event on a task - URL parameters
+.Get an event on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5638,13 +4211,10 @@ GET runtime/tasks/{taskId}/events/{eventId}
 
 
 
-        
+*Success response body:*
 
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "action" : "AddUserLink",
   "id" : "4",
@@ -5657,7 +4227,7 @@ GET runtime/tasks/{taskId}/events/{eventId}
 ----
 
 
-          .Get an event on a task - Response codes
+.Get an event on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5668,23 +4238,13 @@ GET runtime/tasks/{taskId}/events/{eventId}
 
 
 
-        
-
-
-
-====Create a new attachment on a task, containing a link to an external resource
-
-
-          
+==== Create a new attachment on a task, containing a link to an external resource
+     
 ----
 POST runtime/tasks/{taskId}/attachments
 ----
 
-
-        
-
-
-            .Create a new attachment on a task, containing a link to an external resource - URL parameters
+.Create a new attachment on a task, containing a link to an external resource - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5693,14 +4253,10 @@ POST runtime/tasks/{taskId}/attachments
 |===============
 
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-        
+[source,json,linenums]        
 ----
-
 { 
   "name":"Simple attachment",
   "description":"Simple attachment description",
@@ -5714,10 +4270,10 @@ Only the attachment name is required to create a new attachment.
         
 
 
-          *Success response body:*
-            
-----
+*Success response body:*
 
+[source,json,linenums]            
+----
 {
   "id":"3",
   "url":"http://localhost:8182/runtime/tasks/2/attachments/3",
@@ -5732,7 +4288,7 @@ Only the attachment name is required to create a new attachment.
 ----
 
 
-          .Create a new attachment on a task, containing a link to an external resource - Response codes
+.Create a new attachment on a task, containing a link to an external resource - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5744,23 +4300,13 @@ Only the attachment name is required to create a new attachment.
 
 
 
+==== Create a new attachment on a task, with an attached file
         
-
-
-
-====Create a new attachment on a task, with an attached file
-
-
-          
 ----
 POST runtime/tasks/{taskId}/attachments
 ----
 
-
-        
-
-
-            .Create a new attachment on a task, with an attached file - URL parameters
+.Create a new attachment on a task, with an attached file - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5769,44 +4315,33 @@ POST runtime/tasks/{taskId}/attachments
 |===============
 
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the variable. On top of that, the following additional form-fields can be present:
       
 * ++name++: Required name of the variable.
-
-
 * ++description++: Description of the attachment, optional.
-
-
 * ++type++: Type of attachment, optional. Supports any arbitrary string or a valid HTTP content-type.
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
-      "id":"5",
-      "url":"http://localhost:8182/runtime/tasks/2/attachments/5",
-      "name":"Binary attachment",
-      "description":"Binary attachment description",
-      "type":"binaryType",
-      "taskUrl":"http://localhost:8182/runtime/tasks/2",
-      "processInstanceUrl":null,
-      "externalUrl":null,
-      "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
-   }
+	"id":"5",
+	"url":"http://localhost:8182/runtime/tasks/2/attachments/5",
+    "name":"Binary attachment",
+    "description":"Binary attachment description",
+    "type":"binaryType",
+    "taskUrl":"http://localhost:8182/runtime/tasks/2",
+    "processInstanceUrl":null,
+    "externalUrl":null,
+    "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
+}
 ----
 
 
-          .Create a new attachment on a task, with an attached file - Response codes
+.Create a new attachment on a task, with an attached file - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5817,24 +4352,14 @@ POST runtime/tasks/{taskId}/attachments
 |===============
 
 
-
-        
-
-
-
-====Get all attachments on a task
-
-
-          
+==== Get all attachments on a task
+     
 ----
 GET runtime/tasks/{taskId}/attachments
 ----
 
 
-        
-
-
-            .Get all attachments on a task - URL parameters
+.Get all attachments on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5843,14 +4368,10 @@ GET runtime/tasks/{taskId}/attachments
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
   {
     "id":"3",
@@ -5878,7 +4399,7 @@ GET runtime/tasks/{taskId}/attachments
 ----
 
 
-          .Get all attachments on a task - Response codes
+.Get all attachments on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5889,23 +4410,14 @@ GET runtime/tasks/{taskId}/attachments
 
 
 
-        
 
-
-
-====Get an attachment on a task
-
-
-          
+==== Get an attachment on a task
+     
 ----
 GET runtime/tasks/{taskId}/attachments/{attachmentId}
 ----
 
-
-        
-
-
-            .Get an attachment on a task - URL parameters
+.Get an attachment on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5915,45 +4427,28 @@ GET runtime/tasks/{taskId}/attachments/{attachmentId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
-  {
-    "id":"5",
-    "url":"http://localhost:8182/runtime/tasks/2/attachments/5",
-    "name":"Binary attachment",
-    "description":"Binary attachment description",
-    "type":"binaryType",
-    "taskUrl":"http://localhost:8182/runtime/tasks/2",
-    "processInstanceUrl":null,
-    "externalUrl":null,
-    "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
-  }
+{
+  "id":"5",
+  "url":"http://localhost:8182/runtime/tasks/2/attachments/5",
+  "name":"Binary attachment",
+  "description":"Binary attachment description",
+  "type":"binaryType",
+  "taskUrl":"http://localhost:8182/runtime/tasks/2",
+  "processInstanceUrl":null,
+  "externalUrl":null,
+  "contentUrl":"http://localhost:8182/runtime/tasks/2/attachments/5/content"
+}
 ----
-
 
   
-* 
-        ++externalUrl - contentUrl:++In case the attachment is a link to an external resource, the +externalUrl+ contains the URL to the external content. If the attachment content is present in the
-        Activiti engine, the +contentUrl+ will contain an URL where the binary content can be streamed from.
+*  ++externalUrl - contentUrl:++In case the attachment is a link to an external resource, the +externalUrl+ contains the URL to the external content. If the attachment content is present in the Activiti engine, the +contentUrl+ will contain an URL where the binary content can be streamed from.
+*  ++type:++Can be any arbitrary value. When a valid formatted media-type (eg. application/xml, text/plain) is included, the binary content HTTP response content-type will be set the the given value.
       
-
-
-* 
-        ++type:++Can be any arbitrary value. When a valid formatted media-type (eg. application/xml, text/plain) is included, the binary content HTTP response content-type will be set the the given value.
-      
-
-
-   
-        
-
-
-          .Get an attachment on a task - Response codes
+.Get an attachment on a task - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -5964,23 +4459,14 @@ GET runtime/tasks/{taskId}/attachments/{attachmentId}
 
 
 
-        
+==== Get the content for an attachment
 
-
-
-====Get the content for an attachment
-
-
-          
+     
 ----
 GET runtime/tasks/{taskId}/attachment/{attachmentId}/content
 ----
 
-
-        
-
-
-            .Get the content for an attachment - URL parameters
+.Get the content for an attachment - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -5990,11 +4476,7 @@ GET runtime/tasks/{taskId}/attachment/{attachmentId}/content
 |===============
 
 
-
-        
-
-
-          .Get the content for an attachment - Response codes
+.Get the content for an attachment - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6004,29 +4486,19 @@ GET runtime/tasks/{taskId}/attachment/{attachmentId}/content
 |===============
 
 
+*Success response body:*
 
-        
-
-
-       *Success response body:*
-      The response body contains the binary content. By default, the content-type of the response is set to +application/octet-stream+ unless the attachment type contains a valid Content-type. 
+The response body contains the binary content. By default, the content-type of the response is set to +application/octet-stream+ unless the attachment type contains a valid Content-type. 
     
 
+==== Delete an attachment on a task
 
-
-====Delete an attachment on a task
-
-
-          
+     
 ----
 DELETE runtime/tasks/{taskId}/attachments/{attachmentId}
 ----
 
-
-        
-
-
-            .Delete an attachment on a task - URL parameters
+.Delete an attachment on a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -6035,9 +4507,6 @@ DELETE runtime/tasks/{taskId}/attachments/{attachmentId}
 
 |===============
 
-
-
-        
 
 .Delete an attachment on a task - Response codes
 [options="header"]
@@ -6049,25 +4518,16 @@ DELETE runtime/tasks/{taskId}/attachments/{attachmentId}
 |===============
 
 
+=== History
+
+==== Get a historic process instance
 
 
-===History
-
-
-
-====Get a historic process instance
-
-
-      
 ----
 GET history/historic-process-instances/{processInstanceId}
 ----
 
-
-    
-
-
-      .Get a historic process instance - Response codes
+.Get a historic process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6077,14 +4537,10 @@ GET history/historic-process-instances/{processInstanceId}
 |===============
 
 
+*Success response body:*
 
-    
-
-
-      *Success response body:*
-        
+[source,json,linenums]        
 ----
-
 {
   "data": [
     { 
@@ -6113,25 +4569,17 @@ GET history/historic-process-instances/{processInstanceId}
 }
 ----
 
-
-      
-
+ 
 [[restHistoricProcessInstancesGet]]
 
 
-====List of historic process instances
-
-
-        
+==== List of historic process instances
+   
 ----
 GET history/historic-process-instances
 ----
 
-
-      
-
-
-          .List of historic process instances - URL parameters
+.List of historic process instances - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -6157,11 +4605,7 @@ GET history/historic-process-instances
 |===============
 
 
-
-      
-
-
-        .List of historic process instances - Response codes
+.List of historic process instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6171,14 +4615,10 @@ GET history/historic-process-instances
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -6214,26 +4654,16 @@ GET history/historic-process-instances
 ----
 
 
-      
-
-
-
-====Query for historic process instances
-
-
-        
+==== Query for historic process instances
+   
 ----
 POST query/historic-process-instances
 ----
 
+*Request body:*
 
-      
-
-
-        *Request body:*
-        
+[source,json,linenums]        
 ----
-
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
   ...
@@ -6249,16 +4679,10 @@ POST query/historic-process-instances
 }
 ----
 
- 
+All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricProcessInstancesGet,getting a collection of historic process instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows for filtering based on process variables. The +variables+ property is a JSON-array containing objects with the format <<restQueryVariable, as described here.>>
       
 
-
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricProcessInstancesGet,getting a collection of historic process instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-        for filtering based on process variables. The +variables+ property is a JSON-array containing objects with the format <<restQueryVariable, as described here.>>
-      
-
-
-        .Query for historic process instances - Response codes
+.Query for historic process instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6268,14 +4692,10 @@ POST query/historic-process-instances
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -6311,23 +4731,14 @@ POST query/historic-process-instances
 ----
 
 
-      
-
-
-
-====Delete a historic process instance
-
-
-        
+==== Delete a historic process instance
+   
 ----
 DELETE history/historic-process-instances/{processInstanceId}
 ----
 
 
-      
-
-
-        .Response codes
+.Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6337,41 +4748,28 @@ DELETE history/historic-process-instances/{processInstanceId}
 |===============
 
 
+==== Get the identity links of a historic process instance
 
-      
-
-
-
-====Get the identity links of a historic process instance
-
-
-        
+   
 ----
 GET history/historic-process-instance/{processInstanceId}/identitylinks
 ----
 
 
-      
-
-
-        .Response codes
+.Response codes
 [options="header"]
 |===============
 |Response code|Description
 |200|Indicates request was successful and the identity links are returned
 |404|Indicates the process instance could not be found.
 
-|===============
+|===============  
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 [
  {
   "type" : "participant",
@@ -6386,23 +4784,15 @@ GET history/historic-process-instance/{processInstanceId}/identitylinks
 ----
 
 
-      
 
-
-
-====Get the binary data for a historic process instance variable
-
-
-        
+==== Get the binary data for a historic process instance variable
+   
 ----
 GET history/historic-process-instances/{processInstanceId}/variables/{variableName}/data
 ----
 
 
-      
-
-
-        .Get the binary data for a historic process instance variable - Response codes
+.Get the binary data for a historic process instance variable - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6412,29 +4802,19 @@ GET history/historic-process-instances/{processInstanceId}/variables/{variableNa
 |===============
 
 
+*Success response body:*
 
-      
-
-
-      *Success response body:*
-      The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
-    
+The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
 
 
-
-====Create a new comment on a historic process instance
-
-
+==== Create a new comment on a historic process instance
           
 ----
 POST history/historic-process-instances/{processInstanceId}/comments
 ----
 
 
-        
-
-
-            .Create a new comment on a historic process instance - URL parameters
+.Create a new comment on a historic process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -6443,32 +4823,22 @@ POST history/historic-process-instances/{processInstanceId}/comments
 |===============
 
 
+*Request body:*
 
-        
-
-
-       *Request body:*
-        
+[source,json,linenums]        
 ----
-
 { 
   "message" : "This is a comment.",
   "saveProcessInstanceId" : true
 }
 ----
 
-
-        
-
-
-         Parameter +saveProcessInstanceId+ is optional, if +true+ save process instance id of task with comment.
+Parameter +saveProcessInstanceId+ is optional, if +true+ save process instance id of task with comment.
        
+*Success response body:*
 
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "id" : "123",
   "taskUrl" : "http://localhost:8081/activiti-rest/service/runtime/tasks/101/comments/123",
@@ -6482,7 +4852,7 @@ POST history/historic-process-instances/{processInstanceId}/comments
 ----
 
 
-          .Create a new comment on a historic process instance - Response codes
+.Create a new comment on a historic process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6494,23 +4864,15 @@ POST history/historic-process-instances/{processInstanceId}/comments
 
 
 
-        
+==== Get all comments on a historic process instance
 
-
-
-====Get all comments on a historic process instance
-
-
-          
+     
 ----
 GET history/historic-process-instances/{processInstanceId}/comments
 ----
 
 
-        
-
-
-            .Get all comments on a process instance - URL parameters
+.Get all comments on a process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -6518,15 +4880,10 @@ GET history/historic-process-instances/{processInstanceId}/comments
 
 |===============
 
+*Success response body:*
 
-
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
   { 
     "id" : "123",
@@ -6548,7 +4905,7 @@ GET history/historic-process-instances/{processInstanceId}/comments
 ----
 
 
-          .Get all comments on a process instance - Response codes
+.Get all comments on a process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6558,24 +4915,14 @@ GET history/historic-process-instances/{processInstanceId}/comments
 |===============
 
 
-
-        
-
-
-
-====Get a comment on a historic process instance
-
-
-          
+==== Get a comment on a historic process instance
+     
 ----
 GET history/historic-process-instances/{processInstanceId}/comments/{commentId}
 ----
 
 
-        
-
-
-            .Get a comment on a historic process instance - URL parameters
+.Get a comment on a historic process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -6585,14 +4932,10 @@ GET history/historic-process-instances/{processInstanceId}/comments/{commentId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 { 
   "id" : "123",
   "processInstanceUrl" : "http://localhost:8081/activiti-rest/service/history/historic-process-instances/100/comments/456",
@@ -6604,7 +4947,7 @@ GET history/historic-process-instances/{processInstanceId}/comments/{commentId}
 ----
 
 
-          .Get a comment on a historic process instance - Response codes
+.Get a comment on a historic process instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6615,23 +4958,13 @@ GET history/historic-process-instances/{processInstanceId}/comments/{commentId}
 
 
 
-        
-
-
-
-====Delete a comment on a historic process instance
-
-
+==== Delete a comment on a historic process instance
           
 ----
 DELETE history/historic-process-instances/{processInstanceId}/comments/{commentId}
 ----
 
-
-        
-
-
-            .Delete a comment on a historic process instance - URL parameters
+.Delete a comment on a historic process instance - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -6640,9 +4973,6 @@ DELETE history/historic-process-instances/{processInstanceId}/comments/{commentI
 
 |===============
 
-
-
-        
 
 .Delete a comment on a historic process instance - Response codes
 [options="header"]
@@ -6654,21 +4984,13 @@ DELETE history/historic-process-instances/{processInstanceId}/comments/{commentI
 |===============
 
 
-
-
-====Get a single historic task instance
-
-
+==== Get a single historic task instance
       
 ----
 GET history/historic-task-instances/{taskId}
 ----
 
-
-    
-
-
-      .Get a single historic task instance - Response codes
+.Get a single historic task instance - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6678,14 +5000,10 @@ GET history/historic-task-instances/{taskId}
 |===============
 
 
-
-    
-
-
-      *Success response body:*
-        
+*Success response body:*
+  
+[source,json,linenums]        
 ----
-
 {
   "id" : "5",
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
@@ -6715,24 +5033,17 @@ GET history/historic-task-instances/{taskId}
 ----
 
 
-      
-
 [[restHistoricTaskInstancesGet]]
 
 
-====Get historic task instances
-
-
+==== Get historic task instances
         
 ----
 GET history/historic-task-instances
 ----
 
 
-      
-
-
-          .Get historic task instances - URL parameters
+.Get historic task instances - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -6783,11 +5094,7 @@ GET history/historic-task-instances
 |===============
 
 
-
-      
-
-
-        .Get historic task instances - Response codes
+.Get historic task instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6797,14 +5104,10 @@ GET history/historic-task-instances
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -6856,26 +5159,17 @@ GET history/historic-task-instances
 ----
 
 
-      
-
-
-
-====Query for historic task instances
-
-
-        
+==== Query for historic task instances
+   
 ----
 POST query/historic-task-instances
 ----
 
 
-      
+*Query for historic task instances - Request body:*
 
-
-        *Query for historic task instances - Request body:*
-        
+[source,json,linenums]        
 ----
-
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
   ...
@@ -6892,15 +5186,9 @@ POST query/historic-task-instances
 ----
 
  
+All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricTaskInstancesGet,getting a collection of historic task instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows for filtering based on process variables. The +taskVariables+ and +processVariables+ properties are JSON-arrays containing objects with the format <<restQueryVariable, as described here.>>
       
-
-
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricTaskInstancesGet,getting a collection of historic task instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-        for filtering based on process variables. The +taskVariables+ and +processVariables+ properties are JSON-arrays containing objects with the format <<restQueryVariable, as described here.>>
-      
-
-
-        .Query for historic task instances - Response codes
+.Query for historic task instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6910,14 +5198,10 @@ POST query/historic-task-instances
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -6969,23 +5253,13 @@ POST query/historic-task-instances
 ----
 
 
-      
-
-
-
-====Delete a historic task instance
-
-
-        
+==== Delete a historic task instance
+    
 ----
 DELETE history/historic-task-instances/{taskId}
 ----
 
-
-      
-
-
-        .Response codes
+.Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -6996,23 +5270,13 @@ DELETE history/historic-task-instances/{taskId}
 
 
 
-      
-
-
-
-====Get the identity links of a historic task instance
-
-
-        
+==== Get the identity links of a historic task instance
+   
 ----
 GET history/historic-task-instance/{taskId}/identitylinks
 ----
 
-
-      
-
-
-        .Response codes
+.Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7022,14 +5286,10 @@ GET history/historic-task-instance/{taskId}/identitylinks
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 [
  {
   "type" : "assignee",
@@ -7044,23 +5304,13 @@ GET history/historic-task-instance/{taskId}/identitylinks
 ----
 
 
-      
-
-
-
-====Get the binary data for a historic task instance variable
-
-
-        
+==== Get the binary data for a historic task instance variable
+   
 ----
 GET history/historic-task-instances/{taskId}/variables/{variableName}/data
 ----
 
-
-      
-
-
-        .Get the binary data for a historic task instance variable - Response codes
+.Get the binary data for a historic task instance variable - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7070,30 +5320,21 @@ GET history/historic-task-instances/{taskId}/variables/{variableName}/data
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-        The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
+The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
       
 
 [[restHistoricActivityInstancesGet]]
 
 
-====Get historic activity instances
-
-
-        
+==== Get historic activity instances
+   
 ----
 GET history/historic-activity-instances
 ----
 
-
-      
-
-
-          .Get historic activity instances - URL parameters
+.Get historic activity instances - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -7115,10 +5356,7 @@ GET history/historic-activity-instances
 
 
 
-      
-
-
-        .Get historic activity instances - Response codes
+.Get historic activity instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7129,13 +5367,10 @@ GET history/historic-activity-instances
 
 
 
-      
+*Success response body:*
 
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -7166,40 +5401,27 @@ GET history/historic-activity-instances
 ----
 
 
-      
-
-
-
-====Query for historic activity instances
-
-
-        
+==== Query for historic activity instances
+   
 ----
 POST query/historic-activity-instances
 ----
 
 
-      
-
-
-        *Request body:*
-        
+*Request body:*
+    
+[source,json,linenums]    
 ----
-
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4"
 }
 ----
 
- 
+
+All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricTaskInstancesGet,getting a collection of historic task instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
       
 
-
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricTaskInstancesGet,getting a collection of historic task instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
-      
-
-
-        .Query for historic activity instances - Response codes
+.Query for historic activity instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7209,14 +5431,10 @@ POST query/historic-activity-instances
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -7247,24 +5465,16 @@ POST query/historic-activity-instances
 ----
 
 
-      
-
 [[restHistoricVariableInstancesGet]]
 
 
-====List of historic variable instances
-
-
-        
+==== List of historic variable instances
+      
 ----
 GET history/historic-variable-instances
 ----
 
-
-      
-
-
-          .List of historic variable instances - URL parameters
+.List of historic variable instances - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -7278,11 +5488,7 @@ GET history/historic-variable-instances
 |===============
 
 
-
-      
-
-
-        .List of historic variable instances - Response codes
+.List of historic variable instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7292,14 +5498,10 @@ GET history/historic-variable-instances
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -7323,26 +5525,18 @@ GET history/historic-variable-instances
 ----
 
 
-      
 
-
-
-====Query for historic variable instances
-
-
-        
+==== Query for historic variable instances
+   
 ----
 POST query/historic-variable-instances
 ----
 
 
-      
+*Request body:*
 
-
-        *Request body:*
-        
+[source,json,linenums]        
 ----
-
 {
   "processDefinitionId" : "oneTaskProcess%3A1%3A4",
   ...
@@ -7358,16 +5552,10 @@ POST query/historic-variable-instances
 }
 ----
 
- 
+
+All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricVariableInstancesGet,getting a collection of historic process instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows for filtering based on process variables. The +variables+ property is a JSON-array containing objects with the format <<restQueryVariable, as described here.>>
       
-
-
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricVariableInstancesGet,getting a collection of historic process instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long. On top of that, the query allows
-        for filtering based on process variables. The +variables+ property is a JSON-array containing objects with the format <<restQueryVariable, as described here.>>
-      
-
-
-        .Query for historic variable instances - Response codes
+.Query for historic variable instances - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7377,14 +5565,10 @@ POST query/historic-variable-instances
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -7408,23 +5592,14 @@ POST query/historic-variable-instances
 ----
 
 
-      
-
-
-
 ====Get the binary data for a historic task instance variable
 
 
-        
 ----
 GET history/historic-variable-instances/{varInstanceId}/data
 ----
 
-
-      
-
-
-        .Get the binary data for a historic task instance variable - Response codes
+.Get the binary data for a historic task instance variable - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7434,30 +5609,21 @@ GET history/historic-variable-instances/{varInstanceId}/data
 |===============
 
 
+*Success response body:*
 
-      
-
-
-      *Success response body:*
-      The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
+The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
     
 
 [[restHistoricDetailGet]]
 
 
-====Get historic detail
-
-
+==== Get historic detail
         
 ----
 GET history/historic-detail
 ----
 
-
-      
-
-
-          .Get historic detail - URL parameters
+.Get historic detail - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -7473,11 +5639,7 @@ GET history/historic-detail
 |===============
 
 
-
-      
-
-
-        .Get historic detail - Response codes
+.Get historic detail - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7487,14 +5649,10 @@ GET history/historic-detail
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -7526,40 +5684,24 @@ GET history/historic-detail
 ----
 
 
-      
-
-
-
-====Query for historic details
-
-
-        
+==== Query for historic details
+   
 ----
 POST query/historic-detail
 ----
 
-
-      
-
-
-        *Request body:*
+*Request body:*
         
 ----
-
 {
   "processInstanceId" : "5",
 }
 ----
 
- 
-      
 
-
-        All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricDetailGet,getting a collection of historic process instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
-      
-
-
-        .Query for historic details - Response codes
+All supported JSON parameter fields allowed are exactly the same as the parameters found for <<restHistoricDetailGet,getting a collection of historic process instances>>, but passed in as JSON-body arguments rather than URL-parameters to allow for more advanced querying and preventing errors with request-uri's that are too long.
+    
+.Query for historic details - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7569,14 +5711,10 @@ POST query/historic-detail
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -7608,23 +5746,14 @@ POST query/historic-detail
 ----
 
 
-      
-
-
-
-====Get the binary data for a historic detail variable
-
-
-        
+==== Get the binary data for a historic detail variable
+   
 ----
 GET history/historic-detail/{detailId}/data
 ----
 
 
-      
-
-
-        .Get the binary data for a historic detail variable - Response codes
+.Get the binary data for a historic detail variable - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7634,33 +5763,19 @@ GET history/historic-detail/{detailId}/data
 |===============
 
 
+*Success response body:*
 
-      
+The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
+    
+=== Forms
 
-
-        *Success response body:*
-        The response body contains the binary value of the variable. When the variable is of type +binary+, the content-type of the response is set to +application/octet-stream+, regardless of the content of the variable or the request accept-type header. In case of +serializable+, +application/x-java-serialized-object+ is used as content-type. 
-      
-
-
-
-===Forms
-
-
-
-====Get form data
-
-
+==== Get form data
         
 ----
 GET form/form-data
 ----
 
-
-      
-
-
-          .Get form data - URL parameters
+.Get form data - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -7670,11 +5785,7 @@ GET form/form-data
 |===============
 
 
-
-      
-
-
-        .Get form data - Response codes
+.Get form data - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7684,14 +5795,10 @@ GET form/form-data
 |===============
 
 
+*Success response body:*
 
-      
-
-
-        *Success response body:*
-          
+[source,json,linenums]          
 ----
-
 {
   "data": [
     { 
@@ -7734,26 +5841,16 @@ GET form/form-data
 ----
 
 
-      
-
-
-
-====Submit task form data
-
-
-        
+==== Submit task form data
+   
 ----
 POST form/form-data
 ----
 
+*Request body for task form:*
 
-      
-
-
-        *Request body for task form:*
-        
+[source,json,linenums]        
 ----
-
 {
   "taskId" : "5",
   "properties" : [
@@ -7765,14 +5862,11 @@ POST form/form-data
 }
 ----
 
- 
-      
 
+*Request body for start event form:*
 
-        *Request body for start event form:*
-        
+[source,json,linenums]        
 ----
-
 {
   "processDefinitionId" : "5",
   "businessKey" : "myKey", (optional)
@@ -7785,11 +5879,8 @@ POST form/form-data
 }
 ----
 
- 
-      
 
-
-        .Submit task form data - Response codes
+.Submit task form data - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7799,14 +5890,10 @@ POST form/form-data
 |===============
 
 
+*Success response body for start event form data (no response for task form data):*
 
-      
-
-
-        *Success response body for start event form data (no response for task form data):*
-          
+[source,json,linenums]          
 ----
-
 {
   "id" : "5",
   "url" : "http://localhost:8182/history/historic-process-instances/5",
@@ -7819,27 +5906,15 @@ POST form/form-data
 ----
 
 
-      
+=== Database tables
 
-
-
-===Database tables
-
-
-
-====List of tables
-
-
-        
+==== List of tables
+   
 ----
 GET management/tables
 ----
 
-
-      
-
-
-        .List of tables - Response codes
+.List of tables - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7848,14 +5923,10 @@ GET management/tables
 |===============
 
 
+*Success response body:*
 
-      
-
-
-       *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 [
    {
       "name":"ACT_RU_VARIABLE",
@@ -7874,23 +5945,14 @@ GET management/tables
 ----
 
 
-    
-
-
-
-====Get a single table
-
-
-          
+==== Get a single table
+     
 ----
 GET management/tables/{tableName}
 ----
 
 
-        
-
-
-            .Get a single table - URL parameters
+.Get a single table - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -7899,14 +5961,10 @@ GET management/tables/{tableName}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
       "name":"ACT_RE_PROCDEF",
       "url":"http://localhost:8182/management/tables/ACT_RE_PROCDEF",
@@ -7915,7 +5973,7 @@ GET management/tables/{tableName}
 ----
 
 
-          .Get a single table - Response codes
+.Get a single table - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7926,23 +5984,14 @@ GET management/tables/{tableName}
 
 
 
-        
 
-
-
-====Get column info for a single table
-
-
+==== Get column info for a single table
           
 ----
 GET management/tables/{tableName}/columns
 ----
 
-
-        
-
-
-            .Get column info for a single table - URL parameters
+.Get column info for a single table - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -7951,12 +6000,9 @@ GET management/tables/{tableName}/columns
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
 
 {
@@ -7979,7 +6025,7 @@ GET management/tables/{tableName}/columns
 ----
 
 
-          .Get column info for a single table - Response codes
+.Get column info for a single table - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -7990,23 +6036,13 @@ GET management/tables/{tableName}/columns
 
 
 
-        
-
-
-
-====Get row data for a single table
-
-
-          
+==== Get row data for a single table
+     
 ----
 GET management/tables/{tableName}/data
 ----
 
-
-        
-
-
-            .Get row data for a single table - URL parameters
+.Get row data for a single table - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -8015,11 +6051,7 @@ GET management/tables/{tableName}/data
 |===============
 
 
-
-        
-
-
-            .Get row data for a single table - URL query parameters
+.Get row data for a single table - URL query parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -8031,14 +6063,10 @@ GET management/tables/{tableName}/data
 |===============
 
 
-
-        
-
-
-          *Success response body:*
-            
+*Success response body:*
+ 
+[source,json,linenums]           
 ----
-
 {
   "total":3,
    "start":0,
@@ -8062,8 +6090,7 @@ GET management/tables/{tableName}/data
 }
 ----
 
-
-          .Get row data for a single table - Response codes
+.Get row data for a single table - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8073,35 +6100,21 @@ GET management/tables/{tableName}/data
 |===============
 
 
-
-        
-
-
-
-===Engine
-
-
+=== Engine
 
 ====Get engine properties
-
-
           
 ----
 GET management/properties
 ----
 
 
-        
+Returns a read-only view of the properties used internally in the engine.
 
+*Success response body:*
 
-        Returns a read-only view of the properties used internally in the engine.
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "next.dbid":"101",
    "schema.history":"create(5.15)",
@@ -8110,7 +6123,7 @@ GET management/properties
 ----
 
 
-          .Get engine properties - Response codes
+.Get engine properties - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8120,30 +6133,20 @@ GET management/properties
 
 
 
-        
-
-
-
-====Get engine info
-
-
-          
+==== Get engine info
+   
 ----
 GET management/engine
 ----
 
 
+Returns a read-only view of the engine that is used in this REST-service.
         
 
+*Success response body:*
 
-        Returns a read-only view of the engine that is used in this REST-service.
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "name":"default",
    "version":"5.15",
@@ -8153,7 +6156,7 @@ GET management/engine
 ----
 
 
-          .Get engine info - Response codes
+.Get engine info - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8163,34 +6166,21 @@ GET management/engine
 
 
 
-        
+=== Runtime
 
-
-
-===Runtime
-
-
-
-====Signal event received
-
-
+==== Signal event received
           
 ----
 POST runtime/signals
 ----
 
 
+Notifies the engine that a signal event has been received, not explicitally related to a specific execution. 
         
+*Body JSON:*
 
-
-        Notifies the engine that a signal event has been received, not explicitally related to a specific execution. 
-        
-
-
-         *Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 { 
   "signalName": "My Signal",
   "tenantId" : "execute",
@@ -8203,7 +6193,7 @@ POST runtime/signals
 ----
 
 
-        .Signal event received - JSON Body parameters
+.Signal event received - JSON Body parameters
 [options="header"]
 |===============
 |Parameter|Description|Required
@@ -8216,12 +6206,9 @@ POST runtime/signals
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-          .Signal event received - Response codes
+.Signal event received - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8233,27 +6220,15 @@ POST runtime/signals
 
 
 
-        
+=== Jobs
 
-
-
-===Jobs
-
-
-
-====Get a single job
-
-
-          
+==== Get a single job
+     
 ----
 GET management/jobs/{jobId}
 ----
 
-
-        
-
-
-            .Get a single job - URL parameters
+.Get a single job - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -8262,14 +6237,10 @@ GET management/jobs/{jobId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "id":"8",
    "url":"http://localhost:8182/management/jobs/8",
@@ -8286,8 +6257,7 @@ GET management/jobs/{jobId}
 }
 ----
 
-
-          .Get a single job - Response codes
+.Get a single job - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8298,23 +6268,14 @@ GET management/jobs/{jobId}
 
 
 
-        
-
-
-
-====Delete a job
-
-
-          
+==== Delete a job
+     
 ----
 DELETE management/jobs/{jobId}
 ----
 
 
-        
-
-
-            .Delete a job - URL parameters
+.Delete a job - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -8323,11 +6284,7 @@ DELETE management/jobs/{jobId}
 |===============
 
 
-
-        
-
-
-          .Delete a job - Response codes
+.Delete a job - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8338,33 +6295,24 @@ DELETE management/jobs/{jobId}
 
 
 
-        
-
-
-
-====Execute a single job
-
-
-          
+==== Execute a single job
+     
 ----
 POST management/jobs/{jobId}
 ----
 
 
-        
+*Body JSON:*
 
-
-         *Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 { 
   "action" : "execute"
 }
 ----
 
 
-        .Execute a single job - JSON Body parameters
+.Execute a single job - JSON Body parameters
 [options="header"]
 |===============
 |Parameter|Description|Required
@@ -8373,11 +6321,7 @@ POST management/jobs/{jobId}
 |===============
 
 
-
-        
-
-
-          .Execute a single job - Response codes
+.Execute a single job - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8389,23 +6333,14 @@ POST management/jobs/{jobId}
 
 
 
-        
-
-
-
-====Get the exception stacktrace for a job
-
-
+==== Get the exception stacktrace for a job
           
 ----
 GET management/jobs/{jobId}/exception-stacktrace
 ----
 
 
-        
-
-
-        .Get the exception stacktrace for a job - URL parameters
+.Get the exception stacktrace for a job - URL parameters
 [options="header"]
 |===============
 |Parameter|Description|Required
@@ -8414,11 +6349,7 @@ GET management/jobs/{jobId}/exception-stacktrace
 |===============
 
 
-
-        
-
-
-          .Get the exception stacktrace for a job - Response codes
+.Get the exception stacktrace for a job - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8428,13 +6359,7 @@ GET management/jobs/{jobId}/exception-stacktrace
 |===============
 
 
-
-        
-
-
-
-====Get a list of jobs
-
+==== Get a list of jobs
 
           
 ----
@@ -8442,10 +6367,7 @@ GET management/jobs
 ----
 
 
-        
-
-
-        .Get a list of jobs - URL query parameters
+.Get a list of jobs - URL query parameters
 [options="header"]
 |===============
 |Parameter|Description|Type
@@ -8470,14 +6392,10 @@ GET management/jobs
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "data":[
       {
@@ -8506,7 +6424,7 @@ GET management/jobs
 ----
 
 
-          .Get a list of jobs - Response codes
+.Get a list of jobs - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8517,27 +6435,16 @@ GET management/jobs
 
 
 
-        
+=== Users
 
-
-
-===Users
-
-
-
-====Get a single user
-
-
-          
+==== Get a single user
+     
 ----
 GET identity/users/{userId}
 ----
 
 
-        
-
-
-            .Get a single user - URL parameters
+.Get a single user - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -8546,14 +6453,10 @@ GET identity/users/{userId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "id":"testuser",
    "firstName":"Fred",
@@ -8564,7 +6467,7 @@ GET identity/users/{userId}
 ----
 
 
-          .Get a single user - Response codes
+.Get a single user - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8575,23 +6478,14 @@ GET identity/users/{userId}
 
 
 
-        
+==== Get a list of users
 
-
-
-====Get a list of users
-
-
-          
+     
 ----
 GET identity/users
 ----
 
-
-        
-
-
-        .Get a list of users - URL query parameters
+.Get a list of users - URL query parameters
 [options="header"]
 |===============
 |Parameter|Description|Type
@@ -8610,14 +6504,10 @@ GET identity/users
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "data":[
       {
@@ -8651,7 +6541,7 @@ GET identity/users
 ----
 
 
-          .Get a list of users - Response codes
+.Get a list of users - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8661,26 +6551,16 @@ GET identity/users
 
 
 
-        
-
-
-
-====Update a user
-
-
+==== Update a user
           
 ----
 PUT identity/users/{userId}
 ----
 
+*Body JSON:*
 
-        
-
-
-         *Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 {
   "firstName":"Tijs",
   "lastName":"Barrez",
@@ -8689,12 +6569,10 @@ PUT identity/users/{userId}
 }
 ----
 
-
-      All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: +{"firstName" : null}+ will clear the firstName of the user).
+All request values are optional. For example, you can only include the 'firstName' attribute in the request body JSON-object, only updating the firstName of the user, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the user-value will be updated to null. Example: +{"firstName" : null}+ will clear the firstName of the user).
        
 
-
-          .Update a user - Response codes
+.Update a user - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8705,31 +6583,18 @@ PUT identity/users/{userId}
 |===============
 
 
-
-        
-
-
-       *Success response body:* see response for +identity/users/{userId}+.
+*Success response body:* see response for +identity/users/{userId}+.
       
 
-
-
-====Create a user
-
-
-          
+==== Create a user
+     
 ----
 POST identity/users
-----
+----     
 
-
-        
-
-
-         *Body JSON:*
+*Body JSON:*
            
 ----
-
 {
   "id":"tijs",
   "firstName":"Tijs",
@@ -8739,11 +6604,7 @@ POST identity/users
 }
 ----
 
-
-       
-
-
-          .Create a user - Response codes
+.Create a user - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8753,28 +6614,15 @@ POST identity/users
 |===============
 
 
-
-        
-
-
-       *Success response body:* see response for +identity/users/{userId}+.
-      
-
-
-
-====Delete a user
-
-
-        
+*Success response body:* see response for +identity/users/{userId}+.
+    
+==== Delete a user
+   
 ----
 DELETE identity/users/{userId}
 ----
 
-
-      
-
-
-          .Delete a user - URL parameters
+.Delete a user - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -8784,10 +6632,7 @@ DELETE identity/users/{userId}
 
 
 
-      
-
-
-          .Delete a user - Response codes
+.Delete a user - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8795,26 +6640,16 @@ DELETE identity/users/{userId}
 |404|Indicates the requested user was not found.
 
 |===============
-
-
-
         
 
-
-
-====Get a user's picture
-
-
-        
+==== Get a user's picture
+   
 ----
 GET identity/users/{userId}/picture
 ----
 
 
-      
-
-
-          .Get a user's picture - URL parameters
+.Get a user's picture - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -8823,13 +6658,11 @@ GET identity/users/{userId}/picture
 |===============
 
 
+*Response Body:*
 
-      
+The response body contains the raw picture data, representing the user's picture. The Content-type of the response corresponds to the mimeType that was set when creating the picture.
 
-
-          *Response Body:*
-          The response body contains the raw picture data, representing the user's picture. The Content-type of the response corresponds to the mimeType that was set when creating the picture.
-          .Get a user's picture - Response codes
+.Get a user's picture - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8840,23 +6673,13 @@ GET identity/users/{userId}/picture
 
 
 
-        
-
-
-
-====Updating a user's picture
-
-
+==== Updating a user's picture
         
 ----
 GET identity/users/{userId}/picture
-----
+---- 
 
-
-      
-
-
-          .Updating a user's picture - URL parameters
+.Updating a user's picture - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -8865,20 +6688,14 @@ GET identity/users/{userId}/picture
 |===============
 
 
+*Request body:*
 
-      
-
-
-       *Request body:*
-           The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the picture. On top of that, the following additional form-fields can be present:
+The request should be of type +multipart/form-data+. There should be a single file-part included with the binary value of the picture. On top of that, the following additional form-fields can be present:
         
 * ++mimeType++: Optional mime-type for the uploaded picture. If omitted, the default of +image/jpeg+ is used as a mime-type for the picture.
 
 
-        
-
-
-          .Updating a user's picture - Response codes
+.Updating a user's picture - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8889,23 +6706,14 @@ GET identity/users/{userId}/picture
 
 
 
-        
-
-
-
-====List a user's info
-
-
-        
+==== List a user's info
+   
 ----
 PUT identity/users/{userId}/info
 ----
 
 
-      
-
-
-          .List a user's info - URL parameters
+.List a user's info - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -8915,13 +6723,10 @@ PUT identity/users/{userId}/info
 
 
 
-      
+*Response Body:*
 
-
-          *Response Body:*
-
+[source,json,linenums]
 ----
-
 [
    {
       "key":"key1",
@@ -8935,7 +6740,7 @@ PUT identity/users/{userId}/info
 ----
 
 
-          .List a user's info - Response codes
+.List a user's info - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8946,40 +6751,28 @@ PUT identity/users/{userId}/info
 
 
 
-        
 
+==== Get a user's info
 
-
-====Get a user's info
-
-
-        
 ----
 GET identity/users/{userId}/info/{key}
 ----
 
 
-      
-
-
-          .Get a user's info - URL parameters
+.Get a user's info - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
 |userId|Yes|String|The id of the user to get the info for.
 |key|Yes|String|The key of the user info to get.
 
-|===============
+|===============  
 
 
+*Response Body:*
 
-      
-
-
-          *Response Body:*
-
+[source,json,linenums]
 ----
-
 {
    "key":"key1",
    "value":"Value 1",
@@ -8988,7 +6781,7 @@ GET identity/users/{userId}/info/{key}
 ----
 
 
-          .Get a user's info - Response codes
+.Get a user's info - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -8999,23 +6792,13 @@ GET identity/users/{userId}/info/{key}
 
 
 
-        
-
-
-
-====Update a user's info
-
-
-        
+==== Update a user's info
+   
 ----
 PUT identity/users/{userId}/info/{key}
 ----
 
-
-      
-
-
-          .Update a user's info - URL parameters
+.Update a user's info - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -9025,27 +6808,19 @@ PUT identity/users/{userId}/info/{key}
 |===============
 
 
+*Request Body:*
 
-      
-
-
-          *Request Body:*
-
+[source,json,linenums]
 ----
-
 {
    "value":"The updated value"
 }
 ----
 
+*Response Body:*
 
-      
-
-
-          *Response Body:*
-
+[source,json,linenums]
 ----
-
 {
    "key":"key1",
    "value":"The updated value",
@@ -9053,8 +6828,7 @@ PUT identity/users/{userId}/info/{key}
 }
 ----
 
-
-          .Update a user's info - Response codes
+.Update a user's info - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9066,23 +6840,14 @@ PUT identity/users/{userId}/info/{key}
 
 
 
-        
-
-
-
-====Create a new user's info entry
-
-
-        
+==== Create a new user's info entry
+   
 ----
 POST identity/users/{userId}/info
 ----
 
 
-      
-
-
-          .Create a new user's info entry - URL parameters
+.Create a new user's info entry - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -9091,14 +6856,10 @@ POST identity/users/{userId}/info
 |===============
 
 
+*Request Body:*
 
-      
-
-
-          *Request Body:*
-
+[source,json,linenums]
 ----
-
 {
    "key":"key1",
    "value":"The value"
@@ -9106,13 +6867,10 @@ POST identity/users/{userId}/info
 ----
 
 
-      
+*Response Body:*
 
-
-          *Response Body:*
-
+[source,json,linenums]
 ----
-
 {
    "key":"key1",
    "value":"The value",
@@ -9121,7 +6879,7 @@ POST identity/users/{userId}/info
 ----
 
 
-          .Create a new user's info entry - Response codes
+.Create a new user's info entry - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9134,23 +6892,14 @@ POST identity/users/{userId}/info
 
 
 
-        
-
-
-
-====Delete a user's info
-
-
-        
+==== Delete a user's info
+   
 ----
 DELETE identity/users/{userId}/info/{key}
 ----
 
 
-      
-
-
-          .Delete a user's info - URL parameters
+.Delete a user's info - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -9161,10 +6910,7 @@ DELETE identity/users/{userId}/info/{key}
 
 
 
-      
-
-
-          .Delete a user's info - Response codes
+.Delete a user's info - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9175,15 +6921,11 @@ DELETE identity/users/{userId}/info/{key}
 
 
 
-        
+=== Groups
 
 
 
-===Groups
-
-
-
-====Get a single group
+==== Get a single group
 
 
           
@@ -9192,10 +6934,7 @@ GET identity/groups/{groupId}
 ----
 
 
-        
-
-
-            .Get a single group - URL parameters
+.Get a single group - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -9204,14 +6943,10 @@ GET identity/groups/{groupId}
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "id":"testgroup",
    "url":"http://localhost:8182/identity/groups/testgroup",
@@ -9221,7 +6956,7 @@ GET identity/groups/{groupId}
 ----
 
 
-          .Get a single group - Response codes
+.Get a single group - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9232,23 +6967,15 @@ GET identity/groups/{groupId}
 
 
 
-        
+==== Get a list of groups
 
-
-
-====Get a list of groups
-
-
-          
+     
 ----
 GET identity/groups
 ----
 
 
-        
-
-
-        .Get a list of groups - URL query parameters
+.Get a list of groups - URL query parameters
 [options="header"]
 |===============
 |Parameter|Description|Type
@@ -9264,14 +6991,10 @@ GET identity/groups
 |===============
 
 
+*Success response body:*
 
-        
-
-
-          *Success response body:*
-            
+[source,json,linenums]            
 ----
-
 {
    "data":[
      {
@@ -9292,7 +7015,7 @@ GET identity/groups
 ----
 
 
-          .Get a list of groups - Response codes
+.Get a list of groups - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9302,26 +7025,17 @@ GET identity/groups
 
 
 
-        
 
-
-
-====Update a group
-
-
-          
+==== Update a group
+     
 ----
 PUT identity/groups/{groupId}
 ----
 
+*Body JSON:*
 
-        
-
-
-         *Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 {
    "name":"Test group",
    "type":"Test type"
@@ -9329,11 +7043,10 @@ PUT identity/groups/{groupId}
 ----
 
 
-      All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the group, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the group-value will be updated to null.
+All request values are optional. For example, you can only include the 'name' attribute in the request body JSON-object, only updating the name of the group, leaving all other fields unaffected. When an attribute is explicitly included and is set to null, the group-value will be updated to null.
        
 
-
-          .Update a group - Response codes
+.Update a group - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9344,31 +7057,18 @@ PUT identity/groups/{groupId}
 |===============
 
 
-
-        
-
-
-       *Success response body:* see response for +identity/groups/{groupId}+.
+*Success response body:* see response for +identity/groups/{groupId}+.
       
-
-
-
-====Create a group
-
-
-          
+==== Create a group
+     
 ----
 POST identity/groups
 ----
 
+*Body JSON:*
 
-        
-
-
-         *Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 {
    "id":"testgroup",
    "name":"Test group",
@@ -9377,10 +7077,7 @@ POST identity/groups
 ----
 
 
-       
-
-
-          .Create a group - Response codes
+.Create a group - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9389,29 +7086,17 @@ POST identity/groups
 
 |===============
 
-
-
-        
-
-
-       *Success response body:* see response for +identity/groups/{groupId}+.
+*Success response body:* see response for +identity/groups/{groupId}+.
       
 
-
-
-====Delete a group
-
-
-        
+==== Delete a group
+   
 ----
 DELETE identity/groups/{groupId}
 ----
 
 
-      
-
-
-          .Delete a group - URL parameters
+.Delete a group - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -9420,11 +7105,7 @@ DELETE identity/groups/{groupId}
 |===============
 
 
-
-      
-
-
-          .Delete a group - Response codes
+.Delete a group - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9435,17 +7116,13 @@ DELETE identity/groups/{groupId}
 
 
 
-        
-
-
-
-====Get members in a group
+==== Get members in a group
 
 There is no GET allowed on +identity/groups/members+. Use the +identity/users?memberOfGroup=sales+ URL to get all users that are part of a particular group.
 
 
 
-====Add a member to a group
+==== Add a member to a group
 
 
         
@@ -9454,10 +7131,7 @@ POST identity/groups/{groupId}/members
 ----
 
 
-      
-
-
-          .Add a member to a group - URL parameters
+.Add a member to a group - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -9467,23 +7141,17 @@ POST identity/groups/{groupId}/members
 
 
 
-      
+*Body JSON:*
 
-
-         *Body JSON:*
-           
+[source,json,linenums]           
 ----
-
 {
    "userId":"kermit"
 }
 ----
 
 
-       
-
-
-          .Add a member to a group - Response codes
+.Add a member to a group - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9495,14 +7163,10 @@ POST identity/groups/{groupId}/members
 |===============
 
 
+*Response Body:*
 
-        
-
-
-         *Response Body:*
-           
+[source,json,linenums]           
 ----
-
 {
    "userId":"kermit",
    "groupId":"sales",
@@ -9511,23 +7175,14 @@ POST identity/groups/{groupId}/members
 ----
 
 
-       
+==== Delete a member from a group
 
-
-
-====Delete a member from a group
-
-
-        
+   
 ----
 DELETE identity/groups/{groupId}/members/{userId}
 ----
 
-
-      
-
-
-          .Delete a member from a group - URL parameters
+.Delete a member from a group - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -9538,10 +7193,7 @@ DELETE identity/groups/{groupId}/members/{userId}
 
 
 
-      
-
-
-          .Delete a member from a group - Response codes
+.Delete a member from a group - Response codes
 [options="header"]
 |===============
 |Response code|Description
@@ -9551,14 +7203,10 @@ DELETE identity/groups/{groupId}/members/{userId}
 |===============
 
 
+*Response Body:*
 
-        
-
-
-         *Response Body:*
-           
+[source,json,linenums]           
 ----
-
 {
    "userId":"kermit",
    "groupId":"sales",
