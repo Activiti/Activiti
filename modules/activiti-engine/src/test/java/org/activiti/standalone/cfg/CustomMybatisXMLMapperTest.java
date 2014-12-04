@@ -33,6 +33,13 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     
     assertEquals("2", task.getName());
     
+    // test default query as well
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(5, tasks.size());
+    
+    task = taskService.createTaskQuery().taskName("2").singleResult();
+    assertEquals("2", task.getName());
+    
     // Cleanup
     deleteTasks(taskService.createTaskQuery().list());
   }
@@ -65,7 +72,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     }
     createTask("Owned task", "kermit", null, 0);
     
-    CommandExecutor commandExecutor = ((ManagementServiceImpl)managementService).getCommandExecutor();
+    CommandExecutor commandExecutor = ((ManagementServiceImpl) managementService).getCommandExecutor();
     List<Task> tasks = new CustomTaskQuery(commandExecutor).unOwned().list();
     
     assertEquals(5, tasks.size());
@@ -84,7 +91,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
     }
     createTask("Owned task", "kermit", null, 0);
     
-    CommandExecutor commandExecutor = ((ManagementServiceImpl)managementService).getCommandExecutor();
+    CommandExecutor commandExecutor = ((ManagementServiceImpl) managementService).getCommandExecutor();
     Task task = new CustomTaskQuery(commandExecutor).taskOwner("kermit").singleResult();
     
     assertEquals("kermit", task.getOwner());
@@ -100,7 +107,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       createTask(i + "", null, null, 0);
     }
     
-    CommandExecutor commandExecutor = ((ManagementServiceImpl)managementService).getCommandExecutor();
+    CommandExecutor commandExecutor = ((ManagementServiceImpl) managementService).getCommandExecutor();
     List<Task> tasks = new CustomTaskQuery(commandExecutor).listPage(0, 10);
     
     assertEquals(10, tasks.size());
