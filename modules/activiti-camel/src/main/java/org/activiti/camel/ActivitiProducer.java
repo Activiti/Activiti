@@ -85,6 +85,7 @@ public class ActivitiProducer extends DefaultProducer {
           .processDefinitionKey(processKey)
           .processInstanceId(processInstanceId)
           .activityId(activity).singleResult();
+       
        try {
          Thread.sleep(timeResolution);
        } catch (InterruptedException e) {

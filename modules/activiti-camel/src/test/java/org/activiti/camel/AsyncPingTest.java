@@ -29,13 +29,14 @@ public class AsyncPingTest extends SpringActivitiTestCase {
    protected RuntimeService runtimeService;
    
    public void  setUp() throws Exception {
-	   camelContext.addRoutes(new RouteBuilder() {
+     camelContext.addRoutes(new RouteBuilder() {
 
        @Override
        public void configure() throws Exception {
-    	   from("activiti:asyncPingProcess:serviceAsyncPing").to("activiti:asyncPingProcess:receiveAsyncPing");    	   
-       }
-	   });
+    	   from("activiti:asyncPingProcess:serviceAsyncPing").to("seda:continueAsync");
+    	   from("seda:continueAsync").to("activiti:asyncPingProcess:receiveAsyncPing");
+		   }
+     });
    }
    
    public void tearDown() throws Exception {
@@ -54,7 +55,7 @@ public class AsyncPingTest extends SpringActivitiTestCase {
     List<Execution> executionList = runtimeService.createExecutionQuery().list();
     Assert.assertEquals(1, executionList.size());
 
-    waitForJobExecutorToProcessAllJobs( 3000, 100);
+    managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId());
     Thread.sleep(1500);
     
     executionList = runtimeService.createExecutionQuery().list();

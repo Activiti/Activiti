@@ -12,7 +12,4 @@
     
     <camelContext id="camelContext" xmlns="http://camel.apache.org/schema/spring" />
        
-    
-
-
 </beans>

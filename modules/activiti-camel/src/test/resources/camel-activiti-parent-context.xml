@@ -28,6 +28,9 @@
         <property name="transactionManager" ref="transactionManager"/>
         <property name="databaseSchemaUpdate" value="true"/>
         <property name="jobExecutorActivate" value="false"/>
+        <property name="asyncExecutor" ref="asyncExecutor" />
+        <property name="asyncExecutorEnabled" value="true" />
+        <property name="asyncExecutorActivate" value="false" />
     </bean>
 
     <bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
@@ -36,9 +39,13 @@
 
     <bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService"/>
     <bean id="identityService" factory-bean="processEngine" factory-method="getIdentityService"/>
+    <bean id="managementService" factory-bean="processEngine" factory-method="getManagementService"/>
     
+    <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
+        <property name="defaultAsyncJobAcquireWaitTimeInMillis" value="1000" />
+        <property name="defaultTimerJobAcquireWaitTimeInMillis" value="1000" />
+    </bean>
 
-    
     <bean id="sleepBean" class="org.activiti.camel.util.SleepBean"/>
 
 </beans>
