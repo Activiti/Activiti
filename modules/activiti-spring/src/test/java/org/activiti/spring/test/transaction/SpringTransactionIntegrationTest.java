@@ -13,15 +13,15 @@
 
 package org.activiti.spring.test.transaction;
 
-import org.activiti.engine.ActivitiException;
+import javax.sql.DataSource;
+
+import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
-
-import javax.sql.DataSource;
 
 
 /**
@@ -80,7 +80,7 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
         try {
             deployBean.deployProcesses();
             fail();
-        } catch (ActivitiException e) {
+        } catch (XMLException e) {
             // Parse exception should happen
         }
         assertEquals(0, repositoryService.createProcessDefinitionQuery().count());
