@@ -12,7 +12,7 @@ Activiti comes with an Eclipse plugin, the Activiti Eclipse Designer, that can b
 
 The following installation instructions are verified on link:$$http://www.eclipse.org/downloads/$$[Eclipse Kepler and Indigo]. Note that Eclipse Helios is *NOT* supported.
 
-Go to *Help -&gt; Install New Software*. In the following panel, click on _Add_ button and fill in the following fields:
+Go to *Help -> Install New Software*. In the following panel, click on _Add_ button and fill in the following fields:
 
 * *Name:*Activiti BPMN 2.0 designer
 * *Location:*http://activiti.org/designer/update/
@@ -267,7 +267,7 @@ Wait until the build is successful. Refresh the project (use the project's conte
 
 [NOTE]
 ====
-You can of course also use the link:$$http://www.eclipse.org/m2e$$[m2eclipse] plugin and simply enable Maven dependency management from the context menu (right-click) of the project. Then choose +Maven+ &gt; +Update project configuration+ from the project's context menu. That should setup the source folders as well.
+You can of course also use the link:$$http://www.eclipse.org/m2e$$[m2eclipse] plugin and simply enable Maven dependency management from the context menu (right-click) of the project. Then choose +Maven+ > +Update project configuration+ from the project's context menu. That should setup the source folders as well.
 ====
 
 
@@ -281,7 +281,7 @@ That's it for the setup. Now you're ready to start creating customizations to Ac
 You might be wondering how you can add your extension to Activiti Designer so your customizations are applied. These are the steps to do just that:
 * Once you've created your extension JAR (for instance, by performing a mvn install in your project to build it with Maven), you need to transfer the extension to the computer where Activiti Designer is installed;
 * Store the extension somewhere on the hard drive where it will be able to remain and remember the location. _Note:_ the location must be outside the Eclipse workspace of Activiti Designer - storing the extension inside the workspace will lead to the user getting a popup error message and the extensions being unavailable;
-* Start Activiti Designer and from the menu, select +Window+ &gt; +Preferences+
+* Start Activiti Designer and from the menu, select +Window+ > +Preferences+
 * In the preferences screen, type +user+ as keyword. You should see an option to access the +User Libraries+ in Eclipse in the +Java+ section.
 
 image::images/designer.preferences.userlibraries.png[align="center"]
