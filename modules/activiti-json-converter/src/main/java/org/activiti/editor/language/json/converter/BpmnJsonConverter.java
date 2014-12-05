@@ -970,7 +970,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
       
       bpmnModel.addFlowGraphicInfoList(edgeId, graphicInfoList);
       // if sequence has a name, just add a label graphic info
-      if (!"".equals(edgeNode.get("properties").get("name"))) {
+      String flowName = JsonConverterUtil.getPropertyValueAsString("name", edgeNode);
+      if (StringUtils.isNotEmpty(flowName)) {
         bpmnModel.addLabelGraphicInfo(edgeId, createGraphicInfo(0D, 0D));
       }
     }
