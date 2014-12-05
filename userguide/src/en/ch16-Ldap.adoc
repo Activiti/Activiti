@@ -102,14 +102,14 @@ Following properties can be set on ++org.activiti.ldap.LDAPConfigurator++:
                             See for example http://docs.oracle.com/javase/tutorial/jndi/ldap/jndi.html for custom
                             properties. Such properties are for example to configure connection pooling, specific
                             security settings, etc. All the provided parameters will be provided when creating a 
-                            connection to the LDAP system.|Map&lt;String, String&gt;|
+                            connection to the LDAP system.|Map<String, String>|
 |baseDn|The base 'distinguished name' (DN) from which the searches for users and groups are started|String|
 |userBaseDn|The base 'distinguished name' (DN) from which the searches for users are started. If not provided, baseDn (see above) will be used|String|
 |groupBaseDn|The base 'distinguished name' (DN) from which the searches for groups are started. If not provided, baseDn (see above) will be used|String|
 |searchTimeLimit|The timeout that is used when doing a search in LDAP in milliseconds|long|one hour
 |queryUserByUserId|
                             The query that is executed when searching for a user by userId. 
-                            For example: (&amp;(objectClass=inetOrgPerson)(uid={0}))
+                            For example: (&(objectClass=inetOrgPerson)(uid={0}))
                             Here, all the objects in LDAP with the class 'inetOrgPerson'
                             and who have the matching 'uid' attribute value will be returned.
                             As shown in the example, the user id is injected by using
@@ -119,7 +119,7 @@ Following properties can be set on ++org.activiti.ldap.LDAPConfigurator++:
                             |string|
 |queryUserByFullNameLike|
                             The query that is executed when searching for a user by full name. 
-                            For example: (&amp; (objectClass=inetOrgPerson) (|({0}=*{1}*)({2}=*{3}*)) )
+                            For example: (& (objectClass=inetOrgPerson) (|({0}=*{1}*)({2}=*{3}*)) )
                             Here, all the objects in LDAP with the class 'inetOrgPerson'
                             and who have the matching first name and last name values will be returned.
                             Note that {0} injects the firstNameAttribute (as defined above), {1} and {3} the search text
@@ -128,7 +128,7 @@ Following properties can be set on ++org.activiti.ldap.LDAPConfigurator++:
                             LDAPQueryBuilder, which allows for more customization than only the  query.
                             |string|
 |queryGroupsForUser|The query that is executed when searching for the groups of a specific user.
-                            For example: (&amp;(objectClass=groupOfUniqueNames)(uniqueMember={0}))
+                            For example: (&(objectClass=groupOfUniqueNames)(uniqueMember={0}))
                             Here, all the objects in LDAP with the class 'groupOfUniqueNames'
                             and where the provided DN (matching a DN for a user) is a 'uniqueMember' are returned.
                             As shown in the example, the user id is injected by using {0}

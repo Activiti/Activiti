@@ -22,7 +22,7 @@ This introduction is written under the assumption you are using the link:$$http:
 
 ====
 
-Create a new XML file (__right-click on any project and select New-&gt;Other-&gt;XML-XML File__) and give it a name. Make sure that the file *ends with .bpmn20.xml or .bpmn*, since otherwise the engine won't pick up this file for deployment.
+Create a new XML file (__right-click on any project and select New->Other->XML-XML File__) and give it a name. Make sure that the file *ends with .bpmn20.xml or .bpmn*, since otherwise the engine won't pick up this file for deployment.
 
 image::images/new.bpmn.procdef.png[align="center"]
 

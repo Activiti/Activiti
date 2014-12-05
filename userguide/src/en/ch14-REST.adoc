@@ -3295,7 +3295,7 @@ DELETE runtime/tasks/{taskId}?cascadeHistory={cascadeHistory}&deleteReason={dele
 ----
 
 
-.&gt;Delete a task - URL parameters
+.>Delete a task - URL parameters
 [options="header"]
 |===============
 |Parameter|Required|Value|Description
@@ -3306,7 +3306,7 @@ DELETE runtime/tasks/{taskId}?cascadeHistory={cascadeHistory}&deleteReason={dele
 |===============
 
 
-.&gt;Delete a task - Response codes
+.>Delete a task - Response codes
 [options="header"]
 |===============
 |Response code|Description

@@ -116,7 +116,7 @@ The data source that is constructed based on the provided JDBC properties will h
 * *jdbcMaxActiveConnections*: The number of active connections that the connection pool at maximum at any time can contain. Default is 10.
 * *jdbcMaxIdleConnections*: The number of idle connections that the connection pool at maximum at any time can contain.
 * *jdbcMaxCheckoutTime*: The amount of time in milliseconds a connection can be 'checked out' from the connection pool before it is forcefully returned. Default is 20000 (20 seconds).
-* *jdbcMaxWaitTime*: This is a low level setting that gives the pool a chance to print a log status and re-attempt the acquisition of a connection in the case that it&rsquo;s taking unusually long (to avoid failing silently forever if the pool is misconfigured) Default is 20000 (20 seconds).
+* *jdbcMaxWaitTime*: This is a low level setting that gives the pool a chance to print a log status and re-attempt the acquisition of a connection in the case that it is taking unusually long (to avoid failing silently forever if the pool is misconfigured) Default is 20000 (20 seconds).
 
 Example database configuration:
 
@@ -311,7 +311,7 @@ Where __db__ is any of the <<supporteddatabases,supported databases>> and __type
 
 Concretely, the following applies for MySQL version
 
-* *&lt;5.6:* No millisecond precision available. DDL files available (look for files containing __mysql55__). Auto creation/update will work out of the box.
+* *<5.6:* No millisecond precision available. DDL files available (look for files containing __mysql55__). Auto creation/update will work out of the box.
 * *5.6.0 - 5.6.3:* No millisecond precision available. Auto creation/update will NOT work. It is advised to upgrade to a newer database version anyway. DDL files for _mysql 5.5_ could be used if really needed.
 * *5.6.4+:* Millisecond precision available. DDL files available (default file containing __mysql__). Auto creation/update works out of the box.
 

@@ -450,7 +450,7 @@ If we now run the unit test in _debug_ mode (right-click in test class, select '
 
 image::images/api.test.debug.view.png[align="center"]
 
-To inspect the Activiti data, open up the _'Display'_ window (if this window isn't there, open Window-&gt;Show View-&gt;Other and select _Display_.) and type (code completion is available) +org.h2.tools.Server.createWebServer("-web").start()+
+To inspect the Activiti data, open up the _'Display'_ window (if this window isn't there, open Window->Show View->Other and select _Display_.) and type (code completion is available) +org.h2.tools.Server.createWebServer("-web").start()+
 
 image::images/api.test.debug.start.h2.server.png[align="center"]
 
