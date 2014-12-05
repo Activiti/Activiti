@@ -900,21 +900,21 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         
         Collection<Point2D> intersections = eventCircle.intersections(firstLine);
         Point2D intersection = intersections.iterator().next();
-        graphicInfoList.add(createGraphicInfo(intersection.getX(), intersection.getY()));
+        graphicInfoList.add(createGraphicInfo(intersection.x(), intersection.y()));
       
       } else if (DI_RECTANGLES.contains(sourceRefStencilId)) {
         Polyline2D rectangle = createRectangle(sourceInfo);
         
         Collection<Point2D> intersections = rectangle.intersections(firstLine);
         Point2D intersection = intersections.iterator().next();
-        graphicInfoList.add(createGraphicInfo(intersection.getX(), intersection.getY()));
+        graphicInfoList.add(createGraphicInfo(intersection.x(), intersection.y()));
       
       } else if (DI_GATEWAY.contains(sourceRefStencilId)) {
         Polyline2D gatewayRectangle = createGateway(sourceInfo);
         
         Collection<Point2D> intersections = gatewayRectangle.intersections(firstLine);
         Point2D intersection = intersections.iterator().next();
-        graphicInfoList.add(createGraphicInfo(intersection.getX(), intersection.getY()));
+        graphicInfoList.add(createGraphicInfo(intersection.x(), intersection.y()));
       }
       
       Line2D lastLine = null;
@@ -946,7 +946,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         
         Collection<Point2D> intersections = rectangle.intersections(lastLine);
         Point2D intersection = intersections.iterator().next();
-        graphicInfoList.add(createGraphicInfo(intersection.getX(), intersection.getY()));
+        graphicInfoList.add(createGraphicInfo(intersection.x(), intersection.y()));
         
       } else if (DI_CIRCLES.contains(targetRefStencilId)) {
         
@@ -958,17 +958,21 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
         
         Collection<Point2D> intersections = eventCircle.intersections(lastLine);
         Point2D intersection = intersections.iterator().next();
-        graphicInfoList.add(createGraphicInfo(intersection.getX(), intersection.getY()));
+        graphicInfoList.add(createGraphicInfo(intersection.x(), intersection.y()));
         
       } else if (DI_GATEWAY.contains(targetRefStencilId)) {
         Polyline2D gatewayRectangle = createGateway(targetInfo);
         
         Collection<Point2D> intersections = gatewayRectangle.intersections(lastLine);
         Point2D intersection = intersections.iterator().next();
-        graphicInfoList.add(createGraphicInfo(intersection.getX(), intersection.getY()));
+        graphicInfoList.add(createGraphicInfo(intersection.x(), intersection.y()));
       }
       
       bpmnModel.addFlowGraphicInfoList(edgeId, graphicInfoList);
+      // if sequence has a name, just add a label graphic info
+      if (!"".equals(edgeNode.get("properties").get("name"))) {
+        bpmnModel.addLabelGraphicInfo(edgeId, createGraphicInfo(0D, 0D));
+      }
     }
   }
   
