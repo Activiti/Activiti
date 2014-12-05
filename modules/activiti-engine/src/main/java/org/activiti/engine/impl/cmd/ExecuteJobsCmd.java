@@ -75,6 +75,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     if (jobExecutorContext != null) { // if null, then we are not called by the job executor     
       jobExecutorContext.setCurrentJob(job);
     }
+    
     FailedJobListener failedJobListener = null;
     try {
       // When transaction is rolled back, decrement retries
