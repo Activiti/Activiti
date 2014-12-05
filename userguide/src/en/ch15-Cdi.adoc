@@ -287,6 +287,10 @@ This observer would be notified of all events. If we want to restrict the set of
 * ++@StartActivity++: restricts the set of events by a certain activity. For example:  +@Observes @StartActivity("shipGoods") BusinessProcessEvent evt+ is invoke whenever an activity with the  id "shipGoods" is entered. 	  		
 * ++@EndActivity++: restricts the set of events by a certain activity. For example:  +@Observes @EndActivity("shipGoods") BusinessProcessEvent evt+ is invoke whenever an activity with the  id "shipGoods" is left. 	  		
 * ++@TakeTransition++: restricts the set of events by a certain transition.
+* ++@CreateTask++: restricts the set of events by a certain task's creation.
+* ++@DeleteTask++: restricts the set of events by a certain task's deletion.
+* ++@AssignTask++: restricts the set of events by a certain task's assignment.
+* ++@CompleteTask++: restricts the set of events by a certain task's completion.
 	  		
 The qualifiers named above can be combined freely. For example, in order to receive all events generated when  leaving the "shipGoods" activity in the "shipmentProcess", we could write the following observer method:
 
