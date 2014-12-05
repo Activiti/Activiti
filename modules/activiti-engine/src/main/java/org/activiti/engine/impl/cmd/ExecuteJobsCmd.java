@@ -23,7 +23,6 @@ import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.jobexecutor.FailedJobListener;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -76,8 +75,15 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     if (jobExecutorContext != null) { // if null, then we are not called by the job executor     
       jobExecutorContext.setCurrentJob(job);
     }
-    
+    FailedJobListener failedJobListener = null;
     try {
+      // When transaction is rolled back, decrement retries
+      failedJobListener = new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), jobId);
+      commandContext.getTransactionContext().addTransactionListener(
+              TransactionState.ROLLED_BACK,
+              failedJobListener
+              );
+
       job.execute(commandContext);
       
       if (commandContext.getEventDispatcher().isEnabled()) {
@@ -86,14 +92,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
       }
       
     } catch (Throwable exception) {
-      // When transaction is rolled back, decrement retries
-      CommandExecutor commandExecutor = Context
-        .getProcessEngineConfiguration()
-        .getCommandExecutor();
-      
-      commandContext.getTransactionContext().addTransactionListener(
-        TransactionState.ROLLED_BACK, 
-        new FailedJobListener(commandExecutor, jobId, exception));
+      failedJobListener.setException(exception);
       
       // Dispatch an event, indicating job execution failed in a try-catch block, to prevent the original
       // exception to be swallowed
