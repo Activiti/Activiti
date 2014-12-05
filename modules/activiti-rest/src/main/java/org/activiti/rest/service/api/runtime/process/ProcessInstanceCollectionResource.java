@@ -178,8 +178,6 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       
       response.setStatus(HttpStatus.CREATED.value());
       
-      String serverRootUrl = httpRequest.getRequestURL().toString().replace("/runtime/process-instances", "");
-      
       //Added by Ryan Johnston
       if (request.getReturnVariables()) {
         Map<String, Object> runtimeVariableMap = null;
