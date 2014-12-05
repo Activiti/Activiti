@@ -76,8 +76,8 @@ import org.activiti.image.ProcessDiagramGenerator;
  */
 public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
 
-  protected final Map<Class<? extends BaseElement>, ActivityDrawInstruction> activityDrawInstructions = new HashMap<Class<? extends BaseElement>, ActivityDrawInstruction>();
-  protected final Map<Class<? extends BaseElement>, ArtifactDrawInstruction> artifactDrawInstructions = new HashMap<Class<? extends BaseElement>, ArtifactDrawInstruction>();
+  protected Map<Class<? extends BaseElement>, ActivityDrawInstruction> activityDrawInstructions = new HashMap<Class<? extends BaseElement>, ActivityDrawInstruction>();
+  protected Map<Class<? extends BaseElement>, ArtifactDrawInstruction> artifactDrawInstructions = new HashMap<Class<? extends BaseElement>, ArtifactDrawInstruction>();
   
   public DefaultProcessDiagramGenerator() {
     this(1.0);
@@ -873,8 +873,28 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
     }
     return flowNodes;
   }
+  
+  public Map<Class<? extends BaseElement>, ActivityDrawInstruction> getActivityDrawInstructions() {
+		return activityDrawInstructions;
+	}
 
-  protected interface ActivityDrawInstruction {
+	public void setActivityDrawInstructions(
+	    Map<Class<? extends BaseElement>, ActivityDrawInstruction> activityDrawInstructions) {
+		this.activityDrawInstructions = activityDrawInstructions;
+	}
+
+	public Map<Class<? extends BaseElement>, ArtifactDrawInstruction> getArtifactDrawInstructions() {
+		return artifactDrawInstructions;
+	}
+
+	public void setArtifactDrawInstructions(
+	    Map<Class<? extends BaseElement>, ArtifactDrawInstruction> artifactDrawInstructions) {
+		this.artifactDrawInstructions = artifactDrawInstructions;
+	}
+
+
+
+	protected interface ActivityDrawInstruction {
     void draw(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, FlowNode flowNode);
   }
 
