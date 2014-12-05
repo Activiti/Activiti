@@ -1,6 +1,6 @@
 package org.activiti.engine.test.api.repository;
 
-import org.activiti.engine.ActivitiException;
+import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -43,9 +43,8 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
         .deploy()
         .getId();
       fail();
-    } catch (ActivitiException e) {
-      e.printStackTrace();
-      assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getCause().getMessage());
+    } catch (XMLException e) {
+      // expected exception
     }
     
   }
@@ -57,9 +56,8 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
             .deploy()
             .getId();
       fail();
-    } catch (ActivitiException e) {
-      e.printStackTrace();
-      assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getCause().getMessage());
+    } catch (XMLException e) {
+      // expected exception
     }
   }
   

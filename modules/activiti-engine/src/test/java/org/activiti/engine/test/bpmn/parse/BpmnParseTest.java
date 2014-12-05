@@ -13,9 +13,11 @@
 
 package org.activiti.engine.test.bpmn.parse;
 
+import java.util.List;
+
+import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -29,8 +31,6 @@ import org.activiti.engine.impl.test.TestHelper;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.test.Deployment;
 
-import java.util.List;
-
 
 /**
  * 
@@ -43,8 +43,8 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
       String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testInvalidProcessDefinition");
       repositoryService.createDeployment().name(resource).addClasspathResource(resource).deploy();
       fail();
-    } catch (ActivitiException e) {
-      assertTextPresent("Could not validate XML with BPMN 2.0 XSD", e.getCause().getMessage());
+    } catch (XMLException e) {
+      // expected exception
     }
   }
   

@@ -142,7 +142,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    if (!((ExecutionEntity)execution).getTasks().isEmpty())
+    if (!((ExecutionEntity) execution).getTasks().isEmpty())
       throw new ActivitiException("UserTask should not be signalled before complete");
     leave(execution);
   }
@@ -150,19 +150,29 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   @SuppressWarnings({ "unchecked", "rawtypes" })
   protected void handleAssignments(TaskEntity task, ActivityExecution execution) {
     if (taskDefinition.getAssigneeExpression() != null) {
-      task.setAssignee((String) taskDefinition.getAssigneeExpression().getValue(execution), true, false);
+      Object assigneeExpressionValue = taskDefinition.getAssigneeExpression().getValue(execution);
+      String assigneeValue = null;
+      if (assigneeExpressionValue != null) {
+        assigneeValue = assigneeExpressionValue.toString();
+      }
+      task.setAssignee(assigneeValue, true, false);
     }
     
     if (taskDefinition.getOwnerExpression() != null) {
-      task.setOwner((String) taskDefinition.getOwnerExpression().getValue(execution));
+      Object ownerExpressionValue = taskDefinition.getOwnerExpression().getValue(execution);
+      String ownerValue = null;
+      if (ownerExpressionValue != null) {
+        ownerValue = ownerExpressionValue.toString();
+      }
+      task.setOwner(ownerValue);
     }
 
     if (!taskDefinition.getCandidateGroupIdExpressions().isEmpty()) {
       for (Expression groupIdExpr : taskDefinition.getCandidateGroupIdExpressions()) {
         Object value = groupIdExpr.getValue(execution);
         if (value instanceof String) {
-          List<String> candiates = extractCandidates((String) value);
-          task.addCandidateGroups(candiates);
+          List<String> candidates = extractCandidates((String) value);
+          task.addCandidateGroups(candidates);
         } else if (value instanceof Collection) {
           task.addCandidateGroups((Collection) value);
         } else {

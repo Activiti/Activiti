@@ -1190,8 +1190,7 @@ in your subclass, BPMN-event throwing can be prevented. The classes involved are
               </row>
               <row>
                 <entry>PROCESS_CANCELLED</entry>
-                <entry>A process has been cancelled. Dispatched before the process instance is deleted from runtime. Process instance is cancelled by API call <literal>RuntimeService.deleteProcessInstance</entry>literal>.
-                </entry>
+                <entry>A process has been cancelled. Dispatched before the process instance is deleted from runtime. Process instance is cancelled by API call <literal>RuntimeService.deleteProcessInstance</literal></entry>
                 <entry>
                   <literal>org.activiti...ActivitiCancelledEvent</literal>
                 </entry>

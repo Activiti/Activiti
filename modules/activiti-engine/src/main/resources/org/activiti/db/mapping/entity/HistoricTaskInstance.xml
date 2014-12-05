@@ -262,7 +262,7 @@
     <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null || processInstanceBusinessKeyLikeIgnoreCase != null || (orQueryObject != null &amp;&amp; (orQueryObject.processFinished || orQueryObject.processUnfinished || orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null))">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
-    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null))">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0) || (processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null || (orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0) || (orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0)))">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
     <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
@@ -311,6 +311,20 @@
       </if>
       <if test="processDefinitionNameLike != null">
         and D.NAME_ like #{processDefinitionNameLike}
+      </if>
+      <if test="processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0">
+        and D.CATEGORY_ IN
+        <foreach item="processCategory" index="index" collection="processCategoryInList"
+                 open="(" separator="," close=")">
+          #{processCategory}
+        </foreach>
+      </if>
+      <if test="processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0">
+        and D.CATEGORY_ NOT IN
+        <foreach item="processCategory" index="index" collection="processCategoryNotInList"
+                 open="(" separator="," close=")">
+          #{processCategory}
+        </foreach>
       </if>
       <if test="deploymentId != null">
         and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
@@ -573,6 +587,20 @@
           </if>
           <if test="orQueryObject.processDefinitionNameLike != null">
             or D.NAME_ like #{orQueryObject.processDefinitionNameLike}
+          </if>
+          <if test="orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0">
+            or D.CATEGORY_ IN
+            <foreach item="processCategory" index="index" collection="orQueryObject.processCategoryInList"
+                     open="(" separator="," close=")">
+              #{processCategory}
+            </foreach>
+          </if>
+          <if test="orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0">
+            or D.CATEGORY_ NOT IN
+            <foreach item="processCategory" index="index" collection="orQueryObject.processCategoryNotInList"
+                     open="(" separator="," close=")">
+              #{processCategory}
+            </foreach>
           </if>
           <if test="orQueryObject.deploymentId != null">
             or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}

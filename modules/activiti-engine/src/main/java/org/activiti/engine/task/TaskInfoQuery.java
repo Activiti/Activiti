@@ -306,6 +306,26 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    * The syntax that should be used is the same as in SQL, eg. %activiti%.
    */
   T processDefinitionNameLike(String processDefinitionNameLike);
+
+  /**
+   * Only select tasks which are part of a process instance whose definition
+   * belongs to the category which is present in the given list.
+   *
+   * @throws ActivitiIllegalArgumentException
+   *   When passed category list is empty or <code>null</code> or contains <code>null String</code>.
+   * @param processCategoryInList
+   */
+  T processCategoryIn(List<String> processCategoryInList);
+
+  /**
+   * Only select tasks which are part of a process instance whose definition does not
+   * belong to the category which is present in the given list.
+   *
+   * @throws ActivitiIllegalArgumentException
+   *   When passed category list is empty or <code>null</code> or contains <code>null String</code>.
+   * @param processCategoryNotInList
+   */
+  T processCategoryNotIn(List<String> processCategoryNotInList);
   
   /**
    * Only select tasks which are part of a process instance which has the given

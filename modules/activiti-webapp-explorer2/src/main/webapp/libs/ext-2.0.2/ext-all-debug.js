@@ -32042,7 +32042,7 @@ Ext.grid.ColumnModel.defaultRenderer = function(value){
 	if(typeof value == "string" && value.length < 1){
 	    return "&#160;";
 	}
-	return value;
+	return Ext.util.Format.htmlEncode(value);
 };
 
 

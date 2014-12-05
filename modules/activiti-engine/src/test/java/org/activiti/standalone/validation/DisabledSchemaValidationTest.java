@@ -12,6 +12,7 @@
  */
 package org.activiti.standalone.validation;
 
+import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
@@ -60,8 +61,8 @@ public class DisabledSchemaValidationTest {
 				.addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml")
 				.deploy();
 			Assert.fail();
-		} catch (ActivitiException e) {
-			Assert.assertTrue("original message: " + e.getMessage(), e.getMessage().contains("Error parsing XML"));
+		} catch (XMLException e) {
+			// expected exception
 		}
 		
 		// Should fail with validation errors
@@ -72,7 +73,7 @@ public class DisabledSchemaValidationTest {
 				.deploy();
 			Assert.fail();
 		} catch (ActivitiException e) {
-			Assert.assertTrue("original message: " + e.getMessage(), e.getMessage().contains("Errors while parsing"));
+		  // expected exception
 		}
 		
 	}
