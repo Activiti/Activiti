@@ -30,6 +30,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.Event;
@@ -136,6 +137,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         if (throwEvent.getEventDefinitions() != null && !throwEvent.getEventDefinitions().isEmpty()) {
           if (throwEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
             processDiagramCanvas.drawThrowingSignalEvent(graphicInfo, scaleFactor);
+          } else if (throwEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+            processDiagramCanvas.drawThrowingCompensateEvent(graphicInfo, scaleFactor);
           } else {
             processDiagramCanvas.drawThrowingNoneEvent(graphicInfo, scaleFactor);
           }
@@ -296,8 +299,12 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
             
           } else if (boundaryEvent.getEventDefinitions().get(0) instanceof SignalEventDefinition) {
             processDiagramCanvas.drawCatchingSignalEvent(flowNode.getName(), graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);
+
           } else if (boundaryEvent.getEventDefinitions().get(0) instanceof MessageEventDefinition) {
             processDiagramCanvas.drawCatchingMessageEvent(flowNode.getName(), graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);  
+
+          } else if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+            processDiagramCanvas.drawCatchingCompensateEvent(graphicInfo, boundaryEvent.isCancelActivity(), scaleFactor);
           }
         }
         

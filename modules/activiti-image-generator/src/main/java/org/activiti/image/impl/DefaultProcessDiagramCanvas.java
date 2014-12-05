@@ -123,6 +123,8 @@ public class DefaultProcessDiagramCanvas {
   protected static BufferedImage CAMEL_TASK_IMAGE;
   
   protected static BufferedImage TIMER_IMAGE;
+  protected static BufferedImage COMPENSATE_THROW_IMAGE;
+  protected static BufferedImage COMPENSATE_CATCH_IMAGE;
   protected static BufferedImage ERROR_THROW_IMAGE;
   protected static BufferedImage ERROR_CATCH_IMAGE;
   protected static BufferedImage MESSAGE_THROW_IMAGE;
@@ -227,6 +229,8 @@ public class DefaultProcessDiagramCanvas {
       MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/muleTask.png", customClassLoader));
       
       TIMER_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/timer.png", customClassLoader));
+      COMPENSATE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/compensate-throw.png", customClassLoader));
+      COMPENSATE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/compensate.png", customClassLoader));
       ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error-throw.png", customClassLoader));
       ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error.png", customClassLoader));
       MESSAGE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/message-throw.png", customClassLoader));
@@ -423,6 +427,15 @@ public class DefaultProcessDiagramCanvas {
     }
   }
 
+  public void drawCatchingCompensateEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingCompensateEvent(graphicInfo, isInterrupting, scaleFactor);
+    drawLabel(name, graphicInfo);
+  }
+
+  public void drawCatchingCompensateEvent(GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, isInterrupting, COMPENSATE_CATCH_IMAGE, "compensate", scaleFactor);
+  }
+
   public void drawCatchingTimerEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
     drawCatchingTimerEvent(graphicInfo, isInterrupting, scaleFactor);
     drawLabel(name, graphicInfo);
@@ -459,6 +472,10 @@ public class DefaultProcessDiagramCanvas {
     drawLabel(name, graphicInfo);
   }
   
+  public void drawThrowingCompensateEvent(GraphicInfo graphicInfo, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, true, COMPENSATE_THROW_IMAGE, "compensate", scaleFactor);
+  }
+
   public void drawThrowingSignalEvent(GraphicInfo graphicInfo, double scaleFactor) {
     drawCatchingEvent(graphicInfo, true, SIGNAL_THROW_IMAGE, "signal", scaleFactor);
   }
