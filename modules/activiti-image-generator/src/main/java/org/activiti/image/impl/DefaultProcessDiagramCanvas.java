@@ -788,8 +788,12 @@ public class DefaultProcessDiagramCanvas {
   
 
   protected String fitTextToWidth(String original, int width, boolean forceAdd) {
+    if (fontMetrics.stringWidth(original) <= width && !forceAdd) {
+      // if it fits already and we don't need to add "...", return original
+      return original;
+    }
+    
     String text = original;
-
     // remove length for "..."
     int maxWidth = width - 10;
 
@@ -797,7 +801,7 @@ public class DefaultProcessDiagramCanvas {
       text = text.substring(0, text.length() - 1);
     }
 
-    if (!text.equals(original)) {
+    if (!text.equals(original) || forceAdd) {
       text = text + "...";
     }
 
