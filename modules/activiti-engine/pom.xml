@@ -73,7 +73,11 @@
       <artifactId>geronimo-jta_1.1_spec</artifactId>
       <scope>provided</scope>
     </dependency>
-    
+    <dependency>
+    	<groupId>org.jboss.spec.javax.enterprise.concurrent</groupId>
+  		<artifactId>jboss-concurrency-api_1.0_spec</artifactId>
+  		<scope>provided</scope>
+  	</dependency>
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>
