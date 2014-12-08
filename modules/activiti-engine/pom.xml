@@ -177,6 +177,7 @@
       org.drools*;resolution:=optional,
       com.fasterxml*;resolution:=optional,
       javax.transaction;resolution:=optional,
+      javax.enterprise.concurrent;resolution:=optional,
     </activiti.osgi.import.additional>
   </properties>
 
