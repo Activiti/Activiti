@@ -166,7 +166,7 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
 
   protected void writeCustomIdentities(UserTask userTask,String identityType, Set<String> users, Set<String> groups, XMLStreamWriter xtw) throws Exception {
 	  xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ELEMENT_CUSTOM_RESOURCE, ACTIVITI_EXTENSIONS_NAMESPACE);
-	  xtw.writeAttribute(ACTIVITI_EXTENSIONS_PREFIX, ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME, identityType);
+	  writeDefaultAttribute(ATTRIBUTE_NAME, identityType, xtw);
       
     List<String> identityList = new ArrayList<String>();
     
@@ -265,7 +265,13 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
     public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
 	    String identityLinkType = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_NAME);
 	    
-	    if(identityLinkType == null) return;
+	    // the attribute value may be unqualified
+      if (identityLinkType == null)
+      {
+        identityLinkType = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
+      }
+	    
+	    if (identityLinkType == null) return;
 	    
 	    String resourceElement = XMLStreamReaderUtil.moveDown(xtr);
 	      if (StringUtils.isNotEmpty(resourceElement) && ELEMENT_RESOURCE_ASSIGNMENT.equals(resourceElement)) {
