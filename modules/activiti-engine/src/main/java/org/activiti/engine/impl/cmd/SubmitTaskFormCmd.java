@@ -18,6 +18,7 @@ import java.util.Map;
 import org.activiti.engine.impl.form.TaskFormHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -40,6 +41,10 @@ public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
   }
   
   protected Object execute(CommandContext commandContext, TaskEntity task) {
+    String authenticatedUserId = Authentication.getAuthenticatedUserId();
+    if (!StringUtils.equals(authenticatedUserId, task.getAssignee())) {
+      throw new ActivitiException("Task '" + taskId + "' is already assigned to someone else.");
+    }
     commandContext.getHistoryManager()
       .reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
     
