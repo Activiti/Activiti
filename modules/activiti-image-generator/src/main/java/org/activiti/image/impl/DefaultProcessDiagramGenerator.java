@@ -102,6 +102,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
             processDiagramCanvas.drawSignalStartEvent(graphicInfo, scaleFactor);
           } else if (eventDefinition instanceof MessageEventDefinition) {
             processDiagramCanvas.drawMessageStartEvent(graphicInfo, scaleFactor);
+          } else {
+            processDiagramCanvas.drawNoneStartEvent(graphicInfo);
           }
         } else {
           processDiagramCanvas.drawNoneStartEvent(graphicInfo);
