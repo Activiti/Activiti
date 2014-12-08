@@ -366,7 +366,7 @@ public class ExecutionImpl implements
   public String getProcessInstanceId() {
     return getProcessInstance().getId();
   }
-  
+
   public String getBusinessKey() {
     return getProcessInstance().getBusinessKey();
   }
@@ -374,7 +374,7 @@ public class ExecutionImpl implements
   public String getProcessBusinessKey() {
     return getProcessInstance().getBusinessKey();
   }
-  
+
   /** for setting the process instance, this setter must be used as subclasses can override */  
   public void setProcessInstance(InterpretableExecution processInstance) {
     this.processInstance = (ExecutionImpl) processInstance;
@@ -891,6 +891,6 @@ public class ExecutionImpl implements
   }
   
   public String getTenantId() {
-    return null; // Not implemented
+    return getProcessInstance().getTenantId();
   }
 }

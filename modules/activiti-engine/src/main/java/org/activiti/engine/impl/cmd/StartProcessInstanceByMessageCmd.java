@@ -36,9 +36,9 @@ import org.activiti.engine.runtime.ProcessInstance;
 public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance> {
 
   protected final String messageName;
+  protected final String tenantId;
   protected final String businessKey;
   protected final Map<String, Object> processVariables;
-  protected final String tenantId;
 
   public StartProcessInstanceByMessageCmd(String messageName, String businessKey, Map<String, Object> processVariables, String tenantId) {
     this.messageName = messageName;
@@ -46,7 +46,6 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
     this.processVariables = processVariables;
     this.tenantId = tenantId;
   }
-
   public ProcessInstance execute(CommandContext commandContext) {
     
     if(messageName == null) {
@@ -76,6 +75,10 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
   
     ActivityImpl startActivity = processDefinition.findActivity(messageEventSubscription.getActivityId());
     ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey, startActivity);
+
+    if (tenantId != null) {
+      processInstance.setTenantId(tenantId);
+    }
 
     if (processVariables != null) {
       processInstance.setVariables(processVariables);

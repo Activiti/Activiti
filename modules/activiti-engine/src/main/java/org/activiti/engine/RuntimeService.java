@@ -37,6 +37,7 @@ import org.activiti.engine.task.IdentityLinkType;
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Daniel Meyer
+ * @author Tim Stephenson
  */
 public interface RuntimeService {
 
