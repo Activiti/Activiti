@@ -14,11 +14,14 @@
 package org.activiti.engine;
 
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.cfg.BeansConfigurationHelper;
+import org.activiti.engine.impl.cfg.MailServerInfo;
 import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti.engine.impl.history.HistoryLevel;
@@ -112,6 +115,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected boolean useTLS = false;
   protected String mailServerDefaultFrom = "activiti@localhost";
   protected String mailSessionJndi;
+  protected Map<String,MailServerInfo> mailServers = new HashMap<String,MailServerInfo>();
+  protected Map<String, String> mailSessionsJndi = new HashMap<String, String>();
 
   protected String databaseType;
   protected String databaseSchemaUpdate = DB_SCHEMA_UPDATE_FALSE;
@@ -305,7 +310,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
     return this;
   }
 
-  public String getMailSesionJndi() {
+  public String getMailSessionJndi() {
     return mailSessionJndi;
   }
   
@@ -347,6 +352,32 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   
   public ProcessEngineConfiguration setMailServerDefaultFrom(String mailServerDefaultFrom) {
     this.mailServerDefaultFrom = mailServerDefaultFrom;
+    return this;
+  }
+  
+  public MailServerInfo getMailServer(String tenantId) {
+    return mailServers.get(tenantId);
+  }
+  
+  public Map<String, MailServerInfo> getMailServers() {
+    return mailServers;
+  }
+  
+  public ProcessEngineConfiguration setMailServers(Map<String, MailServerInfo> mailServers) {
+    this.mailServers.putAll(mailServers);
+    return this;
+  }
+  
+  public String getMailSessionJndi(String tenantId) {
+    return mailSessionsJndi.get(tenantId);
+  }
+  
+  public Map<String, String> getMailSessionsJndi() {
+    return mailSessionsJndi;
+  }
+  
+  public ProcessEngineConfiguration setMailSessionsJndi(Map<String, String> mailSessionsJndi) {
+    this.mailSessionsJndi.putAll(mailSessionsJndi);
     return this;
   }
   

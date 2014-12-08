@@ -24,6 +24,8 @@ public class MailServerInfo {
   protected int mailServerPort;
   protected String mailServerUsername;
   protected String mailServerPassword;
+  protected boolean mailServerUseSSL = false;
+  protected boolean mailServerUseTLS = false;
   
   public String getMailServerDefaultFrom() {
     return mailServerDefaultFrom;
@@ -63,5 +65,21 @@ public class MailServerInfo {
   
   public void setMailServerPassword(String mailServerPassword) {
     this.mailServerPassword = mailServerPassword;
+  }
+
+  public boolean isMailServerUseSSL() {
+    return mailServerUseSSL;
+  }
+
+  public void setMailServerUseSSL(boolean mailServerUseSSL) {
+    this.mailServerUseSSL = mailServerUseSSL;
+  }
+
+  public boolean isMailServerUseTLS() {
+    return mailServerUseTLS;
+  }
+
+  public void setMailServerUseTLS(boolean mailServerUseTLS) {
+    this.mailServerUseTLS = mailServerUseTLS;
   }
 }

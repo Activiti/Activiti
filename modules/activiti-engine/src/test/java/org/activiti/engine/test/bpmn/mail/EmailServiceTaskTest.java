@@ -35,6 +35,7 @@ import org.subethamail.wiser.WiserMessage;
 
 /**
  * @author Joram Barrez
+ * @author Tim Stephenson
  */
 public class EmailServiceTaskTest extends EmailTestCase {
   
@@ -49,6 +50,40 @@ public class EmailServiceTaskTest extends EmailTestCase {
     assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost",
             Arrays.asList("kermit@activiti.org"), null);
     assertProcessEnded(procId);
+  }
+  
+  public void testSimpleTextMailWhenMultiTenant() throws Exception {
+    String tenantId = "myEmailTenant";
+
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/mail/EmailSendTaskTest.testSimpleTextMail.bpmn20.xml").tenantId(tenantId).deploy();
+    String procId = runtimeService.startProcessInstanceByKeyAndTenantId("simpleTextOnly", tenantId).getId();
+
+    List<WiserMessage> messages = wiser.getMessages();
+    assertEquals(1, messages.size());
+
+    WiserMessage message = messages.get(0);
+    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@myTenant.com",
+        Arrays.asList("kermit@activiti.org"), null);
+    assertProcessEnded(procId);
+
+    repositoryService.deleteDeployment(deployment.getId(), true);
+  }
+
+  public void testSimpleTextMailForNonExistentTenant() throws Exception {
+    String tenantId = "nonExistentTenant";
+
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/mail/EmailSendTaskTest.testSimpleTextMail.bpmn20.xml").tenantId(tenantId).deploy();
+    String procId = runtimeService.startProcessInstanceByKeyAndTenantId("simpleTextOnly", tenantId).getId();
+    
+    List<WiserMessage> messages = wiser.getMessages();
+    assertEquals(1, messages.size());
+
+    WiserMessage message = messages.get(0);
+    assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost",
+        Arrays.asList("kermit@activiti.org"), null);
+    assertProcessEnded(procId);
+
+    repositoryService.deleteDeployment(deployment.getId(), true);
   }
   
   @Deployment

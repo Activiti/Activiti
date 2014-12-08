@@ -49,19 +49,19 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
 
   public ProcessInstance execute(CommandContext commandContext) {
     
-    if(messageName == null) {
+    if (messageName == null) {
       throw new ActivitiIllegalArgumentException("Cannot start process instance by message: message name is null");
     }
     
     MessageEventSubscriptionEntity messageEventSubscription = commandContext.getEventSubscriptionEntityManager()
-      .findMessageStartEventSubscriptionByName(messageName, tenantId);
+          .findMessageStartEventSubscriptionByName(messageName, tenantId);
     
-    if(messageEventSubscription == null) {
+    if (messageEventSubscription == null) {
       throw new ActivitiObjectNotFoundException("Cannot start process instance by message: no subscription to message with name '"+messageName+"' found.", MessageEventSubscriptionEntity.class);
     }
     
     String processDefinitionId = messageEventSubscription.getConfiguration();
-    if(processDefinitionId == null) {
+    if (processDefinitionId == null) {
       throw new ActivitiException("Cannot start process instance by message: subscription to message with name '"+messageName+"' is not a message start event.");
     }
         
@@ -71,7 +71,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
           
     ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
     if (processDefinition == null) {
-        throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
+      throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
     }
   
     ActivityImpl startActivity = processDefinition.findActivity(messageEventSubscription.getActivityId());
