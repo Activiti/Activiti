@@ -13,6 +13,12 @@
 
 package org.activiti.rest.service.api.engine;
 
+import java.util.Date;
+
+import org.activiti.rest.common.util.DateToStringSerializer;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 
 /**
  * @author Frederik Heremans
@@ -29,6 +35,8 @@ public class AttachmentResponse {
   private String processInstanceUrl;
   private String externalUrl;
   private String contentUrl;
+  @JsonSerialize(using = DateToStringSerializer.class, as=Date.class)
+  private Date time;
   
   public String getId() {
     return id;
@@ -108,5 +116,13 @@ public class AttachmentResponse {
   
   public void setContentUrl(String contentUrl) {
     this.contentUrl = contentUrl;
+  }
+
+  public Date getTime() {
+    return time;
+  }
+
+  public void setTime(Date time) {
+    this.time = time;
   }
 }
