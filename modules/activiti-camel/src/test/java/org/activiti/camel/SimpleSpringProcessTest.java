@@ -20,6 +20,7 @@ import java.util.Map;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
@@ -73,8 +74,11 @@ public class SimpleSpringProcessTest extends SpringActivitiTestCase {
     ProducerTemplate tpl = ctx.createProducerTemplate();
     service1.expectedBodiesReceived("ala");
 
-    String instanceId = (String) tpl.requestBody("direct:start", Collections.singletonMap("var1", "ala"));
-
+    Exchange exchange = ctx.getEndpoint("direct:start").createExchange();
+    exchange.getIn().setBody(Collections.singletonMap("var1", "ala"));
+    tpl.send("direct:start", exchange);
+    
+    String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
     tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
 
     assertProcessEnded(instanceId);
