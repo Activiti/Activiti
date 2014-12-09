@@ -47,7 +47,7 @@ public class ProcessEngineMvcEndpoint extends EndpointMvcAdapter {
         ProcessDiagramGenerator processDiagramGenerator = new DefaultProcessDiagramGenerator();
         BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinition.getId());
 
-        if (bpmnModel.getLocationMap().size() == 0) {
+        if (bpmnModel.getLocationMap().isEmpty()) {
             BpmnAutoLayout autoLayout = new BpmnAutoLayout(bpmnModel);
             autoLayout.execute();
         }

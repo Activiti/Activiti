@@ -53,7 +53,7 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
     
     if(value instanceof List<?>) {
       List<?> list = (List<?>) value;
-      if(list.size() > 0) {
+      if(!list.isEmpty()) {
         // We can only store the list if we are sure it's actually a list of JPA entities. In case the 
         // list is empty, we don't store it.
         canStore = true;
@@ -85,7 +85,7 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
       entityManagerSession.flush();
     }
     
-    if(value instanceof List<?> && ((List<?>) value).size() > 0) {
+    if(value instanceof List<?> && !((List<?>) value).isEmpty()) {
       List<?> list = (List<?>) value;
       List<String> ids = new ArrayList<String>();
       

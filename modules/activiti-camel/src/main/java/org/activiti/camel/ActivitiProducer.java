@@ -87,7 +87,7 @@ public class ActivitiProducer extends DefaultProducer {
     
     Map<String, Object> returnVars = getActivitiEndpoint().getReturnVarMap();
     
-    if (returnVars != null && returnVars.size() > 0) {
+    if (returnVars != null && !returnVars.isEmpty()) {
       
       List<HistoricVariableInstance> processVariables = historyService.createHistoricVariableInstanceQuery()
           .processInstanceId(pi.getProcessInstanceId()).list();

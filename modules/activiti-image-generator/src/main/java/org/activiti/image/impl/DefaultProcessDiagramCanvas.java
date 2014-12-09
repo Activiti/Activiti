@@ -1179,7 +1179,7 @@ public class DefaultProcessDiagramCanvas {
     Shape shapeFirst = createShape(sourceShapeType, sourceGraphicInfo);
     Shape shapeLast = createShape(targetShapeType, targetGraphicInfo);
 
-    if (graphicInfoList != null && graphicInfoList.size() > 0) {
+    if (graphicInfoList != null && !graphicInfoList.isEmpty()) {
       GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
       GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size()-1);
       if (shapeFirst != null) {
