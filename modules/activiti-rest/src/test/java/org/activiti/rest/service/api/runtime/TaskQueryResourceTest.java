@@ -65,6 +65,7 @@ public class TaskQueryResourceTest extends BaseSpringRestTestCase {
       adhocTask.setName("Name one");
       adhocTask.setDueDate(adhocTaskCreate.getTime());
       adhocTask.setPriority(100);
+      adhocTask.setFormKey("myForm.json");
       taskService.saveTask(adhocTask);
       taskService.addUserIdentityLink(adhocTask.getId(), "misspiggy", IdentityLinkType.PARTICIPANT);
 

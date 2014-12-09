@@ -71,6 +71,7 @@ public class TaskResourceTest extends BaseSpringRestTestCase {
     assertEquals(task.getId(), responseNode.get("id").asText());
     assertEquals(task.getAssignee(), responseNode.get("assignee").asText());
     assertEquals(task.getOwner(), responseNode.get("owner").asText());
+    assertEquals(task.getFormKey(), responseNode.get("formKey").asText());
     assertEquals(task.getDescription(), responseNode.get("description").asText());
     assertEquals(task.getName(), responseNode.get("name").asText());
     assertEquals(task.getDueDate(), getDateFromISOString(responseNode.get("dueDate").asText()));
