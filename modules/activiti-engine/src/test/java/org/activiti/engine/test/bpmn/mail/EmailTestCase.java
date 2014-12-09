@@ -13,16 +13,20 @@
 
 package org.activiti.engine.test.bpmn.mail;
 
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.subethamail.wiser.Wiser;
 
 
 /**
  * @author Joram Barrez
  */
-public abstract class EmailTestCase extends PluggableActivitiTestCase {
+public abstract class EmailTestCase extends ResourceActivitiTestCase {
   
   protected Wiser wiser;
+  
+  public EmailTestCase() {
+    super("activiti.cfg.xml");
+  }
   
   @Override
   protected void setUp() throws Exception {
