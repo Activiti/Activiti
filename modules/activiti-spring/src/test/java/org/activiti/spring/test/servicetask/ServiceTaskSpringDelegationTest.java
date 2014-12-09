@@ -12,6 +12,7 @@
  */
 package org.activiti.spring.test.servicetask;
 
+import org.activiti.engine.impl.test.JobTestHelper;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
@@ -34,7 +35,7 @@ public class ServiceTaskSpringDelegationTest extends SpringActivitiTestCase {
     @Deployment
     public void testAsyncDelegateExpression() throws Exception {
         ProcessInstance procInst = runtimeService.startProcessInstanceByKey("delegateExpressionToSpringBean");
-        assertTrue(areJobsAvailable());
+        assertTrue(JobTestHelper.areJobsAvailable(managementService));
         waitForJobExecutorToProcessAllJobs(5000, 500);
         Thread.sleep(1000);
         assertEquals("Activiti BPMN 2.0 process engine", runtimeService.getVariable(procInst.getId(), "myVar"));
@@ -50,7 +51,7 @@ public class ServiceTaskSpringDelegationTest extends SpringActivitiTestCase {
     @Deployment
     public void testAsyncMethodExpressionOnSpringBean() {
         ProcessInstance procInst = runtimeService.startProcessInstanceByKey("methodExpressionOnSpringBean");
-        assertTrue(areJobsAvailable());
+        assertTrue(JobTestHelper.areJobsAvailable(managementService));
         waitForJobExecutorToProcessAllJobs(5000, 500);
         assertEquals("ACTIVITI BPMN 2.0 PROCESS ENGINE", runtimeService.getVariable(procInst.getId(), "myVar"));
     }

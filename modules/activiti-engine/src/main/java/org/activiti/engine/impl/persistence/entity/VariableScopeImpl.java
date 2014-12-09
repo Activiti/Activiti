@@ -44,7 +44,6 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   
   protected Map<String, VariableInstanceEntity> variableInstances = null;
   
-  
   protected ELContext cachedElContext;
 
   protected String id = null;
@@ -54,7 +53,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   protected abstract void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance);
 
   protected void ensureVariableInstancesInitialized() {
-    if (variableInstances==null) {
+    if (variableInstances == null) {
       variableInstances = new HashMap<String, VariableInstanceEntity>();
       
       CommandContext commandContext = Context.getCommandContext();
@@ -169,10 +168,13 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return variableInstances.keySet();
   }
 
-  public Map<String,VariableInstanceEntity> getVariableInstances()
-  {
+  public Map<String, VariableInstanceEntity> getVariableInstances() {
     ensureVariableInstancesInitialized();
     return Collections.unmodifiableMap(variableInstances);
+  }
+  
+  public Map<String, VariableInstanceEntity> getRawVariableInstances() {
+    return variableInstances;
   }
   
   public void createVariablesLocal(Map<String, ? extends Object> variables) {
@@ -356,15 +358,15 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     
     VariableType newType = variableTypes.findVariableType(value);
     
-	 if ((variableInstance != null) && (!variableInstance.getType().equals(newType))) {
-		variableInstance.setValue(null);
-		variableInstance.setType(newType);
-		variableInstance.forceUpdate();
-		variableInstance.setValue(value);
-		VariableInstanceEntity.touch(variableInstance);
-	  } else {
-	    variableInstance.setValue(value);
-	  }
+    if ((variableInstance != null) && (!variableInstance.getType().equals(newType))) {
+      variableInstance.setValue(null);
+      variableInstance.setType(newType);
+      variableInstance.forceUpdate();
+      variableInstance.setValue(value);
+      VariableInstanceEntity.touch(variableInstance);
+    } else {
+      variableInstance.setValue(value);
+    }
 
     Context.getCommandContext().getHistoryManager()
       .recordHistoricDetailVariableCreate(variableInstance, sourceActivityExecution, isActivityIdUsedForDetails());
@@ -420,11 +422,11 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     this.id = id;
   }
 
-    public <T> T getVariable(String variableName, Class<T> variableClass){
-        return variableClass.cast(getVariable(variableName));
-    }
+  public <T> T getVariable(String variableName, Class<T> variableClass){
+    return variableClass.cast(getVariable(variableName));
+  }
 
-    public <T> T getVariableLocal(String variableName, Class<T> variableClass){
-        return variableClass.cast(getVariableLocal(variableName));
-    }
+  public <T> T getVariableLocal(String variableName, Class<T> variableClass){
+    return variableClass.cast(getVariableLocal(variableName));
+  }
 }

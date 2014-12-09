@@ -22,7 +22,23 @@
     <property name="asyncFailedJobWaitTime" value="1" />
     
     <!-- mail server configurations -->
-    <property name="mailServerPort" value="5025" />    
+    <property name="mailServerPort" value="5025" />
+    
+    <property name="mailServers">
+      <map>
+        <entry key="myEmailTenant">
+          <bean class="org.activiti.engine.cfg.MailServerInfo">
+            <property name="mailServerHost" value="localhost" />
+            <property name="mailServerPort" value="5025" />
+            <property name="mailServerUseSSL" value="false" />
+            <property name="mailServerUseTLS" value="false" />
+            <property name="mailServerDefaultFrom" value="activiti@myTenant.com" />
+            <property name="mailServerUsername" value="activiti@myTenant.com" />
+            <property name="mailServerPassword" value="password" />
+          </bean>
+        </entry>
+      </map>
+    </property>  
   </bean>
   
   <bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
