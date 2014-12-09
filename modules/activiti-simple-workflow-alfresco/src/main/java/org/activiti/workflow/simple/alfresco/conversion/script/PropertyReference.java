@@ -66,23 +66,23 @@ public class PropertyReference {
   }
 	
 	public String getUsernameReferenceExpression(String namespacePrefix) {
-		String qualifiedName = getQualifiedName(namespacePrefix);;
-		return MessageFormat.format(USERNAME_REFERENCE_EXPRESSION, getVariableName(qualifiedName));
+		String qualifiedName = getQualifiedName(namespacePrefix);
+    return MessageFormat.format(USERNAME_REFERENCE_EXPRESSION, getVariableName(qualifiedName));
 	}
 	
 	public String getGroupReferenceExpression(String namespacePrefix) {
-		String qualifiedName = getQualifiedName(namespacePrefix);;
-		return MessageFormat.format(GROUPNAME_REFERENCE_EXPRESSION, getVariableName(qualifiedName));
+		String qualifiedName = getQualifiedName(namespacePrefix);
+    return MessageFormat.format(GROUPNAME_REFERENCE_EXPRESSION, getVariableName(qualifiedName));
 	}
 	
 	public String getPropertyReferenceExpression(String namespacePrefix) {
-		String qualifiedName = getQualifiedName(namespacePrefix);;
-		return MessageFormat.format(REFERENCE_EXPRESSION, getVariableName(qualifiedName));
+		String qualifiedName = getQualifiedName(namespacePrefix);
+    return MessageFormat.format(REFERENCE_EXPRESSION, getVariableName(qualifiedName));
 	}
 	
 	public String getVariableReference(String namespacePrefix) {
-		String qualifiedName = getQualifiedName(namespacePrefix);;
-		return getVariableName(qualifiedName);
+		String qualifiedName = getQualifiedName(namespacePrefix);
+    return getVariableName(qualifiedName);
 	}
 	
 	public void validate(M2Model model) {
