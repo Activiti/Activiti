@@ -141,6 +141,9 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
           if (loopDef.isSequential() == false) {
             propertiesNode.put(PROPERTY_MULTIINSTANCE_SEQUENTIAL, PROPERTY_VALUE_NO);
           }
+          else {
+              propertiesNode.put(PROPERTY_MULTIINSTANCE_SEQUENTIAL, PROPERTY_VALUE_YES);
+          }
           if (StringUtils.isNotEmpty(loopDef.getLoopCardinality())) {
             propertiesNode.put(PROPERTY_MULTIINSTANCE_CARDINALITY, loopDef.getLoopCardinality());
           }
