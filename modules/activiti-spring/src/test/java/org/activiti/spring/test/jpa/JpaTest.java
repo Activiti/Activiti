@@ -4,7 +4,6 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
-import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.HashMap;

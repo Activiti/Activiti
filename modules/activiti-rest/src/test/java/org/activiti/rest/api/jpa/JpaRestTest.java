@@ -10,7 +10,6 @@ import org.activiti.rest.service.api.RestUrls;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpGet;
-import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
