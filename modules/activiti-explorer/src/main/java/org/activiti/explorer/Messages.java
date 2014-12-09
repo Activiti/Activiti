@@ -77,7 +77,7 @@ public interface Messages {
   String PROFILE_LOCATION = "profile.location";
   String PROFILE_CONTACT = "profile.contact";
   String PROFILE_EMAIL = "profile.email";
-  String PROFILE_PHONE = "profile.phone";;
+  String PROFILE_PHONE = "profile.phone";
   String PROFILE_TWITTER = "profile.twitter";
   String PROFILE_SKYPE = "profile.skype";
   String PROFILE_ACCOUNTS = "profile.accounts";
@@ -438,7 +438,7 @@ public interface Messages {
   
   String RELATED_CONTENT_TYPE_URL = "related.content.type.url";
   String RELATED_CONTENT_TYPE_URL_URL = "related.content.type.url.url";
-  String RELATED_CONTENT_TYPE_URL_URL_REQUIRED = "related.content.type.url.url.required";;
+  String RELATED_CONTENT_TYPE_URL_URL_REQUIRED = "related.content.type.url.url.required";
   String RELATED_CONTENT_TYPE_URL_HELP = "related.content.type.url.help";
   
   String RELATED_CONTENT_TYPE_FILE = "related.content.type.file";

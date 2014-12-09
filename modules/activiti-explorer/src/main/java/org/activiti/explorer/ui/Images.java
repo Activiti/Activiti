@@ -40,7 +40,7 @@ public class Images {
   public static final Resource MAIN_MENU_REPORTS = new ThemeResource("img/mm-reports.png");
   
   // Task
-  public static final Resource TASK_16 =  new ThemeResource("img/task-16.png");;
+  public static final Resource TASK_16 =  new ThemeResource("img/task-16.png");
   public static final Resource TASK_22 = new ThemeResource("img/task-22.png");
   public static final Resource TASK_50 = new ThemeResource("img/task-50.png");
   public static final Resource TASK_FINISHED_22 = new ThemeResource("img/task-finished-22.png");
