@@ -1,6 +1,5 @@
 package org.activiti.rest.service.api.management;
 
-import java.io.InputStream;
 import java.util.Calendar;
 import java.util.Collections;
 
