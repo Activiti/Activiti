@@ -22,7 +22,7 @@ import java.util.TimeZone;
  */
 public class DefaultClockImpl implements org.activiti.engine.runtime.Clock {
   
-  private static volatile Calendar CURRENT_TIME = null;
+  private static volatile Calendar CURRENT_TIME;
 
   @Override
   public void setCurrentTime(Date currentTime) {

@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("date")
 public class DatePropertyDefinition extends FormPropertyDefinition {
 	
-	protected boolean showTime = false;
+	protected boolean showTime;
 	
 	/**
 	 * Creates a new field, showing both time and date components.

@@ -20,7 +20,7 @@ package org.activiti.engine.impl.db;
 public class ListQueryParameterObject {
   
   protected int maxResults = Integer.MAX_VALUE;
-  protected int firstResult = 0;
+  protected int firstResult;
   protected Object parameter;
   protected String databaseType;
   

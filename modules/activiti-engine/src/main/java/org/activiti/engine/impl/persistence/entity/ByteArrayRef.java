@@ -24,7 +24,7 @@ public final class ByteArrayRef implements Serializable {
   private String id;
   private String name;
   private ByteArrayEntity entity;
-  protected boolean deleted = false;
+  protected boolean deleted;
 
   public ByteArrayRef() {
   }

@@ -28,7 +28,7 @@ public class SetVariablesDelegate implements JavaDelegate {
   public static Map<Object, Integer> variablesMap = new HashMap<Object, Integer>(); 
   
   // activiti creates a single instance of the delegate
-  protected int lastInt = 0;
+  protected int lastInt;
 
   public void execute(DelegateExecution execution) throws Exception {
     Object nrOfCompletedInstances = execution.getVariableLocal("nrOfCompletedInstances");    

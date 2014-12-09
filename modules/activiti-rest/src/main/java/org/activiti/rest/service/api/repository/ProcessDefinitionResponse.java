@@ -30,9 +30,9 @@ public class ProcessDefinitionResponse {
   private String resource;
   private String diagramResource;
   private String category;
-  private boolean graphicalNotationDefined = false;
-  private boolean suspended = false;
-  private boolean startFormDefined = false;
+  private boolean graphicalNotationDefined;
+  private boolean suspended;
+  private boolean startFormDefined;
   
   public String getId() {
     return id;

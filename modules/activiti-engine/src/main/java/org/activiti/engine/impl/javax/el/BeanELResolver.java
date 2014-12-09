@@ -194,7 +194,7 @@ public class BeanELResolver extends ELResolver {
 				return Collections.<FeatureDescriptor> emptyList().iterator();
 			}
 			return new Iterator<FeatureDescriptor>() {
-				int next = 0;
+				int next;
 
 				public boolean hasNext() {
 					return properties != null && next < properties.length;

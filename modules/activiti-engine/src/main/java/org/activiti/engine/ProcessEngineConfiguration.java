@@ -111,8 +111,8 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String mailServerUsername; // by default no name and password are provided, which 
   protected String mailServerPassword; // means no authentication for mail server
   protected int mailServerPort = 25;
-  protected boolean useSSL = false;
-  protected boolean useTLS = false;
+  protected boolean useSSL;
+  protected boolean useTLS;
   protected String mailServerDefaultFrom = "activiti@localhost";
   protected String mailSessionJndi;
   protected Map<String,MailServerInfo> mailServers = new HashMap<String,MailServerInfo>();
@@ -124,7 +124,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected String jdbcUrl = "jdbc:h2:tcp://localhost/~/activiti";
   protected String jdbcUsername = "sa";
   protected String jdbcPassword = "";
-  protected String dataSourceJndiName = null;
+  protected String dataSourceJndiName;
   protected boolean isDbIdentityUsed = true;
   protected boolean isDbHistoryUsed = true;
   protected HistoryLevel historyLevel;
@@ -132,12 +132,12 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
   protected int jdbcMaxIdleConnections;
   protected int jdbcMaxCheckoutTime;
   protected int jdbcMaxWaitTime;
-  protected boolean jdbcPingEnabled = false;
-  protected String jdbcPingQuery = null;
+  protected boolean jdbcPingEnabled;
+  protected String jdbcPingQuery;
   protected int jdbcPingConnectionNotUsedFor;
   protected int jdbcDefaultTransactionIsolationLevel;
   protected DataSource dataSource;
-  protected boolean transactionsExternallyManaged = false;
+  protected boolean transactionsExternallyManaged;
   
   protected String jpaPersistenceUnitName;
   protected Object jpaEntityManagerFactory;
@@ -186,7 +186,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
    * doesn't return that correctly, see https://jira.codehaus.org/browse/ACT-1220,
    * https://jira.codehaus.org/browse/ACT-1062
    */
-  protected String databaseSchema = null;
+  protected String databaseSchema;
   
   /**
    * Set to true in case the defined databaseTablePrefix is a schema-name, instead of an actual table name
@@ -195,7 +195,7 @@ public abstract class ProcessEngineConfiguration implements EngineServices {
    * 
    *  @since 5.15
    */
-  protected boolean tablePrefixIsSchema = false;
+  protected boolean tablePrefixIsSchema;
   
   protected boolean isCreateDiagramOnDeploy = true;
   

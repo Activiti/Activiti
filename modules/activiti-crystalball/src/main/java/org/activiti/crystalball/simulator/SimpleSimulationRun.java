@@ -34,7 +34,7 @@ public class SimpleSimulationRun extends AbstractSimulationRun {
 
   /** simulation start date*/
   protected Date simulationStartDate = new Date(0);
-  protected Date dueDate = null;
+  protected Date dueDate;
 
   protected SimpleSimulationRun(Builder builder) {
     super(builder.eventHandlers);

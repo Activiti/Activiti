@@ -5,7 +5,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 
 public class ExceptionServiceMock implements JavaDelegate {
-  static boolean isCalled = false;
+  static boolean isCalled;
 
   @Override
   public void execute(DelegateExecution execution) throws Exception {

@@ -71,7 +71,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
         BODY_AS_MAP, BODY, PROPERTIES
       }  
 
-  protected TargetType toTargetType=null;
+  protected TargetType toTargetType;
   
   protected void updateTargetVariables(ActivitiEndpoint endpoint) {
     toTargetType = null;

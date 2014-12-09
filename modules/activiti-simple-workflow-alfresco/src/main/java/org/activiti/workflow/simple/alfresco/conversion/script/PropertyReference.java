@@ -41,7 +41,7 @@ public class PropertyReference {
   
 	protected String propertyName;
 	protected String additionalProperties;
-	protected boolean isPrefixed = false;
+	protected boolean isPrefixed;
 	
 	public PropertyReference(String propertyName) {
 		this(propertyName, null);

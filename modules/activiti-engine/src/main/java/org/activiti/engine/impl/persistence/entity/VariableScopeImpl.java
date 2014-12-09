@@ -42,12 +42,12 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   
   private static final long serialVersionUID = 1L;
   
-  protected Map<String, VariableInstanceEntity> variableInstances = null;
+  protected Map<String, VariableInstanceEntity> variableInstances;
   
   
   protected ELContext cachedElContext;
 
-  protected String id = null;
+  protected String id;
 
   protected abstract List<VariableInstanceEntity> loadVariableInstances();
   protected abstract VariableScopeImpl getParentVariableScope();

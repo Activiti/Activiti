@@ -78,20 +78,20 @@ public class TestEventListener {
   
   // ---------------------------------------------------------
   
-  private int startActivityService1 = 0;
-  private int endActivityService1 = 0;
-  private int startActivityService2 = 0;
-  private int endActivityService2 = 0;
-  private int takeTransitiont1 = 0;
-  private int takeTransitiont2 = 0;
-  private int takeTransitiont3 = 0;
-  private int assignTask1 = 0;
-  private int completeTask1 = 0;
-  private int completeTask2 = 0;
-  private int completeTask3 = 0;
-  private int createTask1 = 0;
-  private int createTask2 = 0;
-  private int deleteTask3 = 0;
+  private int startActivityService1;
+  private int endActivityService1;
+  private int startActivityService2;
+  private int endActivityService2;
+  private int takeTransitiont1;
+  private int takeTransitiont2;
+  private int takeTransitiont3;
+  private int assignTask1;
+  private int completeTask1;
+  private int completeTask2;
+  private int completeTask3;
+  private int createTask1;
+  private int createTask2;
+  private int deleteTask3;
     
   public void onStartActivityService1(@Observes @StartActivity("service1") BusinessProcessEvent businessProcessEvent) {    
     startActivityService1 += 1;

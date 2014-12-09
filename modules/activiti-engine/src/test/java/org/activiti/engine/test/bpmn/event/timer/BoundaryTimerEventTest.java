@@ -31,8 +31,8 @@ import org.activiti.engine.test.Deployment;
  */
 public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   
-  private static boolean listenerExcecutedStartEvent = false;
-  private static boolean listenerExcecutedEndEvent = false;
+  private static boolean listenerExcecutedStartEvent;
+  private static boolean listenerExcecutedEndEvent;
   
   public static class MyExecutionListener implements ExecutionListener {
     private static final long serialVersionUID = 1L;

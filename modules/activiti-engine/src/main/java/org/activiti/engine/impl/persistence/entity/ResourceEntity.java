@@ -29,7 +29,7 @@ public class ResourceEntity implements PersistentObject, Serializable {
   protected String name;
   protected byte[] bytes;
   protected String deploymentId;
-  protected boolean generated = false;
+  protected boolean generated;
   
   public String getId() {
     return id;

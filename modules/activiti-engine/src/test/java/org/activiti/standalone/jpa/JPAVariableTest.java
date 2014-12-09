@@ -68,7 +68,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
   private static FieldAccessJPAEntity entityToQuery;
   private static FieldAccessJPAEntity entityToUpdate;
   
-  private static boolean entitiesInitialized = false;
+  private static boolean entitiesInitialized;
 
   private static EntityManagerFactory entityManagerFactory;
   

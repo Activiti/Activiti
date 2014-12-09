@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("text")
 public class TextPropertyDefinition extends FormPropertyDefinition {
 	
-	protected boolean multiline = false;
+	protected boolean multiline;
 
 	/**
 	 * Creates a single-lined text-property.

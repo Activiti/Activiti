@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Form
 {
 		@XmlTransient
-		private boolean startForm = false;
+		private boolean startForm;
 		
     @XmlElement(name="field-visibility")
     private FormFieldVisibility formFieldVisibility = new FormFieldVisibility();

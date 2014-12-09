@@ -23,9 +23,9 @@ public class M2AssociationSource {
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String role;
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private boolean mandatory = false;
+	private boolean mandatory;
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private boolean many = false;
+	private boolean many;
 
 	public String getRole() {
 		return role;

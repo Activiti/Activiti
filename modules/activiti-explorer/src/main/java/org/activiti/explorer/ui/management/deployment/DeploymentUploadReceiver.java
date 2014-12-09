@@ -51,7 +51,7 @@ public class DeploymentUploadReceiver implements Receiver, FinishedListener {
   protected String fileName;
   
   // Will be assigned after deployment
-  protected boolean validFile = false;
+  protected boolean validFile;
   protected Deployment deployment;
   
   public DeploymentUploadReceiver() {

@@ -46,9 +46,9 @@ public class ActivitiProducer extends DefaultProducer {
 
   private final long timeResolution;
   
-  private String processKey = null;
+  private String processKey;
 
-  private String activity = null;
+  private String activity;
 
   public ActivitiProducer(ActivitiEndpoint endpoint, long timeout, long timeResolution) {
     super(endpoint);

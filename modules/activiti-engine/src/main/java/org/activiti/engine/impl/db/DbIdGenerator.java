@@ -25,7 +25,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 public class DbIdGenerator implements IdGenerator {
 
   protected int idBlockSize;
-  protected long nextId = 0;
+  protected long nextId;
   protected long lastId = -1;
   
   protected CommandExecutor commandExecutor;

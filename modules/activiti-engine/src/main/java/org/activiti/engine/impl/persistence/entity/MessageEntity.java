@@ -22,7 +22,7 @@ public class MessageEntity extends JobEntity {
 
   private static final long serialVersionUID = 1L;
 
-  private String repeat = null;
+  private String repeat;
   
   @Override
   public void execute(CommandContext commandContext) {

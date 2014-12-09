@@ -25,7 +25,7 @@ public class M2Mandatory {
 	private Boolean enforced;
 	
 	@XmlValue
-	private boolean mandatory = false;
+	private boolean mandatory;
 	
 	public M2Mandatory() {
 		

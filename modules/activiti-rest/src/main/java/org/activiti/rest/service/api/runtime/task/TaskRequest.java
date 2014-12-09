@@ -35,17 +35,17 @@ public class TaskRequest {
   private String tenantId;
   private String formKey;
   
-  private boolean ownerSet = false;
-  private boolean assigneeSet = false;
-  private boolean delegationStateSet = false;
-  private boolean nameSet = false;
-  private boolean descriptionSet = false;
-  private boolean duedateSet = false;
-  private boolean prioritySet = false;
-  private boolean parentTaskIdSet = false;
-  private boolean categorySet = false;
-  private boolean tenantIdSet = false;
-  private boolean formKeySet = false;
+  private boolean ownerSet;
+  private boolean assigneeSet;
+  private boolean delegationStateSet;
+  private boolean nameSet;
+  private boolean descriptionSet;
+  private boolean duedateSet;
+  private boolean prioritySet;
+  private boolean parentTaskIdSet;
+  private boolean categorySet;
+  private boolean tenantIdSet;
+  private boolean formKeySet;
   
   public String getOwner() {
     return owner;

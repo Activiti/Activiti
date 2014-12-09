@@ -60,7 +60,7 @@ public class ImportUploadReceiver implements Receiver, FinishedListener, ModelDa
   protected String fileName;
   
   // Will be assigned after deployment
-  protected boolean validFile = false;
+  protected boolean validFile;
   protected Model modelData;
   
   public ImportUploadReceiver() {

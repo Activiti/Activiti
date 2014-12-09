@@ -26,7 +26,7 @@ public class ProcessDefinitionActionRequest extends RestActionRequest {
   public static final String ACTION_SUSPEND = "suspend";
   public static final String ACTION_ACTIVATE = "activate";
   
-  private boolean includeProcessInstances = false;
+  private boolean includeProcessInstances;
   private Date date;
   private String category;
   

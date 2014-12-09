@@ -64,7 +64,7 @@ public abstract class ProcessEngines {
   
   public static final String NAME_DEFAULT = "default";
   
-  protected static boolean isInitialized = false; 
+  protected static boolean isInitialized;
   protected static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>();
   protected static Map<String, ProcessEngineInfo> processEngineInfosByName = new HashMap<String, ProcessEngineInfo>();
   protected static Map<String, ProcessEngineInfo> processEngineInfosByResourceUrl = new HashMap<String, ProcessEngineInfo>();

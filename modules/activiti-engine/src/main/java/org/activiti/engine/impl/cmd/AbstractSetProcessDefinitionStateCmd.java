@@ -44,7 +44,7 @@ public abstract class AbstractSetProcessDefinitionStateCmd implements Command<Vo
   protected String processDefinitionId;
   protected String processDefinitionKey;
   protected ProcessDefinitionEntity processDefinitionEntity;
-  protected boolean includeProcessInstances = false;
+  protected boolean includeProcessInstances;
   protected Date executionDate;
   protected String tenantId;
 

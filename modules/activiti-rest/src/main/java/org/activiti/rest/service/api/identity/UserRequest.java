@@ -21,10 +21,10 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 public class UserRequest extends UserResponse {
 
-  protected boolean firstNameChanged = false;
-  protected boolean lastNameChanged = false;
-  protected boolean passwordChanged = false;
-  protected boolean emailChanged = false;
+  protected boolean firstNameChanged;
+  protected boolean lastNameChanged;
+  protected boolean passwordChanged;
+  protected boolean emailChanged;
   
   @Override
   public void setEmail(String email) {
