@@ -459,7 +459,7 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   }
 
   private static class InteruptTask extends TimerTask {
-    protected boolean timeLimitExceeded = false;
+    protected boolean timeLimitExceeded;
     protected Thread thread;
     public InteruptTask(Thread thread) {
       this.thread = thread;

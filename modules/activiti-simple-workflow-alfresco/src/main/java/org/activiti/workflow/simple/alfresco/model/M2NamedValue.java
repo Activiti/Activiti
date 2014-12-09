@@ -28,11 +28,11 @@ public class M2NamedValue {
 	private String name;
 	
 	@XmlElement(name="value", namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private String simpleValue = null;
+	private String simpleValue;
 	
 	@XmlElementWrapper(name="list", namespace="http://www.alfresco.org/model/dictionary/1.0")
 	@XmlElement(name="value", namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private List<String> listValue = null;
+	private List<String> listValue;
 
 	public M2NamedValue() {
   }

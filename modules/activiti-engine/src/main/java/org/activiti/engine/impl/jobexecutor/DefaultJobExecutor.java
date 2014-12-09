@@ -43,7 +43,7 @@ public class DefaultJobExecutor extends JobExecutor {
   protected int queueSize = 3;
   protected int corePoolSize = 3;
   protected int maxPoolSize = 10;
-  protected long keepAliveTime = 0L;
+  protected long keepAliveTime;
 
   protected BlockingQueue<Runnable> threadPoolQueue;
   protected ThreadPoolExecutor threadPoolExecutor;

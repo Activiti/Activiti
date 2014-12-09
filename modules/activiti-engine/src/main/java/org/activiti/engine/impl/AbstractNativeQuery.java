@@ -44,7 +44,7 @@ public abstract class AbstractNativeQuery<T extends NativeQuery< ? , ? >, U> imp
   protected transient CommandContext commandContext;
 
   protected int maxResults = Integer.MAX_VALUE;
-  protected int firstResult = 0;
+  protected int firstResult;
   protected ResultType resultType;
 
   private Map<String, Object> parameters = new HashMap<String, Object>();

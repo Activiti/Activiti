@@ -49,7 +49,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected String resourceName;
   protected String resourceNameLike;
   protected Integer version;
-  protected boolean latest = false;
+  protected boolean latest;
   protected SuspensionState suspensionState;
   protected String authorizationUserId;
   protected String procDefId;

@@ -61,15 +61,15 @@ public class ExplorerApp extends Application implements HttpServletRequestListen
   protected SimpleWorkflowJsonConverter simpleWorkflowJsonConverter;
   
   // Flag to see if the session has been invalidated, when the application was closed
-  protected boolean invalidatedSession = false;
+  protected boolean invalidatedSession;
   
   protected List<String> adminGroups;
   protected List<String> userGroups;
   
-  protected String crystalBallCurrentDefinitionId = null;
-  protected String crystalBallCurrentInstanceId = null;
-  protected List<SimulationEvent> crystalBallSimulationEvents = null;
-  protected transient SimulationDebugger crystalBallSimulationDebugger = null;
+  protected String crystalBallCurrentDefinitionId;
+  protected String crystalBallCurrentInstanceId;
+  protected List<SimulationEvent> crystalBallSimulationEvents;
+  protected transient SimulationDebugger crystalBallSimulationDebugger;
   
   public void init() {
     setMainWindow(mainWindow);

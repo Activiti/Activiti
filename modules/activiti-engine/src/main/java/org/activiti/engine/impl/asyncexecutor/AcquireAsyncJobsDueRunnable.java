@@ -30,11 +30,11 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
 
   protected final AsyncExecutor asyncExecutor;
 
-  protected volatile boolean isInterrupted = false;
+  protected volatile boolean isInterrupted;
   protected final Object MONITOR = new Object();
   protected final AtomicBoolean isWaiting = new AtomicBoolean(false);
   
-  protected long millisToWait = 0;
+  protected long millisToWait;
 
   public AcquireAsyncJobsDueRunnable(AsyncExecutor asyncExecutor) {
     this.asyncExecutor = asyncExecutor;

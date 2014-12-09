@@ -21,7 +21,7 @@ public class StatefulObject implements Serializable, InitializingBean {
     public static final long serialVersionUID = 1L;
 
     private String name;
-    private int visitedCount = 0;
+    private int visitedCount;
 
     private long customerId;
 

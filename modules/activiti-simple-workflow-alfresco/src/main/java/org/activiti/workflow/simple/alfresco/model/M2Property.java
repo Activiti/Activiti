@@ -40,10 +40,10 @@ public class M2Property {
 	private String propertyType;
 
 	@XmlElement(name="protected", namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private boolean isProtected = false;
+	private boolean isProtected;
 	
 	@XmlElement(name="multiple", namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private boolean multiValued = false;
+	private boolean multiValued;
 	
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private M2Mandatory mandatory;

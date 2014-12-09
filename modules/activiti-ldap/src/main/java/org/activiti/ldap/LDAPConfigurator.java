@@ -58,7 +58,7 @@ public class LDAPConfigurator extends AbstractProcessEngineConfigurator {
   protected String baseDn;
   protected String userBaseDn;
   protected String groupBaseDn;
-  protected int searchTimeLimit = 0; // Default '0' == wait forever
+  protected int searchTimeLimit; // Default '0' == wait forever
 
   protected String queryUserByUserId;
   protected String queryGroupsForUser;

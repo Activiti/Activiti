@@ -34,7 +34,7 @@ public class AcquireJobNotificationEventHandler implements
 
 	private static Logger log = LoggerFactory.getLogger(AcquireJobNotificationEventHandler.class);
 
-	JobExecutor jobExecutor = null;
+	JobExecutor jobExecutor;
 	
 	public AcquireJobNotificationEventHandler(JobExecutor jobExecutor) {
 		this.jobExecutor = jobExecutor;

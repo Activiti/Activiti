@@ -17,11 +17,11 @@ import org.activiti.engine.delegate.event.BaseEntityEventListener;
 
 public class TestBaseEntityEventListener extends BaseEntityEventListener {
 
-	private boolean updateReceived = false;
-	private boolean createReceived = false;
-	private boolean deleteReceived = false;
-	private boolean initializeReceived = false;
-	private boolean customReceived = false;
+	private boolean updateReceived;
+	private boolean createReceived;
+	private boolean deleteReceived;
+	private boolean initializeReceived;
+	private boolean customReceived;
 
 	public TestBaseEntityEventListener() {
 		super();

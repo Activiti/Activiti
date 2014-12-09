@@ -375,7 +375,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * hence the reason why it is disabled by default. If your platform allows 
    * the use of StaxSource during XML parsing, do enable it.
    */
-  protected boolean enableSafeBpmnXml = false;
+  protected boolean enableSafeBpmnXml;
   
   /**
    * The following settings will determine the amount of entities loaded at once when the engine 
@@ -403,7 +403,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Map<String, List<ActivitiEventListener>> typedEventListeners;
   
   // Event logging to database
-  protected boolean enableDatabaseEventLogging = false;
+  protected boolean enableDatabaseEventLogging;
   
   
   // buildProcessEngine ///////////////////////////////////////////////////////

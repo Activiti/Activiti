@@ -63,7 +63,7 @@ public class ExecutionImpl implements
   protected ActivityImpl activity;
   
   /** current transition.  is null when there is no transition being taken. */
-  protected TransitionImpl transition = null;
+  protected TransitionImpl transition;
 
   /** the process instance.  this is the root of the execution tree.  
    * the processInstance of a process instance is a self reference. */
@@ -96,17 +96,17 @@ public class ExecutionImpl implements
    * </ul>*/ 
   protected boolean isActive = true;
   protected boolean isScope = true;
-  protected boolean isConcurrent = false;
-  protected boolean isEnded = false;
-  protected boolean isEventScope = false;
+  protected boolean isConcurrent;
+  protected boolean isEnded;
+  protected boolean isEventScope;
   
-  protected Map<String, Object> variables = null;
+  protected Map<String, Object> variables;
   
   // events ///////////////////////////////////////////////////////////////////
   
   protected String eventName;
   protected PvmProcessElement eventSource;
-  protected int executionListenerIndex = 0;
+  protected int executionListenerIndex;
     
   // cascade deletion ////////////////////////////////////////////////////////
   
@@ -128,7 +128,7 @@ public class ExecutionImpl implements
    * @see AtomicOperation
    * @see #performOperation(AtomicOperation) */
   protected AtomicOperation nextOperation;
-  protected boolean isOperating = false;
+  protected boolean isOperating;
 
   /* Default constructor for ibatis/jpa/etc. */
   public ExecutionImpl() {    

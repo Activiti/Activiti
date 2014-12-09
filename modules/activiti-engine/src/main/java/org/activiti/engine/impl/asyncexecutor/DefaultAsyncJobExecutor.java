@@ -53,8 +53,8 @@ private static Logger log = LoggerFactory.getLogger(DefaultAsyncJobExecutor.clas
   protected AcquireTimerJobsRunnable timerJobRunnable;
   protected AcquireAsyncJobsDueRunnable asyncJobsDueRunnable;
   
-  protected boolean isAutoActivate = false;
-  protected boolean isActive = false;
+  protected boolean isAutoActivate;
+  protected boolean isActive;
   
   protected int maxTimerJobsPerAcquisition = 1;
   protected int maxAsyncJobsDuePerAcquisition = 1;

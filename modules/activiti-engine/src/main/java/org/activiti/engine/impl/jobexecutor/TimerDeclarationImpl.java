@@ -37,7 +37,7 @@ public class TimerDeclarationImpl implements Serializable {
   protected TimerDeclarationType type;
 
   protected String jobHandlerType;
-  protected String jobHandlerConfiguration = null;
+  protected String jobHandlerConfiguration;
   protected String repeat;
   protected boolean exclusive = TimerEntity.DEFAULT_EXCLUSIVE;
   protected int retries = TimerEntity.DEFAULT_RETRIES;

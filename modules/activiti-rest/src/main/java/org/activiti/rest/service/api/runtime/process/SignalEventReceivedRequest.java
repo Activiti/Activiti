@@ -26,7 +26,7 @@ public class SignalEventReceivedRequest {
   private String signalName;
   private List<RestVariable> variables;
   private String tenantId;
-  private boolean async = false;
+  private boolean async;
   
   public void setTenantId(String tenantId) {
 	  this.tenantId = tenantId;

@@ -34,7 +34,7 @@ public class StandaloneMybatisTransactionContext implements TransactionContext {
   private static Logger log = LoggerFactory.getLogger(StandaloneMybatisTransactionContext.class);
 
   protected CommandContext commandContext;
-  protected Map<TransactionState,List<TransactionListener>> stateTransactionListeners = null;
+  protected Map<TransactionState,List<TransactionListener>> stateTransactionListeners;
   
   public StandaloneMybatisTransactionContext(CommandContext commandContext) {
     this.commandContext = commandContext;

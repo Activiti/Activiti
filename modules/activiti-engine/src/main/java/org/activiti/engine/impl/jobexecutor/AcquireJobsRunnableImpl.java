@@ -30,12 +30,12 @@ public class AcquireJobsRunnableImpl implements AcquireJobsRunnable {
 
   protected final JobExecutor jobExecutor;
 
-  protected volatile boolean isInterrupted = false;
-  protected volatile boolean isJobAdded = false;
+  protected volatile boolean isInterrupted;
+  protected volatile boolean isJobAdded;
   protected final Object MONITOR = new Object();
   protected final AtomicBoolean isWaiting = new AtomicBoolean(false);
   
-  protected long millisToWait = 0;
+  protected long millisToWait;
 
   public AcquireJobsRunnableImpl(JobExecutor jobExecutor) {
     this.jobExecutor = jobExecutor;

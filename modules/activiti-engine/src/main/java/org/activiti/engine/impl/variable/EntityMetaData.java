@@ -23,7 +23,7 @@ import java.lang.reflect.Method;
  */
 public class EntityMetaData {
 
-  private boolean isJPAEntity = false;
+  private boolean isJPAEntity;
   private Class< ? > entityClass;
   private Method idMethod;
   private Field idField;

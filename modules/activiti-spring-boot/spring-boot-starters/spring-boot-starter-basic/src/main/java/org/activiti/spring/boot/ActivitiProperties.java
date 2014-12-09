@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class ActivitiProperties {
 
   private boolean checkProcessDefinitions = true;
-  private boolean jobExecutorActivate = false;
+  private boolean jobExecutorActivate;
   private boolean asyncExecutorEnabled = true;
   private boolean asyncExecutorActivate = true;
   private boolean restApiEnabled;

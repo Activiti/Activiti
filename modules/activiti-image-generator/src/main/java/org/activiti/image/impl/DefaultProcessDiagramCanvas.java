@@ -94,7 +94,7 @@ public class DefaultProcessDiagramCanvas {
   protected static Color SUBPROCESS_BORDER_COLOR = new Color(0, 0, 0);
   
   // Fonts
-  protected static Font LABEL_FONT = null;
+  protected static Font LABEL_FONT;
   protected static Font ANNOTATION_FONT = new Font("Arial", Font.PLAIN, FONT_SIZE);
   protected static Font TASK_FONT = new Font("Arial", Font.PLAIN, FONT_SIZE);
 

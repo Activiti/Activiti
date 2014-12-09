@@ -89,10 +89,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected ActivityImpl activity;
   
   /** current transition.  is null when there is no transition being taken. */
-  protected TransitionImpl transition = null;
+  protected TransitionImpl transition;
   
   /** transition that will be taken.  is null when there is no transition being taken. */
-  protected TransitionImpl transitionBeingTaken = null;
+  protected TransitionImpl transitionBeingTaken;
 
   /** the process instance.  this is the root of the execution tree.  
    * the processInstance of a process instance is a self reference. */
@@ -130,15 +130,15 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    * </ul>*/ 
   protected boolean isActive = true;
   protected boolean isScope = true;
-  protected boolean isConcurrent = false;
-  protected boolean isEnded = false;
-  protected boolean isEventScope = false;
+  protected boolean isConcurrent;
+  protected boolean isEnded;
+  protected boolean isEventScope;
   
   // events ///////////////////////////////////////////////////////////////////
   
   protected String eventName;
   protected PvmProcessElement eventSource;
-  protected int executionListenerIndex = 0;
+  protected int executionListenerIndex;
   
   // associated entities /////////////////////////////////////////////////////
   
@@ -169,7 +169,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    * @see AtomicOperation
    * @see #performOperation(AtomicOperation) */
   protected AtomicOperation nextOperation;
-  protected boolean isOperating = false;
+  protected boolean isOperating;
 
   protected int revision = 1;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();

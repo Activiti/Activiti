@@ -46,7 +46,7 @@ public class AlfrescoReviewStepDefinition extends AbstractStepDefinitionContaine
   protected HumanStepAssignmentType assignmentType = HumanStepAssignmentType.USER;
   protected FormDefinition form;
   protected String requiredApprovalCount;
-  protected boolean endProcessOnReject = false;
+  protected boolean endProcessOnReject;
   
   protected String name;
   protected String description;

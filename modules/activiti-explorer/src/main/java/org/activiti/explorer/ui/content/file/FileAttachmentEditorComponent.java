@@ -56,7 +56,7 @@ public class FileAttachmentEditorComponent extends VerticalLayout implements Att
   protected String fileName;
   protected ByteArrayOutputStream byteArrayOutputStream;
   protected String mimeType;
-  protected boolean fileUploaded = false;
+  protected boolean fileUploaded;
   
   protected I18nManager i18nManager;
   protected transient TaskService taskService;

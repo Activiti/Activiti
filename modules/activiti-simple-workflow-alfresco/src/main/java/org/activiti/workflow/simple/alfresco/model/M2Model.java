@@ -33,13 +33,13 @@ import javax.xml.bind.annotation.XmlType;
 public class M2Model {
 
 	@XmlAttribute
-	private String name = null;
+	private String name;
 	
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private String description = null;
+	private String description;
 	
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private String author = null;
+	private String author;
 	
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")	
 	private String version;

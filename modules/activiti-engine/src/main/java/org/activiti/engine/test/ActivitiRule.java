@@ -86,7 +86,7 @@ import org.junit.runners.model.Statement;
 public class ActivitiRule implements TestRule {
 
 	protected String configurationResource = "activiti.cfg.xml";
-	protected String deploymentId = null;
+	protected String deploymentId;
 
   protected ProcessEngineConfiguration processEngineConfiguration;
 	protected ProcessEngine processEngine;

@@ -74,7 +74,7 @@ public class CommandContext {
   protected TransactionContext transactionContext;
   protected Map<Class< ? >, SessionFactory> sessionFactories;
   protected Map<Class< ? >, Session> sessions = new HashMap<Class< ? >, Session>();
-  protected Throwable exception = null;
+  protected Throwable exception;
   protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected FailedJobCommandFactory failedJobCommandFactory;

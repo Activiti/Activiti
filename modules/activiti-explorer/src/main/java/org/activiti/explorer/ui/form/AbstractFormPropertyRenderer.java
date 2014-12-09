@@ -77,5 +77,5 @@ public abstract class AbstractFormPropertyRenderer implements FormPropertyRender
   /**
    * The form that contains this renderer
    */
-  transient private com.vaadin.ui.Form theForm = null;
+  transient private com.vaadin.ui.Form theForm;
 }

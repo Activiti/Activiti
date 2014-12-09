@@ -26,9 +26,9 @@ public class M2AssociationTarget {
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
 	private String role;
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private boolean mandatory = false;
+	private boolean mandatory;
 	@XmlElement(namespace="http://www.alfresco.org/model/dictionary/1.0")
-	private boolean many = false;
+	private boolean many;
 
 	public String getClassName() {
 		return className;

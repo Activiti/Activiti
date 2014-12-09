@@ -79,7 +79,7 @@ public class ProfilePanel extends Panel {
   
   // ui
   protected boolean isCurrentLoggedInUser;
-  protected boolean editable = false;
+  protected boolean editable;
   protected HorizontalLayout profilePanelLayout;
   protected VerticalLayout imageLayout;
   protected VerticalLayout infoPanelLayout;
