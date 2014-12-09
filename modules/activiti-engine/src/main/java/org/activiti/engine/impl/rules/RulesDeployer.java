@@ -48,7 +48,7 @@ public class RulesDeployer implements Deployer {
     
     Map<String, ResourceEntity> resources = deployment.getResources();
     for (String resourceName : resources.keySet()) {
-      log.debug("Processing resource {}", resourceName);
+      log.info("Processing resource {}", resourceName);
       if (resourceName.endsWith(".drl")) { // is only parsing .drls sufficient? what about other rule dsl's? (@see ResourceType)
         if (knowledgeBuilder==null) {
           knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();

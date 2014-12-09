@@ -79,7 +79,7 @@ public class BpmnDeployer implements Deployer {
     final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     for (String resourceName : resources.keySet()) {
 
-      log.debug("Processing resource {}", resourceName);
+      log.info("Processing resource {}", resourceName);
       if (isBpmnResource(resourceName)) {
         ResourceEntity resource = resources.get(resourceName);
         byte[] bytes = resource.getBytes();
