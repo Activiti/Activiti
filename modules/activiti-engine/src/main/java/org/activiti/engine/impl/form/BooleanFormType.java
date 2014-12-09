@@ -20,7 +20,9 @@ import org.activiti.engine.form.AbstractFormType;
  * @author Frederik Heremans
  */
 public class BooleanFormType extends AbstractFormType {
-
+	
+  private static final long serialVersionUID = 1L;
+  
   public String getName() {
     return "boolean";
   }

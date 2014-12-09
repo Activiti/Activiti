@@ -13,12 +13,15 @@
 
 package org.activiti.engine.form;
 
+import java.io.Serializable;
+
+
 
 /** 
  * Used to indicate the type on a {@link FormProperty}.
  * @author Tom Baeyens
  */
-public interface FormType {
+public interface FormType extends Serializable {
 
   /** Name for the form type. */
   String getName();
