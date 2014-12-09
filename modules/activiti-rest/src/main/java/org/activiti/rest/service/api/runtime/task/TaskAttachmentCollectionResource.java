@@ -126,7 +126,7 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
       throw new ActivitiIllegalArgumentException("Attachment name is required.");
     }
     
-    if (request.getFileMap().size() == 0) {
+    if (request.getFileMap().isEmpty()) {
       throw new ActivitiIllegalArgumentException("Attachment content is required.");
     }
     

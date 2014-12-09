@@ -96,7 +96,7 @@ public class BaseVariableCollectionResource extends BaseExecutionVariableResourc
         throw new ActivitiIllegalArgumentException("Failed to serialize to a RestVariable instance", e);
       }
       
-      if (inputVariables == null || inputVariables.size() == 0) {
+      if (inputVariables == null || inputVariables.isEmpty()) {
         throw new ActivitiIllegalArgumentException("Request didn't contain a list of variables to create.");
       }
       

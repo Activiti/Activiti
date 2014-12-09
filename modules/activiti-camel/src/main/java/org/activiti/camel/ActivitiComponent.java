@@ -75,7 +75,7 @@ public class ActivitiComponent extends DefaultComponent {
     ae.setCopyCamelBodyToBody(this.copyCamelBodyToBody);
     
     Map<String, Object> returnVars = IntrospectionSupport.extractProperties(parameters, "var.return.");
-    if (returnVars != null && returnVars.size() > 0) {
+    if (returnVars != null && !returnVars.isEmpty()) {
       ae.getReturnVarMap().putAll(returnVars);
     }
     

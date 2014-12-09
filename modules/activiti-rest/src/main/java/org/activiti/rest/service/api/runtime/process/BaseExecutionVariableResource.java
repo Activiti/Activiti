@@ -82,7 +82,7 @@ public class BaseExecutionVariableResource {
       Execution execution, int responseVariableType, boolean isNew) {
     
     // Validate input and set defaults
-    if (request.getFileMap().size() == 0) {
+    if (request.getFileMap().isEmpty()) {
       throw new ActivitiIllegalArgumentException("No file content was found in request body.");
     }
     

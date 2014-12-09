@@ -109,7 +109,7 @@ public class DeploymentCollectionResource {
     
     MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
     
-    if (multipartRequest.getFileMap().size() == 0) {
+    if (multipartRequest.getFileMap().isEmpty()) {
       throw new ActivitiIllegalArgumentException("Multipart request with file content is required");
     }
     
