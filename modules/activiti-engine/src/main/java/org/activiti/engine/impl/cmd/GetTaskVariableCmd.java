@@ -25,6 +25,7 @@ import org.activiti.engine.task.Task;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class GetTaskVariableCmd implements Command<Object>, Serializable {
 
@@ -58,9 +59,9 @@ public class GetTaskVariableCmd implements Command<Object>, Serializable {
     Object value;
     
     if (isLocal) {
-      value = task.getVariableLocal(variableName);
+      value = task.getVariableLocal(variableName, false);
     } else {
-      value = task.getVariable(variableName);
+      value = task.getVariable(variableName, false);
     }
     
     return value;

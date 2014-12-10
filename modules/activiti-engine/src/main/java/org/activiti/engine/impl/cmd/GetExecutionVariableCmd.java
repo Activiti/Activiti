@@ -24,6 +24,7 @@ import org.activiti.engine.runtime.Execution;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class GetExecutionVariableCmd implements Command<Object>, Serializable {
 
@@ -57,9 +58,9 @@ public class GetExecutionVariableCmd implements Command<Object>, Serializable {
     Object value;
     
     if (isLocal) {
-      value = execution.getVariableLocal(variableName);
+      value = execution.getVariableLocal(variableName, false);
     } else {
-      value = execution.getVariable(variableName);
+      value = execution.getVariable(variableName, false);
     }
     
     return value;

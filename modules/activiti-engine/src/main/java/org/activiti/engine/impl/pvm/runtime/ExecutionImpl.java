@@ -617,13 +617,33 @@ public class ExecutionImpl implements
     // Variable is nowhere to be found
     return null;
   }
-
+  
+  @Override
+  public Object getVariable(String variableName, boolean fetchAllVariables) {
+  	return getVariable(variableName); // No support for fetchAllVariables on ExecutionImpl
+  }
+  
   public Map<String, Object> getVariables() {
     Map<String, Object> collectedVariables = new HashMap<String, Object>();
     collectVariables(collectedVariables);
     return collectedVariables;
   }
   
+  @Override
+  public Map<String, Object> getVariables(Collection<String> variableNames) {
+  	Map<String, Object> allVariables = getVariables();
+  	Map<String, Object> filteredVariables = new HashMap<String, Object>();
+  	for (String variableName : variableNames) {
+  		filteredVariables.put(variableName, allVariables.get(variableName));
+  	}
+  	return filteredVariables;
+  }
+  
+  @Override
+  public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
+  	return getVariables(variableNames); // No support for the boolean param
+  }
+
   protected void collectVariables(Map<String, Object> collectedVariables) {
     ensureParentInitialized();
     if (parent!=null) {
@@ -658,9 +678,20 @@ public class ExecutionImpl implements
     }
   }
 
+  
+  @Override
+  public void setVariable(String variableName, Object value, boolean fetchAllVariables) {
+  	setVariable(variableName, value);
+  }
+  
   public void setVariableLocally(String variableName, Object value) {
     log.debug("setting variable '{}' to value '{}' on {}", variableName, value, this);
     variables.put(variableName, value);
+  }
+  
+  @Override
+  public Object setVariableLocal(String variableName, Object value, boolean fetchAllVariables) {
+  	return setVariableLocal(variableName, value);
   }
   
   public boolean hasVariable(String variableName) {
@@ -807,6 +838,11 @@ public class ExecutionImpl implements
   public Object getVariableLocal(String variableName) {
     return null;
   }
+  
+  @Override
+  public Object getVariableLocal(String variableName, boolean fetchAllVariables) {
+  	return getVariableLocal(variableName); // No support for fetchAllVariables
+  }
 
     @Override
     public <T> T getVariable(String variableName, Class<T> variableClass) {
@@ -828,6 +864,17 @@ public class ExecutionImpl implements
 
   public Map<String, Object> getVariablesLocal() {
     return null;
+  }
+  
+  
+  @Override
+  public Map<String, Object> getVariablesLocal(Collection<String> variableNames) {
+  	return null;
+  }
+  
+  @Override
+  public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+  	return null;
   }
 
   public boolean hasVariableLocal(String variableName) {
