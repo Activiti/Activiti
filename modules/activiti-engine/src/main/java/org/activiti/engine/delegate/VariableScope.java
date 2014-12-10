@@ -80,7 +80,7 @@ public interface VariableScope {
    */
   void setVariable(String variableName, Object value);
   
-  public void setVariable(String variableName, Object value, boolean fetchAllVariables);
+  void setVariable(String variableName, Object value, boolean fetchAllVariables);
 
   Object setVariableLocal(String variableName, Object value);
   
