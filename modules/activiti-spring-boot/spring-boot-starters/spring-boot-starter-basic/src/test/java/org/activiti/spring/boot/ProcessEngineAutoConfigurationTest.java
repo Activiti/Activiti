@@ -48,7 +48,7 @@ public class ProcessEngineAutoConfigurationTest {
         Assert.assertNotNull(processDefinitionList);
         Assert.assertTrue(!processDefinitionList.isEmpty());
         ProcessDefinition processDefinition = processDefinitionList.iterator().next();
-        Assert.assertEquals(processDefinition.getKey(), "waiter");
+        Assert.assertEquals("waiter", processDefinition.getKey());
     }
 
     private AnnotationConfigApplicationContext context(Class<?>... clzz) {

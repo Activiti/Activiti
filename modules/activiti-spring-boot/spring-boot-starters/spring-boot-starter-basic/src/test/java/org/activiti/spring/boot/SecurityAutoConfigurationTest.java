@@ -36,8 +36,8 @@ public class SecurityAutoConfigurationTest {
         this.applicationContext.refresh();
         UserDetailsService userDetailsService = this.applicationContext.getBean(UserDetailsService.class);
         Assert.assertNotNull("the userDetailsService should not be null", userDetailsService);
-        assertEquals("there should only be 1 authority", userDetailsService.loadUserByUsername("jlong").getAuthorities().size(), 1);
-        assertEquals("there should be 2 authorities", userDetailsService.loadUserByUsername("jbarrez").getAuthorities().size(), 2);
+        assertEquals("there should only be 1 authority", 1, userDetailsService.loadUserByUsername("jlong").getAuthorities().size());
+        assertEquals("there should be 2 authorities", 2, userDetailsService.loadUserByUsername("jbarrez").getAuthorities().size());
     }
 
     @Configuration
