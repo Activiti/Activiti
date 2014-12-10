@@ -24,6 +24,8 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Esteban Robles Luna
  */
 public class SimpleDataInputAssociation extends AbstractDataAssociation {
+	
+  private static final long serialVersionUID = 1L;
 
   protected List<Assignment> assignments = new ArrayList<Assignment>();
   

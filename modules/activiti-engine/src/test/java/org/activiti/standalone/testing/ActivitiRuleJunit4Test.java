@@ -15,8 +15,10 @@ package org.activiti.standalone.testing;
 
 import static org.junit.Assert.assertEquals;
 
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.impl.test.JobTestHelper;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.ActivitiRule;
 import org.activiti.engine.test.Deployment;
@@ -52,4 +54,22 @@ public class ActivitiRuleJunit4Test {
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
   }
 
+  //this is to show how JobTestHelper could be used to wait for jobs to be all processed
+  @Test
+  @Deployment(resources={"org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncTask.bpmn20.xml"})
+  public void testWaitForJobs() {
+    RuntimeService runtimeService = activitiRule.getRuntimeService();
+    ManagementService managementService = activitiRule.getManagementService();
+   
+    // start process 
+    runtimeService.startProcessInstanceByKey("asyncTask");
+   
+    // now there should be one job in the database:
+    assertEquals(1, managementService.createJobQuery().count());
+      
+    JobTestHelper.waitForJobExecutorToProcessAllJobs(activitiRule, 5000L, 500L);
+   
+    // the job is done
+    assertEquals(0, managementService.createJobQuery().count()); 
+  }
 }

@@ -21,6 +21,7 @@ import org.activiti.camel.exception.tools.ThrowBpmnExceptionBean;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.impl.test.JobTestHelper;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
@@ -126,7 +127,7 @@ public class CamelExceptionTest extends SpringActivitiTestCase {
     
     managementService.executeJob(job.getId());
     
-    assertFalse(areJobsAvailable());
+    assertFalse(JobTestHelper.areJobsAvailable(managementService));
     assertFalse(ExceptionServiceMock.isCalled());
     assertTrue(NoExceptionServiceMock.isCalled());
   }
@@ -138,7 +139,7 @@ public class CamelExceptionTest extends SpringActivitiTestCase {
     // Signal ThrowBpmnExceptionBean to throw non bpmn exception
     ThrowBpmnExceptionBean.setExceptionType(ThrowBpmnExceptionBean.ExceptionType.NON_BPMN_EXCEPTION);    
     runtimeService.startProcessInstanceByKey("exceptionInRouteSynchron");
-    assertTrue(areJobsAvailable());
+    assertTrue(JobTestHelper.areJobsAvailable(managementService));
     
     Job job = managementService.createJobQuery().singleResult();
 

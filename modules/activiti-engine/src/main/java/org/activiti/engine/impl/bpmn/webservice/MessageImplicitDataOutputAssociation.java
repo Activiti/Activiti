@@ -25,6 +25,8 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * @author Esteban Robles Luna
  */
 public class MessageImplicitDataOutputAssociation extends AbstractDataAssociation {
+	
+  private static final long serialVersionUID = 1L;
 
   public MessageImplicitDataOutputAssociation(String targetRef, Expression sourceExpression) {
     super(sourceExpression, targetRef);

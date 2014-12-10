@@ -23,6 +23,8 @@ import org.activiti.engine.form.AbstractFormType;
  * @author Tom Baeyens
  */
 public class EnumFormType extends AbstractFormType {
+	
+  private static final long serialVersionUID = 1L;
 
   protected Map<String, String> values;
 

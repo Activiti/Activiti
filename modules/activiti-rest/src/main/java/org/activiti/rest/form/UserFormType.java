@@ -25,6 +25,8 @@ import org.activiti.engine.identity.User;
  * @author 'Frederik Heremans'
  */
 public class UserFormType extends AbstractFormType {
+	
+  private static final long serialVersionUID = 1L;
 
   public static final String TYPE_NAME = "user";
   

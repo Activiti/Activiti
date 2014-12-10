@@ -16,7 +16,6 @@ package org.activiti.engine.test.mock;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.scripting.Resolver;
 import org.activiti.engine.impl.scripting.ResolverFactory;
-import org.activiti.engine.test.mock.Mocks;
 
 /**
  * This is a bridge resolver, making available any objects registered through
