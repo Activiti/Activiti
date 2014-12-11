@@ -28,6 +28,7 @@ public class CxfWebServiceClient implements SyncWebServiceClient {
   public CxfWebServiceClient(String wsdl) {
     JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
     this.client = dcf.createClient(wsdl);
+        this.client.getRequestContext().put("org.apache.cxf.stax.force-start-document", Boolean.TRUE);
   }
   
   /**
