@@ -13,17 +13,19 @@
 
 package org.activiti.engine.impl.form;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.activiti.bpmn.model.FormProperty;
+import org.activiti.bpmn.model.FormValue;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.form.AbstractFormType;
-
 
 /**
  * @author Tom Baeyens
  */
-public class EnumFormType extends AbstractFormType {
-	
+public class EnumFormType extends AbstractFormType implements FormTypeSupport<EnumFormType> {
+
   private static final long serialVersionUID = 1L;
 
   protected Map<String, String> values;
@@ -35,7 +37,7 @@ public class EnumFormType extends AbstractFormType {
   public String getName() {
     return "enum";
   }
-  
+
   @Override
   public Object getInformation(String key) {
     if (key.equals("values")) {
@@ -52,18 +54,28 @@ public class EnumFormType extends AbstractFormType {
 
   @Override
   public String convertModelValueToFormValue(Object modelValue) {
-    if(modelValue != null) {
-      if(!(modelValue instanceof String)) {
+    if (modelValue != null) {
+      if (!(modelValue instanceof String)) {
         throw new ActivitiIllegalArgumentException("Model value should be a String");
       }
       validateValue((String) modelValue);
     }
     return (String) modelValue;
   }
-  
+
+  public EnumFormType newInstance(FormProperty formProperty) {
+    // ACT-1023: Using LinkedHashMap to preserve the order in which the entries
+    // are defined
+    Map<String, String> values = new LinkedHashMap<String, String>();
+    for (FormValue formValue : formProperty.getFormValues()) {
+      values.put(formValue.getId(), formValue.getName());
+    }
+    return new EnumFormType(values);
+  }
+
   protected void validateValue(String value) {
-    if(value != null) {
-      if(values != null && !values.containsKey(value)) {
+    if (value != null) {
+      if (values != null && !values.containsKey(value)) {
         throw new ActivitiIllegalArgumentException("Invalid value for enum form property: " + value);
       }
     }
