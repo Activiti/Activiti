@@ -98,12 +98,12 @@
   
   <select id="selectVariableInstanceByExecutionAndName" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
 	select * from ${prefix}ACT_RU_VARIABLE 
-    where EXECUTION_ID_ = ${executionId, jdbcType=VARCHAR} and NAME_= #{name, jdbcType=VARCHAR} and TASK_ID_ is null
+    where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR} and NAME_= #{name, jdbcType=VARCHAR} and TASK_ID_ is null
   </select>
   
   <select id="selectVariableInstancesByExecutionAndNames" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
 	select * from ${prefix}ACT_RU_VARIABLE 
-    where EXECUTION_ID_ = ${parameter.executionId, jdbcType=VARCHAR} and TASK_ID_ is null
+    where EXECUTION_ID_ = #{parameter.executionId, jdbcType=VARCHAR} and TASK_ID_ is null
     <if test="parameter.names != null and parameter.names.size > 0">
     and (
       <foreach collection="parameter.names" index="index" item="name" separator=" or ">
