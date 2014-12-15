@@ -75,8 +75,8 @@ public class TaskDueDateExtensionsTest extends PluggableActivitiTestCase {
     
     assertNotNull(task.getDueDate());
     Period period = new Period(task.getCreateTime().getTime(), task.getDueDate().getTime());
-    assertEquals(period.getDays(), 2);
-    assertEquals(period.getHours(), 5);
-    assertEquals(period.getMinutes(), 40);
+    assertEquals(2, period.getDays());
+    assertEquals(5, period.getHours());
+    assertEquals(40, period.getMinutes());
   }
 }

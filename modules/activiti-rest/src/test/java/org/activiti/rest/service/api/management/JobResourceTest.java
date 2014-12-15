@@ -51,7 +51,7 @@ public class JobResourceTest extends BaseSpringRestTestCase {
     assertEquals(timerJob.getProcessInstanceId(), responseNode.get("processInstanceId").textValue());
     assertEquals(timerJob.getRetries(), responseNode.get("retries").intValue());
     assertEquals(timerJob.getDuedate(), getDateFromISOString(responseNode.get("dueDate").textValue()));
-    assertEquals(responseNode.get("tenantId").textValue(), "");
+    assertEquals("", responseNode.get("tenantId").textValue());
     
     // Set tenant on deployment
     managementService.executeCommand(new ChangeDeploymentTenantIdCmd(deploymentId, "myTenant"));
