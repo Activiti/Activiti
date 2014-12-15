@@ -81,8 +81,8 @@ public class BaseSpringRestTestCase extends PvmTestCase {
 
   private static Logger log = LoggerFactory.getLogger(BaseSpringRestTestCase.class);
   
-  protected static final int HTTP_SERVER_PORT = 9898;
-  protected static final String SERVER_URL_PREFIX = "http://localhost:9898/service/";
+  protected static final int HTTP_SERVER_PORT = 9797;
+  protected static final String SERVER_URL_PREFIX = "http://localhost:9797/service/";
   protected static final RestUrlBuilder URL_BUILDER = RestUrlBuilder.usingBaseUrl(SERVER_URL_PREFIX);
   protected static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"
