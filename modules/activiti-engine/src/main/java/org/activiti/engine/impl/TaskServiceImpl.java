@@ -231,10 +231,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, false));
   }
 
-    @Override
-    public <T> T getVariable(String taskId, String variableName, Class<T> variableClass) {
-        return variableClass.cast(getVariable(taskId, variableName));
-    }
+  @Override
+  public <T> T getVariable(String taskId, String variableName, Class<T> variableClass) {
+  	return variableClass.cast(getVariable(taskId, variableName));
+  }
 
   public boolean hasVariable(String taskId, String variableName) {
     return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, false));
@@ -244,10 +244,10 @@ public class TaskServiceImpl extends ServiceImpl implements TaskService {
     return commandExecutor.execute(new GetTaskVariableCmd(executionId, variableName, true));
   }
 
-    @Override
-    public <T> T getVariableLocal(String taskId, String variableName, Class<T> variableClass) {
-        return variableClass.cast(getVariableLocal(taskId, variableName));
-    }
+  @Override
+  public <T> T getVariableLocal(String taskId, String variableName, Class<T> variableClass) {
+  	return variableClass.cast(getVariableLocal(taskId, variableName));
+  }
 
   public boolean hasVariableLocal(String taskId, String variableName) {
     return commandExecutor.execute(new HasTaskVariableCmd(taskId, variableName, true));

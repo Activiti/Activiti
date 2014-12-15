@@ -42,7 +42,11 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   
   private static final long serialVersionUID = 1L;
   
-  protected Map<String, VariableInstanceEntity> variableInstances = null;
+  // The cache used when fetching all variables
+  protected Map<String, VariableInstanceEntity> variableInstances = null; // needs to be null, the logic depends on it for checking if vars were already fetched
+  
+  // The cache is used when fetching/setting specific variables
+  protected Map<String, VariableInstanceEntity> usedVariablesCache = new HashMap<String, VariableInstanceEntity>();
   
   protected ELContext cachedElContext;
 
@@ -71,38 +75,175 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     return collectVariables(new HashMap<String, Object>());
   }
   
+  public Map<String, Object> getVariables(Collection<String> variableNames) {
+  	return getVariables(variableNames, true);
+  }
+  
+  public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
+  	
+  	Map<String, Object> requestedVariables = new HashMap<String, Object>();
+  	Set<String> variableNamesToFetch = new HashSet<String>(variableNames);
+  	
+  	// The values in the fetch-cache will be more recent, so they can override any existing ones
+  	for (String variableName : variableNames) {
+  		if (usedVariablesCache.containsKey(variableName)) {
+  			requestedVariables.put(variableName, usedVariablesCache.get(variableName).getValue());
+  			variableNamesToFetch.remove(variableName);
+  		}
+  	}
+  	
+  	if (fetchAllVariables == true) {
+  		
+  		// getVariables() will go up the execution hierarchy, no need to do it here
+  		// also, the cached values will already be applied too 
+	    Map<String, Object> allVariables = getVariables(); 
+	    for (String variableName : variableNamesToFetch) {
+	    	requestedVariables.put(variableName, allVariables.get(variableName));
+	    }
+	    return requestedVariables;
+	    
+  	} else {
+  		
+  		// Fetch variables on this scope
+  		List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
+  		for (VariableInstanceEntity variable : variables) {
+  			requestedVariables.put(variable.getName(), variable.getValue());
+  		}
+    	
+    	// Go up if needed
+    	VariableScopeImpl parent = getParentVariableScope();
+    	if (parent != null) {
+    		requestedVariables.putAll(parent.getVariables(variableNamesToFetch, fetchAllVariables));
+    	}
+  		
+  		return requestedVariables;
+  		
+  	}
+  
+  }
+  
   protected Map<String, Object> collectVariables(HashMap<String, Object> variables) {
     ensureVariableInstancesInitialized();
     VariableScopeImpl parentScope = getParentVariableScope();
     if (parentScope!=null) {
       variables.putAll(parentScope.collectVariables(variables));
     }
+    
     for (VariableInstanceEntity variableInstance: variableInstances.values()) {
       variables.put(variableInstance.getName(), variableInstance.getValue());
     }
+    
+    for (String variableName : usedVariablesCache.keySet()) {
+    	variables.put(variableName, usedVariablesCache.get(variableName).getValue());
+    }
+    
     return variables;
   }
   
   public Object getVariable(String variableName) {
-    ensureVariableInstancesInitialized();
-    VariableInstanceEntity variableInstance = variableInstances.get(variableName);
-    if (variableInstance!=null) {
-      return variableInstance.getValue();
-    }
-    VariableScope parentScope = getParentVariableScope();
-    if (parentScope!=null) {
-      return parentScope.getVariable(variableName);
-    }
-    return null;
+    return getVariable(variableName, true);
   }
   
+  /**
+   * The same operation as {@link VariableScopeImpl#getVariable(String)}, but with
+   * an extra parameter to indicate whether or not all variables need to be fetched.
+   * 
+   * Note that the default Activiti way (because of backwards compatibility) is to 
+   * fetch all the variables when doing a get/set of variables. So this means 'true'
+   * is the default value for this method, and in fact it will simply delegate to {@link #getVariable(String)}.
+   * This can also be the most performant, if you're doing a lot of 
+   * variable gets in the same transaction (eg in service tasks).
+   * 
+   * In case 'false' is used, only the specific variable will be fetched.
+   */
+  public Object getVariable(String variableName, boolean fetchAllVariables) {
+  	if (fetchAllVariables == true) {
+  		
+  		 // Check the local single-fetch cache
+      if (usedVariablesCache.containsKey(variableName)) {
+      	return usedVariablesCache.get(variableName).getValue();
+      }
+  		
+  		ensureVariableInstancesInitialized();
+      VariableInstanceEntity variableInstance = variableInstances.get(variableName);
+      if (variableInstance!=null) {
+        return variableInstance.getValue();
+      }
+      
+  		// Go up the hierarchy
+      VariableScope parentScope = getParentVariableScope();
+      if (parentScope!=null) {
+      	return parentScope.getVariable(variableName, true);
+      }
+      
+      return null;
+      
+  	} else {
+  		
+  		if (usedVariablesCache.containsKey(variableName)) {
+  			return usedVariablesCache.get(variableName).getValue();
+  		}
+  		
+  		if (variableInstances != null && variableInstances.containsKey(variableName)) {
+  			return variableInstances.get(variableName).getValue();
+  		}
+  		
+  		VariableInstanceEntity variable = getSpecificVariable(variableName);
+  		if (variable != null) {
+  			usedVariablesCache.put(variableName, variable);
+  			return variable.getValue();
+  		} 
+  		
+  		// Go up the hierarchy
+  		VariableScope parentScope = getParentVariableScope();
+  		if (parentScope != null) {
+  			return parentScope.getVariable(variableName, false);
+  		}
+  		
+  		return null;
+  		
+  	}
+  }
+  
+  protected abstract VariableInstanceEntity getSpecificVariable(String variableName);
+  
   public Object getVariableLocal(String variableName) {
-    ensureVariableInstancesInitialized();
-    VariableInstanceEntity variableInstance = variableInstances.get(variableName);
-    if (variableInstance!=null) {
-      return variableInstance.getValue();
-    }
-    return null;
+  	return getVariableLocal(variableName, true);
+  }
+  
+  public Object getVariableLocal(String variableName, boolean fetchAllVariables) {
+  	if (fetchAllVariables == true) {
+  		
+  		if (usedVariablesCache.containsKey(variableName)) {
+  			return usedVariablesCache.get(variableName).getValue();
+  		}
+  		
+			ensureVariableInstancesInitialized();
+			
+			VariableInstanceEntity variableInstance = variableInstances.get(variableName);
+			if (variableInstance != null) {
+				return variableInstance.getValue();
+			}
+			return null;
+  		
+  	} else {
+  		
+  		if (usedVariablesCache.containsKey(variableName)) {
+  			return usedVariablesCache.get(variableName).getValue();
+  		}
+  		
+  		if (variableInstances != null && variableInstances.containsKey(variableName)) {
+  			return variableInstances.get(variableName).getValue();
+  		}
+  		
+  		VariableInstanceEntity variable = getSpecificVariable(variableName);
+  		usedVariablesCache.put(variableName, variable);
+  		
+  		if (variable != null) {
+  			return variable.getValue();
+  		} 
+  		return null;
+  	}
   }
   
   public boolean hasVariables() {
@@ -160,8 +301,48 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     for (VariableInstanceEntity variableInstance: variableInstances.values()) {
       variables.put(variableInstance.getName(), variableInstance.getValue());
     }
+    for (String variableName : usedVariablesCache.keySet()) {
+    	variables.put(variableName, usedVariablesCache.get(variableName).getValue());
+    }
     return variables;
   }
+  
+  public Map<String, Object> getVariablesLocal(Collection<String> variableNames) {
+  	return getVariablesLocal(variableNames, true);
+  }
+  
+  public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+  	Map<String, Object> requestedVariables = new HashMap<String, Object>();
+  	
+  	// The values in the fetch-cache will be more recent, so they can override any existing ones
+  	Set<String> variableNamesToFetch = new HashSet<String>(variableNames);
+  	for (String variableName : variableNames) {
+  		if (usedVariablesCache.containsKey(variableName)) {
+  			requestedVariables.put(variableName, usedVariablesCache.get(variableName).getValue());
+  			variableNamesToFetch.remove(variableName);
+  		}
+  	}
+  	
+  	if (fetchAllVariables == true) {
+  		
+	    Map<String, Object> allVariables = getVariablesLocal();
+	    for (String variableName : variableNamesToFetch) {
+	    	requestedVariables.put(variableName, allVariables.get(variableName));
+	    }
+	    
+  	} else {
+  		
+  		List<VariableInstanceEntity> variables = getSpecificVariables(variableNamesToFetch);
+  		for (VariableInstanceEntity variable : variables) {
+  			requestedVariables.put(variable.getName(), variable.getValue());
+  		}
+  		
+  	}
+  	
+  	return requestedVariables;
+  }
+  
+  protected abstract List<VariableInstanceEntity> getSpecificVariables(Collection<String> variableNames);
 
   public Set<String> getVariableNamesLocal() {
     ensureVariableInstancesInitialized();
@@ -244,40 +425,152 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   }
 
   public void setVariable(String variableName, Object value) {
-    setVariable(variableName, value, getSourceActivityExecution());
+    setVariable(variableName, value, getSourceActivityExecution(), true);
+  }
+  
+  /**
+   * The default {@link #setVariable(String, Object)} fetches all variables 
+   * (for historical and backwards compatible reasons) while setting the variables.
+   * 
+   * Setting the fetchAllVariables parameter to true is the default behaviour (ie fetching all variables) 
+   * Setting the fetchAllVariables parameter to false does not do that. 
+   * 
+   */
+  public void setVariable(String variableName, Object value, boolean fetchAllVariables) {
+    setVariable(variableName, value, getSourceActivityExecution(), fetchAllVariables);
   }
 
-  protected void setVariable(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
-    if (hasVariableLocal(variableName)) {
-      setVariableLocal(variableName, value, sourceActivityExecution);
-      return;
-    } 
-    VariableScopeImpl parentVariableScope = getParentVariableScope();
-    if (parentVariableScope!=null) {
-      if (sourceActivityExecution==null) {
-        parentVariableScope.setVariable(variableName, value);
-      } else {
-        parentVariableScope.setVariable(variableName, value, sourceActivityExecution);
-      }
-      return;
-    }
-    createVariableLocal(variableName, value);
+  protected void setVariable(String variableName, Object value, 
+  		ExecutionEntity sourceActivityExecution, boolean fetchAllVariables) {
+  	
+  	if (fetchAllVariables == true) {
+  		
+  		// If it's in the cache, it's more recent
+  		if (usedVariablesCache.containsKey(variableName)) {
+  			updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
+  		}
+	  	
+	  	// If the variable exists on this scope, replace it
+	    if (hasVariableLocal(variableName)) {
+	      setVariableLocal(variableName, value, sourceActivityExecution, true);
+	      return;
+	    } 
+	    
+	    // Otherwise, go up the hierarchy (we're trying to put it as high as possible)
+	    VariableScopeImpl parentVariableScope = getParentVariableScope();
+	    if (parentVariableScope!=null) {
+	      if (sourceActivityExecution==null) {
+	        parentVariableScope.setVariable(variableName, value);
+	      } else {
+	        parentVariableScope.setVariable(variableName, value, sourceActivityExecution, true);
+	      }
+	      return;
+	    }
+	    
+	    // We're as high as possible and the variable doesn't exist yet, so we're creating it
+	    createVariableLocal(variableName, value);
+	    
+  	} else {
+  		
+  		// Check local cache first
+  		if (usedVariablesCache.containsKey(variableName)) {
+  			
+  			updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
+  			
+  		} else if (variableInstances != null && variableInstances.containsKey(variableName)) {
+  			
+  			updateVariableInstance(variableInstances.get(variableName), value, sourceActivityExecution);
+  			
+  		} else {
+  			
+  			// Not in local cache, check if defined on this scope
+  			// Create it if it doesn't exist yet
+  			VariableInstanceEntity variable = getSpecificVariable(variableName);
+  			if (variable != null) {
+  				updateVariableInstance(variable, value, sourceActivityExecution);
+  				usedVariablesCache.put(variableName, variable);
+  			} else {
+  				
+  				VariableScopeImpl parent = getParentVariableScope();
+  				if (parent != null) {
+  					parent.setVariable(variableName, value, sourceActivityExecution, fetchAllVariables);
+  					return;
+  				} 
+
+  				variable = createVariableInstance(variableName, value, sourceActivityExecution);
+  				usedVariablesCache.put(variableName, variable);
+  				
+  			}
+  			
+  		}
+  		
+  	}
+  	
   }
+  
 
   public Object setVariableLocal(String variableName, Object value) {
-    return setVariableLocal(variableName, value, getSourceActivityExecution());
+    return setVariableLocal(variableName, value, getSourceActivityExecution(), true);
+  }
+  
+  /**
+   * The default {@link #setVariableLocal(String, Object)} fetches all variables 
+   * (for historical and backwards compatible reasons) while setting the variables.
+   * 
+   * Setting the fetchAllVariables parameter to true is the default behaviour (ie fetching all variables) 
+   * Setting the fetchAllVariables parameter to false does not do that. 
+   * 
+   */
+  public Object setVariableLocal(String variableName, Object value, boolean fetchAllVariables) {
+    return setVariableLocal(variableName, value, getSourceActivityExecution(), fetchAllVariables);
   }
 
-  public Object setVariableLocal(String variableName, Object value, ExecutionEntity sourceActivityExecution) {
-    ensureVariableInstancesInitialized();
-    VariableInstanceEntity variableInstance = variableInstances.get(variableName);
-    if (variableInstance == null) {
-      createVariableLocal(variableName, value);
-    } else {
-      updateVariableInstance(variableInstance, value, sourceActivityExecution);
-    }
-    
-    return null;
+  public Object setVariableLocal(String variableName, Object value, 
+  		ExecutionEntity sourceActivityExecution, boolean fetchAllVariables) {
+  	
+  	if (fetchAllVariables == true) {
+  		
+	    // If it's in the cache, it's more recent
+  		if (usedVariablesCache.containsKey(variableName)) {
+  			updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
+  		}
+  		
+  		ensureVariableInstancesInitialized();
+	    
+	    VariableInstanceEntity variableInstance = variableInstances.get(variableName);
+	    if (variableInstance == null) {
+	    	variableInstance = usedVariablesCache.get(variableName);
+	    }
+	    
+	    if (variableInstance == null) {
+	    	createVariableLocal(variableName, value);
+	    } else {
+	      updateVariableInstance(variableInstance, value, sourceActivityExecution);
+	    }
+	    
+	    return null;
+	    
+  	} else {
+  		
+  		if (usedVariablesCache.containsKey(variableName)) {
+  			updateVariableInstance(usedVariablesCache.get(variableName), value, sourceActivityExecution);
+  		} else if (variableInstances != null && variableInstances.containsKey(variableName)) {
+				updateVariableInstance(variableInstances.get(variableName), value, sourceActivityExecution);
+			} else {
+				
+				VariableInstanceEntity variable = getSpecificVariable(variableName);
+				if (variable != null) {
+					updateVariableInstance(variable, value, sourceActivityExecution);
+				} else {
+					variable = createVariableInstance(variableName, value, sourceActivityExecution);
+				}
+				usedVariablesCache.put(variableName, variable);
+				
+			}			
+  		
+			return null;
+  		
+  	}
   }
   
   public void createVariableLocal(String variableName, Object value) {
@@ -384,7 +677,10 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
  
     VariableInstanceEntity variableInstance = VariableInstanceEntity.createAndInsert(variableName, type, value);
     initializeVariableInstanceBackPointer(variableInstance);
-    variableInstances.put(variableName, variableInstance);
+    
+    if (variableInstances != null) {
+    	variableInstances.put(variableName, variableInstance);
+    }
     
     // Record historic variable
     Context.getCommandContext().getHistoryManager()

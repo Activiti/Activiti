@@ -735,6 +735,33 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected boolean isActivityIdUsedForDetails() {
     return false;
   }
+  
+  // Override from VariableScopeImpl
+  
+  // Overriden to avoid fetching *all* variables (as is the case in the super call)
+  @Override
+  protected VariableInstanceEntity getSpecificVariable(String variableName) {
+		CommandContext commandContext = Context.getCommandContext();
+		if (commandContext == null) {
+			throw new ActivitiException("lazy loading outside command context");
+		}
+		VariableInstanceEntity variableInstance = commandContext
+		    .getVariableInstanceEntityManager()
+		    .findVariableInstanceByTaskAndName(id, variableName);
+
+		return variableInstance;
+	}
+  
+  @Override
+  protected List<VariableInstanceEntity> getSpecificVariables(Collection<String> variableNames) {
+  	CommandContext commandContext = Context.getCommandContext();
+		if (commandContext == null) {
+			throw new ActivitiException("lazy loading outside command context");
+		}
+		return commandContext
+		    .getVariableInstanceEntityManager()
+		    .findVariableInstancesByTaskAndNames(id, variableNames);
+  }
 
   // modified getters and setters /////////////////////////////////////////////
   

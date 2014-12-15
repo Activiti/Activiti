@@ -14,7 +14,6 @@ package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -27,6 +26,7 @@ import org.activiti.engine.runtime.Execution;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, Serializable {
 
@@ -42,6 +42,8 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
   }
 
   public Map<String, Object> execute(CommandContext commandContext) {
+  	
+  	// Verify existance of execution
     if(executionId == null) {
       throw new ActivitiIllegalArgumentException("executionId is null");
     }
@@ -54,24 +56,26 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
       throw new ActivitiObjectNotFoundException("execution "+executionId+" doesn't exist", Execution.class);
     }
 
-    Map<String, Object> executionVariables;
-    if (isLocal) {
-      executionVariables = execution.getVariablesLocal();
+    if (variableNames == null || variableNames.isEmpty()) {
+    	
+    	// Fetch all
+    	
+    	if (isLocal) {
+    		return execution.getVariablesLocal();
+    	} else {
+    		return execution.getVariables();
+    	}
+    	
     } else {
-      executionVariables = execution.getVariables();
+    	
+    	// Fetch specific collection of variables
+    	if (isLocal) {
+    		return execution.getVariablesLocal(variableNames, false);
+    	} else {
+    		return execution.getVariables(variableNames, false);
+    	}
+    	
     }
     
-    if (variableNames != null && !variableNames.isEmpty()) {
-      // if variableNames is not empty, return only variable names mentioned in it
-      Map<String, Object> tempVariables = new HashMap<String, Object>();
-      for (String variableName: variableNames) {
-        if (executionVariables.containsKey(variableName)) {
-          tempVariables.put(variableName, executionVariables.get(variableName));
-        }
-      }
-      executionVariables = tempVariables;
-    }
-    
-    return executionVariables;
   }
 }

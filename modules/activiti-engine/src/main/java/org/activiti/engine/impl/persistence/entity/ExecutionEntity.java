@@ -15,12 +15,14 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.EngineServices;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -1197,7 +1199,32 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     					variableInstance.getTaskId(), variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
     }
   }
+  
+  @Override
+  protected VariableInstanceEntity getSpecificVariable(String variableName) {
 
+  	CommandContext commandContext = Context.getCommandContext();
+    if (commandContext == null) {
+      throw new ActivitiException("lazy loading outside command context");
+    }
+    VariableInstanceEntity variableInstance = commandContext
+    	.getVariableInstanceEntityManager()
+    	.findVariableInstanceByExecutionAndName(id, variableName);
+    
+    return variableInstance;
+  }
+  
+  @Override
+  protected List<VariableInstanceEntity> getSpecificVariables(Collection<String> variableNames) {
+  	CommandContext commandContext = Context.getCommandContext();
+    if (commandContext == null) {
+      throw new ActivitiException("lazy loading outside command context");
+    }
+    return commandContext
+    	.getVariableInstanceEntityManager()
+    	.findVariableInstancesByExecutionAndNames(id, variableNames);
+  }
+  
   // persistent state /////////////////////////////////////////////////////////
 
   public Object getPersistentState() {

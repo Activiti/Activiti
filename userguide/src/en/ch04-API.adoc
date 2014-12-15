@@ -341,6 +341,74 @@ long count = taskService.createNativeTaskQuery()
   .count();
 ----
 
+[[apiVariables]]
+
+=== Variables
+
+Every process instance needs and uses data to execute the steps it exists of. In Activiti, this data is called _variables_, which are stored in the database. Variables can be used in expressions (for example to select the correct outgoing sequence flow in an exclusive gateway), in java service tasks when calling external services (for example to provide the input or store the result of the service call), etc.
+
+A process instance can have variables (called _process variables_), but also _executions_ (which are specific pointers to where the process is active) and user tasks can have variables. A process instance can have any number of variables. Each variable is stored in a row in the _ACT_RU_VARIABLE_ database table.
+
+Any of the _startProcessInstanceXXX_ methods have an optional parameters to provide the variables when the process instance is created and started. For example, from the _RuntimeService_:
+
+[source,java,linenums]
+----
+ProcessInstance startProcessInstanceByKey(String processDefinitionKey, Map<String, Object> variables);
+----
+
+Variables can be added during process execution. For example (_RuntimeService_):
+
+[source,java,linenums]
+----
+void setVariable(String executionId, String variableName, Object value);
+void setVariableLocal(String executionId, String variableName, Object value);
+void setVariables(String executionId, Map<String, ? extends Object> variables);
+void setVariablesLocal(String executionId, Map<String, ? extends Object> variables);
+----
+
+Note that variables can be set _local_ for a given execution (remember a process instance consists of a tree of executions). The variable will only be visible on that execution, and not higher in the tree of executions. This can be useful if data shouldn't be propagated to the process instance level, or the variable has a new value for a certain path in the process instance (for example when using parallel paths).
+
+Variables can also be fetched again, as shown below. Note that similar methods exist on the _TaskService_. This means that tasks, like executions, can have local variables that are 'alive' just for the duration of the task.
+
+[source,java,linenums]
+----
+Map<String, Object> getVariables(String executionId);
+Map<String, Object> getVariablesLocal(String executionId);
+Map<String, Object> getVariables(String executionId, Collection<String> variableNames);
+Map<String, Object> getVariablesLocal(String executionId, Collection<String> variableNames);
+Object getVariable(String executionId, String variableName);
+<T> T getVariable(String executionId, String variableName, Class<T> variableClass);
+----
+
+Variables are often used in <<bpmnJavaServiceTask, Java delegates>>, <<apiExpressions, expressions>>, execution- or tasklisteners, scripts, etc. In those constructs, the current _execution_ or _task_ object is available and it can be used for variable setting and/or retrieval. The simplest methods are these:
+
+[source,java,linenums]
+----
+execution.getVariables();
+execution.getVariables(Collection<String> variableNames);
+execution.getVariable(String variableName);
+
+execution.setVariables(Map<String, object> variables);
+execution.setVariable(String variableName, Object value);
+----
+
+Note that a variant with _local_ is also available for all of the above.
+
+For historical (and backwards compatible reasons), when doing any of the calls above, behind the scenes actually *all* variables will be fetched from the database. This means that if you have 10 variables, and only get one through _getVariable("myVariable")_, behind the scenes the other 9 will be fetched and cached. This is not bad, as subsequent calls will not hit the database again.  For example, when your process definition has three sequential service tasks (and thus one database transaction), using one call to fetch all variables in the first service task might be better then fetching the variables needed in each service task separately. Note that this applies *both* for getting and setting variables.
+
+Of course, when using a lot of variables or simply when you want tight control on the database query and traffic, this is not appropriate. Since Activiti 5.17, new methods have been introduced to give a tighter control on this, by adding in new methods that have an optional parameter that tells the engine whether or not behind the scenes all variables need to be fetched and cached:
+
+[source,java,linenums]
+----
+Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables);
+Object getVariable(String variableName, boolean fetchAllVariables);
+void setVariable(String variableName, Object value, boolean fetchAllVariables);
+----
+
+When using _true_ for the parameter _fetchAllVariables_, the behaviour will be exactly as described above: when getting or setting a variable, all other variables will be fetched and cached.
+
+However, when using _false_ as value, a specific query will be used and no other variables will be fetched nor cached. Only the value of the variable in question here will be cached for subsequent use.
+
 
 [[apiExpressions]]
 

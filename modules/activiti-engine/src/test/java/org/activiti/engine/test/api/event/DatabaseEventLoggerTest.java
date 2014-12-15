@@ -102,7 +102,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			if (i == 1) {
 				
 				assertNotNull(entry.getType());
-				assertEquals(entry.getType(), "PROCESSINSTANCE_START");
+				assertEquals("PROCESSINSTANCE_START", entry.getType());
 				assertNotNull(entry.getProcessDefinitionId());
 				assertNotNull(entry.getProcessInstanceId());
 				assertNotNull(entry.getTimeStamp());
@@ -385,7 +385,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 				
 			if (i == 14) {
 				assertNotNull(entry.getType());
-				assertEquals(entry.getType(), "PROCESSINSTANCE_END");
+				assertEquals("PROCESSINSTANCE_END", entry.getType());
 				assertNotNull(entry.getProcessDefinitionId());
 				assertNotNull(entry.getProcessInstanceId());
 				assertNotNull(entry.getTimeStamp());
@@ -449,7 +449,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 			
 			// process instance start
 			if (i == 1) {
-				assertEquals(entry.getType(), "PROCESSINSTANCE_START");
+				assertEquals("PROCESSINSTANCE_START", entry.getType());
 				Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>(){});
 				assertNull(data.get(Fields.TENANT_ID));
 			}

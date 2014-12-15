@@ -85,7 +85,7 @@ public class ProcessInstanceCollectionResourceTest extends BaseSpringRestTestCas
     assertEquals(1, variableNodes.size());
     
     variableNodes = dataNode.get("variables");
-    assertEquals(variableNodes.size(), 1);
+    assertEquals(1, variableNodes.size());
     assertNotNull(variableNodes.get(0).get("name"));
     assertNotNull(variableNodes.get(0).get("value"));
    

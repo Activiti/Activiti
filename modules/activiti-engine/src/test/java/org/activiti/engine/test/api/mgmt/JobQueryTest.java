@@ -276,7 +276,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     assertNotNull(job);
     
     List<Job> list = managementService.createJobQuery().withException().list();
-    assertEquals(list.size(), 1);
+    assertEquals(1, list.size());
     
     deleteJobInDatabase();
     
@@ -287,7 +287,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     assertNotNull(job);
     
     list = managementService.createJobQuery().withException().list();
-    assertEquals(list.size(), 1);
+    assertEquals(1, list.size());
     
     deleteJobInDatabase();
     
