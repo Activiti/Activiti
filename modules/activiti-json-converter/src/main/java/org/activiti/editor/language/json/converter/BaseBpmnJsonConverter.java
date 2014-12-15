@@ -36,7 +36,6 @@ import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
@@ -79,17 +78,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
     this.shapesArrayNode = shapesArrayNode;
     GraphicInfo graphicInfo = model.getGraphicInfo(flowElement.getId());
     
-    String stencilId = null;
-    if (flowElement instanceof ServiceTask) {
-      ServiceTask serviceTask = (ServiceTask) flowElement;
-      if ("mail".equalsIgnoreCase(serviceTask.getType())) {
-        stencilId = STENCIL_TASK_MAIL;
-      } else {
-        stencilId = getStencilId(flowElement);
-      }
-    } else {
-      stencilId = getStencilId(flowElement);
-    }
+    String stencilId = getStencilId(flowElement);
     
     flowElementNode = BpmnJsonConverterUtil.createChildShape(flowElement.getId(), stencilId, 
         graphicInfo.getX() - subProcessX + graphicInfo.getWidth(), 
