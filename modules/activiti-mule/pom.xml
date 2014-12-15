@@ -42,7 +42,6 @@
             <buildDirectory>${project.build.directory}</buildDirectory>
           </systemPropertyVariables>
           <runOrder>alphabetical</runOrder>
-          <argLine>-Duser.language=en</argLine>
         </configuration>
       </plugin>
       <plugin>
