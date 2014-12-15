@@ -79,6 +79,7 @@ public class CreateAttachmentCmd implements Command<Attachment> {
       byte[] bytes = IoUtil.readInputStream(content, attachmentName);
       ByteArrayEntity byteArray = ByteArrayEntity.createAndInsert(bytes);
       attachment.setContentId(byteArray.getId());
+      attachment.setContent(byteArray);
     }
 
     commandContext.getHistoryManager()
