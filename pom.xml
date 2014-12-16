@@ -480,6 +480,12 @@
         </exclusions>
       </dependency>
       <dependency>
+        <groupId>org.hsqldb</groupId>
+        <artifactId>hsqldb</artifactId>
+        <version>2.3.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
         <groupId>postgresql</groupId>
         <artifactId>postgresql</artifactId>
         <version>9.0-801.jdbc4</version>
