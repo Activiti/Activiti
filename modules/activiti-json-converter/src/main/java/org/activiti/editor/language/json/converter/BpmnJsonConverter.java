@@ -89,7 +89,6 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     
     // task types
     BusinessRuleTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
-    MailTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ManualTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ReceiveTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
     ScriptTaskJsonConverter.fillTypes(convertersToBpmnMap, convertersToJsonMap);
@@ -146,7 +145,6 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
     DI_RECTANGLES.add(STENCIL_SUB_PROCESS);
     DI_RECTANGLES.add(STENCIL_EVENT_SUB_PROCESS);
     DI_RECTANGLES.add(STENCIL_TASK_BUSINESS_RULE);
-    DI_RECTANGLES.add(STENCIL_TASK_MAIL);
     DI_RECTANGLES.add(STENCIL_TASK_MANUAL);
     DI_RECTANGLES.add(STENCIL_TASK_RECEIVE);
     DI_RECTANGLES.add(STENCIL_TASK_SCRIPT);

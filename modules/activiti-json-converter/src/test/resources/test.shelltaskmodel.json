@@ -1,0 +1,217 @@
+{
+    "bounds": {
+        "lowerRight": {
+            "x": 1485.0, 
+            "y": 1050.0
+        }, 
+        "upperLeft": {
+            "x": 0.0, 
+            "y": 0.0
+        }
+    }, 
+    "childShapes": [
+        {
+            "bounds": {
+                "lowerRight": {
+                    "x": 352.5, 
+                    "y": 165.0
+                }, 
+                "upperLeft": {
+                    "x": 324.5, 
+                    "y": 137.0
+                }
+            }, 
+            "childShapes": [], 
+            "outgoing": [], 
+            "properties": {
+                "overrideid": "sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5"
+            }, 
+            "resourceId": "sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5", 
+            "stencil": {
+                "id": "EndNoneEvent"
+            }
+        }, 
+        {
+            "bounds": {
+                "lowerRight": {
+                    "x": 172.0, 
+                    "y": 212.0
+                }, 
+                "upperLeft": {
+                    "x": 128.0, 
+                    "y": 212.0
+                }
+            }, 
+            "childShapes": [], 
+            "dockers": [
+                {
+                    "x": 15.0, 
+                    "y": 15.0
+                }, 
+                {
+                    "x": 50.0, 
+                    "y": 40.0
+                }
+            ], 
+            "outgoing": [
+                {
+                    "resourceId": "servicetask"
+                }
+            ], 
+            "properties": {
+                "overrideid": "sid-C6C56AC3-9561-49E0-A58A-624F6CB8BB82"
+            }, 
+            "resourceId": "sid-C6C56AC3-9561-49E0-A58A-624F6CB8BB82", 
+            "stencil": {
+                "id": "SequenceFlow"
+            }, 
+            "target": {
+                "resourceId": "servicetask"
+            }
+        }, 
+        {
+            "bounds": {
+                "lowerRight": {
+                    "x": 279.5, 
+                    "y": 191.0
+                }, 
+                "upperLeft": {
+                    "x": 179.5, 
+                    "y": 111.0
+                }
+            }, 
+            "childShapes": [], 
+            "outgoing": [
+                {
+                    "resourceId": "sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E"
+                }
+            ], 
+            "properties": {
+                "executionlisteners": {
+                    "items": [], 
+                    "totalCount": 0
+                }, 
+                "name": "Shell task", 
+                "overrideid": "servicetask", 
+                "servicetaskfields": {
+                    "items": [
+                        {
+                            "servicetask_field_name": "command", 
+                            "servicetask_field_value": "cmd"
+                        }, 
+                        {
+                            "servicetask_field_name": "arg1", 
+                            "servicetask_field_value": "/c"
+                        }, 
+                        {
+                            "servicetask_field_name": "arg2", 
+                            "servicetask_field_value": "echo"
+                        }, 
+                        {
+                            "servicetask_field_name": "arg3", 
+                            "servicetask_field_value": "EchoTest"
+                        }, 
+                        {
+                            "servicetask_field_name": "wait", 
+                            "servicetask_field_value": "true"
+                        }, 
+                        {
+                            "servicetask_field_name": "outputVariable", 
+                            "servicetask_field_value": "resultVar"
+                        }
+                    ], 
+                    "totalCount": 6
+                },
+                "servicetasktype": "shell"
+            }, 
+            "resourceId": "servicetask", 
+            "stencil": {
+                "id": "ServiceTask"
+            }
+        }, 
+        {
+            "bounds": {
+                "lowerRight": {
+                    "x": 134.5, 
+                    "y": 166.0
+                }, 
+                "upperLeft": {
+                    "x": 104.5, 
+                    "y": 136.0
+                }
+            }, 
+            "childShapes": [], 
+            "outgoing": [
+                {
+                    "resourceId": "sid-C6C56AC3-9561-49E0-A58A-624F6CB8BB82"
+                }
+            ], 
+            "properties": {
+                "formproperties": {
+                    "items": [], 
+                    "totalCount": 0
+                }, 
+                "overrideid": "sid-F62B554B-FF4F-475E-94FF-A3F44EDA6A6A"
+            }, 
+            "resourceId": "sid-F62B554B-FF4F-475E-94FF-A3F44EDA6A6A", 
+            "stencil": {
+                "id": "StartNoneEvent"
+            }
+        }, 
+        {
+            "bounds": {
+                "lowerRight": {
+                    "x": 172.0, 
+                    "y": 212.0
+                }, 
+                "upperLeft": {
+                    "x": 128.0, 
+                    "y": 212.0
+                }
+            }, 
+            "childShapes": [], 
+            "dockers": [
+                {
+                    "x": 50.0, 
+                    "y": 40.0
+                }, 
+                {
+                    "x": 14.0, 
+                    "y": 14.0
+                }
+            ], 
+            "outgoing": [
+                {
+                    "resourceId": "sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5"
+                }
+            ], 
+            "properties": {
+                "overrideid": "sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E"
+            }, 
+            "resourceId": "sid-91C0F3A0-649F-462E-A1C1-1CE499FEDE3E", 
+            "stencil": {
+                "id": "SequenceFlow"
+            }, 
+            "target": {
+                "resourceId": "sid-F7795B38-72CD-41A4-9549-6CFB7D3E5FB5"
+            }
+        }
+    ], 
+    "properties": {
+        "eventlisteners": {
+            "items": [], 
+            "totalCount": 0
+        }, 
+        "name": "process1", 
+        "process_id": "process", 
+        "process_namespace": "http://www.activiti.org/test"
+    }, 
+    "resourceId": "canvas", 
+    "stencil": {
+        "id": "BPMNDiagram"
+    }, 
+    "stencilset": {
+        "namespace": "http://b3mn.org/stencilset/bpmn2.0#", 
+        "url": "../editor/stencilsets/bpmn2.0/bpmn2.0.json"
+    }
+}
