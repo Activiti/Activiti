@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 /**
  * Init namespaces
@@ -38,10 +25,10 @@ ORYX.Core.SVG.Label = Clazz.extend({
 		"%W",
 		"@",
 		"m",
-		"wDGMOQÖ#+=<>~^",
-		"ABCHKNRSUVXZÜÄ&",
-		"bdghnopquxöüETY1234567890ß_§${}*´`µ€",
-		"aeksvyzäFLP?°²³",
+		"wDGMOQ√ñ#+=<>~^",
+		"ABCHKNRSUVXZ√ú√Ñ&",
+		"bdghnopqux√∂√ºETY1234567890√ü_¬ß${}*¬¥`¬µ‚Ç¨",
+		"aeksvyz√§FLP?¬∞¬≤¬≥",
 		"c-",
 		"rtJ\"/()[]:;!|\\",
 		"fjI., ",
@@ -301,7 +288,7 @@ ORYX.Core.SVG.Label = Clazz.extend({
 		try {
 			try {
 				var width, cn = this.node.childNodes;
-				if (cn.length == 0 || !Ext.isGecko) {
+				if (cn.length == 0) {
 					width = this.node.getBBox().width;
 				} else {
 					for (var i = 0, size = cn.length; i < size; ++i) {
@@ -556,6 +543,7 @@ ORYX.Core.SVG.Label = Clazz.extend({
 					
 					if (this.fitToElemId) {
 						window.setTimeout(this._checkFittingToReferencedElem.bind(this), 0);
+						//this._checkFittingToReferencedElem();
 					} else {
 						window.setTimeout(this._positionText.bind(this), 0);
 						//this._positionText();
@@ -579,7 +567,6 @@ ORYX.Core.SVG.Label = Clazz.extend({
 				var refNode = this.node.ownerDocument.getElementById(this.fitToElemId);
 				
 				if (refNode) {
-				
 					var refbb = refNode.getBBox();
 					
 					var fontSize = this.getFontSize();
@@ -593,7 +580,7 @@ ORYX.Core.SVG.Label = Clazz.extend({
 								&& this._rotate % 180 != 0 
 								&& this._rotate % 90 == 0 ? 
 										refbb.height : refbb.width);
-										
+						
 						if (textLength > refBoxLength) {
 						
 							var startIndex = 0;
@@ -622,7 +609,6 @@ ORYX.Core.SVG.Label = Clazz.extend({
 									newtspans.push(newtspan);
 									
 									startIndex = lastSeperatorIndex;
-									
 								}
 								else {
 									var curChar = tspan.textContent.charAt(i);
@@ -654,8 +640,8 @@ ORYX.Core.SVG.Label = Clazz.extend({
 		} catch (e) {
 			ORYX.Log.fatal("Error " + e);
 		}
-		
 		window.setTimeout(this._positionText.bind(this), 0);
+		//this._positionText();
 	},
 	
 	/**
@@ -664,7 +650,7 @@ ORYX.Core.SVG.Label = Clazz.extend({
 	 */
 	_positionText: function() {
 		try {
-			//var tspans = this.node.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, 'tspan');
+			
 			var tspans = this.node.childNodes;
 			
 			var fontSize = this.getFontSize(this.node); 
@@ -706,7 +692,6 @@ ORYX.Core.SVG.Label = Clazz.extend({
 							dy += fontSize;
 							break;
 					}
-					
 					tspan.setAttributeNS(null, 'dy', Math.floor(dy));
 					
 					tspan.setAttributeNS(null, 'x', x);
@@ -767,7 +752,7 @@ ORYX.Core.SVG.Label = Clazz.extend({
 	_getRenderedTextLength: function(tspan, startIndex, endIndex, fontSize) {
 		//if (/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent) && new Number(RegExp.$1) >= 3) {
 			if(startIndex === undefined) {
-//test string: abcdefghijklmnopqrstuvwxyzöäü,.-#+ 1234567890ßABCDEFGHIJKLMNOPQRSTUVWXYZ;:_'*ÜÄÖ!"§$%&/()=?[]{}|<>'~´`\^°µ@€²³
+//test string: abcdefghijklmnopqrstuvwxyz√∂√§√º,.-#+ 1234567890√üABCDEFGHIJKLMNOPQRSTUVWXYZ;:_'*√ú√Ñ√ñ!"¬ß$%&/()=?[]{}|<>'~¬¥`\^¬∞¬µ@‚Ç¨¬≤¬≥
 //				for(var i = 0; i < tspan.textContent.length; i++) {
 //					console.log(tspan.textContent.charAt(i), tspan.getSubStringLength(i,1), this._estimateCharacterWidth(tspan.textContent.charAt(i))*(fontSize/14.0));
 //				}
@@ -842,7 +827,11 @@ ORYX.Core.SVG.Label = Clazz.extend({
 			case 1:
 				var oldText = this._text;
 				if(arguments[0]) {
+					// Filter out multiple spaces to fix issue in chrome for line-wrapping
 					this._text = arguments[0].toString();
+					if(this._text != null && this._text != undefined) {
+						this._text = this._text.replace(/ {2,}/g,' ');
+					}
 				} else {
 					this._text = "";
 				}
@@ -940,6 +929,10 @@ ORYX.Core.SVG.Label = Clazz.extend({
 		if(!this.isVisible) {
 			this.isVisible = true;
 			this._isChanged = true;
+
+			// Since text is removed from the tspan when "hidden", mark
+			// the text as changed to get it redrawn
+			this._textHasChanged = true;
 		}
 	},
 	

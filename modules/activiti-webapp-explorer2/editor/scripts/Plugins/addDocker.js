@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object();
@@ -32,55 +19,38 @@ ORYX.Plugins.AddDocker = Clazz.extend({
 	 */
 	construct: function(facade) {
 		this.facade = facade;
-
-		this.facade.offer({
-			'name':ORYX.I18N.AddDocker.add,
-			'functionality': this.enableAddDocker.bind(this),
-			'group': ORYX.I18N.AddDocker.group,
-			'icon': ORYX.PATH + "images/vector_add.png",
-			'description': ORYX.I18N.AddDocker.addDesc,
-			'index': 1,
-            'toggle': true,
-			'minShape': 0,
-			'maxShape': 0});
-
-
-		this.facade.offer({
-			'name':ORYX.I18N.AddDocker.del,
-			'functionality': this.enableDeleteDocker.bind(this),
-			'group': ORYX.I18N.AddDocker.group,
-			'icon': ORYX.PATH + "images/vector_delete.png",
-			'description': ORYX.I18N.AddDocker.delDesc,
-			'index': 2,
-            'toggle': true,
-			'minShape': 0,
-			'maxShape': 0});
+		this.enableAdd = false;
+		this.enableRemove = false;
 		
 		this.facade.registerOnEvent(ORYX.CONFIG.EVENT_MOUSEDOWN, this.handleMouseDown.bind(this));
 	},
 	
-	enableAddDocker: function(button, pressed) {
-        //FIXME This should be done while construct, but this isn't possible right now!
-        this.addDockerButton = button;
-        
-        // Unpress deleteDockerButton
-        if(pressed && this.deleteDockerButton)
-            this.deleteDockerButton.toggle(false);
+	setEnableAdd: function(enable){
+		this.enableAdd = enable;
+		
+		if(this.enableAdd) {
+    		jQuery("#add-bendpoint-button").addClass('pressed');
+    	} else {
+    		jQuery("#add-bendpoint-button").removeClass('pressed');
+    		jQuery("#add-bendpoint-button").blur();
+    	}
 	},
-    enableDeleteDocker: function(button, pressed) {
-        //FIXME This should be done while construct, but this isn't possible right now!
-        this.deleteDockerButton = button;
-        
-        // Unpress addDockerButton
-        if(pressed && this.addDockerButton)
-            this.addDockerButton.toggle(false);
+	setEnableRemove: function(enable){
+		this.enableRemove = enable;
+		
+		if(this.enableRemove) {
+    		jQuery("#remove-bendpoint-button").addClass('pressed');
+    	} else {
+    		jQuery("#remove-bendpoint-button").removeClass('pressed');
+    		jQuery("#remove-bendpoint-button").blur();
+    	}
+	},
+	
+    enabledAdd: function(enable){
+        return this.enableAdd;
     },
-    
-    enabledAdd: function(){
-        return this.addDockerButton ? this.addDockerButton.pressed : false;
-    },
-    enabledDelete: function(){
-        return this.deleteDockerButton ? this.deleteDockerButton.pressed : false;
+    enabledRemove: function(){
+        return this.enableRemove;
     },
 	
 	/**
@@ -93,18 +63,18 @@ ORYX.Plugins.AddDocker = Clazz.extend({
                 edge: uiObj,
                 position: this.facade.eventCoordinates(event)
             });
-		} else if (this.enabledDelete() &&
+            this.setEnableAdd(false);
+            
+		} else if (this.enabledRemove() &&
 				   uiObj instanceof ORYX.Core.Controls.Docker &&
 				   uiObj.parent instanceof ORYX.Core.Edge) {
             this.newDockerCommand({
                 edge: uiObj.parent,
                 docker: uiObj
             });
-		} else if ( this.enabledAdd() ){
-            this.addDockerButton.toggle(false);
-        } else if ( this.enabledDelete() ) {
-            this.deleteDockerButton.toggle(false);
+            this.setEnableRemove(false);
         }
+		document.body.style.cursor = 'default';
 	},
     
     // Options: edge (required), position (required if add), docker (required if delete)
@@ -120,7 +90,6 @@ ORYX.Plugins.AddDocker = Clazz.extend({
                 this.docker = docker;
                 this.pos = pos;
                 this.facade = facade;
-				//this.index = docker.parent.dockers.indexOf(docker);
             },
             execute: function(){
                 if (this.addEnabled) {
@@ -155,7 +124,7 @@ ORYX.Plugins.AddDocker = Clazz.extend({
             }
         })
         
-        var command = new commandClass(this.enabledAdd(), this.enabledDelete(), options.edge, options.docker, options.position, this.facade);
+        var command = new commandClass(this.enabledAdd(), this.enabledRemove(), options.edge, options.docker, options.position, this.facade);
         
         this.facade.executeCommands([command]);
     }

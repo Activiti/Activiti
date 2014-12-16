@@ -1,25 +1,13 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
+
 NAMESPACE_SVG = "http://www.w3.org/2000/svg";
 NAMESPACE_ORYX = "http://www.b3mn.org/oryx";
 
@@ -52,7 +40,7 @@ ORYX.Core.Edge = {
      * @param {Object} options
      * @param {Stencil} stencil
      */
-    construct: function(options, stencil){
+    construct: function(options, stencil, facade){
         arguments.callee.$.construct.apply(this, arguments);
         
         this.isMovable = true;
@@ -91,8 +79,8 @@ ORYX.Core.Edge = {
     },
     
     _update: function(force){
-		if(this._dockerUpdated || this.isChanged || force) {
-			
+        if(this._dockerUpdated || this.isChanged || force) {
+		  
 			this.dockers.invoke("update");
 			
 	        if (false && (this.bounds.width() === 0 || this.bounds.height() === 0)) {
@@ -418,7 +406,13 @@ ORYX.Core.Edge = {
 			this._oldBounds = this.bounds.clone();
         }
 		
-
+		
+  	    // IE10 specific fix, start and end-markes get left behind when moving path
+		var userAgent = navigator.userAgent;
+		if (navigator.appVersion.indexOf("MSIE 10") !== -1 || (userAgent.indexOf('Trident') !== -1 && userAgent.indexOf('rv:11') !== -1)) 
+		{
+			this.node.parentNode.insertBefore(this.node, this.node);
+		}
     },
 	
 	/**
@@ -1050,7 +1044,7 @@ ORYX.Core.Edge = {
 			ref.orientation = (label.verticalAlign()=="top"?"u":"l") + (label.horizontalAlign()=="left"?"l":"r");
 		}
 	
-		label.setReferencePoint(Ext.apply({},{
+		label.setReferencePoint(jQuery.extend({},{
 				intersection: intersection,
 				segment: {
 					from: from,
@@ -1136,6 +1130,23 @@ ORYX.Core.Edge = {
                     var point1 = lastDocker.bounds.center();
                     var point2 = docker.bounds.center();
                     
+                    var additionalIEZoom = 1;
+                    if (!isNaN(screen.logicalXDPI) && !isNaN(screen.systemXDPI)) {
+                        var ua = navigator.userAgent;
+                        if (ua.indexOf('MSIE') >= 0) {
+                            //IE 10 and below
+                            var zoom = Math.round((screen.deviceXDPI / screen.logicalXDPI) * 100);
+                            if (zoom !== 100) {
+                                additionalIEZoom = zoom / 100
+                            }
+                        }
+                    }
+                    
+                    if (additionalIEZoom !== 1) {
+                        position.x = position.x / additionalIEZoom;
+                        position.y = position.y / additionalIEZoom;
+                    }
+                    
                     if (ORYX.Core.Math.isPointInLine(position.x, position.y, point1.x, point1.y, point2.x, point2.y, 10)) {
                         var path = this._paths.find(function(path){
                             return path.id === pair.key;
@@ -1146,17 +1157,11 @@ ORYX.Core.Edge = {
                                 return true;
                             }
                         }
+                        
                         var newDocker = (exDocker) ? exDocker : this.createDocker(this.dockers.indexOf(lastDocker) + 1, position);
 						newDocker.bounds.centerMoveTo(position);
                         if(exDocker)
 							this.add(newDocker, this.dockers.indexOf(lastDocker) + 1);
-                        // Remove new Docker from 'to add' dockers
-						//pair.value = pair.value.without(newDocker);
-						//pair.value.splice(this.dockers.indexOf(lastDocker) + 1, 0, newDocker);
-						// Remove the Docker from the Docker list and add the Docker to the new position
-                        //this.dockers = this.dockers.without(newDocker);
-                        //this.dockers.splice(this.dockers.indexOf(lastDocker) + 1, 0, newDocker);
-                        //this._update(true);
 						result = newDocker;
                         return true;
                     }
@@ -1291,7 +1296,8 @@ ORYX.Core.Edge = {
                 if (markerUrl && markerUrl !== "") {
                     markerUrl = markerUrl.strip();
                     markerUrl = markerUrl.replace(/^url\(#/, '');
-                    var markerStartId = this.id.concat(markerUrl.replace(/\)$/, ''));
+                    
+                    var markerStartId = this.getValidMarkerId(markerUrl);
                     path.setAttributeNS(null, "marker-start", "url(#" + markerStartId + ")");
                     
                     markersByThisPath.push(this._markers[markerStartId]);
@@ -1302,7 +1308,7 @@ ORYX.Core.Edge = {
                 if (markerUrl && markerUrl !== "") {
                     markerUrl = markerUrl.strip();
                     markerUrl = markerUrl.replace(/^url\(#/, '');
-                    var markerMidId = this.id.concat(markerUrl.replace(/\)$/, ''));
+                    var markerMidId = this.getValidMarkerId(markerUrl);
                     path.setAttributeNS(null, "marker-mid", "url(#" + markerMidId + ")");
                     
                     markersByThisPath.push(this._markers[markerMidId]);
@@ -1312,8 +1318,8 @@ ORYX.Core.Edge = {
                 
                 if (markerUrl && markerUrl !== "") {
                     markerUrl = markerUrl.strip();
-                    markerUrl = markerUrl.replace(/^url\(#/, '');
-                    var markerEndId = this.id.concat(markerUrl.replace(/\)$/, ''));
+                    
+                    var markerEndId = this.getValidMarkerId(markerUrl);
                     path.setAttributeNS(null, "marker-end", "url(#" + markerEndId + ")");
                     
                     markersByThisPath.push(this._markers[markerEndId]);
@@ -1435,8 +1441,26 @@ ORYX.Core.Edge = {
         this.propertiesChanged.each(function(pair){
             pair.value = true;
         });
+        
+        
+        //if(this.dockers.length == 2) {
+        	
+        	
+        	
+      //  }
 		
         //this._update(true);
+    },
+    
+    getValidMarkerId: function(markerUrl) {
+    	if(markerUrl.indexOf("url(\"#") >= 0) {
+            // Fix for IE9, additional quotes are added to the <id
+            var rawId = markerUrl.replace(/^url\(\"#/, "").replace(/\"\)$/, '');
+            return this.id + rawId;
+          } else {
+            markerUrl = markerUrl.replace(/^url\(#/, '');
+            return this.id.concat(markerUrl.replace(/\)$/, ''));
+          }
     },
     
     /**

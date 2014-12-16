@@ -79,17 +79,17 @@ public class BlueprintBasicTest {
   @Configuration
   public Option[] createConfiguration() {
     Option[] coreBundles = options(
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("5.17.0-SNAPSHOT"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("5.17.0-SNAPSHOT"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("5.17.0-SNAPSHOT"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version("5.17.0-SNAPSHOT"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("5.17.0-SNAPSHOT"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("5.17.0"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("5.17.0"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("5.17.0"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version("5.17.0"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("5.17.0T"),
         mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version("3.3.2"),
         mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-core").version("2.2.3"),
         mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-databind").version("2.2.3"),
         mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-annotations").version("2.2.3"),
         mavenBundle().groupId("log4j").artifactId("log4j").version("1.2.17"),
-        mavenBundle().groupId("joda-time").artifactId("joda-time").version("2.1"),
+        mavenBundle().groupId("joda-time").artifactId("joda-time").version("2.6"),
         mavenBundle().groupId("com.h2database").artifactId("h2").version("1.3.176"),
         mavenBundle().groupId("org.mybatis").artifactId("mybatis").version("3.2.5"),
         mavenBundle().groupId("org.slf4j").artifactId("slf4j-api").version("1.7.6"),

@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 /**
  * Init namespaces
@@ -39,7 +26,7 @@ ORYX.Core.AbstractShape = ORYX.Core.UIObject.extend(
 	/**
 	 * Constructor
 	 */
-	construct: function(options, stencil) {
+	construct: function(options, stencil, facade) {
 		
 		arguments.callee.$.construct.apply(this, arguments);
 		
@@ -373,7 +360,7 @@ ORYX.Core.AbstractShape = ORYX.Core.UIObject.extend(
 			var value 	= obj.value;
             
             // Complex properties can be real json objects, encode them to a string
-            if(Ext.type(value) === "object") value = Ext.encode(value);
+            if (Object.prototype.toString.call(value) === "Object") value = JSON.stringify(value);
 
 			switch(prefix + "-" + name){
 				case 'raziel-parent': 
@@ -416,16 +403,17 @@ ORYX.Core.AbstractShape = ORYX.Core.UIObject.extend(
     toJSON: function(){
         var json = {
             resourceId: this.resourceId,
-            properties: Ext.apply({}, this.properties, this.hiddenProperties).inject({}, function(props, prop){
+            properties: jQuery.extend({}, this.properties, this.hiddenProperties).inject({}, function(props, prop){
               var key = prop[0];
               var value = prop[1];
                 
               //If complex property, value should be a json object
               if ( this.getStencil().property(key)
                 	&& this.getStencil().property(key).type() === ORYX.CONFIG.TYPE_COMPLEX 
-                	&& Ext.type(value) === "string"){
+                	&& Object.prototype.toString.call(value) === "String"){
 						
-                  try {value = Ext.decode(value);} catch(error){}
+                  try {value = JSON.parse(value);} catch(error){}
+            	  //try {value = JSON.parse(value);} catch(error){}
               
 			  // Parse date
 			  } else if (value instanceof Date&&this.getStencil().property(key)){
@@ -444,7 +432,7 @@ ORYX.Core.AbstractShape = ORYX.Core.UIObject.extend(
                 id: this.getStencil().idWithoutNs()
             },
             childShapes: this.getChildShapes().map(function(shape){
-                return shape.toJSON()
+                return shape.toJSON();
             })
         };
         
@@ -468,10 +456,10 @@ ORYX.Core.AbstractShape = ORYX.Core.UIObject.extend(
                 var d = docker.getDockedShape() && docker.referencePoint ? docker.referencePoint : docker.bounds.center();
                 d.getDocker = function(){return docker;};
                 return d;
-            })
+            });
         }
         
-        Ext.apply(json, ORYX.Core.AbstractShape.JSONHelper);
+        jQuery.extend(json, ORYX.Core.AbstractShape.JSONHelper);
         
         // do not pollute the json attributes (for serialization), so put the corresponding
         // shape is encapsulated in a method
@@ -486,7 +474,7 @@ ORYX.Core.AbstractShape = ORYX.Core.UIObject.extend(
 /**
  * @namespace Collection of methods which can be used on a shape json object (ORYX.Core.AbstractShape#toJSON()).
  * @example
- * Ext.apply(shapeAsJson, ORYX.Core.AbstractShape.JSONHelper);
+ * jQuery.extend(shapeAsJson, ORYX.Core.AbstractShape.JSONHelper);
  */
 ORYX.Core.AbstractShape.JSONHelper = {
      /**
@@ -508,7 +496,7 @@ ORYX.Core.AbstractShape.JSONHelper = {
          
          this.childShapes.each(function(shape){
 		 	 if (!(shape.eachChild instanceof Function)){
-				Ext.apply(shape, ORYX.Core.AbstractShape.JSONHelper);
+		 		jQuery.extend(shape, ORYX.Core.AbstractShape.JSONHelper);
 			 }
              var res = iterator(shape, this);
              if(res) newChildShapes.push(res); //if false is returned, and modify = true, current shape is deleted.
@@ -528,7 +516,7 @@ ORYX.Core.AbstractShape.JSONHelper = {
          if(deep){
              this.eachChild(function(shape){
 			 	 if (!(shape.getChildShapes instanceof Function)){
-					Ext.apply(shape, ORYX.Core.AbstractShape.JSONHelper);
+			 		jQuery.extend(shape, ORYX.Core.AbstractShape.JSONHelper);
 				 }
                  allShapes = allShapes.concat(shape.getChildShapes(deep));
              }, true);
@@ -541,6 +529,6 @@ ORYX.Core.AbstractShape.JSONHelper = {
       * @return {String} Serialized JSON object
       */
      serialize: function(){
-         return Ext.encode(this);
+         return JSON.stringify(this);
      }
  }

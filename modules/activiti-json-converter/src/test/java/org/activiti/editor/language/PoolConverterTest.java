@@ -49,7 +49,7 @@ public class PoolConverterTest extends AbstractConverterTest {
     Lane lane = process.getLanes().get(0);
     assertEquals("idLane1", lane.getId());
     assertEquals("Lane 1", lane.getName());
-    assertEquals(4, lane.getFlowReferences().size());
+    assertEquals(7, lane.getFlowReferences().size());
     assertTrue(lane.getFlowReferences().contains("startevent"));
     assertTrue(lane.getFlowReferences().contains("usertask1"));
     assertTrue(lane.getFlowReferences().contains("usertask6"));
@@ -58,14 +58,14 @@ public class PoolConverterTest extends AbstractConverterTest {
     lane = process.getLanes().get(1);
     assertEquals("idLane2", lane.getId());
     assertEquals("Lane 2", lane.getName());
-    assertEquals(2, lane.getFlowReferences().size());
+    assertEquals(4, lane.getFlowReferences().size());
     assertTrue(lane.getFlowReferences().contains("usertask2"));
     assertTrue(lane.getFlowReferences().contains("usertask5"));
     
     lane = process.getLanes().get(2);
     assertEquals("idLane3", lane.getId());
     assertEquals("Lane 3", lane.getName());
-    assertEquals(2, lane.getFlowReferences().size());
+    assertEquals(4, lane.getFlowReferences().size());
     assertTrue(lane.getFlowReferences().contains("usertask3"));
     assertTrue(lane.getFlowReferences().contains("usertask4"));
     

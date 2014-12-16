@@ -1,25 +1,13 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
+
 if (!ORYX.Plugins) 
     ORYX.Plugins = new Object();
 
@@ -267,11 +255,11 @@ ORYX.Plugins.Edit = Clazz.extend({
 			stencilset:{
 				namespace:this.clipboard.SSnamespace
 			}
-        }
+        };
         // Apply json helper to iterate over json object
-        Ext.apply(canvas, ORYX.Core.AbstractShape.JSONHelper);
+		jQuery.extend(canvas, ORYX.Core.AbstractShape.JSONHelper);
         
-        var childShapeResourceIds =  canvas.getChildShapes(true).pluck("resourceId");
+        var childShapeResourceIds = canvas.getChildShapes(true).pluck("resourceId");
         var outgoings = {};
         // Iterate over all shapes
         canvas.eachChild(function(shape, parent){
@@ -280,8 +268,8 @@ ORYX.Plugins.Edit = Clazz.extend({
                 return childShapeResourceIds.include(out.resourceId);
             });
 			shape.outgoing.each(function(out){
-				if (!outgoings[out.resourceId]){ outgoings[out.resourceId] = [] }
-				outgoings[out.resourceId].push(shape)
+				if (!outgoings[out.resourceId]){ outgoings[out.resourceId] = []; }
+				outgoings[out.resourceId].push(shape);
 			});
 			
             return shape;
@@ -447,10 +435,10 @@ ORYX.Plugins.Edit.DeleteCommand = ORYX.Core.Command.extend({
         this.facade             = facade;
         
         // Store dockers of deleted shapes to restore connections
-        this.dockers            = this.shapesAsJson.map(function(shapeAsJson){
+        this.dockers            = this.shapesAsJson.map(function(shapeAsJson) {
             var shape = shapeAsJson.getShape();
-            var incomingDockers = shape.getIncomingShapes().map(function(s){return s.getDockers().last()})
-            var outgoingDockers = shape.getOutgoingShapes().map(function(s){return s.getDockers().first()})
+            var incomingDockers = shape.getIncomingShapes().map(function(s){return s.getDockers().last();});
+            var outgoingDockers = shape.getOutgoingShapes().map(function(s){return s.getDockers().first();});
             var dockers = shape.getDockers().concat(incomingDockers, outgoingDockers).compact().map(function(docker){
                 return {
                     object: docker,

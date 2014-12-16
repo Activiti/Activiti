@@ -36,20 +36,20 @@
 	            		   "documentation":"startDoc",
 	            		   "formproperties":{
 	            			   "totalCount":2,
-	            			   "items":[
+	            			   "formProperties":[
 	            			            {
-	            			            	"formproperty_id":"startFormProp1",
-	            			            	"formproperty_name":"startFormProp1",
-	            			            	"formproperty_type":"string",
-	            			            	"formproperty_expression":"",
-	            			            	"formproperty_variable":""
+	            			            	"id":"startFormProp1",
+	            			            	"name":"startFormProp1",
+	            			            	"type":"string",
+	            			            	"expression":"",
+	            			            	"variable":""
 	            			            },
 	            			            {
-	            			            	"formproperty_id":"startFormProp2",
-	            			            	"formproperty_name":"startFormProp2",
-	            			            	"formproperty_type":"boolean",
-	            			            	"formproperty_expression":"",
-	            			            	"formproperty_variable":""
+	            			            	"id":"startFormProp2",
+	            			            	"name":"startFormProp2",
+	            			            	"type":"boolean",
+	            			            	"expression":"",
+	            			            	"variable":""
 	            			            }
 	            			            ]
 	            		   },

@@ -1,25 +1,13 @@
-/**
- * Copyright (c) 2008
- * Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
+
 if (!ORYX.Plugins) 
     ORYX.Plugins = new Object();
 
@@ -31,6 +19,7 @@ ORYX.Plugins.RenameShapes = Clazz.extend({
     
         this.facade = facade;
       	
+        this.facade.registerOnEvent(ORYX.CONFIG.EVENT_CANVAS_SCROLL, this.hideField.bind(this)); 
 		this.facade.registerOnEvent(ORYX.CONFIG.EVENT_DBLCLICK, this.actOnDBLClick.bind(this)); 
 		this.facade.offer({
 		 keyCodes: [{
@@ -42,7 +31,7 @@ ORYX.Plugins.RenameShapes = Clazz.extend({
          });
 		
 		
-		document.documentElement.addEventListener(ORYX.CONFIG.EVENT_MOUSEDOWN, this.hide.bind(this), true ) 
+		document.documentElement.addEventListener(ORYX.CONFIG.EVENT_MOUSEDOWN, this.hide.bind(this), true);
     },
 	
 	/**
@@ -55,7 +44,8 @@ ORYX.Plugins.RenameShapes = Clazz.extend({
 	},
 	
 	actOnDBLClick: function(evt, shape){
-		if( !(shape instanceof ORYX.Core.Shape) ){ return }
+		
+		if( !(shape instanceof ORYX.Core.Shape) ){ return; }
 		
 		// Destroys the old input, if there is one
 		this.destroy();
@@ -66,26 +56,50 @@ ORYX.Plugins.RenameShapes = Clazz.extend({
 					&&  item.refToView().length > 0
 					&&	item.directlyEditable()); 
 		});
-		// from these, get all properties where write access are and the type is String
-		props = props.findAll(function(item){ return !item.readonly() &&  item.type() == ORYX.CONFIG.TYPE_STRING });
+		// from these, get all properties where write access are and the type is String or Expression
+		props = props.findAll(function(item){ return !item.readonly() &&  (item.type() == ORYX.CONFIG.TYPE_STRING || item.type() == ORYX.CONFIG.TYPE_EXPRESSION || item.type() == ORYX.CONFIG.TYPE_DATASOURCE); });
 		
 		// Get all ref ids
-		var allRefToViews	= props.collect(function(prop){ return prop.refToView() }).flatten().compact();
+		var allRefToViews	= props.collect(function(prop){ return prop.refToView(); }).flatten().compact();
 		// Get all labels from the shape with the ref ids
-		var labels			= shape.getLabels().findAll(function(label){ return allRefToViews.any(function(toView){ return label.id.endsWith(toView) }); })
+		var labels			= shape.getLabels().findAll(function(label){ return allRefToViews.any(function(toView){ return label.id.endsWith(toView); }); });
 		
 		// If there are no referenced labels --> return
-		if( labels.length == 0 ){ return } 
+		if( labels.length == 0 ){ return; } 
 		
 		// Define the nearest label
 		var nearestLabel 	= labels.length <= 1 ? labels[0] : null;	
 		if( !nearestLabel ){
-			
-			nearestLabel = labels.find(function(label){ return label.node == evt.target || label.node == evt.target.parentNode })
+			nearestLabel = labels.find(function(label){ return label.node == evt.target || label.node == evt.target.parentNode; });
 			if( !nearestLabel ){
 				
 				var evtCoord 	= this.facade.eventCoordinates(evt);
+				
+				var additionalIEZoom = 1;
+                if (!isNaN(screen.logicalXDPI) && !isNaN(screen.systemXDPI)) {
+                    var ua = navigator.userAgent;
+                    if (ua.indexOf('MSIE') >= 0) {
+                        //IE 10 and below
+                        var zoom = Math.round((screen.deviceXDPI / screen.logicalXDPI) * 100);
+                        if (zoom !== 100) {
+                            additionalIEZoom = zoom / 100
+                        }
+                    }
+                }
+                
+                if (additionalIEZoom !== 1) {
+                     evtCoord.x = evtCoord.x / additionalIEZoom;
+                     evtCoord.y = evtCoord.y / additionalIEZoom;
+                }
 
+				evtCoord.y += $("editor-header").clientHeight - $("canvasSection").scrollTop - 5;
+				if (KISBPM.HEADER_CONFIG.showAppTitle == false)
+				{
+					evtCoord.y += 61;
+				}
+				
+				evtCoord.x -= $("canvasSection").scrollLeft;
+				
 				var trans		= this.facade.getCanvas().rootNode.lastChild.getScreenCTM();
 				evtCoord.x		*= trans.a;
 				evtCoord.y		*= trans.d;
@@ -93,66 +107,39 @@ ORYX.Plugins.RenameShapes = Clazz.extend({
 				var diff = labels.collect(function(label){ 
 							var center 	= this.getCenterPosition( label.node ); 
 							var len 	= Math.sqrt( Math.pow(center.x - evtCoord.x, 2) + Math.pow(center.y - evtCoord.y, 2));
-							return {diff: len, label: label} 
+							return {diff: len, label: label}; 
 						}.bind(this));
 				
-				diff.sort(function(a, b){ return a.diff > b.diff })	
+				diff.sort(function(a, b){ return a.diff > b.diff; });
 				
 				nearestLabel = 	diff[0].label;
 
 			}
 		}
 		// Get the particular property for the label
-		var prop 			= props.find(function(item){ return item.refToView().any(function(toView){ return nearestLabel.id == shape.id + toView })});
-
-		// Set all particular config values
-		var htmlCont 	= this.facade.getCanvas().getHTMLContainer().id;
-
+		var prop 			= props.find(function(item){ return item.refToView().any(function(toView){ return nearestLabel.id == shape.id + toView; });});
+		
 		// Get the center position from the nearest label
 		var width		= Math.min(Math.max(100, shape.bounds.width()), 200);
-		var center 		= this.getCenterPosition( nearestLabel.node );
+		var center 		= this.getCenterPosition( nearestLabel.node, shape );
 		center.x		-= (width/2);
 		var propId		= prop.prefix() + "-" + prop.id();
-
-		// Set the config values for the TextField/Area
-		var config 		= 	{
-								renderTo	: htmlCont,
-								value		: shape.properties[propId],
-								x			: (center.x < 10) ? 10 : center.x,
-								y			: center.y,
-								width		: width,
-								style		: 'position:absolute', 
-								allowBlank	: prop.optional(), 
-								maxLength	: prop.length(),
-								emptyText	: prop.title(),
-								cls			: 'x_form_text_set_absolute'
-							}
+		var textInput = document.createElement("textarea");
+		textInput.id = 'shapeTextInput';
+		textInput.style.position = 'absolute';
+		textInput.style.width = width + 'px';
+		textInput.style.left = (center.x < 10) ? 10 : center.x + 'px';
+		textInput.style.top = (center.y - 15) + 'px';
+		textInput.className = 'x-form-textarea x-form-field x_form_text_set_absolute';
+		textInput.value = shape.properties[propId];
+		this.oldValueText = shape.properties[propId];
+		document.getElementById('canvasSection').appendChild(textInput);
+		this.shownTextField = textInput;
 		
-		// Depending on the property, generate 
-		// ether an TextArea or TextField
-		if(prop.wrapLines()) {
-			
-			config.y 		-= (60/2);
-			config['grow']	= true;
-			this.shownTextField = new Ext.form.TextArea(config);
-		} else {
-			
-			config.y -= (20/2);
-			
-			this.shownTextField = new Ext.form.TextField(config);
-		}
 		
-		//focus
-		this.shownTextField.focus();
-		
-		// Define event handler
-		//	Blur 	-> Destroy
-		//	Change 	-> Set new values					
-		this.shownTextField.on( 'blur', 	this.destroy.bind(this) )
-		this.shownTextField.on( 'change', 	function(node, value){ 
+		// Value change listener needs to be defined now since we reference it in the text field
+		this.updateValueFunction = function(newValue, oldValue) {
 			var currentEl 	= shape;
-			var oldValue	= currentEl.properties[propId]; 
-			var newValue	= value;
 			var facade		= this.facade;
 			
 			if (oldValue != newValue) {
@@ -179,80 +166,110 @@ ORYX.Plugins.RenameShapes = Clazz.extend({
 						this.facade.getCanvas().update();
 						this.facade.updateSelection();
 					}
-				})
-				// Instanciated the class
+				});
+				// Instantiated the class
 				var command = new commandClass();
 				
 				// Execute the command
 				this.facade.executeCommands([command]);
 			}
-		}.bind(this) )
-
-		// Diable the keydown in the editor (that when hitting the delete button, the shapes not get deleted)
+		}.bind(this);
+			
+		jQuery("#shapeTextInput").focus();
+		
+		jQuery("#shapeTextInput").autogrow();
+			
+		// Disable the keydown in the editor (that when hitting the delete button, the shapes not get deleted)
 		this.facade.disableEvent(ORYX.CONFIG.EVENT_KEYDOWN);
 		
 	},
 	
-	getCenterPosition: function(svgNode){
+	getCenterPosition: function(svgNode, shape){
 		
-		if (!svgNode) { return {x:0, y:0} }
+		if (!svgNode) { return {x:0, y:0}; }
 		
-		var center 		= {x: 0, y:0 };
-		var trans,scale,transLocal,bounds;
-		var useParent = false;
-		try {
-			
-			if (('hidden' === svgNode.getAttributeNS(null, 'visibility')&&svgNode.childNodes.length>0)
-				||svgNode.childNodes.length === 0) {
-				useParent = true;
+		var scale = this.facade.getCanvas().node.getScreenCTM();
+		var absoluteXY = shape.bounds.upperLeft();
+		
+		var hasParent = true;
+		var searchShape = shape;
+		while (hasParent)
+		{
+			if (searchShape.getParentShape().getStencil().idWithoutNs() === 'BPMNDiagram')
+			{
+				hasParent = false;
 			}
-			
-			var el 		= useParent ? svgNode.parentNode : svgNode;
-			
-			trans 		= el.getTransformToElement(this.facade.getCanvas().rootNode.lastChild);
-			scale 		= this.facade.getCanvas().rootNode.lastChild.getScreenCTM();
-			transLocal 	= el.getTransformToElement(el.parentNode);
-		} catch(e){
-			return {x:0, y:0}
+			else
+			{
+				var parentXY = searchShape.getParentShape().bounds.upperLeft();
+				absoluteXY.x += parentXY.x;
+				absoluteXY.y += parentXY.y;
+				searchShape = searchShape.getParentShape();
+			}
 		}
 		
-		center.x 	= trans.e - transLocal.e;
-		center.y 	= trans.f - transLocal.f;
+		var center = shape.bounds.midPoint();
+		center.x += absoluteXY.x + scale.e;
+		center.y += absoluteXY.y + scale.f;
 		
-		
-		try {
-			bounds = svgNode.getBBox();
-			
-			if (!useParent&&!(bounds.x<-1000)) {
-				bounds.y -= 1;
-			} else {
-				bounds = {x:Number(svgNode.getAttribute('x')), y:Number(svgNode.getAttribute('y')), width:0, height:0};
-			}
-		} catch(e){
-			bounds = {x:Number(svgNode.getAttribute('x')), y:Number(svgNode.getAttribute('y')), width:0, height:0};
-		}
-		
-		center.x += bounds.x;
-		center.y += bounds.y;
-			
-		center.x += bounds.width/2;
-		center.y += bounds.height/2;
-						
 		center.x *= scale.a;
 		center.y *= scale.d;
 		
+		var additionalIEZoom = 1;
+        if (!isNaN(screen.logicalXDPI) && !isNaN(screen.systemXDPI)) {
+            var ua = navigator.userAgent;
+            if (ua.indexOf('MSIE') >= 0) {
+                //IE 10 and below
+                var zoom = Math.round((screen.deviceXDPI / screen.logicalXDPI) * 100);
+                if (zoom !== 100) {
+                    additionalIEZoom = zoom / 100
+                }
+            }
+        }
+        
+        if (additionalIEZoom === 1) {
+             center.y = center.y - jQuery("#canvasSection").offset().top + 5;
+             center.x -= jQuery("#canvasSection").offset().left;
+        
+        } else {
+             var canvasOffsetLeft = jQuery("#canvasSection").offset().left;
+             var canvasScrollLeft = jQuery("#canvasSection").scrollLeft();
+             var canvasScrollTop = jQuery("#canvasSection").scrollTop();
+             
+             var offset = scale.e - (canvasOffsetLeft * additionalIEZoom);
+             var additionaloffset = 0;
+             if (offset > 10) {
+                 additionaloffset = (offset / additionalIEZoom) - offset;
+             }
+             center.y = center.y - (jQuery("#canvasSection").offset().top * additionalIEZoom) + 5 + ((canvasScrollTop * additionalIEZoom) - canvasScrollTop);
+             center.x = center.x - (canvasOffsetLeft * additionalIEZoom) + additionaloffset + ((canvasScrollLeft * additionalIEZoom) - canvasScrollLeft);
+        }
+		
+	
 		return center;			
 	},
 	
 	hide: function(e){
-		if (this.shownTextField && (!e || !this.shownTextField.el || e.target !== this.shownTextField.el.dom)) {
-			this.shownTextField.onBlur();
+		if (this.shownTextField && (!e || e.target !== this.shownTextField)) {
+			var newValue = this.shownTextField.value;
+			if (newValue !== this.oldValueText)
+			{
+				this.updateValueFunction(newValue, this.oldValueText);
+			}
+			this.destroy();
+		}
+	},
+	
+	hideField: function(e){
+		if (this.shownTextField) {
+			this.destroy();
 		}
 	},
 	
 	destroy: function(e){
-		if( this.shownTextField ){
-			this.shownTextField.destroy(); 
+		var textInputComp = jQuery("#shapeTextInput");
+		if( textInputComp ){
+			textInputComp.remove(); 
 			delete this.shownTextField; 
 			
 			this.facade.enableEvent(ORYX.CONFIG.EVENT_KEYDOWN);

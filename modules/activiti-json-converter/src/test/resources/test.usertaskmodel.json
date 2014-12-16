@@ -39,18 +39,18 @@
             "duedatedefinition" : "2012-11-01",
             "exclusivedefinition" : "No",
             "formkeydefinition" : "testKey",
-            "categoryDefinition" : "defaultCategory",
-            "formproperties" : { "items" : [ { "formproperty_expression" : "${expression}",
-                      "formproperty_id" : "formId",
-                      "formproperty_name" : "formName",
-                      "formproperty_type" : "string",
-                      "formproperty_variable" : "variable"
+            "categorydefinition" : "defaultCategory",
+            "formproperties" : { "formProperties" : [ { "expression" : "${expression}",
+                      "id" : "formId",
+                      "name" : "formName",
+                      "type" : "string",
+                      "variable" : "variable"
                     },
-                    { "formproperty_expression" : "",
-                      "formproperty_id" : "formId2",
-                      "formproperty_name" : "anotherName",
-                      "formproperty_type" : "long",
-                      "formproperty_variable" : ""
+                    { "expression" : "",
+                      "id" : "formId2",
+                      "name" : "anotherName",
+                      "type" : "long",
+                      "variable" : ""
                     }
                   ],
                 "totalCount" : 2
@@ -59,37 +59,12 @@
             "looptype" : "None",
             "name" : "User task",
             "prioritydefinition" : "40",
-            "tasklisteners" : "{\"totalCount\": 3, \"items\": [{\"task_listener_event_type\": \"create\", \"task_listener_class\": \"org.test.TestClass\", \"task_listener_expression\": \"\", \"task_listener_delegate_expression\": \"\", \"task_listener_fields\": \"{\\\"totalCount\\\": 2, \\\"items\\\": [{\\\"task_listener_field_name\\\": \\\"testField\\\", \\\"task_listener_field_value\\\": \\\"test\\\", \\\"task_listener_field_expression\\\": \\\"\\\"}, {\\\"task_listener_field_name\\\": \\\"testField2\\\", \\\"task_listener_field_value\\\": \\\"\\\", \\\"task_listener_field_expression\\\": \\\"${expression}\\\"}]}\"}, {\"task_listener_event_type\": \"assignment\", \"task_listener_class\": \"\", \"task_listener_expression\": \"${someExpression}\", \"task_listener_delegate_expression\": \"\", \"task_listener_fields\": \"undefined\"}, {\"task_listener_event_type\": \"complete\", \"task_listener_class\": \"\", \"task_listener_expression\": \"\", \"task_listener_delegate_expression\": \"${someDelegateExpression}\", \"task_listener_fields\": \"undefined\"}]}",
-            "usertaskassignment" : { "items" : [ { "assignment_type" : "assignee",
-                      "resourceassignmentexpr" : "kermit"
-                    },
-                    { "assignment_type" : "owner",
-                      "resourceassignmentexpr" : "gonzo"
-                    },
-                    { "assignment_type" : "candidateUsers",
-                      "resourceassignmentexpr" : "kermit,fozzie"
-                    },
-                    { "assignment_type" : "candidateGroups",
-                      "resourceassignmentexpr" : "management,sales"
-                    }
-                  ],
-                "totalCount" : 4
-              },
-            "customidentitylinks" : { "items" : [ { "identity_type" : "user",
-            		  "identity_link_type" : "manager",
-                      "identitylinkexpr" : "fozzie, gonzo"
-                    },
-                    { "identity_type" : "user",
-                      "identity_link_type" : "bizAdmin",
-                      "identitylinkexpr" : "kermit"
-                    },
-                    { "identity_type" : "group",
-                      "identity_link_type" : "bizAdmin",
-                      "identitylinkexpr" : "management,sales"
-                    }
-                  ],
-                "totalCount" : 3
-              }
+            "tasklisteners" : {"taskListeners": [{"event": "create", "className": "org.test.TestClass", "expression": "", "delegateExpression": "", "fields": [{"name": "testField", "stringValue": "test", "expression": ""}, {"name": "testField2", "stringValue": "", "expression": "${expression}"}]}, 
+            	{"event": "assignment", "className": "", "expression": "${someExpression}", "delegateExpression": "", "fields": "undefined"}, 
+            	{"event": "complete", "className": "", "expression": "", "delegateExpression": "${someDelegateExpression}", "fields": "undefined"}]},
+            "usertaskassignment" : { "assignment" : { "assignee" : "kermit", "owner": "gonzo", 
+            		"candidateUsers": [{"value":"kermit"},{"value":"fozzie"}], "candidateGroups": [{"value":"management"},{"value":"sales"}] }
+            }
           },
         "resourceId" : "usertask",
         "stencil" : { "id" : "UserTask" }

@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2009
- * Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 if(!ORYX){ var ORYX = {} }
 if(!ORYX.Plugins){ ORYX.Plugins = {} }
@@ -311,22 +298,7 @@ ORYX.Plugins.AbstractPlugin = Clazz.extend({
 					ORYX.Log.error("XSL load failed" + transport);
 				}).bind(this)
 			});
-			/*
-			 var parser = new DOMParser();
-			 var parsedDOM = parser.parseFromString(this.getSerializedDOM(), "text/xml");
-			 var xsltPath = ORYX.PATH + "lib/extract-rdf.xsl";
-			 var xsltProcessor = new XSLTProcessor();
-			 var xslRef = document.implementation.createDocument("", "", null);
-			 xslRef.async = false;
-			 xslRef.load(xsltPath);
-			 xsltProcessor.importStylesheet(xslRef);
-			 try {
-			 var rdf = xsltProcessor.transformToDocument(parsedDOM);
-			 return (new XMLSerializer()).serializeToString(rdf);
-			 } catch (error) {
-			 Ext.Msg.alert("Oryx", error);
-			 return null;
-			 }*/
+			
 			var domParser = new DOMParser();
 			var xmlObject = domParser.parseFromString(this.getSerializedDOM(), "text/xml");
 			var xslObject = domParser.parseFromString(xsl, "text/xml");
@@ -337,8 +309,8 @@ ORYX.Plugins.AbstractPlugin = Clazz.extend({
 			var serializer = new XMLSerializer();
 			
 			return serializer.serializeToString(result);
-		}catch(e){
-			Ext.Msg.alert("Oryx", error);
+		} catch(e){
+			console.log("error serializing " + e);
 			return "";
 		}
 
@@ -370,10 +342,20 @@ ORYX.Plugins.AbstractPlugin = Clazz.extend({
 	 */
 	doLayout: function(shapes){
 		// Raises a do layout event
-		this.facade.raiseEvent({
-			type		: ORYX.CONFIG.EVENT_LAYOUT,
-			shapes		: shapes
-		});
+		if (this.facade.raiseEvent)
+		{
+			this.facade.raiseEvent({
+				type		: ORYX.CONFIG.EVENT_LAYOUT,
+				shapes		: shapes
+			});
+		}
+		else
+		{
+			this.facade.handleEvents({
+				type		: ORYX.CONFIG.EVENT_LAYOUT,
+				shapes		: shapes
+			});
+		}
 	},
 	
 	

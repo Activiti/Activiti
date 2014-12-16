@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 /**
  * Init namespace
@@ -119,7 +106,7 @@ ORYX.Core.StencilSet.stencil = function(id) {
  */
 ORYX.Core.StencilSet.rules = function(editorId) {
 	if(!ORYX.Core.StencilSet._rulesByEditorInstance[editorId]) {
-		ORYX.Core.StencilSet._rulesByEditorInstance[editorId] = new ORYX.Core.StencilSet.Rules();;
+		ORYX.Core.StencilSet._rulesByEditorInstance[editorId] = new ORYX.Core.StencilSet.Rules();
 	}
 	return ORYX.Core.StencilSet._rulesByEditorInstance[editorId];
 };
@@ -133,19 +120,22 @@ ORYX.Core.StencilSet.rules = function(editorId) {
  * It also stores which editor instance loads the stencil set and 
  * initializes the Rules object for the editor instance.
  */
-ORYX.Core.StencilSet.loadStencilSet = function(url, editorId) {
-	var stencilSet = ORYX.Core.StencilSet._stencilSetsByUrl[url];
+ORYX.Core.StencilSet.loadStencilSet = function(url, modelMetaData, editorId) {
+	
+	// Alfresco: disable cache, because stencil sets are now flexible
+	
+	//var stencilSet = ORYX.Core.StencilSet._stencilSetsByUrl[url];
 
-	if(!stencilSet) {
+	//if(!stencilSet) {
 		//load stencil set
-		stencilSet = new ORYX.Core.StencilSet.StencilSet(url);
+		stencilSet = new ORYX.Core.StencilSet.StencilSet(url, modelMetaData, editorId);
 		
 		//store stencil set
 		ORYX.Core.StencilSet._stencilSetsByNamespace[stencilSet.namespace()] = stencilSet;
 		
 		//store stencil set by url
 		ORYX.Core.StencilSet._stencilSetsByUrl[url] = stencilSet;
-	}
+	//}
 	
 	var namespace = stencilSet.namespace();
 	

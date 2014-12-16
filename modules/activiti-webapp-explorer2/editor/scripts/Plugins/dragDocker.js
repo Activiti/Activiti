@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object();
@@ -71,11 +58,11 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 	handleMouseOut: function(event, uiObj) {
 		// If there is a Docker, hide this
 		if(!this.docker && uiObj instanceof ORYX.Core.Controls.Docker) {
-			uiObj.hide()	
+			uiObj.hide();
 		} else if(!this.docker && uiObj instanceof ORYX.Core.Edge) {
 			uiObj.dockers.each(function(docker){
 				docker.hide();
-			})
+			});
 		}
 	},
 
@@ -86,11 +73,11 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 	handleMouseOver: function(event, uiObj) {
 		// If there is a Docker, show this		
 		if(!this.docker && uiObj instanceof ORYX.Core.Controls.Docker) {
-			uiObj.show()	
+			uiObj.show();
 		} else if(!this.docker && uiObj instanceof ORYX.Core.Edge) {
 			uiObj.dockers.each(function(docker){
 				docker.show();
-			})
+			});
 		}
 	},
 	/**
@@ -131,9 +118,9 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 				
 				// Get the Edge Source or Target
 				if(uiObj.parent.dockers.first() == uiObj && uiObj.parent.dockers.last().getDockedShape()) {
-					this.dockerTarget = uiObj.parent.dockers.last().getDockedShape()
+					this.dockerTarget = uiObj.parent.dockers.last().getDockedShape();
 				} else if(uiObj.parent.dockers.last() == uiObj && uiObj.parent.dockers.first().getDockedShape()) {
-					this.dockerSource = uiObj.parent.dockers.first().getDockedShape()
+					this.dockerSource = uiObj.parent.dockers.first().getDockedShape();
 				}
 				
 			} else {
@@ -142,8 +129,8 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 				this.dockerTarget = undefined;				
 			}
 		
-			this.isStartDocker = this.docker.parent.dockers.first() === this.docker
-			this.isEndDocker = this.docker.parent.dockers.last() === this.docker
+			this.isStartDocker = this.docker.parent.dockers.first() === this.docker;
+			this.isEndDocker = this.docker.parent.dockers.last() === this.docker;
 					
 			// add to canvas while dragging
 			this.facade.getCanvas().add(this.docker.parent);
@@ -153,22 +140,39 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 				label.hide();
 			});
 			
+			var eventCoordinates = this.facade.eventCoordinates(event);
+			var additionalIEZoom = 1;
+            if (!isNaN(screen.logicalXDPI) && !isNaN(screen.systemXDPI)) {
+                var ua = navigator.userAgent;
+                if (ua.indexOf('MSIE') >= 0) {
+                    //IE 10 and below
+                    var zoom = Math.round((screen.deviceXDPI / screen.logicalXDPI) * 100);
+                    if (zoom !== 100) {
+                        additionalIEZoom = zoom / 100
+                    }
+                }
+            }
+            
+            if (additionalIEZoom !== 1) {
+                eventCoordinates.x = eventCoordinates.x / additionalIEZoom;
+                eventCoordinates.y = eventCoordinates.y / additionalIEZoom;
+            }
+			
 			// Undocked the Docker from current Shape
 			if ((!this.isStartDocker && !this.isEndDocker) || !this.docker.isDocked()) {
 				
-				this.docker.setDockedShape(undefined)
+				this.docker.setDockedShape(undefined);
 				// Set the Docker to the center of the mouse pointer
-				var evPos = this.facade.eventCoordinates(event);
-				this.docker.bounds.centerMoveTo(evPos);
-				//this.docker.update()
-				//this.facade.getCanvas().update();
+				this.docker.bounds.centerMoveTo(eventCoordinates);
 				this.dockerParent._update();
 			} else {
 				this.outerDockerNotMoved = true;
 			}
 			
-			var option = {movedCallback: this.dockerMoved.bind(this), upCallback: this.dockerMovedFinished.bind(this)}
-				
+			var option = {movedCallback: this.dockerMoved.bind(this), upCallback: this.dockerMovedFinished.bind(this)};
+			
+			this.startEventPos = eventCoordinates;
+			
 			// Enable the Docker for Drag'n'Drop, give the mouseMove and mouseUp-Callback with
 			ORYX.Core.UIEnableDrag(event, uiObj, option);
 		}
@@ -188,6 +192,23 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 				// Get the EventPosition and all Shapes on these point
 				var evPos = this.facade.eventCoordinates(event);
 				
+				var additionalIEZoom = 1;
+	            if (!isNaN(screen.logicalXDPI) && !isNaN(screen.systemXDPI)) {
+	                var ua = navigator.userAgent;
+	                if (ua.indexOf('MSIE') >= 0) {
+	                    //IE 10 and below
+	                    var zoom = Math.round((screen.deviceXDPI / screen.logicalXDPI) * 100);
+	                    if (zoom !== 100) {
+	                        additionalIEZoom = zoom / 100
+	                    }
+	                }
+	            }
+	            
+	            if (additionalIEZoom !== 1) {
+	            	evPos.x = evPos.x / additionalIEZoom;
+	            	evPos.y = evPos.y / additionalIEZoom;
+	            }
+				
 				if(this.docker.isDocked()) {
 					/* Only consider start/end dockers if they are moved over a treshold */
 					var distanceDockerPointer = 
@@ -198,7 +219,7 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 					}
 					
 					/* Undock the docker */
-					this.docker.setDockedShape(undefined)
+					this.docker.setDockedShape(undefined);
 					// Set the Docker to the center of the mouse pointer
 					//this.docker.bounds.centerMoveTo(evPos);
 					this.dockerParent._update();
@@ -212,8 +233,6 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 					uiObj = shapes.pop();
 				}
 				
-				
-				
 				// If the top level Shape the same as the last Shape, then return
 				if (this.lastUIObj == uiObj) {
 				//return;
@@ -222,9 +241,6 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 				}
 				else 
 					if (uiObj instanceof ORYX.Core.Shape) {
-					
-						// Get the StencilSet of the Edge
-						var sset = this.docker.parent.getStencil().stencilSet();
 						
 						// Ask by the StencilSet if the source, the edge and the target valid connections.
 						if (this.docker.parent instanceof ORYX.Core.Edge) {
@@ -233,15 +249,16 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 							/* Ensure that the shape to dock is not a child shape 
 							 * of the same edge.
 							 */
-							if(highestParent instanceof ORYX.Core.Edge 
-									&& this.docker.parent === highestParent) {
+							if (highestParent instanceof ORYX.Core.Edge && this.docker.parent === highestParent) 
+							{
 								this.isValid = false;
 								this.dockerParent._update();
 								return;
 							}
 							this.isValid = false;
 							var curObj = uiObj, orgObj = uiObj;
-							while(!this.isValid && curObj && !(curObj instanceof ORYX.Core.Canvas)){
+							while (!this.isValid && curObj && !(curObj instanceof ORYX.Core.Canvas))
+							{
 								uiObj = curObj;
 								this.isValid = this.facade.getRules().canConnect({
 											sourceShape: this.dockerSource ? // Is there a docked source 
@@ -276,12 +293,12 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 						
 						// If there is a lastUIObj, hide the magnets
 						if (this.lastUIObj) {
-							this.hideMagnets(this.lastUIObj)
+							this.hideMagnets(this.lastUIObj);
 						}
 						
 						// If there is a valid connection, show the magnets
 						if (this.isValid) {
-							this.showMagnets(uiObj)
+							this.showMagnets(uiObj);
 						}
 						
 						// Set the Highlight Rectangle by these value
@@ -301,7 +318,7 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 				// Snap to the nearest Magnet
 				if (this.lastUIObj && this.isValid && !(event.shiftKey || event.ctrlKey)) {
 					snapToMagnet = this.lastUIObj.magnets.find(function(magnet){
-						return magnet.absoluteBounds().isIncluded(evPos)
+						return magnet.absoluteBounds().isIncluded(evPos);
 					});
 					
 					if (snapToMagnet) {
@@ -314,8 +331,8 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 		// Snap to on the nearest Docker of the same parent
 		if(!(event.shiftKey || event.ctrlKey) && !snapToMagnet) {
 			var minOffset = ORYX.CONFIG.DOCKER_SNAP_OFFSET;
-			var nearestX = minOffset + 1
-			var nearestY = minOffset + 1
+			var nearestX = minOffset + 1;
+			var nearestY = minOffset + 1;
 			
 			var dockerCenter = this.docker.bounds.center();
 			
@@ -344,8 +361,8 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 					
 					
 					
-					var previous = this.docker.parent.dockers[Math.max(this.docker.parent.dockers.indexOf(this.docker)-1, 0)]
-					var next = this.docker.parent.dockers[Math.min(this.docker.parent.dockers.indexOf(this.docker)+1, this.docker.parent.dockers.length-1)]
+					var previous = this.docker.parent.dockers[Math.max(this.docker.parent.dockers.indexOf(this.docker)-1, 0)];
+					var next = this.docker.parent.dockers[Math.min(this.docker.parent.dockers.indexOf(this.docker)+1, this.docker.parent.dockers.length-1)];
 					
 					if (previous && next && previous !== this.docker && next !== this.docker){
 						var cp = previous.bounds.center();
@@ -406,7 +423,7 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 				});
 			}
 			
-			this.hideMagnets(this.lastUIObj)
+			this.hideMagnets(this.lastUIObj);
 		}
 		
 		// Hide the Docker
@@ -451,7 +468,7 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 					(this.removedDockers||$H({})).each(function(d){
 						this.shape.add(d.value, Number(d.key));
 						this.shape._update(true);
-					}.bind(this))
+					}.bind(this));
 					this.facade.updateSelection();
 				},
 				dock:function( toDockShape, pos ){			
@@ -467,9 +484,6 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 					}
 	
 					this.facade.getCanvas().update();
-					
-												
-								
 				}
 			});
 			
@@ -480,11 +494,7 @@ ORYX.Plugins.DragDocker = Clazz.extend({
 				this.facade.executeCommands( [command] );	
 			}
 		}
-		
 	
-
-		
-
 		// Update all Shapes
 		//this.facade.updateSelection();
 			

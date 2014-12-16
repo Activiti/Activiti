@@ -1024,21 +1024,13 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   private void removeEventSubscriptions() {
     for (EventSubscriptionEntity eventSubscription : getEventSubscriptions()) {
-      if (replacedBy != null) {
-        eventSubscription.setExecution((ExecutionEntity) replacedBy);
-      } else {
-        eventSubscription.delete();
-      }
+      eventSubscription.delete();
     }
   }
 
   private void removeJobs() {
     for (Job job: getJobs()) {
-      if (replacedBy!=null) {
-        ((JobEntity)job).setExecution((ExecutionEntity) replacedBy);
-      } else {
-        ((JobEntity)job).delete();
-      }
+      ((JobEntity) job).delete();
     }
   }
 
@@ -1326,7 +1318,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   protected void ensureEventSubscriptionsInitialized() {
     if (eventSubscriptions == null) {
-
       eventSubscriptions = Context.getCommandContext()
         .getEventSubscriptionEntityManager()
         .findEventSubscriptionsByExecution(id);

@@ -41,12 +41,12 @@ public class ScriptTaskJsonConverter extends BaseBpmnJsonConverter {
     convertersToJsonMap.put(ScriptTask.class, ScriptTaskJsonConverter.class);
   }
   
-  protected String getStencilId(FlowElement flowElement) {
+  protected String getStencilId(BaseElement baseElement) {
     return STENCIL_TASK_SCRIPT;
   }
   
-  protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
-  	ScriptTask scriptTask = (ScriptTask) flowElement;
+  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
+  	ScriptTask scriptTask = (ScriptTask) baseElement;
   	propertiesNode.put(PROPERTY_SCRIPT_FORMAT, scriptTask.getScriptFormat());
   	propertiesNode.put(PROPERTY_SCRIPT_TEXT, scriptTask.getScript());
   }
