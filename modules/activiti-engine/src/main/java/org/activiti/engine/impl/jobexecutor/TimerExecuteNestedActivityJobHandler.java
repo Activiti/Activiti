@@ -40,6 +40,7 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
   }
   
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+    
     ActivityImpl borderEventActivity = execution.getProcessDefinition().findActivity(configuration);
 
     if (borderEventActivity == null) {

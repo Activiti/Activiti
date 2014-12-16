@@ -251,7 +251,7 @@
        CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
        CREATED_ = #{created, jdbcType=TIMESTAMP},
        PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
-       TENANT_ID_ = #{tenantId, jdbcType-VARCHAR}
+       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     </set>
     where ID_= #{id, jdbcType=VARCHAR}
       and REV_ = #{revision, jdbcType=INTEGER}
