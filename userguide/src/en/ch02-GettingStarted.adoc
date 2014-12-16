@@ -98,7 +98,7 @@ org.activiti:activiti-engine:jar:5.17.0
 +- org.mybatis:mybatis:jar:3.2.5:compile
 +- org.springframework:spring-beans:jar:4.0.6.RELEASE:compile
 |  \- org.springframework:spring-core:jar:4.0.6.RELEASE:compile
-+- joda-time:joda-time:jar:2.1:compile
++- joda-time:joda-time:jar:2.6:compile
 +- org.slf4j:slf4j-api:jar:1.7.6:compile
 +- org.slf4j:jcl-over-slf4j:jar:1.7.6:compile
 ----
