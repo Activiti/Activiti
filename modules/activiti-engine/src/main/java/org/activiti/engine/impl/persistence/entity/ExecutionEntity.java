@@ -1325,7 +1325,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   protected void ensureEventSubscriptionsInitialized() {
-    if (eventSubscriptions == null) {
+    if (eventSubscriptions == null || eventSubscriptions.isEmpty()) {
 
       eventSubscriptions = Context.getCommandContext()
         .getEventSubscriptionEntityManager()
