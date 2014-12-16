@@ -25,6 +25,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
@@ -38,12 +39,34 @@ import org.activiti.engine.runtime.Job;
 /**
  * @author Tom Baeyens
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class JobEntityManager extends AbstractManager {
 
   public void send(MessageEntity message) {
+  	
+  	ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+  	
+  	if (processEngineConfiguration.isAsyncExecutorEnabled()) {
+  	
+  		// If the async executor is enabled, we need to set the duedate of the job to the current date + the default lock time. 
+  		// This is cope with the case where the async job executor or the process engine goes down
+  		// before executing the job. This way, other async job executors can pick the job up after the max lock time.
+  		Date dueDate = new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() 
+  				+ processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
+  		message.setDuedate(dueDate);
+  		message.setLockExpirationTime(null); // was set before, but to be quickly picked up needs to be set to null
+  		
+  	} else if (!processEngineConfiguration.isJobExecutorActivate()) {
+  		
+  		// If the async executor is disabled AND there is no old school job executor,
+  		// The job needs to be picked up as soon as possible. So the due date is now set to the current time
+  		message.setDuedate(processEngineConfiguration.getClock().getCurrentTime());
+  		message.setLockExpirationTime(null); // was set before, but to be quickly picked up needs to be set to null
+  	}
+  	
     message.insert();
-    if (Context.getProcessEngineConfiguration().isAsyncExecutorEnabled()) {
+    if (processEngineConfiguration.isAsyncExecutorEnabled()) {
       hintAsyncExecutor(message);
     } else {
       hintJobExecutor(message);

@@ -14,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Default async executor, the next generation.
- * 
  * @author Joram Barrez
  * @author Tijs Rademakers
  */

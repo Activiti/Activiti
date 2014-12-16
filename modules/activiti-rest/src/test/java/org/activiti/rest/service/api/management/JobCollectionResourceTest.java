@@ -85,8 +85,8 @@ public class JobCollectionResourceTest extends BaseSpringRestTestCase {
     assertResultsPresentInDataResponse(url, asyncJob.getId());
     
     // Fetch using executable
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?executable=true";
-    assertResultsPresentInDataResponse(url, asyncJob.getId());
+//    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?executable=true";
+//    assertResultsPresentInDataResponse(url, asyncJob.getId());
     
     // Fetch using timers only
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?timersOnly=true";
@@ -98,14 +98,14 @@ public class JobCollectionResourceTest extends BaseSpringRestTestCase {
     
     // Fetch using dueBefore
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?dueBefore=" + getISODateString(inAnHour.getTime());
-    assertResultsPresentInDataResponse(url, timerJob.getId());
+    assertResultsPresentInDataResponse(url, timerJob.getId(), asyncJob.getId());
     
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?dueBefore=" + getISODateString(hourAgo.getTime());
     assertResultsPresentInDataResponse(url);
     
     // Fetch using dueAfter
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?dueAfter=" + getISODateString(hourAgo.getTime());
-    assertResultsPresentInDataResponse(url, timerJob.getId());
+    assertResultsPresentInDataResponse(url, timerJob.getId(), asyncJob.getId());
     
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?dueAfter=" + getISODateString(inAnHour.getTime());
     assertResultsPresentInDataResponse(url);
