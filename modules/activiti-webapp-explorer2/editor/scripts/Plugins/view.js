@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 /**
  * @namespace Oryx name space for plugins
@@ -50,12 +37,14 @@ ORYX.Plugins.View = {
 		this.diff=5; //difference between canvas and view port, s.th. like toolbar??
 		
 		//Read properties
-		ownPluginData.properties.each( function(property) {			
-			if (property.zoomLevel) {this.zoomLevel = Number(1.0);}		
-			if (property.maxFitToScreenLevel) {this.maxFitToScreenLevel=Number(property.maxFitToScreenLevel);}
-			if (property.minZoomLevel) {this.minZoomLevel = Number(property.minZoomLevel);}
-			if (property.maxZoomLevel) {this.maxZoomLevel = Number(property.maxZoomLevel);}
-		}.bind(this));
+		if (ownPluginData !== undefined && ownPluginData !== null) {
+			ownPluginData.properties.each( function(property) {			
+				if (property.zoomLevel) {this.zoomLevel = Number(1.0);}		
+				if (property.maxFitToScreenLevel) {this.maxFitToScreenLevel=Number(property.maxFitToScreenLevel);}
+				if (property.minZoomLevel) {this.minZoomLevel = Number(property.minZoomLevel);}
+				if (property.maxZoomLevel) {this.maxZoomLevel = Number(property.maxZoomLevel);}
+			}.bind(this));
+		}
 
 		
 		/* Register zoom in */

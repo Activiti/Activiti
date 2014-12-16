@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 function printf() {
 	
@@ -48,41 +35,7 @@ ORYX = Object.extend(ORYX, {
 	PATH: ORYX.CONFIG.ROOT_PATH,
 	//CONFIGURATION: "config.js",
 
-	URLS: [
-	
-		/*
-		 * No longer needed, since compiled into one source file that
-		 * contains all of this files concatenated in the exact order
-		 * as defined in build.xml.
-		 */
-		
-/*
-		"scripts/Core/SVG/editpathhandler.js",
-		"scripts/Core/SVG/minmaxpathhandler.js",
-		"scripts/Core/SVG/pointspathhandler.js",
-		"scripts/Core/SVG/svgmarker.js",
-		"scripts/Core/SVG/svgshape.js",
-		"scripts/Core/SVG/label.js",
-		"scripts/Core/Math/math.js",		
-		"scripts/Core/StencilSet/stencil.js",
-		"scripts/Core/StencilSet/property.js",
-		"scripts/Core/StencilSet/propertyitem.js",
-		"scripts/Core/StencilSet/rules.js",
-		"scripts/Core/StencilSet/stencilset.js",
-		"scripts/Core/StencilSet/stencilsets.js",
-		"scripts/Core/bounds.js",
-		"scripts/Core/uiobject.js",
-		"scripts/Core/abstractshape.js",
-		"scripts/Core/canvas.js",
-		"scripts/Core/main.js",
-		"scripts/Core/svgDrag.js",
-		"scripts/Core/shape.js",
-		"scripts/Core/Controls/control.js",
-		"scripts/Core/Controls/docker.js",
-		"scripts/Core/Controls/magnet.js",		
-		"scripts/Core/node.js",
-		"scripts/Core/edge.js"
-*/	],
+	URLS: [],
 
 	alreadyLoaded: [],
 
@@ -98,8 +51,13 @@ ORYX = Object.extend(ORYX, {
 	Log: {
 	
 		__appenders: [
-			{ append: function(message) {
-				console.log(message); }}
+			{ 
+				append: function(message) {
+					if(typeof(console) !== "undefined" && console.log !== undefined) {
+						console.log(message); 
+					}
+				}
+			}
 		],
 	
 		trace: function() {	if(ORYX_LOGLEVEL >= ORYX_LOGLEVEL_TRACE)
@@ -121,7 +79,6 @@ ORYX = Object.extend(ORYX, {
 				+ prefix + " " + messageParts[0];
 			var message = printf.apply(null, messageParts);
 			
-			
 			ORYX.Log.__appenders.each(function(appender) {
 				appender.append(message);
 			});
@@ -141,11 +98,6 @@ ORYX = Object.extend(ORYX, {
 	 * preliminary condition is not met has to fail with an error.
 	 */
 	load: function() {
-		
-		if (ORYX.CONFIG.PREVENT_LOADINGMASK_AT_READY !== true) {
-			var waitingpanel = new Ext.Window({renderTo:Ext.getBody(),id:'oryx-loading-panel',bodyStyle:'padding: 8px;background:white',title:ORYX.I18N.Oryx.title,width:'auto',height:'auto',modal:true,resizable:false,closable:false,html:'<span style="font-size:11px;">' + ORYX.I18N.Oryx.pleaseWait + '</span>'})
-			waitingpanel.show()
-		}
 		
 		ORYX.Log.debug("Oryx begins loading procedure.");
 		
@@ -390,6 +342,4 @@ ORYX = Object.extend(ORYX, {
 	}
 });
 
-ORYX.Log.debug('Registering Oryx with Kickstart');
-Kickstart.register(ORYX.load);
 

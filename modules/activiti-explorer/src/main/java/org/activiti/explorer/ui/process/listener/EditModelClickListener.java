@@ -133,7 +133,7 @@ public class EditModelClickListener implements ClickListener {
   protected void showModeler() throws MalformedURLException {
 	  URL explorerURL = ExplorerApp.get().getURL();
 	  URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(),
-			  explorerURL.getPath().replace("/ui", "") + "service/editor?id=" + model.getId());
+			  explorerURL.getPath().replace("/ui",  "") + "modeler.html?modelId=" + model.getId());
     ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
   }
   

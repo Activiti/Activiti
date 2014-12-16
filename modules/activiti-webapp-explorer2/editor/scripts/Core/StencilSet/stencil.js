@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 /**
  * Init namespace
@@ -133,19 +120,6 @@ ORYX.Core.StencilSet.Stencil = {
 		var url = source + "view/" + jsonStencil.view;
 		// override content type when this is webkit.
 		
-		/*
-		if(Prototype.Browser.WebKit) {
-			
-			var req = new XMLHttpRequest;
-			req.open("GET", url, false);
-			req.overrideMimeType('text/xml');
-			req.send(null);
-			req.onload = (function() { _loadSVGOnSuccess(req.responseXML); }).bind(this);
-
-		// else just do it.
-		} else
-		*/
-		
 		if(this._jsonStencil.view.trim().match(/</)) {
 			var parser	= new DOMParser();		
 			var xml 	= parser.parseFromString( this._jsonStencil.view ,"text/xml");
@@ -155,14 +129,6 @@ ORYX.Core.StencilSet.Stencil = {
 	
 				this._view = xml.documentElement;
 				
-				//updating link to images
-				var imageElems = this._view.getElementsByTagNameNS("http://www.w3.org/2000/svg", "image");
-				$A(imageElems).each((function(imageElem) {
-					var link = imageElem.getAttributeNodeNS("http://www.w3.org/1999/xlink", "href");
-					if(link && link.value.indexOf("://") == -1) {
-						link.textContent = this._source + "view/" + link.value;
-					}
-				}).bind(this));
 			} else {
 				throw "ORYX.Core.StencilSet.Stencil(_loadSVGOnSuccess): The response is not a SVG document."
 			}
@@ -178,15 +144,9 @@ ORYX.Core.StencilSet.Stencil = {
 
 	postProcessProperties: function() {
 
-		// add image path to icon
-		if(this._jsonStencil.icon && this._jsonStencil.icon.indexOf("://") === -1) {
-			this._jsonStencil.icon = this._source + "icons/" + this._jsonStencil.icon;
-		} else {
-			this._jsonStencil.icon = "";
-		}
-	
 		// init property packages
 		if(this._jsonStencil.propertyPackages && this._jsonStencil.propertyPackages instanceof Array) {
+			
 			this._jsonStencil.propertyPackages.each((function(ppId) {
 				var pp = this._propertyPackages[ppId];
 				
@@ -194,6 +154,7 @@ ORYX.Core.StencilSet.Stencil = {
 					pp.each((function(prop){
 						var oProp = new ORYX.Core.StencilSet.Property(prop, this._namespace, this);
 						this._properties[oProp.prefix() + "-" + oProp.id()] = oProp;
+						
 					}).bind(this));
 				}
 			}).bind(this));
@@ -206,7 +167,6 @@ ORYX.Core.StencilSet.Stencil = {
 				this._properties[oProp.prefix() + "-" + oProp.id()] = oProp;
 			}).bind(this));
 		}
-		
 
 	},
 
@@ -356,14 +316,6 @@ ORYX.Core.StencilSet.Stencil = {
 
 			this._view = xml.documentElement;
 			
-			//updating link to images
-			var imageElems = this._view.getElementsByTagNameNS("http://www.w3.org/2000/svg", "image");
-			$A(imageElems).each((function(imageElem) {
-				var link = imageElem.getAttributeNodeNS("http://www.w3.org/1999/xlink", "href");
-				if(link && link.value.indexOf("://") == -1) {
-					link.textContent = this._source + "view/" + link.value;
-				}
-			}).bind(this));
 		} else {
 			throw "ORYX.Core.StencilSet.Stencil(_loadSVGOnSuccess): The response is not a SVG document."
 		}

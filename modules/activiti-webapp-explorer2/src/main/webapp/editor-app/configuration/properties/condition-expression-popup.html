@@ -1,0 +1,29 @@
+
+<div class="modal" ng-controller="KisBpmConditionExpressionPopupCtrl">
+<div class="modal-dialog">
+<div class="modal-content">
+<div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+    <h2 translate>PROPERTY.SEQUENCEFLOW.CONDITION.TITLE</h2>
+</div>
+<div class="modal-body">
+
+    <div class="detail-group clearfix">
+        
+        <div class="form-group clearfix">
+            <div class="col-xs-12">
+                <label class="col-xs-3">{{'PROPERTY.SEQUENCEFLOW.CONDITION.STATIC' | translate}}</label>
+                <div class="col-xs-9">
+                    <textarea class="form-control" ng-model="conditionExpression.value" style="width:90%; height:100%; max-width: 100%; max-height: 100%; min-height: 100px"/>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button ng-click="close()" class="btn btn-primary" translate>ACTION.CANCEL</button>
+        <button ng-click="save()" class="btn btn-primary" translate>ACTION.SAVE</button>
+    </div>
+</div>
+</div>
+</div>

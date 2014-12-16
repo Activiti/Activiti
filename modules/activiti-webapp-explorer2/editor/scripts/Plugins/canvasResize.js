@@ -1,28 +1,16 @@
-/**
- * Copyright (c) 2008
- * Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
 if (!ORYX.Plugins) {
     ORYX.Plugins = new Object();
 }
+
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 /**
  * This plugin is responsible for resizing the canvas.
@@ -33,11 +21,12 @@ ORYX.Plugins.CanvasResize = Clazz.extend({
     construct: function(facade){
 		
         this.facade = facade;
-        
 		new ORYX.Plugins.CanvasResizeButton( this.facade.getCanvas(), "N", this.resize.bind(this));
 		new ORYX.Plugins.CanvasResizeButton( this.facade.getCanvas(), "W", this.resize.bind(this));
 		new ORYX.Plugins.CanvasResizeButton( this.facade.getCanvas(), "E", this.resize.bind(this));
 		new ORYX.Plugins.CanvasResizeButton( this.facade.getCanvas(), "S", this.resize.bind(this));
+		
+		window.setTimeout(function(){jQuery(window).trigger('resize');});
 
     },
     
@@ -70,6 +59,8 @@ ORYX.Plugins.CanvasResize = Clazz.extend({
     		} else if( position == "E" ){
     			scrollNode.scrollLeft += extentionSize;
     		}
+    		
+    		jQuery(window).trigger('resize');
     		
     		canvas.update();
     		facade.updateSelection();
@@ -106,105 +97,119 @@ ORYX.Plugins.CanvasResizeButton = Clazz.extend({
 	
 	construct: function(canvas, position, callback){
 		this.canvas = canvas;
-		var parentNode = canvas.getHTMLContainer().parentNode.parentNode.parentNode;
+		var parentNode = canvas.getHTMLContainer().parentNode;
 		
-		window.myParent=parentNode
-		var scrollNode 	= parentNode.firstChild;
-		var svgRootNode = scrollNode.firstChild.firstChild;
+		window.myParent=parentNode;
+			
+		var actualScrollNode = jQuery('#canvasSection')[0];
+		var scrollNode 	= actualScrollNode;
+		var canvasNode = jQuery('#canvasSection').find(".ORYX_Editor")[0];
+		var svgRootNode = canvasNode.children[0];
+		
+		var iconClass = 'glyphicon glyphicon-chevron-';
+		var iconClassShrink = 'glyphicon glyphicon-chevron-';
+		if(position == 'N') {
+			iconClass += 'up';
+			iconClassShrink += 'down';
+		} else if(position == 'S') {
+			iconClass += 'down';
+			iconClassShrink += 'up';
+		} else if(position == 'E') {
+			iconClass += 'right';
+			iconClassShrink += 'left';
+		} else if(position == 'W') {
+			iconClass += 'left';
+			iconClassShrink += 'right';
+		}
+		
 		// The buttons
-		var buttonGrow 	= ORYX.Editor.graft("http://www.w3.org/1999/xhtml", parentNode, ['div', { 'class': 'canvas_resize_indicator canvas_resize_indicator_grow' + ' ' + position ,'title':ORYX.I18N.RESIZE.tipGrow+ORYX.I18N.RESIZE[position]}]);
-		var buttonShrink 	= ORYX.Editor.graft("http://www.w3.org/1999/xhtml", parentNode, ['div', { 'class': 'canvas_resize_indicator canvas_resize_indicator_shrink' + ' ' + position ,'title':ORYX.I18N.RESIZE.tipShrink+ORYX.I18N.RESIZE[position]}]);
+		var idGrow = 'canvas-shrink-' + position;
+		var idShrink = 'canvas-grow-' + position;
 		
+		var buttonGrow 	= ORYX.Editor.graft("http://www.w3.org/1999/xhtml", parentNode, ['div', {'class': 'canvas_resize_indicator canvas_resize_indicator_grow' + ' ' + position, 'id': idGrow ,'title':ORYX.I18N.RESIZE.tipGrow+ORYX.I18N.RESIZE[position]},
+             ['i', {'class' : iconClass}]
+		]);
+		var buttonShrink 	= ORYX.Editor.graft("http://www.w3.org/1999/xhtml", parentNode, ['div', {'class': 'canvas_resize_indicator canvas_resize_indicator_shrink' + ' ' + position, 'id': idShrink ,'title':ORYX.I18N.RESIZE.tipGrow+ORYX.I18N.RESIZE[position]},
+             ['i', {'class' : iconClassShrink}]
+		]);
 		// Defines a callback which gives back
 		// a boolean if the current mouse event 
 		// is over the particular button area
 		var offSetWidth = 60;
-		var isOverOffset = function(event){
-			if(event.target!=parentNode && event.target!=scrollNode&& event.target!=scrollNode.firstChild&& event.target!=svgRootNode&& event.target!=scrollNode){ return false }
+		var isOverOffset = function(event) {
+			
+			var isOverButton = event.target.id.indexOf("canvas-shrink") != -1
+				|| event.target.id.indexOf("canvas-grow") != -1
+				|| event.target.parentNode.id.indexOf("canvas-shrink") != -1
+				|| event.target.parentNode.id.indexOf("canvas-grow") != -1;
+			if(isOverButton) {
+				if(event.target.id == idGrow || event.target.id == idShrink || 
+						event.target.parentNode.id == idGrow || event.target.parentNode.id == idShrink ) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+			
+			if(event.target!=parentNode && event.target!=scrollNode&& event.target!=scrollNode.firstChild&& event.target!=svgRootNode&& event.target!=scrollNode){ return false; }
+			
 			//if(inCanvas){offSetWidth=30}else{offSetWidth=30*2}
 			//Safari work around
-			var X=event.layerX !== undefined ? event.layerX : event.offsetX;
-			var Y=event.layerY !== undefined ? event.layerY : event.offsetY;
+			var X=event.offsetX !== undefined ? event.offsetX : event.layerX;
+			var Y=event.offsetY !== undefined ? event.offsetY : event.layerY;
 			
-			if((X - scrollNode.scrollLeft)<0 ||Ext.isSafari){	X+=scrollNode.scrollLeft;}
-			if((Y - scrollNode.scrollTop )<0 ||Ext.isSafari){ Y+=scrollNode.scrollTop ;}
+			var canvasOffset = 0;
+			if(canvasNode.clientWidth < actualScrollNode.clientWidth) {
+              	var widthDiff = actualScrollNode.clientWidth -  canvasNode.clientWidth;
+              	canvasOffset = widthDiff / 2;
+            }
 			
-			//
-
+				// Adjust to relative location to the actual viewport
+				Y = Y - actualScrollNode.scrollTop;
+				X = X - actualScrollNode.scrollLeft;
+			
+			
 			if(position == "N"){
-				return  Y < offSetWidth+scrollNode.firstChild.offsetTop;
+				return  Y < offSetWidth;
 			} else if(position == "W"){
-				return X < offSetWidth + scrollNode.firstChild.offsetLeft;
+				return X < offSetWidth + canvasOffset;
 			} else if(position == "E"){
-				//other offset
-				var offsetRight=(scrollNode.offsetWidth-(scrollNode.firstChild.offsetLeft + scrollNode.firstChild.offsetWidth));
-				if(offsetRight<0)offsetRight=0;
-				return X > scrollNode.scrollWidth-offsetRight-offSetWidth;
+				return actualScrollNode.clientWidth - X < offSetWidth + canvasOffset;
 			} else if(position == "S"){
-				//other offset
-				var offsetDown=(scrollNode.offsetHeight-(scrollNode.firstChild.offsetTop  + scrollNode.firstChild.offsetHeight));
-				if(offsetDown<0)offsetDown=0;
-
-				return Y > scrollNode.scrollHeight -offsetDown- offSetWidth;
+				return actualScrollNode.clientHeight - Y < offSetWidth;
 			}
 			
 			return false;
-		}
+		};
 		
 		var showButtons = (function() {
 			buttonGrow.show(); 
         
-			var x1, y1, x2, y2;
-			try {
-				var bb = this.canvas.getRootNode().childNodes[1].getBBox();
-				x1 = bb.x;
-				y1 = bb.y;
-				x2 = bb.x + bb.width;
-				y2 = bb.y + bb.height;
-			} catch(e) {
-				this.canvas.getChildShapes(true).each(function(shape) {
-					var absBounds = shape.absoluteBounds();
-					var ul = absBounds.upperLeft();
-					var lr = absBounds.lowerRight();
-					if(x1 == undefined) {
-						x1 = ul.x;
-						y1 = ul.y;
-						x2 = lr.x;
-						y2 = lr.y;
-					} else {
-						x1 = Math.min(x1, ul.x);
-						y1 = Math.min(y1, ul.y);
-						x2 = Math.max(x2, lr.x);
-						y2 = Math.max(y2, lr.y);
-					}
-				});
-			}
-        
 			var w = canvas.bounds.width();
 			var h = canvas.bounds.height();
         
-			var isEmpty = canvas.getChildNodes().size()==0;
-        
-			if(position=="N" && (y1>ORYX.CONFIG.CANVAS_RESIZE_INTERVAL || (isEmpty && h>ORYX.CONFIG.CANVAS_RESIZE_INTERVAL))) buttonShrink.show();
-			else if(position=="E" && (w-x2)>ORYX.CONFIG.CANVAS_RESIZE_INTERVAL) buttonShrink.show();
-			else if(position=="S" && (h-y2)>ORYX.CONFIG.CANVAS_RESIZE_INTERVAL) buttonShrink.show();
-			else if(position=="W" && (x1>ORYX.CONFIG.CANVAS_RESIZE_INTERVAL || (isEmpty && w>ORYX.CONFIG.CANVAS_RESIZE_INTERVAL))) buttonShrink.show();
+			if(position=="N" && (h - ORYX.CONFIG.CANVAS_RESIZE_INTERVAL > ORYX.CONFIG.CANVAS_MIN_HEIGHT)) buttonShrink.show();
+			else if(position=="E" && (w - ORYX.CONFIG.CANVAS_RESIZE_INTERVAL > ORYX.CONFIG.CANVAS_MIN_WIDTH)) buttonShrink.show();
+			else if(position=="S" && (h - ORYX.CONFIG.CANVAS_RESIZE_INTERVAL > ORYX.CONFIG.CANVAS_MIN_HEIGHT)) buttonShrink.show();
+			else if(position=="W" && (w - ORYX.CONFIG.CANVAS_RESIZE_INTERVAL > ORYX.CONFIG.CANVAS_MIN_WIDTH)) buttonShrink.show();
 			else buttonShrink.hide();
+			
+
 		}).bind(this);
         
 		var hideButtons = function() {
 			buttonGrow.hide(); 
 			buttonShrink.hide();
-		}	
+		};
         
 		// If the mouse move is over the button area, show the button
-		scrollNode.addEventListener(	ORYX.CONFIG.EVENT_MOUSEMOVE, 	function(event){ if( isOverOffset(event) ){showButtons();} else {hideButtons()}} , false );
+		parentNode.parentNode.addEventListener(	ORYX.CONFIG.EVENT_MOUSEMOVE, 	function(event){ if( isOverOffset(event) ){showButtons();} else {hideButtons()}} , false );
 		// If the mouse is over the button, show them
 		buttonGrow.addEventListener(		ORYX.CONFIG.EVENT_MOUSEOVER, 	function(event){showButtons();}, true );
 		buttonShrink.addEventListener(		ORYX.CONFIG.EVENT_MOUSEOVER, 	function(event){showButtons();}, true );
 		// If the mouse is out, hide the button
 		//scrollNode.addEventListener(		ORYX.CONFIG.EVENT_MOUSEOUT, 	function(event){button.hide()}, true )
-		parentNode.addEventListener(	ORYX.CONFIG.EVENT_MOUSEOUT, 	function(event){hideButtons()} , true );
+		parentNode.parentNode.addEventListener(	ORYX.CONFIG.EVENT_MOUSEOUT, 	function(event){hideButtons()} , true );
 		//svgRootNode.addEventListener(	ORYX.CONFIG.EVENT_MOUSEOUT, 	function(event){ inCanvas = false } , true );
         
 		// Hide the button initialy

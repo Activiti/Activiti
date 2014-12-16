@@ -1,25 +1,13 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
+
 /**
  * Init namespace
  */
@@ -52,6 +40,12 @@ ORYX.Core.StencilSet.Property = Clazz.extend({
         
         this._items = {};
         this._complexItems = {};
+        
+	    // Flag to indicate whether or not the property should be hidden 
+	    // This can be for example when the stencil set is upgraded, but the model
+        // has a value for that specific property filled in which we still want to show.
+        // If the value is missing, the property can simply be not shown.
+        this._hidden = false;
         
         jsonProp.id = jsonProp.id || ORYX.Log.error("ORYX.Core.StencilSet.Property(construct): Id is not defined.");
 		jsonProp.id = jsonProp.id.toLowerCase();
@@ -100,9 +94,9 @@ ORYX.Core.StencilSet.Property = Clazz.extend({
         }
 		
 		if ("number" != typeof jsonProp.lightness) {
-			jsonProp.lightness = 1
+			jsonProp.lightness = 1;
 		} else {
-			jsonProp.lightness = Math.max(0, Math.min(1, jsonProp.lightness))
+			jsonProp.lightness = Math.max(0, Math.min(1, jsonProp.lightness));
 		}
         
         if (!jsonProp.strokeOpacity) {
@@ -179,9 +173,6 @@ ORYX.Core.StencilSet.Property = Clazz.extend({
                     jsonProp.complexItems.each((function(jsonComplexItem){
                         this._complexItems[jsonComplexItem.id.toLowerCase()] = new ORYX.Core.StencilSet.ComplexPropertyItem(jsonComplexItem, namespace, this);
                     }).bind(this));
-                }
-                else {
-                    throw "ORYX.Core.StencilSet.Property(construct): No complex property items defined."
                 }
             }
         // extended by Kerstin (end)
@@ -457,6 +448,14 @@ ORYX.Core.StencilSet.Property = Clazz.extend({
 	
 	setPopular: function() {
 		this._jsonProp.popular = true;
+	},
+	
+	hide: function() {
+		this._hidden = true;
+	},
+	
+	isHidden: function() {
+		return this._hidden;
 	}
 	
 });

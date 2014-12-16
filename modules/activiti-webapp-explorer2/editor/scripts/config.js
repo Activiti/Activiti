@@ -1,25 +1,13 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
+
 if(!ORYX) var ORYX = {};
 
 if(!ORYX.CONFIG) ORYX.CONFIG = {};
@@ -31,11 +19,13 @@ ORYX.CONFIG.BACKEND_SWITCH 		= 		true;
 ORYX.CONFIG.PANEL_LEFT_WIDTH 	= 		250;
 ORYX.CONFIG.PANEL_RIGHT_COLLAPSED 	= 	true;
 ORYX.CONFIG.PANEL_RIGHT_WIDTH	= 		300;
-ORYX.CONFIG.APPNAME = 					'Activiti BPM suite';
-ORYX.CONFIG.WEB_URL = 					"../";
+ORYX.CONFIG.APPNAME = 					'KISBPM';
+ORYX.CONFIG.WEB_URL = 					".";
 
 ORYX.CONFIG.BLANK_IMAGE = ORYX.CONFIG.LIBS_PATH + '/ext-2.0.2/resources/images/default/s.gif';
 
+/* Specify offset of header */
+ORYX.CONFIG.OFFSET_HEADER = 61;
 
 /* Show grid line while dragging */
 ORYX.CONFIG.SHOW_GRIDLINE = 			true;
@@ -43,7 +33,7 @@ ORYX.CONFIG.SHOW_GRIDLINE = 			true;
 	/* Editor-Mode */
 ORYX.CONFIG.MODE_READONLY =				"readonly";
 ORYX.CONFIG.MODE_FULLSCREEN =			"fullscreen";
-ORYX.CONFIG.WINDOW_HEIGHT = 			400;	
+ORYX.CONFIG.WINDOW_HEIGHT = 			800;	
 ORYX.CONFIG.PREVENT_LOADINGMASK_AT_READY = false;
 
 	/* Plugins */
@@ -57,9 +47,11 @@ ORYX.CONFIG.NAMESPACE_ORYX =			"http://www.b3mn.org/oryx";
 ORYX.CONFIG.NAMESPACE_SVG =				"http://www.w3.org/2000/svg";
 
 	/* UI */
-ORYX.CONFIG.CANVAS_WIDTH =				1485; 
+ORYX.CONFIG.CANVAS_WIDTH =				1200; 
 ORYX.CONFIG.CANVAS_HEIGHT =				1050;
-ORYX.CONFIG.CANVAS_RESIZE_INTERVAL =	300;
+ORYX.CONFIG.CANVAS_RESIZE_INTERVAL =	100;
+ORYX.CONFIG.CANVAS_MIN_WIDTH =  800;
+ORYX.CONFIG.CANVAS_MIN_HEIGHT =  300;
 ORYX.CONFIG.SELECTED_AREA_PADDING =		4;
 ORYX.CONFIG.CANVAS_BACKGROUND_COLOR =	"none";
 ORYX.CONFIG.GRID_DISTANCE =				30;
@@ -77,7 +69,7 @@ ORYX.CONFIG.COPY_MOVE_OFFSET =			30;
 	
 ORYX.CONFIG.BORDER_OFFSET =				14;
 
-ORYX.CONFIG.MAX_NUM_SHAPES_NO_GROUP	=	12;
+ORYX.CONFIG.MAX_NUM_SHAPES_NO_GROUP	=	20; // Updated so the form editor shows all elements at once
 
 ORYX.CONFIG.SHAPEMENU_CREATE_OFFSET_CORNER = 30;
 ORYX.CONFIG.SHAPEMENU_CREATE_OFFSET = 45;
@@ -105,10 +97,21 @@ ORYX.CONFIG.TYPE_DIAGRAM_LINK =			"diagramlink";
 ORYX.CONFIG.TYPE_COMPLEX =				"complex";
 ORYX.CONFIG.TYPE_MULTIPLECOMPLEX =		"multiplecomplex";
 ORYX.CONFIG.TYPE_TEXT =					"text";
+ORYX.CONFIG.TYPE_KISBPM_MULTIINSTANCE =	"kisbpm-multiinstance";
 ORYX.CONFIG.TYPE_MODEL_LINK =			"modellink";
+ORYX.CONFIG.TYPE_FORM_FLOW_LINK =		"formflowlink";
+ORYX.CONFIG.TYPE_FORM_LINK =			"formlink";
+ORYX.CONFIG.TYPE_SUB_PROCESS_LINK =		"subprocesslink";
+ORYX.CONFIG.TYPE_SERVICE_LINK =			"servicelink";
+ORYX.CONFIG.TYPE_CONDITIONS =			"conditions";
+ORYX.CONFIG.TYPE_VARIABLES = 			"variables";
 ORYX.CONFIG.TYPE_LISTENER =				"listener";
 ORYX.CONFIG.TYPE_EPC_FREQ = 			"epcfrequency";
 ORYX.CONFIG.TYPE_GLOSSARY_LINK =		"glossarylink";
+ORYX.CONFIG.TYPE_EXPRESSION = 			"expression";
+ORYX.CONFIG.TYPE_DATASOURCE = 			"datasource";
+ORYX.CONFIG.TYPE_DATASOURCE_MINIMAL =	"datasource-minimal";
+ORYX.CONFIG.TYPE_VALIDATORS =			"validators";
 
 	
 	/* Vertical line distance of multiline labels */
@@ -139,6 +142,7 @@ ORYX.CONFIG.EVENT_KEYDOWN =				"keydown";
 ORYX.CONFIG.EVENT_KEYUP =				"keyup";
 
 ORYX.CONFIG.EVENT_LOADED =				"editorloaded";
+ORYX.CONFIG.EVENT_SAVED =				"editorSaved";
 	
 ORYX.CONFIG.EVENT_EXECUTE_COMMANDS =		"executeCommands";
 ORYX.CONFIG.EVENT_STENCIL_SET_LOADED =		"stencilSetLoaded";
@@ -178,7 +182,8 @@ ORYX.CONFIG.EVENT_LAYOUT = 					"layout.dolayout";
 ORYX.CONFIG.EVENT_GLOSSARY_LINK_EDIT = 		"glossary.link.edit";
 ORYX.CONFIG.EVENT_GLOSSARY_SHOW =			"glossary.show.info";
 ORYX.CONFIG.EVENT_GLOSSARY_NEW =			"glossary.show.new";
-ORYX.CONFIG.EVENT_DOCKERDRAG = 				"dragTheDocker";	
+ORYX.CONFIG.EVENT_DOCKERDRAG = 				"dragTheDocker";
+ORYX.CONFIG.EVENT_CANVAS_SCROLL = 			"canvas.scroll";
 	
 ORYX.CONFIG.EVENT_SHOW_PROPERTYWINDOW =		"propertywindow.show";
 ORYX.CONFIG.EVENT_ABOUT_TO_SAVE = "file.aboutToSave";
@@ -232,3 +237,17 @@ ORYX.CONFIG.META_KEY_SHIFT = 			"shift";
 ORYX.CONFIG.KEY_ACTION_DOWN = 			"down";
 ORYX.CONFIG.KEY_ACTION_UP = 			"up";
 
+
+/* Form Rowlayouting */
+ORYX.CONFIG.FORM_ROW_WIDTH =            350;
+ORYX.CONFIG.FORM_GROUP_MARGIN =            5;
+ORYX.CONFIG.FORM_GROUP_EMPTY_HEIGHT =   100;
+
+/* Form element types */
+ORYX.CONFIG.FORM_ELEMENT_ID_PREFIX = 				'http://b3mn.org/stencilset/xforms';
+ORYX.CONFIG.FORM_ELEMENT_TYPE_ROOT = 				'http://b3mn.org/stencilset/xforms#XForm';
+ORYX.CONFIG.FORM_ELEMENT_TYPE_GROUP = 				'http://b3mn.org/stencilset/xforms#Group';
+ORYX.CONFIG.FORM_ELEMENT_TYPE_REPEATING_GROUP =		'http://b3mn.org/stencilset/xforms#RepeatingGroup';
+ORYX.CONFIG.FORM_ELEMENT_TYPE_LABEL_FIELD = 		'http://b3mn.org/stencilset/xforms#LabelField';
+	
+	

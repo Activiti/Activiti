@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 /**
  * Init namespaces
@@ -36,10 +23,11 @@ ORYX.Core.Shape = {
 	/**
 	 * Constructor
 	 */
-	construct: function(options, stencil) {
+	construct: function(options, stencil, facade) {
 		// call base class constructor
 		arguments.callee.$.construct.apply(this, arguments);
 		
+		this.facade = facade;
 		this.dockers = [];
 		this.magnets = [];
 		
@@ -149,14 +137,65 @@ ORYX.Core.Shape = {
 							property.refToView().each((function(ref) {
 								//if the property does not reference an SVG element,
 								// do nothing
-	
+
 								if(ref === "") { return; }
-			
+
 								var refId = this.id + ref;
-	
+								
+								if (property.type() === ORYX.CONFIG.TYPE_KISBPM_MULTIINSTANCE)
+								{
+									if (ref === "multiinstance") {
+										
+										var svgElemParallel = this.node.ownerDocument.getElementById(this.id + 'parallel');
+										if(svgElemParallel) 
+										{
+											if (prop === 'Parallel')
+											{
+												svgElemParallel.setAttributeNS(null, 'display', 'inherit');
+											}
+											else
+											{
+												svgElemParallel.setAttributeNS(null, 'display', 'none');
+											}
+										} 
+										
+										var svgElemSequential = this.node.ownerDocument.getElementById(this.id + 'sequential');
+										
+										if(svgElemSequential) 
+										{
+											if (prop === 'Sequential')
+											{
+												svgElemSequential.setAttributeNS(null, 'display', 'inherit');
+											}
+											else
+											{
+												svgElemSequential.setAttributeNS(null, 'display', 'none');
+											}
+										} 
+									}
+									return;
+									
+								} 
+								else if (property.type() === "cancelactivity")
+								{
+									var svgElemFrame = this.node.ownerDocument.getElementById(this.id + 'frame');
+									var svgElemFrame2 = this.node.ownerDocument.getElementById(this.id + 'frame2');
+									
+									if (prop === 'true')
+									{
+										svgElemFrame.setAttributeNS(null, 'display', 'inherit');
+										svgElemFrame2.setAttributeNS(null, 'display', 'inherit');
+									}
+									else
+									{
+										svgElemFrame.setAttributeNS(null, 'display', 'none');
+										svgElemFrame2.setAttributeNS(null, 'display', 'none');
+									}
+								}
+								
 								//get the SVG element
 								var svgElem = this.node.ownerDocument.getElementById(refId);
-	
+								
 								//if the SVG element can not be found
 								if(!svgElem || !(svgElem.ownerSVGElement)) { 
 									//if the referenced SVG element is a SVGAElement, it cannot
@@ -189,11 +228,9 @@ ORYX.Core.Shape = {
 									}
 									
 								} else {
-	
 									switch (property.type()) {
 										case ORYX.CONFIG.TYPE_BOOLEAN:	
-											
-											if (typeof prop == "string")
+										    if (typeof prop == "string")
 												prop = prop === "true"
 		
 											svgElem.setAttributeNS(null, 'display', (!(prop === property.inverseBoolean())) ? 'inherit' : 'none');
@@ -236,6 +273,18 @@ ORYX.Core.Shape = {
 												label.text(prop);
 											}
 											break;
+										case ORYX.CONFIG.TYPE_EXPRESSION:
+											var label = this._labels[refId];
+											if (label) {
+												label.text(prop);
+											}
+											break;
+										case ORYX.CONFIG.TYPE_DATASOURCE:
+											var label = this._labels[refId];
+											if (label) {
+												label.text(prop);
+											}
+											break;	
 										case ORYX.CONFIG.TYPE_INTEGER:
 											var label = this._labels[refId];
 											if (label) {
@@ -256,6 +305,26 @@ ORYX.Core.Shape = {
 												}
 											}
 											break;
+										
+										case ORYX.CONFIG.TYPE_FORM_LINK:
+	  										if (ref == "pimg") {
+	  											var onclickAttr = svgElem.getAttributeNodeNS('', 'onclick');
+	  											if(onclickAttr) {
+	  												if(prop && ("" + prop).length > 0) {
+	  													onclickAttr.textContent = "window.location = '../service/editor?id=" + prop + "_form'";
+	  							    	   			} else {
+	  							    	   				newFormFacade = this.facade;
+	  							    	   				onclickAttr.textContent = "displayNewFormDialog('" + this.resourceId + "');";
+	  							    		        }
+	  											}
+	  										} else if (ref == "linkIndicator") {
+	  											if (prop && prop.length > 0) {
+	  												svgElem.setAttributeNS(null, 'display', 'inherit');
+	  											} else {
+	  												svgElem.setAttributeNS(null, 'display', 'none');
+	  											}
+	  										}
+	  										break;
 										case ORYX.CONFIG.TYPE_URL:
 										case ORYX.CONFIG.TYPE_DIAGRAM_LINK:
 											//TODO what is the dafault path?
@@ -266,6 +335,7 @@ ORYX.Core.Shape = {
 												svgElem.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', prop);
 											}	
 											break;
+										
 									}
 								}
 							}).bind(this));
@@ -343,39 +413,16 @@ ORYX.Core.Shape = {
 	
 	setOpacity: function(value, animate){
 		
-		// 0.0 <= value <= 1.0
 		value = Math.max(Math.min((typeof value == "number" ? value : 1.0), 1.0), 0.0);
 				
-		//if (animate !== true){
-			if (value !== 1.0){
-				value = String(value);
-				this.node.setAttributeNS(null, "fill-opacity", value)
-				this.node.setAttributeNS(null, "stroke-opacity", value)
-			} else {
-				this.node.removeAttributeNS(null, "fill-opacity");
-				this.node.removeAttributeNS(null, "stroke-opacity");
-			}
-		/*} else {
-			var args = {opacity:{to:value}};
-			if (!this.isVisible){
-				this.show();
-			}
-			if (this.currentAnim){
-				this.currentAnim.stop();
-			}
-			
-			this.currentAnim = Ext.lib.Anim.run(this.node, args, 0.4, "easeOut", function(){
-			    if (args.opacity.to === 0.0){
-			        this.hide();
-			    } else if (args.opacity.to === 1.0){
-					this.node.removeAttributeNS(null, "style");
-				}
-				delete this.currentAnim;
-			}, this)
-		}*/
-
-		
-
+		if (value !== 1.0){
+			value = String(value);
+			this.node.setAttributeNS(null, "fill-opacity", value)
+			this.node.setAttributeNS(null, "stroke-opacity", value)
+		} else {
+			this.node.removeAttributeNS(null, "fill-opacity");
+			this.node.removeAttributeNS(null, "stroke-opacity");
+		}
 	},
 	
 	/**
@@ -746,7 +793,7 @@ ORYX.Core.Shape = {
 	createDocker: function(index, position) {
 		var docker = new ORYX.Core.Controls.Docker({eventHandlerCallback: this.eventHandlerCallback});
 		docker.bounds.registerCallback(this._dockerChangedCallback);
-		if(position) {
+		if (position) {
 			docker.bounds.centerMoveTo(position);
 		}
 		this.add(docker, index);

@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
@@ -30,7 +29,6 @@ public class UserTaskConverterTest extends AbstractConverterTest {
   public void doubleConversionValidation() throws Exception {
     BpmnModel bpmnModel = readJsonFile();
     bpmnModel = convertToJsonAndBack(bpmnModel);
-    System.out.println("xml " + new String(new BpmnXMLConverter().convertToXML(bpmnModel), "utf-8"));
     validateModel(bpmnModel);
   }
   
@@ -59,15 +57,6 @@ public class UserTaskConverterTest extends AbstractConverterTest {
     assertEquals(2, userTask.getCandidateGroups().size());
     assertTrue(userTask.getCandidateGroups().contains("management"));
     assertTrue(userTask.getCandidateGroups().contains("sales"));
-    
-    assertEquals(2, userTask.getCustomUserIdentityLinks().size());
-    assertEquals(1, userTask.getCustomGroupIdentityLinks().size());
-    
-    assertTrue(userTask.getCustomUserIdentityLinks().get("bizAdmin").contains("kermit"));
-    assertTrue(userTask.getCustomGroupIdentityLinks().get("bizAdmin").contains("management"));
-    assertTrue(userTask.getCustomGroupIdentityLinks().get("bizAdmin").contains("sales"));
-    assertTrue(userTask.getCustomUserIdentityLinks().get("manager").contains("fozzie"));
-    assertTrue(userTask.getCustomUserIdentityLinks().get("manager").contains("gonzo"));
     
     List<FormProperty> formProperties = userTask.getFormProperties();
     assertEquals(2, formProperties.size());

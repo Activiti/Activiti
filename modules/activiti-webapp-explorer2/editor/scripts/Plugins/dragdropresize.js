@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 if(!ORYX.Plugins) 
 	ORYX.Plugins = new Object();
@@ -92,7 +79,7 @@ ORYX.Plugins.DragDropResize = ORYX.Plugins.AbstractPlugin.extend({
 	handleMouseDown: function(event, uiObj) {
 		// If the selection Bounds not intialized and the uiObj is not member of current selectio
 		// then return
-		if(!this.dragBounds || !this.currentShapes.member(uiObj) || !this.toMoveShapes.length) {return};
+		if(!this.dragBounds || !this.currentShapes.member(uiObj) || !this.toMoveShapes.length) {return;};
 		
 		// Start Dragging
 		this.dragEnable = true;
@@ -103,12 +90,15 @@ ORYX.Plugins.DragDropResize = ORYX.Plugins.AbstractPlugin.extend({
 		var a = this.facade.getCanvas().node.getScreenCTM();
 		this.faktorXY.x = a.a;
 		this.faktorXY.y = a.d;
+		
+		var eventX = Event.pointerX(event);
+		var eventY = Event.pointerY(event);
 
 		// Set the offset position of dragging
 		var upL = this.dragBounds.upperLeft();
 		this.offSetPosition =  {
-			x: Event.pointerX(event) - (upL.x * this.faktorXY.x),
-			y: Event.pointerY(event) - (upL.y * this.faktorXY.y)};
+			x: eventX - (upL.x * this.faktorXY.x),
+			y: eventY - (upL.y * this.faktorXY.y)};
 		
 		this.offsetScroll	= {x:this.scrollNode.scrollLeft,y:this.scrollNode.scrollTop};
 			
@@ -262,18 +252,6 @@ ORYX.Plugins.DragDropResize = ORYX.Plugins.AbstractPlugin.extend({
 				return (currentShape instanceof ORYX.Core.Edge);
 			});
 			
-//			/* If only edges are selected, check if they are movable. An Edge is
-//			 * movable in case it is not docked
-//			 */
-//			if(this._onlyEdges) {
-//				this.currentShapes.each(function(edge) {
-//					if(edge.isDocked()) {
-//						this.edgesMovable = false;
-//						throw $break;
-//					}
-//				}.bind(this));
-//			}
-			
 			// Do method before Drag
 			this.beforeDrag();
 			
@@ -326,13 +304,32 @@ ORYX.Plugins.DragDropResize = ORYX.Plugins.AbstractPlugin.extend({
 		this.isAttachingAllowed = false;
 
 		//check, if a node can be added to the underlying node
-		var underlyingNodes = $A(this.facade.getCanvas().getAbstractShapesAtPosition(this.facade.eventCoordinates(event)));
+		var eventCoordinates = this.facade.eventCoordinates(event);
+		
+		var additionalIEZoom = 1;
+        if (!isNaN(screen.logicalXDPI) && !isNaN(screen.systemXDPI)) {
+            var ua = navigator.userAgent;
+            if (ua.indexOf('MSIE') >= 0) {
+                //IE 10 and below
+                var zoom = Math.round((screen.deviceXDPI / screen.logicalXDPI) * 100);
+                if (zoom !== 100) {
+                    additionalIEZoom = zoom / 100
+                }
+            }
+        }
+        
+        if (additionalIEZoom !== 1) {
+             eventCoordinates.x = eventCoordinates.x / additionalIEZoom;
+             eventCoordinates.y = eventCoordinates.y / additionalIEZoom;
+        }
+		
+		var underlyingNodes = $A(this.facade.getCanvas().getAbstractShapesAtPosition(eventCoordinates));
 		
 		var checkIfAttachable = this.toMoveShapes.length == 1 && this.toMoveShapes[0] instanceof ORYX.Core.Node && this.toMoveShapes[0].dockers.length > 0
 		checkIfAttachable	= checkIfAttachable && underlyingNodes.length != 1
 		
 			
-		if(		!checkIfAttachable &&
+		if (!checkIfAttachable &&
 				underlyingNodes.length === this._currentUnderlyingNodes.length  &&
 				underlyingNodes.all(function(node, index){return this._currentUnderlyingNodes[index] === node}.bind(this))) {
 					
@@ -742,9 +739,9 @@ ORYX.Plugins.DragDropResize = ORYX.Plugins.AbstractPlugin.extend({
 																			(shape.dockers.length === 0 || !elements.member(shape.dockers.first().getDockedShape()))});		
 																			
 			elements.each((function(shape){
-				if(!(shape instanceof ORYX.Core.Edge)) {return}
+				if(!(shape instanceof ORYX.Core.Edge)) {return;}
 				
-				var dks = shape.getDockers() 
+				var dks = shape.getDockers();
 								
 				var hasF = elements.member(dks.first().getDockedShape());
 				var hasL = elements.member(dks.last().getDockedShape());	
@@ -757,14 +754,14 @@ ORYX.Plugins.DragDropResize = ORYX.Plugins.AbstractPlugin.extend({
 //				} 
 				/* Enable movement of undocked edges */
 				if(!hasF && !hasL) {
-					var isUndocked = !dks.first().getDockedShape() && !dks.last().getDockedShape()
+					var isUndocked = !dks.first().getDockedShape() && !dks.last().getDockedShape();
 					if(isUndocked) {
 						this.toMoveShapes = this.toMoveShapes.concat(dks);
 					}
 				}
 				
 				if( shape.dockers.length > 2 && hasF && hasL){
-					this.toMoveShapes = this.toMoveShapes.concat(dks.findAll(function(el,index){ return index > 0 && index < dks.length-1}))
+					this.toMoveShapes = this.toMoveShapes.concat(dks.findAll(function(el,index){ return index > 0 && index < dks.length-1}));
 				}
 				
 			}).bind(this));
@@ -1091,8 +1088,9 @@ ORYX.Plugins.Resizer = Clazz.extend({
 		this.parentId 		= parentId;
 		this.orientation	= orientation;
 		this.facade			= facade;
-		this.node = ORYX.Editor.graft("http://www.w3.org/1999/xhtml", $(this.parentId),
-			['div', {'class': 'resizer_'+ this.orientation, style:'left:0px; top:0px;'}]);
+		
+		this.node = ORYX.Editor.graft("http://www.w3.org/1999/xhtml", $('canvasSection'),
+			['div', {'class': 'resizer_'+ this.orientation, style:'left:0px; top:0px;position:absolute;'}]);
 
 		this.node.addEventListener(ORYX.CONFIG.EVENT_MOUSEDOWN, this.handleMouseDown.bind(this), true);
 		document.documentElement.addEventListener(ORYX.CONFIG.EVENT_MOUSEUP, 	this.handleMouseUp.bind(this), 		true);
@@ -1116,7 +1114,6 @@ ORYX.Plugins.Resizer = Clazz.extend({
 		
 		// Calculate the Offset
 		this.scrollNode = this.node.parentNode.parentNode.parentNode;
-
 
 	},
 
@@ -1155,19 +1152,19 @@ ORYX.Plugins.Resizer = Clazz.extend({
 
 		var position = {
 			x: Event.pointerX(event) - this.offSetPosition.x,
-			y: Event.pointerY(event) - this.offSetPosition.y}
+			y: Event.pointerY(event) - this.offSetPosition.y};
 
 
 		position.x 	-= this.offsetScroll.x - this.scrollNode.scrollLeft; 
 		position.y 	-= this.offsetScroll.y - this.scrollNode.scrollTop;
 		
-		position.x  = Math.min( position.x, this.facade.getCanvas().bounds.width())
-		position.y  = Math.min( position.y, this.facade.getCanvas().bounds.height())
+		position.x  = Math.min( position.x, this.facade.getCanvas().bounds.width());
+		position.y  = Math.min( position.y, this.facade.getCanvas().bounds.height());
 		
 		var offset = {
 			x: position.x - this.position.x,
 			y: position.y - this.position.y
-		}
+		};
 		
 		if(this.aspectRatio) {
 			// fixed aspect ratio
@@ -1181,6 +1178,7 @@ ORYX.Plugins.Resizer = Clazz.extend({
 		
 		// respect minimum and maximum sizes of stencil
 		if(this.orientation==="northwest") {
+			
 			if(this.bounds.width()-offset.x > this.maxSize.width) {
 				offset.x = -(this.maxSize.width - this.bounds.width());
 				if(this.aspectRatio)
@@ -1201,6 +1199,7 @@ ORYX.Plugins.Resizer = Clazz.extend({
 				if(this.aspectRatio)
 					offset.x = offset.y / this.aspectRatio;
 			}
+			
 		} else { // defaults to southeast
 			if(this.bounds.width()+offset.x > this.maxSize.width) {
 				offset.x = this.maxSize.width - this.bounds.width();
@@ -1225,7 +1224,6 @@ ORYX.Plugins.Resizer = Clazz.extend({
 		}
 
 		if(this.orientation==="northwest") {
-			var oldLR = {x: this.bounds.lowerRight().x, y: this.bounds.lowerRight().y};
 			this.bounds.extend({x:-offset.x, y:-offset.y});
 			this.bounds.moveBy(offset);
 		} else { // defaults to southeast
@@ -1308,20 +1306,50 @@ ORYX.Plugins.Resizer = Clazz.extend({
 		if(!this.bounds) { return; }
 
 		var upL = this.bounds.upperLeft();
-
-		if(this.bounds.width() < this.minSize.width)	{ this.bounds.set(upL.x, upL.y, upL.x + this.minSize.width, upL.y + this.bounds.height())};
-		if(this.bounds.height() < this.minSize.height)	{ this.bounds.set(upL.x, upL.y, upL.x + this.bounds.width(), upL.y + this.minSize.height)};
-		if(this.bounds.width() > this.maxSize.width)	{ this.bounds.set(upL.x, upL.y, upL.x + this.maxSize.width, upL.y + this.bounds.height())};
-		if(this.bounds.height() > this.maxSize.height)	{ this.bounds.set(upL.x, upL.y, upL.x + this.bounds.width(), upL.y + this.maxSize.height)};
+		
+		if(this.bounds.width() < this.minSize.width)	{ this.bounds.set(upL.x, upL.y, upL.x + this.minSize.width, upL.y + this.bounds.height());};
+		if(this.bounds.height() < this.minSize.height)	{ this.bounds.set(upL.x, upL.y, upL.x + this.bounds.width(), upL.y + this.minSize.height);};
+		if(this.bounds.width() > this.maxSize.width)	{ this.bounds.set(upL.x, upL.y, upL.x + this.maxSize.width, upL.y + this.bounds.height());};
+		if(this.bounds.height() > this.maxSize.height)	{ this.bounds.set(upL.x, upL.y, upL.x + this.bounds.width(), upL.y + this.maxSize.height);};
 
 		var a = this.canvasNode.getScreenCTM();
-		
+	    
 		upL.x *= a.a;
 		upL.y *= a.d;
 		
+		var additionalIEZoom = 1;
+        if (!isNaN(screen.logicalXDPI) && !isNaN(screen.systemXDPI)) {
+            var ua = navigator.userAgent;
+            if (ua.indexOf('MSIE') >= 0) {
+                //IE 10 and below
+                var zoom = Math.round((screen.deviceXDPI / screen.logicalXDPI) * 100);
+                if (zoom !== 100) {
+                    additionalIEZoom = zoom / 100
+                }
+            }
+        }
+        
+        if (additionalIEZoom === 1) {
+             upL.y = upL.y - jQuery("#canvasSection").offset().top + a.f;
+             upL.x = upL.x - jQuery("#canvasSection").offset().left + a.e;
+        
+        } else {
+             var canvasOffsetLeft = jQuery("#canvasSection").offset().left;
+             var canvasScrollLeft = jQuery("#canvasSection").scrollLeft();
+             var canvasScrollTop = jQuery("#canvasSection").scrollTop();
+             
+             var offset = a.e - (canvasOffsetLeft * additionalIEZoom);
+             var additionaloffset = 0;
+             if (offset > 10) {
+                 additionaloffset = (offset / additionalIEZoom) - offset;
+             }
+             upL.y = upL.y - (jQuery("#canvasSection").offset().top * additionalIEZoom) + ((canvasScrollTop * additionalIEZoom) - canvasScrollTop) + a.f;
+             upL.x = upL.x - (canvasOffsetLeft * additionalIEZoom) + additionaloffset + ((canvasScrollLeft * additionalIEZoom) - canvasScrollLeft) + a.e;
+        }
+		
 		if(this.orientation==="northwest") {
 			upL.x -= 13;
-			upL.y -= 26;
+			upL.y -= 13;
 		} else { // defaults to southeast
 			upL.x +=  (a.a * this.bounds.width()) + 3 ;
 			upL.y +=  (a.d * this.bounds.height())  + 3;

@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 if(!ORYX.Plugins)
 	ORYX.Plugins = new Object();
@@ -36,13 +23,13 @@ if(!ORYX.Plugins)
 		// Some initiale variables
 		this.position 		= {x:0, y:0};
 		this.size 			= {width:0, height:0};
-		this.offsetPosition = {x: 0, y: 0}
+		this.offsetPosition = {x: 0, y: 0};
 
 		// (Un)Register Mouse-Move Event
 		this.moveCallback 	= undefined;
-		this.offsetScroll	= {x:0,y:0}
+		this.offsetScroll	= {x:0,y:0};
 		// HTML-Node of Selection-Frame
-		this.node = ORYX.Editor.graft("http://www.w3.org/1999/xhtml", this.facade.getCanvas().getHTMLContainer(),
+		this.node = ORYX.Editor.graft("http://www.w3.org/1999/xhtml", $('canvasSection'),
 			['div', {'class':'Oryx_SelectionFrame'}]);
 
 		this.hide();
@@ -58,10 +45,14 @@ if(!ORYX.Plugins)
 			this.offsetPosition = {
 				x: a.e,
 				y: a.f
-			}
+			};
 
 			// Set the new Position
-			this.setPos({x: Event.pointerX(event)-this.offsetPosition.x, y:Event.pointerY(event)-this.offsetPosition.y});
+			this.setPos({
+			    x: Event.pointerX(event) - jQuery("#canvasSection").offset().left, 
+				y: Event.pointerY(event) - jQuery("#canvasSection").offset().top + 5
+			});
+			
 			// Reset the size
 			this.resize({width:0, height:0});
 			this.moveCallback = this.handleMouseMove.bind(this);
@@ -73,9 +64,6 @@ if(!ORYX.Plugins)
 			
 			// Show the Frame
 			this.show();
-			
-			
-
 		}
 
 		Event.stop(event);
@@ -98,26 +86,64 @@ if(!ORYX.Plugins)
 			var a = {
 				x: this.size.width > 0 ? this.position.x : this.position.x + this.size.width,
 				y: this.size.height > 0 ? this.position.y : this.position.y + this.size.height
-			}
+			};
 
 			var b = {
 				x: a.x + Math.abs(this.size.width),
 				y: a.y + Math.abs(this.size.height)
-			}
+			};
+			
+			var additionalIEZoom = 1;
+            if (!isNaN(screen.logicalXDPI) && !isNaN(screen.systemXDPI)) {
+                var ua = navigator.userAgent;
+                if (ua.indexOf('MSIE') >= 0) {
+                    //IE 10 and below
+                    var zoom = Math.round((screen.deviceXDPI / screen.logicalXDPI) * 100);
+                    if (zoom !== 100) {
+                        additionalIEZoom = zoom / 100
+                    }
+                }
+            }
+            
+            if (additionalIEZoom === 1) {
+                a.x = a.x - (corrSVG.e - jQuery("#canvasSection").offset().left);
+                a.y = a.y - (corrSVG.f - jQuery("#canvasSection").offset().top);
+                b.x = b.x - (corrSVG.e - jQuery("#canvasSection").offset().left);
+                b.y = b.y - (corrSVG.f - jQuery("#canvasSection").offset().top);
+            
+            } else {
+                 var canvasOffsetLeft = jQuery("#canvasSection").offset().left;
+                 var canvasScrollLeft = jQuery("#canvasSection").scrollLeft();
+                 var canvasScrollTop = jQuery("#canvasSection").scrollTop();
+                 
+                 var offset = a.e - (canvasOffsetLeft * additionalIEZoom);
+                 var additionaloffset = 0;
+                 if (offset > 10) {
+                     additionaloffset = (offset / additionalIEZoom) - offset;
+                 }
+                 
+                 a.x = a.x - (corrSVG.e - (canvasOffsetLeft * additionalIEZoom) + additionaloffset + ((canvasScrollLeft * additionalIEZoom) - canvasScrollLeft));
+                 a.y = a.y - (corrSVG.f - (jQuery("#canvasSection").offset().top * additionalIEZoom) + ((canvasScrollTop * additionalIEZoom) - canvasScrollTop));
+                 b.x = b.x - (corrSVG.e - (canvasOffsetLeft * additionalIEZoom) + additionaloffset + ((canvasScrollLeft * additionalIEZoom) - canvasScrollLeft));
+                 b.y = b.y - (corrSVG.f - (jQuery("#canvasSection").offset().top * additionalIEZoom) + ((canvasScrollTop * additionalIEZoom) - canvasScrollTop));
+            }
+			
+			
 
 			// Fit to SVG-Coordinates
 			a.x /= corrSVG.a; a.y /= corrSVG.d;
 			b.x /= corrSVG.a; b.y /= corrSVG.d;
-
-
+			
 			// Calculate the elements from the childs of the canvas
 			var elements = this.facade.getCanvas().getChildShapes(true).findAll(function(value) {
 				var absBounds = value.absoluteBounds();
+				
 				var bA = absBounds.upperLeft();
 				var bB = absBounds.lowerRight();
+				
 				if(bA.x > a.x && bA.y > a.y && bB.x < b.x && bB.y < b.y)
 					return true;
-				return false
+				return false;
 			});
 
 			// Set the selection
@@ -128,9 +154,9 @@ if(!ORYX.Plugins)
 	handleMouseMove: function(event) {
 		// Calculate the size
 		var size = {
-			width	: Event.pointerX(event) - this.position.x - this.offsetPosition.x,
-			height	: Event.pointerY(event) - this.position.y - this.offsetPosition.y,
-		}
+			width	: Event.pointerX(event) - this.position.x - jQuery("#canvasSection").offset().left,
+			height	: Event.pointerY(event) - this.position.y - jQuery("#canvasSection").offset().top + 5
+		};
 
 		var scrollNode 	= this.facade.getCanvas().rootNode.parentNode.parentNode;
 		size.width 		-= this.offsetScroll.x - scrollNode.scrollLeft; 

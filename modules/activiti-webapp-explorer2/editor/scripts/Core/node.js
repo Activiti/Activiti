@@ -1,25 +1,12 @@
-/**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
 
 /**
  * Init namespaces
@@ -42,12 +29,13 @@ ORYX.Core.Node = {
      * @param options {Object} A container for arguments.
      * @param stencil {Stencil}
      */
-    construct: function(options, stencil){
+    construct: function(options, stencil, facade){
         arguments.callee.$.construct.apply(this, arguments);
         
         this.isSelectable = true;
         this.isMovable = true;
 		this._dockerUpdated = false;
+		this.facade = facade;
         
         this._oldBounds = new ORYX.Core.Bounds(); //init bounds with undefined values
         this._svgShapes = []; //array of all SVGShape objects of
@@ -65,6 +53,7 @@ ORYX.Core.Node = {
         this.dataId = undefined;
         
         this._init(this._stencil.view());
+        this.forcedHeight = -1;
     },
         
     /**
@@ -326,10 +315,6 @@ ORYX.Core.Node = {
         var x = this.bounds.upperLeft().x;
         var y = this.bounds.upperLeft().y;
         
-        //set translation in transform attribute
-        /*var attributeTransform = document.createAttributeNS(ORYX.CONFIG.NAMESPACE_SVG, "transform");
-        attributeTransform.nodeValue = "translate(" + x + ", " + y + ")";
-        this.node.firstChild.setAttributeNode(attributeTransform);*/
 		// Move owner element
 		this.node.firstChild.setAttributeNS(null, "transform", "translate(" + x + ", " + y + ")");
 		// Move magnets
@@ -566,7 +551,6 @@ ORYX.Core.Node = {
 		
         var svgNode = svgDocument.getElementsByTagName("g")[0]; //outer most g node
         // set all required attributes
-        
         var attributeTitle = svgDocument.ownerDocument.createAttribute("title");
         attributeTitle.nodeValue = this.getStencil().title();
         svgNode.setAttributeNode(attributeTitle);
@@ -806,7 +790,55 @@ ORYX.Core.Node = {
 			
 			label.registerOnChange(this.layout.bind(this));
 			
+			// Only apply fitting on form-components
+			if(this._stencil.id().indexOf(ORYX.CONFIG.FORM_ELEMENT_ID_PREFIX) == 0) {
+				label.registerOnChange(this.fitToLabels.bind(this));
+			}
+			
         }).bind(this));
+    },
+    
+    fitToLabels: function() {
+    	var y = 0;
+    	
+    	this.getLabels().each(function(label){
+    		var lr = label.getY() + label.getHeight();
+    		if(lr > y) {
+    			y = lr;
+    		}
+    	});
+    	
+    	var bounds = this.bounds;
+    	var boundsChanged = false;
+    	
+    	if(this.minimumSize) {
+    		// Check if y-value exceeds the min-value. If not, stick to this value.
+    		var minHeight = this.minimumSize.height;
+    		if(y < minHeight && bounds.height() > minHeight && minHeight > this.forcedHeight) {
+    			bounds.set(bounds.upperLeft().x, bounds.upperLeft().y, bounds.lowerRight().x, bounds.upperLeft().y + minHeight);
+    			boundsChanged = true;
+    		} else if(y > minHeight && bounds.height() != y && y > this.forcedHeight){
+    			bounds.set(bounds.upperLeft().x, bounds.upperLeft().y, bounds.lowerRight().x, bounds.upperLeft().y + y);
+    			boundsChanged = true;
+    		} else if(bounds.height() > this.forcedHeight && this.forcedHeight > 0) {
+    			bounds.set(bounds.upperLeft().x, bounds.upperLeft().y, bounds.lowerRight().x, bounds.upperLeft().y + this.forcedHeight);
+    			boundsChanged = true;
+    		}
+    	}
+    	
+    	if(boundsChanged) {
+    		// Force facade to re-layout since bounds are changed AFTER layout has been performed
+    		if(this.facade.getCanvas() != null) {
+				this.facade.getCanvas().update();
+			}
+    		
+    		// Re-select if needed to force the select
+    		if(this.facade.getSelection().member(this)) {
+    			var selectedNow = this.facade.getSelection();
+    			this.facade.setSelection([]);
+    			this.facade.setSelection(selectedNow);
+    		}
+    	}
     },
 	
 	/**

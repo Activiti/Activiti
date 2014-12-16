@@ -20,10 +20,8 @@ public class ExplorerFilter implements Filter {
   public void init(FilterConfig filterConfig) throws ServletException {
     ignoreList.add("/ui");
     ignoreList.add("/VAADIN");
-    ignoreList.add("/api");
-    ignoreList.add("/editor");
-    ignoreList.add("/explorer");
-    ignoreList.add("/libs");
+    ignoreList.add("/modeler.html");
+    ignoreList.add("/editor-app");
     ignoreList.add("/service");
     ignoreList.add("/diagram-viewer");
   }
@@ -39,8 +37,8 @@ public class ExplorerFilter implements Filter {
     } else {
       firstPart = path;
     }
+    
     if (ignoreList.contains(firstPart)) {
-        
       chain.doFilter(request, response); // Goes to default servlet.
     } else {
       request.getRequestDispatcher("/ui" + path).forward(request, response);

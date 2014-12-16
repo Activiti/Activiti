@@ -1,47 +1,13 @@
-/**
- * Copyright (c) 2008
- * Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- * 
- * HOW to USE the OVERLAY PLUGIN:
- * 	You can use it via the event mechanism from the editor
- * 	by using facade.raiseEvent( <option> )
- * 
- * 	As an example please have a look in the overlayexample.js
- * 
- * 	The option object should/have to have following attributes:
- * 
- * 	Key				Value-Type							Description
- * 	================================================================
- * 
- *	type 			ORYX.CONFIG.EVENT_OVERLAY_SHOW | ORYX.CONFIG.EVENT_OVERLAY_HIDE		This is the type of the event	
- *	id				<String>							You have to use an unified id for later on hiding this overlay
- *	shapes 			<ORYX.Core.Shape[]>					The Shapes where the attributes should be changed
- *	attributes 		<Object>							An object with svg-style attributes as key-value pair
- *	node			<SVGElement>						An SVG-Element could be specified for adding this to the Shape
- *	nodePosition	"N"|"NE"|"E"|"SE"|"S"|"SW"|"W"|"NW"|"START"|"END"	The position for the SVG-Element relative to the 
- *														specified Shape. "START" and "END" are just using for a Edges, then
- *														the relation is the start or ending Docker of this edge.
- *	
- * 
- **/
+/*
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+/*
+ * All code Copyright 2013 KIS Consultancy all rights reserved
+ */
+
 if (!ORYX.Plugins) 
     ORYX.Plugins = new Object();
 
