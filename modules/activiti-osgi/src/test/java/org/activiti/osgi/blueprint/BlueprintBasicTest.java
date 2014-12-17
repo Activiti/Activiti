@@ -83,7 +83,7 @@ public class BlueprintBasicTest {
         mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("5.17.0"),
         mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("5.17.0"),
         mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version("5.17.0"),
-        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("5.17.0T"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("5.17.0"),
         mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version("3.3.2"),
         mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-core").version("2.2.3"),
         mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-databind").version("2.2.3"),
