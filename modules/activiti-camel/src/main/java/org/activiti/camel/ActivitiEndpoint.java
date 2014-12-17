@@ -16,7 +16,6 @@ package org.activiti.camel;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.apache.camel.CamelContext;
@@ -40,8 +39,6 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   protected IdentityService identityService;
 
   protected RuntimeService runtimeService;
-  
-  protected HistoryService historyService;
 
   protected ActivitiConsumer activitiConsumer;
 
@@ -82,7 +79,6 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     ActivitiProducer producer = new ActivitiProducer(this, getTimeout(), getTimeResolution());
     producer.setRuntimeService(runtimeService);
     producer.setIdentityService(identityService);
-    producer.setHistoryService(historyService);
     return producer;
   }
 
@@ -111,10 +107,6 @@ public class ActivitiEndpoint extends DefaultEndpoint {
 
   public void setRuntimeService(RuntimeService runtimeService) {
     this.runtimeService = runtimeService;
-  }
-
-  public void setHistoryService(HistoryService historyService) {
-    this.historyService = historyService;
   }
 
   public boolean isCopyVariablesToProperties() {

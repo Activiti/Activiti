@@ -18,13 +18,11 @@ package org.activiti.camel;
  * @author Arnold Schrijver
  */
 
-import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.engine.history.HistoricVariableInstance;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.camel.Exchange;
@@ -35,8 +33,6 @@ public class ActivitiProducer extends DefaultProducer {
   protected IdentityService identityService;
   
   protected RuntimeService runtimeService;
-  
-  protected HistoryService historyService;
 
   public static final String PROCESS_KEY_PROPERTY = "PROCESS_KEY_PROPERTY";
 
@@ -78,10 +74,6 @@ public class ActivitiProducer extends DefaultProducer {
     this.runtimeService = runtimeService;
   }
 
-  public void setHistoryService(HistoryService historyService) {
-    this.historyService = historyService;
-  }
-
   protected void copyResultToCamel(Exchange exchange, ProcessInstance pi) {
     exchange.setProperty(PROCESS_ID_PROPERTY, pi.getProcessInstanceId());
     
@@ -89,12 +81,12 @@ public class ActivitiProducer extends DefaultProducer {
     
     if (returnVars != null && returnVars.size() > 0) {
       
-      List<HistoricVariableInstance> processVariables = historyService.createHistoricVariableInstanceQuery()
-          .processInstanceId(pi.getProcessInstanceId()).list();
-      
-      for (HistoricVariableInstance variable : processVariables) {
-        if (returnVars.containsKey(variable.getVariableName())) {
-          exchange.setProperty(variable.getVariableName(), variable.getValue());
+      Map<String, Object> processVariables = ((ExecutionEntity) pi).getVariableValues();
+      if (processVariables != null) {
+        for (String variableName : returnVars.keySet()) {
+          if (processVariables.containsKey(variableName)) {
+            exchange.setProperty(variableName, processVariables.get(variableName));
+          }
         }
       }
     }
