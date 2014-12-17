@@ -40,9 +40,16 @@ public class JobTestHelper {
     waitForJobExecutorToProcessAllJobs(activitiRule.getProcessEngine().getProcessEngineConfiguration(), 
         activitiRule.getManagementService(), maxMillisToWait, intervalMillis);
   }
-
+  
   public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, 
       ManagementService managementService, long maxMillisToWait, long intervalMillis) {
+   
+  	waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
+   
+  }
+
+  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, 
+      ManagementService managementService, long maxMillisToWait, long intervalMillis, boolean shutdownExecutorWhenFinished) {
     
     JobExecutor jobExecutor = null;
     AsyncExecutor asyncExecutor = null;
@@ -80,11 +87,13 @@ public class JobTestHelper {
       }
 
     } finally {
-      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-        jobExecutor.shutdown();
-      } else {
-        asyncExecutor.shutdown();
-      }
+    	if (shutdownExecutorWhenFinished) {
+	      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+	        jobExecutor.shutdown();
+	      } else {
+	        asyncExecutor.shutdown();
+	      }
+    	}
     }
   }
 

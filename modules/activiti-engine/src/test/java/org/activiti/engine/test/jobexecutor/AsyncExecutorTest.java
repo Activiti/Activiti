@@ -13,11 +13,8 @@
 package org.activiti.engine.test.jobexecutor;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
@@ -29,6 +26,8 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.JobTestHelper;
 import org.junit.Assert;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Tests specifically for the {@link AsyncExecutor}.
@@ -274,7 +273,8 @@ public class AsyncExecutorTest {
 			processEngineConfiguration.setAsyncExecutorActivate(true);
 			
 			CountingAsyncExecutor countingAsyncExecutor = new CountingAsyncExecutor();
-			countingAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(1); // To avoid waiting too long when a retry happens
+			countingAsyncExecutor.setDefaultAsyncJobAcquireWaitTimeInMillis(50); // To avoid waiting too long when a retry happens
+			countingAsyncExecutor.setDefaultTimerJobAcquireWaitTimeInMillis(50);
 			processEngineConfiguration.setAsyncExecutor(countingAsyncExecutor);
 		}
 
@@ -314,7 +314,7 @@ public class AsyncExecutorTest {
   }
 	
 	private void waitForAllJobsBeingExecuted(ProcessEngine processEngine, long maxWaitTime) {
-	  JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngine.getProcessEngineConfiguration(), processEngine.getManagementService(), maxWaitTime, 50L);
+	  JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngine.getProcessEngineConfiguration(), processEngine.getManagementService(), maxWaitTime, 1000L, false);
   }
 	
 	private int getAsyncExecutorJobCount(ProcessEngine processEngine) {
@@ -327,12 +327,16 @@ public class AsyncExecutorTest {
 	
 	static class CountingAsyncExecutor extends DefaultAsyncJobExecutor {
 		
+		private static final Logger logger = LoggerFactory.getLogger(CountingAsyncExecutor.class);
+		
 		private AtomicInteger counter = new AtomicInteger(0);
 		
 		@Override
 		public void executeAsyncJob(JobEntity job) {
+			logger.info("About to execute job " + job.getId());
 			counter.incrementAndGet();
 		  super.executeAsyncJob(job);
+		  logger.info("Handed off job " + job.getId() + " to async executor (retries=" + job.getRetries() + ")");
 		}
 
 		public AtomicInteger getCounter() {
