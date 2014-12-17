@@ -18,6 +18,8 @@ import org.activiti.engine.TaskService;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringAsyncExecutor;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -29,6 +31,8 @@ import org.springframework.util.Assert;
  * @author Josh Long
  */
 public abstract class AbstractProcessEngineConfiguration {
+	
+	private static final Logger logger = LoggerFactory.getLogger(AbstractProcessEngineConfiguration.class);
 
   public ProcessEngineFactoryBean springProcessEngineBean(SpringProcessEngineConfiguration configuration) {
     ProcessEngineFactoryBean processEngineFactoryBean = new ProcessEngineFactoryBean();
@@ -60,9 +64,10 @@ public abstract class AbstractProcessEngineConfiguration {
   public List<Resource> discoverProcessDefinitionResources(ResourcePatternResolver applicationContext, String prefix, String suffix, boolean checkPDs) throws IOException {
     String path = prefix + suffix;
     if (checkPDs) {
-      Assert.state(applicationContext.getResource(prefix).exists(),
-          String.format("No process definitions were found using the specified " +
-              "path (%s). Are you sure you're using Activiti?", path));
+    	if (!applicationContext.getResource(prefix).exists()) {
+    		logger.warn(String.format("No process definitions were found using the specified path (%s).", path));
+    		return new ArrayList<Resource>();
+    	}
 
       return Arrays.asList(applicationContext.getResources(path));
     }

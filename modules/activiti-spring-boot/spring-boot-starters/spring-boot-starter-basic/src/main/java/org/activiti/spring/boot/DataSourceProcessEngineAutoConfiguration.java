@@ -22,12 +22,12 @@ import org.springframework.transaction.PlatformTransactionManager;
  */
 @Configuration
 @AutoConfigureAfter(DataSourceAutoConfiguration.class)
-@ConditionalOnMissingClass(name = "javax.persistence.EntityManagerFactory")
 public class DataSourceProcessEngineAutoConfiguration {
 
   @Configuration
+  @ConditionalOnMissingClass(name= "javax.persistence.EntityManagerFactory")
   @EnableConfigurationProperties(ActivitiProperties.class)
-  public static class DataSourceConfiguration extends AbstractProcessEngineAutoConfiguration {
+  public static class DataSourceProcessEngineConfiguration extends AbstractProcessEngineAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean

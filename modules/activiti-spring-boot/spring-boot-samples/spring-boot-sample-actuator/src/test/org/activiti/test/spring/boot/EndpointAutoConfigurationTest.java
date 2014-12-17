@@ -1,8 +1,11 @@
-package org.activiti.spring.boot;
+package org.activiti.test.spring.boot;
+
 
 import java.util.Map;
 
 import org.activiti.engine.ProcessEngine;
+import org.activiti.spring.boot.DataSourceProcessEngineAutoConfiguration;
+import org.activiti.spring.boot.EndpointAutoConfiguration;
 import org.activiti.spring.boot.actuate.endpoint.ProcessEngineEndpoint;
 import org.junit.Test;
 import org.springframework.boot.actuate.autoconfigure.EndpointWebMvcAutoConfiguration;
@@ -22,6 +25,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.ResponseEntity;
+import org.springframework.orm.jpa.EntityManagerFactoryAccessor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -45,7 +49,8 @@ public class EndpointAutoConfigurationTest {
             MetricFilterAutoConfiguration.class, EndpointWebMvcAutoConfiguration.class,
             ManagementServerPropertiesAutoConfiguration.class,
             MetricRepositoryAutoConfiguration.class,
-            DataSourceProcessEngineAutoConfiguration.DataSourceConfiguration.class, EndpointAutoConfiguration.class})
+            DataSourceProcessEngineAutoConfiguration.DataSourceProcessEngineConfiguration.class, 
+            EndpointAutoConfiguration.class})
     public static class EndpointConfiguration {
 
         @Bean

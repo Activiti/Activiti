@@ -73,6 +73,7 @@ public class RestApiAutoConfiguration {
   }
 
   @Configuration
+  @ConditionalOnClass(name = {"org.activiti.rest.service.api.RestUrls", "org.springframework.web.servlet.DispatcherServlet"})
   @EnableWebSecurity
   @EnableWebMvcSecurity
   public static class SecurityConfiguration extends WebSecurityConfigurerAdapter {

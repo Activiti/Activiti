@@ -1,8 +1,10 @@
-package org.activiti.spring.boot;
+package org.activiti.test.spring.boot;
 
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
+import org.activiti.spring.boot.DataSourceProcessEngineAutoConfiguration;
+import org.activiti.spring.boot.SecurityAutoConfiguration;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,8 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.core.userdetails.UserDetailsService;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * @author Josh Long
@@ -36,12 +36,12 @@ public class SecurityAutoConfigurationTest {
         this.applicationContext.refresh();
         UserDetailsService userDetailsService = this.applicationContext.getBean(UserDetailsService.class);
         Assert.assertNotNull("the userDetailsService should not be null", userDetailsService);
-        assertEquals("there should only be 1 authority", 1, userDetailsService.loadUserByUsername("jlong").getAuthorities().size());
-        assertEquals("there should be 2 authorities", 2, userDetailsService.loadUserByUsername("jbarrez").getAuthorities().size());
+        Assert.assertEquals("there should only be 1 authority", 1, userDetailsService.loadUserByUsername("jlong").getAuthorities().size());
+        Assert.assertEquals("there should be 2 authorities", 2, userDetailsService.loadUserByUsername("jbarrez").getAuthorities().size());
     }
 
     @Configuration
-    @Import({DataSourceAutoConfiguration.class, DataSourceProcessEngineAutoConfiguration.DataSourceConfiguration.class,
+    @Import({DataSourceAutoConfiguration.class, DataSourceProcessEngineAutoConfiguration.DataSourceProcessEngineConfiguration.class,
             org.springframework.boot.autoconfigure.security.SecurityAutoConfiguration.class,
             SecurityAutoConfiguration.class})
     public static class SecurityConfiguration {
