@@ -39,8 +39,31 @@
   
   <h4>Highlights</h4>
    <ul>
-    <li></li>
+    <li>We introduced a fully tested and brand new Async executor, which supersedes the old Job executor. 
+    The new Async executor uses less database queries to execute asynchronous jobs and is more performant in general. 
+    By default the Activiti Engine still uses the old Job executor, so you have to explicitly choose for the new Async executor by setting the asyncExecutorEnabled property in the process engine configuration.
+    For more details you can look at the advanced section of the user guide.</li>
+    <li>The Activiti Modeler is fully revised and is implemented using Angular JS. This is donated from the Alfresco Activiti BPMN editor that's part of the <a href="http://www.alfresco.com/products/activiti">Alfresco Activiti Enterprise offering</a>. The new Angular JS Activiti Modeler is LGPL licensed. 
+    Note that some dialogs are not yet ported to the new Activiti Modeler, but you'll also find quite a bit of new functionality, including Mule and Camel tasks and being able to define a sequence flow order for an exclusive gateway. Any help with adding new features is really appreciated.</li>
+    <li>The user guide has been revamped with a rewrite to AsciiDoc</li>
+    <li>It's now possible to start a process instance a skip tasks based on a skipExpression. This is very handy when you are migrating process instances to the Activiti Engine (thanks to Robert Hafner for the pull request).
+    <li>We added a new module named activiti-jmx to the Activiti project, which enables JMX for the Activiti Engine. Read <a href="http://tech.blog.saeidmirzaei.com/?p=251">Saeids blog</a> for more details (thanks Saeid).
+    <li>Variable fetching has been optimized for process instances and executions in general.</li>
+    <li>The database upgrade scripts use a different minor version than the JAR version. With the 5.17.0 release, the database version is 5.17.0.2. This versioning enables us to release snapshots and still be able to upgrade from a snapshot release to a stable release.
+    For a 5.17.1 release the database version will be 5.17.1.x where x can be any number. So only the last minor version number can differ from the Activiti Engine release version.</li>
    </ul>
+   
+   <h4>Specific notes</h4>
+  
+  <ul>
+    <li>
+    	Note that the version number is 5.17.0 instead of 5.17. Make sure you use version 5.17.0 for your Maven dependency.
+    </li>
+  </ul>
+   
+   <h4>Bug fixes and various smaller improvements</h4>
+   
+   <p>Check out the <a href="http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=19620">Release notes</a> for more details</p>
   
   <h3>Release Notes - Activiti - Version 5.16.4</h3>
   
