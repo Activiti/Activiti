@@ -33,6 +33,8 @@ This will look for an +activiti.cfg.xml+ file on the classpath and construct an 
     <property name="databaseSchemaUpdate" value="true" />
 
     <property name="jobExecutorActivate" value="false" />
+    <property name="asyncExecutorEnabled" value="true" />
+    <property name="asyncExecutorActivate" value="false" />
 
     <property name="mailServerHost" value="mail.my-corp.com" />
     <property name="mailServerPort" value="5025" />
@@ -71,7 +73,8 @@ All these +ProcessEngineConfiguration.createXXX()+ methods return a +ProcessEngi
 ProcessEngine processEngine = ProcessEngineConfiguration.createStandaloneInMemProcessEngineConfiguration()
   .setDatabaseSchemaUpdate(ProcessEngineConfiguration.DB_SCHEMA_UPDATE_FALSE)
   .setJdbcUrl("jdbc:h2:mem:my-own-db;DB_CLOSE_DELAY=1000")
-  .setJobExecutorActivate(true)
+  .setAsyncExecutorEnabled(true)
+  .setAsyncExecutorActivate(false)
   .buildProcessEngine();
 ----
 
@@ -365,6 +368,10 @@ To upgrade, you have to start with putting the following configuration property 
 
 [[jobExecutorConfiguration]]
 
+=== Job Executor and Async Executor (since version 5.17.0)
+
+Starting from version 5.17.0 Activiti provides an Async executor in addition to the Job Executor. The Async executor is a more performant and more database friendly way of executing asynchronous jobs in the Activiti Engine.
+It's therefore recommended to switch to the Async executor. by default the old job executor is still used. More information can be found in the advanced section of the user guide.
 
 === Job executor activation
 
@@ -378,6 +385,22 @@ By default, the +JobExecutor+ is activated when the process engine boots. Specif
 ----
 
 when you don't want the +JobExecutor+ to be activated upon booting the process engine.
+
+=== Async executor activation
+
+The +AsyncExecutor+ is a component that manages a thread pool to fire timers and other asynchronous tasks.
+
+By default, the +AsyncExecutor+ is not enabled and the JobExecutor is used due to legacy reasons. It's however recommended to use the new AsyncExecutor instead.
+This can be done by defining two properties
+
+[source,xml,linenums]
+----
+<property name="asyncExecutorEnabled" value="true" />
+<property name="asyncExecutorActivate" value="true" />
+----
+
+The asyncExecutorEnabled property is to enable the Async executor in stead of the old Job executor.
+The second property asyncExecutorActivate instructs the Activiti Engine to startup the Async executor thread pool at startup. 
 
 [[mailServerConfiguration]]
 

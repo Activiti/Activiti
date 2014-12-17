@@ -93,6 +93,10 @@ public class ActivitiEngineConfiguration {
   	processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager());
   	processEngineConfiguration.setJobExecutorActivate(Boolean.valueOf(
   	    environment.getProperty("engine.activate.jobexecutor", "false")));
+  	processEngineConfiguration.setAsyncExecutorEnabled(Boolean.valueOf(
+        environment.getProperty("engine.asyncexecutor.enabled", "true")));
+    processEngineConfiguration.setAsyncExecutorActivate(Boolean.valueOf(
+        environment.getProperty("engine.asyncexecutor.activate", "true")));
   	processEngineConfiguration.setHistory(environment.getProperty("engine.history.level", "full"));
   	
   	List<AbstractFormType> formTypes = new ArrayList<AbstractFormType>();

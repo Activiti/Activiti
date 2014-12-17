@@ -13,6 +13,13 @@ All REST-resources require a valid Activiti-user to be authenticated by default.
       
 *It's recommended to use Basic Authentication in combination with HTTPS.*
 
+==== Configuration
+
+The Activiti REST web applicaton is using Spring Java Configuration for starting the Activiti Engine, defining the basic authentication security using Spring security and to define the variable converters for specific variable handling. 
+A small amount of properties can be defined by changing the engine.properties file you can find in the WEB-INF/classes folder.
+If you need more advanced configuration options there's the possibility to override the default Spring beans in XML in the activiti-custom-context.xml file you can also find in the WEB-INF/classes folder.
+An example configuration is already in comments in this file. This is also the place to override the default RestResponseFactory by defining a new Spring bean with the name restResponsefactory and use your custom implementation class for it.
+
 [[restUsageInTomcat]]
 
 
