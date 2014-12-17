@@ -1,6 +1,4 @@
-DROP TABLE IF EXISTS ACT_ID_INFO CASCADE;
-DROP TABLE IF EXISTS ACT_ID_GROUP CASCADE;
-DROP TABLE IF EXISTS ACT_ID_MEMBERSHIP CASCADE;
-DROP TABLE IF EXISTS ACT_ID_USER CASCADE;
-
-
+drop table if exists ACT_ID_INFO cascade;
+drop table if exists ACT_ID_GROUP cascade;
+drop table if exists ACT_ID_MEMBERSHIP cascade;
+drop table if exists ACT_ID_USER cascade;
