@@ -40,8 +40,6 @@ import org.junit.Test;
  */
 public class AsyncExecutorTest {
 	
-	private Set<String> deploymentsToCleanup = new HashSet<String>();
-	
 	@Test
 	public void testRegularAsyncExecution() {
 		
@@ -65,8 +63,8 @@ public class AsyncExecutorTest {
 		Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
 		Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().count());
 
-		// Move clock 2 minutes and 1 second. Triggers the timer
-		addSecondsToCurrentTime(processEngine, 121); 
+		// Move clock 3 minutes and 1 second. Triggers the timer
+		addSecondsToCurrentTime(processEngine, 181); 
 		waitForAllJobsBeingExecuted(processEngine);
 
 		// Verify if all is as expected
@@ -287,8 +285,8 @@ public class AsyncExecutorTest {
 		
 		@Override
 		public void executeAsyncJob(JobEntity job) {
+			counter.incrementAndGet();
 		  super.executeAsyncJob(job);
-		  counter.incrementAndGet();
 		}
 
 		public AtomicInteger getCounter() {
