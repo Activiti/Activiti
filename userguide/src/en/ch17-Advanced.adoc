@@ -5,6 +5,80 @@ The following sections cover advanced use cases of using Activiti, that go beyon
 	
 [[advanced_parseHandlers]]
 
+=== Async and job executor
+
+Starting from version 5.17.0 Activiti provides the Async executor in addition to the existing job executor. Both executors deal with timers and asynchronous jobs in the Activiti Engine, so only one executor can be enabled.
+This section will explain the difference between the Async executor and the job executor and why we recommend to use the Async executor. Note that by default Activiti uses the existing job executor because we don't want to enable the Async executor without making an explicit configuration for it.
+
+==== Async executor design
+
+The Async executor contains a thread pool to execute timer and asynchronous jobs. When enabled, the Engine will call the Async executor with a persisted asynchronous job entity and the thread pool will asynchronously execute the job.
+This is major difference with the old Job executor, because in that case the asynchronous job is persisted and the job executor will poll the database for new jobs.
+In case a job is found it will lock the job and execute it, which means a lot of additional database traffic. The Async executor will execute the asynchronous job directly without first polling the database.
+In case the asynchronous job is an exclusive job, the Async executor will first lock the process instance execution and if that succeeds execute the job and unlock the process instance execution again.
+If the process instance lock fails, it will retry.
+
+In the case of timer jobs the logic is different from asynchronous jobs and the implementation is similar between the Async and the Job executor.
+The Async executor will poll the database for timer jobs which are due to be executed. The job will then be locked and executed.
+
+==== Job executor design
+
+The job executor also contains a thread pool to execute timer and asynchronous jobs. When activated, the Job executor will poll the database for asynchronous jobs and timer jobs due.
+In case a job is found it will lock the job and execute it, which means a lot of additional database traffic. On the other side, the Async executor will execute the asynchronous job directly without first polling the database.
+
+==== Advantages of the Async executor
+
+* Less database queries because asynchronous jobs are executed without polling the database
+* For non-exclusive jobs there's no chance to run into OptimisticLockingExeptions anymore
+* Exclusive jobs are now locked at process instance level instead of the cumbersome logic of queuing exclusive jobs in the Job Executor
+
+==== Async executor configuration
+
+It's possible to define thread pool sizes and other configurations for the Async executor.
+It's always advised to look into the default settings of the Async executor and validate if they match the requirements of your process instances.
+
+To override the default settings of the job executor a new bean needs to be injected into the process engine configuration, like:
+
+[source,xml,linenums]
+----
+<property name="asyncExecutor" ref="asyncExecutor" />
+----
+
+The default Async executor can be used to override the default settings, but you can of course also extend from the DefaultAsyncJobExecutor class. 
+In the following configuration listing, the DefaultAsyncJobExecutor is used with new values for its properties:
+
+[source,xml,linenums]
+----
+<bean id="asyncExecutor" class="org.activiti.engine.impl.asyncexecutor.DefaultAsyncJobExecutor">
+    <property name="corePoolSize" value="10" /> 
+    <property name="maxPoolSize" value="50" />
+    <property name="keepAliveTime" value="3000" />
+    <property name="queueSize" value="200" />
+    <property name="maxTimerJobsPerAcquisition" value="2" />
+    <property name="maxAsyncJobsDuePerAcquisition" value="2" />
+    <property name="defaultAsyncJobAcquireWaitTimeInMillis" value="1000" />
+    <property name="defaultTimerJobAcquireWaitTimeInMillis" value="1000" />
+    <property name="timerLockTimeInMillis" value="60000" />
+    <property name="asyncJobLockTimeInMillis" value="60000" />
+</bean>
+----
+
+.Async executor configuration options
+[options="header"]
+|===============
+|Name|Default value|Description
+|corePoolSize|2|The minimal number of threads that are kept alive in the thread pool for job execution.
+|maxPoolSize|10|The maximum number of threads that are kept alive in the thread pool for job execution.
+|keepAliveTime|5000|The time (in milliseconds) a thread used for job execution must be kept alive before it is destroyed. Default setting is 0. Having a non-default setting of 0 takes resources, but in the case of many job executions it avoids creating new threads all the time.
+|queueSize|100|The size of the queue on which jobs to be executed are placed.
+|maxTimerJobsPerAcquisition|1|The number of timer jobs that are fetched from the database in one query.
+|maxAsyncJobsDuePerAcquisition|1|The number of asynchronous jobs due that are fetched from the database in one query.
+|defaultAsyncJobAcquireWaitTimeInMillis|10000|The time in milliseconds between asynchronous job due queries being executed.
+|defaultTimerJobAcquireWaitTimeInMillis|10000|The time in milliseconds between timer job queries being executed.
+|timerLockTimeInMillis|300000|The time in milliseconds that a timer job is locked before being retried again. The Activiti Engine considers the timer job to have failed after this period of time and will retry.
+|asyncJobLockTimeInMillis|300000|The time in milliseconds that an asynchronous job is locked before being retried again. The Activiti Engine considers the asynchronous job to have failed after this period of time and will retry.
+
+|===============
 
 === Hooking into process parsing
 

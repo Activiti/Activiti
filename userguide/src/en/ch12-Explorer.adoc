@@ -13,6 +13,12 @@ image::images/explorer.tabs.png[align="center"]
 * *Reporting*: generate reports and view previously  saved results. See <<explorer.reporting,the section on reporting>> for more details.
 * *Manage*: only visible when the logged in user has  administrator rights. Allows to administrate the Activiti engine: manage users and groups, execute and see stuck jobs, see the database and deploy new process definitions.        
 
+=== Configuration
+
+The Activiti Explorer is using Spring Java Configuration for starting the Activiti Engine. A small amount of properties can be defined by changing the engine.properties file you can find in the WEB-INF/classes folder.
+If you need more advanced configuration options there's the possibility to define the Activiti process engine configuration in XML in the activiti-custom-context.xml file you can also find in the WEB-INF/classes folder.
+An example configuration is already in comments in this file.
+
 === Process diagram
 
 The Explorer includes functionality to dynamically generate an overview of a process definition using the link:$$http://raphaeljs.com/$$[Raphaël] JavaScript framework. This process image can only be generated when the process definition XML contains BPMN DI information. When there's no BPMN DI information in the process definition XML and the deployment contains a process definition image, that image will be shown.

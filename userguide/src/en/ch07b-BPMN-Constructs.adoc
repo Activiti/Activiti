@@ -105,7 +105,7 @@ based on process variables. The process variables must contain the ISO 8601 (or 
 </boundaryEvent>
 ----
 
-*Note:* timers are only fired when the job executor is enabled (i.e. _jobExecutorActivate_ needs to be set to +true+ in the +activiti.cfg.xml+, since the job executor is disabled by default).
+*Note:* timers are only fired when the job or async executor is enabled (i.e. _jobExecutorActivate_ or _asyncExecutorActivate_ needs to be set to +true+ in the +activiti.cfg.xml+, since the job and async executor are disabled by default).
 
 
 [[bpmnErrorEventDefinition]]
@@ -939,7 +939,7 @@ Since BPMN 2.0 there is the difference between the interrupting and non interrup
 <boundaryEvent id="escalationTimer" cancelActivity="false" attachedToRef="firstLineSupport"/>
 ----
 
-*Note:* boundary timer events are only fired when the job executor is enabled (i.e. _jobExecutorActivate_ needs to be set to +true+ in the +activiti.cfg.xml+, since the job executor is disabled by default).
+*Note:* boundary timer events are only fired when the job or async executor is enabled (i.e. _jobExecutorActivate_ or _asyncExecutorActivate_ needs to be set to +true+ in the +activiti.cfg.xml+, since the job and async executor are disabled by default).
 
 
 [[bpmnKnownIssueBoundaryEvent]]
