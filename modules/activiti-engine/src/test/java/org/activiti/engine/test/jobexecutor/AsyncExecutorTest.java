@@ -43,169 +43,214 @@ public class AsyncExecutorTest {
 	@Test
 	public void testRegularAsyncExecution() {
 		
-		// Deploy
-		ProcessEngine processEngine = createProcessEngine(true);
-		setClockToCurrentTime(processEngine);
-		deploy(processEngine, "AsyncExecutorTest.testRegularAsyncExecution.bpmn20.xml");
+		ProcessEngine processEngine = null;
 		
-		// Start process instance. Wait for all jobs to be done
-		processEngine.getRuntimeService().startProcessInstanceByKey("asyncExecutor");
-		
-		// Move clock 3 minutes. Nothing should happen
-		addSecondsToCurrentTime(processEngine, 180L);
 		try {
-			waitForAllJobsBeingExecuted(processEngine, 500L);
-			Assert.fail();
-		} catch (ActivitiException e) {
-			// Expected
+			// Deploy
+			processEngine = createProcessEngine(true);
+			setClockToCurrentTime(processEngine);
+			deploy(processEngine, "AsyncExecutorTest.testRegularAsyncExecution.bpmn20.xml");
+			
+			// Start process instance. Wait for all jobs to be done
+			processEngine.getRuntimeService().startProcessInstanceByKey("asyncExecutor");
+			
+			// Move clock 3 minutes. Nothing should happen
+			addSecondsToCurrentTime(processEngine, 180L);
+			try {
+				waitForAllJobsBeingExecuted(processEngine, 500L);
+				Assert.fail();
+			} catch (ActivitiException e) {
+				// Expected
+			}
+			Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("The Task").count());
+			Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
+			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().count());
+	
+			// Move clock 3 minutes and 1 second. Triggers the timer
+			addSecondsToCurrentTime(processEngine, 181); 
+			waitForAllJobsBeingExecuted(processEngine);
+	
+			// Verify if all is as expected
+			Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("The Task").count());
+			Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
+			Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().count());
+			
+			Assert.assertEquals(1, getAsyncExecutorJobCount(processEngine));
+		} finally {
+		
+			// Clean up
+			if (processEngine != null) {
+				cleanup(processEngine);
+			}
+			
 		}
-		Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("The Task").count());
-		Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
-		Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().count());
-
-		// Move clock 3 minutes and 1 second. Triggers the timer
-		addSecondsToCurrentTime(processEngine, 181); 
-		waitForAllJobsBeingExecuted(processEngine);
-
-		// Verify if all is as expected
-		Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("The Task").count());
-		Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
-		Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().count());
-		
-		Assert.assertEquals(1, getAsyncExecutorJobCount(processEngine));
-		
-		// Clean up
-		cleanup(processEngine);
 		
 	}
 	
 	@Test
 	public void testAsyncExecutorDisabledOnOneEngine() {
 		
-		// Deploy on one engine, where the async executor is disabled
-		ProcessEngine firstProcessEngine = createProcessEngine(false);
-		Date now = setClockToCurrentTime(firstProcessEngine);
-		deploy(firstProcessEngine, "AsyncExecutorTest.testRegularAsyncExecution.bpmn20.xml");
+		ProcessEngine firstProcessEngine = null;
+		ProcessEngine secondProcessEngine = null;
 		
-		// Start process instance on first engine
-		firstProcessEngine.getRuntimeService().startProcessInstanceByKey("asyncExecutor");
+		try {
 		
-		//	Move clock 5 minutes and 1 second. Triggers the timer normally, but not now since async execution is disabled
-		addSecondsToCurrentTime(firstProcessEngine, 301); // 301 = 5m01s
-		Assert.assertEquals(1, firstProcessEngine.getTaskService().createTaskQuery().taskName("The Task").count());
-		Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
-		Assert.assertEquals(1, firstProcessEngine.getManagementService().createJobQuery().count());
-		
-		// Create second engine, with async executor enabled. Same time as the first engine to start, then add 301 seconds
-		ProcessEngine secondProcessEngine = createProcessEngine(true, now);
-		addSecondsToCurrentTime(secondProcessEngine, 301); // 301 = 5m01s
-		waitForAllJobsBeingExecuted(secondProcessEngine);
-
-		// Verify if all is as expected
-		Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("The Task").count());
-		Assert.assertEquals(1, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
-		Assert.assertEquals(0, firstProcessEngine.getManagementService().createJobQuery().count());
-		
-		Assert.assertEquals(0, getAsyncExecutorJobCount(firstProcessEngine));
-		Assert.assertEquals(1, getAsyncExecutorJobCount(secondProcessEngine));
-		
-		// Clean up
-		cleanup(firstProcessEngine);
-		cleanup(secondProcessEngine);
+			// Deploy on one engine, where the async executor is disabled
+			firstProcessEngine = createProcessEngine(false);
+			Date now = setClockToCurrentTime(firstProcessEngine);
+			deploy(firstProcessEngine, "AsyncExecutorTest.testRegularAsyncExecution.bpmn20.xml");
+			
+			// Start process instance on first engine
+			firstProcessEngine.getRuntimeService().startProcessInstanceByKey("asyncExecutor");
+			
+			//	Move clock 5 minutes and 1 second. Triggers the timer normally, but not now since async execution is disabled
+			addSecondsToCurrentTime(firstProcessEngine, 301); // 301 = 5m01s
+			Assert.assertEquals(1, firstProcessEngine.getTaskService().createTaskQuery().taskName("The Task").count());
+			Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
+			Assert.assertEquals(1, firstProcessEngine.getManagementService().createJobQuery().count());
+			
+			// Create second engine, with async executor enabled. Same time as the first engine to start, then add 301 seconds
+			secondProcessEngine = createProcessEngine(true, now);
+			addSecondsToCurrentTime(secondProcessEngine, 301); // 301 = 5m01s
+			waitForAllJobsBeingExecuted(secondProcessEngine);
+	
+			// Verify if all is as expected
+			Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("The Task").count());
+			Assert.assertEquals(1, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after timer").count());
+			Assert.assertEquals(0, firstProcessEngine.getManagementService().createJobQuery().count());
+			
+			Assert.assertEquals(0, getAsyncExecutorJobCount(firstProcessEngine));
+			Assert.assertEquals(1, getAsyncExecutorJobCount(secondProcessEngine));
+			
+		} finally {
+			
+			// Clean up
+			cleanup(firstProcessEngine);
+			cleanup(secondProcessEngine);
+			
+		}
 		
 	}
 	
 	@Test
 	public void testAsyncScriptExecution() {
-
-		// Deploy
-		ProcessEngine processEngine = createProcessEngine(true);
-		setClockToCurrentTime(processEngine);
-		deploy(processEngine,"AsyncExecutorTest.testAsyncScriptExecution.bpmn20.xml");
-
-		// Start process instance. Wait for all jobs to be done
-		processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
-		waitForAllJobsBeingExecuted(processEngine);
-
-		// Verify if all is as expected
-		Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
-		Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().count());
-
-		Assert.assertEquals(1, getAsyncExecutorJobCount(processEngine));
 		
-		// Clean up
-		cleanup(processEngine);
+		ProcessEngine processEngine = null;
+		
+		try {
+
+			// Deploy
+			processEngine = createProcessEngine(true);
+			setClockToCurrentTime(processEngine);
+			deploy(processEngine,"AsyncExecutorTest.testAsyncScriptExecution.bpmn20.xml");
+	
+			// Start process instance. Wait for all jobs to be done
+			processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
+			waitForAllJobsBeingExecuted(processEngine);
+	
+			// Verify if all is as expected
+			Assert.assertEquals(1, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
+			Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().count());
+	
+			Assert.assertEquals(1, getAsyncExecutorJobCount(processEngine));
+			
+		} finally {
+		
+			// Clean up
+			cleanup(processEngine);
+			
+		}
 		
 	}
 	
 	@Test
 	public void testAsyncScriptExecutionOnTwoEngines() {
-
-		// Deploy
-		ProcessEngine firstProcessEngine = createProcessEngine(false);
-		Date now = setClockToCurrentTime(firstProcessEngine);
-		deploy(firstProcessEngine,"AsyncExecutorTest.testAsyncScriptExecution.bpmn20.xml");
-
-		// Start process instance. Nothing should happen
-		firstProcessEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
-		Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
-		Assert.assertEquals(1, firstProcessEngine.getManagementService().createJobQuery().count());
 		
-		// Start second engine, with async executor enabled
-		ProcessEngine secondProcessEngine = createProcessEngine(true, now); // Same timestamp as first engine
-		Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
-		Assert.assertEquals(1, firstProcessEngine.getManagementService().createJobQuery().count());
+		ProcessEngine firstProcessEngine = null;
+		ProcessEngine secondProcessEngine = null;
 		
-		// Move the clock 1 second. Should be executed now by second engine
-		addSecondsToCurrentTime(secondProcessEngine, 1);
-		waitForAllJobsBeingExecuted(secondProcessEngine, 10000L);
+		try {
 
-		// Verify if all is as expected
-		Assert.assertEquals(1, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
-		Assert.assertEquals(0, firstProcessEngine.getManagementService().createJobQuery().count());
-
-		Assert.assertEquals(0, getAsyncExecutorJobCount(firstProcessEngine));
-		Assert.assertEquals(1, getAsyncExecutorJobCount(secondProcessEngine));
+			// Deploy
+			firstProcessEngine = createProcessEngine(false);
+			Date now = setClockToCurrentTime(firstProcessEngine);
+			deploy(firstProcessEngine,"AsyncExecutorTest.testAsyncScriptExecution.bpmn20.xml");
+	
+			// Start process instance. Nothing should happen
+			firstProcessEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
+			Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
+			Assert.assertEquals(1, firstProcessEngine.getManagementService().createJobQuery().count());
+			
+			// Start second engine, with async executor enabled
+			secondProcessEngine = createProcessEngine(true, now); // Same timestamp as first engine
+			Assert.assertEquals(0, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
+			Assert.assertEquals(1, firstProcessEngine.getManagementService().createJobQuery().count());
+			
+			// Move the clock 1 second. Should be executed now by second engine
+			addSecondsToCurrentTime(secondProcessEngine, 1);
+			waitForAllJobsBeingExecuted(secondProcessEngine, 10000L);
+	
+			// Verify if all is as expected
+			Assert.assertEquals(1, firstProcessEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
+			Assert.assertEquals(0, firstProcessEngine.getManagementService().createJobQuery().count());
+	
+			Assert.assertEquals(0, getAsyncExecutorJobCount(firstProcessEngine));
+			Assert.assertEquals(1, getAsyncExecutorJobCount(secondProcessEngine));
+			
+		} finally {
+			
+			// Clean up
+			cleanup(firstProcessEngine);
+			cleanup(secondProcessEngine);
+			
+		}
 		
-		// Clean up
-		cleanup(firstProcessEngine);
 		
 	}
 	
 	@Test
 	public void testAsyncFailingScript() {
 		
-		// Deploy
-		final ProcessEngine processEngine = createProcessEngine(true);
-		processEngine.getProcessEngineConfiguration().getClock().reset();
-		deploy(processEngine,"AsyncExecutorTest.testAsyncFailingScript.bpmn20.xml");
-
-		// Start process instance. Wait for all jobs to be done.
-		processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
+		ProcessEngine processEngine = null;
 		
-		// There is a back off mechanism for the retry, so need a bit of time
-		// But to be sure, we make the wait time small 
-		processEngine.getProcessEngineConfiguration().setAsyncFailedJobWaitTime(1);
+		try {
 		
-		JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 10000L, 2000L, new Callable<Boolean>() {
-			@Override
-			public Boolean call() throws Exception {
-				return processEngine.getManagementService().createJobQuery().withRetriesLeft().count() == 0;
-			}
-		});
-		
-
-		// Verify if all is as expected
-		Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
-		Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().count());
-		Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().withRetriesLeft().count());
-		Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().noRetriesLeft().count());
-		Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().withException().count());
-
-		Assert.assertEquals(3, getAsyncExecutorJobCount(processEngine));
-		
-		// Clean up
-		cleanup(processEngine);
+			// Deploy
+			processEngine = createProcessEngine(true);
+			processEngine.getProcessEngineConfiguration().getClock().reset();
+			deploy(processEngine,"AsyncExecutorTest.testAsyncFailingScript.bpmn20.xml");
+	
+			// Start process instance. Wait for all jobs to be done.
+			processEngine.getRuntimeService().startProcessInstanceByKey("asyncScript");
+			
+			// There is a back off mechanism for the retry, so need a bit of time
+			// But to be sure, we make the wait time small 
+			processEngine.getProcessEngineConfiguration().setAsyncFailedJobWaitTime(1);
+			
+			final ProcessEngine processEngineCopy = processEngine;
+			JobTestHelper.waitForJobExecutorOnCondition(processEngine.getProcessEngineConfiguration(), 10000L, 2000L, new Callable<Boolean>() {
+				@Override
+				public Boolean call() throws Exception {
+					return processEngineCopy.getManagementService().createJobQuery().withRetriesLeft().count() == 0;
+				}
+			});
+			
+	
+			// Verify if all is as expected
+			Assert.assertEquals(0, processEngine.getTaskService().createTaskQuery().taskName("Task after script").count());
+			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().count());
+			Assert.assertEquals(0, processEngine.getManagementService().createJobQuery().withRetriesLeft().count());
+			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().noRetriesLeft().count());
+			Assert.assertEquals(1, processEngine.getManagementService().createJobQuery().withException().count());
+	
+			Assert.assertEquals(3, getAsyncExecutorJobCount(processEngine));
+			
+		} finally {
+			
+			// Clean up
+			cleanup(processEngine);
+			
+		}
 		
 	}
 	
