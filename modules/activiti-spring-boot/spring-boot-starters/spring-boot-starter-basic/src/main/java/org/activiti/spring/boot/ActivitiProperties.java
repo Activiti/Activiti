@@ -17,6 +17,11 @@ public class ActivitiProperties {
   private String deploymentName;
   private String mailServerHost = "localhost";
   private int mailServerPort = 1025;
+  private String mailServerUserName;
+  private String mailServerPassword;
+  private String mailServerDefaultFrom;
+  private boolean mailServerUseSsl;
+  private boolean mailServerUseTls;
   private String databaseSchemaUpdate = "true";
   private String databaseSchema;
   private String processDefinitionLocationPrefix = "classpath:/processes/";
@@ -147,4 +152,44 @@ public class ActivitiProperties {
     this.mailServerPort = mailServerPort;
   }
 
+	public String getMailServerUserName() {
+		return mailServerUserName;
+	}
+
+	public void setMailServerUserName(String mailServerUserName) {
+		this.mailServerUserName = mailServerUserName;
+	}
+
+	public String getMailServerPassword() {
+		return mailServerPassword;
+	}
+
+	public void setMailServerPassword(String mailServerPassword) {
+		this.mailServerPassword = mailServerPassword;
+	}
+
+	public String getMailServerDefaultFrom() {
+		return mailServerDefaultFrom;
+	}
+
+	public void setMailServerDefaultFrom(String mailServerDefaultFrom) {
+		this.mailServerDefaultFrom = mailServerDefaultFrom;
+	}
+
+	public boolean isMailServerUseSsl() {
+		return mailServerUseSsl;
+	}
+
+	public void setMailServerUseSsl(boolean mailServerUseSsl) {
+		this.mailServerUseSsl = mailServerUseSsl;
+	}
+
+	public boolean isMailServerUseTls() {
+		return mailServerUseTls;
+	}
+
+	public void setMailServerUseTls(boolean mailServerUseTls) {
+		this.mailServerUseTls = mailServerUseTls;
+	}
+	
 }

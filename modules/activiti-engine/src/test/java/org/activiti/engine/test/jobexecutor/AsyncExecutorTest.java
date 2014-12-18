@@ -111,7 +111,7 @@ public class AsyncExecutorTest {
 			
 			// Create second engine, with async executor enabled. Same time as the first engine to start, then add 301 seconds
 			secondProcessEngine = createProcessEngine(true, now);
-			addSecondsToCurrentTime(secondProcessEngine, 301); // 301 = 5m01s
+			addSecondsToCurrentTime(secondProcessEngine, 361); 
 			waitForAllJobsBeingExecuted(secondProcessEngine);
 	
 			// Verify if all is as expected

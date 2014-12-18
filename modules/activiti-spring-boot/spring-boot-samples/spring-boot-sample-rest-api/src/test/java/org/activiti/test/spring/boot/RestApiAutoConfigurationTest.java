@@ -1,8 +1,10 @@
-package org.activiti.spring.boot;
+package org.activiti.test.spring.boot;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.activiti.spring.boot.DataSourceProcessEngineAutoConfiguration;
+import org.activiti.spring.boot.RestApiAutoConfiguration;
 import org.junit.After;
 import org.junit.Test;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
@@ -30,7 +32,7 @@ public class RestApiAutoConfigurationTest {
           MultipartAutoConfiguration.class,
           ServerPropertiesAutoConfiguration.class,
           DataSourceAutoConfiguration.class,
-          DataSourceProcessEngineAutoConfiguration.DataSourceConfiguration.class,
+          DataSourceProcessEngineAutoConfiguration.DataSourceProcessEngineConfiguration.class,
           RestApiAutoConfiguration.class
   })
   protected static class BaseConfiguration {

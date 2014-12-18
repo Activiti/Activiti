@@ -73,6 +73,11 @@ public abstract class AbstractProcessEngineAutoConfiguration
     
     conf.setMailServerHost(activitiProperties.getMailServerHost());
     conf.setMailServerPort(activitiProperties.getMailServerPort());
+    conf.setMailServerUsername(activitiProperties.getMailServerUserName());
+    conf.setMailServerPassword(activitiProperties.getMailServerPassword());
+    conf.setMailServerDefaultFrom(activitiProperties.getMailServerDefaultFrom());
+    conf.setMailServerUseSSL(activitiProperties.isMailServerUseSsl());
+    conf.setMailServerUseTLS(activitiProperties.isMailServerUseTls());
 
 
     return conf;

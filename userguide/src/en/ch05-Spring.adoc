@@ -311,8 +311,6 @@ Note that for this to work, you need to define a _org.activiti.engine.test.Activ
 ----
 
 
-[[spring.enable.activiti.annotation]]
-
 
 === JPA with Hibernate 4.2.x
 
@@ -326,3 +324,534 @@ When using Hibernate 4.2.x JPA in service task or listener logic in the Activiti
   <version>${org.springframework.version}</version>
 </dependency>
 ----
+
+
+[[springSpringBoot]]
+
+
+=== Spring Boot
+
+Spring Boot is an application framework which, according to link:$$http://projects.spring.io/spring-boot/$$[its website], _makes it easy to create stand-alone, production-grade Spring based Applications that can you can "just run". It takes an opinionated view of the Spring platform and third-party libraries so you can get started with minimum fuss. Most Spring Boot applications need very little Spring configuration_.
+
+For more information on Spring Boot, see link:$$http://projects.spring.io/spring-boot/$$[http://projects.spring.io/spring-boot/]
+
+The Spring Boot - Activiti integration is currently experimental. It has been developer together with Spring committers, but it is still early days. We welcome all to try it out and provide feedback. 
+
+==== Getting started
+
+Spring Boot is all about convention over configuration. To get started, simply add the _spring-boot-starters-basic_ dependency to your project. For example for Maven:
+
+
+[source,xml,linenums]
+----
+<dependency>
+	<groupId>org.activiti</groupId>
+	<artifactId>spring-boot-starter-basic</artifactId>
+	<version>${activiti.version}</version>
+</dependency>
+----
+
+That's all that's needed. This dependency will transitively add the correct Activiti and Spring dependencies to the classpath. You can now write the Spring Boot application:
+
+[source,java,,linenums]
+----
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+public class MyApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+
+}
+----
+
+Activiti needs a database to store its data. If you would run the code above, it would give you an informative exception message that you need to add a database driver dependency to the classpath. For now, add the H2 database dependency:
+
+[source,xml,linenums]
+----
+<dependency>
+	<groupId>com.h2database</groupId>
+	<artifactId>h2</artifactId>
+	<version>1.4.183</version>
+</dependency>
+----
+
+The application can now be started. You will see output like this:
+
+----
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+ :: Spring Boot ::        (v1.1.6.RELEASE)
+
+MyApplication                            : Starting MyApplication on ...
+s.c.a.AnnotationConfigApplicationContext : Refreshing org.springframework.context.annotation.AnnotationConfigApplicationContext@33cb5951: startup date [Wed Dec 17 15:24:34 CET 2014]; root of context hierarchy
+a.s.b.AbstractProcessEngineConfiguration : No process definitions were found using the specified path (classpath:/processes/**.bpmn20.xml).
+o.activiti.engine.impl.db.DbSqlSession   : performing create on engine with resource org/activiti/db/create/activiti.h2.create.engine.sql
+o.activiti.engine.impl.db.DbSqlSession   : performing create on history with resource org/activiti/db/create/activiti.h2.create.history.sql
+o.activiti.engine.impl.db.DbSqlSession   : performing create on identity with resource org/activiti/db/create/activiti.h2.create.identity.sql
+o.a.engine.impl.ProcessEngineImpl        : ProcessEngine default created
+o.a.e.i.a.DefaultAsyncJobExecutor        : Starting up the default async job executor [org.activiti.spring.SpringAsyncExecutor].
+o.a.e.i.a.AcquireTimerJobsRunnable       : {} starting to acquire async jobs due
+o.a.e.i.a.AcquireAsyncJobsDueRunnable    : {} starting to acquire async jobs due
+o.s.j.e.a.AnnotationMBeanExporter        : Registering beans for JMX exposure on startup
+MyApplication                            : Started MyApplication in 2.019 seconds (JVM running for 2.294)
+----
+
+So by just adding the dependency to the classpath and using the _@EnableAutoConfiguration_ annotation a lot has happened behind the scenes:
+
+* A in-memory datasource is created automatically (since the H2 driver is on the classpath) and passed to the Activiti process engine configuration
+* An Activiti ProcessEngine bean is created and exposed
+* All the Activiti services are exposed as Spring beans
+* The Spring Job Executor is created
+
+Also, any BPMN 2.0 process definition in the _processes_ folder would be automatically deployed. Create a folder _processes_ and add a dummy process definition (named _one-task-process.bpmn20.xml_) to this folder. 
+
+[source,xml,linenums]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+        xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+        xmlns:activiti="http://activiti.org/bpmn"
+        targetNamespace="Examples">
+
+    <process id="oneTaskProcess" name="The One Task Process">
+        <startEvent id="theStart" />
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+        <userTask id="theTask" name="my task" />
+        <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+        <endEvent id="theEnd" />
+    </process>
+
+</definitions>
+----
+
+Also add following code lines to test if the deployment actually worked. The _CommandLineRunner_ is a special kind of Spring bean that is executed when the application boots:
+
+[source,java,linenums]
+----
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+public class MyApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(MyApplication.class, args);
+    }
+
+    @Bean
+    public CommandLineRunner init(final RepositoryService repositoryService,
+                                  final RuntimeService runtimeService,
+                                  final TaskService taskService) {
+
+        return new CommandLineRunner() {
+            @Override
+            public void run(String... strings) throws Exception {
+                System.out.println("Number of process definitions : " 
+                	+ repositoryService.createProcessDefinitionQuery().count());
+                System.out.println("Number of tasks : " + taskService.createTaskQuery().count());
+                runtimeService.startProcessInstanceByKey("oneTaskProcess");
+                System.out.println("Number of tasks after process start: " + taskService.createTaskQuery().count());
+            }
+        };
+
+    }
+
+}
+----
+
+The output will be as expected:
+
+----
+Number of process definitions : 1
+Number of tasks : 0
+Number of tasks after process start : 1
+----
+
+
+==== Changing the database and connection pool
+
+As stated above, Spring Boot is about convention over configuration. By default, by having only H2 on the classpath, it created an in memory datasource and passed that to the Activiti process engine configuration.
+
+To change the datasource, simply override the default by providing a Datasource bean. We're using the _DataSourceBuilder_ class here, which is a helper class from Spring Boot. If Tomcat, HikariCP or Commons DBCP are on the classpath one of them will be selected (in that order with Tomcat first). For example, to switch to a MySQL database:
+
+[source,java,linenums]
+----
+@Bean
+public DataSource database() {
+    return DataSourceBuilder.create()
+        .url("jdbc:mysql://127.0.0.1:3306/activiti-spring-boot?characterEncoding=UTF-8")
+        .username("alfresco")
+        .password("alfresco")
+        .driverClassName("com.mysql.jdbc.Driver")
+        .build();
+}
+----
+
+Remove H2 from the Maven dependencies and add the Mysql driver and the Tomcat connection pooling to the classpath:
+
+[source,xml,linenums]
+----
+<dependency>
+	<groupId>mysql</groupId>
+	<artifactId>mysql-connector-java</artifactId>
+	<version>5.1.34</version>
+</dependency>
+<dependency>
+	<groupId>org.apache.tomcat</groupId>
+	<artifactId>tomcat-jdbc</artifactId>
+	<version>8.0.15</version>
+</dependency>
+----
+
+When the app is now booted up, you'll see it uses MySQL as database (and the Tomcat connection pooling framework):
+
+----
+org.activiti.engine.impl.db.DbSqlSession   : performing create on engine with resource org/activiti/db/create/activiti.mysql.create.engine.sql
+org.activiti.engine.impl.db.DbSqlSession   : performing create on history with resource org/activiti/db/create/activiti.mysql.create.history.sql
+org.activiti.engine.impl.db.DbSqlSession   : performing create on identity with resource org/activiti/db/create/activiti.mysql.create.identity.sql
+----
+
+When you reboot the application multiple times, you'll see the number of tasks go up (the H2 in-memory database does not survive a shutdown, the MySQL does).
+
+==== REST support
+
+Often, a REST API is needed on top of the embedded Activiti engine (interacting with the different services in a company). Spring Boot makes this really easy. Add following dependency to the classpath:
+
+[source,xml,linenums]
+----
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId>
+	<version>${spring.boot.version}</version>
+</dependency>
+----
+
+Create a new class, a Spring service, and create two methods: one to start our process and one to get a task list for a given assignee. We simply wrap Activiti calls here, but in real-life scenario's this obviously will be more complex obviously.
+
+[source,java,linenums]
+----
+@Service
+public class MyService {
+
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private TaskService taskService;
+
+	@Transactional
+    public void startProcess() {
+        runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    }
+
+	@Transactional
+    public List<Task> getTasks(String assignee) {
+        return taskService.createTaskQuery().taskAssignee(assignee).list();
+    }
+
+}
+----
+
+We can now create a REST endpoint by annotating a class with _@RestController_. Here, we simply delegate to the service defined above.
+
+[source,java,linenums]
+----
+@RestController
+public class MyRestController {
+
+    @Autowired
+    private MyService myService;
+
+    @RequestMapping(value="/process", method= RequestMethod.POST)
+    public void startProcessInstance() {
+        myService.startProcess();
+    }
+
+    @RequestMapping(value="/tasks", method= RequestMethod.GET, produces=MediaType.APPLICATION_JSON_VALUE)
+    public List<TaskRepresentation> getTasks(@RequestParam String assignee) {
+        List<Task> tasks = myService.getTasks(assignee);
+        List<TaskRepresentation> dtos = new ArrayList<TaskRepresentation>();
+        for (Task task : tasks) {
+            dtos.add(new TaskRepresentation(task.getId(), task.getName()));
+        }
+        return dtos;
+    }
+
+    static class TaskRepresentation {
+
+        private String id;
+        private String name;
+
+        public TaskRepresentation(String id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        
+         public String getId() {
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
+        }
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+
+    }
+
+}
+----
+
+Both the _@Service_ and the _@RestController_ will be found by the automatic component scan (_@ComponentScan_) we added to our application class. Run the application class again. We can now interact with the REST API by using for example cURL:
+
+----
+curl http://localhost:8080/tasks?assignee=kermit
+[]
+
+curl -X POST  http://localhost:8080/process
+curl http://localhost:8080/tasks?assignee=kermit
+[{"id":"10004","name":"my task"}]
+----
+
+
+==== JPA support
+
+To add in JPA support for Activiti in Spring Boot, add following dependency:
+
+[source,xml,linenums]
+----
+<dependency>
+	<groupId>org.activiti</groupId>
+	<artifactId>spring-boot-starter-jpa</artifactId>
+	<version>${activiti.version}</version>
+</dependency>
+----
+
+This will add in the Spring configuration and beans for using JPA. By default the JPA provider will be Hibernate.
+
+Let's create a simple Entity class:
+
+[source,java,linenums]
+----
+@Entity
+class Person {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String username;
+
+    private String firstName;
+
+    private String lastName;
+
+    private Date birthDate;
+
+    public Person() {
+    }
+
+    public Person(String username, String firstName, String lastName, Date birthDate) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.birthDate = birthDate;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public Date getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+}
+----
+
+By default, when not using an in-memory database, the tables won't be created automatically. Create a file _application.properties_ on the classpath and add following property:
+
+----
+spring.jpa.hibernate.ddl-auto=update
+----
+
+Add following class:
+
+[source,java,linenums]
+----
+public interface PersonRepository extends JpaRepository<Person, Long> {
+
+    Person findByUsername(String username);
+
+}
+----
+
+This is a Spring repository, which offers CRUD out of the box. We add the method to find a Person by username. Spring will automagically implement this based on conventions (i.e. the property names used).
+
+We now enhance our service further:
+
+* by adding _@Transactional_ to the class. Note that by adding the JPA dependency above, the DataSourceTransactionManager which we were using before is now automatically swapped out by a JpaTransactionManager. 
+* The _startProcess_ now gets and assignee username in, which is used to look up the Person, and put the Person JPA object as a process variable in the process instance.
+* A method to create Dummy users is added. This is used in the CommandLineRunner to populate the database.
+
+[source,java,linenums]
+----
+@Service
+@Transactional
+public class MyService {
+
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private PersonRepository personRepository;
+
+    public void startProcess(String assignee) {
+
+        Person person = personRepository.findByUsername(assignee);
+
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("person", person);
+        runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    }
+
+    public List<Task> getTasks(String assignee) {
+        return taskService.createTaskQuery().taskAssignee(assignee).list();
+    }
+
+    public void createDemoUsers() {
+		 if (personRepository.findAll().size() == 0) {
+            personRepository.save(new Person("jbarrez", "Joram", "Barrez", new Date()));
+            personRepository.save(new Person("trademakers", "Tijs", "Rademakers", new Date()));
+        }
+    }
+
+}
+----
+
+The CommandLineRunner now looks like:
+
+[source,java,linenums]
+----
+@Bean
+public CommandLineRunner init(final MyService myService) {
+
+	return new CommandLineRunner() {
+    	public void run(String... strings) throws Exception {
+        	myService.createDemoUsers();
+        }
+    };
+
+}
+----
+
+The RestController is also slightly changed to incorporate the changes above (only showing new methods) and the HTTP POST now has a body that contains the assignee username:
+
+----
+@RestController
+public class MyRestController {
+
+    @Autowired
+    private MyService myService;
+
+    @RequestMapping(value="/process", method= RequestMethod.POST)
+    public void startProcessInstance(@RequestBody StartProcessRepresentation startProcessRepresentation) {
+        myService.startProcess(startProcessRepresentation.getAssignee());
+    }
+
+   ...
+
+    static class StartProcessRepresentation {
+
+        private String assignee;
+
+        public String getAssignee() {
+            return assignee;
+        }
+
+        public void setAssignee(String assignee) {
+            this.assignee = assignee;
+        }
+    }
+----
+
+And lastly, to try out the Spring-JPA-Activiti integration, we assigne the task using the id of the Person JPA object in the process definition:
+
+[source,xml,linenums]
+----
+<userTask id="theTask" name="my task" activiti:assignee="${person.id}"/>
+----
+
+We can now start a new process instance, providing the user name in the POST body:
+
+----
+curl -H "Content-Type: application/json" -d '{"assignee" : "jbarrez"}' http://localhost:8080/process
+----
+
+And the task list is now fetched using the person id:
+
+----
+curl http://localhost:8080/tasks?assignee=1
+
+[{"id":"12505","name":"my task"}]
+----
+
+==== Further Reading
+
+Obviously there is a lot about Spring Boot that hasn't been touched yet, like very easy JTA integration or building a war file that can be run on major application servers. And there is a lot more to the Spring Boot integration: 
+
+* Actuator support
+* Spring Integration support
+* Rest Api integration: boot up the Activiti Rest api embedded within the Spring application
+* Spring Security support
+
+All these areas are a first version at the moment, but they will evolved in the future further.
+
