@@ -63,7 +63,89 @@
    
    <h4>Bug fixes and various smaller improvements</h4>
    
-   <p>Check out the <a href="http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=19620">Release notes</a> for more details</p>
+   <p>Check out the <a href="http://jira.codehaus.org/secure/ReleaseNote.jspa?projectId=12091&version=20537">Release notes</a> for more details</p>
+            
+<h2>        Bug
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1527'>ACT-1527</a>] -         ProcessDiagramGenerator misses instructions for message start event
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1544'>ACT-1544</a>] -         Asynchronous Continuations join exception
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1849'>ACT-1849</a>] -         Null pointer exception when deploying a workflow created by Activiti explorer integrated workflow editor
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1900'>ACT-1900</a>] -         RuntimeService.getVariables(String, Collection) fetches all variables from DB
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2061'>ACT-2061</a>] -         Suspicious instanceOf test
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2062'>ACT-2062</a>] -         FeatureDescriptor&#39;s setValue method will not accept a null value
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2068'>ACT-2068</a>] -         update for redundant namespace usage
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2071'>ACT-2071</a>] -         Non executable processes are no validation failure
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2083'>ACT-2083</a>] -         Autolayout fails with subprocess data objects
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2084'>ACT-2084</a>] -         TaskService.unclaim(taskId) does not fire an ActivitiEvent
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2088'>ACT-2088</a>] -         drawEventBasedGateway does not work
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2093'>ACT-2093</a>] -         the label of sequenceFlow is wrong
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2096'>ACT-2096</a>] -         Deadlock while concurrently finishing process instances on MSSQL
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2102'>ACT-2102</a>] -         Duplicate condition in &#39;if&#39; statement
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2103'>ACT-2103</a>] -         Sql bug with task query when using OR statement
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2116'>ACT-2116</a>] -         Fix unreachable code in org.activiti.engine.test.api.event.DatabaseEventLoggerTest
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2120'>ACT-2120</a>] -         JobRetryCmd doesn&#39;t use tenantId to query the activity
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2145'>ACT-2145</a>] -         Activiti Modeler UserTask form property expression problem
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2151'>ACT-2151</a>] -         Deployment fails when Intermediate Event is waiting for same message as start message
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2155'>ACT-2155</a>] -         Boolean field form is converted to String
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2157'>ACT-2157</a>] -         Activiti diagram drawing missing some nodes
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2159'>ACT-2159</a>] -         Infinite loop when using multi instance service task
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2164'>ACT-2164</a>] -         The converter BPMN to XML does not manage correctly /definitions/message/@itemRef
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2166'>ACT-2166</a>] -         Missing ${prefix} before ACT_ID_MEMBERSHIP in script /org/activiti/db/mapping/entity/Task.xml
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2168'>ACT-2168</a>] -         Standard XML preamble is missing on SOAP request sent
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2171'>ACT-2171</a>] -         NPE, integrity constraint violation, and timers firing after task completion on processes with certain combinations of timers, messages, and user tasks
+</li>
+</ul>
+            
+<h2>        Improvement
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2089'>ACT-2089</a>] -         Task sorting on due date needs to place those with due date null after those with a duedate
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2091'>ACT-2091</a>] -         Add likeIgnoreCase for most used properties with like query
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2092'>ACT-2092</a>] -         Create parent interface for TaskQuery and HistoricTaskInstanceQuery that groups all common methods
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2094'>ACT-2094</a>] -         New method &quot;getVariableInstances()&quot; on VariableScopeImpl
+</li>
+</ul>
+    
+<h2>        New Feature
+</h2>
+<ul>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-1963'>ACT-1963</a>] -         Data Object support for Activiti Modeler
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2073'>ACT-2073</a>] -         Document custom identity link feature in User Guide
+</li>
+<li>[<a href='http://jira.codehaus.org/browse/ACT-2074'>ACT-2074</a>] -         add support for custom identity links to Modeler
+</li>
+</ul>
+                
   
   <h3>Release Notes - Activiti - Version 5.16.4</h3>
   
