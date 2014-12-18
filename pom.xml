@@ -902,7 +902,6 @@
         <module>modules/activiti-ldap</module>
         <module>modules/activiti-crystalball</module>
         <module>modules/activiti-jmx</module>
-        <module>modules/activiti-hazelcast-async-executor</module>
       </modules>
     </profile>
     <profile>
