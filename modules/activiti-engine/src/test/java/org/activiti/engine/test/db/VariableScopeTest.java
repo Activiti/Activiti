@@ -20,6 +20,8 @@ import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -78,6 +80,15 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     // After completing the task in the subprocess, 
     // the subprocess scope is destroyed and the complete process ends
     taskService.complete(subProcessTask.getId());
+  }
+  
+  @Deployment
+  public void testGetVariableLocal()
+  {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("getVariableLocal", (Map)null);
+    String variableName = "Variable-That-Does-Not-Exist";
+    Object value = runtimeService.getVariableLocal(pi.getId(), variableName);
+    assertNull(value);
   }
   
   /**
@@ -268,6 +279,5 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
       
       return executionVariables;
     }
-    
   }
 }
