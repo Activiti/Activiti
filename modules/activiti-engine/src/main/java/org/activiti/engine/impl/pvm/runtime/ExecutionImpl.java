@@ -225,6 +225,16 @@ public class ExecutionImpl implements
     return parent;
   }
   
+  @Override
+  public String getSuperExecutionId() {
+    ensureActivityInitialized();
+    if (superExecution != null) {
+      return superExecution.getId();
+    }
+    
+    return null;
+  }
+  
   public String getParentId() {
     ensureActivityInitialized();
     if(parent != null) {
