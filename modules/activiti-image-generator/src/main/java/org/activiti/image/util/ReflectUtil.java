@@ -14,12 +14,17 @@ package org.activiti.image.util;
 
 import java.io.InputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * @author Tijs Rademakers
  */
 public abstract class ReflectUtil {
 
+  private static final Logger LOGGER = LoggerFactory.getLogger(ReflectUtil.class);
+	
   public static InputStream getResourceAsStream(String name) {
     return getResourceAsStream(name, null);
   }
@@ -35,6 +40,15 @@ public abstract class ReflectUtil {
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
       resourceStream = classLoader.getResourceAsStream(name);
     }
+    
+    if (resourceStream == null) {
+        resourceStream = ReflectUtil.class.getResourceAsStream(name);
+    }
+    
+    if(resourceStream==null){
+        LOGGER.warn(name + " could not be loaded.");
+    }
+    
     return resourceStream;
    }
 }
