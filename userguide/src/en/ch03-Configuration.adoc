@@ -373,6 +373,23 @@ To upgrade, you have to start with putting the following configuration property 
 Starting from version 5.17.0 Activiti provides an Async executor in addition to the Job Executor. The Async executor is a more performant and more database friendly way of executing asynchronous jobs in the Activiti Engine.
 It's therefore recommended to switch to the Async executor. by default the old job executor is still used. More information can be found in the advanced section of the user guide.
 
+Moreover, if running under Java EE 7, JSR-236 compliant +ManagedJobExecutor+ and +ManagedAsyncJobExecutor+ can be used for letting the container manage the threads. In order to enable them, the thread factory should be passed in the configuration as follows :
+
+[source,xml,linenums]
+----
+<bean id="threadFactory" class="org.springframework.jndi.JndiObjectFactoryBean">
+   <property name="jndiName" value="java:jboss/ee/concurrency/factory/default" />
+</bean>
+
+<bean id="customJobExecutor" class="org.activiti.engine.impl.jobexecutor.ManagedJobExecutor">
+   <!-- ... -->
+   <property name="threadFactory" ref="threadFactory" />
+   <!-- ... -->
+</bean>
+----
+
+Both managed implementations fall back to their default counterparts if the thread factory is not specified.
+
 === Job executor activation
 
 The +JobExecutor+ is a component that manages a couple of threads to fire timers (and later also asynchronous messages). For unit testing scenarios, it is cumbersome to work with multiple threads. Therefore the API allows to query for (++ManagementService.createJobQuery++) and execute jobs (++ManagementService.executeJob++) through the API so that job execution can be controlled from within a unit test.  To avoid interference by the job executor, it can be turned off.
