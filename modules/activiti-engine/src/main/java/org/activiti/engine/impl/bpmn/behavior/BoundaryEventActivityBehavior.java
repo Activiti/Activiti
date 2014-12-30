@@ -40,7 +40,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
   }
   
   @SuppressWarnings("unchecked")
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     ActivityImpl boundaryActivity = executionEntity.getProcessDefinition().findActivity(activityId);
     ActivityImpl interruptedActivity = executionEntity.getActivity();

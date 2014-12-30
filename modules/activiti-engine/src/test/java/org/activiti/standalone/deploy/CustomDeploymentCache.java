@@ -13,6 +13,7 @@
 package org.activiti.standalone.deploy;
 
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 /**
@@ -20,43 +21,48 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  * 
  * @author Joram Barrez
  */
-public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionEntity> {
-  
-  protected String id;
-  
-  protected ProcessDefinitionEntity processDefinition;
-  
-  @Override
-  public ProcessDefinitionEntity get(String id) {
-    if (id.equals(id)) {
-      return processDefinition;
-    }
-    return null;
-  }
+public class CustomDeploymentCache implements
+        DeploymentCache<ProcessDefinitionCacheEntry> {
 
-  @Override
-  public void add(String id, ProcessDefinitionEntity object) {
-    this.id = id;
-    this.processDefinition = object;
-  }
+	protected String id;
+	protected ProcessDefinitionCacheEntry entry;
 
-  @Override
-  public void remove(String id) {
-    if (id.equals(id)) {
-      this.id = null;
-      this.processDefinition = null;
-    }
-  }
+	@Override
+	public ProcessDefinitionCacheEntry get(String id) {
+		if (id.equals(id)) {
+			return entry;
+		}
+		return null;
+	}
 
-  @Override
-  public void clear() {
-    this.id = null;
-    this.processDefinition = null;
-  }
-  
-  // For testing purposes only
-  public ProcessDefinitionEntity getCachedProcessDefinition() {
-    return processDefinition;
-  }
+	@Override
+	public void add(String id, ProcessDefinitionCacheEntry object) {
+		this.id = id;
+		this.entry = object;
+	}
+
+	@Override
+	public void remove(String id) {
+		if (id.equals(id)) {
+			this.id = null;
+			this.entry = null;
+		}
+	}
+
+	@Override
+	public void clear() {
+		this.id = null;
+		this.entry = null;
+	}
+
+	@Override
+	public boolean contains(String id) {
+		return id.equals(this.id);
+	}
+
+	// For testing purposes only
+	public ProcessDefinitionEntity getCachedProcessDefinition() {
+		return entry.getProcessDefinitionEntity();
+	}
 
 }

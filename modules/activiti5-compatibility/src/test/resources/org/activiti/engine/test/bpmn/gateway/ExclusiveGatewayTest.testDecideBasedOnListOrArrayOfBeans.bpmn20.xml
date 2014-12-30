@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="decisionBasedOnListOrArrayOfBeans">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="exclusiveGw" />
+    
+    <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway" />
+    
+    <sequenceFlow id="flow2" sourceRef="exclusiveGw" targetRef="basicService">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${orders[1].price <= 100}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="standardService">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${orders[1].price > 100 && orders[1].price < 250}]]>
+      </conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow4" sourceRef="exclusiveGw" targetRef="goldMemberService">
+      <conditionExpression xsi:type="tFormalExpression">
+        <![CDATA[${orders[1].price >= 250}]]>
+      </conditionExpression>
+    </sequenceFlow>
+
+    <userTask id="basicService" name="Basic service" />
+    
+    <userTask id="standardService" name="Standard service" />
+    
+    <userTask id="goldMemberService" name="Gold Member service" />
+    
+  </process>
+
+</definitions>

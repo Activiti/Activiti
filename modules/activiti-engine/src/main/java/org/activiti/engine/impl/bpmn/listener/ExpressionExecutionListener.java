@@ -30,7 +30,7 @@ public class ExpressionExecutionListener implements ExecutionListener {
     this.expression = expression;
   }
 
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     // Return value of expression is ignored
     expression.getValue(execution);
   }

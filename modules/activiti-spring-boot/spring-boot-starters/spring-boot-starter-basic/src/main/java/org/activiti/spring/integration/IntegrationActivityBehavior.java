@@ -12,7 +12,7 @@ public class IntegrationActivityBehavior extends ReceiveTaskActivityBehavior {
     }
 
     @Override
-    public void execute(ActivityExecution execution) throws Exception {
+    public void execute(ActivityExecution execution) {
         gateway.execute(this, execution);
     }
 
@@ -22,7 +22,7 @@ public class IntegrationActivityBehavior extends ReceiveTaskActivityBehavior {
     }
 
     @Override
-    public void signal(ActivityExecution execution, String signalName, Object data) {
+    public void trigger(ActivityExecution execution, String signalName, Object data) {
         gateway.signal(this, execution, signalName, data);
     }
 }

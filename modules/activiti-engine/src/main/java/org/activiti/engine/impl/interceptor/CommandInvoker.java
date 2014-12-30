@@ -15,23 +15,54 @@ package org.activiti.engine.impl.interceptor;
 import org.activiti.engine.impl.context.Context;
 
 /**
- * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class CommandInvoker extends AbstractCommandInterceptor {
 
-  @Override
-  public <T> T execute(CommandConfig config, Command<T> command) {
-    return command.execute(Context.getCommandContext());
-  }
+    @Override
+    @SuppressWarnings("unchecked")
+	public <T> T execute(final CommandConfig config, final Command<T> command) {
+		final CommandContext commandContext = Context.getCommandContext();
+		
+		// Execute the command. 
+		// This will produce operations that will be put on the agenda.
+		commandContext.getAgenda().planOperation(new Runnable() {
 
-  @Override
-  public CommandInterceptor getNext() {
-    return null;
-  }
+			@Override
+			public void run() {
+				commandContext.setResult(command.execute(commandContext));
+			}
+		});
 
-  @Override
-  public void setNext(CommandInterceptor next) {
-    throw new UnsupportedOperationException("CommandInvoker must be the last interceptor in the chain");
-  }
+		// Run loop for agenda
+		executeOperations(commandContext);
+
+//		// At the end, call the execution tree change listeners.
+//		// TODO: optimization: only do this when the tree has actually changed
+//		// (ie check dbSqlSession).
+//		if (commandContext.hasInvolvedExecutions()) {
+//			commandContext.getAgenda().add(new ExecuteInactivatedBehavior(commandContext.getCoreEngine(), commandContext));
+//			executeOperations(commandContext);
+//		}
+
+		return (T) commandContext.getResult();
+	}
+	
+	protected void executeOperations(final CommandContext commandContext) {
+		while (!commandContext.getAgenda().isEmpty()) {
+			Runnable runnable = commandContext.getAgenda().getNextOperation();
+			runnable.run();
+		}
+	}
+
+	@Override
+	public CommandInterceptor getNext() {
+		return null;
+	}
+
+	@Override
+	public void setNext(CommandInterceptor next) {
+		throw new UnsupportedOperationException("CommandInvoker must be the last interceptor in the chain");
+	}
 
 }

@@ -21,7 +21,7 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class MultiInstanceDelegate implements JavaDelegate {
   
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     Integer result = (Integer) execution.getVariable("result");
     
     Integer item = (Integer) execution.getVariable("item");

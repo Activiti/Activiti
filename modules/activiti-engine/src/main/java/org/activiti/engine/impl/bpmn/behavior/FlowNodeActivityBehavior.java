@@ -14,7 +14,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 
 
 /**
@@ -25,14 +25,14 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
  * 
  * @author Joram Barrez
  */
-public abstract class FlowNodeActivityBehavior implements SignallableActivityBehavior {
+public abstract class FlowNodeActivityBehavior implements TriggerableActivityBehavior {
   
   protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
   
   /**
    * Default behaviour: just leave the activity with no extra functionality.
    */
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     leave(execution);
   }
   
@@ -48,9 +48,9 @@ public abstract class FlowNodeActivityBehavior implements SignallableActivityBeh
     bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
   }
 
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     // concrete activity behaviours that do accept signals should override this method;
-    throw new ActivitiException("this activity doesn't accept signals");
+    throw new ActivitiException("this activity isn't waiting for a trigger");
   }
   
 }

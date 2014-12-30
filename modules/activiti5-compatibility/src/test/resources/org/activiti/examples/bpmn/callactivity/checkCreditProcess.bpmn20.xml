@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+
+	<process id="checkCreditProcess">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="verifyCreditHistoryTask" />
+		
+		<userTask id="verifyCreditHistoryTask" name="Verify credit history" />
+    <sequenceFlow id="flow2" sourceRef="verifyCreditHistoryTask" targetRef="approvalDecision" />
+    
+    <exclusiveGateway id="approvalDecision" />
+    <sequenceFlow id="flow3" sourceRef="approvalDecision" targetRef="contactCustomerTask">
+      <conditionExpression><![CDATA[${!creditApproved}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="approvalDecision" targetRef="normalEnd">
+      <conditionExpression><![CDATA[${creditApproved}]]></conditionExpression>
+    </sequenceFlow>
+    
+    <userTask id="contactCustomerTask" name="Contact customer for further information"/>
+    <sequenceFlow id="flow5" sourceRef="contactCustomerTask" targetRef="customerContactedEnd" />
+    <endEvent id="customerContactedEnd" />
+    
+    <endEvent id="normalEnd" />
+
+	</process>
+
+</definitions>

@@ -29,6 +29,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
+import org.activiti.engine.impl.operation.Agenda;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
@@ -78,9 +79,11 @@ public class CommandContext {
   protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected FailedJobCommandFactory failedJobCommandFactory;
-	protected List<CommandContextCloseListener> closeListeners;
+  protected List<CommandContextCloseListener> closeListeners;
   protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
-
+  
+  protected Agenda agenda = new Agenda();
+  protected Object result = null;
   
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
     nextOperations.add(executionOperation);
@@ -401,5 +404,14 @@ public class CommandContext {
   }
   public ActivitiEventDispatcher getEventDispatcher() {
   	return processEngineConfiguration.getEventDispatcher();
+  }
+  public Agenda getAgenda() {
+	  return agenda;
+  }
+  public Object getResult() {
+	return result;
+  }
+  public void setResult(Object result) {
+	this.result = result;
   }
 }

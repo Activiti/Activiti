@@ -68,11 +68,15 @@ public class ActivitiEndpoint extends DefaultEndpoint {
     setEndpointUri(uri);
   }
 
-  public void process(Exchange ex) throws Exception {
+  public void process(Exchange ex) {
     if (activitiConsumer == null) {
       throw new RuntimeException("Activiti consumer not defined for " + getEndpointUri());
     }
-    activitiConsumer.getProcessor().process(ex);
+    try {
+	    activitiConsumer.getProcessor().process(ex);
+    } catch (Exception e) {
+    	throw new RuntimeException(e);
+    }
   }
 
   public Producer createProducer() throws Exception {

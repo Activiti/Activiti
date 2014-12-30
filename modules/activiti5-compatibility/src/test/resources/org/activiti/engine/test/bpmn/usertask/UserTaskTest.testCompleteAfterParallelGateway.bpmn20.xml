@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://activiti.org/bpmn20">
+  <process id="ForkProcess" name="Fork Process">
+    <startEvent id="theStart" name="Start"></startEvent>
+    <sequenceFlow id="flow1" name="" sourceRef="theStart" targetRef="initialFork"></sequenceFlow>    
+    <parallelGateway id="initialFork" name="Parallel Gateway"></parallelGateway>
+    <sequenceFlow id="flow2" name="" sourceRef="initialFork" targetRef="SimpleUser"></sequenceFlow>
+    <sequenceFlow id="flow3" name="" sourceRef="initialFork" targetRef="UserwithListener"></sequenceFlow>
+    
+    <userTask id="SimpleUser" name="Simple User"></userTask>
+    
+    <userTask id="UserwithListener" name="User with Listener">
+			<extensionElements>
+				<activiti:taskListener event='create' class='org.activiti.engine.test.bpmn.usertask.UserTaskTestCreateTaskListener'>
+					<activiti:field name='expression' stringValue='some expression value' />
+				</activiti:taskListener>
+			</extensionElements>
+    
+    </userTask>
+    
+    <sequenceFlow id="flow4" name="" sourceRef="UserwithListener" targetRef="endevent2"></sequenceFlow>
+    <sequenceFlow id="flow5" name="" sourceRef="SimpleUser" targetRef="theEvent1"></sequenceFlow>
+    <endEvent id="theEvent1" name="End1"></endEvent>
+    <endEvent id="endevent2" name="End2"></endEvent>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_ForkProcess">
+    <bpmndi:BPMNPlane bpmnElement="ForkProcess" id="BPMNPlane_ForkProcess">
+      <bpmndi:BPMNShape bpmnElement="theStart" id="BPMNShape_theStart">
+        <omgdc:Bounds height="35" width="35" x="50" y="163"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="theEvent1" id="BPMNShape_theEvent1">
+        <omgdc:Bounds height="35" width="35" x="650" y="120"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="initialFork" id="BPMNShape_initialFork">
+        <omgdc:Bounds height="40" width="40" x="160" y="160"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="SimpleUser" id="BPMNShape_SimpleUser">
+        <omgdc:Bounds height="55" width="105" x="370" y="110"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="UserwithListener" id="BPMNShape_UserwithListener">
+        <omgdc:Bounds height="55" width="105" x="370" y="250"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent2" id="BPMNShape_endevent2">
+        <omgdc:Bounds height="35" width="35" x="650" y="260"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="85" y="180"></omgdi:waypoint>
+        <omgdi:waypoint x="160" y="180"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow2" id="BPMNEdge_flow2">
+        <omgdi:waypoint x="180" y="160"></omgdi:waypoint>
+        <omgdi:waypoint x="180" y="137"></omgdi:waypoint>
+        <omgdi:waypoint x="370" y="137"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="180" y="200"></omgdi:waypoint>
+        <omgdi:waypoint x="180" y="277"></omgdi:waypoint>
+        <omgdi:waypoint x="370" y="277"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="475" y="277"></omgdi:waypoint>
+        <omgdi:waypoint x="650" y="277"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow5" id="BPMNEdge_flow5">
+        <omgdi:waypoint x="475" y="137"></omgdi:waypoint>
+        <omgdi:waypoint x="650" y="137"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

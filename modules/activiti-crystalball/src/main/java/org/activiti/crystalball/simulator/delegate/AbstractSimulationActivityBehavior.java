@@ -23,5 +23,5 @@ public abstract class AbstractSimulationActivityBehavior implements ActivityBeha
 	public AbstractSimulationActivityBehavior() {
 	}
 	
-	abstract public void execute(ActivityExecution execution) throws Exception;
+	abstract public void execute(ActivityExecution execution);
 }

@@ -68,7 +68,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     this.dataOutputAssociations.add(dataOutputAssociation);
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     
 	String processDefinitonKey = this.processDefinitonKey;
     if (processDefinitionExpression != null) {

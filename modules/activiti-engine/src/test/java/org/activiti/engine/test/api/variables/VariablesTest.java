@@ -447,21 +447,21 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	
 	// Test delegates
 	public static class TestJavaDelegate1 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String var = (String) execution.getVariable("testVar");
 			execution.setVariable("testVar", var.toUpperCase());
 		}
 	}
 	
 	public static class TestJavaDelegate2 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String var = (String) execution.getVariable("testVar");
 			execution.setVariable("testVar", var + " world");
 		}
 	}
 	
 	public static class TestJavaDelegate3 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			
 		}
 	}
@@ -469,21 +469,21 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	//////////////////////////////////////////
 	
 	public static class TestJavaDelegate4 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String var = (String) execution.getVariable("testVar", false);
 			execution.setVariable("testVar", var.toUpperCase());
 		}
 	}
 	
 	public static class TestJavaDelegate5 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String var = (String) execution.getVariable("testVar", false);
 			execution.setVariable("testVar", var + " world");
 		}
 	}
 	
 	public static class TestJavaDelegate6 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String var = (String) execution.getVariable("testVar", false);
 			execution.setVariable("testVar", var + "!");
 		}
@@ -492,7 +492,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	//////////////////////////////////////////
 	
 	public static class TestJavaDelegate7 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			
 			 // Setting variable through 'default' way of setting variable
 			execution.setVariable("testVar", "test");
@@ -501,14 +501,14 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	}
 	
 	public static class TestJavaDelegate8 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String var = (String) execution.getVariable("testVar", false);
 			execution.setVariable("testVar", var + " 1 2 3");
 		}
 	}
 	
 	public static class TestJavaDelegate9 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			execution.setVariable("testVar2", "Hiya");
 		}
 	}
@@ -516,21 +516,21 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	//////////////////////////////////////////
 	
 	public static class TestJavaDelegate10 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String testVar = (String) execution.getVariable("testVar", false);
 			execution.setVariable("testVar", testVar + "2");
 		}
 	}
 
 	public static class TestJavaDelegate11 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String testVar = (String) execution.getVariable("testVar", false);
 			execution.setVariable("testVar", testVar + "3");
 		}
 	}
 
 	public static class TestJavaDelegate12 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String testVar = (String) execution.getVariable("testVar");
 			execution.setVariable("testVar", testVar + "4");
 		}
@@ -539,7 +539,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	// ////////////////////////////////////////
 
 	public static class TestJavaDelegate13 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			Map<String, Object> vars = execution.getVariables(Arrays.asList("testVar1", "testVar2", "testVar3"), false);
 			
 			String testVar1 = (String) vars.get("testVar1");
@@ -555,7 +555,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	}
 
 	public static class TestJavaDelegate14 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			String value = (String) execution.getVariable("testVar2");
 			String localVarValue = (String) execution.getVariableLocal("localValue");
 			execution.setVariableLocal("testVar2", value + localVarValue);
@@ -563,7 +563,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 	}
 
 	public static class TestJavaDelegate15 implements JavaDelegate {
-		public void execute(DelegateExecution execution) throws Exception {
+		public void execute(DelegateExecution execution) {
 			execution.removeVariable("testVar3");
 		}
 	}

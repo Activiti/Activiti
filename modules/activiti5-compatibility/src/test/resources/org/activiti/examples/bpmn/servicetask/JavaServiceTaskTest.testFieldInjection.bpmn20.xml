@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="fieldInjection">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="javaService" />
+    
+    <serviceTask id="javaService" 
+                 name="Java service invocation" 
+                 activiti:class="org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected">
+      <extensionElements>
+        <activiti:field name="text">
+          <activiti:string>Hello World</activiti:string>
+        </activiti:field>
+      </extensionElements>             
+    </serviceTask>
+    
+    <sequenceFlow id="flow2" sourceRef="javaService" targetRef="javaService2" />
+    
+    <serviceTask id="javaService2" 
+                 name="Java service invocation" 
+                 activiti:class="org.activiti.examples.bpmn.servicetask.ToUpperCaseSetterInjected">
+      <extensionElements>
+        <activiti:field name="text">
+          <activiti:string>Hello Setter</activiti:string>
+        </activiti:field>
+      </extensionElements>             
+    </serviceTask>
+    
+    <sequenceFlow id="flow3" sourceRef="javaService2" targetRef="waitState" />
+    
+    <receiveTask id="waitState" />
+    
+    <sequenceFlow id="flow4" sourceRef="waitState" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

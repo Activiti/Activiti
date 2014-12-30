@@ -83,11 +83,11 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
   }
   
   @Override
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     if("compensationDone".equals(signalName)) {
       signalCompensationDone(execution, signalData);
     } else {
-      super.signal(execution, signalName, signalData);
+      super.trigger(execution, signalName, signalData);
     }
   }
 

@@ -18,12 +18,14 @@ import java.util.Stack;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
+import org.activiti.engine.impl.operation.Agenda;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 
 /**
  * @author Tom Baeyens
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class Context {
 
@@ -38,6 +40,10 @@ public class Context {
       return null;
     }
     return stack.peek();
+  }
+  
+  public static Agenda getAgenda() {
+	  return getCommandContext().getAgenda();
   }
 
   public static void setCommandContext(CommandContext commandContext) {

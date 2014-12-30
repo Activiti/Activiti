@@ -63,7 +63,7 @@ public class RecorderExecutionListener implements ExecutionListener {
     
   }
   
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     ExecutionEntity executionCasted = ((ExecutionEntity)execution);
     recordedEvents.add( new RecordedEvent( //
                     executionCasted.getActivityId(), 

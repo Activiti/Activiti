@@ -19,7 +19,7 @@ public class RetryFailingDelegate implements JavaDelegate {
 	}
 
 	@Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
 	    	
 	  times.add(System.currentTimeMillis());
 

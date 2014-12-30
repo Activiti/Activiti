@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+	
+	<process id="transactionProcess">
+
+		<startEvent id="start" />
+		
+		<sequenceFlow sourceRef="start"	targetRef="tx" />
+
+		<transaction id="tx">
+
+			<startEvent id="txStart" />
+							
+			<parallelGateway id="fork" />
+			
+			<sequenceFlow sourceRef="txStart" targetRef="fork"  />
+			<sequenceFlow sourceRef="fork" targetRef="bookFlight"  />
+			
+			<userTask id="bookFlight"/>
+					
+			<boundaryEvent id="compensateBookFlightEvt" name="Boundary event" attachedToRef="bookFlight">
+				<compensateEventDefinition />
+			</boundaryEvent>	
+			
+			<serviceTask id="undoBookFlight" isForCompensation="true"
+				activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+				<extensionElements>
+					<activiti:field name="counterName" stringValue="undoBookFlight" />
+				</extensionElements>
+			</serviceTask>	
+			
+			<sequenceFlow sourceRef="fork" targetRef="innerTx"  />
+			
+			<sequenceFlow sourceRef="bookFlight" targetRef="outerEndSuccess"  />					
+											
+			<transaction id="innerTx">
+	
+				<startEvent id="innerTxStart" />
+				
+				<sequenceFlow sourceRef="innerTxStart" targetRef="innerTxFork" />
+	
+				<parallelGateway id="innerTxFork" />
+				
+				<sequenceFlow sourceRef="innerTxFork" targetRef="innerTxbookHotel" />
+				<sequenceFlow sourceRef="innerTxFork" targetRef="innerTxbookFlight" />
+	
+				<serviceTask id="innerTxbookHotel" activiti:expression="${true}">
+					<multiInstanceLoopCharacteristics isSequential="true">
+					  <loopCardinality>5</loopCardinality>
+					</multiInstanceLoopCharacteristics>
+				</serviceTask>		
+					
+				<serviceTask id="innerTxbookFlight" activiti:expression="${true}"/>
+				
+				<boundaryEvent id="innerTxcompensateBookHotelEvt" name="Boundary event" attachedToRef="innerTxbookHotel">
+					<compensateEventDefinition />
+				</boundaryEvent>	
+				
+				<boundaryEvent id="innerTxcompensateBookFlightEvt" name="Boundary event" attachedToRef="innerTxbookFlight">
+					<compensateEventDefinition />
+				</boundaryEvent>
+
+				<serviceTask id="innerTxundoBookHotel" isForCompensation="true"
+					activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+					<extensionElements>
+						<activiti:field name="counterName" stringValue="innerTxundoBookHotel" />
+					</extensionElements>
+				</serviceTask>
+				
+				<serviceTask id="innerTxundoBookFlight" isForCompensation="true"
+					activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+					<extensionElements>
+						<activiti:field name="counterName" stringValue="innerTxundoBookFlight" />
+					</extensionElements>
+				</serviceTask>
+									            
+				<sequenceFlow sourceRef="innerTxbookHotel" targetRef="innerTxreceive" />
+				
+				<receiveTask id="innerTxreceive" />
+				
+				<sequenceFlow sourceRef="innerTxbookFlight" targetRef="innerTxaskCustomer" />
+				
+				<userTask id="innerTxaskCustomer" activiti:assignee="kermit" />
+	
+				<exclusiveGateway id="innerTxconfirmed" />
+				
+				<sequenceFlow sourceRef="innerTxaskCustomer" targetRef="innerTxconfirmed" />
+				
+				<sequenceFlow sourceRef="innerTxconfirmed" targetRef="innerTxsuccess">
+					<conditionExpression>${confirmed}</conditionExpression>
+				</sequenceFlow>
+				
+				<sequenceFlow sourceRef="innerTxconfirmed" targetRef="innerTxfailure">
+					<conditionExpression>${not confirmed}</conditionExpression>
+				</sequenceFlow>
+	
+				<endEvent id="innerTxsuccess" />
+	
+				<endEvent id="innerTxfailure" >
+					<cancelEventDefinition id="innerTxcancelTx" />
+				</endEvent>
+				
+				<association associationDirection="One" sourceRef="innerTxcompensateBookHotelEvt" targetRef="innerTxundoBookHotel" />
+				
+				<association associationDirection="One" sourceRef="innerTxcompensateBookFlightEvt" targetRef="innerTxundoBookFlight" />
+	
+			</transaction>
+			
+			<boundaryEvent attachedToRef="innerTx" id="catchCancelInnerTx">
+				<cancelEventDefinition />			
+			</boundaryEvent>
+					
+			<receiveTask id="afterInnerCancellation" />
+			<receiveTask id="afterInnerSuccess" />
+			
+			<sequenceFlow sourceRef="catchCancelInnerTx" targetRef="afterInnerCancellation" />
+			<sequenceFlow sourceRef="afterInnerCancellation" targetRef="outerEndInnerCancel" />
+			
+			<sequenceFlow sourceRef="innerTx" targetRef="afterInnerSuccess" />
+			<sequenceFlow sourceRef="afterInnerSuccess" targetRef="outerEndSuccess" />
+			
+			<endEvent id="outerEndSuccess" />
+			
+			<endEvent id="outerEndInnerCancel" />
+					
+			<association associationDirection="One" sourceRef="compensateBookFlightEvt" targetRef="undoBookFlight" />
+			
+		</transaction>
+
+		<endEvent id="end" />
+		
+		<sequenceFlow sourceRef="tx" targetRef="end" />		
+		
+		<boundaryEvent attachedToRef="tx" id="catchCancelTx">
+			<cancelEventDefinition id="calcel"/>			
+		</boundaryEvent>
+		
+		<endEvent id="cancelled" />
+		
+		<sequenceFlow sourceRef="catchCancelTx" targetRef="cancelled" />
+		
+	</process>
+
+</definitions>

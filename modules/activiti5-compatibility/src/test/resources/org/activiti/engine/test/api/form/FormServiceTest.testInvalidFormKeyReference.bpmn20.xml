@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<definitions id="definitions"
+             targetNamespace="http://activiti.org/bpmn20" 
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn">
+  
+  <process id="invalidFormKeyReference">
+  
+    <startEvent id="start" activiti:formKey="IDoNotExist" />
+ 
+  </process>
+  
+</definitions>

@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+
+  <!-- DELETE -->
+
+  <delete id="deleteSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+    delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+  
+  <delete id="deleteCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+    delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+  
+  <delete id="deleteMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+    delete from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+  
+  <delete id="deleteEventSubscriptionsForProcessDefinition" parameterType="string">
+    delete from ${prefix}ACT_RU_EVENT_SUBSCR where PROC_DEF_ID_ = #{processDefinitionId}
+  </delete>
+  
+  <!-- RESULTMAP -->
+
+  <resultMap id="eventSubscriptionResultMap" type="org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="eventType" column="EVENT_TYPE_" jdbcType="VARCHAR" />
+    <result property="eventName" column="EVENT_NAME_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
+    <result property="configuration" column="CONFIGURATION_" jdbcType="VARCHAR" />
+    <result property="created" column="CREATED_" jdbcType="TIMESTAMP" />   
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />     
+    <discriminator javaType="string" column="EVENT_TYPE_">
+      <case value="message" resultMap="messageResultMap"/> 
+      <case value="signal" resultMap="signalResultMap"/> 
+      <case value="compensate" resultMap="compensateResultMap"/>
+    </discriminator>
+  </resultMap>
+
+  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity" extends="eventSubscriptionResultMap"/>
+  <resultMap id="signalResultMap" type="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity" extends="eventSubscriptionResultMap"/>   
+  <resultMap id="compensateResultMap" type="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity" extends="eventSubscriptionResultMap"/>   
+
+  <!-- SELECT -->  
+
+  <select id="selectEventSubscription" parameterType="string" resultMap="eventSubscriptionResultMap">
+    select * from ${prefix}ACT_RU_EVENT_SUBSCR where ID_ = #{id}
+  </select>
+
+  <select id="selectEventSubscriptionByQueryCriteria" parameterType="org.activiti.engine.impl.EventSubscriptionQueryImpl" resultMap="eventSubscriptionResultMap">
+  	${limitBefore}
+    select RES.* ${limitBetween}
+    <include refid="selectEventSubscriptionByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+
+  <select id="selectEventSubscriptionCountByQueryCriteria" parameterType="org.activiti.engine.impl.EventSubscriptionQueryImpl" resultType="long">
+    select count(distinct RES.ID_)
+    <include refid="selectEventSubscriptionByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectEventSubscriptionByQueryCriteriaSql">
+    from ${prefix}ACT_RU_EVENT_SUBSCR RES
+    <where>
+      <if test="eventSubscriptionId != null">
+        RES.ID_ = #{eventSubscriptionId}
+      </if>
+      <if test="processInstanceId != null">
+        and RES.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="executionId != null">
+        and RES.EXECUTION_ID_ = #{executionId}
+      </if>
+      <if test="activityId != null">
+        and RES.ACTIVITY_ID_ = #{activityId}
+      </if>
+      <if test="eventType != null">
+        and RES.EVENT_TYPE_ = #{eventType}
+      </if>
+      <if test="eventName != null">
+        and RES.EVENT_NAME_ = #{eventName}
+      </if>  
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{parameter.tenantId}
+      </if>  
+      <if test="tenantId == null">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>        
+    </where>
+  </sql>
+  
+  <select id="selectSignalEventSubscriptionsByEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR EVT
+    left outer join ${prefix}ACT_RU_EXECUTION EXC on EVT.EXECUTION_ID_ = EXC.ID_
+    where EVENT_TYPE_ = 'signal'
+    	and EVENT_NAME_ = #{parameter.eventName}
+    	and (EVT.EXECUTION_ID_ is null OR (EVT.EXECUTION_ID_ is not null AND EXC.SUSPENSION_STATE_ = 1) )
+    <if test="parameter.tenantId != null">
+        and EVT.TENANT_ID_ = #{parameter.tenantId}
+    </if>  
+    <if test="parameter.tenantId == null">
+        and (EVT.TENANT_ID_ = '' or EVT.TENANT_ID_ is null)
+    </if>   
+  </select>
+  
+   <select id="selectSignalEventSubscriptionsByProcessInstanceAndEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR EVT
+    where (EVENT_TYPE_ = 'signal')
+        and EVENT_NAME_ = #{parameter.eventName}  
+        and PROC_INST_ID_ = #{parameter.processInstanceId}
+  </select> 
+  
+  <select id="selectSignalEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = 'signal')
+        and (EXECUTION_ID_ = #{parameter})  
+  </select>
+  
+  <select id="selectSignalEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = 'signal')
+    	and (EXECUTION_ID_ = #{parameter.executionId})
+    	and (EVENT_NAME_ = #{parameter.eventName})
+  </select>
+  
+  <select id="selectEventSubscriptionsByExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EXECUTION_ID_ = #{parameter})
+  </select>
+      
+  <select id="selectEventSubscriptionsByExecutionAndType" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = #{parameter.eventType})
+    	and (EXECUTION_ID_ = #{parameter.executionId})
+  </select>
+  
+  <select id="selectEventSubscriptionsByExecutionTypeAndActivity" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = #{parameter.eventType})
+    	and (EXECUTION_ID_ = #{parameter.executionId})
+    	and (ACTIVITY_ID_ = #{parameter.activityId})
+  </select>
+  
+  <select id="selectEventSubscriptionsByConfiguration" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = #{parameter.eventType})
+    	and ( 
+    	   (CONFIGURATION_ = #{parameter.configuration})
+    	   or
+    	   (PROC_DEF_ID_ = #{parameter.configuration})
+    	)
+     <if test="parameter.tenantId != null">
+        and TENANT_ID_ = #{parameter.tenantId}
+    </if>  
+    <if test="parameter.tenantId == null">
+        and (TENANT_ID_ = '' or TENANT_ID_ is null)
+    </if>   	
+  </select>
+  
+  <select id="selectEventSubscriptionsByName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = #{parameter.eventType})
+    	and (EVENT_NAME_ = #{parameter.eventName})
+    <if test="parameter.tenantId != null">
+        and TENANT_ID_ = #{parameter.tenantId}
+    </if>  
+    <if test="parameter.tenantId == null">
+        and (TENANT_ID_ = '' or TENANT_ID_ is null)
+    </if>   	
+  </select>
+  
+  <select id="selectEventSubscriptionsByNameAndExecution" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = #{parameter.eventType})
+    	and (EVENT_NAME_ = #{parameter.eventName})
+    	and (EXECUTION_ID_ = #{parameter.executionId})
+  </select>
+  
+   <select id="selectMessageStartEventSubscriptionByName" resultMap="eventSubscriptionResultMap" parameterType="map">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = 'message')
+    	and (EVENT_NAME_ = #{eventName})
+    	and EXECUTION_ID_ is null
+    <if test="tenantId != null">
+        and TENANT_ID_ = #{tenantId}
+    </if>  
+    <if test="tenantId == null">
+        and (TENANT_ID_ = '' or TENANT_ID_ is null)
+    </if>   	
+  </select>
+  
+  
+  <!-- MESSAGE INSERT -->
+  
+  <insert id="insertMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity">
+ 	insert into ${prefix}ACT_RU_EVENT_SUBSCR (
+            ID_, 
+            REV_,
+            EVENT_TYPE_,
+           	EVENT_NAME_,
+           	EXECUTION_ID_,
+           	PROC_INST_ID_,
+           	ACTIVITY_ID_,
+           	CONFIGURATION_,
+           	CREATED_,
+           	PROC_DEF_ID_,
+           	TENANT_ID_
+    )
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            'message',
+            #{eventName, jdbcType=VARCHAR},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{activityId, jdbcType=VARCHAR},
+            #{configuration, jdbcType=VARCHAR},
+            #{created, jdbcType=TIMESTAMP},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}                  
+    )
+  </insert>
+
+  <!-- MESSAGE UPDATE -->
+
+  <update id="updateMessageEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity">
+    update ${prefix}ACT_RU_EVENT_SUBSCR
+    <set>
+       REV_ =  #{revisionNext, jdbcType=INTEGER},
+       EVENT_NAME_ = #{eventName, jdbcType=INTEGER},
+       EXECUTION_ID_ = #{executionId, jdbcType=INTEGER},
+       PROC_INST_ID_ = #{processInstanceId, jdbcType=INTEGER},
+       ACTIVITY_ID_ = #{activityId, jdbcType=INTEGER},
+       CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
+       CREATED_ = #{created, jdbcType=TIMESTAMP},
+       PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+   <!-- SIGNAL INSERT -->
+  
+  <insert id="insertSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity">
+   insert into ${prefix}ACT_RU_EVENT_SUBSCR (
+             ID_, 
+            REV_,
+            EVENT_TYPE_,
+           	EVENT_NAME_,
+           	EXECUTION_ID_,
+           	PROC_INST_ID_,
+           	ACTIVITY_ID_,
+           	CONFIGURATION_,
+           	CREATED_,
+           	PROC_DEF_ID_,
+           	TENANT_ID_
+    )
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            'signal',
+            #{eventName, jdbcType=VARCHAR},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{activityId, jdbcType=VARCHAR},
+            #{configuration, jdbcType=VARCHAR},
+            #{created, jdbcType=TIMESTAMP},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}         
+    )
+  </insert>
+
+  <!-- SIGNAL UPDATE -->
+
+  <update id="updateSignalEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity">
+    update ${prefix}ACT_RU_EVENT_SUBSCR
+    <set>
+       REV_ =  #{revisionNext, jdbcType=INTEGER},
+       EVENT_NAME_ = #{eventName, jdbcType=INTEGER},
+       EXECUTION_ID_ = #{executionId, jdbcType=INTEGER},
+       PROC_INST_ID_ = #{processInstanceId, jdbcType=INTEGER},
+       ACTIVITY_ID_ = #{activityId, jdbcType=INTEGER},
+       CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
+       CREATED_ = #{created, jdbcType=TIMESTAMP},
+       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+   <!-- Compensate INSERT -->
+  
+  <insert id="insertCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity">
+    insert into ${prefix}ACT_RU_EVENT_SUBSCR (
+             ID_, 
+            REV_,
+            EVENT_TYPE_,
+           	EVENT_NAME_,
+           	EXECUTION_ID_,
+           	PROC_INST_ID_,
+           	ACTIVITY_ID_,
+           	CONFIGURATION_,
+           	CREATED_,
+           	PROC_DEF_ID_,
+           	TENANT_ID_
+    )
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            'compensate',
+            #{eventName, jdbcType=VARCHAR},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{activityId, jdbcType=VARCHAR},
+            #{configuration, jdbcType=VARCHAR},
+            #{created, jdbcType=TIMESTAMP},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}      
+    )
+  </insert>
+  
+  <!-- Compensate UPDATE -->
+
+  <update id="updateCompensateEventSubscription" parameterType="org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity">
+    update ${prefix}ACT_RU_EVENT_SUBSCR
+    <set>
+       REV_ =  #{revisionNext, jdbcType=INTEGER},
+       EVENT_NAME_ = #{eventName, jdbcType=INTEGER},
+       EXECUTION_ID_ = #{executionId, jdbcType=INTEGER},
+       PROC_INST_ID_ = #{processInstanceId, jdbcType=INTEGER},
+       ACTIVITY_ID_ = #{activityId, jdbcType=INTEGER},
+       CONFIGURATION_ = #{configuration, jdbcType=VARCHAR},  
+       CREATED_ = #{created, jdbcType=TIMESTAMP},
+       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+  <!--  tenantId update -->
+   <update id="updateTenantIdOfEventSubscriptions" parameterType="map">
+    update ${prefix}ACT_RU_EVENT_SUBSCR
+    <set>
+      TENANT_ID_ = #{newTenantId, jdbcType=VARCHAR}
+    </set>
+    where TENANT_ID_ = #{oldTenantId, jdbcType=VARCHAR}
+  </update>
+
+</mapper>

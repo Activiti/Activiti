@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.EngineServices;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.PvmActivity;
@@ -31,7 +32,7 @@ import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
@@ -439,9 +440,9 @@ public class ExecutionImpl implements
 
   public void signal(String signalName, Object signalData) {
     ensureActivityInitialized();
-    SignallableActivityBehavior activityBehavior = (SignallableActivityBehavior) activity.getActivityBehavior();
+    TriggerableActivityBehavior activityBehavior = (TriggerableActivityBehavior) activity.getActivityBehavior();
     try {
-      activityBehavior.signal(this, signalName, signalData);
+      activityBehavior.trigger(this, signalName, signalData);
     } catch (RuntimeException e) {
       throw e;
     } catch (Exception e) {
@@ -951,4 +952,15 @@ public class ExecutionImpl implements
   public String getTenantId() {
     return null; // Not implemented
   }
+  
+  	@Override
+    public FlowElement getCurrentFlowElement() {
+	  return null;
+    }
+  	
+	@Override
+	public void setCurrentFlowElement(FlowElement flowElement) {
+		// TODO Auto-generated method stub
+
+	}
 }

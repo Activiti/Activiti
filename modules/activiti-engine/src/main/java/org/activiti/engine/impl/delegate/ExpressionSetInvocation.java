@@ -33,7 +33,7 @@ public class ExpressionSetInvocation extends ExpressionInvocation {
   }
 
   @Override
-  protected void invoke() throws Exception {
+  protected void invoke() {
     valueExpression.setValue(elContext, value);
   }
 

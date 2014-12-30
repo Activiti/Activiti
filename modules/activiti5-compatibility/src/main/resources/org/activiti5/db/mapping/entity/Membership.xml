@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.persistence.entity.MembershipRelation">
+  
+  <!-- MEMBERSHIP INSERT -->
+
+  <insert id="insertMembership" parameterType="map">
+    insert into ${prefix}ACT_ID_MEMBERSHIP (USER_ID_, GROUP_ID_)
+    values (
+      #{userId ,jdbcType=VARCHAR},
+      #{groupId ,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- MEMBERSHIP UPDATE -->
+  
+  <!-- MEMBERSHIP DELETE -->
+
+  <delete id="deleteMembershipsByUserId" parameterType="string">
+    delete from ${prefix}ACT_ID_MEMBERSHIP 
+    where USER_ID_ = #{userId} 
+  </delete>
+
+  <delete id="deleteMembership" parameterType="map">
+    delete from ${prefix}ACT_ID_MEMBERSHIP 
+    where USER_ID_ = #{userId}
+      and GROUP_ID_ = #{groupId} 
+  </delete>
+
+  <!-- MEMBERSHIP RESULTMAP -->
+  
+  <!-- MEMBERSHIP DELETE -->
+
+  <delete id="deleteMembershipsByGroupId" parameterType="string">
+    delete from ${prefix}ACT_ID_MEMBERSHIP 
+    where GROUP_ID_ = #{groupId} 
+  </delete>
+  
+</mapper>

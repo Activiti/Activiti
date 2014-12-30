@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://activiti.org/bpmn http://activiti.org/bpmn/activiti-bpmn-extensions-5.18.xsd"
+targetNamespace="Examples">
+
+    <process id="repeatWithEnd">
+
+        <startEvent id="theStart">
+        </startEvent>
+
+        <sequenceFlow id="a1" sourceRef="theStart" targetRef="processStartedScript"/>
+
+        <scriptTask id="processStartedScript" name="Execute script" scriptFormat="groovy">
+            <script>
+                System.out.println("Process started");
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="a2" sourceRef="processStartedScript" targetRef="task1"/>
+        <userTask id="task1" name="Task A"/>
+        <sequenceFlow id="flow2" sourceRef="task1" targetRef="task2"/>
+        <userTask id="task2" name="Task B"/>
+
+        <boundaryEvent id="timer" attachedToRef="task2" cancelActivity="false">
+            <timerEventDefinition>
+                <timeCycle>R10/PT2S</timeCycle>
+            </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow id="flow21" sourceRef="timer" targetRef="timerFiredTask"/>
+
+        <scriptTask id="timerFiredTask" name="Execute script" scriptFormat="groovy">
+            <script>
+                System.out.println("Boundary Event");
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="flow22" sourceRef="timerFiredTask" targetRef="nonInterruptingEnd"/>
+        <endEvent id="nonInterruptingEnd"/>
+
+
+
+        <sequenceFlow id="flow3" sourceRef="task2" targetRef="task2Completed"/>
+
+        <scriptTask id="task2Completed" name="Execute script" scriptFormat="groovy">
+            <script>
+                System.out.println("Process ended");
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="flow10" sourceRef="task2Completed" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+
+    </process>
+
+
+</definitions>

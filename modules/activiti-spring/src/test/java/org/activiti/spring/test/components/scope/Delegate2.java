@@ -19,7 +19,7 @@ public class Delegate2 implements JavaDelegate {
     @Autowired
     private StatefulObject statefulObject;
 
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
 
         this.statefulObject.increment();
 

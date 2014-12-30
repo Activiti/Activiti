@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="TwoTaskHistoricTaskQueryTest">
+    <startEvent id="start" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="task1" />
+
+    <userTask id="task1" name="Task 1" />
+    <sequenceFlow id="flow2" sourceRef="task1" targetRef="task2" />
+    
+    <userTask id="task2" name="Task 2" />
+    <sequenceFlow id="flow3" sourceRef="task2" targetRef="end" />
+    
+    <endEvent id="end" />
+  </process>
+
+</definitions>

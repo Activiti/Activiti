@@ -14,7 +14,7 @@ public class CustomSetConditionsExecutionListener implements ExecutionListener {
   protected String flowId;
 
   @Override
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     execution.setVariable(flowId + "_activiti_conditions", conditions);
   }
 

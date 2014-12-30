@@ -84,7 +84,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     setInnerActivityBehavior(innerActivityBehavior);
   }
   
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     if (getLocalLoopVariable(execution, getCollectionElementIndexVariable()) == null) {
       try {
         createInstances(execution);
@@ -100,11 +100,11 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     }
   }
   
-  protected abstract void createInstances(ActivityExecution execution) throws Exception;
+  protected abstract void createInstances(ActivityExecution execution);
   
   // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    innerActivityBehavior.signal(execution, signalName, signalData);
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+    innerActivityBehavior.trigger(execution, signalName, signalData);
   }
   
   // required for supporting embedded subprocesses
@@ -151,7 +151,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
   
   @SuppressWarnings("rawtypes")
-  protected void executeOriginalBehavior(ActivityExecution execution, int loopCounter) throws Exception {
+  protected void executeOriginalBehavior(ActivityExecution execution, int loopCounter) {
     if (usesCollection() && collectionElementVariable != null) {
       Collection collection = null;
       if (collectionExpression != null) {

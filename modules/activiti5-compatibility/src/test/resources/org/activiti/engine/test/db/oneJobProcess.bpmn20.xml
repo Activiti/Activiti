@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="org.activiti.enginge.test.api.runtime">
+  <process id="oneTaskProcess" name="oneTaskProcess">
+    <startEvent id="theStart" name="Start"></startEvent>
+    <endEvent id="theEnd" name="End"></endEvent>
+    <intermediateCatchEvent id="timerintermediatecatchevent1" name="TimerCatchEvent">
+      <timerEventDefinition>
+        <timeDuration>PT0S</timeDuration>
+      </timerEventDefinition>
+    </intermediateCatchEvent>
+    <sequenceFlow id="flow1" name="" sourceRef="theStart" targetRef="timerintermediatecatchevent1"></sequenceFlow>
+    <sequenceFlow id="flow2" name="" sourceRef="timerintermediatecatchevent1" targetRef="theEnd"></sequenceFlow>
+  </process> 
+</definitions>

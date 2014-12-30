@@ -9,7 +9,7 @@ public class NoExceptionServiceMock implements JavaDelegate {
   static boolean isCalled = false;
 
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     isCalled = true;
   }
   

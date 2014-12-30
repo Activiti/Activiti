@@ -35,7 +35,7 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
   }
   
   @Override
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     final String activityRef = compensateEventDefinition.getActivityRef();
             
     ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity)execution, (ActivityImpl)execution.getActivity());
@@ -57,7 +57,7 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
         
   }
   
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
    
     // join compensating executions    
     if(execution.getExecutions().isEmpty()) {

@@ -1,0 +1,17 @@
+package org.activiti.rules.deploytest;
+ 
+import org.activiti.standalone.rules.Order
+ 
+rule "OrderItemCountZeroOrLess"
+     when
+        order : Order( itemCount <= 0)
+     then
+     	order.setValid(false);          
+end
+ 
+rule "OrderItemCountGreaterThanZero"
+     when
+        order : Order( itemCount > 0)
+     then
+     	order.setValid(true);           
+end

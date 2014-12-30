@@ -36,7 +36,7 @@ import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.TaskListenerInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.util.ReflectUtil;
 
@@ -86,7 +86,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Execution listener
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     if (executionListenerInstance == null) {
       executionListenerInstance = getExecutionListenerInstance();
     }
@@ -130,7 +130,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Activity Behavior
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
     if (!isSkipExpressionEnabled || 
             (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
@@ -153,15 +153,15 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Signallable activity behavior
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     if (activityBehaviorInstance == null) {
       activityBehaviorInstance = getActivityBehaviorInstance(execution);
     }
     
-    if (activityBehaviorInstance instanceof SignallableActivityBehavior) {
-      ((SignallableActivityBehavior) activityBehaviorInstance).signal(execution, signalName, signalData);
+    if (activityBehaviorInstance instanceof TriggerableActivityBehavior) {
+      ((TriggerableActivityBehavior) activityBehaviorInstance).trigger(execution, signalName, signalData);
     } else {
-      throw new ActivitiException("signal() can only be called on a " + SignallableActivityBehavior.class.getName() + " instance");
+      throw new ActivitiException("signal() can only be called on a " + TriggerableActivityBehavior.class.getName() + " instance");
     }
   }
   

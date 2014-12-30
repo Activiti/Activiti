@@ -46,7 +46,7 @@ public class CurrentActivityExecutionListener implements ExecutionListener {
     }
   }
   
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), execution.getCurrentActivityName()));
   }
 

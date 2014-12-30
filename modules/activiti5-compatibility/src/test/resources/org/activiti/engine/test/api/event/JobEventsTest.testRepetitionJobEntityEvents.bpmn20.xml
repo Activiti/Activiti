@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  targetNamespace="Examples">
+
+  <process id="testRepetitionJobEvents">
+
+    <startEvent id="theStart"/>
+
+    <sequenceFlow sourceRef="theStart" targetRef="task"/>
+
+    <userTask id="task"/>
+
+    <boundaryEvent attachedToRef="task" id="timer" cancelActivity="false">
+      <timerEventDefinition>
+        <timeCycle>R2/PT10S</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+
+      <sequenceFlow sourceRef="timer" targetRef="scriptExecutor"/>
+
+      <scriptTask id="scriptExecutor" name="Script Executor" scriptFormat="groovy">
+          <script>System.out.println("Boundary event executed ");</script>
+      </scriptTask>
+
+    <sequenceFlow sourceRef="task" targetRef="theEnd"/>
+
+    <sequenceFlow sourceRef="scriptExecutor" targetRef="theEnd"/>
+
+    <endEvent id="theEnd"/>
+
+  </process>
+
+</definitions>

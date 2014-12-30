@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <error id="myError" errorCode="myErrorCode1" />
+  <process id="processWithSingleExceptionMap" isExecutable="true">
+    <startEvent id="theStart"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask"></sequenceFlow>
+    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.ThrowCustomExceptionDelegate">
+      <extensionElements>
+        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" includeChildExceptions="true"></activiti:mapException>
+      </extensionElements>
+    </serviceTask>
+    <boundaryEvent id="catchError" attachedToRef="serviceTask">
+      <errorEventDefinition errorRef="myErrorCode1" />
+    </boundaryEvent>
+    <sequenceFlow id="flow4" sourceRef="serviceTask" targetRef="theEnd"></sequenceFlow>
+    <endEvent id="theEnd"></endEvent>
+    <serviceTask id="flagTask" name="Set Flag" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.FlagDelegate"></serviceTask>
+    <sequenceFlow id="flow5" sourceRef="catchError" targetRef="flagTask"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="flagTask" targetRef="theEnd"></sequenceFlow>
+  </process>
+</definitions>

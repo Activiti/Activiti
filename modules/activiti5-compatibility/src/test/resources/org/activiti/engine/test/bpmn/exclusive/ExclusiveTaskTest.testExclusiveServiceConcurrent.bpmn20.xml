@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="exclusive">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    
+    <sequenceFlow sourceRef="fork" targetRef="service" />    
+    <sequenceFlow sourceRef="fork" targetRef="service2" />
+    <sequenceFlow sourceRef="fork" targetRef="service3" />
+    
+    <serviceTask id="service" activiti:expression="${true}" activiti:async="true" />    
+    <serviceTask id="service2" activiti:expression="${true}" activiti:async="true" />    
+    <serviceTask id="service3" activiti:expression="${true}" activiti:async="true" />
+    
+    <parallelGateway id="fork2" />
+    
+    <sequenceFlow sourceRef="fork2" targetRef="service10" />
+    <sequenceFlow sourceRef="fork2" targetRef="service11" />
+    <sequenceFlow sourceRef="fork2" targetRef="service12" />
+    
+    <serviceTask id="service10" activiti:expression="${true}" activiti:async="true" />    
+    <serviceTask id="service11" activiti:expression="${true}" activiti:async="true" />    
+    <serviceTask id="service12" activiti:expression="${true}" activiti:async="true" />
+    
+    <sequenceFlow sourceRef="service10" targetRef="join2" />
+    <sequenceFlow sourceRef="service11" targetRef="join2" />
+    <sequenceFlow sourceRef="service12" targetRef="join2" />
+    
+    <parallelGateway id="join2" activiti:async="true" />
+    
+    <sequenceFlow sourceRef="service" targetRef="fork2" />
+    <sequenceFlow sourceRef="join2" targetRef="join" />
+    <sequenceFlow sourceRef="service2" targetRef="join" />
+    <sequenceFlow sourceRef="service3" targetRef="join" />
+    
+    <parallelGateway id="join" activiti:async="true" />
+    
+    <sequenceFlow sourceRef="join" targetRef="theEnd" />
+        
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

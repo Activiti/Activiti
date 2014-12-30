@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+	
+	<process id="CatchErrorThrownByScriptTaskInTopLevelProcess">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="scriptTask" />
+
+    <scriptTask id="scriptTask" scriptFormat="groovy">
+      <script>
+        throw new org.activiti.engine.delegate.BpmnError("123");
+      </script>
+    </scriptTask>
+
+    <sequenceFlow id="flow3" sourceRef="scriptTask" targetRef="theEnd" />
+		
+		<endEvent id="theEnd" />
+    
+
+    <subProcess id="eventSubProcess" triggeredByEvent="true">
+      <startEvent id="catchError">
+        <errorEventDefinition /> <!-- no errorCode: catch any error -->
+      </startEvent>
+      <sequenceFlow id="flow2" sourceRef="catchError" targetRef="taskAfterErrorCatch" />
+      <userTask id="taskAfterErrorCatch" name="Escalated Task" />
+    </subProcess>
+
+	</process>
+
+</definitions>

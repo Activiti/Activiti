@@ -27,7 +27,7 @@ import org.activiti.engine.impl.pvm.PvmTransition;
  * @author Falko Menge
  */
 public interface ActivityExecution extends DelegateExecution {
-  
+
   /* Process instance/activity/transition retrieval */
 
   /**

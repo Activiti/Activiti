@@ -20,7 +20,7 @@ public class AsyncListener implements ExecutionListener {
 
   private static final long serialVersionUID = 1L;
 
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     execution.setVariable("listener", "listener invoked");
   }
 }

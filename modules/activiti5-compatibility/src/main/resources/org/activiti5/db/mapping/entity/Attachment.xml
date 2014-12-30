@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+
+  <!-- ATTACHMENT INSERT -->
+
+  <insert id="insertAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+    insert into ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_, TIME_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{userId ,jdbcType=VARCHAR},
+      #{name ,jdbcType=VARCHAR},
+      #{description ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR},
+      #{taskId ,jdbcType=VARCHAR},
+      #{processInstanceId ,jdbcType=VARCHAR},
+      #{url ,jdbcType=VARCHAR},
+      #{contentId ,jdbcType=VARCHAR},
+      #{time ,jdbcType=TIMESTAMP}
+    )
+  </insert>
+
+  <!-- ATTACHMENT UPDATE -->
+
+  <update id="updateAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+    update ${prefix}ACT_HI_ATTACHMENT 
+    set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      NAME_ = #{name, jdbcType=VARCHAR},
+      DESCRIPTION_ = #{description, jdbcType=TIMESTAMP}
+    where ID_ = #{id}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+
+  <!-- ATTACHMENT DELETE -->
+
+  <delete id="deleteAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+    delete from ${prefix}ACT_HI_ATTACHMENT 
+    where ID_ = #{id} and REV_ = #{revision} 
+  </delete>
+  
+  <!-- ATTACHMENT RESULTMAP -->
+
+  <resultMap id="attachmentResultMap" type="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="description" column="DESCRIPTION_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="url" column="URL_" jdbcType="VARCHAR" />
+    <result property="contentId" column="CONTENT_ID_" jdbcType="VARCHAR" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
+  </resultMap>
+  
+  <!-- ATTACHMENT SELECT -->
+
+  <select id="selectAttachment" parameterType="string" resultMap="attachmentResultMap">
+    select *
+    from ${prefix}ACT_HI_ATTACHMENT
+    where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectAttachmentsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
+    select *
+    from ${prefix}ACT_HI_ATTACHMENT
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+  
+  <select id="selectAttachmentsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
+    select *
+    from ${prefix}ACT_HI_ATTACHMENT
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+</mapper>

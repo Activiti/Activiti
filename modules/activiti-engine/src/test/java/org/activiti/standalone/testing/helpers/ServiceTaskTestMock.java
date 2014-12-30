@@ -25,7 +25,7 @@ public class ServiceTaskTestMock implements JavaDelegate {
 	public static AtomicInteger CALL_COUNT = new AtomicInteger();
 	
 	@Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
 	  CALL_COUNT.incrementAndGet();
 	}
 

@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+  namespace="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+
+  <!-- VARIABLE INSTANCE INSERT -->
+
+  <insert id="insertVariableInstance"
+    parameterType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+    insert into ${prefix}ACT_RU_VARIABLE (ID_, REV_,
+    TYPE_, NAME_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, BYTEARRAY_ID_,
+    DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    values (
+    #{id, jdbcType=VARCHAR},
+    1,
+    #{type, jdbcType=VARCHAR },
+    #{name, jdbcType=VARCHAR},
+    #{processInstanceId, jdbcType=VARCHAR},
+    #{executionId, jdbcType=VARCHAR},
+    #{taskId, jdbcType=VARCHAR},
+    #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+    #{doubleValue, jdbcType=DOUBLE},
+    #{longValue, jdbcType=BIGINT},
+    #{textValue, jdbcType=VARCHAR},
+    #{textValue2, jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- VARIABLE INSTANCE UPDATE -->
+
+  <update id="updateVariableInstance"
+    parameterType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+    update ${prefix}ACT_RU_VARIABLE
+    set
+    REV_ = #{revisionNext, jdbcType=INTEGER},
+    EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
+    BYTEARRAY_ID_ = #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+    TYPE_ =  #{type, jdbcType=VARCHAR },
+    DOUBLE_ = #{doubleValue, jdbcType=DOUBLE},
+    LONG_ = #{longValue, jdbcType=BIGINT},
+    TEXT_ = #{textValue, jdbcType=VARCHAR},
+    TEXT2_ = #{textValue2, jdbcType=VARCHAR}
+    where ID_ = #{id, jdbcType=VARCHAR}
+    and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+
+  <!-- VARIABLE INSTANCE DELETE -->
+
+  <delete id="deleteVariableInstance"
+    parameterType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+    delete from ${prefix}ACT_RU_VARIABLE where ID_ = #{id,
+    jdbcType=VARCHAR} and REV_ = #{revision}
+  </delete>
+
+  <delete id="bulkDeleteVariableInstance" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_VARIABLE where
+    <foreach item="variable" collection="list" index="index" separator=" or ">
+        ID_ = #{variable.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+
+  <!-- VARIABLE INSTANCE RESULTMAP -->
+
+  <resultMap id="variableInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="type" column="TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
+    <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
+    <result property="isConcurrencyScope" column="IS_CONCURRENCY_SCOPE_" jdbcType="BOOLEAN" />
+    <result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
+    <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
+    <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
+    <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
+    <result property="longValue" column="LONG_" jdbcType="BIGINT" />
+  </resultMap>
+
+  <!-- VARIABLE INSTANCE SELECT -->
+
+  <select id="selectVariableInstance" parameterType="string"
+    resultMap="variableInstanceResultMap">
+    select * from ${prefix}ACT_RU_VARIABLE where ID_ = #{id, jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectVariablesByExecutionId"
+    parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+    resultMap="variableInstanceResultMap">
+    select * from ${prefix}ACT_RU_VARIABLE
+    where EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR}
+    and TASK_ID_ is null
+  </select>
+  
+  <select id="selectVariableInstanceByExecutionAndName" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
+	select * from ${prefix}ACT_RU_VARIABLE 
+    where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR} and NAME_= #{name, jdbcType=VARCHAR} and TASK_ID_ is null
+  </select>
+  
+  <select id="selectVariableInstancesByExecutionAndNames" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
+	select * from ${prefix}ACT_RU_VARIABLE 
+    where EXECUTION_ID_ = #{parameter.executionId, jdbcType=VARCHAR} and TASK_ID_ is null
+    <if test="parameter.names != null and parameter.names.size > 0">
+    and (
+      <foreach collection="parameter.names" index="index" item="name" separator=" or ">
+      	NAME_= #{name, jdbcType=VARCHAR}	
+      </foreach>	    
+    )
+    </if>
+  </select>
+  
+  <select id="selectVariablesByTaskId"
+    parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+    resultMap="variableInstanceResultMap">
+    select * from ${prefix}ACT_RU_VARIABLE where
+    TASK_ID_ = #{parameter, jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectVariableInstanceByTaskAndName" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
+	select * from ${prefix}ACT_RU_VARIABLE 
+    where TASK_ID_ = #{taskId, jdbcType=VARCHAR} and NAME_= #{name, jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectVariableInstancesByTaskAndNames" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
+	select * from ${prefix}ACT_RU_VARIABLE 
+    where TASK_ID_ = #{parameter.taskId, jdbcType=VARCHAR} 
+    <if test="parameter.names != null and parameter.names.size > 0">
+    and (
+      <foreach collection="parameter.names" index="index" item="name" separator=" or ">
+      	NAME_= #{name, jdbcType=VARCHAR}	
+      </foreach>	    
+    )
+    </if>
+  </select>
+
+</mapper>

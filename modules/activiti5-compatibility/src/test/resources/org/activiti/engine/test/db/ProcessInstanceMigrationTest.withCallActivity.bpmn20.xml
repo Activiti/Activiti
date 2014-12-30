@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="parentProcess" isExecutable="true">
+  
+    <startEvent id="theStart1" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart1" targetRef="callActivity1" />
+        
+    <callActivity id="callActivity1" name="Call Activity" calledElement="childProcess" />
+    
+    <sequenceFlow id="flow2" sourceRef="callActivity1" targetRef="theEnd1" />
+    
+    <endEvent id="theEnd1" />
+    
+  </process>
+
+  <process id="childProcess" isExecutable="true">
+    <startEvent id="theStart2" />
+    
+    <sequenceFlow id="flow3" sourceRef="theStart2" targetRef="waitState1" />
+    
+    <receiveTask id="waitState1" name="Wait State 1" />
+    
+    <sequenceFlow id="flow4" sourceRef="waitState1" targetRef="theEnd2" />
+    
+    <endEvent id="theEnd2" />
+  </process>
+
+</definitions>

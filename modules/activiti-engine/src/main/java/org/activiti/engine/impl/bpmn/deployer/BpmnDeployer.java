@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.deployer;
 
 import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -40,6 +41,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -74,6 +76,7 @@ public class BpmnDeployer implements Deployer {
     log.debug("Processing deployment {}", deployment.getName());
     
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
+    Map<String, org.activiti.bpmn.model.Process> processModels = new HashMap<String, org.activiti.bpmn.model.Process>();
     Map<String, ResourceEntity> resources = deployment.getResources();
 
     final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
@@ -140,6 +143,7 @@ public class BpmnDeployer implements Deployer {
           
           processDefinition.setDiagramResourceName(diagramResourceName);
           processDefinitions.add(processDefinition);
+          processModels.put(processDefinition.getKey(), bpmnParse.getBpmnModel().getProcessById(processDefinition.getKey()));
         }
       }
     }
@@ -231,12 +235,14 @@ public class BpmnDeployer implements Deployer {
         	processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
         }
       }
-
+      
       // Add to cache
+      ProcessDefinitionCacheEntry cacheEntry = 
+    		  new ProcessDefinitionCacheEntry(processDefinition, processModels.get(processDefinition.getKey()));
       processEngineConfiguration
         .getDeploymentManager()
         .getProcessDefinitionCache()
-        .add(processDefinition.getId(), processDefinition);
+        .add(processDefinition.getId(), cacheEntry);
       
       // Add to deployment for further usage
       deployment.addDeployedArtifact(processDefinition);

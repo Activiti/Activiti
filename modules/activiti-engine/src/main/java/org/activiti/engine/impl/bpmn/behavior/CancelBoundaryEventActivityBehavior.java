@@ -27,7 +27,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 public class CancelBoundaryEventActivityBehavior  extends FlowNodeActivityBehavior {
     
   @Override
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
            
       List<CompensateEventSubscriptionEntity> eventSubscriptions = ((ExecutionEntity)execution).getCompensateEventSubscriptions();
       
@@ -42,7 +42,7 @@ public class CancelBoundaryEventActivityBehavior  extends FlowNodeActivityBehavi
   }
   
   @Override
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     // join compensating executions    
     if(execution.getExecutions().isEmpty()) {
       leave(execution);   

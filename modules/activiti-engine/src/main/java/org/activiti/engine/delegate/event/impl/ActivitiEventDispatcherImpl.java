@@ -20,6 +20,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -105,8 +106,7 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
 		ProcessDefinitionEntity result = null;
 
 		if (event.getProcessDefinitionId() != null) {
-			result = Context.getProcessEngineConfiguration().getDeploymentManager().getProcessDefinitionCache()
-			    .get(event.getProcessDefinitionId());
+			result = ProcessDefinitionCacheUtil.getCachedProcessDefinitionEntity(event.getProcessDefinitionId());
 			if (result != null) {
 				result = Context.getProcessEngineConfiguration().getDeploymentManager().resolveProcessDefinition(result);
 			}

@@ -20,7 +20,7 @@ public class VariableEventsExecutionListener implements ExecutionListener {
   private static final long serialVersionUID = 1L;
 
 	@Override
-	public void notify(DelegateExecution execution) throws Exception {
+	public void notify(DelegateExecution execution) {
 		// Create, update and remove variable
 		execution.setVariable("variable", 123);
 		execution.setVariable("variable", 456);

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+
+	<process id="timerOnSubprocesses">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess" />
+
+    <subProcess id="subprocess">
+    
+      <startEvent id="subprocessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="subprocessEnd" />      
+      <endEvent id="subprocessEnd" />
+      
+    </subProcess>
+    <sequenceFlow id="flow3" sourceRef="subprocess" targetRef="theEnd" />
+
+		<boundaryEvent id="boundaryTimer" cancelActivity="true" attachedToRef="subprocess">
+			<timerEventDefinition>
+			  <timeDuration>PT2H</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+		<sequenceFlow id="flow2" sourceRef="boundaryTimer" targetRef="taskAfterCatch" />
+		<userTask id="taskAfterCatch" name="task outside subprocess" />
+		
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

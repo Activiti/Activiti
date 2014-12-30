@@ -30,6 +30,6 @@ package org.activiti.engine.delegate;
  */
 public interface JavaDelegate {
   
-  void execute(DelegateExecution execution) throws Exception;
+  void execute(DelegateExecution execution);
 
 }

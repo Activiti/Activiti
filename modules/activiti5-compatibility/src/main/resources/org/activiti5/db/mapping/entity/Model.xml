@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.persistence.entity.ModelEntity">
+
+  <!-- MODEL INSERT -->
+  
+  <insert id="insertModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
+    insert into ${prefix}ACT_RE_MODEL(ID_, REV_, NAME_, KEY_, CATEGORY_, CREATE_TIME_, LAST_UPDATE_TIME_, VERSION_, META_INFO_, DEPLOYMENT_ID_, EDITOR_SOURCE_VALUE_ID_, EDITOR_SOURCE_EXTRA_VALUE_ID_, TENANT_ID_)
+    values(#{id, jdbcType=VARCHAR}, 
+           1,
+           #{name, jdbcType=VARCHAR}, 
+           #{key, jdbcType=VARCHAR}, 
+           #{category, jdbcType=VARCHAR}, 
+           #{createTime, jdbcType=TIMESTAMP},
+           #{lastUpdateTime, jdbcType=TIMESTAMP},
+           #{version, jdbcType=INTEGER}, 
+           #{metaInfo, jdbcType=VARCHAR}, 
+           #{deploymentId, jdbcType=VARCHAR},
+           #{editorSourceValueId, jdbcType=VARCHAR}, 
+           #{editorSourceExtraValueId, jdbcType=VARCHAR},
+           #{tenantId, jdbcType=VARCHAR})
+  </insert>
+  
+  <!-- MODEL UPDATE -->
+  <update id="updateModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
+    update ${prefix}ACT_RE_MODEL set
+      REV_ = #{revisionNext, jdbcType=INTEGER},
+      NAME_ = #{name, jdbcType=VARCHAR},
+      KEY_ = #{key, jdbcType=VARCHAR},
+      CATEGORY_ = #{category, jdbcType=VARCHAR},
+      LAST_UPDATE_TIME_ = #{lastUpdateTime, jdbcType=VARCHAR},
+      VERSION_ = #{version, jdbcType=INTEGER},
+      META_INFO_ = #{metaInfo, jdbcType=VARCHAR},
+      DEPLOYMENT_ID_ = #{deploymentId, jdbcType=VARCHAR},
+      EDITOR_SOURCE_VALUE_ID_ = #{editorSourceValueId, jdbcType=VARCHAR},
+      EDITOR_SOURCE_EXTRA_VALUE_ID_ = #{editorSourceExtraValueId, jdbcType=VARCHAR},
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where ID_ = #{id, jdbcType=VARCHAR} and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+
+  
+  <!-- MODEL DELETE -->
+  
+  <delete id="deleteModel" parameterType="org.activiti.engine.impl.persistence.entity.ModelEntity">
+    delete from ${prefix}ACT_RE_MODEL where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+
+  <!-- MODEL RESULTMAP -->
+  
+  <resultMap id="modelResultMap" type="org.activiti.engine.impl.persistence.entity.ModelEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER"/>
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="VARCHAR" />
+    <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
+    <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="lastUpdateTime" column="LAST_UPDATE_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="version" column="VERSION_" jdbcType="INTEGER" />
+    <result property="metaInfo" column="META_INFO_" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DEPLOYMENT_ID_" jdbcType="VARCHAR" />
+    <result property="editorSourceValueId" column="EDITOR_SOURCE_VALUE_ID_" jdbcType="VARCHAR" />
+    <result property="editorSourceExtraValueId" column="EDITOR_SOURCE_EXTRA_VALUE_ID_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- MODEL SELECT -->
+
+  <select id="selectModelsByQueryCriteria" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultMap="modelResultMap">
+  	${limitBefore}
+    select distinct RES.* ${limitBetween}
+    <include refid="selectModelsByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+
+  <select id="selectModelCountByQueryCriteria" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultType="long">
+    select count(distinct RES.ID_)
+    <include refid="selectModelsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectModelsByQueryCriteriaSql">  
+    from ${prefix}ACT_RE_MODEL RES
+    <where>
+      <if test="id != null">
+        RES.ID_ = #{id}
+      </if>
+      <if test="name != null">
+        and RES.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        and RES.NAME_ like #{nameLike}
+      </if>
+      <if test="key != null">
+        and RES.KEY_ = #{key}
+      </if>
+      <if test="category != null">
+        and RES.CATEGORY_ = #{category}
+      </if>
+      <if test="categoryLike != null">
+        and RES.CATEGORY_ like #{categoryLike}
+      </if>
+      <if test="categoryNotEquals != null">
+        and ( RES.CATEGORY_ &lt;&gt; #{categoryNotEquals} OR RES.CATEGORY_ is null )  
+      </if>
+      <if test="version != null">
+        and RES.VERSION_ = #{version}
+      </if>
+      <if test="deploymentId != null">
+        and RES.DEPLOYMENT_ID_ = #{deploymentId}
+      </if>
+      <if test="notDeployed">
+        and RES.DEPLOYMENT_ID_ is null
+      </if>
+      <if test="deployed">
+        and RES.DEPLOYMENT_ID_ is not null
+      </if>
+      <if test="latest">
+        and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_MODEL where KEY_ = RES.KEY_)
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+    </where>
+  </sql>
+  
+  <select id="selectModel" parameterType="string" resultMap="modelResultMap">
+    select * from ${prefix}ACT_RE_MODEL where ID_ = #{id}
+  </select>
+  
+  <!-- mysql specific -->
+  <select id="selectModelCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ModelQueryImpl" resultType="long">
+    select distinct count(RES.ID_)
+    <include refid="selectModelsByQueryCriteriaSql"/>
+  </select>
+
+  <select id="selectModelByNativeQuery" parameterType="java.util.Map" resultMap="modelResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectModelByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="modelResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectModelCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
+
+</mapper>

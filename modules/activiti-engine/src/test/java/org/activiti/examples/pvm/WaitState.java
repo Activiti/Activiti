@@ -14,14 +14,14 @@ package org.activiti.examples.pvm;
 
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 
 
 
 /**
  * @author Tom Baeyens
  */
-public class WaitState implements SignallableActivityBehavior {
+public class WaitState implements TriggerableActivityBehavior {
 
   public void execute(ActivityExecution execution) {
     // By default, the execution will not propagate.
@@ -33,7 +33,7 @@ public class WaitState implements SignallableActivityBehavior {
     // That method will delegate to the method below.  
   }
 
-  public void signal(ActivityExecution execution, String signalName, Object event) {
+  public void trigger(ActivityExecution execution, String signalName, Object event) {
     PvmTransition transition = findTransition(execution, signalName);
     execution.take(transition);
   }

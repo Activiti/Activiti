@@ -98,7 +98,7 @@ public class EventValidator extends ProcessLevelValidator {
 		
 		// Check activityRef
 		 if((StringUtils.isNotEmpty(compensateEventDefinition.getActivityRef())
-				 && process.getFlowElementRecursive(compensateEventDefinition.getActivityRef()) == null)) {
+				 && process.getFlowElement(compensateEventDefinition.getActivityRef(), true) == null)) {
 			 addError(errors, Problems.COMPENSATE_EVENT_INVALID_ACTIVITY_REF, process, event, 
 					 "Invalid attribute value for 'activityRef': no activity with the given id");
 	    }

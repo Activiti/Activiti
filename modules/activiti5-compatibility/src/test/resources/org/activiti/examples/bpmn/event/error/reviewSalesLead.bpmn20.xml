@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+	xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" 
+	xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+	xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	targetNamespace="Examples"
+	xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+	
+	<error id="notEnoughInfoError" errorCode="not_enough_info" />
+	
+   <process id="reviewSaledLead" name="Review sales lead">
+   
+      <startEvent id="theStart" activiti:initiator="initiator" />
+      <sequenceFlow id="flow1" sourceRef="theStart" targetRef="provideNewSalesLead"/>
+      
+      <userTask id="provideNewSalesLead" name="Provide new sales lead" activiti:assignee="${initiator}">
+        <extensionElements>
+          <activiti:formProperty id="customerName" name="Customer name" type="string" required="true"/>
+          <activiti:formProperty id="potentialProfit" name="Potential profit" type="long" />
+          <activiti:formProperty id="details" name="Details" type="string"/>
+        </extensionElements>
+      </userTask>
+      <sequenceFlow id="flow2" sourceRef="provideNewSalesLead" targetRef="reviewSalesLeadSubProcess"/>
+      
+      <subProcess id="reviewSalesLeadSubProcess" name="Review sales lead">
+         
+         <startEvent id="subProcessStart" />
+         <sequenceFlow id="flow3" sourceRef="subProcessStart" targetRef="fork"/>
+         <sequenceFlow id="flow4" sourceRef="fork" targetRef="reviewProfitability"/>
+         
+         <parallelGateway id="fork" />
+         <sequenceFlow id="flow5" sourceRef="fork" targetRef="reviewCustomerRating"/>
+         
+         <userTask id="reviewCustomerRating" name="Review customer rating" activiti:candidateGroups="accountancy" />
+         <sequenceFlow id="flow6" sourceRef="reviewCustomerRating" targetRef="subProcessEnd1"/>
+         
+         <endEvent id="subProcessEnd1" />
+         
+         <userTask id="reviewProfitability" name="Review profitability" activiti:candidateGroups="management">
+           <documentation>
+             ${initiator} has published a new sales lead: ${customerName}. Details: ${details}
+           </documentation> 
+            <extensionElements>
+			        <activiti:formProperty id="notEnoughInformation" name="Do you believe this customer is profitable?" type="enum" required="true">
+			          <activiti:value id="false" name="Yes" />
+			          <activiti:value id="true" name="No (= request more info)" />
+			        </activiti:formProperty>
+			      </extensionElements>
+         </userTask>
+         <sequenceFlow id="flow7" sourceRef="reviewProfitability" targetRef="enoughInformationCheck"/>
+         
+         <exclusiveGateway id="enoughInformationCheck" name="Enough information?" />
+         <sequenceFlow id="flow8" sourceRef="enoughInformationCheck" targetRef="notEnoughInformationEnd">
+           <conditionExpression>${notEnoughInformation == 'true'}</conditionExpression>
+         </sequenceFlow>
+         <sequenceFlow id="flow9" sourceRef="enoughInformationCheck" targetRef="subProcessEnd2">
+           <conditionExpression>${notEnoughInformation == 'false'}</conditionExpression>
+         </sequenceFlow>
+         
+         <endEvent id="subProcessEnd2" />
+         <endEvent id="notEnoughInformationEnd">
+            <errorEventDefinition errorRef="notEnoughInfoError" />
+         </endEvent>
+         
+      </subProcess>
+      <sequenceFlow id="flow10" sourceRef="reviewSalesLeadSubProcess" targetRef="storeLeadInCrmSystem"/>
+      
+      <boundaryEvent attachedToRef="reviewSalesLeadSubProcess" cancelActivity="true" id="catchNotEnoughInformationError" >
+         <errorEventDefinition errorRef="notEnoughInfoError" />
+      </boundaryEvent>
+      <sequenceFlow id="flow11" sourceRef="catchNotEnoughInformationError" targetRef="provideAdditionalDetails"/>
+      
+      <userTask id="provideAdditionalDetails" name="Provide additional details" activiti:assignee="${initiator}">
+        <documentation>Provide additional details for ${customerName}.</documentation>
+        <extensionElements>
+          <activiti:formProperty id="details" name="Additional details" type="string" required="true"/>
+        </extensionElements>
+      </userTask>
+      <sequenceFlow id="flow12" sourceRef="provideAdditionalDetails" targetRef="reviewSalesLeadSubProcess"/>
+      
+      <task id="storeLeadInCrmSystem" name="Store lead in CRM system" />
+      <sequenceFlow id="flow13" sourceRef="storeLeadInCrmSystem" targetRef="processEnd"/>
+      
+      <endEvent id="processEnd" />
+      
+   </process>
+   
+   <bpmndi:BPMNDiagram id="sid-628a8d2c-0009-4da0-9c2a-412cf76015a8">
+      <bpmndi:BPMNPlane bpmnElement="reviewSaledLead" id="sid-5cb2f8c3-3889-4a12-8a5b-b8f90551695e">
+         <bpmndi:BPMNShape bpmnElement="theStart" id="theStart_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="75.0" y="300.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="provideNewSalesLead" id="provideNewSalesLead_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="165.0" y="275.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="reviewSalesLeadSubProcess" id="reviewSalesLeadSubProcess_gui" isExpanded="true">
+            <omgdc:Bounds height="320.0" width="544.0" x="315.0" y="160.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="subProcessStart" id="subProcessStart_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="360.0" y="300.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="fork" id="fork_gui">
+            <omgdc:Bounds height="40.0" width="40.0" x="435.0" y="295.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="reviewCustomerRating" id="reviewCustomerRating_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="517.0" y="210.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="subProcessEnd1" id="subProcessEnd1_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="670.0" y="236.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="reviewProfitability" id="reviewProfitability_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="517.0" y="360.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="enoughInformationCheck" id="enoughInformationCheck_gui" isMarkerVisible="true">
+            <omgdc:Bounds height="40.0" width="40.0" x="664.0" y="380.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="subProcessEnd2" id="subProcessEnd2_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="765.0" y="386.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="notEnoughInformationEnd" id="notEnoughInformationEnd_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="765.0" y="345.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="provideAdditionalDetails" id="provideAdditionalDetails_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="660.0" y="525.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="catchNotEnoughInformationError" id="catchNotEnoughInformationError_gui">
+            <omgdc:Bounds height="30.0" width="30.0" x="783.8620689660311" y="465.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="storeLeadInCrmSystem" id="storeLeadInCrmSystem_gui">
+            <omgdc:Bounds height="80.0" width="100.0" x="910.0" y="275.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNShape bpmnElement="processEnd" id="processEnd_gui">
+            <omgdc:Bounds height="28.0" width="28.0" x="1050.0" y="301.0"/>
+         </bpmndi:BPMNShape>
+         <bpmndi:BPMNEdge bpmnElement="flow12" id="flow12_gui">
+            <omgdi:waypoint x="660.0" y="565.0"/>
+            <omgdi:waypoint x="587.0" y="565.0"/>
+            <omgdi:waypoint x="587.0" y="480.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow9" id="flow9_gui">
+            <omgdi:waypoint x="704.0" y="400.0"/>
+            <omgdi:waypoint x="765.0" y="400.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow7" id="flow7_gui">
+            <omgdi:waypoint x="617.0" y="400.0"/>
+            <omgdi:waypoint x="664.0" y="400.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow8" id="flow8_gui">
+            <omgdi:waypoint x="684.0" y="380.0"/>
+            <omgdi:waypoint x="684.5" y="359.0"/>
+            <omgdi:waypoint x="765.0" y="359.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow3" id="flow3_gui">
+            <omgdi:waypoint x="390.0" y="315.0"/>
+            <omgdi:waypoint x="435.0" y="315.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow4" id="flow4_gui">
+            <omgdi:waypoint x="455.0" y="335.0"/>
+            <omgdi:waypoint x="455.5" y="400.0"/>
+            <omgdi:waypoint x="517.0" y="400.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow6" id="flow6_gui">
+            <omgdi:waypoint x="617.0" y="250.0"/>
+            <omgdi:waypoint x="670.0" y="250.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow1" id="flow1_gui">
+            <omgdi:waypoint x="105.0" y="315.0"/>
+            <omgdi:waypoint x="165.0" y="315.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow10" id="flow10_gui">
+            <omgdi:waypoint x="859.0" y="317.0"/>
+            <omgdi:waypoint x="910.0" y="315.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow11" id="flow11_gui">
+            <omgdi:waypoint x="798.0" y="495.0"/>
+            <omgdi:waypoint x="798.8620689660311" y="565.0"/>
+            <omgdi:waypoint x="760.0" y="565.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow2" id="flow2_gui">
+            <omgdi:waypoint x="265.0" y="315.0"/>
+            <omgdi:waypoint x="290.0" y="315.0"/>
+            <omgdi:waypoint x="315.0" y="316.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow13" id="flow13_gui">
+            <omgdi:waypoint x="1010.0" y="315.0"/>
+            <omgdi:waypoint x="1050.0" y="315.0"/>
+         </bpmndi:BPMNEdge>
+         <bpmndi:BPMNEdge bpmnElement="flow5" id="flow5_gui">
+            <omgdi:waypoint x="455.0" y="295.0"/>
+            <omgdi:waypoint x="455.5" y="250.0"/>
+            <omgdi:waypoint x="517.0" y="250.0"/>
+         </bpmndi:BPMNEdge>
+      </bpmndi:BPMNPlane>
+   </bpmndi:BPMNDiagram>
+</definitions>

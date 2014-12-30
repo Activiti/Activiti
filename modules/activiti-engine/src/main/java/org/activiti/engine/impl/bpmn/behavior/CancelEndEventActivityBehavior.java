@@ -28,7 +28,7 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
   
   @Override
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     
     // find cancel boundary event:
     ActivityImpl cancelBoundaryEvent = ScopeUtil

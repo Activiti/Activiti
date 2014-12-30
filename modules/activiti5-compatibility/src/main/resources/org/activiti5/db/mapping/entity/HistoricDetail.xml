@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricDetailEntity">
+
+  <!-- HISTORIC DETAILS INSERT -->
+  
+  <insert id="insertHistoricFormProperty" parameterType="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity">
+    insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_)
+    values (
+      #{id, jdbcType=VARCHAR},
+      'FormProperty',
+      #{processInstanceId, jdbcType=VARCHAR},
+      #{activityInstanceId, jdbcType=VARCHAR},
+      #{executionId, jdbcType=VARCHAR},
+      #{taskId, jdbcType=VARCHAR},
+      #{time, jdbcType=TIMESTAMP},
+      #{propertyId, jdbcType=VARCHAR},
+      #{propertyValue, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <insert id="insertHistoricDetailVariableInstanceUpdate" parameterType="org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity">
+    insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
+    values (
+      #{id, jdbcType=VARCHAR},
+      'VariableUpdate',
+      #{processInstanceId, jdbcType=VARCHAR},
+      #{executionId, jdbcType=VARCHAR},
+      #{activityInstanceId, jdbcType=VARCHAR},
+      #{taskId, jdbcType=VARCHAR},
+      #{variableName, jdbcType=VARCHAR},
+      #{revision, jdbcType=VARCHAR},
+      #{variableType, jdbcType=VARCHAR},
+      #{time, jdbcType=TIMESTAMP},
+      #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+      #{doubleValue, jdbcType=DOUBLE},
+      #{longValue, jdbcType=BIGINT},
+      #{textValue, jdbcType=VARCHAR},
+      #{textValue2, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- HISTORIC DETAILS DELETE -->
+
+  <delete id="deleteHistoricDetailAssignment">
+    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{id}
+  </delete>
+  
+  <delete id="deleteHistoricDetailTransitionInstance">
+    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{id}
+  </delete>
+  
+  <delete id="deleteHistoricDetailVariableInstanceUpdate">
+    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{id}
+  </delete>
+  
+  <delete id="deleteHistoricFormProperty">
+    delete from ${prefix}ACT_HI_DETAIL where ID_ = #{id}
+  </delete>
+  
+  <!-- HISTORIC DETAILS RESULTMAP -->
+  <resultMap id="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricDetailEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
+    <discriminator javaType="string" column="TYPE_">
+      <case value="VariableUpdate" resultMap="historicVariableUpdateResultMap"/> 
+      <case value="FormProperty" resultMap="historicFormPropertyResultMap"/> 
+    </discriminator>
+  </resultMap>
+  
+  <resultMap id="historicVariableUpdateResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity">
+    <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
+    <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
+    <result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler" />
+    <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
+    <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
+    <result property="textValue2" column="TEXT2_" jdbcType="VARCHAR" />
+    <result property="longValue" column="LONG_" jdbcType="BIGINT" />
+  </resultMap>
+  
+  <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity">
+    <result property="propertyId" column="NAME_" javaType="String" jdbcType="VARCHAR" />
+    <result property="propertyValue" column="TEXT_" javaType="String" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <!-- HISTORIC VARIABLE UPDATE SELECT -->
+
+  <select id="selectHistoricDetailsByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap">
+  	${limitBefore}
+    select RES.* ${limitBetween}
+    <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <select id="selectHistoricDetailCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultType="long">
+    select count(RES.ID_)
+    <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectHistoricDetailsByQueryCriteriaSql">
+    from ${prefix}ACT_HI_DETAIL RES
+    <where>
+      <if test="id != null">
+        RES.ID_ = #{id}
+      </if>
+      <if test="processInstanceId != null">
+        RES.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="executionId != null">
+        RES.EXECUTION_ID_ = #{executionId}
+      </if>
+      <if test="activityId != null">
+        and RES.ACT_INST_ID_ = #{activityId}
+      </if>
+      <if test="activityInstanceId != null">
+        and RES.ACT_INST_ID_ = #{activityInstanceId}
+      </if>
+      <choose>
+        <when test="taskId != null">
+          and RES.TASK_ID_ = #{taskId}
+        </when>
+        <otherwise>
+          <if test="excludeTaskRelated">
+           and RES.TASK_ID_ is null
+         </if>
+        </otherwise>
+      </choose>
+      
+      <if test="type != null">
+        and RES.TYPE_ = #{type}
+      </if>
+    </where>
+  </sql>
+
+  <select id="selectHistoricDetailByNativeQuery" parameterType="java.util.Map" resultMap="historicDetailResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBefore}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectHistoricDetailByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicDetailResultMap">
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitBeforeNativeQuery}
+    </if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+      ${limitAfter}
+    </if>
+  </select>
+
+  <select id="selectHistoricDetailCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
+  
+</mapper>

@@ -41,7 +41,7 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
 
   public BusinessRuleTaskActivityBehavior() {}
   
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
     String deploymentId = processDefinition.getDeploymentId();
     

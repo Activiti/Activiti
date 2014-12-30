@@ -23,7 +23,7 @@ public class Delegate1 implements JavaDelegate, InitializingBean {
     private StatefulObject statefulObject;
 
 
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
 
         String pid = this.processInstance.getId();
 

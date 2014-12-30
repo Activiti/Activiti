@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class BpmnModel {
   
@@ -111,6 +112,15 @@ public class BpmnModel {
 	  
 	  return null;
   }
+	
+	public Process getProcessById(String id) {
+		for (Process process : processes) {
+			if (process.getId().equals(id)) {
+				return process;
+			}
+		}
+		return null;
+	}
 	
 	public List<Process> getProcesses() {
 	  return processes;

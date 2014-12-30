@@ -13,6 +13,7 @@
 
 package org.activiti.standalone.history;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -27,11 +28,16 @@ import org.activiti.engine.test.history.SerializableVariable;
  */
 public class VariableSetter implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     
     SimpleDateFormat sdf =  new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS");
     // We set the time to check of the updated time is picked up in the history
-    Date updatedDate = sdf.parse("01/01/2001 01:23:46 000");
+    Date updatedDate = null;
+    try {
+	    updatedDate = sdf.parse("01/01/2001 01:23:46 000");
+    } catch (ParseException e) {
+	    e.printStackTrace();
+    }
     Context.getProcessEngineConfiguration().getClock().setCurrentTime(updatedDate);
     
     
@@ -41,7 +47,13 @@ public class VariableSetter implements JavaDelegate {
     execution.setVariable("dVariable", 1234.567);
     execution.setVariable("eVariable", (short)12);
     
-    Date theDate =sdf.parse("01/01/2001 01:23:45 678");
+    Date theDate = null;
+    try {
+	    theDate = sdf.parse("01/01/2001 01:23:45 678");
+    } catch (ParseException e) {
+	    // TODO Auto-generated catch block
+	    e.printStackTrace();
+    }
     execution.setVariable("fVariable", theDate);
     
     execution.setVariable("gVariable", new SerializableVariable("hello hello"));

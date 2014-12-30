@@ -14,7 +14,7 @@ public class DummyExecutionListener implements ExecutionListener {
 	private static final long serialVersionUID = 1L;
 
 	@Override
-	public void notify(DelegateExecution execution) throws Exception {
+	public void notify(DelegateExecution execution) {
 		// dummy
 	}
 }

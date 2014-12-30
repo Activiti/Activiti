@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="parentProcess">
+  
+    <startEvent id="theStart0" />
+    <sequenceFlow id="flow01" sourceRef="theStart0" targetRef="callActivity0" />
+    
+    <callActivity id="callActivity0" calledElement="midProcess">
+      <extensionElements>
+        <activiti:in source="list" target="list"/>
+      </extensionElements>      
+    </callActivity>
+    
+    <sequenceFlow id="flow02" sourceRef="callActivity0" targetRef="task01" />
+
+    <userTask id="task01" name="task" activiti:assignee="kermit"/>
+    
+    <sequenceFlow id="flow03" sourceRef="task01" targetRef="theEnd0" />
+    
+    <endEvent id="theEnd0" />    
+  </process>
+  
+  
+  <process id="midProcess">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="miCallActivity" />
+    
+    <callActivity id="miCallActivity" calledElement="childProcess">
+      <extensionElements>
+        <activiti:in source="element" target="element"/>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="#{list}" activiti:elementVariable="element" />      
+    </callActivity>
+    
+    <sequenceFlow id="flow2" sourceRef="miCallActivity" targetRef="task1" />
+
+    <userTask id="task1" name="task" activiti:assignee="kermit"/>
+
+    <sequenceFlow id="flow3" sourceRef="task1" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+    
+  </process>
+  
+    
+  <process id="childProcess">
+    <startEvent id="theStart2" />
+    <sequenceFlow id="flow4" sourceRef="theStart2" targetRef="task2" />
+
+    <userTask id="task2" name="task" activiti:assignee="kermit"/>
+    
+    <sequenceFlow id="flow5" sourceRef="task2" targetRef="end2" />
+    <endEvent id="end2" />     
+  </process>
+
+</definitions>

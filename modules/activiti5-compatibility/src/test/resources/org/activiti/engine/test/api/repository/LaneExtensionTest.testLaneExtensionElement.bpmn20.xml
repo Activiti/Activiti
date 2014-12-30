@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+    <collaboration id="Collaboration">
+        <participant id="swimlane-extension-pool" name="Pool" processRef="swimlane-extension"></participant>
+    </collaboration>
+    <process id="swimlane-extension" name="process_pool1" isExecutable="true">
+        <laneSet id="laneSet_swimlane-extension">
+            <lane id="lane1" name="Lane 1">
+                <extensionElements>
+                    <activiti:field name="property1" stringValue="propertyValue1"/>
+                </extensionElements>
+                <flowNodeRef>usertask1</flowNodeRef>
+                <flowNodeRef>endevent1</flowNodeRef>
+            </lane>
+            <lane id="lane2" name="Lane 2">
+                <extensionElements>
+                    <activiti:field name="property2" stringValue="propertyValue2"/>
+                </extensionElements>
+                <flowNodeRef>usertask2</flowNodeRef>
+            </lane>
+        </laneSet>
+        <userTask id="usertask1" name="User Task"></userTask>
+        <userTask id="usertask2" name="User Task"></userTask>
+        <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="usertask2"></sequenceFlow>
+        <endEvent id="endevent1" name="End"></endEvent>
+        <sequenceFlow id="flow3" sourceRef="usertask2" targetRef="endevent1"></sequenceFlow>
+        <startEvent id="startevent1" name="Start"></startEvent>
+        <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="usertask1"></sequenceFlow>
+    </process>
+</definitions>

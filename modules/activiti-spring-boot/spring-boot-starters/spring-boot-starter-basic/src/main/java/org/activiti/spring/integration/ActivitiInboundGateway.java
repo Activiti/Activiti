@@ -45,7 +45,7 @@ public class ActivitiInboundGateway extends MessagingGatewaySupport {
     }
 
     public void execute(IntegrationActivityBehavior receiveTaskActivityBehavior,
-                        ActivityExecution execution) throws Exception {
+                        ActivityExecution execution) {
         Map<String, Object> stringObjectMap = new HashMap<String, Object>();
         stringObjectMap.put(executionId, execution.getId());
 

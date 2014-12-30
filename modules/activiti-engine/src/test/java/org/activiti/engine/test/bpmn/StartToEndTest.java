@@ -78,7 +78,7 @@ public class StartToEndTest extends PluggableActivitiTestCase {
   public static class PrimitiveServiceTaskDelegate implements JavaDelegate {
 
     @Override
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
       execution.setVariable("string", "string");
       execution.setVariable("boolean", true);
       execution.setVariable("double", 25.5);
@@ -90,7 +90,7 @@ public class StartToEndTest extends PluggableActivitiTestCase {
   public static class SerializableServiceTaskDelegate implements JavaDelegate {
 
     @Override
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
       execution.setVariable("person1", new Person("1", "John"));
       execution.setVariable("person2", new Person("2", "Paul"));
     }

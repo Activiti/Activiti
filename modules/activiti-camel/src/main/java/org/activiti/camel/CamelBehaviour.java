@@ -37,10 +37,14 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
     this.contextProviders = camelContext;
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     ActivitiEndpoint ae = createEndpoint(execution);
     Exchange ex = createExchange(execution, ae);
-    ae.process(ex);
+    try {
+	    ae.process(ex);
+    } catch (Exception e) {
+    	throw new RuntimeException(e);
+    }
     execution.setVariables(ExchangeUtils.prepareVariables(ex, ae));
     performDefaultOutgoingBehavior(execution);
   }

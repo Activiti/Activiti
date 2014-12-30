@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="org.activiti.enginge.test.api.runtime">
+  
+  <process id="threeParallelTasks">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    <sequenceFlow sourceRef="fork" targetRef="task1" />
+    <sequenceFlow sourceRef="fork" targetRef="task2" />
+    <sequenceFlow sourceRef="fork" targetRef="task3" />
+    
+    <userTask id="task1" name="Task 1" />  
+    <userTask id="task2" name="Task 2" /> 
+    <userTask id="task3" name="Task 3" /> 
+    
+    <sequenceFlow sourceRef="task1" targetRef="join" />
+    <sequenceFlow sourceRef="task2" targetRef="join" />
+    <sequenceFlow sourceRef="task3" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    <sequenceFlow sourceRef="join" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

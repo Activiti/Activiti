@@ -27,11 +27,11 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ReceiveTaskActivityBehavior extends TaskActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     // Do nothing: waitstate behavior
   }
   
-  public void signal(ActivityExecution execution, String signalName, Object data) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object data) throws Exception {
     leave(execution);
   }
   

@@ -31,7 +31,7 @@ public class StartEventHistoryParseHandler extends AbstractBpmnParseHandler<Star
   }
   
   protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
-    bpmnParse.getCurrentActivity().addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, START_EVENT_END_HANDLER);
+//    bpmnParse.getCurrentActivity().addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, START_EVENT_END_HANDLER);
   }
 
 }

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+	
+	<process id="transactionProcess">
+
+		<startEvent id="start" />
+		
+		<sequenceFlow sourceRef="start"	targetRef="tx" />
+
+		<transaction id="tx">
+
+			<startEvent id="txStart" />
+			
+			<sequenceFlow sourceRef="txStart" targetRef="fork" />
+
+			<parallelGateway id="fork" />
+			
+			<sequenceFlow sourceRef="fork" targetRef="bookHotel" />
+			<sequenceFlow sourceRef="fork" targetRef="bookFlight" />
+
+			<serviceTask id="bookHotel" activiti:expression="${true}">
+				<multiInstanceLoopCharacteristics isSequential="true">
+				  <loopCardinality>5</loopCardinality>
+				</multiInstanceLoopCharacteristics>
+			</serviceTask>		
+				
+			<serviceTask id="bookFlight" activiti:expression="${true}"/>
+
+			<boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
+				<compensateEventDefinition />
+			</boundaryEvent>	
+				
+			<boundaryEvent id="compensateBookFlightEvt" name="Boundary event" attachedToRef="bookFlight">
+				<compensateEventDefinition />
+			</boundaryEvent>
+			
+			<serviceTask id="undoBookHotel" isForCompensation="true" activiti:expression="${true}"/>
+			
+			<serviceTask id="undoBookFlight" isForCompensation="true" activiti:expression="${true}"/>
+			            
+			<parallelGateway id="join" />
+			
+			<sequenceFlow sourceRef="bookHotel" targetRef="join" />
+			<sequenceFlow sourceRef="bookFlight" targetRef="join" />
+			
+			<userTask id="askCustomer" activiti:assignee="kermit" />
+			
+			<serviceTask id="chargeCard" activiti:expression="${true}"/>
+			
+			<boundaryEvent id="chargeCardEvt" name="Boundary event" attachedToRef="chargeCard">
+				<compensateEventDefinition />
+			</boundaryEvent>	
+											
+			<serviceTask id="undoChargeCard" isForCompensation="true" activiti:expression="${true}"/>			
+
+			<sequenceFlow sourceRef="join" targetRef="askCustomer" />
+			
+			<sequenceFlow sourceRef="askCustomer" targetRef="chargeCard" />
+
+			<exclusiveGateway id="confirmed" />
+			
+			<sequenceFlow sourceRef="chargeCard" targetRef="confirmed" />
+			
+			<sequenceFlow sourceRef="confirmed" targetRef="success">
+				<conditionExpression>${confirmed}</conditionExpression>
+			</sequenceFlow>
+			
+			<sequenceFlow sourceRef="confirmed" targetRef="failure">
+				<conditionExpression>${not confirmed}</conditionExpression>
+			</sequenceFlow>
+
+			<endEvent id="success" />
+
+			<endEvent id="failure" >
+				<cancelEventDefinition id="cancelTx" />
+			</endEvent>
+			
+			<association associationDirection="One" sourceRef="compensateBookHotelEvt" targetRef="undoBookHotel" />
+			
+			<association associationDirection="One" sourceRef="compensateBookFlightEvt" targetRef="undoBookFlight" />
+			
+			<association associationDirection="One" sourceRef="chargeCardEvt" targetRef="undoChargeCard" />
+
+		</transaction>
+
+		<endEvent id="end" />
+		
+		<sequenceFlow sourceRef="tx" targetRef="end" />		
+		
+		<boundaryEvent attachedToRef="tx" id="catchCancelTx">
+			<cancelEventDefinition id="cancelTx1"/>
+		</boundaryEvent>
+		
+		<boundaryEvent attachedToRef="tx" id="catchCancelTx2">
+			<cancelEventDefinition id="cancelTx2"/>
+		</boundaryEvent>
+		
+		<endEvent id="cancelled" />
+		
+		<sequenceFlow sourceRef="catchCancelTx" targetRef="cancelled" />
+		<sequenceFlow sourceRef="catchCancelTx2" targetRef="cancelled" />
+		
+	</process>
+
+</definitions>

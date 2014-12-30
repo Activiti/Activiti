@@ -22,9 +22,13 @@ public class EndEventTestJavaDelegate implements JavaDelegate {
   
   public static int timesCalled = 0;
   
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     timesCalled++;
-    Thread.sleep(3000L);
+    try {
+	    Thread.sleep(3000L);
+    } catch (InterruptedException e) {
+	    e.printStackTrace();
+    }
   }
 
 }

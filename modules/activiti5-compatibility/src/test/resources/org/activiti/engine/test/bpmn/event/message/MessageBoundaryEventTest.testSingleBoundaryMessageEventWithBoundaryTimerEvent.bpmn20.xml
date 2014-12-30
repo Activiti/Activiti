@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples"
+  xmlns:tns="Examples">
+
+  <message id="messageId" name="messageName" />
+
+  <process id="process">
+
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="task" />
+
+    <userTask id="task" />
+    <boundaryEvent id="taskTimerBoundary" attachedToRef="task" cancelActivity="false">
+      <timerEventDefinition>
+        <timeCycle>R/PT1H</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow sourceRef="taskTimerBoundary" targetRef="taskTimer" />
+    <sequenceFlow sourceRef="task" targetRef="taskAfterTask" />
+
+    <userTask id="taskAfterTask" />
+    <boundaryEvent id="messageBoundary" attachedToRef="taskAfterTask" cancelActivity="true">
+      <messageEventDefinition messageRef="messageId" />
+    </boundaryEvent>
+    <boundaryEvent id="taskAfterTaskTimerBoundary" attachedToRef="taskAfterTask" 
+      cancelActivity="false">
+      <timerEventDefinition>
+        <timeCycle>R/PT1H</timeCycle>
+      </timerEventDefinition>
+    </boundaryEvent>
+    <sequenceFlow sourceRef="messageBoundary" targetRef="task" />
+    <sequenceFlow sourceRef="taskAfterTaskTimerBoundary" targetRef="taskAfterTaskTimer" />
+    <sequenceFlow sourceRef="taskAfterTask" targetRef="taskAfterTaskAfterTask" />
+
+    <userTask id="taskTimer" />
+    <sequenceFlow sourceRef="taskTimer" targetRef="theEnd" />
+    
+    <userTask id="taskAfterTaskTimer" />
+    <sequenceFlow sourceRef="taskAfterTaskTimer" targetRef="theEnd" />
+    
+    <userTask id="taskAfterTaskAfterTask" />
+    <sequenceFlow sourceRef="taskAfterTaskAfterTask" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

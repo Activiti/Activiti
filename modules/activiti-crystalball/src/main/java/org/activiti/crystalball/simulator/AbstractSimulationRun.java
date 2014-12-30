@@ -46,7 +46,7 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
   }
 
   @Override
-  public void execute(VariableScope execution) throws Exception {
+  public void execute(VariableScope execution) {
     init(execution);
 
     runContinue();

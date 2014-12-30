@@ -29,5 +29,5 @@ public interface ExecutionListener extends Serializable {
   String EVENTNAME_END = "end";
   String EVENTNAME_TAKE = "take";
 
-  void notify(DelegateExecution execution) throws Exception;
+  void notify(DelegateExecution execution);
 }

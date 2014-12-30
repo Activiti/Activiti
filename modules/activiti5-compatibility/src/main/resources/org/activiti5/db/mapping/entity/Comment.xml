@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.CommentEntity">
+  
+  <!-- COMMENT INSERT -->
+  
+  <insert id="insertComment" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
+    insert into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR},
+      #{time ,jdbcType=TIMESTAMP},
+      #{userId ,jdbcType=VARCHAR},
+      #{taskId ,jdbcType=VARCHAR},
+      #{processInstanceId ,jdbcType=VARCHAR},
+      #{action ,jdbcType=VARCHAR},
+      #{message ,jdbcType=VARCHAR},
+      #{fullMessageBytes ,jdbcType=BLOB}
+    )
+  </insert>
+
+  <insert id="insertComment_postgres" parameterType="org.activiti.engine.impl.persistence.entity.CommentEntity">
+    insert into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR},
+      #{time ,jdbcType=TIMESTAMP},
+      #{userId ,jdbcType=VARCHAR},
+      #{taskId ,jdbcType=VARCHAR},
+      #{processInstanceId ,jdbcType=VARCHAR},
+      #{action ,jdbcType=VARCHAR},
+      #{message ,jdbcType=VARCHAR},
+      #{fullMessageBytes ,jdbcType=BINARY}
+    )
+  </insert>
+
+  <!-- COMMENT DELETE -->
+  
+  <delete id="deleteComment" parameterType="string">
+    delete from ${prefix}ACT_HI_COMMENT where ID_ = #{id}
+  </delete>
+
+  <delete id="deleteCommentsByTaskId" parameterType="string">
+    delete from ${prefix}ACT_HI_COMMENT where TASK_ID_ = #{taskId} 
+  </delete>
+
+  <delete id="deleteCommentsByProcessInstanceId" parameterType="string">
+    delete from ${prefix}ACT_HI_COMMENT where PROC_INST_ID_ = #{processInstanceId} 
+  </delete>
+  
+  <!-- COMMENT RESULTMAP -->
+
+  <resultMap id="commentResultMap" type="org.activiti.engine.impl.persistence.entity.CommentEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="action" column="ACTION_" jdbcType="VARCHAR" />
+    <result property="message" column="MESSAGE_" jdbcType="VARCHAR" />
+    <result property="fullMessageBytes" column="FULL_MSG_" jdbcType="BLOB" />
+  </resultMap>
+
+  <resultMap id="commentResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.CommentEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="time" column="TIME_" jdbcType="TIMESTAMP" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="action" column="ACTION_" jdbcType="VARCHAR" />
+    <result property="message" column="MESSAGE_" jdbcType="VARCHAR" />
+    <result property="fullMessageBytes" column="FULL_MSG_" jdbcType="BINARY" />
+  </resultMap>
+  
+  <!-- COMMENT SELECT -->
+
+  <select id="selectComment" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where ID_ = #{parameter,jdbcType=VARCHAR}
+  </select>
+  
+   <select id="selectComment_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where ID_ = #{parameter,jdbcType=VARCHAR}
+  </select>
+  <select id="selectCommentsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+      and TYPE_ = 'comment'
+    order by TIME_ desc
+  </select>
+  
+  <select id="selectCommentsByTaskId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+      and TYPE_ = 'comment'
+    order by TIME_ desc
+  </select>
+  
+  <select id="selectCommentsByTaskIdAndType" parameterType="java.util.Map" resultMap="commentResultMap">
+  	select *
+  	from ${prefix}ACT_HI_COMMENT
+  	where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+  		and TYPE_ = #{type,jdbcType=VARCHAR}
+  	order by TIME_ desc
+  </select>
+  
+  <select id="selectCommentsByTaskIdAndType_postgres" parameterType="java.util.Map" resultMap="commentResultMap_postgres">
+  	select *
+  	from ${prefix}ACT_HI_COMMENT
+  	where TASK_ID_ = #{taskId,jdbcType=VARCHAR}
+  		and TYPE_ = #{type,jdbcType=VARCHAR}
+  	order by TIME_ desc
+  </select>
+  
+  <select id="selectCommentsByType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+  	select *
+  	from ${prefix}ACT_HI_COMMENT
+  	where TYPE_ = #{parameter,jdbcType=VARCHAR}
+  	order by TIME_ desc
+  </select>
+  
+  <select id="selectCommentsByType_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+  	select *
+  	from ${prefix}ACT_HI_COMMENT
+  	where TYPE_ = #{parameter,jdbcType=VARCHAR}
+  	order by TIME_ desc
+  </select>
+
+  <select id="selectEventsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+  
+  <select id="selectEventsByTaskId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+  
+  <select id="selectEventsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+  <select id="selectEventsByProcessInstanceId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+  <select id="selectCommentsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+  <select id="selectCommentsByProcessInstanceId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select * 
+    from ${prefix}ACT_HI_COMMENT 
+    where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+  <select id="selectCommentsByProcessInstanceIdAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap">
+    select *
+    from ${prefix}ACT_HI_COMMENT
+    where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
+    and TYPE_ = #{type,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+  <select id="selectCommentsByProcessInstanceIdAndType_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="commentResultMap_postgres">
+    select *
+    from ${prefix}ACT_HI_COMMENT
+    where PROC_INST_ID_ = #{processInstanceId,jdbcType=VARCHAR}
+    and TYPE_ = #{type,jdbcType=VARCHAR}
+    order by TIME_ desc
+  </select>
+
+</mapper>

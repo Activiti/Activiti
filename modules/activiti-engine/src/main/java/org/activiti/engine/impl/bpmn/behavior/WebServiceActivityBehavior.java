@@ -57,7 +57,7 @@ public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
   /**
    * {@inheritDoc}
    */
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     MessageInstance message;
     
     if (ioSpecification != null) {

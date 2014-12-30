@@ -160,7 +160,7 @@ public class JobEntityManager extends AbstractManager {
   }
   
   @SuppressWarnings("unchecked")
-  public List<Job> findJobsByExecutionId(String executionId) {
+  public List<JobEntity> findJobsByExecutionId(String executionId) {
     return getDbSqlSession().selectList("selectJobsByExecutionId", executionId);
   }
   

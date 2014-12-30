@@ -80,15 +80,15 @@ public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
   }
 
   public void parse(BpmnParse bpmnParse, BaseElement element) {
-    ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
-    if(element instanceof BoundaryEvent) {
-    	// A boundary-event never receives an activity start-event
-    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITY_INSTANCE_START_LISTENER, 0);
-    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER, 1);
-    } else {
-    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
-    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
-    }
+//    ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
+//    if(element instanceof BoundaryEvent) {
+//    	// A boundary-event never receives an activity start-event
+//    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITY_INSTANCE_START_LISTENER, 0);
+//    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER, 1);
+//    } else {
+//    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
+//    	activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
+//    }
   }
 
 }

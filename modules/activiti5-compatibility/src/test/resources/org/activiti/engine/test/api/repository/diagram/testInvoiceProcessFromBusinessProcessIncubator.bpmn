@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="_1339690990326" name="fox-invoice-2" targetNamespace="http://www.trisotech.com/definitions/_1339690990326">
+  <message id="_1339690990375" name="startMessageBPI"/>
+  <process id="bpi-invoice">
+    <laneSet id="lsProcess_Engine_1">
+      <lane id="Team-Assistenz_110" name="Team-Assistenz">
+        <flowNodeRef>Freigebenden_zuordnen_143</flowNodeRef>
+        <flowNodeRef>Rechnung_kl_ren_148</flowNodeRef>
+        <flowNodeRef>Kl_rung_erfolgreich__153</flowNodeRef>
+        <flowNodeRef>endEvent_165</flowNodeRef>
+        <flowNodeRef>Rechnung_eingegangen_138</flowNodeRef>
+      </lane>
+      <lane id="Freigebender_105" name="Freigebender">
+        <flowNodeRef>Rechnung_freigeben_125</flowNodeRef>
+        <flowNodeRef>Freigabe_erfolgt__131</flowNodeRef>
+      </lane>
+      <lane id="Buchhaltung_119" name="Buchhaltung">
+        <flowNodeRef>zberweisung_vorbereiten_169</flowNodeRef>
+        <flowNodeRef>Rechnungseingang_abgearbeitet_174</flowNodeRef>
+        <flowNodeRef>PDF_aus_SVN_entfernen_160</flowNodeRef>
+      </lane>
+    </laneSet>
+    <userTask id="Freigebenden_zuordnen_143" activiti:formKey="assignApprover" activiti:assignee="kermit" name="Freigebenden zuordnen" implementation="##unspecified">
+      <incoming>sequenceFlow_187</incoming>
+      <outgoing>sequenceFlow_178</outgoing>
+    </userTask>
+    <userTask id="Rechnung_kl_ren_148" activiti:formKey="clarifyInvoice" activiti:assignee="kermit" name="Rechnung checken" implementation="##unspecified">
+      <incoming>Nein_182</incoming>
+      <outgoing>sequenceFlow_183</outgoing>
+    </userTask>
+    <exclusiveGateway id="Kl_rung_erfolgreich__153" name="erfolgreich?">
+      <incoming>sequenceFlow_183</incoming>
+      <outgoing>nein_185</outgoing>
+      <outgoing>ja_186</outgoing>
+    </exclusiveGateway>
+    <endEvent id="endEvent_165" name="">
+      <incoming>nein_185</incoming>
+    </endEvent>
+    <startEvent id="Rechnung_eingegangen_138" name="Rechnung eingegangen">
+      <outgoing>sequenceFlow_187</outgoing>
+      <messageEventDefinition id="MessageEventDefinition_1" messageRef="_1339690990375"/>
+    </startEvent>
+    <userTask id="Rechnung_freigeben_125" activiti:formKey="approveInvoice" activiti:assignee="#{approver}" name="Rechnung freigeben" implementation="##unspecified">
+      <incoming>sequenceFlow_178</incoming>
+      <incoming>ja_186</incoming>
+      <outgoing>sequenceFlow_180</outgoing>
+    </userTask>
+    <exclusiveGateway id="Freigabe_erfolgt__131" name="Freigabe erfolgt?">
+      <incoming>sequenceFlow_180</incoming>
+      <outgoing>Ja_181</outgoing>
+      <outgoing>Nein_182</outgoing>
+    </exclusiveGateway>
+    <userTask id="zberweisung_vorbereiten_169" activiti:formKey="preparePayment" activiti:assignee="kermit" name="Bezahlung vorbereiten" implementation="##unspecified">
+      <incoming>Ja_181</incoming>
+      <outgoing>sequenceFlow_179</outgoing>
+    </userTask>
+    <endEvent id="Rechnungseingang_abgearbeitet_174" name="Rechnungseingang abgearbeitet">
+      <incoming>SequenceFlow_1</incoming>
+    </endEvent>
+    <serviceTask id="PDF_aus_SVN_entfernen_160" activiti:class="com.camunda.fox.showcase.invoice.de.PDFToSVNDelegate" name="PDF in SVN ablegen" implementation="##WebService">
+      <incoming>sequenceFlow_179</incoming>
+      <outgoing>SequenceFlow_1</outgoing>
+    </serviceTask>
+    <sequenceFlow id="Ja_181" name="Ja" sourceRef="Freigabe_erfolgt__131" targetRef="zberweisung_vorbereiten_169">
+      <conditionExpression xsi:type="tFormalExpression" id="FormalExpression_1">#{approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="nein_185" name="nein" sourceRef="Kl_rung_erfolgreich__153" targetRef="endEvent_165"/>
+    <sequenceFlow id="Nein_182" name="Nein" sourceRef="Freigabe_erfolgt__131" targetRef="Rechnung_kl_ren_148">
+      <conditionExpression xsi:type="tFormalExpression" id="FormalExpression_2">#{!approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sequenceFlow_180" name="" sourceRef="Rechnung_freigeben_125" targetRef="Freigabe_erfolgt__131"/>
+    <sequenceFlow id="sequenceFlow_183" name="" sourceRef="Rechnung_kl_ren_148" targetRef="Kl_rung_erfolgreich__153"/>
+    <sequenceFlow id="sequenceFlow_179" name="" sourceRef="zberweisung_vorbereiten_169" targetRef="PDF_aus_SVN_entfernen_160"/>
+    <sequenceFlow id="sequenceFlow_178" name="" sourceRef="Freigebenden_zuordnen_143" targetRef="Rechnung_freigeben_125"/>
+    <sequenceFlow id="ja_186" name="ja" sourceRef="Kl_rung_erfolgreich__153" targetRef="Rechnung_freigeben_125">
+      <conditionExpression xsi:type="tFormalExpression" id="FormalExpression_3">some condition</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sequenceFlow_187" name="" sourceRef="Rechnung_eingegangen_138" targetRef="Freigebenden_zuordnen_143"/>
+    <sequenceFlow id="SequenceFlow_1" name="" sourceRef="PDF_aus_SVN_entfernen_160" targetRef="Rechnungseingang_abgearbeitet_174"/>
+    <textAnnotation id="_40005-2">
+      <text>mit Star Money</text>
+    </textAnnotation>
+    <association id="_40005-5" sourceRef="zberweisung_vorbereiten_169" targetRef="_40005-2"/>
+  </process>
+  <collaboration id="C1339690990575">
+    <participant id="Process_Engine_1" name="Rechnungseingang (fox)" processRef="bpi-invoice"/>
+  </collaboration>
+  <bpmndi:BPMNDiagram documentation="" id="Trisotech.Visio-_40005" name="page .untitled 1" resolution="96.0">
+    <bpmndi:BPMNPlane id="BPMNPlane_Collaboration_1" bpmnElement="C1339690990575">
+      <bpmndi:BPMNShape id="S1339690990560_Process_Engine_1" bpmnElement="Process_Engine_1" isHorizontal="true">
+        <dc:Bounds height="488.0" width="1126.0" x="0.0" y="26.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_1"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990561_Team-Assistenz_110" bpmnElement="Team-Assistenz_110" isHorizontal="true">
+        <dc:Bounds height="183.0" width="1096.0" x="30.0" y="26.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_2"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990562_Freigebender_105" bpmnElement="Freigebender_105" isHorizontal="true">
+        <dc:Bounds height="161.0" width="1096.0" x="30.0" y="209.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_3"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990563_Buchhaltung_119" bpmnElement="Buchhaltung_119" isHorizontal="true">
+        <dc:Bounds height="144.0" width="1096.0" x="30.0" y="370.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_4"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990564_Freigebenden_zuordnen_143" bpmnElement="Freigebenden_zuordnen_143" isHorizontal="true">
+        <dc:Bounds height="80.0" width="100.0" x="185.0" y="78.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_5"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990565_Rechnung_kl_ren_148" bpmnElement="Rechnung_kl_ren_148" isHorizontal="true">
+        <dc:Bounds height="80.0" width="100.0" x="548.0" y="78.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_6"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990566_Kl_rung_erfolgreich__153" bpmnElement="Kl_rung_erfolgreich__153" isHorizontal="true" isMarkerVisible="true">
+        <dc:Bounds height="40.0" width="40.0" x="693.0" y="98.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_7"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990567_endEvent_165" bpmnElement="endEvent_165" isHorizontal="true">
+        <dc:Bounds height="28.0" width="28.0" x="923.0" y="104.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_8"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990568_Rechnung_eingegangen_138" bpmnElement="Rechnung_eingegangen_138" isHorizontal="true">
+        <dc:Bounds height="28.0" width="28.0" x="112.0" y="104.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_9"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990569_Rechnung_freigeben_125" bpmnElement="Rechnung_freigeben_125" isHorizontal="true">
+        <dc:Bounds height="80.0" width="100.0" x="353.0" y="251.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_10"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990570_Freigabe_erfolgt__131" bpmnElement="Freigabe_erfolgt__131" isHorizontal="true" isMarkerVisible="true">
+        <dc:Bounds height="40.0" width="40.0" x="488.0" y="271.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_11"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990571_zberweisung_vorbereiten_169" bpmnElement="zberweisung_vorbereiten_169" isHorizontal="true">
+        <dc:Bounds height="80.0" width="100.0" x="638.0" y="411.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_12"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990572_Rechnungseingang_abgearbeitet_174" bpmnElement="Rechnungseingang_abgearbeitet_174" isHorizontal="true">
+        <dc:Bounds height="28.0" width="28.0" x="923.0" y="437.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_13"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990573_PDF_aus_SVN_entfernen_160" bpmnElement="PDF_aus_SVN_entfernen_160" isHorizontal="true">
+        <dc:Bounds height="80.0" width="100.0" x="780.0" y="411.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_14"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1339690990574__40005-2" bpmnElement="_40005-2" isHorizontal="true">
+        <dc:Bounds height="50.0" width="108.0" x="720.0" y="324.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_15"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="E1339690990576_SequenceFlow_1" bpmnElement="SequenceFlow_1" sourceElement="S1339690990573_PDF_aus_SVN_entfernen_160" targetElement="S1339690990572_Rechnungseingang_abgearbeitet_174">
+        <di:waypoint xsi:type="dc:Point" x="880.0" y="451.0"/>
+        <di:waypoint xsi:type="dc:Point" x="923.0" y="451.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_16"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990577_sequenceFlow_183" bpmnElement="sequenceFlow_183" sourceElement="S1339690990565_Rechnung_kl_ren_148" targetElement="S1339690990566_Kl_rung_erfolgreich__153">
+        <di:waypoint xsi:type="dc:Point" x="648.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="693.0" y="118.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_17"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990578_Ja_181" bpmnElement="Ja_181" sourceElement="S1339690990570_Freigabe_erfolgt__131" targetElement="S1339690990571_zberweisung_vorbereiten_169">
+        <di:waypoint xsi:type="dc:Point" x="528.0" y="291.0"/>
+        <di:waypoint xsi:type="dc:Point" x="546.0" y="291.0"/>
+        <di:waypoint xsi:type="dc:Point" x="546.0" y="451.0"/>
+        <di:waypoint xsi:type="dc:Point" x="638.0" y="451.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_18"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990579_sequenceFlow_178" bpmnElement="sequenceFlow_178" sourceElement="S1339690990564_Freigebenden_zuordnen_143" targetElement="S1339690990569_Rechnung_freigeben_125">
+        <di:waypoint xsi:type="dc:Point" x="285.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="303.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="303.0" y="291.0"/>
+        <di:waypoint xsi:type="dc:Point" x="353.0" y="291.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_19"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990580_sequenceFlow_180" bpmnElement="sequenceFlow_180" sourceElement="S1339690990569_Rechnung_freigeben_125" targetElement="S1339690990570_Freigabe_erfolgt__131">
+        <di:waypoint xsi:type="dc:Point" x="453.0" y="291.0"/>
+        <di:waypoint xsi:type="dc:Point" x="488.0" y="291.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_20"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990581_nein_185" bpmnElement="nein_185" sourceElement="S1339690990566_Kl_rung_erfolgreich__153" targetElement="S1339690990567_endEvent_165">
+        <di:waypoint xsi:type="dc:Point" x="733.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="923.0" y="118.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_21"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990582_sequenceFlow_187" bpmnElement="sequenceFlow_187" sourceElement="S1339690990568_Rechnung_eingegangen_138" targetElement="S1339690990564_Freigebenden_zuordnen_143">
+        <di:waypoint xsi:type="dc:Point" x="140.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="185.0" y="118.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_22"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990583_ja_186" bpmnElement="ja_186" sourceElement="S1339690990566_Kl_rung_erfolgreich__153" targetElement="S1339690990569_Rechnung_freigeben_125">
+        <di:waypoint xsi:type="dc:Point" x="713.0" y="98.0"/>
+        <di:waypoint xsi:type="dc:Point" x="713.0" y="61.0"/>
+        <di:waypoint xsi:type="dc:Point" x="403.0" y="61.0"/>
+        <di:waypoint xsi:type="dc:Point" x="403.0" y="251.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_23"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990584_sequenceFlow_179" bpmnElement="sequenceFlow_179" sourceElement="S1339690990571_zberweisung_vorbereiten_169" targetElement="S1339690990573_PDF_aus_SVN_entfernen_160">
+        <di:waypoint xsi:type="dc:Point" x="738.0" y="451.0"/>
+        <di:waypoint xsi:type="dc:Point" x="780.0" y="451.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_24"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990585__40005-5" bpmnElement="_40005-5" sourceElement="S1339690990571_zberweisung_vorbereiten_169" targetElement="S1339690990574__40005-2">
+        <di:waypoint xsi:type="dc:Point" x="679.0" y="411.0"/>
+        <di:waypoint xsi:type="dc:Point" x="679.0" y="343.0"/>
+        <di:waypoint xsi:type="dc:Point" x="720.0" y="343.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_25"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1339690990586_Nein_182" bpmnElement="Nein_182" sourceElement="S1339690990570_Freigabe_erfolgt__131" targetElement="S1339690990565_Rechnung_kl_ren_148">
+        <di:waypoint xsi:type="dc:Point" x="508.0" y="271.0"/>
+        <di:waypoint xsi:type="dc:Point" x="508.0" y="118.0"/>
+        <di:waypoint xsi:type="dc:Point" x="548.0" y="118.0"/>
+        <bpmndi:BPMNLabel id="BPMNLabel_26"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

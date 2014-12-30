@@ -56,11 +56,11 @@ public class ErrorPropagation {
 
   private static final Logger LOG = LoggerFactory.getLogger(ErrorPropagation.class);
 
-  public static void propagateError(BpmnError error, ActivityExecution execution) throws Exception {    
+  public static void propagateError(BpmnError error, ActivityExecution execution) {    
     propagateError(error.getErrorCode(), execution);
   }
   
-  public static void propagateError(String errorCode, ActivityExecution execution) throws Exception {
+  public static void propagateError(String errorCode, ActivityExecution execution) {
 
 	  while (execution != null) {
 		    String eventHandlerId = findLocalErrorEventHandler(execution, errorCode); 

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xmlns:activiti="http://activiti.org/bpmn"
+   xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+   xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+   xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+   typeLanguage="http://www.w3.org/2001/XMLSchema"
+   expressionLanguage="http://www.w3.org/1999/XPath"
+   targetNamespace="http://www.activiti.org/test">
+   
+  <signal id="testSignal" name="Test signal"/> 
+  
+  <process id="signalProces" name="Signal proces">
+    <startEvent id="start" />
+    <userTask id="usertask1" name="User Task" activiti:assigne="kermit" />
+    <boundaryEvent id="boundarysignal1" name="" cancelActivity="true" attachedToRef="usertask1">
+      <signalEventDefinition signalRef="testSignal"></signalEventDefinition>
+    </boundaryEvent>
+    <userTask id="usertask2" name="User Task 2" activiti:assigne="kermit" />
+    <endEvent id="end" />
+    <sequenceFlow id="flow1" name="" sourceRef="start" targetRef="usertask1"></sequenceFlow>
+    <sequenceFlow id="flow2" name="" sourceRef="usertask1" targetRef="end"></sequenceFlow>
+    <sequenceFlow id="flow3" name="" sourceRef="boundarysignal1" targetRef="usertask2"></sequenceFlow>
+    <sequenceFlow id="flow4" name="" sourceRef="usertask2" targetRef="end"></sequenceFlow>
+  </process>
+</definitions>

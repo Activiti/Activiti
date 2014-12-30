@@ -96,8 +96,8 @@ public class CdiEventSupportBpmnParseHandler implements BpmnParseHandler {
   
   public void parse(BpmnParse bpmnParse, BaseElement element) {
     if (element instanceof SequenceFlow) {
-      TransitionImpl transition = bpmnParse.getSequenceFlows().get(element.getId());
-      transition.addExecutionListener(new CdiExecutionListener(transition.getId()));
+//      TransitionImpl transition = bpmnParse.getSequenceFlows().get(element.getId());
+//      transition.addExecutionListener(new CdiExecutionListener(transition.getId()));
     } else {
       ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
       if (element instanceof UserTask) {

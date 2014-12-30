@@ -37,7 +37,7 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   public static class MyExecutionListener implements ExecutionListener {
     private static final long serialVersionUID = 1L;
 
-    public void notify(DelegateExecution execution) throws Exception {
+    public void notify(DelegateExecution execution) {
       if ("end".equals(execution.getEventName())) {
         listenerExecutedEndEvent = true;
       } else if ("start".equals(execution.getEventName())) {

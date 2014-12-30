@@ -15,18 +15,18 @@ package org.activiti.engine.test.pvm.activities;
 
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 
 
 /**
  * @author Tom Baeyens
  */
-public class WaitState implements SignallableActivityBehavior {
+public class WaitState implements TriggerableActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
   }
 
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
     execution.take(transition);
   }

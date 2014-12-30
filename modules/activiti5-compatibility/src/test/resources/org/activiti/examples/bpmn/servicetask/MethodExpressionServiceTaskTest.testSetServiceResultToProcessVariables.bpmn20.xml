@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="setServiceResultToProcessVariables">
+
+        <startEvent id="theStart"/>
+
+        <sequenceFlow sourceRef="theStart"
+                      targetRef="methodExpressionServiceWithResultVariableNameSet"/>
+
+        <serviceTask id="methodExpressionServiceWithResultVariableNameSet"
+                     activiti:resultVariable="result"
+                     activiti:expression="#{okReturningService.invoke()}"/>
+
+        <sequenceFlow sourceRef="methodExpressionServiceWithResultVariableNameSet"
+                      targetRef="methodExpressionServiceWithoutResultVariableNameSet"/>
+
+        <serviceTask id="methodExpressionServiceWithoutResultVariableNameSet"
+                     activiti:expression="#{okReturningService.invoke()}"/>
+
+        <sequenceFlow sourceRef="methodExpressionServiceWithoutResultVariableNameSet"
+                      targetRef="waitState"/>
+
+        <userTask id="waitState"/>
+
+        <sequenceFlow sourceRef="waitState" targetRef="theEnd"/>
+
+        <endEvent id="theEnd"/>
+
+    </process>
+
+</definitions>

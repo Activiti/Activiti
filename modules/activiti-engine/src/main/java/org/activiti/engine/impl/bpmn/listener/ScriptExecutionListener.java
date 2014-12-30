@@ -30,7 +30,7 @@ public class ScriptExecutionListener implements ExecutionListener {
 	private Expression resultVariable = null;
 
 	@Override
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     
 		if (script == null) {
 			throw new IllegalArgumentException("The field 'script' should be set on the ExecutionListener");

@@ -22,7 +22,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class Decision implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     PvmTransition transition;
     String creditRating = (String) execution.getVariable("creditRating");
     if (creditRating.equals("AAA+")) {

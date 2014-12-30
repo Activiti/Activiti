@@ -66,6 +66,11 @@ public class DefaultDeploymentCache<T> implements DeploymentCache<T> {
     cache.remove(id);
   }
   
+  @Override
+  public boolean contains(String id) {
+	return cache.containsKey(id);
+  }
+  
   public void clear() {
     cache.clear();
   }

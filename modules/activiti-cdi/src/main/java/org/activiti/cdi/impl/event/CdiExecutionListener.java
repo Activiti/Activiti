@@ -60,7 +60,7 @@ public class CdiExecutionListener implements ExecutionListener, Serializable {
   }
 
   @Override
-  public void notify(DelegateExecution execution) throws Exception {    
+  public void notify(DelegateExecution execution) {    
     // test whether cdi is setup correclty. (if not, just do not deliver the event)    
     try {
       ProgrammaticBeanLookup.lookup(ProcessEngine.class);

@@ -29,7 +29,7 @@ public class DelegateExpressionBean implements JavaDelegate {
 
     private FixedValue someField;
 
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
         log.info("Entering DelegateExpressionBean.execute()");
         if (sentenceGenerator != null) {
             execution.setVariable("myVar", sentenceGenerator.getSentence());

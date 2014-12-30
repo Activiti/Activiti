@@ -34,7 +34,7 @@ public class EventCollector implements ExecutionListener {
   
   public List<String> events = new ArrayList<String>(); 
 
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     notify((ExecutionListenerExecution)execution);
   }
   

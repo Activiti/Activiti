@@ -37,7 +37,7 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
   
   public static class Delegate1 implements JavaDelegate {
 
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
       Variable v = new Variable();
       execution.setVariable("variable", v);
       v.value = "delegate1";
@@ -47,7 +47,7 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
   
   public static class Delegate2 implements JavaDelegate {
 
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
       Variable v = (Variable) execution.getVariable("variable");
       synchronized (ServiceTaskVariablesTest.class) {
         // we expect this to be 'true'
@@ -60,7 +60,7 @@ public class ServiceTaskVariablesTest extends PluggableActivitiTestCase {
   
   public static class Delegate3 implements JavaDelegate {
 
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
       Variable v = (Variable) execution.getVariable("variable");
       synchronized (ServiceTaskVariablesTest.class) {
         // we expect this to be 'true' as well

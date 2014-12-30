@@ -51,7 +51,7 @@ public class SignalEventTest extends CdiActivitiTestCase {
     @Inject
     private BusinessProcess businessProcess;   
 
-    public void execute(DelegateExecution execution) throws Exception {
+    public void execute(DelegateExecution execution) {
       businessProcess.setVariable("processName", "throwSignal-visited (was " + businessProcess.getVariable("processName")  + ")");
 
       String signalProcessInstanceId = (String) execution.getVariable("signalProcessInstanceId");      

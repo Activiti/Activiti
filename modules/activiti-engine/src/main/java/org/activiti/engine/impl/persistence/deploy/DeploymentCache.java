@@ -21,6 +21,8 @@ package org.activiti.engine.impl.persistence.deploy;
 public interface DeploymentCache<T> {
   
   T get(String id);
+  
+  boolean contains(String id);
 
   void add(String id, T object);
 

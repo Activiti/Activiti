@@ -161,6 +161,7 @@ import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
@@ -296,7 +297,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected DeploymentManager deploymentManager;
   
   protected int processDefinitionCacheLimit = -1; // By default, no limit
-  protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
+  protected DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache;
   protected int bpmnModelCacheLimit = -1; // By default, no limit
   protected DeploymentCache<BpmnModel> bpmnModelCache;
   
@@ -941,9 +942,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       // Process Definition cache
       if (processDefinitionCache == null) {
         if (processDefinitionCacheLimit <= 0) {
-          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionEntity>();
+          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>();
         } else {
-          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionEntity>(processDefinitionCacheLimit);
+          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>(processDefinitionCacheLimit);
         }
       }
       
@@ -2006,11 +2007,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
-  public DeploymentCache<ProcessDefinitionEntity> getProcessDefinitionCache() {
+  public DeploymentCache<ProcessDefinitionCacheEntry> getProcessDefinitionCache() {
     return processDefinitionCache;
   }
   
-  public ProcessEngineConfigurationImpl setProcessDefinitionCache(DeploymentCache<ProcessDefinitionEntity> processDefinitionCache) {
+  public ProcessEngineConfigurationImpl setProcessDefinitionCache(DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache) {
     this.processDefinitionCache = processDefinitionCache;
     return this;
   }

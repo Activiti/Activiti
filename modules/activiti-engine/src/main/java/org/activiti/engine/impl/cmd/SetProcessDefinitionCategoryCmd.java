@@ -19,6 +19,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
@@ -53,7 +54,7 @@ public class SetProcessDefinitionCategoryCmd implements Command<Void> {
     processDefinition.setCategory(category);
     
     // Remove process definition from cache, it will be refetched later
-    DeploymentCache<ProcessDefinitionEntity> processDefinitionCache = 
+    DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache = 
         commandContext.getProcessEngineConfiguration().getProcessDefinitionCache();
     if (processDefinitionCache != null) {
       processDefinitionCache.remove(processDefinitionId);

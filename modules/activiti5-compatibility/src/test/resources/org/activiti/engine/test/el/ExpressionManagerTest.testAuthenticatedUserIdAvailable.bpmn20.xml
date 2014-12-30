@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="testAuthenticatedUserIdAvailableProcess" name="Test authenticatedUserId available process">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="servicetask1" />
+    <serviceTask id="servicetask1" name="ServiceTask 1" activiti:expression="${execution.setVariable('theUser', authenticatedUserId)}" />    
+    <sequenceFlow id="flow2" sourceRef="servicetask1" targetRef="userTask" />
+    <userTask id="userTask" />
+    <sequenceFlow id="flow3" sourceRef="userTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

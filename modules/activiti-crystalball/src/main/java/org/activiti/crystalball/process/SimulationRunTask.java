@@ -29,7 +29,7 @@ public class SimulationRunTask implements JavaDelegate {
   private Expression simulationRunExpression;
 
   @Override
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     SimulationRun simulationRun = (SimulationRun) simulationRunExpression.getValue(execution);
     simulationRun.execute(execution);
   }

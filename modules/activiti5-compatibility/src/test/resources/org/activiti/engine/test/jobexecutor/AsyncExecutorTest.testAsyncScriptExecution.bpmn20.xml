@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef" xmlns:modeler="http://activiti.com/modeler" modeler:version="1.0en" modeler:exportDateTime="20141216191911527" modeler:modelId="923565" modeler:modelVersion="1" modeler:modelLastUpdated="1418757549140">
+  <process id="asyncScript" name="asyncScript" isExecutable="true">
+    <startEvent id="startEvent1"/>
+    <sequenceFlow id="sid-1A341B40-2063-4D35-A607-4E0DBD35C3A0" sourceRef="startEvent1" targetRef="sid-B1E9D667-AB66-444E-9346-36A8FA71C68E"/>
+    <scriptTask id="sid-B1E9D667-AB66-444E-9346-36A8FA71C68E" name="The Script task" activiti:async="true" activiti:exclusive="false" scriptFormat="javascript" activiti:autoStoreVariables="false">
+      <script>execution.setVariable('test', '123');</script>
+    </scriptTask>
+    <userTask id="sid-9F529DCE-73D6-4281-BD31-B002F5DF8808" name="Task after script"/>
+    <sequenceFlow id="sid-C839C9DA-E1B4-4CAB-A0FD-1022101384A3" sourceRef="sid-B1E9D667-AB66-444E-9346-36A8FA71C68E" targetRef="sid-9F529DCE-73D6-4281-BD31-B002F5DF8808"/>
+    <endEvent id="sid-586727F5-599B-41E8-BA3B-7FF739A74A18"/>
+    <sequenceFlow id="sid-E35E9BA7-5BC4-4B04-A3B9-7B47492E25CD" sourceRef="sid-9F529DCE-73D6-4281-BD31-B002F5DF8808" targetRef="sid-586727F5-599B-41E8-BA3B-7FF739A74A18"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_asyncScript">
+    <bpmndi:BPMNPlane bpmnElement="asyncScript" id="BPMNPlane_asyncScript">
+      <bpmndi:BPMNShape bpmnElement="startEvent1" id="BPMNShape_startEvent1">
+        <omgdc:Bounds height="30.0" width="30.0" x="100.0" y="163.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-B1E9D667-AB66-444E-9346-36A8FA71C68E" id="BPMNShape_sid-B1E9D667-AB66-444E-9346-36A8FA71C68E">
+        <omgdc:Bounds height="80.0" width="100.0" x="175.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-9F529DCE-73D6-4281-BD31-B002F5DF8808" id="BPMNShape_sid-9F529DCE-73D6-4281-BD31-B002F5DF8808">
+        <omgdc:Bounds height="80.0" width="100.0" x="320.0" y="138.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-586727F5-599B-41E8-BA3B-7FF739A74A18" id="BPMNShape_sid-586727F5-599B-41E8-BA3B-7FF739A74A18">
+        <omgdc:Bounds height="28.0" width="28.0" x="465.0" y="164.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="sid-1A341B40-2063-4D35-A607-4E0DBD35C3A0" id="BPMNEdge_sid-1A341B40-2063-4D35-A607-4E0DBD35C3A0">
+        <omgdi:waypoint x="130.0" y="178.0"/>
+        <omgdi:waypoint x="175.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-C839C9DA-E1B4-4CAB-A0FD-1022101384A3" id="BPMNEdge_sid-C839C9DA-E1B4-4CAB-A0FD-1022101384A3">
+        <omgdi:waypoint x="275.0" y="178.0"/>
+        <omgdi:waypoint x="320.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-E35E9BA7-5BC4-4B04-A3B9-7B47492E25CD" id="BPMNEdge_sid-E35E9BA7-5BC4-4B04-A3B9-7B47492E25CD">
+        <omgdi:waypoint x="420.0" y="178.0"/>
+        <omgdi:waypoint x="465.0" y="178.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -27,7 +27,7 @@ import org.activiti.engine.impl.delegate.ActivityBehaviorInvocation;
 import org.activiti.engine.impl.delegate.JavaDelegateInvocation;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 
 
 /**
@@ -52,15 +52,15 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
   }
 
   @Override
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     Object delegate = expression.getValue(execution);
-    if( delegate instanceof SignallableActivityBehavior){
+    if( delegate instanceof TriggerableActivityBehavior){
       ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-      ((SignallableActivityBehavior) delegate).signal( execution , signalName , signalData);
+      ((TriggerableActivityBehavior) delegate).trigger( execution , signalName , signalData);
     }
   }
 
-	public void execute(ActivityExecution execution) throws Exception {
+	public void execute(ActivityExecution execution) {
 
     try {
       boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression); 
@@ -108,7 +108,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
       if (error != null) {
         ErrorPropagation.propagateError(error, execution);
       } else {
-        throw exc;
+    	  throw new RuntimeException(exc);
       }
 
     }

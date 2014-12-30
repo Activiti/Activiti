@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:xsd="http://www.w3.org/2001/XMLSchema"  xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="timerEventWithStartAndDuration" name="Timer intermediate event example with Start date and Duration specified">
+
+        <dataObject id="dObj1" itemSubjectRef="xsd:datetime" name="StartDate">
+           <extensionElements>
+              <activiti:value/>
+           </extensionElements>
+        </dataObject>
+        <startEvent id="theStart"/>
+
+        <userTask id="task1" name="Task A"/>
+        <userTask id="task2" name="Task B"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="task1"/>
+        <sequenceFlow id="flow2" sourceRef="task1" targetRef="timer"/>
+
+        <intermediateCatchEvent id="timer">
+            <timerEventDefinition>
+                <timeDuration>${StartDate}/PT10S</timeDuration>
+            </timerEventDefinition>
+        </intermediateCatchEvent>
+
+        <sequenceFlow id="flow3" sourceRef="timer" targetRef="task2"/>
+        <sequenceFlow id="flow4" sourceRef="task2" targetRef="theEnd"/>
+
+        <endEvent id="theEnd"/>
+
+    </process>   
+
+</definitions>

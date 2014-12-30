@@ -30,7 +30,7 @@ public class JavaDelegateInvocation extends DelegateInvocation {
     this.execution = execution;
   }
 
-  protected void invoke() throws Exception {
+  protected void invoke() {
     delegateInstance.execute((DelegateExecution) execution);
   }
   

@@ -25,7 +25,7 @@ import org.activiti.engine.delegate.JavaDelegate;
  */
 public class BusinessKeyCheckJavaDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     execution.setVariable("businessKeySetOnExecution", execution.getProcessBusinessKey());
   }
 }

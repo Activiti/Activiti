@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" 
+  targetNamespace="Examples">
+  
+  <process id="testSimpleSubProcessWithoutEndEvent">
+
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess" />
+
+    <subProcess id="subprocess">
+      <startEvent id="subprocessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="subprocessScriptTask" />
+      <scriptTask id="subprocessScriptTask" scriptFormat="groovy">
+        <script>
+          println "Hello from Script Task"
+        </script>
+      </scriptTask>
+    </subProcess>
+    
+  </process>
+
+</definitions>

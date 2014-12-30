@@ -16,6 +16,7 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -25,8 +26,9 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
  */
 public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
-    ActivityImpl terminateEndEventActivity = (ActivityImpl) execution.getActivity();
+  public void execute(ActivityExecution execution) {
+    
+    PvmActivity terminateEndEventActivity = execution.getActivity();    
     ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
 
     boolean loop = true;

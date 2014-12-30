@@ -28,7 +28,7 @@ import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
  */
 public class EmbeddedSubProcess implements CompositeActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     List<PvmActivity> startActivities = new ArrayList<PvmActivity>();
     for (PvmActivity activity: execution.getActivity().getActivities()) {
       if (activity.getIncomingTransitions().isEmpty()) {

@@ -52,7 +52,7 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
     this.storeScriptVariables = storeScriptVariables;
   }
   
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     ScriptingEngines scriptingEngines = Context
       .getProcessEngineConfiguration()
       .getScriptingEngines();

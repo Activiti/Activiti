@@ -36,16 +36,16 @@ public class ServiceTaskJavaDelegateActivityBehavior extends TaskActivityBehavio
     this.javaDelegate = javaDelegate;
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     execute((DelegateExecution) execution);
     leave(execution);
   }
   
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     execute((DelegateExecution) execution);
   }
   
-  public void execute(DelegateExecution execution) throws Exception {
+  public void execute(DelegateExecution execution) {
     Context.getProcessEngineConfiguration()
       .getDelegateInterceptor()
       .handleInvocation(new JavaDelegateInvocation(javaDelegate, execution));    

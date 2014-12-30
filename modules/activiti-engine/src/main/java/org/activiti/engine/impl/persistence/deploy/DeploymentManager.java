@@ -43,7 +43,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class DeploymentManager {
 
-  protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
+  protected DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache;
   protected DeploymentCache<BpmnModel> bpmnModelCache;
   protected DeploymentCache<Object> knowledgeBaseCache; // Needs to be object to avoid an import to Drools in this core class
   protected List<Deployer> deployers;
@@ -64,7 +64,8 @@ public class DeploymentManager {
     }
     
     // first try the cache
-    ProcessDefinitionEntity processDefinition = processDefinitionCache.get(processDefinitionId);
+    ProcessDefinitionCacheEntry cacheEntry = processDefinitionCache.get(processDefinitionId);
+    ProcessDefinitionEntity processDefinition = cacheEntry != null ? cacheEntry.getProcessDefinitionEntity() : null;
     
     if (processDefinition == null) {
       processDefinition = Context.getCommandContext()
@@ -154,7 +155,10 @@ public class DeploymentManager {
   public ProcessDefinitionEntity resolveProcessDefinition(ProcessDefinitionEntity processDefinition) {
     String processDefinitionId = processDefinition.getId();
     String deploymentId = processDefinition.getDeploymentId();
-    processDefinition = processDefinitionCache.get(processDefinitionId);
+    
+    ProcessDefinitionCacheEntry cacheEntry = processDefinitionCache.get(processDefinitionId);
+    processDefinition = cacheEntry != null ? cacheEntry.getProcessDefinitionEntity() : null;
+    
     if (processDefinition==null) {
       DeploymentEntity deployment = Context
         .getCommandContext()
@@ -162,7 +166,7 @@ public class DeploymentManager {
         .findDeploymentById(deploymentId);
       deployment.setNew(false);
       deploy(deployment, null);
-      processDefinition = processDefinitionCache.get(processDefinitionId);
+      processDefinition = processDefinitionCache.get(processDefinitionId).getProcessDefinitionEntity();
       
       if (processDefinition==null) {
         throw new ActivitiException("deployment '"+deploymentId+"' didn't put process definition '"+processDefinitionId+"' in the cache");
@@ -220,11 +224,11 @@ public class DeploymentManager {
     this.deployers = deployers;
   }
 
-  public DeploymentCache<ProcessDefinitionEntity> getProcessDefinitionCache() {
+  public DeploymentCache<ProcessDefinitionCacheEntry> getProcessDefinitionCache() {
     return processDefinitionCache;
   }
   
-  public void setProcessDefinitionCache(DeploymentCache<ProcessDefinitionEntity> processDefinitionCache) {
+  public void setProcessDefinitionCache(DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache) {
     this.processDefinitionCache = processDefinitionCache;
   }
   

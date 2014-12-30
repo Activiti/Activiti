@@ -23,7 +23,7 @@ public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
   private static boolean listenerExcecuted = false;
   
   public static class MyExecutionListener implements ExecutionListener {
-    public void notify(DelegateExecution execution) throws Exception {
+    public void notify(DelegateExecution execution) {
       listenerExcecuted = true;
     }    
   }

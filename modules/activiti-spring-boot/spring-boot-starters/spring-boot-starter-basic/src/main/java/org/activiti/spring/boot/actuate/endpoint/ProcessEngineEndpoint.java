@@ -4,6 +4,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.deploy.DefaultDeploymentCache;
 import org.activiti.engine.impl.persistence.deploy.DeploymentCache;
+import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
@@ -70,7 +71,7 @@ public class ProcessEngineEndpoint extends AbstractEndpoint<Map<String, Object>>
         metrics.put("completedActivities", processEngine.getHistoryService().createHistoricActivityInstanceQuery().finished().count());
 
         // Process definition cache
-        DeploymentCache<ProcessDefinitionEntity> deploymentCache = ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getProcessDefinitionCache();
+        DeploymentCache<ProcessDefinitionCacheEntry> deploymentCache = ((ProcessEngineConfigurationImpl) processEngine.getProcessEngineConfiguration()).getProcessDefinitionCache();
         if (deploymentCache instanceof DefaultDeploymentCache) {
             metrics.put("cachedProcessDefinitionCount", ((DefaultDeploymentCache) deploymentCache).size());
         }

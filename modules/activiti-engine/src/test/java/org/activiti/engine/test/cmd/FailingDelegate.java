@@ -22,7 +22,7 @@ public class FailingDelegate implements JavaDelegate {
 
   public static final String EXCEPTION_MESSAGE = "Expected exception.";
     @Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
 	  Boolean fail = (Boolean) execution.getVariable("fail");
 
 	  if (fail == null || fail) {

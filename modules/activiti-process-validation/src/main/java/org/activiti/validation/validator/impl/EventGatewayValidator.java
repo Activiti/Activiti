@@ -34,7 +34,7 @@ public class EventGatewayValidator extends ProcessLevelValidator {
 		List<EventGateway> eventGateways = process.findFlowElementsOfType(EventGateway.class);
 		for (EventGateway eventGateway : eventGateways) {
 	    for (SequenceFlow sequenceFlow : eventGateway.getOutgoingFlows()) {
-	      FlowElement flowElement = process.getFlowElementRecursive(sequenceFlow.getTargetRef());
+	      FlowElement flowElement = process.getFlowElement(sequenceFlow.getTargetRef(), true);
 	      if (flowElement != null && flowElement instanceof IntermediateCatchEvent == false) {
 	      	addError(errors, Problems.EVENT_GATEWAY_ONLY_CONNECTED_TO_INTERMEDIATE_EVENTS, process, eventGateway, 
 	      			"Event based gateway can only be connected to elements of type intermediateCatchEvent");

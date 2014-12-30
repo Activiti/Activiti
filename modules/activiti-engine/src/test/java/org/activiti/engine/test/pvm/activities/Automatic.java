@@ -25,7 +25,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class Automatic implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
     if(outgoingTransitions.isEmpty()) {
       execution.end();

@@ -33,7 +33,7 @@ public class While implements ActivityBehavior {
     this.to = to;
   }
 
-  public void execute(ActivityExecution execution) throws Exception {
+  public void execute(ActivityExecution execution) {
     PvmTransition more = execution.getActivity().findOutgoingTransition("more");
     PvmTransition done = execution.getActivity().findOutgoingTransition("done");
     

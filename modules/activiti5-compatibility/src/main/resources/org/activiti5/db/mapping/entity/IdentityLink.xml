@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
+
+  <!-- INSERT IDENTITY LINK -->
+  
+  <insert id="insertIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
+    insert into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_)
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            #{type, jdbcType=VARCHAR},
+            #{userId, jdbcType=VARCHAR},
+            #{groupId, jdbcType=VARCHAR},
+            #{taskId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{processDefId, jdbcType=VARCHAR})
+            
+  </insert>
+  
+  <!-- IDENTITY LINK DELETE -->
+  
+  <delete id="deleteIdentityLink" parameterType="string">
+    delete from ${prefix}ACT_RU_IDENTITYLINK where ID_ = #{id}
+  </delete>
+  
+  <delete id="bulkDeleteIdentityLink" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_IDENTITYLINK where 
+    <foreach item="identityLink" collection="list" index="index" separator=" or ">
+        ID_ = #{identityLink.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
+  <delete id="deleteIdentityLinkByProcDef" parameterType="string">
+    delete from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{id}
+  </delete>
+  
+
+  <!-- IDENTITY LINK RESULTMAP -->
+
+  <resultMap id="identityLinkResultMap" type="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="groupId" column="GROUP_ID_" jdbcType="VARCHAR" />
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />    
+    <result property="processDefId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />    
+  </resultMap>
+
+  <!-- IDENTITY LINK SELECT -->
+
+  <select id="selectIdentityLink" parameterType="string" resultMap="identityLinkResultMap">
+    select * from ${prefix}ACT_RU_IDENTITYLINK where ID_ = #{id}
+  </select>
+  
+  <select id="selectIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    select * from ${prefix}ACT_RU_IDENTITYLINK where TASK_ID_ = #{parameter}
+  </select>
+  
+  <select id="selectIdentityLinksByProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    select * from ${prefix}ACT_RU_IDENTITYLINK where PROC_INST_ID_ = #{parameter}
+  </select>
+  
+  <select id="selectIdentityLinksByProcessDefinition" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    select * from ${prefix}ACT_RU_IDENTITYLINK where PROC_DEF_ID_ = #{parameter}
+  </select>
+  
+ <select id="selectIdentityLinks" resultMap="identityLinkResultMap">
+    select * from ${prefix}ACT_RU_IDENTITYLINK
+  </select>
+  
+  <select id="selectIdentityLinkByTaskUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    select * 
+    from ${prefix}ACT_RU_IDENTITYLINK 
+    where TASK_ID_ = #{parameter.taskId}
+      <if test="parameter.userId != null">
+        and USER_ID_ = #{parameter.userId}
+      </if>
+      <if test="parameter.groupId != null">
+        and GROUP_ID_ = #{parameter.groupId}
+      </if>
+      <if test="parameter.type != null">
+        and TYPE_ = #{parameter.type}
+      </if>
+  </select>
+  
+   <select id="selectIdentityLinkByProcessInstanceUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    select * 
+    from ${prefix}ACT_RU_IDENTITYLINK 
+    where PROC_INST_ID_ = #{parameter.processInstanceId}
+      <if test="parameter.userId != null">
+        and USER_ID_ = #{parameter.userId}
+      </if>
+      <if test="parameter.groupId != null">
+        and GROUP_ID_ = #{parameter.groupId}
+      </if>
+      <if test="parameter.type != null">
+        and TYPE_ = #{parameter.type}
+      </if>
+  </select>
+  
+  <select id="selectIdentityLinkByProcessDefinitionUserAndGroup" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="identityLinkResultMap">
+    select * 
+    from ${prefix}ACT_RU_IDENTITYLINK 
+    where PROC_DEF_ID_ = #{parameter.processDefinitionId}
+      <if test="parameter.userId != null">
+        and USER_ID_ = #{parameter.userId}
+      </if>
+      <if test="parameter.groupId != null">
+        and GROUP_ID_ = #{parameter.groupId}
+      </if>
+  </select>
+  
+</mapper>

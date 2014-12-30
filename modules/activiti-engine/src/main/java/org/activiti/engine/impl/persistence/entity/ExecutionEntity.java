@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.EngineServices;
 import org.activiti.engine.ProcessEngineConfiguration;
@@ -47,7 +48,7 @@ import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
-import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
+import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -57,6 +58,7 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.pvm.runtime.OutgoingExecution;
 import org.activiti.engine.impl.pvm.runtime.StartingExecution;
 import org.activiti.engine.impl.util.BitMaskUtil;
+import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -86,6 +88,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   // current position /////////////////////////////////////////////////////////
   
   protected ProcessDefinitionImpl processDefinition;
+  
+  protected FlowElement currentFlowElement;
 
   /** current activity */
   protected ActivityImpl activity;
@@ -275,7 +279,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     createdExecution.setActivity(getActivity());
     
     if (log.isDebugEnabled()) {
-      log.debug("Child execution {} created with parent ", createdExecution, this);
+      log.debug("Child execution {} created with parent {}", createdExecution, this.getId());
     }
 
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -287,7 +291,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     return createdExecution;
   }
-
+  
   public PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition) {
     ExecutionEntity subProcessInstance = newExecution();
     
@@ -325,7 +329,21 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     return newExecution;
   }
+  
+	public FlowElement getCurrentFlowElement() {
+		if (currentFlowElement == null) {
+			String processDefinitionId = getProcessDefinitionId();
+			if (processDefinitionId != null) {
+				org.activiti.bpmn.model.Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinitionId);
+				currentFlowElement = process.getFlowElement(getCurrentActivityId(), true);
+			}
+		}
+		return currentFlowElement;
+	}
 
+	public void setCurrentFlowElement(FlowElement currentFlowElement) {
+		this.currentFlowElement = currentFlowElement;
+	}
   
   // scopes ///////////////////////////////////////////////////////////////////
 
@@ -396,15 +414,18 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     performOperation(AtomicOperation.ACTIVITY_END);
   }
 
+  public void setEnded(boolean isEnded) {
+	  this.isEnded = isEnded;
+  }
 
   // methods that translate to operations /////////////////////////////////////
 
   public void signal(String signalName, Object signalData) {
     ensureActivityInitialized();
-    SignallableActivityBehavior activityBehavior = (SignallableActivityBehavior) activity.getActivityBehavior();
+    TriggerableActivityBehavior activityBehavior = (TriggerableActivityBehavior) activity.getActivityBehavior();
     try {
     	String signalledActivityId = activity.getId();
-      activityBehavior.signal(this, signalName, signalData);
+      activityBehavior.trigger(this, signalName, signalData);
       
       // If needed, dispatch an event indicating an activity was signalled
       boolean isUserTask = (activityBehavior instanceof UserTaskActivityBehavior)
@@ -1467,6 +1488,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   
   public String getProcessInstanceId() {
     return processInstanceId;
+  }
+  public void setProcessInstanceId(String processInstanceId) {
+	  this.processInstanceId = processInstanceId;
   }
   public String getParentId() {
     return parentId;

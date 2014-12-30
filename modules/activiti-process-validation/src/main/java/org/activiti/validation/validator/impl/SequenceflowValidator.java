@@ -46,8 +46,8 @@ public class SequenceflowValidator extends ProcessLevelValidator {
 			
 		  // Implicit check: sequence flow cannot cross (sub) process boundaries, hence we check the parent and not the process
 			// (could be subprocess for example)
-			FlowElement source = process.getFlowElementRecursive(sourceRef);
-			FlowElement target = process.getFlowElementRecursive(targetRef);
+			FlowElement source = process.getFlowElement(sourceRef, true);
+			FlowElement target = process.getFlowElement(targetRef, true);
 			
 			// Src and target validation
 			if (source == null) {
@@ -58,8 +58,8 @@ public class SequenceflowValidator extends ProcessLevelValidator {
 			}
 			
 			if (source != null && target != null) {
-  			FlowElementsContainer sourceContainer = process.getFlowElementsContainerRecursive(source.getId());
-  			FlowElementsContainer targetContainer = process.getFlowElementsContainerRecursive(target.getId());
+  			FlowElementsContainer sourceContainer = process.getFlowElementsContainer(source.getId());
+  			FlowElementsContainer targetContainer = process.getFlowElementsContainer(target.getId());
   			
   			if (sourceContainer == null) {
           addError(errors, Problems.SEQ_FLOW_INVALID_SRC, process, sequenceFlow, "Invalid source for sequenceflow");

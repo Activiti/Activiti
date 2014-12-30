@@ -39,7 +39,7 @@ public class DelegateExpressionExecutionListener implements ExecutionListener {
     this.fieldDeclarations = fieldDeclarations;
   }
   
-  public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) {
     // Note: we can't cache the result of the expression, because the
     // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
     Object delegate = expression.getValue(execution);

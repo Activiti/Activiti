@@ -11,13 +11,13 @@ public class TestService implements JavaDelegate{
 	
 
 	@Override
-	public void execute(DelegateExecution execution) throws Exception {
+	public void execute(DelegateExecution execution) {
 		TestService.processDefinitionId = execution.getProcessDefinitionId();
 		TestService.processInstanceId =  execution.getProcessInstanceId();
 		TestService.executionId = execution.getId();
 		TestService.businessKey = execution.getBusinessKey();
 		
-		throw new Exception("test");
+		throw new RuntimeException("test");
 		
 	}
 	

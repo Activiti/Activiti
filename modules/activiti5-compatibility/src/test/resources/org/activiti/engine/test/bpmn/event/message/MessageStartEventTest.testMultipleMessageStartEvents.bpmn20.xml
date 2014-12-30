@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples"
+  xmlns:tns="Examples">
+  
+  <message id="newInvoice" name="newInvoiceMessage" />
+  <message id="newInvoice2" name="newInvoiceMessage2" />
+  
+  <process id="testProcess">
+  
+    <startEvent id="messageStart" >
+    	<messageEventDefinition messageRef="tns:newInvoice" />
+    </startEvent>
+    
+    <startEvent id="messageStart2" >
+    	<messageEventDefinition messageRef="tns:newInvoice2" />
+    </startEvent>
+    
+    <sequenceFlow sourceRef="messageStart" targetRef="taskAfterMessageStart" />
+    <sequenceFlow sourceRef="messageStart2" targetRef="taskAfterMessageStart2" />
+  
+    <userTask id="taskAfterMessageStart" name="Task" />
+    <userTask id="taskAfterMessageStart2" name="Task" />
+    
+  </process>
+
+</definitions>

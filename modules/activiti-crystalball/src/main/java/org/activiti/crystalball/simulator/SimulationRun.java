@@ -30,6 +30,6 @@ public interface SimulationRun {
    * @param execution execution is variable scope used to transfer input/output variable from and to simulation run.
    * @throws Exception
    */
-  void execute(VariableScope execution) throws Exception;
+  void execute(VariableScope execution);
 
 }

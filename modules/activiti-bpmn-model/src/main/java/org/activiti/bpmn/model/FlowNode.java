@@ -17,29 +17,44 @@ import java.util.List;
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public abstract class FlowNode extends FlowElement {
 
-  protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
-  protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
+	protected Object behaviour;
 
-  public List<SequenceFlow> getIncomingFlows() {
-    return incomingFlows;
-  }
+	protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
+	protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
 
-  public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
-    this.incomingFlows = incomingFlows;
-  }
+	public FlowNode() {
+		
+	}
+	
+	public Object getBehaviour() {
+		return behaviour;
+	}
 
-  public List<SequenceFlow> getOutgoingFlows() {
-    return outgoingFlows;
-  }
+	public void setBehaviour(Object behaviour) {
+		this.behaviour = behaviour;
+	}
 
-  public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
-    this.outgoingFlows = outgoingFlows;
-  }
-  
-  public void setValues(FlowNode otherNode) {
-    super.setValues(otherNode);
-  }
+	public List<SequenceFlow> getIncomingFlows() {
+		return incomingFlows;
+	}
+
+	public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
+		this.incomingFlows = incomingFlows;
+	}
+
+	public List<SequenceFlow> getOutgoingFlows() {
+		return outgoingFlows;
+	}
+
+	public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
+		this.outgoingFlows = outgoingFlows;
+	}
+
+	public void setValues(FlowNode otherNode) {
+		super.setValues(otherNode);
+	}
 }

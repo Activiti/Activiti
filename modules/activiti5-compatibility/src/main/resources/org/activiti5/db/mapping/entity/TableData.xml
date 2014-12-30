@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.TablePageMap">
+
+  <!-- The property passing doesn't seem to work with parameterType='string', so we are forced to use a map here -->
+  <select id="selectTableCount" parameterType="org.activiti.engine.impl.TablePageQueryImpl" resultType="long" >
+    select count(*) from ${tableName}
+  </select>
+  
+  <select id="selectTableData" parameterType="org.activiti.engine.impl.TablePageQueryImpl" resultType="map">
+    select * from ${tableName}
+    <if test="order != null">
+      order by ${order}
+    </if>
+  </select>
+
+</mapper>

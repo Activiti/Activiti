@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="CompetingJoinsProcess">
+  
+    <startEvent id="start" />
+    <sequenceFlow id="flow1" sourceRef="start" targetRef="fork" />
+    
+    <parallelGateway id="fork" />
+    <sequenceFlow id="flow2" sourceRef="fork" targetRef="wait1" />
+    <sequenceFlow id="flow3" sourceRef="fork" targetRef="wait2" />
+    
+    <receiveTask id="wait1" />
+    <sequenceFlow id="flow4" sourceRef="wait1" targetRef="join" />
+    
+    <receiveTask id="wait2" />
+    <sequenceFlow id="flow5" sourceRef="wait2" targetRef="join" />
+    
+    <parallelGateway id="join" />
+    <sequenceFlow id="flow6" sourceRef="join" targetRef="end" />
+
+    <endEvent id="end" />
+    
+  </process>
+
+</definitions>
