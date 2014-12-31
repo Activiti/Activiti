@@ -13,10 +13,11 @@
 package org.activiti6;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.junit.Test;
 
 /**
@@ -39,6 +40,20 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
 			repositoryService.deleteDeployment(deployment.getId(), true);
 		}
+	}
+	
+	@Test
+	@org.activiti.engine.test.Deployment
+	public void testOneTaskProcess() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+		assertNotNull(processInstance);
+		assertFalse(processInstance.isEnded());
+		
+		Task task = taskService.createTaskQuery().singleResult();
+		assertEquals("The famous task", task.getName());
+		assertEquals("kermit", task.getAssignee());
+		
+		taskService.complete(task.getId());
 	}
 
 }

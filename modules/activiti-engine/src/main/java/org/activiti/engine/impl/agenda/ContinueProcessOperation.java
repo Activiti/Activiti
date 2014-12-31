@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.operation;
+package org.activiti.engine.impl.agenda;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,11 +26,8 @@ public class ContinueProcessOperation extends AbstractOperation {
 
 	private static Logger logger = LoggerFactory.getLogger(ContinueProcessOperation.class);
 	
-	protected ActivityExecution execution;
-
 	public ContinueProcessOperation(Agenda agenda, ActivityExecution execution) {
-		super(agenda);
-		this.execution = execution;
+		super(agenda, execution);
 	}
 
 	@Override
@@ -38,11 +35,11 @@ public class ContinueProcessOperation extends AbstractOperation {
 
 		FlowElement currentFlowElement = execution.getCurrentFlowElement();
 
-//		if (currentFlowElement == null) {
-//			currentFlowElement = findCurrentFlowElement(execution);
-//		} else {
-//			execution.setCurrentActivityId(currentFlowElement.getId());
-//		}
+		if (currentFlowElement == null) {
+			currentFlowElement = findCurrentFlowElement(execution);
+		} else {
+			execution.setCurrentActivityId(currentFlowElement.getId());
+		}
 
 		if (currentFlowElement instanceof FlowNode) {
 			continueThroughFlowNode((FlowNode) currentFlowElement);

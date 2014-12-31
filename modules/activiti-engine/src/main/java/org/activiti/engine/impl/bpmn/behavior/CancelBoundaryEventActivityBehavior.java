@@ -42,7 +42,7 @@ public class CancelBoundaryEventActivityBehavior  extends FlowNodeActivityBehavi
   }
   
   @Override
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     // join compensating executions    
     if(execution.getExecutions().isEmpty()) {
       leave(execution);   

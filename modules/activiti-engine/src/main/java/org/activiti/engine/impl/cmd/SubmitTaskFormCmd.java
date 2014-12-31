@@ -24,7 +24,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
+public class SubmitTaskFormCmd extends AbstractCompleteTaskCmd {
 
   private static final long serialVersionUID = 1L;
   
@@ -39,7 +39,7 @@ public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
     this.completeTask = completeTask;
   }
   
-  protected Object execute(CommandContext commandContext, TaskEntity task) {
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
     commandContext.getHistoryManager()
       .reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
     
@@ -47,7 +47,7 @@ public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
     taskFormHandler.submitFormProperties(properties, task.getExecution());
 
     if (completeTask) {
-      task.complete(properties, false);
+      executeTaskComplete(task, null, false);
     }
 
     return null;

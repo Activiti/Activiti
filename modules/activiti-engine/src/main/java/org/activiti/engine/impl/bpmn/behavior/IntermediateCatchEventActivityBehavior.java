@@ -23,7 +23,7 @@ public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivity
   }
 
   @Override
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     leave(execution);
   }
 }

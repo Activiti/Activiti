@@ -10,7 +10,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.engine.impl.operation;
+package org.activiti.engine.impl.agenda;
 
 import java.util.LinkedList;
 
@@ -61,5 +61,8 @@ public class Agenda {
 		planOperation(new EndExecutionOperation(this, execution));
 	}
 	
+	public void planTriggerExecutionOperation(ActivityExecution execution) {
+		planOperation(new TriggerExecutionOperation(this, execution));
+	}
 
 }

@@ -21,7 +21,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 /**
  * @author Joram Barrez
  */
-public class CompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
+public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
       
   private static final long serialVersionUID = 1L;
   protected Map<String, Object> variables;
@@ -46,8 +46,8 @@ public class CompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
     		task.setExecutionVariables(variables);
     	}
     }
-    
-    task.complete(variables, localScope);
+
+    executeTaskComplete(task, variables, localScope);
     return null;
   }
   

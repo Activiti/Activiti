@@ -172,36 +172,6 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     return task;
   }
 
-  @SuppressWarnings("rawtypes")
-  public void complete(Map variablesMap, boolean localScope) {
-  	
-  	if (getDelegationState() != null && getDelegationState().equals(DelegationState.PENDING)) {
-  		throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
-  	}
-  	
-    fireEvent(TaskListener.EVENTNAME_COMPLETE);
-
-    if (Authentication.getAuthenticatedUserId() != null && processInstanceId != null) {
-      getProcessInstance().involveUser(Authentication.getAuthenticatedUserId(), IdentityLinkType.PARTICIPANT);
-    }
-    
-    if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    	    ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.TASK_COMPLETED, this, variablesMap, localScope));
-    }
- 
-    Context
-      .getCommandContext()
-      .getTaskEntityManager()
-      .deleteTask(this, TaskEntity.DELETE_REASON_COMPLETED, false);
-    
-    if (executionId!=null) {
-      ExecutionEntity execution = getExecution();
-      execution.removeTask(this);
-      execution.signal(null, null);
-    }
-  }
-  
   public void delegate(String userId) {
     setDelegationState(DelegationState.PENDING);
     if (getOwner() == null) {

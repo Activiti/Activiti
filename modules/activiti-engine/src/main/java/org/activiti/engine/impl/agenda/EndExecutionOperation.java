@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.operation;
+package org.activiti.engine.impl.agenda;
 
 import java.util.Collection;
 
@@ -23,11 +23,8 @@ public class EndExecutionOperation extends AbstractOperation {
 	
 	private static final Logger logger = LoggerFactory.getLogger(EndExecutionOperation.class);
 
-	protected ActivityExecution execution;
-
 	public EndExecutionOperation(Agenda agenda, ActivityExecution execution) {
-		super(agenda);
-		this.execution = execution;
+		super(agenda, execution);
 	}
 
 	@Override

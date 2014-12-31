@@ -103,7 +103,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected abstract void createInstances(ActivityExecution execution);
   
   // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     innerActivityBehavior.trigger(execution, signalName, signalData);
   }
   

@@ -48,7 +48,7 @@ public abstract class FlowNodeActivityBehavior implements TriggerableActivityBeh
     bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
   }
 
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     // concrete activity behaviours that do accept signals should override this method;
     throw new ActivitiException("this activity isn't waiting for a trigger");
   }

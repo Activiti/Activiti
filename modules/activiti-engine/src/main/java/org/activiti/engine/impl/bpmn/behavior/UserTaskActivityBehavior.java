@@ -159,9 +159,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     }
   }
 
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    if (!((ExecutionEntity) execution).getTasks().isEmpty())
-      throw new ActivitiException("UserTask should not be signalled before complete");
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     leave(execution);
   }
 

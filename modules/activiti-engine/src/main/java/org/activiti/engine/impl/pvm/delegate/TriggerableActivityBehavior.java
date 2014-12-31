@@ -18,6 +18,6 @@ package org.activiti.engine.impl.pvm.delegate;
  */
 public interface TriggerableActivityBehavior extends ActivityBehavior {
 
-  void trigger(ActivityExecution execution, String signalEvent, Object signalData) throws Exception;
+  void trigger(ActivityExecution execution, String signalEvent, Object signalData);
   
 }

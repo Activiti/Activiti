@@ -57,7 +57,7 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
         
   }
   
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
    
     // join compensating executions    
     if(execution.getExecutions().isEmpty()) {

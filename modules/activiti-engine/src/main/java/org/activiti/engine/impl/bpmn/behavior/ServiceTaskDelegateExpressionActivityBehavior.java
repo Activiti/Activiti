@@ -52,7 +52,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
   }
 
   @Override
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     Object delegate = expression.getValue(execution);
     if( delegate instanceof TriggerableActivityBehavior){
       ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);

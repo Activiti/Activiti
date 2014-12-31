@@ -51,7 +51,8 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
   }
   
   protected boolean hasCompensationHandler(ActivityExecution execution) {
-    return execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_COMPENSATION_HANDLER_ID) != null;
+	  return false;
+//    return execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_COMPENSATION_HANDLER_ID) != null;
   }
 
   protected void createCompensateEventSubscription(ActivityExecution execution) {
@@ -83,7 +84,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
   }
   
   @Override
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     if("compensationDone".equals(signalName)) {
       signalCompensationDone(execution, signalData);
     } else {

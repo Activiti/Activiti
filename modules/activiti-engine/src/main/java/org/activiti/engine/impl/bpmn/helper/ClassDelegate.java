@@ -153,7 +153,7 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   }
 
   // Signallable activity behavior
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     if (activityBehaviorInstance == null) {
       activityBehaviorInstance = getActivityBehaviorInstance(execution);
     }

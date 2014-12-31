@@ -15,10 +15,10 @@ package org.activiti.engine.impl.context;
 
 import java.util.Stack;
 
+import org.activiti.engine.impl.agenda.Agenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
-import org.activiti.engine.impl.operation.Agenda;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 

@@ -36,7 +36,7 @@ public class AbstractActvitiTest {
 	@Rule
 	public ActivitiRule activitiRule = new ActivitiRule();
 	
-	protected ProcessEngine cachedProcessEngine;
+	protected static ProcessEngine cachedProcessEngine;
 	protected RepositoryService repositoryService; 
 	protected RuntimeService runtimeService;
 	protected TaskService taskService;
@@ -47,20 +47,22 @@ public class AbstractActvitiTest {
 	@Before
 	public void initProcessEngine() {
 		if (cachedProcessEngine == null) {
-			this.cachedProcessEngine = activitiRule.getProcessEngine();
-			this.repositoryService = cachedProcessEngine.getRepositoryService();
-			this.runtimeService = cachedProcessEngine.getRuntimeService();
-			this.taskService = cachedProcessEngine.getTaskService();
-			this.formService = cachedProcessEngine.getFormService();
-			this.historyService = cachedProcessEngine.getHistoryService();
-			this.managementService = cachedProcessEngine.getManagementService();
-	
+			cachedProcessEngine = activitiRule.getProcessEngine();
+			
+			// Boot up H2 webapp
 			if (cachedProcessEngine instanceof ProcessEngineImpl) {
 				if (((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getJdbcUrl().equals(H2_TEST_JDBC_URL)) {
 					initializeH2WebApp(cachedProcessEngine);
 				}
 			}
 		}
+		
+		this.repositoryService = cachedProcessEngine.getRepositoryService();
+		this.runtimeService = cachedProcessEngine.getRuntimeService();
+		this.taskService = cachedProcessEngine.getTaskService();
+		this.formService = cachedProcessEngine.getFormService();
+		this.historyService = cachedProcessEngine.getHistoryService();
+		this.managementService = cachedProcessEngine.getManagementService();
 	}
 	
 	protected void initializeH2WebApp(ProcessEngine processEngine) {

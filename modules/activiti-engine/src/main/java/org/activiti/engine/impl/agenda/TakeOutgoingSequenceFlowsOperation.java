@@ -1,4 +1,4 @@
-package org.activiti.engine.impl.operation;
+package org.activiti.engine.impl.agenda;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,12 +22,10 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
 	private static final Logger logger = LoggerFactory.getLogger(TakeOutgoingSequenceFlowsOperation.class);
 
-	protected ActivityExecution execution;
 	protected boolean evaluateConditions;
 
 	public TakeOutgoingSequenceFlowsOperation(Agenda agenda, ActivityExecution activityExecution, boolean evaluateConditions) {
-		super(agenda);
-		this.execution = activityExecution;
+		super(agenda, activityExecution);
 		this.evaluateConditions = evaluateConditions;
 	}
 
@@ -35,11 +33,11 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 	public void run() {
 		FlowElement currentFlowElement = execution.getCurrentFlowElement();
 		
-//		if (currentFlowElement == null) {
-//			currentFlowElement = findCurrentFlowElement(execution);
-//		} else {
-//			execution.setCurrentActivityId(currentFlowElement.getId());
-//		}
+		if (currentFlowElement == null) {
+			currentFlowElement = findCurrentFlowElement(execution);
+		} else {
+			execution.setCurrentActivityId(currentFlowElement.getId());
+		}
 
 		// If execution is a scope, the scope must first be destroyed before we can continue
 //		if (execution.isScope()) {

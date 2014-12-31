@@ -963,4 +963,10 @@ public class ExecutionImpl implements
 		// TODO Auto-generated method stub
 
 	}
+	
+	@Override
+	    public void setCurrentActivityId(String activityId) {
+		    // TODO Auto-generated method stub
+		    
+	    }
 }

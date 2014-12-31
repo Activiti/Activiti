@@ -26,7 +26,7 @@ public class WaitState implements TriggerableActivityBehavior {
   public void execute(ActivityExecution execution) {
   }
 
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
     PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
     execution.take(transition);
   }

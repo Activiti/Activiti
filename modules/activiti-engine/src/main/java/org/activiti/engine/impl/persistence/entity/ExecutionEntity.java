@@ -1607,6 +1607,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return activityId;
   }
   
+  public void setCurrentActivityId(String activityId) {
+	  this.activityId = activityId;
+  }
+  
   public String getCurrentActivityName() {
     return activityName;
   }
