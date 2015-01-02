@@ -55,5 +55,17 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		
 		taskService.complete(task.getId());
 	}
+	
+	@Test
+	@org.activiti.engine.test.Deployment(resources="org/activiti6/Activiti6Tests.testOneTaskProcess.bpmn20.xml")
+	public void testOneTaskProcessCleanupInMiddleOfProcess() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+		assertNotNull(processInstance);
+		assertFalse(processInstance.isEnded());
+		
+		Task task = taskService.createTaskQuery().singleResult();
+		assertEquals("The famous task", task.getName());
+		assertEquals("kermit", task.getAssignee());
+	}
 
 }
