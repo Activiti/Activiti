@@ -35,7 +35,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
 	
 	@Override
 	protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
-		element.setBehaviour(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
+		element.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
 	  	bpmnParse.getCurrentProcess().setInitialFlowElement(element);	    
 	}
 

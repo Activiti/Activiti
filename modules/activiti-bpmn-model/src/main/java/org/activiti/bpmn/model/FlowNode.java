@@ -21,7 +21,7 @@ import java.util.List;
  */
 public abstract class FlowNode extends FlowElement {
 
-	protected Object behaviour;
+	protected Object behavior;
 
 	protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
 	protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
@@ -30,12 +30,12 @@ public abstract class FlowNode extends FlowElement {
 		
 	}
 	
-	public Object getBehaviour() {
-		return behaviour;
+	public Object getBehavior() {
+		return behavior;
 	}
 
-	public void setBehaviour(Object behaviour) {
-		this.behaviour = behaviour;
+	public void setBehavior(Object behavior) {
+		this.behavior = behavior;
 	}
 
 	public List<SequenceFlow> getIncomingFlows() {

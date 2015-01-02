@@ -27,7 +27,7 @@ public class ExclusiveGatewayParseHandler extends AbstractActivityBpmnParseHandl
   }
   
   protected void executeParse(BpmnParse bpmnParse, ExclusiveGateway gateway) {
-	  gateway.setBehaviour(bpmnParse.getActivityBehaviorFactory().createExclusiveGatewayActivityBehavior(gateway));
+	  gateway.setBehavior(bpmnParse.getActivityBehaviorFactory().createExclusiveGatewayActivityBehavior(gateway));
   }
 
 }

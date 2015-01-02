@@ -39,7 +39,7 @@ public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEv
 
 	@Override
 	protected void executeParse(BpmnParse bpmnParse, EndEvent endEvent) {
-		endEvent.setBehaviour(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
+		endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
 	}
   
 //  protected void executeParse(BpmnParse bpmnParse, EndEvent endEvent) {

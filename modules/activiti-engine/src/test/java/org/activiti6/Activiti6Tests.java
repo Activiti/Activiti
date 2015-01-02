@@ -15,13 +15,14 @@ package org.activiti6;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.junit.Test;
@@ -130,6 +131,26 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		
 		assertEquals(maxCount, CountingServiceTaskTestDelegate.CALL_COUNT.get());
 		assertEquals(0, runtimeService.createExecutionQuery().count());
+	}
+	
+	@Test
+	@org.activiti.engine.test.Deployment
+	public void testScriptTask() {
+		Map<String, Object> variableMap = new HashMap<String, Object>();
+		variableMap.put("a", 1);
+		variableMap.put("b", 2);
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variableMap);
+		assertNotNull(processInstance);
+		assertFalse(processInstance.isEnded());
+
+		assertEquals(3.0, runtimeService.getVariable(processInstance.getId(), "sum"));
+
+		Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).singleResult();
+		assertNotNull(execution);
+
+		runtimeService.signal(execution.getId());
+
+		assertNull(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult());
 	}
 
 }

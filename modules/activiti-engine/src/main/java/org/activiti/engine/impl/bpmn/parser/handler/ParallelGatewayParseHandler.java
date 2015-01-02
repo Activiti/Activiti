@@ -27,7 +27,7 @@ public class ParallelGatewayParseHandler extends AbstractActivityBpmnParseHandle
   }
   
   protected void executeParse(BpmnParse bpmnParse, ParallelGateway gateway) {
-    gateway.setBehaviour(bpmnParse.getActivityBehaviorFactory().createParallelGatewayActivityBehavior(gateway));
+    gateway.setBehavior(bpmnParse.getActivityBehaviorFactory().createParallelGatewayActivityBehavior(gateway));
   }
 
 }

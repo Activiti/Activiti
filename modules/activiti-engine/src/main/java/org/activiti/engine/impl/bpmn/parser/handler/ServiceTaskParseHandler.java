@@ -47,19 +47,19 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
 		if (StringUtils.isNotEmpty(serviceTask.getType())) {
 
 			if (serviceTask.getType().equalsIgnoreCase("mail")) {
-				serviceTask.setBehaviour(bpmnParse.getActivityBehaviorFactory()
+				serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory()
 						.createMailActivityBehavior(serviceTask));
 
 			} else if (serviceTask.getType().equalsIgnoreCase("mule")) {
-				serviceTask.setBehaviour(bpmnParse.getActivityBehaviorFactory()
+				serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory()
 						.createMuleActivityBehavior(serviceTask,bpmnParse.getBpmnModel()));
 
 			} else if (serviceTask.getType().equalsIgnoreCase("camel")) {
-				serviceTask.setBehaviour(bpmnParse.getActivityBehaviorFactory()
+				serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory()
 				        .createCamelActivityBehavior(serviceTask,bpmnParse.getBpmnModel()));
 
 			} else if (serviceTask.getType().equalsIgnoreCase("shell")) {
-				serviceTask.setBehaviour(bpmnParse.getActivityBehaviorFactory()
+				serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory()
 				        .createShellActivityBehavior(serviceTask));
 
 			} else {
@@ -70,19 +70,19 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
 		// activiti:class
 		} else if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(serviceTask.getImplementationType())) {
 			
-			serviceTask.setBehaviour(bpmnParse.getActivityBehaviorFactory()
+			serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory()
 			        .createClassDelegateServiceTask(serviceTask));
 
 		// activiti:delegateExpression
 		} else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
 			
-			serviceTask.setBehaviour(bpmnParse.getActivityBehaviorFactory()
+			serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory()
 			        .createServiceTaskDelegateExpressionActivityBehavior(serviceTask));
 
 		// activiti:expression
 		} else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(serviceTask.getImplementationType())) {
 			
-			serviceTask.setBehaviour(bpmnParse.getActivityBehaviorFactory()
+			serviceTask.setBehavior(bpmnParse.getActivityBehaviorFactory()
 			        .createServiceTaskExpressionActivityBehavior(serviceTask));
 
 		// Webservice
@@ -112,7 +112,7 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
 					webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
 				}
 
-				serviceTask.setBehaviour(webServiceActivityBehavior);
+				serviceTask.setBehavior(webServiceActivityBehavior);
 			}
 		} else {
 			logger.warn("One of the attributes 'class', 'delegateExpression', 'type', 'operation', or 'expression' is mandatory on serviceTask " + serviceTask.getId());

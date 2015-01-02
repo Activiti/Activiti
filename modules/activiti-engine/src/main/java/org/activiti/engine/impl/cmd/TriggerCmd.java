@@ -20,19 +20,16 @@ import java.util.Map;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class SignalCmd extends NeedsActiveExecutionCmd<Object> {
+public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
 
   private static final long serialVersionUID = 1L;
   
-  protected String signalName;
-  protected Object signalData;
   protected final Map<String, Object> processVariables;
   
-  public SignalCmd(String executionId, String signalName, Object signalData, Map<String, Object> processVariables) {
+  public TriggerCmd(String executionId, Map<String, Object> processVariables) {
     super(executionId);
-    this.signalName = signalName;
-    this.signalData = signalData;
     this.processVariables = processVariables;
   }
   
@@ -40,13 +37,13 @@ public class SignalCmd extends NeedsActiveExecutionCmd<Object> {
     if(processVariables != null) {
       execution.setVariables(processVariables);
     }
-    execution.signal(signalName, signalData);
+    commandContext.getAgenda().planTriggerExecutionOperation(execution);
     return null;
   }
   
   @Override
   protected String getSuspendedExceptionMessage() {
-    return "Cannot signal an execution that is suspended";
+    return "Cannot trigger an execution that is suspended";
   }
 
 }

@@ -28,7 +28,7 @@ public class TriggerExecutionOperation extends AbstractOperation {
 		if (currentFlowElement instanceof FlowNode) {
 
 			FlowNode flowNode = (FlowNode) currentFlowElement;
-			ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehaviour();
+			ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
 			if (activityBehavior instanceof TriggerableActivityBehavior) {
 				((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);
 			} else {

@@ -12,11 +12,9 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ScriptTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,12 +37,7 @@ public class ScriptTaskParseHandler extends AbstractActivityBpmnParseHandler<Scr
       logger.warn("No script provided for scriptTask " + scriptTask.getId());
     }
     
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, scriptTask, BpmnXMLConstants.ELEMENT_TASK_SCRIPT);
-    
-    activity.setAsync(scriptTask.isAsynchronous());
-    activity.setExclusive(!scriptTask.isNotExclusive());
-
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
+    scriptTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
     
   }
 

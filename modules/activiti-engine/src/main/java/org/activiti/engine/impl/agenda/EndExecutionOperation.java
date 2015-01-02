@@ -1,11 +1,14 @@
 package org.activiti.engine.impl.agenda;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
@@ -96,6 +99,13 @@ public class EndExecutionOperation extends AbstractOperation {
 				if (execution.isActive()) {
 					activeExecutions++;
 				}
+			}
+			
+			// Delete identity links
+			IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
+			List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceId);
+			for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
+				identityLinkEntityManager.delete(identityLinkEntity);
 			}
 
 			if (activeExecutions == 0) {

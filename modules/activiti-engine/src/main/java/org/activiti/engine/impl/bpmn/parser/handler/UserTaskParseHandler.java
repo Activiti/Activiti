@@ -42,7 +42,7 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
 	protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
 		TaskDefinition taskDefinition = parseTaskDefinition(bpmnParse, userTask, userTask.getId(), 
 				(ProcessDefinitionEntity) bpmnParse.getCurrentScope().getProcessDefinition());
-		userTask.setBehaviour(bpmnParse.getActivityBehaviorFactory()
+		userTask.setBehavior(bpmnParse.getActivityBehaviorFactory()
 				.createUserTaskActivityBehavior(userTask, taskDefinition));
 	}
 

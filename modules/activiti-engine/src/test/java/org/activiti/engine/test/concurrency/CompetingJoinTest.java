@@ -14,7 +14,7 @@
 package org.activiti.engine.test.concurrency;
 
 import org.activiti.engine.ActivitiOptimisticLockingException;
-import org.activiti.engine.impl.cmd.SignalCmd;
+import org.activiti.engine.impl.cmd.TriggerCmd;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -48,7 +48,7 @@ public class CompetingJoinTest extends PluggableActivitiTestCase {
       try {
         processEngineConfiguration
           .getCommandExecutor()
-          .execute(new ControlledCommand(activeThread, new SignalCmd(executionId, null, null,null)));
+          .execute(new ControlledCommand(activeThread, new TriggerCmd(executionId, null)));
 
       } catch (ActivitiOptimisticLockingException e) {
         this.exception = e;

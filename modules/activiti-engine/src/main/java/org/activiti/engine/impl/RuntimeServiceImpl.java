@@ -43,7 +43,7 @@ import org.activiti.engine.impl.cmd.RemoveExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetExecutionVariablesCmd;
 import org.activiti.engine.impl.cmd.SetProcessInstanceBusinessKeyCmd;
 import org.activiti.engine.impl.cmd.SetProcessInstanceNameCmd;
-import org.activiti.engine.impl.cmd.SignalCmd;
+import org.activiti.engine.impl.cmd.TriggerCmd;
 import org.activiti.engine.impl.cmd.SignalEventReceivedCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceByMessageCmd;
 import org.activiti.engine.impl.cmd.StartProcessInstanceCmd;
@@ -224,11 +224,20 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
 
   public void signal(String executionId) {
-    commandExecutor.execute(new SignalCmd(executionId, null, null, null));
+    commandExecutor.execute(new TriggerCmd(executionId, null));
+  }
+  
+  @Override
+  public void trigger(String executionId) {
+	commandExecutor.execute(new TriggerCmd(executionId, null));
   }
   
   public void signal(String executionId, Map<String, Object> processVariables) {
-    commandExecutor.execute(new SignalCmd(executionId, null, null, processVariables));
+    commandExecutor.execute(new TriggerCmd(executionId, processVariables));
+  }
+  
+  public void trigger(String executionId, Map<String, Object> processVariables) {
+	commandExecutor.execute(new TriggerCmd(executionId, processVariables));
   }
 
   public void addUserIdentityLink(String processInstanceId, String userId, String identityLinkType) {
