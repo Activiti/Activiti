@@ -45,8 +45,11 @@ public class EndExecutionOperation extends AbstractOperation {
 		}
 		
 		ExecutionEntity parentExecution = null;
-		if (executionEntity.isScope()) {
-			parentExecution = executionEntity.getParent();
+//		if (executionEntity.isScope()) {
+//			parentExecution = executionEntity.getParent();
+//		}
+		if (executionEntity.getParentId() != null) {
+			parentExecution = executionEntityManager.get(executionEntity.getParentId());
 		}
 
 		if (parentExecution != null) {

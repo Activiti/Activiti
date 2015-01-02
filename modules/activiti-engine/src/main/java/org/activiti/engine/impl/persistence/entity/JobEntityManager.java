@@ -32,7 +32,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.runtime.Job;
 
 
@@ -41,7 +40,7 @@ import org.activiti.engine.runtime.Job;
  * @author Daniel Meyer
  * @author Joram Barrez
  */
-public class JobEntityManager extends AbstractManager {
+public class JobEntityManager extends AbstractEntityManager<JobEntity> {
 
   public void send(MessageEntity message) {
   	

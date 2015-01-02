@@ -21,13 +21,13 @@ import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class HistoricActivityInstanceEntityManager extends AbstractManager {
+public class HistoricActivityInstanceEntityManager extends AbstractEntityManager<HistoricActivityInstanceEntity> {
 
   public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
     if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {

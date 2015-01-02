@@ -23,14 +23,13 @@ import java.util.Set;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Daniel Meyer
  * @author Joram Barrez
  */
-public class EventSubscriptionEntityManager extends AbstractManager {
+public class EventSubscriptionEntityManager extends AbstractEntityManager<EventSubscriptionEntity> {
   
   /** keep track of subscriptions created in the current command */
   protected List<SignalEventSubscriptionEntity> createdSignalSubscriptions = new ArrayList<SignalEventSubscriptionEntity>();

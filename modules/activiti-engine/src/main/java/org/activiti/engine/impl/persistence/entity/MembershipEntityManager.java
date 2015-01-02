@@ -18,13 +18,13 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class MembershipEntityManager extends AbstractManager implements MembershipIdentityManager {
+public class MembershipEntityManager extends AbstractEntityManager<MembershipEntity> implements MembershipIdentityManager {
 
   public void createMembership(String userId, String groupId) {
     MembershipEntity membershipEntity = new MembershipEntity();

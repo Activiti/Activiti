@@ -18,15 +18,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.persistence.AbstractManager;
-
 
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  * @author Saeid Mirzaei
  */
-public class VariableInstanceEntityManager extends AbstractManager {
+public class VariableInstanceEntityManager extends AbstractEntityManager<VariableInstanceEntity> {
 
   @SuppressWarnings("unchecked")
   public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {

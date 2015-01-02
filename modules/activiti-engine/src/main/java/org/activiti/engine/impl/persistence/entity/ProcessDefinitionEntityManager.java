@@ -20,7 +20,6 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
-import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.repository.ProcessDefinition;
 
 
@@ -30,7 +29,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class ProcessDefinitionEntityManager extends AbstractManager {
+public class ProcessDefinitionEntityManager extends AbstractEntityManager<ProcessDefinitionEntity> {
 
   public ProcessDefinitionEntity findLatestProcessDefinitionByKey(String processDefinitionKey) {
     return (ProcessDefinitionEntity) getDbSqlSession().selectOne("selectLatestProcessDefinitionByKey", processDefinitionKey);

@@ -12,8 +12,12 @@
  */
 package org.activiti6;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
+
+import java.util.List;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -66,6 +70,25 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		Task task = taskService.createTaskQuery().singleResult();
 		assertEquals("The famous task", task.getName());
 		assertEquals("kermit", task.getAssignee());
+	}
+	
+	@Test
+	@org.activiti.engine.test.Deployment
+	public void testSimpleParallelGateway() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleParallelGateway");
+		assertNotNull(processInstance);
+		assertFalse(processInstance.isEnded());
+		
+		List<Task> tasks = taskService.createTaskQuery().processDefinitionKey("simpleParallelGateway").orderByTaskName().asc().list();
+		assertEquals(2, tasks.size());
+		assertEquals("Task a", tasks.get(0).getName());
+		assertEquals("Task b", tasks.get(1).getName());
+		
+		for (Task task : tasks) {
+			taskService.complete(task.getId());
+		}
+		
+		assertEquals(0, runtimeService.createProcessInstanceQuery().count());
 	}
 
 }

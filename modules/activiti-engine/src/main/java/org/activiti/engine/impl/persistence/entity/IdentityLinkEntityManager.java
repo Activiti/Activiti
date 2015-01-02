@@ -20,14 +20,14 @@ import java.util.Map;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
  * @author Saeid Mirzaei
+ * @author Joram Barrez
  */
-public class IdentityLinkEntityManager extends AbstractManager {
+public class IdentityLinkEntityManager extends AbstractEntityManager<IdentityLinkEntity> {
 
   public void deleteIdentityLink(IdentityLinkEntity identityLink, boolean cascadeHistory) {
     getDbSqlSession().delete(identityLink);

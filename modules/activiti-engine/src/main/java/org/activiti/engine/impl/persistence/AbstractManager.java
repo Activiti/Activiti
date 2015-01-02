@@ -16,7 +16,6 @@ package org.activiti.engine.impl.persistence;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
@@ -48,14 +47,6 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager
  */
 public abstract class AbstractManager implements Session {
   
-  public void insert(PersistentObject persistentObject) {
-    getDbSqlSession().insert(persistentObject);
-  }
-
-  public void delete(PersistentObject persistentObject) {
-    getDbSqlSession().delete(persistentObject);
-  }
-
   protected DbSqlSession getDbSqlSession() {
     return getSession(DbSqlSession.class);
   }

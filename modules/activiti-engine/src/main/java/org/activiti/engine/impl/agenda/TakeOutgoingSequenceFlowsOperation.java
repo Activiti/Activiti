@@ -55,7 +55,9 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 	}
 
 	protected void leaveFlowNode(FlowNode flowNode) {
-
+		
+		logger.debug("Leaving flow node {} by following it's {} outgoing sequenceflow", flowNode, flowNode.getOutgoingFlows().size());
+		
 		// Determine which sequence flows can be used for leaving
 		List<SequenceFlow> outgoingSequenceFlow = new ArrayList<SequenceFlow>();
 		for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
@@ -91,8 +93,11 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 				ExecutionEntity outgoingExecutionEntity = new ExecutionEntity();
 				outgoingExecutionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
 				outgoingExecutionEntity.setProcessInstanceId(execution.getProcessInstanceId());
+				
 				outgoingExecutionEntity.setScope(false);
 				outgoingExecutionEntity.setActive(true);
+				
+				outgoingExecutionEntity.setParentId(execution.getParentId() != null ? execution.getParentId() : execution.getId());
 				
 				sequenceFlow = outgoingSequenceFlow.get(i);
 				outgoingExecutionEntity.setCurrentFlowElement(sequenceFlow);

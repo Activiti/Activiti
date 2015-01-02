@@ -18,15 +18,15 @@ import java.util.List;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class AttachmentEntityManager extends AbstractManager {
+public class AttachmentEntityManager extends AbstractEntityManager<AttachmentEntity> {
 
   @SuppressWarnings("unchecked")
   public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {

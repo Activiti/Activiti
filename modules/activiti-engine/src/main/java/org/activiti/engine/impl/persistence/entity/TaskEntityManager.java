@@ -28,14 +28,13 @@ import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.task.Task;
 
 
 /**
  * @author Tom Baeyens
  */
-public class TaskEntityManager extends AbstractManager {
+public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {

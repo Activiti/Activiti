@@ -26,7 +26,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
@@ -34,7 +33,7 @@ import org.activiti.engine.impl.persistence.AbstractManager;
  * @author Saeid Mirzaei
  * @author Joram Barrez
  */
-public class GroupEntityManager extends AbstractManager implements GroupIdentityManager {
+public class GroupEntityManager extends AbstractEntityManager<GroupEntity> implements GroupIdentityManager {
 
   public Group createNewGroup(String groupId) {
     return new GroupEntity(groupId);

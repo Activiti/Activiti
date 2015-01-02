@@ -12,11 +12,9 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 
 /**
@@ -29,12 +27,7 @@ public class ParallelGatewayParseHandler extends AbstractActivityBpmnParseHandle
   }
   
   protected void executeParse(BpmnParse bpmnParse, ParallelGateway gateway) {
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL);
-    
-    activity.setAsync(gateway.isAsynchronous());
-    activity.setExclusive(!gateway.isNotExclusive());
-    
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createParallelGatewayActivityBehavior(gateway));
+    gateway.setBehaviour(bpmnParse.getActivityBehaviorFactory().createParallelGatewayActivityBehavior(gateway));
   }
 
 }

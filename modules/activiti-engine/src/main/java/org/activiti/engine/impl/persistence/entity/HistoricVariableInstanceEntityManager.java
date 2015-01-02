@@ -20,13 +20,13 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.HistoricVariableInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Christian Lipphardt (camunda)
+ * @author Joram Barrez
  */
-public class HistoricVariableInstanceEntityManager extends AbstractManager {
+public class HistoricVariableInstanceEntityManager extends AbstractEntityManager<HistoricVariableInstanceEntity> {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricVariableInstanceByProcessInstanceId(String historicProcessInstanceId) {

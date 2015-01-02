@@ -24,7 +24,6 @@ import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
-import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -35,7 +34,7 @@ import org.activiti.engine.runtime.Job;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class DeploymentEntityManager extends AbstractManager {
+public class DeploymentEntityManager extends AbstractEntityManager<DeploymentEntity> {
   
   public void insertDeployment(DeploymentEntity deployment) {
     getDbSqlSession().insert(deployment);

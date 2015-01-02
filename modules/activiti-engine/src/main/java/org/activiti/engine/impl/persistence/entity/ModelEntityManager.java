@@ -24,15 +24,15 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ModelQuery;
 
 
 /**
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
-public class ModelEntityManager extends AbstractManager {
+public class ModelEntityManager extends AbstractEntityManager<ModelEntity> {
 
   public Model createNewModel() {
     return new ModelEntity();

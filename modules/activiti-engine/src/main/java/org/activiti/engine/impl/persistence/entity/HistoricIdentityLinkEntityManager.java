@@ -18,13 +18,13 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Frederik Heremans
+ * @author Joram Barrez
  */
-public class HistoricIdentityLinkEntityManager extends AbstractManager {
+public class HistoricIdentityLinkEntityManager extends AbstractEntityManager<HistoricIdentityLinkEntity> {
 
   public void deleteHistoricIdentityLink(HistoricIdentityLinkEntity identityLink) {
     getDbSqlSession().delete(identityLink);

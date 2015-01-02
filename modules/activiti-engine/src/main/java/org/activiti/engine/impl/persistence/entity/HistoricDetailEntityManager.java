@@ -20,13 +20,13 @@ import org.activiti.engine.history.HistoricDetail;
 import org.activiti.engine.impl.HistoricDetailQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoryLevel;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class HistoricDetailEntityManager extends AbstractManager {
+public class HistoricDetailEntityManager extends AbstractEntityManager<HistoricDetailEntity> {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {

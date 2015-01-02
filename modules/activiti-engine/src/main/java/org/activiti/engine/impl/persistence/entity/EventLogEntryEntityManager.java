@@ -18,13 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.event.EventLogEntry;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Joram Barrez
  */
-public class EventLogEntryEntityManager extends AbstractManager {
+public class EventLogEntryEntityManager extends AbstractEntityManager<EventLogEntryEntity> {
   
   public void insert(EventLogEntryEntity eventLogEntryEntity) {
   	getDbSqlSession().insert(eventLogEntryEntity);

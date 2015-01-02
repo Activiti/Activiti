@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -27,16 +28,22 @@ import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class ExecutionEntityManager extends AbstractManager {
-  
+public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntity> {
+
+	@Override
+	public Class<ExecutionEntity> getManagedPersistentObject() {
+		return ExecutionEntity.class;
+	}
+
   @SuppressWarnings("unchecked")
   public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
     List<String> processInstanceIds = getDbSqlSession()
@@ -167,6 +174,16 @@ public class ExecutionEntityManager extends AbstractManager {
     
     return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parameters);
   }
+  
+	public Collection<ExecutionEntity> getInactiveExecutionsInActivity(final String activityId) {
+		HashMap<String, String> params = new HashMap<String, String>(1);
+		params.put("activityId", activityId);
+		return getList("selectInactiveExecutionsInActivity", params, new CachedEntityMatcher<ExecutionEntity>() {
+			        public boolean isRetained(ExecutionEntity entity) {
+				        return entity.getActivityId() != null && entity.getActivityId().equals(activityId);
+			        }
+		        });
+	}
 
   @SuppressWarnings("unchecked")
   public List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {

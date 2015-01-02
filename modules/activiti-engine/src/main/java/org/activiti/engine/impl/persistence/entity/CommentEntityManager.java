@@ -20,22 +20,21 @@ import java.util.Map;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.task.Comment;
 import org.activiti.engine.task.Event;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class CommentEntityManager extends AbstractManager {
+public class CommentEntityManager extends AbstractEntityManager<CommentEntity> {
   
-  public void delete(PersistentObject persistentObject) {
+  public void delete(CommentEntity commentEntity) {
     checkHistoryEnabled();
-    super.delete(persistentObject);
+    super.delete(commentEntity);
     
-    Comment comment = (Comment) persistentObject;
+    Comment comment = (Comment) commentEntity;
     if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	// Forced to fetch the process-instance to associate the right process definition
     	String processDefinitionId = null;
@@ -47,15 +46,15 @@ public class CommentEntityManager extends AbstractManager {
     		}
     	}
     	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, persistentObject, processInstanceId, processInstanceId, processDefinitionId));
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
     }
   }
 
-  public void insert(PersistentObject persistentObject) {
+  public void insert(CommentEntity commentEntity) {
     checkHistoryEnabled();
-    super.insert(persistentObject);
+    super.insert(commentEntity);
     
-    Comment comment = (Comment) persistentObject;
+    Comment comment = (Comment) commentEntity;
     if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	// Forced to fetch the process-instance to associate the right process definition
     	String processDefinitionId = null;
@@ -67,9 +66,9 @@ public class CommentEntityManager extends AbstractManager {
     		}
     	}
     	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, persistentObject, processInstanceId, processInstanceId, processDefinitionId));
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
     	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, persistentObject, processInstanceId, processInstanceId, processDefinitionId));
+    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, commentEntity, processInstanceId, processInstanceId, processDefinitionId));
     }
   }
 

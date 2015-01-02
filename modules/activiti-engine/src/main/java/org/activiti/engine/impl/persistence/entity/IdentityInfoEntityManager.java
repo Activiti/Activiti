@@ -20,13 +20,13 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class IdentityInfoEntityManager extends AbstractManager {
+public class IdentityInfoEntityManager extends AbstractEntityManager<IdentityInfoEntity> {
 
   public void deleteUserInfoByUserIdAndKey(String userId, String key) {
     IdentityInfoEntity identityInfoEntity = findUserInfoByUserIdAndKey(userId, key);

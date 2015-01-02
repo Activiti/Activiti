@@ -19,15 +19,13 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class HistoricProcessInstanceEntityManager extends AbstractManager {
+public class HistoricProcessInstanceEntityManager extends AbstractEntityManager<HistoricProcessInstanceEntity> {
 
   public HistoricProcessInstanceEntity findHistoricProcessInstance(String processInstanceId) {
     if (getHistoryManager().isHistoryEnabled()) {

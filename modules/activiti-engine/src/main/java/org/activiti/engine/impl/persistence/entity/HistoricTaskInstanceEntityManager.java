@@ -23,13 +23,13 @@ import org.activiti.engine.impl.HistoricTaskInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.persistence.AbstractManager;
 
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
-public class HistoricTaskInstanceEntityManager extends AbstractManager {
+public class HistoricTaskInstanceEntityManager extends AbstractEntityManager<HistoricTaskInstanceEntity> {
 
   @SuppressWarnings("unchecked")
   public void deleteHistoricTaskInstancesByProcessInstanceId(String processInstanceId) {
