@@ -56,7 +56,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
 	protected void leaveFlowNode(FlowNode flowNode) {
 		
-		logger.debug("Leaving flow node {} by following it's {} outgoing sequenceflow", flowNode, flowNode.getOutgoingFlows().size());
+		logger.debug("Leaving flow node {} by following it's {} outgoing sequenceflow", flowNode.getClass(), flowNode.getOutgoingFlows().size());
 		
 		// Determine which sequence flows can be used for leaving
 		List<SequenceFlow> outgoingSequenceFlow = new ArrayList<SequenceFlow>();

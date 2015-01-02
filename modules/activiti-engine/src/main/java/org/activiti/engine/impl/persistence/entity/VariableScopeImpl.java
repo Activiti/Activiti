@@ -52,7 +52,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
   protected String id = null;
 
-  protected abstract List<VariableInstanceEntity> loadVariableInstances();
+  protected abstract Collection<VariableInstanceEntity> loadVariableInstances();
   protected abstract VariableScopeImpl getParentVariableScope();
   protected abstract void initializeVariableInstanceBackPointer(VariableInstanceEntity variableInstance);
 
@@ -64,7 +64,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
       if (commandContext == null) {
         throw new ActivitiException("lazy loading outside command context");
       }
-      List<VariableInstanceEntity> variableInstancesList = loadVariableInstances();
+      Collection<VariableInstanceEntity> variableInstancesList = loadVariableInstances();
       for (VariableInstanceEntity variableInstance : variableInstancesList) {
         variableInstances.put(variableInstance.getName(), variableInstance);
       }

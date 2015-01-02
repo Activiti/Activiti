@@ -36,10 +36,8 @@ public class EndExecutionOperation extends AbstractOperation {
 		executionEntity.setEnded(true);
 
 		// Get variables related to execution and delete them
-		VariableInstanceEntityManager variableInstanceEntityManager = commandContext
-		        .getVariableInstanceEntityManager();
-		Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager
-		        .findVariableInstancesByExecutionId(execution.getId());
+		VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
+		Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(execution.getId());
 		for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
 			variableInstanceEntityManager.delete(variableInstanceEntity);
 		}

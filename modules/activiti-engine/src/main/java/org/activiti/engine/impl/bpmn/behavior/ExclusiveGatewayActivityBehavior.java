@@ -14,13 +14,11 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Iterator;
 
+import org.activiti.bpmn.model.ExclusiveGateway;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.impl.Condition;
-import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +30,12 @@ import org.slf4j.LoggerFactory;
  * @author Joram Barrez
  */
 public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
-  
-  private static final long serialVersionUID = 1L;
-  
-  private static Logger log = LoggerFactory.getLogger(ExclusiveGatewayActivityBehavior.class);
-  
+
+	private static final long serialVersionUID = 1L;
+
+	private static Logger log = LoggerFactory
+	        .getLogger(ExclusiveGatewayActivityBehavior.class);
+
   /**
    * The default behaviour of BPMN, taking every outgoing sequence flow
    * (where the condition evaluates to true), is not valid for an exclusive
@@ -54,48 +53,64 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   protected void leave(ActivityExecution execution) {
     
     if (log.isDebugEnabled()) {
-      log.debug("Leaving activity '{}'", execution.getActivity().getId());
+        log.debug("Leaving exclusive gatewt '{}'",
+                execution.getCurrentActivityId());
     }
-    
-    PvmTransition outgoingSeqFlow = null;
-    String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
-    Iterator<PvmTransition> transitionIterator = execution.getActivity().getOutgoingTransitions().iterator();
-    while (outgoingSeqFlow == null && transitionIterator.hasNext()) {
-      PvmTransition seqFlow = transitionIterator.next();
-      Expression skipExpression = seqFlow.getSkipExpression();
-      
-      if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
-        Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-        if ( (condition == null && (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) ) 
-                || (condition != null && condition.evaluate(execution)) ) {
-          if (log.isDebugEnabled()) {
-            log.debug("Sequence flow '{}'selected as outgoing sequence flow.", seqFlow.getId());
-          }
-          outgoingSeqFlow = seqFlow;
-        }
-      }
-      else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)){
-        outgoingSeqFlow = seqFlow;
-      }
-    }
-    
-    if (outgoingSeqFlow != null) {
-      execution.take(outgoingSeqFlow);
-    } else {
-      
-      if (defaultSequenceFlow != null) {
-        PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
-        if (defaultTransition != null) {
-          execution.take(defaultTransition);
-        } else {
-          throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' not found");
-        }
-      } else {
-        //No sequence flow could be found, not even a default one
-        throw new ActivitiException("No outgoing sequence flow of the exclusive gateway '"
-              + execution.getActivity().getId() + "' could be selected for continuing the process");
-      }
-    }
-  }
 
+    ExclusiveGateway exclusiveGateway = (ExclusiveGateway) execution.getCurrentFlowElement();
+    
+    SequenceFlow outgoingSequenceFlow = null;
+    SequenceFlow defaultSequenceFlow = null;
+    String defaultSequenceFlowId = exclusiveGateway.getDefaultFlow();
+    
+    // Determine sequence flow to take
+    Iterator<SequenceFlow> sequenceFlowIterator = exclusiveGateway.getOutgoingFlows().iterator();
+    while (outgoingSequenceFlow == null && sequenceFlowIterator.hasNext()) {
+        SequenceFlow sequenceFlow = sequenceFlowIterator.next();
+        boolean conditionEvaluatesToTrue = ConditionUtil.hasTrueCondition(sequenceFlow, execution);
+        if (conditionEvaluatesToTrue && (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId())) ) {
+            if (log.isDebugEnabled()) {
+                log.debug("Sequence flow '{}'selected as outgoing sequence flow.", sequenceFlow.getId());
+            }
+            outgoingSequenceFlow = sequenceFlow;
+        }
+        
+        // Already store it, if we would need it later. Saves one for loop.
+        if (defaultSequenceFlowId != null && defaultSequenceFlowId.equals(sequenceFlow.getId())) {
+            defaultSequenceFlow = sequenceFlow;
+        }
+        
+//        Expression skipExpression = seqFlow.getSkipExpression();
+//        
+//        if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
+//          Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+//          if ( (condition == null && (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) ) 
+//                  || (condition != null && condition.evaluate(execution)) ) {
+//            if (log.isDebugEnabled()) {
+//              log.debug("Sequence flow '{}'selected as outgoing sequence flow.", seqFlow.getId());
+//            }
+//            outgoingSeqFlow = seqFlow;
+//          }
+//        }
+//        else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)){
+//          outgoingSeqFlow = seqFlow;
+//        }
+    }
+	    
+	    // Leave the gateway
+	    if (outgoingSequenceFlow != null) {
+	    	execution.setCurrentFlowElement(outgoingSequenceFlow);
+	    } else {
+	    	if (defaultSequenceFlow != null) {
+	    		execution.setCurrentFlowElement(defaultSequenceFlow);
+	    	} else {
+	    		
+	    		//No sequence flow could be found, not even a default one
+	    		throw new ActivitiException("No outgoing sequence flow of the exclusive gateway '"
+	    				+ execution.getActivity().getId() + "' could be selected for continuing the process");
+	      }
+	    }
+	    
+	    super.leave(execution);
+	}
 }

@@ -1164,7 +1164,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   @Override
-  protected List<VariableInstanceEntity> loadVariableInstances() {
+  protected Collection<VariableInstanceEntity> loadVariableInstances() {
     return Context
       .getCommandContext()
       .getVariableInstanceEntityManager()

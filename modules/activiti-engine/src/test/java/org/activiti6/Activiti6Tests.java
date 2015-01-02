@@ -17,7 +17,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -110,6 +112,24 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		}
 		
 		assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+	}
+	
+	/*
+	 * This fails on Activiti 5
+	 */
+	@Test
+	@org.activiti.engine.test.Deployment
+	public void testLongServiceTaskLoop() {
+		int maxCount = 1000; // You can make this as big as you want (as long as it still fits within transaction timeouts). Go on, try it!
+		Map<String, Object> vars = new HashMap<String, Object>();
+		vars.put("counter", new Integer(0));
+		vars.put("maxCount", maxCount);
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testLongServiceTaskLoop", vars);
+		assertNotNull(processInstance);
+		assertTrue(processInstance.isEnded());
+		
+		assertEquals(maxCount, CountingServiceTaskTestDelegate.CALL_COUNT.get());
+		assertEquals(0, runtimeService.createExecutionQuery().count());
 	}
 
 }
