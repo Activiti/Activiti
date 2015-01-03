@@ -326,5 +326,89 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		assertEquals(0, runtimeService.createExecutionQuery().count());
 	}
 	
+	@Test
+	@org.activiti.engine.test.Deployment
+	public void testNonInterruptingMoreComplex2() {
+		
+		// Use case 1: no timers fire
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("nonInterruptingWithInclusiveMerge");
+		assertNotNull(processInstance);
+		assertFalse(processInstance.isEnded());
+		
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(2, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("B", tasks.get(1).getName());
+		assertEquals(2, managementService.createJobQuery().count());
+		
+		// Completing A
+		taskService.complete(tasks.get(0).getId());
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(1, tasks.size());
+		assertEquals("B", tasks.get(0).getName());
+		assertEquals(1, managementService.createJobQuery().count());
+		
+		// Completing B should end the process
+		taskService.complete(tasks.get(0).getId());
+		assertEquals(0, managementService.createJobQuery().count());
+		assertEquals(0, runtimeService.createExecutionQuery().count());
+		
+		// Use case 2: The non interrupting timer on B fires
+		processInstance = runtimeService.startProcessInstanceByKey("nonInterruptingWithInclusiveMerge");
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(2, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("B", tasks.get(1).getName());
+		assertEquals(2, managementService.createJobQuery().count());
+		
+		// Completing B
+		taskService.complete(tasks.get(1).getId());
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(1, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals(1, managementService.createJobQuery().count());
+		
+		// Firing the timer should activate E and F too
+		managementService.executeJob(managementService.createJobQuery().singleResult().getId());
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(3, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("C", tasks.get(1).getName());
+		assertEquals("D", tasks.get(2).getName());
+		
+		// Firing the timer on D
+		assertEquals(1, managementService.createJobQuery().count());
+		managementService.executeJob(managementService.createJobQuery().singleResult().getId());
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(4, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("C", tasks.get(1).getName());
+		assertEquals("D", tasks.get(2).getName());
+		assertEquals("G", tasks.get(3).getName());
+		
+		// Completing C, D, A and G in that order to give the engine a bit of excercise
+		taskService.complete(taskService.createTaskQuery().taskName("C").singleResult().getId());
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(3, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("D", tasks.get(1).getName());
+		assertEquals("G", tasks.get(2).getName());
+		
+		taskService.complete(taskService.createTaskQuery().taskName("D").singleResult().getId());
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(2, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("G", tasks.get(1).getName());
+		
+		taskService.complete(taskService.createTaskQuery().taskName("A").singleResult().getId());
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(1, tasks.size());
+		assertEquals("G", tasks.get(0).getName());
+		
+		taskService.complete(taskService.createTaskQuery().taskName("G").singleResult().getId());
+		assertEquals(0, runtimeService.createExecutionQuery().count());
+		
+	}
+	
 
 }

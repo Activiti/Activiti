@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.interceptor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,6 +37,7 @@ import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventLogEntryEntityManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.GroupIdentityManager;
 import org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntityManager;
@@ -82,8 +84,10 @@ public class CommandContext {
   protected List<CommandContextCloseListener> closeListeners;
   protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
   
-  protected Agenda agenda = new Agenda();
+  protected Agenda agenda = new Agenda(this);
+  protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
   protected Object result = null;
+  
   
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
     nextOperations.add(executionOperation);
@@ -381,6 +385,22 @@ public class CommandContext {
   public HistoryManager getHistoryManager() {
     return getSession(HistoryManager.class);
   }
+  
+  // Involved executions //////////////////////////////////////////////////////
+  
+	public void addInvolvedExecution(ExecutionEntity executionEntity) {
+		if (executionEntity.getId() != null) {
+			involvedExecutions.put(executionEntity.getId(), executionEntity);
+		}
+	}
+
+	public boolean hasInvolvedExecutions() {
+		return involvedExecutions.size() > 0;
+	}
+
+	public Collection<ExecutionEntity> getInvolvedExecutions() {
+		return involvedExecutions.values();
+	}
   
   // getters and setters //////////////////////////////////////////////////////
 

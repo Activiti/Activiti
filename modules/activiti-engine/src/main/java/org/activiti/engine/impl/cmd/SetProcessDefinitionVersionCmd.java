@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -113,7 +114,7 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
     commandContext.getHistoryManager().recordProcessDefinitionChange(processInstanceId, newProcessDefinition.getId());
     
     // switch all sub-executions of the process instance to the new process definition version
-    List<ExecutionEntity> childExecutions = executionManager
+    Collection<ExecutionEntity> childExecutions = executionManager
       .findChildExecutionsByProcessInstanceId(processInstanceId);
     for (ExecutionEntity executionEntity : childExecutions) {
       validateAndSwitchVersionOfExecution(commandContext, executionEntity, newProcessDefinition);

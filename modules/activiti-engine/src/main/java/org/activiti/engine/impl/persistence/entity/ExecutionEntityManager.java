@@ -107,8 +107,13 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   }
   
   @SuppressWarnings("unchecked")
-  public List<ExecutionEntity> findChildExecutionsByProcessInstanceId(String processInstanceId) {
-    return getDbSqlSession().selectList("selectExecutionsByProcessInstanceId", processInstanceId);
+  public Collection<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId) {
+	  return getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
+		@Override
+		public boolean isRetained(ExecutionEntity executionEntity) {
+			return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId);
+		}
+	});
   }
 
   public ExecutionEntity findExecutionById(String executionId) {
@@ -183,6 +188,18 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
 				        return entity.getActivityId() != null && entity.getActivityId().equals(activityId);
 			        }
 		        });
+	}
+
+	public Collection<ExecutionEntity> getInactiveExecutionsForProcessInstance(final String processInstanceId) {
+		HashMap<String, String> params = new HashMap<String, String>(1);
+		params.put("processInstanceId", processInstanceId);
+		return getList("selectInactiveExecutionsForProcessInstance", params, new CachedEntityMatcher<ExecutionEntity>() {
+			public boolean isRetained(ExecutionEntity executionEntity) {
+				return executionEntity.getProcessInstanceId() != null 
+						&& executionEntity.getProcessInstanceId().equals(processInstanceId)
+						&& !executionEntity.isActive();
+			}
+		});
 	}
 
   @SuppressWarnings("unchecked")

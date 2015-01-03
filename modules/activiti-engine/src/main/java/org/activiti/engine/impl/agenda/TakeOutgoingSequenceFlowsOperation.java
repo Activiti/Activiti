@@ -39,11 +39,11 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 			execution.setCurrentActivityId(currentFlowElement.getId());
 		}
 
-		// If execution is a scope, the scope must first be destroyed before we can continue
-//		if (execution.isScope()) {
-//			coreEngine.destroyScope(commandContext, execution);
-//			// return;
-//		}
+		// If execution is a scope (and not the process instance), the scope must first be destroyed before we can continue
+		if (execution.getParentId() != null && execution.isScope()) {
+			agenda.planDestroyScopeOperation(execution);
+			// return;
+		}
 
 		// No scope, can continue
 		if (currentFlowElement instanceof FlowNode) {
@@ -56,7 +56,8 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
 	protected void leaveFlowNode(FlowNode flowNode) {
 		
-		logger.debug("Leaving flow node {} by following it's {} outgoing sequenceflow", flowNode.getClass(), flowNode.getOutgoingFlows().size());
+		logger.debug("Leaving flow node {} with id '{}' by following it's {} outgoing sequenceflow", 
+				flowNode.getClass(), flowNode.getId(), flowNode.getOutgoingFlows().size());
 		
 		// Determine which sequence flows can be used for leaving
 		List<SequenceFlow> outgoingSequenceFlow = new ArrayList<SequenceFlow>();

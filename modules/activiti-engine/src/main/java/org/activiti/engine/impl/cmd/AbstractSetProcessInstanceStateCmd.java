@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.activiti.engine.ActivitiException;
@@ -57,7 +58,7 @@ public abstract class AbstractSetProcessInstanceStateCmd implements Command<Void
     SuspensionStateUtil.setSuspensionState(executionEntity, getNewState());
     
     // All child executions are suspended
-    List<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(executionId);
+    Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByProcessInstanceId(executionId);
     for (ExecutionEntity childExecution : childExecutions) {
       if (!childExecution.getId().equals(executionId)) {
         SuspensionStateUtil.setSuspensionState(childExecution, getNewState());

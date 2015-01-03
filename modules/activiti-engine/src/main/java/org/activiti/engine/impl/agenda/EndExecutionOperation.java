@@ -57,7 +57,7 @@ public class EndExecutionOperation extends AbstractOperation {
 			// Delete current execution
 			logger.debug("Ending execution {}", execution.getId());
 			deleteExecution(commandContext, executionEntity);
-			
+
 			logger.debug("Parent execution found. Continuing process using execution {}", parentExecution.getId());
 			parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
 			agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);

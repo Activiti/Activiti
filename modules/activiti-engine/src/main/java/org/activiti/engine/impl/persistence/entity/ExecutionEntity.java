@@ -276,9 +276,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // initialize the new execution
     createdExecution.setProcessDefinitionId(this.getProcessDefinitionId());
     createdExecution.setProcessInstanceId(this.getProcessInstanceId() != null ? this.getProcessInstanceId() : this.getId());
-//    createdExecution.setProcessDefinition(getProcessDefinition());
-//    createdExecution.setProcessInstance(getProcessInstance());
-//    createdExecution.setActivity(getActivity());
+    createdExecution.setScope(false);
     
     if (log.isDebugEnabled()) {
       log.debug("Child execution {} created with parent {}", createdExecution, this.getId());

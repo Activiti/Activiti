@@ -14,6 +14,7 @@ package org.activiti.engine.impl.agenda;
 
 import java.util.LinkedList;
 
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +26,12 @@ public class Agenda {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Agenda.class);
 	
+	protected CommandContext commandContext;
+	
 	protected LinkedList<Runnable> operations = new LinkedList<Runnable>();
 	
-	public Agenda() {
-		
+	public Agenda(CommandContext commandContext) {
+		this.commandContext = commandContext;
 	}
 	
 	public boolean isEmpty() {
@@ -67,6 +70,22 @@ public class Agenda {
 	
 	public void planDestroyScopeOperation(ActivityExecution execution) {
 		planOperation(new DestroyScopeOperation(this, execution));
+	}
+	
+	public void planExecuteInactiveBehaviorsOperation() {
+		planOperation(new ExecuteInactiveBehaviorsOperation(this));
+	}
+
+	public CommandContext getCommandContext() {
+		return commandContext;
+	}
+
+	public void setCommandContext(CommandContext commandContext) {
+		this.commandContext = commandContext;
+	}
+
+	public LinkedList<Runnable> getOperations() {
+		return operations;
 	}
 
 }

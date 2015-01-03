@@ -37,13 +37,12 @@ public class CommandInvoker extends AbstractCommandInterceptor {
 		// Run loop for agenda
 		executeOperations(commandContext);
 
-//		// At the end, call the execution tree change listeners.
-//		// TODO: optimization: only do this when the tree has actually changed
-//		// (ie check dbSqlSession).
-//		if (commandContext.hasInvolvedExecutions()) {
-//			commandContext.getAgenda().add(new ExecuteInactivatedBehavior(commandContext.getCoreEngine(), commandContext));
-//			executeOperations(commandContext);
-//		}
+		// At the end, call the execution tree change listeners.
+		// TODO: optimization: only do this when the tree has actually changed (ie check dbSqlSession).
+		if (commandContext.hasInvolvedExecutions()) {
+			commandContext.getAgenda().planExecuteInactiveBehaviorsOperation();
+			executeOperations(commandContext);
+		}
 
 		return (T) commandContext.getResult();
 	}
