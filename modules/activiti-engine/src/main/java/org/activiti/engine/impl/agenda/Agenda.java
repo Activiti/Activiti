@@ -15,6 +15,7 @@ package org.activiti.engine.impl.agenda;
 import java.util.LinkedList;
 
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,30 +47,41 @@ public class Agenda {
 	 * Generic method to plan a {@link Runnable}.
 	 */
 	public void planOperation(Runnable operation) {
+		planOperation(operation, null);
+	}
+	
+	/**
+	 * Generic method to plan a {@link Runnable}.
+	 */
+	public void planOperation(Runnable operation, ExecutionEntity executionEntity) {
 		operations.add(operation);
 		logger.debug("Operation {} added to agenda", operation.getClass());
+		
+		if (executionEntity != null) {
+			commandContext.addInvolvedExecution(executionEntity);
+		}
 	}
 	
 	/* SPECIFIC operations */
 	
 	public void planContinueProcessOperation(ActivityExecution execution) {
-		planOperation(new ContinueProcessOperation(this, execution));
+		planOperation(new ContinueProcessOperation(this, execution), (ExecutionEntity) execution);
 	}
 	
 	public void planTakeOutgoingSequenceFlowsOperation(ActivityExecution execution, boolean evaluateConditions) {
-		planOperation(new TakeOutgoingSequenceFlowsOperation(this, execution, evaluateConditions));
+		planOperation(new TakeOutgoingSequenceFlowsOperation(this, execution, evaluateConditions), (ExecutionEntity) execution);
 	}
 	
 	public void planEndExecutionOperation(ActivityExecution execution) {
-		planOperation(new EndExecutionOperation(this, execution));
+		planOperation(new EndExecutionOperation(this, execution), (ExecutionEntity) execution);
 	}
 	
 	public void planTriggerExecutionOperation(ActivityExecution execution) {
-		planOperation(new TriggerExecutionOperation(this, execution));
+		planOperation(new TriggerExecutionOperation(this, execution), (ExecutionEntity) execution);
 	}
 	
 	public void planDestroyScopeOperation(ActivityExecution execution) {
-		planOperation(new DestroyScopeOperation(this, execution));
+		planOperation(new DestroyScopeOperation(this, execution), (ExecutionEntity) execution);
 	}
 	
 	public void planExecuteInactiveBehaviorsOperation() {

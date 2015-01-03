@@ -410,5 +410,71 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		
 	}
 	
+	/**
+	 * Based on the process and use cases described in http://www.bp-3.com/blogs/2013/09/joins-and-ibm-bpm-diving-deeper/
+	 */
+	@Test
+	@org.activiti.engine.test.Deployment
+	public void testInclusiveTrickyMerge() {
+		
+		// Use case 1 (easy): "When C completes, depending on the data, we can immediately issue E no matter what the status is of A or B."
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("trickyInclusiveMerge");
+		assertNotNull(processInstance);
+		assertFalse(processInstance.isEnded());
+		assertEquals(3, taskService.createTaskQuery().count());
+		
+		Task taskC = taskService.createTaskQuery().taskName("C").singleResult();
+		taskService.complete(taskC.getId());
+		List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+		assertEquals(3, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("B", tasks.get(1).getName());
+		assertEquals("E", tasks.get(2).getName());
+		
+		taskService.complete(tasks.get(0).getId());
+		taskService.complete(tasks.get(1).getId());
+		tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+		assertEquals(2, tasks.size());
+		assertEquals("D", tasks.get(0).getName());
+		assertEquals("E", tasks.get(1).getName());
+		
+		taskService.complete(tasks.get(0).getId());
+		taskService.complete(tasks.get(1).getId());
+		assertEquals(0, runtimeService.createExecutionQuery().count());
+		
+		
+		// Use case 2 (tricky): "If A and B are complete and C routes to E, D will be issued in Parallel to E"
+		// It's tricky cause the inclusive gateway is not visited directly.
+		// Instead, it's done by the InactivatedActivityBehavior
+		
+		processInstance = runtimeService.startProcessInstanceByKey("trickyInclusiveMerge");
+		assertEquals(3, taskService.createTaskQuery().count());
+		
+		tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+		assertEquals(3, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("B", tasks.get(1).getName());
+		assertEquals("C", tasks.get(2).getName());
+		taskService.complete(tasks.get(0).getId());
+		taskService.complete(tasks.get(1).getId());
+		
+		// C should still be open
+		tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+		assertEquals(1, tasks.size());
+		assertEquals("C", tasks.get(0).getName());
+		
+		// If C is now completed, the inclusive gateway should also be completed and D and E should be open tasks
+		taskService.complete(tasks.get(0).getId());
+		tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+		assertEquals(2, tasks.size());
+		assertEquals("D", tasks.get(0).getName());
+		assertEquals("E", tasks.get(1).getName());
+		
+		// Completing them should just end the process instance
+		taskService.complete(tasks.get(0).getId());
+		taskService.complete(tasks.get(1).getId());
+		assertEquals(0, runtimeService.createExecutionQuery().count());
+	}
+	
 
 }
