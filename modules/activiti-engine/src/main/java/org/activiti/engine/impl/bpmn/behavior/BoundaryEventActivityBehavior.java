@@ -93,6 +93,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     }
 	
 	protected void executeNonInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
+		
 	    // Non-interrupting: the current execution is given the first parent scope (which isn't its direct parent)
 	     //
 	     // Why? Because this execution does NOT have anything to do with 
@@ -109,17 +110,17 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 	     ExecutionEntity scopeExecution = null;
 	     ExecutionEntity currentlyExaminedExecution = commandContext.getExecutionEntityManager()
 	    		 .findExecutionById(parentExecutionEntity.getParentId());
-	     while (currentlyExaminedExecution != null && scopeExecution != null) {
+	     while (currentlyExaminedExecution != null && scopeExecution == null) {
 	    	 if (currentlyExaminedExecution.isScope()) {
 	    		 scopeExecution = currentlyExaminedExecution;
 	    	 } else {
-	    		 currentlyExaminedExecution =  commandContext.getExecutionEntityManager().findExecutionById(currentlyExaminedExecution.getId());
+	    		 currentlyExaminedExecution =  commandContext.getExecutionEntityManager()
+	    				 .findExecutionById(currentlyExaminedExecution.getParentId());
 	    	 }
 	     }
 	     
 	     if (scopeExecution != null) {
 	    	 executionEntity.setParentId(scopeExecution.getId());
-	    	 scopeExecution.setConcurrent(true);
 	     } else {
 	    	 executionEntity.setParentId(null);
 	     }

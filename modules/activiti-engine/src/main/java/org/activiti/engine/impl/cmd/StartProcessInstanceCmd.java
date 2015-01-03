@@ -156,6 +156,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 		ExecutionEntity processInstance = new ExecutionEntity();
 		processInstance.setProcessDefinitionId(processDefinitionEntity.getId());
 		processInstance.setBusinessKey(businessKey);
+		processInstance.setScope(true); // process instance is always a scope for all child executions
 		
 		// Inherit tenant id (if any)
 		if (processDefinitionEntity.getTenantId() != null) {

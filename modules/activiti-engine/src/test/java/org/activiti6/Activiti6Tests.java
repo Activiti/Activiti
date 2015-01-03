@@ -189,5 +189,42 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		assertEquals(0, runtimeService.createExecutionQuery().count());
 	}
 	
+	@Test
+	@org.activiti.engine.test.Deployment
+	public void testSimpleNonInterruptingTimerBoundaryEvent() {
+		
+		// First test: first the task associated with the parent execution, then the one with the child 
+		// (see the task name ordering in the query to get that specific order)
+		
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleBoundaryTimer");
+		assertNotNull(processInstance);
+		assertFalse(processInstance.isEnded());
+		
+		Job job = managementService.createJobQuery().singleResult();
+		managementService.executeJob(job.getId());
+		
+		List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+		assertEquals(2, tasks.size());
+		
+		// Completing them both should complete the process instance
+		for (Task task : tasks) {
+			taskService.complete(task.getId());
+		}
+		
+		assertEquals(0, runtimeService.createExecutionQuery().count());
+		
+		// Second test: complete tasks: first task associated with child execution, then parent execution (easier case)
+		processInstance = runtimeService.startProcessInstanceByKey("simpleBoundaryTimer");
+
+		job = managementService.createJobQuery().singleResult();
+		managementService.executeJob(job.getId());
+		
+		tasks = taskService.createTaskQuery().orderByTaskName().desc().list(); // Note the 'desc()' here: Task B, Task A will be the result (task b being associated with the child execution)
+		for (Task task : tasks) {
+			taskService.complete(task.getId());
+		}
+		assertEquals(0, runtimeService.createExecutionQuery().count());
+	}
+	
 
 }

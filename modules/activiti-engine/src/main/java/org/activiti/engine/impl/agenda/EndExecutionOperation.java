@@ -38,15 +38,7 @@ public class EndExecutionOperation extends AbstractOperation {
 		CommandContext commandContext = Context.getCommandContext();
 		ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 		ExecutionEntity executionEntity = (ExecutionEntity) execution; // TODO: don't like cast here ...
-		
-		// If the execution is a scope, and it is ended, all the child executions must be deleted first. 
-		if (executionEntity.isScope()) {
-			deleteChildExecutions(commandContext, executionEntity);
-		}
-		
-		// Delete data related the ended execution
-		deleteDataRelatedToExecution(commandContext, executionEntity);
-		
+	
 		// Find parent execution. If not found, it's the process instance and other logic needs to happen
 		ExecutionEntity parentExecution = null;
 		if (executionEntity.getParentId() != null) {
@@ -57,9 +49,14 @@ public class EndExecutionOperation extends AbstractOperation {
 			
 			parentExecution.setActive(true);
 			
+			// If the execution is a scope, and it is ended, all the child executions must be deleted first. 
+			if (executionEntity.isScope()) {
+				deleteChildExecutions(commandContext, executionEntity);
+			}
+			
 			// Delete current execution
 			logger.debug("Ending execution {}", execution.getId());
-			executionEntityManager.delete(executionEntity);
+			deleteExecution(commandContext, executionEntity);
 			
 			logger.debug("Parent execution found. Continuing process using execution {}", parentExecution.getId());
 			parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
@@ -83,22 +80,32 @@ public class EndExecutionOperation extends AbstractOperation {
 				}
 			}
 			
-			// Delete identity links
-			IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
-			List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceId);
-			for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
-				identityLinkEntityManager.delete(identityLinkEntity);
-			}
-
 			if (activeExecutions == 0) {
 				logger.debug("No active executions found. Ending process instance {} ", processInstanceId);
-				ExecutionEntity processInstanceEntity = executionEntityManager.findExecutionById(processInstanceId);
-				executionEntityManager.delete(processInstanceEntity); // TODO: what about delete reason?
+				deleteProcessInstanceExecutionEntity(commandContext, executionEntityManager, processInstanceId);
 			} else {
 				logger.debug("Active executions found. Process instance {} will not be ended.", processInstanceId);
 			}
 		}
 	}
+
+	
+	protected void deleteExecution(CommandContext commandContext, ExecutionEntity executionEntity) {
+		deleteDataRelatedToExecution(commandContext, executionEntity);
+		commandContext.getExecutionEntityManager().delete(executionEntity); // TODO: what about delete reason?
+	}
+	
+	protected void deleteProcessInstanceExecutionEntity(CommandContext commandContext, ExecutionEntityManager executionEntityManager, String processInstanceId) {
+		
+	    IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
+	    List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceId);
+	    for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
+	    	identityLinkEntityManager.delete(identityLinkEntity);
+	    }
+	    
+	    ExecutionEntity processInstanceEntity = executionEntityManager.findExecutionById(processInstanceId);
+	    deleteExecution(commandContext, processInstanceEntity);
+    }
 	
 	protected void deleteChildExecutions(CommandContext commandContext, ExecutionEntity executionEntity) {
 		
