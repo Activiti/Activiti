@@ -37,6 +37,7 @@ public class EndExecutionOperation extends AbstractOperation {
 		ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 		ExecutionEntity executionEntity = (ExecutionEntity) execution; // TODO: don't like cast here ...
 		executionEntity.setEnded(true);
+		executionEntity.setActive(false);
 
 		// Get variables related to execution and delete them
 		VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();

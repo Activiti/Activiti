@@ -39,12 +39,14 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelBoundaryEventActivityBehavior;
@@ -412,11 +414,16 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   // Boundary Events
   
   public BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent, boolean interrupting, ActivityImpl activity) {
-    return new BoundaryEventActivityBehavior(interrupting, activity.getId());
+    return new BoundaryEventActivityBehavior(interrupting);
   }
 
   public CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(CancelEventDefinition cancelEventDefinition) {
     return new CancelBoundaryEventActivityBehavior();
   }
+  
+  @Override
+    public BoundaryTimerEventActivityBehavior createBoundaryTimerEventActivityBehavior(BoundaryEvent boundaryEvent, TimerEventDefinition timerEventDefinition, boolean interrupting) {
+	  return new BoundaryTimerEventActivityBehavior(timerEventDefinition, interrupting);
+    }
   
 }

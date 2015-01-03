@@ -15,7 +15,8 @@ package org.activiti6;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.Map;
 
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.junit.Test;
@@ -148,9 +150,27 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).singleResult();
 		assertNotNull(execution);
 
-		runtimeService.signal(execution.getId());
+		runtimeService.trigger(execution.getId());
 
 		assertNull(runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult());
 	}
+	
+	@Test
+	@org.activiti.engine.test.Deployment
+	public void testSimpleTimerBoundaryEvent() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleBoundaryTimer");
+		assertNotNull(processInstance);
+		assertFalse(processInstance.isEnded());
+		
+		Job job = managementService.createJobQuery().singleResult();
+		managementService.executeJob(job.getId());
+		
+		Task task = taskService.createTaskQuery().singleResult();
+		assertEquals("Task after timer", task.getName());
+		
+		taskService.complete(task.getId());
+		assertEquals(0, runtimeService.createExecutionQuery().count());
+	}
+	
 
 }

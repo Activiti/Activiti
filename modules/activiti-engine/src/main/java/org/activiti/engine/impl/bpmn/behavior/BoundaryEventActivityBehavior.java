@@ -12,82 +12,127 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
 
 /**
  * @author Joram Barrez
  */
 public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
-  
-  protected boolean interrupting;
-  protected String activityId;
-  
-  public BoundaryEventActivityBehavior() {
-    
-  }
-  
-  public BoundaryEventActivityBehavior(boolean interrupting, String activityId) {
-    this.interrupting = interrupting;
-    this.activityId = activityId;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public void execute(ActivityExecution execution) {
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    ActivityImpl boundaryActivity = executionEntity.getProcessDefinition().findActivity(activityId);
-    ActivityImpl interruptedActivity = executionEntity.getActivity();
-    
-    executionEntity.setActivity(boundaryActivity);
-    
-    List<PvmTransition> outgoingTransitions = boundaryActivity.getOutgoingTransitions();
-    List<ExecutionEntity> interruptedExecutions = null;
-    
-    if (interrupting) {
-      if (executionEntity.getSubProcessInstance()!=null) {
-        executionEntity.getSubProcessInstance().deleteCascade(executionEntity.getDeleteReason());
-      }
-      
-      interruptedExecutions = new ArrayList<ExecutionEntity>(executionEntity.getExecutions());
-      for (ExecutionEntity interruptedExecution: interruptedExecutions) {
-        interruptedExecution.deleteCascade("interrupting boundary event '"+execution.getActivity().getId()+"' fired");
-      }
-      
-      execution.takeAll(outgoingTransitions, (List) interruptedExecutions);
-    }
-    else {
-      // non interrupting event, introduced with BPMN 2.0, we need to create a new execution in this case
-      
-      // create a new execution and move it out from the timer activity
-      ExecutionEntity concurrentRoot = executionEntity.getParent().isConcurrent() ? executionEntity.getParent() : executionEntity;
-      ExecutionEntity outgoingExecution = concurrentRoot.createExecution();
-    
-      outgoingExecution.setActive(true);
-      outgoingExecution.setScope(false);
-      outgoingExecution.setConcurrent(true);
-      
-      outgoingExecution.takeAll(outgoingTransitions, Collections.EMPTY_LIST);
-      outgoingExecution.remove();
-      // now we have to move the execution back to the real activity
-      // since the execution stays there (non interrupting) and it was
-      // set to the boundary event before
-      executionEntity.setActivity(interruptedActivity);      
-    }
-  }
 
-  public boolean isInterrupting() {
-    return interrupting;
-  }
+	protected boolean interrupting;
 
-  public void setInterrupting(boolean interrupting) {
-    this.interrupting = interrupting;
-  }
+	public BoundaryEventActivityBehavior() {
+
+	}
+
+	public BoundaryEventActivityBehavior(boolean interrupting) {
+		this.interrupting = interrupting;
+	}
+
+	@Override
+	public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+		
+		ExecutionEntity executionEntity = (ExecutionEntity) execution;
+		if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {
+			throw new ActivitiException("Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event");
+		}
+		
+		CommandContext commandContext = Context.getCommandContext();
+		
+		if (interrupting) {
+			executeInterruptingBehavior(executionEntity, commandContext);
+		} else {
+			executeNonInterruptingBehavior(executionEntity, commandContext);
+		}
+	}
+
+	protected void executeInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
+		
+	    // TODO: is this needed???
+//			if (executionEntity.getSubProcessInstance() != null) {
+//				executionEntity.getSubProcessInstance().deleteCascade(executionEntity.getDeleteReason());
+//			}
+
+	    // The destroy scope operation will look for the parent execution and destroy the whole scope,
+	    // and leave the boundary event using this parent execution.
+	    //
+	    // The take outgoing seq flows operation below (the non-interrupting else clause) on the other hand
+	    // uses the child execution to leave, which keeps the scope alive.
+	    //
+	    // Which is what we need.
+
+	    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+	    ExecutionEntity parentScopeExecution = null;
+	    if (executionEntity.isScope()) {
+	    	parentScopeExecution = executionEntity;
+	    } else {
+	    	ExecutionEntity currentlyExaminedExecution = executionEntityManager.findExecutionById(executionEntity.getParentId());
+	    	while (currentlyExaminedExecution != null && parentScopeExecution == null) {
+	    		if (currentlyExaminedExecution.isScope()) {
+	    			parentScopeExecution = currentlyExaminedExecution;
+	    		} else {
+	    			currentlyExaminedExecution = executionEntityManager.findExecutionById(executionEntity.getParentId());
+	    		}
+	    	}
+	    }
+
+	    if (parentScopeExecution == null) {
+	    	throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
+	    }
+
+	    commandContext.getAgenda().planDestroyScopeOperation(executionEntity);
+	    commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(parentScopeExecution, true);
+    }
+	
+	protected void executeNonInterruptingBehavior(ExecutionEntity executionEntity, CommandContext commandContext) {
+	    // Non-interrupting: the current execution is given the first parent scope (which isn't its direct parent)
+	     //
+	     // Why? Because this execution does NOT have anything to do with 
+	     // the current parent execution (the one where the boundary event is on): when it is
+	     // deleted or whatever, this does not impact this new execution at all,
+	     // it is completely independent in that regard.
+	     
+	     // Note: if the parent of the parent does not exists, this becomes a 
+	     // concurrent execution in the process instance!
+
+	     ExecutionEntity parentExecutionEntity = commandContext.getExecutionEntityManager()
+	    		 .findExecutionById(executionEntity.getParentId());
+	     
+	     ExecutionEntity scopeExecution = null;
+	     ExecutionEntity currentlyExaminedExecution = commandContext.getExecutionEntityManager()
+	    		 .findExecutionById(parentExecutionEntity.getParentId());
+	     while (currentlyExaminedExecution != null && scopeExecution != null) {
+	    	 if (currentlyExaminedExecution.isScope()) {
+	    		 scopeExecution = currentlyExaminedExecution;
+	    	 } else {
+	    		 currentlyExaminedExecution =  commandContext.getExecutionEntityManager().findExecutionById(currentlyExaminedExecution.getId());
+	    	 }
+	     }
+	     
+	     if (scopeExecution != null) {
+	    	 executionEntity.setParentId(scopeExecution.getId());
+	    	 scopeExecution.setConcurrent(true);
+	     } else {
+	    	 executionEntity.setParentId(null);
+	     }
+	     
+	     commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
+    }
+
+	public boolean isInterrupting() {
+		return interrupting;
+	}
+
+	public void setInterrupting(boolean interrupting) {
+		this.interrupting = interrupting;
+	}
 
 }

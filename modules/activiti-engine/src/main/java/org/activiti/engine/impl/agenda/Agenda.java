@@ -64,5 +64,9 @@ public class Agenda {
 	public void planTriggerExecutionOperation(ActivityExecution execution) {
 		planOperation(new TriggerExecutionOperation(this, execution));
 	}
+	
+	public void planDestroyScopeOperation(ActivityExecution execution) {
+		planOperation(new DestroyScopeOperation(this, execution));
+	}
 
 }

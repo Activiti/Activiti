@@ -41,11 +41,13 @@ import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelBoundaryEventActivityBehavior;
@@ -348,6 +350,11 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
 	public CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(
 			CancelEventDefinition cancelEventDefinition) {
 		return wrappedActivityBehaviorFactory.createCancelBoundaryEventActivityBehavior(cancelEventDefinition);
+	}
+	
+	@Override
+	public BoundaryTimerEventActivityBehavior createBoundaryTimerEventActivityBehavior(BoundaryEvent boundaryEvent, TimerEventDefinition timerEventDefinition, boolean interrupting) {
+		return wrappedActivityBehaviorFactory.createBoundaryTimerEventActivityBehavior(boundaryEvent, timerEventDefinition, interrupting);
 	}
 	
 	// Mock support //////////////////////////////////////////////////////

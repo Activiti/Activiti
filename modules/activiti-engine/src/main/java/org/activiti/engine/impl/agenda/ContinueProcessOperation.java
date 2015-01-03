@@ -9,8 +9,11 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -101,25 +104,27 @@ public class ContinueProcessOperation extends AbstractOperation {
 
 	protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents) {
 		
-		throw new RuntimeException("Joram needs to implement boundary events");
+		// The parent execution becomes a scope, and a child execution iscreated for each of the boundary events
+		execution.setScope(true);
 
-//		// The parent execution becomes a scope, and a child execution iscreated
-//		// for each of the boundary events
-//		execution.setScope(true);
-//
-//		ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
-//
-//		for (BoundaryEvent boundaryEvent : boundaryEvents) {
-//
-//			ExecutionEntity childExecutionEntity = new ExecutionEntity((ExecutionEntity) execution); // TODO: cast shouldnt be// necessary
-//			childExecutionEntity.setParentId(execution.getId());
-//			childExecutionEntity.setCurrentFlowElement(boundaryEvent);
-//			childExecutionEntity.setCurrentActivityId(boundaryEvent.getId());
-//			executionEntityManager.insert(childExecutionEntity);
-//
-//			((ActivityBehavior) boundaryEvent.getBehaviour())
-//			        .execute(childExecutionEntity);
-//		}
+		ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+
+		for (BoundaryEvent boundaryEvent : boundaryEvents) {
+
+			ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
+			childExecutionEntity.setParentId(execution.getId());
+			childExecutionEntity.setCurrentFlowElement(boundaryEvent);
+			childExecutionEntity.setCurrentActivityId(boundaryEvent.getId());
+			childExecutionEntity.setScope(false);
+
+			ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+			if (boundaryEventBehavior != null) {
+				logger.debug("Executing boundary event activityBehavior {} with execution {}", boundaryEventBehavior.getClass(), childExecutionEntity.getId());
+				boundaryEventBehavior.execute(childExecutionEntity);
+			} else {
+				throw new ActivitiException("No ActivityBehavior for boundary event " + boundaryEvent.getId());
+			}
+		}
 
 	}
 	
