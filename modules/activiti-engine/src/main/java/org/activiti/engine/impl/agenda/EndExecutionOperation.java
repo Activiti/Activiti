@@ -1,6 +1,8 @@
 package org.activiti.engine.impl.agenda;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.activiti.engine.impl.context.Context;
@@ -36,45 +38,24 @@ public class EndExecutionOperation extends AbstractOperation {
 		CommandContext commandContext = Context.getCommandContext();
 		ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 		ExecutionEntity executionEntity = (ExecutionEntity) execution; // TODO: don't like cast here ...
-		executionEntity.setEnded(true);
-		executionEntity.setActive(false);
-
-		// Get variables related to execution and delete them
-		VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
-		Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(execution.getId());
-		for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
-			variableInstanceEntityManager.delete(variableInstanceEntity);
+		
+		// If the execution is a scope, and it is ended, all the child executions must be deleted first. 
+		if (executionEntity.isScope()) {
+			deleteChildExecutions(commandContext, executionEntity);
 		}
 		
+		// Delete data related the ended execution
+		deleteDataRelatedToExecution(commandContext, executionEntity);
+		
+		// Find parent execution. If not found, it's the process instance and other logic needs to happen
 		ExecutionEntity parentExecution = null;
-//		if (executionEntity.isScope()) {
-//			parentExecution = executionEntity.getParent();
-//		}
 		if (executionEntity.getParentId() != null) {
 			parentExecution = executionEntityManager.get(executionEntity.getParentId());
 		}
-
+		
 		if (parentExecution != null) {
+			
 			parentExecution.setActive(true);
-		}
-
-		// TODO: optimise by keeping boolean on executions!
-
-		// Delete current user tasks
-		TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
-		Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(execution.getId());
-		for (TaskEntity taskEntity : tasksForExecution) {
-			taskEntityManager.delete(taskEntity);
-		}
-
-		// Delete jobs
-		JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
-		Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(execution.getId());
-		for (JobEntity job : jobsForExecution) {
-			jobEntityManager.delete(job);
-		}
-
-		if (parentExecution != null) {
 			
 			// Delete current execution
 			logger.debug("Ending execution {}", execution.getId());
@@ -118,5 +99,58 @@ public class EndExecutionOperation extends AbstractOperation {
 			}
 		}
 	}
+	
+	protected void deleteChildExecutions(CommandContext commandContext, ExecutionEntity executionEntity) {
+		
+		// The children of an execution for a tree. For correct deletions (taking care of foreign keys between child-parent)
+		// the leafs of this tree must be deleted first before the parents elements.
+		
+		// Gather all children
+		List<ExecutionEntity> childExecutionEntities = new ArrayList<ExecutionEntity>();
+		LinkedList<ExecutionEntity> uncheckedExecutions = new LinkedList<ExecutionEntity>(executionEntity.getExecutions());
+		while (!uncheckedExecutions.isEmpty()) {
+			ExecutionEntity currentExecutionentity = uncheckedExecutions.pop();
+			childExecutionEntities.add(currentExecutionentity);
+			uncheckedExecutions.addAll(currentExecutionentity.getExecutions());
+		}
+		
+		// Delete them (reverse order : leafs of the tree first)
+		for (int i=childExecutionEntities.size()-1; i>=0; i--) {
+			ExecutionEntity childExecutionEntity = childExecutionEntities.get(i);
+			if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
+				deleteDataRelatedToExecution(commandContext, childExecutionEntity);
+				commandContext.getExecutionEntityManager().delete(childExecutionEntity);
+			}
+		}
+		
+	}
+
+	protected void deleteDataRelatedToExecution(CommandContext commandContext, ExecutionEntity executionEntity) {
+		
+	    // To start, deactivate the current incoming execution
+		executionEntity.setEnded(true);
+		executionEntity.setActive(false);
+
+		// Get variables related to execution and delete them
+		VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
+		Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
+		for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
+			variableInstanceEntityManager.delete(variableInstanceEntity);
+		}
+		
+		// Delete current user tasks
+		TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
+		Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
+		for (TaskEntity taskEntity : tasksForExecution) {
+			taskEntityManager.delete(taskEntity);
+		}
+
+		// Delete jobs
+		JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
+		Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
+		for (JobEntity job : jobsForExecution) {
+			jobEntityManager.delete(job);
+		}
+    }
 
 }
