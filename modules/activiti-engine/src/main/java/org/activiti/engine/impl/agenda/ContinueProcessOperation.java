@@ -75,7 +75,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
 		// Execute actual behavior
 		ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
-		logger.debug("Executing activityBehavior {} with execution {}", activityBehavior.getClass(), execution.getId());
+		logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
 		activityBehavior.execute(execution);
 	}
 	

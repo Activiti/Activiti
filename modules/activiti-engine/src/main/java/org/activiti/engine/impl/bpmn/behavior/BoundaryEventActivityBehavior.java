@@ -88,7 +88,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 	    	throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
 	    }
 
-	    commandContext.getAgenda().planDestroyScopeOperation(executionEntity);
+	    commandContext.getAgenda().planDestroyScopeOperation(executionEntity); // The destroy scope operation will figure out the correct scope execution, don't pass in the parentScopeExecution here
 	    commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(parentScopeExecution, true);
     }
 	

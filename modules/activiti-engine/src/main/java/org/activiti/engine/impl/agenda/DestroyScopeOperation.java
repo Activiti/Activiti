@@ -58,7 +58,7 @@ public class DestroyScopeOperation extends AbstractOperation {
 		// Delete all child executions
 		Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentScopeExecution.getId());
 		for (ExecutionEntity childExcecution : childExecutions) {
-			agenda.planEndExecutionOperation(childExcecution);
+			deleteExecution(commandContext, childExcecution);
 		}
 
 		// Delete all scope tasks
@@ -75,7 +75,6 @@ public class DestroyScopeOperation extends AbstractOperation {
 			jobEntityManager.delete(job);
 		}
 
-		// Leave the flow element using the parent execution
 		parentScopeExecution.setCurrentFlowElement(currentFlowElement);
 	}
 

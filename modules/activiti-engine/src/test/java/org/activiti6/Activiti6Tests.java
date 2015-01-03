@@ -277,5 +277,54 @@ public class Activiti6Tests extends AbstractActvitiTest {
 		}
 	}
 	
+	@Test
+	@org.activiti.engine.test.Deployment
+	public void testNonInterruptingMoreComplex() {
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("nonInterruptingTimer");
+		assertNotNull(processInstance);
+		assertFalse(processInstance.isEnded());
+		
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(2, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("B", tasks.get(1).getName());
+		
+		// Triggering the timers cancels B, but A is not interrupted
+		List<Job> jobs = managementService.createJobQuery().list();
+		assertEquals(2, jobs.size());
+		for (Job job : jobs) {
+			managementService.executeJob(job.getId());
+		}
+		
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(5, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("C", tasks.get(1).getName());
+		assertEquals("D", tasks.get(2).getName());
+		assertEquals("E", tasks.get(3).getName());
+		assertEquals("F", tasks.get(4).getName());
+		
+		// Firing timer shouldn't cancel anything, but create new task 
+		jobs = managementService.createJobQuery().list();
+		assertEquals(1, jobs.size());
+		managementService.executeJob(jobs.get(0).getId());
+		
+		tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
+		assertEquals(6, tasks.size());
+		assertEquals("A", tasks.get(0).getName());
+		assertEquals("C", tasks.get(1).getName());
+		assertEquals("D", tasks.get(2).getName());
+		assertEquals("E", tasks.get(3).getName());
+		assertEquals("F", tasks.get(4).getName());
+		assertEquals("G", tasks.get(5).getName());
+		
+		// Completing all tasks in this order should give the engine a bit exercise (parent executions first)
+		for (Task task : tasks) {
+			taskService.complete(task.getId());
+		}
+		
+		assertEquals(0, runtimeService.createExecutionQuery().count());
+	}
+	
 
 }
