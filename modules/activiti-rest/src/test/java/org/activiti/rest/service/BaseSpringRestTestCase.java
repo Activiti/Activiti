@@ -161,8 +161,6 @@ public class BaseSpringRestTestCase extends PvmTestCase {
   public void runBare() throws Throwable {
     createUsers();
 
-    log.error(EMPTY_LINE);
-
     try {
       
       deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
