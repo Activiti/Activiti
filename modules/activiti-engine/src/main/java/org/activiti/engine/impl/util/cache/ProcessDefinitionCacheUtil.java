@@ -38,7 +38,7 @@ public class ProcessDefinitionCacheUtil {
 		return null;
 	}
 	
-	private static ProcessDefinitionCacheEntry getCacheEntry(String processDefinitionId) {
+	public static ProcessDefinitionCacheEntry getCacheEntry(String processDefinitionId) {
 	    ProcessDefinitionCacheEntry cacheEntry = Context.getProcessEngineConfiguration()
 	    		.getProcessDefinitionCache().get(processDefinitionId);
 	    return cacheEntry;

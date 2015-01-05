@@ -2,6 +2,7 @@ package org.activiti.engine.impl.agenda;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
@@ -38,7 +39,7 @@ public class TriggerExecutionOperation extends AbstractOperation {
 			}
 
 		} else {
-			throw new RuntimeException("Programmatic error: no current flow element found or invalid type: "
+			throw new ActivitiException("Programmatic error: no current flow element found or invalid type: "
 			                + currentFlowElement + ". Halting.");
 		}
 	}
