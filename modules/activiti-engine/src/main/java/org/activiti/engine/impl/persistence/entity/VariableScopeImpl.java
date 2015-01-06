@@ -237,11 +237,13 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   		}
   		
   		VariableInstanceEntity variable = getSpecificVariable(variableName);
-  		usedVariablesCache.put(variableName, variable);
   		
-  		if (variable != null) {
-  			return variable.getValue();
-  		} 
+  		if(variable != null)
+  		{
+  		  usedVariablesCache.put(variableName, variable);
+  		  return variable.getValue();
+  		}
+
   		return null;
   	}
   }
