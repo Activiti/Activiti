@@ -184,7 +184,11 @@ public class HistoricTaskInstanceCollectionResource extends HistoricTaskInstance
     if (allRequestParams.get("withoutTenantId") != null) {
     	queryRequest.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
     }
-    
+
+    if (allRequestParams.get("taskCandidateGroup") != null) {
+      queryRequest.setTaskCandidateGroup(allRequestParams.get("taskCandidateGroup"));
+    }
+
     return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/history/historic-task-instances", ""));
   }
 }
