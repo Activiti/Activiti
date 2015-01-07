@@ -13,10 +13,6 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
-import java.util.List;
-
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 
@@ -37,7 +33,7 @@ public class AtomicOperationProcessStartInitial extends AbstractEventAtomicOpera
 
   @Override
   protected void eventNotificationsCompleted(InterpretableExecution execution) {
-    ActivityImpl activity = (ActivityImpl) execution.getActivity();
+    /*ActivityImpl activity = (ActivityImpl) execution.getActivity();
     ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
     StartingExecution startingExecution = execution.getStartingExecution();
     if (activity==startingExecution.getInitial()) {
@@ -57,6 +53,6 @@ public class AtomicOperationProcessStartInitial extends AbstractEventAtomicOpera
       }
       executionToUse.setActivity(activity);
       executionToUse.performOperation(PROCESS_START_INITIAL);
-    }
+    }*/
   }
 }

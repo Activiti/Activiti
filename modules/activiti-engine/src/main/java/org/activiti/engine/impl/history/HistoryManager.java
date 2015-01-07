@@ -3,6 +3,7 @@ package org.activiti.engine.impl.history;
 import java.util.Date;
 import java.util.Map;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -35,8 +36,7 @@ public interface HistoryManager extends Session {
 	/**
 	 * Record a process-instance started and record start-event if activity history is enabled.
 	 */
-	public abstract void recordProcessInstanceStart(
-			ExecutionEntity processInstance);
+	public abstract void recordProcessInstanceStart(ExecutionEntity processInstance, FlowElement startElement);
 
 	/**
      * Record a process-instance name change.

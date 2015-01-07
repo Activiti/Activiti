@@ -60,7 +60,7 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
       throw new ActivitiException("Cannot start process instance, initial activity where the process instance should start is null.");
     }
     
-    InterpretableExecution processInstance = newProcessInstance(initial);
+    InterpretableExecution processInstance = newProcessInstance();
     processInstance.setProcessDefinition(this);
     processInstance.setProcessInstance(processInstance);
     processInstance.initialize();
@@ -102,8 +102,8 @@ public class ProcessDefinitionImpl extends ScopeImpl implements PvmProcessDefini
     return initialActivityStack;
   }
 
-  protected InterpretableExecution newProcessInstance(ActivityImpl startActivity) {
-    return new ExecutionImpl(startActivity);
+  protected InterpretableExecution newProcessInstance() {
+    return new ExecutionImpl();
   }
 
   public String getDiagramResourceName() {

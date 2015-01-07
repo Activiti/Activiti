@@ -19,6 +19,8 @@ import java.util.Map;
 
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.HistoricProcessInstanceQueryImpl;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 
 
 /**
@@ -49,45 +51,45 @@ public class HistoricProcessInstanceEntityManager extends AbstractEntityManager<
   
   @SuppressWarnings("unchecked")
   public void deleteHistoricProcessInstanceById(String historicProcessInstanceId) {
-//    if (getHistoryManager().isHistoryEnabled()) {
-//      CommandContext commandContext = Context.getCommandContext();
-//      HistoricProcessInstanceEntity historicProcessInstance = findHistoricProcessInstance(historicProcessInstanceId);
-//      
-//      commandContext
-//        .getHistoricDetailEntityManager()
-//        .deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
-//
-//      commandContext
-//        .getHistoricVariableInstanceEntityManager()
-//        .deleteHistoricVariableInstanceByProcessInstanceId(historicProcessInstanceId);
-//      
-//      commandContext
-//        .getHistoricActivityInstanceEntityManager()
-//        .deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
-//      
-//      commandContext
-//        .getHistoricTaskInstanceEntityManager()
-//        .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
-//      
-//      commandContext
-//      	.getHistoricIdentityLinkEntityManager()
-//        .deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
-//      
-//      commandContext
-//        .getCommentEntityManager()
-//        .deleteCommentsByProcessInstanceId(historicProcessInstanceId);
-//      
-//      getDbSqlSession().delete(historicProcessInstance);
-//      
-//      // Also delete any sub-processes that may be active (ACT-821)
-//      HistoricProcessInstanceQueryImpl subProcessesQueryImpl = new HistoricProcessInstanceQueryImpl();
-//      subProcessesQueryImpl.superProcessInstanceId(historicProcessInstanceId);
-//      
-//      List<HistoricProcessInstance> selectList = getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", subProcessesQueryImpl);
-//      for(HistoricProcessInstance child : selectList) {
-//      	deleteHistoricProcessInstanceById(child.getId());
-//      }
-//    }
+    if (getHistoryManager().isHistoryEnabled()) {
+      CommandContext commandContext = Context.getCommandContext();
+      HistoricProcessInstanceEntity historicProcessInstance = findHistoricProcessInstance(historicProcessInstanceId);
+      
+      commandContext
+        .getHistoricDetailEntityManager()
+        .deleteHistoricDetailsByProcessInstanceId(historicProcessInstanceId);
+
+      commandContext
+        .getHistoricVariableInstanceEntityManager()
+        .deleteHistoricVariableInstanceByProcessInstanceId(historicProcessInstanceId);
+      
+      commandContext
+        .getHistoricActivityInstanceEntityManager()
+        .deleteHistoricActivityInstancesByProcessInstanceId(historicProcessInstanceId);
+      
+      commandContext
+        .getHistoricTaskInstanceEntityManager()
+        .deleteHistoricTaskInstancesByProcessInstanceId(historicProcessInstanceId);
+      
+      commandContext
+      	.getHistoricIdentityLinkEntityManager()
+        .deleteHistoricIdentityLinksByProcInstance(historicProcessInstanceId);
+      
+      commandContext
+        .getCommentEntityManager()
+        .deleteCommentsByProcessInstanceId(historicProcessInstanceId);
+      
+      getDbSqlSession().delete(historicProcessInstance);
+      
+      // Also delete any sub-processes that may be active (ACT-821)
+      HistoricProcessInstanceQueryImpl subProcessesQueryImpl = new HistoricProcessInstanceQueryImpl();
+      subProcessesQueryImpl.superProcessInstanceId(historicProcessInstanceId);
+      
+      List<HistoricProcessInstance> selectList = getDbSqlSession().selectList("selectHistoricProcessInstancesByQueryCriteria", subProcessesQueryImpl);
+      for(HistoricProcessInstance child : selectList) {
+      	deleteHistoricProcessInstanceById(child.getId());
+      }
+    }
   }
   
   public long findHistoricProcessInstanceCountByQueryCriteria(HistoricProcessInstanceQueryImpl historicProcessInstanceQuery) {

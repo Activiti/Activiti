@@ -15,6 +15,8 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CancelEventDefinition;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -48,10 +50,10 @@ public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<
 		}
 
 		if (eventDefinition instanceof TimerEventDefinition 
-				|| eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition 
+				|| eventDefinition instanceof ErrorEventDefinition 
 				|| eventDefinition instanceof SignalEventDefinition
 		        || eventDefinition instanceof CancelEventDefinition || eventDefinition instanceof MessageEventDefinition
-		        || eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
+		        || eventDefinition instanceof CompensateEventDefinition) {
 
 			bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
 

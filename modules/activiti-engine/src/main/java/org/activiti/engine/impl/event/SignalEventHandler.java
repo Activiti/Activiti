@@ -15,6 +15,8 @@ package org.activiti.engine.impl.event;
 
 import java.util.Map;
 
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.context.Context;
@@ -23,7 +25,7 @@ import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 
@@ -55,12 +57,20 @@ public class SignalEventHandler extends AbstractEventHandler {
   		if (processDefinition == null) {
   			throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
   		}
- 
-  		ActivityImpl startActivity = processDefinition.findActivity(eventSubscription.getActivityId());
-  		if (startActivity == null) {
-  			throw new ActivitiException("Could no handle signal: no start activity found with id " + eventSubscription.getActivityId());
-  		}
-  		ExecutionEntity processInstance = processDefinition.createProcessInstance(null, startActivity);
+  		
+  		Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinition.getId());
+  		if (process == null) {
+            throw new ActivitiException("Cannot start process instance. Process model "
+                    + processDefinition.getName() + " (id = " + processDefinition.getId() + ") could not be found");
+        }
+  		
+  		FlowElement signalFlowElement = process.getFlowElement(eventSubscription.getActivityId());
+        if (signalFlowElement == null) {
+            throw new ActivitiException("No activity found in process definition " + processDefinition.getId() +
+                    " for activity id " + eventSubscription.getActivityId());
+        }
+        
+  		ExecutionEntity processInstance = processDefinition.createProcessInstance(null, signalFlowElement);
   		if (processInstance == null) {
   			throw new ActivitiException("Could not handle signal: no process instance started");
   		}

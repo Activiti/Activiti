@@ -107,7 +107,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
 	    		
 	    		//No sequence flow could be found, not even a default one
 	    		throw new ActivitiException("No outgoing sequence flow of the exclusive gateway '"
-	    				+ execution.getActivity().getId() + "' could be selected for continuing the process");
+	    				+ exclusiveGateway.getId() + "' could be selected for continuing the process");
 	      }
 	    }
 	    

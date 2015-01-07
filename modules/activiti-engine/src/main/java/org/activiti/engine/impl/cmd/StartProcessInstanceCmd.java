@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -25,6 +26,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -34,6 +36,7 @@ import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLinkType;
 
 /**
  * @author Tom Baeyens
@@ -119,10 +122,14 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 
 		// Get model from cache
 		Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinition.getId());
+		if (process == null) {
+		    throw new ActivitiException("Cannot start process instance. Process model "
+                    + processDefinition.getName() + " (id = " + processDefinition.getId() + ") could not be found");
+		}
 
 		FlowElement initialFlowElement = process.getInitialFlowElement();
 		if (initialFlowElement == null) {
-			throw new ActivitiException("No start element found");
+			throw new ActivitiException("No start element found for process definition " + processDefinition.getId());
 		}
 
 		// Create process instance
@@ -130,7 +137,12 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 		// //// ////// ////// //////
 
 		// Create the process instance
-		ExecutionEntity processInstance = createProcessInstance(commandContext, processDefinition, businessKey);
+		String initiatorVariableName = null;
+		if (initialFlowElement instanceof StartEvent) {
+		    initiatorVariableName = ((StartEvent) initialFlowElement).getInitiator();
+		}
+		ExecutionEntity processInstance = createProcessInstance(commandContext, processDefinition, 
+		        businessKey, initiatorVariableName, initialFlowElement);
 
 		// Set the variables passed into the start command
 		if (variables != null) {
@@ -150,8 +162,8 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 		return processInstance;
 	}
 
-	protected ExecutionEntity createProcessInstance(CommandContext commandContext, 
-			ProcessDefinitionEntity processDefinitionEntity, String businessKey) {
+	protected ExecutionEntity createProcessInstance(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity, 
+	        String businessKey, String initiatorVariableName, FlowElement initialFlowElement) {
 		
 		ExecutionEntity processInstance = new ExecutionEntity();
 		processInstance.setProcessDefinitionId(processDefinitionEntity.getId());
@@ -163,21 +175,19 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 			processInstance.setTenantId(processDefinitionEntity.getTenantId());
 		}
 
-//		String authenticatedUserId = Authentication.getAuthenticatedUserId();
-//		String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
-//		if (initiatorVariableName != null) {
-//			processInstance.setVariable(initiatorVariableName,
-//			        authenticatedUserId);
-//		}
-//		if (authenticatedUserId != null) {
-//			processInstance.addIdentityLink(authenticatedUserId, null,IdentityLinkType.STARTER);
-//		}
+		String authenticatedUserId = Authentication.getAuthenticatedUserId();
+		if (initiatorVariableName != null) {
+		  processInstance.setVariable(initiatorVariableName, authenticatedUserId);
+		}
+		if (authenticatedUserId != null) {
+		  processInstance.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
+		}
 		
 		// Store in database
 		commandContext.getExecutionEntityManager().insert(processInstance);
 
 		// Fire events
-		commandContext.getHistoryManager().recordProcessInstanceStart(processInstance);
+		commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
 
 		if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
 			Context.getProcessEngineConfiguration()

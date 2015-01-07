@@ -13,13 +13,11 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
-import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
@@ -56,9 +54,6 @@ public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
     }
   	
     ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-    StartingExecution startingExecution = execution.getStartingExecution();
-    List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack(startingExecution.getInitial());  
-    execution.setActivity(initialActivityStack.get(0));
     execution.performOperation(PROCESS_START_INITIAL);
   }
 }
