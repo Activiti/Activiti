@@ -2,6 +2,7 @@
 v  5.17.1-SNAPSHOT
 :doctype: book
 :toc: left
+:toclevels: 5
 :icons: font
 :numbered:
 :source-highlighter: pygments
