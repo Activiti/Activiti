@@ -30,6 +30,7 @@ create table ACT_RE_DEPLOYMENT (
     CATEGORY_ varchar(255),
     TENANT_ID_ varchar(255) default '',
     DEPLOY_TIME_ timestamp(3),
+    ENGINE_VERSION varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
@@ -107,6 +108,7 @@ create table ACT_RE_PROCDEF (
     HAS_GRAPHICAL_NOTATION_ TINYINT,
     SUSPENSION_STATE_ integer,
     TENANT_ID_ varchar(255) default '',
+    ENGINE_VERSION varchar(255),
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 

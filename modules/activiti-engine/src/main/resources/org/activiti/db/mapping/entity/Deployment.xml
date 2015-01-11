@@ -34,6 +34,7 @@
     <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="engineVersion" column="ENGINE_VERSION" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- DEPLOYMENT SELECT -->

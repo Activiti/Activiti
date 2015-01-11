@@ -65,6 +65,7 @@
     <result property="hasStartFormKey" column="HAS_START_FORM_KEY_" jdbcType="BOOLEAN"/>
     <result property="isGraphicalNotationDefined" column="HAS_GRAPHICAL_NOTATION_" jdbcType="BOOLEAN" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
+    <result property="engineVersion" column="ENGINE_VERSION" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- PROCESSDEFINITION SELECT -->

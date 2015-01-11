@@ -20,7 +20,7 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 public final class LocalMessages {
-	private static final String BUNDLE_NAME = "org.activiti.engine.impl.juel.misc.LocalStrings";
+	private static final String BUNDLE_NAME = "org.activiti5.engine.impl.juel.misc.LocalStrings";
 	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
 	public static String get(String key, Object... args) {

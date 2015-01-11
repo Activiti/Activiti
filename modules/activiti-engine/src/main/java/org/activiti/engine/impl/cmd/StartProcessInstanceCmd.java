@@ -23,6 +23,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
@@ -79,6 +80,11 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 
 	public ProcessInstance execute(CommandContext commandContext) {
 		DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
+		
+		//
+		// TODO: Think about cache usage here. How to avoid duplication??
+		// Probably best to switch to separate caches: one for entities, and one for process models.
+		//
 
 		// Find the process definition
 		ProcessDefinitionEntity processDefinition = null;
@@ -111,6 +117,32 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 		} else {
 			throw new ActivitiIllegalArgumentException(
 			        "processDefinitionKey and processDefinitionId are null");
+		}
+		
+		// Backwards compatibility
+		
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println("---> " + processDefinition.getEngineVersion());
+		System.out.println();
+		System.out.println();
+		
+		if (processDefinition.getEngineVersion() != null) {
+			if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
+				Activiti5CompatibilityHandler activiti5CompatibilityHandler =
+						commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
+				
+				if (activiti5CompatibilityHandler == null) {
+					throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath");
+				}
+				
+				return activiti5CompatibilityHandler.startProcessInstance(processDefinitionKey, processDefinitionId, 
+						variables, businessKey, tenantId, processInstanceName);
+			} else {
+				throw new ActivitiException("Invalid 'engine' for process definition " 
+						+ processDefinition.getId() + " : " + processDefinition.getEngineVersion());
+			}
 		}
 
 		// Do not start process a process instance if the process definition is

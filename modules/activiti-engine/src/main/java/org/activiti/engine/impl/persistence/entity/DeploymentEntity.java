@@ -41,6 +41,9 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   protected Date deploymentTime;
   protected boolean isNew;
   
+  // Backwards compatibility
+  protected String engineVersion;
+  
   /**
    * Will only be used during actual deployment to pass deployed artifacts (eg process definitions).
    * Will be null otherwise.
@@ -154,11 +157,19 @@ public class DeploymentEntity implements Serializable, Deployment, PersistentObj
   public void setNew(boolean isNew) {
     this.isNew = isNew;
   }
+  
+  public String getEngineVersion() {
+	return engineVersion;
+  }
+
+  public void setEngineVersion(String engineVersion) {
+	this.engineVersion = engineVersion;
+  }
 
   
   // common methods  //////////////////////////////////////////////////////////
 
-  @Override
+@Override
   public String toString() {
     return "DeploymentEntity[id=" + id + ", name=" + name + "]";
   }

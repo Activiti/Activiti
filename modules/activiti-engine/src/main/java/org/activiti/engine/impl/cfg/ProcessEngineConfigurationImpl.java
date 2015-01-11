@@ -46,6 +46,9 @@ import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.cfg.ProcessEngineConfigurator;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandlerFactory;
+import org.activiti.engine.compatibility.DefaultActiviti5CompatibilityHandlerFactory;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -336,7 +339,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // PROCESS VALIDATION 
   
   protected ProcessValidator processValidator;
-
+  
   // OTHER ////////////////////////////////////////////////////////////////////
   
   protected List<FormEngine> customFormEngines;
@@ -410,6 +413,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Event logging to database
   protected boolean enableDatabaseEventLogging = false;
   
+  // Backwards compatibility
+  protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
+  protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
@@ -453,6 +459,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     initEventDispatcher();
     initProcessValidator();
     initDatabaseEventLogging();
+    initActiviti5CompatibilityHandler();
     configuratorsAfterInit();
   }
 
@@ -1438,6 +1445,26 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   		getEventDispatcher().addEventListener(new EventLogger(clock));
   	}
   }
+  
+  protected void initActiviti5CompatibilityHandler() {
+	  
+	  // If handler is injected, no need to do anything
+	  if (activiti5CompatibilityHandler == null) {
+		
+		  // Create default factory if nothing set
+		  if (activiti5CompatibilityHandlerFactory == null) {
+			  activiti5CompatibilityHandlerFactory = new DefaultActiviti5CompatibilityHandlerFactory();
+		  }
+		  
+		  // Create handler instance
+		  activiti5CompatibilityHandler = activiti5CompatibilityHandlerFactory.createActiviti5CompatibilityHandler();
+		  
+		  if (activiti5CompatibilityHandler != null) {
+			  log.info("Found compatibility handler instance : " + activiti5CompatibilityHandler.getClass());
+		  }
+	  }
+	  
+  }
 
   // getters and setters //////////////////////////////////////////////////////
   
@@ -2085,7 +2112,23 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
 	public ProcessEngineConfigurationImpl setEnableDatabaseEventLogging(boolean enableDatabaseEventLogging) {
 		this.enableDatabaseEventLogging = enableDatabaseEventLogging;
-    return this;
+		return this;
+	}
+
+	public Activiti5CompatibilityHandlerFactory getActiviti5CompatibilityHandlerFactory() {
+		return activiti5CompatibilityHandlerFactory;
+	}
+
+	public void setActiviti5CompatibilityHandlerFactory(Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory) {
+		this.activiti5CompatibilityHandlerFactory = activiti5CompatibilityHandlerFactory;
+	}
+
+	public Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
+		return activiti5CompatibilityHandler;
+	}
+
+	public void setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
+		this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
 	}
 	
 }

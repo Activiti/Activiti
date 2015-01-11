@@ -67,6 +67,9 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
     protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
     protected transient ActivitiEventSupport eventSupport;
+    
+    // Backwards compatibility
+    protected String engineVersion;
 
     public ProcessDefinitionEntity() {
         super(null);
@@ -360,4 +363,13 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     public ActivitiEventSupport getEventSupport() {
         return eventSupport;
     }
+
+	public String getEngineVersion() {
+		return engineVersion;
+	}
+
+	public void setEngineVersion(String engineVersion) {
+		this.engineVersion = engineVersion;
+	}
+
 }

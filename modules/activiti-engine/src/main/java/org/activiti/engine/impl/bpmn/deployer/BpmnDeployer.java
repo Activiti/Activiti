@@ -117,6 +117,11 @@ public class BpmnDeployer implements Deployer {
         for (ProcessDefinitionEntity processDefinition: bpmnParse.getProcessDefinitions()) {
           processDefinition.setResourceName(resourceName);
           
+          // Backwards compatibility
+          if (deployment.getEngineVersion() != null) {
+        	  processDefinition.setEngineVersion(deployment.getEngineVersion());
+          }
+          
           if (deployment.getTenantId() != null) {
           	processDefinition.setTenantId(deployment.getTenantId()); // process definition inherits the tenant id
           }
