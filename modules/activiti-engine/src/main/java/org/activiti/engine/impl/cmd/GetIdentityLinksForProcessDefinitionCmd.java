@@ -45,8 +45,7 @@ public class GetIdentityLinksForProcessDefinitionCmd implements Command<List<Ide
       throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
     }
     
-    List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
-    return identityLinks;
+    return (List) processDefinition.getIdentityLinks();
   }
   
 }

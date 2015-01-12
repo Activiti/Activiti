@@ -38,9 +38,8 @@ public class GetEventLogEntriesCmd implements Command<List<EventLogEntry>> {
           startLogNr,
           pageSize != null ? pageSize : -1);
 		
-	  } else {
-	    return commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
 	  }
+	  return commandContext.getEventLogEntryEntityManager().findAllEventLogEntries();
 	}
 
 }

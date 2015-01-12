@@ -44,16 +44,16 @@ public class DeleteTaskCmd implements Command<Void>, Serializable {
   }
 
   public Void execute(CommandContext commandContext) {
+	
+	if(taskId == null || taskIds == null) throw new ActivitiIllegalArgumentException("taskId and taskIds are null");
+	  
     if (taskId != null) {
       deleteTask(commandContext, taskId);
     } else if (taskIds != null) {
         for (String taskId : taskIds) {
           deleteTask(commandContext, taskId);
         }   
-    } else {
-      throw new ActivitiIllegalArgumentException("taskId and taskIds are null");
     }
-    
     
     return null;
   }

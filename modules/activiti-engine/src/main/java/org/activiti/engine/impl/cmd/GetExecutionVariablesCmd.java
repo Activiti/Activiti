@@ -53,13 +53,8 @@ public class GetExecutionVariablesCmd implements Command<Map<String, Object>>, S
     if (execution==null) {
       throw new ActivitiObjectNotFoundException("execution "+executionId+" doesn't exist", Execution.class);
     }
-
-    Map<String, Object> executionVariables;
-    if (isLocal) {
-      executionVariables = execution.getVariablesLocal();
-    } else {
-      executionVariables = execution.getVariables();
-    }
+    
+    Map<String, Object> executionVariables = isLocal ? execution.getVariablesLocal() : execution.getVariables();
     
     if (variableNames != null && variableNames.size() > 0) {
       // if variableNames is not empty, return only variable names mentioned in it

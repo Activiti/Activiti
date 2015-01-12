@@ -46,9 +46,8 @@ public class GetHistoricIdentityLinksForTaskCmd implements Command<List<Historic
   public List<HistoricIdentityLink> execute(CommandContext commandContext) {
     if(taskId != null) {
       return getLinksForTask(commandContext);
-    } else {
-      return getLinksForProcessInstance(commandContext);
     }
+    return getLinksForProcessInstance(commandContext);
   }
   
   @SuppressWarnings({"unchecked", "rawtypes" })

@@ -61,10 +61,9 @@ public class GetBpmnModelCmd implements Command<BpmnModel>, Serializable {
       if (commandContext.getDeploymentEntityManager().findDeploymentById(processDefinitionEntity.getDeploymentId()) == null) {
         throw new ActivitiObjectNotFoundException("deployment for process definition does not exist: " 
       + processDefinitionEntity.getDeploymentId(), Deployment.class);
-      } else {
-        throw new ActivitiObjectNotFoundException("no resource found with name '" + resourceName 
-                + "' in deployment '" + processDefinitionEntity.getDeploymentId() + "'", InputStream.class);
       }
+      throw new ActivitiObjectNotFoundException("no resource found with name '" + resourceName 
+              + "' in deployment '" + processDefinitionEntity.getDeploymentId() + "'", InputStream.class);
     }
     
     // Convert the bpmn 2.0 xml to a bpmn model

@@ -33,15 +33,13 @@ public class DispatchEventCommand implements Command<Void> {
 
 	@Override
   public Void execute(CommandContext commandContext) {
-		if(event == null) {
-			throw new ActivitiIllegalArgumentException("event is null");
-		}
+   	  if(event == null) {
+		throw new ActivitiIllegalArgumentException("event is null");
+	  } else if(!commandContext.getEventDispatcher().isEnabled()) {
+		throw new ActivitiException("Message dispatcher is disabled, cannot dispatch event");
+	  }
 		
-		if(commandContext.getEventDispatcher().isEnabled()) {
-			commandContext.getEventDispatcher().dispatchEvent(event);
-		} else {
-			throw new ActivitiException("Message dispatcher is disabled, cannot dispatch event");
-		}
+	  commandContext.getEventDispatcher().dispatchEvent(event);
 		
 	  return null;
   }

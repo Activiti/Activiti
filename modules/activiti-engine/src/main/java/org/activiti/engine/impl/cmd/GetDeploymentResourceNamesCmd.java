@@ -23,7 +23,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 /**
  * @author Joram Barrez
  */
-public class GetDeploymentResourceNamesCmd implements Command<List>, Serializable {
+public class GetDeploymentResourceNamesCmd implements Command<List<String>>, Serializable {
   
   private static final long serialVersionUID = 1L;
   protected String deploymentId;
@@ -32,7 +32,7 @@ public class GetDeploymentResourceNamesCmd implements Command<List>, Serializabl
     this.deploymentId = deploymentId;
   }
   
-  public List execute(CommandContext commandContext) {
+  public List<String> execute(CommandContext commandContext) {
     if (deploymentId == null) {
       throw new ActivitiIllegalArgumentException("deploymentId is null");
     }
