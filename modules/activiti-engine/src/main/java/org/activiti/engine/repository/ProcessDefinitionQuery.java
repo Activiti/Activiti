@@ -13,6 +13,8 @@
 
 package org.activiti.engine.repository;
 
+import java.util.Set;
+
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.query.Query;
 
@@ -56,6 +58,9 @@ public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, Pr
    * given deployment id
    */
   ProcessDefinitionQuery deploymentId(String deploymentId);
+  
+  /** Select process definitions that are deployed in deployments with the given set of ids */
+  ProcessDefinitionQuery deploymentIds(Set<String> deploymentIds);
 
   /**
    * Only select process definition with the given key.

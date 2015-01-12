@@ -42,7 +42,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected String processDefinitionId;
   protected String processDefinitionName;
-  protected Set<String> processInstanceIds; 
+  protected Set<String> processInstanceIds;
   protected String processDefinitionKey;
   protected String deploymentId;
   protected List<String> deploymentIds;
