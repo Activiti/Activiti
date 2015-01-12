@@ -4,26 +4,23 @@ package activiti;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
-import org.springframework.boot.CommandLineRunner;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 
 /**
- * Demonstrates the REST API
+ * Demonstrates the <A href="http://localhost:8080/">REST API</A>
  */
-@Configuration
-@ComponentScan
-@EnableAutoConfiguration
+@SpringBootApplication
 public class Application {
-    @Bean
-    CommandLineRunner seedUsersAndGroups(final IdentityService identityService) {
-        return new CommandLineRunner() {
-            @Override
-            public void run(String... strings) throws Exception {
 
+    @Bean
+    InitializingBean usersAndGroupsInitializer(final IdentityService identityService) {
+
+        return new InitializingBean() {
+            @Override
+            public void afterPropertiesSet() throws Exception {
 
                 // install groups & users
                 Group group = identityService.newGroup("user");
