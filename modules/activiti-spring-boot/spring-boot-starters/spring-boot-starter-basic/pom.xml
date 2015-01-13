@@ -21,6 +21,13 @@
 
 
     <dependencies>
+        <!-- Support for auto-completion support in Boot 1.2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <!-- common -->
         <dependency>
             <groupId>org.activiti</groupId>
