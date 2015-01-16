@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
+import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
@@ -58,11 +60,18 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
 
       for (PvmTransition outgoingTransition : execution.getActivity().getOutgoingTransitions()) {
-        if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
-          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-          if (condition == null || condition.evaluate(execution)) {
-            transitionsToTake.add(outgoingTransition);
+        
+        Expression skipExpression = outgoingTransition.getSkipExpression();
+        if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
+          if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
+            Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+            if (condition == null || condition.evaluate(execution)) {
+              transitionsToTake.add(outgoingTransition);
+            }
           }
+        }
+        else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)){
+          transitionsToTake.add(outgoingTransition);
         }
       }
 
