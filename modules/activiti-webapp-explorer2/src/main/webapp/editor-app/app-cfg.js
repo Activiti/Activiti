@@ -21,5 +21,5 @@
 var ACTIVITI = ACTIVITI || {};
 
 ACTIVITI.CONFIG = {
-	'contextRoot' : '/activiti-explorer/service',
+	'contextRoot' :  '/' + window.location.pathname.split('/')[1] + '/service',
 };
