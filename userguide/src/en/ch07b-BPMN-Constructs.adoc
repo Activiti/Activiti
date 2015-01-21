@@ -2050,7 +2050,7 @@ The Event-based Gateway allows to take a decision based on events. Each outgoing
 Note the sequence flows running out of an Event-based Gateway are different from ordinary sequence flows. These sequence flows are never actually "executed". On the contrary, they allow the process engine to determine which events an execution arriving at an Event-based Gateway needs to subscribe to. The following restrictions apply:
 
 * An Event-based Gateway must have two or more outgoing sequence flows.
-* An Event-based Gateway must only be to elements of type +intermediateCatchEvent+ only. (Receive Tasks after an Event-based Gateway are not supported by Activiti.)
+* An Event-based Gateway must only be connected to elements of type +intermediateCatchEvent+ only. (Receive Tasks after an Event-based Gateway are not supported by Activiti.)
 * An +intermediateCatchEvent+ connected to an Event-based Gateway must have a single incoming sequence flow.
 
 
