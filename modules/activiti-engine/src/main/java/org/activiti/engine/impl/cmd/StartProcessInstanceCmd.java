@@ -106,6 +106,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     // now set processInstance name
     if (processInstanceName != null) {
       processInstance.setName(processInstanceName);
+      commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstance.getId(), processInstanceName);
     }
     
     processInstance.start();

@@ -25,6 +25,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -416,4 +417,18 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     	 assertEquals(0L, historyService.createHistoricProcessInstanceQuery().count());
     }
   }
+  
+  @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+  public void testHistoricProcessInstanceName() {
+	  String piName = "Customized Process Instance Name";
+	  ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder();
+	  builder.processDefinitionKey("oneTaskProcess");
+	  builder.processInstanceName(piName);
+	  ProcessInstance processInstance1 = builder.start();
+	
+	  HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance1.getProcessInstanceId()).singleResult();
+	  assertEquals(piName, historicProcessInstance.getName());
+	  assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceName(piName).list().size());
+  }
+  
 }
