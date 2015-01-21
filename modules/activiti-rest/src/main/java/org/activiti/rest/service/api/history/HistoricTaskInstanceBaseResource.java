@@ -231,6 +231,10 @@ public class HistoricTaskInstanceBaseResource {
     if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
     	query.taskWithoutTenantId();
     }
+
+    if(queryRequest.getTaskCandidateGroup() != null) {
+      query.taskCandidateGroup(queryRequest.getTaskCandidateGroup());
+    }
     
     return new HistoricTaskInstancePaginateList(restResponseFactory, serverRootUrl).paginateList(
         allRequestParams, queryRequest, query, "taskInstanceId", allowedSortProperties);

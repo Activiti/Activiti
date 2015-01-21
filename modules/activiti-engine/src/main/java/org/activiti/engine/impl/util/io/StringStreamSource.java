@@ -14,6 +14,7 @@ package org.activiti.engine.impl.util.io;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 
 
 /**
@@ -22,13 +23,26 @@ import java.io.InputStream;
 public class StringStreamSource implements StreamSource {
   
   String string;
+  String byteArrayEncoding="utf-8";
   
   public StringStreamSource(String string) {
-    this.string = string;
-  }
+	    this.string = string;
+	  }
+
+  public StringStreamSource(String string, String byteArrayEncoding) {
+	    this.string = string;
+	    this.byteArrayEncoding = byteArrayEncoding;
+	  }
 
   public InputStream getInputStream() {
-    return new ByteArrayInputStream(string.getBytes());
+    try
+	{
+		return new ByteArrayInputStream(byteArrayEncoding == null ? string.getBytes() : string.getBytes(byteArrayEncoding));
+	}
+	catch (UnsupportedEncodingException e)
+	{
+		throw new RuntimeException(e);
+	}
   }
 
   public String toString() {
