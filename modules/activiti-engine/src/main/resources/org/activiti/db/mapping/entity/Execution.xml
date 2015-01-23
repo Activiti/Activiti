@@ -130,11 +130,14 @@
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR" />
+    
+    <!-- Lowercase 'columns', as they are filled in during a query and are not mapped directly to a table column -->
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="processDefinitionName" column="ProcessDefinitionName" jdbcType="VARCHAR" />
+    <result property="processDefinitionName" column="ProcessDefinitionName" jdbcType="VARCHAR" /> 
     <result property="processDefinitionKey" column="ProcessDefinitionKey" jdbcType="VARCHAR" />
     <result property="processDefinitionVersion" column="ProcessDefinitionVersion" jdbcType="INTEGER" />
     <result property="deploymentId" column="DeploymentId" jdbcType="VARCHAR" />
+    
     <result property="activityId" column="ACT_ID_" jdbcType="VARCHAR" />
     <result property="isActive" column="IS_ACTIVE_" jdbcType="BOOLEAN" />
     <result property="isConcurrent" column="IS_CONCURRENT_" jdbcType="BOOLEAN" />
@@ -296,7 +299,7 @@
     TEMPRES_IS_CONCURRENT_ as IS_CONCURRENT_, TEMPRES_IS_SCOPE_ as IS_SCOPE_,
     TEMPRES_IS_EVENT_SCOPE_ as IS_EVENT_SCOPE_, TEMPRES_PARENT_ID_ as PARENT_ID_, 
     TEMPRES_PROC_INST_ID_ as PROC_INST_ID_, TEMPRES_SUPER_EXEC_ as SUPER_EXEC_, 
-    TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_,
+    TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_, TEMPRES_NAME_ as NAME_, TEMPRES_TENANT_ID_ as TENANT_ID_,
     TEMPRES_SUSPENSION_STATE_ as SUSPENSION_STATE_, TEMPRES_CACHED_ENT_STATE_ as CACHED_ENT_STATE_,
     TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
     TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
@@ -310,7 +313,7 @@
     RES.IS_EVENT_SCOPE_ as TEMPRES_IS_EVENT_SCOPE_, RES.PARENT_ID_ as TEMPRES_PARENT_ID_,
     RES.SUPER_EXEC_ as TEMPRES_SUPER_EXEC_, RES.SUSPENSION_STATE_ as TEMPRES_SUSPENSION_STATE_,
     RES.CACHED_ENT_STATE_ as TEMPRES_CACHED_ENT_STATE_,
-    RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_,
+    RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.NAME_ as TEMPRES_NAME_, RES.TENANT_ID_ as TEMPRES_TENANT_ID_,
     VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
     VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
