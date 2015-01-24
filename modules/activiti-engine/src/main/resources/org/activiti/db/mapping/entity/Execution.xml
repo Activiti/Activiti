@@ -366,8 +366,20 @@
       <if test="processDefinitionId != null">
         and P.ID_ = #{processDefinitionId}
       </if>
+      <if test="processDefinitionIds != null and !processDefinitionIds.isEmpty()">
+        and P.ID_ in
+        <foreach item="item" index="index" collection="processDefinitionIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
       <if test="processDefinitionKey != null">
         and P.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionKeys != null and !processDefinitionKeys.isEmpty()">
+        and P.KEY_ in
+        <foreach item="item" index="index" collection="processDefinitionKeys" open="(" separator="," close=")">
+          #{item}
+        </foreach>
       </if>
       <if test="processDefinitionName != null">
         and P.NAME_ = #{processDefinitionName}
@@ -517,8 +529,20 @@
           <if test="orQueryObject.processDefinitionId != null">
             P.ID_ = #{orQueryObject.processDefinitionId}
           </if>
+          <if test="orQueryObject.processDefinitionIds != null and !orQueryObject.processDefinitionIds.isEmpty()">
+            or P.ID_ in
+            <foreach item="item" index="index" collection="orQueryObject.processDefinitionIds" open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
           <if test="orQueryObject.processDefinitionKey != null">
             or P.KEY_ = #{orQueryObject.processDefinitionKey}
+          </if>
+          <if test="orQueryObject.processDefinitionKeys != null and !orQueryObject.processDefinitionKeys.isEmpty()">
+            or P.KEY_ in
+            <foreach item="item" index="index" collection="orQueryObject.processDefinitionKeys" open="(" separator="," close=")">
+              #{item}
+            </foreach>
           </if>
           <if test="orQueryObject.processDefinitionName != null">
             or P.NAME_ = #{orQueryObject.processDefinitionName}
