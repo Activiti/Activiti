@@ -262,10 +262,10 @@
     <if test="processFinished || processUnfinished || processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null || processInstanceBusinessKeyLikeIgnoreCase != null || (orQueryObject != null &amp;&amp; (orQueryObject.processFinished || orQueryObject.processUnfinished || orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null))">
       inner join ${prefix}ACT_HI_PROCINST HPI ON RES.PROC_INST_ID_ = HPI.ID_
     </if>
-    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0) || (processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null || (orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0) || (orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0)))">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null || processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (processCategoryInList != null &amp;&amp; !processCategoryInList.isEmpty()) || (processCategoryNotInList != null &amp;&amp; !processCategoryNotInList.isEmpty()) || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null || (orQueryObject.processCategoryInList != null &amp;&amp; !orQueryObject.processCategoryInList.isEmpty()) || (orQueryObject.processCategoryNotInList != null &amp;&amp; !orQueryObject.processCategoryNotInList.isEmpty())))">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
-    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
+    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; !deploymentIds.isEmpty()) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; !orQueryObject.deploymentIds.isEmpty())))">
       left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="var">
@@ -312,14 +312,14 @@
       <if test="processDefinitionNameLike != null">
         and D.NAME_ like #{processDefinitionNameLike}
       </if>
-      <if test="processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0">
+      <if test="processCategoryInList != null &amp;&amp; !processCategoryInList.isEmpty()">
         and D.CATEGORY_ IN
         <foreach item="processCategory" index="index" collection="processCategoryInList"
                  open="(" separator="," close=")">
           #{processCategory}
         </foreach>
       </if>
-      <if test="processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0">
+      <if test="processCategoryNotInList != null &amp;&amp; !processCategoryNotInList.isEmpty()">
         and D.CATEGORY_ NOT IN
         <foreach item="processCategory" index="index" collection="processCategoryNotInList"
                  open="(" separator="," close=")">
@@ -329,7 +329,7 @@
       <if test="deploymentId != null">
         and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
-      <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+      <if test="deploymentIds != null &amp;&amp; !deploymentIds.isEmpty()">
         and DEPLOY_P.DEPLOYMENT_ID_ IN
         <foreach item="deployment" index="index" collection="deploymentIds" 
                  open="(" separator="," close=")">
@@ -366,14 +366,14 @@
       <if test="taskNameLikeIgnoreCase != null">
         and lower(RES.NAME_) like #{taskNameLikeIgnoreCase}
       </if>
-      <if test="taskNameList != null &amp;&amp; taskNameList.size() &gt; 0">
+      <if test="taskNameList != null &amp;&amp; !taskNameList.isEmpty()">
         and RES.NAME_ IN
         <foreach item="taskName" index="index" collection="taskNameList"
                  open="(" separator="," close=")">
           #{taskName}
         </foreach>
       </if>
-      <if test="taskNameListIgnoreCase != null &amp;&amp; taskNameListIgnoreCase.size() &gt; 0">
+      <if test="taskNameListIgnoreCase != null &amp;&amp; !taskNameListIgnoreCase.isEmpty()">
         and lower(RES.NAME_) IN
         <foreach item="taskName" index="index" collection="taskNameListIgnoreCase"
                  open="(" separator="," close=")">
@@ -487,10 +487,10 @@
           <if test="candidateUser != null">
             HI.USER_ID_ = #{candidateUser}
           </if>
-          <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+          <if test="candidateUser != null &amp;&amp; candidateGroups != null &amp;&amp; !candidateGroups.isEmpty()">
             or
           </if>
-          <if test="candidateGroups != null &amp;&amp; candidateGroups.size() &gt; 0">
+          <if test="candidateGroups != null &amp;&amp; !candidateGroups.isEmpty()">
             HI.GROUP_ID_ IN
             <foreach item="group" index="index" collection="candidateGroups"
                      open="(" separator="," close=")">
@@ -588,14 +588,14 @@
           <if test="orQueryObject.processDefinitionNameLike != null">
             or D.NAME_ like #{orQueryObject.processDefinitionNameLike}
           </if>
-          <if test="orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0">
+          <if test="orQueryObject.processCategoryInList != null &amp;&amp; !orQueryObject.processCategoryInList.isEmpty()">
             or D.CATEGORY_ IN
             <foreach item="processCategory" index="index" collection="orQueryObject.processCategoryInList"
                      open="(" separator="," close=")">
               #{processCategory}
             </foreach>
           </if>
-          <if test="orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0">
+          <if test="orQueryObject.processCategoryNotInList != null &amp;&amp; !orQueryObject.processCategoryNotInList.isEmpty()">
             or D.CATEGORY_ NOT IN
             <foreach item="processCategory" index="index" collection="orQueryObject.processCategoryNotInList"
                      open="(" separator="," close=")">
@@ -605,7 +605,7 @@
           <if test="orQueryObject.deploymentId != null">
             or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
           </if>
-          <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
+          <if test="orQueryObject.deploymentIds != null &amp;&amp; !orQueryObject.deploymentIds.isEmpty()">
             or DEPLOY_P.DEPLOYMENT_ID_ IN
             <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
                      open="(" separator="," close=")">
@@ -642,14 +642,14 @@
            <if test="orQueryObject.taskNameLikeIgnoreCase != null">
             or lower(RES.NAME_) like #{orQueryObject.taskNameLikeIgnoreCase}
           </if>
-          <if test="orQueryObject.taskNameList != null &amp;&amp; orQueryObject.taskNameList.size() &gt; 0">
+          <if test="orQueryObject.taskNameList != null &amp;&amp; !orQueryObject.taskNameList.isEmpty()">
             or RES.NAME_ IN
             <foreach item="taskName" index="index" collection="orQueryObject.taskNameList"
                      open="(" separator="," close=")">
               #{taskName}
             </foreach>
           </if>
-          <if test="orQueryObject.taskNameListIgnoreCase != null &amp;&amp; orQueryObject.taskNameListIgnoreCase.size() &gt; 0">
+          <if test="orQueryObject.taskNameListIgnoreCase != null &amp;&amp; !orQueryObject.taskNameListIgnoreCase.isEmpty()">
             or lower(RES.NAME_) IN
             <foreach item="taskName" index="index" collection="orQueryObject.taskNameListIgnoreCase"
                      open="(" separator="," close=")">
@@ -763,10 +763,10 @@
               <if test="orQueryObject.candidateUser != null">
                 HI.USER_ID_ = #{orQueryObject.candidateUser}
               </if>
-              <if test="orQueryObject.candidateUser != null &amp;&amp; orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
+              <if test="orQueryObject.candidateUser != null &amp;&amp; orQueryObject.candidateGroups != null &amp;&amp; !orQueryObject.candidateGroups.isEmpty()">
                 or
               </if>
-              <if test="orQueryObject.candidateGroups != null &amp;&amp; orQueryObject.candidateGroups.size() &gt; 0">
+              <if test="orQueryObject.candidateGroups != null &amp;&amp; !orQueryObject.candidateGroups.isEmpty()">
                 HI.GROUP_ID_ IN
                 <foreach item="group" index="index" collection="orQueryObject.candidateGroups"
                          open="(" separator="," close=")">
