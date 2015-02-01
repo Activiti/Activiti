@@ -15,10 +15,12 @@ package org.activiti.engine.impl.variable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Class containing meta-data about Entity-classes.
- * 
+ *
  * @author Frederik Heremans
  */
 public class EntityMetaData {
@@ -27,6 +29,7 @@ public class EntityMetaData {
   private Class< ? > entityClass;
   private Method idMethod;
   private Field idField;
+  private String idPropertyName;
 
   public boolean isJPAEntity() {
     return isJPAEntity;
@@ -68,7 +71,28 @@ public class EntityMetaData {
       idType = idField.getType();
     } else if (idMethod != null) {
       idType = idMethod.getReturnType();
-    } 
+    }
     return idType;
+  }
+
+  /**
+   * Getting javaBean property name using idField or idMethod
+   *
+   * @return id property name
+   */
+  public String getIdPropertyName() {
+    if(idPropertyName == null) {
+      if (idField != null) {
+        idPropertyName = idField.getName();
+      } else if (idMethod != null) {
+        idPropertyName = idMethod.getName();
+        Matcher matcher = Pattern.compile("^(get|is)(.+)$").matcher(idPropertyName);
+        if(matcher.matches()) {
+          idPropertyName = matcher.group(2).substring(0, 1).toLowerCase() +
+                           matcher.group(2).substring(1);
+        }
+      }
+    }
+    return idPropertyName;
   }
 }
