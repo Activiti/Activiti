@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" 
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+
+	<process id="escalationExample" name="Helpdesk process">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="firstLineSupport" />
+
+		<userTask id="firstLineSupport" name="First line support" activiti:assignee="kermit">
+		  <documentation>Fix issue raised by customer</documentation>
+		</userTask>
+		<sequenceFlow id="flow2" sourceRef="firstLineSupport" targetRef="normalEnd" />
+
+		<endEvent id="normalEnd" />
+
+		<boundaryEvent id="escalationTimer" cancelActivity="true" attachedToRef="firstLineSupport">
+			<timerEventDefinition>
+				<timeDuration>PT5M</timeDuration>
+			</timerEventDefinition>
+		</boundaryEvent>
+		<sequenceFlow id="flow3" sourceRef="escalationTimer" targetRef="handleEscalation" />
+
+		<userTask id="handleEscalation" name="Handle escalated issue" activiti:candidateGroups="management">
+		  <documentation>Escalation: issue was not fixed in time by first level support</documentation>
+		</userTask>
+		<sequenceFlow id="flow4" sourceRef="handleEscalation" targetRef="escalatedEnd" />
+
+		<endEvent id="escalatedEnd" />
+
+	</process>
+
+</definitions>

@@ -1,0 +1,33 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="textMailExpressions" >
+
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="sendMail" />
+    
+    <sendTask id="sendMail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="from">
+          <activiti:expression>${sender}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="to">
+          <activiti:expression>${recipient}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:expression>${subject}</activiti:expression>
+        </activiti:field>
+        <activiti:field name="text">
+          <activiti:expression>Hello ${recipientName}, this is an e-mail</activiti:expression>
+        </activiti:field>      
+      </extensionElements>
+    </sendTask>
+    <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

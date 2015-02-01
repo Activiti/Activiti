@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+
+    <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"/>
+    <property name="jdbcDriver" value="org.h2.Driver"/>
+    <property name="jdbcUsername" value="sa"/>
+    <property name="jdbcPassword" value=""/>
+
+    <!-- Database configurations -->
+    <property name="databaseSchemaUpdate" value="true"/>
+
+    <!-- job executor configurations -->
+    <property name="jobExecutorActivate" value="false"/>
+  </bean>
+
+  <bean id="simulationRun" class="org.activiti.crystalball.simulator.SimpleSimulationRunFactory">
+    <property name="processEngine" ref="&amp;defaultProcessEngineFactory"/>
+    <property name="eventCalendar" ref="&amp;eventCalendar"/>
+  </bean>
+
+
+  <bean id="defaultProcessEngineFactory" class="org.activiti.crystalball.simulator.impl.SimulationProcessEngineFactory">
+    <constructor-arg name="processEngineConfiguration">
+      <bean id="simulatedProcessEngineConfiguration"
+            class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+
+        <property name="jdbcUrl" value="jdbc:h2:mem:simulated-activiti;DB_CLOSE_DELAY=1000"/>
+        <property name="jdbcDriver" value="org.h2.Driver"/>
+        <property name="jdbcUsername" value="sa"/>
+        <property name="jdbcPassword" value=""/>
+
+        <!-- Database configurations -->
+        <property name="databaseSchemaUpdate" value="true"/>
+
+        <!-- job executor configurations -->
+        <property name="jobExecutorActivate" value="false"/>
+        <property name="clock" ref="clock"/>
+      </bean>
+    </constructor-arg>
+  </bean>
+
+  <bean id="clock" class="org.activiti.engine.impl.util.DefaultClockImpl"/>
+
+  <bean id="eventCalendar" class="org.activiti.crystalball.simulator.SimpleEventCalendarFactory">
+    <constructor-arg name="clockReader" ref="clock"/>
+    <constructor-arg name="eventComparator"><bean class="org.activiti.crystalball.simulator.SimulationEventComparator"/></constructor-arg>
+    <constructor-arg name="simulationEvents">
+      <list>
+        <bean class="org.activiti.crystalball.simulator.SimulationEvent.Factory">
+          <constructor-arg name="type" value="startProcessInstance"/>
+          <constructor-arg name="simulationTime" value="1"/>
+          <constructor-arg name="properties">
+            <map>
+
+            </map>
+          </constructor-arg>
+
+        </bean>
+      </list>
+    </constructor-arg>
+  </bean>
+
+</beans>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="activiti.qa.db">
+
+	<target name="create.db.schema">
+		<echo message="creating database schema"/>
+		<echo message="  basedir: ${basedir}"/>
+		<echo message="  database: ${database}"/>
+		<property file="${user.home}/.activiti/jdbc/${database}.properties"/>
+		<echo message="  jdbc.driver: ${jdbc.driver}"/>
+		<echo message="  jdbc.url: ${jdbc.url}"/>
+		<echo message="  jdbc.username: ${jdbc.username}"/>
+		<echo message="  jdbc.password: ${jdbc.password}"/>
+		<!-- echo message="  test_classpath: ${test_classpath}" / -->
+		<path id="test.classpath">
+			<pathelement path="${test_classpath}"/>
+		</path>
+		<sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}" classpathref="test.classpath">
+			<javaresource name="org/activiti/db/create/activiti.${database}.create.engine.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/create/activiti.${database}.create.history.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/create/activiti.${database}.create.identity.sql" classpathref="test.classpath"/>
+		</sql>
+	</target>
+
+	<target name="drop.db.schema">
+		<echo message="dropping database schema"/>
+		<echo message="  basedir: ${basedir}"/>
+		<echo message="  database: ${database}"/>
+		<property file="${user.home}/.activiti/jdbc/${database}.properties"/>
+		<echo message="  jdbc.driver: ${jdbc.driver}"/>
+		<echo message="  jdbc.url: ${jdbc.url}"/>
+		<echo message="  jdbc.username: ${jdbc.username}"/>
+		<echo message="  jdbc.password: ${jdbc.password}"/>
+		<!-- echo message="  test_classpath: ${test_classpath}" / -->
+		<path id="test.classpath">
+			<pathelement path="${test_classpath}"/>
+		</path>
+		<sql driver="${jdbc.driver}" password="${jdbc.password}" url="${jdbc.url}" userid="${jdbc.username}" classpathref="test.classpath">
+			<javaresource name="org/activiti/db/drop/activiti.${database}.drop.engine.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/drop/activiti.${database}.drop.history.sql" classpathref="test.classpath"/>
+      <javaresource name="org/activiti/db/drop/activiti.${database}.drop.identity.sql" classpathref="test.classpath"/>
+		</sql>
+	</target>
+	
+	<target name="create.activiti.cfg">
+		<echo message="creating activiti.cfg.xml in target environment"/>
+		<echo message="  basedir: ${basedir}"/>
+		<echo message="  database: ${database}"/>
+		
+		<property file="${user.home}/.activiti/jdbc/${database}.properties"/>
+
+		<echo message="  jdbc.driver: ${jdbc.driver}"/>
+		<echo message="  jdbc.url: ${jdbc.url}"/>
+		<echo message="  jdbc.username: ${jdbc.username}"/>
+		<echo message="  jdbc.password: ${jdbc.password}"/>
+		
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                match='databaseType" value=".*?"' 
+			              replace='databaseType" value="${database}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                    match='jdbcDriver" value=".*?"' 
+		                    replace='jdbcDriver" value="${jdbc.driver}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                        match='jdbcUrl" value=".*?"' 
+		                        replace='jdbcUrl" value="${jdbc.url}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                        match='jdbcUsername" value=".*?"' 
+		                        replace='jdbcUsername" value="${jdbc.username}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                        match='jdbcPassword" value=".*?"' 
+		                        replace='jdbcPassword" value="${jdbc.password}"'/>
+		<replaceregexp file="./target/test-classes/activiti.cfg.xml" flags="s"
+		                        match='databaseSchemaUpdate" value=".*?"' 
+		                        replace='databaseSchemaUpdate" value="false"'/>
+	</target>
+	
+</project>

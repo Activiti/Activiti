@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  #%L
+  Activiti - CrystalBall
+  %%
+  Copyright (C) 2014 Alfresco
+  %%
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+       http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+  #L%
+  -->
+
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <!--
+  Simulation manager is used to manage simulation experiment. It instantiate simulation engines to perform
+  simulation runs
+  -->
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+    <property name="processEngineName" value="simulationManager"/>
+    <property name="jdbcUrl" value="jdbc:h2:mem:simulationManager;DB_CLOSE_DELAY=1000"/>
+    <property name="jdbcDriver" value="org.h2.Driver"/>
+    <property name="jdbcUsername" value="sa"/>
+    <property name="jdbcPassword" value=""/>
+
+    <!-- Database configurations -->
+    <property name="databaseSchemaUpdate" value="true"/>
+
+    <property name="beans">
+      <map>
+        <entry key="simulationRunFactory" value-ref="&amp;simulationRunFactory"/>
+      </map>
+    </property>
+  </bean>
+
+  <!--
+  simulationRunFactory creates new simulationRun instances
+  -->
+  <bean id="simulationRunFactory" class="org.activiti.crystalball.simulator.SimpleSimulationRunFactory">
+    <property name="processEngine" ref="&amp;defaultProcessEngineFactory"/>
+    <property name="eventCalendar" ref="&amp;eventCalendar"/>
+    <!-- handlers for events from the event calendar -->
+    <property name="customEventHandlerMap">
+      <map>
+        <entry key="deployProcessInstance">
+          <bean class="org.activiti.crystalball.simulator.impl.DeployClasspathResourcesEventHandler">
+            <constructor-arg value="resources"/>
+          </bean>
+        </entry>
+        <entry key="startProcessInstance">
+          <bean class="org.activiti.crystalball.simulator.impl.StartProcessByKeyEventHandler">
+            <constructor-arg name="businessKey" value="businessKey"/>
+            <constructor-arg name="processToStartKey" value="processToStart" />
+            <constructor-arg name="variablesKey" value="variables"/>
+          </bean>
+        </entry>
+      </map>
+    </property>
+  </bean>
+
+  <!--
+   SimulationRun uses process engine created in the following factory
+    (to keep things simple only one DB configuration and clock is used)
+  -->
+  <bean id="defaultProcessEngineFactory" class="org.activiti.crystalball.simulator.impl.SimulationProcessEngineFactory">
+    <constructor-arg name="processEngineConfiguration">
+      <bean class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+
+        <property name="processEngineName" value="simulation-run-activiti"/>
+        <property name="jdbcUrl" value="jdbc:h2:mem:simulation-run-activiti;DB_CLOSE_DELAY=1000"/>
+        <property name="jdbcDriver" value="org.h2.Driver"/>
+        <property name="jdbcUsername" value="sa"/>
+        <property name="jdbcPassword" value=""/>
+
+        <property name="clock" ref="clock"/>
+
+        <!--
+        command context reuse is not possible when there are 2 engines running -> both with different
+        process definitions in the repository.
+        -->
+        <property name="defaultCommandConfig">
+          <bean class="org.activiti.engine.impl.interceptor.CommandConfig">
+            <constructor-arg name="contextReusePossible" value="false"/>
+          </bean>
+        </property>
+
+        <!-- Database configurations -->
+        <property name="databaseSchemaUpdate" value="true"/>
+
+        <!-- job executor configurations -->
+        <property name="jobExecutorActivate" value="false"/>
+      </bean>
+    </constructor-arg>
+  </bean>
+
+  <bean id="clock" class="org.activiti.engine.impl.util.DefaultClockImpl"/>
+
+  <!-- simulation run is driven by event calendar. -->
+  <bean id="eventCalendar" class="org.activiti.crystalball.simulator.SimpleEventCalendarFactory">
+    <constructor-arg name="clockReader" ref="clock"/>
+    <constructor-arg name="eventComparator"><bean class="org.activiti.crystalball.simulator.SimulationEventComparator"/></constructor-arg>
+    <constructor-arg name="simulationEvents">
+      <!--
+       there are two events scheduled for execution:
+       time(0) -> deploy process definition FirstSimulationRunTest.oneTaskProcess.bpmn20.xml
+       time(1) -> startProcessInstance oneTaskProcess
+      -->
+      <list>
+        <bean class="org.activiti.crystalball.simulator.SimulationEvent.Factory">
+          <constructor-arg name="type" value="deployProcessInstance"/>
+          <constructor-arg name="simulationTime" value="0"/>
+          <constructor-arg name="properties">
+            <map>
+              <entry key="resources">
+                <list>
+                  <value>org/activiti/crystalball/examples/tutorial/step01/FirstSimulationRunTest.oneTaskProcess.bpmn20.xml</value>
+                </list>
+              </entry>
+            </map>
+          </constructor-arg>
+        </bean>
+
+        <bean class="org.activiti.crystalball.simulator.SimulationEvent.Factory">
+          <constructor-arg name="type" value="startProcessInstance"/>
+          <constructor-arg name="simulationTime" value="1"/>
+          <constructor-arg name="properties">
+            <map>
+              <entry key="businessKey" value="businessKeyValue" />
+              <entry key="processToStart" value="oneTaskProcess"/>
+            </map>
+          </constructor-arg>
+
+        </bean>
+      </list>
+    </constructor-arg>
+  </bean>
+
+</beans>

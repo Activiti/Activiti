@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="checkIncomingDiagnosis_workflow">
+  <process id="FormPropertyDefaultValueTest.testDefaultValue">
+    <startEvent id="start" name="Start"/>
+    <userTask id="usertask" name="Task" activiti:candidateGroups="dummy">
+      <extensionElements>
+        <activiti:formProperty id="booleanProperty" name="Property" type="boolean" required="true" readable="true" writable="true" default="true"/>
+        <activiti:formProperty id="stringProperty" name="Property" type="string" required="true" readable="true" writable="true" default="someString"/>
+        <activiti:formProperty id="longProperty" name="Property" type="long" required="true" readable="true" writable="true" default="42"/>
+        <activiti:formProperty id="longExpressionProperty" name="Property" type="long" required="true" readable="true" writable="true" default="${12 * 2 - 1}"/>
+      </extensionElements>
+    </userTask>
+    <userTask id="wait" name="Wait" activiti:candidateGroups="dummy"/>
+    <endEvent id="end" name="End"/>
+
+    <sequenceFlow sourceRef="start" targetRef="usertask"/>
+    <sequenceFlow sourceRef="usertask" targetRef="wait"/>
+    <sequenceFlow sourceRef="wait" targetRef="end"/>
+  </process>
+</definitions>

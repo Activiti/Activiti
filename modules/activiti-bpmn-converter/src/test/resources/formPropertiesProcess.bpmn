@@ -1,0 +1,70 @@
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="formPropertiesProcess" name="User registration" isExecutable="true">
+    <startEvent id="register" name="Insert Data" activiti:formKey="teste">
+      <extensionElements>
+        <activiti:formProperty id="duplicated" name="duplicated" type="string" variable="duplicated" required="true"/>
+        <activiti:formProperty id="name" name="name" type="string" variable="name" required="true"/>
+        <activiti:formProperty id="age" name="age" type="long" variable="age" required="true"/>
+        <activiti:formProperty id="isMan" name="isMan" type="boolean" variable="isMan" required="true"/>
+        <activiti:formProperty id="remove" name="remove" type="boolean" variable="remove" required="true"/>
+      </extensionElements>
+    </startEvent>
+    <userTask id="edit" name="Edit" activiti:assignee="kermit" activiti:formKey="teste2">
+      <extensionElements>
+        <activiti:formProperty id="duplicated" name="duplicated" type="long" variable="duplicated"/>
+        <activiti:formProperty id="name" name="name" type="string" variable="name"/>
+        <activiti:formProperty id="age" name="age" type="long" variable="age" writable="false"/>
+        <activiti:formProperty id="isMan" name="isMan" type="boolean" variable="isMan" readable="false"/>
+        <activiti:formProperty id="remove" name="remove" type="boolean" variable="remove" required="true"/>
+		<activiti:formProperty id="testeEnum" name="testeEnum" type="enum" variable="testeEnum">
+          <activiti:value id="enum1" name="enum1"/>
+          <activiti:value id="enum2" name="enum2"/>
+        </activiti:formProperty>
+      </extensionElements>
+    </userTask>
+    <exclusiveGateway id="sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6"/>
+    <endEvent id="fim" name="End"/>
+    <sequenceFlow id="sid-288E87B0-A482-45EE-A36F-458C624FFF50" sourceRef="edit" targetRef="sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6"/>
+    <sequenceFlow id="sid-7DB064BE-D4FF-4FAC-8ABE-B411508701A6" sourceRef="register" targetRef="edit"/>
+    <sequenceFlow id="removerInd" name="Remove Data" sourceRef="sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6" targetRef="fim">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${execution.getVariable("remove") == true}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="naoRemoverInd" sourceRef="sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6" targetRef="edit">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${execution.getVariable("remove") == false}]]></conditionExpression>
+    </sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_formPropertiesProcess">
+    <bpmndi:BPMNPlane bpmnElement="formPropertiesProcess" id="BPMNPlane_formPropertiesProcess">
+      <bpmndi:BPMNShape bpmnElement="register" id="BPMNShape_register">
+        <omgdc:Bounds height="30.0" width="30.0" x="45.0" y="40.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="edit" id="BPMNShape_edit">
+        <omgdc:Bounds height="80.0" width="100.0" x="135.0" y="15.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6" id="BPMNShape_sid-5222200D-CB9E-4AA4-BCC9-CF9BD66684B6">
+        <omgdc:Bounds height="40.0" width="40.0" x="315.0" y="35.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="fim" id="BPMNShape_fim">
+        <omgdc:Bounds height="28.0" width="28.0" x="510.0" y="41.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="removerInd" id="BPMNEdge_removerInd">
+        <omgdi:waypoint x="355.0" y="55.0"/>
+        <omgdi:waypoint x="510.0" y="55.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-7DB064BE-D4FF-4FAC-8ABE-B411508701A6" id="BPMNEdge_sid-7DB064BE-D4FF-4FAC-8ABE-B411508701A6">
+        <omgdi:waypoint x="75.0" y="55.0"/>
+        <omgdi:waypoint x="135.0" y="55.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="sid-288E87B0-A482-45EE-A36F-458C624FFF50" id="BPMNEdge_sid-288E87B0-A482-45EE-A36F-458C624FFF50">
+        <omgdi:waypoint x="235.0" y="55.0"/>
+        <omgdi:waypoint x="315.0" y="55.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="naoRemoverInd" id="BPMNEdge_naoRemoverInd">
+        <omgdi:waypoint x="334.75" y="74.75"/>
+        <omgdi:waypoint x="334.0" y="134.0"/>
+        <omgdi:waypoint x="185.0" y="134.0"/>
+        <omgdi:waypoint x="185.0" y="95.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

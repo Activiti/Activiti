@@ -1,0 +1,568 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
+
+  <!-- HISTORIC PROCESS INSTANCE INSERT -->
+  
+  <insert id="insertHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
+      insert into ${prefix}ACT_HI_PROCINST (
+        ID_,
+        PROC_INST_ID_,
+        BUSINESS_KEY_,
+        PROC_DEF_ID_,
+        START_TIME_,
+        END_TIME_,
+        DURATION_,
+        START_USER_ID_,
+        START_ACT_ID_,
+        END_ACT_ID_,
+        SUPER_PROCESS_INSTANCE_ID_,
+        DELETE_REASON_,
+        TENANT_ID_,
+        NAME_
+      ) values (
+        #{id ,jdbcType=VARCHAR},
+        #{processInstanceId, jdbcType=VARCHAR},
+        #{businessKey, jdbcType=VARCHAR},
+        #{processDefinitionId, jdbcType=VARCHAR},
+        #{startTime, jdbcType=TIMESTAMP},
+        #{endTime, jdbcType=TIMESTAMP},
+        #{durationInMillis ,jdbcType=BIGINT},
+        #{startUserId, jdbcType=VARCHAR},
+        #{startActivityId, jdbcType=VARCHAR},
+        #{endActivityId, jdbcType=VARCHAR},
+        #{superProcessInstanceId, jdbcType=VARCHAR},
+        #{deleteReason, jdbcType=VARCHAR},
+        #{tenantId, jdbcType=VARCHAR},
+        #{name, jdbcType=VARCHAR}
+      )
+  </insert>
+
+  <!-- HISTORIC PROCESS INSTANCE UPDATE -->
+  
+  <update id="updateHistoricProcessInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
+    update ${prefix}ACT_HI_PROCINST set
+      PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR},
+      BUSINESS_KEY_ = #{businessKey, jdbcType=VARCHAR},
+      START_TIME_ = #{startTime, jdbcType=TIMESTAMP},
+      END_TIME_ = #{endTime, jdbcType=TIMESTAMP},
+      DURATION_ = #{durationInMillis ,jdbcType=BIGINT},
+      END_ACT_ID_ = #{endActivityId, jdbcType=VARCHAR},
+      DELETE_REASON_ = #{deleteReason, jdbcType=VARCHAR},
+      NAME_ = #{name, jdbcType=VARCHAR}
+    where ID_ = #{id}
+  </update>
+
+  <!-- HISTORIC PROCESS INSTANCE DELETE -->
+  
+  <delete id="deleteHistoricProcessInstance">
+    delete from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId}
+  </delete>
+  
+  <delete id="bulkDeleteHistoricProcessInstance" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_HI_PROCINST where
+     <foreach item="procInst" collection="list" index="index" separator=" or ">
+        ID_ = #{procInst.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
+  <!-- HISTORIC PROCESS INSTANCE RESULT MAP -->
+  
+  <resultMap id="historicProcessInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="deploymentId" column="DeploymentId" jdbcType="VARCHAR" />
+    <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
+    <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
+    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="startActivityId" column="START_ACT_ID_" jdbcType="VARCHAR" />
+    <result property="endActivityId" column="END_ACT_ID_" jdbcType="VARCHAR" />
+    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="historicProcessInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricProcessInstanceEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
+    <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
+    <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
+    <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
+    <result property="startUserId" column="START_USER_ID_" jdbcType="VARCHAR" />
+    <result property="startActivityId" column="START_ACT_ID_" jdbcType="VARCHAR" />
+    <result property="endActivityId" column="END_ACT_ID_" jdbcType="VARCHAR" />
+    <result property="superProcessInstanceId" column="SUPER_PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
+    <result property="deleteReason" column="DELETE_REASON_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <result property="name" column="NAME_" jdbcType="VARCHAR" />
+    <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
+      <id property="id" column="VAR_ID_"/>
+      <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
+      <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
+      <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
+      <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
+      <result property="taskId" column="VAR_TASK_ID_" jdbcType="VARCHAR" />
+      <result property="byteArrayRef" column="VAR_BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
+      <result property="doubleValue" column="VAR_DOUBLE_" jdbcType="DOUBLE" />
+      <result property="textValue" column="VAR_TEXT_" jdbcType="VARCHAR" />
+      <result property="textValue2" column="VAR_TEXT2_" jdbcType="VARCHAR" />
+      <result property="longValue" column="VAR_LONG_" jdbcType="BIGINT" />
+    </collection>
+  </resultMap>
+
+  <!-- HISTORIC PROCESS INSTANCE SELECT -->
+  
+  <select id="selectHistoricProcessInstance" resultMap="historicProcessInstanceResultMap">
+    select * from ${prefix}ACT_HI_PROCINST where PROC_INST_ID_ = #{processInstanceId}
+  </select>
+
+  <select id="selectHistoricProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
+    select ID_
+    from ${prefix}ACT_HI_PROCINST 
+    where PROC_DEF_ID_ = #{parameter}
+  </select>
+  
+
+  <select id="selectHistoricProcessInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceResultMap">
+  	${limitBefore}
+    select RES.* ${limitBetween}
+    <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <select id="selectHistoricProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultType="long">
+    select count(distinct RES.ID_)
+    <include refid="selectHistoricProcessInstancesByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectHistoricProcessInstancesByQueryCriteriaSql">  
+    from ${prefix}ACT_HI_PROCINST RES
+    <include refid="commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
+  </sql>
+  
+  <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
+    ${limitBefore}
+    select distinct RES.*,
+    VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.VAR_TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
+    VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
+    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
+    VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, VAR.LONG_ as VAR_LONG_
+    ${limitBetween}
+    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
+    ${limitBefore}
+    select distinct TEMPRES_ID_ as ID_,
+    TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_, TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_,
+    TEMPRES_START_TIME_ as START_TIME_, TEMPRES_END_TIME_ as END_TIME_,
+    TEMPRES_DURATION_ as DURATION_, TEMPRES_START_USER_ID_ as START_USER_ID_, TEMPRES_START_ACT_ID_ as START_ACT_ID_,
+    TEMPRES_END_ACT_ID_ as END_ACT_ID_, TEMPRES_SUPER_PROCESS_INSTANCE_ID_ as SUPER_PROCESS_INSTANCE_ID_,
+    TEMPRES_DELETE_REASON_ as DELETE_REASON_,
+    TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
+    TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
+    TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, TEMPVAR_DOUBLE_ as VAR_DOUBLE_, 
+    TEMPVAR_TEXT_ as VAR_TEXT_, TEMPVAR_TEXT2_ as VAR_TEXT2_, TEMPVAR_LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, TEMPVAR_LONG_ as VAR_LONG_
+    ${limitOuterJoinBetween}
+    RES.ID_ as TEMPRES_ID_, RES.BUSINESS_KEY_ as TEMPRES_BUSINESS_KEY_,
+    RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
+    RES.START_TIME_ as TEMPRES_START_TIME_, RES.END_TIME_ as TEMPRES_END_TIME_,
+    RES.DURATION_ as TEMPRES_DURATION_, RES.START_USER_ID_ as TEMPRES_START_USER_ID_,
+    RES.START_ACT_ID_ as TEMPRES_START_ACT_ID_, RES.END_ACT_ID_ as TEMPRES_END_ACT_ID_,
+    RES.SUPER_PROCESS_INSTANCE_ID_ as TEMPRES_SUPER_PROCESS_INSTANCE_ID_, RES.DELETE_REASON_ as TEMPRES_DELETE_REASON_,
+    VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.VAR_TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
+    VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
+    VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
+    VAR.TEXT_ as TEMPVAR_TEXT_, VAR.TEXT2_ as TEMPVAR_TEXT2_, VAR.LAST_UPDATED_TIME_ as TEMPVAR_LAST_UPDATED_TIME_, VAR.LONG_ as TEMPVAR_LONG_
+    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <sql id="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql">  
+    from ${prefix}ACT_HI_PROCINST RES
+    <if test="includeProcessVariables">
+      left outer join ${prefix}ACT_HI_VARINST VAR ON RES.PROC_INST_ID_ = VAR.EXECUTION_ID_ and VAR.TASK_ID_ is null
+    </if>
+    <include refid="commonSelectHistoricProcessInstancesByQueryCriteriaSql"/>
+  </sql>
+  
+  <sql id="commonSelectHistoricProcessInstancesByQueryCriteriaSql">
+    <if test="processKeyNotIn != null || processDefinitionKey != null || (orQueryObject != null &amp;&amp; (orQueryObject.processKeyNotIn != null || orQueryObject.processDefinitionKey != null))">
+      inner join ${prefix}ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_
+    </if>
+    <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
+      inner join ${prefix}ACT_HI_VARINST  A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
+    </foreach>
+    <if test="orQueryObject != null">
+      <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
+        left outer join ${prefix}ACT_HI_VARINST A_OR${index} on RES.PROC_INST_ID_ = A_OR${index}.PROC_INST_ID_
+      </foreach>
+    </if>
+    <if test="deploymentId != null || (deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.deploymentId != null || (orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0)))">
+      left outer join ${prefix}ACT_RE_PROCDEF DEPLOY_P ON RES.PROC_DEF_ID_ = DEPLOY_P.ID_
+    </if>
+    <where>
+      <if test="processInstanceId != null">
+        RES.PROC_INST_ID_ = #{processInstanceId}
+      </if>
+      <if test="processInstanceIds != null and !processInstanceIds.isEmpty()">
+        and RES.PROC_INST_ID_ in
+        <foreach item="item" index="index" collection="processInstanceIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
+      <if test="processDefinitionId != null">
+        and RES.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="processDefinitionKey != null">
+        and DEF.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="businessKey != null">
+        and RES.BUSINESS_KEY_ = #{businessKey}
+      </if>
+      <if test="deploymentId != null">
+        and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
+      </if>
+      <if test="deploymentIds != null &amp;&amp; deploymentIds.size() &gt; 0">
+        and DEPLOY_P.DEPLOYMENT_ID_ IN
+        <foreach item="deployment" index="index" collection="deploymentIds" 
+                 open="(" separator="," close=")">
+          #{deployment}
+        </foreach>
+      </if>
+      <if test="startedBefore != null">
+        and RES.START_TIME_ &lt;= #{startedBefore}
+      </if>
+      <if test="startedAfter != null">
+        and RES.START_TIME_ &gt;= #{startedAfter}
+      </if>
+      <if test="finishedBefore != null">
+        and RES.END_TIME_ &lt;= #{finishedBefore}
+      </if>
+      <if test="finishedAfter != null">
+        and RES.END_TIME_ &gt;= #{finishedAfter}
+      </if>
+      <if test="processKeyNotIn != null">
+        <foreach collection="processKeyNotIn" index="index" item="procDefKey">
+        and DEF.KEY_ not like #{procDefKey}
+      </foreach>
+      </if>
+      <if test="unfinished">
+        and RES.END_TIME_ IS NULL
+      </if>
+      <if test="finished">
+        and RES.END_TIME_ is not NULL
+      </if>
+      <if test="notDeleted">
+        and RES.DELETE_REASON_ IS NULL
+      </if>
+      <if test="deleted">
+        and RES.DELETE_REASON_ IS NOT NULL
+      </if>
+      <if test="involvedUser != null">
+        and (
+          exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{involvedUser} and LINK.PROC_INST_ID_ = RES.ID_)
+        )
+      </if>
+      <if test="startedBy != null">
+        and RES.START_USER_ID_ = #{startedBy}
+      </if>
+      <if test="superProcessInstanceId != null">
+        and RES.SUPER_PROCESS_INSTANCE_ID_ = #{superProcessInstanceId}
+      </if>
+      <if test="excludeSubprocesses">
+        and RES.SUPER_PROCESS_INSTANCE_ID_ is null
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+       <if test="name != null">
+        and RES.NAME_ = #{name}
+      </if>
+      <if test="nameLike != null">
+        and RES.NAME_ like #{nameLike}
+      </if>
+        <if test="nameLikeIgnoreCase != null">
+        and lower(RES.NAME_) like #{nameLikeIgnoreCase}
+      </if>
+      <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
+        <if test="queryVariableValue.name != null">
+          <!-- Match-all variable-names when name is null -->
+          and A${index}.NAME_= #{queryVariableValue.name}
+        </if>
+        <if test="!queryVariableValue.type.equals('null')">
+        <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
+          and A${index}.VAR_TYPE_ = #{queryVariableValue.type}
+        </if>
+        <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+          <choose>
+            <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+              and lower(A${index}.TEXT_)
+            </when>
+            <otherwise>
+              and A${index}.TEXT_
+            </otherwise>
+          </choose>
+          <choose>
+            <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+            <otherwise><include refid="executionVariableOperator" /></otherwise>
+          </choose>
+          #{queryVariableValue.textValue}
+        </if>
+        <if test="queryVariableValue.textValue2 != null">
+        and A${index}.TEXT2_
+        <choose>
+          <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+          <otherwise><include refid="executionVariableOperator" /></otherwise>
+        </choose>
+          #{queryVariableValue.textValue2}
+        </if>
+        <if test="queryVariableValue.longValue != null">
+        and A${index}.LONG_
+        <include refid="executionVariableOperator" />
+        #{queryVariableValue.longValue}
+        </if>
+        <if test="queryVariableValue.doubleValue != null">
+        and A${index}.DOUBLE_
+        <include refid="executionVariableOperator" />
+        #{queryVariableValue.doubleValue}
+        </if>
+        <!-- Null variable type -->
+        <if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+          <choose>
+          <when test="queryVariableValue.operator.equals('NOT_EQUALS')">
+            and (A${index}.TEXT_ is not null or A${index}.TEXT2_ is not null or A${index}.LONG_ is not null or A${index}.DOUBLE_ is not null or A${index}.BYTEARRAY_ID_ is not null)
+          </when>
+          <otherwise>
+            and A${index}.TEXT_ is null and A${index}.TEXT2_ is null and A${index}.LONG_ is null and A${index}.DOUBLE_ is null and A${index}.BYTEARRAY_ID_ is null
+          </otherwise>
+        </choose>
+        </if>
+      </foreach>
+      <if test="orQueryObject != null">
+        and 
+        <trim prefix="(" prefixOverrides="OR" suffix=")">
+          <if test="orQueryObject.processInstanceId != null">
+            RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
+          </if>
+          <if test="orQueryObject.processInstanceIds != null and !orQueryObject.processInstanceIds.isEmpty()">
+            or RES.PROC_INST_ID_ in
+            <foreach item="item" index="index" collection="orQueryObject.processInstanceIds" open="(" separator="," close=")">
+              #{item}
+            </foreach>
+          </if>
+          <if test="orQueryObject.processDefinitionId != null">
+            or RES.PROC_DEF_ID_ = #{orQueryObject.processDefinitionId}
+          </if>
+          <if test="orQueryObject.processDefinitionKey != null">
+            or DEF.KEY_ = #{orQueryObject.processDefinitionKey}
+          </if>
+          <if test="orQueryObject.businessKey != null">
+            or RES.BUSINESS_KEY_ = #{orQueryObject.businessKey}
+          </if>
+          <if test="orQueryObject.deploymentId != null">
+            or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
+          </if>
+          <if test="orQueryObject.deploymentIds != null &amp;&amp; orQueryObject.deploymentIds.size() &gt; 0">
+            or DEPLOY_P.DEPLOYMENT_ID_ IN
+            <foreach item="deployment" index="index" collection="orQueryObject.deploymentIds" 
+                     open="(" separator="," close=")">
+              #{deployment}
+            </foreach>
+          </if>
+          <if test="orQueryObject.startedBefore != null">
+            or RES.START_TIME_ &lt;= #{orQueryObject.startedBefore}
+          </if>
+          <if test="orQueryObject.startedAfter != null">
+            or RES.START_TIME_ &gt;= #{orQueryObject.startedAfter}
+          </if>
+          <if test="orQueryObject.finishedBefore != null">
+            or (RES.END_TIME_ is not NULL and RES.END_TIME_ &lt;= #{orQueryObject.finishedBefore})
+          </if>
+          <if test="orQueryObject.finishedAfter != null">
+            or (RES.END_TIME_ is not NULL and RES.END_TIME_ &gt;= #{orQueryObject.finishedAfter})
+          </if>
+          <if test="orQueryObject.processKeyNotIn != null">
+            or
+            <trim prefix="(" prefixOverrides="AND" suffix=")">
+              <foreach collection="orQueryObject.processKeyNotIn" index="index" item="procDefKey">
+                and DEF.KEY_ not like #{procDefKey}
+              </foreach>
+            </trim>
+          </if>
+          <if test="orQueryObject.unfinished">
+            or RES.END_TIME_ IS NULL
+          </if>
+          <if test="orQueryObject.finished">
+            or RES.END_TIME_ is not NULL
+          </if>
+          <if test="orQueryObject.notDeleted">
+            or RES.DELETE_REASON_ IS NULL
+          </if>
+          <if test="orQueryObject.deleted">
+            or RES.DELETE_REASON_ IS NOT NULL
+          </if>
+          <if test="orQueryObject.involvedUser != null">
+            or (
+              exists(select LINK.USER_ID_ from ${prefix}ACT_HI_IDENTITYLINK LINK where USER_ID_ = #{orQueryObject.involvedUser} and LINK.PROC_INST_ID_ = RES.ID_)
+            )
+          </if>
+          <if test="orQueryObject.startedBy != null">
+            or RES.START_USER_ID_ = #{orQueryObject.startedBy}
+          </if>
+          <if test="orQueryObject.superProcessInstanceId != null">
+            or RES.SUPER_PROCESS_INSTANCE_ID_ = #{orQueryObject.superProcessInstanceId}
+          </if>
+          <if test="orQueryObject.excludeSubprocesses">
+            or RES.SUPER_PROCESS_INSTANCE_ID_ is null
+          </if>
+          <if test="orQueryObject.tenantId != null">
+            or RES.TENANT_ID_ = #{orQueryObject.tenantId}
+          </if>
+          <if test="orQueryObject.tenantIdLike != null">
+            or RES.TENANT_ID_ like #{orQueryObject.tenantIdLike}
+          </if>
+          <if test="orQueryObject.withoutTenantId">
+            or (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+          </if>
+           <if test="orQueryObject.name != null">
+            or RES.NAME_ = #{orQueryObject.name}
+          </if>
+          <if test="orQueryObject.nameLike != null">
+            or RES.NAME_ like #{orQueryObject.nameLike}
+          </if>
+          <if test="orQueryObject.nameLikeIgnoreCase != null">
+            or lower(RES.NAME_) like #{orQueryObject.nameLikeIgnoreCase}
+          </if>
+          <foreach collection="orQueryObject.queryVariableValues" index="index" item="queryVariableValue">
+            or
+            <trim prefix="(" prefixOverrides="AND" suffix=")">
+              <if test="queryVariableValue.name != null">
+                <!-- Match-all variable-names when name is null -->
+                and A_OR${index}.NAME_= #{queryVariableValue.name}
+              </if>
+              <if test="!queryVariableValue.type.equals('null')">
+              <!-- When operator is not-equals or type of value is null, type doesn't matter! -->
+                and A_OR${index}.VAR_TYPE_ = #{queryVariableValue.type}
+              </if>
+              <if test="queryVariableValue.textValue != null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+                <choose>
+                  <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE') || queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">
+                    and lower(A_OR${index}.TEXT_)
+                  </when>
+                  <otherwise>
+                    and A_OR${index}.TEXT_
+                  </otherwise>
+                </choose>
+                <choose>
+                  <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+                  <otherwise><include refid="executionVariableOperator" /></otherwise>
+                </choose>
+                #{queryVariableValue.textValue}
+              </if>
+              <if test="queryVariableValue.textValue2 != null">
+              and A_OR${index}.TEXT2_
+              <choose>
+                <when test="queryVariableValue.operator.equals('LIKE')">LIKE</when>
+                <otherwise><include refid="executionVariableOperator" /></otherwise>
+              </choose>
+                #{queryVariableValue.textValue2}
+              </if>
+              <if test="queryVariableValue.longValue != null">
+              and A_OR${index}.LONG_
+              <include refid="executionVariableOperator" />
+              #{queryVariableValue.longValue}
+              </if>
+              <if test="queryVariableValue.doubleValue != null">
+              and A_OR${index}.DOUBLE_
+              <include refid="executionVariableOperator" />
+              #{queryVariableValue.doubleValue}
+              </if>
+              <!-- Null variable type -->
+              <if test="queryVariableValue.textValue == null &amp;&amp; queryVariableValue.textValue2 == null &amp;&amp; queryVariableValue.longValue == null &amp;&amp; queryVariableValue.doubleValue == null">
+                <choose>
+                  <when test="queryVariableValue.operator.equals('NOT_EQUALS')">
+                    and (A_OR${index}.TEXT_ is not null or A_OR${index}.TEXT2_ is not null or A_OR${index}.LONG_ is not null or A_OR${index}.DOUBLE_ is not null or A_OR${index}.BYTEARRAY_ID_ is not null)
+                  </when>
+                  <otherwise>
+                    and A_OR${index}.TEXT_ is null and A_OR${index}.TEXT2_ is null and A_OR${index}.LONG_ is null and A_OR${index}.DOUBLE_ is null and A_OR${index}.BYTEARRAY_ID_ is null
+                  </otherwise>
+                </choose>
+              </if>
+            </trim>
+          </foreach>
+        </trim>
+      </if>
+    </where>
+  </sql>
+  
+  <sql id="executionVariableOperator">
+    <choose>
+      <when test="queryVariableValue.operator.equals('EQUALS')">=</when>
+      <when test="queryVariableValue.operator.equals('EQUALS_IGNORE_CASE')">=</when>
+      <when test="queryVariableValue.operator.equals('NOT_EQUALS')">&lt;&gt;</when>
+      <when test="queryVariableValue.operator.equals('NOT_EQUALS_IGNORE_CASE')">&lt;&gt;</when>
+      <when test="queryVariableValue.operator.equals('GREATER_THAN')">&gt;</when>
+      <when test="queryVariableValue.operator.equals('GREATER_THAN_OR_EQUAL')">&gt;=</when>
+      <when test="queryVariableValue.operator.equals('LESS_THAN')">&lt;</when>
+      <when test="queryVariableValue.operator.equals('LESS_THAN_OR_EQUAL')">&lt;=</when>
+   </choose>
+  </sql>
+ 
+   <select id="selectHistoricProcessInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicProcessInstanceResultMap">
+   	<if test="resultType == 'LIST_PAGE'">
+   		${limitBefore}
+   	</if>
+    ${sql}
+    <if test="resultType == 'LIST_PAGE'">
+    	${limitAfter}
+    </if>
+  </select>
+  
+  <select id="selectHistoricProcessInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicProcessInstanceResultMap">
+  	<if test="resultType == 'LIST_PAGE'">
+        ${limitBeforeNativeQuery}
+  	</if>
+  	${sql} 
+    <if test="resultType == 'LIST_PAGE'">
+  		${limitAfter}
+  	</if>
+  </select>
+
+  <select id="selectHistoricProcessInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
+    ${sql}
+  </select>
+</mapper>

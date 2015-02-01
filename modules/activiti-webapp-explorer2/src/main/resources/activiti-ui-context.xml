@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context" xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:jee="http://www.springframework.org/schema/jee" xmlns:aop="http://www.springframework.org/schema/aop"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+       http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+       http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
+       http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
+       
+  <!-- This application context will be included in Alfresco as-is -->       
+
+  <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer" name="activitiUiPropertyPlaceholder">
+    <property name="location" value="classpath:ui.properties" />
+    <!-- Allow other PropertyPlaceholderConfigurer to run as well -->
+    <property name="ignoreUnresolvablePlaceholders" value="true"/>
+  </bean>
+
+  <!-- Global scoped beans -->
+  
+  <bean name="navigatorManager" class="org.activiti.explorer.navigation.NavigatorManager" />
+  
+  <bean name="attachmentRendererManager" class="org.activiti.explorer.ui.content.AttachmentRendererManager" />
+   
+  <!-- Custom form property renderers can be plugged in here -->
+  <bean id="formPropertyRendererManager" class="org.activiti.explorer.ui.form.FormPropertyRendererManager" lazy-init="true">
+    <!-- Default renderer -->
+    <property name="noTypePropertyRenderer">
+      <bean class="org.activiti.explorer.ui.form.StringFormPropertyRenderer" />
+    </property>
+    <!-- Renderers by property type -->
+    <property name="propertyRenderers">
+      <list>
+        <bean class="org.activiti.explorer.ui.form.StringFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.EnumFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.LongFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.DoubleFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.DateFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.UserFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.BooleanFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.ProcessDefinitionFormPropertyRenderer" />
+        <bean class="org.activiti.explorer.ui.form.MonthFormPropertyRenderer" />
+      </list>
+    </property>
+  </bean>
+  
+  <!-- Variable value rendering -->
+  <bean id="variableRendererManager" class="org.activiti.explorer.ui.variable.VariableRendererManager" />
+  
+  <bean name="componentFactories" class="org.activiti.explorer.ComponentFactories">
+    <property name="environment" value="${activiti.ui.environment}" />
+  </bean>
+  
+  <bean name="processDefinitionFilterFactory" class="org.activiti.explorer.ui.process.ProcessDefinitionFilterFactory">
+    <property name="componentFactories" ref="componentFactories" />
+  </bean>
+  
+  <bean name="deploymentFilterFactory" class="org.activiti.explorer.ui.management.deployment.DeploymentFilterFactory">
+    <property name="componentFactories" ref="componentFactories" />
+  </bean>
+  
+  <!-- Session scoped UI beans -->
+  
+  <bean name="navigationFragmentChangeListener" class="org.activiti.explorer.navigation.NavigationFragmentChangeListener" scope="session">
+    <property name="navigatorManager" ref="navigatorManager" />
+  </bean>
+  
+  <bean name="mainWindow" class="org.activiti.explorer.ui.MainWindow" scope="session">
+    <property name="navigationFragmentChangeListener" ref="navigationFragmentChangeListener" />
+    <property name="i18nManager" ref="i18nManager" />
+  </bean>
+  
+  <bean name="explorerApp" class="org.activiti.explorer.ExplorerApp" scope="session">
+    <property name="environment" value="${activiti.ui.environment}" />
+    <property name="useJavascriptDiagram" value="${activiti.ui.jsdiagram}" />
+    <property name="i18nManager" ref="i18nManager" />
+    <property name="viewManager" ref="viewManager" />
+    <property name="notificationManager" ref="notificationManager" />
+    <property name="attachmentRendererManager" ref="attachmentRendererManager" />
+    <property name="formPropertyRendererManager" ref="formPropertyRendererManager" />
+    <property name="variableRendererManager" ref="variableRendererManager" />
+    <property name="applicationMainWindow" ref="mainWindow" />
+    <property name="componentFactories" ref="componentFactories" />
+    <property name="workflowDefinitionConversionFactory" ref="workflowDefinitionConversionFactory" />
+    <property name="loginHandler" ref="activitiLoginHandler" />
+    <property name="simpleWorkflowJsonConverter" ref="simpleWorkflowJsonConverter" />
+  </bean>
+  
+  <bean id="simpleWorkflowJsonConverter" class="org.activiti.workflow.simple.converter.json.SimpleWorkflowJsonConverter" />
+  
+  <bean name="i18nManager" class="org.activiti.explorer.I18nManager" scope="session">
+    <property name="messageSource" ref="messageSource" />
+  </bean>
+  
+  <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource" >
+    <property name="basenames">
+        <list>
+            <value>messages</value>
+        </list>
+     </property>
+     <aop:scoped-proxy proxy-target-class="false" /> <!-- Needed for session serialization -->
+  </bean>
+  
+  <bean name="notificationManager" class="org.activiti.explorer.NotificationManager" scope="session">
+    <property name="mainWindow" ref="mainWindow" />
+    <property name="i18nManager" ref="i18nManager" />
+  </bean>
+  
+  <bean name="viewManager" class="org.activiti.explorer.ViewManagerFactoryBean" scope="session">
+    <property name="mainWindow" ref="mainWindow" />
+    <property name="environment" value="${activiti.ui.environment}" />
+  </bean>
+
+  <bean name="workflowDefinitionConversionFactory" class="org.activiti.workflow.simple.converter.WorkflowDefinitionConversionFactory" />
+  
+</beans>

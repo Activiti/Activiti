@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="activiti.qa">
+  	
+  <property file="${user.home}/.activiti/build.properties" />
+  <property file="../distro/src/setup/build.properties" />
+  <property name="activiti.version" value="5.16.1" />
+  <property name="activiti.home" value="../distro/target/activiti-${activiti.version}" /> 
+  <property name="macos.browser" value="/usr/bin/open" />
+  <property name="windows.browser" value="C:/Program Files/Mozilla Firefox/firefox.exe" />
+  <property name="linux.browser" value="firefox" />
+  <property name="tomcat.home" value="${activiti.home}/apps/apache-tomcat-${tomcat.version}" />
+  <property name="downloads.dir" value="${user.home}/.activiti/downloads" />
+  
+  <condition property="mvn.executable" value="mvn.bat" else="mvn">
+     <os family="windows"/>
+  </condition>
+
+  <target name="pre.commit.check">
+    <exec executable="${mvn.executable}" dir="..">
+      <arg line="-Pcheck clean install" />
+    </exec>
+  </target>
+
+  <target name="test.demo.start" depends="build.clean.distro">
+    <ant antfile="../distro/target/activiti-${activiti.version}/setup/build.xml"
+         target="demo.start"
+         inheritall="false">
+    	<property name="nodocs" value="true" />
+    </ant>
+  </target>
+	
+  <target name="test.demo.stop">
+    <ant antfile="../distro/target/activiti-${activiti.version}/setup/build.xml"
+         target="demo.stop"
+         inheritall="false" />
+  </target>
+	
+  <target name="test.upgrade" depends="build.clean.distro">
+    <copy file="../distro/target/activiti-${activiti.version}.zip" todir="${downloads.dir}" />
+  	<ant antfile="upgrade/build.xml" target="upgrade" inheritall="false" />
+  </target>
+  
+  <target name="build.userguide">
+    <ant antfile="../userguide/build.xml"
+         target="build.userguide"
+         inheritall="false">
+    </ant>
+    <sleep seconds="1"/>
+    <property name="url" value="file://${basedir}/../userguide/target/html/en/index.html" />
+    <antcall target="open.html.page"/>
+  </target>
+  
+  <target name="test.demo.setup.refresh">
+    <ant antfile="../distro/target/activiti-${activiti.version}/setup/build.xml"
+         target="demo.teardown"
+         inheritall="false" />
+		<antcall target="test.demo.setup" />
+	</target>
+
+  <target name="build.clean.distro">
+  	<ant antfile="../distro/build.xml" inheritall="false">
+      <target name="clean" />
+      <target name="distro" />
+  		<property name="nodocs" value="true" />
+    </ant>
+  </target>
+
+  <target name="build.javadocs">
+    <exec executable="${mvn.executable}" dir="../modules/activiti-engine">
+      <arg line="javadoc:javadoc" />
+    </exec>
+  	<property name="url" value="file://${basedir}/../modules/activiti-engine/target/site/apidocs/index.html" />
+  	<antcall target="open.html.page"/>
+  </target>
+
+  <target name="webapp.rest.redeploy">
+    <property name="webapp.redeploy.module" value="rest"/>
+    <antcall target="webapp.redeploy"/>
+  </target>
+
+  <target name="webapp.probe.redeploy">
+    <property name="webapp.redeploy.module" value="probe"/>
+    <antcall target="webapp.redeploy"/>
+  </target>
+
+  <target name="webapp.explorer.redeploy">
+    <property name="webapp.redeploy.module" value="explorer"/>
+    <antcall target="webapp.redeploy"/>
+  </target>
+  
+  <target name="webapp.redeploy">
+    <fail message="To use this target, set property webapp.redeploy.module to the chosen module" unless="webapp.redeploy.module"/>
+    <available file="${user.home}/.activiti/tomcat-users.xml" property="tomcat.users.available" />
+  	<fail message="To use this target, a tomcat-users.xml must be in your user home ${user.home}/.activiti with following content:&#10;
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt; &#10;
+&lt;tomcat-users&gt; &#10;
+ 	&lt;role rolename=&quot;manager&quot;/&gt; &#10;
+ 	&lt;user username=&quot;activiti&quot; password=&quot;activiti&quot; roles=&quot;manager&quot;/&gt; &#10;
+&lt;/tomcat-users&gt; &#10;
+Then run test.demo.setup to make it get placed inside your tomcat server." unless="tomcat.users.available"/>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp">
+      <arg line="clean install" />
+    </exec>
+    <exec executable="${mvn.executable}" dir="../modules/activiti-webapp-${webapp.redeploy.module}">
+      <arg line="clean package" />
+    </exec>
+    <taskdef name="undeploy" classname="org.apache.catalina.ant.UndeployTask">
+      <classpath>
+        <fileset dir="${tomcat.home}/lib">
+          <include name="catalina-ant.jar"/>
+        </fileset>
+      </classpath>
+    </taskdef>
+    <undeploy url="http://localhost:8080/manager"
+            username="activiti"
+            password="activiti"
+            path="/activiti-${webapp.redeploy.module}"
+            failonerror="false"/>
+    <taskdef name="deploy" classname="org.apache.catalina.ant.DeployTask">
+      <classpath>
+        <fileset dir="${tomcat.home}/lib">
+          <include name="catalina-ant.jar"/>
+        </fileset>
+      </classpath>
+    </taskdef>
+    <deploy url="http://localhost:8080/manager"
+            username="activiti"
+            password="activiti"
+            path="/activiti-${webapp.redeploy.module}"
+            war="${basedir}/../modules/activiti-webapp-${webapp.redeploy.module}/target/activiti-webapp-${webapp.redeploy.module}-${activiti.version}.war"/>
+  </target>
+
+
+  <target name="webapp.rest.redeploy.resources">
+    <copy todir="${tomcat.home}/webapps/activiti-webapp-rest/WEB-INF/classes/webscripts" verbose="true">
+      <fileset dir="../modules/activiti-webapp-rest/src/main/resources/webscripts" />
+    </copy>
+    <copy todir="${tomcat.home}/webapps/activiti-webapp-rest" verbose="true">
+      <fileset dir="../modules/activiti-webapp-rest/src/main/webapp/" excludes="WEB-INF/web.xml" />
+    </copy>
+  </target>
+
+  <target name="webapp.probe.redeploy.resources">
+    <property name="webapp.redeploy.module" value="probe"/>
+    <antcall target="webapp.redeploy.resources"/>
+  </target>
+
+  <target name="webapp.explorer.redeploy.resources">
+    <property name="webapp.redeploy.module" value="explorer"/>
+    <antcall target="webapp.redeploy.resources"/>
+  </target>
+
+  <target name="webapp.redeploy.resources">
+    <copy todir="${tomcat.home}/webapps/activiti-${webapp.redeploy.module}" verbose="true">
+      <fileset dir="../modules/activiti-webapp/src/main/webapp/" excludes="WEB-INF/web.xml" />
+    </copy>
+    <copy todir="${tomcat.home}/webapps/activiti-${webapp.redeploy.module}" verbose="true">
+      <fileset dir="../modules/activiti-webapp-${webapp.redeploy.module}/src/main/webapp/" excludes="WEB-INF/web.xml" />
+    </copy>
+  </target>
+
+  <target name="open.html.page">
+    <fail message="property url has to be specified to use this target" unless="url" />
+    <exec executable="${macos.browser}" os="Mac OS X">
+      <arg value="${url}" />
+    </exec>
+    <exec executable="cmd" os="Windows Vista, Windows XP,Windows 2000,Windows 98">
+      <arg value="/C start &quot;${windows.browser}&quot; &quot;${url}&quot;" />
+    </exec>
+    <exec executable="${linux.browser}" os="Linux">
+      <arg value="${url}" />
+    </exec>
+  </target>
+	
+	<!-- Assumes that a demo setup is successfully running (in /distro/target/etc) -->
+	<target name="deploy.ui.qa.processes">
+		<delete dir="ui/build" />
+		<mkdir dir="ui/build"/>
+		<zip destfile="ui/build/ui-qa-processes.bar">
+		  <fileset dir="ui/processes">
+		    <include name="verifyJobExceptionStacktrace.bpmn20.xml"/>
+		  </fileset>
+		</zip>
+		<taskdef name="deploy-bar" classname="org.activiti.engine.impl.ant.DeployBarTask">
+		  <classpath>
+		    <fileset dir="${activiti.home}/setup/build/">
+		      <include name="activiti-cfg.jar"/>
+		     </fileset>
+		     <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-runtime/" />
+         <fileset dir="${activiti.home}/examples/activiti-engine-examples/libs-test/" />
+		   </classpath>
+		  </taskdef>
+		
+		  <deploy-bar file="ui/build/ui-qa-processes.bar" />
+		  <delete dir="ui/build" />
+	</target>
+	
+</project>

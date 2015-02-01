@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+    expressionLanguage="http://www.w3.org/1999/XPath" 
+    targetNamespace="activiti-report">
+
+    <process id="task-duration-report" name="Task duration report" isExecutable="true">
+    
+        <startEvent id="startevent1" name="Start">
+          <extensionElements>
+            <activiti:formProperty id="processDefinition" name="Select process definition" type="processDefinition" required="true" />
+            <activiti:formProperty id="chartType" name="Chart type" type="enum" required="true">
+                <activiti:value id="pieChart" name="Pie chart" />
+                <activiti:value id="barChart" name="Bar chart" />
+            </activiti:formProperty>
+          </extensionElements>
+        </startEvent>
+        <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="generateDataset" />
+        
+        <scriptTask id="generateDataset" name="Execute script" scriptFormat="js" activiti:autoStoreVariables="false">
+          <script><![CDATA[
+          
+               importPackage(java.sql);
+               importPackage(java.lang);
+               importPackage(org.activiti.explorer.reporting);
+               
+               var processDefinition = execution.getVariable("processDefinition");
+               
+               var result = ReportingUtil.executeSelectSqlQuery("select NAME_, avg(DURATION_) from ACT_HI_TASKINST where PROC_DEF_ID_ = '" + processDefinition.getId() + "' and END_TIME_ is not null group by NAME_");
+            
+               /* JDK 7
+               
+               var reportData = {};
+               reportData.datasets = [];
+               
+               var dataset = {};
+               dataset.type = String(execution.getVariable("chartType"));
+               dataset.description = "Average task duration (in seconds) for process definition '" + processDefinition.getName() + "' (version " + processDefinition.getVersion() + ")";
+               dataset.data = {};
+               
+               while (result.next()) { // process results one row at a time
+                 var name = result.getString(1);
+                 var val = result.getLong(2) / 1000;
+                 dataset.data[name] = val;
+               }
+               reportData.datasets.push(dataset);
+               
+               execution.setVariable("reportData", new java.lang.String(JSON.stringify(reportData)).getBytes("UTF-8"));
+               
+               */
+               
+               /* JDK 6+ */
+               
+               var reportData = new ReportData();
+               var dataset = reportData.newDataset();
+               dataset.type = execution.getVariable("chartType");
+               dataset.description = "Average task duration (in seconds) for process definition '" + processDefinition.getName() + "' (version " + processDefinition.getVersion() + ")";
+               
+               while (result.next()) { // process results one row at a time
+                 var name = result.getString(1);
+                 var val = result.getLong(2) / 1000;
+                 dataset.add(name, val);
+               }
+               
+                execution.setVariable("reportData", reportData.toBytes());
+               
+          ]]></script>
+        </scriptTask>
+        <sequenceFlow id="flow3" sourceRef="generateDataset" targetRef="theEnd" />
+        
+        <endEvent id="theEnd" />
+        
+    </process>
+
+</definitions>

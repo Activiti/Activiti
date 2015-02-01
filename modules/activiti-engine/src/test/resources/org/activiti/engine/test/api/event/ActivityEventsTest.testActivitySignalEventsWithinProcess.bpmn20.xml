@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+
+  <signal id="shipOrderSignal" name="alert" />
+
+  <process id="signalProcess">
+
+    <startEvent id="theStart" />
+
+    <sequenceFlow id="flow1" sourceRef="theStart"
+      targetRef="fork" />
+
+    <parallelGateway id="fork" />
+    <sequenceFlow sourceRef="fork" targetRef="usertask" />
+    <sequenceFlow sourceRef="fork" targetRef="shipOrder" />
+
+    <userTask id="usertask" />
+    <sequenceFlow sourceRef="usertask" targetRef="signal" />
+
+    <intermediateThrowEvent id="signal">
+      <signalEventDefinition signalRef="shipOrderSignal" />
+    </intermediateThrowEvent>
+    <sequenceFlow sourceRef="signal" targetRef="join" />
+
+    <intermediateCatchEvent id="shipOrder" name="On Alert">
+      <!-- signal event definition -->
+      <signalEventDefinition signalRef="shipOrderSignal" />
+    </intermediateCatchEvent>
+
+    <sequenceFlow sourceRef="shipOrder" targetRef="join" />
+
+    <parallelGateway id="join" />
+    <sequenceFlow sourceRef="join" targetRef="archiveOrder" />
+
+    <userTask id="archiveOrder" name="Archive Order" />
+    <sequenceFlow sourceRef="archiveOrder" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+</definitions>

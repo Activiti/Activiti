@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" 
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+  <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+  
+    <property name="jdbcUrl" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000" />
+    <property name="jdbcDriver" value="org.h2.Driver" />
+    <property name="jdbcUsername" value="sa" />
+    <property name="jdbcPassword" value="" />
+    
+    <!-- Database configurations -->
+    <property name="databaseSchemaUpdate" value="true" />
+    
+    <!-- job executor configurations -->
+    <property name="jobExecutorActivate" value="false" />
+    
+    <!-- Add typed event listener -->
+    <property name="typedEventListeners">
+      <map>
+        <entry key="CUSTOM" >
+          <list>
+            <ref bean="eventListener" />
+          </list>
+        </entry>
+        <entry key="ENTITY_DELETED,ENTITY_UPDATED" >
+          <list>
+            <ref bean="eventListener" />
+          </list>
+        </entry>
+      </map>
+    </property>
+    
+    <!-- Also register the eventlistener as bean, to be able to access it from the tests -->
+    <property name="beans">
+      <map>
+        <entry key="eventListener" value-ref="eventListener" />
+      </map>
+    </property>
+  </bean>
+  
+  <!-- The actual event-listener instance -->
+  <bean id="eventListener" class="org.activiti.engine.test.api.event.TestActivitiEventListener" />
+  
+</beans>

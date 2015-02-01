@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.EvenLogEntryEntity">
+
+  <!-- INSERT -->
+
+  <insert id="insertEventLogEntry" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+    insert into ${prefix}ACT_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
+    values (
+      #{type, jdbcType=VARCHAR}, 
+      #{processDefinitionId, jdbcType=VARCHAR}, 
+      #{processInstanceId, jdbcType=VARCHAR},
+      #{executionId, jdbcType=VARCHAR},
+      #{taskId, jdbcType=VARCHAR},   
+      #{timeStamp, jdbcType=TIMESTAMP}, 
+      #{userId, jdbcType=VARCHAR},
+      #{data, jdbcType=BLOB},
+      #{lockOwner, jdbcType=VARCHAR},
+      #{lockTime, jdbcType=TIMESTAMP},
+      #{isProcessed, jdbcType=INTEGER} 
+    )  
+  </insert>
+  
+    <insert id="insertEventLogEntry_postgres" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+    insert into ${prefix}ACT_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
+    values (
+      #{type, jdbcType=VARCHAR}, 
+      #{processDefinitionId, jdbcType=VARCHAR}, 
+      #{processInstanceId, jdbcType=VARCHAR},
+      #{executionId, jdbcType=VARCHAR},
+      #{taskId, jdbcType=VARCHAR},   
+      #{timeStamp, jdbcType=TIMESTAMP}, 
+      #{userId, jdbcType=VARCHAR},
+      #{data, jdbcType=BINARY},
+      #{lockOwner, jdbcType=VARCHAR},
+      #{lockTime, jdbcType=TIMESTAMP},
+      #{isProcessed, jdbcType=INTEGER} 
+    )  
+  </insert>
+  
+  <insert id="insertEventLogEntry_oracle" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+    insert into ${prefix}ACT_EVT_LOG(LOG_NR_, TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
+    values (
+      ${prefix}ACT_EVT_LOG_seq.nextVal,
+      #{type, jdbcType=VARCHAR}, 
+      #{processDefinitionId, jdbcType=VARCHAR}, 
+      #{processInstanceId, jdbcType=VARCHAR},
+      #{executionId, jdbcType=VARCHAR},
+      #{taskId, jdbcType=VARCHAR},   
+      #{timeStamp, jdbcType=TIMESTAMP}, 
+      #{userId, jdbcType=VARCHAR},
+      #{data, jdbcType=BLOB},
+      #{lockOwner, jdbcType=VARCHAR},
+      #{lockTime, jdbcType=TIMESTAMP},
+      #{isProcessed, jdbcType=INTEGER} 
+    )  
+  </insert>
+  
+  <!-- RESULTMAP -->
+  
+  <resultMap id="eventLogEntryResultMap" type="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+    <id property="logNumber" column="LOG_NR_" jdbcType="BIGINT" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR"/>
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR"/>
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR"/>
+    <result property="timeStamp" column="TIME_STAMP_" jdbcType="TIMESTAMP"/>
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="data" column="DATA_" jdbcType="BLOB"/>
+    <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR"/>
+    <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="isProcessed" column="IS_PROCESSED_" jdbcType="INTEGER"/>
+  </resultMap>
+  
+  <resultMap id="eventLogEntryResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+    <id property="logNumber" column="LOG_NR_" jdbcType="BIGINT" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR"/>
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
+    <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR"/>
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR"/>
+    <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR"/>
+    <result property="timeStamp" column="TIME_STAMP_" jdbcType="TIMESTAMP"/>
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="data" column="DATA_" jdbcType="BINARY"/>
+    <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR"/>
+    <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP"/>
+    <result property="isProcessed" column="IS_PROCESSED_" jdbcType="INTEGER"/>
+  </resultMap>
+  
+  <!-- SELECTS -->
+  
+  <select id="selectAllEventLogEntries" resultMap="eventLogEntryResultMap">
+    select * from ${prefix}ACT_EVT_LOG ORDER BY LOG_NR_
+  </select>
+  
+  <select id="selectAllEventLogEntries_postgres" resultMap="eventLogEntryResultMap_postgres">
+    select * from ${prefix}ACT_EVT_LOG ORDER BY LOG_NR_
+  </select>
+  
+  <select id="selectEventLogEntries" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
+    select * from ${prefix}ACT_EVT_LOG 
+    WHERE LOG_NR_ &gt; #{parameter.startLogNr}
+    AND LOG_NR_ &lt; #{parameter.endLogNr}
+    ORDER BY LOG_NR_ 
+  </select>
+  
+  <select id="selectEventLogEntries_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap_postgres">
+    select * from ${prefix}ACT_EVT_LOG 
+    WHERE LOG_NR_ &gt; #{parameter.startLogNr}
+    AND LOG_NR_ &lt; #{parameter.endLogNr}
+    ORDER BY LOG_NR_ 
+  </select>
+  
+  <select id="selectEventLogEntriesByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
+    select * from ${prefix}ACT_EVT_LOG 
+    WHERE PROC_INST_ID_ = #{parameter.processInstanceId}
+    ORDER BY LOG_NR_ 
+  </select>
+  
+  <select id="selectEventLogEntriesByProcessInstanceId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap_postgres">
+    select * from ${prefix}ACT_EVT_LOG 
+    WHERE PROC_INST_ID_ = #{parameter.processInstanceId}
+    ORDER BY LOG_NR_ 
+  </select>
+  
+  <!-- DELETE -->
+  <delete id="deleteEventLogEntry" parameterType="long">
+    delete from ${prefix}ACT_EVT_LOG where LOG_NR_ = #{logNr}
+  </delete>
+
+</mapper>

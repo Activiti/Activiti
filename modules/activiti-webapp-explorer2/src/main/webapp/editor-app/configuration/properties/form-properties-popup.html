@@ -1,0 +1,93 @@
+
+<div class="modal" ng-controller="KisBpmFormPropertiesPopupCtrl">
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+                <h2>{{'PROPERTY.PROPERTY.EDIT.TITLE' | translate:property}}</h2>
+            </div>
+            <div class="modal-body">
+            
+                <div class="row row-no-gutter">
+                    <div class="col-xs-6">
+                        <div ng-if="translationsRetrieved" class="default-grid" ng-grid="gridOptions"></div>
+                        <div class="pull-right">
+                            <div class="btn-group">
+                                <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.MOVE.UP' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="movePropertyUp()"><i class="glyphicon glyphicon-arrow-up"></i></a>
+                                <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.MOVE.DOWN' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="movePropertyDown()"><i class="glyphicon glyphicon-arrow-down"></i></a>
+                            </div>
+                            <div class="btn-group">
+                                <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.ADD' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="addNewProperty()"><i class="glyphicon glyphicon-plus"></i></a>
+                                <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.REMOVE' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="removeProperty()"><i class="glyphicon glyphicon-minus"></i></a>
+                            </div>
+                        </div>
+                    </div>
+            
+                    <div class="col-xs-6">
+                        <div ng-show="selectedProperties.length > 0">
+            
+                            <div class="form-group">
+            			   		<label for="idField">{{'PROPERTY.FORMPROPERTIES.ID' | translate}}</label>
+            			   		<input id="idField" class="form-control" type="text" ng-model="selectedProperties[0].id" placeholder="{{'PROPERTY.FORMPROPERTIES.ID.PLACEHOLDER' | translate }}" />
+            				</div>
+            				<div class="form-group">
+            			   		<label for="nameField">{{'PROPERTY.FORMPROPERTIES.NAME' | translate}}</label>
+            			   		<input id="nameField" class="form-control" type="text" ng-model="selectedProperties[0].name" placeholder="{{'PROPERTY.FORMPROPERTIES.NAME.PLACEHOLDER' | translate }}" />
+            				</div>
+            				<div class="form-group">
+            			   		<label for="typeField">{{'PROPERTY.FORMPROPERTIES.TYPE' | translate}}</label>
+            			   		<select id="typeField" class="form-control" ng-model="selectedProperties[0].type" ng-change="propertyTypeChanged()">
+                                    <option>string</option>
+                                    <option>long</option>
+                                    <option>boolean</option>
+                                    <option>date</option>
+                                    <option>enum</option>
+                                </select>
+            				</div>
+                           	<div class="form-group" ng-show="selectedProperties[0].datePattern">
+            			   		<label for="datePatternField">{{'PROPERTY.FORMPROPERTIES.DATEPATTERN' | translate}}</label>
+            			   		<input id="datePatternField" class="form-control" type="text" ng-model="selectedProperties[0].datePattern" placeholder="{{'PROPERTY.FORMPROPERTIES.DATEPATTERN.PLACEHOLDER' | translate }}" />
+            				</div>
+                            <div class="form-group" ng-show="selectedProperties[0].enumValues">
+            			   		<label for="valueField">{{'PROPERTY.FORMPROPERTIES.VALUES' | translate}}</label>
+            			   		<div ng-repeat="enum in selectedProperties[0].enumValues">
+                                    <input id="valueField" class="form-control" type="text" ng-model="enum.value" />
+                                    <i class="glyphicon glyphicon-minus clickable-property" ng-click="removeEnumValue($index)"></i>
+                                    <i ng-if="$index == (selectedProperties[0].enumValues.length - 1)" class="glyphicon glyphicon-plus clickable-property" ng-click="addEnumValue($index)"></i>
+                                </div>
+            				</div>
+                            <div class="form-group">
+            			   		<label for="expressionField">{{'PROPERTY.FORMPROPERTIES.EXPRESSION' | translate}}</label>
+            			   		<input id="expressionField" class="form-control" type="text" ng-model="selectedProperties[0].expression" placeholder="{{'PROPERTY.FORMPROPERTIES.EXPRESSION.PLACEHOLDER' | translate }}" />
+            				</div>
+            				<div class="form-group">
+            			   		<label for="variableField">{{'PROPERTY.FORMPROPERTIES.VARIABLE' | translate}}</label>
+            			   		<input id="variableField" class="form-control" type="text" ng-model="selectedProperties[0].variable" placeholder="{{'PROPERTY.FORMPROPERTIES.VARIABLE.PLACEHOLDER' | translate }}" />
+            				</div>
+            				<div class="form-inline">
+            					<div class="form-group col-xs-2" >
+            				   		<label for="requiredField">{{'PROPERTY.FORMPROPERTIES.REQUIRED' | translate}}</label>
+            				   		<input id="requiredField" class="form-control" type="checkbox" ng-model="selectedProperties[0].required" />
+            				   	</div>
+            				   	<div class="form-group col-xs-2">
+            				   		<label for="readableField">{{'PROPERTY.FORMPROPERTIES.READABLE' | translate}}</label>
+            				   		<input id="readableField" class="form-control" type="checkbox" ng-model="selectedProperties[0].readable" />
+            					</div>
+            					<div class="form-group col-xs-2">
+            						<label for="writableField">{{'PROPERTY.FORMPROPERTIES.WRITABLE' | translate}}</label>
+            			   			<input id="writableField" class="form-control" type="checkbox" ng-model="selectedProperties[0].writable" />
+            					</div>
+            				</div>
+                        </div>
+                        <div ng-show="selectedProperties.length == 0" class="muted no-property-selected" translate>PROPERTY.FORMPROPERTIES.EMPTY</div>
+                    </div>
+                </div>
+            
+            </div>
+            <div class="modal-footer">
+                <button ng-click="cancel()" class="btn btn-primary" translate>ACTION.CANCEL</button>
+                <button ng-click="save()" class="btn btn-primary" translate>ACTION.SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>

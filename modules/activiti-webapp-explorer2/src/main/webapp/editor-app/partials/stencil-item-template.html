@@ -1,0 +1,27 @@
+<span ng-click="group.expanded = !group.expanded">
+        <i class="glyphicon"
+           ng-class="{'glyphicon-chevron-right': !group.expanded, 'glyphicon-chevron-down': group.expanded}"></i>
+        {{group.name}}
+    </span>
+
+<!-- Child groups -->
+<ul ng-repeat="group in group.groups"
+    class="stencil-group stencil-group-non-root"
+    ng-class="{collapsed: !group.expanded, 'first': $first}"
+    ng-include="'editor-app/partials/stencil-item-template.html?version=4'">
+</ul>
+
+<!-- Group items -->
+<ul>
+    <li ng-repeat="item in group.paletteItems" class="stencil-item"
+        id="{{item.id}}"
+        title="{{item.description}}"
+        ng-model="draggedElement"
+        data-drag="true"
+        jqyoui-draggable="{onStart:'startDragCallback', onDrag:'dragCallback'}"
+        data-jqyoui-options="{revert: 'invalid', helper: 'clone', opacity : 0.5}">
+        
+        <img ng-src="editor-app/stencilsets/bpmn2.0/icons/{{item.icon}}" width="16px;" height="16px;"/>
+        {{item.name}}
+    </li>
+</ul>

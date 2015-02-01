@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="org.activiti.enginge.test.api.runtime">
+
+  <process id="testSignalWithProcessVariables">
+
+    <startEvent id="theStart" />    
+    <sequenceFlow  sourceRef="theStart" targetRef="receiveMessage" />    
+    
+    <receiveTask id="receiveMessage" />    
+    <sequenceFlow sourceRef="receiveMessage" targetRef="theTask" />
+    
+    <userTask id="theTask" name="my task" />        
+    <sequenceFlow  sourceRef="theTask" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

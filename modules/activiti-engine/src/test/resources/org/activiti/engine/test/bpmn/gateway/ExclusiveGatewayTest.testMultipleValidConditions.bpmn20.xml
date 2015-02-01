@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="exclusiveGwMultipleValidConditions">
+  
+    <startEvent id="theStart" />
+    
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="exclusiveGw" />
+    
+    <exclusiveGateway id="exclusiveGw" name="Exclusive Gateway" />
+    
+    <sequenceFlow id="flow2" sourceRef="exclusiveGw" targetRef="theTask1">
+      <conditionExpression xsi:type="tFormalExpression">${input == 1}</conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow3" sourceRef="exclusiveGw" targetRef="theTask2">
+      <conditionExpression xsi:type="tFormalExpression">${input >= 2}</conditionExpression>
+    </sequenceFlow>
+    
+    <sequenceFlow id="flow4" sourceRef="exclusiveGw" targetRef="theTask3">
+      <conditionExpression xsi:type="tFormalExpression">${input >= 3}</conditionExpression>
+    </sequenceFlow>
+
+    <userTask id="theTask1" name="Task 1" />
+    
+    <sequenceFlow id="flow5" sourceRef="theTask1" targetRef="theEnd" />
+    
+    <userTask id="theTask2" name="Task 2" />
+    
+    <sequenceFlow id="flow6" sourceRef="theTask2" targetRef="theEnd" />
+    
+    <userTask id="theTask3" name="Task 3" />
+    
+    <sequenceFlow id="flow7" sourceRef="theTask3" targetRef="theEnd" />    
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

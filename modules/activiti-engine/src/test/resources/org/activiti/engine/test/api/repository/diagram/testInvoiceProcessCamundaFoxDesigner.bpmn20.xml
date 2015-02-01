@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:signavio="http://www.signavio.com" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd" id="sid-2c1c7336-0478-4460-906f-d2a2fc8edcd0" exporter="Signavio Process Editor, http://www.signavio.com" exporterVersion="5.4.0" targetNamespace="http://www.omg.org/spec/BPMN/20100524/MODEL">
+  <collaboration id="collaboration_1">
+    <participant id="Process_Engine_1" name="invoice-inbound" processRef="invoice"/>
+  </collaboration>
+  <message id="messageId" name="messageName"/>
+  <process id="invoice" name="invoice-inbound" isExecutable="false">
+    <laneSet id="laneSet_109">
+      <lane id="Freigebender_105" name="Freigebender">
+        <flowNodeRef>Rechnung_freigeben_125</flowNodeRef>
+        <flowNodeRef>Freigabe_erfolgt__131</flowNodeRef>
+      </lane>
+      <lane id="Team-Assistenz_110" name="Team-Assistenz">
+        <flowNodeRef>Rechnung_eingegangen_138</flowNodeRef>
+        <flowNodeRef>Freigebenden_zuordnen_143</flowNodeRef>
+        <flowNodeRef>Rechnung_kl_ren_148</flowNodeRef>
+        <flowNodeRef>Kl_rung_erfolgreich__153</flowNodeRef>
+        <flowNodeRef>endEvent_165</flowNodeRef>
+      </lane>
+      <lane id="Buchhaltung_119" name="Buchhaltung">
+        <flowNodeRef>zberweisung_vorbereiten_169</flowNodeRef>
+        <flowNodeRef>Rechnungseingang_abgearbeitet_174</flowNodeRef>
+        <flowNodeRef>PDF_aus_SVN_entfernen_160</flowNodeRef>
+      </lane>
+    </laneSet>
+    <userTask id="Rechnung_freigeben_125" activiti:assignee="#{approver}" activiti:formKey="approveInvoice" name="Rechnung&#xA;freigeben">
+      <incoming>sequenceFlow_178</incoming>
+      <incoming>ja_186</incoming>
+      <outgoing>sequenceFlow_180</outgoing>
+    </userTask>
+    <exclusiveGateway id="Freigabe_erfolgt__131" name="Freigabe&#xA;erfolgt?" gatewayDirection="Diverging">
+      <incoming>sequenceFlow_180</incoming>
+      <outgoing>Ja_181</outgoing>
+      <outgoing>Nein_182</outgoing>
+    </exclusiveGateway>
+    <startEvent id="Rechnung_eingegangen_138" name="Rechnung&#xA;eingegangen">
+      <outgoing>sequenceFlow_187</outgoing>
+      <messageEventDefinition id="messageEventDefinition_146" messageRef="messageId"/>
+    </startEvent>
+    <userTask id="Freigebenden_zuordnen_143" activiti:assignee="kermit" activiti:formKey="assignApprover" name="Freigebenden zuordnen">
+      <incoming>sequenceFlow_187</incoming>
+      <outgoing>sequenceFlow_178</outgoing>
+    </userTask>
+    <userTask id="Rechnung_kl_ren_148" activiti:assignee="kermit" activiti:formKey="clarifyInvoice" name="Rechnung&#xA;klären">
+      <incoming>Nein_182</incoming>
+      <outgoing>sequenceFlow_183</outgoing>
+    </userTask>
+    <exclusiveGateway id="Kl_rung_erfolgreich__153" name="Klärung&#xA;erfolgreich?" gatewayDirection="Diverging">
+      <incoming>sequenceFlow_183</incoming>
+      <outgoing>nein_185</outgoing>
+      <outgoing>ja_186</outgoing>
+    </exclusiveGateway>
+    <userTask id="zberweisung_vorbereiten_169" activiti:assignee="kermit" activiti:formKey="preparePayment" name="Überweisung vorbereiten">
+      <incoming>Ja_181</incoming>
+      <outgoing>sequenceFlow_179</outgoing>
+    </userTask>
+    <endEvent id="Rechnungseingang_abgearbeitet_174" name="Rechnungseingang&#xA;abgearbeitet">
+      <incoming>SequenceFlow_1</incoming>
+    </endEvent>
+    <serviceTask id="PDF_aus_SVN_entfernen_160" activiti:delegateExpression="#{svnService}" name="PDF in SVN ablegen">
+      <incoming>sequenceFlow_179</incoming>
+      <outgoing>SequenceFlow_1</outgoing>
+    </serviceTask>
+    <sequenceFlow id="Ja_181" name="Ja" isImmediate="true" sourceRef="Freigabe_erfolgt__131" targetRef="zberweisung_vorbereiten_169">
+      <conditionExpression xsi:type="tFormalExpression" id="conditionExpression_186">${approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="nein_185" name="nein" isImmediate="true" sourceRef="Kl_rung_erfolgreich__153" targetRef="endEvent_165">
+      <conditionExpression xsi:type="tFormalExpression" id="conditionExpression_188">${!clarified.equals('yes')}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sequenceFlow_187" isImmediate="true" sourceRef="Rechnung_eingegangen_138" targetRef="Freigebenden_zuordnen_143"/>
+    <sequenceFlow id="Nein_182" name="Nein" isImmediate="true" sourceRef="Freigabe_erfolgt__131" targetRef="Rechnung_kl_ren_148">
+      <conditionExpression xsi:type="tFormalExpression" id="conditionExpression_191">${!approved}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="sequenceFlow_180" isImmediate="true" sourceRef="Rechnung_freigeben_125" targetRef="Freigabe_erfolgt__131"/>
+    <sequenceFlow id="sequenceFlow_183" isImmediate="true" sourceRef="Rechnung_kl_ren_148" targetRef="Kl_rung_erfolgreich__153"/>
+    <sequenceFlow id="sequenceFlow_179" isImmediate="true" sourceRef="zberweisung_vorbereiten_169" targetRef="PDF_aus_SVN_entfernen_160"/>
+    <sequenceFlow id="sequenceFlow_178" isImmediate="true" sourceRef="Freigebenden_zuordnen_143" targetRef="Rechnung_freigeben_125"/>
+    <sequenceFlow id="ja_186" name="ja" isImmediate="true" sourceRef="Kl_rung_erfolgreich__153" targetRef="Rechnung_freigeben_125">
+      <conditionExpression xsi:type="tFormalExpression" id="conditionExpression_197">${clarified.equals('yes')}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="SequenceFlow_1" isImmediate="true" sourceRef="PDF_aus_SVN_entfernen_160" targetRef="Rechnungseingang_abgearbeitet_174"/>
+    <endEvent id="endEvent_165">
+      <incoming>nein_185</incoming>
+    </endEvent>
+    <association id="association_188" sourceRef="zberweisung_vorbereiten_169" targetRef="zberweisungs-_vorlagen_212"/>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_232">
+    <bpmndi:BPMNPlane id="BPMNPlane_232" bpmnElement="collaboration_1">
+      <bpmndi:BPMNShape id="Process_Engine_1_gui" bpmnElement="Process_Engine_1" isHorizontal="true">
+        <omgdc:Bounds height="505.0" width="1126.0" x="0.0" y="0.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Freigebender_105_gui" bpmnElement="Freigebender_105" isHorizontal="true">
+        <omgdc:Bounds height="161.0" width="1096.0" x="30.0" y="183.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Team-Assistenz_110_gui" bpmnElement="Team-Assistenz_110" isHorizontal="true">
+        <omgdc:Bounds height="183.0" width="1096.0" x="30.0" y="0.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Buchhaltung_119_gui" bpmnElement="Buchhaltung_119" isHorizontal="true">
+        <omgdc:Bounds height="161.0" width="1096.0" x="30.0" y="344.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Rechnung_freigeben_125_gui" bpmnElement="Rechnung_freigeben_125" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="353.0" y="225.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Freigabe_erfolgt__131_gui" bpmnElement="Freigabe_erfolgt__131" isHorizontal="true" isMarkerVisible="true">
+        <omgdc:Bounds height="40.0" width="40.0" x="488.0" y="245.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Rechnung_eingegangen_138_gui" bpmnElement="Rechnung_eingegangen_138" isHorizontal="true">
+        <omgdc:Bounds height="30.0" width="30.0" x="111.0" y="78.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Freigebenden_zuordnen_143_gui" bpmnElement="Freigebenden_zuordnen_143" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="185.0" y="52.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Rechnung_kl_ren_148_gui" bpmnElement="Rechnung_kl_ren_148" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="548.0" y="52.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Kl_rung_erfolgreich__153_gui" bpmnElement="Kl_rung_erfolgreich__153" isHorizontal="true" isMarkerVisible="true">
+        <omgdc:Bounds height="40.0" width="40.0" x="693.0" y="72.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endEvent_165_gui" bpmnElement="endEvent_165" isHorizontal="true">
+        <omgdc:Bounds height="28.0" width="28.0" x="920.0" y="78.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="zberweisung_vorbereiten_169_gui" bpmnElement="zberweisung_vorbereiten_169" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="638.0" y="385.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Rechnungseingang_abgearbeitet_174_gui" bpmnElement="Rechnungseingang_abgearbeitet_174" isHorizontal="true">
+        <omgdc:Bounds height="28.0" width="28.0" x="923.0" y="411.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="PDF_aus_SVN_entfernen_160_gui" bpmnElement="PDF_aus_SVN_entfernen_160" isHorizontal="true">
+        <omgdc:Bounds height="80.0" width="100.0" x="778.0" y="385.0"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="association_188_gui" bpmnElement="association_188" sourceElement="zberweisung_vorbereiten_169_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="638.0" y="439.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="373.0" y="516.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Ja_181_gui" bpmnElement="Ja_181" sourceElement="Freigabe_erfolgt__131_gui" targetElement="zberweisung_vorbereiten_169_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="528.0" y="265.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="587.0" y="265.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="587.0" y="425.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="638.0" y="425.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="nein_185_gui" bpmnElement="nein_185" sourceElement="Kl_rung_erfolgreich__153_gui" targetElement="endEvent_165_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="734.0" y="92.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="920.0" y="92.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_187_gui" bpmnElement="sequenceFlow_187" sourceElement="Rechnung_eingegangen_138_gui" targetElement="Freigebenden_zuordnen_143_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="141.0" y="93.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="185.0" y="92.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Nein_182_gui" bpmnElement="Nein_182" sourceElement="Freigabe_erfolgt__131_gui" targetElement="Rechnung_kl_ren_148_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="508.0" y="245.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="508.5" y="92.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="548.0" y="92.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_180_gui" bpmnElement="sequenceFlow_180" sourceElement="Rechnung_freigeben_125_gui" targetElement="Freigabe_erfolgt__131_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="453.0" y="265.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="488.0" y="265.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_183_gui" bpmnElement="sequenceFlow_183" sourceElement="Rechnung_kl_ren_148_gui" targetElement="Kl_rung_erfolgreich__153_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="648.0" y="92.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="693.0" y="92.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_179_gui" bpmnElement="sequenceFlow_179" sourceElement="zberweisung_vorbereiten_169_gui" targetElement="PDF_aus_SVN_entfernen_160_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="738.0" y="425.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="778.0" y="425.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sequenceFlow_178_gui" bpmnElement="sequenceFlow_178" sourceElement="Freigebenden_zuordnen_143_gui" targetElement="Rechnung_freigeben_125_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="285.0" y="92.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="310.0" y="92.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="310.0" y="265.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="353.0" y="265.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1_gui" bpmnElement="SequenceFlow_1" sourceElement="PDF_aus_SVN_entfernen_160_gui" targetElement="Rechnungseingang_abgearbeitet_174_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="878.0" y="425.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="923.0" y="425.0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ja_186_gui" bpmnElement="ja_186" sourceElement="Kl_rung_erfolgreich__153_gui" targetElement="Rechnung_freigeben_125_gui">
+        <omgdi:waypoint xsi:type="omgdc:Point" x="713.0" y="72.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="713.5" y="35.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="403.0" y="35.0"/>
+        <omgdi:waypoint xsi:type="omgdc:Point" x="403.0" y="225.0"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

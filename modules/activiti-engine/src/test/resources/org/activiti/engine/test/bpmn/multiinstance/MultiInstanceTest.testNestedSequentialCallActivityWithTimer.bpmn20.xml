@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="miNestedSequentialCallActivityWithTimer">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="nesting1" />
+    
+    <subProcess id="nesting1">
+    
+      <startEvent id="subStart1" />
+      <sequenceFlow id="flow2" sourceRef="subStart1" targetRef="nesting2" />
+    
+      <subProcess id="nesting2">
+      
+        <startEvent id="subStart2" />
+        <sequenceFlow id="flow3" sourceRef="subStart2" targetRef="nesting3" />
+      
+        <subProcess id="nesting3">
+        
+          <startEvent id="subStart3" />
+          <sequenceFlow id="flow4" sourceRef="subStart3" targetRef="miCallActivity" />
+        
+          <callActivity id="miCallActivity" calledElement="externalSubProcess">
+			      <multiInstanceLoopCharacteristics isSequential="true">
+			        <loopCardinality>${4}</loopCardinality>
+			      </multiInstanceLoopCharacteristics>
+			    </callActivity>
+          
+          <sequenceFlow id="flow5" sourceRef="miCallActivity" targetRef="subProcessEnd3" />
+          <endEvent id="subProcessEnd3" />
+        
+        </subProcess>
+        
+        <boundaryEvent id="timer" attachedToRef="miCallActivity">
+        <timerEventDefinition>
+          <timeDuration>PT99H</timeDuration>
+        </timerEventDefinition>
+        </boundaryEvent>
+        <sequenceFlow id="flow6" sourceRef="timer" targetRef="taskAfterTimer" />
+        <userTask id="taskAfterTimer" />
+        <sequenceFlow id="flow7" sourceRef="taskAfterTimer" targetRef="subProcessEnd2" />
+        
+        <sequenceFlow id="flow8" sourceRef="nesting3" targetRef="subProcessEnd2" />
+        <endEvent id="subProcessEnd2" />
+      
+      </subProcess>
+      
+      <sequenceFlow id="flow9" sourceRef="nesting2" targetRef="subProcessEnd1" />
+      <endEvent id="subProcessEnd1" />
+    
+    </subProcess>
+    
+    <sequenceFlow id="flow10" sourceRef="nesting1" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

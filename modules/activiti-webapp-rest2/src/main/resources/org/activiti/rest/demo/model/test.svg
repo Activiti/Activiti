@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:oryx="http://oryx-editor.org" id="sid-9E8B6909-1E8D-40E3-AE94-2C66B2753220" width="888.7201538085938" height="626.1982421875" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:svg="http://www.w3.org/2000/svg"><defs><marker id="sid-6F8BFB89-B0B1-4DBC-8AD8-E8C38003274Bstart" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
+        <path id="sid-6F8BFB89-B0B1-4DBC-8AD8-E8C38003274Bconditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="black" stroke-width="1" display="none"/>
+      <path id="sid-6F8BFB89-B0B1-4DBC-8AD8-E8C38003274Bdefault" d="M 5 0 L 11 10" fill="white" stroke="black" stroke-width="1" display="none"/>
+      </marker><marker id="sid-6F8BFB89-B0B1-4DBC-8AD8-E8C38003274Bend" refX="15" refY="6" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="12" orient="auto">
+        <path id="sid-6F8BFB89-B0B1-4DBC-8AD8-E8C38003274Barrowhead" d="M 0 1 L 15 6 L 0 11z" fill="black" stroke="black" stroke-linejoin="round" stroke-width="2"/>
+      </marker><marker id="sid-322F0751-2C02-4570-8AA3-37A32C210B3Bstart" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
+        <path id="sid-322F0751-2C02-4570-8AA3-37A32C210B3Bconditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="black" stroke-width="1" display="none"/>
+      <path id="sid-322F0751-2C02-4570-8AA3-37A32C210B3Bdefault" d="M 5 0 L 11 10" fill="white" stroke="black" stroke-width="1" display="none"/>
+      </marker><marker id="sid-322F0751-2C02-4570-8AA3-37A32C210B3Bend" refX="15" refY="6" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="12" orient="auto">
+        <path id="sid-322F0751-2C02-4570-8AA3-37A32C210B3Barrowhead" d="M 0 1 L 15 6 L 0 11z" fill="black" stroke="black" stroke-linejoin="round" stroke-width="2"/>
+      </marker><marker id="sid-AF72A0D7-8FD5-4E81-A966-F3FCDAFFCC72start" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
+        <path id="sid-AF72A0D7-8FD5-4E81-A966-F3FCDAFFCC72conditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="black" stroke-width="1" display="none"/>
+      <path id="sid-AF72A0D7-8FD5-4E81-A966-F3FCDAFFCC72default" d="M 5 0 L 11 10" fill="white" stroke="black" stroke-width="1" display="none"/>
+      </marker><marker id="sid-AF72A0D7-8FD5-4E81-A966-F3FCDAFFCC72end" refX="15" refY="6" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="12" orient="auto">
+        <path id="sid-AF72A0D7-8FD5-4E81-A966-F3FCDAFFCC72arrowhead" d="M 0 1 L 15 6 L 0 11z" fill="black" stroke="black" stroke-linejoin="round" stroke-width="2"/>
+      </marker><marker id="sid-0670CC59-BD22-47EA-973E-6CBAD36006FDstart" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
+        <path id="sid-0670CC59-BD22-47EA-973E-6CBAD36006FDconditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="black" stroke-width="1" display="none"/>
+      <path id="sid-0670CC59-BD22-47EA-973E-6CBAD36006FDdefault" d="M 5 0 L 11 10" fill="white" stroke="black" stroke-width="1" display="none"/>
+      </marker><marker id="sid-0670CC59-BD22-47EA-973E-6CBAD36006FDend" refX="15" refY="6" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="12" orient="auto">
+        <path id="sid-0670CC59-BD22-47EA-973E-6CBAD36006FDarrowhead" d="M 0 1 L 15 6 L 0 11z" fill="black" stroke="black" stroke-linejoin="round" stroke-width="2"/>
+      </marker><marker id="sid-41087497-92E7-452B-9436-824504B24F27start" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
+        <path id="sid-41087497-92E7-452B-9436-824504B24F27conditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="black" stroke-width="1" display="none"/>
+      <path id="sid-41087497-92E7-452B-9436-824504B24F27default" d="M 5 0 L 11 10" fill="white" stroke="black" stroke-width="1" display="none"/>
+      </marker><marker id="sid-41087497-92E7-452B-9436-824504B24F27end" refX="15" refY="6" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="12" orient="auto">
+        <path id="sid-41087497-92E7-452B-9436-824504B24F27arrowhead" d="M 0 1 L 15 6 L 0 11z" fill="black" stroke="black" stroke-linejoin="round" stroke-width="2"/>
+      </marker><marker id="sid-AF0FC4C9-25E3-4D52-ADD9-A0671C00926Estart" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
+        <path id="sid-AF0FC4C9-25E3-4D52-ADD9-A0671C00926Econditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="black" stroke-width="1" display="none"/>
+      <path id="sid-AF0FC4C9-25E3-4D52-ADD9-A0671C00926Edefault" d="M 5 0 L 11 10" fill="white" stroke="black" stroke-width="1" display="none"/>
+      </marker><marker id="sid-AF0FC4C9-25E3-4D52-ADD9-A0671C00926Eend" refX="15" refY="6" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="12" orient="auto">
+        <path id="sid-AF0FC4C9-25E3-4D52-ADD9-A0671C00926Earrowhead" d="M 0 1 L 15 6 L 0 11z" fill="black" stroke="black" stroke-linejoin="round" stroke-width="2"/>
+      </marker><marker id="sid-B3A1B4A1-9ED7-46E8-B4EF-500F5A4A2A2Dstart" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
+        <path id="sid-B3A1B4A1-9ED7-46E8-B4EF-500F5A4A2A2Dconditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="black" stroke-width="1" display="none"/>
+      <path id="sid-B3A1B4A1-9ED7-46E8-B4EF-500F5A4A2A2Ddefault" d="M 5 0 L 11 10" fill="white" stroke="black" stroke-width="1" display="none"/>
+      </marker><marker id="sid-B3A1B4A1-9ED7-46E8-B4EF-500F5A4A2A2Dend" refX="15" refY="6" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="12" orient="auto">
+        <path id="sid-B3A1B4A1-9ED7-46E8-B4EF-500F5A4A2A2Darrowhead" d="M 0 1 L 15 6 L 0 11z" fill="black" stroke="black" stroke-linejoin="round" stroke-width="2"/>
+      </marker><marker id="sid-5B0B9351-F111-4EA3-B483-028B9F9B3186start" refX="1" refY="5" markerUnits="userSpaceOnUse" markerWidth="17" markerHeight="11" orient="auto">
+        <path id="sid-5B0B9351-F111-4EA3-B483-028B9F9B3186conditional" d="M 0 6 L 8 1 L 15 5 L 8 9 L 1 5" fill="white" stroke="black" stroke-width="1" display="none"/>
+      <path id="sid-5B0B9351-F111-4EA3-B483-028B9F9B3186default" d="M 5 0 L 11 10" fill="white" stroke="black" stroke-width="1" display="none"/>
+      </marker><marker id="sid-5B0B9351-F111-4EA3-B483-028B9F9B3186end" refX="15" refY="6" markerUnits="userSpaceOnUse" markerWidth="15" markerHeight="12" orient="auto">
+        <path id="sid-5B0B9351-F111-4EA3-B483-028B9F9B3186arrowhead" d="M 0 1 L 15 6 L 0 11z" fill="black" stroke="black" stroke-linejoin="round" stroke-width="2"/>
+      </marker></defs><g stroke="black" font-family="Verdana, sans-serif" font-size-adjust="none" font-style="normal" font-variant="normal" font-weight="normal" line-heigth="normal" font-size="12"><g class="stencils" transform="translate(25.72014206647873, 26.198266744613647)"><g class="me"/><g class="children"><g id="svg-sid-2BB933AE-E0AE-48D2-9ACC-B5EC35AD3687"><g class="stencils" transform="translate(139.5, 130)"><g class="me"><g pointer-events="fill" id="sid-5ECCA77D-420F-432C-9214-621198BBF112" title="Start event">
+  
+    <defs id="sid-5ECCA77D-420F-432C-9214-621198BBF112_sid-5ECCA77D-420F-432C-9214-621198BBF112_5">
+    <radialGradient id="sid-5ECCA77D-420F-432C-9214-621198BBF112background" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="sid-5ECCA77D-420F-432C-9214-621198BBF112_sid-5ECCA77D-420F-432C-9214-621198BBF112_6"/>
+      <stop id="sid-5ECCA77D-420F-432C-9214-621198BBF112fill_el" offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+    <circle id="sid-5ECCA77D-420F-432C-9214-621198BBF112bg_frame" cx="15" cy="15" r="15" stroke="black" fill="url(#sid-5ECCA77D-420F-432C-9214-621198BBF112background) white" stroke-width="1"/>
+  <text font-size="11" id="sid-5ECCA77D-420F-432C-9214-621198BBF112text_name" x="15" y="32" oryx:align="top center" stroke="black" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(0 15 32)" oryx:fontSize="11" text-anchor="middle"/>
+  </g></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets" transform="translate(139.5, 130)"><g pointer-events="all" display="none" transform="translate(7, 7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g></g></g></g><g id="svg-sid-AFE2BB40-CF6F-4947-9DF9-2F1F80E34C43"><g class="stencils" transform="translate(225, 105)"><g class="me"><g pointer-events="fill" oryx:minimumSize="50 40" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E" title="User task">
+    <defs id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_17">
+    <radialGradient id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Ebackground" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_18"/>
+      <stop id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Efill_el" offset="100%" stop-color="#ffffcc" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+  <rect id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Etext_frame" oryx:anchors="bottom top right left" x="1" y="1" width="94" height="79" rx="10" ry="10" stroke="none" stroke-width="0" fill="none"/>
+  <rect id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Ebg_frame" oryx:resize="vertical horizontal" x="0" y="0" width="100" height="80" rx="10" ry="10" stroke="black" stroke-width="1" fill="url(#sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Ebackground) #ffffcc"/>
+    <text font-size="12" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Etext_name" x="50" y="40" oryx:align="middle center" oryx:fittoelem="text_frame" stroke="black" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(0 50 40)" oryx:fontSize="12" text-anchor="middle"><tspan x="50" y="40" dy="5">user task 1</tspan></text>
+  
+  <g id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4EuserTask" transform="scale(0.7,0.7) translate(8,8)">
+    <path oryx:anchors="top left" style="opacity:1;fill:#F4F6F7;stroke:#000000" d="M0.585,24.167h24.083v-7.833c0,0-2.333-3.917-7.083-5.167h-9.25    c-4.417,1.333-7.833,5.75-7.833,5.75L0.585,24.167z" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_19"/>
+    <path oryx:anchors="top left" style="opacity:1;fill:none;stroke:#000000" d="M 6 20 L 6 24" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_20"/>
+    <path oryx:anchors="top left" style="opacity:1;fill:none;stroke:#000000" d="M 20 20 L 20 24" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_21"/>
+    <circle oryx:anchors="top left" fill="#000000" stroke="#000000" cx="13.002" cy="5.916" r="5.417" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_22"/>
+    <path oryx:anchors="top left" style="opacity:1;fill:#F0EFF0;stroke:#000000" d="M8.043,7.083c0,0,2.814-2.426,5.376-1.807s4.624-0.693,4.624-0.693    c0.25,1.688,0.042,3.75-1.458,5.584c0,0,1.083,0.75,1.083,1.5s0.125,1.875-1,3s-5.5,1.25-6.75,0S8.668,12.834,8.668,12    s0.583-1.25,1.25-1.917C8.835,9.5,7.419,7.708,8.043,7.083z" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_23"/>
+  </g>
+  
+  <g id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Eloop" display="none">
+      <path oryx:anchors="bottom" style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.0999999;stroke-dasharray:none;stroke-opacity:1" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Epath2396" d="M 47.608384,75.188343 L 47.608384,78.188343 L 44.608384,78.188343 M 47.608384,78.188343 A 4.875,4.875 0 1 1 51.639336,78.189378"/>
+    </g>
+  
+  
+  <g id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Eparallel" display="none">
+    <path oryx:anchors="bottom" fill="none" stroke="black" d="M46 70 v8 M50 70 v8 M54 70 v8" stroke-width="2" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_24"/>
+  </g>
+  <g id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Esequential" display="none">
+    <path oryx:anchors="bottom" fill="none" stroke="#000000" stroke-width="2" d="M46,76h10M46,72h10 M46,68h10" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_25"/>
+  </g>
+  
+
+  <g id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4Ecompensation" display="none">
+    <path oryx:anchors="bottom" fill="none" stroke="black" d="M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74" stroke-width="1" id="sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_sid-0730A03B-B2CA-4658-9071-BB9D27D2CC4E_26"/>
+  </g>
+  </g></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets" transform="translate(225, 105)"><g pointer-events="all" display="none" transform="translate(-7, 12)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(-7, 32)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(-7, 52)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(17, 71)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(42, 71)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(67, 71)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(91, 12)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(91, 32)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(91, 52)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(17, -7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(42, -7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(67, -7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(42, 32)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g></g></g></g><g id="svg-sid-B074A0DD-934A-4053-A537-20ADF0781023"><g class="stencils" transform="translate(390, 125)"><g class="me"><g id="sid-C801B059-15C3-4DCA-912B-9A675973B79A" title="Exclusive gateway">
+  
+    <defs id="sid-C801B059-15C3-4DCA-912B-9A675973B79A_sid-C801B059-15C3-4DCA-912B-9A675973B79A_4">
+    <radialGradient id="sid-C801B059-15C3-4DCA-912B-9A675973B79Abackground" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="sid-C801B059-15C3-4DCA-912B-9A675973B79A_sid-C801B059-15C3-4DCA-912B-9A675973B79A_5"/>
+      <stop id="sid-C801B059-15C3-4DCA-912B-9A675973B79Afill_el" offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+    <path d=" M0 20.5  L20.5 0  L40 20.5  L20.5 40  z" id="sid-C801B059-15C3-4DCA-912B-9A675973B79Abg_frame" fill="url(#sid-C801B059-15C3-4DCA-912B-9A675973B79Abackground) white" stroke="black" style="stroke-width:1"/>
+    <g id="sid-C801B059-15C3-4DCA-912B-9A675973B79Across">
+      <path id="sid-C801B059-15C3-4DCA-912B-9A675973B79Acrosspath" stroke="black" fill="black" d=" M13.25 12.05  L17.25 12.05  L27.65 28.95  L23.75 28.95  z" style="stroke-width:1"/>
+      <path id="sid-C801B059-15C3-4DCA-912B-9A675973B79Acrosspath2" stroke="black" fill="black" d=" M13.25 28.95  L23.75 12.05  L27.65 12.05  L17.25 28.95  z" style="stroke-width:1"/>
+    </g>
+  
+  <text id="sid-C801B059-15C3-4DCA-912B-9A675973B79Atext_name" x="30" y="30" oryx:align="left top" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(0 30 30)" oryx:fontSize="12" text-anchor="start"/>
+  
+  </g></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets" transform="translate(390, 125)"><g pointer-events="all" display="none" transform="translate(12.5, 12.5)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g></g></g></g><g id="svg-sid-03BC7128-4496-4027-88A9-E67D3DA63734"><g class="stencils" transform="translate(475, 30)"><g class="me"><g pointer-events="fill" oryx:minimumSize="50 40" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C" title="User task">
+    <defs id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_17">
+    <radialGradient id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Cbackground" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_18"/>
+      <stop id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Cfill_el" offset="100%" stop-color="#ffffcc" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+  <rect id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Ctext_frame" oryx:anchors="bottom top right left" x="1" y="1" width="94" height="79" rx="10" ry="10" stroke="none" stroke-width="0" fill="none"/>
+  <rect id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Cbg_frame" oryx:resize="vertical horizontal" x="0" y="0" width="100" height="80" rx="10" ry="10" stroke="black" stroke-width="1" fill="url(#sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Cbackground) #ffffcc"/>
+    <text font-size="12" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Ctext_name" x="50" y="40" oryx:align="middle center" oryx:fittoelem="text_frame" stroke="black" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(0 50 40)" oryx:fontSize="12" text-anchor="middle"><tspan x="50" y="40" dy="5">User task 2</tspan></text>
+  
+  <g id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993CuserTask" transform="scale(0.7,0.7) translate(8,8)">
+    <path oryx:anchors="top left" style="opacity:1;fill:#F4F6F7;stroke:#000000" d="M0.585,24.167h24.083v-7.833c0,0-2.333-3.917-7.083-5.167h-9.25    c-4.417,1.333-7.833,5.75-7.833,5.75L0.585,24.167z" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_19"/>
+    <path oryx:anchors="top left" style="opacity:1;fill:none;stroke:#000000" d="M 6 20 L 6 24" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_20"/>
+    <path oryx:anchors="top left" style="opacity:1;fill:none;stroke:#000000" d="M 20 20 L 20 24" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_21"/>
+    <circle oryx:anchors="top left" fill="#000000" stroke="#000000" cx="13.002" cy="5.916" r="5.417" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_22"/>
+    <path oryx:anchors="top left" style="opacity:1;fill:#F0EFF0;stroke:#000000" d="M8.043,7.083c0,0,2.814-2.426,5.376-1.807s4.624-0.693,4.624-0.693    c0.25,1.688,0.042,3.75-1.458,5.584c0,0,1.083,0.75,1.083,1.5s0.125,1.875-1,3s-5.5,1.25-6.75,0S8.668,12.834,8.668,12    s0.583-1.25,1.25-1.917C8.835,9.5,7.419,7.708,8.043,7.083z" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_23"/>
+  </g>
+  
+  <g id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Cloop" display="none">
+      <path oryx:anchors="bottom" style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.0999999;stroke-dasharray:none;stroke-opacity:1" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Cpath2396" d="M 47.608384,75.188343 L 47.608384,78.188343 L 44.608384,78.188343 M 47.608384,78.188343 A 4.875,4.875 0 1 1 51.639336,78.189378"/>
+    </g>
+  
+  
+  <g id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Cparallel" display="none">
+    <path oryx:anchors="bottom" fill="none" stroke="black" d="M46 70 v8 M50 70 v8 M54 70 v8" stroke-width="2" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_24"/>
+  </g>
+  <g id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Csequential" display="none">
+    <path oryx:anchors="bottom" fill="none" stroke="#000000" stroke-width="2" d="M46,76h10M46,72h10 M46,68h10" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_25"/>
+  </g>
+  
+
+  <g id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993Ccompensation" display="none">
+    <path oryx:anchors="bottom" fill="none" stroke="black" d="M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74" stroke-width="1" id="sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_sid-2B2103C2-17F3-478F-87AD-C18EC5FC993C_26"/>
+  </g>
+  </g></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets" transform="translate(475, 30)"><g pointer-events="all" display="none" transform="translate(-7, 12)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(-7, 32)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(-7, 52)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(17, 71)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(42, 71)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(67, 71)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(91, 12)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(91, 32)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(91, 52)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(17, -7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(42, -7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(67, -7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(42, 32)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g></g></g></g><g id="svg-sid-7581049C-894E-4FF9-B861-7DF44B7229E3"><g class="stencils" transform="translate(475, 180)"><g class="me"><g pointer-events="fill" oryx:minimumSize="50 40" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6" title="User task">
+    <defs id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_17">
+    <radialGradient id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6background" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_18"/>
+      <stop id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6fill_el" offset="100%" stop-color="#ffffcc" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+  <rect id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6text_frame" oryx:anchors="bottom top right left" x="1" y="1" width="94" height="79" rx="10" ry="10" stroke="none" stroke-width="0" fill="none"/>
+  <rect id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6bg_frame" oryx:resize="vertical horizontal" x="0" y="0" width="100" height="80" rx="10" ry="10" stroke="black" stroke-width="1" fill="url(#sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6background) #ffffcc"/>
+    <text font-size="12" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6text_name" x="50" y="40" oryx:align="middle center" oryx:fittoelem="text_frame" stroke="black" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(0 50 40)" oryx:fontSize="12" text-anchor="middle"><tspan x="50" y="40" dy="5">User task 3</tspan></text>
+  
+  <g id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6userTask" transform="scale(0.7,0.7) translate(8,8)">
+    <path oryx:anchors="top left" style="opacity:1;fill:#F4F6F7;stroke:#000000" d="M0.585,24.167h24.083v-7.833c0,0-2.333-3.917-7.083-5.167h-9.25    c-4.417,1.333-7.833,5.75-7.833,5.75L0.585,24.167z" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_19"/>
+    <path oryx:anchors="top left" style="opacity:1;fill:none;stroke:#000000" d="M 6 20 L 6 24" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_20"/>
+    <path oryx:anchors="top left" style="opacity:1;fill:none;stroke:#000000" d="M 20 20 L 20 24" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_21"/>
+    <circle oryx:anchors="top left" fill="#000000" stroke="#000000" cx="13.002" cy="5.916" r="5.417" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_22"/>
+    <path oryx:anchors="top left" style="opacity:1;fill:#F0EFF0;stroke:#000000" d="M8.043,7.083c0,0,2.814-2.426,5.376-1.807s4.624-0.693,4.624-0.693    c0.25,1.688,0.042,3.75-1.458,5.584c0,0,1.083,0.75,1.083,1.5s0.125,1.875-1,3s-5.5,1.25-6.75,0S8.668,12.834,8.668,12    s0.583-1.25,1.25-1.917C8.835,9.5,7.419,7.708,8.043,7.083z" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_23"/>
+  </g>
+  
+  <g id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6loop" display="none">
+      <path oryx:anchors="bottom" style="opacity:1;fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:2.0999999;stroke-dasharray:none;stroke-opacity:1" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6path2396" d="M 47.608384,75.188343 L 47.608384,78.188343 L 44.608384,78.188343 M 47.608384,78.188343 A 4.875,4.875 0 1 1 51.639336,78.189378"/>
+    </g>
+  
+  
+  <g id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6parallel" display="none">
+    <path oryx:anchors="bottom" fill="none" stroke="black" d="M46 70 v8 M50 70 v8 M54 70 v8" stroke-width="2" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_24"/>
+  </g>
+  <g id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6sequential" display="none">
+    <path oryx:anchors="bottom" fill="none" stroke="#000000" stroke-width="2" d="M46,76h10M46,72h10 M46,68h10" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_25"/>
+  </g>
+  
+
+  <g id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6compensation" display="none">
+    <path oryx:anchors="bottom" fill="none" stroke="black" d="M 62 74 L 66 70 L 66 78 L 62 74 L 62 70 L 58 74 L 62 78 L 62 74" stroke-width="1" id="sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_sid-6E6AE3FE-B3FC-421D-9CEA-EEC6FAF492B6_26"/>
+  </g>
+  </g></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets" transform="translate(475, 180)"><g pointer-events="all" display="none" transform="translate(-7, 12)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(-7, 32)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(-7, 52)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(17, 71)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(42, 71)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(67, 71)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(91, 12)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(91, 32)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(91, 52)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(17, -7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(42, -7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(67, -7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g><g pointer-events="all" display="none" transform="translate(42, 32)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g></g></g></g><g id="svg-sid-6151821D-C3F9-4DFB-82EE-43885200535F"><g class="stencils" transform="translate(630, 125)"><g class="me"><g id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887B" title="Exclusive gateway">
+  
+    <defs id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887B_sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887B_4">
+    <radialGradient id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887Bbackground" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887B_sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887B_5"/>
+      <stop id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887Bfill_el" offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+    <path d=" M0 20.5  L20.5 0  L40 20.5  L20.5 40  z" id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887Bbg_frame" fill="url(#sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887Bbackground) white" stroke="black" style="stroke-width:1"/>
+    <g id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887Bcross">
+      <path id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887Bcrosspath" stroke="black" fill="black" d=" M13.25 12.05  L17.25 12.05  L27.65 28.95  L23.75 28.95  z" style="stroke-width:1"/>
+      <path id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887Bcrosspath2" stroke="black" fill="black" d=" M13.25 28.95  L23.75 12.05  L27.65 12.05  L17.25 28.95  z" style="stroke-width:1"/>
+    </g>
+  
+  <text id="sid-EECF9F29-3F46-4BBF-ACDA-2E1AF931887Btext_name" x="30" y="30" oryx:align="left top" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(0 30 30)" oryx:fontSize="12" text-anchor="start"/>
+  
+  </g></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets" transform="translate(630, 125)"><g pointer-events="all" display="none" transform="translate(12.5, 12.5)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g></g></g></g><g id="svg-sid-C102D215-8257-40B4-AEE6-99B223204F7B"><g class="stencils" transform="translate(735, 130)"><g class="me"><g pointer-events="fill" id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88" title="Intermediate timer catching event">
+  
+    <defs id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88_sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88_6">
+    <radialGradient id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88background" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88_sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88_7"/>
+      <stop id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88fill_el" offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+    
+    <circle id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88bg_frame" cx="15" cy="15" r="15" stroke="black" fill="url(#sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88background) white" stroke-width="1" style="stroke-dasharray: 5.5, 3"/>
+      
+    <circle id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88frame2_non_interrupting" cx="15" cy="15" r="12" stroke="black" fill="none" stroke-width="1" style="stroke-dasharray: 4.5, 3"/>
+    
+    <circle id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88frame" cx="15" cy="15" r="15" stroke="black" fill="none" stroke-width="1"/>
+    <circle id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88frame2" cx="15" cy="15" r="12" stroke="black" fill="none" stroke-width="1"/>
+    
+    <circle id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88circle" cx="15" cy="15" r="10" stroke="black" fill="none" stroke-width="1"/>
+    <path id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88path1" d=" M15 5  L15 8  M20 6  L18.5 9  M24 10  L21 11.5  M25 15  L22 15  M24 20  L21 18.5  M20 24  L18.5 21  M15 25  L15 22  M10 24  L11.5 21  M6 20  L9 18.5  M5 15  L8 15  M6 10  L9 11.5  M10 6  L11.5 9  M17 8  L15 15  L19 15 " fill="none" stroke="black"/>
+  <text font-size="11" id="sid-641DB73C-50FD-4CAC-A5E7-AC9C3530EF88text_name" x="15" y="32" oryx:align="top center" stroke="black" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(0 15 32)" oryx:fontSize="11" text-anchor="middle"/>
+  </g></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets" transform="translate(735, 130)"><g pointer-events="all" display="none" transform="translate(7, 7)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g></g></g></g><g id="svg-sid-65043A85-6BAD-4616-AD1E-FF3FA8D64D4B"><g class="stencils" transform="translate(810, 131)"><g class="me"><g pointer-events="fill" id="sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8" title="End event">
+
+    <defs id="sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8_sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8_5">
+    <radialGradient id="sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8background" cx="10%" cy="10%" r="100%" fx="10%" fy="10%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1" id="sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8_sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8_6"/>
+      <stop id="sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8fill_el" offset="100%" stop-color="#ffffff" stop-opacity="1"/>
+    </radialGradient>
+  </defs>
+  
+    <circle id="sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8bg_frame" cx="14" cy="14" r="14" stroke="black" fill="url(#sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8background) white" stroke-width="3"/>
+  <text font-size="11" id="sid-A8EE8DA5-A45A-4EFC-A4BC-F56B52FA6FD8text_name" x="14" y="30" oryx:align="top center" stroke="black" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(0 14 30)" oryx:fontSize="11" text-anchor="middle"/>
+  </g></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets" transform="translate(810, 131)"><g pointer-events="all" display="none" transform="translate(6, 6)"><circle cx="8" cy="8" r="4" stroke="none" fill="red" fill-opacity="0.3"/></g></g></g></g></g><g class="edge"><g id="svg-sid-974EF4BD-0E76-4983-B84D-FA92053B98DC"><g class="stencils"><g class="me"><g pointer-events="painted"><path id="sid-6F8BFB89-B0B1-4DBC-8AD8-E8C38003274B_1" d="M169.62109375 145L224.10546875 145 " stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#sid-6F8BFB89-B0B1-4DBC-8AD8-E8C38003274Bstart)" marker-end="url(#sid-6F8BFB89-B0B1-4DBC-8AD8-E8C38003274Bend)"/></g><text id="sid-6F8BFB89-B0B1-4DBC-8AD8-E8C38003274Btext_name" x="177" y="137" oryx:edgePosition="startTop" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(360 169 145)" oryx:fontSize="12" text-anchor="start"/></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets"/></g></g><g id="svg-sid-AFFB5C18-4C31-469B-919B-A08BE34542EA"><g class="stencils"><g class="me"><g pointer-events="painted"><path id="sid-322F0751-2C02-4570-8AA3-37A32C210B3B_1" d="M325.7538994418834 145.18728376177816L389.3867255581166 145.42209123822184 " stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#sid-322F0751-2C02-4570-8AA3-37A32C210B3Bstart)" marker-end="url(#sid-322F0751-2C02-4570-8AA3-37A32C210B3Bend)"/></g><text id="sid-322F0751-2C02-4570-8AA3-37A32C210B3Btext_name" x="333" y="137" oryx:edgePosition="startTop" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(0.2114225810393009 325 145)" oryx:fontSize="12" text-anchor="start"/></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets"/></g></g><g id="svg-sid-07A7E174-8857-4DE9-A7CD-A041706D79C3"><g class="stencils"><g class="me"><g pointer-events="painted"><path id="sid-AF72A0D7-8FD5-4E81-A966-F3FCDAFFCC72_1" d="M410.5 124.4453125L410.5 70 L474.80078125 70 " stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#sid-AF72A0D7-8FD5-4E81-A966-F3FCDAFFCC72start)" marker-end="url(#sid-AF72A0D7-8FD5-4E81-A966-F3FCDAFFCC72end)"/></g><text id="sid-AF72A0D7-8FD5-4E81-A966-F3FCDAFFCC72text_name" x="418" y="116" oryx:edgePosition="startTop" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(270 410 124)" oryx:fontSize="12" text-anchor="start"/></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets"/></g></g><g id="svg-sid-C2068B1E-9A82-41C9-B876-C58E2736C186"><g class="stencils"><g class="me"><g pointer-events="painted"><path id="sid-0670CC59-BD22-47EA-973E-6CBAD36006FD_1" d="M410.5 165.125L410.5 220 L474.80078125 220 " stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#sid-0670CC59-BD22-47EA-973E-6CBAD36006FDstart)" marker-end="url(#sid-0670CC59-BD22-47EA-973E-6CBAD36006FDend)"/></g><text id="sid-0670CC59-BD22-47EA-973E-6CBAD36006FDtext_name" x="402" y="157" oryx:edgePosition="startTop" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(-90 410 165)" oryx:fontSize="12" text-anchor="end"/></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets"/></g></g><g id="svg-sid-CBE1C51A-408E-4383-9D42-713450DD89BE"><g class="stencils"><g class="me"><g pointer-events="painted"><path id="sid-41087497-92E7-452B-9436-824504B24F27_1" d="M575.0234375 220L650.5 220 L650.5 165.125 " stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#sid-41087497-92E7-452B-9436-824504B24F27start)" marker-end="url(#sid-41087497-92E7-452B-9436-824504B24F27end)"/></g><text id="sid-41087497-92E7-452B-9436-824504B24F27text_name" x="583" y="212" oryx:edgePosition="startTop" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(360 575 220)" oryx:fontSize="12" text-anchor="start"/></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets"/></g></g><g id="svg-sid-5DC9E5BB-634D-43BE-BE09-2A4D1A77AB3B"><g class="stencils"><g class="me"><g pointer-events="painted"><path id="sid-AF0FC4C9-25E3-4D52-ADD9-A0671C00926E_1" d="M575.8046875 70L650 70 L650 125.25 " stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#sid-AF0FC4C9-25E3-4D52-ADD9-A0671C00926Estart)" marker-end="url(#sid-AF0FC4C9-25E3-4D52-ADD9-A0671C00926Eend)"/></g><text id="sid-AF0FC4C9-25E3-4D52-ADD9-A0671C00926Etext_name" x="583" y="62" oryx:edgePosition="startTop" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(360 575 70)" oryx:fontSize="12" text-anchor="start"/></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets"/></g></g><g id="svg-sid-7A6FDAE1-C837-4148-AE9E-E36F9BD55C27"><g class="stencils"><g class="me"><g pointer-events="painted"><path id="sid-B3A1B4A1-9ED7-46E8-B4EF-500F5A4A2A2D_1" d="M670.1562373742953 145.4012249378176L734.2304813757047 145.0792438121824 " stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#sid-B3A1B4A1-9ED7-46E8-B4EF-500F5A4A2A2Dstart)" marker-end="url(#sid-B3A1B4A1-9ED7-46E8-B4EF-500F5A4A2A2Dend)"/></g><text id="sid-B3A1B4A1-9ED7-46E8-B4EF-500F5A4A2A2Dtext_name" x="678" y="137" oryx:edgePosition="startTop" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(359.7120839334429 670 145)" oryx:fontSize="12" text-anchor="start"/></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets"/></g></g><g id="svg-sid-104B63DD-B61E-4D47-B65F-95A1B77AB041"><g class="stencils"><g class="me"><g pointer-events="painted"><path id="sid-5B0B9351-F111-4EA3-B483-028B9F9B3186_1" d="M765.453125 145L809.125 145 " stroke="black" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" marker-start="url(#sid-5B0B9351-F111-4EA3-B483-028B9F9B3186start)" marker-end="url(#sid-5B0B9351-F111-4EA3-B483-028B9F9B3186end)"/></g><text id="sid-5B0B9351-F111-4EA3-B483-028B9F9B3186text_name" x="773" y="137" oryx:edgePosition="startTop" stroke-width="0pt" letter-spacing="-0.01px" transform="rotate(360 765 145)" oryx:fontSize="12" text-anchor="start"/></g><g class="children" style="overflow:hidden"/><g class="edge"/></g><g class="controls"><g class="dockers"/><g class="magnets"/></g></g></g></g></g></svg>

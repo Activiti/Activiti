@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntity">
+
+	<select id="customSelectOneTask" parameterType="string" resultMap="taskResultMap">
+		select * from ${prefix}ACT_RU_TASK where NAME_ = #{name}
+	</select>
+
+	<select id="customSelectTaskList" parameterType="int" resultMap="taskResultMap">
+		select * from ${prefix}ACT_RU_TASK where PRIORITY_ &gt;= #{priority}
+	</select>
+	
+	<select id="selectCustomTaskCountByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultType="long">
+    select count(distinct RES.ID_)
+    <include refid="selectCustomTaskByQueryCriteriaSql"/>
+  </select>
+  
+  <select id="selectCustomTaskByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultMap="taskResultMap">
+    ${limitBefore}
+    select distinct RES.* ${limitBetween}
+    <include refid="selectCustomTaskByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <sql id="selectCustomTaskByQueryCriteriaSql">
+  from ${prefix}ACT_RU_TASK RES
+  <where>
+	<if test="taskId != null">
+		RES.ID_ = #{taskId}
+	</if>
+	<if test="owner != null">
+		and RES.OWNER_ = #{owner}
+	</if>
+	<if test="unOwned">
+		and RES.OWNER_ IS NULL
+	</if>
+  </where>
+  </sql>
+</mapper>

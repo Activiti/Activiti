@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule 
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns:script="http://www.mulesoft.org/schema/mule/scripting"
+  xmlns:mule-ss="http://www.mulesoft.org/schema/mule/spring-security"
+  xmlns:ss="http://www.springframework.org/schema/security"
+	xsi:schemaLocation="
+               http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+               http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+		           http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/current/mule-scripting.xsd
+               http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+               http://www.mulesoft.org/schema/mule/spring-security http://www.mulesoft.org/schema/mule/spring-security/current/mule-spring-security.xsd 
+               http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+  
+  <spring:beans>
+      <ss:authentication-manager alias="authenticationManager">
+          <ss:authentication-provider>
+              <ss:user-service id="userService">
+                  <ss:user name="test" password="password" authorities="ROLE_ADMIN" />
+              </ss:user-service>
+          </ss:authentication-provider>
+      </ss:authentication-manager>
+  </spring:beans>
+
+  <mule-ss:security-manager>
+      <mule-ss:delegate-security-provider name="memory-dao" delegate-ref="authenticationManager"/>
+  </mule-ss:security-manager>
+    
+	<flow name="test">
+      <http:inbound-endpoint exchange-pattern="request-response" address="http://localhost:9090/test" />
+      <http:basic-security-filter realm="mule-realm"/>
+		  <script:transformer>
+			   <script:script engine="groovy">return 10</script:script>
+		  </script:transformer>
+	</flow>
+</mule>

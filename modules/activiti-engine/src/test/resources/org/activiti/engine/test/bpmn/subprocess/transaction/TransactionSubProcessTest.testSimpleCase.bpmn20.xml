@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+	
+	<process id="transactionProcess">
+
+		<startEvent id="start" />
+		
+		<sequenceFlow sourceRef="start"	targetRef="tx" />
+
+		<transaction id="tx">
+
+			<startEvent id="txStart" />
+			
+			<sequenceFlow sourceRef="txStart" targetRef="fork" />
+
+			<parallelGateway id="fork" />
+			
+			<sequenceFlow sourceRef="fork" targetRef="bookHotel" />
+			<sequenceFlow sourceRef="fork" targetRef="bookFlight" />
+
+			<serviceTask id="bookHotel" activiti:expression="${true}">
+				<multiInstanceLoopCharacteristics isSequential="true">
+				  <loopCardinality>5</loopCardinality>
+				</multiInstanceLoopCharacteristics>
+			</serviceTask>		
+				
+			<serviceTask id="bookFlight" activiti:expression="${true}"/>
+
+			<boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
+				<compensateEventDefinition />
+			</boundaryEvent>	
+				
+			<boundaryEvent id="compensateBookFlightEvt" name="Boundary event" attachedToRef="bookFlight">
+				<compensateEventDefinition />
+			</boundaryEvent>
+			
+			<serviceTask id="undoBookHotel" isForCompensation="true" activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+				 <extensionElements>
+				      <activiti:field name="counterName" stringValue="undoBookHotel" />
+				 </extensionElements>        
+			</serviceTask>
+			
+			<serviceTask id="undoBookFlight" isForCompensation="true" activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+				 <extensionElements>
+				      <activiti:field name="counterName" stringValue="undoBookFlight" />
+				 </extensionElements>        
+			</serviceTask>
+						            
+			<parallelGateway id="join" />
+			
+			<sequenceFlow sourceRef="bookHotel" targetRef="join" />
+			<sequenceFlow sourceRef="bookFlight" targetRef="join" />
+			
+			<userTask id="askCustomer" activiti:assignee="kermit" />
+			
+			<serviceTask id="chargeCard" activiti:expression="${true}"/>
+			
+			<boundaryEvent id="chargeCardEvt" name="Boundary event" attachedToRef="chargeCard">
+				<compensateEventDefinition />
+			</boundaryEvent>	
+											
+			<serviceTask id="undoChargeCard" isForCompensation="true" activiti:class="org.activiti.engine.test.bpmn.event.compensate.helper.UndoService">
+				 <extensionElements>
+				      <activiti:field name="counterName" stringValue="undoChargeCard" />
+				 </extensionElements>        
+			</serviceTask>
+
+			<sequenceFlow sourceRef="join" targetRef="askCustomer" />
+			
+			<sequenceFlow sourceRef="askCustomer" targetRef="chargeCard" />
+
+			<exclusiveGateway id="confirmed" />
+			
+			<sequenceFlow sourceRef="chargeCard" targetRef="confirmed" />
+			
+			<sequenceFlow sourceRef="confirmed" targetRef="success">
+				<conditionExpression>${confirmed}</conditionExpression>
+			</sequenceFlow>
+			
+			<sequenceFlow sourceRef="confirmed" targetRef="failure">
+				<conditionExpression>${not confirmed}</conditionExpression>
+			</sequenceFlow>
+
+			<endEvent id="success" />
+
+			<endEvent id="failure" >
+				<cancelEventDefinition id="cancelTx" />
+			</endEvent>
+			
+			<association associationDirection="One" sourceRef="compensateBookHotelEvt" targetRef="undoBookHotel" />
+			
+			<association associationDirection="One" sourceRef="compensateBookFlightEvt" targetRef="undoBookFlight" />
+			
+			<association associationDirection="One" sourceRef="chargeCardEvt" targetRef="undoChargeCard" />
+
+		</transaction>
+				
+		<boundaryEvent attachedToRef="tx" id="catchCancelTx">
+			<cancelEventDefinition id="calcel"/>			
+		</boundaryEvent>
+				
+		<receiveTask id="afterCancellation" />
+		<receiveTask id="afterSuccess" />
+		
+		<sequenceFlow sourceRef="catchCancelTx" targetRef="afterCancellation" />
+		<sequenceFlow sourceRef="afterCancellation" targetRef="end" />
+		
+		<sequenceFlow sourceRef="tx" targetRef="afterSuccess" />
+		<sequenceFlow sourceRef="afterSuccess" targetRef="end" />
+		
+		<endEvent id="end" />
+		
+	</process>
+
+</definitions>

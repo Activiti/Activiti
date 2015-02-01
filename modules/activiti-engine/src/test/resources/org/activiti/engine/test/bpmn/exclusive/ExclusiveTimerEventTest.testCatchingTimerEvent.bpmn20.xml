@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples">
+
+    <process id="exclusiveTimers" name="Timer intermediate event example">
+
+        <startEvent id="theStart"/>
+        <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork"/>
+        
+        <parallelGateway id="fork" />
+    
+		<sequenceFlow sourceRef="fork" targetRef="timer" />    
+		<sequenceFlow sourceRef="fork" targetRef="timer2" />
+		<sequenceFlow sourceRef="fork" targetRef="timer3" />
+
+        <intermediateCatchEvent id="timer">
+            <timerEventDefinition>
+                <timeDuration>PT5M</timeDuration>
+            </timerEventDefinition>
+        </intermediateCatchEvent>
+        
+        <intermediateCatchEvent id="timer2">
+            <timerEventDefinition>
+                <timeDuration>PT5M</timeDuration>
+            </timerEventDefinition>
+        </intermediateCatchEvent>
+        
+        <intermediateCatchEvent id="timer3">
+            <timerEventDefinition>
+                <timeDuration>PT5M</timeDuration>
+            </timerEventDefinition>
+        </intermediateCatchEvent>
+
+         <sequenceFlow sourceRef="timer" targetRef="join" />
+	    <sequenceFlow sourceRef="timer2" targetRef="join" />
+	    <sequenceFlow sourceRef="timer3" targetRef="join" />
+	    
+	    <parallelGateway id="join" />
+	    
+	    <sequenceFlow sourceRef="join" targetRef="theEnd" />
+	        
+	    <endEvent id="theEnd" />
+
+    </process>
+  
+
+</definitions>

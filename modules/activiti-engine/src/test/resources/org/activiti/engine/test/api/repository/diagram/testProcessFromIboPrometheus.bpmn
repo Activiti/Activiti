@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<semantic:definitions xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:ibo="http://www.ibo.de/XML/BPMN" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="ibo-4f7774f6-c5e9-4d7b-8c97-ffb9d82ed60d" targetNamespace="http://www.ibo.de/BPMN/2.0" exporter="ibo.NET 3.0 (Debug)" exporterVersion="3.0.23.0" xmlns:semantic="http://www.omg.org/spec/BPMN/20100524/MODEL">
+  <semantic:process id="ibo-7995aeea-4d78-4cbd-881f-2560d11ae141" isExecutable="false">
+    <semantic:startEvent id="ibo-5dfcad89-ba81-4556-a1f4-91bdc6e1e7a0" name="">
+      <semantic:outgoing>ibo-e3bd0c30-0e91-4637-a8f4-886be5da25d1</semantic:outgoing>
+    </semantic:startEvent>
+    <semantic:task id="ibo-6ed75a13-4a9e-42a2-a152-696001bd5b95" name="Tu was">
+      <semantic:incoming>ibo-e3bd0c30-0e91-4637-a8f4-886be5da25d1</semantic:incoming>
+      <semantic:outgoing>ibo-c79c2322-5123-4a35-aec1-541862dd2f62</semantic:outgoing>
+    </semantic:task>
+    <semantic:exclusiveGateway id="ibo-948f53a1-f234-43a1-90ab-7bcc8f08bd15" name="" gatewayDirection="Diverging">
+      <semantic:incoming>ibo-c79c2322-5123-4a35-aec1-541862dd2f62</semantic:incoming>
+      <semantic:outgoing>ibo-452b5933-503d-4986-b4a7-7240b17c948a</semantic:outgoing>
+      <semantic:outgoing>ibo-b9da8d66-a298-4cf0-9495-f88eb0f50742</semantic:outgoing>
+    </semantic:exclusiveGateway>
+    <semantic:task id="ibo-5784efbe-35ac-44bc-bcbe-4c18a2f23d5d" name="denk was">
+      <semantic:incoming>ibo-b9da8d66-a298-4cf0-9495-f88eb0f50742</semantic:incoming>
+      <semantic:outgoing>ibo-d155d74d-e6ef-457a-8db8-baf7a26a0583</semantic:outgoing>
+    </semantic:task>
+    <semantic:task id="ibo-2e515178-eb05-49e1-9b12-f58dba366a8a" name="mach was">
+      <semantic:incoming>ibo-452b5933-503d-4986-b4a7-7240b17c948a</semantic:incoming>
+      <semantic:outgoing>ibo-19e58d2d-552c-4936-b049-a262b2edd6ce</semantic:outgoing>
+    </semantic:task>
+    <semantic:endEvent id="ibo-0efbf33c-46d4-4395-9f57-a7ac96a2bafb" name="">
+      <semantic:incoming>ibo-19e58d2d-552c-4936-b049-a262b2edd6ce</semantic:incoming>
+    </semantic:endEvent>
+    <semantic:endEvent id="ibo-5540904d-48f0-488d-8262-aa1f24db98b9" name="">
+      <semantic:incoming>ibo-d155d74d-e6ef-457a-8db8-baf7a26a0583</semantic:incoming>
+    </semantic:endEvent>
+    <semantic:sequenceFlow id="ibo-e3bd0c30-0e91-4637-a8f4-886be5da25d1" name="" sourceRef="ibo-5dfcad89-ba81-4556-a1f4-91bdc6e1e7a0" targetRef="ibo-6ed75a13-4a9e-42a2-a152-696001bd5b95" />
+    <semantic:sequenceFlow id="ibo-c79c2322-5123-4a35-aec1-541862dd2f62" name="" sourceRef="ibo-6ed75a13-4a9e-42a2-a152-696001bd5b95" targetRef="ibo-948f53a1-f234-43a1-90ab-7bcc8f08bd15" />
+    <semantic:sequenceFlow id="ibo-452b5933-503d-4986-b4a7-7240b17c948a" name="Ja" sourceRef="ibo-948f53a1-f234-43a1-90ab-7bcc8f08bd15" targetRef="ibo-2e515178-eb05-49e1-9b12-f58dba366a8a" />
+    <semantic:sequenceFlow id="ibo-b9da8d66-a298-4cf0-9495-f88eb0f50742" name="nein" sourceRef="ibo-948f53a1-f234-43a1-90ab-7bcc8f08bd15" targetRef="ibo-5784efbe-35ac-44bc-bcbe-4c18a2f23d5d" />
+    <semantic:sequenceFlow id="ibo-19e58d2d-552c-4936-b049-a262b2edd6ce" name="" sourceRef="ibo-2e515178-eb05-49e1-9b12-f58dba366a8a" targetRef="ibo-0efbf33c-46d4-4395-9f57-a7ac96a2bafb" />
+    <semantic:sequenceFlow id="ibo-d155d74d-e6ef-457a-8db8-baf7a26a0583" name="" sourceRef="ibo-5784efbe-35ac-44bc-bcbe-4c18a2f23d5d" targetRef="ibo-5540904d-48f0-488d-8262-aa1f24db98b9" />
+  </semantic:process>
+  <semantic:collaboration id="ibo-73c377ee-ce60-43c0-92cd-7aa75dcac9c3">
+    <semantic:participant id="ibo-f3bdb092-b0fd-4e14-b1b6-bdf2b6452aeb" name="" processRef="ibo-7995aeea-4d78-4cbd-881f-2560d11ae141">
+      <semantic:participantMultiplicity />
+    </semantic:participant>
+  </semantic:collaboration>
+  <bpmndi:BPMNDiagram name="jakobstest" id="ibo-8e415663-d444-40c1-b02e-f1abd6c525ea" documentation="">
+    <bpmndi:BPMNPlane bpmnElement="ibo-73c377ee-ce60-43c0-92cd-7aa75dcac9c3">
+      <bpmndi:BPMNShape id="ibo-020256b6-f9a5-4941-a07d-a2bcd29753a4" bpmnElement="ibo-f3bdb092-b0fd-4e14-b1b6-bdf2b6452aeb" isHorizontal="true" isExpanded="true">
+        <dc:Bounds x="10" y="12" width="900" height="400" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ibo-394a6c2a-07a7-4c85-bc74-6e366ae3397f" bpmnElement="ibo-5dfcad89-ba81-4556-a1f4-91bdc6e1e7a0">
+        <dc:Bounds x="132" y="124" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ibo-369e6679-88e0-49f8-bed0-16143bc200d1" bpmnElement="ibo-6ed75a13-4a9e-42a2-a152-696001bd5b95">
+        <dc:Bounds x="244" y="116" width="128" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ibo-5cde59c1-9e2d-485d-ac71-fe17c2f0e00c" bpmnElement="ibo-948f53a1-f234-43a1-90ab-7bcc8f08bd15">
+        <dc:Bounds x="404" y="116" width="64" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ibo-fddf7800-dbae-4328-b925-bce20957e8e0" bpmnElement="ibo-5784efbe-35ac-44bc-bcbe-4c18a2f23d5d">
+        <dc:Bounds x="508" y="276" width="128" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ibo-247d3ca8-267a-48f6-b382-b748f7c87824" bpmnElement="ibo-2e515178-eb05-49e1-9b12-f58dba366a8a">
+        <dc:Bounds x="500" y="116" width="128" height="64" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ibo-d117559d-4e0e-4e18-b19f-e7115a1314c6" bpmnElement="ibo-0efbf33c-46d4-4395-9f57-a7ac96a2bafb">
+        <dc:Bounds x="660" y="124" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ibo-6df1f814-387a-4e34-b01a-2af6c99ca83c" bpmnElement="ibo-5540904d-48f0-488d-8262-aa1f24db98b9">
+        <dc:Bounds x="668" y="284" width="48" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="ibo-66605665-be28-4b49-a074-49b2345242a9" bpmnElement="ibo-e3bd0c30-0e91-4637-a8f4-886be5da25d1" messageVisibleKind="initiating">
+        <di:waypoint x="180" y="148" />
+        <di:waypoint x="244" y="148" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ibo-011e537d-585d-4a05-8ef3-3fc635c93182" bpmnElement="ibo-c79c2322-5123-4a35-aec1-541862dd2f62" messageVisibleKind="initiating">
+        <di:waypoint x="372" y="148" />
+        <di:waypoint x="404" y="148" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ibo-1f580b52-a542-4dfd-9113-a4c99aee1241" bpmnElement="ibo-452b5933-503d-4986-b4a7-7240b17c948a" messageVisibleKind="initiating">
+        <di:waypoint x="468" y="148" />
+        <di:waypoint x="500" y="148" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ibo-e246df6d-fd44-4c37-8d51-e6eb28fae31b" bpmnElement="ibo-b9da8d66-a298-4cf0-9495-f88eb0f50742" messageVisibleKind="initiating">
+        <di:waypoint x="436" y="180" />
+        <di:waypoint x="436" y="308" />
+        <di:waypoint x="508" y="308" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ibo-87fc4b18-c1d5-4a6d-9da0-e2ae6b835c0c" bpmnElement="ibo-19e58d2d-552c-4936-b049-a262b2edd6ce" messageVisibleKind="initiating">
+        <di:waypoint x="628" y="148" />
+        <di:waypoint x="660" y="148" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ibo-ff2cbbdb-da54-48ac-8664-27dd297d6bc1" bpmnElement="ibo-d155d74d-e6ef-457a-8db8-baf7a26a0583" messageVisibleKind="initiating">
+        <di:waypoint x="636" y="308" />
+        <di:waypoint x="668" y="308" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</semantic:definitions>

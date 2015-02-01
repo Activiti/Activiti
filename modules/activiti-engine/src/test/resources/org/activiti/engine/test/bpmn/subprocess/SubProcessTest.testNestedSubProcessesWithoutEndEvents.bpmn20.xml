@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="testNestedSubProcessesWithoutEndEvents">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="outerSubProcess" />
+    
+    <subProcess id="outerSubProcess">
+      <startEvent id="outerSubProcessStart" />
+      <sequenceFlow id="flow2" sourceRef="outerSubProcessStart" targetRef="innerSubProcess1" />
+      
+      <subProcess id="innerSubProcess1">
+	      <startEvent id="innerSubProcess1Start" />
+	      <sequenceFlow sourceRef="innerSubProcess1Start" targetRef="innerSubProcess" />
+	      
+	      <subProcess id="innerSubProcess">
+	        <startEvent id="innerSubProcessStart" />
+	        <sequenceFlow id="flow3" sourceRef="innerSubProcessStart" targetRef="innerSubProcessTask" />
+	        
+		      <scriptTask id="innerSubProcessTask" scriptFormat="groovy">
+		        <script>
+		          println "Hello from Script Task"
+		        </script>
+		      </scriptTask>
+	      
+        </subProcess>
+      </subProcess>
+    </subProcess>
+    
+  </process>
+
+</definitions>

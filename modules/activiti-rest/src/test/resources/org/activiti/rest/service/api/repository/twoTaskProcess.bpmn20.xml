@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="TwoTaskCategory">
+
+  <process id="twoTaskProcess" name="The Two Task Process" activiti:candidateStarterUsers="kermit">
+    <documentation>Two task process description</documentation>
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
+    <userTask id="theTask" name="my task" />    
+    <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theSecondTask" />
+    <userTask id="theSecondTask" name="my task" />    
+    <sequenceFlow id="flow3" sourceRef="theSecondTask" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+    expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="activiti-report">
+
+    <process id="employee-productivity-report" name="Employee productivity"
+        isExecutable="true">
+
+        <startEvent id="startevent1" name="Start">
+            <extensionElements>
+                <activiti:formProperty id="employee" name="Employee"
+                    type="user" required="true" />
+                <activiti:formProperty id="month" name="Month"
+                    type="month" required="true" />
+            </extensionElements>
+        </startEvent>
+        <sequenceFlow id="flow1" sourceRef="startevent1"
+            targetRef="generateDataset" />
+
+        <scriptTask id="generateDataset" name="Execute script"
+            scriptFormat="js" activiti:autoStoreVariables="false">
+            <script><![CDATA[
+          
+               importPackage(java.sql);
+               importPackage(java.lang);
+               importPackage(java.util);
+               importPackage(org.activiti.explorer.reporting);
+               
+              var reportData = {
+"title": "My Report",
+"datasets": [
+{
+"type" : "lineChart",
+"description" : "My first chart",
+"xaxis" : "Category",
+"yaxis" : "Total sales",
+"data" :
+{ "2010" : 50, "2011" : 33, "2012" : 17, "2013" : 87 }
+}
+]
+}; 
+execution.setVariable("reportData", new java.lang.String(JSON.stringify(reportData)).getBytes("UTF-8"));
+           
+          ]]></script>
+        </scriptTask>
+        <sequenceFlow id="flow3" sourceRef="generateDataset"
+            targetRef="theEnd" />
+
+        <endEvent id="theEnd" />
+
+    </process>
+
+</definitions>

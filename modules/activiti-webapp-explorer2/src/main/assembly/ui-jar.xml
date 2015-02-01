@@ -1,0 +1,44 @@
+<assembly>
+  <id>ui-jar</id>
+  <formats>
+    <format>jar</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <fileSets>
+
+    <!-- Include classes and resources -->
+    <fileSet>
+      <directory>target/activiti-webapp-explorer2-${version}/WEB-INF/classes</directory>
+      <outputDirectory></outputDirectory>
+      <excludes>
+        <exclude>rebel.xml</exclude>
+        <exclude>ui.properties</exclude>
+        <exclude>ui.properties.alfresco</exclude>
+        <exclude>demo/</exclude>
+      </excludes>
+    </fileSet>
+    <!-- Include UI app context -->
+    <fileSet>
+      <directory>src/main/webapp/WEB-INF</directory>
+      <outputDirectory></outputDirectory>
+      <includes>
+        <include>activiti-ui-context.xml</include>
+      </includes>
+    </fileSet>
+
+    <!-- Include VAADIN static resources -->
+    <fileSet>
+      <directory>src/main/webapp/VAADIN</directory>
+      <outputDirectory>VAADIN</outputDirectory>
+    </fileSet>
+  </fileSets>
+
+  <files>
+    <!-- Include ui.properties for alfresco -->
+    <file>
+      <source>target/activiti-webapp-explorer2-${version}/WEB-INF/classes/ui.properties.alfresco</source>
+      <outputDirectory></outputDirectory>
+      <destName>ui.properties</destName>
+    </file>
+  </files>
+</assembly>

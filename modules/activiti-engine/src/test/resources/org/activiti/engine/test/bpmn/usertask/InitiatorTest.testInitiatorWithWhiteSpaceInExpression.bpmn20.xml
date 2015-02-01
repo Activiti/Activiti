@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="InitiatorProcess">
+
+		<startEvent id="start" activiti:initiator="initiator" />
+
+		<sequenceFlow id="flow1" sourceRef="start" targetRef="theTask" />
+
+		<userTask id="theTask" name="my task">
+			<humanPerformer id="humanPerformer111">
+				<resourceAssignmentExpression id="humanPerformer_assignmentExpression">
+					<formalExpression id="humanPerformer_formalExpressions">
+					${initiator}</formalExpression>
+				</resourceAssignmentExpression>
+			</humanPerformer>
+		</userTask>
+
+		<sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

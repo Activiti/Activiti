@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="catchErrorOnCallActivity2ndLevel">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess" />
+    
+    <subProcess id="subprocess">
+    
+      <startEvent id="subprocessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="callActivity" />
+      
+      <callActivity id="callActivity" calledElement="simpleSubProcess2ndLevel" />
+      <sequenceFlow id="subFlow2" sourceRef="callActivity" targetRef="subprocessEnd" />
+      
+      <endEvent id="subprocessEnd" />
+    
+    </subProcess>
+    
+    <boundaryEvent id="catchError" attachedToRef="subprocess">
+      <errorEventDefinition errorRef="myError" />
+    </boundaryEvent>
+    <sequenceFlow id="flow3" sourceRef="catchError" targetRef="escalatedTask" />
+    
+    <userTask id="escalatedTask" name="Escalated Task" />
+    <sequenceFlow id="flow4" sourceRef="escalatedTask" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

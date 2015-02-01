@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
+    xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC"
+    xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema"
+    expressionLanguage="http://www.w3.org/1999/XPath" 
+    targetNamespace="activiti-report">
+
+    <process id="process-instance-overview-report" name="Process Instance Overview" isExecutable="true">
+    
+        <startEvent id="startevent1" name="Start" />
+        <sequenceFlow id="flow1" sourceRef="startevent1" targetRef="generateDataset" />
+        
+        <scriptTask id="generateDataset" name="Execute script" scriptFormat="js" activiti:autoStoreVariables="false">
+          <script><![CDATA[
+          
+               importPackage(java.sql);
+               importPackage(java.lang);
+               importPackage(org.activiti.explorer.reporting);
+               
+               var result = ReportingUtil.executeSelectSqlQuery("SELECT PD.NAME_, PD.VERSION_ , count(PI.ID_) FROM ACT_HI_PROCINST PI inner join ACT_RE_PROCDEF PD on PI.PROC_DEF_ID_ = PD.ID_ group by PI.ID_, PROC_DEF_ID_");
+            
+               /* JDK 7 only
+               
+               var reportData = {};
+               reportData.datasets = [];
+               
+               var dataset = {};
+               dataset.type = "pieChart";
+               dataset.description = "Process instance overview (" + new java.util.Date() + ")";
+               dataset.data = {};
+            
+               while (result.next()) { // process results one row at a time
+                 var name = result.getString(1);
+                 var version = result.getLong(2)
+                 var count = result.getLong(3);
+                 dataset.data[name + " (v" + version + ")"] = count;
+               }
+               reportData.datasets.push(dataset);
+
+               var dataset2 = {};
+               dataset2.type="list";
+               dataset2.description = "List overview of process instances";
+               dataset2.data = dataset.data;
+               reportData.datasets.push(dataset2);
+               
+               execution.setVariable("reportData", new java.lang.String(JSON.stringify(reportData)).getBytes("UTF-8"));
+               */
+               
+               /* JDK 6+ */
+               var reportData = new ReportData;
+               var dataset = reportData.newDataset();
+               dataset.type = "pieChart";
+               dataset.description = "Process instance overview (" + new java.util.Date() + ")";
+               
+               while (result.next()) { // process results one row at a time
+                 var name = result.getString(1);
+                 var version = result.getLong(2);
+                 var count = result.getLong(3);
+                 dataset.add(name + " (v" + version + ")", count);
+               }
+               
+               var dataset2 = reportData.newDataset();
+               dataset2.type="list";
+               dataset2.description = "List overview of process instances";
+               dataset2.data = dataset.data;
+               
+               execution.setVariable("reportData", reportData.toBytes());
+               
+          ]]></script>
+        </scriptTask>
+        <sequenceFlow id="flow3" sourceRef="generateDataset" targetRef="theEnd" />
+        
+        <endEvent id="theEnd" />
+        
+    </process>
+
+</definitions>

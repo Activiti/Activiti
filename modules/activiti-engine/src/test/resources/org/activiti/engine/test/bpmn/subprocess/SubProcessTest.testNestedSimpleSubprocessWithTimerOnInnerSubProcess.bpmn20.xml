@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="nestedSubProcessWithTimer">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="outerSubProcess" />
+    
+    
+    <subProcess id="outerSubProcess">
+    
+      <startEvent id="outerSubProcessStart" />
+      <sequenceFlow id="flow2" sourceRef="outerSubProcessStart" targetRef="innerSubProcess" />
+      
+      <subProcess id="innerSubProcess">
+      
+        <startEvent id="innerSubProcessStart" />
+        <sequenceFlow id="flow3" sourceRef="innerSubProcessStart" targetRef="innerSubProcessTask" />
+        
+        <userTask id="innerSubProcessTask" name="Task in subprocess" />
+        <sequenceFlow id="flow4" sourceRef="innerSubProcessTask" targetRef="innerSubProcessEnd" />
+        
+        <endEvent id="innerSubProcessEnd" />
+      
+      </subProcess>
+      <sequenceFlow id="flow7" sourceRef="innerSubProcess" targetRef="outerSubProcessEnd" />
+      <endEvent id="outerSubProcessEnd" />
+      
+      <!-- Timer attached to inner sub process -->
+      <boundaryEvent id="escalationTimer" attachedToRef="innerSubProcess">
+        <timerEventDefinition>
+          <timeDuration>PT1H</timeDuration>
+        </timerEventDefinition>
+      </boundaryEvent>
+      <sequenceFlow id="flow5" sourceRef="escalationTimer" targetRef="escalationTask" />
+      <userTask id="escalationTask" name="Escalated task" />
+      <sequenceFlow id="flow6" sourceRef="escalationTask" targetRef="outerSubProcessEnd1" />
+      <endEvent id="outerSubProcessEnd1" />
+      
+    </subProcess>
+    <sequenceFlow id="flow8" sourceRef="outerSubProcess" targetRef="afterSubProcessTask" />
+
+    <userTask id="afterSubProcessTask" name="Task after subprocesses" />
+    <sequenceFlow id="flow9" sourceRef="afterSubProcessTask" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

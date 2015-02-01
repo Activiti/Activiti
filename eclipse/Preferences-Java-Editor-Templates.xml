@@ -1,0 +1,1 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><templates><template autoinsert="true" context="java" deleted="false" description="activiti logger" enabled="true" name="log">private static Logger log = Logger.getLogger(${enclosing_type}.class.getName());</template></templates>

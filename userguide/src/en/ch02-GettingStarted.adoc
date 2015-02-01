@@ -1,0 +1,119 @@
+
+== Getting Started
+
+[[demo.setup.one.minute.version]]
+
+=== One minute version
+
+
+After downloading the Activiti Explorer WAR file from the link:$$http://www.activiti.org$$[Activiti website], follow these steps to get the demo setup running with default settings. You'll need a working link:$$http://java.sun.com/javase/downloads/index.jsp$$[Java runtime] and link:$$http://tomcat.apache.org/download-70.cgi$$[Apache Tomcat] installation (actually, any web container would work since we only rely on the servlet capability. But we test on Tomcat primarily).
+
+* Copy the downloaded activiti-explorer.war to the webapps directory of Tomcat.
+* Start Tomcat by running the startup.bat or startup.sh scripts in the bin folder of Tomcat
+* When Tomcat is started open your browser and go to  link:$$http://localhost:8080/activiti-explorer$$[http://localhost:8080/activiti-explorer].
+            Login with kermit/kermit.
+
+
+
+That's it! The Activiti Explorer application uses an in-memory H2 database by default, if you want to use another database configuration please read <<activiti.setup,the longer version>>.
+
+
+[[activiti.setup]]
+
+
+=== Activiti setup
+
+To install Activiti you'll need a working link:$$http://java.sun.com/javase/downloads/index.jsp$$[Java runtime] and link:$$http://tomcat.apache.org/download-70.cgi$$[Apache Tomcat] installation. Also make sure that the _$$JAVA_HOME$$_ system variable is correctly set. The way to do this depends on your operating system.
+
+To get the Activiti Explorer and REST web applications running just copy the WARs downloaded from the Activiti download page to the +webapps+ folder in your Tomcat installation directory. By default the Explorer application runs with an in-memory database and with example processes, users and groups.
+
+
+These are the demo users:
+
+[options="header"]
+|===============
+|UserId|Password|Security roles
+|kermit|kermit|admin
+|gonzo|gonzo|manager
+|fozzie|fozzie|user
+|===============
+
+
+Now you can access following web application:
+
+[options="header"]
+|===============
+|Webapp Name|URL|Description
+|Activiti Explorer|link:$$http://localhost:8080/activiti-explorer$$[http://localhost:8080/activiti-explorer]|The process engine user console.  Use this tool to start new processes, assign tasks, view and claim tasks, etc. This tool also allows to administrate the Activiti engine.
+|===============
+
+Note that the Activiti Explorer demo setup is a way of showing the capabilities and functionality of Activiti as easily and as fast as possible. This does however, *not* mean
+that it is the only way of using Activiti. As Activiti is 'just a jar', it can be embedded in any Java environment: with swing or on a Tomcat, JBoss, WebSphere, etc. Or you could very well choose to run Activiti as a typical, standalone BPM server. If it is possible in Java, it is possible with Activiti!
+
+
+[[activiti.setup.database]]
+
+
+=== Activiti database setup
+
+As said in the one minute demo setup, the Activiti Explorer runs an in-memory H2 database by default. To run the Activiti Explorer with a standalone H2 or another database the db.properties in the WEB-INF/classes of the Activiti Explorer web application  should be changed.
+
+
+In addition, be aware that the Activiti Explorer generates demo user and groups, process definitions and models by default. To disable this, the engine.properties file in the WEB-INF/classes folder should be changed. To disable the demo setup fully you can set all of these properties to false. But as you can see you can also enable and disable items individually.
+
+[source, properties, linenums]
+----
+# demo data properties
+create.demo.users=true
+create.demo.definitions=true
+create.demo.models=true
+create.demo.reports=true
+----
+
+[[getting.started.including.libs]]
+
+
+=== Include the Activiti jar and its dependencies
+
+
+To include the Activiti jar and its dependent libraries, we advise using link:$$http://maven.apache.org/$$[Maven] (or link:$$http://ant.apache.org/ivy/$$[Ivy]), as it
+ simplifies dependency management on both our and your side a lot. Follow the instructions at link:$$http://www.activiti.org/community.html#maven.repository$$[] to include the necessary jars in your environment.
+
+
+Alternatively, if you don't want to use Maven you can include the jars in your project yourself. The Activiti download zip contains a folder +libs+ which contain all the Activiti jars (and the source jars). The dependencies are not shipped this way. The required dependencies of the Activiti engine are (generated using ++mvn dependency:tree++):
+
+----
+org.activiti:activiti-engine:jar:5.17.0
++- org.activiti:activiti-bpmn-converter:jar:5.17.0:compile
+|  \- org.activiti:activiti-bpmn-model:jar:5.17.0:compile
+|     +- com.fasterxml.jackson.core:jackson-core:jar:2.2.3:compile
+|     \- com.fasterxml.jackson.core:jackson-databind:jar:2.2.3:compile
+|        \- com.fasterxml.jackson.core:jackson-annotations:jar:2.2.3:compile
++- org.activiti:activiti-process-validation:jar:5.17.0:compile
++- org.activiti:activiti-image-generator:jar:5.17.0:compile
++- org.apache.commons:commons-email:jar:1.2:compile
+|  +- javax.mail:mail:jar:1.4.1:compile
+|  \- javax.activation:activation:jar:1.1:compile
++- org.apache.commons:commons-lang3:jar:3.3.2:compile
++- org.mybatis:mybatis:jar:3.2.5:compile
++- org.springframework:spring-beans:jar:4.0.6.RELEASE:compile
+|  \- org.springframework:spring-core:jar:4.0.6.RELEASE:compile
++- joda-time:joda-time:jar:2.6:compile
++- org.slf4j:slf4j-api:jar:1.7.6:compile
++- org.slf4j:jcl-over-slf4j:jar:1.7.6:compile
+----
+
+Note: the mail jars are only needed if you are using the <<bpmnEmailTask,mail service task>>.
+
+All the dependencies can easily be downloaded using +mvn dependency:copy-dependencies+ on a module of the link:$$https://github.com/Activiti/Activiti$$[Activiti source code].
+
+
+[[getting.started.next.steps]]
+
+=== Next steps
+
+Playing around with the <<activitiExplorer,Activiti Explorer>> web application is a good way to get familiar with the Activiti concepts and functionality. However, the main purpose of Activiti is of course to enable powerful BPM and workflow capabilities in your own application. The following chapters will help you to get familiar with how to use Activiti programmatically in your environment:
+
+* <<configuration,The chapter on configuration>> will teach you how to set up Activiti and how to obtain an instance of the +ProcessEngine+ class which is your central access point to all the engine functionality of Activiti.
+*<<chapterApi,The API chapter>> will guide you through the services which form Activiti's API. These services offer the Activiti engine functionality in a convenient yet powerful way and can be used in any Java environment.
+*Interested in getting insight on BPMN 2.0, the format in which processes for the Activiti engine are written? Then continue on to the <<bpmn20,BPMN 2.0 section>>.

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+	
+	<error id="myError" errorCode="123" />
+	<error id="someOtherError" errorCode="456" />
+
+	<process id="boundaryErrorTest">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess" />
+
+    <subProcess id="subprocess">
+    
+      <startEvent id="subprocessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="innerSubprocess" />
+      
+      <subProcess id="innerSubprocess">
+        <startEvent id="innerSubprocessStart" />
+        <sequenceFlow id="innerSubFlow1" sourceRef="innerSubprocessStart" targetRef="innerFork" />
+        
+        <parallelGateway id="innerFork" />
+        <sequenceFlow id="innerSubFlow2" sourceRef="innerFork" targetRef="innerTask1" />
+        <sequenceFlow id="innerSubFlow3" sourceRef="innerFork" targetRef="innerTask2" />
+        
+        <userTask id="innerTask1"  name="Inner subprocess task 1" />
+        
+        <userTask id="innerTask2"  name="Inner subprocess task 2" />
+        <sequenceFlow id="innerSubFlow4" sourceRef="innerTask2" targetRef="innerErrorEnd" />
+        
+        <endEvent id="innerErrorEnd">
+          <errorEventDefinition errorRef="myError" />
+        </endEvent>
+        
+      </subProcess>
+      
+      <boundaryEvent id="catchErrorOnInnerSubprocess" cancelActivity="true" attachedToRef="innerSubprocess">
+        <errorEventDefinition errorRef="someOtherError"/>
+      </boundaryEvent>
+      <sequenceFlow id="subFlow2" sourceRef="catchErrorOnInnerSubprocess" targetRef="taskAfterCatchInSubprocess" />
+      <userTask id="taskAfterCatchInSubprocess" name="task in outer subprocess " />
+      
+      <sequenceFlow id="subFlow3" sourceRef="taskAfterCatchInSubprocess" targetRef="subprocessEnd" />
+      <endEvent id="subprocessEnd" />
+      
+    </subProcess>
+    <sequenceFlow id="flow3" sourceRef="subprocess" targetRef="theEnd" />
+
+		<boundaryEvent id="catchErrorOnOuterSubprocess" cancelActivity="true" attachedToRef="subprocess">
+			<errorEventDefinition errorRef="myError"/> 
+		</boundaryEvent>
+		<sequenceFlow id="flow2" sourceRef="catchErrorOnOuterSubprocess" targetRef="taskAfterErrorCatch" />
+		<userTask id="taskAfterErrorCatch" name="task outside subprocess" />
+		
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

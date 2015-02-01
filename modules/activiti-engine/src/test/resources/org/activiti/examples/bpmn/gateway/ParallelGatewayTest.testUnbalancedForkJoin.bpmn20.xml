@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="UnbalancedForkJoin">
+  
+    <startEvent id="theStart" />
+      <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
+    
+    <parallelGateway id="fork" name="Fork" />
+			<sequenceFlow sourceRef="fork" targetRef="task1" />
+			<sequenceFlow sourceRef="fork" targetRef="task2" />
+			<sequenceFlow sourceRef="fork" targetRef="task3" />
+    
+    
+    <userTask id="task1" name="Task 1" />  
+      <sequenceFlow sourceRef="task1" targetRef="firstJoin" />
+    
+    <userTask id="task2" name="Task 2" /> 
+      <sequenceFlow sourceRef="task2" targetRef="firstJoin" />
+    
+    
+    <userTask id="task3" name="Task 3" /> 
+	    <sequenceFlow sourceRef="task3" targetRef="secondJoin" />
+    
+    <parallelGateway id="firstJoin" name="First Join" />
+      <sequenceFlow sourceRef="firstJoin" targetRef="task4" />
+    
+    <userTask id="task4" name="Task 4" /> 
+      <sequenceFlow sourceRef="task4" targetRef="secondJoin" />
+    
+    <parallelGateway id="secondJoin" />
+      <sequenceFlow sourceRef="secondJoin" targetRef="theEnd" />     
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

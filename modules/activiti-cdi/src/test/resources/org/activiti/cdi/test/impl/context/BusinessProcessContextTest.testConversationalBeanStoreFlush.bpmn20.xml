@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="testConversationalBeanStoreFlush">
+
+		<startEvent id="startEvent" />
+		
+		<serviceTask id="serviceTask" activiti:expression="#{processScopedMessageBean.setMessage('Hello from Activiti')}" />
+
+		<userTask id="wait" />
+
+		<endEvent id="endEvent" />
+
+		<sequenceFlow targetRef="serviceTask" sourceRef="startEvent" />	
+		<sequenceFlow targetRef="wait" sourceRef="serviceTask" />
+		<sequenceFlow targetRef="endEvent" sourceRef="wait" />
+
+	</process>
+</definitions>

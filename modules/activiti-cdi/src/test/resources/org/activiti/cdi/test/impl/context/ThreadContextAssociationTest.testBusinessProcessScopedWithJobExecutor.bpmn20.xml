@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="processkey">
+
+		<startEvent id="startEvent" />
+
+		<serviceTask id="jobTask" activiti:async="true" activiti:expression="#{processScopedMessageBean.setMessage('test')}" />	
+		
+		<receiveTask id="waitState" name="wait" />  
+
+		<endEvent id="endEvent" />
+
+		<sequenceFlow targetRef="jobTask" sourceRef="startEvent" />
+		<sequenceFlow targetRef="waitState" sourceRef="jobTask" />
+		<sequenceFlow targetRef="endEvent" sourceRef="waitState" />
+
+	</process>
+</definitions>

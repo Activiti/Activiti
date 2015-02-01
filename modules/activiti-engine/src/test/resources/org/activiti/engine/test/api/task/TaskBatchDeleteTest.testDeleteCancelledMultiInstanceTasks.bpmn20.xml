@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<definitions id="definitions" targetNamespace="http://activiti.org/bpmn20"
+    xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:activiti="http://activiti.org/bpmn" xmlns:cell="http://khaos.eu/cell">
+
+    <process id="testBatchDeleteOfTask">
+
+        <startEvent id="start"></startEvent>
+
+        <sequenceFlow sourceRef="start" targetRef="multiInstance"></sequenceFlow>
+
+        <userTask id="multiInstance">
+            <multiInstanceLoopCharacteristics>
+                <loopCardinality>5</loopCardinality>
+                <completionCondition>${1 == 1}</completionCondition>
+            </multiInstanceLoopCharacteristics>
+        </userTask>
+
+        <sequenceFlow sourceRef="multiInstance" targetRef="end"></sequenceFlow>
+        <endEvent id="end"></endEvent>
+    </process>
+</definitions>

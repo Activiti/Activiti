@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <message id="MyMessage" name="MyMessage"></message>
+  <process id="InclusiveGatewayAfterSignalBoundaryEvent" name="My InclusiveGatewayAfterSignalBoundaryEvent" isExecutable="true">
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <sequenceFlow id="flow3" sourceRef="startevent1" targetRef="subprocess1"></sequenceFlow>
+    <subProcess id="subprocess1" name="Sub Process">
+      <startEvent id="startevent2" name="Start"/>
+      <sequenceFlow id="flow1" sourceRef="startevent2" targetRef="usertask1"></sequenceFlow>     
+      <userTask id="usertask1" name="User Task"/>
+      <sequenceFlow id="flow2" sourceRef="usertask1" targetRef="endevent2"></sequenceFlow>
+      <endEvent id="endevent2" name="End"/>
+    </subProcess>
+    <boundaryEvent id="boundarymessage1" name="Message" attachedToRef="subprocess1" cancelActivity="false">
+      <messageEventDefinition messageRef="MyMessage"/>
+    </boundaryEvent>
+    <sequenceFlow id="flow4" sourceRef="boundarymessage1" targetRef="inclusivegateway1"></sequenceFlow>
+    <inclusiveGateway id="inclusivegateway1" name="Inclusive Gateway"/>
+    <sequenceFlow id="flow5" sourceRef="subprocess1" targetRef="inclusivegateway1"></sequenceFlow>
+    <sequenceFlow id="flow6" sourceRef="inclusivegateway1" targetRef="usertask2"></sequenceFlow>
+    <userTask id="usertask2" name="User Task"/>
+    <sequenceFlow id="flow7" sourceRef="usertask2" targetRef="endevent1"></sequenceFlow>
+    <endEvent id="endevent1" name="End"></endEvent>
+  </process>
+
+</definitions>

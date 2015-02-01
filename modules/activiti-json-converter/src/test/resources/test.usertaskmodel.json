@@ -1,0 +1,156 @@
+{ "bounds" : { "lowerRight" : { "x" : 1485,
+          "y" : 1050
+        },
+      "upperLeft" : { "x" : 0,
+          "y" : 0
+        }
+    },
+  "childShapes" : [ { "bounds" : { "lowerRight" : { "x" : 120.5,
+                "y" : 122
+              },
+            "upperLeft" : { "x" : 90.5,
+                "y" : 92
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [  ],
+        "outgoing" : [ { "resourceId" : "flow1" } ],
+        "properties" : { "documentation" : "",
+            "executionlisteners" : "",
+            "formproperties" : "",
+            "initiator" : "",
+            "name" : ""
+          },
+        "resourceId" : "start",
+        "stencil" : { "id" : "StartNoneEvent" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 265.5,
+                "y" : 147
+              },
+            "upperLeft" : { "x" : 165.5,
+                "y" : 67
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [  ],
+        "outgoing" : [ { "resourceId" : "sid-AA1205FD-63BD-47BA-9FB3-AA9F7C1E31F0" } ],
+        "properties" : { "asynchronousdefinition" : "Yes",
+            "documentation" : "This is a test documentation field",
+            "duedatedefinition" : "2012-11-01",
+            "exclusivedefinition" : "No",
+            "formkeydefinition" : "testKey",
+            "categorydefinition" : "defaultCategory",
+            "formproperties" : { "formProperties" : [ { "expression" : "${expression}",
+                      "id" : "formId",
+                      "name" : "formName",
+                      "type" : "string",
+                      "variable" : "variable"
+                    },
+                    { "expression" : "",
+                      "id" : "formId2",
+                      "name" : "anotherName",
+                      "type" : "long",
+                      "variable" : ""
+                    }
+                  ],
+                "totalCount" : 2
+              },
+            "isforcompensation" : "false",
+            "looptype" : "None",
+            "name" : "User task",
+            "prioritydefinition" : "40",
+            "tasklisteners" : {"taskListeners": [{"event": "create", "className": "org.test.TestClass", "expression": "", "delegateExpression": "", "fields": [{"name": "testField", "stringValue": "test", "expression": ""}, {"name": "testField2", "stringValue": "", "expression": "${expression}"}]}, 
+            	{"event": "assignment", "className": "", "expression": "${someExpression}", "delegateExpression": "", "fields": "undefined"}, 
+            	{"event": "complete", "className": "", "expression": "", "delegateExpression": "${someDelegateExpression}", "fields": "undefined"}]},
+            "usertaskassignment" : { "assignment" : { "assignee" : "kermit", "owner": "gonzo", 
+            		"candidateUsers": [{"value":"kermit"},{"value":"fozzie"}], "candidateGroups": [{"value":"management"},{"value":"sales"}] }
+            }
+          },
+        "resourceId" : "usertask",
+        "stencil" : { "id" : "UserTask" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 164.65625,
+                "y" : 107
+              },
+            "upperLeft" : { "x" : 121.109375,
+                "y" : 107
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [ { "x" : 15,
+              "y" : 15
+            },
+            { "x" : 50,
+              "y" : 40
+            }
+          ],
+        "outgoing" : [ { "resourceId" : "usertask" } ],
+        "properties" : { "conditionalflow" : "None",
+            "conditionsequenceflow" : "",
+            "defaultflow" : "None",
+            "documentation" : "",
+            "name" : ""
+          },
+        "resourceId" : "flow1",
+        "stencil" : { "id" : "SequenceFlow" },
+        "target" : { "resourceId" : "usertask" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 338.5,
+                "y" : 121
+              },
+            "upperLeft" : { "x" : 310.5,
+                "y" : 93
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [  ],
+        "outgoing" : [  ],
+        "properties" : { "documentation" : "",
+            "executionlisteners" : "",
+            "name" : ""
+          },
+        "resourceId" : "sid-7C003C2A-266E-4C30-9309-06BA6F9DD527",
+        "stencil" : { "id" : "EndNoneEvent" }
+      },
+      { "bounds" : { "lowerRight" : { "x" : 309.875,
+                "y" : 107
+              },
+            "upperLeft" : { "x" : 265.890625,
+                "y" : 107
+              }
+          },
+        "childShapes" : [  ],
+        "dockers" : [ { "x" : 50,
+              "y" : 40
+            },
+            { "x" : 14,
+              "y" : 14
+            }
+          ],
+        "outgoing" : [ { "resourceId" : "sid-7C003C2A-266E-4C30-9309-06BA6F9DD527" } ],
+        "properties" : { "conditionalflow" : "None",
+            "conditionsequenceflow" : "",
+            "defaultflow" : "None",
+            "documentation" : "",
+            "name" : ""
+          },
+        "resourceId" : "sid-AA1205FD-63BD-47BA-9FB3-AA9F7C1E31F0",
+        "stencil" : { "id" : "SequenceFlow" },
+        "target" : { "resourceId" : "sid-7C003C2A-266E-4C30-9309-06BA6F9DD527" }
+      }
+    ],
+  "properties" : { "documentation" : "",
+      "executionlisteners" : "",
+      "name" : "",
+      "process_author" : "",
+      "process_id" : "process",
+      "process_namespace" : "http://www.activiti.org/processdef",
+      "process_version" : ""
+    },
+  "resourceId" : "canvas",
+  "ssextensions" : [  ],
+  "stencil" : { "id" : "BPMNDiagram" },
+  "stencilset" : { "namespace" : "http://b3mn.org/stencilset/bpmn2.0#",
+      "url" : "../stencilsets/bpmn2.0/bpmn2.0.json"
+    }
+}

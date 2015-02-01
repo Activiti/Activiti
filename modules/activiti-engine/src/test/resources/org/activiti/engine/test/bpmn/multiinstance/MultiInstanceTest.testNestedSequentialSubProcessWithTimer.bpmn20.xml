@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="miNestedSequentialSubProcessWithTimer">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="nesting1" />
+    
+    <subProcess id="nesting1">
+    
+      <startEvent id="subStart1" />
+      <sequenceFlow id="flow2" sourceRef="subStart1" targetRef="nesting2" />
+    
+      <subProcess id="nesting2">
+      
+        <startEvent id="subStart2" />
+        <sequenceFlow id="flow3" sourceRef="subStart2" targetRef="nesting3" />
+      
+        <subProcess id="nesting3">
+        
+          <startEvent id="subStart3" />
+          <sequenceFlow id="flow4" sourceRef="subStart3" targetRef="miSubProcess" />
+        
+          <subProcess id="miSubProcess">
+			      <multiInstanceLoopCharacteristics isSequential="true">
+			        <loopCardinality>4</loopCardinality>
+			      </multiInstanceLoopCharacteristics>
+			      
+			      <startEvent id="subProcessStart" />
+			      <sequenceFlow id="subFlow1" sourceRef="subProcessStart" targetRef="subProcessFork" />
+			      
+			      <parallelGateway id="subProcessFork" />
+			      <sequenceFlow id="subFlow2" sourceRef="subProcessFork" targetRef="subProcessTask1" />
+			      <sequenceFlow id="subFlow3" sourceRef="subProcessFork" targetRef="subProcessTask2" />
+			      
+			      <userTask id="subProcessTask1" name="task one" activiti:assignee="kermit"/>
+			      <sequenceFlow id="subFlow4" sourceRef="subProcessTask1" targetRef="subSubProcessEnd1" />
+			      <endEvent id="subSubProcessEnd1" />  
+			      
+			      <userTask id="subProcessTask2" name="task two" activiti:assignee="kermit"/>
+			      <sequenceFlow id="subFlow5" sourceRef="subProcessTask2" targetRef="subSubProcessEnd2" />
+			      <endEvent id="subSubProcessEnd2" />  
+			      
+			    </subProcess>
+			    
+			    <boundaryEvent id="timer" attachedToRef="miSubProcess">
+            <timerEventDefinition>
+              <timeDuration>PT1H</timeDuration>
+            </timerEventDefinition>
+          </boundaryEvent>
+		      <sequenceFlow id="flow5" sourceRef="timer" targetRef="taskAfterTimer" />
+		      <userTask id="taskAfterTimer" />
+		      <sequenceFlow id="flow6" sourceRef="taskAfterTimer" targetRef="subProcessEnd3" />
+          
+          <sequenceFlow id="flow7" sourceRef="miSubProcess" targetRef="subProcessEnd3" />
+          <endEvent id="subProcessEnd3" />
+        
+        </subProcess>
+        
+        <sequenceFlow id="flow8" sourceRef="nesting3" targetRef="subProcessEnd2" />
+        <endEvent id="subProcessEnd2" />
+      
+      </subProcess>
+      
+      <sequenceFlow id="flow9" sourceRef="nesting2" targetRef="subProcessEnd1" />
+      <endEvent id="subProcessEnd1" />
+    
+    </subProcess>
+    
+    <sequenceFlow id="flow10" sourceRef="nesting1" targetRef="theEnd" />
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

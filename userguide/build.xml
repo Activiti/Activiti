@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="activiti.userguide" default="build.userguide">
+
+	<target name="build.userguide" depends="build.html" />
+
+	<target name="clean" description="Cleans up generated files.">
+		<delete dir="target/html" />
+	</target>
+
+	<target name="build.html">
+		<mkdir dir="target/html" />
+		<exec dir="src/en" executable="asciidoctor">
+			<arg value="-a" />
+			<arg value="stylesheet=colony.css" />
+			<arg value="index.adoc" />
+		</exec>
+		<copy todir="target/html/en">
+			<fileset dir="src/en">
+				<include name="index.html" />
+			</fileset>
+			<fileset dir="src/en">
+				<include name="images/**" />
+			</fileset>
+		</copy>
+	</target>
+
+</project>

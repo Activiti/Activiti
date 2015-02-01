@@ -1,0 +1,621 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+  xmlns="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://activiti.org/bpmn"
+  xmlns:tns="http://activiti.org/bpmn"
+  xmlns:sem="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  elementFormDefault="qualified">
+  
+<import namespace="http://www.omg.org/spec/BPMN/20100524/MODEL" schemaLocation="Semantic.xsd" />  
+
+  <annotation>
+    <documentation>
+      This XML Schema defines and documents BPMN 2.0 extension elements and
+      attributes introduced by Activiti.
+    </documentation>
+  </annotation>
+  
+  <attribute name="extensionId" type="string">
+    <annotation>
+      <documentation>
+        Attribute on a task.
+        Can be used to represent the custom service task identifier.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="initiator" type="string">
+    <annotation>
+      <documentation>
+        Attribute on a start event.
+        Denotes a process variable in which the process initiator set in the 
+        identityService.setAuthenticatedUserId(userId) is captured.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="history">
+    <annotation>
+      <documentation>
+        Attribute on the process element. 
+        Allows to set the history level for this specific process definition
+        differently from the history level set in the process engine configuration.
+      </documentation>
+    </annotation>
+    <simpleType>
+      <restriction base="string">
+        <enumeration value="none" />
+        <enumeration value="activity" />
+        <enumeration value="audit" />
+        <enumeration value="full" />
+      </restriction>
+    </simpleType>
+  </attribute>
+  
+  <attribute name="formKey" type="string">
+    <annotation>
+      <documentation>
+        Attribute used on a startEvent or a userTask. 
+        The value can be anything. The default form support in Activiti
+        assumes that this is a reference to a form html file insed the deployment
+        of the process definition. But this key can also be something completely different,
+        in case of external form resolving.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="formHandlerClass">
+    <annotation>
+      <documentation>
+        Attribute on a startEvent or userTask.
+        Allows to specify a custom class that will be called during the parsing 
+        of the form information. This way, it is possible to use custom forms and form handling.
+        This class must implement the 
+        org.activiti.engine.inpl.form.FormHamdler/StartFormHandler/taskFormHandler interface
+        (specific interface depending on the activity). 
+      </documentation>
+    </annotation>
+    <simpleType>
+      <restriction base="string">
+        <!-- regular expression taken from http://regexlib.com/REDetails.aspx?regexp_id=2821 -->
+        <pattern value="([a-z]{2,3}(\.[a-zA-Z][a-zA-Z_$0-9]*)*)\.([A-Z][a-zA-Z_$0-9]*)"/>
+      </restriction>
+    </simpleType>
+  </attribute>
+  
+  <element name="formProperty">
+    <annotation>
+      <documentation>
+        Subelement of the extensionsElement of activities that support forms.
+        Allows to specifies properties (!= process variables) for a form. See documentation chapter on
+        form properties.
+      </documentation>
+    </annotation>
+    <complexType>
+      <sequence>
+	    <element name="value" minOccurs="0" maxOccurs="unbounded">
+	   	  <annotation>
+		    <documentation>
+		      Defines a (potential) value for the form property.
+		      Especially usedful when using 'enum' as type.	
+		    </documentation>
+		  </annotation>
+		  <complexType>
+		    <attribute name="id" type="string">
+			  <annotation>
+			    <documentation>
+					Defines the internal value for the form property value.
+			    </documentation>
+			  </annotation>
+		    </attribute>
+		    <attribute name="name" type="string">
+			  <annotation>
+			    <documentation>
+					Defines the display label for the form property value.
+			    </documentation>
+			  </annotation>
+		    </attribute>
+	      </complexType>
+	    </element>
+	  </sequence>
+      <attribute name="id" use="required" type="string">
+        <annotation>
+          <documentation>
+            The key used to submit the property through the API.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="name" type="string">
+        <annotation>
+          <documentation>
+            The display label of the property.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="type" type="string">
+        <annotation>
+          <documentation>
+            The type of the property (see documentation for supported types). 
+            Default is 'string'.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="readable" type="string">
+        <annotation>
+          <documentation>
+            Specifies if the property can be read and displayed in the form.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="writable" type="string">
+        <annotation>
+          <documentation>
+            Specifies if the property is expected when the form is submitted.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="required" type="string">
+        <annotation>
+          <documentation>
+            Specifies if the property is a required field.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="variable" type="string">
+        <annotation>
+          <documentation>
+            Specifies the process variable on which the variable is mapped.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="expression" type="string">
+        <annotation>
+          <documentation>
+            Specifies an expression that maps the property, eg. ${street.address}
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="datePattern" type="string">
+        <annotation>
+			<documentation>
+				Can be used when type is 'date' and defines how a date should be provided
+				in the form. Any date pattern that is compatible
+				with java.text.SimpleDataFormat is valid.
+			</documentation>
+        </annotation>
+      </attribute>
+      <attribute name="value" type="tns:tExpression">
+        <annotation>
+			<documentation>
+				A literal or an expression that evaluates at runtime to the value for
+				the form property.
+			</documentation>
+        </annotation>
+      </attribute>
+    </complexType>
+  </element>
+  
+  <attribute name="class">
+    <annotation>
+      <documentation>
+        Service Task attribute for specifying a fully qualified Java class
+        name. The Java class must implement either
+        org.activiti.engine.delegate.JavaDelegate or
+        org.activiti.engine.impl.pvm.delegate.ActivityBehavior
+      </documentation>
+    </annotation>
+    <simpleType>
+      <restriction base="string">
+        <!-- regular expression taken from http://regexlib.com/REDetails.aspx?regexp_id=2821 -->
+        <pattern value="([a-z]{2,3}(\.[a-zA-Z][a-zA-Z_$0-9]*)*)\.([A-Z][a-zA-Z_$0-9]*)"/>
+      </restriction>
+    </simpleType>
+  </attribute>
+  
+  <attribute name="type">
+    <annotation>
+      <documentation>
+        Service Task attribute specifying a built-in service task implementation.
+      </documentation>
+    </annotation>
+    <simpleType>
+      <restriction base="string">
+        <enumeration value="camel"/>
+        <enumeration value="mail"/>
+        <enumeration value="mule"/>
+        <enumeration value="shell"/>
+      </restriction>
+    </simpleType>
+  </attribute>
+  
+  <attribute name="resultVariable" type="string">
+    <annotation>
+      <documentation>
+        Attribute on Service and Script Task corresponding with a process variable name.
+        The result of executing the service task logic or the script will be stored 
+        in this process variable.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="expression" type="string">
+    <annotation>
+      <documentation>
+        Allows to specify an expression that is evaluated at runtime.     
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="delegateExpression">
+    <annotation>
+      <documentation>
+        Allows to specify an expression on a service task, taskListener or executionListener
+        that at runtime must resolve to an object that implements the corresponsing
+        interface (JavaDelegate, ActivityBehavior, TaskListener, ExecutionListener, etc.)
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="async" type="boolean">
+    <annotation>
+      <documentation>
+        The async attribute can be set on an activity (task, call activity or sub process) to let
+        the job executor handle the execution of the activity asynchronously. This provides ways
+        to define transaction boundaries for your process execution.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="exclusive" type="boolean">
+    <annotation>
+      <documentation>
+        Can be used in combination with an async value of true. By default exclusive is set to false
+        and the job executor can run multiple async tasks of the same process instance concurrently.
+        When exclusive is set to true, only one async task of the same process instance will be executed at a time.
+      </documentation>
+    </annotation>
+  </attribute>
+
+  <element name="field">
+    <annotation>
+      <documentation>
+        Extension Element for Service Tasks to inject values into the fields of
+        delegate classes.
+      </documentation>
+    </annotation>
+    <complexType>
+      <choice minOccurs="0" maxOccurs="1">
+      	<element name="string" type="string" />
+      	<element name="expression" type="tns:tExpression" />
+      </choice>
+      <attribute name="name" type="string" use="required"/>
+      <attribute name="stringValue" type="string" use="optional" />
+      <attribute name="expression" type="tns:tExpression" use="optional" />
+    </complexType>
+  </element>
+  
+  <simpleType name="tExpression">
+    <annotation>
+      <documentation>
+        Expression using the language declared in the expressionLanguage
+        attribute of BPMN's definitions element.
+      </documentation>
+    </annotation>
+    <restriction base="string">
+    </restriction>
+  </simpleType>
+  
+  <attribute name="assignee" type="string">
+    <annotation>
+      <documentation>
+        User Task attribute to set the human performer of a user task.
+        Also supports expressions that evaluate to a String.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="dueDate" type="tns:tExpression">
+    <annotation>
+      <documentation>
+        User Task attribute to set the task due date.
+        The expression should resolve to a value of typejava.util.Date.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="candidateUsers">
+    <annotation>
+      <documentation>
+        User Task attribute to set the potential owners of a user task.
+        The provided user(s) will be candidate for performing the user task.
+        In case of multiple user ids, a comma-separated list must be provided.
+        Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="candidateGroups">
+    <annotation>
+      <documentation>
+        User Task attribute to set the potential owners of a user task.
+        The provided group(s) will be candidate for performing the user task.
+        In case of multiple group ids, a comma-separated list must be provided.
+        Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
+      </documentation>
+    </annotation>
+  </attribute>
+
+  <attribute name="priority">
+    <annotation>
+      <documentation>
+        User Task attribute to set the priority of a user task.
+        The provided priority can be used to sort user tasks in the task list.
+        Also supports expressions that evaluate to a String.
+      </documentation>
+    </annotation>
+  </attribute>
+
+  <attribute name="candidateStarterUsers">
+    <annotation>
+      <documentation>
+        Process attribute to set the potential starts of a process.
+        Provided user(s) will be able to start the process.        
+        In case of multiple user ids, a comma-separated list must be provided.
+        Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="candidateStarterGroups">
+    <annotation>
+      <documentation>
+        Process attribute to set the potential starts of a process.
+        Provided group(s) will be able to start the process.        
+        In case of multiple group ids, a comma-separated list must be provided.
+        Also supports expressions that evaluate to a String or Collection&lt;String&gt;.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <complexType name="tPotentialStarter">
+	<complexContent>
+		<extension base="sem:tHumanPerformer" />
+	</complexContent>
+  </complexType>
+  
+  <element name="potentialStarter" type="string" />
+  
+  <element name="taskListener">
+    <annotation>
+      <documentation>
+        Extension element for User Tasks used to execute custom Java logic or an 
+        expression upon the occurrence of a certain event. 
+      </documentation>
+    </annotation>
+    <complexType>
+      <sequence>
+        <element ref="tns:field" minOccurs="0" maxOccurs="unbounded" />
+      </sequence>
+      <attribute name="class" type="string">
+        <annotation>
+          <documentation>
+            An implementation of the org.activiti.engine.impl.pvm.delegate.TaskListener interface
+            that will be called when the task event occurs.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="expression" type="tns:tExpression">
+        <annotation>
+          <documentation>
+            Expression that will be evaluated when the task event occurs.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="delegateExpression" type="tns:tExpression">
+        <annotation>
+          <documentation>
+            Expression that must resolve to an object implementing a compatible interface
+            for a taskListener. Evaluation and delegation to the resulting object is done
+            when the task event occurs.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="event" use="required">
+        <annotation>
+          <documentation>
+            The event on which the delegation class or expression will be executed.
+          </documentation>
+        </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="create" />
+            <enumeration value="assignment" />
+            <enumeration value="complete" />
+            <enumeration value="delete" />
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+  
+  <element name="executionListener">
+    <annotation>
+      <documentation>
+        Extension element for any activities and sequenceflow, used to execute custom Java logic or an 
+        expression upon the occurrence of a certain event. 
+      </documentation>
+    </annotation>
+    <complexType>
+      <sequence>
+        <element ref="tns:field" minOccurs="0" maxOccurs="unbounded"/>
+      </sequence>
+      <attribute name="class" type="string">
+        <annotation>
+          <documentation>
+            An implementation of the org.activiti.engine.impl.pvm.delegate.ExecutionListener interface
+            that will be called when the event occurs.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="expression" type="tns:tExpression">
+        <annotation>
+          <documentation>
+            Expression that will be evaluated when the event occurs.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="delegateExpression" type="tns:tExpression">
+        <annotation>
+          <documentation>
+            Expression that must resolve to an object implementing a compatible interface
+            for an executionListener. Evaluation and delegation to the resulting object is done
+            when the task event occurs.
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="event" use="optional">
+        <annotation>
+          <documentation>
+            The event on which the delegation class or expression will be executed.
+          </documentation>
+        </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="start" />
+            <enumeration value="end" />
+            <enumeration value="take" />
+          </restriction>
+        </simpleType>
+      </attribute>
+    </complexType>
+  </element>
+  
+  <element name="eventListener">
+    <annotation>
+      <documentation>
+        Extension element for defining event-listeners on a process-definition.
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="events">
+        <annotation>
+          <documentation>
+           Comma-separated list of event-types an event-listener is configured to be notified of. Can also be a single event-type.  
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="entityType">
+        <annotation>
+          <documentation>
+           Type of entity that should be targeted by events for which the event-listener should be notified. 
+          </documentation>
+        </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="attachment" />
+            <enumeration value="comment" />
+            <enumeration value="execution" />
+            <enumeration value="identity-link" />
+            <enumeration value="job" />
+            <enumeration value="process-definition" />
+            <enumeration value="process-instance" />
+            <enumeration value="task" />
+          </restriction>
+        </simpleType>
+      </attribute>
+      <attribute name="throwEvent">
+        <annotation>
+          <documentation>
+           Type of event to be throw as a response to a matching activiti-event being dispatched.
+          </documentation>
+        </annotation>
+        <simpleType>
+          <restriction base="string">
+            <enumeration value="signal" />
+            <enumeration value="globalSignal" />
+            <enumeration value="message" />
+            <enumeration value="error" />
+          </restriction>
+        </simpleType>
+      </attribute>
+      <attribute name="signalName">
+        <annotation>
+          <documentation>
+           Name of a signal.  
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="messageName">
+        <annotation>
+          <documentation>
+           Name of a message.  
+          </documentation>
+        </annotation>
+      </attribute>
+      <attribute name="errorCode">
+        <annotation>
+          <documentation>
+           Error-code of an error event.  
+          </documentation>
+        </annotation>
+      </attribute>
+    </complexType>
+  </element>
+  
+  <element name="in">
+    <annotation>
+      <documentation>
+        Element to specify Data Input in Activiti Shortcuts
+        (compare to DataInputAssociation in BPMN)
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="source" type="string" use="optional"/>
+      <attribute name="sourceExpression" type="tns:tExpression" use="optional"/>
+      <attribute name="target" type="string" use="required" />
+    </complexType>
+  </element>
+  <element name="out">
+    <annotation>
+      <documentation>
+        Element to specify Data Output in Activiti Shortcuts
+        (compare to DataOutputAssociation in BPMN)
+      </documentation>
+    </annotation>
+    <complexType>
+      <attribute name="source" type="string" use="optional"/>
+      <attribute name="sourceExpression" type="tns:tExpression" use="optional"/>
+      <attribute name="target" type="string" use="required" />
+    </complexType>
+  </element>
+  
+  <attribute name="collection" type="string">
+    <annotation>
+      <documentation>
+        To be used on the multiInstanceLoopCharacteristics element, referencing a collection.
+        For each element in the collection, an instance will be created. Can be an expression 
+        or reference to a process variable.
+      </documentation>
+    </annotation>
+  </attribute>
+  
+  <attribute name="elementVariable" type="string">
+    <annotation>
+      <documentation>
+        To be used on the multiInstanceLoopCharacteristics element, used in conjunction with
+        the activiti:collection attribute. Denotes the name of the process variable that
+        will be set on each created instance, containing an element of the specified collection.
+      </documentation>
+    </annotation>
+  </attribute>
+
+  <attribute name="elementIndexVariable" type="string">
+    <annotation>
+      <documentation>
+        To be used on the multiInstanceLoopCharacteristics element. Denotes the name of the process
+        index variable that will be set on each created instance. According to BPMN specification
+        index variable name is loopCounter, which is used for default value.
+      </documentation>
+    </annotation>
+  </attribute>
+</schema>

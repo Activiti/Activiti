@@ -1,0 +1,26 @@
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" targetNamespace="Examples">
+
+	<process id="echoShellMac">
+
+		<startEvent id="theStart" />
+		<sequenceFlow sourceRef="theStart" targetRef="shellEcho" />
+
+		<serviceTask id="shellEcho" activiti:type="shell">
+			<extensionElements>
+				<activiti:field name="command" stringValue="echo" />
+				<activiti:field name="arg1"  stringValue="EchoTest" />
+				<activiti:field name="outputVariable"   stringValue="resultVar" />
+			</extensionElements>
+		</serviceTask>
+		
+		<sequenceFlow sourceRef="shellEcho" targetRef="theTask" />
+	    <userTask id="theTask" name="keep-alive task" />
+		<sequenceFlow sourceRef="theTask" targetRef="theEnd" />
+
+		<endEvent id="theEnd" />
+
+	</process>
+
+</definitions>

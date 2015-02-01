@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="process2">
+
+		<startEvent id="startEvent" />
+
+		<serviceTask id="service1" activiti:expression="#{true}" />
+		<serviceTask id="service2" activiti:expression="#{true}" />
+
+		<endEvent id="endEvent" />
+
+		<sequenceFlow targetRef="service1" sourceRef="startEvent" />
+		<sequenceFlow targetRef="service2" sourceRef="service1" />
+		<sequenceFlow targetRef="endEvent" sourceRef="service2" />
+
+	</process>
+</definitions>

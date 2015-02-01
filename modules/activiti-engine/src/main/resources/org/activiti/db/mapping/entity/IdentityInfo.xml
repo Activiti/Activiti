@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+  
+  <!-- INFO INSERT -->
+
+  <insert id="insertIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+    insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{userId ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR},
+      #{key ,jdbcType=VARCHAR},
+      #{value ,jdbcType=VARCHAR},
+      #{passwordBytes ,jdbcType=BLOB},
+      #{parentId ,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+   <insert id="insertIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+    insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
+    values (
+      #{id ,jdbcType=VARCHAR},
+      1,
+      #{userId ,jdbcType=VARCHAR},
+      #{type ,jdbcType=VARCHAR},
+      #{key ,jdbcType=VARCHAR},
+      #{value ,jdbcType=VARCHAR},
+      #{passwordBytes ,jdbcType=BINARY},
+      #{parentId ,jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- INFO UPDATE -->
+  <update id="updateIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+    update ${prefix}ACT_ID_INFO 
+    set REV_ = #{revisionNext ,jdbcType=INTEGER},
+        VALUE_ = #{value ,jdbcType=VARCHAR},
+        PASSWORD_ = #{passwordBytes ,jdbcType=BLOB}
+    where ID_ = #{id}
+      and REV_ = #{revision}
+  </update>
+  
+  <update id="updateIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+    update ${prefix}ACT_ID_INFO 
+    set REV_ = #{revisionNext ,jdbcType=INTEGER},
+        VALUE_ = #{value ,jdbcType=VARCHAR},
+        PASSWORD_ = #{passwordBytes ,jdbcType=BINARY}
+    where ID_ = #{id}
+      and REV_ = #{revision}
+  </update>
+  
+  <!-- INFO DELETE -->
+
+  <delete id="deleteIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+    delete from ${prefix}ACT_ID_INFO 
+    where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+
+  <!-- INFO RESULTMAP -->
+
+  <resultMap id="identityInfoResultMap" type="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="VARCHAR" />
+    <result property="value" column="VALUE_" jdbcType="VARCHAR" />
+    <result property="passwordBytes" column="PASSWORD_" jdbcType="BLOB" />
+    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="identityInfoResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
+    <result property="type" column="TYPE_" jdbcType="VARCHAR" />
+    <result property="key" column="KEY_" jdbcType="VARCHAR" />
+    <result property="value" column="VALUE_" jdbcType="VARCHAR" />
+    <result property="passwordBytes" column="PASSWORD_" jdbcType="BINARY" />
+    <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- INFO SELECT -->
+
+  <select id="selectIdentityInfoById" parameterType="string" resultMap="identityInfoResultMap">
+    select * from ${prefix}ACT_ID_INFO where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectIdentityInfoById_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
+    select * from ${prefix}ACT_ID_INFO where ID_ = #{id,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectIdentityInfoByUserIdAndKey" parameterType="map" resultMap="identityInfoResultMap">
+    select * from ${prefix}ACT_ID_INFO 
+    where USER_ID_ = #{userId,jdbcType=VARCHAR}
+      and KEY_ =  #{key,jdbcType=VARCHAR}
+      and PARENT_ID_ is null
+  </select>
+  
+   <select id="selectIdentityInfoByUserIdAndKey_postgres" parameterType="map" resultMap="identityInfoResultMap_postgres">
+    select * from ${prefix}ACT_ID_INFO 
+    where USER_ID_ = #{userId,jdbcType=VARCHAR}
+      and KEY_ =  #{key,jdbcType=VARCHAR}
+      and PARENT_ID_ is null
+  </select>
+  
+  <select id="selectIdentityInfoKeysByUserIdAndType" parameterType="map" resultType="string">
+    select KEY_ from ${prefix}ACT_ID_INFO 
+    where USER_ID_ = #{userId,jdbcType=VARCHAR}
+      and TYPE_ =  #{type,jdbcType=VARCHAR}
+      and PARENT_ID_ is null
+  </select>
+  
+  <select id="selectIdentityInfoByUserId" parameterType="string" resultMap="identityInfoResultMap">
+    select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{parameter,jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectIdentityInfoByUserId_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
+    select * from ${prefix}ACT_ID_INFO where USER_ID_ = #{parameter,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectIdentityInfoDetails" parameterType="string" resultMap="identityInfoResultMap">
+    select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parameter,jdbcType=VARCHAR}
+  </select>
+
+  <select id="selectIdentityInfoDetails_postgres" parameterType="string" resultMap="identityInfoResultMap_postgres">
+    select * from ${prefix}ACT_ID_INFO where PARENT_ID_ = #{parameter,jdbcType=VARCHAR}
+  </select>
+  
+  
+</mapper>

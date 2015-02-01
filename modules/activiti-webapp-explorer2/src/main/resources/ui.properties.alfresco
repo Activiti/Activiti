@@ -1,0 +1,4 @@
+# The environment in which the webapp runs
+# values = (activiti | alfresco)
+activiti.ui.environment = alfresco
+activiti.ui.jsdiagram = false

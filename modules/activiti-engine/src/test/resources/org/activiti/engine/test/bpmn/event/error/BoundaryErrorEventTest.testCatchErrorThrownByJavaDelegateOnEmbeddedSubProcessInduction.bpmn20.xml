@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="catchErrorThrownByJavaDelegateOnEmbeddedSubProcessInduction">
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess" />
+    
+    <subProcess id="subProcess">
+      <startEvent id="subProcessStart"/>
+      <sequenceFlow id="flow2" sourceRef="subProcessStart" targetRef="subProcess1" />
+	    <subProcess id="subProcess1">
+	      <startEvent id="subProcess1Start"/>
+	      <sequenceFlow id="flow5" sourceRef="subProcess1Start" targetRef="serviceTask" />
+		    <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.ThrowBpmnErrorDelegate" />
+	    </subProcess>
+    </subProcess>
+    
+    <boundaryEvent id="catchError" attachedToRef="subProcess">
+      <errorEventDefinition />
+    </boundaryEvent>
+    
+    <sequenceFlow id="flow3" sourceRef="catchError" targetRef="escalatedTask" />
+    
+    <userTask id="escalatedTask" name="Escalated Task" />
+    <sequenceFlow id="flow4" sourceRef="subProcess" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:spring="http://www.springframework.org/schema/beans" xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+  xmlns:script="http://www.mulesoft.org/schema/mule/scripting"
+  xmlns:test="http://www.mulesoft.org/schema/mule/test"
+  xsi:schemaLocation="
+          http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+          http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/3.3/mule.xsd
+          http://www.mulesoft.org/schema/mule/scripting http://www.mulesoft.org/schema/mule/scripting/3.3/mule-scripting.xsd
+          http://www.mulesoft.org/schema/mule/test http://www.mulesoft.org/schema/mule/test/3.3/mule-test.xsd
+          http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/3.3/mule-vm.xsd">
+
+  <spring:bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+      <spring:property name="driverClass" value="org.h2.Driver"/>
+      <spring:property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"/>
+      <spring:property name="username" value="sa"/>
+      <spring:property name="password" value=""/>
+  </spring:bean>
+
+  <spring:bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+      <spring:property name="dataSource" ref="dataSource"/>
+  </spring:bean>
+
+  <spring:bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
+    <spring:property name="dataSource" ref="dataSource"/>
+    <spring:property name="transactionManager" ref="transactionManager"/>
+    <spring:property name="databaseSchemaUpdate" value="true" />
+    <spring:property name="jobExecutorActivate" value="false" />
+    <spring:property name="beans">
+      <spring:map>
+        <spring:entry key="muleContext" value-ref="_muleContext" />
+      </spring:map>
+    </spring:property>
+  </spring:bean>
+
+  <spring:bean id="processEngine" class="org.activiti.spring.ProcessEngineFactoryBean">
+    <spring:property name="processEngineConfiguration" ref="processEngineConfiguration" />
+  </spring:bean>
+
+  <spring:bean id="repositoryService" factory-bean="processEngine" factory-method="getRepositoryService" />
+  <spring:bean id="runtimeService" factory-bean="processEngine" factory-method="getRuntimeService" />
+  <spring:bean id="taskService" factory-bean="processEngine" factory-method="getTaskService" />
+  <spring:bean id="historyService" factory-bean="processEngine" factory-method="getHistoryService" />
+
+  <flow name="test">
+    <vm:inbound-endpoint path="in" exchange-pattern="request-response" />
+    <script:transformer>
+      <script:script engine="groovy">return 30</script:script>
+    </script:transformer>
+  </flow>
+</mule>

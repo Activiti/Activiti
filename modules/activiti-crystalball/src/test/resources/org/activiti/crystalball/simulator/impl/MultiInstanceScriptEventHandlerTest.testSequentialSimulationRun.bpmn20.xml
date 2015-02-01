@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/test">
+
+  <process id="multiInstanceResultVariablesSimulationRun" name="The multi instance simulation run with result variables">
+    <documentation>This is a process for testing purposes</documentation>
+
+    <startEvent id="theStart"/>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="simulatioRunExecute"/>
+
+    <serviceTask id="simulatioRunExecute" name="Execute Simulation Run"
+                 activiti:class="org.activiti.crystalball.process.SimulationRunTask">
+      <extensionElements>
+        <activiti:field name="simulationRun">
+          <activiti:expression>${simulationRunFactory.getObject()}</activiti:expression>
+        </activiti:field>
+      </extensionElements>
+      <multiInstanceLoopCharacteristics isSequential="true">
+        <loopCardinality>5</loopCardinality>
+      </multiInstanceLoopCharacteristics>
+    </serviceTask>
+    <sequenceFlow id="flow2" sourceRef="simulatioRunExecute" targetRef="waitForResultCheck"/>
+
+    <receiveTask id="waitForResultCheck" name="Wait for result check"/>
+    <sequenceFlow id="flow3" sourceRef="waitForResultCheck" targetRef="theEnd"/>
+
+    <endEvent id="theEnd"/>
+
+  </process>
+
+</definitions>

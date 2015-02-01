@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+	
+	<process id="testThrowErrorInScriptTaskInsideCallActivitiCatchInTopLevelProcess">
+
+		<startEvent id="theStart" />
+		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess" />
+
+    <subProcess id="subprocess">
+      <startEvent id="subprocessStart" />
+      <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="callSubProcess" />
+      <callActivity id="callSubProcess" calledElement="catchErrorThrownByJavaDelegateOnCallActivity-child" />
+    </subProcess>
+    <sequenceFlow id="flow3" sourceRef="subprocess" targetRef="theEnd" />
+		
+		<endEvent id="theEnd" />
+    
+
+    <subProcess id="eventSubProcess" triggeredByEvent="true">
+      <startEvent id="catchError">
+        <errorEventDefinition /> <!-- no errorCode: catch any error -->
+      </startEvent>
+      <sequenceFlow id="flow2" sourceRef="catchError" targetRef="taskAfterErrorCatch" />
+      <userTask id="taskAfterErrorCatch" name="Escalated Task" />
+    </subProcess>
+
+	</process>
+
+</definitions>

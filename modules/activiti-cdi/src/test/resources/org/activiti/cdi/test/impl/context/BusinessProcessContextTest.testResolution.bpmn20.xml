@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn"
+	targetNamespace="Examples">
+
+	<process id="testResolution">
+
+		<startEvent id="startEvent" />
+
+		<userTask id="wait" />
+
+		<endEvent id="endEvent" />
+
+		<sequenceFlow targetRef="wait" sourceRef="startEvent" />
+		<sequenceFlow targetRef="endEvent" sourceRef="wait" />
+
+	</process>
+</definitions>

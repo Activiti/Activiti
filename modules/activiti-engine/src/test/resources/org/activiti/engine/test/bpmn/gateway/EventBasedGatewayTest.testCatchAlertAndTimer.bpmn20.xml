@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+	xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+	xmlns:activiti="http://activiti.org/bpmn" 
+	targetNamespace="Examples">
+
+	<signal id="alertSignal" name="alert" />
+
+	<process id="catchSignal">
+	
+		<sequenceFlow sourceRef="timerEvent" targetRef="task1" />
+		<sequenceFlow sourceRef="signalEvent" targetRef="task2" />
+
+		<startEvent id="start" />
+
+		<sequenceFlow sourceRef="start" targetRef="gw1" />
+
+		<eventBasedGateway id="gw1" />
+		
+		<sequenceFlow sourceRef="gw1" targetRef="signalEvent" />		
+		<sequenceFlow sourceRef="gw1" targetRef="timerEvent" />
+
+		<intermediateCatchEvent id="signalEvent" name="Alert">
+			<signalEventDefinition signalRef="alertSignal" />
+		</intermediateCatchEvent>
+		
+		<intermediateCatchEvent id="timerEvent" name="Alert">
+			<timerEventDefinition>
+				<timeDuration>PT0S</timeDuration>
+			</timerEventDefinition>		
+		</intermediateCatchEvent>
+	
+		<userTask id="task1" name="afterTimer" activiti:assignee="kermit"/>
+		<userTask id="task2" name="afterSignal" activiti:assignee="kermit"/>
+		
+		
+		<sequenceFlow sourceRef="task1" targetRef="end" />
+		<sequenceFlow sourceRef="task2" targetRef="end" />
+
+		<endEvent id="end" />
+
+	</process>
+
+	
+
+</definitions>

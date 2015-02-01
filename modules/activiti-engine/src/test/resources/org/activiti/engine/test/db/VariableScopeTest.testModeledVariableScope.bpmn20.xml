@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples"
+  typeLanguage="http://www.w3.org/2001/XMLSchema">
+  
+  <process id="nestedSubProcess">
+    <dataObject id="dObj1" name="test" itemSubjectRef="xsd:string">
+      <extensionElements>
+        <activiti:value>test</activiti:value>
+      </extensionElements>
+	</dataObject>
+  
+    <startEvent id="theStart" />
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="subProcess1" />
+    
+    <subProcess id="subProcess1">    
+      <dataObject id="dObj2" name="test" itemSubjectRef="xsd:string">
+        <extensionElements>
+          <activiti:value>test2</activiti:value>
+        </extensionElements>
+	  </dataObject>      
+      
+      <startEvent id="subProcessStart" />
+      <sequenceFlow id="flow2" sourceRef="subProcessStart" targetRef="subProcess1Task" />
+      
+      <userTask id="subProcess1Task" name="Task in subprocess1" />
+      
+      <sequenceFlow id="flow3" sourceRef="subProcess1Task" targetRef="subProcess2" />
+      <sequenceFlow id="flow4" sourceRef="subProcess1Task" targetRef="subProcess3" />
+      
+      <subProcess id="subProcess2">
+        <dataObject id="dObj3" name="test" itemSubjectRef="xsd:string">
+          <extensionElements>
+            <activiti:value>test3</activiti:value>
+          </extensionElements>
+	    </dataObject>
+	      
+        <startEvent id="subProcess2Start" />
+        <sequenceFlow id="flow5" sourceRef="subProcess2Start" targetRef="subProcess2Task" />
+        <userTask id="subProcess2Task" name="Task in subprocess2" />
+        <sequenceFlow id="flow6" sourceRef="subProcess2Task" targetRef="subProcess2End" />
+        <endEvent id="subProcess2End" />        
+      </subProcess>
+
+      <subProcess id="subProcess3">
+        <dataObject id="dObj4" name="test" itemSubjectRef="xsd:string">
+          <extensionElements>
+            <activiti:value>test4</activiti:value>
+          </extensionElements>
+	    </dataObject>
+	      
+        <startEvent id="subProcess3Start" />
+        <sequenceFlow id="flow7" sourceRef="subProcess3Start" targetRef="subProcess3Task" />
+        <userTask id="subProcess3Task" name="Task in subprocess3" />
+        <sequenceFlow id="flow8" sourceRef="subProcess3Task" targetRef="subProcess3End" />
+        <endEvent id="subProcess3End" />        
+      </subProcess>
+      
+      <sequenceFlow id="flow9" sourceRef="subProcess2" targetRef="subProcess1End" />
+      <sequenceFlow id="flow10" sourceRef="subProcess3" targetRef="subProcess1End" />
+      
+      <endEvent id="subProcess1End" />
+    
+    </subProcess>    
+    
+    <sequenceFlow id="flow11" sourceRef="subProcess1" targetRef="theEnd" />
+    
+    <endEvent id="theEnd" />
+    
+  </process>
+
+</definitions>

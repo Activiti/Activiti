@@ -1,0 +1,2 @@
+body{width: expression(document.documentElement.clientWidth < 980 ? "980px" : "auto");}
+#wrapper{width: expression(document.documentElement.clientWidth > 1920 ? "1920px" : "auto");}

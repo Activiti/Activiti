@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definition" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples"> 
+ 
+ <process id="multiInstanceServiceTask" >
+    <startEvent id="startevent1" name="Start"></startEvent>
+    <sequenceFlow id="flow1" name="" sourceRef="startevent1" targetRef="servicetask1"></sequenceFlow>
+    <serviceTask id="servicetask1" name="Service Task" activiti:class="org.activiti.engine.test.bpmn.multiinstance.MultiInstanceDelegate">
+      <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="${items}" activiti:elementVariable="item">
+    </multiInstanceLoopCharacteristics>
+    </serviceTask>
+    <sequenceFlow id="flow2" name="" sourceRef="servicetask1" targetRef="wait"></sequenceFlow>
+    <receiveTask id="wait"></receiveTask>
+    <sequenceFlow id="flow3" name="" sourceRef="wait" targetRef="theEnd"></sequenceFlow>
+    <endEvent id="theEnd"></endEvent>
+  </process>
+  
+</definitions>

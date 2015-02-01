@@ -1,0 +1,2 @@
+# The LocalProcessEngineLookup implementation is enabled by default 
+org.activiti.cdi.impl.LocalProcessEngineLookup

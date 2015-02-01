@@ -1,0 +1,36 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="executionListenersProcess">
+  
+    <extensionElements>
+      <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne" event="start" />
+    </extensionElements>
+    
+    <startEvent id="theStart" />
+    
+    <sequenceFlow sourceRef="theStart" targetRef="firstTask" />
+    
+    <userTask id="firstTask" />
+    <sequenceFlow sourceRef="firstTask" targetRef="secondTask">
+       <extensionElements>
+        <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerTwo" />
+      </extensionElements>
+    </sequenceFlow>
+    
+    <userTask id="secondTask" >
+      <extensionElements>
+        <activiti:executionListener expression="${myPojo.myMethod(execution.eventName)}" event="end" />
+      </extensionElements>
+    </userTask>
+    <sequenceFlow sourceRef="secondTask" targetRef="thirdTask" />
+       
+    <userTask id="thirdTask" />
+    <sequenceFlow sourceRef="thirdTask" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+    
+  </process>
+</definitions>

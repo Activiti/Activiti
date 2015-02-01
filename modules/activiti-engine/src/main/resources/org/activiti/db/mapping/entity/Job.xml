@@ -1,0 +1,468 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+  
+<mapper namespace="org.activiti.engine.impl.persistence.entity.JobEntity">
+
+  <!-- JOB DELETE STATEMENTS-->
+
+  <delete id="deleteJob" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+    delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+  
+  <delete id="bulkDeleteJob" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_JOB where
+     <foreach item="job" collection="list" index="index" separator=" or ">
+        ID_ = #{job.id, jdbcType=VARCHAR}
+    </foreach> 
+  </delete>
+  
+  <delete id="deleteTimer" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+    delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+  
+  <delete id="bulkDeleteTimer" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_JOB where
+     <foreach item="job" collection="list" index="index" separator=" or ">
+        ID_ = #{job.id, jdbcType=VARCHAR}
+    </foreach> 
+  </delete>
+  
+  <delete id="deleteMessage" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+    delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
+  </delete>
+  
+  <delete id="bulkDeleteMessage" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_JOB where
+     <foreach item="job" collection="list" index="index" separator=" or ">
+        ID_ = #{job.id, jdbcType=VARCHAR}
+    </foreach> 
+  </delete>
+  
+  <!-- JOB UPDATE STATEMENTS -->
+  <update id="updateJobTenantIdForDeployment" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_JOB set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+        SELECT J.ID_ from ${prefix}ACT_RU_JOB J
+        inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_  = P.ID_
+        inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+        where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+      ) 
+  </update>
+  
+  <update id="updateJobLockForAllJobs" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_JOB set
+      LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+      LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP}
+    where
+      (RETRIES_ &gt; 0)
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{dueDate, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null)
+      
+	 <!--  and (
+	  	    (EXECUTION_ID_ is null)
+	  		or 
+	  		(PI.SUSPENSION_STATE_ = 1)
+      ) 
+        -->
+  </update>
+    
+  <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
+       Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
+  <update id="updateJobTenantIdForDeployment_mysql" parameterType="java.util.Map">
+    update ${prefix}ACT_RU_JOB set
+      TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
+    where
+      ID_ in (
+
+          SELECT tempTask.tempId
+          FROM (
+                SELECT J.ID_ as tempId
+                FROM  ${prefix}ACT_RU_JOB J
+                inner join ${prefix}ACT_RE_PROCDEF P on J.PROC_DEF_ID_  = P.ID_
+                inner join ${prefix}ACT_RE_DEPLOYMENT D on P.DEPLOYMENT_ID_ = D.ID_ 
+                where D.ID_ = #{deploymentId, jdbcType=VARCHAR}
+                
+        ) AS tempTask 
+
+    )
+  </update>
+  
+  <!-- JOB RESULTMAP (FOR TIMER AND MESSAGE) -->
+
+  <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.JobEntity">
+    <id property="id" column="ID_" jdbcType="VARCHAR" />
+    <result property="revision" column="REV_" jdbcType="INTEGER" />
+    <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
+    <result property="lockExpirationTime" column="LOCK_EXP_TIME_" jdbcType="TIMESTAMP" />
+    <result property="exclusive" column="EXCLUSIVE_" jdbcType="BOOLEAN" />
+    <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
+    <result property="processInstanceId" column="PROCESS_INSTANCE_ID_" jdbcType="VARCHAR" />
+    <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
+    <result property="retries" column="RETRIES_" jdbcType="INTEGER" />
+    <result property="exceptionByteArrayRef" column="EXCEPTION_STACK_ID_" typeHandler="ByteArrayRefTypeHandler" />
+    <result property="exceptionMessage" column="EXCEPTION_MSG_" jdbcType="VARCHAR" />
+    <result property="jobHandlerType" column="HANDLER_TYPE_" jdbcType="VARCHAR" />
+    <result property="jobHandlerConfiguration" column="HANDLER_CFG_" jdbcType="VARCHAR" />
+    <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
+    <discriminator javaType="string" column="TYPE_">
+      <case value="message" resultMap="messageResultMap"/> 
+      <case value="timer" resultMap="timerResultMap"/> 
+    </discriminator>
+  </resultMap>
+
+  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEntity" extends="jobResultMap"/>
+
+  <resultMap id="timerResultMap" type="org.activiti.engine.impl.persistence.entity.TimerEntity" extends="jobResultMap">
+    <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
+    <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <!-- JOB SELECT (FOR TIMER AND MESSAGE) -->  
+
+  <select id="selectJob" parameterType="string" resultMap="jobResultMap">
+    select * from ${prefix}ACT_RU_JOB where ID_ = #{id}
+  </select>
+
+  <select id="selectNextJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
+    select 
+    	RES.* ${limitBetween}    		
+    from ${prefix}ACT_RU_JOB RES    
+    	LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    where (RES.RETRIES_ &gt; 0)
+      and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+	    and (
+	  	    (RES.EXECUTION_ID_ is null)
+	  		  or 
+	  		  (PI.SUSPENSION_STATE_ = 1)
+      )  
+    ${limitAfter}	    
+  </select>
+  
+  <select id="selectNextTimerJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    ${limitBefore}
+    select 
+      RES.* ${limitBetween}       
+    from ${prefix}ACT_RU_JOB RES    
+      LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    where (RES.RETRIES_ &gt; 0)
+      and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and TYPE_ = 'timer'
+      and (
+          (RES.EXECUTION_ID_ is null)
+          or 
+          (PI.SUSPENSION_STATE_ = 1)
+      )  
+    ${limitAfter}     
+  </select>
+  
+  <select id="selectAsyncJobsDueToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    ${limitBefore}
+    select 
+      RES.* ${limitBetween}       
+    from ${prefix}ACT_RU_JOB RES    
+      LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    where RES.RETRIES_ &gt; 0
+      and RES.DUEDATE_ is not null
+      and RES.DUEDATE_ &lt;= #{parameter, jdbcType=TIMESTAMP}
+      and (RES.LOCK_EXP_TIME_ is null or RES.LOCK_EXP_TIME_ &lt;= #{parameter, jdbcType=TIMESTAMP})
+      and TYPE_ = 'message'
+      and (
+          (RES.EXECUTION_ID_ is null)
+          or 
+          (PI.SUSPENSION_STATE_ = 1)
+      )  
+    ${limitAfter}     
+  </select>
+  
+  <select id="selectJobsByLockOwner" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
+    select 
+    	RES.* ${limitBetween}    		
+    from ${prefix}ACT_RU_JOB RES    
+    where (RES.LOCK_OWNER_ = #{parameter, jdbcType=VARCHAR})
+    order by ID_ <!-- Need to have some definitive ordering to have a correct check in place during job fetching -->
+    ${limitAfter}	    
+  </select>   
+  
+  <select id="selectExclusiveJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
+    select RES.* ${limitBetween} 
+    from ${prefix}ACT_RU_JOB RES    
+    where (RETRIES_ &gt; 0)
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
+      and (EXCLUSIVE_ = TRUE)
+      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
+    ${limitAfter}
+  </select>
+  
+  <select id="selectExclusiveJobsToExecute_integerBoolean" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  	${limitBefore}
+    select RES.* ${limitBetween} 
+    from ${prefix}ACT_RU_JOB RES  
+    where (RETRIES_ &gt; 0)
+      and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
+      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
+      and (EXCLUSIVE_ = 1)
+      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
+    ${limitAfter}   
+  </select>
+  
+  <select id="selectJobsByConfiguration" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+      select * from ${prefix}ACT_RU_JOB
+      where HANDLER_TYPE_ = #{parameter.handlerType}
+      and HANDLER_CFG_ =  #{parameter.handlerConfiguration}
+  </select>
+
+  <select id="selectJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    select *
+    from ${prefix}ACT_RU_JOB J
+    where J.EXECUTION_ID_ = #{parameter}
+  </select>
+
+  <select id="selectJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
+  	${limitBefore}
+    select RES.* ${limitBetween}
+    <include refid="selectJobByQueryCriteriaSql"/>
+    ${orderBy}
+    ${limitAfter}
+  </select>
+
+  <select id="selectJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultType="long">
+    select count(distinct RES.ID_)
+    <include refid="selectJobByQueryCriteriaSql"/>
+  </select>
+  
+  <sql id="selectJobByQueryCriteriaSql">
+    from ${prefix}ACT_RU_JOB RES
+    <if test="executable">
+        LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    </if>
+    <where>
+      <if test="id != null">
+        RES.ID_ = #{id}
+      </if>
+      <if test="processInstanceId != null">
+        and RES.PROCESS_INSTANCE_ID_ = #{processInstanceId}
+      </if>
+      <if test="executionId != null">
+        and RES.EXECUTION_ID_ = #{executionId}
+      </if>
+      <if test="processDefinitionId != null">
+        and RES.PROC_DEF_ID_ = #{processDefinitionId}
+      </if>
+      <if test="retriesLeft">
+        and RES.RETRIES_ &gt; 0
+      </if>
+      <if test="noRetriesLeft">
+        and RES.RETRIES_ &lt;= 0
+      </if>
+      <if test="executable">
+        and (RES.RETRIES_ &gt; 0)
+        and (RES.DUEDATE_ is null or RES.DUEDATE_ &lt;= #{now, jdbcType=TIMESTAMP})
+        and (
+            (RES.EXECUTION_ID_ is null)
+            or 
+            (PI.SUSPENSION_STATE_ = 1)     
+      )
+      </if>
+      <if test="onlyTimers">
+        and RES.TYPE_ = 'timer'
+      </if>
+      <if test="onlyMessages">
+        and RES.TYPE_ = 'message'
+      </if>
+      <if test="duedateHigherThan != null">
+        and RES.DUEDATE_ &gt; #{duedateHigherThan}
+      </if>
+      <if test="duedateLowerThan != null">
+        and RES.DUEDATE_ &lt; #{duedateLowerThan}
+      </if>
+      <if test="duedateHigherThanOrEqual != null">
+        and RES.DUEDATE_ &gt;= #{duedateHigherThanOrEqual}
+      </if>
+      <if test="duedateLowerThanOrEqual != null">
+        and RES.DUEDATE_ &lt;= #{duedateLowerThanOrEqual}
+      </if>
+      <if test="withException">
+      	and (RES.EXCEPTION_MSG_ is not null or RES.EXCEPTION_STACK_ID_ is not null)
+      </if>
+      <if test="exceptionMessage">
+      	and RES.EXCEPTION_MSG_ = #{exceptionMessage}
+      </if>
+      <if test="tenantId != null">
+        and RES.TENANT_ID_ = #{tenantId}
+      </if>
+      <if test="tenantIdLike != null">
+        and RES.TENANT_ID_ like #{tenantIdLike}
+      </if>
+      <if test="withoutTenantId">
+        and (RES.TENANT_ID_ = '' or RES.TENANT_ID_ is null)
+      </if>
+    </where>
+  </sql>
+
+  <!-- TIMER INSERT -->
+  
+  <insert id="insertTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
+    insert into ${prefix}ACT_RU_JOB (
+            ID_, 
+            REV_,
+            TYPE_,
+            LOCK_OWNER_, 
+            LOCK_EXP_TIME_,
+            EXCLUSIVE_,
+            EXECUTION_ID_, 
+            PROCESS_INSTANCE_ID_,
+            PROC_DEF_ID_,
+            RETRIES_, 
+            EXCEPTION_STACK_ID_,
+            EXCEPTION_MSG_,
+            DUEDATE_,
+            REPEAT_,
+            HANDLER_TYPE_,
+            HANDLER_CFG_,
+            TENANT_ID_)
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            'timer',
+            #{lockOwner, jdbcType=VARCHAR},
+            #{lockExpirationTime, jdbcType=TIMESTAMP},
+            #{exclusive, jdbcType=BOOLEAN},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{retries, jdbcType=INTEGER},
+            #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+            #{exceptionMessage, jdbcType=VARCHAR},
+            #{duedate, jdbcType=TIMESTAMP},
+            #{repeat, jdbcType=VARCHAR},
+            #{jobHandlerType, jdbcType=VARCHAR},
+            #{jobHandlerConfiguration, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+    )
+  </insert>
+
+  <!-- TIMER UPDATE -->
+
+  <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
+    update ${prefix}ACT_RU_JOB
+    <set>
+       REV_ =  #{revisionNext, jdbcType=INTEGER},
+       LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
+       LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+       RETRIES_ = #{retries, jdbcType=INTEGER},
+       EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+       EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR},
+       DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+  
+  <!-- TIMER SELECT -->
+  
+  <select id="selectUnlockedTimersByDuedate" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    select RES.*
+    from ${prefix}ACT_RU_JOB RES
+    LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    where (RES.TYPE_ = 'timer')
+      and (RES.DUEDATE_ &lt; #{parameter, jdbcType=TIMESTAMP})
+      and (RES.LOCK_OWNER_ is null or RES.LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP})
+      and (RES.RETRIES_  &gt; 0)
+      and (
+        (RES.EXECUTION_ID_ is null)
+        or 
+        (PI.SUSPENSION_STATE_ = 1)    
+      )
+    order by DUEDATE_
+  </select>
+
+  <select id="selectUnlockedTimersByDuedate_oracle" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+          resultMap="jobResultMap">
+    select RES.*
+    from ${prefix}ACT_RU_JOB RES
+    LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
+    where (RES.TYPE_ = 'timer')
+    and (RES.DUEDATE_ &lt; #{parameter, jdbcType=TIMESTAMP})
+    and (NVL(RES.LOCK_OWNER_, 'UNDEF')='UNDEF' OR RES.LOCK_EXP_TIME_ &lt; #{parameter, jdbcType=TIMESTAMP})
+    and (RES.RETRIES_ &gt; 0)
+    and (NVL(RES.EXECUTION_ID_ , 'UNDEF')='UNDEF' OR
+         exists (select 1 from ${prefix}ACT_RU_EXECUTION PI where PI.ID_ =
+    RES.PROCESS_INSTANCE_ID_ and PI.SUSPENSION_STATE_ = 1)
+    )
+    order by DUEDATE_
+  </select>
+
+  <select id="selectTimersByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+    select * 
+    from ${prefix}ACT_RU_JOB 
+    where (RETRIES_ &gt; 0)
+      and (TYPE_ = 'timer')
+      and (EXECUTION_ID_ = #{parameter})
+  </select>
+  
+
+  <!-- MESSAGE INSERT -->
+
+  <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
+    insert into ${prefix}ACT_RU_JOB (
+            ID_, 
+            REV_, 
+            TYPE_,
+            LOCK_OWNER_, 
+            LOCK_EXP_TIME_,
+            EXCLUSIVE_,
+            EXECUTION_ID_, 
+            PROCESS_INSTANCE_ID_,
+            PROC_DEF_ID_,
+            DUEDATE_,
+            RETRIES_, 
+            EXCEPTION_STACK_ID_,
+            EXCEPTION_MSG_,
+            HANDLER_TYPE_,
+            HANDLER_CFG_,
+            TENANT_ID_)
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            'message',
+            #{lockOwner, jdbcType=VARCHAR},
+            #{lockExpirationTime, jdbcType=TIMESTAMP},
+            #{exclusive, jdbcType=BOOLEAN},
+            #{executionId, jdbcType=VARCHAR},
+            #{processInstanceId, jdbcType=VARCHAR},
+            #{processDefinitionId, jdbcType=VARCHAR},
+            #{duedate, jdbcType=TIMESTAMP},
+            #{retries, jdbcType=INTEGER},
+            #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+            #{exceptionMessage, jdbcType=VARCHAR},
+            #{jobHandlerType, jdbcType=VARCHAR},
+            #{jobHandlerConfiguration, jdbcType=VARCHAR},
+            #{tenantId, jdbcType=VARCHAR}
+    )
+  </insert>
+  
+  <!-- MESSAGE UPDATE -->
+  
+  <update id="updateMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
+    update ${prefix}ACT_RU_JOB
+    <set>
+       REV_ =  #{revisionNext, jdbcType=INTEGER},
+       LOCK_EXP_TIME_ = #{lockExpirationTime, jdbcType=TIMESTAMP},
+       LOCK_OWNER_ = #{lockOwner, jdbcType=VARCHAR},
+       RETRIES_ = #{retries, jdbcType=INTEGER},
+       EXCEPTION_STACK_ID_ = #{exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+       EXCEPTION_MSG_ = #{exceptionMessage, jdbcType=VARCHAR},
+       DUEDATE_ = #{duedate, jdbcType=TIMESTAMP}
+    </set>
+    where ID_= #{id, jdbcType=VARCHAR}
+      and REV_ = #{revision, jdbcType=INTEGER}
+  </update>
+
+</mapper>
