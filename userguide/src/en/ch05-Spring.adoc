@@ -736,7 +736,7 @@ This is a Spring repository, which offers CRUD out of the box. We add the method
 We now enhance our service further:
 
 * by adding _@Transactional_ to the class. Note that by adding the JPA dependency above, the DataSourceTransactionManager which we were using before is now automatically swapped out by a JpaTransactionManager. 
-* The _startProcess_ now gets and assignee username in, which is used to look up the Person, and put the Person JPA object as a process variable in the process instance.
+* The _startProcess_ now gets an assignee username in, which is used to look up the Person, and put the Person JPA object as a process variable in the process instance.
 * A method to create Dummy users is added. This is used in the CommandLineRunner to populate the database.
 
 [source,java,linenums]
