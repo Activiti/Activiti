@@ -650,9 +650,9 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     variableInstance.delete();
     variableInstance.setValue(null);
 
-    // Record historic variable
+    // Record historic variable deletion
     Context.getCommandContext().getHistoryManager()
-      .recordVariableUpdate(variableInstance);
+    	.recordVariableRemoved(variableInstance);
 
     // Record historic detail
     Context.getCommandContext().getHistoryManager()
