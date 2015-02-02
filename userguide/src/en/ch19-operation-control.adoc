@@ -11,7 +11,7 @@
 ==== Introduction
 
 
-It is possible to connect to activiti engine using standard Java Management Extensions (JMX) technology in order to get information or to change its behavior. Any standard JMX client can be used for that purpose. Enabling and disabling Job Executor, deploy new process definition files and deleting them are just samples of what could be done using JMX without writing a single line of code.
+It is possible to connect to Activiti engine using standard Java Management Extensions (JMX) technology in order to get information or to change its behavior. Any standard JMX client can be used for that purpose. Enabling and disabling Job Executor, deploy new process definition files and deleting them are just samples of what could be done using JMX without writing a single line of code.
       
 
 [[jmxQuickStart]]
@@ -30,7 +30,7 @@ By default JMX is not enabled. To enable JMX in its default configuration, it is
 </dependency>                    
 ----
 
-After adding the dependency and building process engine, JMX connection is ready to be used. Just run jconsole available in standard JDK distribution. In list of local processes, you will see JVM containing activiti. If for any reason the proper JVM is not listed in "local processes" section, try connecting to it using this URL in "Remote Process" section:
+After adding the dependency and building process engine, the JMX connection is ready to be used. Just run jconsole available in a standard JDK distribution. In the list of local processes, you will see the JVM containing Activiti. If for any reason the proper JVM is not listed in "local processes" section, try connecting to it using this URL in "Remote Process" section:
         
 
 ----

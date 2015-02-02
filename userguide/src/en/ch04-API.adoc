@@ -242,7 +242,7 @@ Log.info("Number of process instances: " + runtimeService.createProcessInstanceQ
 ----
 
 
-[[api.services.tasls]]
+[[api.services.tasks]]
 
 
 ==== Completing tasks

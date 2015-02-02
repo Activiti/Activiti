@@ -2,7 +2,7 @@
 
 == Activiti Explorer
 
-Activiti Explorer is a web application that is included when you download Activiti from the Activiti website. The purpose of Explorer is not a finished, end-user ready application, but  rather to excercise and show the functionality of Activiti. As such, Explorer is meant as a demo, or maybe inspiration for people using Activiti in there own applications. Out of the box, Explorer  uses an in-memory database, but it is easy to switch to your own database (see the applicationContext files in the WEB-INF folder).
+Activiti Explorer is a web application that is included when you download Activiti from the Activiti website. The purpose of Explorer is not a finished, end-user ready application, but  rather to exercise and show the functionality of Activiti. As such, Explorer is meant as a demo, or maybe inspiration for people using Activiti in there own applications. Out of the box, Explorer  uses an in-memory database, but it is easy to switch to your own database (see the applicationContext files in the WEB-INF folder).
  
 After logging into the application, you will see three large icons that show the main capabilities.
 

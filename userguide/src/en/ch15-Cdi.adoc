@@ -2,7 +2,7 @@
 
 == CDI integration
 
-The activiti-cdi modules leverages both the configurability of activiti and the extensibility of cdi. The most prominent features of activiti-cdi are:
+The activiti-cdi modules leverages both the configurability of Activiti and the extensibility of cdi. The most prominent features of activiti-cdi are:
    
 * Support for @BusinessProcessScoped beans (Cdi beans the lifecycle of which is bound to a process instance),
 * A custom El-Resolver for resolving Cdi beans (including EJBs) from the process,
@@ -33,7 +33,7 @@ Activiti cdi uses a java.util.ServiceLoader SPI for resolving an instance of +or
     	
 [NOTE]
 ====
-If you do not provide a custom +org.activiti.cdi.spi.ProcessEngineLookup+ implementation, activiti will use the default +LocalProcessEngineLookup+ implementation. In that case, all you need to do is providing a activiti.cfg.xml file on the classpath (see next section).
+If you do not provide a custom +org.activiti.cdi.spi.ProcessEngineLookup+ implementation, Activiti will use the default +LocalProcessEngineLookup+ implementation. In that case, all you need to do is providing a activiti.cfg.xml file on the classpath (see next section).
 ====
 
 
@@ -43,8 +43,8 @@ Configuration depends on the selected ProcessEngineLookup-Strategy (cf. previous
 
 Activiti offers different ProcessEngineConfiguration implementations mostly dependent on the underlying transaction management strategy. The activiti-cdi module is not concerned with transactions, which means that potentially any transaction management strategy  can be used (even the Spring transaction abstraction). As a convenience, the cdi-module provides two custom ProcessEngineConfiguration implementations: 
      	
-* ++org.activiti.cdi.CdiJtaProcessEngineConfiguration++: a subclass of the activiti JtaProcessEngineConfiguration,  can be used if JTA-managed transactions should be used for activiti
-* ++org.activiti.cdi.CdiStandaloneProcessEngineConfiguration++: a subclass of the activiti StandaloneProcessEngineConfiguration,  can be used if plain JDBC transactions should be used for activiti The following is an example activiti.cfg.xml file for JBoss 7:
+* ++org.activiti.cdi.CdiJtaProcessEngineConfiguration++: a subclass of the activiti JtaProcessEngineConfiguration,  can be used if JTA-managed transactions should be used for Activiti
+* ++org.activiti.cdi.CdiStandaloneProcessEngineConfiguration++: a subclass of the activiti StandaloneProcessEngineConfiguration,  can be used if plain JDBC transactions should be used for Activiti. The following is an example activiti.cfg.xml file for JBoss 7:
      
 [source,xml,linenums]
 ----
@@ -132,7 +132,7 @@ Processes can be deployed using standard activiti-api (++RepositoryService++). I
      
 ===Contextual Process Execution with CDI
 
-In this section we briefly look at the contextual process execution model used by the activiti cdi extension. A BPMN business process is typically a long-running interaction, comprised of both user and system tasks. At runtime, a process is split-up into a set of individual units of work, performed by users and/or  application logic. In activiti-cdi, a process instance can be associated with a cdi scope, the association representing a  unit of work. This is particularly useful, if a unit of work is complex, for instance if the implementation of  a UserTask is a complex sequence of different forms and "non-process-scoped" state needs to be kept during this interaction.    
+In this section we briefly look at the contextual process execution model used by the Activiti cdi extension. A BPMN business process is typically a long-running interaction, comprised of both user and system tasks. At runtime, a process is split-up into a set of individual units of work, performed by users and/or  application logic. In activiti-cdi, a process instance can be associated with a cdi scope, the association representing a  unit of work. This is particularly useful, if a unit of work is complex, for instance if the implementation of  a UserTask is a complex sequence of different forms and "non-process-scoped" state needs to be kept during this interaction.
 
 In the default configuration, process instances are associated with the "broadest" active scope, starting with  the conversation and falling back to the request if the conversation context is not active.	 
 
@@ -140,11 +140,11 @@ In the default configuration, process instances are associated with the "broades
 	
 When resolving @BusinessProcessScoped beans, or injecting process variables, we rely on an existing association  between an active cdi scope and a process instance. Activiti-cdi provides the +org.activiti.cdi.BusinessProcess+ bean  for controlling the association, most prominently:
 		
-* the _startProcessBy(...)_ methods, mirroring the respective methods exposed by the activiti +RuntimeService+ allowing to start and subsequently associating a business process,
+* the _startProcessBy(...)_ methods, mirroring the respective methods exposed by the Activiti +RuntimeService+ allowing to start and subsequently associating a business process,
 * +resumeProcessById(String processInstanceId)+, allowing to associate the process instance with the provided id,
 * +resumeTaskById(String taskId)+, allowing to associate the task with the provided id (and by extension, the corresponding process instance),		  
 
-Once a unit of work (for example a UserTask) is completed, the +completeTask()+ method can be called to disassociate the  conversation/request from the process instance. This signals activiti that the current task is completed and makes  the process instance proceed. 
+Once a unit of work (for example a UserTask) is completed, the +completeTask()+ method can be called to disassociate the  conversation/request from the process instance. This signals Activiti that the current task is completed and makes  the process instance proceed.
 
 Note that the ++BusinessProcess++-bean is a +@Named+ bean, which means that the exposed methods can  be invoked using expression language, for example from a JSF page. The following JSF2 snippet begins a new conversation and associates it  with a user task instance, the id of which is passed as a request parameter (e.g. ++pageName.jsf?taskId=XX++):
 
@@ -169,7 +169,7 @@ public String submitRequest(BusinessTripRequest request) {
 }			
 ----
 
-Depending on the configuration of activiti, the code of the annotated method and the starting of the  process instance will be combined in the same transaction. The ++@org.activiti.cdi.annotation.CompleteTask++-annotation works in the same way:
+Depending on the configuration of Activiti, the code of the annotated method and the starting of the  process instance will be combined in the same transaction. The ++@org.activiti.cdi.annotation.CompleteTask++-annotation works in the same way:
 
 [source,java,linenums]
 ----
@@ -180,12 +180,12 @@ public String authorizeBusinessTrip() {
 }
 ----
 
-The ++@CompleteTask++ annotation offers the possibility to end the current conversation. The  default behavior is to end the conversation after the call to activiti returns. Ending the conversation can be disabled,  as shown in the example above.  	
+The ++@CompleteTask++ annotation offers the possibility to end the current conversation. The  default behavior is to end the conversation after the call to Activiti returns. Ending the conversation can be disabled,  as shown in the example above.
 
 
 ==== Referencing Beans from the Process
 
-Activiti-cdi exposes CDI beans to activiti El, using a custom resolver. This makes it possible to reference beans from the process:
+Activiti-cdi exposes CDI beans to Activiti El, using a custom resolver. This makes it possible to reference beans from the process:
 
 [source,xml,linenums]
 ----
@@ -257,7 +257,7 @@ In order to reference process variables using EL, we have similar options:
 
 <<experimental,[EXPERIMENTAL]>>
 
-Activiti can be hooked-up to the CDI event-bus. This allows us to be notified of process events using standard CDI event mechanisms.  In order to enable CDI event support for activiti, enable the corresponding parse listener in the configuration:
+Activiti can be hooked-up to the CDI event-bus. This allows us to be notified of process events using standard CDI event mechanisms.  In order to enable CDI event support for Activiti, enable the corresponding parse listener in the configuration:
 
 [source,xml,linenums]
 ----
@@ -269,7 +269,7 @@ Activiti can be hooked-up to the CDI event-bus. This allows us to be notified of
 ----
 
 
-Now activiti is configured for publishing events using the CDI event bus. The following gives an overview of how process events can be received in CDI beans. In CDI, we can declaratively specify event observers using the ++@Observes++-annotation. Event notification is type-safe. The type of 
+Now Activiti is configured for publishing events using the CDI event bus. The following gives an overview of how process events can be received in CDI beans. In CDI, we can declaratively specify event observers using the ++@Observes++-annotation. Event notification is type-safe. The type of
 process events is ++org.activiti.cdi.BusinessProcessEvent++.
 The following is an example of a simple event observer method:
 
