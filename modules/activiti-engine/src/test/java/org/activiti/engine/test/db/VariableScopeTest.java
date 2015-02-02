@@ -231,9 +231,8 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
-  public void testGetVariableLocal()
-  {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("getVariableLocal", (Map)null);
+  public void testGetVariableLocal() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("getVariableLocal");
     String variableName = "Variable-That-Does-Not-Exist";
     Object value = runtimeService.getVariableLocal(pi.getId(), variableName);
     assertNull(value);
