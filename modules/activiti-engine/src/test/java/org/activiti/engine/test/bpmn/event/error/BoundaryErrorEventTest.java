@@ -12,10 +12,6 @@
  */
 package org.activiti.engine.test.bpmn.event.error;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.history.HistoricProcessInstance;
@@ -24,6 +20,10 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -369,11 +369,19 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   }
 
   @Deployment(resources = {
-          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnScriptTask.bpmn20.xml"
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnGroovyScriptTask.bpmn20.xml"
   })
-  public void testCatchErrorOnScriptTask() {
+  public void testCatchErrorOnGroovyScriptTask() {
       String procId = runtimeService.startProcessInstanceByKey("catchErrorOnScriptTask").getId();
       assertProcessEnded(procId);
+  }
+
+  @Deployment(resources = {
+      "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnJavaScriptScriptTask.bpmn20.xml"
+  })
+  public void testCatchErrorOnJavaScriptScriptTask() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorOnScriptTask").getId();
+    assertProcessEnded(procId);
   }
 
   @Deployment(resources = {
