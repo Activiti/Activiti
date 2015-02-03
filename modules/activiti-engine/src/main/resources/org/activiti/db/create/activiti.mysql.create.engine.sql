@@ -156,8 +156,8 @@ create table ACT_RU_VARIABLE (
     BYTEARRAY_ID_ varchar(64),
     DOUBLE_ double,
     LONG_ bigint,
-    TEXT_ varchar(4000),
-    TEXT2_ varchar(4000),
+    TEXT_ text,
+    TEXT2_ text,
     primary key (ID_)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
