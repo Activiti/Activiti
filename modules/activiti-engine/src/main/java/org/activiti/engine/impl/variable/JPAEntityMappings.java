@@ -17,11 +17,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
 import javax.persistence.EntityManager;
@@ -139,7 +139,7 @@ public class JPAEntityMappings {
     return entity;
   }
 
-  public List<Object> getJPAEntities(String className, Set<String> ids) {
+  public List<Object> getJPAEntities(String className, Collection<String> ids) {
     if(ids == null || ids.isEmpty()) {
       return Collections.emptyList();
     }
@@ -156,13 +156,12 @@ public class JPAEntityMappings {
             .getSession(EntityManagerSession.class)
             .getEntityManager();
 
-
     List<Object> params = new ArrayList<Object>();
     for (String id : ids) {
       params.add(createId(metaData, id));
     }
 
-    String jpql = String.format("from %s where %s in :ids", className, metaData.getIdPropertyName());
+    String jpql = String.format("select e from %s e where e.%s in (:ids)", className, metaData.getIdPropertyName());
     Query query = em.createQuery(jpql);
     query.setParameter("ids", params);
 

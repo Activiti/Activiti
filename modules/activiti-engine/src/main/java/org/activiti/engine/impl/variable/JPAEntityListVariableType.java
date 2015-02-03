@@ -7,9 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -116,23 +114,23 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
     if(valueFields.getTextValue() != null && bytes != null) {
       String entityClass = valueFields.getTextValue();
 
-      Set<String> ids = new HashSet<String>();
-      ids.addAll(Arrays.asList(deserializeIds(bytes)));
+      List<String> ids = Arrays.asList(deserializeIds(bytes));
 
       // fetch JPA entities in batch
-      List<Object> result = mappings.getJPAEntities(entityClass, ids);
+      List entities = mappings.getJPAEntities(entityClass, ids);
 
-      // test if all entities with given ids have been found
-      ///if(ids.size() != result.size()) {
-      ///  throw new ActivitiException("Entity does not exist: " + entityClass + " - " + id);
-      ///}
-      for (Object entity : result) {
-        String id = mappings.getJPAIdString(entity);
-        if(!ids.contains(id)) {
-          throw new ActivitiException("Entity does not exist: " + entityClass + " - " + id);
+      // test that all entities have been found
+      List result = new ArrayList();
+      outer: for (String id : ids) {
+        for (Object entity : entities) {
+          String entityId = mappings.getJPAIdString(entity);
+          if(id.equals(entityId)) {
+            result.add(entity);
+            continue outer;
+          }
         }
+        throw new ActivitiException("Entity does not exist: " + entityClass + " - " + id);
       }
-      
       return result;
     }
     return null;
