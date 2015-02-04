@@ -369,11 +369,19 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   }
 
   @Deployment(resources = {
-          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnScriptTask.bpmn20.xml"
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnGroovyScriptTask.bpmn20.xml"
   })
-  public void testCatchErrorOnScriptTask() {
+  public void testCatchErrorOnGroovyScriptTask() {
       String procId = runtimeService.startProcessInstanceByKey("catchErrorOnScriptTask").getId();
       assertProcessEnded(procId);
+  }
+  
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnJavaScriptScriptTask.bpmn20.xml"
+  })
+  public void testCatchErrorOnJavaScriptScriptTask() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorOnScriptTask").getId();
+    assertProcessEnded(procId);
   }
 
   @Deployment(resources = {
