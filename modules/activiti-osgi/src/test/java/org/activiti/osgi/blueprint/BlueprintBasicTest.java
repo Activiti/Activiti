@@ -36,6 +36,7 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.osgi.blueprint.bean.ActivityBehaviourBean;
 import org.activiti.osgi.blueprint.bean.SimpleBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -141,6 +142,7 @@ public class BlueprintBasicTest {
           .bundle()
           .add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/task/context.xml")))
           .add(SimpleBean.class)
+          .add(ActivityBehaviourBean.class)
           .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.task")
           .set(Constants.DYNAMICIMPORT_PACKAGE, "*")
           .build();
@@ -173,5 +175,10 @@ public class BlueprintBasicTest {
         .variableName("visited")
         .singleResult();
     assertTrue((Boolean) variable.getValue());
+    HistoricVariableInstance activityBehaviourVisited = historyService.createHistoricVariableInstanceQuery()
+            .processInstanceId(processInstance.getId())
+            .variableName("visitedActivityBehaviour")
+            .singleResult();
+    assertTrue((Boolean) activityBehaviourVisited.getValue());
   }
 }

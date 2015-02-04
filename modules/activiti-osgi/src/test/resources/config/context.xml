@@ -39,6 +39,11 @@
       
       <reference-listener ref="blueprintELResolver" bind-method="bindService" unbind-method="unbindService"/>
   </reference-list>
+  <reference-list id="activityProvidersActivityBehaviour" availability="optional"
+                  interface="org.activiti.engine.impl.pvm.delegate.ActivityBehavior"
+                  activation="eager">
+    <reference-listener ref="blueprintELResolver" bind-method="bindActivityBehaviourService" unbind-method="unbindActivityBehaviourService"/>
+  </reference-list>
   
   <bean id="blueprintELResolver" class="org.activiti.osgi.blueprint.BlueprintELResolver" />
   
