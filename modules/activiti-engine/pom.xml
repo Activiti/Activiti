@@ -797,8 +797,8 @@
       </activation>
       <dependencies>
         <dependency>
-          <groupId>com.oracle.jdbc</groupId>
-          <artifactId>ojdbc5</artifactId>
+          <groupId>com.oracle.ojdbc6</groupId>
+          <artifactId>ojdbc6</artifactId>
           <scope>test</scope>
         </dependency>
       </dependencies>

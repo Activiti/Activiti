@@ -17,8 +17,8 @@
       <version>1.2.132</version>
     </dependency>
     <dependency>
-      <groupId>com.oracle.jdbc</groupId>
-      <artifactId>ojdbc5</artifactId>
+      <groupId>com.oracle.ojdbc6</groupId>
+      <artifactId>ojdbc6</artifactId>
       <version>11.2.0.1.0</version>
     </dependency>
     <dependency>
