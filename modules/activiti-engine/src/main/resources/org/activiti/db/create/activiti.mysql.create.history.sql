@@ -70,8 +70,8 @@ create table ACT_HI_VARINST (
     BYTEARRAY_ID_ varchar(64),
     DOUBLE_ double,
     LONG_ bigint,
-    TEXT_ varchar(4000),
-    TEXT2_ varchar(4000),
+    TEXT_ text,
+    TEXT2_ text,
     CREATE_TIME_ datetime(3),
     LAST_UPDATED_TIME_ datetime(3),
     primary key (ID_)
