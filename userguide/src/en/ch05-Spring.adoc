@@ -498,7 +498,7 @@ public DataSource database() {
 }
 ----
 
-Remove H2 from the Maven dependencies and add the Mysql driver and the Tomcat connection pooling to the classpath:
+Remove H2 from the Maven dependencies and add the MySQL driver and the Tomcat connection pooling to the classpath:
 
 [source,xml,linenums]
 ----

@@ -29,7 +29,7 @@ In case a job is found it will lock the job and execute it, which means a lot of
 ==== Advantages of the Async executor
 
 * Less database queries because asynchronous jobs are executed without polling the database
-* For non-exclusive jobs there's no chance to run into OptimisticLockingExeptions anymore
+* For non-exclusive jobs there's no chance to run into OptimisticLockingExceptions anymore
 * Exclusive jobs are now locked at process instance level instead of the cumbersome logic of queuing exclusive jobs in the Job Executor
 
 ==== Async executor configuration
@@ -548,7 +548,7 @@ If the platform on which Activiti runs does support it, do enable this feature.
 
 === Event logging (Experimental)
 
-As of Activiti version 5.16, an (experimental) event logging mechanism has been introduced. The logging mechanism builds upon the general-purpose <<eventDispatcher,event mechanism of the Activiti engine>> and is disabled by default. The idea is that the events originating from the engine are catched, and a map containing all the event data (and some more) is created and provided to an _org.activiti.engine.impl.event.logger.EventFlusher_ which will flush this data to somewhere else. By default, simple database-backed event handlers/flusher is used, which serializes the said map to JSON using Jackson and stores it in the database as a _EventLogEntryEntity_ instance.  The table required for this database logging is  created by default (called __$$ACT_EVT_LOG$$__). This table can be deleted if the event logging is not used.
+As of Activiti version 5.16, an (experimental) event logging mechanism has been introduced. The logging mechanism builds upon the general-purpose <<eventDispatcher,event mechanism of the Activiti engine>> and is disabled by default. The idea is that the events originating from the engine are caught, and a map containing all the event data (and some more) is created and provided to an _org.activiti.engine.impl.event.logger.EventFlusher_ which will flush this data to somewhere else. By default, simple database-backed event handlers/flusher is used, which serializes the said map to JSON using Jackson and stores it in the database as a _EventLogEntryEntity_ instance.  The table required for this database logging is  created by default (called __$$ACT_EVT_LOG$$__). This table can be deleted if the event logging is not used.
 
 To enable the database logger:
 
@@ -569,7 +569,7 @@ The EventLogger class can be subclassed. In particular, the _createEventFlusher(
 	   
 It is easy to see how this table data can now be used to feed the JSON into a big data NoSQL store such as MongDb, Elastic Search, etc. It is also easy to see that the classes used here (org.activiti.engine.impl.event.logger.EventLogger/EventFlusher and many EventHandler classes) are pluggable and can be tweaked to your own use case (eg not storing the JSON in the database, but firing it straight onto a queue or big data store).
 	   
-Note that this event logging mechanism is additional to the 'traditional' history manager of Activiti. Altough all the data is in the database tables,
+Note that this event logging mechanism is additional to the 'traditional' history manager of Activiti. Although all the data is in the database tables,
 it is not optimized for querying nor for easy retrieval. The real use case is audit trailing and feeding it into a big data store.  
 	   
 

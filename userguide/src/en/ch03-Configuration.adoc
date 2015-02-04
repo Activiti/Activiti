@@ -244,7 +244,7 @@ As an optional step, you can now delete the unused db.properties files in both t
 
 Configuration of the JNDI datasource will differ depending on what servlet container application you are using. The instructions below will work for Tomcat, but for other container applications, please refer to the documentation for your container app.
 
-If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for Activiti Explorer this will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-explorer.war). The default context is copied from the Activiti war file when the application is first deployed, so if it already exists, you will need to replace it. To change the JNDI resource so that the application connects to MySql instead of H2, for example, change the file to the following:
+If using Tomcat, the JNDI resource is configured within $CATALINA_BASE/conf/[enginename]/[hostname]/[warname].xml (for Activiti Explorer this will usually be $CATALINA_BASE/conf/Catalina/localhost/activiti-explorer.war). The default context is copied from the Activiti war file when the application is first deployed, so if it already exists, you will need to replace it. To change the JNDI resource so that the application connects to MySQL instead of H2, for example, change the file to the following:
 
 [source,xml,linenums]
 ----
@@ -362,7 +362,7 @@ To upgrade, you have to start with putting the following configuration property 
 </beans>
 ----
 
-*Also, include a suitable database driver for your database to the classpath.* pgrade the Activiti libraries in your application. Or start up a new version of Activiti and point it to a database that contains an older version.  With +databaseSchemaUpdate+ set to +true+, Activiti will automatically upgrade the DB schema to the newer version the first time when it notices that libraries and DB schema are out of sync.
+*Also, include a suitable database driver for your database to the classpath.* Upgrade the Activiti libraries in your application. Or start up a new version of Activiti and point it to a database that contains an older version.  With +databaseSchemaUpdate+ set to +true+, Activiti will automatically upgrade the DB schema to the newer version the first time when it notices that libraries and DB schema are out of sync.
 
 *As an alternative you can also run the upgrade DDL statements.* It's also possible to run the upgrade database scripts, available on the Activiti downloads page.
 
@@ -518,7 +518,7 @@ Example when using Maven (version omitted):
 === Mapped Diagnostic Contexts
 
 
-As of version 5.13, activiti supports Mapped Diagnostic Contexts feature of sl4j. These basic information are passed to the underlying logger along with what is going to be logged:
+As of version 5.13, Activiti supports Mapped Diagnostic Contexts feature of sl4j. These basic information are passed to the underlying logger along with what is going to be logged:
 
 * processDefinition Id as mdcProcessDefinitionID
 * processInstance Id as mdcProcessInstanceID
@@ -587,7 +587,7 @@ public class MyEventListener implements ActivitiEventListener {
 
 The +isFailOnException()+ method determines the behaviour in case the +onEvent(..)+ method throws an exception when an event is dispatched. In case +false+ is returned, the exception is ignored. When +true+ is returned, the exception is not ignored and bubbles up, effectively failing the current ongoing command. In case the event was part of an API-call (or any other transactional operation, eg. job-execution), the transaction will be rolled back. In case the behaviour in the event-listener is not business-critical, it's recommended to return +false+.
 
-There are a few base implementations provided by activiti to facilitate common usecases of event-listeners. These can be used as base-class or as an example listener implementation:
+There are a few base implementations provided by Activiti to facilitate common usecases of event-listeners. These can be used as base-class or as an example listener implementation:
 
 * *org.activiti.engine.delegate.event.BaseEntityEventListener*: An event-listener base-class that can be used to listen for entity-related events for a specific type of entity or for all entities. It hides away the type-checking and offers 4 methods that should be overridden: +onCreate(..)+, +onUpdate(..)+ and +onDelete(..)+ when an entity is created, updated or deleted. For all other entity-related events, the ++onEntityEvent(..)++is called.
 
@@ -734,7 +734,7 @@ Supported values for the +entityType+ are: +attachment+, +comment+, +execution+,
 <<experimental, [EXPERIMENTAL] >>
 
 
-Another way of handling events being dispatched is to throw a BPMN event. Please bare in mind that it only makes sense to throw BPMN-events with certain kinds of activiti event types. For example, throwing a BPMN event when the process-instance is deleted will result in an error. The snippet below shows how to throw a signal inside process-instance, throw a signal to an external process (global), throw a message-event inside the process-instance and throw an error-event inside the process-instance. Instead of using the +class+ or +delegateExpression+, the attribute +throwEvent+ is used, along with an additional attribute, specific to the type of event being thrown.
+Another way of handling events being dispatched is to throw a BPMN event. Please bare in mind that it only makes sense to throw BPMN-events with certain kinds of Activiti event types. For example, throwing a BPMN event when the process-instance is deleted will result in an error. The snippet below shows how to throw a signal inside process-instance, throw a signal to an external process (global), throw a message-event inside the process-instance and throw an error-event inside the process-instance. Instead of using the +class+ or +delegateExpression+, the attribute +throwEvent+ is used, along with an additional attribute, specific to the type of event being thrown.
 
 [source,xml,linenums]
 ----
@@ -781,7 +781,7 @@ If additional logic is needed to decide whether or not to throw the BPMN-event, 
 * Event-listeners can only be declared on the +process+ element, as a child-element of the +extensionElements+. Listeners cannot be defined on individual activities in the process.
 * Expressions used in the +delegateExpression+ do not have access to the execution-context, as other expressions (eg. in gateways) have. They can only reference beans defined in the +beans+ property of the process engine configuration or when using spring (and the beans property is absent) to any spring-bean that implements the listener interface.
 * When using the +class+ attribute of a listener, there will only be a single instance of that class created. Make sure the listener implementations do not rely on member-fields or ensure safe usage from multiple threads/contexts.
-* When an illegal event-type is used in the +events+ attribute or illegal +throwEvent+ value is used, an exception will be thrown when the process-definition is deployed (effectively failing the deployment). When an illegal value for +class+ or +delegateExecution+ is supplied (either unexisting class, unexisting bean referenced or delegate not implementing listener interface), an exception will be thrown when the process is started (or when the first valid event for that process-definition is dispatched to the listener). Make sure the referenced classes are on the classpath and that the expressions resolve to a valid instance.
+* When an illegal event-type is used in the +events+ attribute or illegal +throwEvent+ value is used, an exception will be thrown when the process-definition is deployed (effectively failing the deployment). When an illegal value for +class+ or +delegateExecution+ is supplied (either a nonexistent class, a nonexistent bean reference or a delegate not implementing listener interface), an exception will be thrown when the process is started (or when the first valid event for that process-definition is dispatched to the listener). Make sure the referenced classes are on the classpath and that the expressions resolve to a valid instance.
 
 
 [[eventDispatcherCustomEvents]]

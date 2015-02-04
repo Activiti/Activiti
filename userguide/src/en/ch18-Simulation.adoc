@@ -29,7 +29,7 @@ No need to:
 * create different reporting for simulation.
 * feed simulation engine with a lot of data.
 
-CrystalBall simulator is based on activiti. That's why it is easy to copy data and start simulation and be able to replay workflow behavior from the history.
+CrystalBall simulator is based on Activiti. That's why it is easy to copy data and start simulation and be able to replay workflow behavior from the history.
     
 
 [[crb-inside]]

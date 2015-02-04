@@ -288,7 +288,7 @@ A message event definition is declared using the +messageEventDefinition+ elemen
 ===== Throwing a Message Event
 
 
-As an embeddable process engine, activiti is not concerned with actually receiving a message. This would be environment dependent and entail platform-specific activities like connecting to a JMS (Java Messaging Service) Queue/Topic or processing a Webservice or REST request. The reception of messages is therefore something you have to implement as part of the application or infrastructure into which the process engine is embedded.
+As an embeddable process engine, Activiti is not concerned with actually receiving a message. This would be environment dependent and entail platform-specific activities like connecting to a JMS (Java Messaging Service) Queue/Topic or processing a Webservice or REST request. The reception of messages is therefore something you have to implement as part of the application or infrastructure into which the process engine is embedded.
 
 After you have received a message inside your application, you must decide what to do with it. If the message should trigger the start of a new process instance, choose between the following methods offered by the runtime service:
 
@@ -607,7 +607,7 @@ The XML representation of a message start event is the normal start event declar
 
 ===== Description
 
-A <<bpmnSignalEventDefinition,signal>> start event can be used to start a process instance using a named signal. The signal can be 'fired' from within a process instance using the intermediary signal throw event or through the API (__runtimService.signalEventReceivedXXX__ methods). In both cases, all process definitions that have a signal start event with the same name will be started.
+A <<bpmnSignalEventDefinition,signal>> start event can be used to start a process instance using a named signal. The signal can be 'fired' from within a process instance using the intermediary signal throw event or through the API (__runtimeService.signalEventReceivedXXX__ methods). In both cases, all process definitions that have a signal start event with the same name will be started.
 
 Note that in both cases, it is also possible to chose between a synchronous and asynchronous starting of the process instances.
 
@@ -1858,7 +1858,7 @@ A parallel gateway is visualized as a gateway (diamond shape) with the 'plus' sy
 
 image::images/bpmn.parallel.gateway.png[align="center"]
 
-[[bpmnParallelGatewayyXML]]
+[[bpmnParallelGatewayXML]]
 
 
 ===== XML representation
@@ -3404,7 +3404,7 @@ The process definition itself needs nothing else then the camel type definition 
 </camelContext>
 ----
 
-For more documentation about Camel routes you can look on the link:$$http://camel.apache.org/$$[Camel website]. The basic concepts are demonstrated through a few small samples here in this document. In the first sample, we will do the simplest form of Camel call from an activiti workflow. Let's call it SimpleCamelCall.
+For more documentation about Camel routes you can look on the link:$$http://camel.apache.org/$$[Camel website]. The basic concepts are demonstrated through a few small samples here in this document. In the first sample, we will do the simplest form of Camel call from an Activiti workflow. Let's call it SimpleCamelCall.
 
 If you want to define multiple Camel context beans and/or want to use a different bean name, this can be overridden on the Camel task definition like this:
 
@@ -3557,17 +3557,17 @@ the following table provides an overview of three available camel behaviours:
 |Behaviour|In Url|Description
 |CamelBehaviorDefaultImpl|copyVariablesToProperties|Copy Activiti variables as Camel properties
 |CamelBehaviorCamelBodyImpl|copyCamelBodyToBody|Copy only Activiti variable named "camelBody" as camel message body
-|CamelBehaviorBodyAsMapImpl|copyVariablesToBodyAsMap|Copy all the activiti variables in a map as Camel message body
+|CamelBehaviorBodyAsMapImpl|copyVariablesToBodyAsMap|Copy all the Activiti variables in a map as Camel message body
 
 |===============
 
 
-The above table explains how activiti variables are going to be transfered to Camel. The following table explains how the Camel variables are returned back to Activiti. This can only be configured in route URLs.
+The above table explains how Activiti variables are going to be transferred to Camel. The following table explains how the Camel variables are returned back to Activiti. This can only be configured in route URLs.
 
 [options="header"]
 |===============
 |Url|Description
-|Default|If Camel body is a map, copy each element as Activiti variable, otherwise copy the whole Camel body as "camelBody" activiti variable
+|Default|If Camel body is a map, copy each element as Activiti variable, otherwise copy the whole Camel body as "camelBody" Activiti variable
 |copyVariablesFromProperties|Copy Camel properties as Activiti variables of the same name
 |copyCamelBodyToBodyAsString|like default, but if camel Body is not a map, first convert it to String and then copy it in "camelBody"
 |copyVariablesFromHeader|Additionally copy camel headers to Activiti variables of the same names
@@ -3580,7 +3580,7 @@ The above table explains how activiti variables are going to be transfered to Ca
 
 ===== Asynchronous Ping Pong example
 
-Previous examples were all synchronous. The workflow stops, until the camel route is concluded and returned. In some cases, we might need the activiti workflow to continue. For such purposes the asynchronous capability of the Camel service task is useful. You can make use of this feature by setting the async property of the Camel service task to true.
+Previous examples were all synchronous. The workflow stops, until the camel route is concluded and returned. In some cases, we might need the Activiti workflow to continue. For such purposes the asynchronous capability of the Camel service task is useful. You can make use of this feature by setting the async property of the Camel service task to true.
 
 [source,xml,linenums]
 ----
@@ -3595,7 +3595,7 @@ By setting this feature the specified Camel route is activated asynchronously by
 <receiveTask id="receiveAsyncPing" name="Wait State" />
 ----
 
-The process instance will wait until a signal is received, for example from Camel. In Camel you can send a signal to the process instance by sending a message to the proper activiti endpoint.
+The process instance will wait until a signal is received, for example from Camel. In Camel you can send a signal to the process instance by sending a message to the proper Activiti endpoint.
 
 [source,java,linenums]
 ----
@@ -4063,7 +4063,7 @@ These values can be retrieved by calling the +execution.getVariable(x)+ method.
 
 Additionally, each of the created executions will have an execution-local variable (i.e. not visible for the other executions, and not stored on process instance level) :
 
-* *loopCounter*: indicates the _index in the for-each loop_ of that particular instance. loopCounter variable can be renamed by activiti *elementIndexVariable* attribute.
+* *loopCounter*: indicates the _index in the for-each loop_ of that particular instance. loopCounter variable can be renamed by Activiti *elementIndexVariable* attribute.
 
 
 [[bpmnMultiInstanceGraphicalNotation]]
