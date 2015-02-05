@@ -82,7 +82,7 @@ For each process definition in a business archive the following steps are perfor
 
 * The process definition +id+ attribute in the XML file is used as the process definition +key+ property.
 * The process definition +name+ attribute in the XML file is used as the process definition +name+ property. If the name attribute is not specified, then id attribute is used as the name.
-* The first time a process with a particular key is deployed, version 1 is assigned.  For all subsequent deployments of process definitions with the same key, the version will be set 1 higher then the maximum currently deployed version. The key property is used to distinguish process definitions.
+* The first time a process with a particular key is deployed, version 1 is assigned.  For all subsequent deployments of process definitions with the same key, the version will be set 1 higher than the maximum currently deployed version. The key property is used to distinguish process definitions.
 * The id property is set to {processDefinitionKey}:{processDefinitionVersion}:{generated-id}, where +generated-id+ is a unique number added to guarantee uniqueness of the process id for the process definition caches in a clustered environment.
 
 Take for example the following process

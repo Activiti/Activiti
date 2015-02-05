@@ -12,14 +12,14 @@ This chapter covers the BPMN 20 constructs supported by  Activiti as well as cus
 
 The BPMN 2.0 standard is a good thing for all parties involved. End-users don't suffer from a vendor lock-in that comes by depending on a proprietary solution. Frameworks, and particularly open-source frameworks such as Activiti, can implement a solution that has the same (and often better implemented ;-) features as those of a big vendor.  Due to the BPMN 2.0 standard, the transition from such a big vendor solution towards Activiti is an easy and smooth path.
 
-The downside of a standard however, is the fact that it is always the result of many discussions and compromises between different companies (and often visions). As a developer reading the BPMN 2.0 XML of a process definition, sometimes it feels like certain constructs or way to do things are too cumbersome. Since Activiti puts ease of development as a top-priority, we introduced something called the *'Activiti BPMN extensions'*. These 'extensions' are new constructs or ways to simplify certain constructs, that are not in the BPMN 2.0 specification.
+The downside of a standard however, is the fact that it is always the result of many discussions and compromises between different companies (and often visions). As a developer reading the BPMN 2.0 XML of a process definition, sometimes it feels like certain constructs or way to do things are too cumbersome. Since Activiti puts ease of development as a top-priority, we introduced something called the *'Activiti BPMN extensions'*. These 'extensions' are new constructs or ways to simplify certain constructs that are not in the BPMN 2.0 specification.
 
 Although the BPMN 2.0 specification clearly states that it was made for custom extension, we make sure that:
 
 * The prerequisite of such a custom extension is that there *always* must be a simple transformation to the *standard way of doing things*. So when you decide to use a custom extension, you don't have to be afraid  that there is no way back.
 * When using a custom extension, this is always clearly indicated by giving the new XML element, attribute, etc. the *activiti:* namespace prefix.
 
-So whether you want to use a custom extension or not, is completely up to you. Several factors will influence this decision (graphical editor usage, company policy, etc.). We only provide them since we believe that some points in the standard can be done simpler or more efficient. Feel free to give us (positive and/or negative) feedback on our extensions, or to post new ideas for custom extensions. Who knows, some day your idea might pop up in the specification!.
+So whether you want to use a custom extension or not, is completely up to you. Several factors will influence this decision (graphical editor usage, company policy, etc.). We only provide them since we believe that some points in the standard can be done simpler or more efficient. Feel free to give us (positive and/or negative) feedback on our extensions, or to post new ideas for custom extensions. Who knows, some day your idea might pop up in the specification!
 
 
 [[bpmnEvents]]
@@ -164,7 +164,7 @@ The ++signalEventDefinition++s reference the same +signal+ element.
 
 ===== Throwing a Signal Event
 
-A signal can either be thrown by a process instance using a bpmn construct or programmatically using java API. The following methods on the +org.activiti.engine.RuntimeService+ can be used to throw a signal programmatically:
+A signal can either be thrown by a process instance using a BPMN construct or programmatically using java API. The following methods on the +org.activiti.engine.RuntimeService+ can be used to throw a signal programmatically:
 
 [source,java,linenums]
 ----
@@ -387,7 +387,7 @@ try {
 
 ----
 
-This code is baked into the Activiti Explorer application.  So it works in combination with <<forms>>
+This code is baked into the Activiti Explorer application.  So it works in combination with <<forms>>.
 
 
 [[bpmnNoneStartEvent]]
@@ -485,7 +485,7 @@ image::images/bpmn.clock.start.event.png[align="center"]
 ===== XML representation
 
 
-The XML representation of a timer start event is the normal start event declaration, with timer definition sub-element. Please refer to <<timerEventDefinitions,timer definitions>> for configuration details. for details on configuration details.
+The XML representation of a timer start event is the normal start event declaration, with timer definition sub-element. Please refer to <<timerEventDefinitions,timer definitions>> for configuration details.
 
 
 Example: process will start 4 times, in 5 minute intervals, starting on 11th march 2011, 12:13
@@ -609,7 +609,7 @@ The XML representation of a message start event is the normal start event declar
 
 A <<bpmnSignalEventDefinition,signal>> start event can be used to start a process instance using a named signal. The signal can be 'fired' from within a process instance using the intermediary signal throw event or through the API (__runtimeService.signalEventReceivedXXX__ methods). In both cases, all process definitions that have a signal start event with the same name will be started.
 
-Note that in both cases, it is also possible to chose between a synchronous and asynchronous starting of the process instances.
+Note that in both cases, it is also possible to choose between a synchronous and asynchronous starting of the process instances.
 
 The +signalName+ that must be passed in the API is the name given in the +name+ attribute of the +signal+ element referenced by the +signalRef+ attribute of the +signalEventDefinition+.
 
@@ -671,7 +671,7 @@ An error start event is always interrupting.
 ===== Graphical notation
 
 
-A error start event is visualized as a circle with an error event symbol. The symbol is unfilled, to visualize the catching (receiving) behavior.
+An error start event is visualized as a circle with an error event symbol. The symbol is unfilled, to visualize the catching (receiving) behavior.
 
 image::images/bpmn.start.error.event.png[align="center"]
 
@@ -770,7 +770,7 @@ image::images/bpmn.error.end.event.png[align="center"]
 
 ===== XML representation
 
-And error end event is represented as an end event, with a _errorEventDefinition_ child element.
+And error end event is represented as an end event, with an _errorEventDefinition_ child element.
 
 [source,xml,linenums]
 ----
@@ -813,7 +813,7 @@ is equivalent with
 </endEvent>
 ----
 
-Note thate the _errorRef_ must comply with the BPMN 2.0 schema, and must be a valid QName.
+Note that the _errorRef_ must comply with the BPMN 2.0 schema, and must be a valid QName.
 
 [[bpmnCancelEndEvent]]
 
@@ -1043,7 +1043,7 @@ An attached intermediate _catching_ <<bpmnSignalEventDefinition,signal>> on the 
 
 *Note:* contrary to other events like the boundary error event, a boundary signal event does not only catch signal events thrown from the scope it is attached to. On the contrary, a signal event has global scope (broadcast semantics) meaning that the signal can be thrown from any place, even from a different process instance.
 
-*Note:* contrary to other events like an error event, a signal is not consumed if it is caught. If you have two active signal boundary events catching the same signal event, both boundary events are triggered, event if they are part of different process instances.
+*Note:* contrary to other events like an error event, a signal is not consumed if it is caught. If you have two active signal boundary events catching the same signal event, both boundary events are triggered, even if they are part of different process instances.
 
 
 [[bpmnBoundarySignalEventGraphicalNotation]]
@@ -1105,7 +1105,7 @@ A boundary message event is visualized as a typical intermediate event (Circle w
 
 image::images/bpmn.boundary.message.event.png[align="center"]
 
-Note that boundary message event can be both interrupting (right hand side) and non interrupting (left hand side).
+Note that boundary message event can be both interrupting (right hand side) and non-interrupting (left hand side).
 
 
 [[bpmnBoundaryMessageEventXml]]
@@ -1249,7 +1249,7 @@ Since the compensation boundary event is activated after the activity has comple
 ==== Intermediate Catching Events
 
 
-All intermediate catching events events are defined in the same way:
+All intermediate catching events are defined in the same way:
 
 [source,xml,linenums]
 ----
@@ -1282,7 +1282,7 @@ A timer intermediate event acts as a stopwatch. When an execution arrives in cat
 
 ===== Graphical Notation
 
-A timer intermediate event is visualized as a intermediate catching event, with the timer icon on the inside.
+A timer intermediate event is visualized as an intermediate catching event, with the timer icon on the inside.
 
 image::images/bpmn.intermediate.timer.event.png[align="center"]
 
@@ -1294,7 +1294,7 @@ image::images/bpmn.intermediate.timer.event.png[align="center"]
 ===== XML Representation
 
 
-A timer intermediate event is defined as a <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *timerEventDefinition* element.
+A timer intermediate event is defined as an <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *timerEventDefinition* element.
 
 [source,xml,linenums]
 ----
@@ -1320,10 +1320,11 @@ See <<timerEventDefinitions,timer event definitions>> for configuration details.
 
 An intermediate _catching_ <<bpmnSignalEventDefinition,signal>> event catches signals with the same signal name as the referenced signal definition.
 
-*Note:* contrary to other events like an error event, a signal is not consumed if it is caught. If you have two active signal boundary events catching the same signal event, both boundary events are triggered, event if they are part of different process instances.
+*Note:* contrary to other events like an error event, a signal is not consumed if it is caught. If you have two active signal boundary events catching the same signal event, both boundary events are triggered, even if they are part of different process instances.
 
 
 [[bpmnIntermediateSignalEventGraphicalNotation]]
+
 
 
 ===== Graphical notation
@@ -1339,7 +1340,7 @@ image::images/bpmn.intermediate.signal.catch.event.png[align="center"]
 ===== XML representation
 
 
-A signal intermediate event is defined as a <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
+A signal intermediate event is defined as an <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
 
 [source,xml,linenums]
 ----
@@ -1389,7 +1390,7 @@ image::images/bpmn.intermediate.message.catch.event.png[align="center"]
 
 ===== XML representation
 
-A message intermediate event is defined as a <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *messageEventDefinition* element.
+A message intermediate event is defined as an <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *messageEventDefinition* element.
 
 [source,xml,linenums]
 ----
@@ -1415,7 +1416,7 @@ See section on <<bpmnMessageEventDefinition,message event definitions>>.
 ==== Intermediate Throwing Event
 
 
-All intermediate throwing events events are defined in the same way:
+All intermediate throwing events are defined in the same way:
 
 [source,xml,linenums]
 ----
@@ -1438,7 +1439,7 @@ The following process diagram shows a simple example of an intermediate none eve
 
 image::images/bpmn.intermediate.none.event.png[align="center"]
 
-This can be a good hook to monitor some KPI's, basically by adding an <<#executionListeners,execution listener>>
+This can be a good hook to monitor some KPI's, basically by adding an <<executionListeners,execution listener>>.
 
 [source,xml,linenums]
 ----
@@ -1490,7 +1491,7 @@ image::images/bpmn.intermediate.signal.throw.event.png[align="center"]
 ===== XML representation
 
 
-A signal intermediate event is defined as a <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
+A signal intermediate event is defined as an <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
 
 [source,xml,linenums]
 ----
@@ -1545,7 +1546,7 @@ An intermediate _throwing_ compensation event can be used to trigger compensatio
 
 image::images/bpmn.throw.compensation.example1.png[align="center"]
 
-In this process we have two concurrent executions, one executing the embedded subprocess and one executing the "charge credit card" activity. Lets assume both executions are started and the first concurrent execution is waiting for a user to complete the "review bookings" task. The second execution performs the "charge credit card" activity and an error is thrown, which causes the "cancel reservations" event to trigger compensation. At this point the parallel subprocess is not yet completed which means that the compensation event is not propagated to the subprocess and thus the "cancel hotel reservation"  compensation handler is not executed. If the user task (and thus the embedded subprocess) completes before the "cancel reservations" is performed, compensation is propagated to the embedded subprocess.
+In this process we have two concurrent executions, one executing the embedded subprocess and one executing the "charge credit card" activity. Let's assume both executions are started and the first concurrent execution is waiting for a user to complete the "review bookings" task. The second execution performs the "charge credit card" activity and an error is thrown, which causes the "cancel reservations" event to trigger compensation. At this point the parallel subprocess is not yet completed which means that the compensation event is not propagated to the subprocess and thus the "cancel hotel reservation"  compensation handler is not executed. If the user task (and thus the embedded subprocess) completes before the "cancel reservations" is performed, compensation is propagated to the embedded subprocess.
 
 *Process variables:* When compensating an embedded subprocess, the execution used for executing the compensation handlers has access to the local process variables of the subprocess in the state they were in when the subprocess completed execution. To achieve this, a snapshot of the process variables associated with the scope execution (execution created for executing the subprocess) is taken. Form this, a couple of implications follow:
 
@@ -1577,7 +1578,7 @@ image::images/bpmn.intermediate.compensation.throw.event.png[align="center"]
 ===== Xml representation
 
 
-A compensation intermediate event is defined as a <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *compensateEventDefinition* element.
+A compensation intermediate event is defined as an <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *compensateEventDefinition* element.
 
 [source,xml,linenums]
 ----
@@ -2207,7 +2208,7 @@ task.getDescription()
 
 Each task has a field, indicating the due date of that task. The Query API can be used to query for tasks that are due on, before or after a certain date.
 
-There is an activity extension which allows you to specify an expression in your task-definition to set the initial due date of a task when it is created. The expression *should always resolve to a +java.util.Date+, +java.util.String (ISO8601 formatted)+, ISO8601 time-duration (eg. PT50M) or +null+*. For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task. In case a time-duration is used, the due-date is calculated based on the current time, incremented by the given period. For example, when "PT30M" is used as dueDate, the task is due in thirty minutes from now.
+There is an activity extension which allows you to specify an expression in your task-definition to set the initial due date of a task when it is created. The expression *should always resolve to a +java.util.Date+, +java.util.String (ISO8601 formatted)+, ISO8601 time-duration (e.g. PT50M) or +null+*. For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task. In case a time-duration is used, the due-date is calculated based on the current time, incremented by the given period. For example, when "PT30M" is used as dueDate, the task is due in thirty minutes from now.
 
 [source,xml,linenums]
 ----
@@ -2558,7 +2559,7 @@ All process variables that are accessible through the execution that arrives in 
 </script>
 ----
 
-It's also possible to set process variables in a script, simply by calling _execution.setVariable("variableName", variableValue)_. By default, no variables are stored automatically (*Note: before Activiti 5.12 this was the case!*). It is possible to automatically store any variable defined in the script (eg. __sum__ in the example above) by setting the property ++autoStoreVariables++ on the ++scriptTask++ to ++true++. However, *the best practice is not to do this and use an explicit execution.setVariable() call*, as on some recent versions of the JDK auto storing of variables does not work for some scripting languages. See link:$$http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/$$[this link] for more details.
+It's also possible to set process variables in a script, simply by calling _execution.setVariable("variableName", variableValue)_. By default, no variables are stored automatically (*Note: before Activiti 5.12 this was the case!*). It is possible to automatically store any variable defined in the script (e.g. __sum__ in the example above) by setting the property ++autoStoreVariables++ on the ++scriptTask++ to ++true++. However, *the best practice is not to do this and use an explicit execution.setVariable() call*, as on some recent versions of the JDK auto storing of variables does not work for some scripting languages. See link:$$http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/$$[this link] for more details.
 
 [source,xml,linenums]
 ----
@@ -2922,7 +2923,7 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 ===== Using an Activiti service from within a JavaDelegate
 
 
-For some use cases, it might be needed to use the Activiti services from within a Java service task (eg. starting a process instance through the RuntimeService, if the callActivity doesn't suit your needs). The _org.activiti.engine.delegate.DelegateExecution_ allows to easily use these services through the _org.activiti.engine.EngineServices_ interface:
+For some use cases, it might be needed to use the Activiti services from within a Java service task (e.g. starting a process instance through the RuntimeService, if the callActivity doesn't suit your needs). The _org.activiti.engine.delegate.DelegateExecution_ allows to easily use these services through the _org.activiti.engine.EngineServices_ interface:
 
 [source,java,linenums]
 ----
@@ -3797,7 +3798,7 @@ Execution listeners allow you to execute external Java code or evaluate an expre
 * Start and ending of an activity.
 * Start and ending of a gateway.
 * Start and ending of intermediate events.
-* Ending an start event or starting an end event.
+* Ending a start event or starting an end event.
 
 The following process definition contains 3 execution listeners:
 
@@ -4051,7 +4052,7 @@ A _multi-instance_ is a regular activity that has extra properties defined (so-c
 * <<bpmnSubProcess,(Embedded) Sub-Process>>
 * <<bpmnCallActivity,Call Activity>>
 
-A <<bpmnGateways,Gateway>> or <<bpmnEvents,Event>> can *not* become multi-instance.
+A <<bpmnGateways,Gateway>> or <<bpmnEvents,Event>> *cannot* become multi-instance.
 
 As required by the spec, each parent execution of the created executions for each instance will have following variables:
 
@@ -4231,7 +4232,7 @@ Sub-Processes have two major use cases:
 Using a Sub-Process does impose some constraints:
 
 * A Sub-Process can only have *one none start event*, no other start event types are allowed. A Sub-Process must *at least have one end event*. Note that the BPMN 2.0 specification allows to omit the start and end events in a Sub-Process, but the current Activiti implementation does not support this.
-* *Sequence flow can not cross Sub-Process boundaries.*
+* *Sequence flow cannot cross Sub-Process boundaries.*
 
 
 [[bpmnSubProcessGraphicalNotation]]
@@ -4403,7 +4404,7 @@ To sum it up: while ACID transactions offer a generic solution to such problems 
 
 * The BPMN specification requires that the process engine reacts to events issued by the underlying transaction protocol and for instance that a transaction is cancelled, if a cancel event occurs in the underlying protocol. As an embeddable engine, Activiti does currently not support this. (For some ramifications of this, see paragraph on consistency below.)
 
-*Consistency on top of ACID transactions and optimistic concurrency:* A bpmn transaction guarantees consistency in the sense that either all activities compete successfully, or if some activity cannot be performed, the effects of all other successful activities are compensated. So either way we end up in a consistent state. However, it is important to recognize that in Activiti, the consistency model for bpmn transactions is superposed on top of the consistency model for process execution. Activiti executes processes in a transactional way. Concurrency is addressed using optimistic locking. In Activiti, bpmn error, cancel and compensation events are built on top of the same acid transactions and optimistic locking. For example, a cancel end event can only trigger compensation if it is actually reached. It is not reached if some undeclared exception is thrown by a service task before. Or, the effects of a compensation handler can not be committed if some other participant in the underlying ACID transaction sets the transaction to the state rollback-only. Or, when two concurrent executions reach a cancel end event, compensation might be triggered twice and fail with an optimistic locking exception. All of this is to say that when implementing bpmn transactions in Activiti, the same set of rules apply as when implementing "ordinary" processes and subprocesses. So to effectively guarantee consistency, it is important to implement processes in a way that does take the optimistic, transactional execution model into consideration.
+*Consistency on top of ACID transactions and optimistic concurrency:* A bpmn transaction guarantees consistency in the sense that either all activities compete successfully, or if some activity cannot be performed, the effects of all other successful activities are compensated. So either way we end up in a consistent state. However, it is important to recognize that in Activiti, the consistency model for bpmn transactions is superposed on top of the consistency model for process execution. Activiti executes processes in a transactional way. Concurrency is addressed using optimistic locking. In Activiti, bpmn error, cancel and compensation events are built on top of the same acid transactions and optimistic locking. For example, a cancel end event can only trigger compensation if it is actually reached. It is not reached if some undeclared exception is thrown by a service task before. Or, the effects of a compensation handler cannot be committed if some other participant in the underlying ACID transaction sets the transaction to the state rollback-only. Or, when two concurrent executions reach a cancel end event, compensation might be triggered twice and fail with an optimistic locking exception. All of this is to say that when implementing bpmn transactions in Activiti, the same set of rules apply as when implementing "ordinary" processes and subprocesses. So to effectively guarantee consistency, it is important to implement processes in a way that does take the optimistic, transactional execution model into consideration.
 
 
 [[bpmnEventSubprocessGraphicalNotation]]

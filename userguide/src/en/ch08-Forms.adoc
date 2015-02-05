@@ -74,7 +74,7 @@ For example:
 
 * Form property +street+ will be mapped to Java bean property +street+ in process variable +address+ as a String.  And required="true" will throw an exception during the submit if the property is not provided.
 
-It's also possible to provide type meta data as part of the FormData that is returned from methods +StartFormData FormService.getStartFormData(String processDefinitionId)+ and +TaskFormdata FormService.getTaskFormData(String taskId)+
+It's also possible to provide type metadata as part of the FormData that is returned from methods +StartFormData FormService.getStartFormData(String processDefinitionId)+ and +TaskFormdata FormService.getTaskFormData(String taskId)+
 
 We support the following form property types:
 

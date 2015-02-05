@@ -99,7 +99,7 @@ ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationC
 	"org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml");
 ----
 
-or, since it is a test:
+or since it is a test:
 
 [source,java,linenums]
 ----
@@ -410,7 +410,7 @@ MyApplication                            : Started MyApplication in 2.019 second
 
 So by just adding the dependency to the classpath and using the _@EnableAutoConfiguration_ annotation a lot has happened behind the scenes:
 
-* A in-memory datasource is created automatically (since the H2 driver is on the classpath) and passed to the Activiti process engine configuration
+* An in-memory datasource is created automatically (since the H2 driver is on the classpath) and passed to the Activiti process engine configuration
 * An Activiti ProcessEngine bean is created and exposed
 * All the Activiti services are exposed as Spring beans
 * The Spring Job Executor is created
@@ -823,7 +823,7 @@ public class MyRestController {
     }
 ----
 
-And lastly, to try out the Spring-JPA-Activiti integration, we assigne the task using the id of the Person JPA object in the process definition:
+And lastly, to try out the Spring-JPA-Activiti integration, we assign the task using the id of the Person JPA object in the process definition:
 
 [source,xml,linenums]
 ----
@@ -850,7 +850,7 @@ Obviously there is a lot about Spring Boot that hasn't been touched yet, like ve
 
 * Actuator support
 * Spring Integration support
-* Rest Api integration: boot up the Activiti Rest api embedded within the Spring application
+* Rest API integration: boot up the Activiti Rest API embedded within the Spring application
 * Spring Security support
 
 All these areas are a first version at the moment, but they will evolved in the future further.
