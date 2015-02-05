@@ -84,7 +84,7 @@ In the following configuration listing, the DefaultAsyncJobExecutor is used with
 
 A BPMN 2.0 xml needs to be parsed to the Activiti internal model to be executed on the Activiti engine. This parsing happens during a deployment of the process or when a process is not found in memory, and the xml is fetched from the database. 
 
-For each of these processes, the +BpmnParser+ class creates a new +BpmnParse+ instance. This instance will be used as container for all things that are done during parsing. The parsing on itself is very simple: for each BPMN 2.0 element, there is a matching instance of the +org.activiti.engine.parse.BpmnParseHandler+ available in the engine. As such, the parser has a map which basically maps an BPMN 2.0 element class to an instance of +BpmnParseHandler+. By default, Activiti has +BpmnParseHandler+ instances to handle all supported elements and also uses it to attach execution listeners to steps of the process for creating the history.
+For each of these processes, the +BpmnParser+ class creates a new +BpmnParse+ instance. This instance will be used as container for all things that are done during parsing. The parsing on itself is very simple: for each BPMN 2.0 element, there is a matching instance of the +org.activiti.engine.parse.BpmnParseHandler+ available in the engine. As such, the parser has a map which basically maps a BPMN 2.0 element class to an instance of +BpmnParseHandler+. By default, Activiti has +BpmnParseHandler+ instances to handle all supported elements and also uses it to attach execution listeners to steps of the process for creating the history.
 
 It is possible to add custom instances of +org.activiti.engine.parse.BpmnParseHandler+ to the Activiti engine. An often seen use case is for example to add execution listeners to certain steps that fire events to some queue for event processing. The history handling is done in such a way internally in Activiti. To add such custom handlers, the Activiti configuration needs to be tweaked:
 	      
@@ -174,7 +174,7 @@ public class CustomUserTaskBpmnParseHandler extends ServiceTaskParseHandler {
 
 === UUID id generator for high concurrency
 
-In some (very) high concurrency load cases, the default id generator may cause exceptions due to not being able to fetch new id blocks quickly enough. Every process engine has one id generator. The default id generator reserves a block of id's in the database, such that no other engine will be able to use id's from the same block. During  engine operations, when the default id generator notices that the id block is used up, a new transaction is started to fetch a new block. In (very) limited use cases this can cause problems when there is a real high load. For most use cases the default id generator is more than sufficient. The default +org.activiti.engine.impl.db.DbIdGenerator+ also has a property +idBlockSize+ which can be configured to set the size of the reserved block of id's and to tweak the behavior of the id fetching. 
+In some (very) high concurrency load cases, the default id generator may cause exceptions due to not being able to fetch new id blocks quickly enough. Every process engine has one id generator. The default id generator reserves a block of ids in the database, such that no other engine will be able to use id's from the same block. During  engine operations, when the default id generator notices that the id block is used up, a new transaction is started to fetch a new block. In (very) limited use cases this can cause problems when there is a real high load. For most use cases the default id generator is more than sufficient. The default +org.activiti.engine.impl.db.DbIdGenerator+ also has a property +idBlockSize+ which can be configured to set the size of the reserved block of ids and to tweak the behavior of the id fetching.
 	   
 The alternative to the default id generator is the +org.activiti.engine.impl.persistence.StrongUuidGenerator+, which generates a unique link:$$http://en.wikipedia.org/wiki/Universally_unique_identifier$$[UUID] locally and uses that as identifier for all entities. Since the UUID is generated without the need for database access, it copes better with very high concurrency use cases. Do note that performance may differ from the default id generator (both positive and negative) depending on the machine.
 	   
@@ -212,7 +212,7 @@ Note that this is fundamentally different from a multi-instance setup, where an 
 	   
 Multitenancy in Activiti is mainly implemented around partitioning the data. It is important to  note that _Activiti does not enforce multi tenancy rules_. This means it will not verify when querying and using data whether the user doing the operation is belonging to the correct tenant. This should be done in the layer calling the Activiti engine. Activiti does make sure that tenant information can be stored and used when retrieving process data.
 	   
-When deploying process definition to the Activiti Process Engine it is possible to pass a _tenant identifier_. This is a string (eg. a UUID, department id, etc.), limited to 256 characters which is uniquely identifies the tenant:
+When deploying process definition to the Activiti Process Engine it is possible to pass a _tenant identifier_. This is a string (e.g. a UUID, department id, etc.), limited to 256 characters which is uniquely identifies the tenant:
 	       
 [source,java,linenums]
 ----
@@ -230,9 +230,9 @@ Passing a tenant id during a deployment has following implications:
 * All tasks created at runtime when executing the process instance inherit this tenant identifier from the process instance. Standalone tasks can have a tenant identifier too.
 * All executions created during process instance execution inherit this tenant identifier from the process instance.            
 * Firing a signal throw event (in the process itself or through the API) can be done whilst providing a tenant identifier. The signal will only be executed in the tenant context: i.e. if there are multiple signal catch events with the same name, only the one with the correct tenant identifier will actually be called.
-* All jobs (timers and async continuations) inherit the tenant identifier from either the process definition (eg. timer start event)or the process instance (when a job is created at runtime, eg. an async continuation). This could potentially be used for giving priority to some tenants in a custom job executor.
+* All jobs (timers and async continuations) inherit the tenant identifier from either the process definition (e.g. timer start event) or the process instance (when a job is created at runtime, e.g. an async continuation). This could potentially be used for giving priority to some tenants in a custom job executor.
 * All the historic entities (historic process instance, task and activities) inherit the tenant identifier from their runtime counterparts.
-* As a side note, models can have a tenant identifier too (models are used eg. by the Activiti Modeler to store BPMN 2.0 models).
+* As a side note, models can have a tenant identifier too (models are used e.g. by the Activiti Modeler to store BPMN 2.0 models).
                
 To actually make use of the tenant identifier on the process data, all the query API's have the capability to filter on tenant. For example (and can be replaced by the relevant query implementation of the other entities):
 
@@ -247,7 +247,7 @@ runtimeService.createProcessInstanceQuery()
 	       
 The query API's also allow to filter on the tenant identifier with _like_ semantics  and also to filter out entities without tenant id. 
 	   
-*Important implementation detail:* due to database quirks (more specifically: null handling in unique constraints) the _default_ tenant identifier value indicating _no tenant_ is the *empty string*. The combination of (process definition key, process definition version, tenant identifier) needs to be unique (and there is a database constraint checking this). Also note that the tenant identifier shouldn't be set to null, as this will effect the queries since certain databases (Oracle) treat empty string as a null value (that's why the query _.withoutTenantId_ does a check against the empty string or null). This means that the same process definition (with same process definition key) can be deployed for multiple tenants, each with their own versioning. This does not affect the usage when tenancy is not used.    
+*Important implementation detail:* due to database quirks (more specifically: null handling in unique constraints) the _default_ tenant identifier value indicating _no tenant_ is the *empty string*. The combination of (process definition key, process definition version, tenant identifier) needs to be unique (and there is a database constraint checking this). Also note that the tenant identifier shouldn't be set to null, as this will affect the queries since certain databases (Oracle) treat empty string as a null value (that's why the query _.withoutTenantId_ does a check against the empty string or null). This means that the same process definition (with same process definition key) can be deployed for multiple tenants, each with their own versioning. This does not affect the usage when tenancy is not used.
        
 *Do note that all of the above does not conflict with running multiple Activiti instances in a cluster.*
 	   
@@ -368,7 +368,7 @@ public class ProcessDefinitionCacheConfigurator extends AbstractProcessEngineCon
 }
 ----
 
-Process Engine configurators can also be auto discovered from the classpath using the link:$$http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html$$[ServiceLoader] approach. This means that a jar with the configurator implementation must be put on the classpath, containing a file in the _META-INF/services_ folder in the jar called *org.activiti.engine.cfg.ProcessEngineConfigurator i*. The content of the file needs to be the fully qualified classname of the custom implementation. When the process engine is booted, the logging will show that these configurators are found:
+Process Engine configurators can also be auto discovered from the classpath using the link:$$http://docs.oracle.com/javase/7/docs/api/java/util/ServiceLoader.html$$[ServiceLoader] approach. This means that a jar with the configurator implementation must be put on the classpath, containing a file in the _META-INF/services_ folder in the jar called *org.activiti.engine.cfg.ProcessEngineConfigurator*. The content of the file needs to be the fully qualified classname of the custom implementation. When the process engine is booted, the logging will show that these configurators are found:
             
 ----
 INFO  org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl  - Found 1 auto-discoverable Process Engine Configurators
@@ -387,14 +387,14 @@ Note that this ServiceLoader approach might not work in certain environments. It
 
 One core component of any BPM user interface is the task list. Typically, end users work on open, runtime tasks, filtering  their inbox with various setting. Often also the historic tasks need to be displayed in those lists, with similar filtering. To make that code-wise easier, the _TaskQuery_ and _HistoricTaskInstanceQuery_ both have a shared parent interface, which contains all common operations (and most of the operations are common).  
 
-This common interface is the _org.activiti.engine.task.TaskInfoQuery_ class. Both _org.activiti.engine.task.Task_ and _org.activiti.engine.task.HistoricTaskInstance_  have a common superclass _org.activiti.engine.task.TaskInfo_ (with common properties) which is returned from eg. the _list()_ method. However, Java generics are sometimes more harming than helping: if you want to use the _TaskInfoQuery_ type directly, it would look like this:
+This common interface is the _org.activiti.engine.task.TaskInfoQuery_ class. Both _org.activiti.engine.task.Task_ and _org.activiti.engine.task.HistoricTaskInstance_  have a common superclass _org.activiti.engine.task.TaskInfo_ (with common properties) which is returned from e.g. the _list()_ method. However, Java generics are sometimes more harming than helping: if you want to use the _TaskInfoQuery_ type directly, it would look like this:
 			
 [source,java,linenums]
 ----
 TaskInfoQuery<? extends TaskInfoQuery<?,?>, ? extends TaskInfo> taskInfoQuery
 ----
 
-Ugh, Right. To 'solve' this, a _org.activiti.engine.task.TaskInfoQueryWrapper_ class that can be used to avoid the generics  (the following code could come from REST code that returns a task list where the user cn switch between open and completed tasks):
+Ugh, Right. To 'solve' this, a _org.activiti.engine.task.TaskInfoQueryWrapper_ class that can be used to avoid the generics  (the following code could come from REST code that returns a task list where the user can switch between open and completed tasks):
 
 [source,java,linenums]			
 ----
@@ -439,7 +439,7 @@ If you do not want to use a full _ProcessEngineConfigurator_ implementation like
 	       
 ----
 
-The _MyGroupManagerFactory_ and _MyUserManagerFactory_ need to implement the _org.activiti.engine.impl.interceptor.SessionFactory_ interface. The call to _openSession()_ returns the custom class implementation that does the actual identity management. For groups this is a class that inherits from _org.activiti.engine.impl.persistence.entity.GroupEntityManager_ and for managing users it must inherit from _org.activiti.engine.impl.persistence.entity.UserEntityManager_ The following code sample contains a custom manager factory for groups:
+The _MyGroupManagerFactory_ and _MyUserManagerFactory_ need to implement the _org.activiti.engine.impl.interceptor.SessionFactory_ interface. The call to _openSession()_ returns the custom class implementation that does the actual identity management. For groups this is a class that inherits from _org.activiti.engine.impl.persistence.entity.GroupEntityManager_ and for managing users it must inherit from _org.activiti.engine.impl.persistence.entity.UserEntityManager_. The following code sample contains a custom manager factory for groups:
           
 [source,java,linenums]          
 ----
@@ -529,7 +529,7 @@ The code for the <<chapter_ldap,LDAP integration>> contains full examples of how
 === Enable safe BPMN 2.0 xml
 
 
-In most cases the BPMN 2.0 processes that are being deployed to the Activiti engine are under tight control of eg. the development team. However, in some use cases it might be desirable to upload arbitrary BPMN 2.0 xml to the engine. In that case, take into consideration that a user with bad intentions can bring the server down as described link:$$http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/$$[here].
+In most cases the BPMN 2.0 processes that are being deployed to the Activiti engine are under tight control of e.g. the development team. However, in some use cases it might be desirable to upload arbitrary BPMN 2.0 xml to the engine. In that case, take into consideration that a user with bad intentions can bring the server down as described link:$$http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml-can-bring-down-your-server/$$[here].
 	   
 To avoid the attacks described in the link above, a property _enableSafeBpmnXml_ can be set on the process engine configuration:
 
@@ -538,7 +538,7 @@ To avoid the attacks described in the link above, a property _enableSafeBpmnXml_
 <property name="enableSafeBpmnXml" value="true"/>
 ----
 
-*By default this feature is disabled!* The reason for this is that it relies on  the availability of the link:$$http://download.java.net/jdk7/archive/b123/docs/api/javax/xml/transform/stax/StAXSource.html$$[StaxSource] class. Unfortunately, on some platforms (eg. JDK 6, JBoss, etc.) this class is unavailable (due to older xml parser implementation) and thus the safe BPMN 2.0 xml feature cannot be enabled. 
+*By default this feature is disabled!* The reason for this is that it relies on  the availability of the link:$$http://download.java.net/jdk7/archive/b123/docs/api/javax/xml/transform/stax/StAXSource.html$$[StaxSource] class. Unfortunately, on some platforms (e.g. JDK 6, JBoss, etc.) this class is unavailable (due to older xml parser implementation) and thus the safe BPMN 2.0 xml feature cannot be enabled.
 	   
 If the platform on which Activiti runs does support it, do enable this feature. 
 	   
@@ -548,7 +548,7 @@ If the platform on which Activiti runs does support it, do enable this feature.
 
 === Event logging (Experimental)
 
-As of Activiti version 5.16, an (experimental) event logging mechanism has been introduced. The logging mechanism builds upon the general-purpose <<eventDispatcher,event mechanism of the Activiti engine>> and is disabled by default. The idea is that the events originating from the engine are caught, and a map containing all the event data (and some more) is created and provided to an _org.activiti.engine.impl.event.logger.EventFlusher_ which will flush this data to somewhere else. By default, simple database-backed event handlers/flusher is used, which serializes the said map to JSON using Jackson and stores it in the database as a _EventLogEntryEntity_ instance.  The table required for this database logging is  created by default (called __$$ACT_EVT_LOG$$__). This table can be deleted if the event logging is not used.
+As of Activiti version 5.16, an (experimental) event logging mechanism has been introduced. The logging mechanism builds upon the general-purpose <<eventDispatcher,event mechanism of the Activiti engine>> and is disabled by default. The idea is that the events originating from the engine are caught, and a map containing all the event data (and some more) is created and provided to an _org.activiti.engine.impl.event.logger.EventFlusher_ which will flush this data to somewhere else. By default, simple database-backed event handlers/flusher is used, which serializes the said map to JSON using Jackson and stores it in the database as an _EventLogEntryEntity_ instance.  The table required for this database logging is  created by default (called __$$ACT_EVT_LOG$$__). This table can be deleted if the event logging is not used.
 
 To enable the database logger:
 

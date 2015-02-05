@@ -156,7 +156,7 @@ Note that Activiti does not ship with a library that allows to define such a dat
 
 The following properties can be set, regardless of whether you are using the JDBC or data source approach:
 
-* *databaseType*: it's normally not necessary to specify this property as it is automatically analyzed from the database connection meta data. Should only be specified in case automatic detection fails. Possible values: {h2, mysql, oracle, postgres, mssql, db2}. *This property is required when not using the default H2 database*. This setting will determine which create/drop scripts and queries will be used. See <<supporteddatabases,the 'supported databases' section>> for an overview of which types are supported.
+* *databaseType*: it's normally not necessary to specify this property as it is automatically analyzed from the database connection metadata. Should only be specified in case automatic detection fails. Possible values: {h2, mysql, oracle, postgres, mssql, db2}. *This property is required when not using the default H2 database*. This setting will determine which create/drop scripts and queries will be used. See <<supporteddatabases,the 'supported databases' section>> for an overview of which types are supported.
 * *databaseSchemaUpdate*: allows to set the strategy to handle the database schema on process engine boot and shutdown.
 ** +false+ (default): Checks the version of the DB schema against the library when the process engine is being created and throws an exception if the versions don't match.
 ** ++true++: Upon building the process engine, a check is performed and an update of the schema is performed if it is necessary. If the schema doesn't exist, it is created.
@@ -310,7 +310,7 @@ Where __db__ is any of the <<supporteddatabases,supported databases>> and __type
 * *identity:* the tables containing users, groups and memberships of users to groups. These tables are optional and should be used when using the default identity management as shipped with the engine.
 * *history:* the tables that contain the history and audit information. Optional: not needed when history level is set to _none_. Note that this will also disable some features (such as commenting on tasks) which store the data in the history database.
 
-*Note for MySQL users:* MySQL version lower than 5.6.4 has no support for timestamps or dates with millisecond precision. To make things even worse, some version will throw an exception when trying to create such a column but other versions don't. When doing auto-creation/upgrade, the engine will change the DDL when executing it. When using the DDL file approach, both a regular version and a special file with _mysql55_ in it are available (this applies on anything lower than 5.6.4). This latter file will have column types with no millisecond precision it it.
+*Note for MySQL users:* MySQL version lower than 5.6.4 has no support for timestamps or dates with millisecond precision. To make things even worse, some version will throw an exception when trying to create such a column but other versions don't. When doing auto-creation/upgrade, the engine will change the DDL when executing it. When using the DDL file approach, both a regular version and a special file with _mysql55_ in it are available (this applies on anything lower than 5.6.4). This latter file will have column types with no millisecond precision in it.
 
 Concretely, the following applies for MySQL version
 
@@ -330,7 +330,7 @@ Do note that in the case of upgrading the MySQL database later on and the Activi
 The database names of Activiti all start with *ACT_*. The second part is a two-character identification of the use case of the table. This use case will also roughly match the service API.
 
 * *ACT_RE_**: 'RE' stands for +repository+. Tables with this prefix contain 'static' information such as process definitions and process resources (images, rules, etc.).
-* *ACT_RU_**: 'RU' stands for +runtime+. These are the runtime tables, that contain the runtime data of process instances, user tasks, variables, jobs, etc. Activiti only stores the runtime data during process instance execution, and removes the records when a process instance ends. This keeps the runtime tables small and fast.
+* *ACT_RU_**: 'RU' stands for +runtime+. These are the runtime tables that contain the runtime data of process instances, user tasks, variables, jobs, etc. Activiti only stores the runtime data during process instance execution, and removes the records when a process instance ends. This keeps the runtime tables small and fast.
 * *ACT_ID_**: 'ID' stands for +identity+. These tables contain identity information, such as users, groups, etc.
 * *ACT_HI_**: 'HI' stands for +history+. These are the tables that contain historic data, such as past process instances, variables, tasks, etc.
 * *ACT_GE_**: +general+ data, which is used in various use cases.
@@ -371,9 +371,9 @@ To upgrade, you have to start with putting the following configuration property 
 === Job Executor and Async Executor (since version 5.17.0)
 
 Starting from version 5.17.0 Activiti provides an Async executor in addition to the Job Executor. The Async executor is a more performant and more database friendly way of executing asynchronous jobs in the Activiti Engine.
-It's therefore recommended to switch to the Async executor. by default the old job executor is still used. More information can be found in the advanced section of the user guide.
+It's therefore recommended to switch to the Async executor. By default the old job executor is still used. More information can be found in the advanced section of the user guide.
 
-Moreover, if running under Java EE 7, JSR-236 compliant +ManagedJobExecutor+ and +ManagedAsyncJobExecutor+ can be used for letting the container manage the threads. In order to enable them, the thread factory should be passed in the configuration as follows :
+Moreover, if running under Java EE 7, JSR-236 compliant +ManagedJobExecutor+ and +ManagedAsyncJobExecutor+ can be used for letting the container manage the threads. In order to enable them, the thread factory should be passed in the configuration as follows:
 
 [source,xml,linenums]
 ----
@@ -416,7 +416,7 @@ This can be done by defining two properties
 <property name="asyncExecutorActivate" value="true" />
 ----
 
-The asyncExecutorEnabled property is to enable the Async executor in stead of the old Job executor.
+The asyncExecutorEnabled property is to enable the Async executor instead of the old Job executor.
 The second property asyncExecutorActivate instructs the Activiti Engine to startup the Async executor thread pool at startup. 
 
 [[mailServerConfiguration]]
@@ -545,7 +545,7 @@ An event mechanism has been introduced in Activiti 5.15. It allows you to get no
 It's possible to register a listener for certain types of events as opposed to getting notified when any type of event is dispatched. You can either add engine-wide event listeners <<eventDispatcherConfiguration,through the configuration>>, add engine-wide event listeners <<eventDispatcherConfigurationRuntime,at runtime using the API>> or add event-listeners to <<eventDispatcherConfigurationProcessDefinition,specific process definitions in the BPMN XML>>.
 
 
-All events dispatched are a subtype of +org.activiti.engine.delegate.event.ActivitiEvent+. The event exposes (if available) the +type+, +executionId+, +processInstanceId+ and +processDefinitionId+. Certain events contain additional context related to the event that occurred, additional information about additional playload can be found in the list of <<eventDispatcherEventTypes,all supported event types>>.
+All events dispatched are a subtype of +org.activiti.engine.delegate.event.ActivitiEvent+. The event exposes (if available) the +type+, +executionId+, +processInstanceId+ and +processDefinitionId+. Certain events contain additional context related to the event that occurred, additional information about additional payload can be found in the list of <<eventDispatcherEventTypes,all supported event types>>.
 
 [[eventDispatcherListener]]
 
@@ -585,11 +585,11 @@ public class MyEventListener implements ActivitiEventListener {
 ----
 
 
-The +isFailOnException()+ method determines the behaviour in case the +onEvent(..)+ method throws an exception when an event is dispatched. In case +false+ is returned, the exception is ignored. When +true+ is returned, the exception is not ignored and bubbles up, effectively failing the current ongoing command. In case the event was part of an API-call (or any other transactional operation, eg. job-execution), the transaction will be rolled back. In case the behaviour in the event-listener is not business-critical, it's recommended to return +false+.
+The +isFailOnException()+ method determines the behaviour in case the +onEvent(..)+ method throws an exception when an event is dispatched. In case +false+ is returned, the exception is ignored. When +true+ is returned, the exception is not ignored and bubbles up, effectively failing the current ongoing command. In case the event was part of an API-call (or any other transactional operation, e.g. job-execution), the transaction will be rolled back. In case the behaviour in the event-listener is not business-critical, it's recommended to return +false+.
 
-There are a few base implementations provided by Activiti to facilitate common usecases of event-listeners. These can be used as base-class or as an example listener implementation:
+There are a few base implementations provided by Activiti to facilitate common use cases of event-listeners. These can be used as base-class or as an example listener implementation:
 
-* *org.activiti.engine.delegate.event.BaseEntityEventListener*: An event-listener base-class that can be used to listen for entity-related events for a specific type of entity or for all entities. It hides away the type-checking and offers 4 methods that should be overridden: +onCreate(..)+, +onUpdate(..)+ and +onDelete(..)+ when an entity is created, updated or deleted. For all other entity-related events, the ++onEntityEvent(..)++is called.
+* *org.activiti.engine.delegate.event.BaseEntityEventListener*: An event-listener base-class that can be used to listen for entity-related events for a specific type of entity or for all entities. It hides away the type-checking and offers 4 methods that should be overridden: +onCreate(..)+, +onUpdate(..)+ and +onDelete(..)+ when an entity is created, updated or deleted. For all other entity-related events, the ++onEntityEvent(..) ++is called.
 
 
 
@@ -600,7 +600,7 @@ There are a few base implementations provided by Activiti to facilitate common u
 
 If an event-listener is configured in the process engine configuration, it will be active when the process engine starts and will remain active after subsequent reboots of the engine.
 
-The property +eventListeners+ expects a list of +org.activiti.engine.delegate.event.ActivitiEventListener+ instances. As usual, you can either declare an inline bean definition or use a +ref+ to an existing bean instead. The snippet below adds an event-listener to the configuration, that is notified when any event is dispatched, regardless of it's type:
+The property +eventListeners+ expects a list of +org.activiti.engine.delegate.event.ActivitiEventListener+ instances. As usual, you can either declare an inline bean definition or use a +ref+ to an existing bean instead. The snippet below adds an event-listener to the configuration that is notified when any event is dispatched, regardless of its type:
 
 [source,xml,linenums]
 ----
@@ -725,7 +725,7 @@ For events related to entities, it's also possible to add listeners to a process
 </process>
 ----
 
-Supported values for the +entityType+ are: +attachment+, +comment+, +execution+,++identity-link++, ++job++, ++process-instance++, ++process-definition++, ++task++.
+Supported values for the +entityType+ are: +attachment+, +comment+, +execution+, ++identity-link++, ++job++, ++process-instance++, ++process-definition++, ++task++.
 
 
 
@@ -734,7 +734,7 @@ Supported values for the +entityType+ are: +attachment+, +comment+, +execution+,
 <<experimental, [EXPERIMENTAL] >>
 
 
-Another way of handling events being dispatched is to throw a BPMN event. Please bare in mind that it only makes sense to throw BPMN-events with certain kinds of Activiti event types. For example, throwing a BPMN event when the process-instance is deleted will result in an error. The snippet below shows how to throw a signal inside process-instance, throw a signal to an external process (global), throw a message-event inside the process-instance and throw an error-event inside the process-instance. Instead of using the +class+ or +delegateExpression+, the attribute +throwEvent+ is used, along with an additional attribute, specific to the type of event being thrown.
+Another way of handling events being dispatched is to throw a BPMN event. Please bear in mind that it only makes sense to throw BPMN-events with certain kinds of Activiti event types. For example, throwing a BPMN event when the process-instance is deleted will result in an error. The snippet below shows how to throw a signal inside process-instance, throw a signal to an external process (global), throw a message-event inside the process-instance and throw an error-event inside the process-instance. Instead of using the +class+ or +delegateExpression+, the attribute +throwEvent+ is used, along with an additional attribute, specific to the type of event being thrown.
 
 [source,xml,linenums]
 ----
@@ -773,13 +773,13 @@ Another way of handling events being dispatched is to throw a BPMN event. Please
 </process>
 ----
 
-If additional logic is needed to decide whether or not to throw the BPMN-event, it's possible to extend the listener-classes provided by Activiti. By overriding the +isValidEvent(ActivitiEvent event) in your subclass, BPMN-event throwing can be prevented. The classes involved are +org.activiti.engine.test.api.event.SignalThrowingEventListenerTest+, +org.activiti.engine.impl.bpmn.helper.MessageThrowingEventListener+ and +org.activiti.engine.impl.bpmn.helper.ErrorThrowingEventListener+.
+If additional logic is needed to decide whether or not to throw the BPMN-event, it's possible to extend the listener-classes provided by Activiti. By overriding the +isValidEvent(ActivitiEvent event) in your subclass, the BPMN-event throwing can be prevented. The classes involved are +org.activiti.engine.test.api.event.SignalThrowingEventListenerTest+, +org.activiti.engine.impl.bpmn.helper.MessageThrowingEventListener+ and +org.activiti.engine.impl.bpmn.helper.ErrorThrowingEventListener+.
 
 
 ===== Notes on listeners on a process-definition
 
 * Event-listeners can only be declared on the +process+ element, as a child-element of the +extensionElements+. Listeners cannot be defined on individual activities in the process.
-* Expressions used in the +delegateExpression+ do not have access to the execution-context, as other expressions (eg. in gateways) have. They can only reference beans defined in the +beans+ property of the process engine configuration or when using spring (and the beans property is absent) to any spring-bean that implements the listener interface.
+* Expressions used in the +delegateExpression+ do not have access to the execution-context, as other expressions (e.g. in gateways) have. They can only reference beans defined in the +beans+ property of the process engine configuration or when using spring (and the beans property is absent) to any spring-bean that implements the listener interface.
 * When using the +class+ attribute of a listener, there will only be a single instance of that class created. Make sure the listener implementations do not rely on member-fields or ensure safe usage from multiple threads/contexts.
 * When an illegal event-type is used in the +events+ attribute or illegal +throwEvent+ value is used, an exception will be thrown when the process-definition is deployed (effectively failing the deployment). When an illegal value for +class+ or +delegateExecution+ is supplied (either a nonexistent class, a nonexistent bean reference or a delegate not implementing listener interface), an exception will be thrown when the process is started (or when the first valid event for that process-definition is dispatched to the listener). Make sure the referenced classes are on the classpath and that the expressions resolve to a valid instance.
 
@@ -857,8 +857,8 @@ Listed below are all event types that can occur in the engine. Each type corresp
                   any transition to take.
                 |+org.activiti...ActivitiEntityEvent+
 |PROCESS_CANCELLED|A process has been cancelled. Dispatched before the process instance is deleted from runtime. Process instance is cancelled by API call +RuntimeService.deleteProcessInstance+|+org.activiti...ActivitiCancelledEvent+
-|MEMBERSHIP_CREATED|A user has been added to a group. The event contains the id's of the user and group involved.|+org.activiti...ActivitiMembershipEvent+
-|MEMBERSHIP_DELETED|A user has been removed from a group. The event contains the id's of the user and group involved.|+org.activiti...ActivitiMembershipEvent+
+|MEMBERSHIP_CREATED|A user has been added to a group. The event contains the ids of the user and group involved.|+org.activiti...ActivitiMembershipEvent+
+|MEMBERSHIP_DELETED|A user has been removed from a group. The event contains the ids of the user and group involved.|+org.activiti...ActivitiMembershipEvent+
 |MEMBERSHIPS_DELETED|All members will be removed from a group. The event is thrown before the members are removed, so they are still accessible. No individual
                 +$$MEMBERSHIP_DELETED$$+ events will be thrown if all members are deleted at once, for performance reasons.|+org.activiti...ActivitiMembershipEvent+
 
@@ -881,6 +881,6 @@ All +$$ENTITY_\*$$+ events are related to entities inside the engine. The list b
 
 *Only listeners are notified in the engine the events are dispatched from.* So in case you have different engines - running against the same database - only events that originated in the engine the listener is registered for, are dispatched to that listener. The events that occur in the other engine are not dispatched to the listeners, regardless of the fact they are running in the same JVM or not.
 
-Certain event-types (related to entities) expose the targeted entity. Depending on the type or event, these entities cannot be updated anymore (eg. when the entity is deleted). If possible, use the +EngineServices+ exposed by the event to interact in a safe way with the engine. Even then, you need to be cautious with updates/operations on entities that are involved in the dispatched event.
+Certain event-types (related to entities) expose the targeted entity. Depending on the type or event, these entities cannot be updated anymore (e.g. when the entity is deleted). If possible, use the +EngineServices+ exposed by the event to interact in a safe way with the engine. Even then, you need to be cautious with updates/operations on entities that are involved in the dispatched event.
 
 No entity-events are dispatched related to history, as they all have a runtime-counterpart which have their events dispatched.

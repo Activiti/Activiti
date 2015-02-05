@@ -39,7 +39,7 @@ image::images/designer.bpmn.file.png[align="center"]
 
 image::images/designer.open.importedfile.png[align="center"]
 
-*  For deployment a BAR file and optionally a JAR file is created by the Activiti Designer by right-clicking on an Activiti project in the package explorer and choosing the _Create deployment artifacts_ option at the bottom of the popup menu. For more information about the deployment functionality of the Designer look a the <<eclipseDesignerDeployment,deployment>> section.
+*  For deployment a BAR file and optionally a JAR file is created by the Activiti Designer by right-clicking on an Activiti project in the package explorer and choosing the _Create deployment artifacts_ option at the bottom of the popup menu. For more information about the deployment functionality of the Designer look at the <<eclipseDesignerDeployment,deployment>> section.
 
 image::images/designer.create.deployment.png[align="center"]
 
@@ -167,7 +167,7 @@ You can setup your project in whichever tool you prefer and build the JAR with y
 
 ===== Extension setup (Eclipse/Maven)
 
-Download and extract link:$$http://www.eclipse.org/downloads$$[Eclipse] (most recent versions should work) and a recent version (3.x) of link:$$http://maven.apache.org/download.html$$[Apache Maven]. If you use a 2.x version of Maven, you will run into problems when building your project, so make sure your version is up to date. We assume you are familiar with using basic features and the Java editor in Eclipse. It's up to you whether your prefer to use Eclipse's features for Maven or run Maven commands from a command prompt.
+Download and extract link:$$http://www.eclipse.org/downloads$$[Eclipse] (most recent versions should work) and a recent version (3.x) of link:$$http://maven.apache.org/download.html$$[Apache Maven]. If you use a 2.x version of Maven, you will run into problems when building your project, so make sure your version is up to date. We assume you are familiar with using basic features and the Java editor in Eclipse. It's up to you whether you prefer to use Eclipse's features for Maven or run Maven commands from a command prompt.
 
 Create a new project in Eclipse. This can be a general project type. Create a +pom.xml+ file at the root of the project to contain the Maven project setup. Also create folders for the +src/main/java+ and +src/main/resources+ folders, which are Maven conventions for your Java source files and resources respectively. Open the +pom.xml+ file and add the following lines:
 
@@ -292,7 +292,7 @@ image::images/designer.preferences.userlibraries.png[align="center"]
 image::images/designer.preferences.userlibraries.activiti.empty.png[align="center"]
 
 
-* Select the +Activiti Designer Extensions+ group and click the +Add JARs...+ button. Navigate to to folder where your extension is stored and select the extension file you want to add. After completing this, your preferences screen should show the extension as part of the +Activiti Designer Extensions+ group, as shown below.
+* Select the +Activiti Designer Extensions+ group and click the +Add JARs...+ button. Navigate to the folder where your extension is stored and select the extension file you want to add. After completing this, your preferences screen should show the extension as part of the +Activiti Designer Extensions+ group, as shown below.
 
 image::images/designer.preferences.userlibraries.activiti.moneytasks.png[align="center"]
 
@@ -340,7 +340,7 @@ There are several +PropertyType+ values you can use, which are described in more
 
 If you want to ensure the order of the various properties in your class as they appear in the property screen, you should specify the order attribute of the +@Property+ annotation.
 
-As you can see, there's also an +@Help+ annotation that's used to provide the user some guidance when filling out the field. You can also use the +@Help+ annotation on the class itself - this information is shown at the top of the property sheet presented to the user.
+As you can see, there's also a +@Help+ annotation that's used to provide the user some guidance when filling out the field. You can also use the +@Help+ annotation on the class itself - this information is shown at the top of the property sheet presented to the user.
 
 Below is the listing for a further elaboration of the +MoneyTask+. A comment field has been added and you can see an icon is included for the node.
 

@@ -3,7 +3,7 @@
 
 You can use JPA-Entities as process variables, allowing you to:
 
-* Updating existing JPA-entities based on process variables, that can be filled in on a form in a userTask or generated in a serviceTask.
+* Updating existing JPA-entities based on process variables that can be filled in on a form in a userTask or generated in a serviceTask.
 * Reusing existing domain model without having to write explicit services to fetch the entities and update the values
 * Make decisions (gateways) based on properties of existing entities.
 * ...
@@ -11,7 +11,7 @@ You can use JPA-Entities as process variables, allowing you to:
 
 === Requirements
 
-Only entities that comply to the following are supported:
+Only entities that comply with the following are supported:
 
 * Entities should be configured using JPA-annotations, we support both field and property-access. Mapped super classes can also be used.
 * Entity should have a primary key annotated with +@Id+, compound primary keys are not supported (++@EmbeddedId++ and ++@IdClass++). The Id field/property can be of any type supported in the JPA-spec: Primitive types and their wrappers (excluding boolean), ++String++, ++BigInteger++, ++BigDecimal++, ++java.util.Date++ and ++java.sql.Date++.
@@ -82,10 +82,10 @@ ProcessEngine processEngine = ProcessEngineConfiguration
 
 Configuration properties:
 
-* jpaPersistenceUnitName: +*The name of the persistence-unit to use. (Make sure the persistence-unit is available on the classpath. According to the spec, the default location is ++/META-INF/persistence.xml++). Use either +jpaEntityManagerFactory+ or +jpaPersistenceUnitName+.
-* jpaEntityManagerFactory: +*An reference to a bean implementing +javax.persistence.EntityManagerFactory+ that will be used to load the Entities and flushing the updates. Use either _jpaEntityManagerFactory_ or _jpaPersistenceUnitName_.
-* jpaHandleTransaction: +*Flag indicating that the engine should begin and commit/rollback the transaction on the used _EntityManager_ instances. Set to false when _Java Transaction API (JTA)_ is used.
-* jpaCloseEntityManager: +*Flag indicating that the engine should close the +EntityManager+ instance that was obtained from the +EntityManagerFactory+. Set to false when the _EntityManager_ is container-managed (e.g. when using an Extended Persistence Context which isn't scoped to a single transaction').
+* ++jpaPersistenceUnitName++: The name of the persistence-unit to use. (Make sure the persistence-unit is available on the classpath. According to the spec, the default location is ++/META-INF/persistence.xml++). Use either +jpaEntityManagerFactory+ or +jpaPersistenceUnitName+.
+* ++jpaEntityManagerFactory++: An reference to a bean implementing +javax.persistence.EntityManagerFactory+ that will be used to load the Entities and flushing the updates. Use either _jpaEntityManagerFactory_ or _jpaPersistenceUnitName_.
+* ++jpaHandleTransaction++: Flag indicating that the engine should begin and commit/rollback the transaction on the used _EntityManager_ instances. Set to false when _Java Transaction API (JTA)_ is used.
+* ++jpaCloseEntityManager++: Flag indicating that the engine should close the +EntityManager+ instance that was obtained from the +EntityManagerFactory+. Set to false when the _EntityManager_ is container-managed (e.g. when using an Extended Persistence Context which isn't scoped to a single transaction').
 
 === Usage
 
@@ -93,7 +93,7 @@ Configuration properties:
 
 Examples for using JPA variables can be found in JPAVariableTest in the Activiti source code. We'll explain +JPAVariableTest.testUpdateJPAEntityValues+ step by step.
 
-First of all, we create a _EntityManagerFactory_ for our persistence-unit, which is based on +META-INF/persistence.xml+. This contains classes which should be included in the persistence unit and some vendor-specific configuration.
+First of all, we create an _EntityManagerFactory_ for our persistence-unit, which is based on +META-INF/persistence.xml+. This contains classes which should be included in the persistence unit and some vendor-specific configuration.
 
 We are using a simple entity in the test, having an id and +String+ value property, which is also persisted. Before running the test, we create an entity and save this.
 
@@ -148,7 +148,7 @@ The first node in our process definition contains a +serviceTask+ that will invo
   activiti:expression="${entityToUpdate.setValue('updatedValue')}" />
 ----
 
-When the service-task is finished, the process instance waits in a userTask defined in the process definition, which allows us to inspect the process instance. At this point, the +EntityManager+ has been flushed and the changes to the entity have been pushed to the database. When we get the value of the variable +entityToUpdate+, it's loaded again and we get the entity with it's +value+ property set to +updatedValue+.
+When the service-task is finished, the process instance waits in a userTask defined in the process definition, which allows us to inspect the process instance. At this point, the +EntityManager+ has been flushed and the changes to the entity have been pushed to the database. When we get the value of the variable +entityToUpdate+, it's loaded again and we get the entity with its +value+ property set to +updatedValue+.
 
 [source,java,linenums]
 ----
@@ -160,7 +160,7 @@ assertEquals("updatedValue", ((FieldAccessJPAEntity)updatedEntity).getValue());
 
 ==== Query JPA process variables
 
-You can query for ++ProcessInstance++s and ++Execution++s that have a certain JPA-entity as variable value. *Note that only +variableValueEquals(name, entity)+ is supported for JPA-Entities on +ProcessInstanceQuery+ and +ExecutionQuery+*. Methods +variableValueNotEquals+, +variableValueGreaterThan+, +variableValueGreaterThanOrEqual+, +variableValueLessThan+ and +variableValueLessThanOrEqual+ are unsupported and will throw an +ActivitiException+ when an JPA-Entity is passed as value.
+You can query for ++ProcessInstance++s and ++Execution++s that have a certain JPA-entity as variable value. *Note that only +variableValueEquals(name, entity)+ is supported for JPA-Entities on +ProcessInstanceQuery+ and +ExecutionQuery+*. Methods +variableValueNotEquals+, +variableValueGreaterThan+, +variableValueGreaterThanOrEqual+, +variableValueLessThan+ and +variableValueLessThanOrEqual+ are unsupported and will throw an +ActivitiException+ when a JPA-Entity is passed as value.
 
 [source,java,linenums]
 ----

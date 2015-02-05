@@ -55,7 +55,7 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
 
 The +process+ element has two attributes:
 
-*  *id*: this attribute is *required* and maps to the *key* property of an Activiti + ProcessDefinition+ object. This +id+ can then be used to start a new process instance of the process definition, through the  +startProcessInstanceByKey+ method on the +RuntimeService+. This method will always take the *latest deployed version* of the process definition.
+*  *id*: this attribute is *required* and maps to the *key* property of an Activiti +ProcessDefinition+ object. This +id+ can then be used to start a new process instance of the process definition, through the  +startProcessInstanceByKey+ method on the +RuntimeService+. This method will always take the *latest deployed version* of the process definition.
 
 [source,java,linenums]
 ----
@@ -117,7 +117,7 @@ What we see is a <<bpmnNoneStartEvent,none Start Event>> (circle on the left), f
 
 The XML version of this business process (__FinancialReportProcess.bpmn20.xml__) looks as shown below. It's easy to recognize the main elements of our process (click on the links for going to the detailed section of that BPMN 2.0 construct):
 
-* The <<bpmnNoneStartEvent,(none) start event>> learns us what the _entry point_ to the process is.
+* The <<bpmnNoneStartEvent,(none) start event>> tells us what the _entry point_ to the process is.
 * The <<bpmnUserTask,User Tasks>> declarations are the representation of the human tasks of our process. Note that the first task is assigned to the _accountancy_ group, while the second task is assigned to the _management_ group. See <<bpmnUserTaskAssignment,the section on user task assignment>> for more information on how users and groups can be assigned to user tasks.
 * The process ends when the <<bpmnNoneEndEvent,none end event>> is reached.
 * The elements are connected with each other through <<bpmnSequenceFlow,sequence flows>>. These sequence flow have a +source+ and +target+, defining the _direction_ of the sequence flow.
@@ -266,7 +266,7 @@ TaskService taskService = processEngine.getTaskService();
 List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("accountancy").list();
 ----
 
-Since we've configured our +ProcessEngine+ to use the same database as the demo setup is using, we can now log into link:$$http://localhost:8080/activiti-explorer/$$[Activiti Explorer]. By default, no user is in the _accountancy_ group. Login with kermit/kermit, click Groups and then "Create group". Then click Users and add the group to fozzie. Now login with fozzie/fozzie, and we will find  that we can start our business process after selecting the _Processes_ page and and clicking on the _'Start Process'_ link in the _'Actions'_ column corresponding to the _'Monthly financial report'_ process.
+Since we've configured our +ProcessEngine+ to use the same database as the demo setup is using, we can now log into link:$$http://localhost:8080/activiti-explorer/$$[Activiti Explorer]. By default, no user is in the _accountancy_ group. Login with kermit/kermit, click Groups and then "Create group". Then click Users and add the group to fozzie. Now login with fozzie/fozzie, and we will find  that we can start our business process after selecting the _Processes_ page and clicking on the _'Start Process'_ link in the _'Actions'_ column corresponding to the _'Monthly financial report'_ process.
 
 image::images/bpmn.financial.report.example.start.process.png[align="center"]
 
@@ -419,7 +419,7 @@ public class TenMinuteTutorial {
 ==== Future enhancements
 
 
-It's easy to see that this business process is too simple to be usable in reality. However, as you are going through the BPMN 2.0 constructs available in Activiti, you will be able to enhance the business process by :
+It's easy to see that this business process is too simple to be usable in reality. However, as you are going through the BPMN 2.0 constructs available in Activiti, you will be able to enhance the business process by:
 
 
 * defining *gateways* that act as decisions. This way, a manager could reject the financial report which would recreate the task for the accountant.
