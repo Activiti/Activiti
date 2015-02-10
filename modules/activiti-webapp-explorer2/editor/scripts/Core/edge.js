@@ -1,12 +1,3 @@
-/*
- * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
- */
-/*
- * All code Copyright 2013 KIS Consultancy all rights reserved
- */
 
 NAMESPACE_SVG = "http://www.w3.org/2000/svg";
 NAMESPACE_ORYX = "http://www.b3mn.org/oryx";

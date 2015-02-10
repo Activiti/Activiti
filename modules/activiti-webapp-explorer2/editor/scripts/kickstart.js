@@ -1,13 +1,3 @@
-/*
- * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
- */
-/*
- * All code Copyright 2013 KIS Consultancy all rights reserved
- */
-
 XMLNS = {
 	ATOM:	"http://www.w3.org/2005/Atom",
 	XHTML:	"http://www.w3.org/1999/xhtml",

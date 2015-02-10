@@ -1,13 +1,3 @@
-/*
- * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
- * License rights for this program may be obtained from Alfresco Software, Ltd.
- * pursuant to a written agreement and any use of this program without such an
- * agreement is prohibited.
- */
-/*
- * All code Copyright 2013 KIS Consultancy all rights reserved
- */
-
 Array.prototype.insertFrom = function(from, to){
 	to 			= Math.max(0, to);
 	from 		= Math.min( Math.max(0, from), this.length-1 );
