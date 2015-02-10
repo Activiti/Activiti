@@ -30,6 +30,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  * @author Tijs Rademakers
  * @author Falko Menge
  * @author Bernd Ruecker
+ * @author Joram Barrez
  */
 public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 
