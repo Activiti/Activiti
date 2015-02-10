@@ -4513,7 +4513,7 @@ It is possible to use expressions here as well:
 ----
 <callActivity id="callSubProcess" calledElement="checkCreditProcess" >
 	<extensionElements>
-	  <activiti:in sourceExpression="${x+5}"" target="y" />
+	  <activiti:in sourceExpression="${x+5}" target="y" />
 	  <activiti:out source="${y+5}" target="z" />
 	</extensionElements>
 </callActivity>
