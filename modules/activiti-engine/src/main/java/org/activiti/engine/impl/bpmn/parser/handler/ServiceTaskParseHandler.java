@@ -42,6 +42,7 @@ public class ServiceTaskParseHandler extends AbstractExternalInvocationBpmnParse
       ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, serviceTask, BpmnXMLConstants.ELEMENT_TASK_SERVICE);
       activity.setAsync(serviceTask.isAsynchronous());
       activity.setFailedJobRetryTimeCycleValue(serviceTask.getFailedJobRetryTimeCycleValue());
+      activity.setFailedJobRetryErrorCode(serviceTask.getFailedJobRetryErrorCode());
       activity.setExclusive(!serviceTask.isNotExclusive());
 
       // Email, Mule and Shell service tasks
