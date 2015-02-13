@@ -339,6 +339,13 @@
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="processInstanceIds != null &amp;&amp; processInstanceIds.size() &gt; 0">
+        and RES.PROC_INST_ID_ IN
+        <foreach item="processInstance" index="index" collection="processInstanceIds" 
+                 open="(" separator="," close=")">
+          #{processInstance}
+        </foreach>
+      </if>
       <if test="processInstanceBusinessKey != null">
         and HPI.BUSINESS_KEY_ = #{processInstanceBusinessKey}
       </if>
@@ -614,6 +621,13 @@
           </if>
           <if test="orQueryObject.processInstanceId != null">
             or RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
+          </if>
+          <if test="orQueryObject.processInstanceIds != null &amp;&amp; orQueryObject.processInstanceIds.size() &gt; 0">
+            or RES.PROC_INST_ID_ IN
+            <foreach item="processInstance" index="index" collection="orQueryObject.processInstanceIds" 
+                     open="(" separator="," close=")">
+              #{processInstance}
+            </foreach>
           </if>
           <if test="orQueryObject.processInstanceBusinessKey != null">
             or HPI.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}
