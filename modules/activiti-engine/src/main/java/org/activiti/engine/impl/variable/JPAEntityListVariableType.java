@@ -57,11 +57,11 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
         // We can only store the list if we are sure it's actually a list of JPA entities. In case the 
         // list is empty, we don't store it.
         canStore = true;
-        Class<?> entityClass = list.get(0).getClass();
+        Class<?> entityClass = mappings.getEntityMetaData(list.get(0).getClass()).getEntityClass();
         
-        for(Object entity : list) {
-          canStore = entity != null && mappings.isJPAEntity(entity) && entity.getClass().equals(entityClass);
-          if(!canStore) {
+        for (Object entity : list) {
+          canStore = entity != null && mappings.isJPAEntity(entity) && mappings.getEntityMetaData(entity.getClass()).getEntityClass().equals(entityClass);
+          if (!canStore) {
             // In case the object is not a JPA entity or the class doesn't match, we can't store the list
             break;
           }
