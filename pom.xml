@@ -17,7 +17,7 @@
   <version>5.17.1-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.framework.version>4.0.6.RELEASE</spring.framework.version>
+    <spring.framework.version>4.1.4.RELEASE</spring.framework.version>
     <spring.security.version>3.2.3.RELEASE</spring.security.version>
     <mule.version>3.5.0</mule.version>
     <cxf.version>2.6.14</cxf.version>
@@ -45,7 +45,7 @@
     <activiti.osgi.activator />
     <activiti.osgi.failok>false</activiti.osgi.failok>
     <activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true</activiti.osgi.export>
-    <!-- <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg> 
+    <!-- <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
       <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg> -->
     <activiti.osgi.export.pkg>
       ${activiti.artifact}*,
@@ -695,7 +695,7 @@
           <artifactId>maven-jar-plugin</artifactId>
           <version>2.3.2</version>
         </plugin>
-        <!--This plugin's configuration is used to store Eclipse m2e settings 
+        <!--This plugin's configuration is used to store Eclipse m2e settings
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -863,7 +863,7 @@
       </modules>
     </profile>
     <profile>
-      <!-- this profile prevents that tests are executed while running the 
+      <!-- this profile prevents that tests are executed while running the
         qa/build.xml test.demo.setup target -->
       <id>nodocs</id>
       <activation>
@@ -916,7 +916,7 @@
       </modules>
     </profile>
     <profile>
-      <!-- Profile used by the start-explorer.sh script to build the Explorer 
+      <!-- Profile used by the start-explorer.sh script to build the Explorer
         webapp and all its dependencies -->
       <id>buildWebappDependencies</id>
       <modules>
@@ -957,7 +957,7 @@
       </build>
     </profile>
     <profile>
-      <!-- Profile used by the start-rest.sh script to build the Explorer 
+      <!-- Profile used by the start-rest.sh script to build the Explorer
         webapp and all its dependencies -->
       <id>buildRestappDependencies</id>
       <modules>
