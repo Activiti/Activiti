@@ -13,7 +13,7 @@
 
     <packaging>pom</packaging>
     <properties>
-        <spring-integration-java-dsl.version>1.0.0.M3</spring-integration-java-dsl.version>
+        <spring-integration-java-dsl.version>1.0.0.RELEASE</spring-integration-java-dsl.version>
     </properties>
     <modules>
         <module>spring-boot-starter-basic</module>
