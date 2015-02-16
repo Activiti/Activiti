@@ -1185,29 +1185,35 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testEmptyCollectionOnParallelUserTask() {
-  	Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("messages", Collections.EMPTY_LIST);
-    runtimeService.startProcessInstanceByKey("parallelUserTaskMi", vars);
-    
-    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+	  	Map<String, Object> vars = new HashMap<String, Object>();
+	    vars.put("messages", Collections.EMPTY_LIST);
+	    runtimeService.startProcessInstanceByKey("parallelUserTaskMi", vars);
+	    
+	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+  	}
   }
   
   @Deployment
   public void testEmptyCollectionOnSequentialEmbeddedSubprocess() {
-  	Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("messages", Collections.EMPTY_LIST);
-    runtimeService.startProcessInstanceByKey("sequentialMiSubprocess", vars);
-    
-    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+	  	Map<String, Object> vars = new HashMap<String, Object>();
+	    vars.put("messages", Collections.EMPTY_LIST);
+	    runtimeService.startProcessInstanceByKey("sequentialMiSubprocess", vars);
+	    
+	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+  	}
   }
   
   @Deployment
   public void testEmptyCollectionOnParallelEmbeddedSubprocess() {
-  	Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("messages", Collections.EMPTY_LIST);
-    runtimeService.startProcessInstanceByKey("parallelMiSubprocess", vars);
-    
-    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+	  	Map<String, Object> vars = new HashMap<String, Object>();
+	    vars.put("messages", Collections.EMPTY_LIST);
+	    runtimeService.startProcessInstanceByKey("parallelMiSubprocess", vars);
+	    
+	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+  	}
   }
 
 }
