@@ -22,6 +22,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+import org.activiti.engine.impl.util.JvmUtil;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -380,8 +381,10 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
           "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnJavaScriptScriptTask.bpmn20.xml"
   })
   public void testCatchErrorOnJavaScriptScriptTask() {
-    String procId = runtimeService.startProcessInstanceByKey("catchErrorOnScriptTask").getId();
-    assertProcessEnded(procId);
+  	if (JvmUtil.isAtLeastJDK7()) {
+  		String procId = runtimeService.startProcessInstanceByKey("catchErrorOnScriptTask").getId();
+  		assertProcessEnded(procId);
+  	}
   }
 
   @Deployment(resources = {
