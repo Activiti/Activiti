@@ -16,9 +16,11 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -45,6 +47,40 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     assertProcessEnded(pi.getProcessInstanceId());
 
 
+  }
+  
+  @Deployment
+  public void testTimerEventWithStartAndDuration() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("timerEventWithStartAndDuration");
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(1, tasks.size());
+    Task task = tasks.get(0);
+    assertEquals("Task A", task.getName());
+
+    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    assertEquals(0, jobQuery.count());
+
+    runtimeService.setVariable(pi.getId(), "StartDate", new Date());
+    taskService.complete(task.getId());
+
+    jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    assertEquals(1, jobQuery.count());
+    Thread.sleep(7000);
+    jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    assertEquals(1, jobQuery.count());
+
+    waitForJobExecutorToProcessAllJobs(15000L, 25L);
+
+    jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    assertEquals(0, jobQuery.count());
+
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(1, tasks.size());
+    task = tasks.get(0);
+    assertEquals("Task B", task.getName());
+    taskService.complete(task.getId());
+
+    assertProcessEnded(pi.getProcessInstanceId());
   }
 
   @Deployment 
