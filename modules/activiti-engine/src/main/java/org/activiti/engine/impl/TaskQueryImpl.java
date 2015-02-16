@@ -67,6 +67,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String tenantIdLike;
   protected boolean withoutTenantId;
   protected String processInstanceId;
+  protected List<String> processInstanceIds;
   protected String executionId;
   protected Date createTime;
   protected Date createTimeBefore;
@@ -546,6 +547,28 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
       orQueryObject.processInstanceId = processInstanceId;
     } else {
       this.processInstanceId = processInstanceId;
+    }
+    return this;
+  }
+  
+  @Override
+  public TaskQuery processInstanceIdIn(List<String> processInstanceIds) {
+    if(processInstanceIds == null) {
+      throw new ActivitiIllegalArgumentException("Process instance id list is null");
+    }
+    if(processInstanceIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Process instance id list is empty");
+    }
+    for (String processInstanceId : processInstanceIds) {
+      if (processInstanceId == null) {
+        throw new ActivitiIllegalArgumentException("None of the given process instance ids can be null");
+      }
+    }
+
+    if (orActive) {
+      orQueryObject.processInstanceIds = processInstanceIds;
+    } else {
+      this.processInstanceIds = processInstanceIds;
     }
     return this;
   }
@@ -1237,6 +1260,9 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   }
   public String getProcessInstanceId() {
     return processInstanceId;
+  }
+  public List<String> getProcessInstanceIds() {
+    return processInstanceIds;
   }
   public String getExecutionId() {
     return executionId;
