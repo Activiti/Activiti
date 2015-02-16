@@ -337,6 +337,10 @@ For more information on Spring Boot, see link:$$http://projects.spring.io/spring
 
 The Spring Boot - Activiti integration is currently experimental. It has been developer together with Spring committers, but it is still early days. We welcome all to try it out and provide feedback. 
 
+==== Compatibility
+
+Spring Boot requires a JDK 7 runtime. It can be made to work with JDK6, but it will need configuration tweaks. Please check the Spring Boot documentation.
+
 ==== Getting started
 
 Spring Boot is all about convention over configuration. To get started, simply add the _spring-boot-starters-basic_ dependency to your project. For example for Maven:

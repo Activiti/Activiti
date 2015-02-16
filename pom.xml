@@ -832,6 +832,28 @@
       </modules>
     </profile>
     <profile>
+      <!-- 
+           A profile dedicated to JDK 6.
+           SpringBoot module is disabled as it needs JDK7+.
+      -->
+      <id>checkJdk6</id>
+      <modules>
+        <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-bpmn-layout</module>
+        <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-spring</module>
+        <module>modules/activiti-common-rest</module>
+        <module>modules/activiti-simple-workflow</module>
+        <module>modules/activiti-rest</module>
+        <module>modules/activiti-webapp-rest2</module>
+        <module>modules/activiti-cxf</module>
+        <module>modules/activiti-cdi</module>
+      </modules>
+    </profile>
+    <profile>
       <id>checkmule</id>
       <modules>
         <module>modules/activiti-cxf</module>
