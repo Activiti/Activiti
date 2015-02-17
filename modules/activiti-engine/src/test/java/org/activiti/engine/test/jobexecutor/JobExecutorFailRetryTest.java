@@ -52,10 +52,10 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
   	RetryFlag.reset();
   	runtimeService.startProcessInstanceByKey("failedJobRetryException");
   	
-  	executeJobExecutorForTime(14000, 500);
+  	waitForJobExecutorToProcessAllJobs(8000, 500);
   	// check that 2 tries are done
-  	assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
   	assertTrue(RetryFlag.visited);
+  	assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
   	
   }
 }
