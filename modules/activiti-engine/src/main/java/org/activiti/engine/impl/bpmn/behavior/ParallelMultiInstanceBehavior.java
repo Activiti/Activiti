@@ -101,11 +101,14 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
   public void leave(ActivityExecution execution) {
     callActivityEndListeners(execution);
     
+<<<<<<< HEAD
+=======
     if (resolveNrOfInstances(execution) == 0) {
     	// Empty collection, just leave.
     	super.leave(execution);
     }
     
+>>>>>>> upstream/master
     int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable());
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
@@ -118,6 +121,35 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       extraScope.remove();
     }
     
+<<<<<<< HEAD
+    setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
+    setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
+    logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
+    
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    executionEntity.inactivate();
+    executionEntity.getParent().forceUpdate();
+    
+    List<ActivityExecution> joinedExecutions = executionEntity.findInactiveConcurrentExecutions(execution.getActivity());
+    if (joinedExecutions.size() >= nrOfInstances || completionConditionSatisfied(execution)) {
+      
+      // Removing all active child executions (ie because completionCondition is true)
+      List<ExecutionEntity> executionsToRemove = new ArrayList<ExecutionEntity>();
+      for (ActivityExecution childExecution : executionEntity.getParent().getExecutions()) {
+        if (childExecution.isActive()) {
+          executionsToRemove.add((ExecutionEntity) childExecution);
+        }
+      }
+      for (ExecutionEntity executionToRemove : executionsToRemove) {
+        if (LOGGER.isDebugEnabled()) {
+          LOGGER.debug("Execution {} still active, but multi-instance is completed. Removing this execution.", executionToRemove);
+        }
+        executionToRemove.inactivate();
+        executionToRemove.deleteCascade("multi-instance completed");
+      }
+      executionEntity.takeAll(executionEntity.getActivity().getOutgoingTransitions(), joinedExecutions);
+    } 
+=======
     if (execution.getParent() != null) { // will be null in case of empty collection
     	setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
     	setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
@@ -154,6 +186,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     } else {
     	super.leave(executionEntity);
     }
+>>>>>>> upstream/master
   }
 
 }

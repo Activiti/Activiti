@@ -1,3 +1,12 @@
+<<<<<<< HEAD
+/**
+ * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
+ * License rights for this program may be obtained from Alfresco Software, Ltd.
+ * pursuant to a written agreement and any use of this program without such an
+ * agreement is prohibited.
+ */
+=======
+>>>>>>> upstream/master
 body, html {
     font-family: tahoma,arial,helvetica,sans-serif;
     font-size: 12px;
@@ -19,7 +28,11 @@ text * {
  */
 
 #oryx_canvas_htmlContainer {
+<<<<<<< HEAD
+    
+=======
 
+>>>>>>> upstream/master
 }
 
 .ORYX_Editor {
@@ -42,7 +55,11 @@ text * {
 
 /** Resizer for the Canvas **/
 .canvas_resize_indicator_area {
+<<<<<<< HEAD
+	
+=======
 
+>>>>>>> upstream/master
 	margin		:auto;
 	display		:block;
 	height		:30px;
@@ -51,6 +68,15 @@ text * {
 	text-align	:center;
 	top			:0;
 	width		:60%;
+<<<<<<< HEAD
+	
+}
+
+.canvas_resize_indicator {
+	
+	width		: 15px;
+	height		: 15px;	
+=======
 
 }
 
@@ -58,6 +84,7 @@ text * {
 
 	width		: 15px;
 	height		: 15px;
+>>>>>>> upstream/master
 	position	: absolute;
 	display		: block;
 	margin		: auto;
@@ -65,13 +92,21 @@ text * {
 }
 
 .canvas_resize_indicator:hover {
+<<<<<<< HEAD
+	
+=======
 
+>>>>>>> upstream/master
 	opacity		: 1.0;
 }
 /** End Resizer **/
 
 .Oryx_down {
+<<<<<<< HEAD
+	
+=======
 
+>>>>>>> upstream/master
 }
 
 .Oryx_button img {
@@ -144,8 +179,13 @@ text * {
 
 .resizer_southeast,
 .resizer_northwest {
+<<<<<<< HEAD
+	width:12px; 
+	height:12px; 
+=======
 	width:12px;
 	height:12px;
+>>>>>>> upstream/master
 	position:relative;
 	background-color: transparent;
 	background-repeat:no-repeat;

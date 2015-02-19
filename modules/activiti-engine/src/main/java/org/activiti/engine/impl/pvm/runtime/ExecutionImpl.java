@@ -225,6 +225,8 @@ public class ExecutionImpl implements
     return parent;
   }
   
+<<<<<<< HEAD
+=======
   @Override
   public String getSuperExecutionId() {
     ensureActivityInitialized();
@@ -235,6 +237,7 @@ public class ExecutionImpl implements
     return null;
   }
   
+>>>>>>> upstream/master
   public String getParentId() {
     ensureActivityInitialized();
     if(parent != null) {

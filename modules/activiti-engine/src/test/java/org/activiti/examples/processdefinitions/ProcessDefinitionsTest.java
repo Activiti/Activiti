@@ -15,9 +15,13 @@ package org.activiti.examples.processdefinitions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+<<<<<<< HEAD
+import java.util.List;
+=======
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+>>>>>>> upstream/master
 
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -80,6 +84,8 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     assertEquals("Insurance Damage Report 1", processDefinition.getName());
     assertTrue(processDefinition.getId().startsWith("IDR:1"));
     assertEquals(1, processDefinition.getVersion());
+<<<<<<< HEAD
+=======
     
     Set<String> queryDeploymentIds = new HashSet<String>();
     queryDeploymentIds.add(processDefinitions.get(0).getDeploymentId());
@@ -117,6 +123,7 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     processDefinition = processDefinitions.get(4);
     assertEquals("IDR", processDefinition.getKey());
     assertEquals("Insurance Damage Report 1", processDefinition.getName());
+>>>>>>> upstream/master
 
     deleteDeployments(deploymentIds);
   }

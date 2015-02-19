@@ -191,11 +191,14 @@ public interface HistoryManager extends Session {
 	 * Record a variable has been updated, if audit history is enabled.
 	 */
 	public abstract void recordVariableUpdate(VariableInstanceEntity variable);
+<<<<<<< HEAD
+=======
 	
 	/**
 	 * Record a variable has been deleted, if audit history is enabled.
 	 */
 	public abstract void recordVariableRemoved(VariableInstanceEntity variable);
+>>>>>>> upstream/master
 
 	/**
 	 * Creates a new comment to indicate a new {@link IdentityLink} has been created or deleted, 

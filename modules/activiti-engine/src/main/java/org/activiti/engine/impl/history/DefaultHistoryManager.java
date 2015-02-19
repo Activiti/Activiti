@@ -606,6 +606,29 @@ public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, 
     }
   }
   
+<<<<<<< HEAD
+  /* (non-Javadoc)
+ * @see org.activiti.engine.impl.history.HistoryManagerInterface#recordVariableUpdate(org.activiti.engine.impl.persistence.entity.VariableInstanceEntity)
+ */
+  @Override
+public void recordVariableUpdate(VariableInstanceEntity variable) {
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricVariableInstanceEntity historicProcessVariable = 
+          getDbSqlSession().findInCache(HistoricVariableInstanceEntity.class, variable.getId());
+      if (historicProcessVariable==null) {
+        historicProcessVariable = Context.getCommandContext()
+                .getHistoricVariableInstanceEntityManager()
+                .findHistoricVariableInstanceByVariableInstanceId(variable.getId());
+      }
+      
+      if (historicProcessVariable!=null) {
+        historicProcessVariable.copyValue(variable);
+      } else {
+        HistoricVariableInstanceEntity.copyAndInsert(variable);
+      }
+    }
+  }
+=======
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -650,6 +673,7 @@ public void recordHistoricDetailVariableCreate(VariableInstanceEntity variable, 
 			} 
 		}
 	}
+>>>>>>> upstream/master
   
   // Comment related history
   

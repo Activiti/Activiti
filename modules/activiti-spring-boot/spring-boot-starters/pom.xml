@@ -6,14 +6,22 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>spring-boot</artifactId>
+<<<<<<< HEAD
+        <version>5.17.0</version>
+=======
         <version>5.17.1-SNAPSHOT</version>
+>>>>>>> upstream/master
     </parent>
 
     <artifactId>spring-boot-starters</artifactId>
 
     <packaging>pom</packaging>
     <properties>
+<<<<<<< HEAD
+        <spring-integration-java-dsl.version>1.0.0.M3</spring-integration-java-dsl.version>
+=======
         <spring-integration-java-dsl.version>1.0.0.RELEASE</spring-integration-java-dsl.version>
+>>>>>>> upstream/master
     </properties>
     <modules>
         <module>spring-boot-starter-basic</module>

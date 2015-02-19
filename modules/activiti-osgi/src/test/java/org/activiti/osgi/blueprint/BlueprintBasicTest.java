@@ -36,7 +36,10 @@ import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
+<<<<<<< HEAD
+=======
 import org.activiti.osgi.blueprint.bean.ActivityBehaviourBean;
+>>>>>>> upstream/master
 import org.activiti.osgi.blueprint.bean.SimpleBean;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -80,11 +83,19 @@ public class BlueprintBasicTest {
   @Configuration
   public Option[] createConfiguration() {
     Option[] coreBundles = options(
+<<<<<<< HEAD
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("5.17.0"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("5.17.0"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("5.17.0"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version("5.17.0"),
+        mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("5.17.0"),
+=======
         mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-model").version("5.17.1-SNAPSHOT"),
         mavenBundle().groupId("org.activiti").artifactId("activiti-bpmn-converter").version("5.17.1-SNAPSHOT"),
         mavenBundle().groupId("org.activiti").artifactId("activiti-process-validation").version("5.17.1-SNAPSHOT"),
         mavenBundle().groupId("org.activiti").artifactId("activiti-image-generator").version("5.17.1-SNAPSHOT"),
         mavenBundle().groupId("org.activiti").artifactId("activiti-engine").version("5.17.1-SNAPSHOT"),
+>>>>>>> upstream/master
         mavenBundle().groupId("org.apache.commons").artifactId("commons-lang3").version("3.3.2"),
         mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-core").version("2.2.3"),
         mavenBundle().groupId("com.fasterxml.jackson.core").artifactId("jackson-databind").version("2.2.3"),
@@ -142,7 +153,10 @@ public class BlueprintBasicTest {
           .bundle()
           .add("OSGI-INF/blueprint/context.xml", new FileInputStream(new File("src/test/resources/task/context.xml")))
           .add(SimpleBean.class)
+<<<<<<< HEAD
+=======
           .add(ActivityBehaviourBean.class)
+>>>>>>> upstream/master
           .set(Constants.BUNDLE_SYMBOLICNAME, "org.activiti.osgi.task")
           .set(Constants.DYNAMICIMPORT_PACKAGE, "*")
           .build();
@@ -175,10 +189,13 @@ public class BlueprintBasicTest {
         .variableName("visited")
         .singleResult();
     assertTrue((Boolean) variable.getValue());
+<<<<<<< HEAD
+=======
     HistoricVariableInstance activityBehaviourVisited = historyService.createHistoricVariableInstanceQuery()
             .processInstanceId(processInstance.getId())
             .variableName("visitedActivityBehaviour")
             .singleResult();
     assertTrue((Boolean) activityBehaviourVisited.getValue());
+>>>>>>> upstream/master
   }
 }

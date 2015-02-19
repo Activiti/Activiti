@@ -45,7 +45,10 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String deploymentId;
   protected List<String> deploymentIds;
   protected String processInstanceId;
+<<<<<<< HEAD
+=======
   protected List<String> processInstanceIds;
+>>>>>>> upstream/master
   protected String processInstanceBusinessKey;
   protected String processInstanceBusinessKeyLike;
   protected String processInstanceBusinessKeyLikeIgnoreCase;
@@ -146,6 +149,8 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
   
+<<<<<<< HEAD
+=======
   @Override
   public HistoricTaskInstanceQueryImpl processInstanceIdIn(List<String> processInstanceIds) {
     if(processInstanceIds == null) {
@@ -168,6 +173,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
   
+>>>>>>> upstream/master
   public HistoricTaskInstanceQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
     if (inOrStatement) {
       this.orQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
@@ -1212,9 +1218,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+<<<<<<< HEAD
+=======
   public List<String> getProcessInstanceIds() {
     return processInstanceIds;
   }
+>>>>>>> upstream/master
   public String getProcessInstanceBusinessKey() {
     return processInstanceBusinessKey;
   }

@@ -1,2 +1,6 @@
+<<<<<<< HEAD
 # The LocalProcessEngineLookup implementation is enabled by default 
+=======
+# The LocalProcessEngineLookup implementation is enabled by default 
+>>>>>>> upstream/master
 org.activiti.cdi.impl.LocalProcessEngineLookup

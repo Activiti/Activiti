@@ -14,6 +14,8 @@ public class JvmUtil {
 		return version.startsWith("1.8");
 	}
 	
+<<<<<<< HEAD
+=======
 	public static boolean isJDK7() {
 		String version = System.getProperty("java.version");
 		return version.startsWith("1.7");
@@ -23,4 +25,5 @@ public class JvmUtil {
 		return isJDK7() || isJDK8();
 	}
 	
+>>>>>>> upstream/master
 }

@@ -230,6 +230,8 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     }
   }
   
+<<<<<<< HEAD
+=======
   @Deployment
   public void testGetVariableLocal() {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("getVariableLocal");
@@ -238,6 +240,7 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     assertNull(value);
   }
 
+>>>>>>> upstream/master
   /**
    * A command to get the names of the variables
    * @author Roman Smirnov

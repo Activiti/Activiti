@@ -13,9 +13,13 @@
 package org.activiti.engine.test.bpmn.gateway;
 
 import java.util.ArrayList;
+<<<<<<< HEAD
+import java.util.List;
+=======
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+>>>>>>> upstream/master
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -39,6 +43,8 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
   }
 
   @Deployment
+<<<<<<< HEAD
+=======
   public void testSkipExpression() {
     for (int i = 1; i <= 3; i++) {
       Map<String,Object> variables = new HashMap<String,Object>();
@@ -52,6 +58,7 @@ public class ExclusiveGatewayTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
+>>>>>>> upstream/master
   public void testMergingExclusiveGateway() {
     runtimeService.startProcessInstanceByKey("exclusiveGwMerging");
     assertEquals(3, taskService.createTaskQuery().count());

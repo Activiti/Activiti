@@ -67,7 +67,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String tenantIdLike;
   protected boolean withoutTenantId;
   protected String processInstanceId;
+<<<<<<< HEAD
+=======
   protected List<String> processInstanceIds;
+>>>>>>> upstream/master
   protected String executionId;
   protected Date createTime;
   protected Date createTimeBefore;
@@ -551,6 +554,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
   
+<<<<<<< HEAD
+=======
   @Override
   public TaskQuery processInstanceIdIn(List<String> processInstanceIds) {
     if(processInstanceIds == null) {
@@ -573,6 +578,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
   
+>>>>>>> upstream/master
   public TaskQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
     if(orActive) {
       orQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
@@ -1261,9 +1267,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+<<<<<<< HEAD
+=======
   public List<String> getProcessInstanceIds() {
     return processInstanceIds;
   }
+>>>>>>> upstream/master
   public String getExecutionId() {
     return executionId;
   }

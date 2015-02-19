@@ -55,7 +55,11 @@ xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
 
 The +process+ element has two attributes:
 
+<<<<<<< HEAD
+*  *id*: this attribute is *required* and maps to the *key* property of an Activiti + ProcessDefinition+ object. This +id+ can then be used to start a new process instance of the process definition, through the  +startProcessInstanceByKey+ method on the +RuntimeService+. This method will always take the *latest deployed version* of the process definition.
+=======
 *  *id*: this attribute is *required* and maps to the *key* property of an Activiti +ProcessDefinition+ object. This +id+ can then be used to start a new process instance of the process definition, through the  +startProcessInstanceByKey+ method on the +RuntimeService+. This method will always take the *latest deployed version* of the process definition.
+>>>>>>> upstream/master
 
 [source,java,linenums]
 ----
@@ -117,7 +121,11 @@ What we see is a <<bpmnNoneStartEvent,none Start Event>> (circle on the left), f
 
 The XML version of this business process (__FinancialReportProcess.bpmn20.xml__) looks as shown below. It's easy to recognize the main elements of our process (click on the links for going to the detailed section of that BPMN 2.0 construct):
 
+<<<<<<< HEAD
+* The <<bpmnNoneStartEvent,(none) start event>> learns us what the _entry point_ to the process is.
+=======
 * The <<bpmnNoneStartEvent,(none) start event>> tells us what the _entry point_ to the process is.
+>>>>>>> upstream/master
 * The <<bpmnUserTask,User Tasks>> declarations are the representation of the human tasks of our process. Note that the first task is assigned to the _accountancy_ group, while the second task is assigned to the _management_ group. See <<bpmnUserTaskAssignment,the section on user task assignment>> for more information on how users and groups can be assigned to user tasks.
 * The process ends when the <<bpmnNoneEndEvent,none end event>> is reached.
 * The elements are connected with each other through <<bpmnSequenceFlow,sequence flows>>. These sequence flow have a +source+ and +target+, defining the _direction_ of the sequence flow.
@@ -202,7 +210,11 @@ Now we can start a new process instance using  the +id+ we defined in the proces
 ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");
 ----
 
+<<<<<<< HEAD
+This will create a process instance thatwill first go through the start event. After the start event, it follows all the outgoing sequence flows (only one in this case) and the first task ('write monthly financial report') is reached. The Activiti engine will now store a task in the persistent database. At this point, the user or group assignments attached to the task are resolved and also stored in the database. It's important to note that the Activiti engine will continue process execution steps until it reaches a _wait state_, such as the user task. At such a wait state, the current state of the process instance is stored in the database. It remains in that state until a user decides to complete their task. At that point, the engine will continue until it reaches a new wait state or the end of the process. When the engine reboots or crashes in the meantime, the state of the process is safe and well in the database.
+=======
 This will create a process instance that will first go through the start event. After the start event, it follows all the outgoing sequence flows (only one in this case) and the first task ('write monthly financial report') is reached. The Activiti engine will now store a task in the persistent database. At this point, the user or group assignments attached to the task are resolved and also stored in the database. It's important to note that the Activiti engine will continue process execution steps until it reaches a _wait state_, such as the user task. At such a wait state, the current state of the process instance is stored in the database. It remains in that state until a user decides to complete their task. At that point, the engine will continue until it reaches a new wait state or the end of the process. When the engine reboots or crashes in the meantime, the state of the process is safe and well in the database.
+>>>>>>> upstream/master
 
 After the task is created, the +startProcessInstanceByKey+ method will return since the user task activity is a _wait state_. In this case, the task is assigned to a group, which means that every member of the group is a *candidate* to perform the task.
 
@@ -266,7 +278,11 @@ TaskService taskService = processEngine.getTaskService();
 List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("accountancy").list();
 ----
 
+<<<<<<< HEAD
+Since we've configured our +ProcessEngine+ to use the same database as the demo setup is using, we can now log into link:$$http://localhost:8080/activiti-explorer/$$[Activiti Explorer]. By default, no user is in the _accountancy_ group. Login with kermit/kermit, click Groups and then "Create group". Then click Users and add the group to fozzie. Now login with fozzie/fozzie, and we will find  that we can start our business process after selecting the _Processes_ page and and clicking on the _'Start Process'_ link in the _'Actions'_ column corresponding to the _'Monthly financial report'_ process.
+=======
 Since we've configured our +ProcessEngine+ to use the same database as the demo setup is using, we can now log into link:$$http://localhost:8080/activiti-explorer/$$[Activiti Explorer]. By default, no user is in the _accountancy_ group. Login with kermit/kermit, click Groups and then "Create group". Then click Users and add the group to fozzie. Now login with fozzie/fozzie, and we will find  that we can start our business process after selecting the _Processes_ page and clicking on the _'Start Process'_ link in the _'Actions'_ column corresponding to the _'Monthly financial report'_ process.
+>>>>>>> upstream/master
 
 image::images/bpmn.financial.report.example.start.process.png[align="center"]
 
@@ -419,7 +435,11 @@ public class TenMinuteTutorial {
 ==== Future enhancements
 
 
+<<<<<<< HEAD
+It's easy to see that this business process is too simple to be usable in reality. However, as you are going through the BPMN 2.0 constructs available in Activiti, you will be able to enhance the business process by :
+=======
 It's easy to see that this business process is too simple to be usable in reality. However, as you are going through the BPMN 2.0 constructs available in Activiti, you will be able to enhance the business process by:
+>>>>>>> upstream/master
 
 
 * defining *gateways* that act as decisions. This way, a manager could reject the financial report which would recreate the task for the accountant.

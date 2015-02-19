@@ -31,6 +31,29 @@ public class JPAEntityScanner {
 
   public EntityMetaData scanClass(Class<?> clazz) {
     EntityMetaData metaData = new EntityMetaData();
+<<<<<<< HEAD
+    metaData.setEntityClass(clazz);
+    
+    // Class should have @Entity annotation
+    boolean isEntity = isEntityAnnotationPresent(clazz);
+    metaData.setJPAEntity(isEntity);
+    
+    if(isEntity) {
+      // Try to find a field annotated with @Id
+      Field idField = getIdField(clazz);
+      if(idField != null) {
+        metaData.setIdField(idField);
+      } else {
+        // Try to find a method annotated with @Id
+        Method idMethod = getIdMethod(clazz);
+        if(idMethod != null) {
+          metaData.setIdMethod(idMethod);
+        } else {
+          throw new ActivitiException("Cannot find field or method with annotation @Id on class '" +
+            clazz.getName() + "', only single-valued primary keys are supported on JPA-enities");
+        }
+      }
+=======
     // in case with JPA Enhancement
     // method should iterate over superclasses list
     // to find @Entity and @Id annotations
@@ -59,6 +82,7 @@ public class JPAEntityScanner {
         break;
       }
       clazz = clazz.getSuperclass();
+>>>>>>> upstream/master
     }
     return metaData;
   }

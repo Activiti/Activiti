@@ -30,7 +30,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+<<<<<<< HEAD
+=======
 import org.springframework.web.bind.annotation.ResponseStatus;
+>>>>>>> upstream/master
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -66,7 +69,10 @@ public class TaskResource extends TaskBaseResource {
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}", method = RequestMethod.POST)
+<<<<<<< HEAD
+=======
   @ResponseStatus(value = HttpStatus.OK)
+>>>>>>> upstream/master
   public void executeTaskAction(@PathVariable String taskId, @RequestBody TaskActionRequest actionRequest) {
     if (actionRequest == null) {
       throw new ActivitiException("A request body was expected when executing a task action.");

@@ -13,12 +13,18 @@
 
 package org.activiti.engine.impl.persistence.deploy;
 
+<<<<<<< HEAD
+import java.util.List;
+import java.util.Map;
+
+=======
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.converter.BpmnXMLConverter;
 import org.activiti.bpmn.model.BpmnModel;
+>>>>>>> upstream/master
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -30,9 +36,12 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+<<<<<<< HEAD
+=======
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.util.io.BytesStreamSource;
 import org.activiti.engine.repository.Deployment;
+>>>>>>> upstream/master
 import org.activiti.engine.repository.ProcessDefinition;
 
 
@@ -44,7 +53,10 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class DeploymentManager {
 
   protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
+<<<<<<< HEAD
+=======
   protected DeploymentCache<BpmnModel> bpmnModelCache;
+>>>>>>> upstream/master
   protected DeploymentCache<Object> knowledgeBaseCache; // Needs to be object to avoid an import to Drools in this core class
   protected List<Deployer> deployers;
   
@@ -78,6 +90,8 @@ public class DeploymentManager {
     return processDefinition;
   }
   
+<<<<<<< HEAD
+=======
   public BpmnModel getBpmnModelById(String processDefinitionId) {
     if (processDefinitionId == null) {
       throw new ActivitiIllegalArgumentException("Invalid process definition id : null");
@@ -114,6 +128,7 @@ public class DeploymentManager {
     return bpmnModel;
   }
   
+>>>>>>> upstream/master
   public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
     ProcessDefinitionEntity processDefinition = Context
       .getCommandContext()
@@ -228,6 +243,8 @@ public class DeploymentManager {
     this.processDefinitionCache = processDefinitionCache;
   }
   
+<<<<<<< HEAD
+=======
   public DeploymentCache<BpmnModel> getBpmnModelCache() {
     return bpmnModelCache;
   }
@@ -236,6 +253,7 @@ public class DeploymentManager {
     this.bpmnModelCache = bpmnModelCache;
   }
 
+>>>>>>> upstream/master
   public DeploymentCache<Object> getKnowledgeBaseCache() {
     return knowledgeBaseCache;
   }

@@ -17,9 +17,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+<<<<<<< HEAD
+import java.util.List;
+=======
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+>>>>>>> upstream/master
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricIdentityLink;
@@ -27,7 +31,10 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+<<<<<<< HEAD
+=======
 import org.activiti.engine.runtime.ProcessInstanceBuilder;
+>>>>>>> upstream/master
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -326,8 +333,13 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     
     // Verify orderByProcessInstanceEndTime
     List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().list();
+<<<<<<< HEAD
+//TODO: inconsistent result    assertEquals(processInstance1.getId(), historicProcessInstances.get(0).getId());
+// TODO: inconsistent result    assertEquals(processInstance2.getId(), historicProcessInstances.get(1).getId());
+=======
     assertEquals(processInstance1.getId(), historicProcessInstances.get(0).getId());
     assertEquals(processInstance2.getId(), historicProcessInstances.get(1).getId());
+>>>>>>> upstream/master
     
     // Verify again, with variables included (bug reported on that)
     historicProcessInstances = historyService.createHistoricProcessInstanceQuery().orderByProcessInstanceEndTime().desc().includeProcessVariables().list();
@@ -419,6 +431,8 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     	 assertEquals(0L, historyService.createHistoricProcessInstanceQuery().count());
     }
   }
+<<<<<<< HEAD
+=======
   
   @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
   public void testHistoricProcessInstanceName() {
@@ -485,4 +499,5 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
   	repositoryService.deleteDeployment(deploymentId, true);
   }
   
+>>>>>>> upstream/master
 }

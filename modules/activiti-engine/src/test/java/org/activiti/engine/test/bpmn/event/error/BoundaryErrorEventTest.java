@@ -22,7 +22,10 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.CollectionUtil;
+<<<<<<< HEAD
+=======
 import org.activiti.engine.impl.util.JvmUtil;
+>>>>>>> upstream/master
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -370,6 +373,14 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   }
 
   @Deployment(resources = {
+<<<<<<< HEAD
+          "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnScriptTask.bpmn20.xml"
+  })
+  public void testCatchErrorOnScriptTask() {
+      String procId = runtimeService.startProcessInstanceByKey("catchErrorOnScriptTask").getId();
+      assertProcessEnded(procId);
+  }
+=======
           "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testCatchErrorOnGroovyScriptTask.bpmn20.xml"
   })
   public void testCatchErrorOnGroovyScriptTask() {
@@ -386,6 +397,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
   		assertProcessEnded(procId);
   	}
   }
+>>>>>>> upstream/master
 
   @Deployment(resources = {
           "org/activiti/engine/test/bpmn/event/error/BoundaryErrorEventTest.testUncaughtErrorOnScriptTaskWithEmptyErrorEventDefinition.bpmn20.xml"

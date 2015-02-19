@@ -3,8 +3,12 @@
   <bean id="testBean" class="org.activiti.osgi.blueprint.bean.SimpleBean" />
   
   <service ref="testBean" interface="org.activiti.engine.delegate.JavaDelegate" />
+<<<<<<< HEAD
+  
+=======
 
   <bean id="activityBehaviourBean" class="org.activiti.osgi.blueprint.bean.ActivityBehaviourBean" />
 
   <service ref="activityBehaviourBean" interface="org.activiti.engine.impl.pvm.delegate.ActivityBehavior" />
+>>>>>>> upstream/master
 </blueprint>

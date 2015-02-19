@@ -43,19 +43,31 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @ConditionalOnClass(name = {"org.activiti.rest.service.api.RestUrls", "org.springframework.web.servlet.DispatcherServlet"})
 public class RestApiAutoConfiguration {
 
+<<<<<<< HEAD
+  @Bean()
+=======
   @Bean
+>>>>>>> upstream/master
   public RestResponseFactory restResponseFactory() {
     RestResponseFactory restResponseFactory = new RestResponseFactory();
     return restResponseFactory;
   }
 
+<<<<<<< HEAD
+  @Bean()
+=======
   @Bean
+>>>>>>> upstream/master
   public ContentTypeResolver contentTypeResolver() {
     ContentTypeResolver resolver = new DefaultContentTypeResolver();
     return resolver;
   }
   
+<<<<<<< HEAD
+  @Bean()
+=======
   @Bean
+>>>>>>> upstream/master
   public ObjectMapper objectMapper() {
     // To avoid instantiating and configuring the mapper everywhere
     ObjectMapper mapper = new ObjectMapper();

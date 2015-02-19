@@ -13,7 +13,10 @@
 
 package org.activiti.engine.test.api.runtime;
 
+<<<<<<< HEAD
+=======
 import java.util.Arrays;
+>>>>>>> upstream/master
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -1017,6 +1020,8 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
         assertNotNull(e);
         assertTrue(e instanceof ClassCastException);
     }
+<<<<<<< HEAD
+=======
     
     // Test for http://jira.codehaus.org/browse/ACT-2186
     @Deployment(resources={
@@ -1052,4 +1057,5 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
 	    }
     }
     
+>>>>>>> upstream/master
 }

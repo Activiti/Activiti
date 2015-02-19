@@ -15,9 +15,13 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.Iterator;
 
 import org.activiti.engine.ActivitiException;
+<<<<<<< HEAD
+import org.activiti.engine.impl.Condition;
+=======
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
+>>>>>>> upstream/master
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -62,6 +66,15 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     Iterator<PvmTransition> transitionIterator = execution.getActivity().getOutgoingTransitions().iterator();
     while (outgoingSeqFlow == null && transitionIterator.hasNext()) {
       PvmTransition seqFlow = transitionIterator.next();
+<<<<<<< HEAD
+      
+      Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+      if ( (condition == null && (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) ) 
+              || (condition != null && condition.evaluate(execution)) ) {
+        if (log.isDebugEnabled()) {
+          log.debug("Sequence flow '{}'selected as outgoing sequence flow.", seqFlow.getId());
+        }
+=======
       Expression skipExpression = seqFlow.getSkipExpression();
       
       if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
@@ -75,6 +88,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
         }
       }
       else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)){
+>>>>>>> upstream/master
         outgoingSeqFlow = seqFlow;
       }
     }

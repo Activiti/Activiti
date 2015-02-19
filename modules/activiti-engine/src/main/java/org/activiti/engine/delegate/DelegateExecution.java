@@ -58,11 +58,14 @@ public interface DelegateExecution extends VariableScope {
   String getParentId();
   
   /**
+<<<<<<< HEAD
+=======
    * Gets the id of the calling execution. If not null, the execution is part of a subprocess. 
    */
   String getSuperExecutionId();
   
   /**
+>>>>>>> upstream/master
    * Gets the id of the current activity.
    */
   String getCurrentActivityId();

@@ -14,7 +14,10 @@
 package org.activiti.standalone.history;
 
 import java.text.SimpleDateFormat;
+<<<<<<< HEAD
+=======
 import java.util.Arrays;
+>>>>>>> upstream/master
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -1376,6 +1379,8 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals("It is I, le binary", new String(bytes));
     
    }
+<<<<<<< HEAD
+=======
    
    // Test for http://jira.codehaus.org/browse/ACT-2186
    @Deployment(resources={
@@ -1430,4 +1435,5 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
       
    }
    
+>>>>>>> upstream/master
 }

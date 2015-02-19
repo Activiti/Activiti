@@ -463,6 +463,8 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     assertTrue(processInstance.isEnded());
   }
   
+<<<<<<< HEAD
+=======
   @Deployment
   public void testSkipExpression() {
     Map<String, Object> varMap = new HashMap<String, Object>();
@@ -492,6 +494,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     assertTrue(processInstance.isEnded());    
   }
   
+>>>>>>> upstream/master
   /*@Deployment
   public void testAsyncBehavior() {
     for (int i = 0; i < 100; i++) {

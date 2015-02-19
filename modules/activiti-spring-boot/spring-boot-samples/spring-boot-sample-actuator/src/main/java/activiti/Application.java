@@ -8,18 +8,29 @@ import org.activiti.engine.TaskService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+<<<<<<< HEAD
+=======
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+>>>>>>> upstream/master
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 /**
+<<<<<<< HEAD
+ * Demonstrates the actuator
+ */
+@Configuration
+@ComponentScan
+@EnableAutoConfiguration
+=======
  * Demonstrates the Activiti Actuator endpoints
  * available <a href="http://localhost:8080/activiti/processes/waiter">on localhost</a>
  * where, in this case, {@code waiter} is the name of the process definition.
  *
  */
 @SpringBootApplication
+>>>>>>> upstream/master
 public class Application {
 
     @Bean

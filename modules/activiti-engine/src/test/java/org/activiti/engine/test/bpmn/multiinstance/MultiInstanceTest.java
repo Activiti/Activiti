@@ -1182,6 +1182,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   		
   	}
   }
+<<<<<<< HEAD
+=======
   
   @Deployment
   public void testEmptyCollectionOnParallelUserTask() {
@@ -1215,5 +1217,6 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
   	}
   }
+>>>>>>> upstream/master
 
 }

@@ -12,6 +12,12 @@
  */
 package org.activiti.engine.impl;
 
+<<<<<<< HEAD
+import java.util.ArrayList;
+import java.util.List;
+
+=======
+>>>>>>> upstream/master
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
@@ -19,10 +25,13 @@ import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ExecutionQuery;
 
+<<<<<<< HEAD
+=======
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+>>>>>>> upstream/master
 
 /**
  * @author Joram Barrez
@@ -55,8 +64,11 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected boolean isActive;
   protected String involvedUser;
+<<<<<<< HEAD
+=======
   protected Set<String> processDefinitionKeys;
   protected Set<String> processDefinitionIds;
+>>>>>>> upstream/master
 
   // Not exposed in API, but here for the ProcessInstanceQuery support, since the name lives on the
   // Execution entity/table
@@ -333,12 +345,15 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
   public void setInvolvedUser(String involvedUser) {
     this.involvedUser = involvedUser;
   }
+<<<<<<< HEAD
+=======
   public Set<String> getProcessDefinitionIds() {
     return processDefinitionIds;
   }
   public Set<String> getProcessDefinitionKeys() {
     return processDefinitionKeys;
   }
+>>>>>>> upstream/master
   public String getParentId() {
     return parentId;
   }

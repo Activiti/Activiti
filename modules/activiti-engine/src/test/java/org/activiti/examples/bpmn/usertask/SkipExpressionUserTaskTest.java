@@ -35,6 +35,8 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
     List<Task> tasks3 = taskService.createTaskQuery().list();
     assertEquals(0, tasks3.size());
   }
+<<<<<<< HEAD
+=======
 
   @Deployment
   public void testSkipMultipleTasks()
@@ -50,4 +52,5 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
     assertEquals(1, tasks.size());
     assertEquals("Task3", tasks.get(0).getName());
   }
+>>>>>>> upstream/master
 }

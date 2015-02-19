@@ -6,6 +6,15 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>spring-boot-starters</artifactId>
+<<<<<<< HEAD
+        <version>5.17.0</version>
+    </parent>
+
+    <artifactId>spring-boot-starter-basic</artifactId>
+
+
+    <dependencies>
+=======
         <version>5.17.1-SNAPSHOT</version>
     </parent>
 
@@ -28,6 +37,7 @@
             <optional>true</optional>
         </dependency>
 
+>>>>>>> upstream/master
         <!-- common -->
         <dependency>
             <groupId>org.activiti</groupId>
@@ -36,7 +46,10 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring</artifactId>
+<<<<<<< HEAD
+=======
 
+>>>>>>> upstream/master
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

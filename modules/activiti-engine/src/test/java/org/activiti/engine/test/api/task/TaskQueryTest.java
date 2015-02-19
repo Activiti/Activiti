@@ -1986,6 +1986,8 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
         .taskId("invalid")
         .processCategoryNotIn(Collections.singletonList("Examples")).count());
   }
+<<<<<<< HEAD
+=======
 
   @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
   public void testProcessInstanceIdIn() throws Exception {
@@ -2039,6 +2041,7 @@ public class TaskQueryTest extends PluggableActivitiTestCase {
     assertEquals(0, taskService.createTaskQuery().or().taskId("invalid").processInstanceIdIn(Arrays.asList("unexisting1", "unexisting2")).count());
   }
  
+>>>>>>> upstream/master
  
   @Deployment(resources={"org/activiti/engine/test/api/task/TaskQueryTest.testProcessDefinition.bpmn20.xml"})
   public void testProcessInstanceBusinessKey() throws Exception {
