@@ -51,6 +51,10 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
   
   @Deployment
   public void testTimerEventWithStartAndDuration() throws Exception {
+  	
+  	Date testStartTime = new Date();
+  	processEngineConfiguration.getClock().setCurrentTime(testStartTime);
+  	
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("timerEventWithStartAndDuration");
     List<Task> tasks = taskService.createTaskQuery().list();
     assertEquals(1, tasks.size());
@@ -60,15 +64,21 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
     JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
     assertEquals(0, jobQuery.count());
 
-    runtimeService.setVariable(pi.getId(), "StartDate", new Date());
+    Date startDate = new Date();
+    runtimeService.setVariable(pi.getId(), "StartDate", startDate);
     taskService.complete(task.getId());
 
     jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
     assertEquals(1, jobQuery.count());
-    Thread.sleep(7000);
+    
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startDate.getTime() + 7000L));
+    
     jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
     assertEquals(1, jobQuery.count());
+    jobQuery = managementService.createJobQuery().processInstanceId(pi.getId()).executable();
+    assertEquals(0, jobQuery.count());
 
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startDate.getTime() + 11000L));
     waitForJobExecutorToProcessAllJobs(15000L, 25L);
 
     jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
