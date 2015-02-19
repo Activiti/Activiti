@@ -19,7 +19,7 @@ import java.util.List;
  * @author Tijs Rademakers
  */
 public abstract class Activity extends FlowNode {
-
+ 
   protected boolean asynchronous;
   protected boolean notExclusive;
   protected String defaultFlow;
@@ -30,6 +30,7 @@ public abstract class Activity extends FlowNode {
   protected List<DataAssociation> dataOutputAssociations = new ArrayList<DataAssociation>();
   protected List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>();
   protected String failedJobRetryTimeCycleValue;
+  protected List<MapExceptionEntry> mapExceptions = new ArrayList<MapExceptionEntry>(); 
 
   public boolean isAsynchronous() {
     return asynchronous;
@@ -127,4 +128,13 @@ public abstract class Activity extends FlowNode {
       }
     }
   }
+  
+  public List<MapExceptionEntry> getMapExceptions() {
+    return mapExceptions;
+  }
+  
+  public void setMapExceptions(List<MapExceptionEntry> mapExceptions) {
+    this.mapExceptions = mapExceptions;
+  }
+  
 }
