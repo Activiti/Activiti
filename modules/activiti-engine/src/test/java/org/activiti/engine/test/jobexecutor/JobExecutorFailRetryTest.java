@@ -58,4 +58,32 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
   	assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
   	
   }
+  
+  // checks if the proper exception is thrown after all tries are exhausted
+/*
+  @Deployment
+  public void testFailedServiceTaskExceptionCancelActivity () {
+ 
+    RetryFailingDelegate.shallThrow = true;  // throw exception in Service delegate
+    RetryFailingDelegate.resetTimeList();
+    RetryFlag.reset();
+    runtimeService.startProcessInstanceByKey("failedJobRetryException");
+    
+    waitForJobExecutorToProcessAllJobs(8000, 500);
+    assertTrue(RetryFlag.visited);
+    assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
+    
+  }
+  
+  */
+  @Deployment
+  public void testFailedServiceTaskExceptionInParallelBranch() {
+     RetryFailingDelegate.resetTimeList();
+     RetryFailingDelegate.shallThrow = true;
+     runtimeService.startProcessInstanceByKey("failedRetryExceptionInBranch");
+     waitForJobExecutorToProcessAllJobs(8000, 500);
+     assertTrue(RetryFlag.visited);
+   
+  }
+  
 }
