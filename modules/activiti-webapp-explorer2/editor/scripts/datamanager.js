@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
  * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
  * License rights for this program may be obtained from Alfresco Software, Ltd.
  * pursuant to a written agreement and any use of this program without such an
@@ -9,6 +10,8 @@
  */
 
 /*
+=======
+>>>>>>> upstream/master
  * Save and triple generation behaviour. Use this area to configure
  * data management to your needs.
  */

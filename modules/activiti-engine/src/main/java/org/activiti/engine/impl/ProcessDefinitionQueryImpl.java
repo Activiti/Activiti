@@ -15,6 +15,10 @@ package org.activiti.engine.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+<<<<<<< HEAD
+=======
+import java.util.Set;
+>>>>>>> upstream/master
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -44,6 +48,10 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   protected String name;
   protected String nameLike;
   protected String deploymentId;
+<<<<<<< HEAD
+=======
+  protected Set<String> deploymentIds;
+>>>>>>> upstream/master
   protected String key;
   protected String keyLike;
   protected String resourceName;
@@ -123,6 +131,17 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     this.deploymentId = deploymentId;
     return this;
   }
+<<<<<<< HEAD
+=======
+  
+  public ProcessDefinitionQueryImpl deploymentIds(Set<String> deploymentIds) {
+    if (deploymentIds == null) {
+      throw new ActivitiIllegalArgumentException("ids are null");
+    }
+    this.deploymentIds = deploymentIds;
+    return this;
+  }
+>>>>>>> upstream/master
 
   public ProcessDefinitionQueryImpl processDefinitionKey(String key) {
     if (key == null) {
@@ -304,6 +323,12 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   public String getDeploymentId() {
     return deploymentId;
   }
+<<<<<<< HEAD
+=======
+  public Set<String> getDeploymentIds() {
+    return deploymentIds;
+  }
+>>>>>>> upstream/master
   public String getId() {
     return id;
   }
@@ -347,6 +372,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
     return categoryNotEquals;
   }
   public String getTenantId() {
+<<<<<<< HEAD
 		return tenantId;
 	}
 	public String getTenantIdLike() {
@@ -354,6 +380,15 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
 	}
 	public boolean isWithoutTenantId() {
 		return withoutTenantId;
+=======
+    return tenantId;
+  }
+  public String getTenantIdLike() {
+    return tenantIdLike;
+  }
+  public boolean isWithoutTenantId() {
+    return withoutTenantId;
+>>>>>>> upstream/master
 	}
 
 	public ProcessDefinitionQueryImpl startableByUser(String userId) {

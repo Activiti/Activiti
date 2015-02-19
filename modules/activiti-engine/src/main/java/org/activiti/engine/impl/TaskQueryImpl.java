@@ -67,6 +67,10 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String tenantIdLike;
   protected boolean withoutTenantId;
   protected String processInstanceId;
+<<<<<<< HEAD
+=======
+  protected List<String> processInstanceIds;
+>>>>>>> upstream/master
   protected String executionId;
   protected Date createTime;
   protected Date createTimeBefore;
@@ -550,6 +554,31 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
   
+<<<<<<< HEAD
+=======
+  @Override
+  public TaskQuery processInstanceIdIn(List<String> processInstanceIds) {
+    if(processInstanceIds == null) {
+      throw new ActivitiIllegalArgumentException("Process instance id list is null");
+    }
+    if(processInstanceIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Process instance id list is empty");
+    }
+    for (String processInstanceId : processInstanceIds) {
+      if (processInstanceId == null) {
+        throw new ActivitiIllegalArgumentException("None of the given process instance ids can be null");
+      }
+    }
+
+    if (orActive) {
+      orQueryObject.processInstanceIds = processInstanceIds;
+    } else {
+      this.processInstanceIds = processInstanceIds;
+    }
+    return this;
+  }
+  
+>>>>>>> upstream/master
   public TaskQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
     if(orActive) {
       orQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
@@ -1238,6 +1267,12 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+<<<<<<< HEAD
+=======
+  public List<String> getProcessInstanceIds() {
+    return processInstanceIds;
+  }
+>>>>>>> upstream/master
   public String getExecutionId() {
     return executionId;
   }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
  * License rights for this program may be obtained from Alfresco Software, Ltd.
@@ -8,6 +9,8 @@
  * All code Copyright 2013 KIS Consultancy all rights reserved
  */
 
+=======
+>>>>>>> upstream/master
 if(!ORYX) var ORYX = {};
 
 if(!ORYX.CONFIG) ORYX.CONFIG = {};

@@ -12,13 +12,22 @@
  */
 package org.activiti.engine.runtime;
 
+<<<<<<< HEAD
+=======
+import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.query.Query;
+
+>>>>>>> upstream/master
 import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
+<<<<<<< HEAD
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.query.Query;
 
+=======
+>>>>>>> upstream/master
 /**
  * Allows programmatic querying of {@link ProcessInstance}s.
  * 
@@ -66,10 +75,28 @@ public interface ProcessInstanceQuery extends Query<ProcessInstanceQuery, Proces
   ProcessInstanceQuery processDefinitionKey(String processDefinitionKey);
 
   /**
+<<<<<<< HEAD
+=======
+   * Select the process instances which are defined by process definitions with
+   * the given keys.
+   */
+  ProcessInstanceQuery processDefinitionKeys(Set<String> processDefinitionKeys);
+
+  /**
+>>>>>>> upstream/master
    * Select the process instances which are defined by a process definition
    * with the given id.
    */
   ProcessInstanceQuery processDefinitionId(String processDefinitionId);
+<<<<<<< HEAD
+=======
+
+  /**
+   * Select the process instances which are defined by process definitions
+   * with the given ids.
+   */
+  ProcessInstanceQuery processDefinitionIds(Set<String> processDefinitionIds);
+>>>>>>> upstream/master
   
   /**
    * Select the process instances which are defined by a deployment

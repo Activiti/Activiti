@@ -10,7 +10,11 @@
 		<groupId>org.activiti</groupId>
 		<artifactId>activiti-root</artifactId>
 		<relativePath>../..</relativePath>
+<<<<<<< HEAD
 		<version>5.17.0</version>
+=======
+		<version>5.17.1-SNAPSHOT</version>
+>>>>>>> upstream/master
 	</parent>
   
 	<properties>

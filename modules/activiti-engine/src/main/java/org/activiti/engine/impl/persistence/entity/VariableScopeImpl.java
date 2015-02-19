@@ -229,6 +229,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   	} else {
   		
   		if (usedVariablesCache.containsKey(variableName)) {
+<<<<<<< HEAD
   			return usedVariablesCache.get(variableName).getValue();
   		}
   		
@@ -242,6 +243,27 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   		if (variable != null) {
   			return variable.getValue();
   		} 
+=======
+  		  VariableInstanceEntity variable = usedVariablesCache.get(variableName);
+  		  if (variable != null) {
+  		    return variable.getValue();
+  		  }
+  		}
+  		
+  		if (variableInstances != null && variableInstances.containsKey(variableName)) {
+  		  VariableInstanceEntity variable = variableInstances.get(variableName);
+        if (variable != null) {
+          return variableInstances.get(variableName).getValue();
+        }
+  		}
+  		
+  		VariableInstanceEntity variable = getSpecificVariable(variableName);
+  		if (variable != null) {
+  		  usedVariablesCache.put(variableName, variable);
+  		  return variable.getValue();
+  		}
+
+>>>>>>> upstream/master
   		return null;
   	}
   }
@@ -644,9 +666,15 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
     variableInstance.delete();
     variableInstance.setValue(null);
 
+<<<<<<< HEAD
     // Record historic variable
     Context.getCommandContext().getHistoryManager()
       .recordVariableUpdate(variableInstance);
+=======
+    // Record historic variable deletion
+    Context.getCommandContext().getHistoryManager()
+    	.recordVariableRemoved(variableInstance);
+>>>>>>> upstream/master
 
     // Record historic detail
     Context.getCommandContext().getHistoryManager()

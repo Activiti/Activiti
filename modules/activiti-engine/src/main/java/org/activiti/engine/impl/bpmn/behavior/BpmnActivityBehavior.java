@@ -161,11 +161,21 @@ public class BpmnActivityBehavior implements Serializable {
         
         Object isForCompensation = execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_IS_FOR_COMPENSATION);
         if(isForCompensation != null && (Boolean) isForCompensation) {
+<<<<<<< HEAD
           
           InterpretableExecution parentExecution = (InterpretableExecution) execution.getParent();
           ((InterpretableExecution)execution).remove();
           parentExecution.signal("compensationDone", null);            
           
+=======
+          if (execution instanceof ExecutionEntity) {
+            Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+          }
+          InterpretableExecution parentExecution = (InterpretableExecution) execution.getParent();
+          ((InterpretableExecution)execution).remove();
+          parentExecution.signal("compensationDone", null);
+
+>>>>>>> upstream/master
         } else {
           
           if (log.isDebugEnabled()) {

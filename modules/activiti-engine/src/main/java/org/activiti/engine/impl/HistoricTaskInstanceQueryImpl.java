@@ -45,6 +45,10 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String deploymentId;
   protected List<String> deploymentIds;
   protected String processInstanceId;
+<<<<<<< HEAD
+=======
+  protected List<String> processInstanceIds;
+>>>>>>> upstream/master
   protected String processInstanceBusinessKey;
   protected String processInstanceBusinessKeyLike;
   protected String processInstanceBusinessKeyLikeIgnoreCase;
@@ -145,6 +149,31 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
     return this;
   }
   
+<<<<<<< HEAD
+=======
+  @Override
+  public HistoricTaskInstanceQueryImpl processInstanceIdIn(List<String> processInstanceIds) {
+    if(processInstanceIds == null) {
+      throw new ActivitiIllegalArgumentException("Process instance id list is null");
+    }
+    if(processInstanceIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Process instance id list is empty");
+    }
+    for (String processInstanceId : processInstanceIds) {
+      if (processInstanceId== null) {
+        throw new ActivitiIllegalArgumentException("None of the given process instance ids can be null");
+      }
+    }
+
+    if (inOrStatement) {
+      this.orQueryObject.processInstanceIds = processInstanceIds;
+    } else {
+      this.processInstanceIds = processInstanceIds;
+    }
+    return this;
+  }
+  
+>>>>>>> upstream/master
   public HistoricTaskInstanceQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
     if (inOrStatement) {
       this.orQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
@@ -1189,6 +1218,12 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+<<<<<<< HEAD
+=======
+  public List<String> getProcessInstanceIds() {
+    return processInstanceIds;
+  }
+>>>>>>> upstream/master
   public String getProcessInstanceBusinessKey() {
     return processInstanceBusinessKey;
   }

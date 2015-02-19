@@ -12,14 +12,21 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+<<<<<<< HEAD
 import javax.script.ScriptException;
 
+=======
+>>>>>>> upstream/master
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
+<<<<<<< HEAD
+=======
+import org.apache.commons.lang3.exception.ExceptionUtils;
+>>>>>>> upstream/master
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -71,10 +78,16 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
       LOGGER.warn("Exception while executing " + execution.getActivity().getId() + " : " + e.getMessage());
       
       noErrors = false;
+<<<<<<< HEAD
       if (e.getCause() instanceof ScriptException
           && e.getCause().getCause() instanceof ScriptException
           && e.getCause().getCause().getCause() instanceof BpmnError) {
         ErrorPropagation.propagateError((BpmnError) e.getCause().getCause().getCause(), execution);
+=======
+      Throwable rootCause = ExceptionUtils.getRootCause(e);
+      if (rootCause instanceof BpmnError) {
+        ErrorPropagation.propagateError((BpmnError) rootCause, execution);
+>>>>>>> upstream/master
       } else {
         throw e;
       }

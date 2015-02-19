@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+  <process id="compensationStepEndRecordedProcess" isExecutable="true" processType="None">
+    <scriptTask id="normalScriptTask" name="Script Task" scriptFormat="groovy">
+      <script>System.out.println('Normal Task');</script>
+    </scriptTask>
+    <sequenceFlow sourceRef="startEvent" targetRef="normalScriptTask"/>
+    <startEvent id="startEvent" isInterrupting="true" name="Start Event" parallelMultiple="false"/>
+    <intermediateThrowEvent id="compensationEvent" name="Intermediate Throw Event">
+      <compensateEventDefinition id="_5_ED_1" waitForCompletion="true"/>
+    </intermediateThrowEvent>
+    <sequenceFlow sourceRef="normalScriptTask" targetRef="compensationEvent"/>
+    <endEvent id="endEvent" name="End Event"/>
+    <sequenceFlow sourceRef="compensationEvent" targetRef="endEvent"/>
+    <boundaryEvent attachedToRef="normalScriptTask" cancelActivity="true" id="_9" parallelMultiple="false">
+      <compensateEventDefinition id="_9_ED_1" waitForCompletion="true"/>
+    </boundaryEvent>
+    <scriptTask id="compensationScriptTask" isForCompensation="true" name="Script Task" scriptFormat="groovy">
+      <script>System.out.println('Compensation Task');</script>
+    </scriptTask>
+    <association associationDirection="One" id="_11" sourceRef="_9" targetRef="compensationScriptTask"/>
+  </process>
+</definitions>

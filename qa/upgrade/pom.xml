@@ -6,13 +6,21 @@
   <name>Activiti - Upgrade Fetcher</name>
   <groupId>org.activiti</groupId>
   <artifactId>activiti-upgrade-fetcher</artifactId>
+<<<<<<< HEAD
   <version>5.17.0</version>
+=======
+  <version>5.17.1-SNAPSHOT</version>
+>>>>>>> upstream/master
 
   <parent>
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
+<<<<<<< HEAD
     <version>5.17.0</version>
+=======
+    <version>5.17.1-SNAPSHOT</version>
+>>>>>>> upstream/master
   </parent>
 
   <dependencies>

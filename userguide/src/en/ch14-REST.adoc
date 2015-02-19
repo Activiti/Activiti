@@ -9,13 +9,21 @@ Activiti includes a REST API to the Activiti Engine that can be installed by dep
 
 By default the Activiti Engine will connect to an in-memory H2 database. You can change the database settings in the db.properties file in the WEB-INF/classes folder. The REST API uses JSON format (http://www.json.org) and is built upon the Spring MVC (http://docs.spring.io/spring/docs/current/spring-framework-reference/html/mvc.html).
 
+<<<<<<< HEAD
 All REST-resources require a valid Activiti-user to be authenticated by default. Basic HTTP access authentication is used, so you should always include a +Authorization: Basic ...==+ HTTP-header when performing requests or include the username and password in the request-url (eg. ++http://username:password@localhost...++).
+=======
+All REST-resources require a valid Activiti-user to be authenticated by default. Basic HTTP access authentication is used, so you should always include a +Authorization: Basic ...==+ HTTP-header when performing requests or include the username and password in the request-url (e.g. ++http://username:password@localhost...++).
+>>>>>>> upstream/master
       
 *It's recommended to use Basic Authentication in combination with HTTPS.*
 
 ==== Configuration
 
+<<<<<<< HEAD
 The Activiti REST web applicaton is using Spring Java Configuration for starting the Activiti Engine, defining the basic authentication security using Spring security and to define the variable converters for specific variable handling. 
+=======
+The Activiti REST web application is using Spring Java Configuration for starting the Activiti Engine, defining the basic authentication security using Spring security and to define the variable converters for specific variable handling.
+>>>>>>> upstream/master
 A small amount of properties can be defined by changing the engine.properties file you can find in the WEB-INF/classes folder.
 If you need more advanced configuration options there's the possibility to override the default Spring beans in XML in the activiti-custom-context.xml file you can also find in the WEB-INF/classes folder.
 An example configuration is already in comments in this file. This is also the place to override the default RestResponseFactory by defining a new Spring bean with the name restResponsefactory and use your custom implementation class for it.
@@ -56,7 +64,11 @@ It's a best practice to always set the *Accept* and *Content-Type* (in case of p
 |+401 - Unauthorized+|The operation failed. The operation requires an Authentication header to be set. If this was present in the request, the supplied credentials are not valid or the user is not authorized to perform this operation.
 |+403 - Forbidden+|The operation is forbidden and should not be re-attempted. This does not imply an issue with authentication not authorization, it's an operation that is not allowed. Example: deleting a task that is part of a running process is not allowed and will never be allowed, regardless of the user or process/task state.
 |+404 - Not found+|The operation failed.The requested resource was not found.
+<<<<<<< HEAD
 |+405 - Method not allowed+|The operation failed. The used method is not allowed for this resource. Eg. trying to update (PUT) a deployment-resource will result in a +405+ status.
+=======
+|+405 - Method not allowed+|The operation failed. The used method is not allowed for this resource. E.g. trying to update (PUT) a deployment-resource will result in a +405+ status.
+>>>>>>> upstream/master
 |+409 - Conflict+|The operation failed. The operation causes an update of a resource that has been updated by another operation, which makes the update no longer valid. Can also indicate a resource that is being created in a collection where a resource with that identifier already exists.
 |+415 - Unsupported Media Type+|The operation failed. The request body contains an unsupported media type. Also occurs when the request-body JSON contains an unknown attribute or value that doesn't have the right format/type to be accepted.
 |+500 - Internal server error+|The operation failed. An unexpected exception occurred while executing the operation. The response-body contains details about the error.
@@ -64,7 +76,11 @@ It's a best practice to always set the *Accept* and *Content-Type* (in case of p
 |===============
 
 
+<<<<<<< HEAD
 The media-type of the HTTP-responses is always +application/json+ unless binary content is requested (eg. deployment resource data), the media-type of the content is used. 
+=======
+The media-type of the HTTP-responses is always +application/json+ unless binary content is requested (e.g. deployment resource data), the media-type of the content is used. 
+>>>>>>> upstream/master
         
 ==== Error response body
 
@@ -84,22 +100,39 @@ When an error occurs (both client and server, 4XX and 5XX status-codes) the resp
 ===== URL fragments
 
 
+<<<<<<< HEAD
 Parameters that are part of the url (eg. the deploymentId parameter in ++http://host/actviti-rest/service/repository/deployments/{deploymentId}++)
  need to be properly escaped (see link:$$https://en.wikipedia.org/wiki/Percent-encoding$$[URL-encoding or Percent-encoding]) in case the segment contains special characters. Most frameworks have this functionality built in, but it should be taken into account. Especially for segments that can contains forward-slashes (eg. deployment resource), this is required.
 
 ===== Rest URL query parameters
 
 Parameters added as query-string in the URL (eg. the name parameter used in ++http://host/activiti-rest/service/deployments?name=Deployment++) can have the following types and are mentioned in the corresponding REST-API documentation:
+=======
+Parameters that are part of the url (e.g. the deploymentId parameter in ++http://host/actviti-rest/service/repository/deployments/{deploymentId}++)
+ need to be properly escaped (see link:$$https://en.wikipedia.org/wiki/Percent-encoding$$[URL-encoding or Percent-encoding]) in case the segment contains special characters. Most frameworks have this functionality built in, but it should be taken into account. Especially for segments that can contains forward-slashes (e.g. deployment resource), this is required.
+
+===== Rest URL query parameters
+
+Parameters added as query-string in the URL (e.g. the name parameter used in ++http://host/activiti-rest/service/deployments?name=Deployment++) can have the following types and are mentioned in the corresponding REST-API documentation:
+>>>>>>> upstream/master
             
 .URL query parameter types
 [options="header"]
 |===============
 |Type|Format
+<<<<<<< HEAD
 |String|Plain text parameters. Can contain any valid characters that are allowed in URL's. In case of a +XXXLike+ parameter, the string should contain the wildcard characted +%+ (properly url-encoded). This allows to specify the intent of the like-search. Eg. '++Tas%++' matches all values, starting with 'Tas'.
 |Integer|Parameter representing an integer value. Can only contain numeric non-decmimal values, between -2.147.483.648 and 2.147.483.647.
 |Long|Parameter representing a long value. Can only contain numeric non-decmimal values, between -9.223.372.036.854.775.808 and 9.223.372.036.854.775.807.
 |Boolean|Parameter representing a boolean value. Can be eiter +true+ or +false+. All other values other than these two, will cause a '++405 - Bad request++' response.
 |Date|Parameter representing a date value. Use the ISO-8601 date-format (see link:$$http://en.wikipedia.org/wiki/ISO_8601$$[ISO-8601 on wikipedia]) using both time and date-components (eg. ++2013-04-03T23:45Z++).
+=======
+|String|Plain text parameters. Can contain any valid characters that are allowed in URL's. In case of a +XXXLike+ parameter, the string should contain the wildcard character +%+ (properly url-encoded). This allows to specify the intent of the like-search. E.g. '++Tas%++' matches all values, starting with 'Tas'.
+|Integer|Parameter representing an integer value. Can only contain numeric non-decimal values, between -2.147.483.648 and 2.147.483.647.
+|Long|Parameter representing a long value. Can only contain numeric non-decimal values, between -9.223.372.036.854.775.808 and 9.223.372.036.854.775.807.
+|Boolean|Parameter representing a boolean value. Can be either +true+ or +false+. All other values other than these two, will cause a '++405 - Bad request++' response.
+|Date|Parameter representing a date value. Use the ISO-8601 date-format (see link:$$http://en.wikipedia.org/wiki/ISO_8601$$[ISO-8601 on wikipedia]) using both time and date-components (e.g. ++2013-04-03T23:45Z++).
+>>>>>>> upstream/master
 
 |===============
 
@@ -113,11 +146,18 @@ Parameters added as query-string in the URL (eg. the name parameter used in ++ht
 [options="header"]
 |===============
 |Type|Format
+<<<<<<< HEAD
 |String|Plain text parameters. In case of a +XXXLike+ parameter, the string should contain the wildcard characted +%+. This allows to specify the intent of the like-search. Eg. '++Tas%++' matches all values, starting with 'Tas'.
 |Integer|Parameter representing an integer value, using a JSON number. Can only contain numeric non-decmimal values, between -2.147.483.648 and 2.147.483.647.
 |Long|Parameter representing a long value, using a JSON number. Can only contain numeric non-decmimal values, between -9.223.372.036.854.775.808 and 9.223.372.036.854.775.807.
 |Boolean|Parameter representing a boolean value, using a JSON boolean. Can be eiter +true+ or +false+. All other values other than these two, will cause a '++405 - Bad request++' response.
 |Date|Parameter representing a date value, using a JSON text. Use the ISO-8601 date-format (see link:$$http://en.wikipedia.org/wiki/ISO_8601$$[ISO-8601 on wikipedia]) using both time and date-components (eg. ++2013-04-03T23:45Z++).
+=======
+|String|Plain text parameters. In case of a +XXXLike+ parameter, the string should contain the wildcard character +%+. This allows to specify the intent of the like-search. E.g. '++Tas%++' matches all values, starting with 'Tas'.
+|Integer|Parameter representing an integer value, using a JSON number. Can only contain numeric non-decimal values, between -2.147.483.648 and 2.147.483.647.
+|Long|Parameter representing a long value, using a JSON number. Can only contain numeric non-decimal values, between -9.223.372.036.854.775.808 and 9.223.372.036.854.775.807.
+|Date|Parameter representing a date value, using a JSON text. Use the ISO-8601 date-format (see link:$$http://en.wikipedia.org/wiki/ISO_8601$$[ISO-8601 on wikipedia]) using both time and date-components (e.g. ++2013-04-03T23:45Z++).
+>>>>>>> upstream/master
 
 |===============
 
@@ -127,7 +167,11 @@ Parameters added as query-string in the URL (eg. the name parameter used in ++ht
 
 ===== Paging and sorting
 
+<<<<<<< HEAD
 Paging and order parameters can be added as query-string in the URL (eg. the name parameter used in ++http://host/activiti-rest/service/deployments?sort=name++).
+=======
+Paging and order parameters can be added as query-string in the URL (e.g. the name parameter used in ++http://host/activiti-rest/service/deployments?sort=name++).
+>>>>>>> upstream/master
 
 .Variable query JSON parameters
 [options="header"]
@@ -2047,7 +2091,11 @@ PUT runtime/process-instances/{processInstanceId}/variables
 ----
 
 
+<<<<<<< HEAD
 When using +POST+, all variables that are passed are created. In case one of the variables already exists on the process instance, the request results in an error (409 - CONFLICT). When +PUT+ is used, unexisting variables are created on the process-instance and existing ones are overridden without any error. 
+=======
+When using +POST+, all variables that are passed are created. In case one of the variables already exists on the process instance, the request results in an error (409 - CONFLICT). When +PUT+ is used, nonexistent variables are created on the process-instance and existing ones are overridden without any error.
+>>>>>>> upstream/master
 
 .Create (or update) variables on a process instance - URL parameters
 [options="header"]
@@ -2705,7 +2753,11 @@ POST runtime/executions/{executionId}/variables
 PUT runtime/executions/{executionId}/variables
 ----
 
+<<<<<<< HEAD
 When using +POST+, all variables that are passed are created. In case one of the variables already exists on the execution in the requested scope, the request results in an error (409 - CONFLICT). When +PUT+ is used, unexisting variables are created on the execution and existing ones are overridden without any error. 
+=======
+When using +POST+, all variables that are passed are created. In case one of the variables already exists on the execution in the requested scope, the request results in an error (409 - CONFLICT). When +PUT+ is used, nonexistent variables are created on the execution and existing ones are overridden without any error.
+>>>>>>> upstream/master
 
 .Create (or update) variables on an execution - URL parameters
 [options="header"]
@@ -3003,7 +3055,11 @@ GET runtime/tasks
 |name|No|String|Only return tasks with the given name.
 |nameLike|No|String|Only return tasks with a name like the given name.
 |description|No|String|Only return tasks with the given description.
+<<<<<<< HEAD
 |priority|No|Integer|Only return tasks with the given priotiry.
+=======
+|priority|No|Integer|Only return tasks with the given priority.
+>>>>>>> upstream/master
 |minimumPriority|No|Integer|Only return tasks with a priority greater than the given value.
 |maximumPriority|No|Integer|Only return tasks with a priority lower than the given value.
 |assignee|No|String|Only return tasks assigned to the given user.
@@ -3250,7 +3306,11 @@ Completes the task. Optional variable array can be passed in using the +variable
 }
 ----
 
+<<<<<<< HEAD
 Claims the task by the given assignee. If the assignee is +null+, the task is assigned to no-one, claimable agian.
+=======
+Claims the task by the given assignee. If the assignee is +null+, the task is assigned to no-one, claimable again.
+>>>>>>> upstream/master
        
 *Delegate a task - Body JSON:*
 
@@ -4436,7 +4496,11 @@ GET runtime/tasks/{taskId}/attachments/{attachmentId}
 
   
 *  ++externalUrl - contentUrl:++In case the attachment is a link to an external resource, the +externalUrl+ contains the URL to the external content. If the attachment content is present in the Activiti engine, the +contentUrl+ will contain an URL where the binary content can be streamed from.
+<<<<<<< HEAD
 *  ++type:++Can be any arbitrary value. When a valid formatted media-type (eg. application/xml, text/plain) is included, the binary content HTTP response content-type will be set the the given value.
+=======
+*  ++type:++Can be any arbitrary value. When a valid formatted media-type (e.g. application/xml, text/plain) is included, the binary content HTTP response content-type will be set the the given value.
+>>>>>>> upstream/master
       
 .Get an attachment on a task - Response codes
 [options="header"]
@@ -6167,7 +6231,11 @@ POST runtime/signals
 ----
 
 
+<<<<<<< HEAD
 Notifies the engine that a signal event has been received, not explicitally related to a specific execution. 
+=======
+Notifies the engine that a signal event has been received, not explicitly related to a specific execution.
+>>>>>>> upstream/master
         
 *Body JSON:*
 
@@ -6192,7 +6260,11 @@ Notifies the engine that a signal event has been received, not explicitally rela
 |signalName|Name of the signal|Yes
 |tenantId|ID of the tenant that the signal event should be processed in|No
 |async|If +true+, handling of the signal will happen asynchronously. Return code will be +202 - Accepted+ to indicate the request is accepted but not yet executed. If +false+, 
+<<<<<<< HEAD
                     handling the signal will be done immedialty and result (++200 - OK++) will only return after this completed successfully. Defaults to ++false++ if omitted.|No
+=======
+                    handling the signal will be done immediately and result (++200 - OK++) will only return after this completed successfully. Defaults to ++false++ if omitted.|No
+>>>>>>> upstream/master
 |variables|Array of variables (in the general variables format) to use as payload to pass along with the signal. Cannot be used in case +async+ is set to +true+, this will result in an error.|No
 
 |===============

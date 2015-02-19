@@ -8,10 +8,15 @@ import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+<<<<<<< HEAD
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+=======
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+>>>>>>> upstream/master
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +26,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.util.*;
 
+<<<<<<< HEAD
 @Configuration
 @ComponentScan
 @EnableAutoConfiguration
@@ -28,6 +34,10 @@ public class Application {
     public static void main(String args[]) {
         SpringApplication.run(Application.class, args);
     }
+=======
+@SpringBootApplication
+public class Application {
+>>>>>>> upstream/master
 
     @Bean
     CommandLineRunner init(final PhotoService photoService) {
@@ -39,6 +49,13 @@ public class Application {
         };
 
     }
+<<<<<<< HEAD
+=======
+
+    public static void main(String args[]) {
+        SpringApplication.run(Application.class, args);
+    }
+>>>>>>> upstream/master
 }
 
 @Service

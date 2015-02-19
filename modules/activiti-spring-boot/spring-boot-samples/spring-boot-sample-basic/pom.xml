@@ -5,7 +5,11 @@
 	<parent>
 		<groupId>org.activiti</groupId>
 		<artifactId>spring-boot-samples</artifactId>
+<<<<<<< HEAD
 		<version>5.17.0</version>
+=======
+		<version>5.17.1-SNAPSHOT</version>
+>>>>>>> upstream/master
 	</parent>
 
 	<artifactId>spring-boot-sample-basic</artifactId>
@@ -14,7 +18,11 @@
 		<dependency>
 			<groupId>org.activiti</groupId>
 			<artifactId>spring-boot-starter-basic</artifactId>
+<<<<<<< HEAD
 			<version>5.17.0</version>
+=======
+			<version>5.17.1-SNAPSHOT</version>
+>>>>>>> upstream/master
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>

@@ -14,10 +14,17 @@
   </parent>
 
   <packaging>pom</packaging>
+<<<<<<< HEAD
   <version>5.17.0</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.0.6.RELEASE</spring.framework.version>
+=======
+  <version>5.17.1-SNAPSHOT</version>
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spring.framework.version>4.1.4.RELEASE</spring.framework.version>
+>>>>>>> upstream/master
     <spring.security.version>3.2.3.RELEASE</spring.security.version>
     <mule.version>3.5.0</mule.version>
     <cxf.version>2.6.14</cxf.version>
@@ -45,7 +52,11 @@
     <activiti.osgi.activator />
     <activiti.osgi.failok>false</activiti.osgi.failok>
     <activiti.osgi.export>${activiti.osgi.export.pkg};${activiti.osgi.version};-noimport:=true</activiti.osgi.export>
+<<<<<<< HEAD
     <!-- <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg> 
+=======
+    <!-- <activiti.osgi.export.pkg>!*.impl;${activiti.artifact}*</activiti.osgi.export.pkg>
+>>>>>>> upstream/master
       <activiti.osgi.private.pkg>${activiti.artifact}*.impl</activiti.osgi.private.pkg> -->
     <activiti.osgi.export.pkg>
       ${activiti.artifact}*,
@@ -695,7 +706,11 @@
           <artifactId>maven-jar-plugin</artifactId>
           <version>2.3.2</version>
         </plugin>
+<<<<<<< HEAD
         <!--This plugin's configuration is used to store Eclipse m2e settings 
+=======
+        <!--This plugin's configuration is used to store Eclipse m2e settings
+>>>>>>> upstream/master
           only. It has no influence on the Maven build itself. -->
         <plugin>
           <groupId>org.eclipse.m2e</groupId>
@@ -832,6 +847,31 @@
       </modules>
     </profile>
     <profile>
+<<<<<<< HEAD
+=======
+      <!-- 
+           A profile dedicated to JDK 6.
+           SpringBoot module is disabled as it needs JDK7+.
+      -->
+      <id>checkJdk6</id>
+      <modules>
+        <module>modules/activiti-bpmn-model</module>
+        <module>modules/activiti-process-validation</module>
+        <module>modules/activiti-image-generator</module>
+        <module>modules/activiti-bpmn-converter</module>
+        <module>modules/activiti-bpmn-layout</module>
+        <module>modules/activiti-json-converter</module>
+        <module>modules/activiti-spring</module>
+        <module>modules/activiti-common-rest</module>
+        <module>modules/activiti-simple-workflow</module>
+        <module>modules/activiti-rest</module>
+        <module>modules/activiti-webapp-rest2</module>
+        <module>modules/activiti-cxf</module>
+        <module>modules/activiti-cdi</module>
+      </modules>
+    </profile>
+    <profile>
+>>>>>>> upstream/master
       <id>checkmule</id>
       <modules>
         <module>modules/activiti-cxf</module>
@@ -863,7 +903,11 @@
       </modules>
     </profile>
     <profile>
+<<<<<<< HEAD
       <!-- this profile prevents that tests are executed while running the 
+=======
+      <!-- this profile prevents that tests are executed while running the
+>>>>>>> upstream/master
         qa/build.xml test.demo.setup target -->
       <id>nodocs</id>
       <activation>
@@ -916,7 +960,11 @@
       </modules>
     </profile>
     <profile>
+<<<<<<< HEAD
       <!-- Profile used by the start-explorer.sh script to build the Explorer 
+=======
+      <!-- Profile used by the start-explorer.sh script to build the Explorer
+>>>>>>> upstream/master
         webapp and all its dependencies -->
       <id>buildWebappDependencies</id>
       <modules>
@@ -957,7 +1005,11 @@
       </build>
     </profile>
     <profile>
+<<<<<<< HEAD
       <!-- Profile used by the start-rest.sh script to build the Explorer 
+=======
+      <!-- Profile used by the start-rest.sh script to build the Explorer
+>>>>>>> upstream/master
         webapp and all its dependencies -->
       <id>buildRestappDependencies</id>
       <modules>

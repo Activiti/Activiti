@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<<<<<<< HEAD
 <!--
 
     Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
@@ -7,6 +8,8 @@
     agreement is prohibited.
 
 -->
+=======
+>>>>>>> upstream/master
 <config>
 
   <plugins>

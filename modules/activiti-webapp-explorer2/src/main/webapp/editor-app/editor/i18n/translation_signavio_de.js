@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
  * License rights for this program may be obtained from Alfresco Software, Ltd.
@@ -5,6 +6,9 @@
  * agreement is prohibited.
  */
 ﻿Ext.PagingToolbar.prototype.firstText = "Erste Seite";
+=======
+Ext.PagingToolbar.prototype.firstText = "Erste Seite";
+>>>>>>> upstream/master
 Ext.PagingToolbar.prototype.prevText = "Vorherige Seite";
 Ext.PagingToolbar.prototype.nextText = "Nächste Seite";
 Ext.PagingToolbar.prototype.lastText  = "Letzte Seite";

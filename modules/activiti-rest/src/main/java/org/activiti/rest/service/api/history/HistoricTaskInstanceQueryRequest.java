@@ -74,6 +74,10 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
   private String tenantId;
   private String tenantIdLike;
   private Boolean withoutTenantId;
+<<<<<<< HEAD
+=======
+  private String taskCandidateGroup;
+>>>>>>> upstream/master
 
   public String getTaskId() {
     return taskId;
@@ -444,4 +448,16 @@ public class HistoricTaskInstanceQueryRequest extends PaginateRequest {
 	public void setWithoutTenantId(Boolean withoutTenantId) {
 		this.withoutTenantId = withoutTenantId;
 	}
+<<<<<<< HEAD
+=======
+
+  public String getTaskCandidateGroup() {
+    return taskCandidateGroup;
+  }
+
+  public void setTaskCandidateGroup(String taskCandidateGroup) {
+    this.taskCandidateGroup = taskCandidateGroup;
+  }
+
+>>>>>>> upstream/master
 }

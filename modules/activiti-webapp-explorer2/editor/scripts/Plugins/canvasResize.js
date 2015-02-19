@@ -1,17 +1,23 @@
+<<<<<<< HEAD
 /*
  * Copyright 2005-2014 Alfresco Software, Ltd. All rights reserved.
  * License rights for this program may be obtained from Alfresco Software, Ltd.
  * pursuant to a written agreement and any use of this program without such an
  * agreement is prohibited.
  */
+=======
+>>>>>>> upstream/master
 if (!ORYX.Plugins) {
     ORYX.Plugins = new Object();
 }
 
+<<<<<<< HEAD
 /*
  * All code Copyright 2013 KIS Consultancy all rights reserved
  */
 
+=======
+>>>>>>> upstream/master
 /**
  * This plugin is responsible for resizing the canvas.
  * @param {Object} facade The editor plugin facade to register enhancements with.

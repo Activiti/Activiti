@@ -12,14 +12,22 @@ This chapter covers the BPMN 20 constructs supported by  Activiti as well as cus
 
 The BPMN 2.0 standard is a good thing for all parties involved. End-users don't suffer from a vendor lock-in that comes by depending on a proprietary solution. Frameworks, and particularly open-source frameworks such as Activiti, can implement a solution that has the same (and often better implemented ;-) features as those of a big vendor.  Due to the BPMN 2.0 standard, the transition from such a big vendor solution towards Activiti is an easy and smooth path.
 
+<<<<<<< HEAD
 The downside of a standard however, is the fact that it is always the result of many discussions and compromises between different companies (and often visions). As a developer reading the BPMN 2.0 XML of a process definition, sometimes it feels like certain constructs or way to do things are too cumbersome. Since Activiti puts ease of development as a top-priority, we introduced something called the *'Activiti BPMN extensions'*. These 'extensions' are new constructs or ways to simplify certain constructs, that are not in the BPMN 2.0 specification.
+=======
+The downside of a standard however, is the fact that it is always the result of many discussions and compromises between different companies (and often visions). As a developer reading the BPMN 2.0 XML of a process definition, sometimes it feels like certain constructs or way to do things are too cumbersome. Since Activiti puts ease of development as a top-priority, we introduced something called the *'Activiti BPMN extensions'*. These 'extensions' are new constructs or ways to simplify certain constructs that are not in the BPMN 2.0 specification.
+>>>>>>> upstream/master
 
 Although the BPMN 2.0 specification clearly states that it was made for custom extension, we make sure that:
 
 * The prerequisite of such a custom extension is that there *always* must be a simple transformation to the *standard way of doing things*. So when you decide to use a custom extension, you don't have to be afraid  that there is no way back.
 * When using a custom extension, this is always clearly indicated by giving the new XML element, attribute, etc. the *activiti:* namespace prefix.
 
+<<<<<<< HEAD
 So whether you want to use a custom extension or not, is completely up to you. Several factors will influence this decision (graphical editor usage, company policy, etc.). We only provide them since we believe that some points in the standard can be done simpler or more efficient. Feel free to give us (positive and/or negative) feedback on our extensions, or to post new ideas for custom extensions. Who knows, some day your idea might pop up in the specification!.
+=======
+So whether you want to use a custom extension or not, is completely up to you. Several factors will influence this decision (graphical editor usage, company policy, etc.). We only provide them since we believe that some points in the standard can be done simpler or more efficient. Feel free to give us (positive and/or negative) feedback on our extensions, or to post new ideas for custom extensions. Who knows, some day your idea might pop up in the specification!
+>>>>>>> upstream/master
 
 
 [[bpmnEvents]]
@@ -164,7 +172,11 @@ The ++signalEventDefinition++s reference the same +signal+ element.
 
 ===== Throwing a Signal Event
 
+<<<<<<< HEAD
 A signal can either be thrown by a process instance using a bpmn construct or programmatically using java API. The following methods on the +org.activiti.engine.RuntimeService+ can be used to throw a signal programmatically:
+=======
+A signal can either be thrown by a process instance using a BPMN construct or programmatically using java API. The following methods on the +org.activiti.engine.RuntimeService+ can be used to throw a signal programmatically:
+>>>>>>> upstream/master
 
 [source,java,linenums]
 ----
@@ -288,7 +300,11 @@ A message event definition is declared using the +messageEventDefinition+ elemen
 ===== Throwing a Message Event
 
 
+<<<<<<< HEAD
 As an embeddable process engine, activiti is not concerned with actually receiving a message. This would be environment dependent and entail platform-specific activities like connecting to a JMS (Java Messaging Service) Queue/Topic or processing a Webservice or REST request. The reception of messages is therefore something you have to implement as part of the application or infrastructure into which the process engine is embedded.
+=======
+As an embeddable process engine, Activiti is not concerned with actually receiving a message. This would be environment dependent and entail platform-specific activities like connecting to a JMS (Java Messaging Service) Queue/Topic or processing a Webservice or REST request. The reception of messages is therefore something you have to implement as part of the application or infrastructure into which the process engine is embedded.
+>>>>>>> upstream/master
 
 After you have received a message inside your application, you must decide what to do with it. If the message should trigger the start of a new process instance, choose between the following methods offered by the runtime service:
 
@@ -387,7 +403,11 @@ try {
 
 ----
 
+<<<<<<< HEAD
 This code is baked into the Activiti Explorer application.  So it works in combination with <<forms>>
+=======
+This code is baked into the Activiti Explorer application.  So it works in combination with <<forms>>.
+>>>>>>> upstream/master
 
 
 [[bpmnNoneStartEvent]]
@@ -485,7 +505,11 @@ image::images/bpmn.clock.start.event.png[align="center"]
 ===== XML representation
 
 
+<<<<<<< HEAD
 The XML representation of a timer start event is the normal start event declaration, with timer definition sub-element. Please refer to <<timerEventDefinitions,timer definitions>> for configuration details. for details on configuration details.
+=======
+The XML representation of a timer start event is the normal start event declaration, with timer definition sub-element. Please refer to <<timerEventDefinitions,timer definitions>> for configuration details.
+>>>>>>> upstream/master
 
 
 Example: process will start 4 times, in 5 minute intervals, starting on 11th march 2011, 12:13
@@ -607,9 +631,15 @@ The XML representation of a message start event is the normal start event declar
 
 ===== Description
 
+<<<<<<< HEAD
 A <<bpmnSignalEventDefinition,signal>> start event can be used to start a process instance using a named signal. The signal can be 'fired' from within a process instance using the intermediary signal throw event or through the API (__runtimService.signalEventReceivedXXX__ methods). In both cases, all process definitions that have a signal start event with the same name will be started.
 
 Note that in both cases, it is also possible to chose between a synchronous and asynchronous starting of the process instances.
+=======
+A <<bpmnSignalEventDefinition,signal>> start event can be used to start a process instance using a named signal. The signal can be 'fired' from within a process instance using the intermediary signal throw event or through the API (__runtimeService.signalEventReceivedXXX__ methods). In both cases, all process definitions that have a signal start event with the same name will be started.
+
+Note that in both cases, it is also possible to choose between a synchronous and asynchronous starting of the process instances.
+>>>>>>> upstream/master
 
 The +signalName+ that must be passed in the API is the name given in the +name+ attribute of the +signal+ element referenced by the +signalRef+ attribute of the +signalEventDefinition+.
 
@@ -671,7 +701,11 @@ An error start event is always interrupting.
 ===== Graphical notation
 
 
+<<<<<<< HEAD
 A error start event is visualized as a circle with an error event symbol. The symbol is unfilled, to visualize the catching (receiving) behavior.
+=======
+An error start event is visualized as a circle with an error event symbol. The symbol is unfilled, to visualize the catching (receiving) behavior.
+>>>>>>> upstream/master
 
 image::images/bpmn.start.error.event.png[align="center"]
 
@@ -770,7 +804,11 @@ image::images/bpmn.error.end.event.png[align="center"]
 
 ===== XML representation
 
+<<<<<<< HEAD
 And error end event is represented as an end event, with a _errorEventDefinition_ child element.
+=======
+And error end event is represented as an end event, with an _errorEventDefinition_ child element.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -813,7 +851,11 @@ is equivalent with
 </endEvent>
 ----
 
+<<<<<<< HEAD
 Note thate the _errorRef_ must comply with the BPMN 2.0 schema, and must be a valid QName.
+=======
+Note that the _errorRef_ must comply with the BPMN 2.0 schema, and must be a valid QName.
+>>>>>>> upstream/master
 
 [[bpmnCancelEndEvent]]
 
@@ -1043,7 +1085,11 @@ An attached intermediate _catching_ <<bpmnSignalEventDefinition,signal>> on the 
 
 *Note:* contrary to other events like the boundary error event, a boundary signal event does not only catch signal events thrown from the scope it is attached to. On the contrary, a signal event has global scope (broadcast semantics) meaning that the signal can be thrown from any place, even from a different process instance.
 
+<<<<<<< HEAD
 *Note:* contrary to other events like an error event, a signal is not consumed if it is caught. If you have two active signal boundary events catching the same signal event, both boundary events are triggered, event if they are part of different process instances.
+=======
+*Note:* contrary to other events like an error event, a signal is not consumed if it is caught. If you have two active signal boundary events catching the same signal event, both boundary events are triggered, even if they are part of different process instances.
+>>>>>>> upstream/master
 
 
 [[bpmnBoundarySignalEventGraphicalNotation]]
@@ -1105,7 +1151,11 @@ A boundary message event is visualized as a typical intermediate event (Circle w
 
 image::images/bpmn.boundary.message.event.png[align="center"]
 
+<<<<<<< HEAD
 Note that boundary message event can be both interrupting (right hand side) and non interrupting (left hand side).
+=======
+Note that boundary message event can be both interrupting (right hand side) and non-interrupting (left hand side).
+>>>>>>> upstream/master
 
 
 [[bpmnBoundaryMessageEventXml]]
@@ -1249,7 +1299,11 @@ Since the compensation boundary event is activated after the activity has comple
 ==== Intermediate Catching Events
 
 
+<<<<<<< HEAD
 All intermediate catching events events are defined in the same way:
+=======
+All intermediate catching events are defined in the same way:
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -1282,7 +1336,11 @@ A timer intermediate event acts as a stopwatch. When an execution arrives in cat
 
 ===== Graphical Notation
 
+<<<<<<< HEAD
 A timer intermediate event is visualized as a intermediate catching event, with the timer icon on the inside.
+=======
+A timer intermediate event is visualized as an intermediate catching event, with the timer icon on the inside.
+>>>>>>> upstream/master
 
 image::images/bpmn.intermediate.timer.event.png[align="center"]
 
@@ -1294,7 +1352,11 @@ image::images/bpmn.intermediate.timer.event.png[align="center"]
 ===== XML Representation
 
 
+<<<<<<< HEAD
 A timer intermediate event is defined as a <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *timerEventDefinition* element.
+=======
+A timer intermediate event is defined as an <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *timerEventDefinition* element.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -1320,12 +1382,20 @@ See <<timerEventDefinitions,timer event definitions>> for configuration details.
 
 An intermediate _catching_ <<bpmnSignalEventDefinition,signal>> event catches signals with the same signal name as the referenced signal definition.
 
+<<<<<<< HEAD
 *Note:* contrary to other events like an error event, a signal is not consumed if it is caught. If you have two active signal boundary events catching the same signal event, both boundary events are triggered, event if they are part of different process instances.
+=======
+*Note:* contrary to other events like an error event, a signal is not consumed if it is caught. If you have two active signal boundary events catching the same signal event, both boundary events are triggered, even if they are part of different process instances.
+>>>>>>> upstream/master
 
 
 [[bpmnIntermediateSignalEventGraphicalNotation]]
 
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 ===== Graphical notation
 
 An intermediate signal catch event is visualized as a typical intermediate event (Circle with smaller circle inside), with the signal icon inside. The signal icon is white (unfilled), to indicate the _catch_ semantics.
@@ -1339,7 +1409,11 @@ image::images/bpmn.intermediate.signal.catch.event.png[align="center"]
 ===== XML representation
 
 
+<<<<<<< HEAD
 A signal intermediate event is defined as a <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
+=======
+A signal intermediate event is defined as an <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -1389,7 +1463,11 @@ image::images/bpmn.intermediate.message.catch.event.png[align="center"]
 
 ===== XML representation
 
+<<<<<<< HEAD
 A message intermediate event is defined as a <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *messageEventDefinition* element.
+=======
+A message intermediate event is defined as an <<bpmnIntermediateCatchingEvent,intermediate catching event>>. The specific type sub-element is in this case a *messageEventDefinition* element.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -1415,7 +1493,11 @@ See section on <<bpmnMessageEventDefinition,message event definitions>>.
 ==== Intermediate Throwing Event
 
 
+<<<<<<< HEAD
 All intermediate throwing events events are defined in the same way:
+=======
+All intermediate throwing events are defined in the same way:
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -1438,7 +1520,11 @@ The following process diagram shows a simple example of an intermediate none eve
 
 image::images/bpmn.intermediate.none.event.png[align="center"]
 
+<<<<<<< HEAD
 This can be a good hook to monitor some KPI's, basically by adding an <<#executionListeners,execution listener>>
+=======
+This can be a good hook to monitor some KPI's, basically by adding an <<executionListeners,execution listener>>.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -1490,7 +1576,11 @@ image::images/bpmn.intermediate.signal.throw.event.png[align="center"]
 ===== XML representation
 
 
+<<<<<<< HEAD
 A signal intermediate event is defined as a <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
+=======
+A signal intermediate event is defined as an <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *signalEventDefinition* element.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -1545,7 +1635,11 @@ An intermediate _throwing_ compensation event can be used to trigger compensatio
 
 image::images/bpmn.throw.compensation.example1.png[align="center"]
 
+<<<<<<< HEAD
 In this process we have two concurrent executions, one executing the embedded subprocess and one executing the "charge credit card" activity. Lets assume both executions are started and the first concurrent execution is waiting for a user to complete the "review bookings" task. The second execution performs the "charge credit card" activity and an error is thrown, which causes the "cancel reservations" event to trigger compensation. At this point the parallel subprocess is not yet completed which means that the compensation event is not propagated to the subprocess and thus the "cancel hotel reservation"  compensation handler is not executed. If the user task (and thus the embedded subprocess) completes before the "cancel reservations" is performed, compensation is propagated to the embedded subprocess.
+=======
+In this process we have two concurrent executions, one executing the embedded subprocess and one executing the "charge credit card" activity. Let's assume both executions are started and the first concurrent execution is waiting for a user to complete the "review bookings" task. The second execution performs the "charge credit card" activity and an error is thrown, which causes the "cancel reservations" event to trigger compensation. At this point the parallel subprocess is not yet completed which means that the compensation event is not propagated to the subprocess and thus the "cancel hotel reservation"  compensation handler is not executed. If the user task (and thus the embedded subprocess) completes before the "cancel reservations" is performed, compensation is propagated to the embedded subprocess.
+>>>>>>> upstream/master
 
 *Process variables:* When compensating an embedded subprocess, the execution used for executing the compensation handlers has access to the local process variables of the subprocess in the state they were in when the subprocess completed execution. To achieve this, a snapshot of the process variables associated with the scope execution (execution created for executing the subprocess) is taken. Form this, a couple of implications follow:
 
@@ -1577,7 +1671,11 @@ image::images/bpmn.intermediate.compensation.throw.event.png[align="center"]
 ===== Xml representation
 
 
+<<<<<<< HEAD
 A compensation intermediate event is defined as a <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *compensateEventDefinition* element.
+=======
+A compensation intermediate event is defined as an <<bpmnIntermediateThrowEvent,intermediate throwing event>>. The specific type sub-element is in this case a *compensateEventDefinition* element.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -1858,7 +1956,11 @@ A parallel gateway is visualized as a gateway (diamond shape) with the 'plus' sy
 
 image::images/bpmn.parallel.gateway.png[align="center"]
 
+<<<<<<< HEAD
 [[bpmnParallelGatewayyXML]]
+=======
+[[bpmnParallelGatewayXML]]
+>>>>>>> upstream/master
 
 
 ===== XML representation
@@ -2050,7 +2152,11 @@ The Event-based Gateway allows to take a decision based on events. Each outgoing
 Note the sequence flows running out of an Event-based Gateway are different from ordinary sequence flows. These sequence flows are never actually "executed". On the contrary, they allow the process engine to determine which events an execution arriving at an Event-based Gateway needs to subscribe to. The following restrictions apply:
 
 * An Event-based Gateway must have two or more outgoing sequence flows.
+<<<<<<< HEAD
 * An Event-based Gateway must only be to elements of type +intermediateCatchEvent+ only. (Receive Tasks after an Event-based Gateway are not supported by Activiti.)
+=======
+* An Event-based Gateway must only be connected to elements of type +intermediateCatchEvent+ only. (Receive Tasks after an Event-based Gateway are not supported by Activiti.)
+>>>>>>> upstream/master
 * An +intermediateCatchEvent+ connected to an Event-based Gateway must have a single incoming sequence flow.
 
 
@@ -2207,7 +2313,11 @@ task.getDescription()
 
 Each task has a field, indicating the due date of that task. The Query API can be used to query for tasks that are due on, before or after a certain date.
 
+<<<<<<< HEAD
 There is an activity extension which allows you to specify an expression in your task-definition to set the initial due date of a task when it is created. The expression *should always resolve to a +java.util.Date+, +java.util.String (ISO8601 formatted)+, ISO8601 time-duration (eg. PT50M) or +null+*. For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task. In case a time-duration is used, the due-date is calculated based on the current time, incremented by the given period. For example, when "PT30M" is used as dueDate, the task is due in thirty minutes from now.
+=======
+There is an activity extension which allows you to specify an expression in your task-definition to set the initial due date of a task when it is created. The expression *should always resolve to a +java.util.Date+, +java.util.String (ISO8601 formatted)+, ISO8601 time-duration (e.g. PT50M) or +null+*. For example, you could use a date that was entered in a previous form in the process or calculated in a previous Service Task. In case a time-duration is used, the due-date is calculated based on the current time, incremented by the given period. For example, when "PT30M" is used as dueDate, the task is due in thirty minutes from now.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -2558,7 +2668,11 @@ All process variables that are accessible through the execution that arrives in 
 </script>
 ----
 
+<<<<<<< HEAD
 It's also possible to set process variables in a script, simply by calling _execution.setVariable("variableName", variableValue)_. By default, no variables are stored automatically (*Note: before Activiti 5.12 this was the case!*). It is possible to automatically store any variable defined in the script (eg. __sum__ in the example above) by setting the property ++autoStoreVariables++ on the ++scriptTask++ to ++true++. However, *the best practice is not to do this and use an explicit execution.setVariable() call*, as on some recent versions of the JDK auto storing of variables does not work for some scripting languages. See link:$$http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/$$[this link] for more details.
+=======
+It's also possible to set process variables in a script, simply by calling _execution.setVariable("variableName", variableValue)_. By default, no variables are stored automatically (*Note: before Activiti 5.12 this was the case!*). It is possible to automatically store any variable defined in the script (e.g. __sum__ in the example above) by setting the property ++autoStoreVariables++ on the ++scriptTask++ to ++true++. However, *the best practice is not to do this and use an explicit execution.setVariable() call*, as on some recent versions of the JDK auto storing of variables does not work for some scripting languages. See link:$$http://www.jorambarrez.be/blog/2013/03/25/bug-on-jdk-1-7-0_17-when-using-scripttask-in-activiti/$$[this link] for more details.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -2922,7 +3036,11 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
 ===== Using an Activiti service from within a JavaDelegate
 
 
+<<<<<<< HEAD
 For some use cases, it might be needed to use the Activiti services from within a Java service task (eg. starting a process instance through the RuntimeService, if the callActivity doesn't suit your needs). The _org.activiti.engine.delegate.DelegateExecution_ allows to easily use these services through the _org.activiti.engine.EngineServices_ interface:
+=======
+For some use cases, it might be needed to use the Activiti services from within a Java service task (e.g. starting a process instance through the RuntimeService, if the callActivity doesn't suit your needs). The _org.activiti.engine.delegate.DelegateExecution_ allows to easily use these services through the _org.activiti.engine.EngineServices_ interface:
+>>>>>>> upstream/master
 
 [source,java,linenums]
 ----
@@ -3404,7 +3522,11 @@ The process definition itself needs nothing else then the camel type definition 
 </camelContext>
 ----
 
+<<<<<<< HEAD
 For more documentation about Camel routes you can look on the link:$$http://camel.apache.org/$$[Camel website]. The basic concepts are demonstrated through a few small samples here in this document. In the first sample, we will do the simplest form of Camel call from an activiti workflow. Let's call it SimpleCamelCall.
+=======
+For more documentation about Camel routes you can look on the link:$$http://camel.apache.org/$$[Camel website]. The basic concepts are demonstrated through a few small samples here in this document. In the first sample, we will do the simplest form of Camel call from an Activiti workflow. Let's call it SimpleCamelCall.
+>>>>>>> upstream/master
 
 If you want to define multiple Camel context beans and/or want to use a different bean name, this can be overridden on the Camel task definition like this:
 
@@ -3557,17 +3679,29 @@ the following table provides an overview of three available camel behaviours:
 |Behaviour|In Url|Description
 |CamelBehaviorDefaultImpl|copyVariablesToProperties|Copy Activiti variables as Camel properties
 |CamelBehaviorCamelBodyImpl|copyCamelBodyToBody|Copy only Activiti variable named "camelBody" as camel message body
+<<<<<<< HEAD
 |CamelBehaviorBodyAsMapImpl|copyVariablesToBodyAsMap|Copy all the activiti variables in a map as Camel message body
+=======
+|CamelBehaviorBodyAsMapImpl|copyVariablesToBodyAsMap|Copy all the Activiti variables in a map as Camel message body
+>>>>>>> upstream/master
 
 |===============
 
 
+<<<<<<< HEAD
 The above table explains how activiti variables are going to be transfered to Camel. The following table explains how the Camel variables are returned back to Activiti. This can only be configured in route URLs.
+=======
+The above table explains how Activiti variables are going to be transferred to Camel. The following table explains how the Camel variables are returned back to Activiti. This can only be configured in route URLs.
+>>>>>>> upstream/master
 
 [options="header"]
 |===============
 |Url|Description
+<<<<<<< HEAD
 |Default|If Camel body is a map, copy each element as Activiti variable, otherwise copy the whole Camel body as "camelBody" activiti variable
+=======
+|Default|If Camel body is a map, copy each element as Activiti variable, otherwise copy the whole Camel body as "camelBody" Activiti variable
+>>>>>>> upstream/master
 |copyVariablesFromProperties|Copy Camel properties as Activiti variables of the same name
 |copyCamelBodyToBodyAsString|like default, but if camel Body is not a map, first convert it to String and then copy it in "camelBody"
 |copyVariablesFromHeader|Additionally copy camel headers to Activiti variables of the same names
@@ -3580,7 +3714,11 @@ The above table explains how activiti variables are going to be transfered to Ca
 
 ===== Asynchronous Ping Pong example
 
+<<<<<<< HEAD
 Previous examples were all synchronous. The workflow stops, until the camel route is concluded and returned. In some cases, we might need the activiti workflow to continue. For such purposes the asynchronous capability of the Camel service task is useful. You can make use of this feature by setting the async property of the Camel service task to true.
+=======
+Previous examples were all synchronous. The workflow stops, until the camel route is concluded and returned. In some cases, we might need the Activiti workflow to continue. For such purposes the asynchronous capability of the Camel service task is useful. You can make use of this feature by setting the async property of the Camel service task to true.
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -3595,7 +3733,11 @@ By setting this feature the specified Camel route is activated asynchronously by
 <receiveTask id="receiveAsyncPing" name="Wait State" />
 ----
 
+<<<<<<< HEAD
 The process instance will wait until a signal is received, for example from Camel. In Camel you can send a signal to the process instance by sending a message to the proper activiti endpoint.
+=======
+The process instance will wait until a signal is received, for example from Camel. In Camel you can send a signal to the process instance by sending a message to the proper Activiti endpoint.
+>>>>>>> upstream/master
 
 [source,java,linenums]
 ----
@@ -3797,7 +3939,11 @@ Execution listeners allow you to execute external Java code or evaluate an expre
 * Start and ending of an activity.
 * Start and ending of a gateway.
 * Start and ending of intermediate events.
+<<<<<<< HEAD
 * Ending an start event or starting an end event.
+=======
+* Ending a start event or starting an end event.
+>>>>>>> upstream/master
 
 The following process definition contains 3 execution listeners:
 
@@ -4051,7 +4197,11 @@ A _multi-instance_ is a regular activity that has extra properties defined (so-c
 * <<bpmnSubProcess,(Embedded) Sub-Process>>
 * <<bpmnCallActivity,Call Activity>>
 
+<<<<<<< HEAD
 A <<bpmnGateways,Gateway>> or <<bpmnEvents,Event>> can *not* become multi-instance.
+=======
+A <<bpmnGateways,Gateway>> or <<bpmnEvents,Event>> *cannot* become multi-instance.
+>>>>>>> upstream/master
 
 As required by the spec, each parent execution of the created executions for each instance will have following variables:
 
@@ -4063,7 +4213,11 @@ These values can be retrieved by calling the +execution.getVariable(x)+ method.
 
 Additionally, each of the created executions will have an execution-local variable (i.e. not visible for the other executions, and not stored on process instance level) :
 
+<<<<<<< HEAD
 * *loopCounter*: indicates the _index in the for-each loop_ of that particular instance. loopCounter variable can be renamed by activiti *elementIndexVariable* attribute.
+=======
+* *loopCounter*: indicates the _index in the for-each loop_ of that particular instance. loopCounter variable can be renamed by Activiti *elementIndexVariable* attribute.
+>>>>>>> upstream/master
 
 
 [[bpmnMultiInstanceGraphicalNotation]]
@@ -4231,7 +4385,11 @@ Sub-Processes have two major use cases:
 Using a Sub-Process does impose some constraints:
 
 * A Sub-Process can only have *one none start event*, no other start event types are allowed. A Sub-Process must *at least have one end event*. Note that the BPMN 2.0 specification allows to omit the start and end events in a Sub-Process, but the current Activiti implementation does not support this.
+<<<<<<< HEAD
 * *Sequence flow can not cross Sub-Process boundaries.*
+=======
+* *Sequence flow cannot cross Sub-Process boundaries.*
+>>>>>>> upstream/master
 
 
 [[bpmnSubProcessGraphicalNotation]]
@@ -4403,7 +4561,11 @@ To sum it up: while ACID transactions offer a generic solution to such problems 
 
 * The BPMN specification requires that the process engine reacts to events issued by the underlying transaction protocol and for instance that a transaction is cancelled, if a cancel event occurs in the underlying protocol. As an embeddable engine, Activiti does currently not support this. (For some ramifications of this, see paragraph on consistency below.)
 
+<<<<<<< HEAD
 *Consistency on top of ACID transactions and optimistic concurrency:* A bpmn transaction guarantees consistency in the sense that either all activities compete successfully, or if some activity cannot be performed, the effects of all other successful activities are compensated. So either way we end up in a consistent state. However, it is important to recognize that in Activiti, the consistency model for bpmn transactions is superposed on top of the consistency model for process execution. Activiti executes processes in a transactional way. Concurrency is addressed using optimistic locking. In Activiti, bpmn error, cancel and compensation events are built on top of the same acid transactions and optimistic locking. For example, a cancel end event can only trigger compensation if it is actually reached. It is not reached if some undeclared exception is thrown by a service task before. Or, the effects of a compensation handler can not be committed if some other participant in the underlying ACID transaction sets the transaction to the state rollback-only. Or, when two concurrent executions reach a cancel end event, compensation might be triggered twice and fail with an optimistic locking exception. All of this is to say that when implementing bpmn transactions in Activiti, the same set of rules apply as when implementing "ordinary" processes and subprocesses. So to effectively guarantee consistency, it is important to implement processes in a way that does take the optimistic, transactional execution model into consideration.
+=======
+*Consistency on top of ACID transactions and optimistic concurrency:* A bpmn transaction guarantees consistency in the sense that either all activities compete successfully, or if some activity cannot be performed, the effects of all other successful activities are compensated. So either way we end up in a consistent state. However, it is important to recognize that in Activiti, the consistency model for bpmn transactions is superposed on top of the consistency model for process execution. Activiti executes processes in a transactional way. Concurrency is addressed using optimistic locking. In Activiti, bpmn error, cancel and compensation events are built on top of the same acid transactions and optimistic locking. For example, a cancel end event can only trigger compensation if it is actually reached. It is not reached if some undeclared exception is thrown by a service task before. Or, the effects of a compensation handler cannot be committed if some other participant in the underlying ACID transaction sets the transaction to the state rollback-only. Or, when two concurrent executions reach a cancel end event, compensation might be triggered twice and fail with an optimistic locking exception. All of this is to say that when implementing bpmn transactions in Activiti, the same set of rules apply as when implementing "ordinary" processes and subprocesses. So to effectively guarantee consistency, it is important to implement processes in a way that does take the optimistic, transactional execution model into consideration.
+>>>>>>> upstream/master
 
 
 [[bpmnEventSubprocessGraphicalNotation]]
@@ -4512,7 +4674,11 @@ It is possible to use expressions here as well:
 ----
 <callActivity id="callSubProcess" calledElement="checkCreditProcess" >
 	<extensionElements>
+<<<<<<< HEAD
 	  <activiti:in sourceExpression="${x+5}"" target="y" />
+=======
+	  <activiti:in sourceExpression="${x+5}" target="y" />
+>>>>>>> upstream/master
 	  <activiti:out source="${y+5}" target="z" />
 	</extensionElements>
 </callActivity>

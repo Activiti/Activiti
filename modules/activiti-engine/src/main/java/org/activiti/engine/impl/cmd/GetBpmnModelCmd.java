@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.cmd;
 
+<<<<<<< HEAD
 import java.io.InputStream;
 import java.io.Serializable;
 
@@ -25,6 +26,14 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.util.io.BytesStreamSource;
 import org.activiti.engine.repository.Deployment;
+=======
+import java.io.Serializable;
+
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.interceptor.Command;
+import org.activiti.engine.impl.interceptor.CommandContext;
+>>>>>>> upstream/master
 
 /**
  * @author Joram Barrez
@@ -44,6 +53,7 @@ public class GetBpmnModelCmd implements Command<BpmnModel>, Serializable {
       throw new ActivitiIllegalArgumentException("processDefinitionId is null");
     }
 
+<<<<<<< HEAD
     // Find the bpmn 2.0 xml resource name which is stored on the process definition
     ProcessDefinitionEntity processDefinitionEntity = commandContext
             .getProcessDefinitionEntityManager()
@@ -73,3 +83,10 @@ public class GetBpmnModelCmd implements Command<BpmnModel>, Serializable {
   }
 
 }
+=======
+    return commandContext.getProcessEngineConfiguration()
+        .getDeploymentManager()
+        .getBpmnModelById(processDefinitionId);
+  }
+}
+>>>>>>> upstream/master

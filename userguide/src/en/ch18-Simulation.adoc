@@ -29,7 +29,11 @@ No need to:
 * create different reporting for simulation.
 * feed simulation engine with a lot of data.
 
+<<<<<<< HEAD
 CrystalBall simulator is based on activiti. That's why it is easy to copy data and start simulation and be able to replay workflow behavior from the history.
+=======
+CrystalBall simulator is based on Activiti. That's why it is easy to copy data and start simulation and be able to replay workflow behavior from the history.
+>>>>>>> upstream/master
     
 
 [[crb-inside]]
@@ -69,7 +73,11 @@ One of the usecases where simulation can be used is analysis of the history. The
 * concurrency - process instance run can interfere with another one and bug can be found only in the case of parallel execution of both of them.
 * users - a lot of users can participate on the process instance execution. It takes a lot of effort to get process instance to the state where error occurred.
             
+<<<<<<< HEAD
 The simulation can address mentioned issues easily. Simulation time is virtual and does not depend on real time. Activiti process engine itself is virtual. There is no need to create virtual process engine which is used in the simulation experiment. In this case concurrency can be addressed naturally. Users behavior can be logged and replayed from this log or predicted and generated on demand.
+=======
+The simulation can address mentioned issues easily. Simulation time is virtual and does not depend on real time. Activiti process engine itself is virtual. There is no need to create virtual process engine which is used in the simulation experiment. In this case concurrency can be addressed naturally. Users' behavior can be logged and replayed from this log or predicted and generated on demand.
+>>>>>>> upstream/master
       
 The best way to analyze history is to re-live it once more time. The re-living is hardly achievable in real life but it can be achieved by simulation.
       
@@ -102,7 +110,11 @@ Events are stored. We can continue in re-living the history again.
 
 ==== PlayBack
 
+<<<<<<< HEAD
 The good thing on the playback is that it can be played over and over again till we do not completely understand what has happened. Crystalball simulation is based on real data, real user behavior and it is crystalball's advantage.
+=======
+The good thing on the playback is that it can be played over and over again till we do not completely understand what has happened. Crystalball simulation is based on real data, real user behavior and it is Crystalball's advantage.
+>>>>>>> upstream/master
         
 The best way to understand how playback works is to explain step by step an example based on JUnit test org.activiti.crystalball.simulator.delegate.event.PlaybackRunTest. The process on which simulation is tested is the simplest one:
 
@@ -258,7 +270,11 @@ Used process engine is basic InMemoryStandaloneProcessEngine with
 Next test part starts simulation debugger on the same process engine as original process. Replay event handlers replaces StartProcessEventHandler with StartReplayProcessEventHandler. StartReplayProcessEventHandler takes process instance Id to replay and in the init phase schedule process instance start. StartProcessEventHandler in the handle phase starts new process instance with one reserved variable. Variable name is "_replay.processInstanceId". The variable is used to store id of the process which is replayed. ReplaySimulationRun in comparison with SimpleSimulationRun does not:
           
 * create and close process engine instance.
+<<<<<<< HEAD
 * change simulation time. (real time can not be changed)
+=======
+* change simulation time. (real time cannot be changed)
+>>>>>>> upstream/master
 [source,java,linenums]
 
 ----

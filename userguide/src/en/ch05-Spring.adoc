@@ -99,7 +99,11 @@ ClassPathXmlApplicationContext applicationContext = new ClassPathXmlApplicationC
 	"org/activiti/examples/spring/SpringTransactionIntegrationTest-context.xml");
 ----
 
+<<<<<<< HEAD
 or, since it is a test:
+=======
+or since it is a test:
+>>>>>>> upstream/master
 
 [source,java,linenums]
 ----
@@ -337,6 +341,13 @@ For more information on Spring Boot, see link:$$http://projects.spring.io/spring
 
 The Spring Boot - Activiti integration is currently experimental. It has been developer together with Spring committers, but it is still early days. We welcome all to try it out and provide feedback. 
 
+<<<<<<< HEAD
+=======
+==== Compatibility
+
+Spring Boot requires a JDK 7 runtime. It can be made to work with JDK6, but it will need configuration tweaks. Please check the Spring Boot documentation.
+
+>>>>>>> upstream/master
 ==== Getting started
 
 Spring Boot is all about convention over configuration. To get started, simply add the _spring-boot-starters-basic_ dependency to your project. For example for Maven:
@@ -410,7 +421,11 @@ MyApplication                            : Started MyApplication in 2.019 second
 
 So by just adding the dependency to the classpath and using the _@EnableAutoConfiguration_ annotation a lot has happened behind the scenes:
 
+<<<<<<< HEAD
 * A in-memory datasource is created automatically (since the H2 driver is on the classpath) and passed to the Activiti process engine configuration
+=======
+* An in-memory datasource is created automatically (since the H2 driver is on the classpath) and passed to the Activiti process engine configuration
+>>>>>>> upstream/master
 * An Activiti ProcessEngine bean is created and exposed
 * All the Activiti services are exposed as Spring beans
 * The Spring Job Executor is created
@@ -498,7 +513,11 @@ public DataSource database() {
 }
 ----
 
+<<<<<<< HEAD
 Remove H2 from the Maven dependencies and add the Mysql driver and the Tomcat connection pooling to the classpath:
+=======
+Remove H2 from the Maven dependencies and add the MySQL driver and the Tomcat connection pooling to the classpath:
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -736,7 +755,11 @@ This is a Spring repository, which offers CRUD out of the box. We add the method
 We now enhance our service further:
 
 * by adding _@Transactional_ to the class. Note that by adding the JPA dependency above, the DataSourceTransactionManager which we were using before is now automatically swapped out by a JpaTransactionManager. 
+<<<<<<< HEAD
 * The _startProcess_ now gets and assignee username in, which is used to look up the Person, and put the Person JPA object as a process variable in the process instance.
+=======
+* The _startProcess_ now gets an assignee username in, which is used to look up the Person, and put the Person JPA object as a process variable in the process instance.
+>>>>>>> upstream/master
 * A method to create Dummy users is added. This is used in the CommandLineRunner to populate the database.
 
 [source,java,linenums]
@@ -823,7 +846,11 @@ public class MyRestController {
     }
 ----
 
+<<<<<<< HEAD
 And lastly, to try out the Spring-JPA-Activiti integration, we assigne the task using the id of the Person JPA object in the process definition:
+=======
+And lastly, to try out the Spring-JPA-Activiti integration, we assign the task using the id of the Person JPA object in the process definition:
+>>>>>>> upstream/master
 
 [source,xml,linenums]
 ----
@@ -850,7 +877,11 @@ Obviously there is a lot about Spring Boot that hasn't been touched yet, like ve
 
 * Actuator support
 * Spring Integration support
+<<<<<<< HEAD
 * Rest Api integration: boot up the Activiti Rest api embedded within the Spring application
+=======
+* Rest API integration: boot up the Activiti Rest API embedded within the Spring application
+>>>>>>> upstream/master
 * Spring Security support
 
 All these areas are a first version at the moment, but they will evolved in the future further.

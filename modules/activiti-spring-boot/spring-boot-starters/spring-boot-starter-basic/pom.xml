@@ -6,6 +6,7 @@
     <parent>
         <groupId>org.activiti</groupId>
         <artifactId>spring-boot-starters</artifactId>
+<<<<<<< HEAD
         <version>5.17.0</version>
     </parent>
 
@@ -13,6 +14,30 @@
 
 
     <dependencies>
+=======
+        <version>5.17.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>spring-boot-starter-basic</artifactId>
+<!--
+
+    <properties>
+        <spring.framework.version>4.1.4.RELEASE</spring.framework.version>
+    </properties>
+
+-->
+
+
+
+    <dependencies>
+        <!-- Support for auto-completion support in Boot 1.2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-configuration-processor</artifactId>
+            <optional>true</optional>
+        </dependency>
+
+>>>>>>> upstream/master
         <!-- common -->
         <dependency>
             <groupId>org.activiti</groupId>
@@ -21,6 +46,10 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-spring</artifactId>
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

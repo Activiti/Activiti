@@ -230,6 +230,17 @@ public class VariableScopeTest extends PluggableActivitiTestCase {
     }
   }
   
+<<<<<<< HEAD
+=======
+  @Deployment
+  public void testGetVariableLocal() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("getVariableLocal");
+    String variableName = "Variable-That-Does-Not-Exist";
+    Object value = runtimeService.getVariableLocal(pi.getId(), variableName);
+    assertNull(value);
+  }
+
+>>>>>>> upstream/master
   /**
    * A command to get the names of the variables
    * @author Roman Smirnov

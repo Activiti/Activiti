@@ -1,7 +1,14 @@
 = Activiti User Guide
+<<<<<<< HEAD
 v  5.17.0
 :doctype: book
 :toc: left
+=======
+v  5.17.1-SNAPSHOT
+:doctype: book
+:toc: left
+:toclevels: 5
+>>>>>>> upstream/master
 :icons: font
 :numbered:
 :source-highlighter: pygments
