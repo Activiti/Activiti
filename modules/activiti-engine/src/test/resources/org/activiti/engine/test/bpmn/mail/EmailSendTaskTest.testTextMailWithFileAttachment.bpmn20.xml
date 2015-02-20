@@ -1,0 +1,31 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="textMailWithFileAttachment" >
+
+    <startEvent id="theStart" />
+    <sequenceFlow sourceRef="theStart" targetRef="sendMail" />
+
+    <sendTask id="sendMail" activiti:type="mail">
+      <extensionElements>
+        <activiti:field name="to">
+          <activiti:string>kermit@activiti.org</activiti:string>
+        </activiti:field>
+        <activiti:field name="subject">
+          <activiti:string>Hello Kermit!</activiti:string>
+        </activiti:field>
+        <activiti:field name="text">
+          <activiti:string>This a text only e-mail.</activiti:string>
+        </activiti:field>
+        <activiti:field name="attachments">
+          <activiti:expression>#{attachmentsBean.getFile()}</activiti:expression>
+        </activiti:field>
+      </extensionElements>
+    </sendTask>
+    <sequenceFlow sourceRef="sendMail" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+  </process>
+</definitions>
