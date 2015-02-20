@@ -23,7 +23,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.calendar.DurationHelper;
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionState;
@@ -99,7 +98,7 @@ public class JobRetryCmd implements Command<Object> {
         }
         job.setRetries(job.getRetries() - 1);
         if ((job.getRetries() == 0) && (activity.getFailedJobRetryErrorCode() != null)) {
-            ErrorPropagation.propagateError(activity.getFailedJobRetryErrorCode(), commandContext.getExecutionEntityManager().findExecutionById(job.getExecutionId()));
+            // errorProgation is already executed, just delete the job
             job.delete();
         }
       } catch (Exception e) {
