@@ -39,11 +39,8 @@ import org.activiti.bpmn.converter.child.TimeCycleParser;
 import org.activiti.bpmn.converter.child.TimeDateParser;
 import org.activiti.bpmn.converter.child.TimeDurationParser;
 import org.activiti.bpmn.converter.child.TimerEventDefinitionParser;
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.ExtensionAttribute;
-import org.activiti.bpmn.model.ExtensionElement;
-import org.activiti.bpmn.model.GraphicInfo;
+import org.activiti.bpmn.converter.export.ProcessExport;
+import org.activiti.bpmn.model.*;
 import org.apache.commons.lang3.StringUtils;
 
 public class BpmnXMLUtil implements BpmnXMLConstants {
@@ -104,7 +101,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       childParsers = new HashMap<String, BaseChildElementParser>();
     }
     childParsers.putAll(genericChildParserMap);
-    
+
     boolean inExtensionElements = false;
     boolean readyWithChildElements = false;
     while (readyWithChildElements == false && xtr.hasNext()) {
@@ -113,6 +110,13 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
         if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
           inExtensionElements = true;
         } else if (childParsers.containsKey(xtr.getLocalName())) {
+          BaseChildElementParser childParser = childParsers.get(xtr.getLocalName());
+          //if we're into an extension element but the current element is not accepted by this parentElement then is read as a custom extension element
+          if (inExtensionElements && !childParser.accepts(parentElement)) {
+            ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
+            parentElement.addExtensionElement(extensionElement);
+            continue;
+          }
           childParsers.get(xtr.getLocalName()).parseChildElement(xtr, parentElement, model);
         } else if (inExtensionElements) {
           ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);

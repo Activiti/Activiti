@@ -31,11 +31,16 @@ public class FieldExtensionParser extends BaseChildElementParser {
   public String getElementName() {
     return ELEMENT_FIELD;
   }
-  
+
+  public boolean accepts(BaseElement element){
+    return ((element instanceof ActivitiListener)
+        || (element instanceof ServiceTask)
+        || (element instanceof SendTask));
+  }
+
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     
-    if (parentElement instanceof ActivitiListener == false && parentElement instanceof ServiceTask == false && 
-        parentElement instanceof SendTask == false) return;
+    if (!accepts(parentElement)) return;
     
     FieldExtension extension = new FieldExtension();
     BpmnXMLUtil.addXMLLocation(extension, xtr);

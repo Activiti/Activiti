@@ -15,12 +15,7 @@ package org.activiti.bpmn.converter.child;
 import javax.xml.stream.XMLStreamReader;
 
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
-import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.FormProperty;
-import org.activiti.bpmn.model.FormValue;
-import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.UserTask;
+import org.activiti.bpmn.model.*;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -31,11 +26,17 @@ public class FormPropertyParser extends BaseChildElementParser {
   public String getElementName() {
     return ELEMENT_FORMPROPERTY;
   }
-  
+
+
+  public boolean accepts(BaseElement element){
+    return ((element instanceof UserTask)
+        || (element instanceof StartEvent));
+  }
+
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    
-    if (parentElement instanceof UserTask == false && parentElement instanceof StartEvent == false) return;
-    
+
+    if (!accepts(parentElement)) return;
+
     FormProperty property = new FormProperty();
     BpmnXMLUtil.addXMLLocation(property, xtr);
     property.setId(xtr.getAttributeValue(null, ATTRIBUTE_FORM_ID));

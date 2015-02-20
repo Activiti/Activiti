@@ -15,6 +15,7 @@ package org.activiti.bpmn.converter.export;
 import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
+import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Lane;
 import org.activiti.bpmn.model.Process;
 import org.apache.commons.lang3.StringUtils;
@@ -28,10 +29,16 @@ public class LaneExport implements BpmnXMLConstants {
       for (Lane lane : process.getLanes()) {
         xtw.writeStartElement(ELEMENT_LANE);
         xtw.writeAttribute(ATTRIBUTE_ID, lane.getId());
+
         if(StringUtils.isNotEmpty(lane.getName())) {
           xtw.writeAttribute(ATTRIBUTE_NAME, lane.getName());
         }
-        
+
+        boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(lane, false, xtw);
+        if (didWriteExtensionStartElement) {
+          xtw.writeEndElement();
+        }
+
         for (String flowNodeRef : lane.getFlowReferences()) {
           xtw.writeStartElement(ELEMENT_FLOWNODE_REF);
           xtw.writeCharacters(flowNodeRef);
