@@ -151,7 +151,10 @@ public class TaskEntityManager extends AbstractManager {
     taskQuery.setFirstResult(0);
     
     List<Task> instanceList = getDbSqlSession().selectListWithRawParameterWithoutFilter(query, taskQuery, taskQuery.getFirstResult(), taskQuery.getMaxResults());
-    
+    // ensure that all jpa-variables are loaded
+    for (Task task : instanceList) {
+      task.getProcessVariables();
+    }
     if (instanceList != null && !instanceList.isEmpty()) {
       if (firstResult > 0) {
         if (firstResult <= instanceList.size()) {

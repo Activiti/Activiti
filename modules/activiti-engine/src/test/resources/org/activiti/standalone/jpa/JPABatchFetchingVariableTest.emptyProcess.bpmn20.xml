@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+	
+  <process id="JPABatchFetchingProcess" name="Empty process with JPA variables and JPA variable lists">
+  
+    <startEvent id="theStart1" />
+    <sequenceFlow id="flow1" sourceRef="theStart1" targetRef="theEnd1" />
+    <endEvent id="theEnd1" />
+    
+  </process>
+
+</definitions>

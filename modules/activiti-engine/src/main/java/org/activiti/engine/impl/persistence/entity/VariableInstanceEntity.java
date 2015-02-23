@@ -13,13 +13,22 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Objects;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.BulkDeleteable;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
+import org.activiti.engine.impl.util.ReflectUtil;
+import org.activiti.engine.impl.variable.EntityMetaData;
+import org.activiti.engine.impl.variable.JPAEntityMappings;
+import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.ValueFields;
 import org.activiti.engine.impl.variable.VariableType;
 import org.apache.commons.lang3.StringUtils;
@@ -51,9 +60,13 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   protected Object cachedValue;
   protected boolean forcedUpdate;
   protected boolean deleted = false;
-  
+
+  protected static final ThreadLocal<List<VariableInstanceEntity>> threadLocalInstances = new ThreadLocal<List<VariableInstanceEntity>>();
+  protected List<VariableInstanceEntity> queryInstances;
+
   // Default constructor for SQL mapping
   protected VariableInstanceEntity() {
+    initializeQueryInstances();
   }
   
   public static void touch(VariableInstanceEntity variableInstance) {
@@ -88,8 +101,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
   }
   
   public void forceUpdate() {
-	    forcedUpdate = true;
-	  
+	  forcedUpdate = true;
   }
 
   public void delete() {
@@ -175,14 +187,91 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   public Object getValue() {
     if (!type.isCachable() || cachedValue==null) {
-      cachedValue = type.getValue(this);
+      if(type instanceof JPAEntityVariableType) {
+        initializeQueryInstances();
+        ensureJpaVariablesInitialized();
+      } else {
+        cachedValue = type.getValue(this);
+      }
     }
     return cachedValue;
+  }
+
+  private void ensureJpaVariablesInitialized() {
+    Map<String, List<VariableInstanceEntity>> entityMap = new HashMap<String, List<VariableInstanceEntity>>();
+    Map<String, List<String>> entityIdMap = new HashMap<String, List<String>>();
+    ListIterator<VariableInstanceEntity> it = queryInstances.listIterator();
+    // Find all uninitialized jpa entities
+    while (it.hasNext()) {
+      VariableInstanceEntity entity = it.next();
+      it.remove();
+      if(entity.getType() != null && JPAEntityVariableType.TYPE_NAME.equals(entity.getType().getTypeName())) {
+        String className = entity.getTextValue();
+        List<VariableInstanceEntity> entities = entityMap.get(className);
+        if (entities == null) {
+          entities = new ArrayList<VariableInstanceEntity>();
+          entityMap.put(className, entities);
+        }
+        entities.add(entity);
+        String id = entity.getTextValue2();
+        List<String> entityIds = entityIdMap.get(className);
+        if (entityIds == null) {
+          entityIds = new ArrayList<String>();
+          entityIdMap.put(className, entityIds);
+        }
+        entityIds.add(id);
+      }
+    }
+    // load entities from the database and initialize variable instances
+    JPAEntityMappings mappings = new JPAEntityMappings();
+    for (Map.Entry<String, List<String>> entry : entityIdMap.entrySet()) {
+      String className = entry.getKey();
+      final List<Object> entities = mappings.getJPAEntities(className, entry.getValue());
+      outer: for(VariableInstanceEntity instance : entityMap.get(className)) {
+        EntityMetaData metaData = mappings.getEntityMetaData(ReflectUtil.loadClass(className));
+        String stringId = instance.getTextValue2();
+        Object instanceId = mappings.createId(metaData, stringId);
+        for (Object entity : entities) {
+          Object entityId = mappings.getIdValue(entity, metaData);
+          if(Objects.equals(entityId, instanceId)) {
+            instance.setCachedValue(entity);
+            continue outer;
+          }
+        }
+        // if entity has not been found within batch query then try to find it by id.
+        // some types eg. java.sql.Date, java.sql.Time can be truncated by database
+        Object entity = mappings.getJPAEntity(className, stringId);
+        if(entity != null) {
+          instance.setCachedValue(entity);
+        } else {
+          throw new ActivitiException("Entity does not exist: " + className + " - " + instanceId);
+        }
+      }
+    }
   }
 
   public void setValue(Object value) {
     type.setValue(value, this);
     cachedValue = value;
+    initializeQueryInstances().remove(this);
+  }
+
+  /**
+   * @return list of jpa-entities to load
+   */
+  private List<VariableInstanceEntity> initializeQueryInstances() {
+    // initialize jpa-entity lists and put 'this' in that list
+    if(queryInstances == null) {
+      queryInstances = threadLocalInstances.get();
+      if(queryInstances == null) {
+        queryInstances = new ArrayList<VariableInstanceEntity>();
+        threadLocalInstances.set(queryInstances);
+      }
+    }
+    if(!queryInstances.contains(this)) {
+      queryInstances.add(this);
+    }
+    return queryInstances;
   }
 
   // getters and setters //////////////////////////////////////////////////////

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="taskAssigneeExample" 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="JPABatchFetchingComplexProcess" name="Empty process with JPA variables and JPA variable lists">
+
+    <startEvent id="theStart2"/>
+    <sequenceFlow id="flow2" sourceRef="theStart2" targetRef="gateway1"/>
+    <parallelGateway id="gateway1"/>
+    <sequenceFlow id="flow3" sourceRef="gateway1" targetRef="usertask1"/>
+    <userTask id="usertask1"/>
+    <sequenceFlow id="flow4" sourceRef="gateway1" targetRef="usertask2"/>
+    <userTask id="usertask2"/>
+    <sequenceFlow id="flow5" sourceRef="usertask1" targetRef="gateway2"/>
+    <sequenceFlow id="flow6" sourceRef="usertask2" targetRef="gateway2"/>
+    <parallelGateway id="gateway2"/>
+    <sequenceFlow id="flow7" sourceRef="gateway2" targetRef="theEnd2"/>
+    <endEvent id="theEnd2"/>
+
+  </process>
+
+</definitions>

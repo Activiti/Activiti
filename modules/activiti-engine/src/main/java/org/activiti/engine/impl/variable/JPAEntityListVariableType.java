@@ -6,11 +6,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.util.ReflectUtil;
 
 /**
  * Variable type capable of storing a list of reference to JPA-entities. Only JPA-Entities which
@@ -106,27 +109,43 @@ public class JPAEntityListVariableType implements VariableType, CacheableVariabl
     } else {
       throw new ActivitiIllegalArgumentException("Value is not a list of JPA entities: " + value);
     }
-    
   }
 
   @Override
   public Object getValue(ValueFields valueFields) {
     byte[] bytes = valueFields.getBytes();
     if(valueFields.getTextValue() != null && bytes != null) {
-      String entityClass = valueFields.getTextValue();
-      
-      List<Object> result = new ArrayList<Object>();
-      String[] ids = deserializeIds(bytes);
-      
-      for(String id : ids) {
-        result.add(mappings.getJPAEntity(entityClass, id));
+      String className = valueFields.getTextValue();
+
+      List<String> ids = Arrays.asList(deserializeIds(bytes));
+
+      // fetch JPA entities in batch
+      List entities = mappings.getJPAEntities(className, ids);
+
+      // test that all entities have been found
+      List result = new ArrayList();
+      outer: for (String id : ids) {
+        EntityMetaData metaData = mappings.getEntityMetaData(ReflectUtil.loadClass(className));
+        Object entityId = mappings.createId(metaData, id);
+        for (Object entity : entities) {
+          if (Objects.equals(entityId, mappings.getIdValue(entity, metaData))) {
+            result.add(entity);
+            continue outer;
+          }
+        }
+        // if entity has not been found within batch query then try to find it by id
+        // some types eg. java.sql.Date, java.sql.Time can be truncated by database
+        Object entity = mappings.getJPAEntity(className, id);
+        if(entity != null) {
+          result.add(entity);
+        } else {
+          throw new ActivitiException("Entity does not exist: " + className + " - " + id);
+        }
       }
-      
       return result;
     }
     return null;
   }
-  
   
   /**
    * @return a bytearray containing all ID's in the given string serialized as an array.

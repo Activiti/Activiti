@@ -63,11 +63,12 @@ public class VariableInitializingList extends ArrayList<VariableInstanceEntity> 
    */
   protected void initializeVariable(VariableInstanceEntity e) {
     if(Context.getCommandContext() != null && e != null && e.getType() != null) {
-      e.getValue();
-      
       // make sure JPA entities are cached for later retrieval
       if (JPAEntityVariableType.TYPE_NAME.equals(e.getType().getTypeName()) || JPAEntityListVariableType.TYPE_NAME.equals(e.getType().getTypeName())) {
+        // do not initialize jpa entities now
         ((CacheableVariable) e.getType()).setForceCacheable(true);
+      } else {
+        e.getValue();
       }
     }
   }
