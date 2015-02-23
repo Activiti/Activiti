@@ -226,9 +226,9 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     JPAEntityMappings mappings = new JPAEntityMappings();
     for (Map.Entry<String, List<String>> entry : entityIdMap.entrySet()) {
       String className = entry.getKey();
+      EntityMetaData metaData = mappings.getEntityMetaData(ReflectUtil.loadClass(className));
       final List<Object> entities = mappings.getJPAEntities(className, entry.getValue());
       outer: for(VariableInstanceEntity instance : entityMap.get(className)) {
-        EntityMetaData metaData = mappings.getEntityMetaData(ReflectUtil.loadClass(className));
         String stringId = instance.getTextValue2();
         Object instanceId = mappings.createId(metaData, stringId);
         for (Object entity : entities) {
