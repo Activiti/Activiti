@@ -52,8 +52,6 @@ public class ActivitiMapExceptionParser extends BaseChildElementParser {
     if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(errorCode.trim()))
       throw new XMLException("No errorCode defined mapException with errorCode=" + errorCode + " and class=" + exceptionClass);
 
-    if (StringUtils.isEmpty(exceptionClass) || StringUtils.isEmpty(exceptionClass.trim()))
-      throw new XMLException("No exception code defined mapException with errorCode=" + errorCode + " and class=" + exceptionClass);
 
 
     ((Activity) parentElement).getMapExceptions().add(new MapExceptionEntry(errorCode, exceptionClass, hasChildrenBool));

@@ -51,16 +51,18 @@ public class MapExceptionConverterTest extends AbstractConverterTest {
   @Test
   public void  testMapExceptionWithNoExceptionClass() throws Exception {
     resourceName = "mapException/mapExceptionNoExceptionClass.bpmn"; 
-    try {
       
-      BpmnModel bpmnModel = readXMLFile();
-      fail("No exception is thrown for mapExecution with no exception class");      
-    } catch (XMLException x) {
-      assertTrue(x.getMessage().indexOf("No exception code defined") != -1);
-     
-    } catch (Exception e) {
-      fail("wrong exception thrown. XmlException expected, " +  e.getClass() + " thrown");
-    }
+    BpmnModel bpmnModel = readXMLFile();
+    FlowElement flowElement = bpmnModel.getMainProcess().getFlowElement("servicetaskWithAndTrueAndChildren");
+    assertNotNull(flowElement);
+    assertTrue(flowElement instanceof ServiceTask);
+    assertEquals("servicetaskWithAndTrueAndChildren", flowElement.getId());
+    ServiceTask serviceTask = (ServiceTask) flowElement;
+    assertNotNull(serviceTask.getMapExceptions());
+    assertEquals(1, serviceTask.getMapExceptions().size());
+    assertNotNull(serviceTask.getMapExceptions().get(0).getClassName());
+    assertEquals(0, serviceTask.getMapExceptions().get(0).getClassName().length());
+      
         
   }
 
