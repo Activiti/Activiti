@@ -221,7 +221,11 @@ public class DemoDataConfiguration {
       public void run() {
         
         // We need to temporarily disable the job executor or it would interfere with the process execution
-        processEngineConfiguration.getJobExecutor().shutdown();
+        if (processEngineConfiguration.isAsyncExecutorEnabled() && processEngineConfiguration.getAsyncExecutor() != null) {
+          processEngineConfiguration.getAsyncExecutor().shutdown();
+        } else if (processEngineConfiguration.isAsyncExecutorEnabled() == false && processEngineConfiguration.getJobExecutor() != null) {
+          processEngineConfiguration.getJobExecutor().shutdown();
+        }
         
         Random random = new Random();
         
@@ -279,7 +283,11 @@ public class DemoDataConfiguration {
 
         processEngineConfiguration.getClock().reset();
         
-        processEngineConfiguration.getJobExecutor().start();
+        if (processEngineConfiguration.isAsyncExecutorEnabled() && processEngineConfiguration.getAsyncExecutor() != null) {
+          processEngineConfiguration.getAsyncExecutor().start();
+        } else if (processEngineConfiguration.isAsyncExecutorEnabled() == false && processEngineConfiguration.getJobExecutor() != null) {
+          processEngineConfiguration.getJobExecutor().start();
+        }
         LOGGER.info("Demo report data generated");
       }
       
