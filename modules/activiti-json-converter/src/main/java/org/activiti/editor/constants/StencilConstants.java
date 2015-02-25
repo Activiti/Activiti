@@ -89,6 +89,11 @@ public interface StencilConstants {
   final String PROPERTY_TIMER_DATE = "timerdatedefinition";
   final String PROPERTY_TIMER_CYCLE = "timercycledefinition";
 
+  final String PROPERTY_MESSAGES = "messages";
+  final String PROPERTY_MESSAGE_ID = "message_id";
+  final String PROPERTY_MESSAGE_NAME = "message_name";
+  final String PROPERTY_MESSAGE_ITEM_REF = "message_item_ref";
+
   final String PROPERTY_MESSAGEREF = "messageref";
 
   final String PROPERTY_SIGNALREF = "signalref";
