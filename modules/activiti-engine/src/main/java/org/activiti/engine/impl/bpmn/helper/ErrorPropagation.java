@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.helper;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -33,6 +34,7 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -182,4 +184,27 @@ public class ErrorPropagation {
     }
   }
   
+  public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap) throws Exception {
+    if (exceptionMap == null)
+      return false;
+    
+   String defaultException = null;
+   
+   for (MapExceptionEntry me: exceptionMap) {
+       String exceptionClass = me.getClassName();
+       String errorCode = me.getErrorCode();
+       
+       if (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(exceptionClass) && defaultException == null)
+         defaultException = errorCode;
+       
+       if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(exceptionClass))
+          continue;
+       
+       if (e.getClass().getName().equals(exceptionClass)) {
+         propagateError(errorCode, execution);
+         return true;
+       }
+   }
+   return false;
+  }
 }

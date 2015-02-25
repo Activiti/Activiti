@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
@@ -47,6 +48,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
  * 
  * @author Joram Barrez
  * @author Falko Menge
+ * @author Saeid Mirzaei
  */
 public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, SubProcessActivityBehavior {
   
@@ -56,13 +58,21 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   protected TaskListener taskListenerInstance;
   protected ActivityBehavior activityBehaviorInstance;
   protected Expression skipExpression;
+  protected List<MapExceptionEntry> mapExceptions;
 
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
     this.className = className;
     this.fieldDeclarations = fieldDeclarations;
     this.skipExpression = skipExpression;
+   
   }
-  
+
+  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
+    this(className, fieldDeclarations, skipExpression);
+    this.mapExceptions = mapExceptions;
+   
+  }
+
   public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
     this(className, fieldDeclarations, null);
   }
@@ -133,7 +143,12 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
         activityBehaviorInstance.execute(execution);
       } catch (BpmnError error) {
         ErrorPropagation.propagateError(error, execution);
+      } catch (Exception e) {
+        if (!ErrorPropagation.mapException(e, execution, mapExceptions))
+            throw e;
+        
       }
+      
     }
   }
 
