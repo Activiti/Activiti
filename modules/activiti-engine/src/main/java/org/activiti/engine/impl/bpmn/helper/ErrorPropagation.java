@@ -204,6 +204,14 @@ public class ErrorPropagation {
          propagateError(errorCode, execution);
          return true;
        }
+       if (me.isAndChildren()) {
+         Class<?> exceptionClassClass   = Class.forName(exceptionClass);
+         if (exceptionClassClass.isAssignableFrom(e.getClass())) {
+           propagateError(errorCode, execution);
+           return true;
+           
+         }
+       }
    }
    return false;
   }
