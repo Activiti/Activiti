@@ -32,6 +32,7 @@ import org.activiti.engine.runtime.ProcessInstance;
 /**
  * @author Daniel Meyer
  * @author Joram Barrez
+ * @author Vasile Dirla
  */
 public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance> {
 
@@ -73,7 +74,13 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
     }
-  
+
+    // Do not start process a process instance if the process definition is suspended
+    if (processDefinition.isSuspended()) {
+      throw new ActivitiException("Cannot start process instance. Process definition "
+          + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
+    }
+    
     ActivityImpl startActivity = processDefinition.findActivity(messageEventSubscription.getActivityId());
     ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey, startActivity);
 
