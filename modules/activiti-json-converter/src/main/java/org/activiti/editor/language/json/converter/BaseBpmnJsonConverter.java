@@ -145,13 +145,8 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                 outgoingArrayNode.add(BpmnJsonConverterUtil.createResourceNode(boundaryEvent.getId()));
             }
 
-            if (activity.isAsynchronous()) {
-                propertiesNode.put(PROPERTY_ASYNCHRONOUS, PROPERTY_VALUE_YES);
-            }
-
-            if (activity.isNotExclusive()) {
-                propertiesNode.put(PROPERTY_EXCLUSIVE, PROPERTY_VALUE_NO);
-            }
+            propertiesNode.put(PROPERTY_ASYNCHRONOUS, activity.isAsynchronous());
+            propertiesNode.put(PROPERTY_EXCLUSIVE, !activity.isNotExclusive());
 
             if (activity.getLoopCharacteristics() != null) {
                 MultiInstanceLoopCharacteristics loopDef = activity.getLoopCharacteristics();

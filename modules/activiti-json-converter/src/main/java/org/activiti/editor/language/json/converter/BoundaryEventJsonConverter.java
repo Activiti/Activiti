@@ -80,6 +80,8 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
         dockersArrayNode.add(dockNode);
         flowElementNode.put("dockers", dockersArrayNode);
 
+        propertiesNode.put(PROPERTY_CANCEL_ACTIVITY, boundaryEvent.isCancelActivity());
+        
         addEventProperties(boundaryEvent, propertiesNode);
     }
 
