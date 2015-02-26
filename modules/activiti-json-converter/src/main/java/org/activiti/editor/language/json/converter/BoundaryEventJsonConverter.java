@@ -101,41 +101,39 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
             convertJsonToMessageDefinition(elementNode, boundaryEvent);
             boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
         }
-      boundaryEvent.setAttachedToRefId(lookForAttachedRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES)));
-
-      return boundaryEvent;
+        boundaryEvent.setAttachedToRefId(lookForAttachedRef(elementNode.get(EDITOR_SHAPE_ID).asText(), modelNode.get(EDITOR_CHILD_SHAPES)));
+        return boundaryEvent;
     }
 
-  private String lookForAttachedRef(String boundaryEventId, JsonNode childShapesNode) {
-    String attachedRefId = null;
+    private String lookForAttachedRef(String boundaryEventId, JsonNode childShapesNode) {
+        String attachedRefId = null;
 
-    if (childShapesNode != null) {
+        if (childShapesNode != null) {
 
-      for (JsonNode childNode : childShapesNode) {
+            for (JsonNode childNode : childShapesNode) {
+                ArrayNode outgoingNode = (ArrayNode) childNode.get("outgoing");
+                if (outgoingNode != null && outgoingNode.size() > 0) {
+                    for (JsonNode outgoingChildNode : outgoingNode) {
+                        JsonNode resourceNode = outgoingChildNode.get(EDITOR_SHAPE_ID);
+                        if (resourceNode != null && boundaryEventId.equals(resourceNode.asText())) {
+                            attachedRefId = BpmnJsonConverterUtil.getElementId(childNode);
+                            break;
+                        }
+                    }
 
-        ArrayNode outgoingNode = (ArrayNode) childNode.get("outgoing");
-        if (outgoingNode != null && outgoingNode.size() > 0) {
-          for (JsonNode outgoingChildNode : outgoingNode) {
-            JsonNode resourceNode = outgoingChildNode.get(EDITOR_SHAPE_ID);
-            if (resourceNode != null && boundaryEventId.equals(resourceNode.asText())) {
-              attachedRefId = BpmnJsonConverterUtil.getElementId(childNode);
-              break;
+                    if (attachedRefId != null) {
+                        break;
+                    }
+                }
+
+                attachedRefId = lookForAttachedRef(boundaryEventId, childNode.get(EDITOR_CHILD_SHAPES));
+
+                if (attachedRefId != null) {
+                    break;
+                }
             }
-          }
-
-          if (attachedRefId != null) {
-            break;
-          }
         }
 
-        attachedRefId = lookForAttachedRef(boundaryEventId, childNode.get(EDITOR_CHILD_SHAPES));
-
-        if (attachedRefId != null) {
-          break;
-        }
-      }
+        return attachedRefId;
     }
-
-    return attachedRefId;
-  }
 }
