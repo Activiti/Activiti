@@ -15,9 +15,10 @@ package org.activiti.engine.test.bpmn.event.error.mapError;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.xml.bind.JAXBException;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
-import org.activiti.engine.test.mock.MockServiceTask;
 import org.activiti.standalone.testing.helpers.ServiceTaskTestMock;
 
 /**
@@ -43,7 +44,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase{
     FlagDelegate.reset();
     
     Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("exceptionClass", BoundaryEventChildException.class.getName());
+    vars.put("exceptionClass", JAXBException.class.getName());
     assertEquals(0, ServiceTaskTestMock.CALL_COUNT.get());
     
     try {

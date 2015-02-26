@@ -6,7 +6,7 @@
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="serviceTask"></sequenceFlow>
     <serviceTask id="serviceTask" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.ThrowCustomExceptionDelegate">
       <extensionElements>
-        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" andChildren="true">org.activiti.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException</activiti:mapException>
+        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" includeChildExceptions="true">org.activiti.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException</activiti:mapException>
       </extensionElements>
     </serviceTask>
     <boundaryEvent id="catchError" attachedToRef="serviceTask">

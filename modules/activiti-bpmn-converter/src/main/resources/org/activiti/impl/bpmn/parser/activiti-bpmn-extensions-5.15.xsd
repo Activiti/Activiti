@@ -628,7 +628,7 @@
     <complexType>
     	<sequence>
     	   <element name="errorCode" type="string"/>
-    	   <element name="andChildren" type="boolean"/>
+    	   <element name="includeChildExceptions" type="boolean"/>
     	</sequence>
     </complexType>
   </element>
