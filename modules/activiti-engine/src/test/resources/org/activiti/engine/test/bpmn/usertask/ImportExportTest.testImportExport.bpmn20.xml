@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/processdef">
+    <message id="InterruptMessage" name="InterruptMessage"></message>
+    <process id="process" isExecutable="true">
+        <startEvent id="start1" name="Start 1"></startEvent>
+        <userTask id="userTask1" name="User Task"></userTask>
+        <sequenceFlow id="sid-0A7A4470-CF60-467E-BB33-8601B5C48600" sourceRef="start1" targetRef="userTask1"></sequenceFlow>
+        <endEvent id="stop1" name="Stop 1"></endEvent>
+        <sequenceFlow id="sid-D3A13A9C-D68D-4460-A4E1-20487B8BE030" sourceRef="userTask1" targetRef="stop1"></sequenceFlow>
+        <boundaryEvent id="bm1" name="Boundary Message1" attachedToRef="userTask1" cancelActivity="false">
+            <messageEventDefinition messageRef="InterruptMessage"></messageEventDefinition>
+        </boundaryEvent>
+        <endEvent id="stop2" name="Stop 2"></endEvent>
+        <sequenceFlow id="sid-0CDD0039-66F8-4BFF-9E7B-A2610FDB5CE0" sourceRef="bm1" targetRef="stop2"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+        <bpmndi:BPMNPlane bpmnElement="process" id="BPMNPlane_process">
+            <bpmndi:BPMNShape bpmnElement="start1" id="BPMNShape_start1">
+                <omgdc:Bounds height="30.0" width="30.0" x="158.5" y="114.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="userTask1" id="BPMNShape_userTask1">
+                <omgdc:Bounds height="80.0" width="100.0" x="233.5" y="89.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="stop1" id="BPMNShape_stop1">
+                <omgdc:Bounds height="28.0" width="28.0" x="378.5" y="115.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="bm1" id="BPMNShape_bm1">
+                <omgdc:Bounds height="30.0" width="30.0" x="282.0145920238293" y="154.54377607148803"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="stop2" id="BPMNShape_stop2">
+                <omgdc:Bounds height="28.0" width="28.0" x="378.5" y="300.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="sid-0CDD0039-66F8-4BFF-9E7B-A2610FDB5CE0" id="BPMNEdge_sid-0CDD0039-66F8-4BFF-9E7B-A2610FDB5CE0">
+                <omgdi:waypoint x="297.0145920238293" y="184.54377607148803"></omgdi:waypoint>
+                <omgdi:waypoint x="297.0145920238293" y="314.0"></omgdi:waypoint>
+                <omgdi:waypoint x="378.5" y="314.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-D3A13A9C-D68D-4460-A4E1-20487B8BE030" id="BPMNEdge_sid-D3A13A9C-D68D-4460-A4E1-20487B8BE030">
+                <omgdi:waypoint x="333.5" y="129.0"></omgdi:waypoint>
+                <omgdi:waypoint x="378.5" y="129.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="sid-0A7A4470-CF60-467E-BB33-8601B5C48600" id="BPMNEdge_sid-0A7A4470-CF60-467E-BB33-8601B5C48600">
+                <omgdi:waypoint x="188.5" y="129.0"></omgdi:waypoint>
+                <omgdi:waypoint x="233.5" y="129.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>
