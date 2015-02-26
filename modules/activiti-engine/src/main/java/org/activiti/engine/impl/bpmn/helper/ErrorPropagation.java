@@ -188,15 +188,20 @@ public class ErrorPropagation {
     if (exceptionMap == null)
       return false;
     
-   String defaultException = null;
+   String defaultMap = null;
    
    for (MapExceptionEntry me: exceptionMap) {
        String exceptionClass = me.getClassName();
        String errorCode = me.getErrorCode();
        
-       if (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(exceptionClass) && defaultException == null)
-         defaultException = errorCode;
        
+       // save the first mapping with no exception class as default map
+       if (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(exceptionClass) && defaultMap == null) {
+         defaultMap = errorCode;
+         continue;
+       }
+       
+       // neglect if errorcode or class are not given
        if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(exceptionClass))
           continue;
        
@@ -213,6 +218,12 @@ public class ErrorPropagation {
          }
        }
    }
+   if (defaultMap != null) {
+     propagateError(defaultMap, execution);
+     return true;
+     
+   }
+     
    return false;
   }
 }

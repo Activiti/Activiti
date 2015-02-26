@@ -63,7 +63,17 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase{
     
     runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
     assertTrue(FlagDelegate.isVisited());
-
+  }
+  
+  // check the default map
+  @Deployment
+  public void testDefaultMap() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("exceptionClass", Exception.class.getName());
+    FlagDelegate.reset();
+    
+    runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
+    assertTrue(FlagDelegate.isVisited());
     
   }
 
