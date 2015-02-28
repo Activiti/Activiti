@@ -33,11 +33,13 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.TaskListenerInvocation;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.util.ReflectUtil;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -133,6 +135,14 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
         activityBehaviorInstance.execute(execution);
       } catch (BpmnError error) {
         ErrorPropagation.propagateError(error, execution);
+      } catch (Exception e) {
+        String asyncFailRetryErrorCode = ((ExecutionEntity) execution).getAsyncRetryFailErrorCode();
+        // this was last try, if an errorcode is defined, follow it
+        if (StringUtils.isNotEmpty(asyncFailRetryErrorCode))
+          ErrorPropagation.propagateError(asyncFailRetryErrorCode, execution);
+        else
+            throw e;
+          
       }
     }
   }

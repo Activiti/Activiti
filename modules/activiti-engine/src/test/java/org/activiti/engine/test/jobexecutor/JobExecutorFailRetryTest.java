@@ -42,4 +42,48 @@ public class JobExecutorFailRetryTest extends PluggableActivitiTestCase {
   	long timeDiff = RetryFailingDelegate.times.get(1) - RetryFailingDelegate.times.get(0) ; 
   	assertTrue(timeDiff > 6000 && timeDiff < 12000);  // check time difference between calls. Just roughly
   }
+	
+	// checks if the proper exception is thrown after all tries are exhausted
+  @Deployment
+  public void testFailedServiceTaskException() {
+	// service task throws exception all the time
+  	RetryFailingDelegate.shallThrow = true;  // throw exception in Service delegate
+  	RetryFailingDelegate.resetTimeList();
+  	RetryFlag.reset();
+  	runtimeService.startProcessInstanceByKey("failedJobRetryException");
+  	
+  	waitForJobExecutorToProcessAllJobs(8000, 500);
+  	// check that 2 tries are done
+  	assertTrue(RetryFlag.visited);
+  	assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
+  	
+  }
+  
+  // checks if the proper exception is thrown after all tries are exhausted
+/*
+  @Deployment
+  public void testFailedServiceTaskExceptionCancelActivity () {
+ 
+    RetryFailingDelegate.shallThrow = true;  // throw exception in Service delegate
+    RetryFailingDelegate.resetTimeList();
+    RetryFlag.reset();
+    runtimeService.startProcessInstanceByKey("failedJobRetryException");
+    
+    waitForJobExecutorToProcessAllJobs(8000, 500);
+    assertTrue(RetryFlag.visited);
+    assertEquals(2, RetryFailingDelegate.times.size());  // check number of calls of delegate
+    
+  }
+  
+  */
+  @Deployment
+  public void testFailedServiceTaskExceptionInParallelBranch() {
+     RetryFailingDelegate.resetTimeList();
+     RetryFailingDelegate.shallThrow = true;
+     runtimeService.startProcessInstanceByKey("failedRetryExceptionInBranch");
+     waitForJobExecutorToProcessAllJobs(8000, 500);
+     assertTrue(RetryFlag.visited);
+   
+  }
+  
 }

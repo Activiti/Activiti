@@ -97,7 +97,10 @@ public class JobRetryCmd implements Command<Object> {
           log.debug("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle+ "' for job " + job.getId());
         }
         job.setRetries(job.getRetries() - 1);
-	       
+        if ((job.getRetries() == 0) && (activity.getFailedJobRetryErrorCode() != null)) {
+            // errorProgation is already executed, just delete the job
+            job.delete();
+        }
       } catch (Exception e) {
         throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);
       }  

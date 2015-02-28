@@ -15,6 +15,7 @@ import javax.xml.stream.XMLStreamWriter;
 
 import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.child.ActivitiEventListenerParser;
+import org.activiti.bpmn.converter.child.ActivitiFailedJobErrorCodeParser;
 import org.activiti.bpmn.converter.child.ActivitiFailedjobRetryParser;
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.converter.child.CancelEventDefinitionParser;
@@ -72,6 +73,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     addGenericParser(new TimeDurationParser());
     addGenericParser(new FlowNodeRefParser());
     addGenericParser(new ActivitiFailedjobRetryParser());
+    addGenericParser(new ActivitiFailedJobErrorCodeParser());
   }
   
   private static void addGenericParser(BaseChildElementParser parser) {

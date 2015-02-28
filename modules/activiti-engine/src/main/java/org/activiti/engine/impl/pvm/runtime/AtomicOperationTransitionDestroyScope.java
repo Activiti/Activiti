@@ -92,7 +92,7 @@ public class AtomicOperationTransitionDestroyScope implements AtomicOperation {
         propagatingExecution = execution;
         
       } else {
-        propagatingExecution = (InterpretableExecution) execution.getParent();
+    		propagatingExecution = (InterpretableExecution) execution.getParent();
         propagatingExecution.setActivity((ActivityImpl) execution.getActivity());
         propagatingExecution.setTransition(execution.getTransition());
         propagatingExecution.setActive(true);

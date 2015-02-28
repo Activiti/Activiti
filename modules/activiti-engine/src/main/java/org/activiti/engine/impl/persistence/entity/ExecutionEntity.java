@@ -83,6 +83,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected static final int TASKS_STATE_BIT = 2;
   protected static final int JOBS_STATE_BIT = 3;
   
+  protected String asyncRetryFailErrorCode;
+  
   // current position /////////////////////////////////////////////////////////
   
   protected ProcessDefinitionImpl processDefinition;
@@ -1661,5 +1663,17 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     getIdentityLinks().removeAll(identityLinks);
 
   }
+
+  
+  public String getAsyncRetryFailErrorCode() {
+    return asyncRetryFailErrorCode;
+  }
+
+  
+  public void setAsyncRetryFailErrorCode(String asyncRetryFailErrorCode) {
+    this.asyncRetryFailErrorCode = asyncRetryFailErrorCode;
+  }
+  
+  
   
 }

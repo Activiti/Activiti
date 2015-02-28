@@ -30,6 +30,7 @@ public abstract class Activity extends FlowNode {
   protected List<DataAssociation> dataOutputAssociations = new ArrayList<DataAssociation>();
   protected List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>();
   protected String failedJobRetryTimeCycleValue;
+  protected String failedJobRetryErrorCode;
 
   public boolean isAsynchronous() {
     return asynchronous;
@@ -43,6 +44,15 @@ public abstract class Activity extends FlowNode {
   public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
 	this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
   }
+  
+  public String getFailedJobRetryErrorCode() {
+	return failedJobRetryErrorCode;
+  }
+  
+  public void setFailedJobRetryErrorCode(String failedJobRetryErrorCode) {
+	 this.failedJobRetryErrorCode = failedJobRetryErrorCode;
+  }
+  
   public boolean isNotExclusive() {
     return notExclusive;
   }
@@ -96,6 +106,7 @@ public abstract class Activity extends FlowNode {
     super.setValues(otherActivity);
     setAsynchronous(otherActivity.isAsynchronous());
     setFailedJobRetryTimeCycleValue(otherActivity.getFailedJobRetryTimeCycleValue());
+    setFailedJobRetryErrorCode(failedJobRetryErrorCode);
     setNotExclusive(otherActivity.isNotExclusive());
     setDefaultFlow(otherActivity.getDefaultFlow());
     setForCompensation(otherActivity.isForCompensation());

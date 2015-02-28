@@ -24,6 +24,7 @@ import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.converter.child.BaseChildElementParser;
 import org.activiti.bpmn.converter.export.ActivitiListenerExport;
 import org.activiti.bpmn.converter.export.FailedJobRetryCountExport;
+import org.activiti.bpmn.converter.export.FailedJobRetryErrorCodeExport;
 import org.activiti.bpmn.converter.export.MultiInstanceExport;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
 import org.activiti.bpmn.model.Activity;
@@ -204,6 +205,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
     if (baseElement instanceof Activity) {
     	final Activity activity = (Activity) baseElement;
         FailedJobRetryCountExport.writeFailedJobRetryCount(activity, xtw);
+        FailedJobRetryErrorCodeExport.writeFailedJobException(activity, xtw);
         
      }
     

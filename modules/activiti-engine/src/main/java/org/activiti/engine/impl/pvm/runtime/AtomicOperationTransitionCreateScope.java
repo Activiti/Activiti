@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.pvm.runtime;
 
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,7 +35,11 @@ public class AtomicOperationTransitionCreateScope implements AtomicOperation {
     ActivityImpl activity = (ActivityImpl) execution.getActivity();
     if (activity.isScope()) {
       propagatingExecution = (InterpretableExecution) execution.createExecution();
+      
+      if (execution instanceof ExecutionEntity)
+        ((ExecutionEntity) propagatingExecution).setAsyncRetryFailErrorCode(((ExecutionEntity) execution).getAsyncRetryFailErrorCode());
       propagatingExecution.setActivity(activity);
+      
       propagatingExecution.setTransition(execution.getTransition());
       execution.setTransition(null);
       execution.setActivity(null);

@@ -68,5 +68,6 @@ public class ServiceTaskConverterTest extends AbstractConverterTest {
     assertEquals("start", listener.getEvent());
     
     assertEquals("R5/PT5M", serviceTask.getFailedJobRetryTimeCycleValue());
+    assertEquals("testErrorCode", serviceTask.getFailedJobRetryErrorCode());
   }
 }
