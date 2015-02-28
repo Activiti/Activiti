@@ -618,4 +618,21 @@
       </documentation>
     </annotation>
   </attribute>
+  
+  <element name="mapException">
+    <annotation>
+      <documentation>
+        To be used on exception handling. All exceptions with given class will be handled as BpmnError with the given errorCode
+      </documentation>
+    </annotation>
+    <complexType>
+    	<sequence>
+    	   <element name="errorCode" type="string"/>
+    	   <element name="includeChildExceptions" type="boolean"/>
+    	</sequence>
+    </complexType>
+  </element>
+  
+
+  
 </schema>
