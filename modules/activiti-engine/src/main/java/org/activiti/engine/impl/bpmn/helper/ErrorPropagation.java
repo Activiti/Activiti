@@ -34,6 +34,7 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.activiti.engine.impl.util.ReflectUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -188,42 +189,39 @@ public class ErrorPropagation {
     if (exceptionMap == null)
       return false;
     
-   String defaultMap = null;
+    String defaultMap = null;
    
-   for (MapExceptionEntry me: exceptionMap) {
-       String exceptionClass = me.getClassName();
-       String errorCode = me.getErrorCode();
+    for (MapExceptionEntry me: exceptionMap) {
+      String exceptionClass = me.getClassName();
+      String errorCode = me.getErrorCode();
        
+      // save the first mapping with no exception class as default map
+      if (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(exceptionClass) && defaultMap == null) {
+        defaultMap = errorCode;
+        continue;
+      }
        
-       // save the first mapping with no exception class as default map
-       if (StringUtils.isNotEmpty(errorCode) && StringUtils.isEmpty(exceptionClass) && defaultMap == null) {
-         defaultMap = errorCode;
-         continue;
-       }
+      // ignore if error code or class are not defined
+      if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(exceptionClass))
+        continue;
        
-       // neglect if errorcode or class are not given
-       if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(exceptionClass))
-          continue;
-       
-       if (e.getClass().getName().equals(exceptionClass)) {
-         propagateError(errorCode, execution);
-         return true;
-       }
-       if (me.isAndChildren()) {
-         Class<?> exceptionClassClass   = Class.forName(exceptionClass);
-         if (exceptionClassClass.isAssignableFrom(e.getClass())) {
-           propagateError(errorCode, execution);
-           return true;
-           
-         }
-       }
-   }
-   if (defaultMap != null) {
-     propagateError(defaultMap, execution);
-     return true;
+      if (e.getClass().getName().equals(exceptionClass)) {
+        propagateError(errorCode, execution);
+        return true;
+      }
+      if (me.isAndChildren()) {
+        Class<?> exceptionClassClass = ReflectUtil.loadClass(exceptionClass);
+        if (exceptionClassClass.isAssignableFrom(e.getClass())) {
+          propagateError(errorCode, execution);
+          return true;
+        }
+      }
+    }
+    if (defaultMap != null) {
+      propagateError(defaultMap, execution);
+      return true;
+    }
      
-   }
-     
-   return false;
+    return false;
   }
 }
