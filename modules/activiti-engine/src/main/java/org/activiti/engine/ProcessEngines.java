@@ -117,9 +117,8 @@ public abstract class ProcessEngines {
 
   protected static void initProcessEngineFromSpringResource(URL resource) {
     try {
-        Class< ? > springConfigurationHelperClass = ReflectUtil.loadClass("org.activiti.spring.SpringConfigurationHelper");
+      Class< ? > springConfigurationHelperClass = ReflectUtil.loadClass("org.activiti.spring.SpringConfigurationHelper");
       Method method = springConfigurationHelperClass.getDeclaredMethod("buildProcessEngine", new Class<?>[]{URL.class});
-      method.setAccessible(true);
       ProcessEngine processEngine = (ProcessEngine) method.invoke(null, new Object[]{resource});
       
       String processEngineName = processEngine.getName();

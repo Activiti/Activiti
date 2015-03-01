@@ -52,7 +52,7 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
 
         // Create a table that the userBean is supposed to fill with some data
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.execute("create table MY_TABLE (MY_TEXT varchar(255));");
+        jdbcTemplate.execute("create table MY_TABLE (MY_TEXT varchar);");
 
         // The hello() method will start the process. The process will wait in a user task
         userBean.hello();
