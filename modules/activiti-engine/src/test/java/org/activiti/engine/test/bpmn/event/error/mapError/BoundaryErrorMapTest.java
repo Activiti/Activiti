@@ -40,7 +40,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase{
 
   // exception does not match the single mapping
   @Deployment(resources="org/activiti/engine/test/bpmn/event/error/mapError/BoundaryErrorMapTest.testClassDelegateSingleDirectMap.bpmn20.xml")
-  public void testSingleDirectMapNotMachingException() {
+  public void testClassDelegateSingleDirectMapNotMachingException() {
     FlagDelegate.reset();
     
     Map<String, Object> vars = new HashMap<String, Object>();
@@ -77,6 +77,16 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase{
     assertTrue(FlagDelegate.isVisited());
     
   }
-
+  
+  
+  @Deployment
+  public void testSeqMultInstanceSingleDirectMap() {
+    FlagDelegate.reset();
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
+    
+    runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
+    assertTrue(FlagDelegate.isVisited());
+  }
 
 }
