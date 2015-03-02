@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.IOParameter;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.ManualTask;
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.bpmn.model.ReceiveTask;
 import org.activiti.bpmn.model.ScriptTask;
@@ -98,6 +99,7 @@ import org.apache.commons.lang3.StringUtils;
 public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
   
   // Start event
+  public final static String EXCEPTION_MAP_FIELD = "mapExceptions";
 
   public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
     return new NoneStartEventActivityBehavior();
@@ -234,6 +236,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
       }
       
       List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
+      addExceptionMapAsFieldDeclaraion(fieldDeclarations, task.getMapExceptions());
       return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
      
     } catch (ClassNotFoundException e) {
@@ -241,6 +244,12 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
   }
   
+  private void addExceptionMapAsFieldDeclaraion(List<FieldDeclaration> fieldDeclarations, List<MapExceptionEntry> mapExceptions) {
+    FieldDeclaration exceptionMapsFieldDeclaration = new FieldDeclaration(EXCEPTION_MAP_FIELD, mapExceptions.getClass().toString(), mapExceptions);
+    fieldDeclarations.add(exceptionMapsFieldDeclaration);
+    
+  }
+
   public ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask) {
     List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(serviceTask.getFieldExtensions());
     return (ShellActivityBehavior) ClassDelegate.instantiateDelegate(ShellActivityBehavior.class, fieldDeclarations);
