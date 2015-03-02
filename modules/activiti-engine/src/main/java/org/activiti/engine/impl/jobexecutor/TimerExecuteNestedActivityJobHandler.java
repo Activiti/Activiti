@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.jobexecutor;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
@@ -21,6 +22,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,17 +36,21 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
   private static Logger log = LoggerFactory.getLogger(TimerExecuteNestedActivityJobHandler.class);
   
   public static final String TYPE = "timer-transition";
+  public static final String PROPERTYNAME_TIMER_ACTIVITY_ID = "activityId";
+  public static final String PROPERTYNAME_END_DATE_EXPRESSION = "timerEndDate";
 
   public String getType() {
     return TYPE;
   }
   
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+    JSONObject cfgJson = new JSONObject(configuration);
+    String nestedActivityId = (String) cfgJson.get(PROPERTYNAME_TIMER_ACTIVITY_ID);
     
-    ActivityImpl borderEventActivity = execution.getProcessDefinition().findActivity(configuration);
+    ActivityImpl borderEventActivity = execution.getProcessDefinition().findActivity(nestedActivityId);
 
     if (borderEventActivity == null) {
-      throw new ActivitiException("Error while firing timer: border event activity " + configuration + " not found");
+      throw new ActivitiException("Error while firing timer: border event activity " + nestedActivityId + " not found");
     }
 
     try {
@@ -68,7 +74,10 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
   }
 
   protected void dispatchActivityTimeoutIfNeeded(JobEntity timerEntity, ExecutionEntity execution, CommandContext commandContext) {
-    ActivityImpl boundaryEventActivity = execution.getProcessDefinition().findActivity(timerEntity.getJobHandlerConfiguration());
+    JSONObject cfgJson = new JSONObject(timerEntity.getJobHandlerConfiguration());
+    String nestedActivityId = (String) cfgJson.get(PROPERTYNAME_TIMER_ACTIVITY_ID);
+
+    ActivityImpl boundaryEventActivity = execution.getProcessDefinition().findActivity(nestedActivityId);
     ActivityBehavior boundaryActivityBehavior = boundaryEventActivity.getActivityBehavior();
     if (boundaryActivityBehavior instanceof BoundaryEventActivityBehavior) {
       BoundaryEventActivityBehavior boundaryEventActivityBehavior = (BoundaryEventActivityBehavior) boundaryActivityBehavior;
@@ -108,6 +117,15 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
         timerEntity
         )
     );
+  }
+
+  public static String createConfiguration(String id, Expression endDate) {
+    JSONObject cfgJson = new JSONObject();
+    cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, id);
+    if (endDate!=null) {
+      cfgJson.put(PROPERTYNAME_END_DATE_EXPRESSION, endDate.getExpressionText());
+    }
+    return cfgJson.toString();
   }
 
 }

@@ -16,11 +16,17 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,6 +41,7 @@ public class TimerEntity extends JobEntity {
   private static Logger log = LoggerFactory.getLogger(TimerEntity.class);
 
   protected String repeat;
+  protected Date endDate;
 
   public TimerEntity() {
   }
@@ -53,6 +60,7 @@ public class TimerEntity extends JobEntity {
     isExclusive = te.isExclusive;
     repeat = te.repeat;
     retries = te.retries;
+    endDate = te.endDate;
     executionId = te.executionId;
     processInstanceId = te.processInstanceId;
     processDefinitionId = te.processDefinitionId;
@@ -66,6 +74,40 @@ public class TimerEntity extends JobEntity {
 
     super.execute(commandContext);
 
+    //set endDate if it was set to the definition
+    if (jobHandlerType.equalsIgnoreCase(TimerExecuteNestedActivityJobHandler.TYPE)) {
+      JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
+      String nestedActivityId = (String) cfgJson.get(TimerExecuteNestedActivityJobHandler.PROPERTYNAME_TIMER_ACTIVITY_ID);
+      if (cfgJson.has(TimerExecuteNestedActivityJobHandler.PROPERTYNAME_END_DATE_EXPRESSION)) {
+        String endDateExpressionString = (String) cfgJson.get(TimerExecuteNestedActivityJobHandler.PROPERTYNAME_END_DATE_EXPRESSION);
+        Expression endDateExpression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(endDateExpressionString);
+
+        String endDateString = null;
+
+        BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+
+        VariableScope executionEntity = commandContext.getExecutionEntityManager().findExecutionById(this.getExecutionId());
+        if (executionEntity == null) {
+          executionEntity = NoExecutionVariableScope.getSharedInstance();
+        }
+
+        if (endDateExpression != null) {
+          Object endDateValue = endDateExpression.getValue(executionEntity);
+          if (endDateValue instanceof String) {
+            endDateString = (String) endDateValue;
+          } else if (endDateValue instanceof Date) {
+            endDate = (Date) endDateValue;
+          } else {
+            throw new ActivitiException("Timer '" + ((ExecutionEntity) executionEntity).getActivityId() + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
+          }
+
+          if (endDate == null) {
+            endDate = businessCalendar.resolveEndDate(endDateString);
+          }
+        }
+      }
+    }
+    
     if (repeat == null) {
 
       if (log.isDebugEnabled()) {
@@ -80,7 +122,7 @@ public class TimerEntity extends JobEntity {
           setNewRepeat(repeatValue);
         }
         Date newTimer = calculateRepeat();
-        if (newTimer != null) {
+        if (newTimer != null && isValidTime(newTimer)) {
           TimerEntity te = new TimerEntity(this);
           te.setDuedate(newTimer);
           Context
@@ -92,7 +134,15 @@ public class TimerEntity extends JobEntity {
     }
 
   }
-  
+
+  private boolean isValidTime(Date newTimer) {
+    BusinessCalendar businessCalendar = Context
+        .getProcessEngineConfiguration()
+        .getBusinessCalendarManager()
+        .getBusinessCalendar(CycleBusinessCalendar.NAME);
+    return businessCalendar.validateDuedate(repeat , endDate, newTimer);
+  }
+
   private int calculateRepeatValue() {
     int times = -1;
     List<String> expression = Arrays.asList(repeat.split("/"));
@@ -131,5 +181,13 @@ public class TimerEntity extends JobEntity {
 
   public void setRepeat(String repeat) {
     this.repeat = repeat;
+  }
+
+  public Date getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
   }
 }

@@ -57,6 +57,16 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
     return resolvedDuedate;
   }
 
+  @Override
+  public Boolean validateDuedate(String duedateDescription, Date endDate, Date newTimer) {
+    return true;
+  }
+
+  @Override
+  public Date resolveEndDate(String endDate) {
+    return null;
+  }
+
   protected Date addSingleUnitQuantity(Date startDate, String singleUnitQuantity) {
     int spaceIndex = singleUnitQuantity.indexOf(" ");
     if (spaceIndex==-1 || singleUnitQuantity.length() < spaceIndex+1) {

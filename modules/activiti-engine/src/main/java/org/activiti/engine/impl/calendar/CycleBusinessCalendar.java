@@ -40,4 +40,23 @@ public class CycleBusinessCalendar extends BusinessCalendarImpl {
 
   }
 
+
+  public Boolean validateDuedate(String duedateDescription, Date endDate, Date newTimer) {
+    if (endDate!=null){
+      return  super.validateDuedate(duedateDescription,endDate,newTimer);
+    }
+    //end date could be part of the chron expression
+    try {
+      if (duedateDescription.startsWith("R")) {
+        return new DurationHelper(duedateDescription, clockReader).isValidDate(newTimer);
+      } else {
+        return true;
+      }
+
+    } catch (Exception e) {
+      throw new ActivitiException("Failed to parse cron expression: " + duedateDescription, e);
+    }
+
+  }
+
 }

@@ -23,11 +23,7 @@ import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationType;
-import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.*;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
@@ -104,6 +100,7 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
   protected TimerDeclarationImpl createTimer(BpmnParse bpmnParse, TimerEventDefinition timerEventDefinition, ScopeImpl timerActivity, String jobHandlerType) {
     TimerDeclarationType type = null;
     Expression expression = null;
+    Expression endDate = null;
     ExpressionManager expressionManager = bpmnParse.getExpressionManager();
     if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDate())) {
       // TimeDate
@@ -113,6 +110,10 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
       // TimeCycle
       type = TimerDeclarationType.CYCLE;
       expression = expressionManager.createExpression(timerEventDefinition.getTimeCycle());
+      //support for endDate
+      if (StringUtils.isNotEmpty(timerEventDefinition.getEndDate())) {
+        endDate = expressionManager.createExpression(timerEventDefinition.getEndDate());
+      }
     } else if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDuration())) {
       // TimeDuration
       type = TimerDeclarationType.DURATION;
@@ -124,11 +125,19 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
       logger.warn("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed) (" + timerActivity.getId() + ")");      
     }    
 
+
+    String jobHandlerConfiguration = timerActivity.getId();
+
+    if (jobHandlerType.equalsIgnoreCase(TimerExecuteNestedActivityJobHandler.TYPE)){
+      jobHandlerConfiguration = TimerExecuteNestedActivityJobHandler.createConfiguration(timerActivity.getId(), endDate);
+    }
+
     // Parse the timer declaration
     // TODO move the timer declaration into the bpmn activity or next to the
     // TimerSession
-    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(expression, type, jobHandlerType);
-    timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
+    TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(expression, type, jobHandlerType , endDate);
+    timerDeclaration.setJobHandlerConfiguration(jobHandlerConfiguration);
+    
     timerDeclaration.setExclusive(true);
     return timerDeclaration;
   }

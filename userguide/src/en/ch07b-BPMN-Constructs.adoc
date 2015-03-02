@@ -70,14 +70,28 @@ Timer definition must have exactly one element from the following:
 
 * *timeCycle*. Specifies repeating interval, which can be useful for starting process periodically, or for sending multiple reminders for overdue user task. Time cycle element can be in two formats. First is the format of recurring time duration, as specified by link:$$http://en.wikipedia.org/wiki/ISO_8601#Repeating_intervals$$[ISO 8601] standard. Example (3 repeating intervals, each lasting 10 hours):
 
+There is also the possibility to specify the _endDate_ as an optional attribute on the _timeCycle_ or either in the end of the time expression as follows: +R3/PT10H/${EndDate}+.
+When the endDate is reached the application will stop creating other jobs for this task.
+It accepts as value either static values link:$$http://en.wikipedia.org/wiki/ISO_8601#Dates$$[ISO 8601] standard for example _"2015-02-25T16:42:11+00:00"_ or variables _${EndDate}_
+
 [source,xml,linenums]
 ----
 <timerEventDefinition>
-    <timeCycle>R3/PT10H</timeCycle>
+    <timeCycle activiti:endDate="2015-02-25T16:42:11+00:00">R3/PT10H</timeCycle>
 </timerEventDefinition>
 ----
 
+[source,xml,linenums]
+----
+<timerEventDefinition>
+    <timeCycle>R3/PT10H/${EndDate}</timeCycle>
+</timerEventDefinition>
+----
 
+If booth are specified then the endDate specified as attribute will be used by the system.
+ 
+ Currently only the _BoundaryTimerEvents_ and _CatchTimerEvent_ supports _EndDate_ functionality.
+ 
 Additionally, you can specify time cycle using cron expressions, example below shows trigger firing every 5 minutes, starting at full hour:
 
 

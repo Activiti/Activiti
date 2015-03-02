@@ -103,7 +103,7 @@ public class DurationHelper {
   public Calendar getCalendarAfter() {
     return getCalendarAfter(clockReader.getCurrentCalendar());
   }
-  
+
   public Calendar getCalendarAfter(Calendar time) {
     if (isRepeat) {
       return getDateAfterRepeat(time);
@@ -113,6 +113,10 @@ public class DurationHelper {
       return end;
     }
     return add(start, period);
+  }
+
+  public Boolean isValidDate(Date newTimer) {
+    return end==null || end.getTime().after(newTimer) || end.getTime().equals(newTimer);
   }
 
   public Date getDateAfter() {

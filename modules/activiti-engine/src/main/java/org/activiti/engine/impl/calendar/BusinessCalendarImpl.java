@@ -1,6 +1,8 @@
 package org.activiti.engine.impl.calendar;
 
 import org.activiti.engine.runtime.ClockReader;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.ISODateTimeFormat;
 
 import java.util.Date;
 
@@ -17,4 +19,15 @@ public abstract class BusinessCalendarImpl implements BusinessCalendar {
 
   @Override
   public abstract Date resolveDuedate(String duedateDescription);
+
+  @Override
+  public Boolean validateDuedate(String duedateDescription, Date endDate, Date newTimer) {
+    return endDate == null || endDate.after(newTimer) || endDate.equals(newTimer);
+  }
+
+  @Override
+  public Date resolveEndDate(String endDateString) {
+      return ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())).parseDateTime(endDateString).toCalendar(null).getTime();
+  }
+
 }
