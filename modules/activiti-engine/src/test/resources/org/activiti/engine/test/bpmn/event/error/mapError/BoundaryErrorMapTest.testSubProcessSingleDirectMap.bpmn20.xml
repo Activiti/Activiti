@@ -18,8 +18,8 @@
     <endEvent id="endevent1" name="End"></endEvent>
     <sequenceFlow id="flow2" sourceRef="subprocess1" targetRef="endevent1"></sequenceFlow>
     <boundaryEvent id="boundaryerror1" name="Error" attachedToRef="subprocess1">
-      <errorEventDefinition></errorEventDefinition>
-    </boundaryEvent>
+ 		<errorEventDefinition errorRef="myErrorCode1" />    
+ 	</boundaryEvent>
     <serviceTask id="servicetask2" name="Set Flag" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.FlagDelegate"></serviceTask>
     <sequenceFlow id="flow5" sourceRef="servicetask2" targetRef="endevent1"></sequenceFlow>
     <sequenceFlow id="flow6" sourceRef="boundaryerror1" targetRef="servicetask2"></sequenceFlow>

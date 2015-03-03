@@ -26,6 +26,7 @@ import org.activiti.engine.impl.bpmn.parser.ErrorEventDefinition;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmActivity;
+import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmScope;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -184,10 +185,18 @@ public class ErrorPropagation {
       leavingExecution.executeActivity(borderEventActivity);
     }
   }
-  
+
   public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap) throws Exception {
+    return mapException(e,execution,  exceptionMap, false); 
+  }
+
+  public static boolean mapException(Exception e, ActivityExecution execution, List<MapExceptionEntry> exceptionMap, boolean wrapped) throws Exception {
     if (exceptionMap == null)
       return false;
+    
+    if (wrapped && e instanceof PvmException) {
+      e = (Exception) ((PvmException) e).getCause();
+    }
     
     String defaultMap = null;
    
