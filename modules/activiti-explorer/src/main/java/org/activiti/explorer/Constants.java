@@ -80,5 +80,6 @@ public class Constants {
  public static final String EMAIL_RECEIVED_DATE = "receivedDate";
  public static final String EMAIL_SUBJECT = "subject";
  public static final String EMAIL_HTML_CONTENT = "htmlContent";
+ public static final String AUTHENTICATED_USER_ID = "_currentUser";
  
 }
