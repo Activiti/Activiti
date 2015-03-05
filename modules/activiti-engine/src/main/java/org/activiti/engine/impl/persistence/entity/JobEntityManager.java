@@ -80,11 +80,11 @@ public class JobEntityManager extends AbstractManager {
     }
 
     timer.insert();
-    
+
     ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
     if (engineConfiguration.isAsyncExecutorEnabled() == false && 
         timer.getDuedate().getTime() <= (engineConfiguration.getClock().getCurrentTime().getTime())) {
-      
+
       hintJobExecutor(timer);
     }
   }

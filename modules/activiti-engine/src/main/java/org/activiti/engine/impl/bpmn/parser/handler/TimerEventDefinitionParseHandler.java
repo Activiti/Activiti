@@ -130,6 +130,8 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
 
     if (jobHandlerType.equalsIgnoreCase(TimerExecuteNestedActivityJobHandler.TYPE)){
       jobHandlerConfiguration = TimerExecuteNestedActivityJobHandler.createConfiguration(timerActivity.getId(), endDate);
+    } else if (jobHandlerType.equalsIgnoreCase(TimerCatchIntermediateEventJobHandler.TYPE)){
+      jobHandlerConfiguration = TimerCatchIntermediateEventJobHandler.createConfiguration(timerActivity.getId(), endDate);
     }
 
     // Parse the timer declaration

@@ -24,6 +24,7 @@ import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.util.json.JSONObject;
@@ -75,9 +76,11 @@ public class TimerEntity extends JobEntity {
     super.execute(commandContext);
 
     //set endDate if it was set to the definition
-    if (jobHandlerType.equalsIgnoreCase(TimerExecuteNestedActivityJobHandler.TYPE)) {
+    if (jobHandlerType.equalsIgnoreCase(TimerExecuteNestedActivityJobHandler.TYPE) ||
+        jobHandlerType.equalsIgnoreCase(TimerCatchIntermediateEventJobHandler.TYPE)
+            ) {
       JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
-      String nestedActivityId = (String) cfgJson.get(TimerExecuteNestedActivityJobHandler.PROPERTYNAME_TIMER_ACTIVITY_ID);
+
       if (cfgJson.has(TimerExecuteNestedActivityJobHandler.PROPERTYNAME_END_DATE_EXPRESSION)) {
         String endDateExpressionString = (String) cfgJson.get(TimerExecuteNestedActivityJobHandler.PROPERTYNAME_END_DATE_EXPRESSION);
         Expression endDateExpression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(endDateExpressionString);
@@ -107,7 +110,7 @@ public class TimerEntity extends JobEntity {
         }
       }
     }
-    
+
     if (repeat == null) {
 
       if (log.isDebugEnabled()) {
