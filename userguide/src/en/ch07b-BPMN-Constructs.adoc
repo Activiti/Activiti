@@ -1881,23 +1881,23 @@ For example, the model above comes down to the following XML:
 ----
 <startEvent id="theStart" />
 <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
-    
+
 <parallelGateway id="fork" />
 <sequenceFlow sourceRef="fork" targetRef="receivePayment" />
 <sequenceFlow sourceRef="fork" targetRef="shipOrder" />
-    
-<userTask id="receivePayment" name="Receive Payment" />  
+
+<userTask id="receivePayment" name="Receive Payment" />
 <sequenceFlow sourceRef="receivePayment" targetRef="join" />
-    
-<userTask id="shipOrder" name="Ship Order" /> 
+
+<userTask id="shipOrder" name="Ship Order" />
 <sequenceFlow sourceRef="shipOrder" targetRef="join" />
-    
+
 <parallelGateway id="join" />
 <sequenceFlow sourceRef="join" targetRef="archiveOrder" />
-    
-<userTask id="archiveOrder" name="Archive Order" /> 
+
+<userTask id="archiveOrder" name="Archive Order" />
 <sequenceFlow sourceRef="archiveOrder" targetRef="theEnd" />
-    
+
 <endEvent id="theEnd" />
 ----
 
@@ -1984,7 +1984,7 @@ For example, the model above comes down to the following XML:
 ----
 <startEvent id="theStart" />
 <sequenceFlow id="flow1" sourceRef="theStart" targetRef="fork" />
-    
+
 <inclusiveGateway id="fork" />
 <sequenceFlow sourceRef="fork" targetRef="receivePayment" >
   <conditionExpression xsi:type="tFormalExpression">${paymentReceived == false}</conditionExpression>
@@ -1992,19 +1992,19 @@ For example, the model above comes down to the following XML:
 <sequenceFlow sourceRef="fork" targetRef="shipOrder" >
   <conditionExpression xsi:type="tFormalExpression">${shipOrder == true}</conditionExpression>
 </sequenceFlow>
-    
-<userTask id="receivePayment" name="Receive Payment" />  
+
+<userTask id="receivePayment" name="Receive Payment" />
 <sequenceFlow sourceRef="receivePayment" targetRef="join" />
-    
-<userTask id="shipOrder" name="Ship Order" /> 
+
+<userTask id="shipOrder" name="Ship Order" />
 <sequenceFlow sourceRef="shipOrder" targetRef="join" />
-    
+
 <inclusiveGateway id="join" />
 <sequenceFlow sourceRef="join" targetRef="archiveOrder" />
-    
-<userTask id="archiveOrder" name="Archive Order" /> 
+
+<userTask id="archiveOrder" name="Archive Order" />
 <sequenceFlow sourceRef="archiveOrder" targetRef="theEnd" />
-    
+
 <endEvent id="theEnd" />
 ----
 
@@ -2255,9 +2255,9 @@ Tasks can also be put in the so-called *candidate task list* of people. In that 
 [source,xml,linenums]
 ----
 <process >
-  
+
   ...
-  
+
   <userTask id='theTask' name='important task' >
     <potentialOwner>
       <resourceAssignmentExpression>
@@ -2380,7 +2380,7 @@ public Map<String,
 }
 
 public void addCustomUserIdentityLinkExpression(String identityLinkType,
-      Set<Expression> idList) 
+      Set<Expression> idList)
   customUserIdentityLinkExpressions.put(identityLinkType, idList);
 }
 
@@ -2740,13 +2740,13 @@ The following code snippet shows how to inject a constant value into a field. Fi
 
 [source,xml,linenums]
 ----
-<serviceTask id="javaService" 
-    name="Java service invocation" 
+<serviceTask id="javaService"
+    name="Java service invocation"
     activiti:class="org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected">
     <extensionElements>
       <activiti:field name="text" stringValue="Hello World" />
-  </extensionElements>           
-</serviceTask>      
+  </extensionElements>
+</serviceTask>
 ----
 
 The class +ToUpperCaseFieldInjected+ has a field +text+ which is of type +org.activiti.engine.delegate.Expression+. When calling +text.getValue(execution)+, the configured string value +Hello World+ will be returned.
@@ -2755,26 +2755,26 @@ Alternatively, for longs texts (e.g. an inline e-mail) the _'activiti:string'_ s
 
 [source,xml,linenums]
 ----
-<serviceTask id="javaService" 
-    name="Java service invocation" 
+<serviceTask id="javaService"
+    name="Java service invocation"
     activiti:class="org.activiti.examples.bpmn.servicetask.ToUpperCaseFieldInjected">
-  <extensionElements>   
+  <extensionElements>
     <activiti:field name="text">
         <activiti:string>
           Hello World
       </activiti:string>
     </activiti:field>
-  </extensionElements>        
-</serviceTask>        
+  </extensionElements>
+</serviceTask>
 ----
 
 To inject values that are dynamically resolved at runtime, expressions can be used. Those expressions can use process variables, or Spring defined beans (if Spring is used). As noted in <<bpmnJavaServiceTaskImplementation,Service Task Implementation>>, an instance of the Java class is shared among all process-instances in a service task. To have dynamic injection of values in fields, you can inject value and method expressions in a +org.activiti.engine.delegate.Expression+ which can be evaluated/invoked using the +DelegateExecution+ passed in the +execute+ method.
 
 [source,xml,linenums]
 ----
-<serviceTask id="javaService" name="Java service invocation" 
+<serviceTask id="javaService" name="Java service invocation"
   activiti:class="org.activiti.examples.bpmn.servicetask.ReverseStringsFieldInjected">
-  
+
   <extensionElements>
     <activiti:field name="text1">
       <activiti:expression>${genderBean.getGenderString(gender)}</activiti:expression>
@@ -2871,6 +2871,54 @@ public class ThrowBpmnErrorDelegate implements JavaDelegate {
 The constructor argument is an error code, which will be used to determine the error handler that is responsible for the error. See <<bpmnBoundaryErrorEvent,Boundary Error Event>> for information on how to catch a BPMN Error.
 
 This mechanism should be used *only for business faults* that shall be handled by a Boundary Error Event or Error Event Sub-Process modeled in the process definition. Technical errors should be represented by other exception types and are usually not handled inside a process.
+
+[[exceptionMapping]]
+
+====== Exception mapping
+
+It is also possible to directly map a java exception to business exception by using +mapException+ extention. Single mapping is the simplest form:
+[source,xml,linenums]
+----
+<serviceTask id="servicetask1" name="Service Task" activiti:class="...">
+  <extensionElements>
+    <activiti:mapException
+          errorCode="myErrorCode1">org.activiti.SomeException</activiti:mapException>
+  </extensionElements>
+</serviceTask>
+
+----
+In above code, if an instance of +org.activiti.SomeException+ is thrown in service task, it would be caught and converted to a BPMN exception with the given errorCode. From this point on, it will be handled exactly like a normal BPMN exception.
+Any other exception will be treated as if there is no mapping in place. It will be propagated to the API caller.
+
+One can map all the child exception of a certain exception in a single line by using +includeChildExceptions+ attribute.
+
+[source,xml,linenums]
+----
+<serviceTask id="servicetask1" name="Service Task" activiti:class="...">
+  <extensionElements>
+    <activiti:mapException errorCode="myErrorCode1"
+           includeChildExceptions="true">org.activiti.SomeException</activiti:mapException>
+  </extensionElements>
+</serviceTask>
+
+----
+The above code will cause activiti to convert any direct or indirect descendent of +SomeException+ to a BPMN error with the given error code.
++includeChildExceptions+ will be considered "false" when not given.
+
+
+The most generic mapping is a default map. Default map is a map with no class. It will match any java exception:
+
+[source,xml,linenums]
+----
+<serviceTask id="servicetask1" name="Service Task" activiti:class="...">
+  <extensionElements>
+    <activiti:mapException errorCode="myErrorCode1"/>
+  </extensionElements>
+</serviceTask>
+----
+
+The mappings are checked in order, from top to buttom and the first found match will be followed, except for the default map. Default map is selected only after all maps are unsuccessfully checked.
+Only the first map with no class will be considered as default map. +includeChildExceptions+ is ignored for default Map.
 
 
 [[serviceTaskExceptionSequenceFlow]]
@@ -3163,17 +3211,17 @@ The following business rule task executes all business rules deployed with the p
 [source,xml,linenums]
 ----
 <process id="simpleBusinessRuleProcess">
-  
+
   <startEvent id="theStart" />
   <sequenceFlow sourceRef="theStart" targetRef="businessRuleTask" />
-  
+
   <businessRuleTask id="businessRuleTask" activiti:ruleVariablesInput="${order}"
       activiti:resultVariable="rulesOutput" />
-        
+
   <sequenceFlow sourceRef="businessRuleTask" targetRef="theEnd" />
 
   <endEvent id="theEnd" />
- 
+
 </process>
 ----
 
@@ -3245,7 +3293,7 @@ The Email task is implemented as a dedicated <<bpmnJavaServiceTask,Service Task>
 
 [source,xml,linenums]
 ----
-<serviceTask id="sendMail" activiti:type="mail"> 
+<serviceTask id="sendMail" activiti:type="mail">
 ----
 
 The Email task is configured by <<serviceTaskFieldInjection,field injection>>. All the values for these properties can contain EL expression, which are resolved at runtime during process execution. Following properties can be set:
@@ -3334,7 +3382,7 @@ The Mule task is implemented as a dedicated <<bpmnJavaServiceTask,Service Task>>
 
 [source,xml,linenums]
 ----
-<serviceTask id="sendMule" activiti:type="mule">                      
+<serviceTask id="sendMule" activiti:type="mule">
 ----
 
 The Mule task is configured by <<serviceTaskFieldInjection,field injection>>. All the values for these properties can contain EL expression, which are resolved at runtime during process execution. Following properties can be set:
@@ -3466,12 +3514,12 @@ Ok, our route is now properly configured and accessible to the Camel. Now comes 
 <process id="SimpleCamelCallProcess">
   <startEvent id="start"/>
   <sequenceFlow id="flow1" sourceRef="start" targetRef="simpleCall"/>
-  
+
   <serviceTask id="simpleCall" activiti:type="camel"/>
-  
-  <sequenceFlow id="flow2" sourceRef="simpleCall" targetRef="end"/>      
+
+  <sequenceFlow id="flow2" sourceRef="simpleCall" targetRef="end"/>
   <endEvent id="end"/>
-</process>       
+</process>
 ----
 
 
@@ -3713,8 +3761,8 @@ Execution execution = runtimeService.createExecutionQuery()
   .activityId("waitState")
   .singleResult();
 assertNotNull(execution);
-    
-runtimeService.signal(execution.getId());   
+
+runtimeService.signal(execution.getId());
 ----
 
 
@@ -3809,29 +3857,29 @@ The following process definition contains 3 execution listeners:
   <extensionElements>
     <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne" event="start" />
   </extensionElements>
-    
+
   <startEvent id="theStart" />
   <sequenceFlow sourceRef="theStart" targetRef="firstTask" />
-    
+
   <userTask id="firstTask" />
   <sequenceFlow sourceRef="firstTask" targetRef="secondTask">
     <extensionElements>
       <activiti:executionListener class="org.activiti.examples.bpmn.executionListener.ExampleExecutionListenerTwo" />
     </extensionElements>
   </sequenceFlow>
-    
+
   <userTask id="secondTask" >
     <extensionElements>
       <activiti:executionListener expression="${myPojo.myMethod(execution.event)}" event="end" />
     </extensionElements>
   </userTask>
   <sequenceFlow sourceRef="secondTask" targetRef="thirdTask" />
-       
+
   <userTask id="thirdTask" />
   <sequenceFlow sourceRef="thirdTask" targetRef="theEnd" />
 
   <endEvent id="theEnd" />
-    
+
 </process>
 ----
 
@@ -3907,13 +3955,13 @@ The fragment below shows a simple example process with an execution listener wit
       <activiti:field name="dynamicValue" expression="${myVar}" />
     </activiti:executionListener>
   </extensionElements>
-    
+
   <startEvent id="theStart" />
   <sequenceFlow sourceRef="theStart" targetRef="firstTask" />
-    
+
   <userTask id="firstTask" />
   <sequenceFlow sourceRef="firstTask" targetRef="theEnd" />
-    
+
   <endEvent id="theEnd" />
 </process>
 ----
@@ -3940,13 +3988,13 @@ The class +ExampleFieldInjectedExecutionListener+ concatenates the 2 injected fi
 public void testExecutionListenerFieldInjection() {
   Map<String, Object> variables = new HashMap<String, Object>();
   variables.put("myVar", "listening!");
-    
+
   ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", variables);
-    
+
   Object varSetByListener = runtimeService.getVariable(processInstance.getId(), "var");
   assertNotNull(varSetByListener);
   assertTrue(varSetByListener instanceof String);
-    
+
   // Result is a concatenation of fixed injected field and injected expression
   assertEquals("Yes, I am listening!", varSetByListener);
 }
@@ -4131,7 +4179,7 @@ The downside of the +loopDataInputRef+ and +inputDataItem+ is that 1) the names 
 [source,xml,linenums]
 ----
 <userTask id="miTasks" name="My Task" activiti:assignee="${assignee}">
-  <multiInstanceLoopCharacteristics isSequential="true" 
+  <multiInstanceLoopCharacteristics isSequential="true"
      activiti:collection="${myService.resolveUsersForTask()}" activiti:elementVariable="assignee" >
   </multiInstanceLoopCharacteristics>
 </userTask>
@@ -4142,7 +4190,7 @@ A multi-instance activity ends when all instances are finished. However, it is p
 [source,xml,linenums]
 ----
 <userTask id="miTasks" name="My Task" activiti:assignee="${assignee}">
-  <multiInstanceLoopCharacteristics isSequential="false" 
+  <multiInstanceLoopCharacteristics isSequential="false"
      activiti:collection="assigneeList" activiti:elementVariable="assignee" >
     <completionCondition>${nrOfCompletedInstances/nrOfInstances >= 0.6 }</completionCondition>
   </multiInstanceLoopCharacteristics>
@@ -4295,8 +4343,8 @@ An Event Sub-Process must not have any incoming or outgoing sequence flows. Sinc
 
 * Activiti only supports interrupting Event Sub-Processes.
 * Activiti only supports Event Sub-Process triggered using an Error Start Event or Message Start Event.
- 
- 
+
+
 [[bpmnEventSubprocessGraphicalNotation]]
 
 
@@ -4469,7 +4517,7 @@ When process execution arrives in the _call activity_, a new execution is create
 
 
 A call activity is visualized the same as a <<bpmnSubProcessGraphicalNotation,subprocess>>, however with a thick border (collapsed and expanded). Depending on the modeling tool, a call activity can also be expanded, but the default visualization is the collapsed subprocess representation.
-          
+
 image::images/bpmn.collapsed.call.activity.png[align="center"]
 
 
@@ -4540,13 +4588,13 @@ The process looks as follows:
 
 <manualTask id="receiveOrder" name="Receive Order" />
 <sequenceFlow id="flow2" sourceRef="receiveOrder" targetRef="callCheckCreditProcess" />
-    
+
 <callActivity id="callCheckCreditProcess" name="Check credit" calledElement="checkCreditProcess" />
 <sequenceFlow id="flow3" sourceRef="callCheckCreditProcess" targetRef="prepareAndShipTask" />
-   
+
 <userTask id="prepareAndShipTask" name="Prepare and Ship" />
 <sequenceFlow id="flow4" sourceRef="prepareAndShipTask" targetRef="end" />
-    
+
 <endEvent id="end" />
 ----
 
@@ -4643,7 +4691,7 @@ Is this a good solution? As we have seen, optimistic locking allows Activiti to 
 
 * Activiti will retry the same job for a fixed maximum number of times only ('3' in the default configuration). After that, the job will still be present in the database but not be retried actively anymore. That means that an operator would need to trigger the job manually.
 * If a job has non-transactional side effects, those will not be rolled back by the failing transaction. For instance, if the "book concert tickets" service does not share the same transaction as Activiti, we might book multiple tickets if we retry the job.
- 
+
 
 ===== What are exclusive jobs?
 
@@ -4680,7 +4728,7 @@ By default everyone is allowed to start a new process instance of deployed proce
        </resourceAssignmentExpression>
     </activiti:potentialStarter>
   </extensionElements>
-  
+
   <startEvent id="theStart"/>
   ...
 ----
