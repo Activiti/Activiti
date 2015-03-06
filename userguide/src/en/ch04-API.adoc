@@ -77,7 +77,7 @@ The base exception in Activiti is the +org.activiti.engine.ActivitiException+, a
 
 In the example above, when an id is passed for which no task exists, an exception will be thrown. Also, since the javadoc *explicitly states that taskId cannot be null, an +ActivitiIllegalArgumentException+ will be thrown when +null+ is passed*.
 
-Even though we want to avoid a big exception hierarchy, the following subclasses were added which are thrown in specific cases. All other errors that occur during process-execution or API-invocation that don't fit into the possible exceptions below, are throw as regular ++ActivitiExceptions++s.
+Even though we want to avoid a big exception hierarchy, the following subclasses were added which are thrown in specific cases. All other errors that occur during process-execution or API-invocation that don't fit into the possible exceptions below, are thrown as regular ++ActivitiExceptions++s.
 
 * ++ActivitiWrongDbException++: Thrown when the Activiti engine discovers a mismatch between the database schema version and the engine version.
 * ++ActivitiOptimisticLockingException++: Thrown when an optimistic locking occurs in the data store caused by concurrent access of the same data entry.
