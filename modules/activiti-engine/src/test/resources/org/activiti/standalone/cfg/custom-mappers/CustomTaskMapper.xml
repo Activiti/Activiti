@@ -15,14 +15,18 @@
     <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
   </resultMap>
 
-	<select id="customSelectOneTask" parameterType="string" resultMap="customTaskResultMap">
-		select * from ${prefix}ACT_RU_TASK where NAME_ = #{name}
-	</select>
-
-	<select id="customSelectTaskList" parameterType="int" resultMap="customTaskResultMap">
-		select * from ${prefix}ACT_RU_TASK where PRIORITY_ &gt;= #{priority}
+  <sql id="selectCustomTaskColumns">
+		RES.ID_, RES.NAME_, RES.PRIORITY_, RES.CREATE_TIME_, RES.OWNER_, RES.ASSIGNEE_
+	</sql>
+	
+	<select id="selectCustomTaskList" parameterType="string" resultMap="customTaskResultMap">
+		select <include refid="selectCustomTaskColumns"/> from ACT_RU_TASK RES
 	</select>
 	
+	<select id="selectOneCustomTask" parameterType="string" resultMap="customTaskResultMap">
+		select <include refid="selectCustomTaskColumns"/> from ACT_RU_TASK RES where RES.ID_ = #{id}
+	</select>
+
 	<select id="selectCustomTaskCountByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultType="long">
     select count(distinct RES.ID_)
     <include refid="selectCustomTaskByQueryCriteriaSql"/>
@@ -30,7 +34,7 @@
   
   <select id="selectCustomTaskByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultMap="customTaskResultMap">
     ${limitBefore}
-    select distinct RES.* ${limitBetween}
+    select distinct <include refid="selectCustomTaskColumns"/> ${limitBetween}
     <include refid="selectCustomTaskByQueryCriteriaSql"/> 
     ${orderBy}
     ${limitAfter}

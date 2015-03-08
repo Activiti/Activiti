@@ -333,9 +333,76 @@ For a working example on using Annotation based Mapped Statements check the unit
 
 ==== XML based Mapped Statements
 
-When working with more complicated statements XML Mapped Statements can be helpful. Suppose that for some use case the ability to query attachments data is needed based on id, name, type, userId, etc!. Since Activiti uses	XML Mapped Statements internally, it's possible to make use of the underlying capabilities. 
+When using XML based Mapped Statements, statements are defined in XML files. For the use case where not the whole task data is needed, but only a small subset of it. The XML file can look as follows:
 
-To fulfill the use case create a sub-class of  _org.activiti.engine.impl.AbstractQuery_ that can look as follows:   
+[source,xml,linenums]            
+----
+<mapper namespace="org.activiti.standalone.cfg.TaskMapper">
+
+  <resultMap id="customTaskResultMap" type="org.activiti.standalone.cfg.CustomTask">
+    <id property="id" column="ID_" jdbcType="VARCHAR"/>
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
+  </resultMap>
+	
+  <select id="selectCustomTaskList" resultMap="customTaskResultMap">
+    select RES.ID_, RES.NAME_, RES.CREATE_TIME_ from ACT_RU_TASK RES
+  </select>
+
+</mapper>
+----
+
+Results are mapped to instances of _org.activiti.standalone.cfg.CustomTask_ class which can look as follows:
+
+[source,java,linenums]	       
+----
+public class CustomTask {
+
+  protected String id;
+  protected String name;
+  protected Date createTime;
+  
+  public String getId() {
+    return id;
+  }
+  public String getName() {
+    return name;
+  }
+  public Date getCreateTime() {
+    return createTime;
+  }
+}
+----
+
+Mapper XML files must be provided to the Process Engine configuration as follows:
+
+[source,xml,linenums]            
+----
+...
+<property name="customMybatisXMLMappers">
+  <set>
+    <value>org/activiti/standalone/cfg/custom-mappers/CustomTaskMapper.xml</value>
+  </set>
+</property>
+...
+---- 
+
+The statement can be executed as follows: 
+[source,java,linenums]	       
+----
+List<CustomTask> tasks = managementService.executeCommand(new Command<List<CustomTask>>() {
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public List<CustomTask> execute(CommandContext commandContext) {
+        return (List<CustomTask>) commandContext.getDbSqlSession().selectList("selectCustomTaskList");
+      }
+    });
+----
+
+For uses cases that require more complicated statements, XML Mapped Statements can be helpful. Since Activiti uses XML Mapped Statements internally, it's possible to make use of the underlying capabilities. 
+
+Suppose that for some use case the ability to query attachments data is required based on id, name, type, userId, etc! To fulfill the use case a query class _AttachmentQuery_ that extends  _org.activiti.engine.impl.AbstractQuery_ can be created as follows:   
 
 [source,java,linenums]	       
 ----
@@ -383,7 +450,7 @@ public class AttachmentQuery extends AbstractQuery<AttachmentQuery, Attachment> 
   }
 ----
 
-Note that when extending _AbstractQuery_ extended classes should pass an instance of _ManagementService_ to super constructor and that methods _executeCount_ and _executeList_ need to be overrided to call the mapped statements. 
+Note that when extending _AbstractQuery_ extended classes should pass an instance of _ManagementService_ to super constructor and methods _executeCount_ and _executeList_ need to be implemented to call the mapped statements. 
 
 The XML file containing the mapped statements can look as follows: 
 
@@ -424,22 +491,9 @@ The XML file containing the mapped statements can look as follows:
 </mapper>
 ----
 
-Capabilities such as pagination, ordering, table name prefixing are available and can be used in the statements (since the parameterType is a subclass of _AbstractQuery_). Note that to map results the internal resultMap (_org.activiti.engine.impl.persistence.entity.AttachmentEntity.attachmentResultMap_) can be used.
+Capabilities such as pagination, ordering, table name prefixing are available and can be used in the statements (since the parameterType is a subclass of _AbstractQuery_). Note that to map results the predefined _org.activiti.engine.impl.persistence.entity.AttachmentEntity.attachmentResultMap_ resultMap can be used.
 
-The mapper XML file must be provided to the Process Engine configuration as follows:
-
-[source,xml,linenums]            
-----
-...
-<property name="customMybatisXMLMappers">
-  <set>
-    <value>org/activiti/standalone/cfg/custom-mappers/AttachmentMapper.xml</value>
-  </set>
-</property>
-...
----- 
-
-Finally, the custom query can be used as follows:
+Finally, the _AttachmentQuery_ can be used as follows:
 
 [source,java,linenums]	       
 ----

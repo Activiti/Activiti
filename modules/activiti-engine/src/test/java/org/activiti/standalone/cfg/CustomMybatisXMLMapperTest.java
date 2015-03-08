@@ -19,18 +19,20 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
 
   public void testSelectOneTask() {
     // Create test data
-    for (int i=0; i<5; i++) {
+    for (int i=0; i<4; i++) {
       createTask(i + "", null, null, 0);
     }
+    
+    final String taskId = createTask("4", null, null, 0);
     
     CustomTask customTask = managementService.executeCommand(new Command<CustomTask>() {
       @Override
       public CustomTask execute(CommandContext commandContext) {
-        return (CustomTask) commandContext.getDbSqlSession().selectOne("customSelectOneTask", "2");
+        return (CustomTask) commandContext.getDbSqlSession().selectOne("selectOneCustomTask", taskId);
       }
     });
     
-    assertEquals("2", customTask.getName());
+    assertEquals("4", customTask.getName());
     
     // test default query as well
     List<Task> tasks = taskService.createTaskQuery().list();
@@ -54,7 +56,7 @@ public class CustomMybatisXMLMapperTest extends ResourceActivitiTestCase {
       @SuppressWarnings("unchecked")
       @Override
       public List<CustomTask> execute(CommandContext commandContext) {
-        return (List<CustomTask>) commandContext.getDbSqlSession().selectListWithRawParameter("customSelectTaskList", 0, 0, Integer.MAX_VALUE);
+        return (List<CustomTask>) commandContext.getDbSqlSession().selectList("selectCustomTaskList");
       }
     });
     
