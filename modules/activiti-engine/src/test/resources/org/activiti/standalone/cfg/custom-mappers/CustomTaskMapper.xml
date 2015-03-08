@@ -2,13 +2,24 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntity">
+<mapper namespace="org.activiti.standalone.cfg.TaskMapper">
 
-	<select id="customSelectOneTask" parameterType="string" resultMap="taskResultMap">
+  <!-- CUSTOM TASK RESULTMAP -->
+  
+  <resultMap id="customTaskResultMap" type="org.activiti.standalone.cfg.CustomTask">
+    <id property="id" column="ID_" jdbcType="VARCHAR"/>
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="priority" column="PRIORITY_" jdbcType="INTEGER"/>
+    <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
+    <result property="owner" column="OWNER_" jdbcType="VARCHAR"/>
+    <result property="assignee" column="ASSIGNEE_" jdbcType="VARCHAR"/>
+  </resultMap>
+
+	<select id="customSelectOneTask" parameterType="string" resultMap="customTaskResultMap">
 		select * from ${prefix}ACT_RU_TASK where NAME_ = #{name}
 	</select>
 
-	<select id="customSelectTaskList" parameterType="int" resultMap="taskResultMap">
+	<select id="customSelectTaskList" parameterType="int" resultMap="customTaskResultMap">
 		select * from ${prefix}ACT_RU_TASK where PRIORITY_ &gt;= #{priority}
 	</select>
 	
@@ -17,7 +28,7 @@
     <include refid="selectCustomTaskByQueryCriteriaSql"/>
   </select>
   
-  <select id="selectCustomTaskByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultMap="taskResultMap">
+  <select id="selectCustomTaskByQueryCriteria" parameterType="org.activiti.standalone.cfg.CustomTaskQuery" resultMap="customTaskResultMap">
     ${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectCustomTaskByQueryCriteriaSql"/> 

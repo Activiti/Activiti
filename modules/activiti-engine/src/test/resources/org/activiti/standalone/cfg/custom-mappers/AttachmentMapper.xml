@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!--
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.activiti.standalone.cfg.AttachmentMapper">
+
+  <select id="selectAttachmentCountByQueryCriteria" parameterType="org.activiti.standalone.cfg.AttachmentQuery" resultType="long">
+    select count(distinct RES.ID_)
+    <include refid="selectAttachmentByQueryCriteriaSql"/>
+  </select>
+  
+  <select id="selectAttachmentByQueryCriteria" parameterType="org.activiti.standalone.cfg.AttachmentQuery" resultMap="org.activiti.engine.impl.persistence.entity.AttachmentEntity.attachmentResultMap">
+    ${limitBefore}
+    select distinct RES.* ${limitBetween}
+    <include refid="selectAttachmentByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <sql id="selectAttachmentByQueryCriteriaSql">
+  from ${prefix}ACT_HI_ATTACHMENT RES
+  <where>
+	 <if test="attachmentId != null">
+		 RES.ID_ = #{attachmentId}
+	 </if>
+	 <if test="attachmentName != null">
+		 and RES.NAME_ = #{attachmentName}
+	 </if>
+	 <if test="attachmentType != null">
+	   and RES.TYPE_ = #{attachmentType}
+	 </if>
+	 <if test="userId != null">
+	   and RES.USER_ID_ = #{userId}
+	 </if>
+	 <if test="taskId != null">
+	   and RES.TASK_ID_ = #{taskId}
+	 </if>
+	 <if test="processInstanceId != null">
+	   and RES.PROC_INST_ID_ = #{processInstanceId}
+	 </if>
+  </where>
+  </sql>
+</mapper>

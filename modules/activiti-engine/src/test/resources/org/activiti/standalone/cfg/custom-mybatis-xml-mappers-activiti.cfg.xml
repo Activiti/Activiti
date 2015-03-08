@@ -21,6 +21,7 @@
     <property name="customMybatisXMLMappers">
         <set>
             <value>org/activiti/standalone/cfg/custom-mappers/CustomTaskMapper.xml</value>
+            <value>org/activiti/standalone/cfg/custom-mappers/AttachmentMapper.xml</value>
         </set>
     </property>
 

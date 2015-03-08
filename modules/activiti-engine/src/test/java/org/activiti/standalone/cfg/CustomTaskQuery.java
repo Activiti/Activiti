@@ -5,27 +5,40 @@ package org.activiti.standalone.cfg;
 
 import java.util.List;
 
+import org.activiti.engine.ManagementService;
+import org.activiti.engine.impl.AbstractQuery;
 import org.activiti.engine.impl.Page;
-import org.activiti.engine.impl.TaskQueryImpl;
+import org.activiti.engine.impl.TaskQueryProperty;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.task.Task;
 
 /**
  * @author Bassam Al-Sarori
  *
  */
-public class CustomTaskQuery extends TaskQueryImpl {
+public class CustomTaskQuery extends AbstractQuery<CustomTaskQuery, CustomTask> {
 
   private static final long serialVersionUID = 1L;
   
   protected boolean unOwned;
+  protected String taskId;
+  protected String owner;
   
-  public CustomTaskQuery() {
+  public CustomTaskQuery(ManagementService managementService) {
+    super(managementService);
   }
   
-  public CustomTaskQuery(CommandExecutor commandExecutor) {
-    super(commandExecutor);
+  public CustomTaskQuery taskId(String taskId){
+    this.taskId = taskId;
+    return this;
+  }
+  
+  public CustomTaskQuery taskOwner(String owner){
+    this.owner = owner;
+    return this;
+  }
+  
+  public CustomTaskQuery orderByTaskPriority(){
+    return orderBy(TaskQueryProperty.PRIORITY);
   }
   
   public CustomTaskQuery unOwned(){
@@ -38,15 +51,11 @@ public class CustomTaskQuery extends TaskQueryImpl {
   }
   
   @SuppressWarnings("unchecked")
-  public List<Task> executeList(CommandContext commandContext, Page page) {
-    ensureVariablesInitialized();
-    checkQueryOk();
+  public List<CustomTask> executeList(CommandContext commandContext, Page page) {
     return commandContext.getDbSqlSession().selectList("selectCustomTaskByQueryCriteria", this);
   }
   
   public long executeCount(CommandContext commandContext) {
-    ensureVariablesInitialized();
-    checkQueryOk();
     return (Long) commandContext.getDbSqlSession().selectOne("selectCustomTaskCountByQueryCriteria", this);
   }
 }

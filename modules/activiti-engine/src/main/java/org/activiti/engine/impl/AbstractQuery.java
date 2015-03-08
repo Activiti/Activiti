@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.ListQueryParameterObject;
@@ -71,6 +72,11 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> extends ListQueryPa
   
   public AbstractQuery(CommandContext commandContext) {
     this.commandContext = commandContext;
+  }
+  
+  // To be used by custom queries
+  public AbstractQuery(ManagementService managementService){
+    this(((ManagementServiceImpl) managementService).getCommandExecutor());
   }
   
   public AbstractQuery<T, U> setCommandExecutor(CommandExecutor commandExecutor) {
