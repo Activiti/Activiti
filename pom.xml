@@ -17,7 +17,7 @@
   <version>5.17.1-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <spring.framework.version>4.1.4.RELEASE</spring.framework.version>
+    <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
     <spring.security.version>3.2.3.RELEASE</spring.security.version>
     <mule.version>3.5.0</mule.version>
     <cxf.version>2.6.14</cxf.version>
