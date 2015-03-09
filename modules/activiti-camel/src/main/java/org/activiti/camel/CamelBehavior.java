@@ -14,8 +14,10 @@
 package org.activiti.camel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.BpmnError;
@@ -64,9 +66,11 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
   protected Expression camelContext;
   protected CamelContext camelContextObj;
   protected SpringProcessEngineConfiguration springConfiguration;
+  protected List<MapExceptionEntry> mapExceptions;
   
   protected abstract void setPropertTargetVariable(ActivitiEndpoint endpoint);
   
+ 
   public enum TargetType {
         BODY_AS_MAP, BODY, PROPERTIES
       }  
@@ -145,7 +149,10 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
             execution);
         return true;
       } else {
-        throw new ActivitiException("Unhandled exception on camel route", camelException);
+        if (ErrorPropagation.mapException(camelException, execution, mapExceptions))
+          return true;
+        else
+          throw new ActivitiException("Unhandled exception on camel route", camelException);
       }
     }
     return false;
