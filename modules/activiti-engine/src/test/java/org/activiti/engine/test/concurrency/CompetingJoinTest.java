@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CompetingJoinTest extends PluggableActivitiTestCase {
 
-  private static Logger log = LoggerFactory.getLogger(CompetingSignalsTest.class);
+  private static Logger log = LoggerFactory.getLogger(CompetingJoinTest.class);
   
   Thread testThread = Thread.currentThread();
   static ControllableThread activeThread;
