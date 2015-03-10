@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 
 public class MBeanInfoAssembler {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementAgent.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MBeanInfoAssembler.class);
 
   protected final WeakHashMap<Class< ? >, MBeanAttributesAndOperations> cache = new WeakHashMap<Class< ? >, MBeanAttributesAndOperations>(10);
 

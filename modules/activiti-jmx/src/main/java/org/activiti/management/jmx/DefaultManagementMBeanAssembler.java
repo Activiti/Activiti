@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultManagementMBeanAssembler implements ManagementMBeanAssembler {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementAgent.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementMBeanAssembler.class);
   
   protected final MBeanInfoAssembler assembler;
 
