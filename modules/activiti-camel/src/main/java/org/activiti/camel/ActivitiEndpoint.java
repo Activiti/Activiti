@@ -48,9 +48,9 @@ public class ActivitiEndpoint extends DefaultEndpoint {
 
   protected boolean copyCamelBodyToBody;
   
-  protected boolean copyVariablesFromProperties;
+  protected String copyVariablesFromProperties;
 
-  protected boolean copyVariablesFromHeader;
+  protected String copyVariablesFromHeader;
   
   protected boolean copyCamelBodyToBodyAsString;
   
@@ -132,20 +132,46 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   public void setCopyVariablesToBodyAsMap(boolean copyVariablesToBodyAsMap) {
     this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
   }
-  
-  public boolean isCopyVariablesFromProperties() {
-    return copyVariablesFromProperties;
+
+  public boolean isCopyVariablesFromPropertiesBoolean() {
+    if (copyVariablesFromProperties == null)
+      return false;
+    String lower = copyVariablesFromProperties.toLowerCase();
+    return lower.equals("true") || lower.equals("false");
   }
 
-  public void setCopyVariablesFromProperties(boolean copyVariablesFromProperties) {
+  public String getCopyVariablesFromProperties() {
+    return copyVariablesFromProperties ;
+  }
+
+  public boolean CopyVariablesFromPropertiesAsBoolean() {
+    return copyVariablesFromProperties != null &&  copyVariablesFromProperties.equalsIgnoreCase("true");
+  }
+
+  public void setCopyVariablesFromProperties(String copyVariablesFromProperties) {
     this.copyVariablesFromProperties = copyVariablesFromProperties;
   }
 
-  public boolean isCopyVariablesFromHeader() {
-    return this.copyVariablesFromHeader;
+  
+  public boolean isCopyVariablesFromHeaderBoolean() {
+    if (copyVariablesFromHeader == null)
+      return false;
+    String lower = copyVariablesFromHeader.toLowerCase();
+    return lower.equals("true") || lower.equals("false");
+  }
+  
+  public String getCopyVariablesFromHeader() {
+    return copyVariablesFromHeader;
+    
+  }
+  
+  public boolean  copyVariablesFromHeaderAsBoolean() {
+    return copyVariablesFromHeader != null && copyVariablesFromHeader.equalsIgnoreCase("true");
+    
   }
 
-  public void setCopyVariablesFromHeader(boolean copyVariablesFromHeader) {
+
+  public void setCopyVariablesFromHeader(String copyVariablesFromHeader) {
     this.copyVariablesFromHeader = copyVariablesFromHeader;
   }
   

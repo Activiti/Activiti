@@ -14,6 +14,7 @@ package org.activiti.camel;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.activiti.engine.ActivitiException;
 import org.apache.camel.Exchange;
@@ -29,6 +30,7 @@ public class ExchangeUtils {
 
   public static final String CAMELBODY = "camelBody";
   protected static final String IGNORE_MESSAGE_PROPERTY = "CamelMessageHistory";
+  static Map<String, Pattern> patternsCache = new HashMap<String, Pattern >();
 	
   /**
    * Copies variables from Camel into Activiti.
@@ -48,59 +50,80 @@ public class ExchangeUtils {
    */
   
   public static Map<String, Object> prepareVariables(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
-    boolean shouldReadFromProperties = activitiEndpoint.isCopyVariablesFromProperties();
-    Map<String, Object> camelVarMap = null;
+    Map<String, Object> camelVarMap =  new HashMap<String, Object>();
     
-    if (shouldReadFromProperties) {
-      camelVarMap = exchange.getProperties();
-      // filter camel property that can't be serializable for camel version after 2.12.x+
-      Map<String, Object> newCamelVarMap = new HashMap<String, Object>();
-      for (String s : camelVarMap.keySet()) {
+    if (!StringUtils.isEmpty(activitiEndpoint.getCopyVariablesFromProperties()) && (!activitiEndpoint.isCopyVariablesFromPropertiesBoolean() || activitiEndpoint.CopyVariablesFromPropertiesAsBoolean())) {
+      Pattern pattern = null;
+      if (!activitiEndpoint.CopyVariablesFromPropertiesAsBoolean()) {
+        String copyVariablesFromProperties = activitiEndpoint.getCopyVariablesFromProperties(); 
+        pattern = patternsCache.get(copyVariablesFromProperties);
+        if (pattern == null) {
+            pattern = Pattern.compile(copyVariablesFromProperties);
+            patternsCache.put(copyVariablesFromProperties, pattern);
+        }
+      } 
+        
+      Map<String, Object> exchangeVarMap = exchange.getProperties();
+      // filter camel property that can't be serializable for camel version after 2.12.x+      
+      for (String s : exchangeVarMap.keySet()) {
         if (IGNORE_MESSAGE_PROPERTY.equalsIgnoreCase(s) == false) {
-          newCamelVarMap.put(s, camelVarMap.get(s));
-        }
-      }
-      camelVarMap = newCamelVarMap;
-      
-    } else {
-      camelVarMap = new HashMap<String, Object>();
-      Object camelBody = null;
-      if (exchange.hasOut()) {
-    	  camelBody = exchange.getOut().getBody();
-      } else {
-    	  camelBody = exchange.getIn().getBody();
-      }
-      
-      if (camelBody instanceof Map<?,?>) {
-        Map<?,?> camelBodyMap = (Map<?,?>)camelBody;
-        for (@SuppressWarnings("rawtypes") Map.Entry e : camelBodyMap.entrySet()) {
-          if (e.getKey() instanceof String) {
-            camelVarMap.put((String) e.getKey(), e.getValue());
-          }
-        }
-      } else {
-        if (activitiEndpoint.isCopyCamelBodyToBodyAsString() && !(camelBody instanceof String)) {
-          camelBody = exchange.getContext().getTypeConverter().convertTo(String.class, exchange, camelBody);
-        }
-        if (camelBody != null) {
-          camelVarMap.put(CAMELBODY, camelBody);
-        }
-      }
-
-      if (activitiEndpoint.isCopyVariablesFromHeader()) {
-        boolean isSetProcessInitiator = activitiEndpoint.isSetProcessInitiator();
-        for (Map.Entry<String, Object> header : exchange.getIn().getHeaders().entrySet()) {
-          // Don't pass the process initiator header as a variable.
-          if (isSetProcessInitiator && activitiEndpoint.getProcessInitiatorHeaderName().equals(header.getKey())) {
-              continue;
-          }
-          camelVarMap.put(header.getKey(), header.getValue());
+         if (pattern == null || pattern.matcher(s).matches())  
+          camelVarMap.put(s, exchangeVarMap.get(s));
         }
       }
     }
     
+    if (!StringUtils.isEmpty(activitiEndpoint.getCopyVariablesFromHeader()) && (!activitiEndpoint.isCopyVariablesFromHeaderBoolean() || activitiEndpoint.copyVariablesFromHeaderAsBoolean())) {
+      Pattern pattern = null;
+      
+      if (!activitiEndpoint.copyVariablesFromHeaderAsBoolean()) {
+        String copyVariablesFromHeader = activitiEndpoint.getCopyVariablesFromHeader();
+        pattern = patternsCache.get(copyVariablesFromHeader);
+        if (pattern == null)  {
+          pattern = Pattern.compile(copyVariablesFromHeader);
+          patternsCache.put(copyVariablesFromHeader, pattern);
+          
+        }
+      }
+      
+      boolean isSetProcessInitiator = activitiEndpoint.isSetProcessInitiator();
+      for (Map.Entry<String, Object> header : exchange.getIn().getHeaders().entrySet()) {
+        // Don't pass the process initiator header as a variable.
+        if (!isSetProcessInitiator && activitiEndpoint.getProcessInitiatorHeaderName().equals(header.getKey())
+                && (pattern == null || pattern.matcher(header.getKey()).matches())) {
+          camelVarMap.put(header.getKey(), header.getValue());
+        }
+      }
+    }
+
+    
+    Object camelBody = null;
+    if (exchange.hasOut()) {
+  	  camelBody = exchange.getOut().getBody();
+    } else {
+  	  camelBody = exchange.getIn().getBody();
+    }
+    
+    if (camelBody instanceof Map<?,?>) {
+      Map<?,?> camelBodyMap = (Map<?,?>)camelBody;
+      for (@SuppressWarnings("rawtypes") Map.Entry e : camelBodyMap.entrySet()) {
+        if (e.getKey() instanceof String) {
+          camelVarMap.put((String) e.getKey(), e.getValue());
+        }
+      }
+    } else {
+      if (activitiEndpoint.isCopyCamelBodyToBodyAsString() && !(camelBody instanceof String)) {
+        camelBody = exchange.getContext().getTypeConverter().convertTo(String.class, exchange, camelBody);
+      }
+      if (camelBody != null) {
+        camelVarMap.put(CAMELBODY, camelBody);
+      }
+    }
+
+    
     return camelVarMap;
   }
+    
   
   /**
    * Gets the value of the Camel header that contains the userId to be set as the process initiator.
