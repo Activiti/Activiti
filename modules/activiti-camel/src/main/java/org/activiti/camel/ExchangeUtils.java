@@ -20,11 +20,13 @@ import org.activiti.engine.ActivitiException;
 import org.apache.camel.Exchange;
 import org.apache.camel.TypeConversionException;
 import org.springframework.util.StringUtils;
+import org.activiti.camel.BooleanStringUtils;
 
 /**
  * This class contains one method - prepareVariables - that is used to copy variables from Camel into Activiti.
  * 
  * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Arnold Schrijver
+ * @author Saeid Mirzaei
  */
 public class ExchangeUtils {
 
@@ -65,9 +67,12 @@ public class ExchangeUtils {
   public static Map<String, Object> prepareVariables(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
     Map<String, Object> camelVarMap =  new HashMap<String, Object>();
 
-    if (!StringUtils.isEmpty(activitiEndpoint.getCopyVariablesFromProperties()) && (!activitiEndpoint.isCopyVariablesFromPropertiesBoolean() || activitiEndpoint.CopyVariablesFromPropertiesAsBoolean())) {
+    String copyProperties = activitiEndpoint.getCopyVariablesFromProperties();
+    // don't other if the property is null, or is a false
+    if (!StringUtils.isEmpty(copyProperties) 
+            && (!BooleanStringUtils.isBoolean(copyProperties) || Boolean.parseBoolean(copyProperties))) {
       
-      Pattern pattern = createPattern(activitiEndpoint.getCopyVariablesFromProperties(), activitiEndpoint.CopyVariablesFromPropertiesAsBoolean());
+      Pattern pattern = createPattern(copyProperties, Boolean.parseBoolean(copyProperties));
           
       Map<String, Object> exchangeVarMap = exchange.getProperties();
       // filter camel property that can't be serializable for camel version after 2.12.x+      
@@ -79,9 +84,11 @@ public class ExchangeUtils {
       }
     }
 
-    if (!StringUtils.isEmpty(activitiEndpoint.getCopyVariablesFromHeader()) && (! activitiEndpoint.isCopyVariablesFromHeaderBoolean() || activitiEndpoint.copyVariablesFromHeaderAsBoolean())) {
+    String copyHeader = activitiEndpoint.getCopyVariablesFromHeader();
+    if (!StringUtils.isEmpty(copyHeader) && 
+             (!BooleanStringUtils.isBoolean(copyHeader) || Boolean.parseBoolean(copyHeader))) {
 
-      Pattern pattern = createPattern(activitiEndpoint.getCopyVariablesFromHeader(), activitiEndpoint.copyVariablesFromHeaderAsBoolean());
+      Pattern pattern = createPattern(copyHeader, Boolean.parseBoolean(copyHeader));
       
       boolean isSetProcessInitiator = activitiEndpoint.isSetProcessInitiator();
       for (Map.Entry<String, Object> header : exchange.getIn().getHeaders().entrySet()) {
