@@ -48,54 +48,48 @@ public class ExchangeUtils {
    * @param activitiEndpoint The ActivitiEndpoint implementation
    * @return A Map&lt;String, Object&gt; containing all of the variables to be used in Activiti
    */
-  
-  public static Map<String, Object> prepareVariables(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
-    Map<String, Object> camelVarMap =  new HashMap<String, Object>();
-    
-    if (!StringUtils.isEmpty(activitiEndpoint.getCopyVariablesFromProperties()) && (!activitiEndpoint.isCopyVariablesFromPropertiesBoolean() || activitiEndpoint.CopyVariablesFromPropertiesAsBoolean())) {
-      Pattern pattern = null;
-      if (!activitiEndpoint.CopyVariablesFromPropertiesAsBoolean()) {
-        String copyVariablesFromProperties = activitiEndpoint.getCopyVariablesFromProperties(); 
+
+  private static Pattern createPattern(String propertyString, boolean isBoolean, boolean asBoolean) {
+    Pattern pattern = null;
+    if (!StringUtils.isEmpty(propertyString) && (!isBoolean || asBoolean)) {
+      if (!asBoolean) {
+        String copyVariablesFromProperties = propertyString; 
         pattern = patternsCache.get(copyVariablesFromProperties);
         if (pattern == null) {
             pattern = Pattern.compile(copyVariablesFromProperties);
             patternsCache.put(copyVariablesFromProperties, pattern);
         }
       } 
+    }
+    return pattern;
+  }
+    
+  public static Map<String, Object> prepareVariables(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
+    Map<String, Object> camelVarMap =  new HashMap<String, Object>();
+
+    Pattern pattern = createPattern(activitiEndpoint.getCopyVariablesFromProperties(), activitiEndpoint.isCopyVariablesFromPropertiesBoolean(), activitiEndpoint.CopyVariablesFromPropertiesAsBoolean());
         
-      Map<String, Object> exchangeVarMap = exchange.getProperties();
-      // filter camel property that can't be serializable for camel version after 2.12.x+      
-      for (String s : exchangeVarMap.keySet()) {
-        if (IGNORE_MESSAGE_PROPERTY.equalsIgnoreCase(s) == false) {
-         if (pattern == null || pattern.matcher(s).matches())  
-          camelVarMap.put(s, exchangeVarMap.get(s));
-        }
+    Map<String, Object> exchangeVarMap = exchange.getProperties();
+    // filter camel property that can't be serializable for camel version after 2.12.x+      
+    for (String s : exchangeVarMap.keySet()) {
+      if (IGNORE_MESSAGE_PROPERTY.equalsIgnoreCase(s) == false) {
+       if (pattern == null || pattern.matcher(s).matches())  
+        camelVarMap.put(s, exchangeVarMap.get(s));
       }
     }
     
-    if (!StringUtils.isEmpty(activitiEndpoint.getCopyVariablesFromHeader()) && (!activitiEndpoint.isCopyVariablesFromHeaderBoolean() || activitiEndpoint.copyVariablesFromHeaderAsBoolean())) {
-      Pattern pattern = null;
+    pattern = createPattern(activitiEndpoint.getCopyVariablesFromHeader(), activitiEndpoint.isCopyVariablesFromHeaderBoolean(), activitiEndpoint.copyVariablesFromHeaderAsBoolean());
+    
+    boolean isSetProcessInitiator = activitiEndpoint.isSetProcessInitiator();
+    for (Map.Entry<String, Object> header : exchange.getIn().getHeaders().entrySet()) {
+      // Don't pass the process initiator header as a variable.
       
-      if (!activitiEndpoint.copyVariablesFromHeaderAsBoolean()) {
-        String copyVariablesFromHeader = activitiEndpoint.getCopyVariablesFromHeader();
-        pattern = patternsCache.get(copyVariablesFromHeader);
-        if (pattern == null)  {
-          pattern = Pattern.compile(copyVariablesFromHeader);
-          patternsCache.put(copyVariablesFromHeader, pattern);
-          
-        }
-      }
-      
-      boolean isSetProcessInitiator = activitiEndpoint.isSetProcessInitiator();
-      for (Map.Entry<String, Object> header : exchange.getIn().getHeaders().entrySet()) {
-        // Don't pass the process initiator header as a variable.
-        if (!isSetProcessInitiator && activitiEndpoint.getProcessInitiatorHeaderName().equals(header.getKey())
-                && (pattern == null || pattern.matcher(header.getKey()).matches())) {
-          camelVarMap.put(header.getKey(), header.getValue());
-        }
+      if ((!isSetProcessInitiator || activitiEndpoint.getProcessInitiatorHeaderName().equals(header.getKey()))
+              && (pattern == null || pattern.matcher(header.getKey()).matches())) {
+        camelVarMap.put(header.getKey(), header.getValue());
       }
     }
-
+ 
     
     Object camelBody = null;
     if (exchange.hasOut()) {
