@@ -144,5 +144,5 @@ public interface ActivityExecution extends DelegateExecution {
    * Performs destroy scope behavior: all child executions and sub-process instances and other related
    * resources are removed. The execution itself can continue execution. 
    */
-  void destroyScope(String string);
+  void destroyScope(String reason);
 }
