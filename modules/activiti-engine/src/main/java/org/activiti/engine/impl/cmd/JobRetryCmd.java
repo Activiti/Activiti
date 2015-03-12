@@ -28,16 +28,12 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
-import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
-import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.jobexecutor.*;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,8 +148,12 @@ public class JobRetryCmd implements Command<Object> {
       }
     } else if (TimerStartEventJobHandler.TYPE.equals(type)) {
     	DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-      ProcessDefinitionEntity processDefinition =  
-      		deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(job.getJobHandlerConfiguration(), job.getTenantId());
+      String processId = job.getJobHandlerConfiguration();
+      if (job instanceof TimerEntity) {
+         processId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
+      }
+      ProcessDefinitionEntity processDefinition =
+      		deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processId, job.getTenantId());
       if (processDefinition != null) {
         activity = processDefinition.getInitial();
       }

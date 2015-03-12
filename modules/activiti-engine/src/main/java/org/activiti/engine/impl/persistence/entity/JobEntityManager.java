@@ -113,7 +113,7 @@ public class JobEntityManager extends AbstractManager {
       .getTransactionContext()
       .addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
- 
+
   public void cancelTimers(ExecutionEntity execution) {
     List<TimerEntity> timers = Context
       .getCommandContext()
@@ -194,7 +194,7 @@ public class JobEntityManager extends AbstractManager {
   public List<Job> findJobsByConfiguration(String jobHandlerType, String jobHandlerConfiguration) {
     Map<String, String> params = new HashMap<String, String>();
     params.put("handlerType", jobHandlerType);
-    params.put("handlerConfiguration", jobHandlerConfiguration);
+    params.put("handlerConfiguration", String.format("%%s%%",jobHandlerConfiguration));
     return getDbSqlSession().selectList("selectJobsByConfiguration", params);
   }
 

@@ -1,4 +1,4 @@
-package org.activiti.engine.test.bpmn.event.timer;
+package org.activiti.engine.test.bpmn.event.timer.compatibility;
 
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@ package org.activiti.engine.test.bpmn.event.timer;
  * limitations under the License.
  */
 
-import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -23,22 +23,23 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
-public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
+public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompatibilityTest {
 
   @Deployment
-  public void testRepeatWithEnd() throws Throwable {
+  public void testRepeatWithoutEnd() throws Throwable {
 
     Calendar calendar = Calendar.getInstance();
     Date baseTime = calendar.getTime();
 
     calendar.add(Calendar.MINUTE, 20);
-     //expect to stop boundary jobs after 20 minutes
+    //expect to stop boundary jobs after 20 minutes
     DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
     DateTime dt = new DateTime(calendar.getTime());
     String dateStr = fmt.print(dt);
-
 
     //reset the timer
     Calendar nextTimeCal = Calendar.getInstance();
@@ -55,34 +56,38 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     Task task = tasks.get(0);
     assertEquals("Task A", task.getName());
 
-
     //Test Boundary Events
     // complete will cause timer to be created
     taskService.complete(task.getId());
 
     List<Job> jobs = managementService.createJobQuery().list();
     assertEquals(1, jobs.size());
+
+    //change the job in old mode (the configuration should not be json in "old mode" but a simple string).
+    JobEntity job= (JobEntity) jobs.get(0);
+    changeConfigurationToPlainText(job);
+
     //boundary events
 
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
-      fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
-    }catch (Exception ex){
+      fail("a new job must be prepared because there are 10 repeats 2 seconds interval");
+    } catch (Exception ex) {
       //expected exception because a new job is prepared
     }
 
-    nextTimeCal.add(Calendar.MINUTE, 15); //after 15 minutes
-    processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
-
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 100);
-      fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
-    }catch (Exception ex){
-      //expected exception because a new job is prepared
+    for (int i = 0; i < 9; i++) {
+      nextTimeCal.add(Calendar.SECOND, 2);
+      processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
+      try {
+        waitForJobExecutorToProcessAllJobs(2000, 100);
+        fail("a new job must be prepared because there are 10 repeats 2 seconds interval");
+      } catch (Exception ex) {
+        //expected exception because a new job is prepared
+      }
     }
 
-    nextTimeCal.add(Calendar.MINUTE, 5); //after another 5 minutes (20 minutes and 1 second from the baseTime) the BoundaryEndTime is reached
-    nextTimeCal.add(Calendar.SECOND, 1);
+    nextTimeCal.add(Calendar.SECOND, 2);
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     try {

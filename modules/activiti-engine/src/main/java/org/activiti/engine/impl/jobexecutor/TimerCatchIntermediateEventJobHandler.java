@@ -26,11 +26,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class TimerCatchIntermediateEventJobHandler implements JobHandler {
+public class TimerCatchIntermediateEventJobHandler extends TimerEventHandler implements JobHandler {
 
   private static Logger log = LoggerFactory.getLogger(TimerCatchIntermediateEventJobHandler.class);
-  public static final String PROPERTYNAME_TIMER_ACTIVITY_ID = "activityId";
-  public static final String PROPERTYNAME_END_DATE_EXPRESSION = "timerEndDate";
 
   public static final String TYPE = "timer-intermediate-transition";
 
@@ -39,8 +37,8 @@ public class TimerCatchIntermediateEventJobHandler implements JobHandler {
   }
 
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    JSONObject cfgJson = new JSONObject(configuration);
-    String nestedActivityId = (String) cfgJson.get(PROPERTYNAME_TIMER_ACTIVITY_ID);
+
+    String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
 
     ActivityImpl intermediateEventActivity = execution.getProcessDefinition().findActivity(nestedActivityId);
 
@@ -71,12 +69,4 @@ public class TimerCatchIntermediateEventJobHandler implements JobHandler {
     }
   }
 
-  public static String createConfiguration(String id, Expression endDate) {
-    JSONObject cfgJson = new JSONObject();
-    cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, id);
-    if (endDate!=null) {
-      cfgJson.put(PROPERTYNAME_END_DATE_EXPRESSION, endDate.getExpressionText());
-    }
-    return cfgJson.toString();
-  }
 }

@@ -69,7 +69,7 @@ public class DurationHelperTest {
 
     testingClock.setCurrentTime(parse("19700101-00:00:35"));
 
-    assertEquals(parse("19700101-00:00:40"), dh.getDateAfter());
+    assertEquals(parse("19700101-00:00:35"), dh.getDateAfter());
   }
 
   @Test

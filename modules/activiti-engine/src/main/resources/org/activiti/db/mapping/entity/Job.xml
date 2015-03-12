@@ -217,7 +217,7 @@
   <select id="selectJobsByConfiguration" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
       select * from ${prefix}ACT_RU_JOB
       where HANDLER_TYPE_ = #{parameter.handlerType}
-      and HANDLER_CFG_ =  #{parameter.handlerConfiguration}
+      and HANDLER_CFG_ like  #{parameter.handlerConfiguration}
   </select>
 
   <select id="selectJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">

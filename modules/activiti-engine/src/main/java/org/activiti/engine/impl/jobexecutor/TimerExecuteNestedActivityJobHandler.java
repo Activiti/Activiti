@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public class TimerExecuteNestedActivityJobHandler implements JobHandler {
+public class TimerExecuteNestedActivityJobHandler extends TimerEventHandler implements JobHandler {
   
   private static Logger log = LoggerFactory.getLogger(TimerExecuteNestedActivityJobHandler.class);
   
@@ -44,9 +44,9 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
   }
   
   public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    JSONObject cfgJson = new JSONObject(configuration);
-    String nestedActivityId = (String) cfgJson.get(PROPERTYNAME_TIMER_ACTIVITY_ID);
-    
+
+    String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
+
     ActivityImpl borderEventActivity = execution.getProcessDefinition().findActivity(nestedActivityId);
 
     if (borderEventActivity == null) {
@@ -74,8 +74,8 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
   }
 
   protected void dispatchActivityTimeoutIfNeeded(JobEntity timerEntity, ExecutionEntity execution, CommandContext commandContext) {
-    JSONObject cfgJson = new JSONObject(timerEntity.getJobHandlerConfiguration());
-    String nestedActivityId = (String) cfgJson.get(PROPERTYNAME_TIMER_ACTIVITY_ID);
+
+    String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(timerEntity.getJobHandlerConfiguration());
 
     ActivityImpl boundaryEventActivity = execution.getProcessDefinition().findActivity(nestedActivityId);
     ActivityBehavior boundaryActivityBehavior = boundaryEventActivity.getActivityBehavior();
@@ -117,15 +117,6 @@ public class TimerExecuteNestedActivityJobHandler implements JobHandler {
         timerEntity
         )
     );
-  }
-
-  public static String createConfiguration(String id, Expression endDate) {
-    JSONObject cfgJson = new JSONObject();
-    cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, id);
-    if (endDate!=null) {
-      cfgJson.put(PROPERTYNAME_END_DATE_EXPRESSION, endDate.getExpressionText());
-    }
-    return cfgJson.toString();
   }
 
 }

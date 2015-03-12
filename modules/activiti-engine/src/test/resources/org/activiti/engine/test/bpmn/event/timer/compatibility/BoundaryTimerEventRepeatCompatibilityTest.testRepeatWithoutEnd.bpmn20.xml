@@ -26,7 +26,7 @@ targetNamespace="Examples">
 
         <boundaryEvent id="timer" attachedToRef="task2" cancelActivity="false">
             <timerEventDefinition>
-                <timeCycle activiti:endDate="${EndDateForBoundary}">R20/PT2S</timeCycle>
+                <timeCycle>R10/PT2S</timeCycle>
             </timerEventDefinition>
         </boundaryEvent>
         <sequenceFlow id="flow21" sourceRef="timer" targetRef="timerFiredTask"/>

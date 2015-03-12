@@ -55,6 +55,9 @@ public class TimerDeclarationImpl implements Serializable {
     this.type= type;
   }
 
+  public Expression getDescription() {
+    return description;
+  }
   public String getJobHandlerType() {
     return jobHandlerType;
   }

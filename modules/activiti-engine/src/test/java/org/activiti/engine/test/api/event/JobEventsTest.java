@@ -122,18 +122,34 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     listener.clearEventsReceived();
 
-    // fire timer for the first time
+    try {
+     waitForJobExecutorToProcessAllJobs(2000, 100);
+     fail("a new job must be prepared because there are 2 repeats");
+   }catch (Exception ex){
+     //expected exception because a new job is prepared
+   }
+
     testClock.setCurrentTime(new Date(now.getTime() + 10000L));
-    waitForJobExecutorToProcessAllJobs(20000, 100);
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+      fail("a new job must be prepared because there are 2 repeats");
+    }catch (Exception ex){
+      //expected exception because a new job is prepared
+    }
 
-    // fire timer for the second time
     testClock.setCurrentTime(new Date(now.getTime() + 20000L));
-    waitForJobExecutorToProcessAllJobs(20000, 100);
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+    }catch (Exception ex){
+      fail("There must be no jobs remaining");
+    }
 
-    // do not fire timer
     testClock.setCurrentTime(new Date(now.getTime() + 30000L));
-    waitForJobExecutorToProcessAllJobs(20000, 100);
-
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+    }catch (Exception ex){
+      fail("There must be no jobs remaining");
+    }
     // count timer fired events
     int timerFiredCount = 0;
     List<ActivitiEvent> eventsReceived = listener.getEventsReceived();

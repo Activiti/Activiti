@@ -25,10 +25,10 @@ public class CycleBusinessCalendar extends BusinessCalendarImpl {
     super(clockReader);
   }
 
-  public Date resolveDuedate(String duedateDescription) {
+  public Date resolveDuedate(String duedateDescription, int maxIterations) {
     try {
-      if (duedateDescription.startsWith("R")) {
-        return new DurationHelper(duedateDescription, clockReader).getDateAfter();
+      if (duedateDescription != null && duedateDescription.startsWith("R")) {
+        return new DurationHelper(duedateDescription, maxIterations, clockReader).getDateAfter();
       } else {
         CronExpression ce = new CronExpression(duedateDescription, clockReader);
         return ce.getTimeAfter(clockReader.getCurrentTime());
@@ -41,14 +41,14 @@ public class CycleBusinessCalendar extends BusinessCalendarImpl {
   }
 
 
-  public Boolean validateDuedate(String duedateDescription, Date endDate, Date newTimer) {
-    if (endDate!=null){
-      return  super.validateDuedate(duedateDescription,endDate,newTimer);
+  public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
+    if (endDate != null) {
+      return super.validateDuedate(duedateDescription, maxIterations, endDate, newTimer);
     }
     //end date could be part of the chron expression
     try {
-      if (duedateDescription.startsWith("R")) {
-        return new DurationHelper(duedateDescription, clockReader).isValidDate(newTimer);
+      if (duedateDescription != null && duedateDescription.startsWith("R")) {
+        return new DurationHelper(duedateDescription, maxIterations, clockReader).isValidDate(newTimer);
       } else {
         return true;
       }
