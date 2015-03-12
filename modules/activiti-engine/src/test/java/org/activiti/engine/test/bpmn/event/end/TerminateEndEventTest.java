@@ -141,6 +141,15 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(pi.getId());
   }
+
+  @Deployment(resources = "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInSubProcessConcurrentMultiInstance.bpmn")
+  public void testTerminateInSubProcessConcurrentMultiInstance_clarification() throws Exception {
+    serviceTaskInvokedCount = 0;
+
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
+
+    assertProcessEnded(pi.getId());
+  }
   
   @Deployment
   public void testTerminateInSubProcessMultiInstance() throws Exception {
