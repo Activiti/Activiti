@@ -15,6 +15,7 @@
                  jdbcType="VARCHAR"/>
   </typeHandlers>
   <mappers>
+    <mapper resource="org/activiti/db/mapping/common.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Attachment.xml" />
     <mapper resource="org/activiti/db/mapping/entity/ByteArray.xml" />
     <mapper resource="org/activiti/db/mapping/entity/Comment.xml" />

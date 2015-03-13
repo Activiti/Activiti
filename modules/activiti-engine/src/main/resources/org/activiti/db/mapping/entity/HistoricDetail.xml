@@ -156,23 +156,7 @@
   </sql>
 
   <select id="selectHistoricDetailByNativeQuery" parameterType="java.util.Map" resultMap="historicDetailResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBefore}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
-  </select>
-
-  <select id="selectHistoricDetailByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicDetailResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBeforeNativeQuery}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
+    <include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
 
   <select id="selectHistoricDetailCountByNativeQuery" parameterType="java.util.Map" resultType="long">

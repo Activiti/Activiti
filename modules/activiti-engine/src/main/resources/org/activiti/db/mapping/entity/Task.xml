@@ -85,7 +85,7 @@
   
     <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
        Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance0 -->
-  <update id="updateTaskTenantIdForDeployment_mysql" parameterType="java.util.Map">
+  <update id="updateTaskTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
     update ${prefix}ACT_RU_TASK set
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     where
@@ -218,20 +218,23 @@
   </sql>
   
   <select id="selectTaskWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
+    <include refid="selectTaskWithVariablesByQueryCriteriaColumns"/> 
+    <include refid="selectTaskWithVariablesByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <sql id="selectTaskWithVariablesByQueryCriteriaColumns">
     ${limitBefore}
+  	<if test="_databaseId != 'db2' and _databaseId != 'mssql'">
     select RES.*,
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
     VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
     VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LONG_ as VAR_LONG_
     ${limitBetween}
-    <include refid="selectTaskWithVariablesByQueryCriteriaSql"/> 
-    ${orderBy}
-    ${limitAfter}
-  </select>
-  
-  <select id="selectTaskWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
-    ${limitBefore}
+    </if>
+    <if test="_databaseId == 'db2' || _databaseId == 'mssql'">
     select distinct TEMPRES_ID_ as ID_, TEMPRES_REV_ as REV_, TEMPRES_NAME_ as NAME_,
     TEMPRES_PARENT_TASK_ID_ as PARENT_TASK_ID_, TEMPRES_DESCRIPTION_ as DESCRIPTION_,
     TEMPRES_PRIORITY_ as PRIORITY_, TEMPRES_CREATE_TIME_ as CREATE_TIME_,
@@ -255,10 +258,8 @@
     VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
     VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
     VAR.TEXT_ as TEMPVAR_TEXT_, VAR.TEXT2_ as TEMPVAR_TEXT2_, VAR.LONG_ as TEMPVAR_LONG_
-    <include refid="selectTaskWithVariablesByQueryCriteriaSql"/> 
-    ${orderBy}
-    ${limitAfter}
-  </select>
+    </if>
+  </sql>
   
   <sql id="selectTaskWithVariablesByQueryCriteriaSql">  
     from ${prefix}ACT_RU_TASK RES
@@ -945,25 +946,9 @@
   </sql>  
 
   <select id="selectTaskByNativeQuery" parameterType="java.util.Map" resultMap="taskResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-  		${limitBefore}
-  	</if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-  		${limitAfter}
-  	</if>
+  	<include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
   
-  <select id="selectTaskByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="taskResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-  		${limitBeforeNativeQuery}
-  	</if>
-  	${sql} 
-    <if test="resultType == 'LIST_PAGE'">
-  		${limitAfter}
-  	</if>
-  </select>
-
   <select id="selectTaskCountByNativeQuery" parameterType="java.util.Map" resultType="long">
      ${sql}
   </select>

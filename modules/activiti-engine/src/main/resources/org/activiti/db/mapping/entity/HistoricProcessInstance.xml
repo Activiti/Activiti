@@ -164,7 +164,15 @@
   </sql>
   
   <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
+    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaColumns"/> 
+    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <sql id="selectHistoricProcessInstancesWithVariablesByQueryCriteriaColumns">  
     ${limitBefore}
+   <if test="_databaseId != 'db2' and _databaseId != 'mssql'">
     select distinct RES.*,
     VAR.ID_ as VAR_ID_, 
     VAR.NAME_ as VAR_NAME_, 
@@ -180,13 +188,8 @@
     VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, 
     VAR.LONG_ as VAR_LONG_
     ${limitBetween}
-    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
-    ${orderBy}
-    ${limitAfter}
-  </select>
-  
-  <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
-    ${limitBefore}
+   </if>
+   <if test="_databaseId == 'db2' || _databaseId == 'mssql'">
     select distinct TEMPRES_ID_ as ID_,
     TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_, 
     TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_,
@@ -241,10 +244,8 @@
     VAR.TEXT2_ as TEMPVAR_TEXT2_, 
     VAR.LAST_UPDATED_TIME_ as TEMPVAR_LAST_UPDATED_TIME_, 
     VAR.LONG_ as TEMPVAR_LONG_
-    <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
-    ${orderBy}
-    ${limitAfter}
-  </select>
+   </if>
+  </sql>
   
   <sql id="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql">  
     from ${prefix}ACT_HI_PROCINST RES
@@ -598,25 +599,9 @@
   </sql>
  
    <select id="selectHistoricProcessInstanceByNativeQuery" parameterType="java.util.Map" resultMap="historicProcessInstanceResultMap">
-   	<if test="resultType == 'LIST_PAGE'">
-   		${limitBefore}
-   	</if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-    	${limitAfter}
-    </if>
+   	<include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
   
-  <select id="selectHistoricProcessInstanceByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="historicProcessInstanceResultMap">
-  	<if test="resultType == 'LIST_PAGE'">
-        ${limitBeforeNativeQuery}
-  	</if>
-  	${sql} 
-    <if test="resultType == 'LIST_PAGE'">
-  		${limitAfter}
-  	</if>
-  </select>
-
   <select id="selectHistoricProcessInstanceCountByNativeQuery" parameterType="java.util.Map" resultType="long">
     ${sql}
   </select>

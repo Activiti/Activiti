@@ -71,7 +71,7 @@
     
   <!-- See http://stackoverflow.com/questions/4429319/you-cant-specify-target-table-for-update-in-from-clause
        Tested this on MySQL 5.6: does NOT use a temporary table (so good, performance) -->
-  <update id="updateJobTenantIdForDeployment_mysql" parameterType="java.util.Map">
+  <update id="updateJobTenantIdForDeployment" databaseId="mysql" parameterType="java.util.Map">
     update ${prefix}ACT_RU_JOB set
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
     where
@@ -197,21 +197,9 @@
     where (RETRIES_ &gt; 0)
       and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
       and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
-      and (EXCLUSIVE_ = TRUE)
+      and (EXCLUSIVE_ = ${boolValue})
       and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
     ${limitAfter}
-  </select>
-  
-  <select id="selectExclusiveJobsToExecute_integerBoolean" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
-  	${limitBefore}
-    select RES.* ${limitBetween} 
-    from ${prefix}ACT_RU_JOB RES  
-    where (RETRIES_ &gt; 0)
-      and (DUEDATE_ is null or DUEDATE_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
-      and (LOCK_OWNER_ is null or LOCK_EXP_TIME_ &lt;= #{parameter.now, jdbcType=TIMESTAMP})
-      and (EXCLUSIVE_ = 1)
-      and (PROCESS_INSTANCE_ID_ = #{parameter.pid})  
-    ${limitAfter}   
   </select>
   
   <select id="selectJobsByConfiguration" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
@@ -384,7 +372,7 @@
     order by DUEDATE_
   </select>
 
-  <select id="selectUnlockedTimersByDuedate_oracle" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+  <select id="selectUnlockedTimersByDuedate" databaseId="oracle" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
           resultMap="jobResultMap">
     select RES.*
     from ${prefix}ACT_RU_JOB RES
