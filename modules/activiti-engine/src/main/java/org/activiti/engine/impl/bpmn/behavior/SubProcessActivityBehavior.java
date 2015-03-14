@@ -60,8 +60,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
     bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
   }
 
-  protected void initializeDataObjects(ActivityExecution execution, PvmActivity activity)
-  {
+  protected void initializeDataObjects(ActivityExecution execution, PvmActivity activity) {
     Map<String, Object> dataObjectVars = ((ActivityImpl) activity).getVariables();
     if (dataObjectVars != null) {
       execution.setVariablesLocal(dataObjectVars);
