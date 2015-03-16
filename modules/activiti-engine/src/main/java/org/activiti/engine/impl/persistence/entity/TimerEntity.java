@@ -88,14 +88,12 @@ public class TimerEntity extends JobEntity {
 
     super.execute(commandContext);
 
-    if (repeat == null) {
+    if (log.isDebugEnabled()) {
+      log.debug("Timer {} fired. Deleting timer.", getId());
+    }
+    delete();
 
-      if (log.isDebugEnabled()) {
-        log.debug("Timer {} fired. Deleting timer.", getId());
-      }
-      delete();
-    } else {
-      delete();
+    if (repeat != null) {
       int repeatValue = calculateRepeatValue();
       if (repeatValue != 0) {
         if (repeatValue > 0) {

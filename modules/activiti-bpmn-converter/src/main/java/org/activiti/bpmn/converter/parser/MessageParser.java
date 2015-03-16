@@ -46,7 +46,7 @@ public class MessageParser implements BpmnXMLConstants {
         String resolvedNamespace = model.getNamespace(prefix);
         result = resolvedNamespace + ":" + itemRef.substring(indexOfP + 1);
       } else {
-        result = model.getTargetNamespace() + ":" + itemRef;
+        result = itemRef;
       }
     }
     return result;
