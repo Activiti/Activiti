@@ -8,7 +8,7 @@
         <endEvent id="sid-CE530061-D0A4-471E-B21C-1D768994D955"></endEvent>
         <startEvent id="startEvent" name="StartEvent">
             <timerEventDefinition>
-                <timeCycle activiti:endDate="2015-01-13T18:00:00">R10/PT24H</timeCycle>
+                <timeCycle activiti:endDate="2025-12-12T00:00:00">R10/PT24H</timeCycle>
             </timerEventDefinition>
         </startEvent>
         <scriptTask id="scriptExecutor" name="Script Executor" scriptFormat="groovy">

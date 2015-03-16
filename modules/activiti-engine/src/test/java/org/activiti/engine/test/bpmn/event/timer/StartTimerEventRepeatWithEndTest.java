@@ -19,9 +19,9 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
-import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -48,7 +48,6 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
   /**
    * Timer repetition
    */
-  @Deployment
   public void testCycleDateStartTimerEvent() throws Exception {
     Clock previousClock = processEngineConfiguration.getClock();
 
@@ -56,43 +55,39 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
 
     processEngineConfiguration.setClock(testClock);
 
-    Date now = new Date();
-    testClock.setCurrentTime(now);
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(2025,Calendar.DECEMBER,10,0,0,0);
+    testClock.setCurrentTime(calendar.getTime());
+
+    repositoryService.createDeployment()
+            .addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventRepeatWithEndTest.testCycleDateStartTimerEvent.bpmn20.xml")
+            .deploy();
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
 
     listener.clearEventsReceived();
 
     try {
       waitForJobExecutorToProcessAllJobs(2000, 500); //5 dec
-      fail("there must be a pending job but will not execute since the endDate is overdue");
+      fail("there must be a pending job because the endDate is not reached yet");
     } catch (Exception e) {
       //expected failure
     }
 
-    moveByMinutes(60*24);
+    moveByMinutes(60*24); //11 dec
     try {
       waitForJobExecutorToProcessAllJobs(2000, 500);
-
+      fail("there must be a pending job because the endDate is not reached yet");
     } catch (Exception e) {
       //expected failure
-      fail("Because the endDate is reached it will not be executed");
     }
 
-    moveByMinutes(60*24);
-
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
-    } catch (Exception e) {
-      //expected failure
-      fail("Because the endDate is reached it will not be executed");
-    }
-
-    moveByMinutes(60*24);
+    moveByMinutes(60*24); //12 dec (last execution)
 
     try {
       waitForJobExecutorToProcessAllJobs(2000, 500);
     } catch (Exception e) {
       //expected failure
-      fail("Because the endDate is reached it will not be executed");
+      fail("Because the endDate is reached it will not be executed other jobs");
     }
 
     moveByMinutes(60*24);
@@ -101,8 +96,9 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
       waitForJobExecutorToProcessAllJobs(2000, 500);
     } catch (Exception e) {
       //expected failure
-      fail("Because the endDate is reached it will not be executed");
+      fail("Because the endDate is reached it will not be executed other jobs");
     }
+
 
     // count timer fired events
     int timerFiredCount = 0;
@@ -115,7 +111,10 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
     listener.clearEventsReceived();
     processEngineConfiguration.setClock(previousClock);
 
-    assertEquals(0, timerFiredCount);
+    assertEquals(2, timerFiredCount);
+
+    repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
+
   }
 
   private void moveByMinutes(int minutes) throws Exception {
