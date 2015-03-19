@@ -104,10 +104,20 @@ public class BoundaryTimerEventRepeatCompatibilityTest extends TimerEventCompati
     try {
       waitForJobExecutorToProcessAllJobs(2000, 500);
     } catch (Exception e) {
-      // expected
       fail("No jobs should be active here.");
-
     }
+
+    //now All the process instances should be completed
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(0, processInstances.size());
+
+    //no jobs
+    jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+
+    //no tasks
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(0, tasks.size());
 
   }
 

@@ -13,7 +13,6 @@ package org.activiti.engine.test.bpmn.event.timer;
  * limitations under the License.
  */
 
-import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -23,8 +22,13 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
+/**
+ * @author Vasile Dirla
+ */
 public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
 
   @Deployment
@@ -34,11 +38,10 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     Date baseTime = calendar.getTime();
 
     calendar.add(Calendar.MINUTE, 20);
-     //expect to stop boundary jobs after 20 minutes
+    //expect to stop boundary jobs after 20 minutes
     DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
     DateTime dt = new DateTime(calendar.getTime());
     String dateStr = fmt.print(dt);
-
 
     //reset the timer
     Calendar nextTimeCal = Calendar.getInstance();
@@ -55,7 +58,6 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     Task task = tasks.get(0);
     assertEquals("Task A", task.getName());
 
-
     //Test Boundary Events
     // complete will cause timer to be created
     taskService.complete(task.getId());
@@ -67,7 +69,7 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
       fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
-    }catch (Exception ex){
+    } catch (Exception ex) {
       //expected exception because a new job is prepared
     }
 
@@ -77,7 +79,7 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
       fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
-    }catch (Exception ex){
+    } catch (Exception ex) {
       //expected exception because a new job is prepared
     }
 
@@ -87,7 +89,7 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
 
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
-    }catch (Exception ex){
+    } catch (Exception ex) {
       fail("Should not have any other jobs because the endDate is reached");
     }
     tasks = taskService.createTaskQuery().list();

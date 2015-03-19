@@ -19,12 +19,17 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
-import org.activiti.engine.test.Deployment;
+import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.Task;
 import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * @author Vasile Dirla
+ */
 public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivitiTestCase {
 
   private TestActivitiEntityEventListener listener;
@@ -48,7 +53,6 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
   /**
    * Timer repetition
    */
-  @Deployment
   public void testCycleDateStartTimerEvent() throws Exception {
     Clock previousClock = processEngineConfiguration.getClock();
 
@@ -56,55 +60,86 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
 
     processEngineConfiguration.setClock(testClock);
 
-    Date now = new Date();
-    testClock.setCurrentTime(now);
+    Calendar calendar = Calendar.getInstance();
+    calendar.set(2025, Calendar.DECEMBER, 10, 0, 0, 0);
+    testClock.setCurrentTime(calendar.getTime());
 
-    listener.clearEventsReceived();
+    //deploy the process
+    repositoryService.createDeployment().addClasspathResource(
+            "org/activiti/engine/test/bpmn/event/timer/StartTimerEventRepeatWithEndExpressionTest.testCycleDateStartTimerEvent.bpmn20.xml").deploy();
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
 
-     try {
-      waitForJobExecutorToProcessAllJobs(2000, 500); //5 dec
-      fail("there must be a pending job but will not execute since the endDate is overdue");
-    } catch (Exception e) {
-      //expected failure
-    }
+    //AFTER DEPLOYMENT
+    //when the process is deployed there will be created a timerStartEvent job which will wait to be executed.
+    List<Job> jobs = managementService.createJobQuery().list();
+    assertEquals(1, jobs.size());
 
-    moveByMinutes(60*24);
+    //dueDate should be after 24 hours from the process deployment
+    Calendar dueDateCalendar = Calendar.getInstance();
+    dueDateCalendar.set(2025, Calendar.DECEMBER, 11, 0, 0, 0);
+
+    //check the due date is inside the 2 seconds range
+    assertEquals(true, Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000);
+
+    //No process instances
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(0, processInstances.size());
+
+    //No tasks
+    List<Task> tasks = taskService.createTaskQuery().list();
+    assertEquals(0, tasks.size());
+
+    // ADVANCE THE CLOCK
+    // advance the clock to 11 dec -> the system will execute the pending job and will create a new one
+    moveByMinutes(60 * 24);
     try {
       waitForJobExecutorToProcessAllJobs(2000, 500);
-
+      fail("there must be a pending job because the endDate is not reached yet");
     } catch (Exception e) {
       //expected failure
-      fail("Because the endDate is reached it will not be executed");
     }
 
-    moveByMinutes(60*24);
+    // After the first startEvent Execution should be one process instance started
+    processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(1, processInstances.size());
 
-     try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
-    } catch (Exception e) {
-      //expected failure
-      fail("Because the endDate is reached it will not be executed");
-    }
+    // one task to be executed (the userTask "Task A")
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(1, tasks.size());
 
-    moveByMinutes(60*24);
+    // one new job will be created (and the old one will be deleted after execution)
+    jobs = managementService.createJobQuery().list();
+    assertEquals(1, jobs.size());
 
+    dueDateCalendar = Calendar.getInstance();
+    dueDateCalendar.set(2025, Calendar.DECEMBER, 12, 0, 0, 0);
+
+    assertEquals(true, Math.abs(dueDateCalendar.getTime().getTime() - jobs.get(0).getDuedate().getTime()) < 2000);
+
+    // ADVANCE THE CLOCK SO THE END DATE WILL BE REACHED
+    // 12 dec (last execution)
+    moveByMinutes(60 * 24);
     try {
       waitForJobExecutorToProcessAllJobs(2000, 500);
     } catch (Exception e) {
-      //expected failure
-      fail("Because the endDate is reached it will not be executed");
+      fail("Because the endDate is reached it will not be executed other jobs");
     }
+    // After the second startEvent Execution should have 2 process instances started
+    // (since the first one was not completed)
+    processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(2, processInstances.size());
 
-    moveByMinutes(60*24);
+    // Because the endDate 12.dec.2025 is reached
+    // the current job will be deleted after execution and a new one will not be created.
+    jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
 
-    try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
-    } catch (Exception e) {
-      //expected failure
-      fail("Because the endDate is reached it will not be executed");
-    }
+    // 2 tasks to be executed (the userTask "Task A")
+    // one task for each process instance
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(2, tasks.size());
 
-    // count timer fired events
+    // count "timer fired" events
     int timerFiredCount = 0;
     List<ActivitiEvent> eventsReceived = listener.getEventsReceived();
     for (ActivitiEvent eventReceived : eventsReceived) {
@@ -112,15 +147,57 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
         timerFiredCount++;
       }
     }
+
+    //count "entity created" events
+    int eventCreatedCount = 0;
+    for (ActivitiEvent eventReceived : eventsReceived) {
+      if (ActivitiEventType.ENTITY_CREATED.equals(eventReceived.getType())) {
+        eventCreatedCount++;
+      }
+    }
+
+    // count "entity deleted" events
+    int eventDeletedCount = 0;
+    for (ActivitiEvent eventReceived : eventsReceived) {
+      if (ActivitiEventType.ENTITY_DELETED.equals(eventReceived.getType())) {
+        eventDeletedCount++;
+      }
+    }
+    assertEquals(2, timerFiredCount); //2 timers fired
+    assertEquals(2, eventCreatedCount); //2 jobs created
+    assertEquals(2, eventDeletedCount); //2 jobs deleted
+
+    // for each processInstance
+    // let's complete the userTasks where the process is hanging in order to complete the processes.
+    for (ProcessInstance processInstance : processInstances) {
+      tasks = taskService.createTaskQuery().processInstanceId(processInstance.getProcessInstanceId()).list();
+      Task task = tasks.get(0);
+      assertEquals("Task A", task.getName());
+      assertEquals(1, tasks.size());
+      taskService.complete(task.getId());
+    }
+
+    //now All the process instances should be completed
+    processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(0, processInstances.size());
+
+    //no jobs
+    jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+
+    //no tasks
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(0, tasks.size());
+
     listener.clearEventsReceived();
     processEngineConfiguration.setClock(previousClock);
 
-    assertEquals(0, timerFiredCount);
+    repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
+
   }
 
   private void moveByMinutes(int minutes) throws Exception {
-    processEngineConfiguration.getClock()
-            .setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000))));
+    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000))));
   }
 
 }

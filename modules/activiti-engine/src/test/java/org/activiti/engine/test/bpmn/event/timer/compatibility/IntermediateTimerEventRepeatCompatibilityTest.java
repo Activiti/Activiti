@@ -111,6 +111,20 @@ public class IntermediateTimerEventRepeatCompatibilityTest extends TimerEventCom
             .singleResult();
 
     assertNotNull(historicInstance.getEndTime());
+
+
+    //now All the process instances should be completed
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(0, processInstances.size());
+
+    //no jobs
+    jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+
+    //no tasks
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(0, tasks.size());
+
   }
 
 }

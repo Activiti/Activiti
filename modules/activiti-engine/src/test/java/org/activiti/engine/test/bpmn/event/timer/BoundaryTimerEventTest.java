@@ -31,17 +31,17 @@ import org.activiti.engine.test.Deployment;
  */
 public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
   
-  private static boolean listenerExcecutedStartEvent = false;
-  private static boolean listenerExcecutedEndEvent = false;
+  private static boolean listenerExecutedStartEvent = false;
+  private static boolean listenerExecutedEndEvent = false;
   
   public static class MyExecutionListener implements ExecutionListener {
     private static final long serialVersionUID = 1L;
 
     public void notify(DelegateExecution execution) throws Exception {
       if ("end".equals(execution.getEventName())) {
-        listenerExcecutedEndEvent = true;
+        listenerExecutedEndEvent = true;
       } else if ("start".equals(execution.getEventName())) {
-        listenerExcecutedStartEvent = true;
+        listenerExecutedStartEvent = true;
       }
     }    
   }
@@ -118,8 +118,8 @@ public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
     assertEquals(0L, jobQuery.count());
     
     // start execution listener is not executed
-    assertFalse(listenerExcecutedStartEvent);
-    assertTrue(listenerExcecutedEndEvent);
+    assertFalse(listenerExecutedStartEvent);
+    assertTrue(listenerExecutedEndEvent);
 
     // which means the process has ended
     assertProcessEnded(pi.getId());

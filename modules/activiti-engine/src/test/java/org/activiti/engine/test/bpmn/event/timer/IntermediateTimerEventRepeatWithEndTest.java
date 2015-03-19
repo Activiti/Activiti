@@ -26,7 +26,9 @@ import org.joda.time.format.ISODateTimeFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-
+/**
+ * @author Vasile Dirla
+ */
 public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTestCase {
 
   @Deployment
@@ -112,6 +114,18 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
             .singleResult();
 
     assertNotNull(historicInstance.getEndTime());
+
+    //now All the process instances should be completed
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(0, processInstances.size());
+
+    //no jobs
+    jobs = managementService.createJobQuery().list();
+    assertEquals(0, jobs.size());
+
+    //no tasks
+    tasks = taskService.createTaskQuery().list();
+    assertEquals(0, tasks.size());
   }
 
 }
