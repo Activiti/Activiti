@@ -121,13 +121,6 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 		
 		// Backwards compatibility
 		
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println("---> " + processDefinition.getEngineVersion());
-		System.out.println();
-		System.out.println();
-		
 		if (processDefinition.getEngineVersion() != null) {
 			if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
 				Activiti5CompatibilityHandler activiti5CompatibilityHandler =

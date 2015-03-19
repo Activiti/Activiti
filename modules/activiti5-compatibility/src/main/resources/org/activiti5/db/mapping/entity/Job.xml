@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.JobEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.JobEntity">
 
   <!-- JOB DELETE STATEMENTS-->
 
-  <delete id="deleteJob" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+  <delete id="deleteJob" parameterType="org.activiti5.engine.impl.persistence.entity.JobEntity">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -17,7 +17,7 @@
     </foreach> 
   </delete>
   
-  <delete id="deleteTimer" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+  <delete id="deleteTimer" parameterType="org.activiti5.engine.impl.persistence.entity.JobEntity">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -28,7 +28,7 @@
     </foreach> 
   </delete>
   
-  <delete id="deleteMessage" parameterType="org.activiti.engine.impl.persistence.entity.JobEntity">
+  <delete id="deleteMessage" parameterType="org.activiti5.engine.impl.persistence.entity.JobEntity">
     delete from ${prefix}ACT_RU_JOB where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -92,7 +92,7 @@
   
   <!-- JOB RESULTMAP (FOR TIMER AND MESSAGE) -->
 
-  <resultMap id="jobResultMap" type="org.activiti.engine.impl.persistence.entity.JobEntity">
+  <resultMap id="jobResultMap" type="org.activiti5.engine.impl.persistence.entity.JobEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="lockOwner" column="LOCK_OWNER_" jdbcType="VARCHAR" />
@@ -113,9 +113,9 @@
     </discriminator>
   </resultMap>
 
-  <resultMap id="messageResultMap" type="org.activiti.engine.impl.persistence.entity.MessageEntity" extends="jobResultMap"/>
+  <resultMap id="messageResultMap" type="org.activiti5.engine.impl.persistence.entity.MessageEntity" extends="jobResultMap"/>
 
-  <resultMap id="timerResultMap" type="org.activiti.engine.impl.persistence.entity.TimerEntity" extends="jobResultMap">
+  <resultMap id="timerResultMap" type="org.activiti5.engine.impl.persistence.entity.TimerEntity" extends="jobResultMap">
     <result property="duedate" column="DUEDATE_" jdbcType="TIMESTAMP" />
     <result property="repeat" column="REPEAT_" jdbcType="VARCHAR" />
   </resultMap>
@@ -126,7 +126,7 @@
     select * from ${prefix}ACT_RU_JOB where ID_ = #{id}
   </select>
 
-  <select id="selectNextJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectNextJobsToExecute" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
   	${limitBefore}
     select 
     	RES.* ${limitBetween}    		
@@ -143,7 +143,7 @@
     ${limitAfter}	    
   </select>
   
-  <select id="selectNextTimerJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectNextTimerJobsToExecute" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
     ${limitBefore}
     select 
       RES.* ${limitBetween}       
@@ -161,7 +161,7 @@
     ${limitAfter}     
   </select>
   
-  <select id="selectAsyncJobsDueToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectAsyncJobsDueToExecute" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
     ${limitBefore}
     select 
       RES.* ${limitBetween}       
@@ -180,7 +180,7 @@
     ${limitAfter}     
   </select>
   
-  <select id="selectJobsByLockOwner" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectJobsByLockOwner" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
   	${limitBefore}
     select 
     	RES.* ${limitBetween}    		
@@ -190,7 +190,7 @@
     ${limitAfter}	    
   </select>   
   
-  <select id="selectExclusiveJobsToExecute" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectExclusiveJobsToExecute" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
   	${limitBefore}
     select RES.* ${limitBetween} 
     from ${prefix}ACT_RU_JOB RES    
@@ -202,7 +202,7 @@
     ${limitAfter}
   </select>
   
-  <select id="selectExclusiveJobsToExecute_integerBoolean" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectExclusiveJobsToExecute_integerBoolean" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
   	${limitBefore}
     select RES.* ${limitBetween} 
     from ${prefix}ACT_RU_JOB RES  
@@ -214,19 +214,19 @@
     ${limitAfter}   
   </select>
   
-  <select id="selectJobsByConfiguration" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectJobsByConfiguration" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
       select * from ${prefix}ACT_RU_JOB
       where HANDLER_TYPE_ = #{parameter.handlerType}
       and HANDLER_CFG_ like  #{parameter.handlerConfiguration}
   </select>
 
-  <select id="selectJobsByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectJobsByExecutionId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
     select *
     from ${prefix}ACT_RU_JOB J
     where J.EXECUTION_ID_ = #{parameter}
   </select>
 
-  <select id="selectJobByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultMap="jobResultMap">
+  <select id="selectJobByQueryCriteria" parameterType="org.activiti5.engine.impl.JobQueryImpl" resultMap="jobResultMap">
   	${limitBefore}
     select RES.* ${limitBetween}
     <include refid="selectJobByQueryCriteriaSql"/>
@@ -234,7 +234,7 @@
     ${limitAfter}
   </select>
 
-  <select id="selectJobCountByQueryCriteria" parameterType="org.activiti.engine.impl.JobQueryImpl" resultType="long">
+  <select id="selectJobCountByQueryCriteria" parameterType="org.activiti5.engine.impl.JobQueryImpl" resultType="long">
     select count(distinct RES.ID_)
     <include refid="selectJobByQueryCriteriaSql"/>
   </select>
@@ -310,7 +310,7 @@
 
   <!-- TIMER INSERT -->
   
-  <insert id="insertTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
+  <insert id="insertTimer" parameterType="org.activiti5.engine.impl.persistence.entity.TimerEntity">
     insert into ${prefix}ACT_RU_JOB (
             ID_, 
             REV_,
@@ -351,7 +351,7 @@
 
   <!-- TIMER UPDATE -->
 
-  <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
+  <update id="updateTimer" parameterType="org.activiti5.engine.impl.persistence.entity.TimerEntity">
     update ${prefix}ACT_RU_JOB
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},
@@ -368,7 +368,7 @@
   
   <!-- TIMER SELECT -->
   
-  <select id="selectUnlockedTimersByDuedate" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectUnlockedTimersByDuedate" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
     select RES.*
     from ${prefix}ACT_RU_JOB RES
     LEFT OUTER JOIN ${prefix}ACT_RU_EXECUTION PI ON PI.ID_ = RES.PROCESS_INSTANCE_ID_
@@ -384,7 +384,7 @@
     order by DUEDATE_
   </select>
 
-  <select id="selectUnlockedTimersByDuedate_oracle" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
+  <select id="selectUnlockedTimersByDuedate_oracle" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject"
           resultMap="jobResultMap">
     select RES.*
     from ${prefix}ACT_RU_JOB RES
@@ -400,7 +400,7 @@
     order by DUEDATE_
   </select>
 
-  <select id="selectTimersByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+  <select id="selectTimersByExecutionId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
     select * 
     from ${prefix}ACT_RU_JOB 
     where (RETRIES_ &gt; 0)
@@ -411,7 +411,7 @@
 
   <!-- MESSAGE INSERT -->
 
-  <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
+  <insert id="insertMessage" parameterType="org.activiti5.engine.impl.persistence.entity.MessageEntity">
     insert into ${prefix}ACT_RU_JOB (
             ID_, 
             REV_, 
@@ -450,7 +450,7 @@
   
   <!-- MESSAGE UPDATE -->
   
-  <update id="updateMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
+  <update id="updateMessage" parameterType="org.activiti5.engine.impl.persistence.entity.MessageEntity">
     update ${prefix}ACT_RU_JOB
     <set>
        REV_ =  #{revisionNext, jdbcType=INTEGER},

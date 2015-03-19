@@ -14,12 +14,14 @@ package org.activiti;
 
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * @author Joram Barrez
  */
-public class Main {
+public class NewEngineApp {
 	
 	public static void main(String[] args) {
 	    
@@ -29,19 +31,22 @@ public class Main {
 	    		.buildProcessEngine();
 		
 	    // Start a process in old engine
-		System.out.println("Starting process instance ...");
+		System.out.println("Starting process instance from old engine ...");
 		RuntimeService runtimeService = processEngine.getRuntimeService();
-		runtimeService.startProcessInstanceByKey("oneTaskProcess");
+		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 		
-//		// Start a process in new engine 
-//	    
-//	    RepositoryService repositoryService = processEngine.getRepositoryService();
-//	    repositoryService.createDeployment().addClasspathResource("oneTaskProcess.bpmn20.xml").deploy();
-//	    
-//	    RuntimeService runtimeService = processEngine.getRuntimeService();
-//	    runtimeService.startProcessInstanceByKey("oneTaskProcess");
-//	    
+		System.out.println("ProcessInstance = " + processInstance);
+	    System.out.println("Done. Nr of tasks active = " + processEngine.getTaskService().createTaskQuery().count());
+		
+		// Start a process in new engine 
 	    
+	    System.out.println("Starting process instance from old engine ...");
+	    RepositoryService repositoryService = processEngine.getRepositoryService();
+	    repositoryService.createDeployment().addClasspathResource("oneTaskProcess.bpmn20.xml").deploy();
+	    
+	    processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+	    
+	    System.out.println("ProcessInstance = " + processInstance);
 	    System.out.println("Done. Nr of tasks active = " + processEngine.getTaskService().createTaskQuery().count());
 	}
 

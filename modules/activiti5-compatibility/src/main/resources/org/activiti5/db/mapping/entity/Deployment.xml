@@ -2,18 +2,18 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.DeploymentEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.DeploymentEntity">
 
   <!-- DEPLOYMENT INSERT -->
   
-  <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntity">
+  <insert id="insertDeployment" parameterType="org.activiti5.engine.impl.persistence.entity.DeploymentEntity">
     insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_)
     values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
   </insert>
   
   <!-- DEPLOYMENT UPDATE -->
   
-  <update id="updateDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntity">
+  <update id="updateDeployment" parameterType="org.activiti5.engine.impl.persistence.entity.DeploymentEntity">
     update ${prefix}ACT_RE_DEPLOYMENT set
       CATEGORY_ = #{category, jdbcType=VARCHAR},
       TENANT_ID_ = #{tenantId, jdbcType=VARCHAR}
@@ -28,7 +28,7 @@
 
   <!-- DEPLOYMENT RESULTMAP -->
   
-  <resultMap id="deploymentResultMap" type="org.activiti.engine.impl.persistence.entity.DeploymentEntity">
+  <resultMap id="deploymentResultMap" type="org.activiti5.engine.impl.persistence.entity.DeploymentEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
@@ -38,7 +38,7 @@
 
   <!-- DEPLOYMENT SELECT -->
 
-  <select id="selectDeploymentsByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
+  <select id="selectDeploymentsByQueryCriteria" parameterType="org.activiti5.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
   	${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
@@ -46,7 +46,7 @@
     ${limitAfter}
   </select>
 
-  <select id="selectDeploymentCountByQueryCriteria" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
+  <select id="selectDeploymentCountByQueryCriteria" parameterType="org.activiti5.engine.impl.DeploymentQueryImpl" resultType="long">
     select count(distinct RES.ID_)
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
   </select>
@@ -90,7 +90,7 @@
     </where>
   </sql>
     
-  <select id="selectDeploymentsByName" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="deploymentResultMap">
+  <select id="selectDeploymentsByName" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="deploymentResultMap">
     select * from ${prefix}ACT_RE_DEPLOYMENT D where NAME_=#{parameter} order by D.DEPLOY_TIME_ desc
   </select>
   
@@ -99,7 +99,7 @@
   </select>
 
   <!-- mysql specific -->
-  <select id="selectDeploymentsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
+  <select id="selectDeploymentsByQueryCriteria_mysql" parameterType="org.activiti5.engine.impl.DeploymentQueryImpl" resultMap="deploymentResultMap">
   	${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
@@ -108,7 +108,7 @@
   </select>
   
   <!-- mysql specific -->
-  <select id="selectDeploymentCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.DeploymentQueryImpl" resultType="long">
+  <select id="selectDeploymentCountByQueryCriteria_mysql" parameterType="org.activiti5.engine.impl.DeploymentQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectDeploymentsByQueryCriteriaSql"/>
   </select>

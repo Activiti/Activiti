@@ -246,7 +246,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
   
-  public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti/db/mapping/mappings.xml";
+  public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti5/db/mapping/mappings.xml";
 
   // SERVICES /////////////////////////////////////////////////////////////////
 

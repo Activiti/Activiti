@@ -16,11 +16,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricDetailEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.HistoricDetailEntity">
 
   <!-- HISTORIC DETAILS INSERT -->
   
-  <insert id="insertHistoricFormProperty" parameterType="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity">
+  <insert id="insertHistoricFormProperty" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricFormPropertyEntity">
     insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_)
     values (
       #{id, jdbcType=VARCHAR},
@@ -35,7 +35,7 @@
     )
   </insert>
   
-  <insert id="insertHistoricDetailVariableInstanceUpdate" parameterType="org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity">
+  <insert id="insertHistoricDetailVariableInstanceUpdate" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity">
     insert into ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_)
     values (
       #{id, jdbcType=VARCHAR},
@@ -75,7 +75,7 @@
   </delete>
   
   <!-- HISTORIC DETAILS RESULTMAP -->
-  <resultMap id="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricDetailEntity">
+  <resultMap id="historicDetailResultMap" type="org.activiti5.engine.impl.persistence.entity.HistoricDetailEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="activityInstanceId" column="ACT_INST_ID_" jdbcType="VARCHAR" />
@@ -88,10 +88,10 @@
     </discriminator>
   </resultMap>
   
-  <resultMap id="historicVariableUpdateResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity">
+  <resultMap id="historicVariableUpdateResultMap" extends="historicDetailResultMap" type="org.activiti5.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity">
     <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
+    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti5.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
     <result property="activityId" column="ACTIVITY_ID_" jdbcType="VARCHAR" />
     <result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler" />
     <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
@@ -100,14 +100,14 @@
     <result property="longValue" column="LONG_" jdbcType="BIGINT" />
   </resultMap>
   
-  <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricFormPropertyEntity">
+  <resultMap id="historicFormPropertyResultMap" extends="historicDetailResultMap" type="org.activiti5.engine.impl.persistence.entity.HistoricFormPropertyEntity">
     <result property="propertyId" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="propertyValue" column="TEXT_" javaType="String" jdbcType="VARCHAR"/>
   </resultMap>
 
   <!-- HISTORIC VARIABLE UPDATE SELECT -->
 
-  <select id="selectHistoricDetailsByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap">
+  <select id="selectHistoricDetailsByQueryCriteria" parameterType="org.activiti5.engine.impl.HistoricDetailQueryImpl" resultMap="historicDetailResultMap">
   	${limitBefore}
     select RES.* ${limitBetween}
     <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
@@ -115,7 +115,7 @@
     ${limitAfter}
   </select>
   
-  <select id="selectHistoricDetailCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricDetailQueryImpl" resultType="long">
+  <select id="selectHistoricDetailCountByQueryCriteria" parameterType="org.activiti5.engine.impl.HistoricDetailQueryImpl" resultType="long">
     select count(RES.ID_)
     <include refid="selectHistoricDetailsByQueryCriteriaSql"/>
   </select>

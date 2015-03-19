@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.ResourceEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.ResourceEntity">
   
   <!-- RESOURCE INSERT -->
 
-  <insert id="insertResource" parameterType="org.activiti.engine.impl.persistence.entity.ResourceEntity">
+  <insert id="insertResource" parameterType="org.activiti5.engine.impl.persistence.entity.ResourceEntity">
     insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_, GENERATED_)
     values (#{id, jdbcType=VARCHAR}, 1, #{name, jdbcType=VARCHAR}, #{bytes, jdbcType=BLOB}, #{deploymentId, jdbcType=VARCHAR}, #{generated, jdbcType=BOOLEAN})  
   </insert>
@@ -21,7 +21,7 @@
   
   <!-- RESOURCE RESULTMAP -->
 
-  <resultMap id="resourceResultMap" type="org.activiti.engine.impl.persistence.entity.ResourceEntity">
+  <resultMap id="resourceResultMap" type="org.activiti5.engine.impl.persistence.entity.ResourceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BLOB"/>
@@ -30,7 +30,7 @@
   
   <!-- RESOURCE SELECT -->
 
-  <select id="selectResourceNamesByDeploymentId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
+  <select id="selectResourceNamesByDeploymentId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultType="string">
     select NAME_ from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
   </select>
   
@@ -40,12 +40,12 @@
           AND NAME_ = #{resourceName}
   </select>
 
-  <select id="selectResourcesByDeploymentId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="resourceResultMap">
+  <select id="selectResourcesByDeploymentId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="resourceResultMap">
     select * from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
   </select>  
 
   <!-- postgresql specific -->
-  <resultMap id="resourceResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.ResourceEntity">
+  <resultMap id="resourceResultMap_postgres" type="org.activiti5.engine.impl.persistence.entity.ResourceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
     <result property="bytes" column="BYTES_" jdbcType="BINARY"/>
@@ -60,7 +60,7 @@
   </select>
   
   <!-- postgresql specific -->
-  <select id="selectResourcesByDeploymentId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="resourceResultMap_postgres">
+  <select id="selectResourcesByDeploymentId_postgres" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="resourceResultMap_postgres">
     select * from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{parameter} order by NAME_ asc
   </select>  
   

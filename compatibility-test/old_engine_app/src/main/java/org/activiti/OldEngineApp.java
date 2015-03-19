@@ -20,7 +20,7 @@ import org.activiti.engine.RuntimeService;
 /**
  * @author Joram Barrez
  */
-public class Main {
+public class OldEngineApp {
 	
 	public static void main(String[] args) {
 	    

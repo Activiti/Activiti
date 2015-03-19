@@ -16,11 +16,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
   
   <!-- HISTORIC TASK INSTANCE INSERT -->
   
-  <insert id="insertHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
+  <insert id="insertHistoricTaskInstance" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
       insert into ${prefix}ACT_HI_TASKINST (
         ID_,
         PROC_DEF_ID_,
@@ -68,7 +68,7 @@
 
   <!-- HISTORIC TASK INSTANCE UPDATE -->
   
-  <update id="updateHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
+  <update id="updateHistoricTaskInstance" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
     update ${prefix}ACT_HI_TASKINST set
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       NAME_ = #{name, jdbcType=VARCHAR},
@@ -90,7 +90,7 @@
 
   <!-- HISTORIC TASK INSTANCE DELETE -->
   
-  <delete id="deleteHistoricTaskInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
+  <delete id="deleteHistoricTaskInstance" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
     delete from ${prefix}ACT_HI_TASKINST where ID_ = #{id}
   </delete>
   
@@ -103,7 +103,7 @@
   
   <!-- HISTORIC TASK INSTANCE RESULT MAP -->
 
-  <resultMap id="historicTaskInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
+  <resultMap id="historicTaskInstanceResultMap" type="org.activiti5.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -126,7 +126,7 @@
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <resultMap id="historicTaskInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
+  <resultMap id="historicTaskInstanceAndVariablesResultMap" type="org.activiti5.engine.impl.persistence.entity.HistoricTaskInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -147,10 +147,10 @@
     <result property="dueDate" column="DUE_DATE_" jdbcType="TIMESTAMP" />
     <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
+    <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti5.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
-      <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="variableType" column="VAR_TYPE_" javaType="org.activiti5.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
       <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
       <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
       <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
@@ -169,13 +169,13 @@
     select * from ${prefix}ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
   </select>
   
-  <select id="selectHistoricTaskInstanceIdsByProcessInstanceId" resultType="string" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" >
+  <select id="selectHistoricTaskInstanceIdsByProcessInstanceId" resultType="string" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" >
     select ID_ 
     from ${prefix}ACT_HI_TASKINST 
     where PROC_INST_ID_ = #{parameter}
   </select>
 
-  <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
+  <select id="selectHistoricTaskInstancesByQueryCriteria" parameterType="org.activiti5.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceResultMap">
   	${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
@@ -183,7 +183,7 @@
     ${limitAfter}
   </select>
   
-  <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
+  <select id="selectHistoricTaskInstanceCountByQueryCriteria" parameterType="org.activiti5.engine.impl.HistoricTaskInstanceQueryImpl" resultType="long">
     select count(RES.ID_)
     <include refid="selectHistoricTaskInstancesByQueryCriteriaSql"/>
   </select>
@@ -193,7 +193,7 @@
     <include refid="commonSelectHistoricTaskInstancesByQueryCriteriaSql"/>
   </sql>
   
-  <select id="selectHistoricTaskInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceAndVariablesResultMap">
+  <select id="selectHistoricTaskInstancesWithVariablesByQueryCriteria" parameterType="org.activiti5.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceAndVariablesResultMap">
     ${limitBefore}
     select distinct RES.*,
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.VAR_TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
@@ -206,7 +206,7 @@
     ${limitAfter}
   </select>
   
-  <select id="selectHistoricTaskInstancesWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceAndVariablesResultMap">
+  <select id="selectHistoricTaskInstancesWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti5.engine.impl.HistoricTaskInstanceQueryImpl" resultMap="historicTaskInstanceAndVariablesResultMap">
     ${limitBefore}
     select distinct TEMPRES_ID_ as ID_,
     TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_, TEMPRES_PROC_INST_ID_ as PROC_INST_ID_, TEMPRES_EXECUTION_ID_ as EXECUTION_ID_,

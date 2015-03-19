@@ -15,20 +15,34 @@ package org.activiti5.engine.impl.compatibility;
 import java.util.Map;
 
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti5.engine.ProcessEngine;
 
 /**
  * @author Joram Barrez
  */
 public class Activiti5CompatibilityHandlerImpl implements Activiti5CompatibilityHandler {
 	
+	protected ProcessEngine processEngine;
+	
 	@Override
 	public ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, 
 			Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName) {
-		System.out.println("BOO!");
-		System.out.println();
-		System.out.println("This was Activiti 5!");
-		return null;
+		
+		return getProcessEngine().getRuntimeService().startProcessInstanceByKey(processDefinitionKey);
+		
+	}
+	
+	protected ProcessEngine getProcessEngine() {
+		if (processEngine == null) {
+			synchronized (this) {
+	            if (processEngine == null) {
+	            	processEngine = ProcessEngineFactory.buildProcessEngine(Context.getProcessEngineConfiguration());
+	            }
+            }
+		}
+		return processEngine;
 	}
 
 }

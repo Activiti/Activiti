@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.ByteArrayEntity">
 
   <!-- BYTE ARRAY INSERT -->
 
-  <insert id="insertByteArray" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+  <insert id="insertByteArray" parameterType="org.activiti5.engine.impl.persistence.entity.ByteArrayEntity">
     insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (
       #{id, jdbcType=VARCHAR},
@@ -19,7 +19,7 @@
   
   <!-- BYTE ARRAY UPDATE -->
 
-  <update id="updateByteArray" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+  <update id="updateByteArray" parameterType="org.activiti5.engine.impl.persistence.entity.ByteArrayEntity">
     update ${prefix}ACT_GE_BYTEARRAY 
     set
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -34,11 +34,11 @@
     select BYTES_ from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id} and REV_ = #{revision}
   </select>
   
-  <delete id="deleteByteArraysForDeployment" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+  <delete id="deleteByteArraysForDeployment" parameterType="org.activiti5.engine.impl.persistence.entity.ByteArrayEntity">
     delete from ${prefix}ACT_GE_BYTEARRAY where DEPLOYMENT_ID_ = #{id} and REV_ = #{revision}
   </delete>
   
-  <delete id="deleteByteArray" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+  <delete id="deleteByteArray" parameterType="org.activiti5.engine.impl.persistence.entity.ByteArrayEntity">
     delete from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -48,7 +48,7 @@
 
   <!-- BYTE ARRAY RESULTMAP -->
   
-  <resultMap id="byteArrayResultMap" type="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+  <resultMap id="byteArrayResultMap" type="org.activiti5.engine.impl.persistence.entity.ByteArrayEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
@@ -62,7 +62,7 @@
   </select>
   
 <!-- Postgresql specific configuration -->
-  <resultMap id="byteArrayResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+  <resultMap id="byteArrayResultMap_postgres" type="org.activiti5.engine.impl.persistence.entity.ByteArrayEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="name" column="NAME_" jdbcType="VARCHAR"/>
@@ -73,7 +73,7 @@
    select * from ${prefix}ACT_GE_BYTEARRAY where ID_ = #{id}
   </select>
 
-  <update id="updateByteArray_postgres" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+  <update id="updateByteArray_postgres" parameterType="org.activiti5.engine.impl.persistence.entity.ByteArrayEntity">
     update ${prefix}ACT_GE_BYTEARRAY 
     set
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -82,7 +82,7 @@
       and REV_ = #{revision, jdbcType=INTEGER}
   </update>  
   
-    <insert id="insertByteArray_postgres" parameterType="org.activiti.engine.impl.persistence.entity.ByteArrayEntity">
+    <insert id="insertByteArray_postgres" parameterType="org.activiti5.engine.impl.persistence.entity.ByteArrayEntity">
     insert into ${prefix}ACT_GE_BYTEARRAY(ID_, REV_, NAME_, BYTES_, DEPLOYMENT_ID_)
     values (
       #{id, jdbcType=VARCHAR},

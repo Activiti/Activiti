@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity">
   
   <!-- INFO INSERT -->
 
-  <insert id="insertIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+  <insert id="insertIdentityInfo" parameterType="org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity">
     insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -20,7 +20,7 @@
     )
   </insert>
   
-   <insert id="insertIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+   <insert id="insertIdentityInfo_postgres" parameterType="org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity">
     insert into ${prefix}ACT_ID_INFO (ID_, REV_, USER_ID_, TYPE_, KEY_, VALUE_, PASSWORD_, PARENT_ID_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -35,7 +35,7 @@
   </insert>
   
   <!-- INFO UPDATE -->
-  <update id="updateIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+  <update id="updateIdentityInfo" parameterType="org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity">
     update ${prefix}ACT_ID_INFO 
     set REV_ = #{revisionNext ,jdbcType=INTEGER},
         VALUE_ = #{value ,jdbcType=VARCHAR},
@@ -44,7 +44,7 @@
       and REV_ = #{revision}
   </update>
   
-  <update id="updateIdentityInfo_postgres" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+  <update id="updateIdentityInfo_postgres" parameterType="org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity">
     update ${prefix}ACT_ID_INFO 
     set REV_ = #{revisionNext ,jdbcType=INTEGER},
         VALUE_ = #{value ,jdbcType=VARCHAR},
@@ -55,14 +55,14 @@
   
   <!-- INFO DELETE -->
 
-  <delete id="deleteIdentityInfo" parameterType="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+  <delete id="deleteIdentityInfo" parameterType="org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity">
     delete from ${prefix}ACT_ID_INFO 
     where ID_ = #{id} and REV_ = #{revision}
   </delete>
 
   <!-- INFO RESULTMAP -->
 
-  <resultMap id="identityInfoResultMap" type="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+  <resultMap id="identityInfoResultMap" type="org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
@@ -73,7 +73,7 @@
     <result property="parentId" column="PARENT_ID_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <resultMap id="identityInfoResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.IdentityInfoEntity">
+  <resultMap id="identityInfoResultMap_postgres" type="org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />

@@ -16,11 +16,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.AttachmentEntity">
 
   <!-- ATTACHMENT INSERT -->
 
-  <insert id="insertAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+  <insert id="insertAttachment" parameterType="org.activiti5.engine.impl.persistence.entity.AttachmentEntity">
     insert into ${prefix}ACT_HI_ATTACHMENT (ID_, REV_, USER_ID_, NAME_, DESCRIPTION_, TYPE_, TASK_ID_, PROC_INST_ID_, URL_, CONTENT_ID_, TIME_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -39,7 +39,7 @@
 
   <!-- ATTACHMENT UPDATE -->
 
-  <update id="updateAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+  <update id="updateAttachment" parameterType="org.activiti5.engine.impl.persistence.entity.AttachmentEntity">
     update ${prefix}ACT_HI_ATTACHMENT 
     set
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -51,14 +51,14 @@
 
   <!-- ATTACHMENT DELETE -->
 
-  <delete id="deleteAttachment" parameterType="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+  <delete id="deleteAttachment" parameterType="org.activiti5.engine.impl.persistence.entity.AttachmentEntity">
     delete from ${prefix}ACT_HI_ATTACHMENT 
     where ID_ = #{id} and REV_ = #{revision} 
   </delete>
   
   <!-- ATTACHMENT RESULTMAP -->
 
-  <resultMap id="attachmentResultMap" type="org.activiti.engine.impl.persistence.entity.AttachmentEntity">
+  <resultMap id="attachmentResultMap" type="org.activiti5.engine.impl.persistence.entity.AttachmentEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
@@ -80,14 +80,14 @@
     where ID_ = #{id,jdbcType=VARCHAR}
   </select>
   
-  <select id="selectAttachmentsByTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
+  <select id="selectAttachmentsByTaskId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
     select *
     from ${prefix}ACT_HI_ATTACHMENT
     where TASK_ID_ = #{parameter,jdbcType=VARCHAR}
     order by TIME_ desc
   </select>
   
-  <select id="selectAttachmentsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
+  <select id="selectAttachmentsByProcessInstanceId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="attachmentResultMap">
     select *
     from ${prefix}ACT_HI_ATTACHMENT
     where PROC_INST_ID_ = #{parameter,jdbcType=VARCHAR}

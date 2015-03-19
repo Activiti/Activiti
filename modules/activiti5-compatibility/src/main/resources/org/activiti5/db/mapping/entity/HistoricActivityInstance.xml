@@ -16,11 +16,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
 
   <!-- HISTORIC ACTIVITY INSTANCE INSERT -->
   
-  <insert id="insertHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
+  <insert id="insertHistoricActivityInstance" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
       insert into ${prefix}ACT_HI_ACTINST (
         ID_,
         PROC_DEF_ID_,
@@ -56,7 +56,7 @@
 
   <!-- HISTORIC ACTIVITY INSTANCE UPDATE -->
   
-  <update id="updateHistoricActivityInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
+  <update id="updateHistoricActivityInstance" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
     update ${prefix}ACT_HI_ACTINST set
       EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR},
       ASSIGNEE_ = #{assignee, jdbcType=VARCHAR},
@@ -73,7 +73,7 @@
   
   <!-- HISTORIC ACTIVITY INSTANCE RESULT MAP -->
 
-  <resultMap id="historicActivityInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
+  <resultMap id="historicActivityInstanceResultMap" type="org.activiti5.engine.impl.persistence.entity.HistoricActivityInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -96,7 +96,7 @@
     select * from ${prefix}ACT_HI_ACTINST where ACT_ID_ = #{activityId} and PROC_INST_ID_ = #{processInstanceId}
   </select>
 
-  <select id="selectHistoricActivityInstancesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultMap="historicActivityInstanceResultMap">
+  <select id="selectHistoricActivityInstancesByQueryCriteria" parameterType="org.activiti5.engine.impl.HistoricActivityInstanceQueryImpl" resultMap="historicActivityInstanceResultMap">
     ${limitBefore}
     select RES.* ${limitBetween}
     <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
@@ -104,7 +104,7 @@
     ${limitAfter}
   </select>
   
-  <select id="selectHistoricActivityInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricActivityInstanceQueryImpl" resultType="long">
+  <select id="selectHistoricActivityInstanceCountByQueryCriteria" parameterType="org.activiti5.engine.impl.HistoricActivityInstanceQueryImpl" resultType="long">
     select count(RES.ID_)
     <include refid="selectHistoricActivityInstancesByQueryCriteriaSql"/>
   </select>

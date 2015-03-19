@@ -17,11 +17,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.TaskEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.TaskEntity">
 
   <!-- TASK INSERT -->
   
-  <insert id="insertTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <insert id="insertTask" parameterType="org.activiti5.engine.impl.persistence.entity.TaskEntity">
     insert into ${prefix}ACT_RU_TASK (ID_, REV_, NAME_, PARENT_TASK_ID_, DESCRIPTION_, PRIORITY_, CREATE_TIME_, OWNER_,
                       ASSIGNEE_, DELEGATION_, EXECUTION_ID_, PROC_INST_ID_, PROC_DEF_ID_, TASK_DEF_KEY_, DUE_DATE_, CATEGORY_, SUSPENSION_STATE_, TENANT_ID_, FORM_KEY_)
     values (#{id, jdbcType=VARCHAR},
@@ -48,7 +48,7 @@
   
   <!-- TASK UPDATE -->
   
-  <update id="updateTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <update id="updateTask" parameterType="org.activiti5.engine.impl.persistence.entity.TaskEntity">
     update ${prefix}ACT_RU_TASK
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -105,7 +105,7 @@
   </update>
   
   <!-- TASK DELETE -->
-  <delete id="deleteTask" parameterType="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <delete id="deleteTask" parameterType="org.activiti5.engine.impl.persistence.entity.TaskEntity">
     delete from ${prefix}ACT_RU_TASK where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -118,7 +118,7 @@
   
   <!-- TASK RESULTMAP -->
   
-  <resultMap id="taskResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <resultMap id="taskResultMap" type="org.activiti5.engine.impl.persistence.entity.TaskEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="nameWithoutCascade" column="NAME_" jdbcType="VARCHAR"/>
@@ -140,7 +140,7 @@
     <result property="formKeyWithoutCascade" column="FORM_KEY_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <resultMap id="taskAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntity">
+  <resultMap id="taskAndVariablesResultMap" type="org.activiti5.engine.impl.persistence.entity.TaskEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR"/>
     <result property="revision" column="REV_" jdbcType="INTEGER"/>
     <result property="nameWithoutCascade" column="NAME_" jdbcType="VARCHAR"/>
@@ -160,10 +160,10 @@
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="formKeyWithoutCascade" column="FORM_KEY_" jdbcType="VARCHAR" />
-    <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+    <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
-      <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="type" column="VAR_TYPE_" javaType="org.activiti5.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
       <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
       <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
       <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
@@ -182,24 +182,24 @@
    select * from ${prefix}ACT_RU_TASK where ID_ = #{id}
   </select>
   
-  <select id="selectTasksByParentTaskId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
+  <select id="selectTasksByParentTaskId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
     select * from ${prefix}ACT_RU_TASK where PARENT_TASK_ID_ = #{parameter}
   </select>
 
-  <select id="selectTasksByExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
+  <select id="selectTasksByExecutionId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
     select distinct T.*
     from ${prefix}ACT_RU_TASK T
     where T.EXECUTION_ID_ = #{parameter}
   </select>
   
-  <select id="selectTasksByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
+  <select id="selectTasksByProcessInstanceId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="taskResultMap">
     select T.*
     from ${prefix}ACT_RU_TASK T
     where T.PROC_INST_ID_ = #{parameter}
   </select>
   
   <!-- Using distinct here because a task can appear multiple times in a resultset when -->
-  <select id="selectTaskByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
+  <select id="selectTaskByQueryCriteria" parameterType="org.activiti5.engine.impl.TaskQueryImpl" resultMap="taskResultMap">
     ${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectTaskByQueryCriteriaSql"/> 
@@ -207,7 +207,7 @@
     ${limitAfter}
   </select>
 
-  <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultType="long">
+  <select id="selectTaskCountByQueryCriteria" parameterType="org.activiti5.engine.impl.TaskQueryImpl" resultType="long">
     select count(distinct RES.ID_)
     <include refid="selectTaskByQueryCriteriaSql"/>
   </select>
@@ -217,7 +217,7 @@
     <include refid="commonSelectTaskByQueryCriteriaSql"/>
   </sql>
   
-  <select id="selectTaskWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
+  <select id="selectTaskWithVariablesByQueryCriteria" parameterType="org.activiti5.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
     ${limitBefore}
     select RES.*,
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
@@ -230,7 +230,7 @@
     ${limitAfter}
   </select>
   
-  <select id="selectTaskWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
+  <select id="selectTaskWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti5.engine.impl.TaskQueryImpl" resultMap="taskAndVariablesResultMap">
     ${limitBefore}
     select distinct TEMPRES_ID_ as ID_, TEMPRES_REV_ as REV_, TEMPRES_NAME_ as NAME_,
     TEMPRES_PARENT_TASK_ID_ as PARENT_TASK_ID_, TEMPRES_DESCRIPTION_ as DESCRIPTION_,

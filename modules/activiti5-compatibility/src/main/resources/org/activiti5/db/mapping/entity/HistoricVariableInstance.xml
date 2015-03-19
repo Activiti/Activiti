@@ -16,11 +16,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
 
   <!-- HISTORIC PROCESS VARIABLE INSERT -->
   
-  <insert id="insertHistoricVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
+  <insert id="insertHistoricVariableInstance" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
     insert into ${prefix}ACT_HI_VARINST (ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, NAME_, REV_, VAR_TYPE_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_, CREATE_TIME_, LAST_UPDATED_TIME_)
     values (
       #{id, jdbcType=VARCHAR},
@@ -42,7 +42,7 @@
 
   <!-- HISTORIC PROCESS VARIABLE UPDATE -->
   
-  <update id="updateHistoricVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
+  <update id="updateHistoricVariableInstance" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
     update ${prefix}ACT_HI_VARINST set
       REV_ = #{revisionNext, jdbcType=INTEGER},
       BYTEARRAY_ID_ = #{byteArrayRef, typeHandler=ByteArrayRefTypeHandler},
@@ -58,7 +58,7 @@
   
   <!-- HISTORIC PROCESS VARIABLE DELETE -->
 
-  <delete id="deleteHistoricVariableInstance" parameterType="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
+  <delete id="deleteHistoricVariableInstance" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
     delete from ${prefix}ACT_HI_VARINST where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
@@ -70,14 +70,14 @@
   </delete>
   
   <!-- HISTORIC PROCESS VARIABLE RESULTMAP -->
-  <resultMap id="historicProcessVariableResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
+  <resultMap id="historicProcessVariableResultMap" type="org.activiti5.engine.impl.persistence.entity.HistoricVariableInstanceEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="executionId" column="EXECUTION_ID_" jdbcType="VARCHAR" />
     <result property="taskId" column="TASK_ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" javaType="String" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
-    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
+    <result property="variableType" column="VAR_TYPE_" javaType="org.activiti5.engine.impl.variable.VariableType" jdbcType="VARCHAR"/>
     <result property="byteArrayRef" column="BYTEARRAY_ID_" typeHandler="ByteArrayRefTypeHandler"/>
     <result property="doubleValue" column="DOUBLE_" jdbcType="DOUBLE" />
     <result property="textValue" column="TEXT_" jdbcType="VARCHAR" />
@@ -89,7 +89,7 @@
   
   <!-- HISTORIC VARIABLE SELECT -->
 
-  <select id="selectHistoricVariableInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricVariableInstanceQueryImpl" resultMap="historicProcessVariableResultMap">
+  <select id="selectHistoricVariableInstanceByQueryCriteria" parameterType="org.activiti5.engine.impl.HistoricVariableInstanceQueryImpl" resultMap="historicProcessVariableResultMap">
   	${limitBefore}
     select RES.* ${limitBetween}
     <include refid="selectHistoricVariableInstanceByQueryCriteriaSql"/>
@@ -97,7 +97,7 @@
     ${limitAfter}
   </select>
   
-  <select id="selectHistoricVariableInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricVariableInstanceQueryImpl" resultType="long">
+  <select id="selectHistoricVariableInstanceCountByQueryCriteria" parameterType="org.activiti5.engine.impl.HistoricVariableInstanceQueryImpl" resultType="long">
     select count(RES.ID_)
     <include refid="selectHistoricVariableInstanceByQueryCriteriaSql"/>
   </select>

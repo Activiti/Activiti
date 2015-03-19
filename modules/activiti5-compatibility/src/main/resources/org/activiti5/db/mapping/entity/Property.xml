@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.PropertyEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.PropertyEntity">
 
   <!-- PROPERTY INSERT -->
   
-  <insert id="insertProperty" parameterType="org.activiti.engine.impl.persistence.entity.PropertyEntity">
+  <insert id="insertProperty" parameterType="org.activiti5.engine.impl.persistence.entity.PropertyEntity">
       insert into ${prefix}ACT_GE_PROPERTY (
         NAME_,
         VALUE_,
@@ -20,7 +20,7 @@
 
   <!-- PROPERTY UPDATE -->
   
-  <update id="updateProperty" parameterType="org.activiti.engine.impl.persistence.entity.PropertyEntity">
+  <update id="updateProperty" parameterType="org.activiti5.engine.impl.persistence.entity.PropertyEntity">
     update ${prefix}ACT_GE_PROPERTY
     <set>
       REV_ = #{revisionNext, jdbcType=INTEGER},
@@ -32,14 +32,14 @@
 
   <!-- PROPERTY DELETE -->
   
-  <delete id="deleteProperty" parameterType="org.activiti.engine.impl.persistence.entity.PropertyEntity">
+  <delete id="deleteProperty" parameterType="org.activiti5.engine.impl.persistence.entity.PropertyEntity">
     delete from ${prefix}ACT_GE_PROPERTY where NAME_ = #{propertyName} and REV_ = #{revision}
   </delete>
 
 
   <!-- PROPERTY SELECT -->
   
-  <resultMap id="propertyResultMap" type="org.activiti.engine.impl.persistence.entity.PropertyEntity">
+  <resultMap id="propertyResultMap" type="org.activiti5.engine.impl.persistence.entity.PropertyEntity">
     <id property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="value" column="VALUE_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />

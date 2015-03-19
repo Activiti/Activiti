@@ -16,11 +16,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.HistoricIdentityLinkEntity">
   
    <!-- INSERT HISTORIC IDENTITY LINK -->
   
-  <insert id="insertHistoricIdentityLink" parameterType="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity">
+  <insert id="insertHistoricIdentityLink" parameterType="org.activiti5.engine.impl.persistence.entity.HistoricIdentityLinkEntity">
     insert into ${prefix}ACT_HI_IDENTITYLINK (ID_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_)
     values (#{id, jdbcType=VARCHAR},
             #{type, jdbcType=VARCHAR},
@@ -45,7 +45,7 @@
   
   <!-- HISTORIC IDENTITY LINK RESULTMAP -->
 
-  <resultMap id="historicIdentityLinkResultMap" type="org.activiti.engine.impl.persistence.entity.HistoricIdentityLinkEntity">
+  <resultMap id="historicIdentityLinkResultMap" type="org.activiti5.engine.impl.persistence.entity.HistoricIdentityLinkEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR" />
     <result property="userId" column="USER_ID_" jdbcType="VARCHAR" />
@@ -60,11 +60,11 @@
     select * from ${prefix}ACT_HI_IDENTITYLINK where ID_ = #{id}
   </select>
   
-  <select id="selectHistoricIdentityLinksByTask" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
+  <select id="selectHistoricIdentityLinksByTask" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
     select * from ${prefix}ACT_HI_IDENTITYLINK where TASK_ID_ = #{parameter}
   </select>
   
-  <select id="selectHistoricIdentityLinksByProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
+  <select id="selectHistoricIdentityLinksByProcessInstance" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
     select * from ${prefix}ACT_HI_IDENTITYLINK where PROC_INST_ID_ = #{parameter}
   </select>
   
@@ -72,7 +72,7 @@
     select * from ${prefix}ACT_HI_IDENTITYLINK
   </select>
   
-  <select id="selectHistoricIdentityLinkByTaskUserGroupAndType" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
+  <select id="selectHistoricIdentityLinkByTaskUserGroupAndType" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="historicIdentityLinkResultMap">
     select * 
     from ${prefix}ACT_HI_IDENTITYLINK 
     where TASK_ID_ = #{parameter.taskId}

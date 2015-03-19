@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.activiti.engine.impl.persistence.entity.EvenLogEntryEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.EvenLogEntryEntity">
 
   <!-- INSERT -->
 
-  <insert id="insertEventLogEntry" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+  <insert id="insertEventLogEntry" parameterType="org.activiti5.engine.impl.persistence.entity.EventLogEntryEntity">
     insert into ${prefix}ACT_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
     values (
       #{type, jdbcType=VARCHAR}, 
@@ -23,7 +23,7 @@
     )  
   </insert>
   
-    <insert id="insertEventLogEntry_postgres" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+    <insert id="insertEventLogEntry_postgres" parameterType="org.activiti5.engine.impl.persistence.entity.EventLogEntryEntity">
     insert into ${prefix}ACT_EVT_LOG(TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
     values (
       #{type, jdbcType=VARCHAR}, 
@@ -40,7 +40,7 @@
     )  
   </insert>
   
-  <insert id="insertEventLogEntry_oracle" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+  <insert id="insertEventLogEntry_oracle" parameterType="org.activiti5.engine.impl.persistence.entity.EventLogEntryEntity">
     insert into ${prefix}ACT_EVT_LOG(LOG_NR_, TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
     values (
       ${prefix}ACT_EVT_LOG_seq.nextVal,
@@ -60,7 +60,7 @@
   
   <!-- RESULTMAP -->
   
-  <resultMap id="eventLogEntryResultMap" type="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+  <resultMap id="eventLogEntryResultMap" type="org.activiti5.engine.impl.persistence.entity.EventLogEntryEntity">
     <id property="logNumber" column="LOG_NR_" jdbcType="BIGINT" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR"/>
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
@@ -75,7 +75,7 @@
     <result property="isProcessed" column="IS_PROCESSED_" jdbcType="INTEGER"/>
   </resultMap>
   
-  <resultMap id="eventLogEntryResultMap_postgres" type="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
+  <resultMap id="eventLogEntryResultMap_postgres" type="org.activiti5.engine.impl.persistence.entity.EventLogEntryEntity">
     <id property="logNumber" column="LOG_NR_" jdbcType="BIGINT" />
     <result property="type" column="TYPE_" jdbcType="VARCHAR"/>
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR"/>
@@ -100,27 +100,27 @@
     select * from ${prefix}ACT_EVT_LOG ORDER BY LOG_NR_
   </select>
   
-  <select id="selectEventLogEntries" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
+  <select id="selectEventLogEntries" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
     select * from ${prefix}ACT_EVT_LOG 
     WHERE LOG_NR_ &gt; #{parameter.startLogNr}
     AND LOG_NR_ &lt; #{parameter.endLogNr}
     ORDER BY LOG_NR_ 
   </select>
   
-  <select id="selectEventLogEntries_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap_postgres">
+  <select id="selectEventLogEntries_postgres" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap_postgres">
     select * from ${prefix}ACT_EVT_LOG 
     WHERE LOG_NR_ &gt; #{parameter.startLogNr}
     AND LOG_NR_ &lt; #{parameter.endLogNr}
     ORDER BY LOG_NR_ 
   </select>
   
-  <select id="selectEventLogEntriesByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
+  <select id="selectEventLogEntriesByProcessInstanceId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap">
     select * from ${prefix}ACT_EVT_LOG 
     WHERE PROC_INST_ID_ = #{parameter.processInstanceId}
     ORDER BY LOG_NR_ 
   </select>
   
-  <select id="selectEventLogEntriesByProcessInstanceId_postgres" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap_postgres">
+  <select id="selectEventLogEntriesByProcessInstanceId_postgres" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="eventLogEntryResultMap_postgres">
     select * from ${prefix}ACT_EVT_LOG 
     WHERE PROC_INST_ID_ = #{parameter.processInstanceId}
     ORDER BY LOG_NR_ 

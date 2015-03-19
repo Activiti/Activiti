@@ -2,11 +2,11 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
   
-<mapper namespace="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+<mapper namespace="org.activiti5.engine.impl.persistence.entity.ExecutionEntity">
 
   <!-- EXECUTION INSERT -->
 
-  <insert id="insertExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+  <insert id="insertExecution" parameterType="org.activiti5.engine.impl.persistence.entity.ExecutionEntity">
     insert into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_, IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_)
     values (
       #{id ,jdbcType=VARCHAR},
@@ -30,7 +30,7 @@
 
   <!-- EXECUTION UPDATE -->
   
-  <update id="updateExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+  <update id="updateExecution" parameterType="org.activiti5.engine.impl.persistence.entity.ExecutionEntity">
     update ${prefix}ACT_RU_EXECUTION set
       REV_ = #{revisionNext, jdbcType=INTEGER},
       BUSINESS_KEY_ = #{businessKey, jdbcType=VARCHAR},
@@ -100,13 +100,13 @@
   
   <!-- EXECUTION DELETE -->
   
-  <delete id="deleteExecution" parameterType="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+  <delete id="deleteExecution" parameterType="org.activiti5.engine.impl.persistence.entity.ExecutionEntity">
     delete from ${prefix}ACT_RU_EXECUTION where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
   <!-- EXECUTION RESULTMAP -->
   
-  <resultMap id="executionResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+  <resultMap id="executionResultMap" type="org.activiti5.engine.impl.persistence.entity.ExecutionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -125,7 +125,7 @@
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
   </resultMap>
   
-  <resultMap id="processInstanceResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+  <resultMap id="processInstanceResultMap" type="org.activiti5.engine.impl.persistence.entity.ExecutionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -152,7 +152,7 @@
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
   </resultMap>
   
-  <resultMap id="executionAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+  <resultMap id="executionAndVariablesResultMap" type="org.activiti5.engine.impl.persistence.entity.ExecutionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -169,10 +169,10 @@
     <result property="cachedEntityState" column="CACHED_ENT_STATE_" jdbcType="INTEGER"/>
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
-    <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+    <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
-      <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="type" column="VAR_TYPE_" javaType="org.activiti5.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
       <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
       <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
       <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
@@ -185,7 +185,7 @@
     </collection>
   </resultMap>
   
-  <resultMap id="processInstanceAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
+  <resultMap id="processInstanceAndVariablesResultMap" type="org.activiti5.engine.impl.persistence.entity.ExecutionEntity">
     <id property="id" column="ID_" jdbcType="VARCHAR" />
     <result property="revision" column="REV_" jdbcType="INTEGER" />
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
@@ -207,10 +207,10 @@
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="name" column="NAME_" jdbcType="VARCHAR" />
     <result property="lockTime" column="LOCK_TIME_" jdbcType="TIMESTAMP" />
-    <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
+    <collection property="queryVariables" column="EXECUTION_ID_" javaType="ArrayList" ofType="org.activiti5.engine.impl.persistence.entity.VariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
-      <result property="type" column="VAR_TYPE_" javaType="org.activiti.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
+      <result property="type" column="VAR_TYPE_" javaType="org.activiti5.engine.impl.variable.VariableType" jdbcType="VARCHAR" />
       <result property="revision" column="VAR_REV_" jdbcType="INTEGER" />
       <result property="processInstanceId" column="VAR_PROC_INST_ID_" jdbcType="VARCHAR" />
       <result property="executionId" column="VAR_EXECUTION_ID_" jdbcType="VARCHAR" />
@@ -229,23 +229,23 @@
     select * from ${prefix}ACT_RU_EXECUTION where ID_ = #{id}
   </select>
   
-  <select id="selectExecutionsByParentExecutionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
+  <select id="selectExecutionsByParentExecutionId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     select * from ${prefix}ACT_RU_EXECUTION
     where PARENT_ID_ = #{parameter}
   </select>
   
-  <select id="selectExecutionsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
+  <select id="selectExecutionsByProcessInstanceId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     select * from ${prefix}ACT_RU_EXECUTION
     where PROC_INST_ID_ = #{parameter}
   </select>
   
-  <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">
+  <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti5.engine.impl.db.ListQueryParameterObject" resultType="string">
     select ID_
     from ${prefix}ACT_RU_EXECUTION
     where PROC_DEF_ID_ = #{parameter} and PARENT_ID_ is null
   </select>
   
-  <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
+  <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti5.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
     select distinct RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId
     <include refid="selectExecutionsByQueryCriteriaSql"/>
@@ -253,13 +253,13 @@
     ${limitAfter}
   </select>
   
-  <select id="selectExecutionCountByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultType="long">
+  <select id="selectExecutionCountByQueryCriteria" parameterType="org.activiti5.engine.impl.ExecutionQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>
   
   <!--  same as selectExecutionsByQueryCriteria, but with different parameterType -->
-  <select id="selectProcessInstanceByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceResultMap">
+  <select id="selectProcessInstanceByQueryCriteria" parameterType="org.activiti5.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceResultMap">
   	${limitBefore}
     select distinct RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId
     <include refid="selectExecutionsByQueryCriteriaSql"/>
@@ -267,7 +267,7 @@
     ${limitAfter}
   </select>
   
-  <select id="selectProcessInstanceCountByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultType="long">
+  <select id="selectProcessInstanceCountByQueryCriteria" parameterType="org.activiti5.engine.impl.ProcessInstanceQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectExecutionsByQueryCriteriaSql"/>
   </select>
@@ -278,7 +278,7 @@
     <include refid="commonSelectExecutionsByQueryCriteriaSql"/>
   </sql>
   
-  <select id="selectProcessInstanceWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceAndVariablesResultMap">
+  <select id="selectProcessInstanceWithVariablesByQueryCriteria" parameterType="org.activiti5.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceAndVariablesResultMap">
     ${limitBefore}
     select distinct RES.*, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId, P.NAME_ as ProcessDefinitionName, P.VERSION_ as ProcessDefinitionVersion, P.DEPLOYMENT_ID_ as DeploymentId, 
     VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
@@ -291,7 +291,7 @@
     ${limitAfter}
   </select>
   
-  <select id="selectProcessInstanceWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceAndVariablesResultMap">
+  <select id="selectProcessInstanceWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti5.engine.impl.ProcessInstanceQueryImpl" resultMap="processInstanceAndVariablesResultMap">
     ${limitBefore}
     select distinct TEMPRES_ID_ as ID_, TEMPP_KEY_ as ProcessDefinitionKey, TEMPP_ID_ as ProcessDefinitionId, TEMPP_NAME_ as ProcessDefinitionName, TEMPP_VERSION_ as ProcessDefinitionVersion, TEMPP_DEPLOYMENT_ID_ as DeploymentId, 
     TEMPRES_REV_ as REV_, TEMPRES_ACT_ID_ as ACT_ID_,
