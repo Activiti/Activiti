@@ -21,7 +21,7 @@ import org.activiti.management.jmx.annotations.ManagedResource;
 /**
  * @author Saeid Mirzaei
  */
-@ManagedResource(description = "Process definition MBean")
+@ManagedResource(description = "Job executor MBean")
 public class JobExecutorMBean {
 
   JobExecutor jobExecutor;
@@ -34,7 +34,7 @@ public class JobExecutorMBean {
 
   @ManagedAttribute(description = "check if the job executor is activated")
   public boolean isJobExecutorActivated() {
-    return jobExecutor == null || jobExecutor.isActive();
+    return jobExecutor != null && jobExecutor.isActive();
   }
 
   @ManagedOperation(description = "set job executor activate")

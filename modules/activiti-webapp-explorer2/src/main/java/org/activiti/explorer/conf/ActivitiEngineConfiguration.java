@@ -21,6 +21,7 @@ import org.activiti.explorer.form.ProcessDefinitionFormType;
 import org.activiti.explorer.form.UserFormType;
 import org.activiti.spring.ProcessEngineFactoryBean;
 import org.activiti.spring.SpringProcessEngineConfiguration;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,6 +99,26 @@ public class ActivitiEngineConfiguration {
   	processEngineConfiguration.setAsyncExecutorActivate(Boolean.valueOf(
         environment.getProperty("engine.asyncexecutor.activate", "true")));
   	processEngineConfiguration.setHistory(environment.getProperty("engine.history.level", "full"));
+  	
+  	String mailEnabled = environment.getProperty("engine.email.enabled");
+  	if ("true".equals(mailEnabled)) {
+  	  processEngineConfiguration.setMailServerHost(environment.getProperty("engine.email.host"));
+  	  int emailPort = 1025;
+  	  String emailPortProperty = environment.getProperty("engine.email.port");
+  	  if (StringUtils.isNotEmpty(emailPortProperty)) {
+  	    emailPort = Integer.valueOf(emailPortProperty);
+  	  }
+  	  processEngineConfiguration.setMailServerPort(emailPort);
+  	  String emailUsernameProperty = environment.getProperty("engine.email.username");
+  	  if (StringUtils.isNotEmpty(emailUsernameProperty)) {
+  	    processEngineConfiguration.setMailServerUsername(emailUsernameProperty);
+  	  }
+  	  
+  	  String emailPasswordProperty = environment.getProperty("engine.email.password");
+      if (StringUtils.isNotEmpty(emailPasswordProperty)) {
+        processEngineConfiguration.setMailServerPassword(emailPasswordProperty);
+      }
+  	}
   	
   	List<AbstractFormType> formTypes = new ArrayList<AbstractFormType>();
   	formTypes.add(new UserFormType());

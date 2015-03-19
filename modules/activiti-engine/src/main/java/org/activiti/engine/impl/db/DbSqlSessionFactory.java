@@ -40,14 +40,21 @@ public class DbSqlSessionFactory implements SessionFactory {
   static {
     
     String defaultOrderBy = " order by ${orderBy} ";
-    
+
     // h2
     databaseSpecificLimitBeforeStatements.put("h2", "");
     databaseSpecificLimitAfterStatements.put("h2", "LIMIT #{maxResults} OFFSET #{firstResult}");
     databaseSpecificLimitBetweenStatements.put("h2", "");
     databaseOuterJoinLimitBetweenStatements.put("h2", "");
     databaseSpecificOrderByStatements.put("h2", defaultOrderBy);
-    
+
+    // hsql
+    databaseSpecificLimitBeforeStatements.put("hsql", "");
+    databaseSpecificLimitAfterStatements.put("hsql", "LIMIT #{maxResults} OFFSET #{firstResult}");
+    databaseSpecificLimitBetweenStatements.put("hsql", "");
+    databaseOuterJoinLimitBetweenStatements.put("hsql", "");
+    databaseSpecificOrderByStatements.put("hsql", defaultOrderBy);
+
 	  //mysql specific
     databaseSpecificLimitBeforeStatements.put("mysql", "");
     databaseSpecificLimitAfterStatements.put("mysql", "LIMIT #{maxResults} OFFSET #{firstResult}");

@@ -43,10 +43,7 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
     }
 
     // initialize the template-defined data objects as variables
-    Map<String, Object> dataObjectVars = ((ActivityImpl) activity).getVariables();
-    if (dataObjectVars != null) {
-      execution.setVariablesLocal(dataObjectVars);
-    }
+    initializeDataObjects(execution, activity);
 
     execution.executeActivity(initialActivity);
   }
@@ -63,4 +60,10 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
     bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
   }
 
+  protected void initializeDataObjects(ActivityExecution execution, PvmActivity activity) {
+    Map<String, Object> dataObjectVars = ((ActivityImpl) activity).getVariables();
+    if (dataObjectVars != null) {
+      execution.setVariablesLocal(dataObjectVars);
+    }
+  }
 }

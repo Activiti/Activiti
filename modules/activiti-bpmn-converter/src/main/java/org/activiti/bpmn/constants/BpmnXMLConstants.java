@@ -285,4 +285,8 @@ public interface BpmnXMLConstants {
   public static final String ELEMENT_FORMAL_EXPRESSION = "formalExpression";
   
   public static final String FAILED_JOB_RETRY_TIME_CYCLE = "failedJobRetryTimeCycle";
+  public static final String MAP_EXCEPTION = "mapException";
+  public static final String MAP_EXCEPTION_ERRORCODE = "errorCode";
+  public static final String MAP_EXCEPTION_ANDCHILDREN = "includeChildExceptions";
+  
 }

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             targetNamespace="Examples" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="
+             http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd">
+
+ <error id="myError" errorCode="myErrorCode1" />
+    <process id="mapExceptionDefaultProcess">
+
+        <startEvent id="start"/>
+        <sequenceFlow id="flow1" sourceRef="start" targetRef="exceptionRoute"/>
+
+        <serviceTask id="exceptionRoute" activiti:type="camel">
+	      <extensionElements>
+	        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" ></activiti:mapException>
+	      </extensionElements>
+        	
+        </serviceTask>
+        
+        <sequenceFlow id="flow2" sourceRef="exceptionRoute" targetRef="end"/>
+	    <boundaryEvent id="catchError" attachedToRef="exceptionRoute">
+	      <errorEventDefinition errorRef="myErrorCode1" />
+	    </boundaryEvent>
+        <sequenceFlow id="flow3" sourceRef="catchError" targetRef="setFlagService"/>
+        
+		<serviceTask id="setFlagService" activiti:class="org.activiti.camel.util.FlagJavaDelegate" />
+        <sequenceFlow id="flow4" sourceRef="setFlagService" targetRef="end"/>
+        
+        <endEvent id="end"/>
+
+    </process>
+
+</definitions>

@@ -255,7 +255,7 @@
   </sql>
   
   <sql id="commonSelectHistoricProcessInstancesByQueryCriteriaSql">
-    <if test="processKeyNotIn != null || processDefinitionKey != null || (orQueryObject != null &amp;&amp; (orQueryObject.processKeyNotIn != null || orQueryObject.processDefinitionKey != null))">
+    <if test="processKeyNotIn != null || processDefinitionKey != null || (processDefinitionKeyIn != null &amp;&amp; processDefinitionKeyIn.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.processKeyNotIn != null || orQueryObject.processDefinitionKey != null || (orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0)))">
       inner join ${prefix}ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
@@ -284,6 +284,13 @@
       </if>
       <if test="processDefinitionKey != null">
         and DEF.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionKeyIn != null &amp;&amp; processDefinitionKeyIn.size() &gt; 0">
+        and DEF.KEY_ IN
+        <foreach item="definition" index="index" collection="processDefinitionKeyIn"
+                 open="(" separator="," close=")">
+          #{definition}
+        </foreach>
       </if>
       <if test="businessKey != null">
         and RES.BUSINESS_KEY_ = #{businessKey}
@@ -430,6 +437,13 @@
           </if>
           <if test="orQueryObject.processDefinitionKey != null">
             or DEF.KEY_ = #{orQueryObject.processDefinitionKey}
+          </if>
+          <if test="orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0">
+            or DEF.KEY_ IN
+            <foreach item="definition" index="index" collection="orQueryObject.processDefinitionKeyIn"
+                     open="(" separator="," close=")">
+              #{definition}
+            </foreach>
           </if>
           <if test="orQueryObject.businessKey != null">
             or RES.BUSINESS_KEY_ = #{orQueryObject.businessKey}

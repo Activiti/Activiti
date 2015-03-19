@@ -39,9 +39,9 @@ public class JsonConverterUtil implements EditorJsonConstants, StencilConstants 
     boolean result = defaultValue;
     String stringValue = getPropertyValueAsString(name, objectNode);
     
-    if (PROPERTY_VALUE_YES.equalsIgnoreCase(stringValue)) {
+    if (PROPERTY_VALUE_YES.equalsIgnoreCase(stringValue) || "true".equalsIgnoreCase(stringValue)) {
       result = true;
-    } else if (PROPERTY_VALUE_NO.equalsIgnoreCase(stringValue)) {
+    } else if (PROPERTY_VALUE_NO.equalsIgnoreCase(stringValue) || "false".equalsIgnoreCase(stringValue)) {
       result = false;
     }
     

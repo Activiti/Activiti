@@ -614,6 +614,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected static Properties databaseTypeMappings = getDefaultDatabaseTypeMappings();
   
   public static final String DATABASE_TYPE_H2 = "h2";
+  public static final String DATABASE_TYPE_HSQL = "hsql";
   public static final String DATABASE_TYPE_MYSQL = "mysql";
   public static final String DATABASE_TYPE_ORACLE = "oracle";
   public static final String DATABASE_TYPE_POSTGRES = "postgres";
@@ -623,6 +624,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected static Properties getDefaultDatabaseTypeMappings() {
     Properties databaseTypeMappings = new Properties();
     databaseTypeMappings.setProperty("H2", DATABASE_TYPE_H2);
+    databaseTypeMappings.setProperty("HSQL Database Engine", DATABASE_TYPE_HSQL);
     databaseTypeMappings.setProperty("MySQL", DATABASE_TYPE_MYSQL);
     databaseTypeMappings.setProperty("Oracle", DATABASE_TYPE_ORACLE);
     databaseTypeMappings.setProperty("PostgreSQL", DATABASE_TYPE_POSTGRES);

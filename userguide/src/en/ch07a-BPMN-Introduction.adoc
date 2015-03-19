@@ -120,7 +120,7 @@ The XML version of this business process (__FinancialReportProcess.bpmn20.xml__)
 * The <<bpmnNoneStartEvent,(none) start event>> tells us what the _entry point_ to the process is.
 * The <<bpmnUserTask,User Tasks>> declarations are the representation of the human tasks of our process. Note that the first task is assigned to the _accountancy_ group, while the second task is assigned to the _management_ group. See <<bpmnUserTaskAssignment,the section on user task assignment>> for more information on how users and groups can be assigned to user tasks.
 * The process ends when the <<bpmnNoneEndEvent,none end event>> is reached.
-* The elements are connected with each other through <<bpmnSequenceFlow,sequence flows>>. These sequence flow have a +source+ and +target+, defining the _direction_ of the sequence flow.
+* The elements are connected with each other through <<bpmnSequenceFlow,sequence flows>>. These sequence flows have a +source+ and +target+, defining the _direction_ of the sequence flow.
 
 [source,xml,linenums]
 ----

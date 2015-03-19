@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<archetype-descriptor name="activiti-archetype-unittest">
+ <fileSets>
+   <fileSet filtered="true" packaged="true">
+     <directory>src/test/java</directory>
+     <includes>
+       <include>**/*.java</include>
+     </includes>
+   </fileSet>
+   <fileSet filtered="true" packaged="true">
+     <directory>src/test/resources</directory>
+     <includes>
+       <include>my-process.bpmn20.xml</include>
+     </includes>
+   </fileSet>
+   <fileSet filtered="false" packaged="false">
+     <directory>src/test/resources</directory>
+     <includes>
+       <include>log4j.properties</include>
+       <include>activiti.cfg.xml</include>
+     </includes>
+   </fileSet>
+ </fileSets>
+</archetype-descriptor>

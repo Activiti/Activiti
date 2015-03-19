@@ -260,7 +260,11 @@ The query API's also allow to filter on the tenant identifier with _like_ semant
 
 The Activiti API allows for interacting with the database using a high level API. For example, for retrieving data the Query API and the Native Query API are powerful in its usage. However, for some use cases they might not be flexible enough. The following section describes how a completely custom SQL statement (select, insert, update and delete are possible) can be executed against the Activiti data store, but completely within the configured Process Engine (and thus levering the transaction setup for example). 
 	   
-To define custom SQL statements, the Activiti engine leverages the capabilities of its underlying framework, MyBatis. The first thing to do when using custom SQL, is to create a MyBatis mapper class. More info can be read  link:$$http://mybatis.github.io/mybatis-3/java-api.html$$[in the MyBatis user guide]. For example, suppose that for some use case not the whole task data is needed, but only a small subset of it. A Mapper that could do this, looks as follows:
+To define custom SQL statements, the Activiti engine leverages the capabilities of its underlying framework, MyBatis. More info can be read  link:$$http://mybatis.github.io/mybatis-3/java-api.html$$[in the MyBatis user guide]. 
+
+==== Annotation based Mapped Statements
+
+The first thing to do when using Annotation based Mapped Statements, is to create a MyBatis mapper class. For example, suppose that for some use case not the whole task data is needed, but only a small subset of it. A Mapper that could do this, looks as follows:
 	       
 [source,java,linenums]	       
 ----
@@ -323,7 +327,193 @@ Any SQL is possible when using the approach above. Another more complex example:
 ----
 
 Using this method, the task table will be joined with the variables table. Only where the variable has a certain name is retained, and the task id and the corresponding numerical value is returned.
-	   
+
+For a working example on using Annotation based Mapped Statements check the unit test _org.activiti.standalone.cfg.CustomMybatisMapperTest_ and other classes and resources in folders src/test/java/org/activiti/standalone/cfg/ and src/test/resources/org/activiti/standalone/cfg/
+
+
+==== XML based Mapped Statements
+
+When using XML based Mapped Statements, statements are defined in XML files. For the use case where not the whole task data is needed, but only a small subset of it. The XML file can look as follows:
+
+[source,xml,linenums]            
+----
+<mapper namespace="org.activiti.standalone.cfg.TaskMapper">
+
+  <resultMap id="customTaskResultMap" type="org.activiti.standalone.cfg.CustomTask">
+    <id property="id" column="ID_" jdbcType="VARCHAR"/>
+    <result property="name" column="NAME_" jdbcType="VARCHAR"/>
+    <result property="createTime" column="CREATE_TIME_" jdbcType="TIMESTAMP" />
+  </resultMap>
+	
+  <select id="selectCustomTaskList" resultMap="customTaskResultMap">
+    select RES.ID_, RES.NAME_, RES.CREATE_TIME_ from ACT_RU_TASK RES
+  </select>
+
+</mapper>
+----
+
+Results are mapped to instances of _org.activiti.standalone.cfg.CustomTask_ class which can look as follows:
+
+[source,java,linenums]	       
+----
+public class CustomTask {
+
+  protected String id;
+  protected String name;
+  protected Date createTime;
+  
+  public String getId() {
+    return id;
+  }
+  public String getName() {
+    return name;
+  }
+  public Date getCreateTime() {
+    return createTime;
+  }
+}
+----
+
+Mapper XML files must be provided to the Process Engine configuration as follows:
+
+[source,xml,linenums]            
+----
+...
+<property name="customMybatisXMLMappers">
+  <set>
+    <value>org/activiti/standalone/cfg/custom-mappers/CustomTaskMapper.xml</value>
+  </set>
+</property>
+...
+---- 
+
+The statement can be executed as follows: 
+[source,java,linenums]	       
+----
+List<CustomTask> tasks = managementService.executeCommand(new Command<List<CustomTask>>() {
+
+      @SuppressWarnings("unchecked")
+      @Override
+      public List<CustomTask> execute(CommandContext commandContext) {
+        return (List<CustomTask>) commandContext.getDbSqlSession().selectList("selectCustomTaskList");
+      }
+    });
+----
+
+For uses cases that require more complicated statements, XML Mapped Statements can be helpful. Since Activiti uses XML Mapped Statements internally, it's possible to make use of the underlying capabilities. 
+
+Suppose that for some use case the ability to query attachments data is required based on id, name, type, userId, etc! To fulfill the use case a query class _AttachmentQuery_ that extends  _org.activiti.engine.impl.AbstractQuery_ can be created as follows:   
+
+[source,java,linenums]	       
+----
+public class AttachmentQuery extends AbstractQuery<AttachmentQuery, Attachment> {
+
+  protected String attachmentId;
+  protected String attachmentName;
+  protected String attachmentType;
+  protected String userId;
+  
+  public AttachmentQuery(ManagementService managementService) {
+    super(managementService);
+  }
+  
+  public AttachmentQuery attachmentId(String attachmentId){
+    this.attachmentId = attachmentId;
+    return this;
+  }
+  
+  public AttachmentQuery attachmentName(String attachmentName){
+    this.attachmentName = attachmentName;
+    return this;
+  }
+  
+  public AttachmentQuery attachmentType(String attachmentType){
+    this.attachmentType = attachmentType;
+    return this;
+  }
+  
+  public AttachmentQuery userId(String userId){
+    this.userId = userId;
+    return this;
+  }
+  
+  @Override
+  public long executeCount(CommandContext commandContext) {
+    return (Long) commandContext.getDbSqlSession()
+                   .selectOne("selectAttachmentCountByQueryCriteria", this);
+  }
+
+  @Override
+  public List<Attachment> executeList(CommandContext commandContext, Page page) {
+    return commandContext.getDbSqlSession()
+            .selectList("selectAttachmentByQueryCriteria", this);
+  }
+----
+
+Note that when extending _AbstractQuery_ extended classes should pass an instance of _ManagementService_ to super constructor and methods _executeCount_ and _executeList_ need to be implemented to call the mapped statements. 
+
+The XML file containing the mapped statements can look as follows: 
+
+[source,xml,linenums]            
+----
+<mapper namespace="org.activiti.standalone.cfg.AttachmentMapper">
+
+  <select id="selectAttachmentCountByQueryCriteria" parameterType="org.activiti.standalone.cfg.AttachmentQuery" resultType="long">
+    select count(distinct RES.ID_)
+    <include refid="selectAttachmentByQueryCriteriaSql"/>
+  </select>
+  
+  <select id="selectAttachmentByQueryCriteria" parameterType="org.activiti.standalone.cfg.AttachmentQuery" resultMap="org.activiti.engine.impl.persistence.entity.AttachmentEntity.attachmentResultMap">
+    ${limitBefore}
+    select distinct RES.* ${limitBetween}
+    <include refid="selectAttachmentByQueryCriteriaSql"/> 
+    ${orderBy}
+    ${limitAfter}
+  </select>
+  
+  <sql id="selectAttachmentByQueryCriteriaSql">
+  from ${prefix}ACT_HI_ATTACHMENT RES
+  <where>
+   <if test="attachmentId != null">
+     RES.ID_ = #{attachmentId}
+   </if>
+   <if test="attachmentName != null">
+     and RES.NAME_ = #{attachmentName}
+   </if>
+   <if test="attachmentType != null">
+     and RES.TYPE_ = #{attachmentType}
+   </if>
+   <if test="userId != null">
+     and RES.USER_ID_ = #{userId}
+   </if>
+  </where>
+  </sql>
+</mapper>
+----
+
+Capabilities such as pagination, ordering, table name prefixing are available and can be used in the statements (since the parameterType is a subclass of _AbstractQuery_). Note that to map results the predefined _org.activiti.engine.impl.persistence.entity.AttachmentEntity.attachmentResultMap_ resultMap can be used.
+
+Finally, the _AttachmentQuery_ can be used as follows:
+
+[source,java,linenums]	       
+----
+....
+// Get the total number of attachments
+long count = new AttachmentQuery(managementService).count();
+
+// Get attachment with id 10025
+Attachment attachment = new AttachmentQuery(managementService).attachmentId("10025").singleResult();
+
+// Get first 10 attachments
+List<Attachment> attachments = new AttachmentQuery(managementService).listPage(0, 10);
+
+// Get all attachments uploaded by user kermit
+attachments = new AttachmentQuery(managementService).userId("kermit").list();
+....
+----
+
+For working examples on using XML Mapped Statements check the unit test _org.activiti.standalone.cfg.CustomMybatisXMLMapperTest_ and other classes and resources in folders src/test/java/org/activiti/standalone/cfg/ and src/test/resources/org/activiti/standalone/cfg/
+
 
 [[advanced.process.engine.configurators]]
 
