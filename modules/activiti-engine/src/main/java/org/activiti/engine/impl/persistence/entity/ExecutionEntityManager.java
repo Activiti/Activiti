@@ -400,6 +400,10 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   public void deleteProcessInstanceExecutionEntity(ExecutionEntity processInstanceEntity, 
       String currentFlowElementId, String deleteReason, boolean cascade, boolean cancel) {
     
+    if (processInstanceEntity.isDeleted()) {
+      return;
+    }
+    
     for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
       if (subExecutionEntity.getSubProcessInstance() != null) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, cascade);
@@ -414,11 +418,17 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     }
     
     deleteChildExecutions(processInstanceEntity, deleteReason, cancel);
-    
     deleteExecutionAndRelatedData(processInstanceEntity, deleteReason, cancel);
+    
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, processInstanceEntity));
+    }
 
     // TODO: what about delete reason?
     Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(processInstanceEntity.getId(), deleteReason, currentFlowElementId);
+    
+    processInstanceEntity.setDeleted(true);
   }
   
   public void deleteChildExecutions(ExecutionEntity executionEntity) {

@@ -195,11 +195,6 @@ public class EndExecutionOperation extends AbstractOperation {
           throw new ActivitiException("Error while completing sub process of execution " + executionEntity, e);
         }
 
-      } else {        
-        // dispatch process completed event
-        if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
-        }
       }
     }
   }

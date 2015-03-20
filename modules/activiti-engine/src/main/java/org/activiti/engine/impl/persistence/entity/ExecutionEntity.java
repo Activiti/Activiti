@@ -218,6 +218,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   protected boolean forcedUpdate;
 
   protected List<VariableInstanceEntity> queryVariables;
+  
+  protected boolean isDeleted; // TODO: should be in PersistentObject probably
 
   public ExecutionEntity() {
   }
@@ -1246,6 +1248,14 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     getIdentityLinks().removeAll(identityLinks);
 
+  }
+
+  public boolean isDeleted() {
+    return isDeleted;
+  }
+
+  public void setDeleted(boolean isDeleted) {
+    this.isDeleted = isDeleted;
   }
 
 }

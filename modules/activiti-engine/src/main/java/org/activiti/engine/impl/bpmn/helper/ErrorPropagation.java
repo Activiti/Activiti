@@ -15,8 +15,10 @@ package org.activiti.engine.impl.bpmn.helper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
@@ -75,21 +77,21 @@ public class ErrorPropagation {
           // get execution node for parent process of current process instance
           ExecutionTreeNode parentNode = existingNode.getParent();
           
-          List<ActivityExecution> toDeleteExecutions = new ArrayList<ActivityExecution>();
-          toDeleteExecutions.add(execution);
+          Set<String> toDeleteExecutions = new HashSet<String>();
+          toDeleteExecutions.add(execution.getProcessInstanceId());
           
           while (parentNode != null && eventMap.size() == 0) {
             eventMap = findCatchingEventsForProcess(parentNode.getExecutionEntity().getProcessDefinitionId(), errorCode);
             if (eventMap.size() > 0) {
               
-              for (ActivityExecution toDeleteExecution : toDeleteExecutions) {
-                executionEntityManager.deleteProcessInstanceExecutionEntity(toDeleteExecution.getProcessInstanceId(), 
-                    toDeleteExecution.getCurrentFlowElement() != null ? toDeleteExecution.getCurrentFlowElement().getId() : null, "FINISHED");
+              for (String processInstanceId : toDeleteExecutions) {
+                executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceId, 
+                    execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null, "FINISHED");
               }
               executeCatch(eventMap, parentNode.getExecutionEntity(), errorCode);
             
             } else {
-              toDeleteExecutions.add(parentNode.getExecutionEntity());
+              toDeleteExecutions.add(parentNode.getExecutionEntity().getProcessInstanceId());
               parentNode = parentNode.getParent();
             }
           }
