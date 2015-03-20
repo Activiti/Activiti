@@ -157,7 +157,7 @@ public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements 
 
 	          URL explorerURL = ExplorerApp.get().getURL();
 	          URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(),
-			          explorerURL.getPath().replace("/ui", "") + "service/editor?id=" + modelData.getId());
+			          explorerURL.getPath().replace("/ui", "") + "modeler.html?modelId=" + modelData.getId());
               ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
             }
           }
