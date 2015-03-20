@@ -67,7 +67,7 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     //boundary events
 
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 100);
+      waitForJobExecutorToProcessAllJobs(2000, 200);
       fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
     } catch (Exception ex) {
       //expected exception because a new job is prepared
@@ -77,7 +77,7 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 100);
+      waitForJobExecutorToProcessAllJobs(2000, 200);
       fail("a new job must be prepared because there are 20 repeats 2 seconds interval");
     } catch (Exception ex) {
       //expected exception because a new job is prepared
@@ -88,7 +88,7 @@ public class BoundaryTimerEventRepeatWithEnd extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 100);
+      waitForJobExecutorToProcessAllJobs(2000, 200);
     } catch (Exception ex) {
       fail("Should not have any other jobs because the endDate is reached");
     }

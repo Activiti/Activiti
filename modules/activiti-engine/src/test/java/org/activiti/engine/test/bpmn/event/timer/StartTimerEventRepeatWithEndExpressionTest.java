@@ -93,7 +93,7 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     // advance the clock to 11 dec -> the system will execute the pending job and will create a new one
     moveByMinutes(60 * 24);
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
+      waitForJobExecutorToProcessAllJobs(2000, 200);
       fail("there must be a pending job because the endDate is not reached yet");
     } catch (Exception e) {
       //expected failure
@@ -120,7 +120,7 @@ public class StartTimerEventRepeatWithEndExpressionTest extends PluggableActivit
     // 12 dec (last execution)
     moveByMinutes(60 * 24);
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 500);
+      waitForJobExecutorToProcessAllJobs(2000, 200);
     } catch (Exception e) {
       fail("Because the endDate is reached it will not be executed other jobs");
     }

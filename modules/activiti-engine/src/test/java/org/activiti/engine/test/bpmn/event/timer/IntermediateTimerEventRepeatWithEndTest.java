@@ -88,7 +88,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     nextTimeCal.add(Calendar.HOUR, 1); //after 1 hour the event must be triggered and the flow will go to the next step
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
-    waitForJobExecutorToProcessAllJobs(2000, 500);
+    waitForJobExecutorToProcessAllJobs(2000, 200);
     //expect to execute because the time is reached.
 
     List<Job> jobs = managementService.createJobQuery().list();
@@ -115,7 +115,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
 
     assertNotNull(historicInstance.getEndTime());
 
-    //now All the process instances should be completed
+    //now all the process instances should be completed
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
     assertEquals(0, processInstances.size());
 
