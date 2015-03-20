@@ -22,4 +22,9 @@ public interface BusinessCalendar {
 
   Date resolveDuedate(String duedateDescription);
 
+  Date resolveDuedate(String duedateDescription, int maxIterations);
+
+  Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer);
+
+  Date resolveEndDate(String endDateString);
 }

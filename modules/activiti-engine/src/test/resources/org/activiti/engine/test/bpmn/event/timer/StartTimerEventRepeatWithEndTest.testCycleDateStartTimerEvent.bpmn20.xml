@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://activiti.org/bpmn http://activiti.org/bpmn/activiti-bpmn-extensions-5.18.xsd"
+             targetNamespace="Examples">
+    <process id="process" isExecutable="true">
+        <startEvent id="startEvent" name="StartEvent">
+            <timerEventDefinition>
+                <timeCycle activiti:endDate="2025-12-12T00:00:05">R10/PT24H</timeCycle>
+            </timerEventDefinition>
+        </startEvent>
+        <sequenceFlow id="start2Script" sourceRef="startEvent" targetRef="scriptExecutor"></sequenceFlow>
+
+        <scriptTask id="scriptExecutor" name="Script Executor" scriptFormat="groovy">
+            <script>System.out.println("Process executed");</script>
+        </scriptTask>
+
+        <sequenceFlow id="script2Task" sourceRef="scriptExecutor" targetRef="task1"></sequenceFlow>
+        <userTask id="task1" name="Task A"/>
+        <sequenceFlow id="task2End" sourceRef="scriptExecutor" targetRef="endEvent"></sequenceFlow>
+        <endEvent id="endEvent"></endEvent>
+    </process>
+</definitions>

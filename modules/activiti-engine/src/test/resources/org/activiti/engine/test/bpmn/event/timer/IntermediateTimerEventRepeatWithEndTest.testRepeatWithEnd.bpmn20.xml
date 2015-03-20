@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:activiti="http://activiti.org/bpmn"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://activiti.org/bpmn http://activiti.org/bpmn/activiti-bpmn-extensions-5.18.xsd"
+targetNamespace="Examples">
+
+    <process id="repeatWithEnd">
+
+        <startEvent id="theStart">
+        </startEvent>
+
+        <sequenceFlow id="a1" sourceRef="theStart" targetRef="processStartedScript"/>
+
+        <scriptTask id="processStartedScript" name="Execute script" scriptFormat="groovy">
+            <script>
+                System.out.println("Process started");
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="a2" sourceRef="processStartedScript" targetRef="task1"/>
+        <userTask id="task1" name="Task A"/>
+
+
+        <sequenceFlow id="flow3" sourceRef="task1" targetRef="task2Completed"/>
+
+        <scriptTask id="task2Completed" name="Execute script" scriptFormat="groovy">
+            <script>
+                System.out.println("Task 2 completed");
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="flow4" sourceRef="task2Completed" targetRef="it1"/>
+
+        <intermediateCatchEvent id="it1">
+            <timerEventDefinition>
+                <timeCycle activiti:endDate="${EndDateForCatch1}">R1/PT1H</timeCycle>
+            </timerEventDefinition>
+        </intermediateCatchEvent>
+
+        <sequenceFlow id="flow5" sourceRef="it1" targetRef="timerFiredTask2"/>
+
+        <scriptTask id="timerFiredTask2" name="Execute script" scriptFormat="groovy">
+            <script>
+                System.out.println("Intermediate Timer event 1");
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="flow6" sourceRef="timerFiredTask2" targetRef="end"/>
+
+
+        <sequenceFlow id="flow7" sourceRef="task2Completed" targetRef="task3"/>
+        <userTask id="task3" name="Task C"/>
+
+
+        <sequenceFlow id="flow8" sourceRef="task3" targetRef="it2"/>
+
+        <intermediateCatchEvent id="it2">
+            <timerEventDefinition>
+                <timeCycle activiti:endDate="${EndDateForCatch2}">R1/PT1H</timeCycle>
+            </timerEventDefinition>
+        </intermediateCatchEvent>
+
+        <sequenceFlow id="flow9" sourceRef="it2" targetRef="timerFiredTask3"/>
+
+
+        <scriptTask id="timerFiredTask3" name="Execute script" scriptFormat="groovy">
+            <script>
+                System.out.println("Intermediate Timer event 2 (Process ended)");
+            </script>
+        </scriptTask>
+
+        <sequenceFlow id="flow10" sourceRef="timerFiredTask3" targetRef="end"/>
+
+        <endEvent id="end"/>
+
+
+    </process>
+
+
+</definitions>
