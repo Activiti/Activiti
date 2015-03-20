@@ -85,10 +85,18 @@ public class InterfaceParser implements BpmnXMLConstants {
       if (indexOfP != -1) {
         String prefix = messageRef.substring(0, indexOfP);
         String resolvedNamespace = model.getNamespace(prefix);
-        result = resolvedNamespace + ":" + messageRef.substring(indexOfP + 1);
-      } else {
-        result = model.getTargetNamespace() + ":" + messageRef;
+        messageRef = messageRef.substring(indexOfP + 1);
+
+        if (resolvedNamespace == null) {
+          // if it's an invalid prefix will consider this is not a namespace prefix so will be used as part of the stringReference
+          messageRef = prefix + ":" + messageRef;
+        } else if (!resolvedNamespace.equalsIgnoreCase(model.getTargetNamespace())) {
+          //  if it's a valid namespace prefix but it's not the targetNamespace then we'll use it as a valid namespace
+          // (even out editor does not support defining namespaces it is still a valid xml file)
+          messageRef = resolvedNamespace + ":" + messageRef;
+        }
       }
+      result = messageRef;
     }
     return result;
   }

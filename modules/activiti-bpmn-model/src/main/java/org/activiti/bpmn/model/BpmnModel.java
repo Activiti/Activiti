@@ -351,11 +351,24 @@ public class BpmnModel {
       messageMap.put(message.getId(), message);
     }
   }
-  
+
   public Message getMessage(String id) {
-    return messageMap.get(id);
+    Message result = messageMap.get(id);
+    if (result == null) {
+      int indexOfNS = id.indexOf(":");
+      if (indexOfNS > 0) {
+        String idNamespace = id.substring(0, indexOfNS);
+        if (idNamespace.equalsIgnoreCase(this.getTargetNamespace())) {
+          id = id.substring(indexOfNS + 1);
+        }
+        result = messageMap.get(id);
+      }
+    }
+    return result;
   }
-  
+
+
+
   public boolean containsMessageId(String messageId) {
     return messageMap.containsKey(messageId);
   }
