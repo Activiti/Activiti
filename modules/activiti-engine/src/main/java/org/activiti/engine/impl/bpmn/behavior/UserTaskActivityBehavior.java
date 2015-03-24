@@ -30,7 +30,6 @@ import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.javax.el.PropertyNotFoundException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -64,9 +63,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       String name = null;
       try {
         name = (String) taskDefinition.getNameExpression().getValue(execution);
-      } catch (PropertyNotFoundException e) {
+      } catch (ActivitiException e) {
         name = taskDefinition.getNameExpression().getExpressionText();
-        LOGGER.warn("property not found in task name expression", e.getMessage());
+        LOGGER.warn("property not found in task name expression " + e.getMessage());
       }
       task.setName(name);
     }
@@ -75,9 +74,9 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       String description = null;
       try {
         description = (String) taskDefinition.getDescriptionExpression().getValue(execution);
-      } catch (PropertyNotFoundException e) {
+      } catch (ActivitiException e) {
         description = taskDefinition.getDescriptionExpression().getExpressionText();
-        LOGGER.warn("property not found in task description expression", e.getMessage());
+        LOGGER.warn("property not found in task description expression " + e.getMessage());
       }
       task.setDescription(description);
     }
