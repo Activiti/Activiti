@@ -17,6 +17,7 @@ import javax.xml.stream.XMLStreamReader;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.TimerEventDefinition;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
@@ -29,8 +30,12 @@ public class TimeCycleParser extends BaseChildElementParser {
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     if (parentElement instanceof TimerEventDefinition == false) return;
-    
+
     TimerEventDefinition eventDefinition = (TimerEventDefinition) parentElement;
+    
+    if (StringUtils.isNotEmpty(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_END_DATE))) {
+      eventDefinition.setEndDate(xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_END_DATE));
+    }
     eventDefinition.setTimeCycle(xtr.getElementText());
   }
 }

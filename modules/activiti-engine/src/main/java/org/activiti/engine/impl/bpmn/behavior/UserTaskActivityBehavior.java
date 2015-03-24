@@ -30,10 +30,13 @@ import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.javax.el.PropertyNotFoundException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * activity implementation for the user task.
@@ -41,6 +44,10 @@ import org.activiti.engine.impl.task.TaskDefinition;
  * @author Joram Barrez
  */
 public class UserTaskActivityBehavior extends TaskActivityBehavior {
+  
+  private static final long serialVersionUID = 1L;
+  
+  private static final Logger LOGGER = LoggerFactory.getLogger(UserTaskActivityBehavior.class);
 
   protected TaskDefinition taskDefinition;
 
@@ -54,18 +61,30 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
     task.setTaskDefinition(taskDefinition);
 
     if (taskDefinition.getNameExpression() != null) {
-      String name = (String) taskDefinition.getNameExpression().getValue(execution);
+      String name = null;
+      try {
+        name = (String) taskDefinition.getNameExpression().getValue(execution);
+      } catch (PropertyNotFoundException e) {
+        name = taskDefinition.getNameExpression().getExpressionText();
+        LOGGER.warn("property not found in task name expression", e.getMessage());
+      }
       task.setName(name);
     }
 
     if (taskDefinition.getDescriptionExpression() != null) {
-      String description = (String) taskDefinition.getDescriptionExpression().getValue(execution);
+      String description = null;
+      try {
+        description = (String) taskDefinition.getDescriptionExpression().getValue(execution);
+      } catch (PropertyNotFoundException e) {
+        description = taskDefinition.getDescriptionExpression().getExpressionText();
+        LOGGER.warn("property not found in task description expression", e.getMessage());
+      }
       task.setDescription(description);
     }
     
-    if(taskDefinition.getDueDateExpression() != null) {
+    if (taskDefinition.getDueDateExpression() != null) {
       Object dueDate = taskDefinition.getDueDateExpression().getValue(execution);
-      if(dueDate != null) {
+      if (dueDate != null) {
         if (dueDate instanceof Date) {
           task.setDueDate((Date) dueDate);
         } else if (dueDate instanceof String) {

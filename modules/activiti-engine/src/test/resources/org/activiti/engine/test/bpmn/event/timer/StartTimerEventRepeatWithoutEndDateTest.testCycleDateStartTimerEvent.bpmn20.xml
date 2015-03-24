@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+             xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             targetNamespace="Examples">
+    <process id="process" isExecutable="true">
+        <startEvent id="startEvent" name="StartEvent">
+            <timerEventDefinition>
+                <timeCycle>R10/PT24H</timeCycle>
+            </timerEventDefinition>
+        </startEvent>
+        <sequenceFlow id="start2Script" sourceRef="startEvent" targetRef="scriptExecutor"></sequenceFlow>
+
+        <scriptTask id="scriptExecutor" name="Script Executor" scriptFormat="groovy">
+            <script>System.out.println("Process executed");</script>
+        </scriptTask>
+
+        <sequenceFlow id="script2Task" sourceRef="scriptExecutor" targetRef="task1"></sequenceFlow>
+        <userTask id="task1" name="Task A"/>
+        <sequenceFlow id="task2End" sourceRef="scriptExecutor" targetRef="endEvent"></sequenceFlow>
+        <endEvent id="endEvent"></endEvent>
+    </process>
+</definitions>

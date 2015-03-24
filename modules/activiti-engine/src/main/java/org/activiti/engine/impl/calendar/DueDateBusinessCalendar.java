@@ -28,14 +28,14 @@ public class DueDateBusinessCalendar extends BusinessCalendarImpl {
     super(clockReader);
   }
 
-  public Date resolveDuedate(String duedate) {
+  @Override
+  public Date resolveDuedate(String duedate, int maxIterations) {
     try {
-    	
-    	// check if due period was specified
-    	if(duedate.startsWith("P")){
-    		return DateTime.now().plus(Period.parse(duedate)).toDate();
-    	}
-    	
+      // check if due period was specified
+      if(duedate.startsWith("P")){
+        return DateTime.now().plus(Period.parse(duedate)).toDate();
+      }
+
       return DateTime.parse(duedate).toDate();
 
     } catch (Exception e) {

@@ -35,6 +35,7 @@ public class TimerDeclarationImpl implements Serializable {
 
   protected Expression description;
   protected TimerDeclarationType type;
+  protected Expression endDateExpression;
 
   protected String jobHandlerType;
   protected String jobHandlerConfiguration = null;
@@ -43,12 +44,20 @@ public class TimerDeclarationImpl implements Serializable {
   protected int retries = TimerEntity.DEFAULT_RETRIES;
   protected boolean isInterruptingTimer; // For boundary timers
 
+  public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType, Expression endDateExpression) {
+    this(expression,type,jobHandlerType);
+    this.endDateExpression = endDateExpression;
+  }  
+  
   public TimerDeclarationImpl(Expression expression, TimerDeclarationType type, String jobHandlerType) {
     this.jobHandlerType = jobHandlerType;
     this.description = expression;
     this.type= type;
   }
 
+  public Expression getDescription() {
+    return description;
+  }
   public String getJobHandlerType() {
     return jobHandlerType;
   }
@@ -108,9 +117,11 @@ public class TimerDeclarationImpl implements Serializable {
       throw new ActivitiIllegalArgumentException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time");
     }
     
+    String endDateString = null;
     String dueDateString = null;
     Date duedate = null;
-
+    Date endDate = null;
+    
     // ACT-1415: timer-declaration on start-event may contain expressions NOT
     // evaluating variables but other context, evaluating should happen nevertheless
     VariableScope scopeForExpression = executionEntity;
@@ -118,6 +129,21 @@ public class TimerDeclarationImpl implements Serializable {
       scopeForExpression = NoExecutionVariableScope.getSharedInstance();
     }
 
+    if (endDateExpression!=null &&  !(scopeForExpression instanceof NoExecutionVariableScope)) {
+      Object endDateValue = endDateExpression.getValue(scopeForExpression);
+      if (endDateValue instanceof String) {
+        endDateString = (String) endDateValue;
+      } else if (endDateValue instanceof Date) {
+        endDate = (Date) endDateValue;
+      } else {
+        throw new ActivitiException("Timer '" + executionEntity.getActivityId() + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
+      }
+
+      if (endDate == null) {
+        endDate = businessCalendar.resolveEndDate(endDateString);
+      }
+    }
+    
     Object dueDateValue = description.getValue(scopeForExpression);
     if (dueDateValue instanceof String) {
       dueDateString = (String)dueDateValue;
@@ -135,6 +161,7 @@ public class TimerDeclarationImpl implements Serializable {
 
     TimerEntity timer = new TimerEntity(this);
     timer.setDuedate(duedate);
+    timer.setEndDate(endDate);
     if (executionEntity != null) {
       timer.setExecution(executionEntity);
       timer.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
@@ -154,6 +181,12 @@ public class TimerDeclarationImpl implements Serializable {
     	// ACT-1951: intermediate catching timer events shouldn't repeat according to spec
     	if(TimerCatchIntermediateEventJobHandler.TYPE.equals(jobHandlerType)) {
     		repeat = false;
+        if (endDate!=null) {
+          long endDateMiliss = endDate.getTime();
+          long dueDateMiliss = duedate.getTime();
+          long dueDate = Math.min(endDateMiliss,dueDateMiliss);
+          timer.setDuedate(new Date(dueDate));
+        }
     	}
     	
       if (repeat) {

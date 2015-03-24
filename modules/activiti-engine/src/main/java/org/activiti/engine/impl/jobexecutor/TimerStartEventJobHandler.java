@@ -22,12 +22,13 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
-public class TimerStartEventJobHandler implements JobHandler {
+public class TimerStartEventJobHandler extends TimerEventHandler implements JobHandler {
 
   private static Logger log = LoggerFactory.getLogger(TimerStartEventJobHandler.class);
 
@@ -41,12 +42,14 @@ public class TimerStartEventJobHandler implements JobHandler {
     DeploymentManager deploymentCache = Context
             .getProcessEngineConfiguration()
             .getDeploymentManager();
-    
+
+    String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
+
     ProcessDefinition processDefinition = null;
     if (job.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(job.getTenantId())) {
-    		processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(configuration);
+    		processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(nestedActivityId);
     } else {
-    	processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(configuration, job.getTenantId());
+    	processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(nestedActivityId, job.getTenantId());
     }
     
     if (processDefinition == null) {
@@ -60,7 +63,7 @@ public class TimerStartEventJobHandler implements JobHandler {
             ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
         }
 
-        new StartProcessInstanceCmd(configuration, null, null, null, job.getTenantId()).execute(commandContext);
+        new StartProcessInstanceCmd(nestedActivityId, null, null, null, job.getTenantId()).execute(commandContext);
       } else {
         log.debug("ignoring timer of suspended process definition {}", processDefinition.getName());
       }

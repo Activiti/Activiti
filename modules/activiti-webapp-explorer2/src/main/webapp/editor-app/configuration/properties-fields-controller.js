@@ -25,7 +25,7 @@ var KisBpmFieldsCtrl = [ '$scope', '$modal', '$timeout', '$translate', function(
 
     // Config for the modal window
     var opts = {
-        template:  'kisbpm-app/configuration/properties/fields-popup.html',
+        template:  'editor-app/configuration/properties/fields-popup.html',
         scope: $scope
     };
 
@@ -33,7 +33,7 @@ var KisBpmFieldsCtrl = [ '$scope', '$modal', '$timeout', '$translate', function(
     $modal(opts);
 }];
 
-var KisBpmFieldsPopupCtrl = [ '$scope', '$translate', function($scope, $translate) {
+var KisBpmFieldsPopupCtrl = [ '$scope', '$q', '$translate', function($scope, $q, $translate) {
 
     // Put json representing form properties on scope
     if ($scope.property.value !== undefined && $scope.property.value !== null
@@ -66,18 +66,29 @@ var KisBpmFieldsPopupCtrl = [ '$scope', '$translate', function($scope, $translat
 
     // Array to contain selected properties (yes - we only can select one, but ng-grid isn't smart enough)
     $scope.selectedFields = [];
+    $scope.translationsRetrieved = false;
+    $scope.labels = {};
 
-    // Config for grid
-    $scope.gridOptions = {
-        data: 'fields',
-        enableRowReordering: true,
-        headerRowHeight: 28,
-        multiSelect: false,
-        keepLastSelected : false,
-        selectedItems: $scope.selectedFields,
-        columnDefs: [{ field: 'name', displayName: $translate('PROPERTY.FIELDS.NAME') },
-                     { field: 'implementation', displayName: $translate('PROPERTY.FIELDS.IMPLEMENTATION')}]
-    };
+    var namePromise = $translate('PROPERTY.FIELDS.NAME');
+    var implementationPromise = $translate('PROPERTY.FIELDS.IMPLEMENTATION');
+
+    $q.all([namePromise, implementationPromise]).then(function(results) {
+        $scope.labels.nameLabel = results[0];
+        $scope.labels.implementationLabel = results[1];
+        $scope.translationsRetrieved = true;
+
+        // Config for grid
+        $scope.gridOptions = {
+            data: 'fields',
+            enableRowReordering: true,
+            headerRowHeight: 28,
+            multiSelect: false,
+            keepLastSelected: false,
+            selectedItems: $scope.selectedFields,
+            columnDefs: [{field: 'name', displayName: $scope.labels.nameLabel},
+                {field: 'implementation', displayName: $scope.labels.implementationLabel}]
+        };
+    });
     
     $scope.fieldDetailsChanged = function() {
     	if ($scope.selectedFields[0].stringValue != '')
@@ -170,12 +181,12 @@ var KisBpmFieldsPopupCtrl = [ '$scope', '$translate', function($scope, $translat
     };
 
     $scope.cancel = function() {
-      dialog.close();
+        $scope.close();
     };
 
     // Close button handler
     $scope.close = function() {
-    	$scope.property.mode = 'read';
+        $scope.property.mode = 'read';
         $scope.$hide();
     };
 }];

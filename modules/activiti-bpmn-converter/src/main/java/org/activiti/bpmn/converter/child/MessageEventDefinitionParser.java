@@ -43,9 +43,19 @@ public class MessageEventDefinitionParser extends BaseChildElementParser {
       if (indexOfP != -1) {
         String prefix = eventDefinition.getMessageRef().substring(0, indexOfP);
         String resolvedNamespace = model.getNamespace(prefix);
-        eventDefinition.setMessageRef(resolvedNamespace + ":" + eventDefinition.getMessageRef().substring(indexOfP + 1));
+        String messageRef = eventDefinition.getMessageRef().substring(indexOfP + 1);
+
+        if (resolvedNamespace==null) {
+        // if it's an invalid prefix will consider this is not a namespace prefix so will be used as part of the stringReference
+          messageRef = prefix + ":" + messageRef;
+        }else if (!resolvedNamespace.equalsIgnoreCase(model.getTargetNamespace())) {
+        //  if it's a valid namespace prefix but it's not the targetNamespace then we'll use it as a valid namespace
+        // (even out editor does not support defining namespaces it is still a valid xml file)
+          messageRef = resolvedNamespace + ":" + messageRef;
+        }
+        eventDefinition.setMessageRef(messageRef);
       } else {
-        eventDefinition.setMessageRef(model.getTargetNamespace() + ":" + eventDefinition.getMessageRef());
+        eventDefinition.setMessageRef( eventDefinition.getMessageRef());
       }
      
     }
