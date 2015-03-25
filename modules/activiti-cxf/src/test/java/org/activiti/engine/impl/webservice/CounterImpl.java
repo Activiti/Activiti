@@ -63,4 +63,18 @@ public class CounterImpl implements Counter {
   public String prettyPrintCount(String prefix, String suffix) {
     return prefix + this.getCount() + suffix;
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  public String noNameResult(String prefix, String suffix) {
+    return prefix + this.getCount() + suffix;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public String reservedWordAsName(String prefix, String suffix) {
+    return prefix + this.getCount() + suffix;
+  }
 }

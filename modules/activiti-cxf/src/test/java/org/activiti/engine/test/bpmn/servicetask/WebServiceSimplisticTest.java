@@ -39,4 +39,30 @@ public class WebServiceSimplisticTest extends AbstractWebServiceTaskTest {
     String response = (String) processEngine.getRuntimeService().getVariable(instance.getId(), "OutputVariable");
     assertEquals("The counter has the value -1. Good news", response);
   }
+
+  @Deployment
+  public void testWebResponseNoName() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("PrefixVariable", "The counter has the value ");
+    variables.put("SuffixVariable", ". Good news (NO NAME)");
+
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey("webServiceInvocationWithSimplisticDataFlow", variables);
+    waitForJobExecutorToProcessAllJobs(10000L, 250L);
+
+    String response = (String) processEngine.getRuntimeService().getVariable(instance.getId(), "OutputVariable");
+    assertEquals("The counter has the value -1. Good news (NO NAME)", response);
+  }
+
+  @Deployment
+  public void testWebResponseKeywordName() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("PrefixVariable", "The counter has the value ");
+    variables.put("SuffixVariable", ". Good news Keyword");
+
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey("webServiceInvocationWithSimplisticDataFlow", variables);
+    waitForJobExecutorToProcessAllJobs(10000L, 250L);
+
+    String response = (String) processEngine.getRuntimeService().getVariable(instance.getId(), "OutputVariable");
+    assertEquals("The counter has the value -1. Good news Keyword", response);
+  }
 }

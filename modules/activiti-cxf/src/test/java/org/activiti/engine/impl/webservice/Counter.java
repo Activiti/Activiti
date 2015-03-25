@@ -58,4 +58,10 @@ public interface Counter {
    */
   @WebResult(name="prettyPrint")
   String prettyPrintCount(@WebParam(name="prefix") String prefix, @WebParam(name="suffix") String suffix);
+
+  @WebResult
+  String noNameResult(@WebParam(name="prefix") String prefix, @WebParam(name="suffix") String suffix);
+
+  @WebResult(name = "static")
+  String reservedWordAsName(@WebParam(name="prefix") String prefix, @WebParam(name="suffix") String suffix);
 }
