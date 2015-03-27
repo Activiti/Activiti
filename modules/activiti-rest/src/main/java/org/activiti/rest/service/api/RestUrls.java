@@ -137,7 +137,7 @@ public final class RestUrls {
   public static final String[] URL_PROCESS_DEFINITION_MODEL = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_MODEL};
   
   /**
-   * URL template for the model of a process definition: <i>repository/process-definitions/{0:processDefinitionId}/model</i>
+   * URL template for the image of a process definition: <i>repository/process-definitions/{0:processDefinitionId}/image</i>
    */
   public static final String[] URL_PROCESS_DEFINITION_IMAGE = {SEGMENT_REPOSITORY_RESOURCES, SEGMENT_PROCESS_DEFINITION_RESOURCE, "{0}", SEGMENT_IMAGE};
   
