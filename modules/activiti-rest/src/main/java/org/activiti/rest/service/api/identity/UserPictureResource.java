@@ -24,11 +24,12 @@ import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.identity.Picture;
 import org.activiti.engine.identity.User;
 import org.apache.commons.io.IOUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
@@ -39,8 +40,8 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 @RestController
 public class UserPictureResource extends BaseUserResource {
 
-  @RequestMapping(value="/identity/users/{userId}/picture", method = RequestMethod.GET, produces = "application/json")
-  public @ResponseBody byte[] getUserPicture(@PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
+  @RequestMapping(value="/identity/users/{userId}/picture", method = RequestMethod.GET)
+  public ResponseEntity<byte[]> getUserPicture(@PathVariable String userId, HttpServletRequest request, HttpServletResponse response) {
     User user = getUserFromRequest(userId);
     Picture userPicture = identityService.getUserPicture(user.getId());
     
@@ -48,15 +49,15 @@ public class UserPictureResource extends BaseUserResource {
       throw new ActivitiObjectNotFoundException("The user with id '" + user.getId() + "' does not have a picture.", Picture.class);
     }
     
-    String mediaType = "image/jpeg";
+    HttpHeaders responseHeaders = new HttpHeaders();
     if (userPicture.getMimeType() != null) {
-      mediaType = userPicture.getMimeType();
+      responseHeaders.set("Content-Type", userPicture.getMimeType());
+    }else{
+      responseHeaders.set("Content-Type", "image/jpeg");
     }
     
-    response.setContentType(mediaType);
-    
     try {
-      return IOUtils.toByteArray(userPicture.getInputStream());
+      return new ResponseEntity<byte[]>(IOUtils.toByteArray(userPicture.getInputStream()), responseHeaders, HttpStatus.OK);
     } catch (Exception e) {
       throw new ActivitiException("Error exporting picture: " + e.getMessage(), e);
     }

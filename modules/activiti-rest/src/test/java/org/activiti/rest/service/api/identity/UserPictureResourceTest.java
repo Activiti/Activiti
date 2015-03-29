@@ -91,8 +91,12 @@ public class UserPictureResourceTest extends BaseSpringRestTestCase {
       identityService.saveUser(newUser);
       savedUser = newUser;
       
-      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_NOT_FOUND));
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_NOT_FOUND);
+      
+      // response content type application/json;charset=UTF-8
+      assertEquals("application/json", response.getEntity().getContentType().getValue().split(";")[0]);
+      closeResponse(response);
       
     } finally {
       
