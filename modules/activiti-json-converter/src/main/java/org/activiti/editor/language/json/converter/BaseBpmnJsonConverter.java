@@ -520,6 +520,7 @@ public abstract class BaseBpmnJsonConverter implements EditorJsonConstants, Sten
                                 for (JsonNode enumNode : enumValuesNode) {
                                     if (enumNode.get("value") != null && enumNode.get("value").isNull() == false) {
                                         FormValue formValue = new FormValue();
+										formValue.setId(enumNode.get("value").asText());
                                         formValue.setName(enumNode.get("value").asText());
                                         formValueList.add(formValue);
                                     }
