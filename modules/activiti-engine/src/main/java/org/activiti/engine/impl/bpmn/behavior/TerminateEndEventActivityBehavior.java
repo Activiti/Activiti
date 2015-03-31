@@ -29,14 +29,33 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
     ActivityImpl terminateEndEventActivity = (ActivityImpl) execution.getActivity();
     ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
 
+    boolean loop = true;
+    // get top superexecution to terminate
+    while (scopeExecution.getSuperExecutionId() != null && loop) {
+      ActivityExecution superExecution = (ActivityExecution) Context.getProcessEngineConfiguration().getRuntimeService().createExecutionQuery().executionId(scopeExecution.getSuperExecutionId()).singleResult();
+      if (superExecution != null) {
+        // superExecution can be null in the case when no wait state was reached between super start event and TerminateEndEvent
+        while (superExecution.getParent() != null) {
+          superExecution = superExecution.getParent();
+        }
+        scopeExecution = superExecution;
+      } else {
+        loop = false;
+      }
+    }
+    
+    terminateExecution(execution, terminateEndEventActivity, scopeExecution);
+  }
+
+  private void terminateExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
     // send cancelled event
     sendCancelledEvent( execution, terminateEndEventActivity, scopeExecution);
 
     // destroy the scope
     scopeExecution.destroyScope("terminate end event fired");
-    
+
     // set the scope execution to the terminate end event and make it end here.
-    // (the history should reflect that the execution ended here and we want an 'end time' for the 
+    // (the history should reflect that the execution ended here and we want an 'end time' for the
     // historic activity instance.)
     ((InterpretableExecution)scopeExecution).setActivity(terminateEndEventActivity);
     // end the scope execution
