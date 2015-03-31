@@ -791,7 +791,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     if (sessionFactories==null) {
       sessionFactories = new HashMap<Class<?>, SessionFactory>();
 
-      dbSqlSessionFactory = new DbSqlSessionFactory();
+      if(null == dbSqlSessionFactory)
+      {
+        dbSqlSessionFactory = new DbSqlSessionFactory();
+      }
       dbSqlSessionFactory.setDatabaseType(databaseType);
       dbSqlSessionFactory.setIdGenerator(idGenerator);
       dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
