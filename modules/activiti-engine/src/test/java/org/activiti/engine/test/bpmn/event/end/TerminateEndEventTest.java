@@ -12,14 +12,23 @@
  */
 package org.activiti.engine.test.bpmn.event.end;
 
-import java.util.List;
-
-import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.bpmn.model.ExtensionAttribute;
+import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import java.util.List;
+import java.util.Map;
+
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
 
 /**
  * @author Nico Rehwaldt
@@ -28,25 +37,8 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
   public static int serviceTaskInvokedCount = 0;
 
-  public static class CountDelegate implements JavaDelegate {
-    
-    public void execute(DelegateExecution execution) throws Exception {
-      serviceTaskInvokedCount++;
-
-      // leave only 3 out of n subprocesses
-      execution.setVariableLocal("terminate", serviceTaskInvokedCount > 3);
-    }
-  }
-  
   public static int serviceTaskInvokedCount2 = 0;
 
-  public static class CountDelegate2 implements JavaDelegate {
-    
-    public void execute(DelegateExecution execution) throws Exception {
-      serviceTaskInvokedCount2++;
-    }
-  }
-    
   @Deployment
   public void testProcessTerminate() throws Exception {
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
@@ -247,5 +239,31 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
+  }
+
+  public void testParseTerminateEndEventDefinitionWithExtensions() {
+    org.activiti.engine.repository.Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.parseExtensionElements.bpmn20.xml").deploy();
+    ProcessDefinition processDefinitionQuery = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+    ProcessDefinitionEntity processDefinition = this.processEngineConfiguration.getProcessDefinitionCache().get(processDefinitionQuery.getId());
+
+    assertThat(processDefinition.getActivities().size(), is(2));
+    ActivityImpl endEvent = processDefinition.getActivities().get(1);
+    assertThat(endEvent.getId(), is("terminateEnd"));
+    assertThat(endEvent.getActivityBehavior(), instanceOf(TerminateEndEventActivityBehavior.class));
+    TerminateEndEventActivityBehavior terminateEndEventBehavior = (TerminateEndEventActivityBehavior) endEvent.getActivityBehavior();
+    Map<String, List<ExtensionElement>> extensionElements = terminateEndEventBehavior.getEndEvent().getExtensionElements();
+    assertThat(extensionElements.size(), is(1));
+    List<ExtensionElement> strangeProperties = extensionElements.get("strangeProperty");
+    assertThat(strangeProperties.size(), is(1));
+    ExtensionElement strangeProperty = strangeProperties.get(0);
+    assertThat(strangeProperty.getNamespace(), is("http://activiti.org/bpmn"));
+    assertThat(strangeProperty.getElementText(), is("value"));
+    assertThat(strangeProperty.getAttributes().size(), is(1));
+    ExtensionAttribute id = strangeProperty.getAttributes().get("id").get(0);
+    assertThat(id.getName(), is("id"));
+    assertThat(id.getValue(), is("strangeId"));
+
+
+    repositoryService.deleteDeployment(deployment.getId());
   }
 }

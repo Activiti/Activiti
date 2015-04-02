@@ -12,8 +12,9 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.bpmn.model.EndEvent;
+
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -23,40 +24,48 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
  */
 public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
+  protected final EndEvent endEvent;
+
+  public TerminateEndEventActivityBehavior(EndEvent endEvent) {
+    this.endEvent = endEvent.clone();
+  }
+
   public void execute(ActivityExecution execution) throws Exception {
-    
-    PvmActivity terminateEndEventActivity = execution.getActivity();    
+    ActivityImpl terminateEndEventActivity = (ActivityImpl) execution.getActivity();
     ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
-    
+
     // destroy the scope
     scopeExecution.destroyScope("terminate end event fired");
     
     // set the scope execution to the terminate end event and make it end here.
     // (the history should reflect that the execution ended here and we want an 'end time' for the 
     // historic activity instance.)
-    ((InterpretableExecution)scopeExecution).setActivity((ActivityImpl) terminateEndEventActivity);
+    ((InterpretableExecution)scopeExecution).setActivity(terminateEndEventActivity);
     // end the scope execution
     scopeExecution.end();
   }
-  
-  
+
+  public EndEvent getEndEvent() {
+    return this.endEvent;
+  }
+
   // If we use this implementation, we run into trouble in the DbSqlSession, see ACT-1382
-  
+
 //  public void execute(ActivityExecution execution) throws Exception {
-//    
+//
 //    PvmActivity terminateEndEventActivity = execution.getActivity();
-//    
+//
 //    ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
-//    
+//
 //    // first end the current execution normally
 //    execution.end();
-//    
-//    // if this does not end the scope execution, interrupt it and destroy it. 
+//
+//    // if this does not end the scope execution, interrupt it and destroy it.
 //    if (!scopeExecution.isEnded()) {
 //      // destroy the scope execution (this interrupts all child executions / sub process instances)
 //      scopeExecution.destroyScope("terminate end event fired");
-//    
-//      // set the scope execution to the terminate end event make 
+//
+//      // set the scope execution to the terminate end event make
 //      // (the history should reflect that the execution ended here).
 //      ((InterpretableExecution)scopeExecution).setActivity((ActivityImpl) terminateEndEventActivity);
 //      // end the scope execution
