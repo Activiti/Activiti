@@ -14,6 +14,8 @@ package org.activiti.engine.test.bpmn.event.end;
 
 import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.bpmn.behavior.TerminateEndEventActivityBehavior;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
@@ -37,7 +39,24 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
   public static int serviceTaskInvokedCount = 0;
 
+  public static class CountDelegate implements JavaDelegate {
+
+    public void execute(DelegateExecution execution) throws Exception {
+      serviceTaskInvokedCount++;
+
+      // leave only 3 out of n subprocesses
+      execution.setVariableLocal("terminate", serviceTaskInvokedCount > 3);
+    }
+  }
+
   public static int serviceTaskInvokedCount2 = 0;
+
+  public static class CountDelegate2 implements JavaDelegate {
+
+    public void execute(DelegateExecution execution) throws Exception {
+      serviceTaskInvokedCount2++;
+    }
+  }
 
   @Deployment
   public void testProcessTerminate() throws Exception {
