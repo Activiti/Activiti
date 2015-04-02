@@ -4591,7 +4591,7 @@ So in the end z = y+5 = x+5+5
 
 The following process diagram shows a simple handling of an order. Since the checking of the customer's credit could be common to many other processes, the _check credit step_ is modeled here as a call activity.
 
-image::images/image::images/bpmn.conditional.sequence.flow.png[align="center"][align="center"]Ω
+image::images/bpmn.call.activity.super.process.png[align="center"]
 
 The process looks as follows:
 
