@@ -34,6 +34,7 @@ public class ProcessInstanceDiagramResourceTest extends BaseSpringRestTestCase {
     CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_DIAGRAM, processInstance.getId())), HttpStatus.SC_OK);
     assertNotNull(response.getEntity().getContent());
+    assertEquals("image/png", response.getEntity().getContentType().getValue());
     closeResponse(response);
   }
   

@@ -64,7 +64,7 @@ public class JobRetryCmd implements Command<Object> {
     ProcessEngineConfiguration processEngineConfig = commandContext.getProcessEngineConfiguration();
    
     if (activity == null || activity.getFailedJobRetryTimeCycleValue() == null) {
-      log.error("activitiy or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
+      log.info("activitiy or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
       job.setRetries(job.getRetries() - 1);
       job.setLockOwner(null);
       job.setLockExpirationTime(null);
