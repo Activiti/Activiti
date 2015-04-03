@@ -53,6 +53,8 @@ public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.ENTITY_INITIALIZED, 
     			    execution, variablesMap, false));
+            Context.getProcessEngineConfiguration().getEventDispatcher()
+                    .dispatchEvent(ActivitiEventBuilder.createProcessStartedEvent(execution, variablesMap, false));
     }
   	
     ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
