@@ -79,6 +79,8 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
         dockNode.put(EDITOR_BOUNDS_Y, graphicInfo.getY() - parentGraphicInfo.getY());
         dockersArrayNode.add(dockNode);
         flowElementNode.put("dockers", dockersArrayNode);
+		// Now lets populate the property used to hold the interrupt activity flag
+		propertiesNode.put("cancelactivity", boundaryEvent.isCancelActivity());
 
         propertiesNode.put(PROPERTY_CANCEL_ACTIVITY, boundaryEvent.isCancelActivity());
         
