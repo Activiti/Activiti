@@ -1,22 +1,13 @@
 package org.activiti.engine.impl.agenda;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,8 +38,6 @@ public class EndExecutionOperation extends AbstractOperation {
 		
 		if (parentExecution != null) {
 			
-			parentExecution.setActive(true);
-			
 			// If the execution is a scope, and it is ended, all the child executions must be deleted first. 
 			if (executionEntity.isScope()) {
 				deleteChildExecutions(commandContext, executionEntity);
@@ -59,7 +48,22 @@ public class EndExecutionOperation extends AbstractOperation {
 			deleteExecution(commandContext, executionEntity);
 
 			logger.debug("Parent execution found. Continuing process using execution {}", parentExecution.getId());
-			parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
+			SubProcess subProcess = null;
+			if (executionEntity.getCurrentFlowElement() instanceof EndEvent) {
+			    EndEvent endEvent = (EndEvent) executionEntity.getCurrentFlowElement();
+			    subProcess = endEvent.getSubProcess();
+			    
+			    if (parentExecution.getParentId() != null) {
+			        deleteExecution(commandContext, parentExecution);
+			        parentExecution = executionEntityManager.get(parentExecution.getParentId());
+			    }
+			}
+			
+			if (subProcess != null) {
+			    parentExecution.setCurrentFlowElement(subProcess);
+			} else {
+			    parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
+			}
 			agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);
 			
 		} else {

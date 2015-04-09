@@ -14,11 +14,14 @@
 package org.activiti.engine.impl.cmd;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -168,10 +171,14 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 		}
 		ExecutionEntity processInstance = createProcessInstance(commandContext, processDefinition, 
 		        businessKey, initiatorVariableName, initialFlowElement);
-
+		
+		processInstance.setVariables(processDataObjects(process.getDataObjects()));
+		
 		// Set the variables passed into the start command
 		if (variables != null) {
-			processInstance.setVariables(variables);
+			for (String varName : variables.keySet()) {
+                processInstance.setVariable(varName, variables.get(varName));
+            }
 		}
 
 		// Set processInstance name
@@ -222,4 +229,15 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
 		
 		return processInstance;
 	}
+	
+	protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
+        Map<String, Object> variablesMap = new HashMap<String, Object>();
+        // convert data objects to process variables  
+        if (dataObjects != null) {
+            for (ValuedDataObject dataObject : dataObjects) {
+                variablesMap.put(dataObject.getName(), dataObject.getValue());
+            }
+        }
+        return variablesMap;
+    }
 }

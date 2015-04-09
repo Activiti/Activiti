@@ -86,7 +86,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     bpmnParse.setCurrentScope(currentProcessDefinition);
     
     bpmnParse.processFlowElements(process.getFlowElements());
-    processArtifacts(bpmnParse, process.getArtifacts(), currentProcessDefinition);
+    processArtifacts(bpmnParse, process.getArtifacts());
     
     // parse out any data objects from the template in order to set up the necessary process variables
     Map<String, Object> variables = processDataObjects(bpmnParse, process.getDataObjects(), currentProcessDefinition);

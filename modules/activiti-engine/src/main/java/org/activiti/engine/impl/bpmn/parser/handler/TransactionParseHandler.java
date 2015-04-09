@@ -43,7 +43,7 @@ public class TransactionParseHandler extends AbstractActivityBpmnParseHandler<Tr
     bpmnParse.setCurrentScope(activity);
     
     bpmnParse.processFlowElements(transaction.getFlowElements());
-    processArtifacts(bpmnParse, transaction.getArtifacts(), activity);
+    processArtifacts(bpmnParse, transaction.getArtifacts());
     
     bpmnParse.removeCurrentScope();
     

@@ -12,28 +12,20 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ManualTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
 
 /**
  * @author Joram Barrez
  */
 public class ManualTaskParseHandler extends AbstractActivityBpmnParseHandler<ManualTask> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
-    return ManualTask.class;
-  }
-  
-  protected void executeParse(BpmnParse bpmnParse, ManualTask manualTask) {
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, manualTask, BpmnXMLConstants.ELEMENT_TASK_MANUAL);
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createManualTaskActivityBehavior(manualTask));
-    
-    activity.setAsync(manualTask.isAsynchronous());
-    activity.setExclusive(!manualTask.isNotExclusive());
-  }
 
+    public Class<? extends BaseElement> getHandledType() {
+        return ManualTask.class;
+    }
+
+    protected void executeParse(BpmnParse bpmnParse, ManualTask manualTask) {
+        manualTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createManualTaskActivityBehavior(manualTask));
+    }
 }

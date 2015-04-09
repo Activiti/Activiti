@@ -203,16 +203,16 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
     return ioSpecification;
   }
   
-  protected void processArtifacts(BpmnParse bpmnParse, Collection<Artifact> artifacts, ScopeImpl scope) {
+  protected void processArtifacts(BpmnParse bpmnParse, Collection<Artifact> artifacts) {
     // associations  
     for (Artifact artifact : artifacts) {
       if (artifact instanceof Association) {
-        createAssociation(bpmnParse, (Association) artifact, scope);
+        createAssociation(bpmnParse, (Association) artifact);
       }
     }
   }
   
-  protected void createAssociation(BpmnParse bpmnParse, Association association, ScopeImpl parentScope) {
+  protected void createAssociation(BpmnParse bpmnParse, Association association) {
     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
     if (bpmnModel.getArtifact(association.getSourceRef()) != null ||
         bpmnModel.getArtifact(association.getTargetRef()) != null) {
@@ -221,17 +221,17 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
       return;
     }
     
-    ActivityImpl sourceActivity = parentScope.findActivity(association.getSourceRef());
-    ActivityImpl targetActivity = parentScope.findActivity(association.getTargetRef());
+    //ActivityImpl sourceActivity = parentScope.findActivity(association.getSourceRef());
+    //ActivityImpl targetActivity = parentScope.findActivity(association.getTargetRef());
     
     // an association may reference elements that are not parsed as activities (like for instance 
     // text annotations so do not throw an exception if sourceActivity or targetActivity are null)
     // However, we make sure they reference 'something':
-    if (sourceActivity == null) {
+    //if (sourceActivity == null) {
       //bpmnModel.addProblem("Invalid reference sourceRef '" + association.getSourceRef() + "' of association element ", association.getId());
-    } else if (targetActivity == null) {
+    //} else if (targetActivity == null) {
       //bpmnModel.addProblem("Invalid reference targetRef '" + association.getTargetRef() + "' of association element ", association.getId());
-    } else {      
+    /*} else {      
       if (sourceActivity.getProperty("type").equals("compensationBoundaryCatch")) {
         Object isForCompensation = targetActivity.getProperty(PROPERTYNAME_IS_FOR_COMPENSATION);          
         if (isForCompensation == null || !(Boolean) isForCompensation) {
@@ -241,7 +241,7 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
           compensatedActivity.setProperty(BpmnParse.PROPERTYNAME_COMPENSATION_HANDLER_ID, targetActivity.getId());            
         }
       }
-    }
+    }*/
   }
   
   protected Map<String, Object> processDataObjects(BpmnParse bpmnParse, Collection<ValuedDataObject> dataObjects, ScopeImpl scope) {

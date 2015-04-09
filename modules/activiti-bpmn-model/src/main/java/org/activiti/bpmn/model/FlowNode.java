@@ -22,6 +22,8 @@ import java.util.List;
 public abstract class FlowNode extends FlowElement {
 
 	protected Object behavior;
+	
+	protected SubProcess subProcess;
 
 	protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
 	protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
@@ -38,7 +40,15 @@ public abstract class FlowNode extends FlowElement {
 		this.behavior = behavior;
 	}
 
-	public List<SequenceFlow> getIncomingFlows() {
+	public SubProcess getSubProcess() {
+        return subProcess;
+    }
+
+    public void setSubProcess(SubProcess subProcess) {
+        this.subProcess = subProcess;
+    }
+
+    public List<SequenceFlow> getIncomingFlows() {
 		return incomingFlows;
 	}
 

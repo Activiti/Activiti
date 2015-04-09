@@ -13,57 +13,98 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.ValuedDataObject;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
+import org.apache.commons.collections.CollectionUtils;
 
 /**
- * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded' subprocess):
- * a subprocess defined within another process definition.
+ * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded'
+ * subprocess): a subprocess defined within another process definition.
  * 
  * @author Joram Barrez
  */
 public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior implements CompositeActivityBehavior {
-  
-  public void execute(ActivityExecution execution) {
-    PvmActivity activity = execution.getActivity();
-    ActivityImpl initialActivity = (ActivityImpl) activity.getProperty(BpmnParse.PROPERTYNAME_INITIAL);
+
+    private static final long serialVersionUID = 1L;
+
+    public void execute(ActivityExecution execution) {
+        SubProcess subProcess = getSubProcessFromExecution(execution);
+
+        FlowElement startElement = null;
+        if (CollectionUtils.isNotEmpty(subProcess.getFlowElements())) {
+            for (FlowElement subElement : subProcess.getFlowElements()) {
+                if (subElement instanceof StartEvent) {
+                    StartEvent startEvent = (StartEvent) subElement;
+                    
+                    // start none event
+                    if (CollectionUtils.isEmpty(startEvent.getEventDefinitions())) {
+                        startElement = startEvent;
+                        break;
+                    }
+                }
+            }
+        }
+        
+        if (startElement == null) {
+            throw new ActivitiException("No initial activity found for subprocess " + subProcess.getId());
+        }
+        
+        ExecutionEntity subProcessExecution = ((ExecutionEntity) execution).createExecution();
+
+        // initialize the template-defined data objects as variables
+        Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
+        if (dataObjectVars != null) {
+            subProcessExecution.setVariablesLocal(dataObjectVars);
+        }
+
+        ExecutionEntity startSubProcessExecution = subProcessExecution.createExecution();
+        startSubProcessExecution.setCurrentFlowElement(startElement);
+        Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
+    }
+
+    public void lastExecutionEnded(ActivityExecution execution) {
+        SubProcess subProcess = getSubProcessFromExecution(execution);
+        
+        // remove the template-defined data object variables
+        Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
+        if (dataObjectVars != null) {
+            execution.removeVariablesLocal(dataObjectVars.keySet());
+        }
+
+        bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
+    }
     
-    if (initialActivity == null) {
-      throw new ActivitiException("No initial activity found for subprocess " 
-              + execution.getActivity().getId());
+    protected SubProcess getSubProcessFromExecution(ActivityExecution execution) {
+        FlowElement flowElement = execution.getCurrentFlowElement();
+        SubProcess subProcess = null;
+        if (flowElement instanceof SubProcess) {
+            subProcess = (SubProcess) flowElement;
+        } else {
+            throw new ActivitiException("Programmatic error: sub process behaviour can only be applied"
+                    + " to a SubProcess instance, but got an instance of " + flowElement);
+        }
+        return subProcess;
     }
-
-    // initialize the template-defined data objects as variables
-    initializeDataObjects(execution, activity);
-
-    execution.executeActivity(initialActivity);
-  }
-  
-  public void lastExecutionEnded(ActivityExecution execution) {
-    ScopeUtil.createEventScopeExecution((ExecutionEntity) execution);
     
-    // remove the template-defined data object variables
-    Map<String, Object> dataObjectVars = ((ActivityImpl) execution.getActivity()).getVariables();
-    if (dataObjectVars != null) {
-      execution.removeVariablesLocal(dataObjectVars.keySet());
+    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
+        Map<String, Object> variablesMap = new HashMap<String, Object>();
+        // convert data objects to process variables  
+        if (dataObjects != null) {
+            for (ValuedDataObject dataObject : dataObjects) {
+                variablesMap.put(dataObject.getName(), dataObject.getValue());
+            }
+        }
+        return variablesMap;
     }
-
-    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
-  }
-
-  protected void initializeDataObjects(ActivityExecution execution, PvmActivity activity) {
-    Map<String, Object> dataObjectVars = ((ActivityImpl) activity).getVariables();
-    if (dataObjectVars != null) {
-      execution.setVariablesLocal(dataObjectVars);
-    }
-  }
 }

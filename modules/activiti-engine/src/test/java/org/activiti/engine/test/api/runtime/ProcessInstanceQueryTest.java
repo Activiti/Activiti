@@ -14,6 +14,7 @@ package org.activiti.engine.test.api.runtime;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.history.HistoricVariableInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -1347,6 +1348,12 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
     vars = new HashMap<String, Object>();
     vars.put("nullVarByte", "testbytes".getBytes());
     ProcessInstance processInstance5 = runtimeService.startProcessInstanceByKey("oneTaskProcess", vars);
+    
+    List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().list();
+    for (HistoricVariableInstance historicVariableInstance : variables) {
+        System.out.println("historicVariableInstance " + historicVariableInstance.getProcessInstanceId() + " " + 
+                historicVariableInstance.getVariableName() + " " + historicVariableInstance.getValue());
+    }
     
     // Query on null value, should return one value
     ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery().variableValueEquals("nullVar", null);

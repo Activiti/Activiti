@@ -28,52 +28,52 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class SubProcessParser implements BpmnXMLConstants {
-  
-  public void parse(XMLStreamReader xtr, List<SubProcess> activeSubProcessList, Process activeProcess) {
-  	SubProcess subProcess = null;
-  	if (ELEMENT_TRANSACTION.equalsIgnoreCase(xtr.getLocalName())) {
-  	  subProcess = new Transaction();
-  	} else if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(xtr.getAttributeValue(null, ATTRIBUTE_TRIGGERED_BY))) {
-			subProcess = new EventSubProcess();
-		} else {
-			subProcess = new SubProcess();
-		}
-  	BpmnXMLUtil.addXMLLocation(subProcess, xtr);
-		activeSubProcessList.add(subProcess);
-		
-		subProcess.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
-		subProcess.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
-    
-		boolean async = false;
-    String asyncString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS);
-    if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(asyncString)) {
-      async = true;
-    }
-    
-    boolean notExclusive = false;
-    String exclusiveString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE);
-    if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(exclusiveString)) {
-      notExclusive = true;
-    }
 
-    boolean forCompensation = false;
-    String compensationString = xtr.getAttributeValue(null, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION);
-    if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(compensationString)) {
-      forCompensation = true;
+    public void parse(XMLStreamReader xtr, List<SubProcess> activeSubProcessList, Process activeProcess) {
+        SubProcess subProcess = null;
+        if (ELEMENT_TRANSACTION.equalsIgnoreCase(xtr.getLocalName())) {
+            subProcess = new Transaction();
+        } else if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(xtr.getAttributeValue(null, ATTRIBUTE_TRIGGERED_BY))) {
+            subProcess = new EventSubProcess();
+        } else {
+            subProcess = new SubProcess();
+        }
+        BpmnXMLUtil.addXMLLocation(subProcess, xtr);
+        activeSubProcessList.add(subProcess);
+
+        subProcess.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
+        subProcess.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
+
+        boolean async = false;
+        String asyncString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS);
+        if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(asyncString)) {
+            async = true;
+        }
+
+        boolean notExclusive = false;
+        String exclusiveString = xtr.getAttributeValue(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE);
+        if (ATTRIBUTE_VALUE_FALSE.equalsIgnoreCase(exclusiveString)) {
+            notExclusive = true;
+        }
+
+        boolean forCompensation = false;
+        String compensationString = xtr.getAttributeValue(null, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION);
+        if (ATTRIBUTE_VALUE_TRUE.equalsIgnoreCase(compensationString)) {
+            forCompensation = true;
+        }
+
+        subProcess.setAsynchronous(async);
+        subProcess.setNotExclusive(notExclusive);
+        subProcess.setForCompensation(forCompensation);
+        if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_DEFAULT))) {
+            subProcess.setDefaultFlow(xtr.getAttributeValue(null, ATTRIBUTE_DEFAULT));
+        }
+
+        if (activeSubProcessList.size() > 1) {
+            activeSubProcessList.get(activeSubProcessList.size() - 2).addFlowElement(subProcess);
+
+        } else {
+            activeProcess.addFlowElement(subProcess);
+        }
     }
-		
-		subProcess.setAsynchronous(async);
-		subProcess.setNotExclusive(notExclusive);
-    subProcess.setForCompensation(forCompensation);
-    if(StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_DEFAULT))) {
-      subProcess.setDefaultFlow(xtr.getAttributeValue(null, ATTRIBUTE_DEFAULT));
-    }
-    
-    if(activeSubProcessList.size() > 1) {
-      activeSubProcessList.get(activeSubProcessList.size() - 2).addFlowElement(subProcess);
-      
-    } else {
-      activeProcess.addFlowElement(subProcess);
-    }
-  }
 }
