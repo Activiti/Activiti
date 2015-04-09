@@ -99,9 +99,11 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
     parseChildElements(elementName, parentElement, xtr, null, model);
   }
 
-  public static void parseChildElements(String elementName, BaseElement parentElement, XMLStreamReader xtr, Map<String, BaseChildElementParser> childParsers, BpmnModel model) throws Exception {
-
+  public static void parseChildElements(String elementName, BaseElement parentElement, XMLStreamReader xtr, 
+      Map<String, BaseChildElementParser> childParsers, BpmnModel model) throws Exception {
+    
     Map<String, BaseChildElementParser> localParserMap = new HashMap<String, BaseChildElementParser>(genericChildParserMap);
+
     if (childParsers != null) {
       localParserMap.putAll(childParsers);
     }
@@ -115,9 +117,7 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
           inExtensionElements = true;
         } else if (localParserMap.containsKey(xtr.getLocalName())) {
           BaseChildElementParser childParser = localParserMap.get(xtr.getLocalName());
-          // if we're into an extension element but the current
-          // element is not accepted by this parentElement then is
-          // read as a custom extension element
+          //if we're into an extension element but the current element is not accepted by this parentElement then is read as a custom extension element
           if (inExtensionElements && !childParser.accepts(parentElement)) {
             ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
             parentElement.addExtensionElement(extensionElement);
