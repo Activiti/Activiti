@@ -12,7 +12,9 @@
  */
 package org.activiti.engine.test.bpmn.event.end;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -92,7 +94,40 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(pi.getId());
   }
-  
+
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInExclusiveGatewayWithCallActivity.bpmn",
+          "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessNoTerminate.bpmn"
+  })
+  public void testTerminateInExclusiveGatewayWithCallActivity() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample-terminateAfterExclusiveGateway");
+
+    long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
+    assertEquals(4, executionEntities);
+
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("input", 1);
+    taskService.complete(task.getId(), variables);
+
+    assertProcessEnded(pi.getId());
+  }
+
+  @Deployment
+  public void testTerminateInExclusiveGatewayWithMultiInstanceSubProcess() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample-terminateAfterExclusiveGateway");
+
+    long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
+    assertEquals(14, executionEntities);
+
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("input", 1);
+    taskService.complete(task.getId(), variables);
+
+    assertProcessEnded(pi.getId());
+  }
+
   @Deployment
   public void testTerminateInSubProcess() throws Exception {
     serviceTaskInvokedCount = 0;
