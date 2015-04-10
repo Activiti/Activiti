@@ -16,7 +16,6 @@ package org.activiti.spring.test.taskListener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-
 /**
  * @author Joram Barrez
  */

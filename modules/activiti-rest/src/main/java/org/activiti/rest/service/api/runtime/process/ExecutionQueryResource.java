@@ -24,19 +24,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class ExecutionQueryResource extends ExecutionBaseResource {
 
-  @RequestMapping(value="/query/executions", method = RequestMethod.POST, produces="application/json")
-  public DataResponse queryProcessInstances(@RequestBody ExecutionQueryRequest queryRequest,
-      @RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
-    
-    return getQueryResponse(queryRequest, allRequestParams, 
-        request.getRequestURL().toString().replace("/query/executions", ""));
-  }
+    @RequestMapping(value = "/query/executions", method = RequestMethod.POST, produces = "application/json")
+    public DataResponse queryProcessInstances(@RequestBody ExecutionQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+
+        return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/query/executions", ""));
+    }
 }

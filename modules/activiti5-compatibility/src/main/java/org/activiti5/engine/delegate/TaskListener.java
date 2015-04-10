@@ -15,26 +15,23 @@ package org.activiti5.engine.delegate;
 
 import java.io.Serializable;
 
-
-
-
-
 /**
  * @author Tom Baeyens
  */
 public interface TaskListener extends Serializable {
 
-  String EVENTNAME_CREATE = "create";
-  String EVENTNAME_ASSIGNMENT = "assignment";
-  String EVENTNAME_COMPLETE = "complete";
-  String EVENTNAME_DELETE = "delete";
-  
-  
-  /**
-   * Not an actual event, used as a marker-value for {@link TaskListener}s that should be called for all events,
-   * including {@link #EVENTNAME_CREATE}, {@link #EVENTNAME_ASSIGNMENT} and {@link #EVENTNAME_COMPLETE} and {@link #EVENTNAME_DELETE}.
-   */
-  String EVENTNAME_ALL_EVENTS = "all";
-  
-  void notify(DelegateTask delegateTask);
+    String EVENTNAME_CREATE = "create";
+    String EVENTNAME_ASSIGNMENT = "assignment";
+    String EVENTNAME_COMPLETE = "complete";
+    String EVENTNAME_DELETE = "delete";
+
+    /**
+     * Not an actual event, used as a marker-value for {@link TaskListener}s
+     * that should be called for all events, including {@link #EVENTNAME_CREATE}
+     * , {@link #EVENTNAME_ASSIGNMENT} and {@link #EVENTNAME_COMPLETE} and
+     * {@link #EVENTNAME_DELETE}.
+     */
+    String EVENTNAME_ALL_EVENTS = "all";
+
+    void notify(DelegateTask delegateTask);
 }

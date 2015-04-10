@@ -22,22 +22,22 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
  */
 public class MultipleJobsExecutorContext implements JobExecutorContext {
 
-  protected List<String> currentProcessorJobQueue = new LinkedList<String>();
-  protected JobEntity currentJob;
-        
-  public List<String> getCurrentProcessorJobQueue() {
-    return currentProcessorJobQueue;
-  }
+    protected List<String> currentProcessorJobQueue = new LinkedList<String>();
+    protected JobEntity currentJob;
 
-  public boolean isExecutingExclusiveJob() {
-    return currentJob == null ? false : currentJob.isExclusive();
-  }
-     
-  public void setCurrentJob(JobEntity currentJob) {
-    this.currentJob = currentJob;
-  }
-    
-  public JobEntity getCurrentJob() {
-    return currentJob;
-  }
+    public List<String> getCurrentProcessorJobQueue() {
+        return currentProcessorJobQueue;
+    }
+
+    public boolean isExecutingExclusiveJob() {
+        return currentJob == null ? false : currentJob.isExclusive();
+    }
+
+    public void setCurrentJob(JobEntity currentJob) {
+        this.currentJob = currentJob;
+    }
+
+    public JobEntity getCurrentJob() {
+        return currentJob;
+    }
 }

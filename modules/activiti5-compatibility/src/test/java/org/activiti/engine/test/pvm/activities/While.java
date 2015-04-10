@@ -17,43 +17,42 @@ import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Tom Baeyens
  */
 public class While implements ActivityBehavior {
-  
-  String variableName;
-  int from;
-  int to;
-  
-  public While(String variableName, int from, int to) {
-    this.variableName = variableName;
-    this.from = from;
-    this.to = to;
-  }
 
-  public void execute(ActivityExecution execution) throws Exception {
-    PvmTransition more = execution.getActivity().findOutgoingTransition("more");
-    PvmTransition done = execution.getActivity().findOutgoingTransition("done");
-    
-    Integer value = (Integer) execution.getVariable(variableName);
+    String variableName;
+    int from;
+    int to;
 
-    if (value==null) {
-      execution.setVariable(variableName, from);
-      execution.take(more);
-      
-    } else {
-      value = value+1;
-      
-      if (value<to) {
-        execution.setVariable(variableName, value);
-        execution.take(more);
-        
-      } else {
-        execution.take(done);
-      }
+    public While(String variableName, int from, int to) {
+        this.variableName = variableName;
+        this.from = from;
+        this.to = to;
     }
-  }
+
+    public void execute(ActivityExecution execution) throws Exception {
+        PvmTransition more = execution.getActivity().findOutgoingTransition("more");
+        PvmTransition done = execution.getActivity().findOutgoingTransition("done");
+
+        Integer value = (Integer) execution.getVariable(variableName);
+
+        if (value == null) {
+            execution.setVariable(variableName, from);
+            execution.take(more);
+
+        } else {
+            value = value + 1;
+
+            if (value < to) {
+                execution.setVariable(variableName, value);
+                execution.take(more);
+
+            } else {
+                execution.take(done);
+            }
+        }
+    }
 
 }

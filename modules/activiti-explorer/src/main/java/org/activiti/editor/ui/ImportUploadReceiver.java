@@ -42,111 +42,107 @@ import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.FinishedListener;
 import com.vaadin.ui.Upload.Receiver;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class ImportUploadReceiver implements Receiver, FinishedListener, ModelDataJsonConstants {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected transient RepositoryService repositoryService;
-  protected I18nManager i18nManager;
-  protected NotificationManager notificationManager;
-  protected ViewManager viewManager;
-  
-  // Will be assigned during upload
-  protected ByteArrayOutputStream outputStream;
-  protected String fileName;
-  
-  // Will be assigned after deployment
-  protected boolean validFile = false;
-  protected Model modelData;
-  
-  public ImportUploadReceiver() {
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.notificationManager = ExplorerApp.get().getNotificationManager();
-    this.viewManager = ExplorerApp.get().getViewManager();
-  }
-  
-  public OutputStream receiveUpload(String filename, String mimeType) {
-    this.fileName = filename;
-    this.outputStream = new ByteArrayOutputStream();
-    return outputStream;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public void uploadFinished(FinishedEvent event) {
-    deployUploadedFile();
-    if (validFile) {
-      showUploadedDeployment();
+    protected transient RepositoryService repositoryService;
+    protected I18nManager i18nManager;
+    protected NotificationManager notificationManager;
+    protected ViewManager viewManager;
+
+    // Will be assigned during upload
+    protected ByteArrayOutputStream outputStream;
+    protected String fileName;
+
+    // Will be assigned after deployment
+    protected boolean validFile = false;
+    protected Model modelData;
+
+    public ImportUploadReceiver() {
+        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+        this.notificationManager = ExplorerApp.get().getNotificationManager();
+        this.viewManager = ExplorerApp.get().getViewManager();
     }
-  }
 
-  protected void deployUploadedFile() {
-    try {
-      try {
-        if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
-          validFile = true;
-            
-          XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
-          InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray()), "UTF-8");
-          XMLStreamReader xtr = xif.createXMLStreamReader(in);
-          BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-          
-          if (bpmnModel.getMainProcess() == null || bpmnModel.getMainProcess().getId() == null) {
-            notificationManager.showErrorNotification(Messages.MODEL_IMPORT_FAILED, 
-                i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMN_EXPLANATION));
-          } else {
-          
-            if (bpmnModel.getLocationMap().isEmpty()) {
-              notificationManager.showErrorNotification(Messages.MODEL_IMPORT_INVALID_BPMNDI,
-                  i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMNDI_EXPLANATION));
-            } else {
-            
-              String processName = null;
-              if (StringUtils.isNotEmpty(bpmnModel.getMainProcess().getName())) {
-                processName = bpmnModel.getMainProcess().getName();
-              } else {
-                processName = bpmnModel.getMainProcess().getId();
-              }
-              
-              modelData = repositoryService.newModel();
-              ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
-              modelObjectNode.put(MODEL_NAME, processName);
-              modelObjectNode.put(MODEL_REVISION, 1);
-              modelData.setMetaInfo(modelObjectNode.toString());
-              modelData.setName(processName);
-              
-              repositoryService.saveModel(modelData);
-              
-              BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
-              ObjectNode editorNode = jsonConverter.convertToJson(bpmnModel);
-              
-              repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
-            }
-          }
-        } else {
-          notificationManager.showErrorNotification(Messages.MODEL_IMPORT_INVALID_FILE,
-          		i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_FILE_EXPLANATION));
+    public OutputStream receiveUpload(String filename, String mimeType) {
+        this.fileName = filename;
+        this.outputStream = new ByteArrayOutputStream();
+        return outputStream;
+    }
+
+    public void uploadFinished(FinishedEvent event) {
+        deployUploadedFile();
+        if (validFile) {
+            showUploadedDeployment();
         }
-      } catch (Exception e) {
-        String errorMsg = e.getMessage().replace(System.getProperty("line.separator"), "<br/>");
-        notificationManager.showErrorNotification(Messages.MODEL_IMPORT_FAILED, errorMsg);
-      }
-    } finally {
-      if (outputStream != null) {
+    }
+
+    protected void deployUploadedFile() {
         try {
-          outputStream.close();
-        } catch (IOException e) {
-          notificationManager.showErrorNotification("Server-side error", e.getMessage());
+            try {
+                if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
+                    validFile = true;
+
+                    XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
+                    InputStreamReader in = new InputStreamReader(new ByteArrayInputStream(outputStream.toByteArray()), "UTF-8");
+                    XMLStreamReader xtr = xif.createXMLStreamReader(in);
+                    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+
+                    if (bpmnModel.getMainProcess() == null || bpmnModel.getMainProcess().getId() == null) {
+                        notificationManager.showErrorNotification(Messages.MODEL_IMPORT_FAILED, i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMN_EXPLANATION));
+                    } else {
+
+                        if (bpmnModel.getLocationMap().isEmpty()) {
+                            notificationManager.showErrorNotification(Messages.MODEL_IMPORT_INVALID_BPMNDI, i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMNDI_EXPLANATION));
+                        } else {
+
+                            String processName = null;
+                            if (StringUtils.isNotEmpty(bpmnModel.getMainProcess().getName())) {
+                                processName = bpmnModel.getMainProcess().getName();
+                            } else {
+                                processName = bpmnModel.getMainProcess().getId();
+                            }
+
+                            modelData = repositoryService.newModel();
+                            ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
+                            modelObjectNode.put(MODEL_NAME, processName);
+                            modelObjectNode.put(MODEL_REVISION, 1);
+                            modelData.setMetaInfo(modelObjectNode.toString());
+                            modelData.setName(processName);
+
+                            repositoryService.saveModel(modelData);
+
+                            BpmnJsonConverter jsonConverter = new BpmnJsonConverter();
+                            ObjectNode editorNode = jsonConverter.convertToJson(bpmnModel);
+
+                            repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+                        }
+                    }
+                } else {
+                    notificationManager.showErrorNotification(Messages.MODEL_IMPORT_INVALID_FILE, i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_FILE_EXPLANATION));
+                }
+            } catch (Exception e) {
+                String errorMsg = e.getMessage().replace(System.getProperty("line.separator"), "<br/>");
+                notificationManager.showErrorNotification(Messages.MODEL_IMPORT_FAILED, errorMsg);
+            }
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    notificationManager.showErrorNotification("Server-side error", e.getMessage());
+                }
+            }
         }
-      }
     }
-  }
-  
-  protected void showUploadedDeployment() {
-    viewManager.showEditorProcessDefinitionPage(modelData.getId());
-  }
-  
+
+    protected void showUploadedDeployment() {
+        viewManager.showEditorProcessDefinitionPage(modelData.getId());
+    }
+
 }

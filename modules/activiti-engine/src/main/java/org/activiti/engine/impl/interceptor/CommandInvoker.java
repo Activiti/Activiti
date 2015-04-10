@@ -21,47 +21,48 @@ public class CommandInvoker extends AbstractCommandInterceptor {
 
     @Override
     @SuppressWarnings("unchecked")
-	public <T> T execute(final CommandConfig config, final Command<T> command) {
-		final CommandContext commandContext = Context.getCommandContext();
-		
-		// Execute the command. 
-		// This will produce operations that will be put on the agenda.
-		commandContext.getAgenda().planOperation(new Runnable() {
+    public <T> T execute(final CommandConfig config, final Command<T> command) {
+        final CommandContext commandContext = Context.getCommandContext();
 
-			@Override
-			public void run() {
-				commandContext.setResult(command.execute(commandContext));
-			}
-		});
+        // Execute the command.
+        // This will produce operations that will be put on the agenda.
+        commandContext.getAgenda().planOperation(new Runnable() {
 
-		// Run loop for agenda
-		executeOperations(commandContext);
+            @Override
+            public void run() {
+                commandContext.setResult(command.execute(commandContext));
+            }
+        });
 
-		// At the end, call the execution tree change listeners.
-		// TODO: optimization: only do this when the tree has actually changed (ie check dbSqlSession).
-		if (commandContext.hasInvolvedExecutions()) {
-			commandContext.getAgenda().planExecuteInactiveBehaviorsOperation();
-			executeOperations(commandContext);
-		}
+        // Run loop for agenda
+        executeOperations(commandContext);
 
-		return (T) commandContext.getResult();
-	}
-	
-	protected void executeOperations(final CommandContext commandContext) {
-		while (!commandContext.getAgenda().isEmpty()) {
-			Runnable runnable = commandContext.getAgenda().getNextOperation();
-			runnable.run();
-		}
-	}
+        // At the end, call the execution tree change listeners.
+        // TODO: optimization: only do this when the tree has actually changed
+        // (ie check dbSqlSession).
+        if (commandContext.hasInvolvedExecutions()) {
+            commandContext.getAgenda().planExecuteInactiveBehaviorsOperation();
+            executeOperations(commandContext);
+        }
 
-	@Override
-	public CommandInterceptor getNext() {
-		return null;
-	}
+        return (T) commandContext.getResult();
+    }
 
-	@Override
-	public void setNext(CommandInterceptor next) {
-		throw new UnsupportedOperationException("CommandInvoker must be the last interceptor in the chain");
-	}
+    protected void executeOperations(final CommandContext commandContext) {
+        while (!commandContext.getAgenda().isEmpty()) {
+            Runnable runnable = commandContext.getAgenda().getNextOperation();
+            runnable.run();
+        }
+    }
+
+    @Override
+    public CommandInterceptor getNext() {
+        return null;
+    }
+
+    @Override
+    public void setNext(CommandInterceptor next) {
+        throw new UnsupportedOperationException("CommandInvoker must be the last interceptor in the chain");
+    }
 
 }

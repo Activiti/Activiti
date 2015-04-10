@@ -53,14 +53,14 @@ public class SpringTransactionInterceptor extends AbstractCommandInterceptor {
 
     private int getPropagation(CommandConfig config) {
         switch (config.getTransactionPropagation()) {
-            case NOT_SUPPORTED:
-                return TransactionTemplate.PROPAGATION_NOT_SUPPORTED;
-            case REQUIRED:
-                return TransactionTemplate.PROPAGATION_REQUIRED;
-            case REQUIRES_NEW:
-                return TransactionTemplate.PROPAGATION_REQUIRES_NEW;
-            default:
-                throw new ActivitiIllegalArgumentException("Unsupported transaction propagation: " + config.getTransactionPropagation());
+        case NOT_SUPPORTED:
+            return TransactionTemplate.PROPAGATION_NOT_SUPPORTED;
+        case REQUIRED:
+            return TransactionTemplate.PROPAGATION_REQUIRED;
+        case REQUIRES_NEW:
+            return TransactionTemplate.PROPAGATION_REQUIRES_NEW;
+        default:
+            throw new ActivitiIllegalArgumentException("Unsupported transaction propagation: " + config.getTransactionPropagation());
         }
     }
 }

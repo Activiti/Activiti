@@ -15,28 +15,27 @@ package org.activiti.engine.impl;
 
 import org.activiti.engine.query.QueryProperty;
 
-
 /**
  * @author Daniel Meyer
  */
 public class EventSubscriptionQueryProperty implements QueryProperty {
 
-  private static final long serialVersionUID = 1L;
-  
-  // properties used in event subscription queries:
-  
-  public final static EventSubscriptionQueryProperty CREATED = new EventSubscriptionQueryProperty("RES.CREATED_");
-  
-  ///////////////////////////////////////////////// 
-  
-  private final String propertyName;
-  
-  public EventSubscriptionQueryProperty(String propertyName) {
-    this.propertyName = propertyName;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public String getName() {
-    return propertyName;
-  }
+    // properties used in event subscription queries:
+
+    public final static EventSubscriptionQueryProperty CREATED = new EventSubscriptionQueryProperty("RES.CREATED_");
+
+    // ///////////////////////////////////////////////
+
+    private final String propertyName;
+
+    public EventSubscriptionQueryProperty(String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    public String getName() {
+        return propertyName;
+    }
 
 }

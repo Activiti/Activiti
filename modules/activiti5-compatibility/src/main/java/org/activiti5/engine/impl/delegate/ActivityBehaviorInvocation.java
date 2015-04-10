@@ -21,21 +21,21 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ActivityBehaviorInvocation extends DelegateInvocation {
 
-  protected final ActivityBehavior behaviorInstance;
+    protected final ActivityBehavior behaviorInstance;
 
-  protected final ActivityExecution execution;
+    protected final ActivityExecution execution;
 
-  public ActivityBehaviorInvocation(ActivityBehavior behaviorInstance, ActivityExecution execution) {
-    this.behaviorInstance = behaviorInstance;
-    this.execution = execution;
-  }
+    public ActivityBehaviorInvocation(ActivityBehavior behaviorInstance, ActivityExecution execution) {
+        this.behaviorInstance = behaviorInstance;
+        this.execution = execution;
+    }
 
-  protected void invoke() throws Exception {
-    behaviorInstance.execute(execution);
-  }
+    protected void invoke() throws Exception {
+        behaviorInstance.execute(execution);
+    }
 
-  public Object getTarget() {
-    return behaviorInstance;
-  }
+    public Object getTarget() {
+        return behaviorInstance;
+    }
 
 }

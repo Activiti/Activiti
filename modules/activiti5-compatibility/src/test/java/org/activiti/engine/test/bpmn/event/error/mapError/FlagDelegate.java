@@ -15,25 +15,24 @@ package org.activiti.engine.test.bpmn.event.error.mapError;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 
-
 /**
  * @author Saeid Mirzaei
  */
-public class FlagDelegate implements JavaDelegate{
-  static boolean visited = false;
+public class FlagDelegate implements JavaDelegate {
+    static boolean visited = false;
 
-  public static void reset() {
-    visited = false;
-  }
-  
-  public static boolean isVisited() {
-    return visited;
-  }
-  
-  @Override
-  public void execute(DelegateExecution execution) throws Exception {
-    visited =   true;
-    
-  }
+    public static void reset() {
+        visited = false;
+    }
+
+    public static boolean isVisited() {
+        return visited;
+    }
+
+    @Override
+    public void execute(DelegateExecution execution) throws Exception {
+        visited = true;
+
+    }
 
 }

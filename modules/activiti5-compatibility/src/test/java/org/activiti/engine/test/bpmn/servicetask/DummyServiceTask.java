@@ -16,16 +16,15 @@ package org.activiti.engine.test.bpmn.servicetask;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 
-
 /**
  * @author Joram Barrez
  */
 public class DummyServiceTask implements JavaDelegate {
-  
-  public void execute(DelegateExecution execution) throws Exception {
-    Integer count = (Integer) execution.getVariable("count");
-    count = count+1;
-    execution.setVariable("count", count);
-  }
+
+    public void execute(DelegateExecution execution) throws Exception {
+        Integer count = (Integer) execution.getVariable("count");
+        count = count + 1;
+        execution.setVariable("count", count);
+    }
 
 }

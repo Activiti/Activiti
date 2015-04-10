@@ -22,11 +22,11 @@ import org.activiti5.engine.delegate.JavaDelegate;
  */
 public class ServiceTaskTestMock implements JavaDelegate {
 
-	public static AtomicInteger CALL_COUNT = new AtomicInteger();
-	
-	@Override
-	public void execute(DelegateExecution execution) throws Exception {
-	  CALL_COUNT.incrementAndGet();
-	}
+    public static AtomicInteger CALL_COUNT = new AtomicInteger();
+
+    @Override
+    public void execute(DelegateExecution execution) throws Exception {
+        CALL_COUNT.incrementAndGet();
+    }
 
 }

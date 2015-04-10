@@ -20,22 +20,19 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.task.Attachment;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GetTaskAttachmentsCmd implements Command<List<Attachment>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String taskId;
-  
-  public GetTaskAttachmentsCmd(String taskId) {
-    this.taskId = taskId;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String taskId;
 
-  public List<Attachment> execute(CommandContext commandContext) {
-    return commandContext
-      .getAttachmentEntityManager()
-      .findAttachmentsByTaskId(taskId);
-  }
+    public GetTaskAttachmentsCmd(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public List<Attachment> execute(CommandContext commandContext) {
+        return commandContext.getAttachmentEntityManager().findAttachmentsByTaskId(taskId);
+    }
 }

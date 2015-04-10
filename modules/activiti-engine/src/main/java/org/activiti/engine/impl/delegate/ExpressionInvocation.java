@@ -21,14 +21,14 @@ import org.activiti.engine.impl.javax.el.ValueExpression;
  */
 public abstract class ExpressionInvocation extends DelegateInvocation {
 
-  protected final ValueExpression valueExpression;
-  
-  public ExpressionInvocation(ValueExpression valueExpression) {
-    this.valueExpression = valueExpression;
-  }
+    protected final ValueExpression valueExpression;
 
-  public Object getTarget() {
-    return valueExpression; 
-  }
-  
+    public ExpressionInvocation(ValueExpression valueExpression) {
+        this.valueExpression = valueExpression;
+    }
+
+    public Object getTarget() {
+        return valueExpression;
+    }
+
 }

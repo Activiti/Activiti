@@ -28,52 +28,53 @@ import org.activiti.engine.task.Task;
  * @author Daniel Meyer
  */
 public interface ContextAssociationManager {
-  
-  /**
-   * Disassociates the current process instance with a context / scope
-   * 
-   * @throws ActivitiException if no process instance is currently associated
-   */
-  public void disAssociate();
-    
-  /**
-   * @return the id of the execution currently associated or null
-   */
-  public String getExecutionId();
 
-  /**
-   * get the current execution
-   */
-  public Execution getExecution();
+    /**
+     * Disassociates the current process instance with a context / scope
+     * 
+     * @throws ActivitiException
+     *             if no process instance is currently associated
+     */
+    public void disAssociate();
 
-  /**
-   * associate with the provided execution
-   */
-  void setExecution(Execution execution);
-  
-  /**
-   * set a current task
-   */
-  public void setTask(Task task);
-  
-  /**
-   * get the current task
-   */
-  public Task getTask();
+    /**
+     * @return the id of the execution currently associated or null
+     */
+    public String getExecutionId();
 
-  /**
-   * set a process variable
-   */
-  public void setVariable(String variableName, Object value);
+    /**
+     * get the current execution
+     */
+    public Execution getExecution();
 
-  /**
-   * get a process variable
-   */
-  public Object getVariable(String variableName);
+    /**
+     * associate with the provided execution
+     */
+    void setExecution(Execution execution);
 
-  /**  
-   * @return a map of process variables cached between flushes
-   */
-  public Map<String,Object> getCachedVariables();
-  
+    /**
+     * set a current task
+     */
+    public void setTask(Task task);
+
+    /**
+     * get the current task
+     */
+    public Task getTask();
+
+    /**
+     * set a process variable
+     */
+    public void setVariable(String variableName, Object value);
+
+    /**
+     * get a process variable
+     */
+    public Object getVariable(String variableName);
+
+    /**
+     * @return a map of process variables cached between flushes
+     */
+    public Map<String, Object> getCachedVariables();
+
 }

@@ -20,52 +20,51 @@ import org.activiti.explorer.data.LazyLoadingQuery;
 import org.activiti.explorer.navigation.MyProcessesNavigator;
 import org.activiti.explorer.navigation.UriFragment;
 
-
 /**
  * @author Frederik Heremans
  */
 public class MyProcessInstancesPage extends ProcessInstancePage {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String processInstanceId;
-  
-  protected transient RepositoryService repositoryService;
-  protected transient HistoryService historyService;
-  
-  public MyProcessInstancesPage() {
-    historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
-    repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-  }
-  
-  public MyProcessInstancesPage(String processInstanceId) {
-    this();
-    this.processInstanceId = processInstanceId;
-  }
+    protected String processInstanceId;
 
-  @Override
-  protected LazyLoadingQuery createLazyLoadingQuery() {
-    return new MyProcessInstancesListQuery(historyService, repositoryService);
-  }
-  
-  @Override
-  protected void initUi() {
-    super.initUi();
-    
-    if(processInstanceId != null) {
-      selectElement(processInstanceListContainer.getIndexForObjectId(processInstanceId));
-    } else {
-      selectElement(0);
+    protected transient RepositoryService repositoryService;
+    protected transient HistoryService historyService;
+
+    public MyProcessInstancesPage() {
+        historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
+        repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     }
-  }
 
-  @Override
-  protected UriFragment getUriFragment(String processInstanceId) {
-    UriFragment fragment = new UriFragment(MyProcessesNavigator.MY_PROCESSES_URI_PART);
-    if(processInstanceId != null) {
-      fragment.addUriPart(processInstanceId);
+    public MyProcessInstancesPage(String processInstanceId) {
+        this();
+        this.processInstanceId = processInstanceId;
     }
-    return fragment;
-  }
-  
+
+    @Override
+    protected LazyLoadingQuery createLazyLoadingQuery() {
+        return new MyProcessInstancesListQuery(historyService, repositoryService);
+    }
+
+    @Override
+    protected void initUi() {
+        super.initUi();
+
+        if (processInstanceId != null) {
+            selectElement(processInstanceListContainer.getIndexForObjectId(processInstanceId));
+        } else {
+            selectElement(0);
+        }
+    }
+
+    @Override
+    protected UriFragment getUriFragment(String processInstanceId) {
+        UriFragment fragment = new UriFragment(MyProcessesNavigator.MY_PROCESSES_URI_PART);
+        if (processInstanceId != null) {
+            fragment.addUriPart(processInstanceId);
+        }
+        return fragment;
+    }
+
 }

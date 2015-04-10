@@ -19,46 +19,44 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.test.Deployment;
 
 /**
- * Test case for {@link ActivitiEvent} thrown when a BPMNError is not caught
- * in the process.
+ * Test case for {@link ActivitiEvent} thrown when a BPMNError is not caught in
+ * the process.
  * 
  * @author Frederik Heremans
  */
 public class UncaughtErrorEventTest extends PluggableActivitiTestCase {
 
-	private TestActivitiEventListener listener;
+    private TestActivitiEventListener listener;
 
-	/**
-	 * Test events related to error-events, thrown from within process-execution (eg. service-task).
-	 */
-	@Deployment
-	public void testUncaughtError() throws Exception {
-		try {
-			runtimeService.startProcessInstanceByKey("errorProcess");
-			fail("Exception BPMN  error excepted due to not caught exception");
-		} catch (BpmnError e) {
-			
-		}
-	}
-	
-	
-	
+    /**
+     * Test events related to error-events, thrown from within process-execution
+     * (eg. service-task).
+     */
+    @Deployment
+    public void testUncaughtError() throws Exception {
+        try {
+            runtimeService.startProcessInstanceByKey("errorProcess");
+            fail("Exception BPMN  error excepted due to not caught exception");
+        } catch (BpmnError e) {
 
-	@Override
-	protected void initializeServices() {
-		super.initializeServices();
+        }
+    }
 
-		listener = new TestActivitiEventListener();
-		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
-	}
+    @Override
+    protected void initializeServices() {
+        super.initializeServices();
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+        listener = new TestActivitiEventListener();
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+    }
 
-		if (listener != null) {
-			listener.clearEventsReceived();
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
-		}
-	}
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+
+        if (listener != null) {
+            listener.clearEventsReceived();
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+        }
+    }
 }

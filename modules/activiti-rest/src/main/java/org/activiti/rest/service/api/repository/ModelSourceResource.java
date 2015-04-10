@@ -29,46 +29,46 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class ModelSourceResource extends BaseModelSourceResource {
 
-  @RequestMapping(value="/repository/models/{modelId}/source", method = RequestMethod.GET)
-  protected @ResponseBody byte[] getModelBytes(@PathVariable String modelId, HttpServletResponse response) {
-    byte[] editorSource = repositoryService.getModelEditorSource(modelId);
-    if (editorSource == null) {
-      throw new ActivitiObjectNotFoundException("Model with id '" + modelId + "' does not have source available.", String.class);
+    @RequestMapping(value = "/repository/models/{modelId}/source", method = RequestMethod.GET)
+    protected @ResponseBody
+    byte[] getModelBytes(@PathVariable String modelId, HttpServletResponse response) {
+        byte[] editorSource = repositoryService.getModelEditorSource(modelId);
+        if (editorSource == null) {
+            throw new ActivitiObjectNotFoundException("Model with id '" + modelId + "' does not have source available.", String.class);
+        }
+        response.setContentType("application/octet-stream");
+        return editorSource;
     }
-    response.setContentType("application/octet-stream");
-    return editorSource;
-  }
-  
-  @RequestMapping(value="/repository/models/{modelId}/source", method = RequestMethod.PUT)
-  protected void setModelSource(@PathVariable String modelId, HttpServletRequest request, HttpServletResponse response) {
-    Model model = getModelFromRequest(modelId);
-    if (model != null) {
-      
-      if (request instanceof MultipartHttpServletRequest == false) {
-        throw new ActivitiIllegalArgumentException("Multipart request is required");
-      }
-      
-      MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-      
-      if (multipartRequest.getFileMap().size() == 0) {
-        throw new ActivitiIllegalArgumentException("Multipart request with file content is required");
-      }
-      
-      MultipartFile file = multipartRequest.getFileMap().values().iterator().next();
-      
-      try {
-        repositoryService.addModelEditorSource(modelId, file.getBytes());
-        response.setStatus(HttpStatus.NO_CONTENT.value());
-      } catch (Exception e) {
-        throw new ActivitiException("Error adding model editor source extra", e);
-      }
+
+    @RequestMapping(value = "/repository/models/{modelId}/source", method = RequestMethod.PUT)
+    protected void setModelSource(@PathVariable String modelId, HttpServletRequest request, HttpServletResponse response) {
+        Model model = getModelFromRequest(modelId);
+        if (model != null) {
+
+            if (request instanceof MultipartHttpServletRequest == false) {
+                throw new ActivitiIllegalArgumentException("Multipart request is required");
+            }
+
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+
+            if (multipartRequest.getFileMap().size() == 0) {
+                throw new ActivitiIllegalArgumentException("Multipart request with file content is required");
+            }
+
+            MultipartFile file = multipartRequest.getFileMap().values().iterator().next();
+
+            try {
+                repositoryService.addModelEditorSource(modelId, file.getBytes());
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+            } catch (Exception e) {
+                throw new ActivitiException("Error adding model editor source extra", e);
+            }
+        }
     }
-  }
 }

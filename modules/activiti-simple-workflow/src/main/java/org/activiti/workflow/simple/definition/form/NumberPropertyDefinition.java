@@ -18,28 +18,28 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * A form-property with a value that is represented as a number.
- *  
+ * 
  * @author Frederik Heremans
  */
 @JsonTypeName("number")
 public class NumberPropertyDefinition extends FormPropertyDefinition {
-	
-	@Override
-	public FormPropertyDefinition clone() {
-		NumberPropertyDefinition clone = new NumberPropertyDefinition();
-		clone.setValues(this);
-	  return clone;
-	}
-	
-	@Override
-	public void setValues(FormPropertyDefinition otherDefinition) {
-		if(!(otherDefinition instanceof NumberPropertyDefinition)) {
-			throw new SimpleWorkflowException("An instance of NumberPropertyDefinition is required to set values");
-		}
-		setName(otherDefinition.getName());
-		setMandatory(otherDefinition.isMandatory());
-		setWritable(otherDefinition.isWritable());
-		
-		setParameters(otherDefinition.cloneParameters());
-	}
+
+    @Override
+    public FormPropertyDefinition clone() {
+        NumberPropertyDefinition clone = new NumberPropertyDefinition();
+        clone.setValues(this);
+        return clone;
+    }
+
+    @Override
+    public void setValues(FormPropertyDefinition otherDefinition) {
+        if (!(otherDefinition instanceof NumberPropertyDefinition)) {
+            throw new SimpleWorkflowException("An instance of NumberPropertyDefinition is required to set values");
+        }
+        setName(otherDefinition.getName());
+        setMandatory(otherDefinition.isMandatory());
+        setWritable(otherDefinition.isWritable());
+
+        setParameters(otherDefinition.cloneParameters());
+    }
 }

@@ -31,93 +31,91 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * @author Joram Barrez
  */
 public class DatabaseDetailPanel extends DetailPanel {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected transient ManagementService managementService;
-  protected I18nManager i18nManager;
-  
-  protected String tableName;
-  
-  
-  public DatabaseDetailPanel(String tableName) {
-    this.tableName = tableName;
-    this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-  
-    addStyleName(Reindeer.LAYOUT_WHITE);
-    setSizeFull();
-    
-    addTableName();
-    addTableData();
-  }
-  
-  protected void addTableName() {
-    HorizontalLayout header = new HorizontalLayout();
-    header.setWidth(100, UNITS_PERCENTAGE);
-    header.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
-    header.setSpacing(true);
-    
-    // TODO: use right image
-    Embedded image = new Embedded(null, Images.DATABASE_50);
-    header.addComponent(image);
-    header.setComponentAlignment(image, Alignment.MIDDLE_LEFT);
-    header.setMargin(false, false, true, false);
-    
-    Label name = new Label(tableName);
-    name.addStyleName(Reindeer.LABEL_H2);
-    header.addComponent(name);
 
-    header.setExpandRatio(name, 1.0f);
-    header.setComponentAlignment(name, Alignment.MIDDLE_LEFT);
-    addDetailComponent(header);
-    
-    Label spacer = new Label();
-    spacer.setWidth(100, UNITS_PERCENTAGE);
-    spacer.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
-    addDetailComponent(spacer);
-  }
-  
-  protected void addTableData() {
-    LazyLoadingQuery lazyLoadingQuery = new TableDataQuery(tableName, managementService);
-    LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
-    
-    if (lazyLoadingContainer.size() > 0) {
-      
-      Table data = new Table();
-      data.setContainerDataSource(lazyLoadingContainer);
-      data.setEditable(false);
-      data.setSelectable(true);
-      data.setColumnReorderingAllowed(true);
-      if (lazyLoadingQuery.size() < 10) {
-        data.setPageLength(0);
-      } else {
-        data.setPageLength(10);
-      }
-      addDetailComponent(data);
-      
-      data.setWidth(100, UNITS_PERCENTAGE);
-      data.setHeight(100, UNITS_PERCENTAGE);
-      data.addStyleName(ExplorerLayout.STYLE_DATABASE_TABLE);
-      setDetailExpandRatio(data, 1.0f);
-      
-      // Create column headers
-      TableMetaData metaData = managementService.getTableMetaData(tableName);
-      for (String columnName : metaData.getColumnNames()) {
-        data.addContainerProperty(columnName, String.class, null);
-      }
-      
-    } else {
-      Label noDataLabel = new Label(i18nManager.getMessage(Messages.DATABASE_NO_ROWS));
-      noDataLabel.addStyleName(Reindeer.LABEL_SMALL);
-      addDetailComponent(noDataLabel);
-      setDetailExpandRatio(noDataLabel, 1.0f);
+    private static final long serialVersionUID = 1L;
+
+    protected transient ManagementService managementService;
+    protected I18nManager i18nManager;
+
+    protected String tableName;
+
+    public DatabaseDetailPanel(String tableName) {
+        this.tableName = tableName;
+        this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+
+        addStyleName(Reindeer.LAYOUT_WHITE);
+        setSizeFull();
+
+        addTableName();
+        addTableData();
     }
-  }
+
+    protected void addTableName() {
+        HorizontalLayout header = new HorizontalLayout();
+        header.setWidth(100, UNITS_PERCENTAGE);
+        header.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+        header.setSpacing(true);
+
+        // TODO: use right image
+        Embedded image = new Embedded(null, Images.DATABASE_50);
+        header.addComponent(image);
+        header.setComponentAlignment(image, Alignment.MIDDLE_LEFT);
+        header.setMargin(false, false, true, false);
+
+        Label name = new Label(tableName);
+        name.addStyleName(Reindeer.LABEL_H2);
+        header.addComponent(name);
+
+        header.setExpandRatio(name, 1.0f);
+        header.setComponentAlignment(name, Alignment.MIDDLE_LEFT);
+        addDetailComponent(header);
+
+        Label spacer = new Label();
+        spacer.setWidth(100, UNITS_PERCENTAGE);
+        spacer.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+        addDetailComponent(spacer);
+    }
+
+    protected void addTableData() {
+        LazyLoadingQuery lazyLoadingQuery = new TableDataQuery(tableName, managementService);
+        LazyLoadingContainer lazyLoadingContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
+
+        if (lazyLoadingContainer.size() > 0) {
+
+            Table data = new Table();
+            data.setContainerDataSource(lazyLoadingContainer);
+            data.setEditable(false);
+            data.setSelectable(true);
+            data.setColumnReorderingAllowed(true);
+            if (lazyLoadingQuery.size() < 10) {
+                data.setPageLength(0);
+            } else {
+                data.setPageLength(10);
+            }
+            addDetailComponent(data);
+
+            data.setWidth(100, UNITS_PERCENTAGE);
+            data.setHeight(100, UNITS_PERCENTAGE);
+            data.addStyleName(ExplorerLayout.STYLE_DATABASE_TABLE);
+            setDetailExpandRatio(data, 1.0f);
+
+            // Create column headers
+            TableMetaData metaData = managementService.getTableMetaData(tableName);
+            for (String columnName : metaData.getColumnNames()) {
+                data.addContainerProperty(columnName, String.class, null);
+            }
+
+        } else {
+            Label noDataLabel = new Label(i18nManager.getMessage(Messages.DATABASE_NO_ROWS));
+            noDataLabel.addStyleName(Reindeer.LABEL_SMALL);
+            addDetailComponent(noDataLabel);
+            setDetailExpandRatio(noDataLabel, 1.0f);
+        }
+    }
 
 }

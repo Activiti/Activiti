@@ -30,147 +30,143 @@ import org.apache.camel.impl.DefaultProducer;
 
 public class ActivitiProducer extends DefaultProducer {
 
-  protected IdentityService identityService;
-  
-  protected RuntimeService runtimeService;
+    protected IdentityService identityService;
 
-  public static final String PROCESS_KEY_PROPERTY = "PROCESS_KEY_PROPERTY";
+    protected RuntimeService runtimeService;
 
-  public static final String PROCESS_ID_PROPERTY = "PROCESS_ID_PROPERTY";
-  
-  private final long timeout;
+    public static final String PROCESS_KEY_PROPERTY = "PROCESS_KEY_PROPERTY";
 
-  private final long timeResolution;
-  
-  private String processKey = null;
+    public static final String PROCESS_ID_PROPERTY = "PROCESS_ID_PROPERTY";
 
-  private String activity = null;
+    private final long timeout;
 
-  public ActivitiProducer(ActivitiEndpoint endpoint, long timeout, long timeResolution) {
-    super(endpoint);
-    String[] path = endpoint.getEndpointKey().split(":");
-    processKey = path[1].replace("//", "");
-    if (path.length > 2) {
-      activity = path[2];
-    }
-    this.timeout = timeout;
-    this.timeResolution = timeResolution;
-  }
-  
-  public void process(Exchange exchange) throws Exception {
-    if (shouldStartProcess()) {
-      ProcessInstance pi = startProcess(exchange);
-      copyResultToCamel(exchange, pi);
-    } else {
-      signal(exchange);
-    }
-  }
+    private final long timeResolution;
 
-  public void setIdentityService(IdentityService identityService) {
-    this.identityService = identityService;
-  }
-  
-  public void setRuntimeService(RuntimeService runtimeService) {
-    this.runtimeService = runtimeService;
-  }
+    private String processKey = null;
 
-  protected void copyResultToCamel(Exchange exchange, ProcessInstance pi) {
-    exchange.setProperty(PROCESS_ID_PROPERTY, pi.getProcessInstanceId());
-    
-    Map<String, Object> returnVars = getActivitiEndpoint().getReturnVarMap();
-    
-    if (returnVars != null && returnVars.size() > 0) {
-      
-      Map<String, Object> processVariables = ((ExecutionEntity) pi).getVariableValues();
-      if (processVariables != null) {
-        for (String variableName : returnVars.keySet()) {
-          if (processVariables.containsKey(variableName)) {
-            exchange.setProperty(variableName, processVariables.get(variableName));
-          }
+    private String activity = null;
+
+    public ActivitiProducer(ActivitiEndpoint endpoint, long timeout, long timeResolution) {
+        super(endpoint);
+        String[] path = endpoint.getEndpointKey().split(":");
+        processKey = path[1].replace("//", "");
+        if (path.length > 2) {
+            activity = path[2];
         }
-      }
+        this.timeout = timeout;
+        this.timeResolution = timeResolution;
     }
-  }
 
-  protected boolean shouldStartProcess() {
-    return activity == null;
-  }
-  
-  protected void signal(Exchange exchange) {
-    String processInstanceId = findProcessInstanceId(exchange);
-    
-    boolean firstTime = true; 
-    long initialTime  = System.currentTimeMillis();
-   
-    Execution execution = null;
-    while (firstTime || (timeout > 0 && (System.currentTimeMillis() - initialTime < timeout))) {
-      execution = runtimeService.createExecutionQuery()
-          .processDefinitionKey(processKey)
-          .processInstanceId(processInstanceId)
-          .activityId(activity).singleResult();
-       
-      try {
-        Thread.sleep(timeResolution);
-      } catch (InterruptedException e) {
-        throw new RuntimeException("error occured while waiting for activiti=" + activity + " for processInstanceId=" + processInstanceId);
-      }
-      firstTime = false;
-      if (execution != null) {
-        break;
-      }
+    public void process(Exchange exchange) throws Exception {
+        if (shouldStartProcess()) {
+            ProcessInstance pi = startProcess(exchange);
+            copyResultToCamel(exchange, pi);
+        } else {
+            signal(exchange);
+        }
     }
-    if (execution == null) {
-      throw new RuntimeException("Couldn't find activity "+activity+" for processId " + processInstanceId + " in defined timeout.");
-    }
-    
-    runtimeService.setVariables(execution.getId(), ExchangeUtils.prepareVariables(exchange, getActivitiEndpoint()));
-    runtimeService.signal(execution.getId());
-  }
 
-  protected String findProcessInstanceId(Exchange exchange) {
-    String processInstanceId = exchange.getProperty(PROCESS_ID_PROPERTY, String.class);
-    if (processInstanceId != null) {
-      return processInstanceId;
+    public void setIdentityService(IdentityService identityService) {
+        this.identityService = identityService;
     }
-    String processInstanceKey = exchange.getProperty(PROCESS_KEY_PROPERTY, String.class);
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
-        .processInstanceBusinessKey(processInstanceKey).singleResult();
 
-    if (processInstance == null) {
-      throw new RuntimeException("Could not find activiti with key " + processInstanceKey);
+    public void setRuntimeService(RuntimeService runtimeService) {
+        this.runtimeService = runtimeService;
     }
-    return processInstance.getId();
-  }
 
-  protected ProcessInstance startProcess(Exchange exchange) {
-    ActivitiEndpoint endpoint = getActivitiEndpoint();
-    String key = exchange.getProperty(PROCESS_KEY_PROPERTY, String.class);
-    try {
-      if (endpoint.isSetProcessInitiator()) {
-        setProcessInitiator(ExchangeUtils.prepareInitiator(exchange, endpoint));
-      }
-      
-      if (key == null) {
-        return runtimeService.startProcessInstanceByKey(processKey, ExchangeUtils.prepareVariables(exchange, endpoint));
-      } else {
-        return runtimeService.startProcessInstanceByKey(processKey, key, ExchangeUtils.prepareVariables(exchange, endpoint));
-      }
-      
-    } finally {
-      if (endpoint.isSetProcessInitiator()) {
-        setProcessInitiator(null);
-      }
-    }
-  }
-  
-  protected void setProcessInitiator(String processInitiator) {
-    if (identityService == null) {
-      throw new RuntimeException("IdentityService is missing and must be provided to set process initiator.");
-    }
-    identityService.setAuthenticatedUserId(processInitiator);
-  }
+    protected void copyResultToCamel(Exchange exchange, ProcessInstance pi) {
+        exchange.setProperty(PROCESS_ID_PROPERTY, pi.getProcessInstanceId());
 
-  protected ActivitiEndpoint getActivitiEndpoint() {
-    return (ActivitiEndpoint) getEndpoint();
-  }
+        Map<String, Object> returnVars = getActivitiEndpoint().getReturnVarMap();
+
+        if (returnVars != null && returnVars.size() > 0) {
+
+            Map<String, Object> processVariables = ((ExecutionEntity) pi).getVariableValues();
+            if (processVariables != null) {
+                for (String variableName : returnVars.keySet()) {
+                    if (processVariables.containsKey(variableName)) {
+                        exchange.setProperty(variableName, processVariables.get(variableName));
+                    }
+                }
+            }
+        }
+    }
+
+    protected boolean shouldStartProcess() {
+        return activity == null;
+    }
+
+    protected void signal(Exchange exchange) {
+        String processInstanceId = findProcessInstanceId(exchange);
+
+        boolean firstTime = true;
+        long initialTime = System.currentTimeMillis();
+
+        Execution execution = null;
+        while (firstTime || (timeout > 0 && (System.currentTimeMillis() - initialTime < timeout))) {
+            execution = runtimeService.createExecutionQuery().processDefinitionKey(processKey).processInstanceId(processInstanceId).activityId(activity).singleResult();
+
+            try {
+                Thread.sleep(timeResolution);
+            } catch (InterruptedException e) {
+                throw new RuntimeException("error occured while waiting for activiti=" + activity + " for processInstanceId=" + processInstanceId);
+            }
+            firstTime = false;
+            if (execution != null) {
+                break;
+            }
+        }
+        if (execution == null) {
+            throw new RuntimeException("Couldn't find activity " + activity + " for processId " + processInstanceId + " in defined timeout.");
+        }
+
+        runtimeService.setVariables(execution.getId(), ExchangeUtils.prepareVariables(exchange, getActivitiEndpoint()));
+        runtimeService.signal(execution.getId());
+    }
+
+    protected String findProcessInstanceId(Exchange exchange) {
+        String processInstanceId = exchange.getProperty(PROCESS_ID_PROPERTY, String.class);
+        if (processInstanceId != null) {
+            return processInstanceId;
+        }
+        String processInstanceKey = exchange.getProperty(PROCESS_KEY_PROPERTY, String.class);
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey(processInstanceKey).singleResult();
+
+        if (processInstance == null) {
+            throw new RuntimeException("Could not find activiti with key " + processInstanceKey);
+        }
+        return processInstance.getId();
+    }
+
+    protected ProcessInstance startProcess(Exchange exchange) {
+        ActivitiEndpoint endpoint = getActivitiEndpoint();
+        String key = exchange.getProperty(PROCESS_KEY_PROPERTY, String.class);
+        try {
+            if (endpoint.isSetProcessInitiator()) {
+                setProcessInitiator(ExchangeUtils.prepareInitiator(exchange, endpoint));
+            }
+
+            if (key == null) {
+                return runtimeService.startProcessInstanceByKey(processKey, ExchangeUtils.prepareVariables(exchange, endpoint));
+            } else {
+                return runtimeService.startProcessInstanceByKey(processKey, key, ExchangeUtils.prepareVariables(exchange, endpoint));
+            }
+
+        } finally {
+            if (endpoint.isSetProcessInitiator()) {
+                setProcessInitiator(null);
+            }
+        }
+    }
+
+    protected void setProcessInitiator(String processInitiator) {
+        if (identityService == null) {
+            throw new RuntimeException("IdentityService is missing and must be provided to set process initiator.");
+        }
+        identityService.setAuthenticatedUserId(processInitiator);
+    }
+
+    protected ActivitiEndpoint getActivitiEndpoint() {
+        return (ActivitiEndpoint) getEndpoint();
+    }
 }

@@ -13,64 +13,63 @@
 
 package org.activiti.rest.service.api.engine;
 
-
 /**
  * @author Henry Yan
  */
 public class CommentRequest {
 
-  private String id;
-  private String url;
-  private String author;
-  private String message;
-  private String type;
-  private boolean saveProcessInstanceId;
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-  
-  public String getId() {
-    return id;
-  }
-  
-  public String getUrl() {
-    return url;
-  }
-  
-  public void setUrl(String url) {
-    this.url = url;
-  }
-  
-  public String getAuthor() {
-    return author;
-  }
-  
-  public void setAuthor(String author) {
-    this.author = author;
-  }
-  
-  public String getMessage() {
-    return message;
-  }
-  
-  public void setMessage(String message) {
-    this.message = message;
-  }
+    private String id;
+    private String url;
+    private String author;
+    private String message;
+    private String type;
+    private boolean saveProcessInstanceId;
 
-  public String getType() {
-    return type;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public void setType(String type) {
-    this.type = type;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public boolean isSaveProcessInstanceId() {
-    return saveProcessInstanceId;
-  }
+    public String getUrl() {
+        return url;
+    }
 
-  public void setSaveProcessInstanceId(boolean saveProcessInstanceId) {
-    this.saveProcessInstanceId = saveProcessInstanceId;
-  }
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public boolean isSaveProcessInstanceId() {
+        return saveProcessInstanceId;
+    }
+
+    public void setSaveProcessInstanceId(boolean saveProcessInstanceId) {
+        this.saveProcessInstanceId = saveProcessInstanceId;
+    }
 }

@@ -19,21 +19,22 @@ import org.slf4j.LoggerFactory;
  * Use with Camel's bean component.
  * 
  * @author stefan.schulze@accelsis.biz
- *
+ * 
  */
 public class BrokenService {
 
-	private static final Logger LOG = LoggerFactory.getLogger(BrokenService.class);
-	
-	/**
-	 * Always throws an exception.
-	 * 
-	 * 	the current Camel message
-	 * @throws BrokenServiceException
-	 */
-	public void alwaysFails() throws BrokenServiceException {
-		LOG.info("{} called", this.getClass().getSimpleName());
-		throw new BrokenServiceException("Provoked failure");
-	}
-	
+    private static final Logger LOG = LoggerFactory.getLogger(BrokenService.class);
+
+    /**
+     * Always throws an exception.
+     * 
+     * the current Camel message
+     * 
+     * @throws BrokenServiceException
+     */
+    public void alwaysFails() throws BrokenServiceException {
+        LOG.info("{} called", this.getClass().getSimpleName());
+        throw new BrokenServiceException("Provoked failure");
+    }
+
 }

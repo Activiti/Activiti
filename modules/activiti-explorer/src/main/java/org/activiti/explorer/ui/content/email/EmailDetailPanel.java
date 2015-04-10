@@ -40,80 +40,79 @@ import com.vaadin.ui.Panel;
  */
 public class EmailDetailPanel extends Panel {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected I18nManager i18nManager;
-  protected transient TaskService taskService;
-  
-  protected Label content;
-  protected Attachment attachment;
-  
-  protected GridLayout gridLayout;
+    protected I18nManager i18nManager;
+    protected transient TaskService taskService;
 
+    protected Label content;
+    protected Attachment attachment;
 
-  public EmailDetailPanel(Attachment attachment) {
-    setSizeFull();
-    ((AbstractLayout) getContent()).setMargin(true);
-    ((SpacingHandler) getContent()).setSpacing(true);
-    addStyleName(Reindeer.PANEL_LIGHT);
+    protected GridLayout gridLayout;
 
-    this.attachment = attachment;
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-    
-    gridLayout = new GridLayout(2, 4);
-    gridLayout.setSpacing(true);
-    addComponent(gridLayout);
-    
-    InputStream contentStream = taskService.getAttachmentContent(attachment.getId());
-    // TODO: Error handling
-    JSONObject emailJson = new JSONObject(new JSONTokener(new InputStreamReader(contentStream)));
+    public EmailDetailPanel(Attachment attachment) {
+        setSizeFull();
+        ((AbstractLayout) getContent()).setMargin(true);
+        ((SpacingHandler) getContent()).setSpacing(true);
+        addStyleName(Reindeer.PANEL_LIGHT);
 
-    String html = emailJson.getString(Constants.EMAIL_HTML_CONTENT);
-    String subject = emailJson.getString(Constants.EMAIL_SUBJECT);
-    String recipients = emailJson.getString(Constants.EMAIL_RECIPIENT);
-    String sentDate = emailJson.getString(Constants.EMAIL_SENT_DATE);
-    String receivedDate = emailJson.getString(Constants.EMAIL_RECEIVED_DATE);
-    
-    // Add subject
-    addSimpleRow(Messages.EMAIL_SUBJECT, subject);
-    addSimpleRow(Messages.EMAIL_RECIPIENTS, recipients);
-    addSimpleRow(Messages.EMAIL_SENT_DATE, sentDate);
-    addSimpleRow(Messages.EMAIL_RECEIVED_DATE, receivedDate);
+        this.attachment = attachment;
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
 
-    // Add HTML content
-    addHtmlContent(html);
-   
-  }
+        gridLayout = new GridLayout(2, 4);
+        gridLayout.setSpacing(true);
+        addComponent(gridLayout);
 
-  protected void addHtmlContent(String html) {
-    Panel panel = new Panel();
-    panel.setWidth(800, UNITS_PIXELS);
-    panel.setHeight(300, UNITS_PIXELS);
-    
-    content = new Label(html, Label.CONTENT_XHTML);
-    content.setHeight(100, UNITS_PERCENTAGE);
-    
-    panel.addComponent(content);
-    addComponent(panel);
-  }
+        InputStream contentStream = taskService.getAttachmentContent(attachment.getId());
+        // TODO: Error handling
+        JSONObject emailJson = new JSONObject(new JSONTokener(new InputStreamReader(contentStream)));
 
-  protected void addSimpleRow(String labelMessageKey, String content) {
-    addLabel(labelMessageKey);
-    
-    Label subjectLabel = new Label(content);
-    subjectLabel.setSizeUndefined();
-    subjectLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-    
-    gridLayout.addComponent(subjectLabel);
-    gridLayout.setComponentAlignment(subjectLabel, Alignment.MIDDLE_LEFT);
-  }
-  
-  protected void addLabel(String messageKey) {
-    Label theLabel  = new Label(i18nManager.getMessage(messageKey));
-    theLabel.setSizeUndefined();
-    gridLayout.addComponent(theLabel);
-    
-  }
+        String html = emailJson.getString(Constants.EMAIL_HTML_CONTENT);
+        String subject = emailJson.getString(Constants.EMAIL_SUBJECT);
+        String recipients = emailJson.getString(Constants.EMAIL_RECIPIENT);
+        String sentDate = emailJson.getString(Constants.EMAIL_SENT_DATE);
+        String receivedDate = emailJson.getString(Constants.EMAIL_RECEIVED_DATE);
+
+        // Add subject
+        addSimpleRow(Messages.EMAIL_SUBJECT, subject);
+        addSimpleRow(Messages.EMAIL_RECIPIENTS, recipients);
+        addSimpleRow(Messages.EMAIL_SENT_DATE, sentDate);
+        addSimpleRow(Messages.EMAIL_RECEIVED_DATE, receivedDate);
+
+        // Add HTML content
+        addHtmlContent(html);
+
+    }
+
+    protected void addHtmlContent(String html) {
+        Panel panel = new Panel();
+        panel.setWidth(800, UNITS_PIXELS);
+        panel.setHeight(300, UNITS_PIXELS);
+
+        content = new Label(html, Label.CONTENT_XHTML);
+        content.setHeight(100, UNITS_PERCENTAGE);
+
+        panel.addComponent(content);
+        addComponent(panel);
+    }
+
+    protected void addSimpleRow(String labelMessageKey, String content) {
+        addLabel(labelMessageKey);
+
+        Label subjectLabel = new Label(content);
+        subjectLabel.setSizeUndefined();
+        subjectLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
+
+        gridLayout.addComponent(subjectLabel);
+        gridLayout.setComponentAlignment(subjectLabel, Alignment.MIDDLE_LEFT);
+    }
+
+    protected void addLabel(String messageKey) {
+        Label theLabel = new Label(i18nManager.getMessage(messageKey));
+        theLabel.setSizeUndefined();
+        gridLayout.addComponent(theLabel);
+
+    }
 
 }

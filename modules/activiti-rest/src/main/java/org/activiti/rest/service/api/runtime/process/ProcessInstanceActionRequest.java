@@ -20,6 +20,6 @@ import org.activiti.rest.service.api.RestActionRequest;
  */
 public class ProcessInstanceActionRequest extends RestActionRequest {
 
-  public static final String ACTION_SUSPEND = "suspend";
-  public static final String ACTION_ACTIVATE = "activate";
+    public static final String ACTION_SUSPEND = "suspend";
+    public static final String ACTION_ACTIVATE = "activate";
 }

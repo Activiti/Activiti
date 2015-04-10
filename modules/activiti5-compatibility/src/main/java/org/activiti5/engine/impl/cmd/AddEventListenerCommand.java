@@ -24,35 +24,33 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  * @author Frederik Heremans
  */
 public class AddEventListenerCommand implements Command<Void> {
-	
-	protected ActivitiEventListener listener;
-	protected ActivitiEventType[] types;
-	
-	public AddEventListenerCommand(ActivitiEventListener listener, ActivitiEventType[] types) {
-	  this.listener = listener;
-	  this.types = types;
-  }
 
-	public AddEventListenerCommand(ActivitiEventListener listener) {
-	  super();
-	  this.listener = listener;
-  }
+    protected ActivitiEventListener listener;
+    protected ActivitiEventType[] types;
 
-	@Override
-  public Void execute(CommandContext commandContext) {
-		if(listener == null) {
-			throw new ActivitiIllegalArgumentException("listener is null.");
-		}
-		
-		if(types != null) {
-			commandContext.getProcessEngineConfiguration()
-				.getEventDispatcher().addEventListener(listener, types);
-		} else {
-			commandContext.getProcessEngineConfiguration()
-				.getEventDispatcher().addEventListener(listener);
-		}
-		
-	  return null;
-  }
-	
+    public AddEventListenerCommand(ActivitiEventListener listener, ActivitiEventType[] types) {
+        this.listener = listener;
+        this.types = types;
+    }
+
+    public AddEventListenerCommand(ActivitiEventListener listener) {
+        super();
+        this.listener = listener;
+    }
+
+    @Override
+    public Void execute(CommandContext commandContext) {
+        if (listener == null) {
+            throw new ActivitiIllegalArgumentException("listener is null.");
+        }
+
+        if (types != null) {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener, types);
+        } else {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().addEventListener(listener);
+        }
+
+        return null;
+    }
+
 }

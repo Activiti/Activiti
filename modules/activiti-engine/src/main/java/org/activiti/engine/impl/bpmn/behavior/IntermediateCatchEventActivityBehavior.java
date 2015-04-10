@@ -14,17 +14,14 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
+    public void execute(ActivityExecution execution) {
+        // Do nothing: waitstate behavior
+    }
 
-  public void execute(ActivityExecution execution) {
-    // Do nothing: waitstate behavior
-  }
-
-  @Override
-  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
-    leave(execution);
-  }
+    @Override
+    public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+        leave(execution);
+    }
 }
-

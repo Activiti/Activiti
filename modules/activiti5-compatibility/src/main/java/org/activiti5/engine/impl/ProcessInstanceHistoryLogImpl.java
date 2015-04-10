@@ -15,90 +15,90 @@ import org.activiti5.engine.history.ProcessInstanceHistoryLog;
  * @author Joram Barrez
  */
 public class ProcessInstanceHistoryLogImpl implements ProcessInstanceHistoryLog {
-	
-	protected HistoricProcessInstance historicProcessInstance;
-	
-	protected List<HistoricData> historicData = new ArrayList<HistoricData>();
-	
-	public ProcessInstanceHistoryLogImpl(HistoricProcessInstance historicProcessInstance) {
-		this.historicProcessInstance = historicProcessInstance;
-	}
 
-	@Override
-  public String getId() {
-		return historicProcessInstance.getId();
-  }
+    protected HistoricProcessInstance historicProcessInstance;
 
-	@Override
-  public String getBusinessKey() {
-		return historicProcessInstance.getBusinessKey();
-  }
+    protected List<HistoricData> historicData = new ArrayList<HistoricData>();
 
-	@Override
-  public String getProcessDefinitionId() {
-		return historicProcessInstance.getProcessDefinitionId();
-  }
+    public ProcessInstanceHistoryLogImpl(HistoricProcessInstance historicProcessInstance) {
+        this.historicProcessInstance = historicProcessInstance;
+    }
 
-	@Override
-  public Date getStartTime() {
-		return historicProcessInstance.getStartTime();
-  }
+    @Override
+    public String getId() {
+        return historicProcessInstance.getId();
+    }
 
-	@Override
-  public Date getEndTime() {
-		return historicProcessInstance.getEndTime();
-  }
+    @Override
+    public String getBusinessKey() {
+        return historicProcessInstance.getBusinessKey();
+    }
 
-	@Override
-  public Long getDurationInMillis() {
-		return historicProcessInstance.getDurationInMillis();
-  }
+    @Override
+    public String getProcessDefinitionId() {
+        return historicProcessInstance.getProcessDefinitionId();
+    }
 
-	@Override
-  public String getStartUserId() {
-		return historicProcessInstance.getStartUserId();
-  }
+    @Override
+    public Date getStartTime() {
+        return historicProcessInstance.getStartTime();
+    }
 
-	@Override
-  public String getStartActivityId() {
-		return historicProcessInstance.getStartActivityId();
-  }
+    @Override
+    public Date getEndTime() {
+        return historicProcessInstance.getEndTime();
+    }
 
-	@Override
-  public String getDeleteReason() {
-		return historicProcessInstance.getDeleteReason();
-  }
+    @Override
+    public Long getDurationInMillis() {
+        return historicProcessInstance.getDurationInMillis();
+    }
 
-	@Override
-  public String getSuperProcessInstanceId() {
-		return historicProcessInstance.getSuperProcessInstanceId();
-  }
+    @Override
+    public String getStartUserId() {
+        return historicProcessInstance.getStartUserId();
+    }
 
-	@Override
-  public String getTenantId() {
-		return historicProcessInstance.getTenantId();
-  }
+    @Override
+    public String getStartActivityId() {
+        return historicProcessInstance.getStartActivityId();
+    }
 
-	@Override
-  public List<HistoricData> getHistoricData() {
-		return historicData;
-  }
-	
-	public void addHistoricData(HistoricData historicEvent) {
-		historicData.add(historicEvent);
-	}
-	
-	public void addHistoricData(Collection<? extends HistoricData> historicEvents) {
-		historicData.addAll(historicEvents);
-	}
-	
-	public void orderHistoricData() {
-		Collections.sort(historicData, new Comparator<HistoricData>() {
-			@Override
-			public int compare(HistoricData data1, HistoricData data2) {
-				return data1.getTime().compareTo(data2.getTime());
-			}
-		});
-	}
+    @Override
+    public String getDeleteReason() {
+        return historicProcessInstance.getDeleteReason();
+    }
+
+    @Override
+    public String getSuperProcessInstanceId() {
+        return historicProcessInstance.getSuperProcessInstanceId();
+    }
+
+    @Override
+    public String getTenantId() {
+        return historicProcessInstance.getTenantId();
+    }
+
+    @Override
+    public List<HistoricData> getHistoricData() {
+        return historicData;
+    }
+
+    public void addHistoricData(HistoricData historicEvent) {
+        historicData.add(historicEvent);
+    }
+
+    public void addHistoricData(Collection<? extends HistoricData> historicEvents) {
+        historicData.addAll(historicEvents);
+    }
+
+    public void orderHistoricData() {
+        Collections.sort(historicData, new Comparator<HistoricData>() {
+            @Override
+            public int compare(HistoricData data1, HistoricData data2) {
+                return data1.getTime().compareTo(data2.getTime());
+            }
+        });
+    }
 
 }

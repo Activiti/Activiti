@@ -25,50 +25,43 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 import org.activiti5.engine.task.Task;
 
-
 /**
  * @author Tom Baeyens
  */
-public class GetRenderedTaskFormCmd  implements Command<Object>, Serializable {
+public class GetRenderedTaskFormCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String taskId;
-  protected String formEngineName;
-  
-  public GetRenderedTaskFormCmd(String taskId, String formEngineName) {
-    this.taskId = taskId;
-    this.formEngineName = formEngineName;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String taskId;
+    protected String formEngineName;
 
+    public GetRenderedTaskFormCmd(String taskId, String formEngineName) {
+        this.taskId = taskId;
+        this.formEngineName = formEngineName;
+    }
 
-  public Object execute(CommandContext commandContext) {
-    TaskEntity task = commandContext
-      .getTaskEntityManager()
-      .findTaskById(taskId);
-    if (task == null) {
-      throw new ActivitiObjectNotFoundException("Task '" + taskId +"' not found", Task.class);
+    public Object execute(CommandContext commandContext) {
+        TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+        if (task == null) {
+            throw new ActivitiObjectNotFoundException("Task '" + taskId + "' not found", Task.class);
+        }
+
+        if (task.getTaskDefinition() == null) {
+            throw new ActivitiException("Task form definition for '" + taskId + "' not found");
+        }
+
+        TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
+        if (taskFormHandler == null) {
+            return null;
+        }
+
+        FormEngine formEngine = commandContext.getProcessEngineConfiguration().getFormEngines().get(formEngineName);
+
+        if (formEngine == null) {
+            throw new ActivitiException("No formEngine '" + formEngineName + "' defined process engine configuration");
+        }
+
+        TaskFormData taskForm = taskFormHandler.createTaskForm(task);
+
+        return formEngine.renderTaskForm(taskForm);
     }
-    
-    if (task.getTaskDefinition() == null) {
-      throw new ActivitiException("Task form definition for '" + taskId +"' not found");
-    }
-    
-    TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-    if (taskFormHandler == null) {
-      return null;
-    }
-    
-    FormEngine formEngine = commandContext
-      .getProcessEngineConfiguration()
-      .getFormEngines()
-      .get(formEngineName);
-    
-    if (formEngine==null) {
-      throw new ActivitiException("No formEngine '" + formEngineName +"' defined process engine configuration");
-    }
-    
-    TaskFormData taskForm = taskFormHandler.createTaskForm(task);
-    
-    return formEngine.renderTaskForm(taskForm);
-  }
 }

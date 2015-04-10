@@ -14,16 +14,16 @@ package org.activiti.cdi.annotation.event;
 
 import javax.enterprise.util.AnnotationLiteral;
 
+public class TakeTransitionLiteral extends AnnotationLiteral<TakeTransition> implements TakeTransition {
 
-public class TakeTransitionLiteral extends AnnotationLiteral<TakeTransition> implements TakeTransition {  
-  
-  protected final String transitionName;   
-  
-  public TakeTransitionLiteral(String transitionName) {
-    this.transitionName = transitionName;
-  }
-  @Override
-  public String value() {
-    return transitionName != null ? transitionName : "";
-  }
+    protected final String transitionName;
+
+    public TakeTransitionLiteral(String transitionName) {
+        this.transitionName = transitionName;
+    }
+
+    @Override
+    public String value() {
+        return transitionName != null ? transitionName : "";
+    }
 }

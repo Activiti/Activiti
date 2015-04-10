@@ -25,7 +25,6 @@ import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * Entry to use in a tool bar. Shows label and optional count.
  * 
@@ -34,96 +33,96 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class ToolbarEntry extends CustomComponent {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String title;
-  protected Long count;
-  protected boolean active;
-  protected ToolbarCommand command;
-  protected String name;
-  
-  protected Button titleButton;
-  protected Button countButton;
-  protected HorizontalLayout layout;
+    private static final long serialVersionUID = 1L;
 
-  
-  public ToolbarEntry(String key, String title) {
-    this.name = key;
-    this.title = title;
-    addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    layout = new HorizontalLayout();
-    setCompositionRoot(layout);
-    setSizeUndefined();
-    initLabelComponent();
-    initCountComponent();
-  }
-  
-  /**
-   * Sets the count to be displayed. When count is null, no
-   * count-component will be shown.
-   */
-  public void setCount(Long count) {
-    this.count = count;
-    if(count != null) {
-      countButton.setCaption(count + "");
-      if(!countButton.isVisible()) {
-        countButton.setVisible(true);
-      }
-    } else {
-      countButton.setVisible(true);
-    }
-  }
-  
-  public Long getCount() {
-    return count;
-  }
-  
-  public void setActive(boolean active) {
-    if(this.active != active) {
-      this.active = active;
-      if(active) {
-        titleButton.addStyleName(ExplorerLayout.STYLE_ACTIVE);
-        countButton.addStyleName(ExplorerLayout.STYLE_ACTIVE);
-      } else {
-        titleButton.removeStyleName(ExplorerLayout.STYLE_ACTIVE);
-        countButton.removeStyleName(ExplorerLayout.STYLE_ACTIVE);
-      }
-    }
-  }
-  
-  public void setCommand(ToolbarCommand command) {
-    this.command = command;
-  }
+    protected String title;
+    protected Long count;
+    protected boolean active;
+    protected ToolbarCommand command;
+    protected String name;
 
-  protected void initLabelComponent() {
-    titleButton = new Button(title);
-    titleButton.addStyleName(Reindeer.BUTTON_LINK);
-    layout.addComponent(titleButton);
-    layout.setComponentAlignment(titleButton, Alignment.MIDDLE_LEFT);
-    
-    titleButton.addListener(new ClickListener() {
-      private static final long serialVersionUID = 1L;
-      public void buttonClick(ClickEvent event) {
-        if(command != null) {
-          command.toolBarItemSelected();
+    protected Button titleButton;
+    protected Button countButton;
+    protected HorizontalLayout layout;
+
+    public ToolbarEntry(String key, String title) {
+        this.name = key;
+        this.title = title;
+        addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        layout = new HorizontalLayout();
+        setCompositionRoot(layout);
+        setSizeUndefined();
+        initLabelComponent();
+        initCountComponent();
+    }
+
+    /**
+     * Sets the count to be displayed. When count is null, no count-component
+     * will be shown.
+     */
+    public void setCount(Long count) {
+        this.count = count;
+        if (count != null) {
+            countButton.setCaption(count + "");
+            if (!countButton.isVisible()) {
+                countButton.setVisible(true);
+            }
+        } else {
+            countButton.setVisible(true);
         }
-      }
-    });
-  }
+    }
 
-  protected void initCountComponent() {
-    countButton = new Button(count + "");
-    countButton.addStyleName(Reindeer.BUTTON_LINK);
-    countButton.addStyleName(ExplorerLayout.STYLE_TOOLBAR_COUNT);
-    
-    // Initially hidden
-    countButton.setVisible(false);
-    
-    layout.addComponent(countButton);
-    layout.setComponentAlignment(countButton, Alignment.MIDDLE_LEFT);
-  }
-  
-  public interface ToolbarCommand extends Serializable {
-    void toolBarItemSelected();
-  }
+    public Long getCount() {
+        return count;
+    }
+
+    public void setActive(boolean active) {
+        if (this.active != active) {
+            this.active = active;
+            if (active) {
+                titleButton.addStyleName(ExplorerLayout.STYLE_ACTIVE);
+                countButton.addStyleName(ExplorerLayout.STYLE_ACTIVE);
+            } else {
+                titleButton.removeStyleName(ExplorerLayout.STYLE_ACTIVE);
+                countButton.removeStyleName(ExplorerLayout.STYLE_ACTIVE);
+            }
+        }
+    }
+
+    public void setCommand(ToolbarCommand command) {
+        this.command = command;
+    }
+
+    protected void initLabelComponent() {
+        titleButton = new Button(title);
+        titleButton.addStyleName(Reindeer.BUTTON_LINK);
+        layout.addComponent(titleButton);
+        layout.setComponentAlignment(titleButton, Alignment.MIDDLE_LEFT);
+
+        titleButton.addListener(new ClickListener() {
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+                if (command != null) {
+                    command.toolBarItemSelected();
+                }
+            }
+        });
+    }
+
+    protected void initCountComponent() {
+        countButton = new Button(count + "");
+        countButton.addStyleName(Reindeer.BUTTON_LINK);
+        countButton.addStyleName(ExplorerLayout.STYLE_TOOLBAR_COUNT);
+
+        // Initially hidden
+        countButton.setVisible(false);
+
+        layout.addComponent(countButton);
+        layout.setComponentAlignment(countButton, Alignment.MIDDLE_LEFT);
+    }
+
+    public interface ToolbarCommand extends Serializable {
+        void toolBarItemSelected();
+    }
 }

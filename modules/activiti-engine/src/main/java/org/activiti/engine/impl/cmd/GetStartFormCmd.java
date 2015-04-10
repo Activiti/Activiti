@@ -24,34 +24,29 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GetStartFormCmd implements Command<StartFormData>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
 
-  public GetStartFormCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+    public GetStartFormCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
 
-  public StartFormData execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
-      .getProcessEngineConfiguration()
-      .getDeploymentManager()
-      .findDeployedProcessDefinitionById(processDefinitionId);
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId +"'", ProcessDefinition.class);
+    public StartFormData execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
+        }
+
+        StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
+        if (startFormHandler == null) {
+            throw new ActivitiException("No startFormHandler defined in process '" + processDefinitionId + "'");
+        }
+
+        return startFormHandler.createStartFormData(processDefinition);
     }
-    
-    StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
-    if (startFormHandler == null) {
-      throw new ActivitiException("No startFormHandler defined in process '" + processDefinitionId +"'");
-    }
-    
-    
-    return startFormHandler.createStartFormData(processDefinition);
-  }
 }

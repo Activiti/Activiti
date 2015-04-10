@@ -26,39 +26,39 @@ import org.activiti.workflow.simple.definition.form.FormDefinition;
  */
 public class TaskFormModel implements Serializable {
 
-  protected List<TaskFormModelListener> formModelListeners = new ArrayList<TaskFormModelListener>();
+    protected List<TaskFormModelListener> formModelListeners = new ArrayList<TaskFormModelListener>();
 
-  /* Mapping id of task in taskTable <-> FormDefinition */
-  protected Map<Object, FormDefinition> forms = new HashMap<Object, FormDefinition>();
+    /* Mapping id of task in taskTable <-> FormDefinition */
+    protected Map<Object, FormDefinition> forms = new HashMap<Object, FormDefinition>();
 
-  public void addForm(Object taskItemId, FormDefinition form) {
-    forms.put(taskItemId, form);
-    fireFormAdded(taskItemId);
-  }
-
-  public void removeForm(Object taskItemId) {
-    forms.remove(taskItemId);
-    fireFormRemoved(taskItemId);
-  }
-
-  public FormDefinition getForm(Object id) {
-    return forms.get(id);
-  }
-
-  public void addFormModelListener(TaskFormModelListener formAdditionListener) {
-    formModelListeners.add(formAdditionListener);
-  }
-
-  protected void fireFormAdded(Object taskItemId) {
-    for (TaskFormModelListener formAdditionListener : formModelListeners) {
-      formAdditionListener.formAdded(taskItemId);
+    public void addForm(Object taskItemId, FormDefinition form) {
+        forms.put(taskItemId, form);
+        fireFormAdded(taskItemId);
     }
-  }
 
-  protected void fireFormRemoved(Object taskItemId) {
-    for (TaskFormModelListener formModelListener : formModelListeners) {
-      formModelListener.formRemoved(taskItemId);
+    public void removeForm(Object taskItemId) {
+        forms.remove(taskItemId);
+        fireFormRemoved(taskItemId);
     }
-  }
+
+    public FormDefinition getForm(Object id) {
+        return forms.get(id);
+    }
+
+    public void addFormModelListener(TaskFormModelListener formAdditionListener) {
+        formModelListeners.add(formAdditionListener);
+    }
+
+    protected void fireFormAdded(Object taskItemId) {
+        for (TaskFormModelListener formAdditionListener : formModelListeners) {
+            formAdditionListener.formAdded(taskItemId);
+        }
+    }
+
+    protected void fireFormRemoved(Object taskItemId) {
+        for (TaskFormModelListener formModelListener : formModelListeners) {
+            formModelListener.formRemoved(taskItemId);
+        }
+    }
 
 }

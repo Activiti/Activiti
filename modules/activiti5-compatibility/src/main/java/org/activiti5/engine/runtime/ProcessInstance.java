@@ -16,9 +16,8 @@ import java.util.Map;
 
 import org.activiti5.engine.repository.ProcessDefinition;
 
-
-
-/** Represents one execution of a  {@link ProcessDefinition}.
+/**
+ * Represents one execution of a {@link ProcessDefinition}.
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
@@ -26,5 +25,5 @@ import org.activiti5.engine.repository.ProcessDefinition;
  * @author Tijs Rademakers
  */
 public interface ProcessInstance extends org.activiti.engine.runtime.ProcessInstance {
-  
+
 }

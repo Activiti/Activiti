@@ -25,17 +25,18 @@ import org.activiti.bpmn.model.TimerEventDefinition;
  */
 public class TimerEventDefinitionParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ELEMENT_EVENT_TIMERDEFINITION;
-  }
-  
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof Event == false) return;
-    
-    TimerEventDefinition eventDefinition = new TimerEventDefinition();
-    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TIMERDEFINITION, eventDefinition, xtr, model);
-    
-    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
-  }
+    public String getElementName() {
+        return ELEMENT_EVENT_TIMERDEFINITION;
+    }
+
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+        if (parentElement instanceof Event == false)
+            return;
+
+        TimerEventDefinition eventDefinition = new TimerEventDefinition();
+        BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TIMERDEFINITION, eventDefinition, xtr, model);
+
+        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+    }
 }

@@ -21,31 +21,28 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.IdentityLink;
 
-
 /**
  * @author Marcus Klimstra
  */
 public class GetIdentityLinksForProcessInstanceCmd implements Command<List<IdentityLink>>, Serializable {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected String processInstanceId;
 
-  public GetIdentityLinksForProcessInstanceCmd(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-  
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public List<IdentityLink> execute(CommandContext commandContext) {
-    ExecutionEntity processInstance = commandContext
-        .getExecutionEntityManager()
-        .findExecutionById(processInstanceId);
-      
-    if (processInstance == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processInstanceId, ExecutionEntity.class);
+    private static final long serialVersionUID = 1L;
+
+    protected String processInstanceId;
+
+    public GetIdentityLinksForProcessInstanceCmd(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
-    
-    return (List) processInstance.getIdentityLinks();
-  }
-  
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<IdentityLink> execute(CommandContext commandContext) {
+        ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+
+        if (processInstance == null) {
+            throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processInstanceId, ExecutionEntity.class);
+        }
+
+        return (List) processInstance.getIdentityLinks();
+    }
+
 }

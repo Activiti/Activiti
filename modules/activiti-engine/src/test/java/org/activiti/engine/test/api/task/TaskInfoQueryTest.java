@@ -25,55 +25,59 @@ import org.activiti.engine.task.TaskInfoQueryWrapper;
  * @author Joram Barrez
  */
 public class TaskInfoQueryTest extends PluggableActivitiTestCase {
-	
-	protected void tearDown() throws Exception {
-		for (Task task : taskService.createTaskQuery().list()) {
-			taskService.deleteTask(task.getId(), true);
-		}
-	}
 
-  public void testTaskInfoQuery() {
-  	Date now = processEngineConfiguration.getClock().getCurrentTime();
-  	
-  	// 4 tasks with a due date
-  	createTask("task0", new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))); // 4 weeks in future
-  	createTask("task1", new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))); // 2 days in future
-  	createTask("task2", new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))); // 1 week in future
-  	createTask("task3", new Date(now.getTime() + (24L * 60L * 60L * 1000L))); // 1 day in future
-  	
-  	// 2 tasks without a due date
-  	createTask("task4", null);
-  	createTask("task5", null);
-  	
-  	// Runtime
-  	TaskInfoQueryWrapper taskInfoQueryWrapper = new TaskInfoQueryWrapper(taskService.createTaskQuery());
-  	List<? extends TaskInfo> taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or()
-  		.taskNameLike("%k1%")
-  		.taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L)))
-  	.endOr()
-  	.list();
-  	
-  	assertEquals(3, taskInfos.size());
-  	
-  	if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-    	// History
-    	taskInfoQueryWrapper = new TaskInfoQueryWrapper(historyService.createHistoricTaskInstanceQuery());
-    	taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or()
-    		.taskNameLike("%k1%")
-    		.taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L)))
-    	.endOr()
-    	.list();
-    	
-    	assertEquals(3, taskInfos.size());
-  	}
-  }
-  
-  private Task createTask(String name, Date dueDate) {
-  	Task task = taskService.newTask();
-  	task.setName(name);
-  	task.setDueDate(dueDate);
-  	taskService.saveTask(task);
-  	return task;
-  }
+    protected void tearDown() throws Exception {
+        for (Task task : taskService.createTaskQuery().list()) {
+            taskService.deleteTask(task.getId(), true);
+        }
+    }
+
+    public void testTaskInfoQuery() {
+        Date now = processEngineConfiguration.getClock().getCurrentTime();
+
+        // 4 tasks with a due date
+        createTask("task0", new Date(now.getTime() + (4L * 7L * 24L * 60L * 60L * 1000L))); // 4
+                                                                                            // weeks
+                                                                                            // in
+                                                                                            // future
+        createTask("task1", new Date(now.getTime() + (2 * 24L * 60L * 60L * 1000L))); // 2
+                                                                                      // days
+                                                                                      // in
+                                                                                      // future
+        createTask("task2", new Date(now.getTime() + (7L * 24L * 60L * 60L * 1000L))); // 1
+                                                                                       // week
+                                                                                       // in
+                                                                                       // future
+        createTask("task3", new Date(now.getTime() + (24L * 60L * 60L * 1000L))); // 1
+                                                                                  // day
+                                                                                  // in
+                                                                                  // future
+
+        // 2 tasks without a due date
+        createTask("task4", null);
+        createTask("task5", null);
+
+        // Runtime
+        TaskInfoQueryWrapper taskInfoQueryWrapper = new TaskInfoQueryWrapper(taskService.createTaskQuery());
+        List<? extends TaskInfo> taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or().taskNameLike("%k1%").taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L))).endOr().list();
+
+        assertEquals(3, taskInfos.size());
+
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            // History
+            taskInfoQueryWrapper = new TaskInfoQueryWrapper(historyService.createHistoricTaskInstanceQuery());
+            taskInfos = taskInfoQueryWrapper.getTaskInfoQuery().or().taskNameLike("%k1%").taskDueAfter(new Date(now.getTime() + (3 * 24L * 60L * 60L * 1000L))).endOr().list();
+
+            assertEquals(3, taskInfos.size());
+        }
+    }
+
+    private Task createTask(String name, Date dueDate) {
+        Task task = taskService.newTask();
+        task.setName(name);
+        task.setDueDate(dueDate);
+        taskService.saveTask(task);
+        return task;
+    }
 
 }

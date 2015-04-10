@@ -34,82 +34,92 @@ import com.vaadin.ui.Table;
  */
 public class GroupPage extends ManagementPage {
 
-  private static final long serialVersionUID = 1L;
-  protected String groupId;
-  protected Table groupTable;
-  protected LazyLoadingQuery groupListQuery;
-  protected LazyLoadingContainer groupListContainer;
-  
-  public GroupPage() {
-    ExplorerApp.get().setCurrentUriFragment(
-            new UriFragment(GroupNavigator.GROUP_URI_PART));
-  }
-  
-  public GroupPage(String groupId) {
-    this.groupId = groupId;
-  }
-  
-  @Override
-  protected void initUi() {
-    super.initUi();
-    
-    if (groupId == null) {
-      selectElement(0);
-    } else {
-      selectElement(groupListContainer.getIndexForObjectId(groupId));
-    }
-  }
+    private static final long serialVersionUID = 1L;
+    protected String groupId;
+    protected Table groupTable;
+    protected LazyLoadingQuery groupListQuery;
+    protected LazyLoadingContainer groupListContainer;
 
-  protected Table createList() {
-    groupTable = new Table();
-    
-    groupTable.setEditable(false);
-    groupTable.setImmediate(true);
-    groupTable.setSelectable(true);
-    groupTable.setNullSelectionAllowed(false);
-    groupTable.setSortDisabled(true);
-    groupTable.setSizeFull();
-    
-    groupListQuery = new GroupListQuery();
-    groupListContainer = new LazyLoadingContainer(groupListQuery, 30);
-    groupTable.setContainerDataSource(groupListContainer);
-    
-    // Column headers
-    groupTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.GROUP_22));
-    groupTable.setColumnWidth("icon", 22);
-    groupTable.addContainerProperty("name", String.class, null);
-    groupTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-            
-    // Listener to change right panel when clicked on a user
-    groupTable.addListener(new Property.ValueChangeListener() {
-      private static final long serialVersionUID = 1L;
-      public void valueChange(ValueChangeEvent event) {
-        Item item = groupTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
-        if(item != null) {
-          String groupId = (String) item.getItemProperty("id").getValue();
-          setDetailComponent(new GroupDetailPanel(GroupPage.this, groupId));
-          
-          // Update URL
-          ExplorerApp.get().setCurrentUriFragment(
-            new UriFragment(GroupNavigator.GROUP_URI_PART, groupId));
+    public GroupPage() {
+        ExplorerApp.get().setCurrentUriFragment(new UriFragment(GroupNavigator.GROUP_URI_PART));
+    }
+
+    public GroupPage(String groupId) {
+        this.groupId = groupId;
+    }
+
+    @Override
+    protected void initUi() {
+        super.initUi();
+
+        if (groupId == null) {
+            selectElement(0);
         } else {
-          // Nothing is selected
-          setDetailComponent(null);
-          ExplorerApp.get().setCurrentUriFragment(new UriFragment(GroupNavigator.GROUP_URI_PART, groupId));
+            selectElement(groupListContainer.getIndexForObjectId(groupId));
         }
-      }
-    });
-    
-    return groupTable;
-  }
-  
-  public void notifyGroupChanged(String groupId) {
-    // Clear cache
-    groupTable.removeAllItems();
-    groupListContainer.removeAllItems();
-    
-    // select changed group
-    groupTable.select(groupListContainer.getIndexForObjectId(groupId));
-  }
-  
+    }
+
+    protected Table createList() {
+        groupTable = new Table();
+
+        groupTable.setEditable(false);
+        groupTable.setImmediate(true);
+        groupTable.setSelectable(true);
+        groupTable.setNullSelectionAllowed(false);
+        groupTable.setSortDisabled(true);
+        groupTable.setSizeFull();
+
+        groupListQuery = new GroupListQuery();
+        groupListContainer = new LazyLoadingContainer(groupListQuery, 30);
+        groupTable.setContainerDataSource(groupListContainer);
+
+        // Column headers
+        groupTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.GROUP_22));
+        groupTable.setColumnWidth("icon", 22);
+        groupTable.addContainerProperty("name", String.class, null);
+        groupTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+
+        // Listener to change right panel when clicked on a user
+        groupTable.addListener(new Property.ValueChangeListener() {
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+                Item item = groupTable.getItem(event.getProperty().getValue()); // the
+                                                                                // value
+                                                                                // of
+                                                                                // the
+                                                                                // property
+                                                                                // is
+                                                                                // the
+                                                                                // itemId
+                                                                                // of
+                                                                                // the
+                                                                                // table
+                                                                                // entry
+                if (item != null) {
+                    String groupId = (String) item.getItemProperty("id").getValue();
+                    setDetailComponent(new GroupDetailPanel(GroupPage.this, groupId));
+
+                    // Update URL
+                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(GroupNavigator.GROUP_URI_PART, groupId));
+                } else {
+                    // Nothing is selected
+                    setDetailComponent(null);
+                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(GroupNavigator.GROUP_URI_PART, groupId));
+                }
+            }
+        });
+
+        return groupTable;
+    }
+
+    public void notifyGroupChanged(String groupId) {
+        // Clear cache
+        groupTable.removeAllItems();
+        groupListContainer.removeAllItems();
+
+        // select changed group
+        groupTable.select(groupListContainer.getIndexForObjectId(groupId));
+    }
+
 }

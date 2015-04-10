@@ -20,9 +20,9 @@ import org.activiti5.engine.delegate.JavaDelegate;
  * @author Daniel Meyer
  */
 public class AsyncService implements JavaDelegate {
-  
-  public void execute(DelegateExecution execution) throws Exception {
-    AsyncTaskTest.INVOCATION = true;
-  }
+
+    public void execute(DelegateExecution execution) throws Exception {
+        AsyncTaskTest.INVOCATION = true;
+    }
 
 }

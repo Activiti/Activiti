@@ -29,57 +29,56 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author Tijs Rademakers
  */
 public class CatchEventJsonConverter extends BaseBpmnJsonConverter {
-  
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
-      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    
-    fillJsonTypes(convertersToBpmnMap);
-    fillBpmnTypes(convertersToJsonMap);
-  }
-  
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-    convertersToBpmnMap.put(STENCIL_EVENT_CATCH_TIMER, CatchEventJsonConverter.class);
-    convertersToBpmnMap.put(STENCIL_EVENT_CATCH_MESSAGE, CatchEventJsonConverter.class);
-    convertersToBpmnMap.put(STENCIL_EVENT_CATCH_SIGNAL, CatchEventJsonConverter.class);
-  }
-  
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    convertersToJsonMap.put(IntermediateCatchEvent.class, CatchEventJsonConverter.class);
-  }
-  
-  protected String getStencilId(BaseElement baseElement) {
-    IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
-    List<EventDefinition> eventDefinitions = catchEvent.getEventDefinitions();
-    if (eventDefinitions.size() != 1) {
-      // return timer event as default;
-      return STENCIL_EVENT_CATCH_TIMER;
-    }
-    
-    EventDefinition eventDefinition = eventDefinitions.get(0);
-    if (eventDefinition instanceof MessageEventDefinition) {
-      return STENCIL_EVENT_CATCH_MESSAGE;
-    } else if (eventDefinition instanceof SignalEventDefinition) {
-      return STENCIL_EVENT_CATCH_SIGNAL;
-    } else {
-      return STENCIL_EVENT_CATCH_TIMER;
-    }
-  }
 
-  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
-    IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
-    addEventProperties(catchEvent, propertiesNode);
-  }
-  
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-    IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
-    String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
-    if (STENCIL_EVENT_CATCH_TIMER.equals(stencilId)) {
-      convertJsonToTimerDefinition(elementNode, catchEvent);
-    } else if (STENCIL_EVENT_CATCH_MESSAGE.equals(stencilId)) {
-      convertJsonToMessageDefinition(elementNode, catchEvent);
-    } else if (STENCIL_EVENT_CATCH_SIGNAL.equals(stencilId)) {
-      convertJsonToSignalDefinition(elementNode, catchEvent);
+    public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+
+        fillJsonTypes(convertersToBpmnMap);
+        fillBpmnTypes(convertersToJsonMap);
     }
-    return catchEvent;
-  }
+
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_EVENT_CATCH_TIMER, CatchEventJsonConverter.class);
+        convertersToBpmnMap.put(STENCIL_EVENT_CATCH_MESSAGE, CatchEventJsonConverter.class);
+        convertersToBpmnMap.put(STENCIL_EVENT_CATCH_SIGNAL, CatchEventJsonConverter.class);
+    }
+
+    public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+        convertersToJsonMap.put(IntermediateCatchEvent.class, CatchEventJsonConverter.class);
+    }
+
+    protected String getStencilId(BaseElement baseElement) {
+        IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
+        List<EventDefinition> eventDefinitions = catchEvent.getEventDefinitions();
+        if (eventDefinitions.size() != 1) {
+            // return timer event as default;
+            return STENCIL_EVENT_CATCH_TIMER;
+        }
+
+        EventDefinition eventDefinition = eventDefinitions.get(0);
+        if (eventDefinition instanceof MessageEventDefinition) {
+            return STENCIL_EVENT_CATCH_MESSAGE;
+        } else if (eventDefinition instanceof SignalEventDefinition) {
+            return STENCIL_EVENT_CATCH_SIGNAL;
+        } else {
+            return STENCIL_EVENT_CATCH_TIMER;
+        }
+    }
+
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
+        IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) baseElement;
+        addEventProperties(catchEvent, propertiesNode);
+    }
+
+    protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+        IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
+        String stencilId = BpmnJsonConverterUtil.getStencilId(elementNode);
+        if (STENCIL_EVENT_CATCH_TIMER.equals(stencilId)) {
+            convertJsonToTimerDefinition(elementNode, catchEvent);
+        } else if (STENCIL_EVENT_CATCH_MESSAGE.equals(stencilId)) {
+            convertJsonToMessageDefinition(elementNode, catchEvent);
+        } else if (STENCIL_EVENT_CATCH_SIGNAL.equals(stencilId)) {
+            convertJsonToSignalDefinition(elementNode, catchEvent);
+        }
+        return catchEvent;
+    }
 }

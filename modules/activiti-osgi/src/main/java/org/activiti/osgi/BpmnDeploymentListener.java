@@ -27,9 +27,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
- * A fileinstall deployer transforming a BPMN xml definition file into
- * an installable bundle.
- *
+ * A fileinstall deployer transforming a BPMN xml definition file into an
+ * installable bundle.
+ * 
  * @author <a href="gnodet@gmail.com">Guillaume Nodet</a>
  */
 public class BpmnDeploymentListener implements ArtifactUrlTransformer {
@@ -43,7 +43,7 @@ public class BpmnDeploymentListener implements ArtifactUrlTransformer {
             if (artifact.isFile() && artifact.getName().endsWith(".xml")) {
                 Document doc = parse(artifact);
                 String name = doc.getDocumentElement().getLocalName();
-                String uri  = doc.getDocumentElement().getNamespaceURI();
+                String uri = doc.getDocumentElement().getNamespaceURI();
                 if ("definitions".equals(name) && "http://www.omg.org/spec/BPMN/20100524/MODEL".equals(uri)) {
                     return true;
                 }
@@ -72,8 +72,10 @@ public class BpmnDeploymentListener implements ArtifactUrlTransformer {
         db.setErrorHandler(new ErrorHandler() {
             public void warning(SAXParseException exception) throws SAXException {
             }
+
             public void error(SAXParseException exception) throws SAXException {
             }
+
             public void fatalError(SAXParseException exception) throws SAXException {
                 throw exception;
             }

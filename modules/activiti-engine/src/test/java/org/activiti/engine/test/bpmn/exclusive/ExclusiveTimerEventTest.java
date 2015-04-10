@@ -19,25 +19,25 @@ import org.activiti.engine.test.Deployment;
 
 import java.util.Date;
 
-
 public class ExclusiveTimerEventTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testCatchingTimerEvent() throws Exception {
+    @Deployment
+    public void testCatchingTimerEvent() throws Exception {
 
-    // Set the clock fixed
-    Date startTime = new Date();
+        // Set the clock fixed
+        Date startTime = new Date();
 
-    // After process start, there should be 3 timers created
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveTimers");
-    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
-    assertEquals(3, jobQuery.count());
+        // After process start, there should be 3 timers created
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("exclusiveTimers");
+        JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+        assertEquals(3, jobQuery.count());
 
-    // After setting the clock to time '50minutes and 5 seconds', the timers should fire
-    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 100L);
+        // After setting the clock to time '50minutes and 5 seconds', the timers
+        // should fire
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
+        waitForJobExecutorToProcessAllJobs(5000L, 100L);
 
-    assertEquals(0, jobQuery.count());
-    assertProcessEnded(pi.getProcessInstanceId());
-  }
+        assertEquals(0, jobQuery.count());
+        assertProcessEnded(pi.getProcessInstanceId());
+    }
 }

@@ -12,19 +12,18 @@
  */
 package org.activiti.bpmn.model;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class ThrowEvent extends Event {
-  
-  public ThrowEvent clone() {
-    ThrowEvent clone = new ThrowEvent();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  public void setValues(ThrowEvent otherEvent) {
-    super.setValues(otherEvent);
-  }
+
+    public ThrowEvent clone() {
+        ThrowEvent clone = new ThrowEvent();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(ThrowEvent otherEvent) {
+        super.setValues(otherEvent);
+    }
 }

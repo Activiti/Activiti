@@ -35,90 +35,88 @@ import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class EditorProcessDefinitionInfoComponent extends VerticalLayout {
 
-  protected static final Logger LOGGER = LoggerFactory.getLogger(EditorProcessDefinitionInfoComponent.class);
-  private static final long serialVersionUID = 1L;
+    protected static final Logger LOGGER = LoggerFactory.getLogger(EditorProcessDefinitionInfoComponent.class);
+    private static final long serialVersionUID = 1L;
 
-  // Services
-  protected transient RepositoryService repositoryService;
-  protected I18nManager i18nManager;
-  
-  // Members
-  protected Model modelData;
-  
-  // UI
-  protected HorizontalLayout timeDetails;
-  protected VerticalLayout processImageContainer;
-  
-  
-  public EditorProcessDefinitionInfoComponent(Model model) {
-    super();
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    this.i18nManager = ExplorerApp.get().getI18nManager(); 
-    
-    this.modelData = model;
-    
-    addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
-    
-    initImage();
-  }
-  
-  protected void initImage() {
-    processImageContainer = new VerticalLayout();
-    
-    Label processTitle = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
-    processTitle.addStyleName(ExplorerLayout.STYLE_H3);
-    processImageContainer.addComponent(processTitle);
-    
-    StreamSource streamSource = null;
-    final byte[] editorSourceExtra = repositoryService.getModelEditorSourceExtra(modelData.getId());
-    if (editorSourceExtra != null) {
-      streamSource = new StreamSource() {
-        private static final long serialVersionUID = 1L;
+    // Services
+    protected transient RepositoryService repositoryService;
+    protected I18nManager i18nManager;
 
-        public InputStream getStream() {
-          InputStream inStream = null;
-          try {
-            inStream = new ByteArrayInputStream(editorSourceExtra);
-          } catch (Exception e) {
-            LOGGER.warn("Error reading PNG in StreamSource", e);
-          }
-          return inStream;
+    // Members
+    protected Model modelData;
+
+    // UI
+    protected HorizontalLayout timeDetails;
+    protected VerticalLayout processImageContainer;
+
+    public EditorProcessDefinitionInfoComponent(Model model) {
+        super();
+        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+
+        this.modelData = model;
+
+        addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+
+        initImage();
+    }
+
+    protected void initImage() {
+        processImageContainer = new VerticalLayout();
+
+        Label processTitle = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
+        processTitle.addStyleName(ExplorerLayout.STYLE_H3);
+        processImageContainer.addComponent(processTitle);
+
+        StreamSource streamSource = null;
+        final byte[] editorSourceExtra = repositoryService.getModelEditorSourceExtra(modelData.getId());
+        if (editorSourceExtra != null) {
+            streamSource = new StreamSource() {
+                private static final long serialVersionUID = 1L;
+
+                public InputStream getStream() {
+                    InputStream inStream = null;
+                    try {
+                        inStream = new ByteArrayInputStream(editorSourceExtra);
+                    } catch (Exception e) {
+                        LOGGER.warn("Error reading PNG in StreamSource", e);
+                    }
+                    return inStream;
+                }
+            };
         }
-      };
+
+        if (streamSource != null) {
+            Embedded embedded = new Embedded(null, new ImageStreamSource(streamSource, ExplorerApp.get()));
+            embedded.setType(Embedded.TYPE_IMAGE);
+            embedded.setSizeUndefined();
+
+            Panel imagePanel = new Panel(); // using panel for scrollbars
+            imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
+            imagePanel.setWidth(100, UNITS_PERCENTAGE);
+            imagePanel.setHeight(700, UNITS_PIXELS);
+            HorizontalLayout panelLayout = new HorizontalLayout();
+            panelLayout.setSizeUndefined();
+            imagePanel.setContent(panelLayout);
+            imagePanel.addComponent(embedded);
+
+            processImageContainer.addComponent(imagePanel);
+        } else {
+            Label noImageAvailable = new Label(i18nManager.getMessage(Messages.PROCESS_NO_DIAGRAM));
+            processImageContainer.addComponent(noImageAvailable);
+        }
+        addComponent(processImageContainer);
     }
 
-    if(streamSource != null) {
-      Embedded embedded = new Embedded(null, new ImageStreamSource(streamSource, ExplorerApp.get()));
-      embedded.setType(Embedded.TYPE_IMAGE);
-      embedded.setSizeUndefined();
-      
-      Panel imagePanel = new Panel(); // using panel for scrollbars
-      imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
-      imagePanel.setWidth(100, UNITS_PERCENTAGE);
-      imagePanel.setHeight(700, UNITS_PIXELS);
-      HorizontalLayout panelLayout = new HorizontalLayout();
-      panelLayout.setSizeUndefined();
-      imagePanel.setContent(panelLayout);
-      imagePanel.addComponent(embedded);
-      
-      processImageContainer.addComponent(imagePanel);
-    } else {
-      Label noImageAvailable = new Label(i18nManager.getMessage(Messages.PROCESS_NO_DIAGRAM));
-      processImageContainer.addComponent(noImageAvailable);
+    protected void addEmptySpace(ComponentContainer container) {
+        Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+        emptySpace.setSizeUndefined();
+        container.addComponent(emptySpace);
     }
-    addComponent(processImageContainer);
-  }
-  
-  protected void addEmptySpace(ComponentContainer container) {
-    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-    emptySpace.setSizeUndefined();
-    container.addComponent(emptySpace);
-  }
-  
+
 }

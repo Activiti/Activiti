@@ -18,20 +18,19 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-
 public class SimpleContextProvider implements ContextProvider {
 
-  private Map<String, CamelContext> contexts = new HashMap<String, CamelContext>();
+    private Map<String, CamelContext> contexts = new HashMap<String, CamelContext>();
 
-  public SimpleContextProvider(Map<String, CamelContext> contexts) {
-    this.contexts = contexts;
-  }
+    public SimpleContextProvider(Map<String, CamelContext> contexts) {
+        this.contexts = contexts;
+    }
 
-  public SimpleContextProvider(String processName, CamelContext ctx) {
-    this(Collections.singletonMap(processName, ctx));
-  }
+    public SimpleContextProvider(String processName, CamelContext ctx) {
+        this(Collections.singletonMap(processName, ctx));
+    }
 
-  public CamelContext getContext(String processName) {
-    return contexts.get(processName);
-  }
+    public CamelContext getContext(String processName) {
+        return contexts.get(processName);
+    }
 }

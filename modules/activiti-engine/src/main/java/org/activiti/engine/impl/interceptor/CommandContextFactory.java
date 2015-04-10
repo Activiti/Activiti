@@ -15,25 +15,25 @@ package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
-
 /**
  * @author Tom Baeyens
  */
 public class CommandContextFactory {
 
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
-  
-  public CommandContext createCommandContext(Command<?> cmd) {
-    return new CommandContext(cmd, processEngineConfiguration);
-  }
-  
-  // getters and setters //////////////////////////////////////////////////////
-  
-  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-    return processEngineConfiguration;
-  }
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    this.processEngineConfiguration = processEngineConfiguration;
-  }
+    public CommandContext createCommandContext(Command<?> cmd) {
+        return new CommandContext(cmd, processEngineConfiguration);
+    }
+
+    // getters and setters
+    // //////////////////////////////////////////////////////
+
+    public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+        return processEngineConfiguration;
+    }
+
+    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
 }

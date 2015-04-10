@@ -14,39 +14,39 @@
 package org.activiti5.engine;
 
 /**
- * An exception indicating that the object that is required or actioned on
- * does not exist.
+ * An exception indicating that the object that is required or actioned on does
+ * not exist.
  * 
  * @author Frederik Heremans
  */
 public class ActivitiObjectNotFoundException extends ActivitiException {
 
-  private static final long serialVersionUID = 1L;
-  
-  private Class<?> objectClass;
-  
-  public ActivitiObjectNotFoundException(String message) {
-    super(message);
-  }
+    private static final long serialVersionUID = 1L;
 
-  public ActivitiObjectNotFoundException(String message, Class<?> objectClass) {
-    this(message, objectClass, null);
-  }
-  
-  public ActivitiObjectNotFoundException(Class<?> objectClass) {
-    this(null, objectClass, null);
-  }
-  
-  public ActivitiObjectNotFoundException(String message, Class<?> objectClass, Throwable cause) {
-    super(message, cause);
-    this.objectClass = objectClass;
-  }
-  
-  /**
-   * The class of the object that was not found. Contains the 
-   * interface-class of the activiti-object that was not found.
-   */
-  public Class<?> getObjectClass() {
-    return objectClass;
-  }
+    private Class<?> objectClass;
+
+    public ActivitiObjectNotFoundException(String message) {
+        super(message);
+    }
+
+    public ActivitiObjectNotFoundException(String message, Class<?> objectClass) {
+        this(message, objectClass, null);
+    }
+
+    public ActivitiObjectNotFoundException(Class<?> objectClass) {
+        this(null, objectClass, null);
+    }
+
+    public ActivitiObjectNotFoundException(String message, Class<?> objectClass, Throwable cause) {
+        super(message, cause);
+        this.objectClass = objectClass;
+    }
+
+    /**
+     * The class of the object that was not found. Contains the interface-class
+     * of the activiti-object that was not found.
+     */
+    public Class<?> getObjectClass() {
+        return objectClass;
+    }
 }

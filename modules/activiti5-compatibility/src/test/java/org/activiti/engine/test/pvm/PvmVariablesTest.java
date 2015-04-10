@@ -22,37 +22,31 @@ import org.activiti5.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti5.engine.impl.pvm.PvmProcessInstance;
 import org.activiti5.engine.impl.test.PvmTestCase;
 
-
 /**
  * @author Tom Baeyens
  */
 public class PvmVariablesTest extends PvmTestCase {
 
-  public void testVariables() {
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .createActivity("a")
-        .initial()
-        .behavior(new WaitState())
-      .endActivity()
-    .buildProcessDefinition();
-      
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-    processInstance.setVariable("amount", 500L);
-    processInstance.setVariable("msg", "hello world");
-    processInstance.start();
+    public void testVariables() {
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("a").initial().behavior(new WaitState()).endActivity().buildProcessDefinition();
 
-    assertEquals(500L, processInstance.getVariable("amount"));
-    assertEquals("hello world", processInstance.getVariable("msg"));
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.setVariable("amount", 500L);
+        processInstance.setVariable("msg", "hello world");
+        processInstance.start();
 
-    PvmExecution activityInstance = processInstance.findExecution("a");
-    assertEquals(500L, activityInstance.getVariable("amount"));
-    assertEquals("hello world", activityInstance.getVariable("msg"));
-    
-    Map<String, Object> expectedVariables = new HashMap<String, Object>();
-    expectedVariables.put("amount", 500L);
-    expectedVariables.put("msg", "hello world");
+        assertEquals(500L, processInstance.getVariable("amount"));
+        assertEquals("hello world", processInstance.getVariable("msg"));
 
-    assertEquals(expectedVariables, activityInstance.getVariables());
-    assertEquals(expectedVariables, processInstance.getVariables());
-  }
+        PvmExecution activityInstance = processInstance.findExecution("a");
+        assertEquals(500L, activityInstance.getVariable("amount"));
+        assertEquals("hello world", activityInstance.getVariable("msg"));
+
+        Map<String, Object> expectedVariables = new HashMap<String, Object>();
+        expectedVariables.put("amount", 500L);
+        expectedVariables.put("msg", "hello world");
+
+        assertEquals(expectedVariables, activityInstance.getVariables());
+        assertEquals(expectedVariables, processInstance.getVariables());
+    }
 }

@@ -24,27 +24,25 @@ import org.activiti.engine.runtime.ProcessInstance;
  * @author Joram Barrez
  */
 public class SuspendProcessDefinitionCmd extends AbstractSetProcessDefinitionStateCmd {
-  
-  public SuspendProcessDefinitionCmd(ProcessDefinitionEntity processDefinitionEntity, 
-          boolean includeProcessInstances, Date executionDate, String tenantId) {
-    super(processDefinitionEntity, includeProcessInstances, executionDate, tenantId);
-  }
 
-  public SuspendProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey,
-          boolean suspendProcessInstances, Date suspensionDate, String tenantId) {
-    super(processDefinitionId, processDefinitionKey, suspendProcessInstances, suspensionDate, tenantId);
-  }
-  
-  protected SuspensionState getProcessDefinitionSuspensionState() {
-    return SuspensionState.SUSPENDED;
-  }
+    public SuspendProcessDefinitionCmd(ProcessDefinitionEntity processDefinitionEntity, boolean includeProcessInstances, Date executionDate, String tenantId) {
+        super(processDefinitionEntity, includeProcessInstances, executionDate, tenantId);
+    }
 
-  protected String getDelayedExecutionJobHandlerType() {
-    return TimerSuspendProcessDefinitionHandler.TYPE;
-  }
-  
-  protected AbstractSetProcessInstanceStateCmd getProcessInstanceChangeStateCmd(ProcessInstance processInstance) {
-    return new SuspendProcessInstanceCmd(processInstance.getId());
-  }
-  
+    public SuspendProcessDefinitionCmd(String processDefinitionId, String processDefinitionKey, boolean suspendProcessInstances, Date suspensionDate, String tenantId) {
+        super(processDefinitionId, processDefinitionKey, suspendProcessInstances, suspensionDate, tenantId);
+    }
+
+    protected SuspensionState getProcessDefinitionSuspensionState() {
+        return SuspensionState.SUSPENDED;
+    }
+
+    protected String getDelayedExecutionJobHandlerType() {
+        return TimerSuspendProcessDefinitionHandler.TYPE;
+    }
+
+    protected AbstractSetProcessInstanceStateCmd getProcessInstanceChangeStateCmd(ProcessInstance processInstance) {
+        return new SuspendProcessInstanceCmd(processInstance.getId());
+    }
+
 }

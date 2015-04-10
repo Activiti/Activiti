@@ -29,61 +29,60 @@ import org.activiti.engine.test.Deployment;
 import org.junit.Test;
 
 public class SignalEventTest extends CdiActivitiTestCase {
-  
-  
-  @Named
-  public static class SignalReceivedDelegate implements JavaDelegate {    
-    
-    @Inject
-    private BusinessProcess businessProcess;
-    
-    public void execute(DelegateExecution execution) {
-      businessProcess.setVariable("processName", "catchSignal-visited (was " + businessProcess.getVariable("processName")  + ")");
-    }
-  }
 
-  @Named
-  public static class SendSignalDelegate implements JavaDelegate {
+    @Named
+    public static class SignalReceivedDelegate implements JavaDelegate {
 
-    @Inject
-    private RuntimeService runtimeService;  
+        @Inject
+        private BusinessProcess businessProcess;
 
-    @Inject
-    private BusinessProcess businessProcess;   
-
-    public void execute(DelegateExecution execution) {
-      businessProcess.setVariable("processName", "throwSignal-visited (was " + businessProcess.getVariable("processName")  + ")");
-
-      String signalProcessInstanceId = (String) execution.getVariable("signalProcessInstanceId");      
-      String executionId = runtimeService.createExecutionQuery().processInstanceId(signalProcessInstanceId).signalEventSubscriptionName("alert").singleResult().getId();      
-      
-      runtimeService.signalEventReceived("alert", executionId);
+        public void execute(DelegateExecution execution) {
+            businessProcess.setVariable("processName", "catchSignal-visited (was " + businessProcess.getVariable("processName") + ")");
+        }
     }
 
-  }
+    @Named
+    public static class SendSignalDelegate implements JavaDelegate {
 
-  @Test
-  @Deployment(resources = {"org/activiti/cdi/test/bpmn/SignalEventTests.catchAlertSignalBoundaryWithReceiveTask.bpmn20.xml", 
-                          "org/activiti/cdi/test/bpmn/SignalEventTests.throwAlertSignalWithDelegate.bpmn20.xml"})
-  public void testSignalCatchBoundaryWithVariables() {
-    HashMap<String, Object> variables1 = new HashMap<String, Object>();
-    variables1.put("processName", "catchSignal");
-    ProcessInstance piCatchSignal = runtimeService.startProcessInstanceByKey("catchSignal", variables1);
-        
-    HashMap<String, Object> variables2 = new HashMap<String, Object>();
-    variables2.put("processName", "throwSignal");
-    variables2.put("signalProcessInstanceId", piCatchSignal.getProcessInstanceId());
-    ProcessInstance piThrowSignal = runtimeService.startProcessInstanceByKey("throwSignal", variables2);
-    
-    assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(piCatchSignal.getProcessInstanceId()).activityId("receiveTask").count());
-    assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(piThrowSignal.getProcessInstanceId()).activityId("receiveTask").count());
-    
-    assertEquals("catchSignal-visited (was catchSignal)", runtimeService.getVariable(piCatchSignal.getId(), "processName"));
-    assertEquals("throwSignal-visited (was throwSignal)", runtimeService.getVariable(piThrowSignal.getId(), "processName"));
+        @Inject
+        private RuntimeService runtimeService;
 
-    // clean up
-    runtimeService.signal(piCatchSignal.getId());
-    runtimeService.signal(piThrowSignal.getId());
-  }
+        @Inject
+        private BusinessProcess businessProcess;
+
+        public void execute(DelegateExecution execution) {
+            businessProcess.setVariable("processName", "throwSignal-visited (was " + businessProcess.getVariable("processName") + ")");
+
+            String signalProcessInstanceId = (String) execution.getVariable("signalProcessInstanceId");
+            String executionId = runtimeService.createExecutionQuery().processInstanceId(signalProcessInstanceId).signalEventSubscriptionName("alert").singleResult().getId();
+
+            runtimeService.signalEventReceived("alert", executionId);
+        }
+
+    }
+
+    @Test
+    @Deployment(resources = { "org/activiti/cdi/test/bpmn/SignalEventTests.catchAlertSignalBoundaryWithReceiveTask.bpmn20.xml",
+            "org/activiti/cdi/test/bpmn/SignalEventTests.throwAlertSignalWithDelegate.bpmn20.xml" })
+    public void testSignalCatchBoundaryWithVariables() {
+        HashMap<String, Object> variables1 = new HashMap<String, Object>();
+        variables1.put("processName", "catchSignal");
+        ProcessInstance piCatchSignal = runtimeService.startProcessInstanceByKey("catchSignal", variables1);
+
+        HashMap<String, Object> variables2 = new HashMap<String, Object>();
+        variables2.put("processName", "throwSignal");
+        variables2.put("signalProcessInstanceId", piCatchSignal.getProcessInstanceId());
+        ProcessInstance piThrowSignal = runtimeService.startProcessInstanceByKey("throwSignal", variables2);
+
+        assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(piCatchSignal.getProcessInstanceId()).activityId("receiveTask").count());
+        assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(piThrowSignal.getProcessInstanceId()).activityId("receiveTask").count());
+
+        assertEquals("catchSignal-visited (was catchSignal)", runtimeService.getVariable(piCatchSignal.getId(), "processName"));
+        assertEquals("throwSignal-visited (was throwSignal)", runtimeService.getVariable(piThrowSignal.getId(), "processName"));
+
+        // clean up
+        runtimeService.signal(piCatchSignal.getId());
+        runtimeService.signal(piThrowSignal.getId());
+    }
 
 }

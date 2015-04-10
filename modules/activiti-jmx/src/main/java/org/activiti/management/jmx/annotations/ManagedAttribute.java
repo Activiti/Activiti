@@ -32,8 +32,8 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ManagedAttribute {
 
-  String description() default "";
+    String description() default "";
 
-  boolean mask() default false;
+    boolean mask() default false;
 
 }

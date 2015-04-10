@@ -16,14 +16,13 @@ package org.activiti.engine.test.pvm.activities;
 import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Tom Baeyens
  */
 public class End implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
-    execution.end();
-  }
+    public void execute(ActivityExecution execution) throws Exception {
+        execution.end();
+    }
 
 }

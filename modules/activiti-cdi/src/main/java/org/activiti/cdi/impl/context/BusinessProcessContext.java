@@ -34,87 +34,89 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("unchecked")
 public class BusinessProcessContext implements Context {
 
-  final static Logger logger = LoggerFactory.getLogger(BusinessProcessContext.class);
-  
-  private final BeanManager beanManager;  
-  
-  public BusinessProcessContext(BeanManager beanManager) {
-    this.beanManager = beanManager;
-  }
+    final static Logger logger = LoggerFactory.getLogger(BusinessProcessContext.class);
 
-  protected BusinessProcess getBusinessProcess() {
-    return ProgrammaticBeanLookup.lookup(BusinessProcess.class, beanManager);
-  }
+    private final BeanManager beanManager;
 
-  @Override
-  public Class< ? extends Annotation> getScope() {
-    return BusinessProcessScoped.class;
-  }
-
-  @Override
-  public <T> T get(Contextual<T> contextual) {
-    Bean<T> bean = (Bean<T>) contextual;
-    String variableName = bean.getName();
-
-    BusinessProcess businessProcess = getBusinessProcess();
-    Object variable = businessProcess.getVariable(variableName);
-    if (variable != null) {
-      if(logger.isDebugEnabled()) {
-        if(businessProcess.isAssociated()) {        
-          logger.debug("Getting instance of bean '{}' from Execution[{}]", variableName, businessProcess.getExecutionId());
-        } else {
-          logger.debug("Getting instance of bean '{}' from transient bean store", variableName);
-        }
-      }
-
-      return (T) variable;
-    } else {
-      return null;
+    public BusinessProcessContext(BeanManager beanManager) {
+        this.beanManager = beanManager;
     }
 
-  }
-
-  @Override
-  public <T> T get(Contextual<T> contextual, CreationalContext<T> arg1) {
-
-    Bean<T> bean = (Bean<T>) contextual;
-    String variableName = bean.getName();
-
-    BusinessProcess businessProcess = getBusinessProcess();
-    Object variable = businessProcess.getVariable(variableName);
-    if (variable != null) {
-      if(logger.isDebugEnabled()) {
-        if(businessProcess.isAssociated()) {        
-          logger.debug("Getting instance of bean '{}' from Execution[{}]", variableName, businessProcess.getExecutionId());
-        } else {
-          logger.debug("Getting instance of bean '{}' from transient bean store", variableName);
-        }
-      }
-
-      return (T) variable;
-    } else {
-      
-      if(logger.isDebugEnabled()) {
-        if(businessProcess.isAssociated()) {        
-          logger.debug("Creating instance of bean '{}' in business process context representing Execution[{}]", variableName, businessProcess.getExecutionId());
-        } else {
-          logger.debug("Creating instance of bean '{}' in transient bean store", variableName);
-        }
-      }
-
-      T beanInstance = bean.create(arg1);
-      businessProcess.setVariable(variableName, beanInstance);
-      return beanInstance;
+    protected BusinessProcess getBusinessProcess() {
+        return ProgrammaticBeanLookup.lookup(BusinessProcess.class, beanManager);
     }
 
-  }
+    @Override
+    public Class<? extends Annotation> getScope() {
+        return BusinessProcessScoped.class;
+    }
 
-  @Override
-  public boolean isActive() {
-    // we assume the business process is always 'active'. If no task/execution is 
-    // associated, temporary instances of @BusinessProcesScoped beans are cached in the 
-    // conversation / request 
-    return true;
-  }
+    @Override
+    public <T> T get(Contextual<T> contextual) {
+        Bean<T> bean = (Bean<T>) contextual;
+        String variableName = bean.getName();
+
+        BusinessProcess businessProcess = getBusinessProcess();
+        Object variable = businessProcess.getVariable(variableName);
+        if (variable != null) {
+            if (logger.isDebugEnabled()) {
+                if (businessProcess.isAssociated()) {
+                    logger.debug("Getting instance of bean '{}' from Execution[{}]", variableName, businessProcess.getExecutionId());
+                } else {
+                    logger.debug("Getting instance of bean '{}' from transient bean store", variableName);
+                }
+            }
+
+            return (T) variable;
+        } else {
+            return null;
+        }
+
+    }
+
+    @Override
+    public <T> T get(Contextual<T> contextual, CreationalContext<T> arg1) {
+
+        Bean<T> bean = (Bean<T>) contextual;
+        String variableName = bean.getName();
+
+        BusinessProcess businessProcess = getBusinessProcess();
+        Object variable = businessProcess.getVariable(variableName);
+        if (variable != null) {
+            if (logger.isDebugEnabled()) {
+                if (businessProcess.isAssociated()) {
+                    logger.debug("Getting instance of bean '{}' from Execution[{}]", variableName, businessProcess.getExecutionId());
+                } else {
+                    logger.debug("Getting instance of bean '{}' from transient bean store", variableName);
+                }
+            }
+
+            return (T) variable;
+        } else {
+
+            if (logger.isDebugEnabled()) {
+                if (businessProcess.isAssociated()) {
+                    logger.debug("Creating instance of bean '{}' in business process context representing Execution[{}]", variableName, businessProcess.getExecutionId());
+                } else {
+                    logger.debug("Creating instance of bean '{}' in transient bean store", variableName);
+                }
+            }
+
+            T beanInstance = bean.create(arg1);
+            businessProcess.setVariable(variableName, beanInstance);
+            return beanInstance;
+        }
+
+    }
+
+    @Override
+    public boolean isActive() {
+        // we assume the business process is always 'active'. If no
+        // task/execution is
+        // associated, temporary instances of @BusinessProcesScoped beans are
+        // cached in the
+        // conversation / request
+        return true;
+    }
 
 }

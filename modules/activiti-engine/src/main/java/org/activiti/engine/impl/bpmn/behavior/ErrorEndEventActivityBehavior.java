@@ -15,28 +15,28 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Joram Barrez
  * @author Falko Menge
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
-  
-  protected String errorCode;
-  
-  public ErrorEndEventActivityBehavior(String errorCode) {
-    this.errorCode = errorCode;
-  }
-  
-  public void execute(ActivityExecution execution) {    
-    ErrorPropagation.propagateError(errorCode, execution);    
-  }
 
-  public String getErrorCode() {
-    return errorCode;
-  }
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
-  
+    protected String errorCode;
+
+    public ErrorEndEventActivityBehavior(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public void execute(ActivityExecution execution) {
+        ErrorPropagation.propagateError(errorCode, execution);
+    }
+
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
 }

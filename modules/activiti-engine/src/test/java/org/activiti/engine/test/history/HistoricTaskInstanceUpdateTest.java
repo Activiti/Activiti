@@ -19,52 +19,50 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-
 /**
  * @author Frederik Heremans
  */
 public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
 
-  
-  @Deployment
-  public void testHistoricTaskInstanceUpdate() {
-    runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
-    
-    Task task = taskService.createTaskQuery().singleResult();
-    
-    // Update and save the task's fields before it is finished
-    task.setPriority(12345);
-    task.setDescription("Updated description");
-    task.setName("Updated name");
-    task.setAssignee("gonzo");
-    taskService.saveTask(task);   
+    @Deployment
+    public void testHistoricTaskInstanceUpdate() {
+        runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
 
-    taskService.complete(task.getId());
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
+        Task task = taskService.createTaskQuery().singleResult();
 
-    HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
-    assertEquals("Updated name", historicTaskInstance.getName());
-    assertEquals("Updated description", historicTaskInstance.getDescription());
-    assertEquals("gonzo", historicTaskInstance.getAssignee());
-    assertEquals("task", historicTaskInstance.getTaskDefinitionKey());
+        // Update and save the task's fields before it is finished
+        task.setPriority(12345);
+        task.setDescription("Updated description");
+        task.setName("Updated name");
+        task.setAssignee("gonzo");
+        taskService.saveTask(task);
 
-    
-    // Validate fix of ACT-1923: updating assignee to null should be reflected in history
-    ProcessInstance secondInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
-    
-    task = taskService.createTaskQuery().singleResult();
-    
-    task.setDescription(null);
-    task.setName(null);
-    task.setAssignee(null);
-    taskService.saveTask(task);   
+        taskService.complete(task.getId());
+        assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
 
-    taskService.complete(task.getId());
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).count());
+        HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
+        assertEquals("Updated name", historicTaskInstance.getName());
+        assertEquals("Updated description", historicTaskInstance.getDescription());
+        assertEquals("gonzo", historicTaskInstance.getAssignee());
+        assertEquals("task", historicTaskInstance.getTaskDefinitionKey());
 
-    historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).singleResult();
-    assertNull(historicTaskInstance.getName());
-    assertNull(historicTaskInstance.getDescription());
-    assertNull(historicTaskInstance.getAssignee());
-  }
+        // Validate fix of ACT-1923: updating assignee to null should be
+        // reflected in history
+        ProcessInstance secondInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
+
+        task = taskService.createTaskQuery().singleResult();
+
+        task.setDescription(null);
+        task.setName(null);
+        task.setAssignee(null);
+        taskService.saveTask(task);
+
+        taskService.complete(task.getId());
+        assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).count());
+
+        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).singleResult();
+        assertNull(historicTaskInstance.getName());
+        assertNull(historicTaskInstance.getDescription());
+        assertNull(historicTaskInstance.getAssignee());
+    }
 }

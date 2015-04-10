@@ -18,32 +18,29 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public class CreateMembershipCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  String userId;
-  String groupId;
-  
-  public CreateMembershipCmd(String userId, String groupId) {
-    this.userId = userId;
-    this.groupId = groupId;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public Object execute(CommandContext commandContext) {
-    if(userId == null) {
-      throw new ActivitiIllegalArgumentException("userId is null");
+    String userId;
+    String groupId;
+
+    public CreateMembershipCmd(String userId, String groupId) {
+        this.userId = userId;
+        this.groupId = groupId;
     }
-    if(groupId == null) {
-      throw new ActivitiIllegalArgumentException("groupId is null");
+
+    public Object execute(CommandContext commandContext) {
+        if (userId == null) {
+            throw new ActivitiIllegalArgumentException("userId is null");
+        }
+        if (groupId == null) {
+            throw new ActivitiIllegalArgumentException("groupId is null");
+        }
+        commandContext.getMembershipIdentityManager().createMembership(userId, groupId);
+        return null;
     }
-    commandContext
-      .getMembershipIdentityManager()
-      .createMembership(userId, groupId);
-    return null;
-  }
 }

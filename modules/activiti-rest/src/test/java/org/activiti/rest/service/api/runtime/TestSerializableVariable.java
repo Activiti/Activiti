@@ -15,7 +15,6 @@ package org.activiti.rest.service.api.runtime;
 
 import java.io.Serializable;
 
-
 /**
  * Serializable for testing purposes.
  * 
@@ -23,14 +22,15 @@ import java.io.Serializable;
  */
 public class TestSerializableVariable implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  private String someField;
-  
-  public String getSomeField() {
-    return someField;
-  }
-  public void setSomeField(String someField) {
-    this.someField = someField;
-  }
+    private static final long serialVersionUID = 1L;
+
+    private String someField;
+
+    public String getSomeField() {
+        return someField;
+    }
+
+    public void setSomeField(String someField) {
+        this.someField = someField;
+    }
 }

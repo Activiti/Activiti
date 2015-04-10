@@ -24,46 +24,43 @@ import org.activiti5.engine.runtime.ProcessInstance;
 
 public class SetProcessInstanceNameCmd implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String processInstanceId;
-  protected String name;
+    private static final long serialVersionUID = 1L;
 
-  public SetProcessInstanceNameCmd(String processInstanceId, String name) {
-    this.processInstanceId = processInstanceId;
-    this.name = name;
-  }
+    protected String processInstanceId;
+    protected String name;
 
-  @Override
-  public Void execute(CommandContext commandContext) {
-    if(processInstanceId == null) {
-      throw new ActivitiIllegalArgumentException("processInstanceId is null");
+    public SetProcessInstanceNameCmd(String processInstanceId, String name) {
+        this.processInstanceId = processInstanceId;
+        this.name = name;
     }
-    
-    ExecutionEntity execution = commandContext
-      .getExecutionEntityManager()
-      .findExecutionById(processInstanceId);
-    
-    if (execution==null) {
-      throw new ActivitiObjectNotFoundException("process instance " + processInstanceId + " doesn't exist", ProcessInstance.class);
+
+    @Override
+    public Void execute(CommandContext commandContext) {
+        if (processInstanceId == null) {
+            throw new ActivitiIllegalArgumentException("processInstanceId is null");
+        }
+
+        ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+
+        if (execution == null) {
+            throw new ActivitiObjectNotFoundException("process instance " + processInstanceId + " doesn't exist", ProcessInstance.class);
+        }
+
+        if (!execution.isProcessInstanceType()) {
+            throw new ActivitiObjectNotFoundException("process instance " + processInstanceId + " doesn't exist, the given ID references an execution, though", ProcessInstance.class);
+        }
+
+        if (execution.isSuspended()) {
+            throw new ActivitiException("process instance " + processInstanceId + " is suspended, cannot set name");
+        }
+
+        // Actually set the name
+        execution.setName(name);
+
+        // Record the change in history
+        commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstanceId, name);
+
+        return null;
     }
-    
-    if(!execution.isProcessInstanceType()) {
-      throw new ActivitiObjectNotFoundException("process instance " + processInstanceId +
-          " doesn't exist, the given ID references an execution, though", ProcessInstance.class);
-    }
-    
-    if (execution.isSuspended()) {
-      throw new ActivitiException("process instance " + processInstanceId + " is suspended, cannot set name");
-    }
-    
-    // Actually set the name
-    execution.setName(name);
-    
-    // Record the change in history
-    commandContext.getHistoryManager().recordProcessInstanceNameChange(processInstanceId, name);
-    
-    return null;
-  }
 
 }

@@ -24,26 +24,26 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  * @author Frederik Heremans
  */
 public class DispatchEventCommand implements Command<Void> {
-	
-	protected ActivitiEvent event;
-	
-	public DispatchEventCommand(ActivitiEvent event) {
-	  this.event = event;
-  }
 
-	@Override
-  public Void execute(CommandContext commandContext) {
-		if(event == null) {
-			throw new ActivitiIllegalArgumentException("event is null");
-		}
-		
-		if(commandContext.getEventDispatcher().isEnabled()) {
-			commandContext.getEventDispatcher().dispatchEvent(event);
-		} else {
-			throw new ActivitiException("Message dispatcher is disabled, cannot dispatch event");
-		}
-		
-	  return null;
-  }
-	
+    protected ActivitiEvent event;
+
+    public DispatchEventCommand(ActivitiEvent event) {
+        this.event = event;
+    }
+
+    @Override
+    public Void execute(CommandContext commandContext) {
+        if (event == null) {
+            throw new ActivitiIllegalArgumentException("event is null");
+        }
+
+        if (commandContext.getEventDispatcher().isEnabled()) {
+            commandContext.getEventDispatcher().dispatchEvent(event);
+        } else {
+            throw new ActivitiException("Message dispatcher is disabled, cannot dispatch event");
+        }
+
+        return null;
+    }
+
 }

@@ -21,48 +21,46 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
  */
 public class AtomicOperationDeleteCascadeFireActivityEnd extends AbstractEventAtomicOperation {
 
-  @Override
-  protected ScopeImpl getScope(InterpretableExecution execution) {
-    ActivityImpl activity = (ActivityImpl) execution.getActivity();
+    @Override
+    protected ScopeImpl getScope(InterpretableExecution execution) {
+        ActivityImpl activity = (ActivityImpl) execution.getActivity();
 
-    if (activity!=null) {
-      return activity;
-    } else {
-      InterpretableExecution parent = (InterpretableExecution) execution.getParent();
-      if (parent != null) {
-        return getScope((InterpretableExecution) execution.getParent());
-      }
-      return execution.getProcessDefinition();
-    }
-  }
-
-  @Override
-  protected String getEventName() {
-    return org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END;
-  }
-
-  @Override
-  protected void eventNotificationsCompleted(InterpretableExecution execution) {
-    ActivityImpl activity = (ActivityImpl) execution.getActivity();
-    if ( (execution.isScope())
-            && (activity!=null)
-          )  {
-      execution.setActivity(activity.getParentActivity());
-      execution.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
-      
-    } else {
-      if (execution.isScope()) {
-        execution.destroy();
-      }
- 
-      execution.remove();
-      
-      if (!execution.isDeleteRoot()) {
-        InterpretableExecution parent = (InterpretableExecution) execution.getParent();
-        if (parent!=null) {
-          parent.performOperation(AtomicOperation.DELETE_CASCADE);
+        if (activity != null) {
+            return activity;
+        } else {
+            InterpretableExecution parent = (InterpretableExecution) execution.getParent();
+            if (parent != null) {
+                return getScope((InterpretableExecution) execution.getParent());
+            }
+            return execution.getProcessDefinition();
         }
-      }
     }
-  }
+
+    @Override
+    protected String getEventName() {
+        return org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END;
+    }
+
+    @Override
+    protected void eventNotificationsCompleted(InterpretableExecution execution) {
+        ActivityImpl activity = (ActivityImpl) execution.getActivity();
+        if ((execution.isScope()) && (activity != null)) {
+            execution.setActivity(activity.getParentActivity());
+            execution.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
+
+        } else {
+            if (execution.isScope()) {
+                execution.destroy();
+            }
+
+            execution.remove();
+
+            if (!execution.isDeleteRoot()) {
+                InterpretableExecution parent = (InterpretableExecution) execution.getParent();
+                if (parent != null) {
+                    parent.performOperation(AtomicOperation.DELETE_CASCADE);
+                }
+            }
+        }
+    }
 }

@@ -22,17 +22,17 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class TransformationDataOutputAssociation extends AbstractDataAssociation {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected Expression transformation;
-  
-  public TransformationDataOutputAssociation(String sourceRef, String targetRef, Expression transformation) {
-    super(sourceRef, targetRef);
-    this.transformation = transformation;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public void evaluate(ActivityExecution execution) {
-    Object value = this.transformation.getValue(execution);
-    execution.setVariable(this.getTarget(), value);
-  }
+    protected Expression transformation;
+
+    public TransformationDataOutputAssociation(String sourceRef, String targetRef, Expression transformation) {
+        super(sourceRef, targetRef);
+        this.transformation = transformation;
+    }
+
+    public void evaluate(ActivityExecution execution) {
+        Object value = this.transformation.getValue(execution);
+        execution.setVariable(this.getTarget(), value);
+    }
 }

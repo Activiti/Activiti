@@ -18,12 +18,11 @@ import org.activiti.engine.impl.javax.el.ExpressionFactory;
 import org.activiti.engine.impl.javax.el.FunctionMapper;
 import org.activiti.engine.impl.javax.el.VariableMapper;
 
-
 /**
  * Simple implementation of the {@link ELContext} used during parsings.
  * 
- * Currently this implementation does nothing, but a non-null implementation
- * of the {@link ELContext} interface is required by the {@link ExpressionFactory}
+ * Currently this implementation does nothing, but a non-null implementation of
+ * the {@link ELContext} interface is required by the {@link ExpressionFactory}
  * when create value- and methodexpressions.
  * 
  * @see ExpressionManager#createExpression(String)
@@ -33,16 +32,16 @@ import org.activiti.engine.impl.javax.el.VariableMapper;
  */
 public class ParsingElContext extends ELContext {
 
-  public ELResolver getELResolver() {
-    return null;
-  }
+    public ELResolver getELResolver() {
+        return null;
+    }
 
-  public FunctionMapper getFunctionMapper() {
-    return null;
-  }
+    public FunctionMapper getFunctionMapper() {
+        return null;
+    }
 
-  public VariableMapper getVariableMapper() {
-    return null;
-  }
+    public VariableMapper getVariableMapper() {
+        return null;
+    }
 
 }

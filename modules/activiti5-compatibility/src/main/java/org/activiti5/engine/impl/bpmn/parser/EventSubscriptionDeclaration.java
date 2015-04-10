@@ -22,7 +22,6 @@ import org.activiti5.engine.impl.persistence.entity.MessageEventSubscriptionEnti
 import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 
-
 /**
  * @author Daniel Meyer
  * @author Falko Menge
@@ -30,82 +29,82 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public class EventSubscriptionDeclaration implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected final String eventName;
-  protected final String eventType;
-  
-  protected boolean async;
-  protected String activityId;
-  protected boolean isStartEvent;
-  protected String configuration; 
+    protected final String eventName;
+    protected final String eventType;
 
-  public EventSubscriptionDeclaration(String eventName, String eventType) {
-    this.eventName = eventName;
-    this.eventType = eventType;   
-  }
-    
-  public String getEventName() {
-    return eventName;
-  }
-    
-  public boolean isAsync() {
-    return async;
-  }
-  
-  public void setAsync(boolean async) {
-    this.async = async;
-  }
-  
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;   
-  }
-    
-  public String getActivityId() {
-    return activityId;
-  }
-  
-  public boolean isStartEvent() {
-    return isStartEvent;
-  }
-  
-  public void setStartEvent(boolean isStartEvent) {
-    this.isStartEvent = isStartEvent;
-  }
-  
-  public String getEventType() {
-    return eventType;
-  }
-  
-  public String getConfiguration() {
-    return configuration;
-  }
+    protected boolean async;
+    protected String activityId;
+    protected boolean isStartEvent;
+    protected String configuration;
 
-  public void setConfiguration(String configuration) {
-    this.configuration = configuration;
-  }
-
-  public EventSubscriptionEntity prepareEventSubscriptionEntity(ExecutionEntity execution) {
-    EventSubscriptionEntity eventSubscriptionEntity = null;
-    if(eventType.equals("message")) {
-      eventSubscriptionEntity = new MessageEventSubscriptionEntity(execution);
-    }else  if(eventType.equals("signal")) {
-      eventSubscriptionEntity = new SignalEventSubscriptionEntity(execution);
-    }else {
-      throw new ActivitiIllegalArgumentException("Found event definition of unknown type: "+eventType);
+    public EventSubscriptionDeclaration(String eventName, String eventType) {
+        this.eventName = eventName;
+        this.eventType = eventType;
     }
-    
-    eventSubscriptionEntity.setEventName(eventName);
-    if(activityId != null) {
-      ActivityImpl activity = execution.getProcessDefinition().findActivity(activityId);
-      eventSubscriptionEntity.setActivity(activity);
+
+    public String getEventName() {
+        return eventName;
     }
-    
-    if (configuration != null) {
-      eventSubscriptionEntity.setConfiguration(configuration);
+
+    public boolean isAsync() {
+        return async;
     }
-    
-    return eventSubscriptionEntity;
-  }
+
+    public void setAsync(boolean async) {
+        this.async = async;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public boolean isStartEvent() {
+        return isStartEvent;
+    }
+
+    public void setStartEvent(boolean isStartEvent) {
+        this.isStartEvent = isStartEvent;
+    }
+
+    public String getEventType() {
+        return eventType;
+    }
+
+    public String getConfiguration() {
+        return configuration;
+    }
+
+    public void setConfiguration(String configuration) {
+        this.configuration = configuration;
+    }
+
+    public EventSubscriptionEntity prepareEventSubscriptionEntity(ExecutionEntity execution) {
+        EventSubscriptionEntity eventSubscriptionEntity = null;
+        if (eventType.equals("message")) {
+            eventSubscriptionEntity = new MessageEventSubscriptionEntity(execution);
+        } else if (eventType.equals("signal")) {
+            eventSubscriptionEntity = new SignalEventSubscriptionEntity(execution);
+        } else {
+            throw new ActivitiIllegalArgumentException("Found event definition of unknown type: " + eventType);
+        }
+
+        eventSubscriptionEntity.setEventName(eventName);
+        if (activityId != null) {
+            ActivityImpl activity = execution.getProcessDefinition().findActivity(activityId);
+            eventSubscriptionEntity.setActivity(activity);
+        }
+
+        if (configuration != null) {
+            eventSubscriptionEntity.setConfiguration(configuration);
+        }
+
+        return eventSubscriptionEntity;
+    }
 
 }

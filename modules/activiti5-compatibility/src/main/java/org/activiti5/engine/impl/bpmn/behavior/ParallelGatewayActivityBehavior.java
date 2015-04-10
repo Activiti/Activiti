@@ -39,9 +39,9 @@ import org.slf4j.LoggerFactory;
  * 
  * Note that there is a slight difference to spec (p. 436): "The parallel
  * gateway is activated if there is at least one Token on each incoming sequence
- * flow." We only check the number of incoming tokens to the number of sequenceflow.
- * So if two tokens would arrive through the same sequence flow, our implementation
- * would activate the gateway.
+ * flow." We only check the number of incoming tokens to the number of
+ * sequenceflow. So if two tokens would arrive through the same sequence flow,
+ * our implementation would activate the gateway.
  * 
  * Note that a Parallel Gateway having one incoming and multiple ougoing
  * sequence flow, is the same as having multiple outgoing sequence flow on a
@@ -52,34 +52,34 @@ import org.slf4j.LoggerFactory;
  * @author Tom Baeyens
  */
 public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
-  
-  private static final long serialVersionUID = 1L;
-  
-  private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
 
-  public void execute(ActivityExecution execution) throws Exception { 
-    
-    // Join
-    PvmActivity activity = execution.getActivity();
-    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    execution.inactivate();
-    lockConcurrentRoot(execution);
-    
-    List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
-    int nbrOfExecutionsToJoin = execution.getActivity().getIncomingTransitions().size();
-    int nbrOfExecutionsJoined = joinedExecutions.size();
-    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
-    if (nbrOfExecutionsJoined==nbrOfExecutionsToJoin) {
-      
-      // Fork
-      if(log.isDebugEnabled()) {
-        log.debug("parallel gateway '{}' activates: {} of {} joined", activity.getId(), nbrOfExecutionsJoined, nbrOfExecutionsToJoin);
-      }
-      execution.takeAll(outgoingTransitions, joinedExecutions);
-      
-    } else if (log.isDebugEnabled()){
-      log.debug("parallel gateway '{}' does not activate: {} of {} joined", activity.getId(), nbrOfExecutionsJoined, nbrOfExecutionsToJoin);
+    private static final long serialVersionUID = 1L;
+
+    private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
+
+    public void execute(ActivityExecution execution) throws Exception {
+
+        // Join
+        PvmActivity activity = execution.getActivity();
+        List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+        execution.inactivate();
+        lockConcurrentRoot(execution);
+
+        List<ActivityExecution> joinedExecutions = execution.findInactiveConcurrentExecutions(activity);
+        int nbrOfExecutionsToJoin = execution.getActivity().getIncomingTransitions().size();
+        int nbrOfExecutionsJoined = joinedExecutions.size();
+        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+        if (nbrOfExecutionsJoined == nbrOfExecutionsToJoin) {
+
+            // Fork
+            if (log.isDebugEnabled()) {
+                log.debug("parallel gateway '{}' activates: {} of {} joined", activity.getId(), nbrOfExecutionsJoined, nbrOfExecutionsToJoin);
+            }
+            execution.takeAll(outgoingTransitions, joinedExecutions);
+
+        } else if (log.isDebugEnabled()) {
+            log.debug("parallel gateway '{}' does not activate: {} of {} joined", activity.getId(), nbrOfExecutionsJoined, nbrOfExecutionsToJoin);
+        }
     }
-  }
 
 }

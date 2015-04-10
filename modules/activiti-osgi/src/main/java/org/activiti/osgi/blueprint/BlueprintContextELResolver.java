@@ -33,62 +33,60 @@ import org.osgi.service.blueprint.container.BlueprintContainer;
  * @see org.activiti.spring.ApplicationContextElResolver
  * @author Prabhat_Tripathi
  * 
- *         blueprint context declaration syntax: 
- *         <bean id="blueprintContextELResolver" 
- *             class="org.activiti.osgi.blueprint.BlueprintContextELResolver">
- *           <property name="blueprintContainer" ref="blueprintContainer"/>
+ *         blueprint context declaration syntax: <bean
+ *         id="blueprintContextELResolver"
+ *         class="org.activiti.osgi.blueprint.BlueprintContextELResolver">
+ *         <property name="blueprintContainer" ref="blueprintContainer"/>
  *         </bean>
  */
 public class BlueprintContextELResolver extends ELResolver {
 
-  private BlueprintContainer blueprintContainer;
+    private BlueprintContainer blueprintContainer;
 
-  public BlueprintContextELResolver() {
+    public BlueprintContextELResolver() {
 
-  }
-
-  public BlueprintContextELResolver(BlueprintContainer blueprintContainer) {
-    this.blueprintContainer = blueprintContainer;
-  }
-
-  public void setBlueprintContainer(BlueprintContainer blueprintContainer) {
-    this.blueprintContainer = blueprintContainer;
-  }
-
-  @SuppressWarnings("unchecked")
-  public Object getValue(ELContext context, Object base, Object property) {
-    if (base == null) {
-      // according to javadoc, can only be a String
-      String key = (String) property;
-      for (String componentId : (Set<String>) blueprintContainer.getComponentIds()) {
-        if (componentId.equals(key)) {
-          context.setPropertyResolved(true);
-          return blueprintContainer.getComponentInstance(key);
-        }
-      }
     }
 
-    return null;
-  }
+    public BlueprintContextELResolver(BlueprintContainer blueprintContainer) {
+        this.blueprintContainer = blueprintContainer;
+    }
 
-  public boolean isReadOnly(ELContext context, Object base, Object property) {
-    return true;
-  }
+    public void setBlueprintContainer(BlueprintContainer blueprintContainer) {
+        this.blueprintContainer = blueprintContainer;
+    }
 
-  public void setValue(ELContext context, Object base, Object property,
-      Object value) {
-  }
+    @SuppressWarnings("unchecked")
+    public Object getValue(ELContext context, Object base, Object property) {
+        if (base == null) {
+            // according to javadoc, can only be a String
+            String key = (String) property;
+            for (String componentId : (Set<String>) blueprintContainer.getComponentIds()) {
+                if (componentId.equals(key)) {
+                    context.setPropertyResolved(true);
+                    return blueprintContainer.getComponentInstance(key);
+                }
+            }
+        }
 
-  public Class<?> getCommonPropertyType(ELContext context, Object arg) {
-    return Object.class;
-  }
+        return null;
+    }
 
-  public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context,
-      Object arg) {
-    return null;
-  }
+    public boolean isReadOnly(ELContext context, Object base, Object property) {
+        return true;
+    }
 
-  public Class<?> getType(ELContext context, Object arg1, Object arg2) {
-    return Object.class;
-  }
+    public void setValue(ELContext context, Object base, Object property, Object value) {
+    }
+
+    public Class<?> getCommonPropertyType(ELContext context, Object arg) {
+        return Object.class;
+    }
+
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
+        return null;
+    }
+
+    public Class<?> getType(ELContext context, Object arg1, Object arg2) {
+        return Object.class;
+    }
 }

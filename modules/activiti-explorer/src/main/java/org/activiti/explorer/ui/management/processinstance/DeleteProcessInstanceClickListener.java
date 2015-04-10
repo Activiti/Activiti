@@ -27,40 +27,39 @@ import org.activiti.explorer.ui.event.ConfirmationEventListener;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-
 /**
  * @author Joram Barrez
  */
 public class DeleteProcessInstanceClickListener implements ClickListener {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected String processInstanceId;
-  protected AbstractTablePage processInstancePage;
-  
-  public DeleteProcessInstanceClickListener(String processInstanceId, AbstractTablePage processInstancePage) {
-    this.processInstanceId = processInstanceId;
-    this.processInstancePage = processInstancePage;
-  }
 
-  public void buttonClick(ClickEvent event) {
-    I18nManager i18nManager = ExplorerApp.get().getI18nManager();
-    ViewManager viewManager = ExplorerApp.get().getViewManager();
-    
-    final ConfirmationDialogPopupWindow confirmPopup = new ConfirmationDialogPopupWindow(
-            i18nManager.getMessage(Messages.PROCESS_INSTANCE_DELETE_POPUP_TITLE, processInstanceId), 
-            i18nManager.getMessage(Messages.PROCESS_INSTANCE_DELETE_POPUP_DESCRIPTION, processInstanceId));
+    private static final long serialVersionUID = 1L;
 
-    confirmPopup.addListener(new ConfirmationEventListener() {
-      private static final long serialVersionUID = 1L;
-      protected void confirmed(ConfirmationEvent event) {
-        RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
-        runtimeService.deleteProcessInstance(processInstanceId, null);
-        processInstancePage.refreshSelectNext();
-      }
-    });
-    
-    viewManager.showPopupWindow(confirmPopup);
-  }
+    protected String processInstanceId;
+    protected AbstractTablePage processInstancePage;
+
+    public DeleteProcessInstanceClickListener(String processInstanceId, AbstractTablePage processInstancePage) {
+        this.processInstanceId = processInstanceId;
+        this.processInstancePage = processInstancePage;
+    }
+
+    public void buttonClick(ClickEvent event) {
+        I18nManager i18nManager = ExplorerApp.get().getI18nManager();
+        ViewManager viewManager = ExplorerApp.get().getViewManager();
+
+        final ConfirmationDialogPopupWindow confirmPopup = new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.PROCESS_INSTANCE_DELETE_POPUP_TITLE, processInstanceId),
+                i18nManager.getMessage(Messages.PROCESS_INSTANCE_DELETE_POPUP_DESCRIPTION, processInstanceId));
+
+        confirmPopup.addListener(new ConfirmationEventListener() {
+            private static final long serialVersionUID = 1L;
+
+            protected void confirmed(ConfirmationEvent event) {
+                RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
+                runtimeService.deleteProcessInstance(processInstanceId, null);
+                processInstancePage.refreshSelectNext();
+            }
+        });
+
+        viewManager.showPopupWindow(confirmPopup);
+    }
 
 }

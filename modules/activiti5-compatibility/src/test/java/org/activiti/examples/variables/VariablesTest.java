@@ -36,313 +36,305 @@ import org.apache.commons.lang3.ObjectUtils;
  * @author Tom Baeyens
  */
 public class VariablesTest extends PluggableActivitiTestCase {
-  
-  @Deployment
-  public void testBasicVariableOperations() {
-    processEngineConfiguration.getVariableTypes().addType(CustomVariableType.instance);
- 
-    Date now = new Date();
-    List<String> serializable = new ArrayList<String>();
-    serializable.add("one");
-    serializable.add("two");
-    serializable.add("three");
-    byte[] bytes1 = "somebytes1".getBytes();
-    byte[] bytes2 = "somebytes2".getBytes();
 
-    // Start process instance with different types of variables
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("longVar", 928374L);
-    variables.put("shortVar", (short) 123);
-    variables.put("integerVar", 1234);
-    variables.put("stringVar", "coca-cola");
-    variables.put("dateVar", now);
-    variables.put("nullVar", null);
-    variables.put("serializableVar", serializable);
-    variables.put("bytesVar", bytes1);
-    variables.put("customVar1", new CustomType(bytes2));
-    variables.put("customVar2", null);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
+    @Deployment
+    public void testBasicVariableOperations() {
+        processEngineConfiguration.getVariableTypes().addType(CustomVariableType.instance);
 
-    variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals(928374L, variables.get("longVar"));
-    assertEquals((short) 123, variables.get("shortVar"));
-    assertEquals(1234, variables.get("integerVar"));
-    assertEquals("coca-cola", variables.get("stringVar"));
-    assertEquals(now, variables.get("dateVar"));
-    assertEquals(null, variables.get("nullVar"));
-    assertEquals(serializable, variables.get("serializableVar"));
-    assertTrue(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar")));
-    assertEquals(new CustomType(bytes2), variables.get("customVar1"));
-    assertEquals(null, variables.get("customVar2"));
-    assertEquals(10, variables.size());
+        Date now = new Date();
+        List<String> serializable = new ArrayList<String>();
+        serializable.add("one");
+        serializable.add("two");
+        serializable.add("three");
+        byte[] bytes1 = "somebytes1".getBytes();
+        byte[] bytes2 = "somebytes2".getBytes();
 
-    // Set all existing variables values to null
-    runtimeService.setVariable(processInstance.getId(), "longVar", null);
-    runtimeService.setVariable(processInstance.getId(), "shortVar", null);
-    runtimeService.setVariable(processInstance.getId(), "integerVar", null);
-    runtimeService.setVariable(processInstance.getId(), "stringVar", null);
-    runtimeService.setVariable(processInstance.getId(), "dateVar", null);
-    runtimeService.setVariable(processInstance.getId(), "nullVar", null);
-    runtimeService.setVariable(processInstance.getId(), "serializableVar", null);
-    runtimeService.setVariable(processInstance.getId(), "bytesVar", null);
-    runtimeService.setVariable(processInstance.getId(), "customVar1", null);
-    runtimeService.setVariable(processInstance.getId(), "customVar2", null);
+        // Start process instance with different types of variables
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("longVar", 928374L);
+        variables.put("shortVar", (short) 123);
+        variables.put("integerVar", 1234);
+        variables.put("stringVar", "coca-cola");
+        variables.put("dateVar", now);
+        variables.put("nullVar", null);
+        variables.put("serializableVar", serializable);
+        variables.put("bytesVar", bytes1);
+        variables.put("customVar1", new CustomType(bytes2));
+        variables.put("customVar2", null);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
 
-    variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals(null, variables.get("longVar"));
-    assertEquals(null, variables.get("shortVar"));
-    assertEquals(null, variables.get("integerVar"));
-    assertEquals(null, variables.get("stringVar"));
-    assertEquals(null, variables.get("dateVar"));
-    assertEquals(null, variables.get("nullVar"));
-    assertEquals(null, variables.get("serializableVar"));
-    assertEquals(null, variables.get("bytesVar"));
-    assertEquals(null, variables.get("customVar1"));
-    assertEquals(null, variables.get("customVar2"));
-    assertEquals(10, variables.size());
+        variables = runtimeService.getVariables(processInstance.getId());
+        assertEquals(928374L, variables.get("longVar"));
+        assertEquals((short) 123, variables.get("shortVar"));
+        assertEquals(1234, variables.get("integerVar"));
+        assertEquals("coca-cola", variables.get("stringVar"));
+        assertEquals(now, variables.get("dateVar"));
+        assertEquals(null, variables.get("nullVar"));
+        assertEquals(serializable, variables.get("serializableVar"));
+        assertTrue(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar")));
+        assertEquals(new CustomType(bytes2), variables.get("customVar1"));
+        assertEquals(null, variables.get("customVar2"));
+        assertEquals(10, variables.size());
 
-    // Update existing variable values again, and add a new variable
-    runtimeService.setVariable(processInstance.getId(), "new var", "hi");
-    runtimeService.setVariable(processInstance.getId(), "longVar", 9987L);
-    runtimeService.setVariable(processInstance.getId(), "shortVar", (short) 456);
-    runtimeService.setVariable(processInstance.getId(), "integerVar", 4567);
-    runtimeService.setVariable(processInstance.getId(), "stringVar", "colgate");
-    runtimeService.setVariable(processInstance.getId(), "dateVar", now);
-    runtimeService.setVariable(processInstance.getId(), "serializableVar", serializable);
-    runtimeService.setVariable(processInstance.getId(), "bytesVar", bytes1);
-    runtimeService.setVariable(processInstance.getId(), "customVar1", new CustomType(bytes2));
-    runtimeService.setVariable(processInstance.getId(), "customVar2", new CustomType(bytes1));
+        // Set all existing variables values to null
+        runtimeService.setVariable(processInstance.getId(), "longVar", null);
+        runtimeService.setVariable(processInstance.getId(), "shortVar", null);
+        runtimeService.setVariable(processInstance.getId(), "integerVar", null);
+        runtimeService.setVariable(processInstance.getId(), "stringVar", null);
+        runtimeService.setVariable(processInstance.getId(), "dateVar", null);
+        runtimeService.setVariable(processInstance.getId(), "nullVar", null);
+        runtimeService.setVariable(processInstance.getId(), "serializableVar", null);
+        runtimeService.setVariable(processInstance.getId(), "bytesVar", null);
+        runtimeService.setVariable(processInstance.getId(), "customVar1", null);
+        runtimeService.setVariable(processInstance.getId(), "customVar2", null);
 
-    variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals("hi", variables.get("new var"));
-    assertEquals(9987L, variables.get("longVar"));
-    assertEquals((short)456, variables.get("shortVar"));
-    assertEquals(4567, variables.get("integerVar"));
-    assertEquals("colgate", variables.get("stringVar"));
-    assertEquals(now, variables.get("dateVar"));
-    assertEquals(null, variables.get("nullVar"));
-    assertEquals(serializable, variables.get("serializableVar"));
-    assertTrue(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar")));
-    assertEquals(new CustomType(bytes2), variables.get("customVar1"));
-    assertEquals(new CustomType(bytes1), variables.get("customVar2"));
-    assertEquals(11, variables.size());
-    
-    Collection<String> varFilter = new ArrayList<String>(2);
-    varFilter.add("stringVar");
-    varFilter.add("integerVar");
-    
-    Map<String, Object> filteredVariables = runtimeService.getVariables(processInstance.getId(), varFilter);
-    assertEquals(2, filteredVariables.size());
-    assertTrue(filteredVariables.containsKey("stringVar"));
-    assertTrue(filteredVariables.containsKey("integerVar"));
-    
-    // Try setting the value of the variable that was initially created with value 'null'
-    runtimeService.setVariable(processInstance.getId(), "nullVar", "a value");
-    Object newValue = runtimeService.getVariable(processInstance.getId(), "nullVar");
-    assertNotNull(newValue);
-    assertEquals("a value", newValue);
-    
-    Task task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-    taskService.complete(task.getId());
-    
-    
-    
-  }
-  
- 
-  
-  // Test case for ACT-1839
-  @Deployment(resources = {"org/activiti/examples/variables/VariablesTest.testChangeTypeSerializable.bpmn20.xml"})
-  public void testChangeTypeSerializable() {
-	  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("variable-type-change-test");
-	  assertNotNull(processInstance);
-	  Task task = taskService.createTaskQuery().singleResult();
-	  assertEquals("Activiti is awesome!", task.getName());
-	  SomeSerializable myVar = (SomeSerializable) runtimeService.getVariable(processInstance.getId(), "myVar");
-	  assertEquals("someValue", myVar.getValue());		
-   }
+        variables = runtimeService.getVariables(processInstance.getId());
+        assertEquals(null, variables.get("longVar"));
+        assertEquals(null, variables.get("shortVar"));
+        assertEquals(null, variables.get("integerVar"));
+        assertEquals(null, variables.get("stringVar"));
+        assertEquals(null, variables.get("dateVar"));
+        assertEquals(null, variables.get("nullVar"));
+        assertEquals(null, variables.get("serializableVar"));
+        assertEquals(null, variables.get("bytesVar"));
+        assertEquals(null, variables.get("customVar1"));
+        assertEquals(null, variables.get("customVar2"));
+        assertEquals(10, variables.size());
 
-  
-  
-  public String getVariableInstanceId(String executionId, String name) {
-    HistoricVariableInstance variable = historyService.createHistoricVariableInstanceQuery().processInstanceId(executionId).variableName(name).singleResult();
-	  return variable.getId();
-  }
-  
-  // test case for ACT-1082
-  @Deployment(resources = 
-	     {"org/activiti/examples/variables/VariablesTest.testBasicVariableOperations.bpmn20.xml" })
-  public void testChangeVariableType() {
- 
-    Date now = new Date();
-    List<String> serializable = new ArrayList<String>();
-    serializable.add("one");
-    serializable.add("two");
-    serializable.add("three");
-    byte[] bytes = "somebytes".getBytes();
+        // Update existing variable values again, and add a new variable
+        runtimeService.setVariable(processInstance.getId(), "new var", "hi");
+        runtimeService.setVariable(processInstance.getId(), "longVar", 9987L);
+        runtimeService.setVariable(processInstance.getId(), "shortVar", (short) 456);
+        runtimeService.setVariable(processInstance.getId(), "integerVar", 4567);
+        runtimeService.setVariable(processInstance.getId(), "stringVar", "colgate");
+        runtimeService.setVariable(processInstance.getId(), "dateVar", now);
+        runtimeService.setVariable(processInstance.getId(), "serializableVar", serializable);
+        runtimeService.setVariable(processInstance.getId(), "bytesVar", bytes1);
+        runtimeService.setVariable(processInstance.getId(), "customVar1", new CustomType(bytes2));
+        runtimeService.setVariable(processInstance.getId(), "customVar2", new CustomType(bytes1));
 
-    // Start process instance with different types of variables
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("longVar", 928374L);
-    variables.put("shortVar", (short) 123);
-    variables.put("integerVar", 1234);
-    variables.put("stringVar", "coca-cola");
-    variables.put("dateVar", now);
-    variables.put("nullVar", null);
-    variables.put("serializableVar", serializable);
-    variables.put("bytesVar", bytes);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
+        variables = runtimeService.getVariables(processInstance.getId());
+        assertEquals("hi", variables.get("new var"));
+        assertEquals(9987L, variables.get("longVar"));
+        assertEquals((short) 456, variables.get("shortVar"));
+        assertEquals(4567, variables.get("integerVar"));
+        assertEquals("colgate", variables.get("stringVar"));
+        assertEquals(now, variables.get("dateVar"));
+        assertEquals(null, variables.get("nullVar"));
+        assertEquals(serializable, variables.get("serializableVar"));
+        assertTrue(Arrays.equals(bytes1, (byte[]) variables.get("bytesVar")));
+        assertEquals(new CustomType(bytes2), variables.get("customVar1"));
+        assertEquals(new CustomType(bytes1), variables.get("customVar2"));
+        assertEquals(11, variables.size());
 
-    variables = runtimeService.getVariables(processInstance.getId());
-    assertEquals(928374L, variables.get("longVar"));
-    assertEquals((short) 123, variables.get("shortVar"));
-    assertEquals(1234, variables.get("integerVar"));
-    assertEquals("coca-cola", variables.get("stringVar"));
-    assertEquals(now, variables.get("dateVar"));
-    assertEquals(null, variables.get("nullVar"));
-    assertEquals(serializable, variables.get("serializableVar"));
-    assertTrue(Arrays.equals(bytes, (byte[]) variables.get("bytesVar")));
-    assertEquals(8, variables.size());
-    
-    // check if the id of the variable is the same or not
-   
-    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-      String oldSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
-      String oldLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
-      
-  
-      // Change type of serializableVar from serializable to Short
-      Map<String, Object> newVariables = new HashMap<String, Object>();
-      newVariables.put("serializableVar", (short) 222);
-      runtimeService.setVariables(processInstance.getId(), newVariables);
-      variables = runtimeService.getVariables(processInstance.getId());
-      assertEquals((short) 222, variables.get("serializableVar"));
-      
-      String newSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
-      
-      assertEquals(oldSerializableVarId, newSerializableVarId);
-  
-      
-      // Change type of a  longVar from Long to Short
-      newVariables = new HashMap<String, Object>();
-      newVariables.put("longVar", (short) 123);
-      runtimeService.setVariables(processInstance.getId(), newVariables);
-      variables = runtimeService.getVariables(processInstance.getId());
-      assertEquals((short) 123, variables.get("longVar"));
-      
-      String newLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
-      assertEquals(oldLongVar, newLongVar);
+        Collection<String> varFilter = new ArrayList<String>(2);
+        varFilter.add("stringVar");
+        varFilter.add("integerVar");
+
+        Map<String, Object> filteredVariables = runtimeService.getVariables(processInstance.getId(), varFilter);
+        assertEquals(2, filteredVariables.size());
+        assertTrue(filteredVariables.containsKey("stringVar"));
+        assertTrue(filteredVariables.containsKey("integerVar"));
+
+        // Try setting the value of the variable that was initially created with
+        // value 'null'
+        runtimeService.setVariable(processInstance.getId(), "nullVar", "a value");
+        Object newValue = runtimeService.getVariable(processInstance.getId(), "nullVar");
+        assertNotNull(newValue);
+        assertEquals("a value", newValue);
+
+        Task task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
+        taskService.complete(task.getId());
+
     }
-  }
-  
-  
-  // test case for ACT-1428
-  @Deployment
-  public void testNullVariable() {
-	    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
-	    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
-	    Map<String, String> variables = new HashMap<String, String>();
-	    variables.put("testProperty", "434");
+    // Test case for ACT-1839
+    @Deployment(resources = { "org/activiti/examples/variables/VariablesTest.testChangeTypeSerializable.bpmn20.xml" })
+    public void testChangeTypeSerializable() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("variable-type-change-test");
+        assertNotNull(processInstance);
+        Task task = taskService.createTaskQuery().singleResult();
+        assertEquals("Activiti is awesome!", task.getName());
+        SomeSerializable myVar = (SomeSerializable) runtimeService.getVariable(processInstance.getId(), "myVar");
+        assertEquals("someValue", myVar.getValue());
+    }
 
-	    formService.submitTaskFormData(task.getId(), variables);
-	    String resultVar = (String) runtimeService.getVariable(processInstance.getId(), "testProperty");
-	    
-	    assertEquals("434", resultVar);
-	    
-	    task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
-	    taskService.complete(task.getId());
+    public String getVariableInstanceId(String executionId, String name) {
+        HistoricVariableInstance variable = historyService.createHistoricVariableInstanceQuery().processInstanceId(executionId).variableName(name).singleResult();
+        return variable.getId();
+    }
 
-	    // If no variable is given, no variable should be set and script test should throw exception
-	    processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
-	    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();	    
-	    variables = new HashMap<String, String>();
-	    try {
-	    	formService.submitTaskFormData(task.getId(), variables);
-	    	fail("Should throw exception as testProperty is not defined and used in Script task");
-	    } catch (Exception e) {
-		    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
+    // test case for ACT-1082
+    @Deployment(resources = { "org/activiti/examples/variables/VariablesTest.testBasicVariableOperations.bpmn20.xml" })
+    public void testChangeVariableType() {
 
-	    	assertEquals("class org.activiti.engine.ActivitiException", e.getClass().toString());
-	    }
-	    
-	    	    
-	    // No we put null property, This should be put into the variable. We do not expect exceptions
-	    processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
-	    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();	    
-	    variables = new HashMap<String, String>();
-	    variables.put("testProperty", null);
-	    
-	    try {
-	    	formService.submitTaskFormData(task.getId(), variables);
-	    } catch (Exception e) {
-	    	fail("Should not throw exception as the testProperty is defined, although null");
-	    }
-	    resultVar = (String) runtimeService.getVariable(processInstance.getId(), "testProperty");
-	    
-	    assertNull(resultVar);
-	    
-	    runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
-  }
-  
-  /**
-   * Test added to validate UUID variable type + querying (ACT-1665)
-   */
-	@Deployment
-	public void testUUIDVariableAndQuery() {
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-		assertNotNull(processInstance);
-		
-		// Check UUID variable type query on task
-		Task task = taskService.createTaskQuery().singleResult();
-		assertNotNull(task);
-		UUID randomUUID = UUID.randomUUID();
-		taskService.setVariableLocal(task.getId(), "conversationId", randomUUID);
-		
-		Task resultingTask = taskService.createTaskQuery().taskVariableValueEquals("conversationId", randomUUID).singleResult();
-		assertNotNull(resultingTask);
-		assertEquals(task.getId(), resultingTask.getId());
-		
-		randomUUID = UUID.randomUUID();
-		
-		// Check UUID variable type query on process
-		runtimeService.setVariable(processInstance.getId(), "uuidVar", randomUUID);
-		ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("uuidVar", randomUUID).singleResult();
-		
-		assertNotNull(result);
-		assertEquals(processInstance.getId(), result.getId());
-	}
+        Date now = new Date();
+        List<String> serializable = new ArrayList<String>();
+        serializable.add("one");
+        serializable.add("two");
+        serializable.add("three");
+        byte[] bytes = "somebytes".getBytes();
+
+        // Start process instance with different types of variables
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("longVar", 928374L);
+        variables.put("shortVar", (short) 123);
+        variables.put("integerVar", 1234);
+        variables.put("stringVar", "coca-cola");
+        variables.put("dateVar", now);
+        variables.put("nullVar", null);
+        variables.put("serializableVar", serializable);
+        variables.put("bytesVar", bytes);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess", variables);
+
+        variables = runtimeService.getVariables(processInstance.getId());
+        assertEquals(928374L, variables.get("longVar"));
+        assertEquals((short) 123, variables.get("shortVar"));
+        assertEquals(1234, variables.get("integerVar"));
+        assertEquals("coca-cola", variables.get("stringVar"));
+        assertEquals(now, variables.get("dateVar"));
+        assertEquals(null, variables.get("nullVar"));
+        assertEquals(serializable, variables.get("serializableVar"));
+        assertTrue(Arrays.equals(bytes, (byte[]) variables.get("bytesVar")));
+        assertEquals(8, variables.size());
+
+        // check if the id of the variable is the same or not
+
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            String oldSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
+            String oldLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
+
+            // Change type of serializableVar from serializable to Short
+            Map<String, Object> newVariables = new HashMap<String, Object>();
+            newVariables.put("serializableVar", (short) 222);
+            runtimeService.setVariables(processInstance.getId(), newVariables);
+            variables = runtimeService.getVariables(processInstance.getId());
+            assertEquals((short) 222, variables.get("serializableVar"));
+
+            String newSerializableVarId = getVariableInstanceId(processInstance.getId(), "serializableVar");
+
+            assertEquals(oldSerializableVarId, newSerializableVarId);
+
+            // Change type of a longVar from Long to Short
+            newVariables = new HashMap<String, Object>();
+            newVariables.put("longVar", (short) 123);
+            runtimeService.setVariables(processInstance.getId(), newVariables);
+            variables = runtimeService.getVariables(processInstance.getId());
+            assertEquals((short) 123, variables.get("longVar"));
+
+            String newLongVar = getVariableInstanceId(processInstance.getId(), "longVar");
+            assertEquals(oldLongVar, newLongVar);
+        }
+    }
+
+    // test case for ACT-1428
+    @Deployment
+    public void testNullVariable() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+
+        Map<String, String> variables = new HashMap<String, String>();
+        variables.put("testProperty", "434");
+
+        formService.submitTaskFormData(task.getId(), variables);
+        String resultVar = (String) runtimeService.getVariable(processInstance.getId(), "testProperty");
+
+        assertEquals("434", resultVar);
+
+        task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
+        taskService.complete(task.getId());
+
+        // If no variable is given, no variable should be set and script test
+        // should throw exception
+        processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        variables = new HashMap<String, String>();
+        try {
+            formService.submitTaskFormData(task.getId(), variables);
+            fail("Should throw exception as testProperty is not defined and used in Script task");
+        } catch (Exception e) {
+            runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
+
+            assertEquals("class org.activiti.engine.ActivitiException", e.getClass().toString());
+        }
+
+        // No we put null property, This should be put into the variable. We do
+        // not expect exceptions
+        processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeProcess");
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        variables = new HashMap<String, String>();
+        variables.put("testProperty", null);
+
+        try {
+            formService.submitTaskFormData(task.getId(), variables);
+        } catch (Exception e) {
+            fail("Should not throw exception as the testProperty is defined, although null");
+        }
+        resultVar = (String) runtimeService.getVariable(processInstance.getId(), "testProperty");
+
+        assertNull(resultVar);
+
+        runtimeService.deleteProcessInstance(processInstance.getId(), "intentional exception in script task");
+    }
+
+    /**
+     * Test added to validate UUID variable type + querying (ACT-1665)
+     */
+    @Deployment
+    public void testUUIDVariableAndQuery() {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        assertNotNull(processInstance);
+
+        // Check UUID variable type query on task
+        Task task = taskService.createTaskQuery().singleResult();
+        assertNotNull(task);
+        UUID randomUUID = UUID.randomUUID();
+        taskService.setVariableLocal(task.getId(), "conversationId", randomUUID);
+
+        Task resultingTask = taskService.createTaskQuery().taskVariableValueEquals("conversationId", randomUUID).singleResult();
+        assertNotNull(resultingTask);
+        assertEquals(task.getId(), resultingTask.getId());
+
+        randomUUID = UUID.randomUUID();
+
+        // Check UUID variable type query on process
+        runtimeService.setVariable(processInstance.getId(), "uuidVar", randomUUID);
+        ProcessInstance result = runtimeService.createProcessInstanceQuery().variableValueEquals("uuidVar", randomUUID).singleResult();
+
+        assertNotNull(result);
+        assertEquals(processInstance.getId(), result.getId());
+    }
 
 }
 
 class CustomType {
-  private byte[] value;
-  
-  public CustomType(byte[] value) {
-    if (value == null) {
-      throw new NullPointerException();
+    private byte[] value;
+
+    public CustomType(byte[] value) {
+        if (value == null) {
+            throw new NullPointerException();
+        }
+        this.value = value;
     }
-    this.value = value;
-  }
 
-  public byte[] getValue() {
-    return value;
-  }
-  
-  @Override
-  public int hashCode() {
-    return ObjectUtils.hashCode(value);
-  }
+    public byte[] getValue() {
+        return value;
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof CustomType))
-      return false;
-    
-    CustomType other = (CustomType) obj;
-    return ArrayUtils.isEquals(this.value, other.value);
-  }
-  
+    @Override
+    public int hashCode() {
+        return ObjectUtils.hashCode(value);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof CustomType))
+            return false;
+
+        CustomType other = (CustomType) obj;
+        return ArrayUtils.isEquals(this.value, other.value);
+    }
+
 }
 
 /**
@@ -351,38 +343,38 @@ class CustomType {
  * @author Marcus Klimstra (CGI)
  */
 class CustomVariableType implements VariableType {
-  public static final CustomVariableType instance = new CustomVariableType();
+    public static final CustomVariableType instance = new CustomVariableType();
 
-  @Override
-  public String getTypeName() {
-    return "CustomVariableType";
-  }
+    @Override
+    public String getTypeName() {
+        return "CustomVariableType";
+    }
 
-  @Override
-  public boolean isCachable() {
-    return true;
-  }
+    @Override
+    public boolean isCachable() {
+        return true;
+    }
 
-  @Override
-  public boolean isAbleToStore(Object value) {
-    return value == null || value instanceof CustomType;
-  }
+    @Override
+    public boolean isAbleToStore(Object value) {
+        return value == null || value instanceof CustomType;
+    }
 
-  @Override
-  public void setValue(Object o, ValueFields valueFields) {
-    // ensure calling setBytes multiple times no longer causes any problems 
-    valueFields.setBytes(new byte[] { 1, 2, 3} );
-    valueFields.setBytes(null);
-    valueFields.setBytes(new byte[] { 4, 5, 6} );
-    
-    byte[] value = (o == null ? null : ((CustomType) o).getValue());
-    valueFields.setBytes(value);
-  }
+    @Override
+    public void setValue(Object o, ValueFields valueFields) {
+        // ensure calling setBytes multiple times no longer causes any problems
+        valueFields.setBytes(new byte[] { 1, 2, 3 });
+        valueFields.setBytes(null);
+        valueFields.setBytes(new byte[] { 4, 5, 6 });
 
-  @Override
-  public Object getValue(ValueFields valueFields) {
-    byte[] bytes = valueFields.getBytes();
-    return bytes == null ? null : new CustomType(bytes);
-  }
-  
+        byte[] value = (o == null ? null : ((CustomType) o).getValue());
+        valueFields.setBytes(value);
+    }
+
+    @Override
+    public Object getValue(ValueFields valueFields) {
+        byte[] bytes = valueFields.getBytes();
+        return bytes == null ? null : new CustomType(bytes);
+    }
+
 }

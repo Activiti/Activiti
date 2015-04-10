@@ -18,38 +18,38 @@ import org.activiti.engine.impl.persistence.entity.MembershipEntity;
 import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
 
 /**
- * {@link SessionFactory} responsible for creating a {@link Session}
- * that manages {@link MembershipEntity}s.
+ * {@link SessionFactory} responsible for creating a {@link Session} that
+ * manages {@link MembershipEntity}s.
  * 
- * For LDAP, this will not do anything and even throw an exception
- * when trying to use, as memberships are managed by the ldap system itself.
+ * For LDAP, this will not do anything and even throw an exception when trying
+ * to use, as memberships are managed by the ldap system itself.
  * 
  * @author Joram Barrez
  */
 public class LDAPMembershipManagerFactory implements SessionFactory {
 
-	protected LDAPConfigurator ldapConfigurator;
-	
-	public LDAPMembershipManagerFactory(LDAPConfigurator ldapConfigurator) {
-    this.ldapConfigurator = ldapConfigurator;
-  }
-	
-	@Override
-  public Class<?> getSessionType() {
-	  return MembershipIdentityManager.class;
-  }
+    protected LDAPConfigurator ldapConfigurator;
 
-	@Override
-  public Session openSession() {
-	  throw new UnsupportedOperationException("Memberships are not supported in ldap");
-  }
+    public LDAPMembershipManagerFactory(LDAPConfigurator ldapConfigurator) {
+        this.ldapConfigurator = ldapConfigurator;
+    }
 
-  public LDAPConfigurator getLdapConfigurator() {
-    return ldapConfigurator;
-  }
-  
-  public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
-    this.ldapConfigurator = ldapConfigurator;
-  }
+    @Override
+    public Class<?> getSessionType() {
+        return MembershipIdentityManager.class;
+    }
+
+    @Override
+    public Session openSession() {
+        throw new UnsupportedOperationException("Memberships are not supported in ldap");
+    }
+
+    public LDAPConfigurator getLdapConfigurator() {
+        return ldapConfigurator;
+    }
+
+    public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
+        this.ldapConfigurator = ldapConfigurator;
+    }
 
 }

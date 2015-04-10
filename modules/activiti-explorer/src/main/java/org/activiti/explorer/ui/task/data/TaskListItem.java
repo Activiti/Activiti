@@ -19,28 +19,27 @@ import org.activiti.engine.task.Task;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
-
 /**
  * @author Joram Barrez
  */
-public  class TaskListItem extends PropertysetItem implements Comparable<TaskListItem>{
+public class TaskListItem extends PropertysetItem implements Comparable<TaskListItem> {
 
-  private static final long serialVersionUID = 1L;
-  
-  public TaskListItem(Task task) {
-    addItemProperty("id", new ObjectProperty<String>(task.getId(), String.class));
-    addItemProperty("name", new ObjectProperty<String>(task.getName(), String.class));
-  }
-  
-  public TaskListItem(HistoricTaskInstance historicTaskInstance) {
-    addItemProperty("id", new ObjectProperty<String>(historicTaskInstance.getId(), String.class));
-    addItemProperty("name", new ObjectProperty<String>(historicTaskInstance.getName(), String.class));
-  }
+    private static final long serialVersionUID = 1L;
 
-  public int compareTo(TaskListItem other) {
-    String taskId = (String) getItemProperty("id").getValue();
-    String otherTaskId = (String) other.getItemProperty("id").getValue();
-    return taskId.compareTo(otherTaskId);
-  }
-  
+    public TaskListItem(Task task) {
+        addItemProperty("id", new ObjectProperty<String>(task.getId(), String.class));
+        addItemProperty("name", new ObjectProperty<String>(task.getName(), String.class));
+    }
+
+    public TaskListItem(HistoricTaskInstance historicTaskInstance) {
+        addItemProperty("id", new ObjectProperty<String>(historicTaskInstance.getId(), String.class));
+        addItemProperty("name", new ObjectProperty<String>(historicTaskInstance.getName(), String.class));
+    }
+
+    public int compareTo(TaskListItem other) {
+        String taskId = (String) getItemProperty("id").getValue();
+        String otherTaskId = (String) other.getItemProperty("id").getValue();
+        return taskId.compareTo(otherTaskId);
+    }
+
 }

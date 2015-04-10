@@ -24,16 +24,16 @@ import org.activiti.validation.validator.ValidatorImpl;
  */
 public class ErrorValidator extends ValidatorImpl {
 
-	@Override
-	public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-		if (bpmnModel.getErrors() != null) {
-			for (String errorRef : bpmnModel.getErrors().keySet()) {
-				String errorCode = bpmnModel.getErrors().get(errorRef);
-				if ("".equals(errorCode)) {
-					addError(errors, Problems.ERROR_MISSING_ERROR_CODE, null, errorRef, "Invalid error code: empty errorCode");
-				}
-			}
-		}
-	}
+    @Override
+    public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
+        if (bpmnModel.getErrors() != null) {
+            for (String errorRef : bpmnModel.getErrors().keySet()) {
+                String errorCode = bpmnModel.getErrors().get(errorRef);
+                if ("".equals(errorCode)) {
+                    addError(errors, Problems.ERROR_MISSING_ERROR_CODE, null, errorRef, "Invalid error code: empty errorCode");
+                }
+            }
+        }
+    }
 
 }

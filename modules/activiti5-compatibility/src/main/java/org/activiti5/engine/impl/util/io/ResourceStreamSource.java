@@ -18,39 +18,38 @@ import java.io.InputStream;
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.impl.util.ReflectUtil;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class ResourceStreamSource implements StreamSource {
 
-  String resource;
-  ClassLoader classLoader;
-  
-  public ResourceStreamSource(String resource) {
-    this.resource = resource;
-  }
+    String resource;
+    ClassLoader classLoader;
 
-  public ResourceStreamSource(String resource, ClassLoader classLoader) {
-    this.resource = resource;
-    this.classLoader = classLoader;
-  }
-
-  public InputStream getInputStream() {
-    InputStream inputStream = null;
-    if (classLoader==null) {
-      inputStream = ReflectUtil.getResourceAsStream(resource);
-    } else {
-      inputStream = classLoader.getResourceAsStream(resource);
+    public ResourceStreamSource(String resource) {
+        this.resource = resource;
     }
-    if (inputStream==null) {
-      throw new ActivitiIllegalArgumentException("resource '"+resource+"' doesn't exist");
-    }
-    return new BufferedInputStream(inputStream);
-  }
 
-  public String toString() {
-    return "Resource["+resource+"]";
-  }
+    public ResourceStreamSource(String resource, ClassLoader classLoader) {
+        this.resource = resource;
+        this.classLoader = classLoader;
+    }
+
+    public InputStream getInputStream() {
+        InputStream inputStream = null;
+        if (classLoader == null) {
+            inputStream = ReflectUtil.getResourceAsStream(resource);
+        } else {
+            inputStream = classLoader.getResourceAsStream(resource);
+        }
+        if (inputStream == null) {
+            throw new ActivitiIllegalArgumentException("resource '" + resource + "' doesn't exist");
+        }
+        return new BufferedInputStream(inputStream);
+    }
+
+    public String toString() {
+        return "Resource[" + resource + "]";
+    }
 }

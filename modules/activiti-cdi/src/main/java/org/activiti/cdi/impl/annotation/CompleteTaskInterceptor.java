@@ -33,23 +33,24 @@ import org.activiti.cdi.annotation.CompleteTask;
 @CompleteTask
 public class CompleteTaskInterceptor implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Inject BusinessProcess businessProcess;
+    @Inject
+    BusinessProcess businessProcess;
 
-  @AroundInvoke
-  public Object invoke(InvocationContext ctx) throws Exception {
-    try {
-      Object result = ctx.proceed();
+    @AroundInvoke
+    public Object invoke(InvocationContext ctx) throws Exception {
+        try {
+            Object result = ctx.proceed();
 
-      CompleteTask completeTaskAnnotation = ctx.getMethod().getAnnotation(CompleteTask.class);
-      boolean endConversation = completeTaskAnnotation.endConversation();    
-      businessProcess.completeTask(endConversation);     
+            CompleteTask completeTaskAnnotation = ctx.getMethod().getAnnotation(CompleteTask.class);
+            boolean endConversation = completeTaskAnnotation.endConversation();
+            businessProcess.completeTask(endConversation);
 
-      return result;
-    } catch (InvocationTargetException e) {
-      throw new ActivitiCdiException("Error while completing task: "+e.getCause().getMessage(), e.getCause());
+            return result;
+        } catch (InvocationTargetException e) {
+            throw new ActivitiCdiException("Error while completing task: " + e.getCause().getMessage(), e.getCause());
+        }
     }
-  }
 
 }

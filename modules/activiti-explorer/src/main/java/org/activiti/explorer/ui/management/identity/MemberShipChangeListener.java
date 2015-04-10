@@ -12,18 +12,17 @@
  */
 package org.activiti.explorer.ui.management.identity;
 
-
 /**
- * Interface for {@link UserDetailPanel} and {@link GroupDetailPanel},
- * since they both contain a table showing the memberships
- * and they both must react to changes of the currently displayed memberships.
+ * Interface for {@link UserDetailPanel} and {@link GroupDetailPanel}, since
+ * they both contain a table showing the memberships and they both must react to
+ * changes of the currently displayed memberships.
  * 
  * By using this interface, ClickListeners and others can be easily reused.
  * 
  * @author Joram Barrez
  */
 public interface MemberShipChangeListener {
-  
-  void notifyMembershipChanged();
+
+    void notifyMembershipChanged();
 
 }

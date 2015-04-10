@@ -24,7 +24,7 @@ import org.activiti.engine.repository.ProcessDefinition;
  * 
  * <pre>
  * public void onSthRelatedToBilling(@Observes @BusinessProcess(&quot;billingProcess&quot;) BusinessProcessEvent evt) {
- *   // ...
+ *     // ...
  * }
  * </pre>
  * 
@@ -33,6 +33,6 @@ import org.activiti.engine.repository.ProcessDefinition;
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 public @interface BusinessProcess {
-  /** the key of the process */  
-  String value() default "";
+    /** the key of the process */
+    String value() default "";
 }

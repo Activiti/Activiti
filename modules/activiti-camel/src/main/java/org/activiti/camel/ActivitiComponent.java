@@ -22,82 +22,85 @@ import org.apache.camel.impl.DefaultComponent;
 import org.apache.camel.util.IntrospectionSupport;
 
 /**
- * This class has been modified to be consistent with the changes to CamelBehavior and its implementations. The set of changes
- * significantly increases the flexibility of our Camel integration, as you can either choose one of three "out-of-the-box" modes,
- * or you can choose to create your own. Please reference the comments for the "CamelBehavior" class for more information on the 
- * out-of-the-box implementation class options. 
+ * This class has been modified to be consistent with the changes to
+ * CamelBehavior and its implementations. The set of changes significantly
+ * increases the flexibility of our Camel integration, as you can either choose
+ * one of three "out-of-the-box" modes, or you can choose to create your own.
+ * Please reference the comments for the "CamelBehavior" class for more
+ * information on the out-of-the-box implementation class options.
  * 
  * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Arnold Schrijver
  */
 public class ActivitiComponent extends DefaultComponent {
 
-  protected IdentityService identityService;
-    
-  protected RuntimeService runtimeService;
-  
-  protected boolean copyVariablesToProperties;
+    protected IdentityService identityService;
 
-  protected boolean copyVariablesToBodyAsMap;
+    protected RuntimeService runtimeService;
 
-  protected boolean copyCamelBodyToBody;
+    protected boolean copyVariablesToProperties;
 
-  public ActivitiComponent() {}
-  
-  @Override
-  public void setCamelContext(CamelContext context) {
-    super.setCamelContext(context);
-    identityService = getByType(context, IdentityService.class);
-    runtimeService = getByType(context, RuntimeService.class);
-  }
+    protected boolean copyVariablesToBodyAsMap;
 
-  private <T> T getByType(CamelContext ctx, Class<T> kls) {
-    Map<String, T> looked = ctx.getRegistry().findByTypeWithName(kls);
-    if (looked.isEmpty()) {
-      return null;
+    protected boolean copyCamelBodyToBody;
+
+    public ActivitiComponent() {
     }
-    return looked.values().iterator().next();
 
-  }
-
-  @Override
-  protected Endpoint createEndpoint(String s, String s1, Map<String, Object> parameters) throws Exception {
-    ActivitiEndpoint ae = new ActivitiEndpoint(s, getCamelContext());
-    ae.setIdentityService(identityService);
-    ae.setRuntimeService(runtimeService);
-    
-    ae.setCopyVariablesToProperties(this.copyVariablesToProperties);
-    ae.setCopyVariablesToBodyAsMap(this.copyVariablesToBodyAsMap);
-    ae.setCopyCamelBodyToBody(this.copyCamelBodyToBody);
-    
-    Map<String, Object> returnVars = IntrospectionSupport.extractProperties(parameters, "var.return.");
-    if (returnVars != null && returnVars.size() > 0) {
-      ae.getReturnVarMap().putAll(returnVars);
+    @Override
+    public void setCamelContext(CamelContext context) {
+        super.setCamelContext(context);
+        identityService = getByType(context, IdentityService.class);
+        runtimeService = getByType(context, RuntimeService.class);
     }
-    
-    return ae;
-  }
-  
-  public boolean isCopyVariablesToProperties() {
-    return copyVariablesToProperties;
-  }
-  
-  public void setCopyVariablesToProperties(boolean copyVariablesToProperties) {
-    this.copyVariablesToProperties = copyVariablesToProperties;
-  }
-  
-  public boolean isCopyCamelBodyToBody() {
-    return copyCamelBodyToBody;
-  }
-  
-  public void setCopyCamelBodyToBody(boolean copyCamelBodyToBody) {
-    this.copyCamelBodyToBody = copyCamelBodyToBody;
-  }
-  
-  public boolean isCopyVariablesToBodyAsMap() {
-    return copyVariablesToBodyAsMap;
-  }
-  
-  public void setCopyVariablesToBodyAsMap(boolean copyVariablesToBodyAsMap) {
-    this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
-  }
+
+    private <T> T getByType(CamelContext ctx, Class<T> kls) {
+        Map<String, T> looked = ctx.getRegistry().findByTypeWithName(kls);
+        if (looked.isEmpty()) {
+            return null;
+        }
+        return looked.values().iterator().next();
+
+    }
+
+    @Override
+    protected Endpoint createEndpoint(String s, String s1, Map<String, Object> parameters) throws Exception {
+        ActivitiEndpoint ae = new ActivitiEndpoint(s, getCamelContext());
+        ae.setIdentityService(identityService);
+        ae.setRuntimeService(runtimeService);
+
+        ae.setCopyVariablesToProperties(this.copyVariablesToProperties);
+        ae.setCopyVariablesToBodyAsMap(this.copyVariablesToBodyAsMap);
+        ae.setCopyCamelBodyToBody(this.copyCamelBodyToBody);
+
+        Map<String, Object> returnVars = IntrospectionSupport.extractProperties(parameters, "var.return.");
+        if (returnVars != null && returnVars.size() > 0) {
+            ae.getReturnVarMap().putAll(returnVars);
+        }
+
+        return ae;
+    }
+
+    public boolean isCopyVariablesToProperties() {
+        return copyVariablesToProperties;
+    }
+
+    public void setCopyVariablesToProperties(boolean copyVariablesToProperties) {
+        this.copyVariablesToProperties = copyVariablesToProperties;
+    }
+
+    public boolean isCopyCamelBodyToBody() {
+        return copyCamelBodyToBody;
+    }
+
+    public void setCopyCamelBodyToBody(boolean copyCamelBodyToBody) {
+        this.copyCamelBodyToBody = copyCamelBodyToBody;
+    }
+
+    public boolean isCopyVariablesToBodyAsMap() {
+        return copyVariablesToBodyAsMap;
+    }
+
+    public void setCopyVariablesToBodyAsMap(boolean copyVariablesToBodyAsMap) {
+        this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
+    }
 }

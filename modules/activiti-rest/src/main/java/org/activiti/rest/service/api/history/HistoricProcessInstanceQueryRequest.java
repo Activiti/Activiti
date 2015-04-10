@@ -22,183 +22,182 @@ import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class HistoricProcessInstanceQueryRequest extends PaginateRequest {
 
-  private String processInstanceId;
-  private List<String> processInstanceIds;
-  private String processBusinessKey;
-  private String processDefinitionId;
-  private String processDefinitionKey;
-  private String superProcessInstanceId;
-  private Boolean excludeSubprocesses;
-  private Boolean finished;
-  private String involvedUser;
-  private Date finishedAfter;
-  private Date finishedBefore;
-  private Date startedAfter;
-  private Date startedBefore;
-  private String startedBy;
-  private Boolean includeProcessVariables;
-  private List<QueryVariable> variables;
-  private String tenantId;
-  private String tenantIdLike;
-  private Boolean withoutTenantId;
-  
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-  
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-  
-  public List<String> getProcessInstanceIds() {
-    return processInstanceIds;
-  }
+    private String processInstanceId;
+    private List<String> processInstanceIds;
+    private String processBusinessKey;
+    private String processDefinitionId;
+    private String processDefinitionKey;
+    private String superProcessInstanceId;
+    private Boolean excludeSubprocesses;
+    private Boolean finished;
+    private String involvedUser;
+    private Date finishedAfter;
+    private Date finishedBefore;
+    private Date startedAfter;
+    private Date startedBefore;
+    private String startedBy;
+    private Boolean includeProcessVariables;
+    private List<QueryVariable> variables;
+    private String tenantId;
+    private String tenantIdLike;
+    private Boolean withoutTenantId;
 
-  public void setProcessInstanceIds(List<String> processInstanceIds) {
-    this.processInstanceIds = processInstanceIds;
-  }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  public String getProcessBusinessKey() {
-    return processBusinessKey;
-  }
-  
-  public void setProcessBusinessKey(String processBusinessKey) {
-    this.processBusinessKey = processBusinessKey;
-  }
-  
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
-  
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-  
-  public String getProcessDefinitionKey() {
-    return processDefinitionKey;
-  }
-  
-  public void setProcessDefinitionKey(String processDefinitionKey) {
-    this.processDefinitionKey = processDefinitionKey;
-  }
-  
-  public String getSuperProcessInstanceId() {
-    return superProcessInstanceId;
-  }
-  
-  public void setSuperProcessInstanceId(String superProcessInstanceId) {
-    this.superProcessInstanceId = superProcessInstanceId;
-  }
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-  public Boolean getExcludeSubprocesses() {
-    return excludeSubprocesses;
-  }
+    public List<String> getProcessInstanceIds() {
+        return processInstanceIds;
+    }
 
-  public void setExcludeSubprocesses(Boolean excludeSubprocesses) {
-    this.excludeSubprocesses = excludeSubprocesses;
-  }
+    public void setProcessInstanceIds(List<String> processInstanceIds) {
+        this.processInstanceIds = processInstanceIds;
+    }
 
-  public Boolean getFinished() {
-    return finished;
-  }
+    public String getProcessBusinessKey() {
+        return processBusinessKey;
+    }
 
-  public void setFinished(Boolean finished) {
-    this.finished = finished;
-  }
+    public void setProcessBusinessKey(String processBusinessKey) {
+        this.processBusinessKey = processBusinessKey;
+    }
 
-  public String getInvolvedUser() {
-    return involvedUser;
-  }
-  
-  public void setInvolvedUser(String involvedUser) {
-    this.involvedUser = involvedUser;
-  }
-  
-  public Date getFinishedAfter() {
-    return finishedAfter;
-  }
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
 
-  public void setFinishedAfter(Date finishedAfter) {
-    this.finishedAfter = finishedAfter;
-  }
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
 
-  public Date getFinishedBefore() {
-    return finishedBefore;
-  }
+    public String getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
 
-  public void setFinishedBefore(Date finishedBefore) {
-    this.finishedBefore = finishedBefore;
-  }
+    public void setProcessDefinitionKey(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
+    }
 
-  public Date getStartedAfter() {
-    return startedAfter;
-  }
+    public String getSuperProcessInstanceId() {
+        return superProcessInstanceId;
+    }
 
-  public void setStartedAfter(Date startedAfter) {
-    this.startedAfter = startedAfter;
-  }
+    public void setSuperProcessInstanceId(String superProcessInstanceId) {
+        this.superProcessInstanceId = superProcessInstanceId;
+    }
 
-  public Date getStartedBefore() {
-    return startedBefore;
-  }
+    public Boolean getExcludeSubprocesses() {
+        return excludeSubprocesses;
+    }
 
-  public void setStartedBefore(Date startedBefore) {
-    this.startedBefore = startedBefore;
-  }
+    public void setExcludeSubprocesses(Boolean excludeSubprocesses) {
+        this.excludeSubprocesses = excludeSubprocesses;
+    }
 
-  public String getStartedBy() {
-    return startedBy;
-  }
+    public Boolean getFinished() {
+        return finished;
+    }
 
-  public void setStartedBy(String startedBy) {
-    this.startedBy = startedBy;
-  }
+    public void setFinished(Boolean finished) {
+        this.finished = finished;
+    }
 
-  public Boolean getIncludeProcessVariables() {
-    return includeProcessVariables;
-  }
+    public String getInvolvedUser() {
+        return involvedUser;
+    }
 
-  public void setIncludeProcessVariables(Boolean includeProcessVariables) {
-    this.includeProcessVariables = includeProcessVariables;
-  }
+    public void setInvolvedUser(String involvedUser) {
+        this.involvedUser = involvedUser;
+    }
 
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
-  public List<QueryVariable> getVariables() {
-    return variables;
-  }
-  
-  public void setVariables(List<QueryVariable> variables) {
-    this.variables = variables;
-  }
+    public Date getFinishedAfter() {
+        return finishedAfter;
+    }
 
-	public String getTenantId() {
-		return tenantId;
-	}
+    public void setFinishedAfter(Date finishedAfter) {
+        this.finishedAfter = finishedAfter;
+    }
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
+    public Date getFinishedBefore() {
+        return finishedBefore;
+    }
 
-	public String getTenantIdLike() {
-		return tenantIdLike;
-	}
+    public void setFinishedBefore(Date finishedBefore) {
+        this.finishedBefore = finishedBefore;
+    }
 
-	public void setTenantIdLike(String tenantIdLike) {
-		this.tenantIdLike = tenantIdLike;
-	}
+    public Date getStartedAfter() {
+        return startedAfter;
+    }
 
-	public Boolean getWithoutTenantId() {
-		return withoutTenantId;
-	}
+    public void setStartedAfter(Date startedAfter) {
+        this.startedAfter = startedAfter;
+    }
 
-	public void setWithoutTenantId(Boolean withoutTenantId) {
-		this.withoutTenantId = withoutTenantId;
-	}
-   
+    public Date getStartedBefore() {
+        return startedBefore;
+    }
+
+    public void setStartedBefore(Date startedBefore) {
+        this.startedBefore = startedBefore;
+    }
+
+    public String getStartedBy() {
+        return startedBy;
+    }
+
+    public void setStartedBy(String startedBy) {
+        this.startedBy = startedBy;
+    }
+
+    public Boolean getIncludeProcessVariables() {
+        return includeProcessVariables;
+    }
+
+    public void setIncludeProcessVariables(Boolean includeProcessVariables) {
+        this.includeProcessVariables = includeProcessVariables;
+    }
+
+    @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
+    public List<QueryVariable> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(List<QueryVariable> variables) {
+        this.variables = variables;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getTenantIdLike() {
+        return tenantIdLike;
+    }
+
+    public void setTenantIdLike(String tenantIdLike) {
+        this.tenantIdLike = tenantIdLike;
+    }
+
+    public Boolean getWithoutTenantId() {
+        return withoutTenantId;
+    }
+
+    public void setWithoutTenantId(Boolean withoutTenantId) {
+        this.withoutTenantId = withoutTenantId;
+    }
+
 }

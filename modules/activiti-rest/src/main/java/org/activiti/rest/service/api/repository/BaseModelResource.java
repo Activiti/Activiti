@@ -25,22 +25,22 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class BaseModelResource {
 
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected RepositoryService repositoryService;
-  
-  /**
-   * Returns the {@link Model} that is requested. Throws the right exceptions
-   * when bad request was made or model is not found.
-   */
-  protected Model getModelFromRequest(String modelId) {
-    Model model = repositoryService.createModelQuery().modelId(modelId).singleResult();
-   
-    if (model == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a model with id '" + modelId + "'.", ProcessDefinition.class);
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected RepositoryService repositoryService;
+
+    /**
+     * Returns the {@link Model} that is requested. Throws the right exceptions
+     * when bad request was made or model is not found.
+     */
+    protected Model getModelFromRequest(String modelId) {
+        Model model = repositoryService.createModelQuery().modelId(modelId).singleResult();
+
+        if (model == null) {
+            throw new ActivitiObjectNotFoundException("Could not find a model with id '" + modelId + "'.", ProcessDefinition.class);
+        }
+        return model;
     }
-    return model;
-  }
 }

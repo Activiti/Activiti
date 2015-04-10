@@ -23,42 +23,40 @@ import org.activiti.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.task.Attachment;
 
-
 /**
  * @author Tom Baeyens
  */
 public class SaveAttachmentCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected Attachment attachment;
-  
-  public SaveAttachmentCmd(Attachment attachment) {
-    this.attachment = attachment;
-  }
+    private static final long serialVersionUID = 1L;
+    protected Attachment attachment;
 
-  public Object execute(CommandContext commandContext) {
-    AttachmentEntity updateAttachment = commandContext
-      .getDbSqlSession()
-      .selectById(AttachmentEntity.class, attachment.getId());
-    
-    updateAttachment.setName(attachment.getName());
-    updateAttachment.setDescription(attachment.getDescription());
-    
-    if(commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	// Forced to fetch the process-instance to associate the right process definition
-    	String processDefinitionId = null;
-    	String processInstanceId = updateAttachment.getProcessInstanceId();
-    	if(updateAttachment.getProcessInstanceId() != null) {
-    		ExecutionEntity process = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
-    		if(process != null) {
-    			processDefinitionId = process.getProcessDefinitionId();
-    		}
-    	}
-    	
-    	commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+    public SaveAttachmentCmd(Attachment attachment) {
+        this.attachment = attachment;
     }
-    
-    return null;
-  }
+
+    public Object execute(CommandContext commandContext) {
+        AttachmentEntity updateAttachment = commandContext.getDbSqlSession().selectById(AttachmentEntity.class, attachment.getId());
+
+        updateAttachment.setName(attachment.getName());
+        updateAttachment.setDescription(attachment.getDescription());
+
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            // Forced to fetch the process-instance to associate the right
+            // process definition
+            String processDefinitionId = null;
+            String processInstanceId = updateAttachment.getProcessInstanceId();
+            if (updateAttachment.getProcessInstanceId() != null) {
+                ExecutionEntity process = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+                if (process != null) {
+                    processDefinitionId = process.getProcessDefinitionId();
+                }
+            }
+
+            commandContext.getProcessEngineConfiguration().getEventDispatcher()
+                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, attachment, processInstanceId, processInstanceId, processDefinitionId));
+        }
+
+        return null;
+    }
 }

@@ -36,6 +36,7 @@ import javax.enterprise.inject.spi.PassivationCapable;
  * process instance, the bean instances are flushed to the ProcessInstance.
  * <p />
  * Example:
+ * 
  * <pre>
  * {@code @BusinessProcessScoped}
  * public class Authorization implements Serializable {

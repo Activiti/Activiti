@@ -22,21 +22,21 @@ import com.vaadin.data.util.PropertysetItem;
  */
 class ProcessInstanceItem extends PropertysetItem implements Comparable<ProcessInstanceItem> {
 
-  private static final long serialVersionUID = 1L;
-  
-  public ProcessInstanceItem() {
-    
-  }
-  
-  public ProcessInstanceItem(ProcessInstance processInstance) {
-    addItemProperty("id", new ObjectProperty<String>(processInstance.getId(), String.class));
-    addItemProperty("businessKey", new ObjectProperty<String>(processInstance.getBusinessKey(), String.class));
-  }
+    private static final long serialVersionUID = 1L;
 
-  public int compareTo(ProcessInstanceItem other) {
-    // process instances are ordered by id
-    String id = (String) getItemProperty("id").getValue();
-    String otherId = (String) other.getItemProperty("id").getValue();
-    return id.compareTo(otherId);
-  }
+    public ProcessInstanceItem() {
+
+    }
+
+    public ProcessInstanceItem(ProcessInstance processInstance) {
+        addItemProperty("id", new ObjectProperty<String>(processInstance.getId(), String.class));
+        addItemProperty("businessKey", new ObjectProperty<String>(processInstance.getBusinessKey(), String.class));
+    }
+
+    public int compareTo(ProcessInstanceItem other) {
+        // process instances are ordered by id
+        String id = (String) getItemProperty("id").getValue();
+        String otherId = (String) other.getItemProperty("id").getValue();
+        return id.compareTo(otherId);
+    }
 }

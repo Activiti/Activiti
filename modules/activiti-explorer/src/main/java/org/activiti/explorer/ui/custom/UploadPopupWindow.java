@@ -23,69 +23,70 @@ import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.StartedListener;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * @author Joram Barrez
  */
-public class UploadPopupWindow extends PopupWindow { 
-  
-  private static final long serialVersionUID = 1L;
-  
-  // Services
-  protected I18nManager i18nManager;
-  protected UploadComponent uploadComponent;
+public class UploadPopupWindow extends PopupWindow {
 
-  public UploadPopupWindow(String caption, String description, Receiver receiver) {
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    
-    init(caption, description, receiver);
-    
-    uploadComponent.addFinishedListener(new FinishedListener() {
-      
-      private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-      public void uploadFinished(FinishedEvent event) {
-        close();
-      }
-    });
-  }
+    // Services
+    protected I18nManager i18nManager;
+    protected UploadComponent uploadComponent;
 
-  // UI initialisation ----------------------------------------------------------------------------
-  protected void init(String caption, String description, Receiver receiver) {
-    uploadComponent = ExplorerApp.get().getComponentFactory(UploadComponentFactory.class).create();
-    uploadComponent.setReceiver(receiver);
-    uploadComponent.setDescription(description);
-    uploadComponent.setSizeFull();
-    initWindow(caption);
-  }
+    public UploadPopupWindow(String caption, String description, Receiver receiver) {
+        this.i18nManager = ExplorerApp.get().getI18nManager();
 
-  protected void initWindow(String caption) {
-    // Fixed width/height since otherwise the layout can be screwed by the drag and drop
-    setWidth("300px");
-    setHeight("300px");
-    addStyleName(Reindeer.WINDOW_LIGHT);
-    setModal(true);
-    center();
-    setCaption(caption);
-    
-    setContent(uploadComponent);
-  }
-  
-  
-  // Upload Listeners ----------------------------------------------------------------------------
-  public void addFinishedListener(FinishedListener finishedListener) {
-    uploadComponent.addFinishedListener(finishedListener);
-  }
-  
-  public void addStartedListener(StartedListener startedListener) {
-    uploadComponent.addStartedListener(startedListener);
-  }
-  
-  public void addFailedListener(FailedListener failedListener) {
-    uploadComponent.addFailedListener(failedListener);
-  }
-  
-  public void addProgressListener(ProgressListener progressListener) {
-    uploadComponent.addProgressListener(progressListener);
-  }  
+        init(caption, description, receiver);
+
+        uploadComponent.addFinishedListener(new FinishedListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void uploadFinished(FinishedEvent event) {
+                close();
+            }
+        });
+    }
+
+    // UI initialisation
+    // ----------------------------------------------------------------------------
+    protected void init(String caption, String description, Receiver receiver) {
+        uploadComponent = ExplorerApp.get().getComponentFactory(UploadComponentFactory.class).create();
+        uploadComponent.setReceiver(receiver);
+        uploadComponent.setDescription(description);
+        uploadComponent.setSizeFull();
+        initWindow(caption);
+    }
+
+    protected void initWindow(String caption) {
+        // Fixed width/height since otherwise the layout can be screwed by the
+        // drag and drop
+        setWidth("300px");
+        setHeight("300px");
+        addStyleName(Reindeer.WINDOW_LIGHT);
+        setModal(true);
+        center();
+        setCaption(caption);
+
+        setContent(uploadComponent);
+    }
+
+    // Upload Listeners
+    // ----------------------------------------------------------------------------
+    public void addFinishedListener(FinishedListener finishedListener) {
+        uploadComponent.addFinishedListener(finishedListener);
+    }
+
+    public void addStartedListener(StartedListener startedListener) {
+        uploadComponent.addStartedListener(startedListener);
+    }
+
+    public void addFailedListener(FailedListener failedListener) {
+        uploadComponent.addFailedListener(failedListener);
+    }
+
+    public void addProgressListener(ProgressListener progressListener) {
+        uploadComponent.addProgressListener(progressListener);
+    }
 }

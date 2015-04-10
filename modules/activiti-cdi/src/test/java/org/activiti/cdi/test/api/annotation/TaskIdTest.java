@@ -25,18 +25,18 @@ import static org.junit.Assert.*;
  */
 public class TaskIdTest extends CdiActivitiTestCase {
 
-  @Test
-  @Deployment
-  public void testTaskIdInjectable() {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
-    businessProcess.startProcessByKey("keyOfTheProcess");  
-    
-    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());   
-    
-    // assert that now the 'taskId'-bean can be looked up
-    assertNotNull(getBeanInstance("taskId"));
-    
-    businessProcess.completeTask();
-  }
-  
+    @Test
+    @Deployment
+    public void testTaskIdInjectable() {
+        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+        businessProcess.startProcessByKey("keyOfTheProcess");
+
+        businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
+
+        // assert that now the 'taskId'-bean can be looked up
+        assertNotNull(getBeanInstance("taskId"));
+
+        businessProcess.completeTask();
+    }
+
 }

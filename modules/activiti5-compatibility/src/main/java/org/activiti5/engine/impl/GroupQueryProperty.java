@@ -19,36 +19,34 @@ import java.util.Map;
 import org.activiti5.engine.identity.GroupQuery;
 import org.activiti5.engine.query.QueryProperty;
 
-
-
 /**
  * Contains the possible properties that can be used by the {@link GroupQuery}.
  * 
  * @author Joram Barrez
  */
 public class GroupQueryProperty implements QueryProperty {
-  
-  private static final long serialVersionUID = 1L;
 
-  private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
+    private static final long serialVersionUID = 1L;
 
-  public static final GroupQueryProperty GROUP_ID = new GroupQueryProperty("RES.ID_");
-  public static final GroupQueryProperty NAME = new GroupQueryProperty("RES.NAME_");
-  public static final GroupQueryProperty TYPE = new GroupQueryProperty("RES.TYPE_");
-  
-  private String name;
+    private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
 
-  public GroupQueryProperty(String name) {
-    this.name = name;
-    properties.put(name, this);
-  }
+    public static final GroupQueryProperty GROUP_ID = new GroupQueryProperty("RES.ID_");
+    public static final GroupQueryProperty NAME = new GroupQueryProperty("RES.NAME_");
+    public static final GroupQueryProperty TYPE = new GroupQueryProperty("RES.TYPE_");
 
-  public String getName() {
-    return name;
-  }
-  
-  public static GroupQueryProperty findByName(String propertyName) {
-    return properties.get(propertyName);
-  }
+    private String name;
+
+    public GroupQueryProperty(String name) {
+        this.name = name;
+        properties.put(name, this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static GroupQueryProperty findByName(String propertyName) {
+        return properties.get(propertyName);
+    }
 
 }

@@ -17,7 +17,6 @@ import java.io.InputStream;
 
 import com.vaadin.terminal.StreamResource.StreamSource;
 
-
 /**
  * Simple {@link StreamSource} that streams the given inputstream.
  * 
@@ -25,15 +24,15 @@ import com.vaadin.terminal.StreamResource.StreamSource;
  */
 public class InputStreamStreamSource implements StreamSource {
 
-  private static final long serialVersionUID = -860417435916179985L;
-  
-  protected transient InputStream inputStream;
-  
-  public InputStreamStreamSource(InputStream inputStream) {
-    this.inputStream = inputStream;
-  }
+    private static final long serialVersionUID = -860417435916179985L;
 
-  public InputStream getStream() {
-    return inputStream;
-  }
+    protected transient InputStream inputStream;
+
+    public InputStreamStreamSource(InputStream inputStream) {
+        this.inputStream = inputStream;
+    }
+
+    public InputStream getStream() {
+        return inputStream;
+    }
 }

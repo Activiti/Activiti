@@ -12,28 +12,26 @@
  */
 package org.activiti5.engine.impl.jobexecutor;
 
-
 import org.activiti5.engine.impl.cfg.TransactionListener;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Tom Baeyens
  */
 public class JobAddedNotification implements TransactionListener {
-  
-  private static Logger log = LoggerFactory.getLogger(JobAddedNotification.class);
-  
-  protected JobExecutor jobExecutor;
-  
-  public JobAddedNotification(JobExecutor jobExecutor) {
-    this.jobExecutor = jobExecutor;
-  }
 
-  public void execute(CommandContext commandContext) {
-    log.debug("notifying job executor of new job");
-    jobExecutor.jobWasAdded();
-  }
+    private static Logger log = LoggerFactory.getLogger(JobAddedNotification.class);
+
+    protected JobExecutor jobExecutor;
+
+    public JobAddedNotification(JobExecutor jobExecutor) {
+        this.jobExecutor = jobExecutor;
+    }
+
+    public void execute(CommandContext commandContext) {
+        log.debug("notifying job executor of new job");
+        jobExecutor.jobWasAdded();
+    }
 }

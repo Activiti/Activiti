@@ -25,29 +25,29 @@ import org.activiti.bpmn.model.ManualTask;
  */
 public class ManualTaskXMLConverter extends BaseBpmnXMLConverter {
 
-  public Class<? extends BaseElement> getBpmnElementType() {
-    return ManualTask.class;
-  }
-  
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_TASK_MANUAL;
-  }
-  
-  @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    ManualTask manualTask = new ManualTask();
-    BpmnXMLUtil.addXMLLocation(manualTask, xtr);
-    parseChildElements(getXMLElementName(), manualTask, model, xtr);
-    return manualTask;
-  }
+    public Class<? extends BaseElement> getBpmnElementType() {
+        return ManualTask.class;
+    }
 
-  @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-  }
-  
-  @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    
-  }
+    @Override
+    protected String getXMLElementName() {
+        return ELEMENT_TASK_MANUAL;
+    }
+
+    @Override
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        ManualTask manualTask = new ManualTask();
+        BpmnXMLUtil.addXMLLocation(manualTask, xtr);
+        parseChildElements(getXMLElementName(), manualTask, model, xtr);
+        return manualTask;
+    }
+
+    @Override
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+    }
+
+    @Override
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+
+    }
 }

@@ -24,45 +24,44 @@ import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
 
-
 /**
  * @author Joram Barrez
  */
 public abstract class AbstractTaskListQuery extends AbstractLazyLoadingQuery {
-  
-  protected String userId;
-  protected transient TaskService taskService;
-  
-  public AbstractTaskListQuery() {
-    this.userId = ExplorerApp.get().getLoggedInUser().getId();
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-  }
 
-  public int size() {
-    return (int) getQuery().count();
-  }
+    protected String userId;
+    protected transient TaskService taskService;
 
-  public List<Item> loadItems(int start, int count) {
-    List<Task> tasks = getQuery().listPage(start, count);
-    List<Item> items = new ArrayList<Item>();
-    for (Task task : tasks) {
-      items.add(new TaskListItem(task));
+    public AbstractTaskListQuery() {
+        this.userId = ExplorerApp.get().getLoggedInUser().getId();
+        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
     }
-    return items;
-  }
 
-  public Item loadSingleResult(String id) {
-    Task task = getQuery().taskId(id).singleResult();
-    if(task != null) {
-      return new TaskListItem(task);
+    public int size() {
+        return (int) getQuery().count();
     }
-    return null;
-  }
 
-  public void setSorting(Object[] propertyId, boolean[] ascending) {
-    throw new UnsupportedOperationException();
-  }
-  
-  protected abstract TaskQuery getQuery();
-  
+    public List<Item> loadItems(int start, int count) {
+        List<Task> tasks = getQuery().listPage(start, count);
+        List<Item> items = new ArrayList<Item>();
+        for (Task task : tasks) {
+            items.add(new TaskListItem(task));
+        }
+        return items;
+    }
+
+    public Item loadSingleResult(String id) {
+        Task task = getQuery().taskId(id).singleResult();
+        if (task != null) {
+            return new TaskListItem(task);
+        }
+        return null;
+    }
+
+    public void setSorting(Object[] propertyId, boolean[] ascending) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected abstract TaskQuery getQuery();
+
 }

@@ -16,7 +16,6 @@ package org.activiti.explorer.ui;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Tree;
 
-
 /**
  * Superclass for all pages that have a tree on the left side of the page.
  * 
@@ -24,25 +23,25 @@ import com.vaadin.ui.Tree;
  */
 public abstract class AbstractTreePage extends AbstractPage {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  protected AbstractSelect createSelectComponent() {
-    Tree tree = createTree();
-    tree.setSizeFull();
-    return tree;
-  }
-  
-  protected abstract Tree createTree();
+    @Override
+    protected AbstractSelect createSelectComponent() {
+        Tree tree = createTree();
+        tree.setSizeFull();
+        return tree;
+    }
 
-  @Override
-  public void refreshSelectNext() {
-    throw new UnsupportedOperationException();
-  }
+    protected abstract Tree createTree();
 
-  @Override
-  public void selectElement(int index) {
-    throw new UnsupportedOperationException();
-  }
+    @Override
+    public void refreshSelectNext() {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void selectElement(int index) {
+        throw new UnsupportedOperationException();
+    }
 
 }

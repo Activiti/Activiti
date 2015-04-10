@@ -20,23 +20,20 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti5.engine.task.Attachment;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GetAttachmentCmd implements Command<Attachment>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String attachmentId;
-  
-  public GetAttachmentCmd(String attachmentId) {
-    this.attachmentId = attachmentId;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String attachmentId;
 
-  public Attachment execute(CommandContext commandContext) {
-    return commandContext
-      .getDbSqlSession()
-      .selectById(AttachmentEntity.class, attachmentId);
-  }
+    public GetAttachmentCmd(String attachmentId) {
+        this.attachmentId = attachmentId;
+    }
+
+    public Attachment execute(CommandContext commandContext) {
+        return commandContext.getDbSqlSession().selectById(AttachmentEntity.class, attachmentId);
+    }
 
 }

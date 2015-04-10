@@ -30,24 +30,23 @@ import org.junit.Test;
  */
 public class CompleteTaskTest extends CdiActivitiTestCase {
 
-  @Test
-  @Deployment(resources = "org/activiti/cdi/test/api/annotation/CompleteTaskTest.bpmn20.xml")
-  public void testCompleteTask() {
+    @Test
+    @Deployment(resources = "org/activiti/cdi/test/api/annotation/CompleteTaskTest.bpmn20.xml")
+    public void testCompleteTask() {
 
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
-    businessProcess.startProcessByKey("keyOfTheProcess");
+        businessProcess.startProcessByKey("keyOfTheProcess");
 
-    Task task = taskService.createTaskQuery().singleResult();
-    
-    // associate current unit of work with the task:
-    businessProcess.startTask(task.getId());
+        Task task = taskService.createTaskQuery().singleResult();
 
-    getBeanInstance(DeclarativeProcessController.class).completeTask();
+        // associate current unit of work with the task:
+        businessProcess.startTask(task.getId());
 
-    // assert that now the task is completed
-    assertNull(taskService.createTaskQuery().singleResult());
-  }
+        getBeanInstance(DeclarativeProcessController.class).completeTask();
 
-  
+        // assert that now the task is completed
+        assertNull(taskService.createTaskQuery().singleResult());
+    }
+
 }

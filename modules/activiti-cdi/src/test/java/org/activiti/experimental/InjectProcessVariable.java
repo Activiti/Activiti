@@ -18,7 +18,11 @@ import org.activiti.cdi.annotation.ProcessVariable;
 
 public class InjectProcessVariable {
 
-  @Inject @ProcessVariable public Object testKeyString;
-  @Inject @ProcessVariable("testKeyString") public Object someBeanProperty;
-    
+    @Inject
+    @ProcessVariable
+    public Object testKeyString;
+    @Inject
+    @ProcessVariable("testKeyString")
+    public Object someBeanProperty;
+
 }

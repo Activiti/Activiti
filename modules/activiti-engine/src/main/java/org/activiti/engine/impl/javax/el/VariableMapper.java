@@ -16,29 +16,31 @@
 package org.activiti.engine.impl.javax.el;
 
 /**
- * The interface to a map between EL variables and the EL expressions they are associated with.
+ * The interface to a map between EL variables and the EL expressions they are
+ * associated with.
  */
 public abstract class VariableMapper {
-	/**
-	 * Resolves the specified variable name to a ValueExpression.
-	 * 
-	 * @param variable
-	 *            The variable name
-	 * @return the ValueExpression assigned to the variable, null if there is no previous assignment
-	 *         to this variable.
-	 */
-	public abstract ValueExpression resolveVariable(String variable);
+    /**
+     * Resolves the specified variable name to a ValueExpression.
+     * 
+     * @param variable
+     *            The variable name
+     * @return the ValueExpression assigned to the variable, null if there is no
+     *         previous assignment to this variable.
+     */
+    public abstract ValueExpression resolveVariable(String variable);
 
-	/**
-	 * Assign a ValueExpression to an EL variable, replacing any previously assignment to the same
-	 * variable. The assignment for the variable is removed if the expression is null.
-	 * 
-	 * @param variable
-	 *            The variable name
-	 * @param expression
-	 *            The ValueExpression to be assigned to the variable.
-	 * @return The previous ValueExpression assigned to this variable, null if there is no previous
-	 *         assignment to this variable.
-	 */
-	public abstract ValueExpression setVariable(String variable, ValueExpression expression);
+    /**
+     * Assign a ValueExpression to an EL variable, replacing any previously
+     * assignment to the same variable. The assignment for the variable is
+     * removed if the expression is null.
+     * 
+     * @param variable
+     *            The variable name
+     * @param expression
+     *            The ValueExpression to be assigned to the variable.
+     * @return The previous ValueExpression assigned to this variable, null if
+     *         there is no previous assignment to this variable.
+     */
+    public abstract ValueExpression setVariable(String variable, ValueExpression expression);
 }

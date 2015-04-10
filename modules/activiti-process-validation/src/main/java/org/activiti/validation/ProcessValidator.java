@@ -18,22 +18,23 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.validation.validator.ValidatorSet;
 
 /**
- * Validates a process definition against the rules of the Activiti engine to be executable 
+ * Validates a process definition against the rules of the Activiti engine to be
+ * executable
  * 
  * @author jbarrez
  */
 public interface ProcessValidator {
 
-	/**
-	 * Validates the provided {@link BpmnModel} and returns a list
-	 * of all {@link ValidationError} occurences found. 
-	 */
-	List<ValidationError> validate(BpmnModel bpmnModel);
-	
-	/**
-	 * Returns the {@link ValidatorSet} instances for this process validator.
-	 * Useful if some validation rules need to be disabled. 
-	 */
-	List<ValidatorSet> getValidatorSets();
-	
+    /**
+     * Validates the provided {@link BpmnModel} and returns a list of all
+     * {@link ValidationError} occurences found.
+     */
+    List<ValidationError> validate(BpmnModel bpmnModel);
+
+    /**
+     * Returns the {@link ValidatorSet} instances for this process validator.
+     * Useful if some validation rules need to be disabled.
+     */
+    List<ValidatorSet> getValidatorSets();
+
 }

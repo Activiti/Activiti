@@ -19,28 +19,27 @@ import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.task.Task;
 import org.activiti5.engine.test.Deployment;
 
-
 /**
  * @author Joram Barrez
  */
 public class UelExpressionTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testValueAndMethodExpression() {
-    // An order of price 150 is a standard order (goes through an UEL value expression)
-    UelExpressionTestOrder order = new UelExpressionTestOrder(150);
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", 
-            CollectionUtil.singletonMap("order",  order));
-    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertEquals("Standard service", task.getName());
-    
-    // While an order of 300, gives us a premium service (goes through an UEL method expression)
-    order = new UelExpressionTestOrder(300);
-    processInstance = runtimeService.startProcessInstanceByKey("uelExpressions",
-            CollectionUtil.singletonMap("order",  order));
-    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertEquals("Premium service", task.getName());
-    
-  }
+    @Deployment
+    public void testValueAndMethodExpression() {
+        // An order of price 150 is a standard order (goes through an UEL value
+        // expression)
+        UelExpressionTestOrder order = new UelExpressionTestOrder(150);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", CollectionUtil.singletonMap("order", order));
+        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        assertEquals("Standard service", task.getName());
+
+        // While an order of 300, gives us a premium service (goes through an
+        // UEL method expression)
+        order = new UelExpressionTestOrder(300);
+        processInstance = runtimeService.startProcessInstanceByKey("uelExpressions", CollectionUtil.singletonMap("order", order));
+        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        assertEquals("Premium service", task.getName());
+
+    }
 
 }

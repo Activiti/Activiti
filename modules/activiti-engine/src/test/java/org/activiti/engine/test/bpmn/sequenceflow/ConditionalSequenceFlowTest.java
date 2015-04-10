@@ -22,39 +22,32 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
-
 /**
  * @author Joram Barrez
  */
 public class ConditionalSequenceFlowTest extends PluggableActivitiTestCase {
-  
-  @Deployment
-  public void testUelExpression() {
-    Map<String, Object> variables = CollectionUtil.singletonMap("input", "right");
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("condSeqFlowUelExpr", variables);
-    
-    Task task = taskService
-      .createTaskQuery()
-      .processInstanceId(pi.getId())
-      .singleResult();
-    
-    assertEquals("task right", task.getName());
-  }
-  
-  @Deployment
-  public void testSkipExpression() {
-    Map<String, Object> variables = new HashMap<String,Object>();
-    variables.put("input", "right");
-    variables.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
-    variables.put("skipLeft", true);
-    variables.put("skipRight", false);
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("testSkipExpression", variables);
-    
-    Task task = taskService
-      .createTaskQuery()
-      .processInstanceId(pi.getId())
-      .singleResult();
-    
-    assertEquals("task left", task.getName());
-  }
+
+    @Deployment
+    public void testUelExpression() {
+        Map<String, Object> variables = CollectionUtil.singletonMap("input", "right");
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("condSeqFlowUelExpr", variables);
+
+        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+
+        assertEquals("task right", task.getName());
+    }
+
+    @Deployment
+    public void testSkipExpression() {
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("input", "right");
+        variables.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
+        variables.put("skipLeft", true);
+        variables.put("skipRight", false);
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("testSkipExpression", variables);
+
+        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+
+        assertEquals("task left", task.getName());
+    }
 }

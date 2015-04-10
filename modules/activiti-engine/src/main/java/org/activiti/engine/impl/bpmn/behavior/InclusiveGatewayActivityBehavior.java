@@ -35,65 +35,65 @@ import org.slf4j.LoggerFactory;
  */
 public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior implements InactiveActivityBehavior {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private static Logger logger = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
+    private static Logger logger = LoggerFactory.getLogger(InclusiveGatewayActivityBehavior.class.getName());
 
-	@Override
-	public void execute(ActivityExecution execution) {
-		// The join in the inclusive gateway works as follows:
-		// When an execution enters it, it is inactivated.
-		// All the inactivated executions stay in the inclusive gateway
-		// until ALL executions that CAN reach the inclusive gateway have reached it.
-		//
-		// This check is repeated on execution changes until the inactivated
-		// executions leave the gateway.
+    @Override
+    public void execute(ActivityExecution execution) {
+        // The join in the inclusive gateway works as follows:
+        // When an execution enters it, it is inactivated.
+        // All the inactivated executions stay in the inclusive gateway
+        // until ALL executions that CAN reach the inclusive gateway have
+        // reached it.
+        //
+        // This check is repeated on execution changes until the inactivated
+        // executions leave the gateway.
 
-		execution.inactivate();
-		executeInclusiveGatewayLogic((ExecutionEntity) execution);
-	}
-	
-	@Override
-	public void executeInactive(ExecutionEntity executionEntity) {
-		executeInclusiveGatewayLogic(executionEntity);
-	}
-	
-	protected void executeInclusiveGatewayLogic(ExecutionEntity execution) {
-		CommandContext commandContext = Context.getCommandContext();
-		ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-		Collection<ExecutionEntity> allExecutions = executionEntityManager
-				.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
-		Iterator<ExecutionEntity> executionIterator = allExecutions.iterator();
-		boolean oneExecutionCanReachGateway = false;
-		while (!oneExecutionCanReachGateway && executionIterator.hasNext()) {
-			ExecutionEntity executionEntity = executionIterator.next();
-			if (!executionEntity.getActivityId().equals(execution.getCurrentActivityId())) {
-				boolean canReachGateway = ExecutionGraphUtil.isReachable(execution.getProcessDefinitionId(), 
-						executionEntity.getActivityId(), execution.getCurrentActivityId());
-				if (canReachGateway) {
-					oneExecutionCanReachGateway = true;
-				}
-			}
-		}
+        execution.inactivate();
+        executeInclusiveGatewayLogic((ExecutionEntity) execution);
+    }
 
-		// If no execution can reach the gateway, the gateway activates and executes fork behavior
-		if (!oneExecutionCanReachGateway) {
-			
-			logger.debug("Inclusive gateway cannot be reached by any execution and is activated");
+    @Override
+    public void executeInactive(ExecutionEntity executionEntity) {
+        executeInclusiveGatewayLogic(executionEntity);
+    }
 
-			// Kill all executions here (except the incoming)
-			Collection<ExecutionEntity> executionsInGateway = executionEntityManager.getInactiveExecutionsInActivity(execution.getCurrentActivityId());
-			for (ExecutionEntity executionEntityInGateway : executionsInGateway) {
-				if (!executionEntityInGateway.getId().equals(execution.getId())) {
-					executionEntityManager.delete(executionEntityInGateway);
-				}
-			}
+    protected void executeInclusiveGatewayLogic(ExecutionEntity execution) {
+        CommandContext commandContext = Context.getCommandContext();
+        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+        Collection<ExecutionEntity> allExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
+        Iterator<ExecutionEntity> executionIterator = allExecutions.iterator();
+        boolean oneExecutionCanReachGateway = false;
+        while (!oneExecutionCanReachGateway && executionIterator.hasNext()) {
+            ExecutionEntity executionEntity = executionIterator.next();
+            if (!executionEntity.getActivityId().equals(execution.getCurrentActivityId())) {
+                boolean canReachGateway = ExecutionGraphUtil.isReachable(execution.getProcessDefinitionId(), executionEntity.getActivityId(), execution.getCurrentActivityId());
+                if (canReachGateway) {
+                    oneExecutionCanReachGateway = true;
+                }
+            }
+        }
 
-			// Leave
+        // If no execution can reach the gateway, the gateway activates and
+        // executes fork behavior
+        if (!oneExecutionCanReachGateway) {
 
-			// TODO: default sequence flow
+            logger.debug("Inclusive gateway cannot be reached by any execution and is activated");
 
-			commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
-		}
-	}
+            // Kill all executions here (except the incoming)
+            Collection<ExecutionEntity> executionsInGateway = executionEntityManager.getInactiveExecutionsInActivity(execution.getCurrentActivityId());
+            for (ExecutionEntity executionEntityInGateway : executionsInGateway) {
+                if (!executionEntityInGateway.getId().equals(execution.getId())) {
+                    executionEntityManager.delete(executionEntityInGateway);
+                }
+            }
+
+            // Leave
+
+            // TODO: default sequence flow
+
+            commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
+        }
+    }
 }

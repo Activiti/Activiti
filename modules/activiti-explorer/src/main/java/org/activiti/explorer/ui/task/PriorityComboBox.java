@@ -25,38 +25,35 @@ import com.vaadin.ui.ComboBox;
  */
 public class PriorityComboBox extends ComboBox {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected I18nManager i18nManager;
-  
-  public PriorityComboBox(I18nManager i18nManager) {
-    super(null, Arrays.asList(
-            i18nManager.getMessage(Messages.TASK_PRIORITY_LOW),
-            i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM),
-            i18nManager.getMessage(Messages.TASK_PRIORITY_HIGH)));
-    this.i18nManager = i18nManager;
-    setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW));
-    setNullSelectionAllowed(false);
-    setInvalidAllowed(false);
-    setImmediate(true);
-    setWidth(125, UNITS_PIXELS);
-  }
-  
-  public PriorityComboBox(I18nManager i18nManager, Object value) {
-    this(i18nManager);
-    
-    setValue(value);
-  }
-  
-  public int getPriority() {
-    String value = getValue().toString();
-    if (i18nManager.getMessage(Messages.TASK_PRIORITY_LOW).equals(value)) {
-      return Constants.TASK_PRIORITY_LOW;
-    } else if (i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM).equals(value)) {
-      return Constants.TASK_PRIORITY_MEDIUM;
-    } else {
-      return Constants.TASK_PRIORITY_HIGH;
+    private static final long serialVersionUID = 1L;
+
+    protected I18nManager i18nManager;
+
+    public PriorityComboBox(I18nManager i18nManager) {
+        super(null, Arrays.asList(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW), i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM), i18nManager.getMessage(Messages.TASK_PRIORITY_HIGH)));
+        this.i18nManager = i18nManager;
+        setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW));
+        setNullSelectionAllowed(false);
+        setInvalidAllowed(false);
+        setImmediate(true);
+        setWidth(125, UNITS_PIXELS);
     }
-  }
+
+    public PriorityComboBox(I18nManager i18nManager, Object value) {
+        this(i18nManager);
+
+        setValue(value);
+    }
+
+    public int getPriority() {
+        String value = getValue().toString();
+        if (i18nManager.getMessage(Messages.TASK_PRIORITY_LOW).equals(value)) {
+            return Constants.TASK_PRIORITY_LOW;
+        } else if (i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM).equals(value)) {
+            return Constants.TASK_PRIORITY_MEDIUM;
+        } else {
+            return Constants.TASK_PRIORITY_HIGH;
+        }
+    }
 
 }

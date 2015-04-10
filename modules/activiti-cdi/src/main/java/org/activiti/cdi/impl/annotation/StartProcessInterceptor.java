@@ -33,62 +33,63 @@ import org.activiti.engine.ActivitiException;
  * 
  * @author Daniel Meyer
  */
-@Interceptor 
+@Interceptor
 @StartProcess("")
 public class StartProcessInterceptor implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  @Inject BusinessProcess businessProcess;
+    private static final long serialVersionUID = 1L;
 
-  @AroundInvoke
-  public Object invoke(InvocationContext ctx) throws Exception {
-    try {
-      Object result = ctx.proceed();
+    @Inject
+    BusinessProcess businessProcess;
 
-      StartProcess startProcessAnnotation = ctx.getMethod().getAnnotation(StartProcess.class);
+    @AroundInvoke
+    public Object invoke(InvocationContext ctx) throws Exception {
+        try {
+            Object result = ctx.proceed();
 
-      String name = startProcessAnnotation.name();
-      String key = startProcessAnnotation.value();
+            StartProcess startProcessAnnotation = ctx.getMethod().getAnnotation(StartProcess.class);
 
-      Map<String, Object> variables = extractVariables(startProcessAnnotation, ctx);
-      
-      if (name.length() > 0) {
-        businessProcess.startProcessByName(name, variables);
-      } else {
-        businessProcess.startProcessByKey(key, variables);
-      }
+            String name = startProcessAnnotation.name();
+            String key = startProcessAnnotation.value();
 
-      return result;
-    } catch (InvocationTargetException e) {
-      Throwable cause = e.getCause();
-      if(cause instanceof Exception) {
-        throw (Exception) cause;
-      } else {
-        throw e;
-      }
-    } catch (Exception e) {
-      throw new ActivitiException("Error while starting process using @StartProcess on method  '"+ctx.getMethod()+"': " + e.getMessage(), e);
-    }
-  }
+            Map<String, Object> variables = extractVariables(startProcessAnnotation, ctx);
 
-  private Map<String, Object> extractVariables(StartProcess startProcessAnnotation, InvocationContext ctx) throws Exception {
-    Map<String, Object> variables = new HashMap<String, Object>();
-    for (Field field : ctx.getMethod().getDeclaringClass().getDeclaredFields()) {
-      if (!field.isAnnotationPresent(ProcessVariable.class)) {
-        continue;
-      }
-      field.setAccessible(true);
-      ProcessVariable processStartVariable = field.getAnnotation(ProcessVariable.class);
-      String fieldName = processStartVariable.value();
-      if (fieldName == null || fieldName.length() == 0) {
-        fieldName = field.getName();
-      }
-      Object value = field.get(ctx.getTarget());
-      variables.put(fieldName, value);
+            if (name.length() > 0) {
+                businessProcess.startProcessByName(name, variables);
+            } else {
+                businessProcess.startProcessByKey(key, variables);
+            }
+
+            return result;
+        } catch (InvocationTargetException e) {
+            Throwable cause = e.getCause();
+            if (cause instanceof Exception) {
+                throw (Exception) cause;
+            } else {
+                throw e;
+            }
+        } catch (Exception e) {
+            throw new ActivitiException("Error while starting process using @StartProcess on method  '" + ctx.getMethod() + "': " + e.getMessage(), e);
+        }
     }
 
-    return variables;
-  }
+    private Map<String, Object> extractVariables(StartProcess startProcessAnnotation, InvocationContext ctx) throws Exception {
+        Map<String, Object> variables = new HashMap<String, Object>();
+        for (Field field : ctx.getMethod().getDeclaringClass().getDeclaredFields()) {
+            if (!field.isAnnotationPresent(ProcessVariable.class)) {
+                continue;
+            }
+            field.setAccessible(true);
+            ProcessVariable processStartVariable = field.getAnnotation(ProcessVariable.class);
+            String fieldName = processStartVariable.value();
+            if (fieldName == null || fieldName.length() == 0) {
+                fieldName = field.getName();
+            }
+            Object value = field.get(ctx.getTarget());
+            variables.put(fieldName, value);
+        }
+
+        return variables;
+    }
 
 }

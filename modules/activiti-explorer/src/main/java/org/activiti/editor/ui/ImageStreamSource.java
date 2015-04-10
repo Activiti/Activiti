@@ -23,14 +23,14 @@ import com.vaadin.terminal.StreamResource;
  */
 public class ImageStreamSource extends StreamResource {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	public ImageStreamSource(StreamSource streamSource, Application application) {
-		super(streamSource, null, application);
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
-		String filename = "myfilename-" + df.format(new Date()) + ".png";
-		setFilename(filename);
-		setCacheTime(0l);
-	}
+    public ImageStreamSource(StreamSource streamSource, Application application) {
+        super(streamSource, null, application);
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmssSSS");
+        String filename = "myfilename-" + df.format(new Date()) + ".png";
+        setFilename(filename);
+        setCacheTime(0l);
+    }
 
 }

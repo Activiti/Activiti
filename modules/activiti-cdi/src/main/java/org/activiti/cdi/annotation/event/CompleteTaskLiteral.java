@@ -14,16 +14,16 @@ package org.activiti.cdi.annotation.event;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-
 public class CompleteTaskLiteral extends AnnotationLiteral<CompleteTask> implements CompleteTask {
-  
-  protected final String activityId;   
-  
-  public CompleteTaskLiteral(String activityId) {
-    this.activityId = activityId;
-  }
-  @Override
-  public String value() {
-    return activityId != null ? activityId : "";
-  }
+
+    protected final String activityId;
+
+    public CompleteTaskLiteral(String activityId) {
+        this.activityId = activityId;
+    }
+
+    @Override
+    public String value() {
+        return activityId != null ? activityId : "";
+    }
 }

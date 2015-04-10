@@ -14,14 +14,13 @@ package org.activiti.workflow.simple.definition;
 
 import java.util.List;
 
-
 /**
  * @author Tijs Rademakers
  */
 public interface StepListContainer<T> {
-  
-  List<ListStepDefinition<T>> getStepList();
 
-  void addStepList(ListStepDefinition<T> stepDefinition);
+    List<ListStepDefinition<T>> getStepList();
+
+    void addStepList(ListStepDefinition<T> stepDefinition);
 
 }

@@ -12,27 +12,26 @@
  */
 package org.activiti.engine;
 
-
 /**
  * Interface implemented by all classes that expose the Activiti services.
  * 
- * @author Joram Barrez 
+ * @author Joram Barrez
  */
 public interface EngineServices {
 
-  RepositoryService getRepositoryService();
-  
-  RuntimeService getRuntimeService();
-  
-  FormService getFormService();
-  
-  TaskService getTaskService();
-  
-  HistoryService getHistoryService();
-  
-  IdentityService getIdentityService();
-  
-  ManagementService getManagementService();
-  
-  ProcessEngineConfiguration getProcessEngineConfiguration();
+    RepositoryService getRepositoryService();
+
+    RuntimeService getRuntimeService();
+
+    FormService getFormService();
+
+    TaskService getTaskService();
+
+    HistoryService getHistoryService();
+
+    IdentityService getIdentityService();
+
+    ManagementService getManagementService();
+
+    ProcessEngineConfiguration getProcessEngineConfiguration();
 }

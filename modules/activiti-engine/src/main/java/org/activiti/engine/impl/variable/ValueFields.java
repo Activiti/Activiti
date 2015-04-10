@@ -15,7 +15,6 @@ package org.activiti.engine.impl.variable;
 
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
 
-
 /**
  * Common interface for regular and historic variable entities.
  * 
@@ -23,82 +22,85 @@ import org.activiti.engine.impl.persistence.entity.ByteArrayEntity;
  */
 public interface ValueFields {
 
-  /**
-   * @return the name of the variable
-   */
-  String getName();
+    /**
+     * @return the name of the variable
+     */
+    String getName();
 
-  /**
-   * @return the first text value, if any, or null.
-   */
-  String getTextValue();
-  
-  /**
-   * Sets the first text value. A value of null is allowed.
-   */
-  void setTextValue(String textValue);
+    /**
+     * @return the first text value, if any, or null.
+     */
+    String getTextValue();
 
-  /**
-   * @return the second text value, if any, or null.
-   */
-  String getTextValue2();
+    /**
+     * Sets the first text value. A value of null is allowed.
+     */
+    void setTextValue(String textValue);
 
-  /**
-   * Sets second text value. A value of null is allowed.
-   */
-  void setTextValue2(String textValue2);
+    /**
+     * @return the second text value, if any, or null.
+     */
+    String getTextValue2();
 
-  /**
-   * @return the long value, if any, or null.
-   */
-  Long getLongValue();
+    /**
+     * Sets second text value. A value of null is allowed.
+     */
+    void setTextValue2(String textValue2);
 
-  /**
-   * Sets the long value. A value of null is allowed.
-   */
-  void setLongValue(Long longValue);
-  
-  /**
-   * @return the double value, if any, or null.
-   */
-  Double getDoubleValue();
+    /**
+     * @return the long value, if any, or null.
+     */
+    Long getLongValue();
 
-  /**
-   * Sets the double value. A value of null is allowed.
-   */
-  void setDoubleValue(Double doubleValue);
+    /**
+     * Sets the long value. A value of null is allowed.
+     */
+    void setLongValue(Long longValue);
 
-  /**
-   * @return the byte array value, if any, or null.
-   */
-  byte[] getBytes();
-  
-  /**
-   * Sets the byte array value. A value of null is allowed.
-   */
-  void setBytes(byte[] bytes);
-  
-  /**
-   * @return the id of the byte array entity value, or null if the byte array value is null.
-   * @deprecated should no longer be used
-   */
-  @Deprecated
-  String getByteArrayValueId();
+    /**
+     * @return the double value, if any, or null.
+     */
+    Double getDoubleValue();
 
-  /**
-   * @return the ByteArrayEntity that contains the byte array value, or null if the byte array value is null.
-   * @deprecated use getBytes.
-   */
-  @Deprecated
-  ByteArrayEntity getByteArrayValue();
+    /**
+     * Sets the double value. A value of null is allowed.
+     */
+    void setDoubleValue(Double doubleValue);
 
-  /**
-   * @deprecated use setBytes.
-   */
-  @Deprecated
-  void setByteArrayValue(byte[] bytes);
-  
-  Object getCachedValue();
-  void setCachedValue(Object cachedValue);
+    /**
+     * @return the byte array value, if any, or null.
+     */
+    byte[] getBytes();
+
+    /**
+     * Sets the byte array value. A value of null is allowed.
+     */
+    void setBytes(byte[] bytes);
+
+    /**
+     * @return the id of the byte array entity value, or null if the byte array
+     *         value is null.
+     * @deprecated should no longer be used
+     */
+    @Deprecated
+    String getByteArrayValueId();
+
+    /**
+     * @return the ByteArrayEntity that contains the byte array value, or null
+     *         if the byte array value is null.
+     * @deprecated use getBytes.
+     */
+    @Deprecated
+    ByteArrayEntity getByteArrayValue();
+
+    /**
+     * @deprecated use setBytes.
+     */
+    @Deprecated
+    void setByteArrayValue(byte[] bytes);
+
+    Object getCachedValue();
+
+    void setCachedValue(Object cachedValue);
 
 }

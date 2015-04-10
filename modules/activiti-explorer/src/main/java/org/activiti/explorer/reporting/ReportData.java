@@ -22,60 +22,59 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
-
 /**
  * @author Joram Barrez
  */
 public class ReportData {
-  
-  protected String title;
-  
-  protected List<Dataset> datasets = new ArrayList<Dataset>();
 
-  public String getTitle() {
-    return title;
-  }
-  
-  public void setTitle(String title) {
-    this.title = title;
-  }
+    protected String title;
 
-  public List<Dataset> getDatasets() {
-    return datasets;
-  }
-  
-  public void setDatasets(List<Dataset> datasets) {
-    this.datasets = datasets;
-  }
-  
-  public void addDataset(Dataset dataset) {
-    datasets.add(dataset);
-  }
-  
-  public Dataset newDataset() {
-    Dataset dataset = new Dataset();
-    addDataset(dataset);
-    return dataset;
-  }
-  
-  public String toString() {
-    try {
-      return new String(toBytes(), "UTF-8");
-    } catch (UnsupportedEncodingException e) {
-      throw new ActivitiException("Could not convert report data to json", e);
+    protected List<Dataset> datasets = new ArrayList<Dataset>();
+
+    public String getTitle() {
+        return title;
     }
-  }
-  
-  public byte[] toBytes() {
-    try {
-      ObjectMapper objectMapper = new ObjectMapper();
-      objectMapper.configure(SerializationFeature.FLUSH_AFTER_WRITE_VALUE, false);
-      objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
-      objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-      return objectMapper.writeValueAsBytes(this);
-    } catch (Exception e) {
-      throw new ActivitiException("Could not convert report data to json", e);
+
+    public void setTitle(String title) {
+        this.title = title;
     }
-  }
-  
+
+    public List<Dataset> getDatasets() {
+        return datasets;
+    }
+
+    public void setDatasets(List<Dataset> datasets) {
+        this.datasets = datasets;
+    }
+
+    public void addDataset(Dataset dataset) {
+        datasets.add(dataset);
+    }
+
+    public Dataset newDataset() {
+        Dataset dataset = new Dataset();
+        addDataset(dataset);
+        return dataset;
+    }
+
+    public String toString() {
+        try {
+            return new String(toBytes(), "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new ActivitiException("Could not convert report data to json", e);
+        }
+    }
+
+    public byte[] toBytes() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(SerializationFeature.FLUSH_AFTER_WRITE_VALUE, false);
+            objectMapper.configure(SerializationFeature.WRITE_NULL_MAP_VALUES, false);
+            objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+            return objectMapper.writeValueAsBytes(this);
+        } catch (Exception e) {
+            throw new ActivitiException("Could not convert report data to json", e);
+        }
+    }
+
 }

@@ -18,27 +18,24 @@ import java.io.Serializable;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class AddEditorSourceForModelCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String modelId;
-  protected byte[] bytes;
-  
-  public AddEditorSourceForModelCmd(String modelId, byte[] bytes) {
-    this.modelId = modelId;
-    this.bytes = bytes;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public Object execute(CommandContext commandContext) {
-    commandContext
-      .getModelEntityManager()
-      .insertEditorSourceForModel(modelId, bytes);
-    
-    return null;
-  }
+    protected String modelId;
+    protected byte[] bytes;
+
+    public AddEditorSourceForModelCmd(String modelId, byte[] bytes) {
+        this.modelId = modelId;
+        this.bytes = bytes;
+    }
+
+    public Object execute(CommandContext commandContext) {
+        commandContext.getModelEntityManager().insertEditorSourceForModel(modelId, bytes);
+
+        return null;
+    }
 }

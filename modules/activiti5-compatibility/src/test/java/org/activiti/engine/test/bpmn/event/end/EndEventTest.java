@@ -23,63 +23,65 @@ import org.activiti5.engine.test.Deployment;
  */
 public class EndEventTest extends PluggableActivitiTestCase {
 
-  // Test case for ACT-1259
-  @Deployment
-  public void testConcurrentEndOfSameProcess() throws Exception {
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskWithDelay");
-    Task task = taskService.createTaskQuery().singleResult();
-    assertNotNull(task);
-    
-    // We will now start two threads that both complete the task.
-    // In the process, the task is followed by a delay of three seconds
-    // This will cause both threads to call the taskService.complete method with enough time,
-    // before ending the process. Both threads will now try to end the process
-    // and only one should succeed (due to optimistic locking).
-    TaskCompleter taskCompleter1 = new TaskCompleter(task.getId());
-    TaskCompleter taskCompleter2 = new TaskCompleter(task.getId());
+    // Test case for ACT-1259
+    @Deployment
+    public void testConcurrentEndOfSameProcess() throws Exception {
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskWithDelay");
+        Task task = taskService.createTaskQuery().singleResult();
+        assertNotNull(task);
 
-    assertFalse(taskCompleter1.isSucceeded());
-    assertFalse(taskCompleter2.isSucceeded());
-    
-    taskCompleter1.start();
-    taskCompleter2.start();
-    taskCompleter1.join();
-    taskCompleter2.join();
-    
-    int successCount = 0;
-    if (taskCompleter1.isSucceeded()) {
-      successCount++;
-    }
-    if (taskCompleter2.isSucceeded()) {
-      successCount++;
-    }
-    
-    assertEquals("(Only) one thread should have been able to successfully end the process", 1, successCount);
-    assertProcessEnded(processInstance.getId());
-  }
-  
-  /** Helper class for concurrent testing */
-  class TaskCompleter extends Thread {
+        // We will now start two threads that both complete the task.
+        // In the process, the task is followed by a delay of three seconds
+        // This will cause both threads to call the taskService.complete method
+        // with enough time,
+        // before ending the process. Both threads will now try to end the
+        // process
+        // and only one should succeed (due to optimistic locking).
+        TaskCompleter taskCompleter1 = new TaskCompleter(task.getId());
+        TaskCompleter taskCompleter2 = new TaskCompleter(task.getId());
 
-    protected String taskId;
-    protected boolean succeeded;
+        assertFalse(taskCompleter1.isSucceeded());
+        assertFalse(taskCompleter2.isSucceeded());
 
-    public TaskCompleter(String taskId) {
-      this.taskId = taskId;
-    }
-    
-    public boolean isSucceeded() {
-      return succeeded;
+        taskCompleter1.start();
+        taskCompleter2.start();
+        taskCompleter1.join();
+        taskCompleter2.join();
+
+        int successCount = 0;
+        if (taskCompleter1.isSucceeded()) {
+            successCount++;
+        }
+        if (taskCompleter2.isSucceeded()) {
+            successCount++;
+        }
+
+        assertEquals("(Only) one thread should have been able to successfully end the process", 1, successCount);
+        assertProcessEnded(processInstance.getId());
     }
 
-    public void run() {
-      try {
-        taskService.complete(taskId);
-        succeeded = true;
-      } catch (ActivitiOptimisticLockingException ae) {
-        // Exception is expected for one of the threads
-      }
+    /** Helper class for concurrent testing */
+    class TaskCompleter extends Thread {
+
+        protected String taskId;
+        protected boolean succeeded;
+
+        public TaskCompleter(String taskId) {
+            this.taskId = taskId;
+        }
+
+        public boolean isSucceeded() {
+            return succeeded;
+        }
+
+        public void run() {
+            try {
+                taskService.complete(taskId);
+                succeeded = true;
+            } catch (ActivitiOptimisticLockingException ae) {
+                // Exception is expected for one of the threads
+            }
+        }
     }
-  }
 
 }

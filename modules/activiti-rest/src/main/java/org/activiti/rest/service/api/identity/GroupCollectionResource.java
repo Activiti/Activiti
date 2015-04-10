@@ -42,67 +42,67 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GroupCollectionResource {
 
-  protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
-  
-  static {
-    properties.put("id", GroupQueryProperty.GROUP_ID);
-    properties.put("name", GroupQueryProperty.NAME);
-    properties.put("type", GroupQueryProperty.TYPE);
-  }
-  
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected IdentityService identityService;
-  
-  @RequestMapping(value="/identity/groups", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getGroups(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
-    GroupQuery query = identityService.createGroupQuery();
-    
-    if (allRequestParams.containsKey("id")) {
-      query.groupId(allRequestParams.get("id"));
-    }
-    if (allRequestParams.containsKey("name")) {
-      query.groupName(allRequestParams.get("name"));
-    }
-    if (allRequestParams.containsKey("nameLike")) {
-      query.groupNameLike(allRequestParams.get("nameLike"));
-    }
-    if (allRequestParams.containsKey("type")) {
-      query.groupType(allRequestParams.get("type"));
-    }
-    if (allRequestParams.containsKey("member")) {
-      query.groupMember(allRequestParams.get("member"));
-    }
-    if (allRequestParams.containsKey("potentialStarter")) {
-      query.potentialStarter(allRequestParams.get("potentialStarter"));
+    protected static HashMap<String, QueryProperty> properties = new HashMap<String, QueryProperty>();
+
+    static {
+        properties.put("id", GroupQueryProperty.GROUP_ID);
+        properties.put("name", GroupQueryProperty.NAME);
+        properties.put("type", GroupQueryProperty.TYPE);
     }
 
-    return new GroupPaginateList(restResponseFactory)
-        .paginateList(allRequestParams, query, "id", properties);
-  }
-  
-  @RequestMapping(value="/identity/groups", method = RequestMethod.POST, produces = "application/json")
-  public GroupResponse createGroup(@RequestBody GroupRequest groupRequest, HttpServletRequest httpRequest, HttpServletResponse response) {
-    if (groupRequest.getId() == null) {
-      throw new ActivitiIllegalArgumentException("Id cannot be null.");
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected IdentityService identityService;
+
+    @RequestMapping(value = "/identity/groups", method = RequestMethod.GET, produces = "application/json")
+    public DataResponse getGroups(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+        GroupQuery query = identityService.createGroupQuery();
+
+        if (allRequestParams.containsKey("id")) {
+            query.groupId(allRequestParams.get("id"));
+        }
+        if (allRequestParams.containsKey("name")) {
+            query.groupName(allRequestParams.get("name"));
+        }
+        if (allRequestParams.containsKey("nameLike")) {
+            query.groupNameLike(allRequestParams.get("nameLike"));
+        }
+        if (allRequestParams.containsKey("type")) {
+            query.groupType(allRequestParams.get("type"));
+        }
+        if (allRequestParams.containsKey("member")) {
+            query.groupMember(allRequestParams.get("member"));
+        }
+        if (allRequestParams.containsKey("potentialStarter")) {
+            query.potentialStarter(allRequestParams.get("potentialStarter"));
+        }
+
+        return new GroupPaginateList(restResponseFactory).paginateList(allRequestParams, query, "id", properties);
     }
 
-    // Check if a user with the given ID already exists so we return a CONFLICT
-    if (identityService.createGroupQuery().groupId(groupRequest.getId()).count() > 0) {
-      throw new ActivitiConflictException("A group with id '" + groupRequest.getId() + "' already exists.");
+    @RequestMapping(value = "/identity/groups", method = RequestMethod.POST, produces = "application/json")
+    public GroupResponse createGroup(@RequestBody GroupRequest groupRequest, HttpServletRequest httpRequest, HttpServletResponse response) {
+        if (groupRequest.getId() == null) {
+            throw new ActivitiIllegalArgumentException("Id cannot be null.");
+        }
+
+        // Check if a user with the given ID already exists so we return a
+        // CONFLICT
+        if (identityService.createGroupQuery().groupId(groupRequest.getId()).count() > 0) {
+            throw new ActivitiConflictException("A group with id '" + groupRequest.getId() + "' already exists.");
+        }
+
+        Group created = identityService.newGroup(groupRequest.getId());
+        created.setId(groupRequest.getId());
+        created.setName(groupRequest.getName());
+        created.setType(groupRequest.getType());
+        identityService.saveGroup(created);
+
+        response.setStatus(HttpStatus.CREATED.value());
+
+        return restResponseFactory.createGroupResponse(created);
     }
-    
-    Group created = identityService.newGroup(groupRequest.getId());
-    created.setId(groupRequest.getId());
-    created.setName(groupRequest.getName());
-    created.setType(groupRequest.getType());
-    identityService.saveGroup(created);
-    
-    response.setStatus(HttpStatus.CREATED.value());
-    
-    return restResponseFactory.createGroupResponse(created);
-  }
-  
+
 }

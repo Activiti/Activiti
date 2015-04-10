@@ -14,7 +14,6 @@ package org.activiti5.engine.delegate.event;
 
 import org.activiti5.engine.impl.variable.VariableType;
 
-
 /**
  * An {@link ActivitiEvent} related to a single variable.
  * 
@@ -23,30 +22,29 @@ import org.activiti5.engine.impl.variable.VariableType;
  */
 public interface ActivitiVariableEvent extends ActivitiEvent {
 
-	/**
-	 * @return the name of the variable involved.
-	 */
-	String getVariableName();
-	
-	/**
-	 * @return the current value of the variable.
-	 */
-	Object getVariableValue();
-	
-	/**
-	 * @return The {@link VariableType} of the variable.
-	 */
-	VariableType getVariableType();
-	
-	
-	/**
-	 * @return the id of the execution the variable is set on.
-	 */
-	@Override
-	String getExecutionId();
-	
-	/**
-	 * @return the id of the task the variable has been set on.
-	 */
-	String getTaskId();
+    /**
+     * @return the name of the variable involved.
+     */
+    String getVariableName();
+
+    /**
+     * @return the current value of the variable.
+     */
+    Object getVariableValue();
+
+    /**
+     * @return The {@link VariableType} of the variable.
+     */
+    VariableType getVariableType();
+
+    /**
+     * @return the id of the execution the variable is set on.
+     */
+    @Override
+    String getExecutionId();
+
+    /**
+     * @return the id of the task the variable has been set on.
+     */
+    String getTaskId();
 }

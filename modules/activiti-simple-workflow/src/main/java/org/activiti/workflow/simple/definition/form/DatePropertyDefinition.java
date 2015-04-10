@@ -18,52 +18,52 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 
 /**
  * A form-property with a value that is represented as a date.
- *  
+ * 
  * @author Frederik Heremans
  */
 @JsonTypeName("date")
 public class DatePropertyDefinition extends FormPropertyDefinition {
-	
-	protected boolean showTime = false;
-	
-	/**
-	 * Creates a new field, showing both time and date components.
-	 */
-	public DatePropertyDefinition() {
-	  this(true);
-  }
 
-	public DatePropertyDefinition(boolean showTime) {
-	  this.showTime = showTime;
-  }
+    protected boolean showTime = false;
 
-	public boolean isShowTime() {
-	  return showTime;
-  }
-	
-	public void setShowTime(boolean showTime) {
-	  this.showTime = showTime;
-  }
-	
-	@Override
-	public FormPropertyDefinition clone() {
-		DatePropertyDefinition clone = new DatePropertyDefinition();
-		clone.setValues(this);
-	  return clone;
-	}
-	
-	@Override
-	public void setValues(FormPropertyDefinition otherDefinition) {
-		if(!(otherDefinition instanceof DatePropertyDefinition)) {
-			throw new SimpleWorkflowException("An instance of DatePropertyDefinition is required to set values");
-		}
-		
-		DatePropertyDefinition datePropertyDefinition = (DatePropertyDefinition) otherDefinition;
-		setName(datePropertyDefinition.getName());
-		setMandatory(datePropertyDefinition.isMandatory());
-		setWritable(datePropertyDefinition.isWritable());
-		setShowTime(datePropertyDefinition.isShowTime());
-		
-		setParameters(otherDefinition.cloneParameters());
-	}
+    /**
+     * Creates a new field, showing both time and date components.
+     */
+    public DatePropertyDefinition() {
+        this(true);
+    }
+
+    public DatePropertyDefinition(boolean showTime) {
+        this.showTime = showTime;
+    }
+
+    public boolean isShowTime() {
+        return showTime;
+    }
+
+    public void setShowTime(boolean showTime) {
+        this.showTime = showTime;
+    }
+
+    @Override
+    public FormPropertyDefinition clone() {
+        DatePropertyDefinition clone = new DatePropertyDefinition();
+        clone.setValues(this);
+        return clone;
+    }
+
+    @Override
+    public void setValues(FormPropertyDefinition otherDefinition) {
+        if (!(otherDefinition instanceof DatePropertyDefinition)) {
+            throw new SimpleWorkflowException("An instance of DatePropertyDefinition is required to set values");
+        }
+
+        DatePropertyDefinition datePropertyDefinition = (DatePropertyDefinition) otherDefinition;
+        setName(datePropertyDefinition.getName());
+        setMandatory(datePropertyDefinition.isMandatory());
+        setWritable(datePropertyDefinition.isWritable());
+        setShowTime(datePropertyDefinition.isShowTime());
+
+        setParameters(otherDefinition.cloneParameters());
+    }
 }

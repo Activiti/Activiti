@@ -21,73 +21,72 @@ import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 
-
 /**
  * @author Joram Barrez
  */
 public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
-  
-  protected boolean interrupting;
-  protected String activityId;
-  
-  public BoundaryEventActivityBehavior() {
-    
-  }
-  
-  public BoundaryEventActivityBehavior(boolean interrupting, String activityId) {
-    this.interrupting = interrupting;
-    this.activityId = activityId;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public void execute(ActivityExecution execution) throws Exception {
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    ActivityImpl boundaryActivity = executionEntity.getProcessDefinition().findActivity(activityId);
-    ActivityImpl interruptedActivity = executionEntity.getActivity();
-    
-    executionEntity.setActivity(boundaryActivity);
-    
-    List<PvmTransition> outgoingTransitions = boundaryActivity.getOutgoingTransitions();
-    List<ExecutionEntity> interruptedExecutions = null;
-    
-    if (interrupting) {
-      if (executionEntity.getSubProcessInstance()!=null) {
-        executionEntity.getSubProcessInstance().deleteCascade(executionEntity.getDeleteReason());
-      }
-      
-      interruptedExecutions = new ArrayList<ExecutionEntity>(executionEntity.getExecutions());
-      for (ExecutionEntity interruptedExecution: interruptedExecutions) {
-        interruptedExecution.deleteCascade("interrupting boundary event '"+execution.getActivity().getId()+"' fired");
-      }
-      
-      execution.takeAll(outgoingTransitions, (List) interruptedExecutions);
-    }
-    else {
-      // non interrupting event, introduced with BPMN 2.0, we need to create a new execution in this case
-      
-      // create a new execution and move it out from the timer activity
-      ExecutionEntity concurrentRoot = executionEntity.getParent().isConcurrent() ? executionEntity.getParent() : executionEntity;
-      ExecutionEntity outgoingExecution = concurrentRoot.createExecution();
-    
-      outgoingExecution.setActive(true);
-      outgoingExecution.setScope(false);
-      outgoingExecution.setConcurrent(true);
-      
-      outgoingExecution.takeAll(outgoingTransitions, Collections.EMPTY_LIST);
-      outgoingExecution.remove();
-      // now we have to move the execution back to the real activity
-      // since the execution stays there (non interrupting) and it was
-      // set to the boundary event before
-      executionEntity.setActivity(interruptedActivity);      
-    }
-  }
 
-  public boolean isInterrupting() {
-    return interrupting;
-  }
+    protected boolean interrupting;
+    protected String activityId;
 
-  public void setInterrupting(boolean interrupting) {
-    this.interrupting = interrupting;
-  }
+    public BoundaryEventActivityBehavior() {
+
+    }
+
+    public BoundaryEventActivityBehavior(boolean interrupting, String activityId) {
+        this.interrupting = interrupting;
+        this.activityId = activityId;
+    }
+
+    @SuppressWarnings("unchecked")
+    public void execute(ActivityExecution execution) throws Exception {
+        ExecutionEntity executionEntity = (ExecutionEntity) execution;
+        ActivityImpl boundaryActivity = executionEntity.getProcessDefinition().findActivity(activityId);
+        ActivityImpl interruptedActivity = executionEntity.getActivity();
+
+        executionEntity.setActivity(boundaryActivity);
+
+        List<PvmTransition> outgoingTransitions = boundaryActivity.getOutgoingTransitions();
+        List<ExecutionEntity> interruptedExecutions = null;
+
+        if (interrupting) {
+            if (executionEntity.getSubProcessInstance() != null) {
+                executionEntity.getSubProcessInstance().deleteCascade(executionEntity.getDeleteReason());
+            }
+
+            interruptedExecutions = new ArrayList<ExecutionEntity>(executionEntity.getExecutions());
+            for (ExecutionEntity interruptedExecution : interruptedExecutions) {
+                interruptedExecution.deleteCascade("interrupting boundary event '" + execution.getActivity().getId() + "' fired");
+            }
+
+            execution.takeAll(outgoingTransitions, (List) interruptedExecutions);
+        } else {
+            // non interrupting event, introduced with BPMN 2.0, we need to
+            // create a new execution in this case
+
+            // create a new execution and move it out from the timer activity
+            ExecutionEntity concurrentRoot = executionEntity.getParent().isConcurrent() ? executionEntity.getParent() : executionEntity;
+            ExecutionEntity outgoingExecution = concurrentRoot.createExecution();
+
+            outgoingExecution.setActive(true);
+            outgoingExecution.setScope(false);
+            outgoingExecution.setConcurrent(true);
+
+            outgoingExecution.takeAll(outgoingTransitions, Collections.EMPTY_LIST);
+            outgoingExecution.remove();
+            // now we have to move the execution back to the real activity
+            // since the execution stays there (non interrupting) and it was
+            // set to the boundary event before
+            executionEntity.setActivity(interruptedActivity);
+        }
+    }
+
+    public boolean isInterrupting() {
+        return interrupting;
+    }
+
+    public void setInterrupting(boolean interrupting) {
+        this.interrupting = interrupting;
+    }
 
 }

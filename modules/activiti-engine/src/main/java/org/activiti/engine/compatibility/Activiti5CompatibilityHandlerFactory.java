@@ -16,7 +16,7 @@ package org.activiti.engine.compatibility;
  * @author Joram Barrez
  */
 public interface Activiti5CompatibilityHandlerFactory {
-	
-	Activiti5CompatibilityHandler createActiviti5CompatibilityHandler();
+
+    Activiti5CompatibilityHandler createActiviti5CompatibilityHandler();
 
 }

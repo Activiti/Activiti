@@ -17,23 +17,24 @@ package org.activiti.bpmn.model;
  */
 public class ErrorEventDefinition extends EventDefinition {
 
-  protected String errorCode;
+    protected String errorCode;
 
-  public String getErrorCode() {
-    return errorCode;
-  }
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
-  
-  public ErrorEventDefinition clone() {
-    ErrorEventDefinition clone = new ErrorEventDefinition();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  public void setValues(ErrorEventDefinition otherDefinition) {
-    super.setValues(otherDefinition);
-    setErrorCode(otherDefinition.getErrorCode());
-  }
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public ErrorEventDefinition clone() {
+        ErrorEventDefinition clone = new ErrorEventDefinition();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(ErrorEventDefinition otherDefinition) {
+        super.setValues(otherDefinition);
+        setErrorCode(otherDefinition.getErrorCode());
+    }
 }

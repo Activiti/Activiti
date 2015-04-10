@@ -24,18 +24,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
 /**
  * @author Tijs Rademakers
  */
 @RestController
 public class HistoricVariableInstanceQueryResource extends HistoricVariableInstanceBaseResource {
-  
-  @RequestMapping(value="/query/historic-variable-instances", method = RequestMethod.POST, produces = "application/json")
-  public DataResponse queryVariableInstances(@RequestBody HistoricVariableInstanceQueryRequest queryRequest, 
-      @RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
-  
-    return getQueryResponse(queryRequest, allRequestParams);
-  }
+
+    @RequestMapping(value = "/query/historic-variable-instances", method = RequestMethod.POST, produces = "application/json")
+    public DataResponse queryVariableInstances(@RequestBody HistoricVariableInstanceQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+
+        return getQueryResponse(queryRequest, allRequestParams);
+    }
 }

@@ -15,24 +15,23 @@ package org.activiti5.engine.impl.cmd;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Joram Barrez
  */
 public class SetTaskPriorityCmd extends NeedsActiveTaskCmd<Void> {
-  
-  private static final long serialVersionUID = 1L;
 
-  protected int priority;
-  
-  public SetTaskPriorityCmd(String taskId, int priority) {
-    super(taskId);
-    this.priority = priority;
-  }
-  
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    task.setPriority(priority, true);
-    return null;
-  }
+    private static final long serialVersionUID = 1L;
+
+    protected int priority;
+
+    public SetTaskPriorityCmd(String taskId, int priority) {
+        super(taskId);
+        this.priority = priority;
+    }
+
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        task.setPriority(priority, true);
+        return null;
+    }
 
 }

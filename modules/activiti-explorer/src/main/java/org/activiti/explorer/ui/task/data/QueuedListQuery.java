@@ -16,23 +16,22 @@ import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.task.TaskQuery;
 
-
 /**
  * @author Joram Barrez
  */
 public class QueuedListQuery extends AbstractTaskListQuery {
-  
-  protected String groupId;
-  protected transient TaskService taskService;
-  
-  public QueuedListQuery(String groupId) {
-    this.groupId = groupId;
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-  }
-  
-  @Override
-  protected TaskQuery getQuery() {
-    return taskService.createTaskQuery().taskCandidateGroup(groupId).taskUnassigned().orderByTaskId().asc();
-  }
+
+    protected String groupId;
+    protected transient TaskService taskService;
+
+    public QueuedListQuery(String groupId) {
+        this.groupId = groupId;
+        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    }
+
+    @Override
+    protected TaskQuery getQuery() {
+        return taskService.createTaskQuery().taskCandidateGroup(groupId).taskUnassigned().orderByTaskId().asc();
+    }
 
 }

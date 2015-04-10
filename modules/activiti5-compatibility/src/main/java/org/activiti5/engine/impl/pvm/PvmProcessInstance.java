@@ -15,19 +15,18 @@ package org.activiti5.engine.impl.pvm;
 
 import java.util.List;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface PvmProcessInstance extends PvmExecution {
 
-  void start();
+    void start();
 
-  PvmExecution findExecution(String activityId);
+    PvmExecution findExecution(String activityId);
 
-  List<String> findActiveActivityIds();
-  
-  boolean isEnded();
+    List<String> findActiveActivityIds();
 
-  void deleteCascade(String deleteReason);
+    boolean isEnded();
+
+    void deleteCascade(String deleteReason);
 }

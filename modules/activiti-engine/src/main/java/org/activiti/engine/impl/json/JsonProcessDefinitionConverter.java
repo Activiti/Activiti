@@ -18,26 +18,25 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.repository.ProcessDefinition;
 
-
 /**
  * @author Tom Baeyens
  */
 public class JsonProcessDefinitionConverter extends JsonObjectConverter<ProcessDefinition> {
 
-  public JSONObject toJsonObject(ProcessDefinition processDefinition) {
-    ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) processDefinition;
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("id", processDefinitionEntity.getId());
-    if (processDefinitionEntity.getKey()!=null) {
-      jsonObject.put("key", processDefinitionEntity.getKey());
+    public JSONObject toJsonObject(ProcessDefinition processDefinition) {
+        ProcessDefinitionEntity processDefinitionEntity = (ProcessDefinitionEntity) processDefinition;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", processDefinitionEntity.getId());
+        if (processDefinitionEntity.getKey() != null) {
+            jsonObject.put("key", processDefinitionEntity.getKey());
+        }
+        if (processDefinitionEntity.getDeploymentId() != null) {
+            jsonObject.put("deploymentId", processDefinitionEntity.getDeploymentId());
+        }
+        return jsonObject;
     }
-    if (processDefinitionEntity.getDeploymentId()!=null) {
-      jsonObject.put("deploymentId", processDefinitionEntity.getDeploymentId());
-    }
-    return jsonObject;
-  }
 
-  public ProcessDefinition toObject(Reader reader) {
-    return null;
-  }
+    public ProcessDefinition toObject(Reader reader) {
+        return null;
+    }
 }

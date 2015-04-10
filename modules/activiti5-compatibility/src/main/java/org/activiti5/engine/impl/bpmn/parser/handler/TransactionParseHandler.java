@@ -19,39 +19,37 @@ import org.activiti5.engine.impl.bpmn.data.IOSpecification;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 
-
 /**
  * @author Joram Barrez
  */
 public class TransactionParseHandler extends AbstractActivityBpmnParseHandler<Transaction> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
-    return Transaction.class;
-  }
-  
-  protected void executeParse(BpmnParse bpmnParse, Transaction transaction) {
-    
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, transaction, BpmnXMLConstants.ELEMENT_TRANSACTION);
-    
-    activity.setAsync(transaction.isAsynchronous());
-    activity.setExclusive(!transaction.isNotExclusive());
-    
-    activity.setScope(true);
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createTransactionActivityBehavior(transaction));
-    
 
-    bpmnParse.setCurrentScope(activity);
-    
-    bpmnParse.processFlowElements(transaction.getFlowElements());
-    processArtifacts(bpmnParse, transaction.getArtifacts(), activity);
-    
-    bpmnParse.removeCurrentScope();
-    
-    if (transaction.getIoSpecification() != null) {
-      IOSpecification ioSpecification = createIOSpecification(bpmnParse, transaction.getIoSpecification());
-      activity.setIoSpecification(ioSpecification);
+    public Class<? extends BaseElement> getHandledType() {
+        return Transaction.class;
     }
 
-  }
+    protected void executeParse(BpmnParse bpmnParse, Transaction transaction) {
+
+        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, transaction, BpmnXMLConstants.ELEMENT_TRANSACTION);
+
+        activity.setAsync(transaction.isAsynchronous());
+        activity.setExclusive(!transaction.isNotExclusive());
+
+        activity.setScope(true);
+        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createTransactionActivityBehavior(transaction));
+
+        bpmnParse.setCurrentScope(activity);
+
+        bpmnParse.processFlowElements(transaction.getFlowElements());
+        processArtifacts(bpmnParse, transaction.getArtifacts(), activity);
+
+        bpmnParse.removeCurrentScope();
+
+        if (transaction.getIoSpecification() != null) {
+            IOSpecification ioSpecification = createIOSpecification(bpmnParse, transaction.getIoSpecification());
+            activity.setIoSpecification(ioSpecification);
+        }
+
+    }
 
 }

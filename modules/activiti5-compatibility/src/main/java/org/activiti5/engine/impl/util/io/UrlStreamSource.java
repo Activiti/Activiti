@@ -19,23 +19,22 @@ import java.net.URL;
 
 import org.activiti5.engine.ActivitiIllegalArgumentException;
 
-
 /**
  * @author Tom Baeyens
  */
 public class UrlStreamSource implements StreamSource {
 
-  URL url;
-  
-  public UrlStreamSource(URL url) {
-    this.url = url;
-  }
+    URL url;
 
-  public InputStream getInputStream() {
-    try {
-      return new BufferedInputStream(url.openStream());
-    } catch (IOException e) {
-      throw new ActivitiIllegalArgumentException("couldn't open url '"+url+"'", e);
+    public UrlStreamSource(URL url) {
+        this.url = url;
     }
-  }
+
+    public InputStream getInputStream() {
+        try {
+            return new BufferedInputStream(url.openStream());
+        } catch (IOException e) {
+            throw new ActivitiIllegalArgumentException("couldn't open url '" + url + "'", e);
+        }
+    }
 }

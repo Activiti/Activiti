@@ -20,28 +20,28 @@ import org.activiti.engine.delegate.event.ActivitiEventListener;
 
 public class TestActivitiEventListener implements ActivitiEventListener {
 
-	private List<ActivitiEvent> eventsReceived;
-	
-	public TestActivitiEventListener() {
-		eventsReceived = new ArrayList<ActivitiEvent>();
-  }
-	
-	public List<ActivitiEvent> getEventsReceived() {
-	  return eventsReceived;
-  }
-	
-	public void clearEventsReceived() {
-		eventsReceived.clear();
-	}
-	
-	@Override
-	public void onEvent(ActivitiEvent event) {
-		eventsReceived.add(event);
-	}
+    private List<ActivitiEvent> eventsReceived;
 
-	@Override
-	public boolean isFailOnException() {
-		return false;
-	}
+    public TestActivitiEventListener() {
+        eventsReceived = new ArrayList<ActivitiEvent>();
+    }
+
+    public List<ActivitiEvent> getEventsReceived() {
+        return eventsReceived;
+    }
+
+    public void clearEventsReceived() {
+        eventsReceived.clear();
+    }
+
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        eventsReceived.add(event);
+    }
+
+    @Override
+    public boolean isFailOnException() {
+        return false;
+    }
 
 }

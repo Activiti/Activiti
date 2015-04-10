@@ -19,22 +19,21 @@ import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.test.Deployment;
 
 public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
-  
-  private static boolean listenerExcecuted = false;
-  
-  public static class MyExecutionListener implements ExecutionListener {
-    public void notify(DelegateExecution execution) throws Exception {
-      listenerExcecuted = true;
-    }    
-  }
 
-  @Deployment
-  public void testIntermediateNoneTimerEvent() throws Exception {    
-    assertFalse(listenerExcecuted);    
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("intermediateNoneEventExample");
-    assertProcessEnded(pi.getProcessInstanceId());
-    assertTrue(listenerExcecuted);    
-  }
+    private static boolean listenerExcecuted = false;
 
+    public static class MyExecutionListener implements ExecutionListener {
+        public void notify(DelegateExecution execution) throws Exception {
+            listenerExcecuted = true;
+        }
+    }
+
+    @Deployment
+    public void testIntermediateNoneTimerEvent() throws Exception {
+        assertFalse(listenerExcecuted);
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("intermediateNoneEventExample");
+        assertProcessEnded(pi.getProcessInstanceId());
+        assertTrue(listenerExcecuted);
+    }
 
 }

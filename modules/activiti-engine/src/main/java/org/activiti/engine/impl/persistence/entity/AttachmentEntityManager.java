@@ -21,62 +21,61 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.task.Attachment;
 import org.activiti.engine.task.Task;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class AttachmentEntityManager extends AbstractEntityManager<AttachmentEntity> {
 
-  @SuppressWarnings("unchecked")
-  public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
-    checkHistoryEnabled();
-    return getDbSqlSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Attachment> findAttachmentsByTaskId(String taskId) {
-    checkHistoryEnabled();
-    return getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
-  }
-
-  @SuppressWarnings("unchecked")
-  public void deleteAttachmentsByTaskId(String taskId) {
-    checkHistoryEnabled();
-    List<AttachmentEntity> attachments = getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
-    boolean dispatchEvents = getProcessEngineConfiguration().getEventDispatcher().isEnabled();
-
-    String processInstanceId = null;
-    String processDefinitionId = null;
-    String executionId = null;
-    
-    if(dispatchEvents && attachments != null && !attachments.isEmpty()) {
-    	// Forced to fetch the task to get hold of the process definition for event-dispatching, if available
-    	Task task = getTaskManager().findTaskById(taskId);
-    	if(task != null) {
-    		processDefinitionId = task.getProcessDefinitionId();
-    		processInstanceId = task.getProcessInstanceId();
-    		executionId = task.getExecutionId();
-    	}
+    @SuppressWarnings("unchecked")
+    public List<Attachment> findAttachmentsByProcessInstanceId(String processInstanceId) {
+        checkHistoryEnabled();
+        return getDbSqlSession().selectList("selectAttachmentsByProcessInstanceId", processInstanceId);
     }
-    
-    for (AttachmentEntity attachment: attachments) {
-      String contentId = attachment.getContentId();
-      if (contentId!=null) {
-        getByteArrayManager().deleteByteArrayById(contentId);
-      }
-      getDbSqlSession().delete(attachment);
-      if(dispatchEvents) {
-      	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, executionId, processInstanceId, processDefinitionId));
-      }
+
+    @SuppressWarnings("unchecked")
+    public List<Attachment> findAttachmentsByTaskId(String taskId) {
+        checkHistoryEnabled();
+        return getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
     }
-  }
-  
-  protected void checkHistoryEnabled() {
-    if(!getHistoryManager().isHistoryEnabled()) {
-      throw new ActivitiException("In order to use attachments, history should be enabled");
+
+    @SuppressWarnings("unchecked")
+    public void deleteAttachmentsByTaskId(String taskId) {
+        checkHistoryEnabled();
+        List<AttachmentEntity> attachments = getDbSqlSession().selectList("selectAttachmentsByTaskId", taskId);
+        boolean dispatchEvents = getProcessEngineConfiguration().getEventDispatcher().isEnabled();
+
+        String processInstanceId = null;
+        String processDefinitionId = null;
+        String executionId = null;
+
+        if (dispatchEvents && attachments != null && !attachments.isEmpty()) {
+            // Forced to fetch the task to get hold of the process definition
+            // for event-dispatching, if available
+            Task task = getTaskManager().findTaskById(taskId);
+            if (task != null) {
+                processDefinitionId = task.getProcessDefinitionId();
+                processInstanceId = task.getProcessInstanceId();
+                executionId = task.getExecutionId();
+            }
+        }
+
+        for (AttachmentEntity attachment : attachments) {
+            String contentId = attachment.getContentId();
+            if (contentId != null) {
+                getByteArrayManager().deleteByteArrayById(contentId);
+            }
+            getDbSqlSession().delete(attachment);
+            if (dispatchEvents) {
+                getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                        ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, attachment, executionId, processInstanceId, processDefinitionId));
+            }
+        }
     }
-  }
+
+    protected void checkHistoryEnabled() {
+        if (!getHistoryManager().isHistoryEnabled()) {
+            throw new ActivitiException("In order to use attachments, history should be enabled");
+        }
+    }
 }
-

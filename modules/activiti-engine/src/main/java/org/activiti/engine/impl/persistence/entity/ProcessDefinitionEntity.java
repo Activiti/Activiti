@@ -67,7 +67,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
     protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
     protected transient ActivitiEventSupport eventSupport;
-    
+
     // Backwards compatibility
     protected String engineVersion;
 
@@ -127,8 +127,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
         Context.getCommandContext().getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
 
         if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
         }
 
         return processInstance;
@@ -161,8 +160,7 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     }
 
     public void deleteIdentityLink(String userId, String groupId) {
-        List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager()
-                .findIdentityLinkByProcessDefinitionUserAndGroup(id, userId, groupId);
+        List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinkByProcessDefinitionUserAndGroup(id, userId, groupId);
 
         for (IdentityLinkEntity identityLink : identityLinks) {
             Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(identityLink, false);
@@ -364,12 +362,12 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
         return eventSupport;
     }
 
-	public String getEngineVersion() {
-		return engineVersion;
-	}
+    public String getEngineVersion() {
+        return engineVersion;
+    }
 
-	public void setEngineVersion(String engineVersion) {
-		this.engineVersion = engineVersion;
-	}
+    public void setEngineVersion(String engineVersion) {
+        this.engineVersion = engineVersion;
+    }
 
 }

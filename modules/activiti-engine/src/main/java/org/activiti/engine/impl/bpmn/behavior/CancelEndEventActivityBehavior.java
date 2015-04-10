@@ -20,38 +20,35 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
-
 /**
  * @author Daniel Meyer
  * @author Falko Menge
  */
 public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
-  
-  @Override
-  public void execute(ActivityExecution execution) {
-    
-    // find cancel boundary event:
-    ActivityImpl cancelBoundaryEvent = ScopeUtil
-      .findInParentScopesByBehaviorType((ActivityImpl) execution.getActivity(), CancelBoundaryEventActivityBehavior.class);
-    
-    if(cancelBoundaryEvent == null) {
-      throw new ActivitiException("Could not find cancel boundary event for cancel end event "+execution.getActivity());
+
+    @Override
+    public void execute(ActivityExecution execution) {
+
+        // find cancel boundary event:
+        ActivityImpl cancelBoundaryEvent = ScopeUtil.findInParentScopesByBehaviorType((ActivityImpl) execution.getActivity(), CancelBoundaryEventActivityBehavior.class);
+
+        if (cancelBoundaryEvent == null) {
+            throw new ActivitiException("Could not find cancel boundary event for cancel end event " + execution.getActivity());
+        }
+
+        ActivityExecution scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity) execution, cancelBoundaryEvent.getParentActivity());
+
+        // end all executions and process instances in the scope of the
+        // transaction
+        scopeExecution.destroyScope("cancel end event fired");
+
+        // the scope execution executes the boundary event
+        InterpretableExecution outgoingExecution = (InterpretableExecution) scopeExecution;
+        outgoingExecution.setActivity(cancelBoundaryEvent);
+        outgoingExecution.setActive(true);
+
+        // execute the boundary
+        cancelBoundaryEvent.getActivityBehavior().execute(outgoingExecution);
     }
-    
-    ActivityExecution scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity)execution, cancelBoundaryEvent.getParentActivity());    
-    
-    // end all executions and process instances in the scope of the transaction
-    scopeExecution.destroyScope("cancel end event fired");
-    
-    // the scope execution executes the boundary event
-    InterpretableExecution outgoingExecution = (InterpretableExecution)scopeExecution;
-    outgoingExecution.setActivity(cancelBoundaryEvent);
-    outgoingExecution.setActive(true);
-    
-    // execute the boundary
-    cancelBoundaryEvent
-      .getActivityBehavior()
-      .execute(outgoingExecution);    
-  }
 
 }

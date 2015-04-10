@@ -15,74 +15,72 @@ package org.activiti.rest.service.api.history;
 
 import org.activiti.rest.common.api.PaginateRequest;
 
-
-
 /**
  * @author Tijs Rademakers
  */
 public class HistoricDetailQueryRequest extends PaginateRequest {
 
-  private String id;
-  private String processInstanceId;
-  private String executionId;
-  private String activityInstanceId;
-  private String taskId;
-  private Boolean selectOnlyFormProperties;
-  private Boolean selectOnlyVariableUpdates;
-  
-  public String getId() {
-    return id;
-  }
+    private String id;
+    private String processInstanceId;
+    private String executionId;
+    private String activityInstanceId;
+    private String taskId;
+    private Boolean selectOnlyFormProperties;
+    private Boolean selectOnlyVariableUpdates;
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-  
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public String getExecutionId() {
-    return executionId;
-  }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-  public String getActivityInstanceId() {
-    return activityInstanceId;
-  }
+    public String getExecutionId() {
+        return executionId;
+    }
 
-  public void setActivityInstanceId(String activityInstanceId) {
-    this.activityInstanceId = activityInstanceId;
-  }
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
+    }
 
-  public String getTaskId() {
-    return taskId;
-  }
+    public String getActivityInstanceId() {
+        return activityInstanceId;
+    }
 
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
+    public void setActivityInstanceId(String activityInstanceId) {
+        this.activityInstanceId = activityInstanceId;
+    }
 
-  public Boolean getSelectOnlyFormProperties() {
-    return selectOnlyFormProperties;
-  }
+    public String getTaskId() {
+        return taskId;
+    }
 
-  public void setSelectOnlyFormProperties(Boolean selectOnlyFormProperties) {
-    this.selectOnlyFormProperties = selectOnlyFormProperties;
-  }
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
-  public Boolean getSelectOnlyVariableUpdates() {
-    return selectOnlyVariableUpdates;
-  }
+    public Boolean getSelectOnlyFormProperties() {
+        return selectOnlyFormProperties;
+    }
 
-  public void setSelectOnlyVariableUpdates(Boolean selectOnlyVariableUpdates) {
-    this.selectOnlyVariableUpdates = selectOnlyVariableUpdates;
-  }
+    public void setSelectOnlyFormProperties(Boolean selectOnlyFormProperties) {
+        this.selectOnlyFormProperties = selectOnlyFormProperties;
+    }
+
+    public Boolean getSelectOnlyVariableUpdates() {
+        return selectOnlyVariableUpdates;
+    }
+
+    public void setSelectOnlyVariableUpdates(Boolean selectOnlyVariableUpdates) {
+        this.selectOnlyVariableUpdates = selectOnlyVariableUpdates;
+    }
 }

@@ -16,24 +16,23 @@ package org.activiti.explorer.util.time.timeunit;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.util.time.TimeUnit;
 
-
 /**
  * @author Frederik Heremans
  */
 public class MinuteTimeUnit implements TimeUnit {
 
-  private static final Long MILLIS_PER_MINUTE = 60000L;
-  
-  public Long getNumberOfMillis() {
-    return MILLIS_PER_MINUTE;
-  }
+    private static final Long MILLIS_PER_MINUTE = 60000L;
 
-  public String getMessageKey(Long numberOfUnits) {
-    if(numberOfUnits == 1) {
-      return Messages.TIME_UNIT_MINUTE;
-    } else {
-      return Messages.TIME_UNIT_MINUTES;
+    public Long getNumberOfMillis() {
+        return MILLIS_PER_MINUTE;
     }
-  }
+
+    public String getMessageKey(Long numberOfUnits) {
+        if (numberOfUnits == 1) {
+            return Messages.TIME_UNIT_MINUTE;
+        } else {
+            return Messages.TIME_UNIT_MINUTES;
+        }
+    }
 
 }

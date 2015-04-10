@@ -7,13 +7,13 @@ package org.activiti.workflow.simple.exception;
  */
 public class SimpleWorkflowException extends RuntimeException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public SimpleWorkflowException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public SimpleWorkflowException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-  public SimpleWorkflowException(String message) {
-    super(message);
-  }
+    public SimpleWorkflowException(String message) {
+        super(message);
+    }
 }

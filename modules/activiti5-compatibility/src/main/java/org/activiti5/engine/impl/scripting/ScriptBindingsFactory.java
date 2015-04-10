@@ -20,43 +20,42 @@ import javax.script.Bindings;
 
 import org.activiti5.engine.delegate.VariableScope;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class ScriptBindingsFactory {
-  
-  protected List<ResolverFactory> resolverFactories;
-  
-  public ScriptBindingsFactory(List<ResolverFactory> resolverFactories) {
-    this.resolverFactories = resolverFactories;
-  }
-  
-  public Bindings createBindings(VariableScope variableScope) {
-    return new ScriptBindings(createResolvers(variableScope), variableScope);
-  }
-  
-  public Bindings createBindings(VariableScope variableScope, boolean storeScriptVariables) {
-    return new ScriptBindings(createResolvers(variableScope), variableScope, storeScriptVariables);
-  }
-  
-  protected List<Resolver> createResolvers(VariableScope variableScope) {
-    List<Resolver> scriptResolvers = new ArrayList<Resolver>();
-    for (ResolverFactory scriptResolverFactory: resolverFactories) {
-      Resolver resolver = scriptResolverFactory.createResolver(variableScope);
-      if (resolver!=null) {
-        scriptResolvers.add(resolver);
-      }
+
+    protected List<ResolverFactory> resolverFactories;
+
+    public ScriptBindingsFactory(List<ResolverFactory> resolverFactories) {
+        this.resolverFactories = resolverFactories;
     }
-    return scriptResolvers;
-  }
-  
-  public List<ResolverFactory> getResolverFactories() {
-    return resolverFactories;
-  }
-  
-  public void setResolverFactories(List<ResolverFactory> resolverFactories) {
-    this.resolverFactories = resolverFactories;
-  }
+
+    public Bindings createBindings(VariableScope variableScope) {
+        return new ScriptBindings(createResolvers(variableScope), variableScope);
+    }
+
+    public Bindings createBindings(VariableScope variableScope, boolean storeScriptVariables) {
+        return new ScriptBindings(createResolvers(variableScope), variableScope, storeScriptVariables);
+    }
+
+    protected List<Resolver> createResolvers(VariableScope variableScope) {
+        List<Resolver> scriptResolvers = new ArrayList<Resolver>();
+        for (ResolverFactory scriptResolverFactory : resolverFactories) {
+            Resolver resolver = scriptResolverFactory.createResolver(variableScope);
+            if (resolver != null) {
+                scriptResolvers.add(resolver);
+            }
+        }
+        return scriptResolvers;
+    }
+
+    public List<ResolverFactory> getResolverFactories() {
+        return resolverFactories;
+    }
+
+    public void setResolverFactories(List<ResolverFactory> resolverFactories) {
+        this.resolverFactories = resolverFactories;
+    }
 }

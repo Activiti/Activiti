@@ -13,7 +13,6 @@
 
 package org.activiti.management.jmx.testMbeans;
 
-
 import org.activiti.management.jmx.annotations.ManagedResource;
 
 /**

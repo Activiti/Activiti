@@ -19,13 +19,13 @@ package org.activiti.image.exception;
  */
 public class ActivitiImageException extends RuntimeException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public ActivitiImageException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public ActivitiImageException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-  public ActivitiImageException(String message) {
-    super(message);
-  }
+    public ActivitiImageException(String message) {
+        super(message);
+    }
 }

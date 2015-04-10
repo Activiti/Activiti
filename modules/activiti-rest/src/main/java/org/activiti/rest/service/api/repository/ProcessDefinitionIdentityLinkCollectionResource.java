@@ -29,46 +29,44 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class ProcessDefinitionIdentityLinkCollectionResource extends BaseProcessDefinitionResource {
 
-  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
-  public List<RestIdentityLink> getIdentityLinks(@PathVariable String processDefinitionId, HttpServletRequest request) {
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-    return restResponseFactory.createRestIdentityLinks(repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId()));
-  }
-  
-  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks", method = RequestMethod.POST, produces = "application/json")
-  public RestIdentityLink createIdentityLink(@PathVariable String processDefinitionId, @RequestBody RestIdentityLink identityLink, 
-      HttpServletRequest request, HttpServletResponse response) {
-    
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-    
-    if (identityLink.getGroup() == null && identityLink.getUser() == null) {
-      throw new ActivitiIllegalArgumentException("A group or a user is required to create an identity link.");
+    @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
+    public List<RestIdentityLink> getIdentityLinks(@PathVariable String processDefinitionId, HttpServletRequest request) {
+        ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
+        return restResponseFactory.createRestIdentityLinks(repositoryService.getIdentityLinksForProcessDefinition(processDefinition.getId()));
     }
-    
-    if (identityLink.getGroup() != null && identityLink.getUser() != null) {
-      throw new ActivitiIllegalArgumentException("Only one of user or group can be used to create an identity link.");
+
+    @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/identitylinks", method = RequestMethod.POST, produces = "application/json")
+    public RestIdentityLink createIdentityLink(@PathVariable String processDefinitionId, @RequestBody RestIdentityLink identityLink, HttpServletRequest request, HttpServletResponse response) {
+
+        ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
+
+        if (identityLink.getGroup() == null && identityLink.getUser() == null) {
+            throw new ActivitiIllegalArgumentException("A group or a user is required to create an identity link.");
+        }
+
+        if (identityLink.getGroup() != null && identityLink.getUser() != null) {
+            throw new ActivitiIllegalArgumentException("Only one of user or group can be used to create an identity link.");
+        }
+
+        if (identityLink.getGroup() != null) {
+            repositoryService.addCandidateStarterGroup(processDefinition.getId(), identityLink.getGroup());
+        } else {
+            repositoryService.addCandidateStarterUser(processDefinition.getId(), identityLink.getUser());
+        }
+
+        // Always candidate for process-definition. User-provided value is
+        // ignored
+        identityLink.setType(IdentityLinkType.CANDIDATE);
+
+        response.setStatus(HttpStatus.CREATED.value());
+
+        return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, processDefinition.getId(), null);
     }
-    
-    if (identityLink.getGroup() != null) {
-      repositoryService.addCandidateStarterGroup(processDefinition.getId(), identityLink.getGroup());
-    } else {
-      repositoryService.addCandidateStarterUser(processDefinition.getId(), identityLink.getUser());
-    }
-    
-    // Always candidate for process-definition. User-provided value is ignored
-    identityLink.setType(IdentityLinkType.CANDIDATE);
-    
-    response.setStatus(HttpStatus.CREATED.value());
-    
-    return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, 
-        processDefinition.getId(), null);
-  }
-  
+
 }

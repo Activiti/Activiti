@@ -25,60 +25,54 @@ import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
  * @author Bernd Ruecker
  */
 public class RecorderExecutionListener implements ExecutionListener {
-  
-  private FixedValue parameter;
-  
-  private static List<RecorderExecutionListener.RecordedEvent> recordedEvents = new ArrayList<RecorderExecutionListener.RecordedEvent>();
 
-  public static class RecordedEvent {
-    private final String activityId;
-    private final String eventName;
-    private final String activityName;
-    private final String parameter;
-    
-    public RecordedEvent(String activityId, String activityName, String eventName, String parameter) {
-      this.activityId = activityId;
-      this.activityName = activityName;
-      this.parameter = parameter;
-      this.eventName = eventName;
+    private FixedValue parameter;
+
+    private static List<RecorderExecutionListener.RecordedEvent> recordedEvents = new ArrayList<RecorderExecutionListener.RecordedEvent>();
+
+    public static class RecordedEvent {
+        private final String activityId;
+        private final String eventName;
+        private final String activityName;
+        private final String parameter;
+
+        public RecordedEvent(String activityId, String activityName, String eventName, String parameter) {
+            this.activityId = activityId;
+            this.activityName = activityName;
+            this.parameter = parameter;
+            this.eventName = eventName;
+        }
+
+        public String getActivityId() {
+            return activityId;
+        }
+
+        public String getEventName() {
+            return eventName;
+        }
+
+        public String getActivityName() {
+            return activityName;
+        }
+
+        public String getParameter() {
+            return parameter;
+        }
+
     }
 
-    public String getActivityId() {
-      return activityId;
-    }
-    
-    public String getEventName() {
-      return eventName;
+    public void notify(DelegateExecution execution) throws Exception {
+        ExecutionEntity executionCasted = ((ExecutionEntity) execution);
+        recordedEvents.add(new RecordedEvent( //
+                executionCasted.getActivityId(), (String) executionCasted.getActivity().getProperties().get("name"), execution.getEventName(), (String) parameter.getValue(execution)));
     }
 
-    
-    public String getActivityName() {
-      return activityName;
+    public static void clear() {
+        recordedEvents.clear();
     }
 
-    
-    public String getParameter() {
-      return parameter;
+    public static List<RecordedEvent> getRecordedEvents() {
+        return recordedEvents;
     }
-    
-  }
-  
-  public void notify(DelegateExecution execution) throws Exception {
-    ExecutionEntity executionCasted = ((ExecutionEntity)execution);
-    recordedEvents.add( new RecordedEvent( //
-                    executionCasted.getActivityId(), 
-                    (String)executionCasted.getActivity().getProperties().get("name"), 
-                    execution.getEventName(),
-                    (String)parameter.getValue(execution)));
-  }
 
-  public static void clear() {
-    recordedEvents.clear();
-  }
-
-  public static List<RecordedEvent> getRecordedEvents() {
-    return recordedEvents;
-  }
-  
-  
 }

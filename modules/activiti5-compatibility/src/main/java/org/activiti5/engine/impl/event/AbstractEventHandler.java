@@ -31,85 +31,77 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public abstract class AbstractEventHandler implements EventHandler {
 
-  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
+    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
 
-    ExecutionEntity execution = eventSubscription.getExecution();
-    ActivityImpl activity = eventSubscription.getActivity();
+        ExecutionEntity execution = eventSubscription.getExecution();
+        ActivityImpl activity = eventSubscription.getActivity();
 
-    if (activity == null) {
-      throw new ActivitiException("Error while sending signal for event subscription '" + eventSubscription.getId() + "': "
-              + "no activity associated with event subscription");
+        if (activity == null) {
+            throw new ActivitiException("Error while sending signal for event subscription '" + eventSubscription.getId() + "': " + "no activity associated with event subscription");
+        }
+
+        if (payload instanceof Map) {
+            @SuppressWarnings("unchecked")
+            Map<String, Object> processVariables = (Map<String, Object>) payload;
+            execution.setVariables(processVariables);
+        }
+
+        ActivityBehavior activityBehavior = activity.getActivityBehavior();
+        if (activityBehavior instanceof BoundaryEventActivityBehavior || activityBehavior instanceof EventSubProcessStartEventActivityBehavior) {
+
+            try {
+
+                dispatchActivitiesCanceledIfNeeded(eventSubscription, execution, activity, commandContext);
+
+                activityBehavior.execute(execution);
+
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new ActivitiException("exception while sending signal for event subscription '" + eventSubscription + "':" + e.getMessage(), e);
+            }
+
+        } else { // not boundary
+            if (!activity.equals(execution.getActivity())) {
+                execution.setActivity(activity);
+            }
+            execution.signal(eventSubscription.getEventName(), payload);
+        }
     }
 
-    if (payload instanceof Map) {
-      @SuppressWarnings("unchecked")
-      Map<String, Object> processVariables = (Map<String, Object>) payload;
-      execution.setVariables(processVariables);
+    protected void dispatchActivitiesCanceledIfNeeded(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, ActivityImpl boundaryEventActivity, CommandContext commandContext) {
+        ActivityBehavior boundaryActivityBehavior = boundaryEventActivity.getActivityBehavior();
+        if (boundaryActivityBehavior instanceof BoundaryEventActivityBehavior) {
+            BoundaryEventActivityBehavior boundaryEventActivityBehavior = (BoundaryEventActivityBehavior) boundaryActivityBehavior;
+            if (boundaryEventActivityBehavior.isInterrupting()) {
+                dispatchExecutionCancelled(eventSubscription, execution, commandContext);
+            }
+        }
     }
 
-    ActivityBehavior activityBehavior = activity.getActivityBehavior();
-    if (activityBehavior instanceof BoundaryEventActivityBehavior
-            || activityBehavior instanceof EventSubProcessStartEventActivityBehavior) {
+    protected void dispatchExecutionCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, CommandContext commandContext) {
+        // subprocesses
+        for (ExecutionEntity subExecution : execution.getExecutions()) {
+            dispatchExecutionCancelled(eventSubscription, subExecution, commandContext);
+        }
 
-      try {
+        // call activities
+        ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
+        if (subProcessInstance != null) {
+            dispatchExecutionCancelled(eventSubscription, subProcessInstance, commandContext);
+        }
 
-        dispatchActivitiesCanceledIfNeeded(eventSubscription, execution, activity, commandContext);
-
-        activityBehavior.execute(execution);
-
-      } catch (RuntimeException e) {
-        throw e;
-      } catch (Exception e) {
-        throw new ActivitiException("exception while sending signal for event subscription '" + eventSubscription + "':" + e.getMessage(), e);
-      }
-
-    } else { // not boundary
-      if (!activity.equals( execution.getActivity() )) {
-        execution.setActivity(activity);
-      }
-      execution.signal(eventSubscription.getEventName(), payload);
-    }
-  }
-
-  protected void dispatchActivitiesCanceledIfNeeded(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, ActivityImpl boundaryEventActivity, CommandContext commandContext) {
-    ActivityBehavior boundaryActivityBehavior = boundaryEventActivity.getActivityBehavior();
-    if (boundaryActivityBehavior instanceof BoundaryEventActivityBehavior) {
-      BoundaryEventActivityBehavior boundaryEventActivityBehavior = (BoundaryEventActivityBehavior) boundaryActivityBehavior;
-      if (boundaryEventActivityBehavior.isInterrupting()) {
-        dispatchExecutionCancelled(eventSubscription, execution, commandContext);
-      }
-    }
-  }
-
-  protected void dispatchExecutionCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, CommandContext commandContext) {
-    // subprocesses
-    for (ExecutionEntity subExecution : execution.getExecutions()) {
-      dispatchExecutionCancelled(eventSubscription, subExecution, commandContext);
+        // activity with message/signal boundary events
+        ActivityImpl activity = execution.getActivity();
+        if (activity != null && activity.getActivityBehavior() != null) {
+            dispatchActivityCancelled(eventSubscription, execution, activity, commandContext);
+        }
     }
 
-    // call activities
-    ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
-    if (subProcessInstance != null) {
-      dispatchExecutionCancelled(eventSubscription, subProcessInstance, commandContext);
+    protected void dispatchActivityCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, ActivityImpl activity, CommandContext commandContext) {
+        commandContext.getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(), (String) activity.getProperties().get("name"), execution.getId(), execution.getProcessInstanceId(),
+                        execution.getProcessDefinitionId(), (String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName(), eventSubscription));
     }
-
-    // activity with message/signal boundary events
-    ActivityImpl activity = execution.getActivity();
-    if (activity != null && activity.getActivityBehavior() != null) {
-      dispatchActivityCancelled(eventSubscription, execution, activity, commandContext);
-    }
-  }
-
-  protected void dispatchActivityCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, ActivityImpl activity, CommandContext commandContext) {
-    commandContext.getEventDispatcher().dispatchEvent(
-      ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(),
-        (String) activity.getProperties().get("name"),
-        execution.getId(),
-        execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
-        (String) activity.getProperties().get("type"),
-        activity.getActivityBehavior().getClass().getCanonicalName(),
-        eventSubscription)
-    );
-  }
 
 }

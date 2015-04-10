@@ -29,50 +29,50 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class ErrorMapExceptionTest extends SpringActivitiTestCase {
 
-  @Autowired
-  protected CamelContext camelContext;
+    @Autowired
+    protected CamelContext camelContext;
 
-  @Deployment(resources = { "process/mapExceptionSingleMap.bpmn20.xml" })
-  public void testCamelSingleDirectMap() throws Exception {
-    camelContext.addRoutes(new RouteBuilder() {
+    @Deployment(resources = { "process/mapExceptionSingleMap.bpmn20.xml" })
+    public void testCamelSingleDirectMap() throws Exception {
+        camelContext.addRoutes(new RouteBuilder() {
 
-      @Override
-      public void configure() throws Exception {
-        from("activiti:mapExceptionProcess:exceptionRoute").throwException(new MapExceptionParent("test exception"));
-      }
-    });
+            @Override
+            public void configure() throws Exception {
+                from("activiti:mapExceptionProcess:exceptionRoute").throwException(new MapExceptionParent("test exception"));
+            }
+        });
 
-    FlagJavaDelegate.reset();
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("mapExceptionProcess");
-    assertTrue(FlagJavaDelegate.isFlagSet());
-  }
+        FlagJavaDelegate.reset();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("mapExceptionProcess");
+        assertTrue(FlagJavaDelegate.isFlagSet());
+    }
 
-  @Deployment(resources = { "process/mapExceptionDefaultMap.bpmn20.xml" })
-  public void testCamelDefaultMap() throws Exception {
-    camelContext.addRoutes(new RouteBuilder() {
+    @Deployment(resources = { "process/mapExceptionDefaultMap.bpmn20.xml" })
+    public void testCamelDefaultMap() throws Exception {
+        camelContext.addRoutes(new RouteBuilder() {
 
-      @Override
-      public void configure() throws Exception {
-        from("activiti:mapExceptionDefaultProcess:exceptionRoute").throwException(new NullPointerException("test exception"));
-      }
-    });
-    FlagJavaDelegate.reset();
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("mapExceptionDefaultProcess");
-    assertTrue(FlagJavaDelegate.isFlagSet());
-  }
+            @Override
+            public void configure() throws Exception {
+                from("activiti:mapExceptionDefaultProcess:exceptionRoute").throwException(new NullPointerException("test exception"));
+            }
+        });
+        FlagJavaDelegate.reset();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("mapExceptionDefaultProcess");
+        assertTrue(FlagJavaDelegate.isFlagSet());
+    }
 
-  @Deployment(resources = { "process/mapExceptionParentMap.bpmn20.xml" })
-  public void testCamelParentMap() throws Exception {
-    camelContext.addRoutes(new RouteBuilder() {
+    @Deployment(resources = { "process/mapExceptionParentMap.bpmn20.xml" })
+    public void testCamelParentMap() throws Exception {
+        camelContext.addRoutes(new RouteBuilder() {
 
-      @Override
-      public void configure() throws Exception {
-        from("activiti:mapExceptionParentProcess:exceptionRoute").throwException(new MapExceptionChild("test exception"));
-      }
-    });
-    FlagJavaDelegate.reset();
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("mapExceptionParentProcess");
-    assertTrue(FlagJavaDelegate.isFlagSet());
-  }
+            @Override
+            public void configure() throws Exception {
+                from("activiti:mapExceptionParentProcess:exceptionRoute").throwException(new MapExceptionChild("test exception"));
+            }
+        });
+        FlagJavaDelegate.reset();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("mapExceptionParentProcess");
+        assertTrue(FlagJavaDelegate.isFlagSet());
+    }
 
 }

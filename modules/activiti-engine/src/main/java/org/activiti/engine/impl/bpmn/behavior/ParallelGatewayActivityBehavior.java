@@ -55,65 +55,69 @@ import org.slf4j.LoggerFactory;
  */
 public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 
-	private static final long serialVersionUID = 1840892471343975524L;
-	
-	private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
+    private static final long serialVersionUID = 1840892471343975524L;
 
-	public void execute(ActivityExecution execution) {
-		
-		// First off all, deactivate the execution
-		execution.inactivate();
-		
-		// Join
-		FlowElement flowElement = execution.getCurrentFlowElement();
-		ParallelGateway parallelGateway = null;
-		if (flowElement instanceof ParallelGateway) {
-			parallelGateway = (ParallelGateway) flowElement;
-		} else {
-			throw new ActivitiException("Programmatic error: parallel gateway behaviour can only be applied"
-					+ " to a ParallelGateway instance, but got an instance of " + flowElement); 
-		}
+    private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
 
-		ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
-		Collection<ExecutionEntity> joinedExecutions = executionEntityManager.getInactiveExecutionsInActivity(execution.getCurrentActivityId());
-		int nbrOfExecutionsToJoin = parallelGateway.getIncomingFlows().size();
-		int nbrOfExecutionsCurrentlyJoined = joinedExecutions.size();
-		
-		// Fork
-		
-		 // TODO: Verify if this is the correct place! Seems out of place here!
-//	    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
-	    
-		if (nbrOfExecutionsCurrentlyJoined == nbrOfExecutionsToJoin) {
+    public void execute(ActivityExecution execution) {
 
-			// Fork
-			if (log.isDebugEnabled()) {
-				log.debug("parallel gateway '{}' activates: {} of {} joined",
-				        execution.getCurrentActivityId(), nbrOfExecutionsCurrentlyJoined, nbrOfExecutionsToJoin);
-			}
+        // First off all, deactivate the execution
+        execution.inactivate();
 
-			if (parallelGateway.getIncomingFlows().size() > 1) {
+        // Join
+        FlowElement flowElement = execution.getCurrentFlowElement();
+        ParallelGateway parallelGateway = null;
+        if (flowElement instanceof ParallelGateway) {
+            parallelGateway = (ParallelGateway) flowElement;
+        } else {
+            throw new ActivitiException("Programmatic error: parallel gateway behaviour can only be applied" + " to a ParallelGateway instance, but got an instance of " + flowElement);
+        }
 
-				// All (now inactive) children are deleted.
-				for (ExecutionEntity joinedExecution : joinedExecutions) {
+        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+        Collection<ExecutionEntity> joinedExecutions = executionEntityManager.getInactiveExecutionsInActivity(execution.getCurrentActivityId());
+        int nbrOfExecutionsToJoin = parallelGateway.getIncomingFlows().size();
+        int nbrOfExecutionsCurrentlyJoined = joinedExecutions.size();
 
-					// The current execution will be reused and not deleted
-					if (!joinedExecution.getId().equals(execution.getId())) {
-						executionEntityManager.delete(joinedExecution);
-					}
+        // Fork
 
-				}
-			}
+        // TODO: Verify if this is the correct place! Seems out of place here!
+        // Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity)
+        // execution);
 
-			// TODO: potential optimization here: reuse more then 1 execution, only 1 currently
-			Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, false); // false -> ignoring conditions on parallel gw
+        if (nbrOfExecutionsCurrentlyJoined == nbrOfExecutionsToJoin) {
 
-		} else if (log.isDebugEnabled()) {
-			log.debug("parallel gateway '{}' does not activate: {} of {} joined",
-			        execution.getCurrentActivityId(),
-			        nbrOfExecutionsCurrentlyJoined, nbrOfExecutionsToJoin);
-		}
-		
-	}
+            // Fork
+            if (log.isDebugEnabled()) {
+                log.debug("parallel gateway '{}' activates: {} of {} joined", execution.getCurrentActivityId(), nbrOfExecutionsCurrentlyJoined, nbrOfExecutionsToJoin);
+            }
+
+            if (parallelGateway.getIncomingFlows().size() > 1) {
+
+                // All (now inactive) children are deleted.
+                for (ExecutionEntity joinedExecution : joinedExecutions) {
+
+                    // The current execution will be reused and not deleted
+                    if (!joinedExecution.getId().equals(execution.getId())) {
+                        executionEntityManager.delete(joinedExecution);
+                    }
+
+                }
+            }
+
+            // TODO: potential optimization here: reuse more then 1 execution,
+            // only 1 currently
+            Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, false); // false
+                                                                                          // ->
+                                                                                          // ignoring
+                                                                                          // conditions
+                                                                                          // on
+                                                                                          // parallel
+                                                                                          // gw
+
+        } else if (log.isDebugEnabled()) {
+            log.debug("parallel gateway '{}' does not activate: {} of {} joined", execution.getCurrentActivityId(), nbrOfExecutionsCurrentlyJoined, nbrOfExecutionsToJoin);
+        }
+
+    }
 
 }

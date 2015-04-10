@@ -16,11 +16,10 @@ package org.activiti5.engine.impl.form;
 import org.activiti5.engine.form.StartFormData;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface StartFormHandler extends FormHandler {
 
-  StartFormData createStartFormData(ProcessDefinitionEntity processDefinition);
+    StartFormData createStartFormData(ProcessDefinitionEntity processDefinition);
 }

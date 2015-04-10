@@ -24,11 +24,11 @@ import org.activiti5.engine.delegate.Expression;
  */
 public class ExampleFieldInjectedExecutionListener implements ExecutionListener {
 
-  private Expression fixedValue;
+    private Expression fixedValue;
 
-  private Expression dynamicValue;
+    private Expression dynamicValue;
 
-  public void notify(DelegateExecution execution) throws Exception {
-    execution.setVariable("var", fixedValue.getValue(execution).toString() + dynamicValue.getValue(execution).toString());
-  }
+    public void notify(DelegateExecution execution) throws Exception {
+        execution.setVariable("var", fixedValue.getValue(execution).toString() + dynamicValue.getValue(execution).toString());
+    }
 }

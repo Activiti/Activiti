@@ -8,34 +8,34 @@ import org.activiti.engine.delegate.ExecutionListener;
 
 public class CustomSetConditionsExecutionListener implements ExecutionListener {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected List<String> conditions = new ArrayList<String>();
-  protected String flowId;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public void notify(DelegateExecution execution) {
-    execution.setVariable(flowId + "_activiti_conditions", conditions);
-  }
+    protected List<String> conditions = new ArrayList<String>();
+    protected String flowId;
 
-  public List<String> getConditions() {
-    return conditions;
-  }
+    @Override
+    public void notify(DelegateExecution execution) {
+        execution.setVariable(flowId + "_activiti_conditions", conditions);
+    }
 
-  public void setConditions(List<String> conditions) {
-    this.conditions = conditions;
-  }
-  
-  public void addCondition(String condition) {
-    this.conditions.add(condition);
-  }
+    public List<String> getConditions() {
+        return conditions;
+    }
 
-  public String getFlowId() {
-    return flowId;
-  }
+    public void setConditions(List<String> conditions) {
+        this.conditions = conditions;
+    }
 
-  public void setFlowId(String flowId) {
-    this.flowId = flowId;
-  }
-  
+    public void addCondition(String condition) {
+        this.conditions.add(condition);
+    }
+
+    public String getFlowId() {
+        return flowId;
+    }
+
+    public void setFlowId(String flowId) {
+        this.flowId = flowId;
+    }
+
 }

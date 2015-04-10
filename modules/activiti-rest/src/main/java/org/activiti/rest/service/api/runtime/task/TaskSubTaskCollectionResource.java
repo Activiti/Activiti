@@ -23,16 +23,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Tijs Rademakers
  */
 @RestController
 public class TaskSubTaskCollectionResource extends TaskBaseResource {
 
-  @RequestMapping(value="/runtime/tasks/{taskId}/subtasks", method = RequestMethod.GET, produces="application/json")
-  public List<TaskResponse> getSubTasks(@PathVariable String taskId, HttpServletRequest request) {
-    Task task = getTaskFromRequest(taskId);
-    return restResponseFactory.createTaskResponseList(taskService.getSubTasks(task.getId()));
-  }
+    @RequestMapping(value = "/runtime/tasks/{taskId}/subtasks", method = RequestMethod.GET, produces = "application/json")
+    public List<TaskResponse> getSubTasks(@PathVariable String taskId, HttpServletRequest request) {
+        Task task = getTaskFromRequest(taskId);
+        return restResponseFactory.createTaskResponseList(taskService.getSubTasks(task.getId()));
+    }
 }

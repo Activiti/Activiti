@@ -26,10 +26,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProcessDefinitionModelResource extends BaseProcessDefinitionResource {
 
-  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/model", method = RequestMethod.GET, produces = "application/json")
-  public BpmnModel getModelResource(@PathVariable String processDefinitionId) {
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-    return repositoryService.getBpmnModel(processDefinition.getId());
-  }
-  
+    @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/model", method = RequestMethod.GET, produces = "application/json")
+    public BpmnModel getModelResource(@PathVariable String processDefinitionId) {
+        ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
+        return repositoryService.getBpmnModel(processDefinition.getId());
+    }
+
 }

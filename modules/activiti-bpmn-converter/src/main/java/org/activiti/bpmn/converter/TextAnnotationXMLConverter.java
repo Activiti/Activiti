@@ -30,45 +30,45 @@ import org.apache.commons.lang3.StringUtils;
  * @author Tijs Rademakers
  */
 public class TextAnnotationXMLConverter extends BaseBpmnXMLConverter {
-  
-  protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();
-  
-  public TextAnnotationXMLConverter() {
-    TextAnnotationTextParser annotationTextParser = new TextAnnotationTextParser();
-    childParserMap.put(annotationTextParser.getElementName(), annotationTextParser);
-  }
-  
-  public Class<? extends BaseElement> getBpmnElementType() {
-    return TextAnnotation.class;
-  }
-  
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_TEXT_ANNOTATION;
-  }
-  
-  @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    TextAnnotation textAnnotation = new TextAnnotation();
-    BpmnXMLUtil.addXMLLocation(textAnnotation, xtr);
-    textAnnotation.setTextFormat(xtr.getAttributeValue(null, ATTRIBUTE_TEXTFORMAT));
-    parseChildElements(getXMLElementName(), textAnnotation, childParserMap, model, xtr);
-    return textAnnotation;
-  }
 
-  @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    TextAnnotation textAnnotation = (TextAnnotation) element;
-    writeDefaultAttribute(ATTRIBUTE_TEXTFORMAT, textAnnotation.getTextFormat(), xtw);
-  }
-  
-  @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    TextAnnotation textAnnotation = (TextAnnotation) element;
-    if (StringUtils.isNotEmpty(textAnnotation.getText())) {
-      xtw.writeStartElement(ELEMENT_TEXT_ANNOTATION_TEXT);
-      xtw.writeCharacters(textAnnotation.getText());
-      xtw.writeEndElement();
+    protected Map<String, BaseChildElementParser> childParserMap = new HashMap<String, BaseChildElementParser>();
+
+    public TextAnnotationXMLConverter() {
+        TextAnnotationTextParser annotationTextParser = new TextAnnotationTextParser();
+        childParserMap.put(annotationTextParser.getElementName(), annotationTextParser);
     }
-  }
+
+    public Class<? extends BaseElement> getBpmnElementType() {
+        return TextAnnotation.class;
+    }
+
+    @Override
+    protected String getXMLElementName() {
+        return ELEMENT_TEXT_ANNOTATION;
+    }
+
+    @Override
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        TextAnnotation textAnnotation = new TextAnnotation();
+        BpmnXMLUtil.addXMLLocation(textAnnotation, xtr);
+        textAnnotation.setTextFormat(xtr.getAttributeValue(null, ATTRIBUTE_TEXTFORMAT));
+        parseChildElements(getXMLElementName(), textAnnotation, childParserMap, model, xtr);
+        return textAnnotation;
+    }
+
+    @Override
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+        TextAnnotation textAnnotation = (TextAnnotation) element;
+        writeDefaultAttribute(ATTRIBUTE_TEXTFORMAT, textAnnotation.getTextFormat(), xtw);
+    }
+
+    @Override
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+        TextAnnotation textAnnotation = (TextAnnotation) element;
+        if (StringUtils.isNotEmpty(textAnnotation.getText())) {
+            xtw.writeStartElement(ELEMENT_TEXT_ANNOTATION_TEXT);
+            xtw.writeCharacters(textAnnotation.getText());
+            xtw.writeEndElement();
+        }
+    }
 }

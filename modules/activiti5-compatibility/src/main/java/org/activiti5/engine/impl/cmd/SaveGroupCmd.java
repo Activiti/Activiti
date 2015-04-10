@@ -19,34 +19,29 @@ import org.activiti5.engine.identity.Group;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Joram Barrez
  */
 public class SaveGroupCmd implements Command<Void>, Serializable {
-  
-  private static final long serialVersionUID = 1L;
-  protected Group group;
-  
-  public SaveGroupCmd(Group group) {
-    this.group = group;
-  }
-  
-  public Void execute(CommandContext commandContext) {
-    if(group == null) {
-      throw new ActivitiIllegalArgumentException("group is null");
+
+    private static final long serialVersionUID = 1L;
+    protected Group group;
+
+    public SaveGroupCmd(Group group) {
+        this.group = group;
     }
-    
-    if(commandContext.getGroupIdentityManager().isNewGroup(group)) {
-    	commandContext
-    		.getGroupIdentityManager()
-    		.insertGroup(group);
-    } else {
-    	commandContext
-    		.getGroupIdentityManager()
-    		.updateGroup(group);
+
+    public Void execute(CommandContext commandContext) {
+        if (group == null) {
+            throw new ActivitiIllegalArgumentException("group is null");
+        }
+
+        if (commandContext.getGroupIdentityManager().isNewGroup(group)) {
+            commandContext.getGroupIdentityManager().insertGroup(group);
+        } else {
+            commandContext.getGroupIdentityManager().updateGroup(group);
+        }
+        return null;
     }
-    return null;
-  }
 
 }

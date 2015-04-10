@@ -26,26 +26,26 @@ import org.activiti5.engine.impl.Page;
  */
 public interface GroupIdentityManager {
 
-  Group createNewGroup(String groupId);
+    Group createNewGroup(String groupId);
 
-  void insertGroup(Group group);
+    void insertGroup(Group group);
 
-  void updateGroup(Group updatedGroup);
+    void updateGroup(Group updatedGroup);
 
-  void deleteGroup(String groupId);
+    void deleteGroup(String groupId);
 
-  GroupQuery createNewGroupQuery();
+    GroupQuery createNewGroupQuery();
 
-  List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page);
+    List<Group> findGroupByQueryCriteria(GroupQueryImpl query, Page page);
 
-  long findGroupCountByQueryCriteria(GroupQueryImpl query);
+    long findGroupCountByQueryCriteria(GroupQueryImpl query);
 
-  List<Group> findGroupsByUser(String userId);
+    List<Group> findGroupsByUser(String userId);
 
-  List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
+    List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults);
 
-  long findGroupCountByNativeQuery(Map<String, Object> parameterMap);
-  
-  boolean isNewGroup(Group group);
+    long findGroupCountByNativeQuery(Map<String, Object> parameterMap);
+
+    boolean isNewGroup(Group group);
 
 }

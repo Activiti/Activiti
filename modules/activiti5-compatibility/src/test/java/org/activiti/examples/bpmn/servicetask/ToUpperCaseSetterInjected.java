@@ -1,4 +1,3 @@
-
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -17,26 +16,25 @@ import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.delegate.JavaDelegate;
 
-
 /**
  * @author Frederik Heremans
  */
 public class ToUpperCaseSetterInjected implements JavaDelegate {
-  
-  private Expression text;
-  private boolean setterInvoked = false;
-  
-  public void execute(DelegateExecution execution) {
-    
-    if(!setterInvoked) {
-      throw new RuntimeException("Setter was not invoked");
+
+    private Expression text;
+    private boolean setterInvoked = false;
+
+    public void execute(DelegateExecution execution) {
+
+        if (!setterInvoked) {
+            throw new RuntimeException("Setter was not invoked");
+        }
+        execution.setVariable("setterVar", ((String) text.getValue(execution)).toUpperCase());
     }
-    execution.setVariable("setterVar", ((String)text.getValue(execution)).toUpperCase());
-  }
-  
-  public void setText(Expression text) {
-    setterInvoked = true;
-    this.text = text;
-  }
-  
+
+    public void setText(Expression text) {
+        setterInvoked = true;
+        this.text = text;
+    }
+
 }

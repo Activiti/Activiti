@@ -19,18 +19,15 @@ import org.activiti5.engine.identity.GroupQuery;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public class CreateGroupQueryCmd implements Command<GroupQuery>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public GroupQuery execute(CommandContext commandContext) {
-    return commandContext
-      .getGroupIdentityManager()
-      .createNewGroupQuery();
-  }
+    public GroupQuery execute(CommandContext commandContext) {
+        return commandContext.getGroupIdentityManager().createNewGroupQuery();
+    }
 
 }

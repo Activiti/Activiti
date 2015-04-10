@@ -15,32 +15,31 @@ package org.activiti.engine.impl.pvm.runtime;
 
 import java.util.List;
 
-
 /**
  * @author Tom Baeyens
  */
 public class AtomicOperationDeleteCascade implements AtomicOperation {
-  
-  public boolean isAsync(InterpretableExecution execution) {
-    return false;
-  }
 
-  public void execute(InterpretableExecution execution) {
-    InterpretableExecution firstLeaf = findFirstLeaf(execution);
-    
-    if (firstLeaf.getSubProcessInstance()!=null) {
-      firstLeaf.getSubProcessInstance().deleteCascade(execution.getDeleteReason());
+    public boolean isAsync(InterpretableExecution execution) {
+        return false;
     }
 
-    firstLeaf.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
-  }
+    public void execute(InterpretableExecution execution) {
+        InterpretableExecution firstLeaf = findFirstLeaf(execution);
 
-  @SuppressWarnings("unchecked")
-  protected InterpretableExecution findFirstLeaf(InterpretableExecution execution) {
-    List<InterpretableExecution> executions = (List<InterpretableExecution>) execution.getExecutions();
-    if (!executions.isEmpty()) {
-      return findFirstLeaf(executions.get(0));
+        if (firstLeaf.getSubProcessInstance() != null) {
+            firstLeaf.getSubProcessInstance().deleteCascade(execution.getDeleteReason());
+        }
+
+        firstLeaf.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
     }
-    return execution;
-  }
+
+    @SuppressWarnings("unchecked")
+    protected InterpretableExecution findFirstLeaf(InterpretableExecution execution) {
+        List<InterpretableExecution> executions = (List<InterpretableExecution>) execution.getExecutions();
+        if (!executions.isEmpty()) {
+            return findFirstLeaf(executions.get(0));
+        }
+        return execution;
+    }
 }

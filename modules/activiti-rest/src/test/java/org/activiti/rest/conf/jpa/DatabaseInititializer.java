@@ -14,27 +14,27 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 @Configuration
 public class DatabaseInititializer {
 
-  @Value("classpath:org/activiti/rest/api/jpa/schema.sql")
-  private Resource schemaScript;
+    @Value("classpath:org/activiti/rest/api/jpa/schema.sql")
+    private Resource schemaScript;
 
-  @Value("classpath:org/activiti/rest/api/jpa/data.sql")
-  private Resource dataScript;
-  
-  @Autowired
-  protected DataSource dataSource;
+    @Value("classpath:org/activiti/rest/api/jpa/data.sql")
+    private Resource dataScript;
 
-  @Bean
-  public DataSourceInitializer dataSourceInitializer() {
-    DataSourceInitializer initializer = new DataSourceInitializer();
-    initializer.setDataSource(dataSource);
-    initializer.setDatabasePopulator(databasePopulator());
-    return initializer;
-  }
+    @Autowired
+    protected DataSource dataSource;
 
-  private DatabasePopulator databasePopulator() {
-    ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-    populator.addScript(schemaScript);
-    populator.addScript(dataScript);
-    return populator;
-  }
+    @Bean
+    public DataSourceInitializer dataSourceInitializer() {
+        DataSourceInitializer initializer = new DataSourceInitializer();
+        initializer.setDataSource(dataSource);
+        initializer.setDatabasePopulator(databasePopulator());
+        return initializer;
+    }
+
+    private DatabasePopulator databasePopulator() {
+        ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
+        populator.addScript(schemaScript);
+        populator.addScript(dataScript);
+        return populator;
+    }
 }

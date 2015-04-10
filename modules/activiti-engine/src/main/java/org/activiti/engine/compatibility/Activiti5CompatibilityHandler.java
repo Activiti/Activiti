@@ -20,14 +20,9 @@ import org.activiti.engine.runtime.ProcessInstance;
  * @author Joram Barrez
  */
 public interface Activiti5CompatibilityHandler {
-	
-	public static final String ACTIVITI_5_ENGINE_TAG = "activiti-5";
-	
-	ProcessInstance startProcessInstance(String processDefinitionKey,
-			String processDefinitionId,
-			Map<String, Object> variables,
-			String businessKey,
-			String tenantId,
-			String processInstanceName);
+
+    public static final String ACTIVITI_5_ENGINE_TAG = "activiti-5";
+
+    ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
 
 }

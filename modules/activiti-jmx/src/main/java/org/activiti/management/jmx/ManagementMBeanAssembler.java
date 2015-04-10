@@ -23,6 +23,6 @@ import javax.management.modelmbean.ModelMBean;
 
 public interface ManagementMBeanAssembler {
 
-  ModelMBean assemble(Object obj, ObjectName name) throws JMException;
+    ModelMBean assemble(Object obj, ObjectName name) throws JMException;
 
 }

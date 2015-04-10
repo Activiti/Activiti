@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.activiti.engine.identity.Group;
 
-
 /**
  * Interface describing the logged in user.
  * 
@@ -26,22 +25,22 @@ import org.activiti.engine.identity.Group;
  */
 public interface LoggedInUser extends Serializable {
 
-  String getId();
-  
-  String getFirstName();
-  
-  String getLastName();
-  
-  String getFullName();
-  
-  String getPassword();
-  
-  boolean isAdmin();
-  
-  boolean isUser();
-  
-  List<Group> getSecurityRoles();
+    String getId();
 
-  List<Group> getGroups();
-  
+    String getFirstName();
+
+    String getLastName();
+
+    String getFullName();
+
+    String getPassword();
+
+    boolean isAdmin();
+
+    boolean isUser();
+
+    List<Group> getSecurityRoles();
+
+    List<Group> getGroups();
+
 }

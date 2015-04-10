@@ -30,109 +30,111 @@ import com.vaadin.ui.Window;
  */
 public class MainWindow extends Window {
 
-  private static final long serialVersionUID = 1L;
-  
-  @Autowired
-  protected I18nManager i18nManager;
-  
-  @Autowired
-  protected NavigationFragmentChangeListener navigationFragmentChangeListener;
-  
-  // UI
-  protected MainLayout mainLayout;
-  protected UriFragmentUtility uriFragmentUtility;
-  protected UriFragment currentUriFragment;
-  protected boolean showingLoginPage;
+    private static final long serialVersionUID = 1L;
 
-  public MainWindow() {
-    setTheme(ExplorerLayout.THEME);
-  }
-  
-  @Override
-  public void attach() {
-    super.attach();
-    setCaption(i18nManager.getMessage(Messages.APP_TITLE));
-  }
+    @Autowired
+    protected I18nManager i18nManager;
 
-  public void showLoginPage() {
-    showingLoginPage = true;
-    addStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
-    setContent(new LoginPage());
-  }
-  
-  public void showDefaultContent() {
-    showingLoginPage = false;
-    removeStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
-    addStyleName("Default style"); // Vaadin bug: must set something or old style (eg. login page style) is not overwritten
-    
-    // init general look and feel
-    mainLayout = new MainLayout();
-    setContent(mainLayout);
+    @Autowired
+    protected NavigationFragmentChangeListener navigationFragmentChangeListener;
 
-    // init hidden components
-    initHiddenComponents();
-  }
-  
-  // View handling
-  
-  public void switchView(Component component) {
-    mainLayout.setMainContent(component);
-  }
-  
-  public void setMainNavigation(String navigation) {
-    mainLayout.setMainNavigation(navigation);
-  }
-  
-  // URL handling
-  
-  protected void initHiddenComponents() {
-    // Add the URI Fragent utility
-    uriFragmentUtility = new UriFragmentUtility();
-    mainLayout.addComponent(uriFragmentUtility);
-    
-    // Add listener to control page flow based on URI
-    uriFragmentUtility.addListener(navigationFragmentChangeListener);
-  }
-  
-  public UriFragment getCurrentUriFragment() {
-    return currentUriFragment;
-  }
+    // UI
+    protected MainLayout mainLayout;
+    protected UriFragmentUtility uriFragmentUtility;
+    protected UriFragment currentUriFragment;
+    protected boolean showingLoginPage;
 
-  /**
-   * Sets the current {@link UriFragment}. 
-   * Won't trigger navigation, just updates the URI fragment in the browser.
-   */
-  public void setCurrentUriFragment(UriFragment fragment) {
-    this.currentUriFragment = fragment;
-    
-    if(fragmentChanged(fragment)) {
-      
-      if(fragment != null) {
-        uriFragmentUtility.setFragment(fragment.toString(), false);      
-      } else {
-        uriFragmentUtility.setFragment("", false);      
-      }
+    public MainWindow() {
+        setTheme(ExplorerLayout.THEME);
     }
-  }
 
-  private boolean fragmentChanged(UriFragment fragment) {
-    String fragmentString = fragment.toString();
-    if(fragmentString == null) {
-      return uriFragmentUtility.getFragment() != null;
-    } else {
-      return !fragmentString.equals(uriFragmentUtility.getFragment());
+    @Override
+    public void attach() {
+        super.attach();
+        setCaption(i18nManager.getMessage(Messages.APP_TITLE));
     }
-  }
-  
-  public boolean isShowingLoginPage() {
-    return showingLoginPage;
-  }
-  
-  public void setNavigationFragmentChangeListener(NavigationFragmentChangeListener navigationFragmentChangeListener) {
-    this.navigationFragmentChangeListener = navigationFragmentChangeListener;
-  }
-  
-  public void setI18nManager(I18nManager i18nManager) {
-    this.i18nManager = i18nManager;
-  }
+
+    public void showLoginPage() {
+        showingLoginPage = true;
+        addStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
+        setContent(new LoginPage());
+    }
+
+    public void showDefaultContent() {
+        showingLoginPage = false;
+        removeStyleName(ExplorerLayout.STYLE_LOGIN_PAGE);
+        addStyleName("Default style"); // Vaadin bug: must set something or old
+                                       // style (eg. login page style) is not
+                                       // overwritten
+
+        // init general look and feel
+        mainLayout = new MainLayout();
+        setContent(mainLayout);
+
+        // init hidden components
+        initHiddenComponents();
+    }
+
+    // View handling
+
+    public void switchView(Component component) {
+        mainLayout.setMainContent(component);
+    }
+
+    public void setMainNavigation(String navigation) {
+        mainLayout.setMainNavigation(navigation);
+    }
+
+    // URL handling
+
+    protected void initHiddenComponents() {
+        // Add the URI Fragent utility
+        uriFragmentUtility = new UriFragmentUtility();
+        mainLayout.addComponent(uriFragmentUtility);
+
+        // Add listener to control page flow based on URI
+        uriFragmentUtility.addListener(navigationFragmentChangeListener);
+    }
+
+    public UriFragment getCurrentUriFragment() {
+        return currentUriFragment;
+    }
+
+    /**
+     * Sets the current {@link UriFragment}. Won't trigger navigation, just
+     * updates the URI fragment in the browser.
+     */
+    public void setCurrentUriFragment(UriFragment fragment) {
+        this.currentUriFragment = fragment;
+
+        if (fragmentChanged(fragment)) {
+
+            if (fragment != null) {
+                uriFragmentUtility.setFragment(fragment.toString(), false);
+            } else {
+                uriFragmentUtility.setFragment("", false);
+            }
+        }
+    }
+
+    private boolean fragmentChanged(UriFragment fragment) {
+        String fragmentString = fragment.toString();
+        if (fragmentString == null) {
+            return uriFragmentUtility.getFragment() != null;
+        } else {
+            return !fragmentString.equals(uriFragmentUtility.getFragment());
+        }
+    }
+
+    public boolean isShowingLoginPage() {
+        return showingLoginPage;
+    }
+
+    public void setNavigationFragmentChangeListener(NavigationFragmentChangeListener navigationFragmentChangeListener) {
+        this.navigationFragmentChangeListener = navigationFragmentChangeListener;
+    }
+
+    public void setI18nManager(I18nManager i18nManager) {
+        this.i18nManager = i18nManager;
+    }
 }

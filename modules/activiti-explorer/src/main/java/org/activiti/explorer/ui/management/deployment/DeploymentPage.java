@@ -26,78 +26,87 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Table;
 
-
 /**
  * @author Joram Barrez
  */
 public class DeploymentPage extends ManagementPage {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String deploymentId;
-  protected Table deploymentTable;
-  protected LazyLoadingContainer deploymentListContainer;
-  protected DeploymentFilter deploymentFilter;
-  
-  public DeploymentPage() {
-    ExplorerApp.get().setCurrentUriFragment(
-      new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
-    
-    deploymentFilter = ExplorerApp.get().getComponentFactory(DeploymentFilterFactory.class).create();
-  }
-  
-  public DeploymentPage(String deploymentId) {
-    this();
-    this.deploymentId = deploymentId;
-  }
-  
-  @Override
-  protected void initUi() {
-    super.initUi();
-    
-    if (deploymentId == null) {
-      selectElement(0);
-    } else {
-      selectElement(deploymentListContainer.getIndexForObjectId(deploymentId));
+    private static final long serialVersionUID = 1L;
+
+    protected String deploymentId;
+    protected Table deploymentTable;
+    protected LazyLoadingContainer deploymentListContainer;
+    protected DeploymentFilter deploymentFilter;
+
+    public DeploymentPage() {
+        ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
+
+        deploymentFilter = ExplorerApp.get().getComponentFactory(DeploymentFilterFactory.class).create();
     }
-  }
-  
-  @Override
-  protected Table createList() {
-    final Table deploymentTable = new Table();
-    
-    LazyLoadingQuery deploymentListQuery = new DeploymentListQuery(deploymentFilter);
-    deploymentListContainer = new LazyLoadingContainer(deploymentListQuery, 30);
-    deploymentTable.setContainerDataSource(deploymentListContainer);
-            
-    // Listener to change right panel when clicked on a deployment
-    deploymentTable.addListener(new Property.ValueChangeListener() {
-      private static final long serialVersionUID = 8811553575319455854L;
-      public void valueChange(ValueChangeEvent event) {
-        Item item = deploymentTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
-        if(item != null) {
-          String deploymentId = (String) item.getItemProperty("id").getValue();
-          setDetailComponent(new DeploymentDetailPanel(deploymentId, DeploymentPage.this));
-          
-          // Update URL
-          ExplorerApp.get().setCurrentUriFragment(
-            new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART, deploymentId));
+
+    public DeploymentPage(String deploymentId) {
+        this();
+        this.deploymentId = deploymentId;
+    }
+
+    @Override
+    protected void initUi() {
+        super.initUi();
+
+        if (deploymentId == null) {
+            selectElement(0);
         } else {
-          // Nothing is selected
-          setDetailComponent(null);
-          ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
+            selectElement(deploymentListContainer.getIndexForObjectId(deploymentId));
         }
-      }
-    });
-    
-    // Create column headers
-    deploymentTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.DEPLOYMENT_22));
-    deploymentTable.setColumnWidth("icon", 22);
-    
-    deploymentTable.addContainerProperty("name", String.class, null);
-    deploymentTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-    
-    return deploymentTable;
-  }
-  
+    }
+
+    @Override
+    protected Table createList() {
+        final Table deploymentTable = new Table();
+
+        LazyLoadingQuery deploymentListQuery = new DeploymentListQuery(deploymentFilter);
+        deploymentListContainer = new LazyLoadingContainer(deploymentListQuery, 30);
+        deploymentTable.setContainerDataSource(deploymentListContainer);
+
+        // Listener to change right panel when clicked on a deployment
+        deploymentTable.addListener(new Property.ValueChangeListener() {
+            private static final long serialVersionUID = 8811553575319455854L;
+
+            public void valueChange(ValueChangeEvent event) {
+                Item item = deploymentTable.getItem(event.getProperty().getValue()); // the
+                                                                                     // value
+                                                                                     // of
+                                                                                     // the
+                                                                                     // property
+                                                                                     // is
+                                                                                     // the
+                                                                                     // itemId
+                                                                                     // of
+                                                                                     // the
+                                                                                     // table
+                                                                                     // entry
+                if (item != null) {
+                    String deploymentId = (String) item.getItemProperty("id").getValue();
+                    setDetailComponent(new DeploymentDetailPanel(deploymentId, DeploymentPage.this));
+
+                    // Update URL
+                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART, deploymentId));
+                } else {
+                    // Nothing is selected
+                    setDetailComponent(null);
+                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
+                }
+            }
+        });
+
+        // Create column headers
+        deploymentTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.DEPLOYMENT_22));
+        deploymentTable.setColumnWidth("icon", 22);
+
+        deploymentTable.addContainerProperty("name", String.class, null);
+        deploymentTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+
+        return deploymentTable;
+    }
+
 }

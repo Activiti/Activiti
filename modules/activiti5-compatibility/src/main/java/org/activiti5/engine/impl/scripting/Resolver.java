@@ -13,13 +13,12 @@
 
 package org.activiti5.engine.impl.scripting;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public interface Resolver {
 
-  boolean containsKey(Object key);
-  Object get(Object key);
+    boolean containsKey(Object key);
+
+    Object get(Object key);
 }

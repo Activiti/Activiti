@@ -19,24 +19,23 @@ import org.activiti.engine.identity.User;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 /**
  * @author Frederik Heremans
  */
 public class BaseUserResource {
-  
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected IdentityService identityService;
 
-  protected User getUserFromRequest(String userId) {
-    User user = identityService.createUserQuery().userId(userId).singleResult();
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
 
-    if (user == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a user with id '" + userId + "'.", User.class);
+    @Autowired
+    protected IdentityService identityService;
+
+    protected User getUserFromRequest(String userId) {
+        User user = identityService.createUserQuery().userId(userId).singleResult();
+
+        if (user == null) {
+            throw new ActivitiObjectNotFoundException("Could not find a user with id '" + userId + "'.", User.class);
+        }
+        return user;
     }
-    return user;
-  }
 }

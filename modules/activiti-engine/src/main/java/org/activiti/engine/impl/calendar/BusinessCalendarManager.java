@@ -12,12 +12,11 @@
  */
 package org.activiti.engine.impl.calendar;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface BusinessCalendarManager {
 
-  BusinessCalendar getBusinessCalendar(String businessCalendarRef);
+    BusinessCalendar getBusinessCalendar(String businessCalendarRef);
 
 }

@@ -23,29 +23,29 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
  */
 public abstract class JobExecutorTestCase extends PluggableActivitiTestCase {
 
-  protected TweetHandler tweetHandler = new TweetHandler();
+    protected TweetHandler tweetHandler = new TweetHandler();
 
-  public void setUp() throws Exception {
-    processEngineConfiguration.getJobHandlers().put(tweetHandler.getType(), tweetHandler);
-  }
+    public void setUp() throws Exception {
+        processEngineConfiguration.getJobHandlers().put(tweetHandler.getType(), tweetHandler);
+    }
 
-  public void tearDown() throws Exception {
-    processEngineConfiguration.getJobHandlers().remove(tweetHandler.getType());
-  }
+    public void tearDown() throws Exception {
+        processEngineConfiguration.getJobHandlers().remove(tweetHandler.getType());
+    }
 
-  protected MessageEntity createTweetMessage(String msg) {
-    MessageEntity message = new MessageEntity();
-    message.setJobHandlerType("tweet");
-    message.setJobHandlerConfiguration(msg);
-    return message;
-  }
+    protected MessageEntity createTweetMessage(String msg) {
+        MessageEntity message = new MessageEntity();
+        message.setJobHandlerType("tweet");
+        message.setJobHandlerConfiguration(msg);
+        return message;
+    }
 
-  protected TimerEntity createTweetTimer(String msg, Date duedate) {
-    TimerEntity timer = new TimerEntity();
-    timer.setJobHandlerType("tweet");
-    timer.setJobHandlerConfiguration(msg);
-    timer.setDuedate(duedate);
-    return timer;
-  }
+    protected TimerEntity createTweetTimer(String msg, Date duedate) {
+        TimerEntity timer = new TimerEntity();
+        timer.setJobHandlerType("tweet");
+        timer.setJobHandlerConfiguration(msg);
+        timer.setDuedate(duedate);
+        return timer;
+    }
 
 }

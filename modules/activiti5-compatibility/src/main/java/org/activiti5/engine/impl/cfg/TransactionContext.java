@@ -12,15 +12,14 @@
  */
 package org.activiti5.engine.impl.cfg;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public interface TransactionContext {
 
-  void commit();
-  void rollback();
+    void commit();
 
-  void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener);
+    void rollback();
+
+    void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener);
 }

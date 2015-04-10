@@ -18,28 +18,25 @@ import org.activiti5.engine.ActivitiIllegalArgumentException;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
-public class DeleteGroupCmd implements Command<Void>, Serializable  {
+public class DeleteGroupCmd implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  String groupId;
-  
-  public DeleteGroupCmd(String groupId) {
-    this.groupId = groupId;
-  }
-  
-  public Void execute(CommandContext commandContext) {
-    if(groupId == null) {
-      throw new ActivitiIllegalArgumentException("groupId is null");
+    private static final long serialVersionUID = 1L;
+    String groupId;
+
+    public DeleteGroupCmd(String groupId) {
+        this.groupId = groupId;
     }
-    commandContext
-      .getGroupIdentityManager()
-      .deleteGroup(groupId);
-    
-    return null;
-  }
+
+    public Void execute(CommandContext commandContext) {
+        if (groupId == null) {
+            throw new ActivitiIllegalArgumentException("groupId is null");
+        }
+        commandContext.getGroupIdentityManager().deleteGroup(groupId);
+
+        return null;
+    }
 
 }

@@ -15,30 +15,32 @@ package org.activiti5.engine.repository;
 
 import java.io.Serializable;
 
-
 /**
  * Stores the position of a waypoint of a diagram edge.
- *
+ * 
  * @author Falko Menge
  */
 public class DiagramEdgeWaypoint implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  private Double x = null;
-  private Double y = null;
-  
-  public Double getX() {
-    return x;
-  }
-  public void setX(Double x) {
-    this.x = x;
-  }
-  public Double getY() {
-    return y;
-  }
-  public void setY(Double y) {
-    this.y = y;
-  }
+    private static final long serialVersionUID = 1L;
+
+    private Double x = null;
+    private Double y = null;
+
+    public Double getX() {
+        return x;
+    }
+
+    public void setX(Double x) {
+        this.x = x;
+    }
+
+    public Double getY() {
+        return y;
+    }
+
+    public void setY(Double y) {
+        this.y = y;
+    }
 
 }

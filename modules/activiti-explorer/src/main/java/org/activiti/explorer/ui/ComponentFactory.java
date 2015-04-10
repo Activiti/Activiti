@@ -16,17 +16,17 @@ import java.io.Serializable;
 
 import com.vaadin.ui.Component;
 
-
 /**
- * Interface for a factory that produces a {@link Component} of the given generic type,
- * depending on the environment parameter passed during initialisation.
+ * Interface for a factory that produces a {@link Component} of the given
+ * generic type, depending on the environment parameter passed during
+ * initialisation.
  * 
  * @author Joram Barrez
  */
 public interface ComponentFactory<T> extends Serializable {
-  
-  void initialise(String environment);
-  
-  T create();
+
+    void initialise(String environment);
+
+    T create();
 
 }

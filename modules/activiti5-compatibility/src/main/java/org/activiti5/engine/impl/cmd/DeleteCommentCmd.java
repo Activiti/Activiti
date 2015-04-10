@@ -27,42 +27,42 @@ import org.activiti5.engine.task.Comment;
  */
 public class DeleteCommentCmd implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String taskId;
-  protected String processInstanceId;
-  protected String commentId;
+    private static final long serialVersionUID = 1L;
+    protected String taskId;
+    protected String processInstanceId;
+    protected String commentId;
 
-  public DeleteCommentCmd(String taskId, String processInstanceId, String commentId) {
-    this.taskId = taskId;
-    this.processInstanceId = processInstanceId;
-    this.commentId = commentId;
-  }
-
-  public Void execute(CommandContext commandContext) {
-    CommentEntityManager commentManager = commandContext.getCommentEntityManager();
-    
-    if(commentId != null) {
-      // Delete for an individual comment
-      Comment comment = commentManager.findComment(commentId);
-      if(comment == null) {
-        throw new ActivitiObjectNotFoundException("Comment with id '" + commentId + "' doesn't exists.", Comment.class);
-      }
-      commentManager.delete((CommentEntity) comment);
-      
-    } else {
-      // Delete all comments on a task of process
-      ArrayList<Comment> comments = new ArrayList<Comment>();
-      if (processInstanceId != null) {
-        comments.addAll(commentManager.findCommentsByProcessInstanceId(processInstanceId));
-      }
-      if (taskId != null) {
-        comments.addAll(commentManager.findCommentsByTaskId(taskId));
-      }
-
-      for (Comment comment : comments) {
-        commentManager.delete((CommentEntity)comment);
-      }
+    public DeleteCommentCmd(String taskId, String processInstanceId, String commentId) {
+        this.taskId = taskId;
+        this.processInstanceId = processInstanceId;
+        this.commentId = commentId;
     }
-    return null;
-  }
+
+    public Void execute(CommandContext commandContext) {
+        CommentEntityManager commentManager = commandContext.getCommentEntityManager();
+
+        if (commentId != null) {
+            // Delete for an individual comment
+            Comment comment = commentManager.findComment(commentId);
+            if (comment == null) {
+                throw new ActivitiObjectNotFoundException("Comment with id '" + commentId + "' doesn't exists.", Comment.class);
+            }
+            commentManager.delete((CommentEntity) comment);
+
+        } else {
+            // Delete all comments on a task of process
+            ArrayList<Comment> comments = new ArrayList<Comment>();
+            if (processInstanceId != null) {
+                comments.addAll(commentManager.findCommentsByProcessInstanceId(processInstanceId));
+            }
+            if (taskId != null) {
+                comments.addAll(commentManager.findCommentsByTaskId(taskId));
+            }
+
+            for (Comment comment : comments) {
+                commentManager.delete((CommentEntity) comment);
+            }
+        }
+        return null;
+    }
 }

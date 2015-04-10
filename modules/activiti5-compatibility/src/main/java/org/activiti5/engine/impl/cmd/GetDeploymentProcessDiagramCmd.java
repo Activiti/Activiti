@@ -23,7 +23,6 @@ import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Gives access to a deployed process diagram, e.g., a PNG image, through a
  * stream of bytes.
@@ -32,34 +31,29 @@ import org.slf4j.LoggerFactory;
  */
 public class GetDeploymentProcessDiagramCmd implements Command<InputStream>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  private static Logger log = LoggerFactory.getLogger(GetDeploymentProcessDiagramCmd.class);
-  
-  protected String processDefinitionId;
+    private static final long serialVersionUID = 1L;
+    private static Logger log = LoggerFactory.getLogger(GetDeploymentProcessDiagramCmd.class);
 
-  public GetDeploymentProcessDiagramCmd(String processDefinitionId) {
-    if (processDefinitionId == null || processDefinitionId.length() < 1) {
-      throw new ActivitiIllegalArgumentException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
-    }
-    this.processDefinitionId = processDefinitionId;
-  }
+    protected String processDefinitionId;
 
-  public InputStream execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager()
-            .findDeployedProcessDefinitionById(processDefinitionId);
-    String deploymentId = processDefinition.getDeploymentId();
-    String resourceName = processDefinition.getDiagramResourceName();
-    if (resourceName == null ) {
-      log.info("Resource name is null! No process diagram stream exists.");
-      return null;
-    } else {
-      InputStream processDiagramStream =
-              new GetDeploymentResourceCmd(deploymentId, resourceName)
-              .execute(commandContext);
-      return processDiagramStream;
+    public GetDeploymentProcessDiagramCmd(String processDefinitionId) {
+        if (processDefinitionId == null || processDefinitionId.length() < 1) {
+            throw new ActivitiIllegalArgumentException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
+        }
+        this.processDefinitionId = processDefinitionId;
     }
-  }
+
+    public InputStream execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+        String deploymentId = processDefinition.getDeploymentId();
+        String resourceName = processDefinition.getDiagramResourceName();
+        if (resourceName == null) {
+            log.info("Resource name is null! No process diagram stream exists.");
+            return null;
+        } else {
+            InputStream processDiagramStream = new GetDeploymentResourceCmd(deploymentId, resourceName).execute(commandContext);
+            return processDiagramStream;
+        }
+    }
 
 }

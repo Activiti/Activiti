@@ -14,12 +14,11 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 
-
 /**
  * @author Joram Barrez
  */
 public interface UnresolvedReference {
-  
-  void resolve(ProcessDefinitionImpl processDefinition);
+
+    void resolve(ProcessDefinitionImpl processDefinition);
 
 }

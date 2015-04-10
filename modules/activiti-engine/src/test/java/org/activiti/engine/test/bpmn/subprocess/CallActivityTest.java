@@ -28,124 +28,105 @@ import java.util.List;
 
 public class CallActivityTest extends ResourceActivitiTestCase {
 
-  private static String MAIN_PROCESS_RESOURCE = "org/activiti/engine/test/bpmn/subprocess/SubProcessTest.testSuspendedProcessCallActivity_mainProcess.bpmn.xml";
-  private static String CHILD_PROCESS_RESOURCE = "org/activiti/engine/test/bpmn/subprocess/SubProcessTest.testSuspendedProcessCallActivity_childProcess.bpmn.xml";
-  private static String MESSAGE_TRIGGERED_PROCESS_RESOURCE = "org/activiti/engine/test/bpmn/subprocess/SubProcessTest.testSuspendedProcessCallActivity_messageTriggeredProcess.bpmn.xml";
+    private static String MAIN_PROCESS_RESOURCE = "org/activiti/engine/test/bpmn/subprocess/SubProcessTest.testSuspendedProcessCallActivity_mainProcess.bpmn.xml";
+    private static String CHILD_PROCESS_RESOURCE = "org/activiti/engine/test/bpmn/subprocess/SubProcessTest.testSuspendedProcessCallActivity_childProcess.bpmn.xml";
+    private static String MESSAGE_TRIGGERED_PROCESS_RESOURCE = "org/activiti/engine/test/bpmn/subprocess/SubProcessTest.testSuspendedProcessCallActivity_messageTriggeredProcess.bpmn.xml";
 
-  public CallActivityTest() {
-    super("org/activiti/standalone/parsing/encoding.activiti.cfg.xml");
-  }
-
-  public void testInstantiateProcessByMessage() throws Exception {
-    BpmnModel messageTriggeredBpmnModel = loadBPMNModel(MESSAGE_TRIGGERED_PROCESS_RESOURCE);
-
-    Deployment messageTriggeredBpmnDeployment = processEngine.getRepositoryService()
-        .createDeployment()
-        .name("messageTriggeredProcessDeployment")
-        .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel).deploy();
-
-    ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE");
-    assertNotNull(childProcessInstance);
-  }
-
-  public void testInstantiateSuspendedProcessByMessage() throws Exception {
-    BpmnModel messageTriggeredBpmnModel = loadBPMNModel(MESSAGE_TRIGGERED_PROCESS_RESOURCE);
-
-    Deployment messageTriggeredBpmnDeployment = processEngine.getRepositoryService()
-        .createDeployment()
-        .name("messageTriggeredProcessDeployment")
-        .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel).deploy();
-
-    suspendProcessDefinitions(messageTriggeredBpmnDeployment);
-
-    try {
-      ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE");
-      fail("Exception expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot start process instance. Process definition Message Triggered Process", ae.getMessage());
+    public CallActivityTest() {
+        super("org/activiti/standalone/parsing/encoding.activiti.cfg.xml");
     }
 
-  }
+    public void testInstantiateProcessByMessage() throws Exception {
+        BpmnModel messageTriggeredBpmnModel = loadBPMNModel(MESSAGE_TRIGGERED_PROCESS_RESOURCE);
 
-  public void testInstantiateChildProcess() throws Exception {
-    BpmnModel childBpmnModel = loadBPMNModel(CHILD_PROCESS_RESOURCE);
+        Deployment messageTriggeredBpmnDeployment = processEngine.getRepositoryService().createDeployment().name("messageTriggeredProcessDeployment")
+                .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel).deploy();
 
-    Deployment childDeployment = processEngine.getRepositoryService()
-        .createDeployment()
-        .name("childProcessDeployment")
-        .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
-
-    ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByKey("childProcess");
-    assertNotNull(childProcessInstance);
-  }
-
-  public void testInstantiateSuspendedChildProcess() throws Exception {
-    BpmnModel childBpmnModel = loadBPMNModel(CHILD_PROCESS_RESOURCE);
-
-    Deployment childDeployment = processEngine.getRepositoryService()
-        .createDeployment()
-        .name("childProcessDeployment")
-        .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
-
-    suspendProcessDefinitions(childDeployment);
-
-    try {
-      ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByKey("childProcess");
-      fail("Exception expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot start process instance. Process definition Child Process", ae.getMessage());
+        ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE");
+        assertNotNull(childProcessInstance);
     }
 
-  }
+    public void testInstantiateSuspendedProcessByMessage() throws Exception {
+        BpmnModel messageTriggeredBpmnModel = loadBPMNModel(MESSAGE_TRIGGERED_PROCESS_RESOURCE);
 
+        Deployment messageTriggeredBpmnDeployment = processEngine.getRepositoryService().createDeployment().name("messageTriggeredProcessDeployment")
+                .addBpmnModel("messageTriggered.bpmn20.xml", messageTriggeredBpmnModel).deploy();
 
-  public void testInstantiateSubprocess() throws Exception {
-    BpmnModel mainBpmnModel = loadBPMNModel(MAIN_PROCESS_RESOURCE);
-    BpmnModel childBpmnModel = loadBPMNModel(CHILD_PROCESS_RESOURCE);
+        suspendProcessDefinitions(messageTriggeredBpmnDeployment);
 
-    Deployment childDeployment = processEngine.getRepositoryService()
-        .createDeployment()
-        .name("childProcessDeployment")
-        .addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
+        try {
+            ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByMessage("TRIGGER_PROCESS_MESSAGE");
+            fail("Exception expected");
+        } catch (ActivitiException ae) {
+            assertTextPresent("Cannot start process instance. Process definition Message Triggered Process", ae.getMessage());
+        }
 
-    Deployment masterDeployment = processEngine.getRepositoryService()
-        .createDeployment()
-        .name("masterProcessDeployment")
-        .addBpmnModel("masterProcess.bpmn20.xml", mainBpmnModel).deploy();
-
-    suspendProcessDefinitions(childDeployment);
-
-    try {
-      ProcessInstance masterProcessInstance = runtimeService.startProcessInstanceByKey("masterProcess");
-      fail("Exception expected");
-    } catch (ActivitiException ae) {
-      assertTextPresent("Cannot start process instance. Process definition Child Process", ae.getMessage());
     }
 
-  }
+    public void testInstantiateChildProcess() throws Exception {
+        BpmnModel childBpmnModel = loadBPMNModel(CHILD_PROCESS_RESOURCE);
 
-  private void suspendProcessDefinitions(Deployment childDeployment) {
-    List<ProcessDefinition> childProcessDefinitionList = repositoryService.createProcessDefinitionQuery().deploymentId(childDeployment.getId()).list();
+        Deployment childDeployment = processEngine.getRepositoryService().createDeployment().name("childProcessDeployment").addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
 
-    for (ProcessDefinition processDefinition : childProcessDefinitionList) {
-      repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+        ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByKey("childProcess");
+        assertNotNull(childProcessInstance);
     }
-  }
 
-  protected void tearDown() throws Exception {
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
+    public void testInstantiateSuspendedChildProcess() throws Exception {
+        BpmnModel childBpmnModel = loadBPMNModel(CHILD_PROCESS_RESOURCE);
+
+        Deployment childDeployment = processEngine.getRepositoryService().createDeployment().name("childProcessDeployment").addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
+
+        suspendProcessDefinitions(childDeployment);
+
+        try {
+            ProcessInstance childProcessInstance = runtimeService.startProcessInstanceByKey("childProcess");
+            fail("Exception expected");
+        } catch (ActivitiException ae) {
+            assertTextPresent("Cannot start process instance. Process definition Child Process", ae.getMessage());
+        }
+
     }
-    super.tearDown();
-  }
 
+    public void testInstantiateSubprocess() throws Exception {
+        BpmnModel mainBpmnModel = loadBPMNModel(MAIN_PROCESS_RESOURCE);
+        BpmnModel childBpmnModel = loadBPMNModel(CHILD_PROCESS_RESOURCE);
 
-  protected BpmnModel loadBPMNModel(String bpmnModelFilePath) throws Exception {
-    InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(bpmnModelFilePath);
-    StreamSource xmlSource = new InputStreamSource(xmlStream);
-    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xmlSource, false, false, processEngineConfiguration.getXmlEncoding());
-    return bpmnModel;
-  }
+        Deployment childDeployment = processEngine.getRepositoryService().createDeployment().name("childProcessDeployment").addBpmnModel("childProcess.bpmn20.xml", childBpmnModel).deploy();
 
+        Deployment masterDeployment = processEngine.getRepositoryService().createDeployment().name("masterProcessDeployment").addBpmnModel("masterProcess.bpmn20.xml", mainBpmnModel).deploy();
+
+        suspendProcessDefinitions(childDeployment);
+
+        try {
+            ProcessInstance masterProcessInstance = runtimeService.startProcessInstanceByKey("masterProcess");
+            fail("Exception expected");
+        } catch (ActivitiException ae) {
+            assertTextPresent("Cannot start process instance. Process definition Child Process", ae.getMessage());
+        }
+
+    }
+
+    private void suspendProcessDefinitions(Deployment childDeployment) {
+        List<ProcessDefinition> childProcessDefinitionList = repositoryService.createProcessDefinitionQuery().deploymentId(childDeployment.getId()).list();
+
+        for (ProcessDefinition processDefinition : childProcessDefinitionList) {
+            repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+        }
+    }
+
+    protected void tearDown() throws Exception {
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
+        super.tearDown();
+    }
+
+    protected BpmnModel loadBPMNModel(String bpmnModelFilePath) throws Exception {
+        InputStream xmlStream = this.getClass().getClassLoader().getResourceAsStream(bpmnModelFilePath);
+        StreamSource xmlSource = new InputStreamSource(xmlStream);
+        BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xmlSource, false, false, processEngineConfiguration.getXmlEncoding());
+        return bpmnModel;
+    }
 
 }

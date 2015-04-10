@@ -16,35 +16,34 @@ package org.activiti.engine.test.bpmn.usertask;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.test.Deployment;
 
-
 /**
  * @author Tom Baeyens
  */
 public class InitiatorTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testInitiator() {
-    try {
-      identityService.setAuthenticatedUserId("bono");
-      runtimeService.startProcessInstanceByKey("InitiatorProcess");
-    } finally {
-      identityService.setAuthenticatedUserId(null);
+    @Deployment
+    public void testInitiator() {
+        try {
+            identityService.setAuthenticatedUserId("bono");
+            runtimeService.startProcessInstanceByKey("InitiatorProcess");
+        } finally {
+            identityService.setAuthenticatedUserId(null);
+        }
+
+        assertEquals(1, taskService.createTaskQuery().taskAssignee("bono").count());
     }
-    
-    assertEquals(1, taskService.createTaskQuery().taskAssignee("bono").count());
-  }
-  
-  // See ACT-1372
-  @Deployment
-  public void testInitiatorWithWhiteSpaceInExpression() {
-    try {
-      identityService.setAuthenticatedUserId("bono");
-      runtimeService.startProcessInstanceByKey("InitiatorProcess");
-    } finally {
-      identityService.setAuthenticatedUserId(null);
+
+    // See ACT-1372
+    @Deployment
+    public void testInitiatorWithWhiteSpaceInExpression() {
+        try {
+            identityService.setAuthenticatedUserId("bono");
+            runtimeService.startProcessInstanceByKey("InitiatorProcess");
+        } finally {
+            identityService.setAuthenticatedUserId(null);
+        }
+
+        assertEquals(1, taskService.createTaskQuery().taskAssignee("bono").count());
     }
-    
-    assertEquals(1, taskService.createTaskQuery().taskAssignee("bono").count());
-  }
-  
+
 }

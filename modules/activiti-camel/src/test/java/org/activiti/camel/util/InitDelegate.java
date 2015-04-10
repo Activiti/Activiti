@@ -6,9 +6,9 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 public class InitDelegate implements JavaDelegate {
 
-  @Override
-  public void execute(DelegateExecution execution) {
-    execution.setVariable(ActivitiProducer.PROCESS_ID_PROPERTY, execution.getProcessInstanceId());
-  }
+    @Override
+    public void execute(DelegateExecution execution) {
+        execution.setVariable(ActivitiProducer.PROCESS_ID_PROPERTY, execution.getProcessInstanceId());
+    }
 
 }

@@ -23,17 +23,17 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  */
 public class CancelEventDefinitionParseHandler extends AbstractBpmnParseHandler<CancelEventDefinition> {
 
-  public Class< ? extends BaseElement> getHandledType() {
-    return CancelEventDefinition.class;
-  }
-
-  protected void executeParse(BpmnParse bpmnParse, CancelEventDefinition cancelEventDefinition) {
-    if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-      ActivityImpl activity = bpmnParse.getCurrentActivity();
-      activity.setProperty("type", "cancelBoundaryCatch");
-      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCancelBoundaryEventActivityBehavior(cancelEventDefinition));
+    public Class<? extends BaseElement> getHandledType() {
+        return CancelEventDefinition.class;
     }
 
-  }
+    protected void executeParse(BpmnParse bpmnParse, CancelEventDefinition cancelEventDefinition) {
+        if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
+            ActivityImpl activity = bpmnParse.getCurrentActivity();
+            activity.setProperty("type", "cancelBoundaryCatch");
+            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCancelBoundaryEventActivityBehavior(cancelEventDefinition));
+        }
+
+    }
 
 }

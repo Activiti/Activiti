@@ -14,12 +14,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 /**
  * tests the scoped beans
- *
+ * 
  * @author Josh Long
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:org/activiti/spring/test/components/ScopingTests-context.xml")
-@Ignore // Ignored for the moment. Josh is working on this.
+@Ignore
+// Ignored for the moment. Josh is working on this.
 public class XmlNamespaceProcessScopeTest {
 
     private ProcessScopeTestEngine processScopeTestEngine;
@@ -29,9 +30,7 @@ public class XmlNamespaceProcessScopeTest {
 
     @Before
     public void before() throws Throwable {
-        this.processEngine.getRepositoryService().createDeployment()
-                .addClasspathResource("org/activiti/spring/test/components/spring-component-waiter.bpmn20.xml")
-                .deploy();
+        this.processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/spring/test/components/spring-component-waiter.bpmn20.xml").deploy();
 
         processScopeTestEngine = new ProcessScopeTestEngine(this.processEngine);
     }
@@ -48,6 +47,5 @@ public class XmlNamespaceProcessScopeTest {
     public void testScopedProxyCreation() throws Throwable {
         processScopeTestEngine.testScopedProxyCreation();
     }
-
 
 }

@@ -20,9 +20,9 @@ import org.activiti5.engine.delegate.JavaDelegate;
  * @author Daniel Meyer
  */
 public class FailingAsyncService implements JavaDelegate {
-  
-  public void execute(DelegateExecution execution) throws Exception {
-    throw new RuntimeException();
-  }
+
+    public void execute(DelegateExecution execution) throws Exception {
+        throw new RuntimeException();
+    }
 
 }

@@ -17,49 +17,49 @@ import java.util.Map;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class SetExecutionVariablesCmd extends NeedsActiveExecutionCmd<Object> {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected Map<String, ? extends Object> variables;
-  protected boolean isLocal;
-  
-  public SetExecutionVariablesCmd(String executionId, Map<String, ? extends Object> variables, boolean isLocal) {
-    super(executionId);
-    this.variables = variables;
-    this.isLocal = isLocal;
-  }
-  
-  protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
-    if (isLocal) {
-    	if (variables != null) {
-    		for (String variableName : variables.keySet()) {
-    			execution.setVariableLocal(variableName, variables.get(variableName), false);
-    		}
-    	}
-    } else {
-    	if (variables != null) {
-    		for (String variableName : variables.keySet()) {
-    			execution.setVariable(variableName, variables.get(variableName), false);
-    		}
-    	}
-    }
-    
-    // ACT-1887: Force an update of the execution's revision to prevent simultaneous inserts of the same
-    // variable. If not, duplicate variables may occur since optimistic locking doesn't work on inserts
-    execution.forceUpdate();
-    return null;
-  }
-  
-  @Override
-  protected String getSuspendedExceptionMessage() {
-    return "Cannot set variables because execution '" + executionId + "' is suspended";
-  }
-  
-}
+    private static final long serialVersionUID = 1L;
 
+    protected Map<String, ? extends Object> variables;
+    protected boolean isLocal;
+
+    public SetExecutionVariablesCmd(String executionId, Map<String, ? extends Object> variables, boolean isLocal) {
+        super(executionId);
+        this.variables = variables;
+        this.isLocal = isLocal;
+    }
+
+    protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
+        if (isLocal) {
+            if (variables != null) {
+                for (String variableName : variables.keySet()) {
+                    execution.setVariableLocal(variableName, variables.get(variableName), false);
+                }
+            }
+        } else {
+            if (variables != null) {
+                for (String variableName : variables.keySet()) {
+                    execution.setVariable(variableName, variables.get(variableName), false);
+                }
+            }
+        }
+
+        // ACT-1887: Force an update of the execution's revision to prevent
+        // simultaneous inserts of the same
+        // variable. If not, duplicate variables may occur since optimistic
+        // locking doesn't work on inserts
+        execution.forceUpdate();
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedExceptionMessage() {
+        return "Cannot set variables because execution '" + executionId + "' is suspended";
+    }
+
+}

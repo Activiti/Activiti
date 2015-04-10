@@ -26,73 +26,73 @@ import org.slf4j.LoggerFactory;
  */
 public class WSOperation implements OperationImplementation {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(WSOperation.class);
-  
-  protected String id;
+    private static final Logger LOGGER = LoggerFactory.getLogger(WSOperation.class);
 
-  protected String name;
-  
-  protected WSService service;
-  
-  public WSOperation(String id, String operationName, WSService service) {
-    this.id = id;
-    this.name = operationName;
-    this.service = service;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public String getId() {
-    return this.id;
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public String getName() {
-    return this.name;
-  }
+    protected String id;
 
-  /**
-   * {@inheritDoc}
-   */
-  public MessageInstance sendFor(MessageInstance message, Operation operation) {
-    Object[] arguments = this.getArguments(message);
-    Object[] results = this.safeSend(arguments);
-    return this.createResponseMessage(results, operation);
-  }
+    protected String name;
 
-  private Object[] getArguments(MessageInstance message) {
-    return message.getStructureInstance().toArray();
-  }
-  
-  private Object[] safeSend(Object[] arguments) {
-    Object[] results = null;
-    
-    try {
-      results = this.service.getClient().send(this.name, arguments);
-    } catch (Exception e) {
-      LOGGER.warn("Error calling WS {}", this.service.getName(), e);
+    protected WSService service;
+
+    public WSOperation(String id, String operationName, WSService service) {
+        this.id = id;
+        this.name = operationName;
+        this.service = service;
     }
-    
-    if (results == null) {
-      results = new Object[] {};
-    }
-    return results;
-  }
-  
-  private MessageInstance createResponseMessage(Object[] results, Operation operation) {
-    MessageInstance message = null;
-    MessageDefinition outMessage = operation.getOutMessage();
-    if (outMessage != null) {
-      message = outMessage.createInstance();
-      message.getStructureInstance().loadFrom(results);
-    }
-    return message;
-  }
 
-  public WSService getService() {
-    return this.service;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public String getId() {
+        return this.id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public MessageInstance sendFor(MessageInstance message, Operation operation) {
+        Object[] arguments = this.getArguments(message);
+        Object[] results = this.safeSend(arguments);
+        return this.createResponseMessage(results, operation);
+    }
+
+    private Object[] getArguments(MessageInstance message) {
+        return message.getStructureInstance().toArray();
+    }
+
+    private Object[] safeSend(Object[] arguments) {
+        Object[] results = null;
+
+        try {
+            results = this.service.getClient().send(this.name, arguments);
+        } catch (Exception e) {
+            LOGGER.warn("Error calling WS {}", this.service.getName(), e);
+        }
+
+        if (results == null) {
+            results = new Object[] {};
+        }
+        return results;
+    }
+
+    private MessageInstance createResponseMessage(Object[] results, Operation operation) {
+        MessageInstance message = null;
+        MessageDefinition outMessage = operation.getOutMessage();
+        if (outMessage != null) {
+            message = outMessage.createInstance();
+            message.getStructureInstance().loadFrom(results);
+        }
+        return message;
+    }
+
+    public WSService getService() {
+        return this.service;
+    }
 }

@@ -24,36 +24,35 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public abstract class AbstractDataAssociation implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String source;
+    private static final long serialVersionUID = 1L;
 
-  protected Expression sourceExpression;
+    protected String source;
 
-  protected String target;
-  
-  protected AbstractDataAssociation(String source, String target) {
-    this.source = source;
-    this.target = target;
-  }
+    protected Expression sourceExpression;
 
-  protected AbstractDataAssociation(Expression sourceExpression, String target) {
-    this.sourceExpression = sourceExpression;
-    this.target = target;
-  }
+    protected String target;
 
-  public abstract void evaluate(ActivityExecution execution);
-  
-  public String getSource() {
-    return source;
-  }
-  
-  public String getTarget() {
-    return target;
-  }
+    protected AbstractDataAssociation(String source, String target) {
+        this.source = source;
+        this.target = target;
+    }
 
-  
-  public Expression getSourceExpression() {
-    return sourceExpression;
-  }
+    protected AbstractDataAssociation(Expression sourceExpression, String target) {
+        this.sourceExpression = sourceExpression;
+        this.target = target;
+    }
+
+    public abstract void evaluate(ActivityExecution execution);
+
+    public String getSource() {
+        return source;
+    }
+
+    public String getTarget() {
+        return target;
+    }
+
+    public Expression getSourceExpression() {
+        return sourceExpression;
+    }
 }

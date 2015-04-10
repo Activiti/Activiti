@@ -17,18 +17,17 @@ import org.activiti.explorer.ui.NoParamComponentFactory;
 import org.activiti.explorer.ui.alfresco.AlfrescoManagementMenuBar;
 import org.activiti.explorer.ui.custom.ToolBar;
 
-
 /**
  * @author Joram Barrez
  */
 public class ManagementMenuBarFactory extends NoParamComponentFactory<ToolBar> {
 
-  protected Class< ? extends ToolBar> getAlfrescoComponentClass() {
-    return AlfrescoManagementMenuBar.class; 
-  }
+    protected Class<? extends ToolBar> getAlfrescoComponentClass() {
+        return AlfrescoManagementMenuBar.class;
+    }
 
-  protected Class< ? extends ToolBar> getDefaultComponentClass() {
-    return ManagementMenuBar.class;
-  }
+    protected Class<? extends ToolBar> getDefaultComponentClass() {
+        return ManagementMenuBar.class;
+    }
 
 }

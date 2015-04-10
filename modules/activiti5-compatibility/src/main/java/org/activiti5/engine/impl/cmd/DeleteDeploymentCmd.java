@@ -23,26 +23,23 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class DeleteDeploymentCmd implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String deploymentId;
-  protected boolean cascade;
+    private static final long serialVersionUID = 1L;
+    protected String deploymentId;
+    protected boolean cascade;
 
-  public DeleteDeploymentCmd(String deploymentId, boolean cascade) {
-    this.deploymentId = deploymentId;
-    this.cascade = cascade;
-  }
-
-  public Void execute(CommandContext commandContext) {
-    if(deploymentId == null) {
-      throw new ActivitiIllegalArgumentException("deploymentId is null");
+    public DeleteDeploymentCmd(String deploymentId, boolean cascade) {
+        this.deploymentId = deploymentId;
+        this.cascade = cascade;
     }
-    
-    // Remove process definitions from cache:
-    commandContext
-      .getProcessEngineConfiguration()
-      .getDeploymentManager()
-      .removeDeployment(deploymentId, cascade);
 
-    return null;
-  }
+    public Void execute(CommandContext commandContext) {
+        if (deploymentId == null) {
+            throw new ActivitiIllegalArgumentException("deploymentId is null");
+        }
+
+        // Remove process definitions from cache:
+        commandContext.getProcessEngineConfiguration().getDeploymentManager().removeDeployment(deploymentId, cascade);
+
+        return null;
+    }
 }

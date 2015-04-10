@@ -29,47 +29,47 @@ import com.vaadin.ui.PopupDateField;
  */
 public class DateFormPropertyRenderer extends AbstractFormPropertyRenderer {
 
-  public DateFormPropertyRenderer() {
-    super(DateFormType.class);
-  }
-
-  @Override
-  public Field getPropertyField(FormProperty formProperty) {
-    // Writable string
-    PopupDateField dateField = new PopupDateField(getPropertyLabel(formProperty));
-    String datePattern = (String) formProperty.getType().getInformation("datePattern");
-    dateField.setDateFormat(datePattern);
-    dateField.setRequired(formProperty.isRequired());
-    dateField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
-    dateField.setEnabled(formProperty.isWritable());
-
-    if (formProperty.getValue() != null) {
-      // Try parsing the current value
-      SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
-
-      try {
-        Date date = dateFormat.parse(formProperty.getValue());
-        dateField.setValue(date);
-      } catch (ParseException e) {
-        // TODO: what happens if current value is illegal date?
-      }
+    public DateFormPropertyRenderer() {
+        super(DateFormType.class);
     }
-    return dateField;
-  }
-  
-  @Override
-  public String getFieldValue(FormProperty formProperty, Field field) {
-    PopupDateField dateField = (PopupDateField) field;
-    Date selectedDate = (Date) dateField.getValue();
-    
-    if(selectedDate != null) {
-      // Use the datePattern specified in the form property type
-      String datePattern = (String) formProperty.getType().getInformation("datePattern");
-      SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
-      return dateFormat.format(selectedDate);
+
+    @Override
+    public Field getPropertyField(FormProperty formProperty) {
+        // Writable string
+        PopupDateField dateField = new PopupDateField(getPropertyLabel(formProperty));
+        String datePattern = (String) formProperty.getType().getInformation("datePattern");
+        dateField.setDateFormat(datePattern);
+        dateField.setRequired(formProperty.isRequired());
+        dateField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
+        dateField.setEnabled(formProperty.isWritable());
+
+        if (formProperty.getValue() != null) {
+            // Try parsing the current value
+            SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
+
+            try {
+                Date date = dateFormat.parse(formProperty.getValue());
+                dateField.setValue(date);
+            } catch (ParseException e) {
+                // TODO: what happens if current value is illegal date?
+            }
+        }
+        return dateField;
     }
-    
-    return null;
-  }
+
+    @Override
+    public String getFieldValue(FormProperty formProperty, Field field) {
+        PopupDateField dateField = (PopupDateField) field;
+        Date selectedDate = (Date) dateField.getValue();
+
+        if (selectedDate != null) {
+            // Use the datePattern specified in the form property type
+            String datePattern = (String) formProperty.getType().getInformation("datePattern");
+            SimpleDateFormat dateFormat = new SimpleDateFormat(datePattern);
+            return dateFormat.format(selectedDate);
+        }
+
+        return null;
+    }
 
 }

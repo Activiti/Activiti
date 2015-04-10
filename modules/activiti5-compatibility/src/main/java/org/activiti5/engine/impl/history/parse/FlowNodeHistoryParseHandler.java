@@ -44,51 +44,51 @@ import org.activiti5.engine.parse.BpmnParseHandler;
  * @author Joram Barrez
  */
 public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
-  
-  protected static final ActivityInstanceEndHandler ACTIVITI_INSTANCE_END_LISTENER = new ActivityInstanceEndHandler();
 
-  protected static final ActivityInstanceStartHandler ACTIVITY_INSTANCE_START_LISTENER = new ActivityInstanceStartHandler();
-  
-  protected static Set<Class<? extends BaseElement>> supportedElementClasses = new HashSet<Class<? extends BaseElement>>();
-  
-  static {
-    supportedElementClasses.add(EndEvent.class);
-    supportedElementClasses.add(ThrowEvent.class);
-    supportedElementClasses.add(BoundaryEvent.class);
-    supportedElementClasses.add(IntermediateCatchEvent.class);
+    protected static final ActivityInstanceEndHandler ACTIVITI_INSTANCE_END_LISTENER = new ActivityInstanceEndHandler();
 
-    supportedElementClasses.add(ExclusiveGateway.class);
-    supportedElementClasses.add(InclusiveGateway.class);
-    supportedElementClasses.add(ParallelGateway.class);
-    supportedElementClasses.add(EventGateway.class);
-    
-    supportedElementClasses.add(Task.class);
-    supportedElementClasses.add(ManualTask.class);
-    supportedElementClasses.add(ReceiveTask.class);
-    supportedElementClasses.add(ScriptTask.class);
-    supportedElementClasses.add(ServiceTask.class);
-    supportedElementClasses.add(BusinessRuleTask.class);
-    supportedElementClasses.add(SendTask.class);
-    supportedElementClasses.add(UserTask.class);
-    
-    supportedElementClasses.add(CallActivity.class);
-    supportedElementClasses.add(SubProcess.class);
-  }
-  
-  public Set<Class< ? extends BaseElement>> getHandledTypes() {
-    return supportedElementClasses;
-  }
+    protected static final ActivityInstanceStartHandler ACTIVITY_INSTANCE_START_LISTENER = new ActivityInstanceStartHandler();
 
-  public void parse(BpmnParse bpmnParse, BaseElement element) {
-    ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
-    if(element instanceof BoundaryEvent) {
-    	// A boundary-event never receives an activity start-event
-    	activity.addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITY_INSTANCE_START_LISTENER, 0);
-    	activity.addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER, 1);
-    } else {
-    	activity.addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
-    	activity.addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
+    protected static Set<Class<? extends BaseElement>> supportedElementClasses = new HashSet<Class<? extends BaseElement>>();
+
+    static {
+        supportedElementClasses.add(EndEvent.class);
+        supportedElementClasses.add(ThrowEvent.class);
+        supportedElementClasses.add(BoundaryEvent.class);
+        supportedElementClasses.add(IntermediateCatchEvent.class);
+
+        supportedElementClasses.add(ExclusiveGateway.class);
+        supportedElementClasses.add(InclusiveGateway.class);
+        supportedElementClasses.add(ParallelGateway.class);
+        supportedElementClasses.add(EventGateway.class);
+
+        supportedElementClasses.add(Task.class);
+        supportedElementClasses.add(ManualTask.class);
+        supportedElementClasses.add(ReceiveTask.class);
+        supportedElementClasses.add(ScriptTask.class);
+        supportedElementClasses.add(ServiceTask.class);
+        supportedElementClasses.add(BusinessRuleTask.class);
+        supportedElementClasses.add(SendTask.class);
+        supportedElementClasses.add(UserTask.class);
+
+        supportedElementClasses.add(CallActivity.class);
+        supportedElementClasses.add(SubProcess.class);
     }
-  }
+
+    public Set<Class<? extends BaseElement>> getHandledTypes() {
+        return supportedElementClasses;
+    }
+
+    public void parse(BpmnParse bpmnParse, BaseElement element) {
+        ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(element.getId());
+        if (element instanceof BoundaryEvent) {
+            // A boundary-event never receives an activity start-event
+            activity.addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITY_INSTANCE_START_LISTENER, 0);
+            activity.addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER, 1);
+        } else {
+            activity.addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, ACTIVITY_INSTANCE_START_LISTENER, 0);
+            activity.addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, ACTIVITI_INSTANCE_END_LISTENER);
+        }
+    }
 
 }

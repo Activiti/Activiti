@@ -35,86 +35,81 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class ExecutionVariableResource extends BaseExecutionVariableResource {
-  
-  @Autowired
-  protected ObjectMapper objectMapper;
 
-  @RequestMapping(value="/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.GET, produces="application/json")
-  public RestVariable getVariable(@PathVariable("executionId") String executionId, 
-      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
-      HttpServletRequest request) {
-    
-    Execution execution = getExecutionFromRequest(executionId);
-    return getVariableFromRequest(execution, variableName, scope, false);
-  }
-  
-  @RequestMapping(value="/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.PUT, produces="application/json")
-  public RestVariable updateVariable(@PathVariable("executionId") String executionId, 
-      @PathVariable("variableName") String variableName,
-      HttpServletRequest request) {
-    
-    Execution execution = getExecutionFromRequest(executionId);
-    
-    RestVariable result = null;
-    if (request instanceof MultipartHttpServletRequest) {
-      result = setBinaryVariable((MultipartHttpServletRequest) request, execution, 
-          RestResponseFactory.VARIABLE_EXECUTION, false);
-      
-      if (!result.getName().equals(variableName)) {
-        throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
-      }
-      
-    } else {
-      
-      RestVariable restVariable = null;
-      
-      try {
-        restVariable = objectMapper.readValue(request.getInputStream(), RestVariable.class);
-      } catch (Exception e) {
-        throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
-      }
-      
-      if (restVariable == null) {
-        throw new ActivitiException("Invalid body was supplied");
-      }
-      if (!restVariable.getName().equals(variableName)) {
-        throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
-      }
-      
-      result = setSimpleVariable(restVariable, execution, false);
-    }
-    return result;
-  }
-  
-  @RequestMapping(value="/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.DELETE)
-  public void deleteVariable(@PathVariable("executionId") String executionId, 
-      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
-      HttpServletResponse response) {
-    
-    Execution execution = getExecutionFromRequest(executionId);
-    // Determine scope
-    RestVariableScope variableScope = RestVariableScope.LOCAL;
-    if (scope != null) {
-      variableScope = RestVariable.getScopeFromString(scope);
+    @Autowired
+    protected ObjectMapper objectMapper;
+
+    @RequestMapping(value = "/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.GET, produces = "application/json")
+    public RestVariable getVariable(@PathVariable("executionId") String executionId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+            HttpServletRequest request) {
+
+        Execution execution = getExecutionFromRequest(executionId);
+        return getVariableFromRequest(execution, variableName, scope, false);
     }
 
-    if (!hasVariableOnScope(execution, variableName, variableScope)) {
-      throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable '" + 
-          variableName + "' in scope " + variableScope.name().toLowerCase(), VariableInstanceEntity.class);
+    @RequestMapping(value = "/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.PUT, produces = "application/json")
+    public RestVariable updateVariable(@PathVariable("executionId") String executionId, @PathVariable("variableName") String variableName, HttpServletRequest request) {
+
+        Execution execution = getExecutionFromRequest(executionId);
+
+        RestVariable result = null;
+        if (request instanceof MultipartHttpServletRequest) {
+            result = setBinaryVariable((MultipartHttpServletRequest) request, execution, RestResponseFactory.VARIABLE_EXECUTION, false);
+
+            if (!result.getName().equals(variableName)) {
+                throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+            }
+
+        } else {
+
+            RestVariable restVariable = null;
+
+            try {
+                restVariable = objectMapper.readValue(request.getInputStream(), RestVariable.class);
+            } catch (Exception e) {
+                throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
+            }
+
+            if (restVariable == null) {
+                throw new ActivitiException("Invalid body was supplied");
+            }
+            if (!restVariable.getName().equals(variableName)) {
+                throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+            }
+
+            result = setSimpleVariable(restVariable, execution, false);
+        }
+        return result;
     }
-    
-    if (variableScope == RestVariableScope.LOCAL) {
-      runtimeService.removeVariableLocal(execution.getId(), variableName);
-    } else {
-      // Safe to use parentId, as the hasVariableOnScope would have stopped a global-var update on a root-execution
-      runtimeService.removeVariable(execution.getParentId(), variableName);
+
+    @RequestMapping(value = "/runtime/executions/{executionId}/variables/{variableName}", method = RequestMethod.DELETE)
+    public void deleteVariable(@PathVariable("executionId") String executionId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+            HttpServletResponse response) {
+
+        Execution execution = getExecutionFromRequest(executionId);
+        // Determine scope
+        RestVariableScope variableScope = RestVariableScope.LOCAL;
+        if (scope != null) {
+            variableScope = RestVariable.getScopeFromString(scope);
+        }
+
+        if (!hasVariableOnScope(execution, variableName, variableScope)) {
+            throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + "' doesn't have a variable '" + variableName + "' in scope " + variableScope.name().toLowerCase(),
+                    VariableInstanceEntity.class);
+        }
+
+        if (variableScope == RestVariableScope.LOCAL) {
+            runtimeService.removeVariableLocal(execution.getId(), variableName);
+        } else {
+            // Safe to use parentId, as the hasVariableOnScope would have
+            // stopped a global-var update on a root-execution
+            runtimeService.removeVariable(execution.getParentId(), variableName);
+        }
+        response.setStatus(HttpStatus.NO_CONTENT.value());
     }
-    response.setStatus(HttpStatus.NO_CONTENT.value());
-  }
 }

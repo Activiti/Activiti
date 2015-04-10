@@ -22,14 +22,14 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class CustomActivityBehaviorFactory extends DefaultActivityBehaviorFactory {
 
-  @Override
-  public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
-    return new NoneStartEventActivityBehavior() {
-      public void execute(ActivityExecution execution) {
-        super.execute(execution);
-        CustomActivityBehaviorFactoryTest.COUNTER.addAndGet(1);
-      }
-    };
-  }
+    @Override
+    public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
+        return new NoneStartEventActivityBehavior() {
+            public void execute(ActivityExecution execution) {
+                super.execute(execution);
+                CustomActivityBehaviorFactoryTest.COUNTER.addAndGet(1);
+            }
+        };
+    }
 
 }

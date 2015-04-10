@@ -40,18 +40,18 @@ import org.activiti.engine.impl.javax.el.MapELResolver;
  */
 public class CdiExpressionManager extends ExpressionManager {
 
-  @Override
-  protected ELResolver createElResolver(VariableScope variableScope) {
-    CompositeELResolver compositeElResolver = new CompositeELResolver();
-    compositeElResolver.add(new VariableScopeElResolver(variableScope));
-    
-    compositeElResolver.add(new CdiResolver());
-    
-    compositeElResolver.add(new ArrayELResolver());
-    compositeElResolver.add(new ListELResolver());
-    compositeElResolver.add(new MapELResolver());
-    compositeElResolver.add(new BeanELResolver());
-    return compositeElResolver;
-  }
+    @Override
+    protected ELResolver createElResolver(VariableScope variableScope) {
+        CompositeELResolver compositeElResolver = new CompositeELResolver();
+        compositeElResolver.add(new VariableScopeElResolver(variableScope));
+
+        compositeElResolver.add(new CdiResolver());
+
+        compositeElResolver.add(new ArrayELResolver());
+        compositeElResolver.add(new ListELResolver());
+        compositeElResolver.add(new MapELResolver());
+        compositeElResolver.add(new BeanELResolver());
+        return compositeElResolver;
+    }
 
 }

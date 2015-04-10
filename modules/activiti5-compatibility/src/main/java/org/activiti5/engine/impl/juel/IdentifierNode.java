@@ -12,22 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.activiti5.engine.impl.juel;
 
 /**
  * Identifier node interface.
- *
+ * 
  * @author Christoph Beck
  */
 public interface IdentifierNode extends Node {
-	/**
-	 * Get the identifier name
-	 */
-	public String getName();
+    /**
+     * Get the identifier name
+     */
+    public String getName();
 
-	/**
-	 * Get the unique index of this identifier in the expression (e.g. preorder index)
-	 */
-	public int getIndex();
+    /**
+     * Get the unique index of this identifier in the expression (e.g. preorder
+     * index)
+     */
+    public int getIndex();
 }

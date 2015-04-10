@@ -29,70 +29,69 @@ import org.apache.camel.impl.DefaultExchange;
 @Deprecated
 public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBehavior {
 
-  private static final long serialVersionUID = 1L;
-  
-  private Collection<ContextProvider> contextProviders;
+    private static final long serialVersionUID = 1L;
 
-  public CamelBehaviour(Collection<ContextProvider> camelContext) {
-    this.contextProviders = camelContext;
-  }
+    private Collection<ContextProvider> contextProviders;
 
-  public void execute(ActivityExecution execution) {
-    ActivitiEndpoint ae = createEndpoint(execution);
-    Exchange ex = createExchange(execution, ae);
-    try {
-	    ae.process(ex);
-    } catch (Exception e) {
-    	throw new RuntimeException(e);
+    public CamelBehaviour(Collection<ContextProvider> camelContext) {
+        this.contextProviders = camelContext;
     }
-    execution.setVariables(ExchangeUtils.prepareVariables(ex, ae));
-    performDefaultOutgoingBehavior(execution);
-  }
 
-  private ActivitiEndpoint createEndpoint(ActivityExecution execution) {
-    String uri = "activiti://" + getProcessName(execution) + ":" + execution.getActivity().getId();
-    return getEndpoint(getContext(execution), uri);
-  }
-
-  private ActivitiEndpoint getEndpoint(CamelContext ctx, String key) {
-    for (Endpoint e : ctx.getEndpoints()) {
-      if (e.getEndpointKey().equals(key) && (e instanceof ActivitiEndpoint)) {
-        return (ActivitiEndpoint) e;
-      }
+    public void execute(ActivityExecution execution) {
+        ActivitiEndpoint ae = createEndpoint(execution);
+        Exchange ex = createExchange(execution, ae);
+        try {
+            ae.process(ex);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        execution.setVariables(ExchangeUtils.prepareVariables(ex, ae));
+        performDefaultOutgoingBehavior(execution);
     }
-    throw new RuntimeException("Activiti endpoint not defined for " + key);    
-  }
 
-  private CamelContext getContext(ActivityExecution execution) {
-    String processName = getProcessName(execution);
-    String names = "";
-    for (ContextProvider provider : contextProviders) {
-      CamelContext ctx = provider.getContext(processName);
-      if (ctx != null) {
-        return ctx;
-      }
+    private ActivitiEndpoint createEndpoint(ActivityExecution execution) {
+        String uri = "activiti://" + getProcessName(execution) + ":" + execution.getActivity().getId();
+        return getEndpoint(getContext(execution), uri);
     }
-    throw new RuntimeException("Could not find camel context for " + processName + " names are " + names);
-  }
 
-
-  private Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
-    Exchange ex = new DefaultExchange(getContext(activityExecution));
-    Map<String, Object> variables = activityExecution.getVariables();
-    if (endpoint.isCopyVariablesToProperties()) {
-      for (Map.Entry<String, Object> var : variables.entrySet()) {
-        ex.setProperty(var.getKey(), var.getValue());
-      }
+    private ActivitiEndpoint getEndpoint(CamelContext ctx, String key) {
+        for (Endpoint e : ctx.getEndpoints()) {
+            if (e.getEndpointKey().equals(key) && (e instanceof ActivitiEndpoint)) {
+                return (ActivitiEndpoint) e;
+            }
+        }
+        throw new RuntimeException("Activiti endpoint not defined for " + key);
     }
-    if (endpoint.isCopyVariablesToBodyAsMap()) {
-      ex.getIn().setBody(new HashMap<String,Object>(variables));
-    }
-    return ex;
-  }
 
-  private String getProcessName(ActivityExecution execution) {
-    PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
-    return processDefinition.getKey();
-  }
+    private CamelContext getContext(ActivityExecution execution) {
+        String processName = getProcessName(execution);
+        String names = "";
+        for (ContextProvider provider : contextProviders) {
+            CamelContext ctx = provider.getContext(processName);
+            if (ctx != null) {
+                return ctx;
+            }
+        }
+        throw new RuntimeException("Could not find camel context for " + processName + " names are " + names);
+    }
+
+    private Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
+        Exchange ex = new DefaultExchange(getContext(activityExecution));
+        Map<String, Object> variables = activityExecution.getVariables();
+        if (endpoint.isCopyVariablesToProperties()) {
+            for (Map.Entry<String, Object> var : variables.entrySet()) {
+                ex.setProperty(var.getKey(), var.getValue());
+            }
+        }
+        if (endpoint.isCopyVariablesToBodyAsMap()) {
+            ex.getIn().setBody(new HashMap<String, Object>(variables));
+        }
+        return ex;
+    }
+
+    private String getProcessName(ActivityExecution execution) {
+        PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
+        return processDefinition.getKey();
+    }
 
 }

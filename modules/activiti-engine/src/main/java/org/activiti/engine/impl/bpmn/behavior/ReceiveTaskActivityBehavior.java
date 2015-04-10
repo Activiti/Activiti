@@ -26,14 +26,14 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ReceiveTaskActivityBehavior extends TaskActivityBehavior {
 
-	private static final long serialVersionUID = 5931982223430789965L;
+    private static final long serialVersionUID = 5931982223430789965L;
 
-	public void execute(ActivityExecution execution) {
-		// Do nothing: waitstate behavior
-	}
+    public void execute(ActivityExecution execution) {
+        // Do nothing: waitstate behavior
+    }
 
-	public void trigger(ActivityExecution execution, String signalName, Object data) {
-		leave(execution);
-	}
+    public void trigger(ActivityExecution execution, String signalName, Object data) {
+        leave(execution);
+    }
 
 }

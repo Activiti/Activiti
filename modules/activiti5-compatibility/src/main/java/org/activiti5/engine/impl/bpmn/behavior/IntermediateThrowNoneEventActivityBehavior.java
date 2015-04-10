@@ -12,6 +12,6 @@
  */
 package org.activiti5.engine.impl.bpmn.behavior;
 
-public class IntermediateThrowNoneEventActivityBehavior extends FlowNodeActivityBehavior{
+public class IntermediateThrowNoneEventActivityBehavior extends FlowNodeActivityBehavior {
 
 }

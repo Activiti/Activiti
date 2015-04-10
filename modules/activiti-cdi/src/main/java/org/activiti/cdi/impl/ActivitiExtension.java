@@ -49,80 +49,79 @@ import org.slf4j.LoggerFactory;
  */
 public class ActivitiExtension implements Extension {
 
-  private static Logger logger = LoggerFactory.getLogger(ActivitiExtension.class);
-  private ProcessEngineLookup processEngineLookup;
+    private static Logger logger = LoggerFactory.getLogger(ActivitiExtension.class);
+    private ProcessEngineLookup processEngineLookup;
 
-  public void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event) {
-    event.addScope(BusinessProcessScoped.class, true, true);
-  }
-
-  public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {       
-    BeanManagerLookup.localInstance = manager;
-    event.addContext(new BusinessProcessContext(manager));
-  }
-
-  public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
-    try {   
-      logger.info("Initializing activiti-cdi.");      
-      // initialize the process engine
-      ProcessEngine processEngine = lookupProcessEngine(beanManager);      
-      // deploy the processes if engine was set up correctly
-      deployProcesses(processEngine);      
-    } catch (Exception e) {
-      // interpret engine initialization problems as definition errors
-      event.addDeploymentProblem(e);
+    public void beforeBeanDiscovery(@Observes final BeforeBeanDiscovery event) {
+        event.addScope(BusinessProcessScoped.class, true, true);
     }
-  }
 
-  protected ProcessEngine lookupProcessEngine(BeanManager beanManager) {    
-    ServiceLoader<ProcessEngineLookup> processEngineServiceLoader = ServiceLoader.load(ProcessEngineLookup.class);
-    Iterator<ProcessEngineLookup> serviceIterator = processEngineServiceLoader.iterator();
-    List<ProcessEngineLookup> discoveredLookups = new ArrayList<ProcessEngineLookup>();
-    while (serviceIterator.hasNext()) {
-      ProcessEngineLookup serviceInstance = (ProcessEngineLookup) serviceIterator.next();
-      discoveredLookups.add(serviceInstance);
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager manager) {
+        BeanManagerLookup.localInstance = manager;
+        event.addContext(new BusinessProcessContext(manager));
     }
-    
-    Collections.sort(discoveredLookups, new Comparator<ProcessEngineLookup>() {
-      public int compare(ProcessEngineLookup o1, ProcessEngineLookup o2) {       
-        return (-1)*((Integer)o1.getPrecedence()).compareTo(o2.getPrecedence());
-      }      
-    });
-    
-    ProcessEngine processEngine = null;
-    
-    for (ProcessEngineLookup processEngineLookup : discoveredLookups) {
-      processEngine = processEngineLookup.getProcessEngine();
-      if(processEngine != null) {
-        this.processEngineLookup = processEngineLookup;
-        logger.debug("ProcessEngineLookup service {} returned process engine.", processEngineLookup.getClass());
-        break;
-      } else {
-        logger.debug("ProcessEngineLookup service {} retuned 'null' value.", processEngineLookup.getClass());
-      }
-    }
-    
-    if(processEngineLookup == null) {
-      throw new ActivitiException("Could not find an implementation of the org.activiti.cdi.spi.ProcessEngineLookup service " +
-      		"returning a non-null processEngine. Giving up.");
-    }
-    
-    ActivitiServices activitiServices = ProgrammaticBeanLookup.lookup(ActivitiServices.class, beanManager);
-    activitiServices.setProcessEngine(processEngine);
-    
-    return processEngine;
-  }
 
-  private void deployProcesses(ProcessEngine processEngine) {
-    new ProcessDeployer(processEngine).deployProcesses();
-  }
-
-  public void beforeShutdown(@Observes BeforeShutdown event) {
-    if(processEngineLookup != null) {
-      processEngineLookup.ungetProcessEngine();
-      processEngineLookup = null;
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event, BeanManager beanManager) {
+        try {
+            logger.info("Initializing activiti-cdi.");
+            // initialize the process engine
+            ProcessEngine processEngine = lookupProcessEngine(beanManager);
+            // deploy the processes if engine was set up correctly
+            deployProcesses(processEngine);
+        } catch (Exception e) {
+            // interpret engine initialization problems as definition errors
+            event.addDeploymentProblem(e);
+        }
     }
-    logger.info("Shutting down activiti-cdi");    
-  }
+
+    protected ProcessEngine lookupProcessEngine(BeanManager beanManager) {
+        ServiceLoader<ProcessEngineLookup> processEngineServiceLoader = ServiceLoader.load(ProcessEngineLookup.class);
+        Iterator<ProcessEngineLookup> serviceIterator = processEngineServiceLoader.iterator();
+        List<ProcessEngineLookup> discoveredLookups = new ArrayList<ProcessEngineLookup>();
+        while (serviceIterator.hasNext()) {
+            ProcessEngineLookup serviceInstance = (ProcessEngineLookup) serviceIterator.next();
+            discoveredLookups.add(serviceInstance);
+        }
+
+        Collections.sort(discoveredLookups, new Comparator<ProcessEngineLookup>() {
+            public int compare(ProcessEngineLookup o1, ProcessEngineLookup o2) {
+                return (-1) * ((Integer) o1.getPrecedence()).compareTo(o2.getPrecedence());
+            }
+        });
+
+        ProcessEngine processEngine = null;
+
+        for (ProcessEngineLookup processEngineLookup : discoveredLookups) {
+            processEngine = processEngineLookup.getProcessEngine();
+            if (processEngine != null) {
+                this.processEngineLookup = processEngineLookup;
+                logger.debug("ProcessEngineLookup service {} returned process engine.", processEngineLookup.getClass());
+                break;
+            } else {
+                logger.debug("ProcessEngineLookup service {} retuned 'null' value.", processEngineLookup.getClass());
+            }
+        }
+
+        if (processEngineLookup == null) {
+            throw new ActivitiException("Could not find an implementation of the org.activiti.cdi.spi.ProcessEngineLookup service " + "returning a non-null processEngine. Giving up.");
+        }
+
+        ActivitiServices activitiServices = ProgrammaticBeanLookup.lookup(ActivitiServices.class, beanManager);
+        activitiServices.setProcessEngine(processEngine);
+
+        return processEngine;
+    }
+
+    private void deployProcesses(ProcessEngine processEngine) {
+        new ProcessDeployer(processEngine).deployProcesses();
+    }
+
+    public void beforeShutdown(@Observes BeforeShutdown event) {
+        if (processEngineLookup != null) {
+            processEngineLookup.ungetProcessEngine();
+            processEngineLookup = null;
+        }
+        logger.info("Shutting down activiti-cdi");
+    }
 
 }

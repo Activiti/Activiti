@@ -5,14 +5,19 @@ import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 
 /**
- * Creates an advanced cycle business calendar manager (ACBCM). The ACBCM can handle daylight
- * savings changes when the scheduled time zone is different than the server time zone.
+ * Creates an advanced cycle business calendar manager (ACBCM). The ACBCM can
+ * handle daylight savings changes when the scheduled time zone is different
+ * than the server time zone.
  * <p>
  * Create a factory bean
+ * 
  * <pre>
  * &lt;bean id="businessCalendarManagerFactory" class="org.activiti.spring.SpringAdvancedBusinessCalendarManagerFactory" /&gt;
  * </pre>
- * Add the manager to your org.activiti.spring.SpringProcessEngineConfiguration bean
+ * 
+ * Add the manager to your org.activiti.spring.SpringProcessEngineConfiguration
+ * bean
+ * 
  * <pre>
  *  &lt;bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration"&gt;
  *    ...
@@ -22,7 +27,7 @@ import org.activiti.engine.runtime.Clock;
  *    ...
  *  &lt;/bean&gt;
  * </pre>
- *
+ * 
  * @author mseiden
  * @see AdvancedCycleBusinessCalendar
  */

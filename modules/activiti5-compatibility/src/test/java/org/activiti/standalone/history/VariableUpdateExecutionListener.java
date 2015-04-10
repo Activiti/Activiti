@@ -13,22 +13,20 @@
 
 package org.activiti.standalone.history;
 
-
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.ExecutionListener;
 import org.activiti5.engine.delegate.Expression;
-
 
 /**
  * @author Frederik Heremans
  */
 public class VariableUpdateExecutionListener implements ExecutionListener {
 
-  private Expression varName;
-  
-  public void notify(DelegateExecution execution) throws Exception {
-    String variableName = (String) varName.getValue(execution);
-    execution.setVariable(variableName, "Event: " + execution.getEventName());
-  }
- 
+    private Expression varName;
+
+    public void notify(DelegateExecution execution) throws Exception {
+        String variableName = (String) varName.getValue(execution);
+        execution.setVariable(variableName, "Event: " + execution.getEventName());
+    }
+
 }

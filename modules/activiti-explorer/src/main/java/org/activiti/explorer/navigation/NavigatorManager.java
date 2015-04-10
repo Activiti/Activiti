@@ -28,50 +28,50 @@ import org.springframework.stereotype.Component;
 @Component
 public class NavigatorManager implements InitializingBean, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected Map<String, Navigator> navigationHandlers = new HashMap<String, Navigator>();
-  protected Navigator defaultHandler;
+    private static final long serialVersionUID = 1L;
+    protected Map<String, Navigator> navigationHandlers = new HashMap<String, Navigator>();
+    protected Navigator defaultHandler;
 
-  public void addNavigator(Navigator handler) {
-    navigationHandlers.put(handler.getTrigger(), handler);
-  }
-
-  public Navigator getNavigator(String trigger) {
-    if (trigger != null) {
-      return navigationHandlers.get(trigger);
+    public void addNavigator(Navigator handler) {
+        navigationHandlers.put(handler.getTrigger(), handler);
     }
-    return null;
-  }
 
-  public Navigator getDefaultNavigator() {
-    if(defaultHandler == null) {
-      throw new IllegalStateException("No default navigation handler has been set");
+    public Navigator getNavigator(String trigger) {
+        if (trigger != null) {
+            return navigationHandlers.get(trigger);
+        }
+        return null;
     }
-    return defaultHandler;
-  }
 
-  public void setDefaultNavigator(Navigator handler) {
-    defaultHandler = handler;
-  }
-  
-  public void afterPropertiesSet() throws Exception {
-    // Initialising all navigators
-    //setDefaultNavigator(defaultHandler);
-    
-    addNavigator(new TaskNavigator());
-    addNavigator(new ProcessNavigator());
-    addNavigator(new ProcessModelNavigator());
-    addNavigator(new DeploymentNavigator());
-    addNavigator(new DatabaseNavigator());
-    addNavigator(new JobNavigator());
-    addNavigator(new UserNavigator());
-    addNavigator(new GroupNavigator());
-    addNavigator(new AdministrationNavigator());
-    addNavigator(new MyProcessesNavigator());
-    addNavigator(new SavedReportNavigator());
-    addNavigator(new ReportNavigator());
-    addNavigator(new ActiveProcessDefinitionNavigator());
-    addNavigator(new SuspendedProcessDefinitionNavigator());
-  }
+    public Navigator getDefaultNavigator() {
+        if (defaultHandler == null) {
+            throw new IllegalStateException("No default navigation handler has been set");
+        }
+        return defaultHandler;
+    }
+
+    public void setDefaultNavigator(Navigator handler) {
+        defaultHandler = handler;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        // Initialising all navigators
+        // setDefaultNavigator(defaultHandler);
+
+        addNavigator(new TaskNavigator());
+        addNavigator(new ProcessNavigator());
+        addNavigator(new ProcessModelNavigator());
+        addNavigator(new DeploymentNavigator());
+        addNavigator(new DatabaseNavigator());
+        addNavigator(new JobNavigator());
+        addNavigator(new UserNavigator());
+        addNavigator(new GroupNavigator());
+        addNavigator(new AdministrationNavigator());
+        addNavigator(new MyProcessesNavigator());
+        addNavigator(new SavedReportNavigator());
+        addNavigator(new ReportNavigator());
+        addNavigator(new ActiveProcessDefinitionNavigator());
+        addNavigator(new SuspendedProcessDefinitionNavigator());
+    }
 
 }

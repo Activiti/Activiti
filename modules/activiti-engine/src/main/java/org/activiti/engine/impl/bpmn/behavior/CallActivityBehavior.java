@@ -18,134 +18,120 @@ import java.util.List;
 
 import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.repository.ProcessDefinition;
-
 
 /**
- * Implementation of the BPMN 2.0 call activity
- * (limited currently to calling a subprocess and not (yet) a global task).
+ * Implementation of the BPMN 2.0 call activity (limited currently to calling a
+ * subprocess and not (yet) a global task).
  * 
  * @author Joram Barrez
  */
 public class CallActivityBehavior extends AbstractBpmnActivityBehavior implements SubProcessActivityBehavior {
-  
-  protected String processDefinitonKey;
-  private List<AbstractDataAssociation> dataInputAssociations = new ArrayList<AbstractDataAssociation>();
-  private List<AbstractDataAssociation> dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
-  private Expression processDefinitionExpression;
-  protected List<MapExceptionEntry> mapExceptions;
 
-  public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
-    this.processDefinitonKey = processDefinitionKey;
-    this.mapExceptions = mapExceptions;
-  }
-  
-  public CallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions) {
-    super();
-    this.processDefinitionExpression = processDefinitionExpression;
-    this.mapExceptions = mapExceptions;
-  }
+    protected String processDefinitonKey;
+    private List<AbstractDataAssociation> dataInputAssociations = new ArrayList<AbstractDataAssociation>();
+    private List<AbstractDataAssociation> dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
+    private Expression processDefinitionExpression;
+    protected List<MapExceptionEntry> mapExceptions;
 
-  public void addDataInputAssociation(AbstractDataAssociation dataInputAssociation) {
-    this.dataInputAssociations.add(dataInputAssociation);
-  }
-
-  public void addDataOutputAssociation(AbstractDataAssociation dataOutputAssociation) {
-    this.dataOutputAssociations.add(dataOutputAssociation);
-  }
-
-  public void execute(ActivityExecution execution) {
-    
-	String processDefinitonKey = this.processDefinitonKey;
-    if (processDefinitionExpression != null) {
-      processDefinitonKey = (String) processDefinitionExpression.getValue(execution);
+    public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
+        this.processDefinitonKey = processDefinitionKey;
+        this.mapExceptions = mapExceptions;
     }
 
-    ProcessDefinitionEntity processDefinition = null;
-    if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
-    	processDefinition = Context
-    			.getProcessEngineConfiguration()
-    			.getDeploymentManager()
-    			.findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
-    } else {
-    	processDefinition = Context
-          .getProcessEngineConfiguration()
-          .getDeploymentManager()
-          .findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitonKey, execution.getTenantId());
+    public CallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions) {
+        super();
+        this.processDefinitionExpression = processDefinitionExpression;
+        this.mapExceptions = mapExceptions;
     }
 
-    // Do not start a process instance if the process definition is suspended
-    if (processDefinition.isSuspended()) {
-      throw new ActivitiException("Cannot start process instance. Process definition "
-          + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
+    public void addDataInputAssociation(AbstractDataAssociation dataInputAssociation) {
+        this.dataInputAssociations.add(dataInputAssociation);
     }
-    
-    PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
-    
-    // copy process variables
-    for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
-      Object value = null;
-      if (dataInputAssociation.getSourceExpression()!=null) {
-        value = dataInputAssociation.getSourceExpression().getValue(execution);
-      }
-      else {
-        value = execution.getVariable(dataInputAssociation.getSource());
-      }
-      subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
-    }
-    
-    try {
-      subProcessInstance.start();
-    } catch (Exception e) {
-        if (!ErrorPropagation.mapException(e, execution, mapExceptions, true))
-            throw e;
-        
-      }
-      
-  }
-  
-  public void setProcessDefinitonKey(String processDefinitonKey) {
-    this.processDefinitonKey = processDefinitonKey;
-  }
-  
-  public String getProcessDefinitonKey() {
-    return processDefinitonKey;
-  }
-  
-  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-    // only data.  no control flow available on this execution.
 
-    // copy process variables
-    for (AbstractDataAssociation dataOutputAssociation : dataOutputAssociations) {
-      Object value = null;
-      if (dataOutputAssociation.getSourceExpression()!=null) {
-        value = dataOutputAssociation.getSourceExpression().getValue(subProcessInstance);
-      }
-      else {
-        value = subProcessInstance.getVariable(dataOutputAssociation.getSource());
-      }
-      
-      execution.setVariable(dataOutputAssociation.getTarget(), value);
+    public void addDataOutputAssociation(AbstractDataAssociation dataOutputAssociation) {
+        this.dataOutputAssociations.add(dataOutputAssociation);
     }
-  }
 
-  public void completed(ActivityExecution execution) throws Exception {
-    // only control flow.  no sub process instance data available
-    leave(execution);
-  }
+    public void execute(ActivityExecution execution) {
+
+        String processDefinitonKey = this.processDefinitonKey;
+        if (processDefinitionExpression != null) {
+            processDefinitonKey = (String) processDefinitionExpression.getValue(execution);
+        }
+
+        ProcessDefinitionEntity processDefinition = null;
+        if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
+            processDefinition = Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
+        } else {
+            processDefinition = Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitonKey, execution.getTenantId());
+        }
+
+        // Do not start a process instance if the process definition is
+        // suspended
+        if (processDefinition.isSuspended()) {
+            throw new ActivitiException("Cannot start process instance. Process definition " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
+        }
+
+        PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
+
+        // copy process variables
+        for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
+            Object value = null;
+            if (dataInputAssociation.getSourceExpression() != null) {
+                value = dataInputAssociation.getSourceExpression().getValue(execution);
+            } else {
+                value = execution.getVariable(dataInputAssociation.getSource());
+            }
+            subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
+        }
+
+        try {
+            subProcessInstance.start();
+        } catch (Exception e) {
+            if (!ErrorPropagation.mapException(e, execution, mapExceptions, true))
+                throw new ActivitiException("Error executing call activity", e);
+
+        }
+
+    }
+
+    public void setProcessDefinitonKey(String processDefinitonKey) {
+        this.processDefinitonKey = processDefinitonKey;
+    }
+
+    public String getProcessDefinitonKey() {
+        return processDefinitonKey;
+    }
+
+    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+        // only data. no control flow available on this execution.
+
+        // copy process variables
+        for (AbstractDataAssociation dataOutputAssociation : dataOutputAssociations) {
+            Object value = null;
+            if (dataOutputAssociation.getSourceExpression() != null) {
+                value = dataOutputAssociation.getSourceExpression().getValue(subProcessInstance);
+            } else {
+                value = subProcessInstance.getVariable(dataOutputAssociation.getSource());
+            }
+
+            execution.setVariable(dataOutputAssociation.getTarget(), value);
+        }
+    }
+
+    public void completed(ActivityExecution execution) throws Exception {
+        // only control flow. no sub process instance data available
+        leave(execution);
+    }
 
 }

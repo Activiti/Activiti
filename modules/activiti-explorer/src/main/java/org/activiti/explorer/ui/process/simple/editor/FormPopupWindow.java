@@ -12,7 +12,6 @@
  */
 package org.activiti.explorer.ui.process.simple.editor;
 
-
 import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.process.simple.editor.table.PropertyTable;
@@ -38,125 +37,125 @@ import com.vaadin.ui.Window;
  */
 public class FormPopupWindow extends Window {
 
-  protected static final long serialVersionUID = -1754225937375971709L;
+    protected static final long serialVersionUID = -1754225937375971709L;
 
-  protected static final String TITLE = "Define form";
-  protected static final String DESCRIPTION = "Define the form properties that will be shown with the task";
+    protected static final String TITLE = "Define form";
+    protected static final String DESCRIPTION = "Define the form properties that will be shown with the task";
 
-  protected Object taskItemId;
-  protected TaskFormModel formModel;
-  protected PropertyTable propertyTable;
+    protected Object taskItemId;
+    protected TaskFormModel formModel;
+    protected PropertyTable propertyTable;
 
-  public FormPopupWindow(Object taskItemId, TaskFormModel formModel) {
-    this.taskItemId = taskItemId;
-    this.formModel = formModel;
+    public FormPopupWindow(Object taskItemId, TaskFormModel formModel) {
+        this.taskItemId = taskItemId;
+        this.formModel = formModel;
 
-    setModal(true);
-    setWidth("50%");
-    center();
-    setCaption(TITLE);
+        setModal(true);
+        setWidth("50%");
+        center();
+        setCaption(TITLE);
 
-    initUi();
-  }
-
-  protected void initUi() {
-    VerticalLayout layout = new VerticalLayout();
-    layout.setSpacing(true);
-    addComponent(layout);
-
-    // Description
-    layout.addComponent(new Label(DESCRIPTION));
-
-    // Property table
-    propertyTable = new PropertyTable();
-    layout.addComponent(propertyTable);
-    fillFormFields();
-
-    // Buttons
-    HorizontalLayout buttons = new HorizontalLayout();
-    buttons.setSpacing(true);
-
-    // Save button
-    Button saveButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.BUTTON_SAVE));
-    buttons.addComponent(saveButton);
-    saveButton.addListener(new Button.ClickListener() {
-
-      private static final long serialVersionUID = -2906886872414089331L;
-
-      public void buttonClick(ClickEvent event) {
-        FormDefinition form = createForm();
-        formModel.addForm(taskItemId, form);
-        close();
-      }
-    });
-
-    // Delete button
-    Button deleteButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.BUTTON_DELETE));
-    buttons.addComponent(deleteButton);
-    deleteButton.addListener(new Button.ClickListener() {
-
-      private static final long serialVersionUID = 5267967369680365653L;
-
-      public void buttonClick(ClickEvent event) {
-        formModel.removeForm(taskItemId);
-        close();
-      }
-    });
-
-    layout.addComponent(new Label(""));
-    layout.addComponent(buttons);
-  }
-
-  public FormDefinition createForm() {
-    FormDefinition formDefinition = new FormDefinition();
-    for (Object itemId : propertyTable.getItemIds()) {
-    	
-    	Item item = propertyTable.getItem(itemId);
-      FormPropertyDefinition formPropertyDefinition = getFormPropertyDefinition(item);
-      formDefinition.addFormProperty(formPropertyDefinition);
+        initUi();
     }
-    return formDefinition;
-  }
 
-  protected FormPropertyDefinition getFormPropertyDefinition(Item item) {
-  	String type = (String) ((ComboBox) item.getItemProperty(PropertyTable.ID_PROPERTY_TYPE).getValue()).getValue();
-  	
-  	FormPropertyDefinition result = null;
-  	if(type.equals("number")) {
-  		result = new NumberPropertyDefinition();
-  	} else if(type.equals("date")) {
-  		result = new DatePropertyDefinition();
-  	} else {
-  		result = new TextPropertyDefinition();
-  	}
-  	
-  	// Set generic properties
-  	result.setName((String) item.getItemProperty(PropertyTable.ID_PROPERTY_NAME).getValue());
-  	result.setMandatory((Boolean) ((CheckBox) item.getItemProperty(PropertyTable.ID_PROPERTY_REQUIRED).getValue()).getValue());
-  	
-  	return result;
-  }
+    protected void initUi() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.setSpacing(true);
+        addComponent(layout);
 
-	protected void fillFormFields() {
-    FormDefinition form = formModel.getForm(taskItemId);
-    if (form == null) {
-      propertyTable.addPropertyRow();
-    } else {
-      for (FormPropertyDefinition property : form.getFormPropertyDefinitions()) {
-        propertyTable.addPropertyRow(property.getName(), getPropertyTypeDisplay(property), property.isMandatory());
-      }
+        // Description
+        layout.addComponent(new Label(DESCRIPTION));
+
+        // Property table
+        propertyTable = new PropertyTable();
+        layout.addComponent(propertyTable);
+        fillFormFields();
+
+        // Buttons
+        HorizontalLayout buttons = new HorizontalLayout();
+        buttons.setSpacing(true);
+
+        // Save button
+        Button saveButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.BUTTON_SAVE));
+        buttons.addComponent(saveButton);
+        saveButton.addListener(new Button.ClickListener() {
+
+            private static final long serialVersionUID = -2906886872414089331L;
+
+            public void buttonClick(ClickEvent event) {
+                FormDefinition form = createForm();
+                formModel.addForm(taskItemId, form);
+                close();
+            }
+        });
+
+        // Delete button
+        Button deleteButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.BUTTON_DELETE));
+        buttons.addComponent(deleteButton);
+        deleteButton.addListener(new Button.ClickListener() {
+
+            private static final long serialVersionUID = 5267967369680365653L;
+
+            public void buttonClick(ClickEvent event) {
+                formModel.removeForm(taskItemId);
+                close();
+            }
+        });
+
+        layout.addComponent(new Label(""));
+        layout.addComponent(buttons);
     }
-  }
-	
-	protected String getPropertyTypeDisplay(FormPropertyDefinition definition) {
-	  if(definition instanceof NumberPropertyDefinition) {
-			return "number";
-		} else if(definition instanceof DatePropertyDefinition) {
-			return "date";
-		} else {
-			// Default
-			return "text";
-		}
-	}
+
+    public FormDefinition createForm() {
+        FormDefinition formDefinition = new FormDefinition();
+        for (Object itemId : propertyTable.getItemIds()) {
+
+            Item item = propertyTable.getItem(itemId);
+            FormPropertyDefinition formPropertyDefinition = getFormPropertyDefinition(item);
+            formDefinition.addFormProperty(formPropertyDefinition);
+        }
+        return formDefinition;
+    }
+
+    protected FormPropertyDefinition getFormPropertyDefinition(Item item) {
+        String type = (String) ((ComboBox) item.getItemProperty(PropertyTable.ID_PROPERTY_TYPE).getValue()).getValue();
+
+        FormPropertyDefinition result = null;
+        if (type.equals("number")) {
+            result = new NumberPropertyDefinition();
+        } else if (type.equals("date")) {
+            result = new DatePropertyDefinition();
+        } else {
+            result = new TextPropertyDefinition();
+        }
+
+        // Set generic properties
+        result.setName((String) item.getItemProperty(PropertyTable.ID_PROPERTY_NAME).getValue());
+        result.setMandatory((Boolean) ((CheckBox) item.getItemProperty(PropertyTable.ID_PROPERTY_REQUIRED).getValue()).getValue());
+
+        return result;
+    }
+
+    protected void fillFormFields() {
+        FormDefinition form = formModel.getForm(taskItemId);
+        if (form == null) {
+            propertyTable.addPropertyRow();
+        } else {
+            for (FormPropertyDefinition property : form.getFormPropertyDefinitions()) {
+                propertyTable.addPropertyRow(property.getName(), getPropertyTypeDisplay(property), property.isMandatory());
+            }
+        }
+    }
+
+    protected String getPropertyTypeDisplay(FormPropertyDefinition definition) {
+        if (definition instanceof NumberPropertyDefinition) {
+            return "number";
+        } else if (definition instanceof DatePropertyDefinition) {
+            return "date";
+        } else {
+            // Default
+            return "text";
+        }
+    }
 
 }

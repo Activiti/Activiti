@@ -15,12 +15,11 @@ package org.activiti5.engine.impl.cfg;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParser;
 
-
 /**
  * @author Nico Rehwaldt
  */
 public interface BpmnParseFactory {
 
-  BpmnParse createBpmnParse(BpmnParser bpmnParser);
+    BpmnParse createBpmnParse(BpmnParser bpmnParser);
 
 }

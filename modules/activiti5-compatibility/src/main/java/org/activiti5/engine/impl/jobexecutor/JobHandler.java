@@ -16,12 +16,12 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.JobEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface JobHandler {
 
-  String getType();
-  void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext);
+    String getType();
+
+    void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext);
 }

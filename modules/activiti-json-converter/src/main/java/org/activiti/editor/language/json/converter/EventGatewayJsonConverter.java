@@ -26,30 +26,29 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class EventGatewayJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
-      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    
-    fillJsonTypes(convertersToBpmnMap);
-    fillBpmnTypes(convertersToJsonMap);
-  }
-  
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-    convertersToBpmnMap.put(STENCIL_GATEWAY_EVENT, EventGatewayJsonConverter.class);
-  }
-  
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    convertersToJsonMap.put(EventGateway.class, EventGatewayJsonConverter.class);
-  }
-  
-  protected String getStencilId(BaseElement baseElement) {
-    return STENCIL_GATEWAY_EVENT;
-  }
-  
-  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
-  }
-  
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-    EventGateway gateway = new EventGateway();
-    return gateway;
-  }
+    public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+
+        fillJsonTypes(convertersToBpmnMap);
+        fillBpmnTypes(convertersToJsonMap);
+    }
+
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_GATEWAY_EVENT, EventGatewayJsonConverter.class);
+    }
+
+    public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+        convertersToJsonMap.put(EventGateway.class, EventGatewayJsonConverter.class);
+    }
+
+    protected String getStencilId(BaseElement baseElement) {
+        return STENCIL_GATEWAY_EVENT;
+    }
+
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
+    }
+
+    protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+        EventGateway gateway = new EventGateway();
+        return gateway;
+    }
 }

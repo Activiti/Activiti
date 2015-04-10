@@ -18,22 +18,21 @@ import org.activiti5.engine.ProcessEngineInfo;
 import org.activiti5.engine.impl.ProcessEngineInfoImpl;
 import org.activiti5.engine.impl.util.json.JSONObject;
 
-
 /**
  * @author Tom Baeyens
  */
 public class JsonProcessEngineInfoConverter extends JsonObjectConverter<ProcessEngineInfo> {
 
-  public JSONObject toJsonObject(ProcessEngineInfo processEngineInfo) {
-    ProcessEngineInfoImpl processEngineInfoImpl = (ProcessEngineInfoImpl) processEngineInfo;
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("name", processEngineInfoImpl.getName());
-    jsonObject.put("resourceUrl", processEngineInfoImpl.getResourceUrl());
-    jsonObject.put("exception", processEngineInfoImpl.getException());
-    return jsonObject;
-  }
+    public JSONObject toJsonObject(ProcessEngineInfo processEngineInfo) {
+        ProcessEngineInfoImpl processEngineInfoImpl = (ProcessEngineInfoImpl) processEngineInfo;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("name", processEngineInfoImpl.getName());
+        jsonObject.put("resourceUrl", processEngineInfoImpl.getResourceUrl());
+        jsonObject.put("exception", processEngineInfoImpl.getException());
+        return jsonObject;
+    }
 
-  public ProcessEngineInfo toObject(Reader reader) {
-    return null;
-  }
+    public ProcessEngineInfo toObject(Reader reader) {
+        return null;
+    }
 }

@@ -19,13 +19,13 @@ import org.activiti.engine.test.Deployment;
  */
 public class WebServiceTaskTest extends AbstractWebServiceTaskTest {
 
-  @Deployment
-  public void testWebServiceInvocationWithoutDataFlow() throws Exception {
-    assertEquals(-1, counter.getCount());
-    
-    processEngine.getRuntimeService().startProcessInstanceByKey("webServiceInvocationWithoutDataFlow");
-    waitForJobExecutorToProcessAllJobs(10000L, 250L);
-    
-    assertEquals(0, counter.getCount());
-  }
+    @Deployment
+    public void testWebServiceInvocationWithoutDataFlow() throws Exception {
+        assertEquals(-1, counter.getCount());
+
+        processEngine.getRuntimeService().startProcessInstanceByKey("webServiceInvocationWithoutDataFlow");
+        waitForJobExecutorToProcessAllJobs(10000L, 250L);
+
+        assertEquals(0, counter.getCount());
+    }
 }

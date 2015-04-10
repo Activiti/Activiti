@@ -22,51 +22,51 @@ import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
 
 /**
- * An {@link ELResolver} that exposed object values in the map, under the name of the entry's key.
- * The values in the map are only returned when requested property has no 'base', meaning
- * it's a root-object.
+ * An {@link ELResolver} that exposed object values in the map, under the name
+ * of the entry's key. The values in the map are only returned when requested
+ * property has no 'base', meaning it's a root-object.
  * 
  * @author Frederik Heremans
  */
 public class ReadOnlyMapELResolver extends ELResolver {
 
-  protected Map<Object, Object> wrappedMap;
-  
-  public ReadOnlyMapELResolver(Map<Object, Object> map) {
-    this.wrappedMap = map;
-  }
+    protected Map<Object, Object> wrappedMap;
 
-  public Object getValue(ELContext context, Object base, Object property) {
-    if (base == null) {
-      if (wrappedMap.containsKey(property)) {
-        context.setPropertyResolved(true);
-        return wrappedMap.get(property);
-      }
+    public ReadOnlyMapELResolver(Map<Object, Object> map) {
+        this.wrappedMap = map;
     }
-    return null;
-  }
 
-  public boolean isReadOnly(ELContext context, Object base, Object property) {
-    return true;
-  }
-
-  public void setValue(ELContext context, Object base, Object property, Object value) {
-    if(base == null) {
-      if (wrappedMap.containsKey(property)) {
-        throw new ActivitiException("Cannot set value of '" + property + "', it's readonly!");
-      }
+    public Object getValue(ELContext context, Object base, Object property) {
+        if (base == null) {
+            if (wrappedMap.containsKey(property)) {
+                context.setPropertyResolved(true);
+                return wrappedMap.get(property);
+            }
+        }
+        return null;
     }
-  }
 
-  public Class< ? > getCommonPropertyType(ELContext context, Object arg) {
-    return Object.class;
-  }
+    public boolean isReadOnly(ELContext context, Object base, Object property) {
+        return true;
+    }
 
-  public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
-    return null;
-  }
+    public void setValue(ELContext context, Object base, Object property, Object value) {
+        if (base == null) {
+            if (wrappedMap.containsKey(property)) {
+                throw new ActivitiException("Cannot set value of '" + property + "', it's readonly!");
+            }
+        }
+    }
 
-  public Class< ? > getType(ELContext context, Object arg1, Object arg2) {
-    return Object.class;
-  }
+    public Class<?> getCommonPropertyType(ELContext context, Object arg) {
+        return Object.class;
+    }
+
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
+        return null;
+    }
+
+    public Class<?> getType(ELContext context, Object arg1, Object arg2) {
+        return Object.class;
+    }
 }

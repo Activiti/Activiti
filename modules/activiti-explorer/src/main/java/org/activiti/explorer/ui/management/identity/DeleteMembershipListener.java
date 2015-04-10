@@ -25,44 +25,43 @@ import org.activiti.explorer.ui.event.ConfirmationEventListener;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 
-
 /**
  * @author Joram Barrez
  */
 public class DeleteMembershipListener implements ClickListener {
-  
-  private static final long serialVersionUID = 1L;
-  protected transient IdentityService identityService;
-  protected String userId;
-  protected String groupId;
-  protected MemberShipChangeListener membershipChangeListener;
 
-  public DeleteMembershipListener(IdentityService identityService, String userId,
-          String groupId, MemberShipChangeListener memberShipChangeListener ) {
-    this.identityService = identityService;
-    this.userId = userId;
-    this.groupId = groupId;
-    this.membershipChangeListener = memberShipChangeListener;
-  }
-  
-  public void click(ClickEvent event) {
-    I18nManager i18nManager = ExplorerApp.get().getI18nManager();
-    ViewManager viewManager = ExplorerApp.get().getViewManager();
-    
-    // Add listener to confirmation window. If confirmed, membership is deleted
-    ConfirmationDialogPopupWindow confirmationPopup = 
-      new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.USER_CONFIRM_DELETE_GROUP, userId, groupId));
-    confirmationPopup.addListener(new ConfirmationEventListener() {
-      protected void rejected(ConfirmationEvent event) {
-      }
-      protected void confirmed(ConfirmationEvent event) {
-        identityService.deleteMembership(userId, groupId);
-        membershipChangeListener.notifyMembershipChanged();
-      }
-    });
-    
-    // Show popup
-    viewManager.showPopupWindow(confirmationPopup);
-  }
+    private static final long serialVersionUID = 1L;
+    protected transient IdentityService identityService;
+    protected String userId;
+    protected String groupId;
+    protected MemberShipChangeListener membershipChangeListener;
+
+    public DeleteMembershipListener(IdentityService identityService, String userId, String groupId, MemberShipChangeListener memberShipChangeListener) {
+        this.identityService = identityService;
+        this.userId = userId;
+        this.groupId = groupId;
+        this.membershipChangeListener = memberShipChangeListener;
+    }
+
+    public void click(ClickEvent event) {
+        I18nManager i18nManager = ExplorerApp.get().getI18nManager();
+        ViewManager viewManager = ExplorerApp.get().getViewManager();
+
+        // Add listener to confirmation window. If confirmed, membership is
+        // deleted
+        ConfirmationDialogPopupWindow confirmationPopup = new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.USER_CONFIRM_DELETE_GROUP, userId, groupId));
+        confirmationPopup.addListener(new ConfirmationEventListener() {
+            protected void rejected(ConfirmationEvent event) {
+            }
+
+            protected void confirmed(ConfirmationEvent event) {
+                identityService.deleteMembership(userId, groupId);
+                membershipChangeListener.notifyMembershipChanged();
+            }
+        });
+
+        // Show popup
+        viewManager.showPopupWindow(confirmationPopup);
+    }
 
 }

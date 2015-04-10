@@ -19,57 +19,56 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-
 /**
  * Stores a two-dimensional graph layout.
- *
+ * 
  * @author Falko Menge
  */
 public class DiagramLayout implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  private Map<String, DiagramElement> elements;
+    private static final long serialVersionUID = 1L;
 
-  public DiagramLayout(Map<String, DiagramElement> elements) {
-    this.setElements(elements);
-  }
+    private Map<String, DiagramElement> elements;
 
-  public DiagramNode getNode(String id) {
-    DiagramElement element = getElements().get(id);
-    if (element instanceof DiagramNode) {
-      return (DiagramNode) element;
-    } else {
-      return null;
+    public DiagramLayout(Map<String, DiagramElement> elements) {
+        this.setElements(elements);
     }
-  }
-  
-  public DiagramEdge getEdge(String id) {
-    DiagramElement element = getElements().get(id);
-    if (element instanceof DiagramEdge) {
-      return (DiagramEdge) element;
-    } else {
-      return null;
-    }
-  }
-  
-  public Map<String, DiagramElement> getElements() {
-    return elements;
-  }
-  
-  public void setElements(Map<String, DiagramElement> elements) {
-    this.elements = elements;
-  }
 
-  public List<DiagramNode> getNodes() {
-    List<DiagramNode> nodes = new ArrayList<DiagramNode>();
-    for (Entry<String, DiagramElement> entry : getElements().entrySet()) {
-      DiagramElement element = entry.getValue();
-      if (element instanceof DiagramNode) {
-        nodes.add((DiagramNode) element);
-      }
+    public DiagramNode getNode(String id) {
+        DiagramElement element = getElements().get(id);
+        if (element instanceof DiagramNode) {
+            return (DiagramNode) element;
+        } else {
+            return null;
+        }
     }
-    return nodes;
-  }
-  
+
+    public DiagramEdge getEdge(String id) {
+        DiagramElement element = getElements().get(id);
+        if (element instanceof DiagramEdge) {
+            return (DiagramEdge) element;
+        } else {
+            return null;
+        }
+    }
+
+    public Map<String, DiagramElement> getElements() {
+        return elements;
+    }
+
+    public void setElements(Map<String, DiagramElement> elements) {
+        this.elements = elements;
+    }
+
+    public List<DiagramNode> getNodes() {
+        List<DiagramNode> nodes = new ArrayList<DiagramNode>();
+        for (Entry<String, DiagramElement> entry : getElements().entrySet()) {
+            DiagramElement element = entry.getValue();
+            if (element instanceof DiagramNode) {
+                nodes.add((DiagramNode) element);
+            }
+        }
+        return nodes;
+    }
+
 }

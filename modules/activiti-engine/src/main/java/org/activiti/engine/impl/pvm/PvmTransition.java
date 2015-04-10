@@ -15,16 +15,14 @@ package org.activiti.engine.impl.pvm;
 
 import org.activiti.engine.delegate.Expression;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public interface PvmTransition extends PvmProcessElement {
 
-  PvmActivity getSource();
+    PvmActivity getSource();
 
-  PvmActivity getDestination();
-  
-  Expression getSkipExpression();
+    PvmActivity getDestination();
+
+    Expression getSkipExpression();
 }

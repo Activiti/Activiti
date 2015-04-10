@@ -17,9 +17,9 @@ package org.activiti5.engine.impl.variable;
  * Interface to abstract the JPA cacheable setting
  * 
  * @author Tijs Rademakers
- *
+ * 
  */
 public interface CacheableVariable {
 
-  public void setForceCacheable(boolean forceCachedValue);
+    public void setForceCacheable(boolean forceCachedValue);
 }

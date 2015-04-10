@@ -1,4 +1,5 @@
 package org.activiti.engine.test.pvm;
+
 import java.util.ArrayList;
 
 import org.activiti.engine.impl.pvm.ProcessDefinitionBuilder;
@@ -10,7 +11,6 @@ import org.activiti.engine.test.pvm.activities.Automatic;
 import org.activiti.engine.test.pvm.activities.End;
 import org.activiti.engine.test.pvm.activities.WaitState;
 import org.activiti.engine.test.pvm.activities.While;
-
 
 /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,184 +30,96 @@ import org.activiti.engine.test.pvm.activities.While;
  */
 public class PvmBasicLinearExecutionTest extends PvmTestCase {
 
-  /**
-   * +-------+   +-----+
-   * | start |-->| end |
-   * +-------+   +-----+
-   */
-  public void testStartEnd() {
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .createActivity("start")
-        .initial()
-        .behavior(new Automatic())
-        .transition("end")
-      .endActivity()
-      .createActivity("end")
-        .behavior(new End())
-      .endActivity()
-    .buildProcessDefinition();
-    
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-    processInstance.start();
-    
-    assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
-    assertTrue(processInstance.isEnded());
-  }
+    /**
+     * +-------+ +-----+ | start |-->| end | +-------+ +-----+
+     */
+    public void testStartEnd() {
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("end").endActivity().createActivity("end")
+                .behavior(new End()).endActivity().buildProcessDefinition();
 
-  /**
-   * +-----+   +-----+   +-------+
-   * | one |-->| two |-->| three |
-   * +-----+   +-----+   +-------+
-   */
-  public void testSingleAutomatic() {
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .createActivity("one")
-        .initial()
-        .behavior(new Automatic())
-        .transition("two")
-      .endActivity()
-      .createActivity("two")
-        .behavior(new Automatic())
-        .transition("three")
-      .endActivity()
-      .createActivity("three")
-        .behavior(new End())
-      .endActivity()
-    .buildProcessDefinition();
-    
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-    processInstance.start();
-    
-    assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
-    assertTrue(processInstance.isEnded());
-  }
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.start();
 
-  /**
-   * +-----+   +-----+   +-------+
-   * | one |-->| two |-->| three |
-   * +-----+   +-----+   +-------+
-   */
-  public void testSingleWaitState() {
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .createActivity("one")
-        .initial()
-        .behavior(new Automatic())
-        .transition("two")
-      .endActivity()
-      .createActivity("two")
-        .behavior(new WaitState())
-        .transition("three")
-      .endActivity()
-      .createActivity("three")
-        .behavior(new End())
-      .endActivity()
-    .buildProcessDefinition();
-    
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-    processInstance.start();
-    
-    PvmExecution activityInstance = processInstance.findExecution("two");
-    assertNotNull(activityInstance);
-    
-    activityInstance.signal(null, null);
+        assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
+        assertTrue(processInstance.isEnded());
+    }
 
-    assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
-    assertTrue(processInstance.isEnded());
-  }
+    /**
+     * +-----+ +-----+ +-------+ | one |-->| two |-->| three | +-----+ +-----+
+     * +-------+
+     */
+    public void testSingleAutomatic() {
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("one").initial().behavior(new Automatic()).transition("two").endActivity().createActivity("two")
+                .behavior(new Automatic()).transition("three").endActivity().createActivity("three").behavior(new End()).endActivity().buildProcessDefinition();
 
-  /**
-   * +-----+   +-----+   +-------+   +------+    +------+
-   * | one |-->| two |-->| three |-->| four |--> | five |
-   * +-----+   +-----+   +-------+   +------+    +------+
-   */
-  public void testCombinationOfWaitStatesAndAutomatics() {
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .createActivity("start")
-        .initial()
-        .behavior(new Automatic())
-        .transition("one")
-      .endActivity()
-      .createActivity("one")
-        .behavior(new WaitState())
-        .transition("two")
-      .endActivity()
-      .createActivity("two")
-        .behavior(new WaitState())
-        .transition("three")
-      .endActivity()
-      .createActivity("three")
-        .behavior(new Automatic())
-        .transition("four")
-      .endActivity()
-      .createActivity("four")
-        .behavior(new Automatic())
-        .transition("five")
-      .endActivity()
-      .createActivity("five")
-        .behavior(new End())
-      .endActivity()
-    .buildProcessDefinition();
-    
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-    processInstance.start();
-    
-    PvmExecution activityInstance = processInstance.findExecution("one");
-    assertNotNull(activityInstance);
-    activityInstance.signal(null, null);
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.start();
 
-    activityInstance = processInstance.findExecution("two");
-    assertNotNull(activityInstance);
-    activityInstance.signal(null, null);
+        assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
+        assertTrue(processInstance.isEnded());
+    }
 
-    assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
-    assertTrue(processInstance.isEnded());
-  }
+    /**
+     * +-----+ +-----+ +-------+ | one |-->| two |-->| three | +-----+ +-----+
+     * +-------+
+     */
+    public void testSingleWaitState() {
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("one").initial().behavior(new Automatic()).transition("two").endActivity().createActivity("two")
+                .behavior(new WaitState()).transition("three").endActivity().createActivity("three").behavior(new End()).endActivity().buildProcessDefinition();
 
-  /**
-   *                  +----------------------------+
-   *                  v                            |
-   * +-------+   +------+   +-----+   +-----+    +-------+
-   * | start |-->| loop |-->| one |-->| two |--> | three |
-   * +-------+   +------+   +-----+   +-----+    +-------+
-   *                  |
-   *                  |   +-----+
-   *                  +-->| end |
-   *                      +-----+
-   */
-  public void testWhileLoop() {
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .createActivity("start")
-        .initial()
-        .behavior(new Automatic())
-        .transition("loop")
-      .endActivity()
-      .createActivity("loop")
-        .behavior(new While("count", 0, 500))
-        .transition("one", "more")
-        .transition("end", "done")
-      .endActivity()
-      .createActivity("one")
-        .behavior(new Automatic())
-        .transition("two")
-      .endActivity()
-      .createActivity("two")
-        .behavior(new Automatic())
-        .transition("three")
-      .endActivity()
-      .createActivity("three")
-        .behavior(new Automatic())
-        .transition("loop")
-      .endActivity()
-      .createActivity("end")
-        .behavior(new End())
-      .endActivity()
-    .buildProcessDefinition();
-    
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-    processInstance.start();
-    
-    assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
-    assertTrue(processInstance.isEnded());
-  }
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.start();
+
+        PvmExecution activityInstance = processInstance.findExecution("two");
+        assertNotNull(activityInstance);
+
+        activityInstance.signal(null, null);
+
+        assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
+        assertTrue(processInstance.isEnded());
+    }
+
+    /**
+     * +-----+ +-----+ +-------+ +------+ +------+ | one |-->| two |-->| three
+     * |-->| four |--> | five | +-----+ +-----+ +-------+ +------+ +------+
+     */
+    public void testCombinationOfWaitStatesAndAutomatics() {
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("one").endActivity().createActivity("one")
+                .behavior(new WaitState()).transition("two").endActivity().createActivity("two").behavior(new WaitState()).transition("three").endActivity().createActivity("three")
+                .behavior(new Automatic()).transition("four").endActivity().createActivity("four").behavior(new Automatic()).transition("five").endActivity().createActivity("five")
+                .behavior(new End()).endActivity().buildProcessDefinition();
+
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.start();
+
+        PvmExecution activityInstance = processInstance.findExecution("one");
+        assertNotNull(activityInstance);
+        activityInstance.signal(null, null);
+
+        activityInstance = processInstance.findExecution("two");
+        assertNotNull(activityInstance);
+        activityInstance.signal(null, null);
+
+        assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
+        assertTrue(processInstance.isEnded());
+    }
+
+    /**
+     * +----------------------------+ v | +-------+ +------+ +-----+ +-----+
+     * +-------+ | start |-->| loop |-->| one |-->| two |--> | three | +-------+
+     * +------+ +-----+ +-----+ +-------+ | | +-----+ +-->| end | +-----+
+     */
+    public void testWhileLoop() {
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("loop").endActivity().createActivity("loop")
+                .behavior(new While("count", 0, 500)).transition("one", "more").transition("end", "done").endActivity().createActivity("one").behavior(new Automatic()).transition("two").endActivity()
+                .createActivity("two").behavior(new Automatic()).transition("three").endActivity().createActivity("three").behavior(new Automatic()).transition("loop").endActivity()
+                .createActivity("end").behavior(new End()).endActivity().buildProcessDefinition();
+
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.start();
+
+        assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
+        assertTrue(processInstance.isEnded());
+    }
 
 }

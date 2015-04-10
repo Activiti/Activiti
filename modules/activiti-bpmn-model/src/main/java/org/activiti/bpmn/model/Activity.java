@@ -19,122 +19,141 @@ import java.util.List;
  * @author Tijs Rademakers
  */
 public abstract class Activity extends FlowNode {
- 
-  protected boolean asynchronous;
-  protected boolean notExclusive;
-  protected String defaultFlow;
-  protected boolean forCompensation;
-  protected MultiInstanceLoopCharacteristics loopCharacteristics;
-  protected IOSpecification ioSpecification;
-  protected List<DataAssociation> dataInputAssociations = new ArrayList<DataAssociation>();
-  protected List<DataAssociation> dataOutputAssociations = new ArrayList<DataAssociation>();
-  protected List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>();
-  protected String failedJobRetryTimeCycleValue;
-  protected List<MapExceptionEntry> mapExceptions = new ArrayList<MapExceptionEntry>(); 
 
-  public boolean isAsynchronous() {
-    return asynchronous;
-  }
-  public void setAsynchronous(boolean asynchronous) {
-    this.asynchronous = asynchronous;
-  }  
-  public String getFailedJobRetryTimeCycleValue() {
-	return failedJobRetryTimeCycleValue;
-  }
-  public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
-	this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
-  }
-  public boolean isNotExclusive() {
-    return notExclusive;
-  }
-  public void setNotExclusive(boolean notExclusive) {
-    this.notExclusive = notExclusive;
-  }
-  public boolean isForCompensation() {
-    return forCompensation;
-  }
-  public void setForCompensation(boolean forCompensation) {
-    this.forCompensation = forCompensation;
-  }
-  public List<BoundaryEvent> getBoundaryEvents() {
-    return boundaryEvents;
-  }
-  public void setBoundaryEvents(List<BoundaryEvent> boundaryEvents) {
-    this.boundaryEvents = boundaryEvents;
-  }
-  public String getDefaultFlow() {
-    return defaultFlow;
-  }
-  public void setDefaultFlow(String defaultFlow) {
-    this.defaultFlow = defaultFlow;
-  }
-  public MultiInstanceLoopCharacteristics getLoopCharacteristics() {
-    return loopCharacteristics;
-  }
-  public void setLoopCharacteristics(MultiInstanceLoopCharacteristics loopCharacteristics) {
-    this.loopCharacteristics = loopCharacteristics;
-  }
-  public IOSpecification getIoSpecification() {
-    return ioSpecification;
-  }
-  public void setIoSpecification(IOSpecification ioSpecification) {
-    this.ioSpecification = ioSpecification;
-  }
-  public List<DataAssociation> getDataInputAssociations() {
-    return dataInputAssociations;
-  }
-  public void setDataInputAssociations(List<DataAssociation> dataInputAssociations) {
-    this.dataInputAssociations = dataInputAssociations;
-  }
-  public List<DataAssociation> getDataOutputAssociations() {
-    return dataOutputAssociations;
-  }
-  public void setDataOutputAssociations(List<DataAssociation> dataOutputAssociations) {
-    this.dataOutputAssociations = dataOutputAssociations;
-  }
-  
-  public void setValues(Activity otherActivity) {
-    super.setValues(otherActivity);
-    setAsynchronous(otherActivity.isAsynchronous());
-    setFailedJobRetryTimeCycleValue(otherActivity.getFailedJobRetryTimeCycleValue());
-    setNotExclusive(otherActivity.isNotExclusive());
-    setDefaultFlow(otherActivity.getDefaultFlow());
-    setForCompensation(otherActivity.isForCompensation());
-    if (otherActivity.getLoopCharacteristics() != null) {
-      setLoopCharacteristics(otherActivity.getLoopCharacteristics().clone());
+    protected boolean asynchronous;
+    protected boolean notExclusive;
+    protected String defaultFlow;
+    protected boolean forCompensation;
+    protected MultiInstanceLoopCharacteristics loopCharacteristics;
+    protected IOSpecification ioSpecification;
+    protected List<DataAssociation> dataInputAssociations = new ArrayList<DataAssociation>();
+    protected List<DataAssociation> dataOutputAssociations = new ArrayList<DataAssociation>();
+    protected List<BoundaryEvent> boundaryEvents = new ArrayList<BoundaryEvent>();
+    protected String failedJobRetryTimeCycleValue;
+    protected List<MapExceptionEntry> mapExceptions = new ArrayList<MapExceptionEntry>();
+
+    public boolean isAsynchronous() {
+        return asynchronous;
     }
-    if (otherActivity.getIoSpecification() != null) {
-      setIoSpecification(otherActivity.getIoSpecification().clone());
+
+    public void setAsynchronous(boolean asynchronous) {
+        this.asynchronous = asynchronous;
     }
-    
-    dataInputAssociations = new ArrayList<DataAssociation>();
-    if (otherActivity.getDataInputAssociations() != null && !otherActivity.getDataInputAssociations().isEmpty()) {
-      for (DataAssociation association : otherActivity.getDataInputAssociations()) {
-        dataInputAssociations.add(association.clone());
-      }
+
+    public String getFailedJobRetryTimeCycleValue() {
+        return failedJobRetryTimeCycleValue;
     }
-    
-    dataOutputAssociations = new ArrayList<DataAssociation>();
-    if (otherActivity.getDataOutputAssociations() != null && !otherActivity.getDataOutputAssociations().isEmpty()) {
-      for (DataAssociation association : otherActivity.getDataOutputAssociations()) {
-        dataOutputAssociations.add(association.clone());
-      }
+
+    public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
+        this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
     }
-    
-    boundaryEvents = new ArrayList<BoundaryEvent>();
-    if (otherActivity.getBoundaryEvents() != null && !otherActivity.getBoundaryEvents().isEmpty()) {
-      for (BoundaryEvent event : otherActivity.getBoundaryEvents()) {
-        boundaryEvents.add(event.clone());
-      }
+
+    public boolean isNotExclusive() {
+        return notExclusive;
     }
-  }
-  
-  public List<MapExceptionEntry> getMapExceptions() {
-    return mapExceptions;
-  }
-  
-  public void setMapExceptions(List<MapExceptionEntry> mapExceptions) {
-    this.mapExceptions = mapExceptions;
-  }
-  
+
+    public void setNotExclusive(boolean notExclusive) {
+        this.notExclusive = notExclusive;
+    }
+
+    public boolean isForCompensation() {
+        return forCompensation;
+    }
+
+    public void setForCompensation(boolean forCompensation) {
+        this.forCompensation = forCompensation;
+    }
+
+    public List<BoundaryEvent> getBoundaryEvents() {
+        return boundaryEvents;
+    }
+
+    public void setBoundaryEvents(List<BoundaryEvent> boundaryEvents) {
+        this.boundaryEvents = boundaryEvents;
+    }
+
+    public String getDefaultFlow() {
+        return defaultFlow;
+    }
+
+    public void setDefaultFlow(String defaultFlow) {
+        this.defaultFlow = defaultFlow;
+    }
+
+    public MultiInstanceLoopCharacteristics getLoopCharacteristics() {
+        return loopCharacteristics;
+    }
+
+    public void setLoopCharacteristics(MultiInstanceLoopCharacteristics loopCharacteristics) {
+        this.loopCharacteristics = loopCharacteristics;
+    }
+
+    public IOSpecification getIoSpecification() {
+        return ioSpecification;
+    }
+
+    public void setIoSpecification(IOSpecification ioSpecification) {
+        this.ioSpecification = ioSpecification;
+    }
+
+    public List<DataAssociation> getDataInputAssociations() {
+        return dataInputAssociations;
+    }
+
+    public void setDataInputAssociations(List<DataAssociation> dataInputAssociations) {
+        this.dataInputAssociations = dataInputAssociations;
+    }
+
+    public List<DataAssociation> getDataOutputAssociations() {
+        return dataOutputAssociations;
+    }
+
+    public void setDataOutputAssociations(List<DataAssociation> dataOutputAssociations) {
+        this.dataOutputAssociations = dataOutputAssociations;
+    }
+
+    public void setValues(Activity otherActivity) {
+        super.setValues(otherActivity);
+        setAsynchronous(otherActivity.isAsynchronous());
+        setFailedJobRetryTimeCycleValue(otherActivity.getFailedJobRetryTimeCycleValue());
+        setNotExclusive(otherActivity.isNotExclusive());
+        setDefaultFlow(otherActivity.getDefaultFlow());
+        setForCompensation(otherActivity.isForCompensation());
+        if (otherActivity.getLoopCharacteristics() != null) {
+            setLoopCharacteristics(otherActivity.getLoopCharacteristics().clone());
+        }
+        if (otherActivity.getIoSpecification() != null) {
+            setIoSpecification(otherActivity.getIoSpecification().clone());
+        }
+
+        dataInputAssociations = new ArrayList<DataAssociation>();
+        if (otherActivity.getDataInputAssociations() != null && !otherActivity.getDataInputAssociations().isEmpty()) {
+            for (DataAssociation association : otherActivity.getDataInputAssociations()) {
+                dataInputAssociations.add(association.clone());
+            }
+        }
+
+        dataOutputAssociations = new ArrayList<DataAssociation>();
+        if (otherActivity.getDataOutputAssociations() != null && !otherActivity.getDataOutputAssociations().isEmpty()) {
+            for (DataAssociation association : otherActivity.getDataOutputAssociations()) {
+                dataOutputAssociations.add(association.clone());
+            }
+        }
+
+        boundaryEvents = new ArrayList<BoundaryEvent>();
+        if (otherActivity.getBoundaryEvents() != null && !otherActivity.getBoundaryEvents().isEmpty()) {
+            for (BoundaryEvent event : otherActivity.getBoundaryEvents()) {
+                boundaryEvents.add(event.clone());
+            }
+        }
+    }
+
+    public List<MapExceptionEntry> getMapExceptions() {
+        return mapExceptions;
+    }
+
+    public void setMapExceptions(List<MapExceptionEntry> mapExceptions) {
+        this.mapExceptions = mapExceptions;
+    }
+
 }

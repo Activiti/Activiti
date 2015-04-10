@@ -15,25 +15,24 @@ package org.activiti.explorer.navigation;
 
 import org.activiti.explorer.ExplorerApp;
 
-
 /**
  * @author Joram Barrez
  */
 public class ProcessInstanceNavigator {
-  
- public static final String PROCESS_INSTANCE_URL_PART = "processinstance";
-  
-  public String getTrigger() {
-    return PROCESS_INSTANCE_URL_PART;
-  }
-  
-  public void handleManagementNavigation(UriFragment uriFragment) {
-    String processInstanceId = uriFragment.getUriPart(1);
-    if(processInstanceId != null) {
-      ExplorerApp.get().getViewManager().showProcessInstancePage(processInstanceId);
-    } else {
-      ExplorerApp.get().getViewManager().showProcessInstancePage();
+
+    public static final String PROCESS_INSTANCE_URL_PART = "processinstance";
+
+    public String getTrigger() {
+        return PROCESS_INSTANCE_URL_PART;
     }
-  }
+
+    public void handleManagementNavigation(UriFragment uriFragment) {
+        String processInstanceId = uriFragment.getUriPart(1);
+        if (processInstanceId != null) {
+            ExplorerApp.get().getViewManager().showProcessInstancePage(processInstanceId);
+        } else {
+            ExplorerApp.get().getViewManager().showProcessInstancePage();
+        }
+    }
 
 }

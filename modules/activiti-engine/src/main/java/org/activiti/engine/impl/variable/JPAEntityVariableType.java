@@ -16,77 +16,76 @@ package org.activiti.engine.impl.variable;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 
-
 /**
- * Variable type capable of storing reference to JPA-entities. Only JPA-Entities which
- * are configured by annotations are supported. Use of compound primary keys is not supported.
+ * Variable type capable of storing reference to JPA-entities. Only JPA-Entities
+ * which are configured by annotations are supported. Use of compound primary
+ * keys is not supported.
  * 
  * @author Frederik Heremans
  */
 public class JPAEntityVariableType implements VariableType, CacheableVariable {
 
-  public static final String TYPE_NAME = "jpa-entity";
-  
-  private JPAEntityMappings mappings;
-  
-  private boolean forceCacheable = false;
-  
-  public JPAEntityVariableType() {
-    mappings = new JPAEntityMappings();
-  }
-  
-  public String getTypeName() {
-    return TYPE_NAME;
-  }
+    public static final String TYPE_NAME = "jpa-entity";
 
-  public boolean isCachable() {
-    return forceCacheable;
-  }
+    private JPAEntityMappings mappings;
 
-  public boolean isAbleToStore(Object value) {
-    if(value == null) {
-      return true;
+    private boolean forceCacheable = false;
+
+    public JPAEntityVariableType() {
+        mappings = new JPAEntityMappings();
     }
-    return mappings.isJPAEntity(value);      
-  }
 
-  public void setValue(Object value, ValueFields valueFields) {
-    EntityManagerSession entityManagerSession = Context 
-      .getCommandContext()
-      .getSession(EntityManagerSession.class);
-    if (entityManagerSession == null) {
-      throw new ActivitiException("Cannot set JPA variable: " + EntityManagerSession.class + " not configured");
-    } else {
-      // Before we set the value we must flush all pending changes from the entitymanager
-      // If we don't do this, in some cases the primary key will not yet be set in the object
-      // which will cause exceptions down the road.
-      entityManagerSession.flush();
+    public String getTypeName() {
+        return TYPE_NAME;
     }
-    
-    if(value != null) {
-      String className = mappings.getJPAClassString(value);
-      String idString = mappings.getJPAIdString(value);
-      valueFields.setTextValue(className);
-      valueFields.setTextValue2(idString);      
-    } else {
-      valueFields.setTextValue(null);
-      valueFields.setTextValue2(null);            
+
+    public boolean isCachable() {
+        return forceCacheable;
     }
-  }
 
-  public Object getValue(ValueFields valueFields) {
-    if(valueFields.getTextValue() != null && valueFields.getTextValue2() != null) {
-      return mappings.getJPAEntity(valueFields.getTextValue(), valueFields.getTextValue2());      
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return mappings.isJPAEntity(value);
     }
-    return null;
-  }
 
-  /**
-   * Force the value to be cacheable.
-   */
-  public void setForceCacheable(boolean forceCachedValue) {
-    this.forceCacheable = forceCachedValue;
-  }
+    public void setValue(Object value, ValueFields valueFields) {
+        EntityManagerSession entityManagerSession = Context.getCommandContext().getSession(EntityManagerSession.class);
+        if (entityManagerSession == null) {
+            throw new ActivitiException("Cannot set JPA variable: " + EntityManagerSession.class + " not configured");
+        } else {
+            // Before we set the value we must flush all pending changes from
+            // the entitymanager
+            // If we don't do this, in some cases the primary key will not yet
+            // be set in the object
+            // which will cause exceptions down the road.
+            entityManagerSession.flush();
+        }
 
- 
+        if (value != null) {
+            String className = mappings.getJPAClassString(value);
+            String idString = mappings.getJPAIdString(value);
+            valueFields.setTextValue(className);
+            valueFields.setTextValue2(idString);
+        } else {
+            valueFields.setTextValue(null);
+            valueFields.setTextValue2(null);
+        }
+    }
+
+    public Object getValue(ValueFields valueFields) {
+        if (valueFields.getTextValue() != null && valueFields.getTextValue2() != null) {
+            return mappings.getJPAEntity(valueFields.getTextValue(), valueFields.getTextValue2());
+        }
+        return null;
+    }
+
+    /**
+     * Force the value to be cacheable.
+     */
+    public void setForceCacheable(boolean forceCachedValue) {
+        this.forceCacheable = forceCachedValue;
+    }
+
 }

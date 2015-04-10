@@ -32,231 +32,222 @@ import org.activiti5.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Tom Baeyens
  */
 public class TimerEntity extends JobEntity {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static Logger log = LoggerFactory.getLogger(TimerEntity.class);
+    private static Logger log = LoggerFactory.getLogger(TimerEntity.class);
 
-  protected int maxIterations;
-  protected String repeat;
-  protected Date endDate;
+    protected int maxIterations;
+    protected String repeat;
+    protected Date endDate;
 
-  public TimerEntity() {
-  }
-
-  public TimerEntity(TimerDeclarationImpl timerDeclaration) {
-    jobHandlerType = timerDeclaration.getJobHandlerType();
-    jobHandlerConfiguration = timerDeclaration.getJobHandlerConfiguration();
-    isExclusive = timerDeclaration.isExclusive();
-    repeat = timerDeclaration.getRepeat();
-    retries = timerDeclaration.getRetries();
-  }
-
-  private TimerEntity(TimerEntity te) {
-    jobHandlerConfiguration = te.jobHandlerConfiguration;
-    jobHandlerType = te.jobHandlerType;
-    isExclusive = te.isExclusive;
-    repeat = te.repeat;
-    retries = te.retries;
-    endDate = te.endDate;
-    executionId = te.executionId;
-    processInstanceId = te.processInstanceId;
-    processDefinitionId = te.processDefinitionId;
-
-    // Inherit tenant
-    tenantId = te.tenantId;
-  }
-
-  @Override
-  public void execute(CommandContext commandContext) {
-
-    //set endDate if it was set to the definition
-    restoreExtraData(commandContext, jobHandlerConfiguration);
-
-    if (this.getDuedate() != null && !isValidTime(this.getDuedate())) {
-      if (log.isDebugEnabled()) {
-        log.debug("Timer {} fired. but the dueDate is after the endDate.  Deleting timer.", getId());
-      }
-      delete();
-      return;
+    public TimerEntity() {
     }
 
-    super.execute(commandContext);
-
-    if (log.isDebugEnabled()) {
-      log.debug("Timer {} fired. Deleting timer.", getId());
+    public TimerEntity(TimerDeclarationImpl timerDeclaration) {
+        jobHandlerType = timerDeclaration.getJobHandlerType();
+        jobHandlerConfiguration = timerDeclaration.getJobHandlerConfiguration();
+        isExclusive = timerDeclaration.isExclusive();
+        repeat = timerDeclaration.getRepeat();
+        retries = timerDeclaration.getRetries();
     }
-    delete();
 
-    if (repeat != null) {
-      int repeatValue = calculateRepeatValue();
-      if (repeatValue != 0) {
-        if (repeatValue > 0) {
-          setNewRepeat(repeatValue);
-        }
-        Date newTimer = calculateNextTimer();
-        if (newTimer != null && isValidTime(newTimer)) {
-          TimerEntity te = new TimerEntity(this);
-          te.setDuedate(newTimer);
-          Context.getCommandContext().getJobEntityManager().schedule(te);
-        }
-      }
+    private TimerEntity(TimerEntity te) {
+        jobHandlerConfiguration = te.jobHandlerConfiguration;
+        jobHandlerType = te.jobHandlerType;
+        isExclusive = te.isExclusive;
+        repeat = te.repeat;
+        retries = te.retries;
+        endDate = te.endDate;
+        executionId = te.executionId;
+        processInstanceId = te.processInstanceId;
+        processDefinitionId = te.processDefinitionId;
+
+        // Inherit tenant
+        tenantId = te.tenantId;
     }
-  }
 
-  private void restoreExtraData(CommandContext commandContext, String jobHandlerConfiguration) {
-    String embededActivityId = jobHandlerConfiguration;
+    @Override
+    public void execute(CommandContext commandContext) {
 
-    if (jobHandlerType.equalsIgnoreCase(TimerExecuteNestedActivityJobHandler.TYPE) ||
-            jobHandlerType.equalsIgnoreCase(TimerCatchIntermediateEventJobHandler.TYPE) ||
-            jobHandlerType.equalsIgnoreCase(TimerStartEventJobHandler.TYPE)) {
+        // set endDate if it was set to the definition
+        restoreExtraData(commandContext, jobHandlerConfiguration);
 
-      embededActivityId = TimerEventHandler.getActivityIdFromConfiguration(jobHandlerConfiguration);
-
-      String endDateExpressionString = TimerEventHandler.getEndDateFromConfiguration(jobHandlerConfiguration);
-
-      if (endDateExpressionString!=null) {
-         Expression endDateExpression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(endDateExpressionString);
-
-        String endDateString = null;
-
-        BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager()
-                .getBusinessCalendar(CycleBusinessCalendar.NAME);
-
-        VariableScope executionEntity = commandContext.getExecutionEntityManager().findExecutionById(this.getExecutionId());
-        if (executionEntity == null) {
-          executionEntity = NoExecutionVariableScope.getSharedInstance();
+        if (this.getDuedate() != null && !isValidTime(this.getDuedate())) {
+            if (log.isDebugEnabled()) {
+                log.debug("Timer {} fired. but the dueDate is after the endDate.  Deleting timer.", getId());
+            }
+            delete();
+            return;
         }
 
-        if (endDateExpression != null) {
-          Object endDateValue = endDateExpression.getValue(executionEntity);
-          if (endDateValue instanceof String) {
-            endDateString = (String) endDateValue;
-          } else if (endDateValue instanceof Date) {
-            endDate = (Date) endDateValue;
-          } else {
-            throw new ActivitiException("Timer '" + ((ExecutionEntity) executionEntity).getActivityId()
-                    + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
-          }
+        super.execute(commandContext);
 
-          if (endDate == null) {
-            endDate = businessCalendar.resolveEndDate(endDateString);
-          }
+        if (log.isDebugEnabled()) {
+            log.debug("Timer {} fired. Deleting timer.", getId());
         }
-      }
-    }
+        delete();
 
-     if (processDefinitionId != null) {
-      ProcessDefinition def = Context.getProcessEngineConfiguration().getRepositoryService().getProcessDefinition(processDefinitionId);
-      maxIterations = checkStartEventDefinitions(def, embededActivityId);
-      if (maxIterations <= 1) {
-        maxIterations = checkBoundaryEventsDefinitions(def, embededActivityId);
-      }
-    } else {
-      maxIterations = 1;
-    }
-  }
-
-  private int checkStartEventDefinitions(ProcessDefinition def, String embededActivityId) {
-    List<TimerDeclarationImpl> startTimerDeclarations = (List<TimerDeclarationImpl>) ((ProcessDefinitionEntity) def).getProperty("timerStart");
-
-    if (startTimerDeclarations != null && startTimerDeclarations.size() > 0) {
-      TimerDeclarationImpl timerDeclaration = startTimerDeclarations.get(0);
-      String definitionActivityId = TimerEventHandler.getActivityIdFromConfiguration(timerDeclaration.getJobHandlerConfiguration());
-
-      if (timerDeclaration.getJobHandlerType().equalsIgnoreCase(jobHandlerType) && (definitionActivityId.equalsIgnoreCase(embededActivityId))) {
-        return calculateMaxIterationsValue(timerDeclaration.getDescription().getExpressionText());
-      }
-    }
-    return 1;
-  }
-
-  private int checkBoundaryEventsDefinitions(ProcessDefinition def, String embededActivityId) {
-    List<ActivityImpl> activities = ((ProcessDefinitionEntity) def).getActivities();
-    for (ActivityImpl activity : activities) {
-      List<TimerDeclarationImpl> activityTimerDeclarations = (List<TimerDeclarationImpl>) activity.getProperty("timerDeclarations");
-      if (activityTimerDeclarations != null) {
-        for (TimerDeclarationImpl timerDeclaration : activityTimerDeclarations) {
-          String definitionActivityId = TimerEventHandler.getActivityIdFromConfiguration(timerDeclaration.getJobHandlerConfiguration());
-          if (timerDeclaration.getJobHandlerType().equalsIgnoreCase(jobHandlerType) && (definitionActivityId.equalsIgnoreCase(embededActivityId))) {
-            return calculateMaxIterationsValue(timerDeclaration.getDescription().getExpressionText());
-          }
+        if (repeat != null) {
+            int repeatValue = calculateRepeatValue();
+            if (repeatValue != 0) {
+                if (repeatValue > 0) {
+                    setNewRepeat(repeatValue);
+                }
+                Date newTimer = calculateNextTimer();
+                if (newTimer != null && isValidTime(newTimer)) {
+                    TimerEntity te = new TimerEntity(this);
+                    te.setDuedate(newTimer);
+                    Context.getCommandContext().getJobEntityManager().schedule(te);
+                }
+            }
         }
-      }
     }
-    return 1;
-  }
 
-  private int calculateMaxIterationsValue(String originalExpression) {
-    int times = Integer.MAX_VALUE;
-    List<String> expression = Arrays.asList(originalExpression.split("/"));
-    if (expression.size() > 1 && expression.get(0).startsWith("R")) {
-      times = Integer.MAX_VALUE;
-      if (expression.get(0).length() > 1) {
-        times = Integer.parseInt(expression.get(0).substring(1));
-      }
+    private void restoreExtraData(CommandContext commandContext, String jobHandlerConfiguration) {
+        String embededActivityId = jobHandlerConfiguration;
+
+        if (jobHandlerType.equalsIgnoreCase(TimerExecuteNestedActivityJobHandler.TYPE) || jobHandlerType.equalsIgnoreCase(TimerCatchIntermediateEventJobHandler.TYPE)
+                || jobHandlerType.equalsIgnoreCase(TimerStartEventJobHandler.TYPE)) {
+
+            embededActivityId = TimerEventHandler.getActivityIdFromConfiguration(jobHandlerConfiguration);
+
+            String endDateExpressionString = TimerEventHandler.getEndDateFromConfiguration(jobHandlerConfiguration);
+
+            if (endDateExpressionString != null) {
+                Expression endDateExpression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(endDateExpressionString);
+
+                String endDateString = null;
+
+                BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+
+                VariableScope executionEntity = commandContext.getExecutionEntityManager().findExecutionById(this.getExecutionId());
+                if (executionEntity == null) {
+                    executionEntity = NoExecutionVariableScope.getSharedInstance();
+                }
+
+                if (endDateExpression != null) {
+                    Object endDateValue = endDateExpression.getValue(executionEntity);
+                    if (endDateValue instanceof String) {
+                        endDateString = (String) endDateValue;
+                    } else if (endDateValue instanceof Date) {
+                        endDate = (Date) endDateValue;
+                    } else {
+                        throw new ActivitiException("Timer '" + ((ExecutionEntity) executionEntity).getActivityId()
+                                + "' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
+                    }
+
+                    if (endDate == null) {
+                        endDate = businessCalendar.resolveEndDate(endDateString);
+                    }
+                }
+            }
+        }
+
+        if (processDefinitionId != null) {
+            ProcessDefinition def = Context.getProcessEngineConfiguration().getRepositoryService().getProcessDefinition(processDefinitionId);
+            maxIterations = checkStartEventDefinitions(def, embededActivityId);
+            if (maxIterations <= 1) {
+                maxIterations = checkBoundaryEventsDefinitions(def, embededActivityId);
+            }
+        } else {
+            maxIterations = 1;
+        }
     }
-    return times;
-  }
 
-  private boolean isValidTime(Date newTimer) {
-    BusinessCalendar businessCalendar = Context
-        .getProcessEngineConfiguration()
-        .getBusinessCalendarManager()
-        .getBusinessCalendar(CycleBusinessCalendar.NAME);
-    return businessCalendar.validateDuedate(repeat , maxIterations, endDate, newTimer);
-  }
+    private int checkStartEventDefinitions(ProcessDefinition def, String embededActivityId) {
+        List<TimerDeclarationImpl> startTimerDeclarations = (List<TimerDeclarationImpl>) ((ProcessDefinitionEntity) def).getProperty("timerStart");
 
-  private int calculateRepeatValue() {
-    int times = -1;
-    List<String> expression = Arrays.asList(repeat.split("/"));
-    if (expression.size() > 1 && expression.get(0).startsWith("R") && expression.get(0).length() > 1) {
-      times = Integer.parseInt(expression.get(0).substring(1));
-      if (times > 0) {
-        times--;
-      }
+        if (startTimerDeclarations != null && startTimerDeclarations.size() > 0) {
+            TimerDeclarationImpl timerDeclaration = startTimerDeclarations.get(0);
+            String definitionActivityId = TimerEventHandler.getActivityIdFromConfiguration(timerDeclaration.getJobHandlerConfiguration());
+
+            if (timerDeclaration.getJobHandlerType().equalsIgnoreCase(jobHandlerType) && (definitionActivityId.equalsIgnoreCase(embededActivityId))) {
+                return calculateMaxIterationsValue(timerDeclaration.getDescription().getExpressionText());
+            }
+        }
+        return 1;
     }
-    return times;
-  }
-  
-  private void setNewRepeat(int newRepeatValue) {
-    List<String> expression = Arrays.asList(repeat.split("/"));
-    expression = expression.subList(1, expression.size());
-    StringBuilder repeatBuilder = new StringBuilder("R");
-    repeatBuilder.append(newRepeatValue);
-    for (String value : expression) {
-      repeatBuilder.append("/");
-      repeatBuilder.append(value);
+
+    private int checkBoundaryEventsDefinitions(ProcessDefinition def, String embededActivityId) {
+        List<ActivityImpl> activities = ((ProcessDefinitionEntity) def).getActivities();
+        for (ActivityImpl activity : activities) {
+            List<TimerDeclarationImpl> activityTimerDeclarations = (List<TimerDeclarationImpl>) activity.getProperty("timerDeclarations");
+            if (activityTimerDeclarations != null) {
+                for (TimerDeclarationImpl timerDeclaration : activityTimerDeclarations) {
+                    String definitionActivityId = TimerEventHandler.getActivityIdFromConfiguration(timerDeclaration.getJobHandlerConfiguration());
+                    if (timerDeclaration.getJobHandlerType().equalsIgnoreCase(jobHandlerType) && (definitionActivityId.equalsIgnoreCase(embededActivityId))) {
+                        return calculateMaxIterationsValue(timerDeclaration.getDescription().getExpressionText());
+                    }
+                }
+            }
+        }
+        return 1;
     }
-    repeat = repeatBuilder.toString();
-  }
 
-  private Date calculateNextTimer() {
-    BusinessCalendar businessCalendar = Context
-        .getProcessEngineConfiguration()
-        .getBusinessCalendarManager()
-        .getBusinessCalendar(CycleBusinessCalendar.NAME);
-    return businessCalendar.resolveDuedate(repeat,maxIterations);
-  }
+    private int calculateMaxIterationsValue(String originalExpression) {
+        int times = Integer.MAX_VALUE;
+        List<String> expression = Arrays.asList(originalExpression.split("/"));
+        if (expression.size() > 1 && expression.get(0).startsWith("R")) {
+            times = Integer.MAX_VALUE;
+            if (expression.get(0).length() > 1) {
+                times = Integer.parseInt(expression.get(0).substring(1));
+            }
+        }
+        return times;
+    }
 
-  public String getRepeat() {
-    return repeat;
-  }
+    private boolean isValidTime(Date newTimer) {
+        BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+        return businessCalendar.validateDuedate(repeat, maxIterations, endDate, newTimer);
+    }
 
-  public void setRepeat(String repeat) {
-    this.repeat = repeat;
-  }
+    private int calculateRepeatValue() {
+        int times = -1;
+        List<String> expression = Arrays.asList(repeat.split("/"));
+        if (expression.size() > 1 && expression.get(0).startsWith("R") && expression.get(0).length() > 1) {
+            times = Integer.parseInt(expression.get(0).substring(1));
+            if (times > 0) {
+                times--;
+            }
+        }
+        return times;
+    }
 
-  public Date getEndDate() {
-    return endDate;
-  }
+    private void setNewRepeat(int newRepeatValue) {
+        List<String> expression = Arrays.asList(repeat.split("/"));
+        expression = expression.subList(1, expression.size());
+        StringBuilder repeatBuilder = new StringBuilder("R");
+        repeatBuilder.append(newRepeatValue);
+        for (String value : expression) {
+            repeatBuilder.append("/");
+            repeatBuilder.append(value);
+        }
+        repeat = repeatBuilder.toString();
+    }
 
-  public void setEndDate(Date endDate) {
-    this.endDate = endDate;
-  }
+    private Date calculateNextTimer() {
+        BusinessCalendar businessCalendar = Context.getProcessEngineConfiguration().getBusinessCalendarManager().getBusinessCalendar(CycleBusinessCalendar.NAME);
+        return businessCalendar.resolveDuedate(repeat, maxIterations);
+    }
+
+    public String getRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(String repeat) {
+        this.repeat = repeat;
+    }
+
+    public Date getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(Date endDate) {
+        this.endDate = endDate;
+    }
 }

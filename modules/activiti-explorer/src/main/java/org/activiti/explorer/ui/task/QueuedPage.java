@@ -24,37 +24,37 @@ import org.activiti.explorer.ui.task.data.QueuedListQuery;
  */
 public class QueuedPage extends TaskPage {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String groupId;
-  
-  public QueuedPage(String groupId) {
-    this.groupId = groupId;
-  }
-  
-  public QueuedPage(String groupId, String taskId) {
-    super(taskId);
-    this.groupId = groupId;
-  }
-  
-  @Override
-  protected LazyLoadingQuery createLazyLoadingQuery() {
-    return new QueuedListQuery(groupId);
-  }
-  
-  @Override
-  protected UriFragment getUriFragment(String taskId) {
-    UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
-    if(taskId != null) {
-      taskFragment.addUriPart(taskId);
+    private static final long serialVersionUID = 1L;
+
+    protected String groupId;
+
+    public QueuedPage(String groupId) {
+        this.groupId = groupId;
     }
-    
-    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_QUEUED);
-    
-    if(groupId != null) {
-      taskFragment.addParameter(TaskNavigator.PARAMETER_GROUP, groupId);
+
+    public QueuedPage(String groupId, String taskId) {
+        super(taskId);
+        this.groupId = groupId;
     }
-    return taskFragment;
-  }
-  
+
+    @Override
+    protected LazyLoadingQuery createLazyLoadingQuery() {
+        return new QueuedListQuery(groupId);
+    }
+
+    @Override
+    protected UriFragment getUriFragment(String taskId) {
+        UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
+        if (taskId != null) {
+            taskFragment.addUriPart(taskId);
+        }
+
+        taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_QUEUED);
+
+        if (groupId != null) {
+            taskFragment.addParameter(TaskNavigator.PARAMETER_GROUP, groupId);
+        }
+        return taskFragment;
+    }
+
 }

@@ -20,52 +20,59 @@ import java.util.List;
  */
 public class ActivitiListener extends BaseElement {
 
-  protected String event;
-  protected String implementationType;
-  protected String implementation;
-  protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
+    protected String event;
+    protected String implementationType;
+    protected String implementation;
+    protected List<FieldExtension> fieldExtensions = new ArrayList<FieldExtension>();
 
-  public String getEvent() {
-    return event;
-  }
-  public void setEvent(String event) {
-    this.event = event;
-  }
-  public String getImplementationType() {
-    return implementationType;
-  }
-  public void setImplementationType(String implementationType) {
-    this.implementationType = implementationType;
-  }
-  public String getImplementation() {
-    return implementation;
-  }
-  public void setImplementation(String implementation) {
-    this.implementation = implementation;
-  }
-  public List<FieldExtension> getFieldExtensions() {
-    return fieldExtensions;
-  }
-  public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
-    this.fieldExtensions = fieldExtensions;
-  }
-  
-  public ActivitiListener clone() {
-    ActivitiListener clone = new ActivitiListener();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  public void setValues(ActivitiListener otherListener) {
-    setEvent(otherListener.getEvent());
-    setImplementation(otherListener.getImplementation());
-    setImplementationType(otherListener.getImplementationType());
-    
-    fieldExtensions = new ArrayList<FieldExtension>();
-    if (otherListener.getFieldExtensions() != null && !otherListener.getFieldExtensions().isEmpty()) {
-      for (FieldExtension extension : otherListener.getFieldExtensions()) {
-        fieldExtensions.add(extension.clone());
-      }
+    public String getEvent() {
+        return event;
     }
-  }
+
+    public void setEvent(String event) {
+        this.event = event;
+    }
+
+    public String getImplementationType() {
+        return implementationType;
+    }
+
+    public void setImplementationType(String implementationType) {
+        this.implementationType = implementationType;
+    }
+
+    public String getImplementation() {
+        return implementation;
+    }
+
+    public void setImplementation(String implementation) {
+        this.implementation = implementation;
+    }
+
+    public List<FieldExtension> getFieldExtensions() {
+        return fieldExtensions;
+    }
+
+    public void setFieldExtensions(List<FieldExtension> fieldExtensions) {
+        this.fieldExtensions = fieldExtensions;
+    }
+
+    public ActivitiListener clone() {
+        ActivitiListener clone = new ActivitiListener();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(ActivitiListener otherListener) {
+        setEvent(otherListener.getEvent());
+        setImplementation(otherListener.getImplementation());
+        setImplementationType(otherListener.getImplementationType());
+
+        fieldExtensions = new ArrayList<FieldExtension>();
+        if (otherListener.getFieldExtensions() != null && !otherListener.getFieldExtensions().isEmpty()) {
+            for (FieldExtension extension : otherListener.getFieldExtensions()) {
+                fieldExtensions.add(extension.clone());
+            }
+        }
+    }
 }

@@ -22,14 +22,15 @@ import org.activiti.bpmn.model.ScriptTask;
  * @author Tijs Rademakers
  */
 public class ScriptTextParser extends BaseChildElementParser {
-	
-  public String getElementName() {
-    return ATTRIBUTE_TASK_SCRIPT_TEXT;
-  }
-  
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof ScriptTask == false) return;
-    
-    ((ScriptTask) parentElement).setScript(xtr.getElementText());
-  }
+
+    public String getElementName() {
+        return ATTRIBUTE_TASK_SCRIPT_TEXT;
+    }
+
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+        if (parentElement instanceof ScriptTask == false)
+            return;
+
+        ((ScriptTask) parentElement).setScript(xtr.getElementText());
+    }
 }

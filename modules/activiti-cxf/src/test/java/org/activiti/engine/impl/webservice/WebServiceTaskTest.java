@@ -22,7 +22,7 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 
 /**
  * An integration test for CXF based web services
- *
+ * 
  * @author <a href="mailto:gnodet@gmail.com">Guillaume Nodet</a>
  */
 public class WebServiceTaskTest extends PluggableActivitiTestCase {

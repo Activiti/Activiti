@@ -19,26 +19,25 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Joram Barrez
  */
 public class ScriptTaskParseHandler extends AbstractActivityBpmnParseHandler<ScriptTask> {
-	
-	private static final Logger logger = LoggerFactory.getLogger(ScriptTaskParseHandler.class);
-  
-  public Class< ? extends BaseElement> getHandledType() {
-    return ScriptTask.class;
-  }
-  
-  protected void executeParse(BpmnParse bpmnParse, ScriptTask scriptTask) {
 
-    if (StringUtils.isEmpty(scriptTask.getScript())) {
-      logger.warn("No script provided for scriptTask " + scriptTask.getId());
+    private static final Logger logger = LoggerFactory.getLogger(ScriptTaskParseHandler.class);
+
+    public Class<? extends BaseElement> getHandledType() {
+        return ScriptTask.class;
     }
-    
-    scriptTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
-    
-  }
+
+    protected void executeParse(BpmnParse bpmnParse, ScriptTask scriptTask) {
+
+        if (StringUtils.isEmpty(scriptTask.getScript())) {
+            logger.warn("No script provided for scriptTask " + scriptTask.getId());
+        }
+
+        scriptTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
+
+    }
 
 }

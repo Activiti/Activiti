@@ -23,8 +23,8 @@ import org.activiti5.engine.delegate.ExecutionListener;
  */
 public class ExampleExecutionListenerTwo implements ExecutionListener {
 
-  public void notify(DelegateExecution execution) throws Exception {
-    execution.setVariable("variableSetInExecutionListener", "secondValue");
-    execution.setVariable("eventNameReceived", execution.getEventName());
-  }
+    public void notify(DelegateExecution execution) throws Exception {
+        execution.setVariable("variableSetInExecutionListener", "secondValue");
+        execution.setVariable("eventNameReceived", execution.getEventName());
+    }
 }

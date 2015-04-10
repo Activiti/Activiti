@@ -48,191 +48,173 @@ import org.activiti.engine.task.IdentityLinkType;
  */
 public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Serializable {
 
-	private static final long serialVersionUID = 1L;
-	protected String processDefinitionKey;
-	protected String processDefinitionId;
-	protected Map<String, Object> variables;
-	protected String businessKey;
-	protected String tenantId;
-	protected String processInstanceName;
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionKey;
+    protected String processDefinitionId;
+    protected Map<String, Object> variables;
+    protected String businessKey;
+    protected String tenantId;
+    protected String processInstanceName;
 
-	public StartProcessInstanceCmd(String processDefinitionKey,
-	        String processDefinitionId, String businessKey,
-	        Map<String, Object> variables) {
-		this.processDefinitionKey = processDefinitionKey;
-		this.processDefinitionId = processDefinitionId;
-		this.businessKey = businessKey;
-		this.variables = variables;
-	}
+    public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables) {
+        this.processDefinitionKey = processDefinitionKey;
+        this.processDefinitionId = processDefinitionId;
+        this.businessKey = businessKey;
+        this.variables = variables;
+    }
 
-	public StartProcessInstanceCmd(String processDefinitionKey,
-	        String processDefinitionId, String businessKey,
-	        Map<String, Object> variables, String tenantId) {
-		this(processDefinitionKey, processDefinitionId, businessKey, variables);
-		this.tenantId = tenantId;
-	}
+    public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables, String tenantId) {
+        this(processDefinitionKey, processDefinitionId, businessKey, variables);
+        this.tenantId = tenantId;
+    }
 
-	public StartProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
-		this(processInstanceBuilder.getProcessDefinitionKey(), 
-				processInstanceBuilder.getProcessDefinitionId(),
-		        processInstanceBuilder.getBusinessKey(), 
-		        processInstanceBuilder.getVariables(), 
-		        processInstanceBuilder.getTenantId());
-		this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
-	}
+    public StartProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
+        this(processInstanceBuilder.getProcessDefinitionKey(), processInstanceBuilder.getProcessDefinitionId(), processInstanceBuilder.getBusinessKey(), processInstanceBuilder.getVariables(),
+                processInstanceBuilder.getTenantId());
+        this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
+    }
 
-	public ProcessInstance execute(CommandContext commandContext) {
-		DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-		
-		//
-		// TODO: Think about cache usage here. How to avoid duplication??
-		// Probably best to switch to separate caches: one for entities, and one for process models.
-		//
+    public ProcessInstance execute(CommandContext commandContext) {
+        DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
 
-		// Find the process definition
-		ProcessDefinitionEntity processDefinition = null;
-		if (processDefinitionId != null) {
-			
-			processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
-			if (processDefinition == null) {
-				throw new ActivitiObjectNotFoundException("No process definition found for id = '"
-				                + processDefinitionId + "'", ProcessDefinition.class);
-			}
-			
-		} else if (processDefinitionKey != null
-		        && (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId))) {
-			
-			processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
-			if (processDefinition == null) {
-				throw new ActivitiObjectNotFoundException("No process definition found for key '"
-				                + processDefinitionKey + "'", ProcessDefinition.class);
-			}
-			
-		} else if (processDefinitionKey != null && tenantId != null
-		        && !ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
-			
-			processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
-			if (processDefinition == null) {
-				throw new ActivitiObjectNotFoundException("No process definition found for key '"
-				                + processDefinitionKey + "' for tenant identifier " + tenantId, ProcessDefinition.class);
-			}
-			
-		} else {
-			throw new ActivitiIllegalArgumentException(
-			        "processDefinitionKey and processDefinitionId are null");
-		}
-		
-		// Backwards compatibility
-		
-		if (processDefinition.getEngineVersion() != null) {
-			if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
-				Activiti5CompatibilityHandler activiti5CompatibilityHandler =
-						commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
-				
-				if (activiti5CompatibilityHandler == null) {
-					throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath");
-				}
-				
-				return activiti5CompatibilityHandler.startProcessInstance(processDefinitionKey, processDefinitionId, 
-						variables, businessKey, tenantId, processInstanceName);
-			} else {
-				throw new ActivitiException("Invalid 'engine' for process definition " 
-						+ processDefinition.getId() + " : " + processDefinition.getEngineVersion());
-			}
-		}
+        //
+        // TODO: Think about cache usage here. How to avoid duplication??
+        // Probably best to switch to separate caches: one for entities, and one
+        // for process models.
+        //
 
-		// Do not start process a process instance if the process definition is
-		// suspended
-		if (processDefinition.isSuspended()) {
-			throw new ActivitiException("Cannot start process instance. Process definition "
-					+ processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
-		}
+        // Find the process definition
+        ProcessDefinitionEntity processDefinition = null;
+        if (processDefinitionId != null) {
 
-		// Get model from cache
-		Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinition.getId());
-		if (process == null) {
-		    throw new ActivitiException("Cannot start process instance. Process model "
-                    + processDefinition.getName() + " (id = " + processDefinition.getId() + ") could not be found");
-		}
+            processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
+            if (processDefinition == null) {
+                throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
+            }
 
-		FlowElement initialFlowElement = process.getInitialFlowElement();
-		if (initialFlowElement == null) {
-			throw new ActivitiException("No start element found for process definition " + processDefinition.getId());
-		}
+        } else if (processDefinitionKey != null && (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId))) {
 
-		// Create process instance
+            processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
+            if (processDefinition == null) {
+                throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "'", ProcessDefinition.class);
+            }
 
-		// //// ////// ////// //////
+        } else if (processDefinitionKey != null && tenantId != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
 
-		// Create the process instance
-		String initiatorVariableName = null;
-		if (initialFlowElement instanceof StartEvent) {
-		    initiatorVariableName = ((StartEvent) initialFlowElement).getInitiator();
-		}
-		ExecutionEntity processInstance = createProcessInstance(commandContext, processDefinition, 
-		        businessKey, initiatorVariableName, initialFlowElement);
-		
-		processInstance.setVariables(processDataObjects(process.getDataObjects()));
-		
-		// Set the variables passed into the start command
-		if (variables != null) {
-			for (String varName : variables.keySet()) {
+            processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+            if (processDefinition == null) {
+                throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "' for tenant identifier " + tenantId, ProcessDefinition.class);
+            }
+
+        } else {
+            throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
+        }
+
+        // Backwards compatibility
+
+        if (processDefinition.getEngineVersion() != null) {
+            if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
+                Activiti5CompatibilityHandler activiti5CompatibilityHandler = commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
+
+                if (activiti5CompatibilityHandler == null) {
+                    throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath");
+                }
+
+                return activiti5CompatibilityHandler.startProcessInstance(processDefinitionKey, processDefinitionId, variables, businessKey, tenantId, processInstanceName);
+            } else {
+                throw new ActivitiException("Invalid 'engine' for process definition " + processDefinition.getId() + " : " + processDefinition.getEngineVersion());
+            }
+        }
+
+        // Do not start process a process instance if the process definition is
+        // suspended
+        if (processDefinition.isSuspended()) {
+            throw new ActivitiException("Cannot start process instance. Process definition " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
+        }
+
+        // Get model from cache
+        Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinition.getId());
+        if (process == null) {
+            throw new ActivitiException("Cannot start process instance. Process model " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") could not be found");
+        }
+
+        FlowElement initialFlowElement = process.getInitialFlowElement();
+        if (initialFlowElement == null) {
+            throw new ActivitiException("No start element found for process definition " + processDefinition.getId());
+        }
+
+        // Create process instance
+
+        // //// ////// ////// //////
+
+        // Create the process instance
+        String initiatorVariableName = null;
+        if (initialFlowElement instanceof StartEvent) {
+            initiatorVariableName = ((StartEvent) initialFlowElement).getInitiator();
+        }
+        ExecutionEntity processInstance = createProcessInstance(commandContext, processDefinition, businessKey, initiatorVariableName, initialFlowElement);
+
+        processInstance.setVariables(processDataObjects(process.getDataObjects()));
+
+        // Set the variables passed into the start command
+        if (variables != null) {
+            for (String varName : variables.keySet()) {
                 processInstance.setVariable(varName, variables.get(varName));
             }
-		}
+        }
 
-		// Set processInstance name
-		if (processInstanceName != null) {
-			processInstance.setName(processInstanceName);
-		}
-		
-		// Create the first execution that will visit all the process definition elements
-		ExecutionEntity execution = processInstance.createExecution();
-		execution.setCurrentFlowElement(initialFlowElement);
-		commandContext.getAgenda().planContinueProcessOperation(execution);
+        // Set processInstance name
+        if (processInstanceName != null) {
+            processInstance.setName(processInstanceName);
+        }
 
-		return processInstance;
-	}
+        // Create the first execution that will visit all the process definition
+        // elements
+        ExecutionEntity execution = processInstance.createExecution();
+        execution.setCurrentFlowElement(initialFlowElement);
+        commandContext.getAgenda().planContinueProcessOperation(execution);
 
-	protected ExecutionEntity createProcessInstance(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity, 
-	        String businessKey, String initiatorVariableName, FlowElement initialFlowElement) {
-		
-		ExecutionEntity processInstance = new ExecutionEntity();
-		processInstance.setProcessDefinitionId(processDefinitionEntity.getId());
-		processInstance.setBusinessKey(businessKey);
-		processInstance.setScope(true); // process instance is always a scope for all child executions
-		
-		// Inherit tenant id (if any)
-		if (processDefinitionEntity.getTenantId() != null) {
-			processInstance.setTenantId(processDefinitionEntity.getTenantId());
-		}
+        return processInstance;
+    }
 
-		String authenticatedUserId = Authentication.getAuthenticatedUserId();
-		if (initiatorVariableName != null) {
-		  processInstance.setVariable(initiatorVariableName, authenticatedUserId);
-		}
-		if (authenticatedUserId != null) {
-		  processInstance.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
-		}
-		
-		// Store in database
-		commandContext.getExecutionEntityManager().insert(processInstance);
+    protected ExecutionEntity createProcessInstance(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity, String businessKey, String initiatorVariableName,
+            FlowElement initialFlowElement) {
 
-		// Fire events
-		commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
+        ExecutionEntity processInstance = new ExecutionEntity();
+        processInstance.setProcessDefinitionId(processDefinitionEntity.getId());
+        processInstance.setBusinessKey(businessKey);
+        processInstance.setScope(true); // process instance is always a scope
+                                        // for all child executions
 
-		if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-			Context.getProcessEngineConfiguration()
-			        .getEventDispatcher()
-			        .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
-		}
-		
-		return processInstance;
-	}
-	
-	protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
+        // Inherit tenant id (if any)
+        if (processDefinitionEntity.getTenantId() != null) {
+            processInstance.setTenantId(processDefinitionEntity.getTenantId());
+        }
+
+        String authenticatedUserId = Authentication.getAuthenticatedUserId();
+        if (initiatorVariableName != null) {
+            processInstance.setVariable(initiatorVariableName, authenticatedUserId);
+        }
+        if (authenticatedUserId != null) {
+            processInstance.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
+        }
+
+        // Store in database
+        commandContext.getExecutionEntityManager().insert(processInstance);
+
+        // Fire events
+        commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
+
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
+        }
+
+        return processInstance;
+    }
+
+    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
         Map<String, Object> variablesMap = new HashMap<String, Object>();
-        // convert data objects to process variables  
+        // convert data objects to process variables
         if (dataObjects != null) {
             for (ValuedDataObject dataObject : dataObjects) {
                 variablesMap.put(dataObject.getName(), dataObject.getValue());

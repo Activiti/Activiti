@@ -16,23 +16,22 @@ import org.activiti.engine.impl.javax.el.ValueExpression;
 import org.activiti.engine.impl.javax.el.VariableMapper;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class TaskVariableMapper extends VariableMapper {
 
-  public TaskVariableMapper(TaskEntity task) {
-  }
+    public TaskVariableMapper(TaskEntity task) {
+    }
 
-  @Override
-  public ValueExpression resolveVariable(String variableName) {
-    return null;
-  }
+    @Override
+    public ValueExpression resolveVariable(String variableName) {
+        return null;
+    }
 
-  @Override
-  public ValueExpression setVariable(String variableName, ValueExpression arg1) {
-    return null;
-  }
+    @Override
+    public ValueExpression setVariable(String variableName, ValueExpression arg1) {
+        return null;
+    }
 
 }

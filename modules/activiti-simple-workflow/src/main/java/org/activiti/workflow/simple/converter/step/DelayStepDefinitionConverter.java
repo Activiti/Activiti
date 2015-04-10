@@ -21,30 +21,29 @@ import org.activiti.workflow.simple.definition.StepDefinition;
 
 public class DelayStepDefinitionConverter extends BaseStepDefinitionConverter<DelayStepDefinition, IntermediateCatchEvent> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-  public Class<? extends StepDefinition> getHandledClass() {
-	  return DelayStepDefinition.class;
-  }
+    @Override
+    public Class<? extends StepDefinition> getHandledClass() {
+        return DelayStepDefinition.class;
+    }
 
-	@Override
-  protected IntermediateCatchEvent createProcessArtifact(DelayStepDefinition stepDefinition,
-      WorkflowDefinitionConversion conversion) {
+    @Override
+    protected IntermediateCatchEvent createProcessArtifact(DelayStepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
 
-		IntermediateCatchEvent event = new IntermediateCatchEvent();
-		event.setId(conversion.getUniqueNumberedId(ConversionConstants.INTERMEDIATE_EVENT_ID_PREVIX));
-		event.setName(stepDefinition.getName());
-		event.setDocumentation(stepDefinition.getDescription());
-		
-		TimerEventDefinition timer = new TimerEventDefinition();
-		event.addEventDefinition(timer);
-		if(stepDefinition.getTimeDate() != null) {
-			timer.setTimeDate(stepDefinition.getTimeDate());
-		} else if(stepDefinition.getTimeDuration() != null) {
-			timer.setTimeDuration(stepDefinition.getTimeDuration().toISO8601DurationString());
-		}
-    addFlowElement(conversion, event, true);
-    return event;
-  }
+        IntermediateCatchEvent event = new IntermediateCatchEvent();
+        event.setId(conversion.getUniqueNumberedId(ConversionConstants.INTERMEDIATE_EVENT_ID_PREVIX));
+        event.setName(stepDefinition.getName());
+        event.setDocumentation(stepDefinition.getDescription());
+
+        TimerEventDefinition timer = new TimerEventDefinition();
+        event.addEventDefinition(timer);
+        if (stepDefinition.getTimeDate() != null) {
+            timer.setTimeDate(stepDefinition.getTimeDate());
+        } else if (stepDefinition.getTimeDuration() != null) {
+            timer.setTimeDuration(stepDefinition.getTimeDuration().toISO8601DurationString());
+        }
+        addFlowElement(conversion, event, true);
+        return event;
+    }
 }

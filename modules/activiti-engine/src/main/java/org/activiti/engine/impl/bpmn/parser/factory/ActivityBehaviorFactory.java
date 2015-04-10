@@ -82,112 +82,119 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.task.TaskDefinition;
 
 /**
- * Factory class used by the {@link BpmnParser} and {@link BpmnParse} to instantiate
- * the behaviour classes. For example when parsing an exclusive gateway, this factory
- * will be requested to create a new {@link ActivityBehavior} that will be set on the 
- * {@link ActivityImpl} of that step of the process and will implement the spec-compliant
- * behavior of the exclusive gateway.
+ * Factory class used by the {@link BpmnParser} and {@link BpmnParse} to
+ * instantiate the behaviour classes. For example when parsing an exclusive
+ * gateway, this factory will be requested to create a new
+ * {@link ActivityBehavior} that will be set on the {@link ActivityImpl} of that
+ * step of the process and will implement the spec-compliant behavior of the
+ * exclusive gateway.
  * 
  * You can provide your own implementation of this class. This way, you can give
  * different execution semantics to a standard bpmn xml construct. Eg. you could
- * tweak the exclusive gateway to do something completely different if you would want that.
- * Creating your own {@link ActivityBehaviorFactory} is only advisable if you
- * want to change the default behavior of any BPMN default construct.
- * And even then, think twice, because it won't be spec compliant bpmn anymore.
+ * tweak the exclusive gateway to do something completely different if you would
+ * want that. Creating your own {@link ActivityBehaviorFactory} is only
+ * advisable if you want to change the default behavior of any BPMN default
+ * construct. And even then, think twice, because it won't be spec compliant
+ * bpmn anymore.
  * 
- * Note that you can always express any custom step as a service task with a class delegation.
+ * Note that you can always express any custom step as a service task with a
+ * class delegation.
  * 
- * The easiest and advisable way to implement your own {@link ActivityBehaviorFactory} 
- * is to extend the {@link DefaultActivityBehaviorFactory} class and override 
- * the method specific to the {@link ActivityBehavior} you want to change. 
+ * The easiest and advisable way to implement your own
+ * {@link ActivityBehaviorFactory} is to extend the
+ * {@link DefaultActivityBehaviorFactory} class and override the method specific
+ * to the {@link ActivityBehavior} you want to change.
  * 
- * An instance of this interface can be injected in the {@link ProcessEngineConfigurationImpl}
- * and its subclasses. 
+ * An instance of this interface can be injected in the
+ * {@link ProcessEngineConfigurationImpl} and its subclasses.
  * 
  * @author Joram Barrez
  */
 public interface ActivityBehaviorFactory {
 
-  public abstract NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent);
+    public abstract NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent);
 
-  public abstract EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent, String activityId);
+    public abstract EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent, String activityId);
 
-  public abstract TaskActivityBehavior createTaskActivityBehavior(Task task);
+    public abstract TaskActivityBehavior createTaskActivityBehavior(Task task);
 
-  public abstract ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask);
+    public abstract ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask);
 
-  public abstract ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask);
+    public abstract ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask);
 
-  public abstract UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition);
+    public abstract UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition);
 
-  public abstract ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask);
+    public abstract ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask);
 
-  public abstract ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask);
+    public abstract ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask);
 
-  public abstract ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask);
+    public abstract ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask);
 
-  public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask);
+    public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask);
 
-  public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(SendTask sendTask);
+    public abstract WebServiceActivityBehavior createWebServiceActivityBehavior(SendTask sendTask);
 
-  public abstract MailActivityBehavior createMailActivityBehavior(ServiceTask serviceTask);
+    public abstract MailActivityBehavior createMailActivityBehavior(ServiceTask serviceTask);
 
-  public abstract MailActivityBehavior createMailActivityBehavior(SendTask sendTask);
+    public abstract MailActivityBehavior createMailActivityBehavior(SendTask sendTask);
 
-  // We do not want a hard dependency on the Mule module, hence we return ActivityBehavior and instantiate 
-  // the delegate instance using a string instead of the Class itself.
-  public abstract ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel);
+    // We do not want a hard dependency on the Mule module, hence we return
+    // ActivityBehavior and instantiate
+    // the delegate instance using a string instead of the Class itself.
+    public abstract ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel);
 
-  public abstract ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel);
-  
-  public abstract ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel);
- 
-  public abstract ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel);
+    public abstract ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel);
 
-  public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
+    public abstract ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel);
 
-  public abstract BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
+    public abstract ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel);
 
-  public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask);
+    public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
 
-  public abstract ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(ExclusiveGateway exclusiveGateway);
+    public abstract BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask);
 
-  public abstract ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(ParallelGateway parallelGateway);
+    public abstract ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask);
 
-  public abstract InclusiveGatewayActivityBehavior createInclusiveGatewayActivityBehavior(InclusiveGateway inclusiveGateway);
+    public abstract ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(ExclusiveGateway exclusiveGateway);
 
-  public abstract EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(EventGateway eventGateway);
+    public abstract ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(ParallelGateway parallelGateway);
 
-  public abstract SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior);
+    public abstract InclusiveGatewayActivityBehavior createInclusiveGatewayActivityBehavior(InclusiveGateway inclusiveGateway);
 
-  public abstract ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior);
+    public abstract EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(EventGateway eventGateway);
 
-  public abstract SubProcessActivityBehavior createSubprocActivityBehavior(SubProcess subProcess);
+    public abstract SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior);
 
-  public abstract CallActivityBehavior createCallActivityBehavior(CallActivity callActivity);
+    public abstract ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior);
 
-  public abstract TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction);
+    public abstract SubProcessActivityBehavior createSubprocActivityBehavior(SubProcess subProcess);
 
-  public abstract IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent);
+    public abstract CallActivityBehavior createCallActivityBehavior(CallActivity callActivity);
 
-  public abstract IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(ThrowEvent throwEvent);
+    public abstract TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction);
 
-  public abstract IntermediateThrowSignalEventActivityBehavior createIntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal, EventSubscriptionDeclaration eventSubscriptionDeclaration);
+    public abstract IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent);
 
-  public abstract IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition);
+    public abstract IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(ThrowEvent throwEvent);
 
-  public abstract NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent);
+    public abstract IntermediateThrowSignalEventActivityBehavior createIntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal,
+            EventSubscriptionDeclaration eventSubscriptionDeclaration);
 
-  public abstract ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(EndEvent endEvent, ErrorEventDefinition errorEventDefinition);
+    public abstract IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(ThrowEvent throwEvent,
+            CompensateEventDefinition compensateEventDefinition);
 
-  public abstract CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(EndEvent endEvent);
+    public abstract NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent);
 
-  public abstract TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent);
+    public abstract ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(EndEvent endEvent, ErrorEventDefinition errorEventDefinition);
 
-  public abstract BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent, boolean interrupting, ActivityImpl activity);
+    public abstract CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(EndEvent endEvent);
 
-  public abstract CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(CancelEventDefinition cancelEventDefinition);
-  
-  public abstract BoundaryTimerEventActivityBehavior createBoundaryTimerEventActivityBehavior(BoundaryEvent boundaryEvent, TimerEventDefinition timerEventDefinition, boolean interrupting);
+    public abstract TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent);
+
+    public abstract BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent, boolean interrupting, ActivityImpl activity);
+
+    public abstract CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(CancelEventDefinition cancelEventDefinition);
+
+    public abstract BoundaryTimerEventActivityBehavior createBoundaryTimerEventActivityBehavior(BoundaryEvent boundaryEvent, TimerEventDefinition timerEventDefinition, boolean interrupting);
 
 }

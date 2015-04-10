@@ -43,88 +43,88 @@ import org.mockito.MockitoAnnotations;
 
 public class JobExecutorMBeanTest {
 
-  protected JobExecutorMBean jobExecutorMbean;
+    protected JobExecutorMBean jobExecutorMbean;
 
-  @Mock
-  protected ProcessEngineConfiguration processEngineConfiguration;
-  
-  @Mock
-  protected JobExecutor jobExecutor;
+    @Mock
+    protected ProcessEngineConfiguration processEngineConfiguration;
 
-  @Before
-  public void initMocks() throws MalformedObjectNameException {
-    MockitoAnnotations.initMocks(this);
-    when(processEngineConfiguration.getJobExecutor()).thenReturn(jobExecutor);
-    jobExecutorMbean = new JobExecutorMBean(processEngineConfiguration);
-  }
+    @Mock
+    protected JobExecutor jobExecutor;
 
-  @Test
-  public void TestIsJobExecutorActivatedFalse() {
-    when(jobExecutor.isActive()).thenReturn(false);
-   
-    boolean result = jobExecutorMbean.isJobExecutorActivated();
-    verify(jobExecutor).isActive();
-    assertFalse(result);
-
-  }
-
-  @Test
-  public void TestIsJobExecutorActivatedTrue() {
-    when(jobExecutor.isActive()).thenReturn(true);
-    boolean result = jobExecutorMbean.isJobExecutorActivated();
-    verify(jobExecutor).isActive();
-    assertTrue(result);
-  }
-
-  @Test
-  public void setJobExecutorActivateTrue() {
-    jobExecutorMbean.setJobExecutorActivate(true);
-    verify(jobExecutor).start();
-
-    jobExecutorMbean.setJobExecutorActivate(false);
-    verify(jobExecutor).shutdown();
-
-  }
-
-  ManagementMBeanAssembler assembler = new DefaultManagementMBeanAssembler();
-
-  @Test
-  public void testAnnotations() throws MalformedObjectNameException, JMException {
-
-    ModelMBean modelBean = assembler.assemble(jobExecutorMbean, new ObjectName("domain", "key", "value"));
-    assertNotNull(modelBean);
-    MBeanInfo beanInfo = modelBean.getMBeanInfo();
-    assertNotNull(beanInfo);
-    assertNotNull(beanInfo.getOperations());
-    assertEquals(2, beanInfo.getOperations().length);
-    int counter = 0;
-
-    for (MBeanOperationInfo op : beanInfo.getOperations()) {
-      if (op.getName().equals("setJobExecutorActivate")) {
-        counter++;
-        assertEquals("set job executor activate", op.getDescription());
-        assertEquals("void", op.getReturnType());
-        assertEquals(1, op.getSignature().length);
-        assertEquals("java.lang.Boolean", op.getSignature()[0].getType());
-      }
+    @Before
+    public void initMocks() throws MalformedObjectNameException {
+        MockitoAnnotations.initMocks(this);
+        when(processEngineConfiguration.getJobExecutor()).thenReturn(jobExecutor);
+        jobExecutorMbean = new JobExecutorMBean(processEngineConfiguration);
     }
-    assertEquals(1, counter);
 
-    // check attributes
-    assertNotNull(beanInfo.getAttributes());
-    assertEquals(1, beanInfo.getAttributes().length);
+    @Test
+    public void TestIsJobExecutorActivatedFalse() {
+        when(jobExecutor.isActive()).thenReturn(false);
 
-    counter = 0;
+        boolean result = jobExecutorMbean.isJobExecutorActivated();
+        verify(jobExecutor).isActive();
+        assertFalse(result);
 
-    for (MBeanAttributeInfo attr : beanInfo.getAttributes()) {
-      if (attr.getName().equals("JobExecutorActivated")) {
-        counter++;
-        assertEquals("check if the job executor is activated", attr.getDescription());
-        assertEquals("boolean", attr.getType());
-      }
     }
-    assertEquals(1, counter);
 
-  }
+    @Test
+    public void TestIsJobExecutorActivatedTrue() {
+        when(jobExecutor.isActive()).thenReturn(true);
+        boolean result = jobExecutorMbean.isJobExecutorActivated();
+        verify(jobExecutor).isActive();
+        assertTrue(result);
+    }
+
+    @Test
+    public void setJobExecutorActivateTrue() {
+        jobExecutorMbean.setJobExecutorActivate(true);
+        verify(jobExecutor).start();
+
+        jobExecutorMbean.setJobExecutorActivate(false);
+        verify(jobExecutor).shutdown();
+
+    }
+
+    ManagementMBeanAssembler assembler = new DefaultManagementMBeanAssembler();
+
+    @Test
+    public void testAnnotations() throws MalformedObjectNameException, JMException {
+
+        ModelMBean modelBean = assembler.assemble(jobExecutorMbean, new ObjectName("domain", "key", "value"));
+        assertNotNull(modelBean);
+        MBeanInfo beanInfo = modelBean.getMBeanInfo();
+        assertNotNull(beanInfo);
+        assertNotNull(beanInfo.getOperations());
+        assertEquals(2, beanInfo.getOperations().length);
+        int counter = 0;
+
+        for (MBeanOperationInfo op : beanInfo.getOperations()) {
+            if (op.getName().equals("setJobExecutorActivate")) {
+                counter++;
+                assertEquals("set job executor activate", op.getDescription());
+                assertEquals("void", op.getReturnType());
+                assertEquals(1, op.getSignature().length);
+                assertEquals("java.lang.Boolean", op.getSignature()[0].getType());
+            }
+        }
+        assertEquals(1, counter);
+
+        // check attributes
+        assertNotNull(beanInfo.getAttributes());
+        assertEquals(1, beanInfo.getAttributes().length);
+
+        counter = 0;
+
+        for (MBeanAttributeInfo attr : beanInfo.getAttributes()) {
+            if (attr.getName().equals("JobExecutorActivated")) {
+                counter++;
+                assertEquals("check if the job executor is activated", attr.getDescription());
+                assertEquals("boolean", attr.getType());
+            }
+        }
+        assertEquals(1, counter);
+
+    }
 
 }

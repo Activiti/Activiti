@@ -31,34 +31,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GroupResource extends BaseGroupResource {
 
-  @RequestMapping(value="/identity/groups/{groupId}", method = RequestMethod.GET, produces = "application/json")
-  public GroupResponse getGroup(@PathVariable String groupId, HttpServletRequest request) {
-    return restResponseFactory.createGroupResponse(getGroupFromRequest(groupId));
-  }
-  
-  @RequestMapping(value="/identity/groups/{groupId}", method = RequestMethod.PUT, produces = "application/json")
-  public GroupResponse updateGroup(@PathVariable String groupId, @RequestBody GroupRequest groupRequest, HttpServletRequest request) {
-    Group group = getGroupFromRequest(groupId);
-
-    if (groupRequest.getId() == null || groupRequest.getId().equals(group.getId())) {
-      if (groupRequest.isNameChanged()) {
-        group.setName(groupRequest.getName());
-      }
-      if (groupRequest.isTypeChanged()) {
-        group.setType(groupRequest.getType());
-      }
-      identityService.saveGroup(group);
-    } else {
-      throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
+    @RequestMapping(value = "/identity/groups/{groupId}", method = RequestMethod.GET, produces = "application/json")
+    public GroupResponse getGroup(@PathVariable String groupId, HttpServletRequest request) {
+        return restResponseFactory.createGroupResponse(getGroupFromRequest(groupId));
     }
-    
-    return restResponseFactory.createGroupResponse(group);
-  }
-  
-  @RequestMapping(value="/identity/groups/{groupId}", method = RequestMethod.DELETE)
-  public void deleteGroup(@PathVariable String groupId, HttpServletResponse response) {
-  	Group group = getGroupFromRequest(groupId);
-    identityService.deleteGroup(group.getId());
-    response.setStatus(HttpStatus.NO_CONTENT.value());
-  }
+
+    @RequestMapping(value = "/identity/groups/{groupId}", method = RequestMethod.PUT, produces = "application/json")
+    public GroupResponse updateGroup(@PathVariable String groupId, @RequestBody GroupRequest groupRequest, HttpServletRequest request) {
+        Group group = getGroupFromRequest(groupId);
+
+        if (groupRequest.getId() == null || groupRequest.getId().equals(group.getId())) {
+            if (groupRequest.isNameChanged()) {
+                group.setName(groupRequest.getName());
+            }
+            if (groupRequest.isTypeChanged()) {
+                group.setType(groupRequest.getType());
+            }
+            identityService.saveGroup(group);
+        } else {
+            throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
+        }
+
+        return restResponseFactory.createGroupResponse(group);
+    }
+
+    @RequestMapping(value = "/identity/groups/{groupId}", method = RequestMethod.DELETE)
+    public void deleteGroup(@PathVariable String groupId, HttpServletResponse response) {
+        Group group = getGroupFromRequest(groupId);
+        identityService.deleteGroup(group.getId());
+        response.setStatus(HttpStatus.NO_CONTENT.value());
+    }
 }

@@ -29,103 +29,103 @@ import org.activiti.engine.test.Deployment;
  */
 public class CommentEventsTest extends PluggableActivitiTestCase {
 
-	private TestActivitiEntityEventListener listener;
+    private TestActivitiEntityEventListener listener;
 
-	/**
-	 * Test create, update and delete events of comments on a task/process.
-	 */
-	@Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
-	public void testCommentEntityEvents() throws Exception {
-		if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-			ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-			
-			Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-			assertNotNull(task);
-			
-			// Create link-comment
-			Comment comment = taskService.addComment(task.getId(), task.getProcessInstanceId(), "comment");
-			assertEquals(2, listener.getEventsReceived().size());
-			ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-			assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-			assertEquals(processInstance.getId(), event.getProcessInstanceId());
-			assertEquals(processInstance.getId(), event.getExecutionId());
-			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
-			Comment commentFromEvent = (Comment) event.getEntity();
-			assertEquals(comment.getId(), commentFromEvent.getId());
-			
-			event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-			assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-			listener.clearEventsReceived();
-			
-			// Finally, delete comment
-			taskService.deleteComment(comment.getId());
-			assertEquals(1, listener.getEventsReceived().size());
-			event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-			assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-			assertEquals(processInstance.getId(), event.getProcessInstanceId());
-			assertEquals(processInstance.getId(), event.getExecutionId());
-			assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
-			commentFromEvent = (Comment) event.getEntity();
-			assertEquals(comment.getId(), commentFromEvent.getId());
-		}
-	}
-	
-	public void testCommentEntityEventsStandaloneTask() throws Exception {
-		if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
-			Task task = null;
-			try {
-				task = taskService.newTask();
-				taskService.saveTask(task);
-				assertNotNull(task);
-				
-				// Create link-comment
-				Comment comment = taskService.addComment(task.getId(), null, "comment");
-				assertEquals(2, listener.getEventsReceived().size());
-				ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-				assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-				assertNull(event.getProcessInstanceId());
-				assertNull(event.getExecutionId());
-				assertNull(event.getProcessDefinitionId());
-				Comment commentFromEvent = (Comment) event.getEntity();
-				assertEquals(comment.getId(), commentFromEvent.getId());
-				
-				event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-				assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-				listener.clearEventsReceived();
-				
-				// Finally, delete comment
-				taskService.deleteComment(comment.getId());
-				assertEquals(1, listener.getEventsReceived().size());
-				event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-				assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-				assertNull(event.getProcessInstanceId());
-				assertNull(event.getExecutionId());
-				assertNull(event.getProcessDefinitionId());
-				commentFromEvent = (Comment) event.getEntity();
-				assertEquals(comment.getId(), commentFromEvent.getId());
-				
-			} finally {
-				if(task != null && task.getId() != null) {
-					taskService.deleteTask(task.getId());
-					historyService.deleteHistoricTaskInstance(task.getId());
-				}
-			}
-		}
-	}
-	
-	@Override
-	protected void setUp() throws Exception {
-		super.setUp();
-		listener = new TestActivitiEntityEventListener(Comment.class);
-		processEngineConfiguration.getEventDispatcher().addEventListener(listener);
-	}
+    /**
+     * Test create, update and delete events of comments on a task/process.
+     */
+    @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+    public void testCommentEntityEvents() throws Exception {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-	@Override
-	protected void tearDown() throws Exception {
-		super.tearDown();
+            Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+            assertNotNull(task);
 
-		if (listener != null) {
-			processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
-		}
-	}
+            // Create link-comment
+            Comment comment = taskService.addComment(task.getId(), task.getProcessInstanceId(), "comment");
+            assertEquals(2, listener.getEventsReceived().size());
+            ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+            assertEquals(processInstance.getId(), event.getProcessInstanceId());
+            assertEquals(processInstance.getId(), event.getExecutionId());
+            assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+            Comment commentFromEvent = (Comment) event.getEntity();
+            assertEquals(comment.getId(), commentFromEvent.getId());
+
+            event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+            assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+            listener.clearEventsReceived();
+
+            // Finally, delete comment
+            taskService.deleteComment(comment.getId());
+            assertEquals(1, listener.getEventsReceived().size());
+            event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+            assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
+            assertEquals(processInstance.getId(), event.getProcessInstanceId());
+            assertEquals(processInstance.getId(), event.getExecutionId());
+            assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+            commentFromEvent = (Comment) event.getEntity();
+            assertEquals(comment.getId(), commentFromEvent.getId());
+        }
+    }
+
+    public void testCommentEntityEventsStandaloneTask() throws Exception {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+            Task task = null;
+            try {
+                task = taskService.newTask();
+                taskService.saveTask(task);
+                assertNotNull(task);
+
+                // Create link-comment
+                Comment comment = taskService.addComment(task.getId(), null, "comment");
+                assertEquals(2, listener.getEventsReceived().size());
+                ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+                assertNull(event.getProcessInstanceId());
+                assertNull(event.getExecutionId());
+                assertNull(event.getProcessDefinitionId());
+                Comment commentFromEvent = (Comment) event.getEntity();
+                assertEquals(comment.getId(), commentFromEvent.getId());
+
+                event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+                assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+                listener.clearEventsReceived();
+
+                // Finally, delete comment
+                taskService.deleteComment(comment.getId());
+                assertEquals(1, listener.getEventsReceived().size());
+                event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+                assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
+                assertNull(event.getProcessInstanceId());
+                assertNull(event.getExecutionId());
+                assertNull(event.getProcessDefinitionId());
+                commentFromEvent = (Comment) event.getEntity();
+                assertEquals(comment.getId(), commentFromEvent.getId());
+
+            } finally {
+                if (task != null && task.getId() != null) {
+                    taskService.deleteTask(task.getId());
+                    historyService.deleteHistoricTaskInstance(task.getId());
+                }
+            }
+        }
+    }
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        listener = new TestActivitiEntityEventListener(Comment.class);
+        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+    }
+
+    @Override
+    protected void tearDown() throws Exception {
+        super.tearDown();
+
+        if (listener != null) {
+            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
+        }
+    }
 }

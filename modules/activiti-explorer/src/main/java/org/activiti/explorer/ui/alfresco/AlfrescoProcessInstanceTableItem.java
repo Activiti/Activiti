@@ -30,36 +30,37 @@ import com.vaadin.ui.themes.Reindeer;
  */
 class AlfrescoProcessInstanceTableItem extends PropertysetItem implements Comparable<AlfrescoProcessInstanceTableItem> {
 
-  private static final long serialVersionUID = 1L;
-  
-  public static final String PROPERTY_ID = "id";
-  public static final String PROPERTY_BUSINESSKEY = "businessKey";
-  public static final String PROPERTY_ACTIONS = "actions";
-  
-  public AlfrescoProcessInstanceTableItem(final ProcessInstance processInstance) {
-    addItemProperty(PROPERTY_ID, new ObjectProperty<String>(processInstance.getId(), String.class));
-    
-    if (processInstance.getBusinessKey() != null) {
-      addItemProperty(PROPERTY_BUSINESSKEY, new ObjectProperty<String>(processInstance.getBusinessKey(), String.class));
+    private static final long serialVersionUID = 1L;
+
+    public static final String PROPERTY_ID = "id";
+    public static final String PROPERTY_BUSINESSKEY = "businessKey";
+    public static final String PROPERTY_ACTIONS = "actions";
+
+    public AlfrescoProcessInstanceTableItem(final ProcessInstance processInstance) {
+        addItemProperty(PROPERTY_ID, new ObjectProperty<String>(processInstance.getId(), String.class));
+
+        if (processInstance.getBusinessKey() != null) {
+            addItemProperty(PROPERTY_BUSINESSKEY, new ObjectProperty<String>(processInstance.getBusinessKey(), String.class));
+        }
+
+        Button viewProcessInstanceButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.PROCESS_ACTION_VIEW));
+        viewProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
+        viewProcessInstanceButton.addListener(new ClickListener() {
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+                ExplorerApp.get().getViewManager().showProcessInstancePage(processInstance.getId());
+            }
+        });
+
+        viewProcessInstanceButton.setIcon(Images.MAGNIFIER_16);
+        addItemProperty(PROPERTY_ACTIONS, new ObjectProperty<Component>(viewProcessInstanceButton, Component.class));
     }
 
-    Button viewProcessInstanceButton = new Button(ExplorerApp.get().getI18nManager().getMessage(Messages.PROCESS_ACTION_VIEW));
-    viewProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
-    viewProcessInstanceButton.addListener(new ClickListener() {
-      private static final long serialVersionUID = 1L;
-      public void buttonClick(ClickEvent event) {
-        ExplorerApp.get().getViewManager().showProcessInstancePage(processInstance.getId());
-      }
-    });
-    
-    viewProcessInstanceButton.setIcon(Images.MAGNIFIER_16);
-    addItemProperty(PROPERTY_ACTIONS, new ObjectProperty<Component>(viewProcessInstanceButton, Component.class));
-  }
-
-  public int compareTo(AlfrescoProcessInstanceTableItem other) {
-    // process instances are ordered by id
-    String id = (String) getItemProperty("id").getValue();
-    String otherId = (String) other.getItemProperty("id").getValue();
-    return id.compareTo(otherId);
-  }
+    public int compareTo(AlfrescoProcessInstanceTableItem other) {
+        // process instances are ordered by id
+        String id = (String) getItemProperty("id").getValue();
+        String otherId = (String) other.getItemProperty("id").getValue();
+        return id.compareTo(otherId);
+    }
 }

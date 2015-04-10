@@ -27,30 +27,30 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
  */
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "type")
 public interface StepDefinition {
-	
-  String getId();
 
-  void setId(String id);
+    String getId();
 
-  /**
-   * Create a clone of this {@link StepDefinition} instance.
-   */
-  StepDefinition clone();
+    void setId(String id);
 
-  /**
-   * Sets the properties of this {@link StepDefinition} instance based in the
-   * properties present in the given definition.
-   */
-  void setValues(StepDefinition otherDefinition);
+    /**
+     * Create a clone of this {@link StepDefinition} instance.
+     */
+    StepDefinition clone();
 
-  /**
-   * @return custom parameter map.
-   */
-  Map<String, Object> getParameters();
+    /**
+     * Sets the properties of this {@link StepDefinition} instance based in the
+     * properties present in the given definition.
+     */
+    void setValues(StepDefinition otherDefinition);
 
-  /**
-   * Set the custom parameters.
-   */
-  void setParameters(Map<String, Object> parameters);
+    /**
+     * @return custom parameter map.
+     */
+    Map<String, Object> getParameters();
+
+    /**
+     * Set the custom parameters.
+     */
+    void setParameters(Map<String, Object> parameters);
 
 }

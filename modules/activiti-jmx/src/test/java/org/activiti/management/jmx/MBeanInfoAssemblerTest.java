@@ -41,99 +41,101 @@ import org.junit.Test;
 
 public class MBeanInfoAssemblerTest {
 
-  protected TestMbean testMbean = new TestMbean();
-  protected MBeanInfoAssembler mbeanInfoAssembler = new MBeanInfoAssembler();
+    protected TestMbean testMbean = new TestMbean();
+    protected MBeanInfoAssembler mbeanInfoAssembler = new MBeanInfoAssembler();
 
-  @Test
-  public void testNullInputs() throws JMException {
+    @Test
+    public void testNullInputs() throws JMException {
 
-    // at least one of the first parameters should be not null
-    assertNull(mbeanInfoAssembler.getMBeanInfo(null, null, ""));
+        // at least one of the first parameters should be not null
+        assertNull(mbeanInfoAssembler.getMBeanInfo(null, null, ""));
 
-    // mbean should be not null
-    assertNull(mbeanInfoAssembler.getMBeanInfo(testMbean, testMbean, null));
+        // mbean should be not null
+        assertNull(mbeanInfoAssembler.getMBeanInfo(testMbean, testMbean, null));
 
-    // it should return something if at least one of the first paramaters are
-    // not null
-    NotManagedMBean notManagedMbean = new NotManagedMBean();
-    assertNotNull(mbeanInfoAssembler.getMBeanInfo(null, notManagedMbean, "someName"));
-    assertNotNull(mbeanInfoAssembler.getMBeanInfo(notManagedMbean, null, "someName"));
+        // it should return something if at least one of the first paramaters
+        // are
+        // not null
+        NotManagedMBean notManagedMbean = new NotManagedMBean();
+        assertNotNull(mbeanInfoAssembler.getMBeanInfo(null, notManagedMbean, "someName"));
+        assertNotNull(mbeanInfoAssembler.getMBeanInfo(notManagedMbean, null, "someName"));
 
-  }
-  @Test
-  public void testReadAtributeInfoHappyPath() throws JMException {
-    ModelMBeanInfo beanInfo = mbeanInfoAssembler.getMBeanInfo(testMbean, null, "someName");
-    assertNotNull(beanInfo);
-
-    assertEquals("test description", beanInfo.getDescription());
-    MBeanAttributeInfo[] testAttributes = beanInfo.getAttributes();
-    assertNotNull(testAttributes);
-    assertEquals(2, testAttributes.length);
-
-    int counter = 0;
-    for (MBeanAttributeInfo info : testAttributes) {
-      if (info.getName().equals("TestAttributeBoolean")) {
-        counter++;
-        assertEquals("test attribute Boolean description", info.getDescription());
-        assertEquals("java.lang.Boolean", info.getType());
-        assertTrue(info.isReadable());
-        assertFalse(info.isWritable());
-      } else if (info.getName().equals("TestAttributeString")) {
-        counter++;
-        assertEquals("test attribute String description", info.getDescription());
-        assertEquals("java.lang.String", info.getType());
-        assertTrue(info.isReadable());
-        assertFalse(info.isWritable());
-      }
     }
-    assertEquals(2, counter);
 
-    // check the single operation
+    @Test
+    public void testReadAtributeInfoHappyPath() throws JMException {
+        ModelMBeanInfo beanInfo = mbeanInfoAssembler.getMBeanInfo(testMbean, null, "someName");
+        assertNotNull(beanInfo);
 
-    assertNotNull(beanInfo.getOperations());
-    assertEquals(3, beanInfo.getOperations().length);
-  }
+        assertEquals("test description", beanInfo.getDescription());
+        MBeanAttributeInfo[] testAttributes = beanInfo.getAttributes();
+        assertNotNull(testAttributes);
+        assertEquals(2, testAttributes.length);
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAttributeGetterNameNotCaptial() throws JMException {
-    mbeanInfoAssembler.getMBeanInfo(new BadAttributeGetterNameNotCapital(), null, "someName");
+        int counter = 0;
+        for (MBeanAttributeInfo info : testAttributes) {
+            if (info.getName().equals("TestAttributeBoolean")) {
+                counter++;
+                assertEquals("test attribute Boolean description", info.getDescription());
+                assertEquals("java.lang.Boolean", info.getType());
+                assertTrue(info.isReadable());
+                assertFalse(info.isWritable());
+            } else if (info.getName().equals("TestAttributeString")) {
+                counter++;
+                assertEquals("test attribute String description", info.getDescription());
+                assertEquals("java.lang.String", info.getType());
+                assertTrue(info.isReadable());
+                assertFalse(info.isWritable());
+            }
+        }
+        assertEquals(2, counter);
 
-  }
+        // check the single operation
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAttributePOJONamingNoGetter() throws JMException {
-    mbeanInfoAssembler.getMBeanInfo(new BadAttributeNameNoGetterSetter(), null, "someName");
-  }
+        assertNotNull(beanInfo.getOperations());
+        assertEquals(3, beanInfo.getOperations().length);
+    }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAttributeSetterNameNotCaptial() throws JMException {
-    mbeanInfoAssembler.getMBeanInfo(new BadAttributeSetterNameNotCapital(), null, "someName");
-  }
+    @Test(expected = IllegalArgumentException.class)
+    public void testAttributeGetterNameNotCaptial() throws JMException {
+        mbeanInfoAssembler.getMBeanInfo(new BadAttributeGetterNameNotCapital(), null, "someName");
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAttributeHavingParameter() throws JMException {
-    mbeanInfoAssembler.getMBeanInfo(new BadAttributeGetterHavinParameter(), null, "someName");
-  }
+    }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAttributeSetterHavingResult() throws JMException {
-    mbeanInfoAssembler.getMBeanInfo(new BadAttributeSetterHavinReturn(), null, "someName");
-  }
+    @Test(expected = IllegalArgumentException.class)
+    public void testAttributePOJONamingNoGetter() throws JMException {
+        mbeanInfoAssembler.getMBeanInfo(new BadAttributeNameNoGetterSetter(), null, "someName");
+    }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void testAttributeVoid() throws JMException {
-    mbeanInfoAssembler.getMBeanInfo(new BadAttributeVoid(), null, "someName");
-  }
+    @Test(expected = IllegalArgumentException.class)
+    public void testAttributeSetterNameNotCaptial() throws JMException {
+        mbeanInfoAssembler.getMBeanInfo(new BadAttributeSetterNameNotCapital(), null, "someName");
+    }
 
-  @Test
-  public void testInherited() throws JMException {
-    ModelMBeanInfo beanInfo = mbeanInfoAssembler.getMBeanInfo(new BadInherited(), null, "someName");
-    assertNotNull(beanInfo);
-    assertNotNull(beanInfo.getAttributes());
-    assertEquals(2, beanInfo.getAttributes().length);
-    assertNotNull(beanInfo.getOperations());
-    assertEquals(3, beanInfo.getOperations().length);
+    @Test(expected = IllegalArgumentException.class)
+    public void testAttributeHavingParameter() throws JMException {
+        mbeanInfoAssembler.getMBeanInfo(new BadAttributeGetterHavinParameter(), null, "someName");
+    }
 
-  }
+    @Test(expected = IllegalArgumentException.class)
+    public void testAttributeSetterHavingResult() throws JMException {
+        mbeanInfoAssembler.getMBeanInfo(new BadAttributeSetterHavinReturn(), null, "someName");
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testAttributeVoid() throws JMException {
+        mbeanInfoAssembler.getMBeanInfo(new BadAttributeVoid(), null, "someName");
+    }
+
+    @Test
+    public void testInherited() throws JMException {
+        ModelMBeanInfo beanInfo = mbeanInfoAssembler.getMBeanInfo(new BadInherited(), null, "someName");
+        assertNotNull(beanInfo);
+        assertNotNull(beanInfo.getAttributes());
+        assertEquals(2, beanInfo.getAttributes().length);
+        assertNotNull(beanInfo.getOperations());
+        assertEquals(3, beanInfo.getOperations().length);
+
+    }
 
 }

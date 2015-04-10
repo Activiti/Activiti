@@ -21,13 +21,13 @@ import org.activiti.bpmn.model.HasExecutionListeners;
  */
 public class ExecutionListenerParser extends ActivitiListenerParser {
 
-  public String getElementName() {
-  	return ELEMENT_EXECUTION_LISTENER;
-  }
-  
-  public void addListenerToParent(ActivitiListener listener, BaseElement parentElement) {
-    if (parentElement instanceof HasExecutionListeners) {
-      ((HasExecutionListeners) parentElement).getExecutionListeners().add(listener);
+    public String getElementName() {
+        return ELEMENT_EXECUTION_LISTENER;
     }
-  }
+
+    public void addListenerToParent(ActivitiListener listener, BaseElement parentElement) {
+        if (parentElement instanceof HasExecutionListeners) {
+            ((HasExecutionListeners) parentElement).getExecutionListeners().add(listener);
+        }
+    }
 }

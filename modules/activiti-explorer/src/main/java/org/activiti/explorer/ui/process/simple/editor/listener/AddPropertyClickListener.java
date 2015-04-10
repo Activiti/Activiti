@@ -22,17 +22,17 @@ import com.vaadin.ui.Button.ClickEvent;
  */
 public class AddPropertyClickListener implements Button.ClickListener {
 
-  private static final long serialVersionUID = 7191125475609217512L;
+    private static final long serialVersionUID = 7191125475609217512L;
 
-  protected PropertyTable propertyTable;
+    protected PropertyTable propertyTable;
 
-  public AddPropertyClickListener(PropertyTable propertyTable) {
-    this.propertyTable = propertyTable;
-  }
+    public AddPropertyClickListener(PropertyTable propertyTable) {
+        this.propertyTable = propertyTable;
+    }
 
-  public void buttonClick(ClickEvent event) {
-    Object itemId = event.getButton().getData();
-    propertyTable.addPropertyRowAfter(itemId);
-  }
+    public void buttonClick(ClickEvent event) {
+        Object itemId = event.getButton().getData();
+        propertyTable.addPropertyRowAfter(itemId);
+    }
 
 }

@@ -19,7 +19,6 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
-
 /**
  * @author Joram Barrez
  */

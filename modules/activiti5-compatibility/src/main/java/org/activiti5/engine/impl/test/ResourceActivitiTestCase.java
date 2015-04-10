@@ -16,31 +16,28 @@ package org.activiti5.engine.impl.test;
 import org.activiti5.engine.ProcessEngineConfiguration;
 import org.activiti5.engine.ProcessEngines;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase {
-  
-  protected String activitiConfigurationResource;
-  
-  public ResourceActivitiTestCase(String activitiConfigurationResource) {
-    this.activitiConfigurationResource = activitiConfigurationResource;
-  }
-  
-  @Override
-  protected void closeDownProcessEngine() {
-    super.closeDownProcessEngine();
-    ProcessEngines.unregister(processEngine);
-    processEngine = null;
-  }
 
-  @Override
-  protected void initializeProcessEngine() {
-    processEngine = ProcessEngineConfiguration
-            .createProcessEngineConfigurationFromResource(activitiConfigurationResource)
-            .buildProcessEngine();
-  }
+    protected String activitiConfigurationResource;
+
+    public ResourceActivitiTestCase(String activitiConfigurationResource) {
+        this.activitiConfigurationResource = activitiConfigurationResource;
+    }
+
+    @Override
+    protected void closeDownProcessEngine() {
+        super.closeDownProcessEngine();
+        ProcessEngines.unregister(processEngine);
+        processEngine = null;
+    }
+
+    @Override
+    protected void initializeProcessEngine() {
+        processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(activitiConfigurationResource).buildProcessEngine();
+    }
 
 }

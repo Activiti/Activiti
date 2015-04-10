@@ -40,121 +40,120 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessEngineImpl implements ProcessEngine {
 
-  private static Logger log = LoggerFactory.getLogger(ProcessEngineImpl.class);
+    private static Logger log = LoggerFactory.getLogger(ProcessEngineImpl.class);
 
-  protected String name;
-  protected RepositoryService repositoryService;
-  protected RuntimeService runtimeService;
-  protected HistoryService historicDataService;
-  protected IdentityService identityService;
-  protected TaskService taskService;
-  protected FormService formService;
-  protected ManagementService managementService;
-  protected JobExecutor jobExecutor;
-  protected AsyncExecutor asyncExecutor;
-  protected CommandExecutor commandExecutor;
-  protected Map<Class<?>, SessionFactory> sessionFactories;
-  protected ExpressionManager expressionManager;
-  protected TransactionContextFactory transactionContextFactory;
-  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+    protected String name;
+    protected RepositoryService repositoryService;
+    protected RuntimeService runtimeService;
+    protected HistoryService historicDataService;
+    protected IdentityService identityService;
+    protected TaskService taskService;
+    protected FormService formService;
+    protected ManagementService managementService;
+    protected JobExecutor jobExecutor;
+    protected AsyncExecutor asyncExecutor;
+    protected CommandExecutor commandExecutor;
+    protected Map<Class<?>, SessionFactory> sessionFactories;
+    protected ExpressionManager expressionManager;
+    protected TransactionContextFactory transactionContextFactory;
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public ProcessEngineImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    this.processEngineConfiguration = processEngineConfiguration;
-    this.name = processEngineConfiguration.getProcessEngineName();
-    this.repositoryService = processEngineConfiguration.getRepositoryService();
-    this.runtimeService = processEngineConfiguration.getRuntimeService();
-    this.historicDataService = processEngineConfiguration.getHistoryService();
-    this.identityService = processEngineConfiguration.getIdentityService();
-    this.taskService = processEngineConfiguration.getTaskService();
-    this.formService = processEngineConfiguration.getFormService();
-    this.managementService = processEngineConfiguration.getManagementService();
-    this.jobExecutor = processEngineConfiguration.getJobExecutor();
-    this.asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-    this.commandExecutor = processEngineConfiguration.getCommandExecutor();
-    this.sessionFactories = processEngineConfiguration.getSessionFactories();
-    this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
-    
-    commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationsProcessEngineBuild());
+    public ProcessEngineImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+        this.name = processEngineConfiguration.getProcessEngineName();
+        this.repositoryService = processEngineConfiguration.getRepositoryService();
+        this.runtimeService = processEngineConfiguration.getRuntimeService();
+        this.historicDataService = processEngineConfiguration.getHistoryService();
+        this.identityService = processEngineConfiguration.getIdentityService();
+        this.taskService = processEngineConfiguration.getTaskService();
+        this.formService = processEngineConfiguration.getFormService();
+        this.managementService = processEngineConfiguration.getManagementService();
+        this.jobExecutor = processEngineConfiguration.getJobExecutor();
+        this.asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+        this.commandExecutor = processEngineConfiguration.getCommandExecutor();
+        this.sessionFactories = processEngineConfiguration.getSessionFactories();
+        this.transactionContextFactory = processEngineConfiguration.getTransactionContextFactory();
 
-    if (name == null) {
-      log.info("default activiti ProcessEngine created");
-    } else {
-      log.info("ProcessEngine {} created", name);
-    }
-    
-    ProcessEngines.registerProcessEngine(this);
+        commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationsProcessEngineBuild());
 
-    if (jobExecutor != null && jobExecutor.isAutoActivate()) {
-      jobExecutor.start();
-    }
-    
-    if (asyncExecutor != null && asyncExecutor.isAutoActivate()) {
-      asyncExecutor.start();
-    }
-     
-    if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
-      processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineBuilt(this);
-    }
-    
-    processEngineConfiguration.getEventDispatcher().dispatchEvent(
-    		ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CREATED));
-  }
-  
-  public void close() {
-    ProcessEngines.unregister(this);
-    if (jobExecutor != null && jobExecutor.isActive()) {
-      jobExecutor.shutdown();
-    }
-    
-    if (asyncExecutor != null && asyncExecutor.isActive()) {
-      asyncExecutor.shutdown();
+        if (name == null) {
+            log.info("default activiti ProcessEngine created");
+        } else {
+            log.info("ProcessEngine {} created", name);
+        }
+
+        ProcessEngines.registerProcessEngine(this);
+
+        if (jobExecutor != null && jobExecutor.isAutoActivate()) {
+            jobExecutor.start();
+        }
+
+        if (asyncExecutor != null && asyncExecutor.isAutoActivate()) {
+            asyncExecutor.start();
+        }
+
+        if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
+            processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineBuilt(this);
+        }
+
+        processEngineConfiguration.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CREATED));
     }
 
-    commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationProcessEngineClose());
-    
-    if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
-      processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineClosed(this);
+    public void close() {
+        ProcessEngines.unregister(this);
+        if (jobExecutor != null && jobExecutor.isActive()) {
+            jobExecutor.shutdown();
+        }
+
+        if (asyncExecutor != null && asyncExecutor.isActive()) {
+            asyncExecutor.shutdown();
+        }
+
+        commandExecutor.execute(processEngineConfiguration.getSchemaCommandConfig(), new SchemaOperationProcessEngineClose());
+
+        if (processEngineConfiguration.getProcessEngineLifecycleListener() != null) {
+            processEngineConfiguration.getProcessEngineLifecycleListener().onProcessEngineClosed(this);
+        }
+
+        processEngineConfiguration.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CLOSED));
     }
-    
-    processEngineConfiguration.getEventDispatcher().dispatchEvent(
-    		ActivitiEventBuilder.createGlobalEvent(ActivitiEventType.ENGINE_CLOSED));
-  }
 
-  // getters and setters //////////////////////////////////////////////////////
+    // getters and setters
+    // //////////////////////////////////////////////////////
 
-  public String getName() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public IdentityService getIdentityService() {
-    return identityService;
-  }
+    public IdentityService getIdentityService() {
+        return identityService;
+    }
 
-  public ManagementService getManagementService() {
-    return managementService;
-  }
+    public ManagementService getManagementService() {
+        return managementService;
+    }
 
-  public TaskService getTaskService() {
-    return taskService;
-  }
+    public TaskService getTaskService() {
+        return taskService;
+    }
 
-  public HistoryService getHistoryService() {
-    return historicDataService;
-  }
+    public HistoryService getHistoryService() {
+        return historicDataService;
+    }
 
-  public RuntimeService getRuntimeService() {
-    return runtimeService;
-  }
-  
-  public RepositoryService getRepositoryService() {
-    return repositoryService;
-  }
-  
-  public FormService getFormService() {
-    return formService;
-  }
+    public RuntimeService getRuntimeService() {
+        return runtimeService;
+    }
 
-  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-    return processEngineConfiguration;
-  }
+    public RepositoryService getRepositoryService() {
+        return repositoryService;
+    }
+
+    public FormService getFormService() {
+        return formService;
+    }
+
+    public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+        return processEngineConfiguration;
+    }
 }

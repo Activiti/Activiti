@@ -18,27 +18,24 @@ import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.bpmn.gateway.ExclusiveGatewayTest;
 
-
 /**
- * See {@link ExclusiveGatewayTest} for a default sequence flow test on an exclusive gateway.
+ * See {@link ExclusiveGatewayTest} for a default sequence flow test on an
+ * exclusive gateway.
  * 
  * @author Joram Barrez
  */
 public class DefaultSequenceFlowTest extends PluggableActivitiTestCase {
-  
-  @Deployment
-  public void testDefaultSequenceFlowOnTask() {
-    String procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow",
-            CollectionUtil.singletonMap("input", 2)).getId();
-    assertNotNull(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task2").singleResult());
-    
-    procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow",
-            CollectionUtil.singletonMap("input", 3)).getId();
-    assertNotNull(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task3").singleResult());
-    
-    procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow",
-            CollectionUtil.singletonMap("input", 123)).getId();
-    assertNotNull(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task1").singleResult());
-  }
+
+    @Deployment
+    public void testDefaultSequenceFlowOnTask() {
+        String procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", CollectionUtil.singletonMap("input", 2)).getId();
+        assertNotNull(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task2").singleResult());
+
+        procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", CollectionUtil.singletonMap("input", 3)).getId();
+        assertNotNull(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task3").singleResult());
+
+        procId = runtimeService.startProcessInstanceByKey("defaultSeqFlow", CollectionUtil.singletonMap("input", 123)).getId();
+        assertNotNull(runtimeService.createExecutionQuery().processInstanceId(procId).activityId("task1").singleResult());
+    }
 
 }

@@ -23,30 +23,30 @@ import org.activiti5.engine.impl.test.PvmTestCase;
  * @author Tom Baeyens
  */
 public class ProcessEnginesTest extends PvmTestCase {
-  
-  protected void setUp() throws Exception {
-    super.setUp();
-    ProcessEngines.destroy();
-    ProcessEngines.init();
-  }
-  
-  protected void tearDown() throws Exception {
-    ProcessEngines.destroy();
-    super.tearDown();
-  }
 
-  public void testProcessEngineInfo() {
+    protected void setUp() throws Exception {
+        super.setUp();
+        ProcessEngines.destroy();
+        ProcessEngines.init();
+    }
 
-    List<ProcessEngineInfo> processEngineInfos = ProcessEngines.getProcessEngineInfos();
-    assertEquals(1, processEngineInfos.size());
+    protected void tearDown() throws Exception {
+        ProcessEngines.destroy();
+        super.tearDown();
+    }
 
-    ProcessEngineInfo processEngineInfo = processEngineInfos.get(0);
-    assertNull(processEngineInfo.getException());
-    assertNotNull(processEngineInfo.getName());
-    assertNotNull(processEngineInfo.getResourceUrl());
+    public void testProcessEngineInfo() {
 
-    ProcessEngine processEngine = ProcessEngines.getProcessEngine(ProcessEngines.NAME_DEFAULT);
-    assertNotNull(processEngine);
-  }
+        List<ProcessEngineInfo> processEngineInfos = ProcessEngines.getProcessEngineInfos();
+        assertEquals(1, processEngineInfos.size());
+
+        ProcessEngineInfo processEngineInfo = processEngineInfos.get(0);
+        assertNull(processEngineInfo.getException());
+        assertNotNull(processEngineInfo.getName());
+        assertNotNull(processEngineInfo.getResourceUrl());
+
+        ProcessEngine processEngine = ProcessEngines.getProcessEngine(ProcessEngines.NAME_DEFAULT);
+        assertNotNull(processEngine);
+    }
 
 }

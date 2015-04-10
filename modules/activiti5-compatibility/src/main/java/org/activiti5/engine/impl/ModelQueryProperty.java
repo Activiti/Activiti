@@ -19,7 +19,6 @@ import java.util.Map;
 import org.activiti5.engine.query.QueryProperty;
 import org.activiti5.engine.repository.ModelQuery;
 
-
 /**
  * Contains the possible properties that can be used in a {@link ModelQuery}.
  * 
@@ -27,34 +26,33 @@ import org.activiti5.engine.repository.ModelQuery;
  * @author Joram Barrez
  */
 public class ModelQueryProperty implements QueryProperty {
-  
-  private static final long serialVersionUID = 1L;
 
-  private static final Map<String, ModelQueryProperty> properties = new HashMap<String, ModelQueryProperty>();
-  
-  public static final ModelQueryProperty MODEL_CATEGORY = new ModelQueryProperty("RES.CATEGORY_");
-  public static final ModelQueryProperty MODEL_ID = new ModelQueryProperty("RES.ID_");
-  public static final ModelQueryProperty MODEL_VERSION = new ModelQueryProperty("RES.VERSION_");
-  public static final ModelQueryProperty MODEL_NAME = new ModelQueryProperty("RES.NAME_");
-  public static final ModelQueryProperty MODEL_CREATE_TIME = new ModelQueryProperty("RES.CREATE_TIME_");
-  public static final ModelQueryProperty MODEL_LAST_UPDATE_TIME = new ModelQueryProperty("RES.LAST_UPDATE_TIME_");
-  public static final ModelQueryProperty MODEL_KEY = new ModelQueryProperty("RES.KEY_");
-  public static final ModelQueryProperty MODEL_TENANT_ID = new ModelQueryProperty("RES.TENANT_ID_");
-  
-  
-  private String name;
+    private static final long serialVersionUID = 1L;
 
-  public ModelQueryProperty(String name) {
-    this.name = name;
-    properties.put(name, this);
-  }
+    private static final Map<String, ModelQueryProperty> properties = new HashMap<String, ModelQueryProperty>();
 
-  public String getName() {
-    return name;
-  }
-  
-  public static ModelQueryProperty findByName(String propertyName) {
-    return properties.get(propertyName);
-  }
+    public static final ModelQueryProperty MODEL_CATEGORY = new ModelQueryProperty("RES.CATEGORY_");
+    public static final ModelQueryProperty MODEL_ID = new ModelQueryProperty("RES.ID_");
+    public static final ModelQueryProperty MODEL_VERSION = new ModelQueryProperty("RES.VERSION_");
+    public static final ModelQueryProperty MODEL_NAME = new ModelQueryProperty("RES.NAME_");
+    public static final ModelQueryProperty MODEL_CREATE_TIME = new ModelQueryProperty("RES.CREATE_TIME_");
+    public static final ModelQueryProperty MODEL_LAST_UPDATE_TIME = new ModelQueryProperty("RES.LAST_UPDATE_TIME_");
+    public static final ModelQueryProperty MODEL_KEY = new ModelQueryProperty("RES.KEY_");
+    public static final ModelQueryProperty MODEL_TENANT_ID = new ModelQueryProperty("RES.TENANT_ID_");
+
+    private String name;
+
+    public ModelQueryProperty(String name) {
+        this.name = name;
+        properties.put(name, this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static ModelQueryProperty findByName(String propertyName) {
+        return properties.get(propertyName);
+    }
 
 }

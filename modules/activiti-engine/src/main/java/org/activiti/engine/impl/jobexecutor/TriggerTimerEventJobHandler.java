@@ -25,20 +25,20 @@ import org.slf4j.LoggerFactory;
  */
 public class TriggerTimerEventJobHandler implements JobHandler {
 
-	private static Logger log = LoggerFactory.getLogger(TriggerTimerEventJobHandler.class);
+    private static Logger log = LoggerFactory.getLogger(TriggerTimerEventJobHandler.class);
 
-	public static final String TYPE = "trigger-timer";
+    public static final String TYPE = "trigger-timer";
 
-	public String getType() {
-		return TYPE;
-	}
+    public String getType() {
+        return TYPE;
+    }
 
-	public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
 
-		commandContext.getAgenda().planTriggerExecutionOperation(execution);
+        commandContext.getAgenda().planTriggerExecutionOperation(execution);
 
-		if (commandContext.getEventDispatcher().isEnabled()) {
-			commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
-		}
-	}
+        if (commandContext.getEventDispatcher().isEnabled()) {
+            commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+        }
+    }
 }

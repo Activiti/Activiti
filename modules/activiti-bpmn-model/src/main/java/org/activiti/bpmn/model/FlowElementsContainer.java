@@ -19,13 +19,19 @@ import java.util.Collection;
  */
 public interface FlowElementsContainer {
 
-  FlowElement getFlowElement(String id);
-  Collection<FlowElement> getFlowElements();
-  void addFlowElement(FlowElement element);
-  void removeFlowElement(String elementId);
-  
-  Artifact getArtifact(String id);
-  Collection<Artifact> getArtifacts();
-  void addArtifact(Artifact artifact);
-  void removeArtifact(String artifactId);
+    FlowElement getFlowElement(String id);
+
+    Collection<FlowElement> getFlowElements();
+
+    void addFlowElement(FlowElement element);
+
+    void removeFlowElement(String elementId);
+
+    Artifact getArtifact(String id);
+
+    Collection<Artifact> getArtifacts();
+
+    void addArtifact(Artifact artifact);
+
+    void removeArtifact(String artifactId);
 }

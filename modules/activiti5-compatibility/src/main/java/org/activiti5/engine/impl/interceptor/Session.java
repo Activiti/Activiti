@@ -12,13 +12,12 @@
  */
 package org.activiti5.engine.impl.interceptor;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface Session {
-  
-  void flush();
 
-  void close();
+    void flush();
+
+    void close();
 }

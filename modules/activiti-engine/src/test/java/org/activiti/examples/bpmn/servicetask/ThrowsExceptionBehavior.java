@@ -17,29 +17,28 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Joram Barrez
  */
 public class ThrowsExceptionBehavior implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
-    String var = (String) execution.getVariable("var");
+    public void execute(ActivityExecution execution) {
+        String var = (String) execution.getVariable("var");
 
-    PvmTransition transition;
-    try {
-      executeLogic(var);
-      transition = execution.getActivity().findOutgoingTransition("no-exception");
-    } catch (Exception e) {
-      transition = execution.getActivity().findOutgoingTransition("exception");
+        PvmTransition transition;
+        try {
+            executeLogic(var);
+            transition = execution.getActivity().findOutgoingTransition("no-exception");
+        } catch (Exception e) {
+            transition = execution.getActivity().findOutgoingTransition("exception");
+        }
+        execution.take(transition);
     }
-    execution.take(transition);
-  }
-  
-  protected void executeLogic(String value) {
-    if (value.equals("throw-exception")) {
-      throw new RuntimeException();
+
+    protected void executeLogic(String value) {
+        if (value.equals("throw-exception")) {
+            throw new RuntimeException();
+        }
     }
-  }
-  
+
 }

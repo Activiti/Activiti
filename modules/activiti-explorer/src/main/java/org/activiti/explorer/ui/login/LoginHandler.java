@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.explorer.identity.LoggedInUser;
 
-
 /**
  * Class handling authentication for the explorer ui.
  * 
@@ -28,39 +27,39 @@ import org.activiti.explorer.identity.LoggedInUser;
  */
 public interface LoginHandler extends Serializable {
 
-  /**
-   * Authenticate the user with the given username and given password.
-   * 
-   * @return the logged in user. Return null of authentication failed. 
-   */
-  LoggedInUser authenticate(String userName, String password);
-  
-  /**
-   * Authenticate the current user. Use this to eg. shared autentication, 
-   * which can be done without the user actually having to provide 
-   * credentials.
-   * 
-   * @return The logged in user. Return null, if no user can be logged in
-   * automatically. When null is returned, user will be requested to provide
-   * credentials.
-   */
-  LoggedInUser authenticate(HttpServletRequest request, HttpServletResponse response);
-    
-  /**
-   * Called when the user is logged out, should clear all context related
-   * to authorization and authentication for the current logged in user.
-   */
-  void logout(LoggedInUser userTologout);
-  
-  /**
-   * Called when request started. Allows eg. validating of authentication or
-   * renewing.
-   */
-  void onRequestStart(HttpServletRequest request, HttpServletResponse response);
-  
-  /**
-   * Called when request started. Allows eg. validating of authentication or
-   * renewing.
-   */
-  void onRequestEnd(HttpServletRequest request, HttpServletResponse response);
+    /**
+     * Authenticate the user with the given username and given password.
+     * 
+     * @return the logged in user. Return null of authentication failed.
+     */
+    LoggedInUser authenticate(String userName, String password);
+
+    /**
+     * Authenticate the current user. Use this to eg. shared autentication,
+     * which can be done without the user actually having to provide
+     * credentials.
+     * 
+     * @return The logged in user. Return null, if no user can be logged in
+     *         automatically. When null is returned, user will be requested to
+     *         provide credentials.
+     */
+    LoggedInUser authenticate(HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * Called when the user is logged out, should clear all context related to
+     * authorization and authentication for the current logged in user.
+     */
+    void logout(LoggedInUser userTologout);
+
+    /**
+     * Called when request started. Allows eg. validating of authentication or
+     * renewing.
+     */
+    void onRequestStart(HttpServletRequest request, HttpServletResponse response);
+
+    /**
+     * Called when request started. Allows eg. validating of authentication or
+     * renewing.
+     */
+    void onRequestEnd(HttpServletRequest request, HttpServletResponse response);
 }

@@ -15,15 +15,14 @@ package org.activiti.bpmn.model;
 
 import java.util.List;
 
-
 /**
  * Interface indicating an element has execution-listeners
  * 
  * @author Frederik Heremans
  */
 public interface HasExecutionListeners {
-  
-  List<ActivitiListener> getExecutionListeners();
-  
-  void setExecutionListeners(List<ActivitiListener> executionListeners);
+
+    List<ActivitiListener> getExecutionListeners();
+
+    void setExecutionListeners(List<ActivitiListener> executionListeners);
 }

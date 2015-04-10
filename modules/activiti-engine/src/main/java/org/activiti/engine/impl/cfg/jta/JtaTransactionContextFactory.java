@@ -19,20 +19,19 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Daniel Meyer
  */
 public class JtaTransactionContextFactory implements TransactionContextFactory {
-  
-  protected final TransactionManager transactionManager;
 
-  public JtaTransactionContextFactory(TransactionManager transactionManager) {
-    this.transactionManager = transactionManager;
-  }
+    protected final TransactionManager transactionManager;
 
-  public TransactionContext openTransactionContext(CommandContext commandContext) {
-    return new JtaTransactionContext(transactionManager);
-  }
+    public JtaTransactionContextFactory(TransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
+    public TransactionContext openTransactionContext(CommandContext commandContext) {
+        return new JtaTransactionContext(transactionManager);
+    }
 
 }

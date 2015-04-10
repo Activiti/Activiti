@@ -23,7 +23,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -54,11 +53,13 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
         JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
         jdbcTemplate.execute("create table MY_TABLE (MY_TEXT varchar);");
 
-        // The hello() method will start the process. The process will wait in a user task
+        // The hello() method will start the process. The process will wait in a
+        // user task
         userBean.hello();
         assertEquals(0, jdbcTemplate.queryForLong("select count(*) from MY_TABLE"));
 
-        // The completeTask() method will write a record to the 'MY_TABLE' table and complete the user task
+        // The completeTask() method will write a record to the 'MY_TABLE' table
+        // and complete the user task
         try {
             userBean.completeTask(taskService.createTaskQuery().singleResult().getId());
             fail();
@@ -75,7 +76,8 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
     }
 
     public void testRollBackOnDeployment() {
-        // The second process should fail. None of the processes should be deployed, the first one should be rolled back
+        // The second process should fail. None of the processes should be
+        // deployed, the first one should be rolled back
         assertEquals(0, repositoryService.createProcessDefinitionQuery().count());
         try {
             deployBean.deployProcesses();
@@ -85,6 +87,5 @@ public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
         }
         assertEquals(0, repositoryService.createProcessDefinitionQuery().count());
     }
-
 
 }

@@ -16,23 +16,23 @@ package org.activiti5.engine.impl.form;
 import org.activiti5.engine.form.TaskFormData;
 import org.activiti5.engine.task.Task;
 
-
 /**
  * @author Tom Baeyens
  */
 public class TaskFormDataImpl extends FormDataImpl implements TaskFormData {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected Task task;
+    private static final long serialVersionUID = 1L;
 
-  // getters and setters //////////////////////////////////////////////////////
-  
-  public Task getTask() {
-    return task;
-  }
+    protected Task task;
 
-  public void setTask(Task task) {
-    this.task = task;
-  }
+    // getters and setters
+    // //////////////////////////////////////////////////////
+
+    public Task getTask() {
+        return task;
+    }
+
+    public void setTask(Task task) {
+        this.task = task;
+    }
 }

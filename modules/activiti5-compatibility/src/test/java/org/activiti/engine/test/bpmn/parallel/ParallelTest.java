@@ -16,14 +16,13 @@ package org.activiti.engine.test.bpmn.parallel;
 import org.activiti5.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti5.engine.test.Deployment;
 
-
 /**
  * @author Tom Baeyens
  */
 public class ParallelTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testParallel() {
-    runtimeService.startProcessInstanceByKey("myProc");
-  }
+    @Deployment
+    public void testParallel() {
+        runtimeService.startProcessInstanceByKey("myProc");
+    }
 }

@@ -22,28 +22,27 @@ import org.activiti.explorer.ui.content.AttachmentEditorComponent;
 
 import com.vaadin.terminal.Resource;
 
-
 /**
  * @author Frederik Heremans
  */
 public class FileAttachmentEditor implements AttachmentEditor {
 
-  public static final String FILE_ATTACHMENT_TYPE = "file";
-  
-  public String getName() {
-    return FILE_ATTACHMENT_TYPE;
-  }
+    public static final String FILE_ATTACHMENT_TYPE = "file";
 
-  public String getTitle(I18nManager i18nManager) {
-    return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_FILE);
-  }
+    public String getName() {
+        return FILE_ATTACHMENT_TYPE;
+    }
 
-  public Resource getImage() {
-    return Images.RELATED_CONTENT_FILE;
-  }
+    public String getTitle(I18nManager i18nManager) {
+        return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_FILE);
+    }
 
-  public AttachmentEditorComponent getEditor(Attachment attachment, String taskId, String processInstanceId) {
-    return new FileAttachmentEditorComponent(attachment, taskId, processInstanceId);
-  }
+    public Resource getImage() {
+        return Images.RELATED_CONTENT_FILE;
+    }
+
+    public AttachmentEditorComponent getEditor(Attachment attachment, String taskId, String processInstanceId) {
+        return new FileAttachmentEditorComponent(attachment, taskId, processInstanceId);
+    }
 
 }

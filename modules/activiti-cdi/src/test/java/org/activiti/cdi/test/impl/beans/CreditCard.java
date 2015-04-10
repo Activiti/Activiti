@@ -26,31 +26,31 @@ import org.activiti.cdi.annotation.BusinessProcessScoped;
 @BusinessProcessScoped
 public class CreditCard implements Serializable {
 
-  private String creditcardNumber;
+    private String creditcardNumber;
 
-  public void setCreditcardNumber(String creditcardNumber) {
-    this.creditcardNumber = creditcardNumber;
-  }
+    public void setCreditcardNumber(String creditcardNumber) {
+        this.creditcardNumber = creditcardNumber;
+    }
 
-  public String getCreditcardNumber() {
-    return creditcardNumber;
-  }
+    public String getCreditcardNumber() {
+        return creditcardNumber;
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    CreditCard other = (CreditCard) obj;
-    if (creditcardNumber == null) {
-      if (other.creditcardNumber != null)
-        return false;
-    } else if (!creditcardNumber.equals(other.creditcardNumber))
-      return false;
-    return true;
-  }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        CreditCard other = (CreditCard) obj;
+        if (creditcardNumber == null) {
+            if (other.creditcardNumber != null)
+                return false;
+        } else if (!creditcardNumber.equals(other.creditcardNumber))
+            return false;
+        return true;
+    }
 
 }

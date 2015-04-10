@@ -17,46 +17,46 @@ package org.activiti.bpmn.model;
  */
 public class Signal extends BaseElement {
 
-  public static final String SCOPE_GLOBAL = "global";
-  public static final String SCOPE_PROCESS_INSTANCE = "processInstance";
+    public static final String SCOPE_GLOBAL = "global";
+    public static final String SCOPE_PROCESS_INSTANCE = "processInstance";
 
-  protected String name;
-  
-  protected String scope;
+    protected String name;
 
-  public Signal() {
-  }
-  
-  public Signal(String id, String name) {
-    this.id = id;
-    this.name = name;
-  }
+    protected String scope;
 
-  public String getName() {
-    return name;
-  }
+    public Signal() {
+    }
 
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  public String getScope() {
-    return scope;
-  }
+    public Signal(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
-  public void setScope(String scope) {
-    this.scope = scope;
-  }
-  
-  public Signal clone() {
-    Signal clone = new Signal();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  public void setValues(Signal otherElement) {
-    super.setValues(otherElement);
-    setName(otherElement.getName());
-    setScope(otherElement.getScope());
-  }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getScope() {
+        return scope;
+    }
+
+    public void setScope(String scope) {
+        this.scope = scope;
+    }
+
+    public Signal clone() {
+        Signal clone = new Signal();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(Signal otherElement) {
+        super.setValues(otherElement);
+        setName(otherElement.getName());
+        setScope(otherElement.getScope());
+    }
 }

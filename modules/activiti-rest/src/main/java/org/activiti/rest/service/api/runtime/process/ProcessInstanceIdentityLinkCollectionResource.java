@@ -28,42 +28,39 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class ProcessInstanceIdentityLinkCollectionResource extends BaseProcessInstanceResource {
 
-  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/identitylinks", method = RequestMethod.GET, produces="application/json")
-  public List<RestIdentityLink> getIdentityLinks(@PathVariable String processInstanceId, HttpServletRequest request) {
-    ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
-    return restResponseFactory.createRestIdentityLinks(runtimeService.getIdentityLinksForProcessInstance(processInstance.getId()));
-  }
-  
-  @RequestMapping(value="/runtime/process-instances/{processInstanceId}/identitylinks", method = RequestMethod.POST, produces="application/json")
-  public RestIdentityLink createIdentityLink(@PathVariable String processInstanceId, @RequestBody RestIdentityLink identityLink,
-      HttpServletRequest request, HttpServletResponse response) {
-    
-    ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
-    
-    if (identityLink.getGroup() != null)  {
-      throw new ActivitiIllegalArgumentException("Only user identity links are supported on a process instance.");
-    }
-    
-    if (identityLink.getUser() == null)  {
-      throw new ActivitiIllegalArgumentException("The user is required.");
-    }
-    
-    if (identityLink.getType() == null) {
-      throw new ActivitiIllegalArgumentException("The identity link type is required.");
+    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
+    public List<RestIdentityLink> getIdentityLinks(@PathVariable String processInstanceId, HttpServletRequest request) {
+        ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
+        return restResponseFactory.createRestIdentityLinks(runtimeService.getIdentityLinksForProcessInstance(processInstance.getId()));
     }
 
-    runtimeService.addUserIdentityLink(processInstance.getId(), identityLink.getUser(), identityLink.getType());
-    
-    response.setStatus(HttpStatus.CREATED.value());
-    
-    return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), 
-        identityLink.getGroup(), null, null, processInstance.getId());
-  }
+    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/identitylinks", method = RequestMethod.POST, produces = "application/json")
+    public RestIdentityLink createIdentityLink(@PathVariable String processInstanceId, @RequestBody RestIdentityLink identityLink, HttpServletRequest request, HttpServletResponse response) {
+
+        ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
+
+        if (identityLink.getGroup() != null) {
+            throw new ActivitiIllegalArgumentException("Only user identity links are supported on a process instance.");
+        }
+
+        if (identityLink.getUser() == null) {
+            throw new ActivitiIllegalArgumentException("The user is required.");
+        }
+
+        if (identityLink.getType() == null) {
+            throw new ActivitiIllegalArgumentException("The identity link type is required.");
+        }
+
+        runtimeService.addUserIdentityLink(processInstance.getId(), identityLink.getUser(), identityLink.getType());
+
+        response.setStatus(HttpStatus.CREATED.value());
+
+        return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), null, null, processInstance.getId());
+    }
 }

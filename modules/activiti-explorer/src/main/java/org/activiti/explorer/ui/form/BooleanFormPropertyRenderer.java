@@ -24,23 +24,23 @@ import com.vaadin.ui.Field;
  */
 public class BooleanFormPropertyRenderer extends AbstractFormPropertyRenderer {
 
-  public BooleanFormPropertyRenderer() {
-    super(BooleanFormType.class);
-  }
-
-  @Override
-  public Field getPropertyField(FormProperty formProperty) {
-    
-    CheckBox checkBox = new CheckBox(getPropertyLabel(formProperty));
-    checkBox.setRequired(formProperty.isRequired());
-    checkBox.setEnabled(formProperty.isWritable());
-
-    if (formProperty.getValue() != null) {
-      Boolean value = new Boolean(Boolean.parseBoolean(formProperty.getValue()));
-      checkBox.setValue(value); 
+    public BooleanFormPropertyRenderer() {
+        super(BooleanFormType.class);
     }
 
-    return checkBox;
-  }
+    @Override
+    public Field getPropertyField(FormProperty formProperty) {
+
+        CheckBox checkBox = new CheckBox(getPropertyLabel(formProperty));
+        checkBox.setRequired(formProperty.isRequired());
+        checkBox.setEnabled(formProperty.isWritable());
+
+        if (formProperty.getValue() != null) {
+            Boolean value = new Boolean(Boolean.parseBoolean(formProperty.getValue()));
+            checkBox.setValue(value);
+        }
+
+        return checkBox;
+    }
 
 }

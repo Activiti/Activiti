@@ -21,16 +21,16 @@ import org.activiti5.engine.impl.javax.el.ValueExpression;
  * @author Daniel Meyer
  */
 public class ExpressionGetInvocation extends ExpressionInvocation {
-  
-  protected final ELContext elContext;
-  
-  public ExpressionGetInvocation(ValueExpression valueExpression, ELContext elContext) {
-    super(valueExpression);
-    this.elContext = elContext;
-  }
-  
-  protected void invoke() throws Exception {    
-    invocationResult = valueExpression.getValue(elContext);
-  }
+
+    protected final ELContext elContext;
+
+    public ExpressionGetInvocation(ValueExpression valueExpression, ELContext elContext) {
+        super(valueExpression);
+        this.elContext = elContext;
+    }
+
+    protected void invoke() throws Exception {
+        invocationResult = valueExpression.getValue(elContext);
+    }
 
 }

@@ -28,54 +28,47 @@ import org.junit.Test;
  * @author Joram Barrez
  */
 public class DisabledSchemaValidationTest {
-	
-	protected ProcessEngine processEngine;
-	
-	protected RepositoryService repositoryService;
-	
-	@Before
-	public void setup() {
-		this.processEngine = new StandaloneInMemProcessEngineConfiguration()
-			.setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000")
-			.buildProcessEngine();
-		this.repositoryService = processEngine.getRepositoryService();
-	}
-	
-	@After
-	public void tearDown() {
-		for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-			repositoryService.deleteDeployment(deployment.getId());
-		}
-		
-		ProcessEngines.unregister(processEngine);
-		processEngine = null;
-		repositoryService = null;
-	}
-	
-	@Test
-	public void testDisableValidation() {
-		
-		// Should fail
-		try {
-			repositoryService.createDeployment()
-				.addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml")
-				.deploy();
-			Assert.fail();
-		} catch (XMLException e) {
-			// expected exception
-		}
-		
-		// Should fail with validation errors
-		try {
-			repositoryService.createDeployment()
-				.addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml")
-				.disableSchemaValidation()
-				.deploy();
-			Assert.fail();
-		} catch (ActivitiException e) {
-		  // expected exception
-		}
-		
-	}
+
+    protected ProcessEngine processEngine;
+
+    protected RepositoryService repositoryService;
+
+    @Before
+    public void setup() {
+        this.processEngine = new StandaloneInMemProcessEngineConfiguration().setJdbcUrl("jdbc:h2:mem:activiti-process-validation;DB_CLOSE_DELAY=1000").buildProcessEngine();
+        this.repositoryService = processEngine.getRepositoryService();
+    }
+
+    @After
+    public void tearDown() {
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId());
+        }
+
+        ProcessEngines.unregister(processEngine);
+        processEngine = null;
+        repositoryService = null;
+    }
+
+    @Test
+    public void testDisableValidation() {
+
+        // Should fail
+        try {
+            repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml").deploy();
+            Assert.fail();
+        } catch (XMLException e) {
+            // expected exception
+        }
+
+        // Should fail with validation errors
+        try {
+            repositoryService.createDeployment().addClasspathResource("org/activiti/standalone/validation/invalid_process_xsd_error.bpmn20.xml").disableSchemaValidation().deploy();
+            Assert.fail();
+        } catch (ActivitiException e) {
+            // expected exception
+        }
+
+    }
 
 }

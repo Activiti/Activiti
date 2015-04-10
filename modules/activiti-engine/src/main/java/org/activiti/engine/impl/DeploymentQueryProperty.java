@@ -32,38 +32,36 @@ import java.util.Map;
 import org.activiti.engine.query.QueryProperty;
 import org.activiti.engine.repository.DeploymentQuery;
 
-
-
 /**
- * Contains the possible properties that can be used in a {@link DeploymentQuery}.
+ * Contains the possible properties that can be used in a
+ * {@link DeploymentQuery}.
  * 
  * @author Joram Barrez
  */
 public class DeploymentQueryProperty implements QueryProperty {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static final Map<String, DeploymentQueryProperty> properties = new HashMap<String, DeploymentQueryProperty>();
+    private static final Map<String, DeploymentQueryProperty> properties = new HashMap<String, DeploymentQueryProperty>();
 
-  public static final DeploymentQueryProperty DEPLOYMENT_ID = new DeploymentQueryProperty("RES.ID_");
-  public static final DeploymentQueryProperty DEPLOYMENT_NAME = new DeploymentQueryProperty("RES.NAME_");
-  public static final DeploymentQueryProperty DEPLOYMENT_TENANT_ID = new DeploymentQueryProperty("RES.TENANT_ID_");
-  public static final DeploymentQueryProperty DEPLOY_TIME = new DeploymentQueryProperty("RES.DEPLOY_TIME_");
-  
-  private String name;
+    public static final DeploymentQueryProperty DEPLOYMENT_ID = new DeploymentQueryProperty("RES.ID_");
+    public static final DeploymentQueryProperty DEPLOYMENT_NAME = new DeploymentQueryProperty("RES.NAME_");
+    public static final DeploymentQueryProperty DEPLOYMENT_TENANT_ID = new DeploymentQueryProperty("RES.TENANT_ID_");
+    public static final DeploymentQueryProperty DEPLOY_TIME = new DeploymentQueryProperty("RES.DEPLOY_TIME_");
 
-  public DeploymentQueryProperty(String name) {
-    this.name = name;
-    properties.put(name, this);
-  }
+    private String name;
 
-  public String getName() {
-    return name;
-  }
-  
-  public static DeploymentQueryProperty findByName(String propertyName) {
-    return properties.get(propertyName);
-  }
+    public DeploymentQueryProperty(String name) {
+        this.name = name;
+        properties.put(name, this);
+    }
 
-  
+    public String getName() {
+        return name;
+    }
+
+    public static DeploymentQueryProperty findByName(String propertyName) {
+        return properties.get(propertyName);
+    }
+
 }

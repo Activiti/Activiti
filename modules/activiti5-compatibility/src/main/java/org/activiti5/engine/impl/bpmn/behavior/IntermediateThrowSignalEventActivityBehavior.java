@@ -23,44 +23,41 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Daniel Meyer
  */
-public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {    
-      
-  private static final long serialVersionUID = -2961893934810190972L;
-  
-  protected final boolean processInstanceScope;
-  protected final EventSubscriptionDeclaration signalDefinition;
+public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
-  public IntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal, EventSubscriptionDeclaration signalDefinition) {
-    this.processInstanceScope = Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope());
-    this.signalDefinition = signalDefinition;
-  }
-  
-  public void execute(ActivityExecution execution) throws Exception {
-    
-    CommandContext commandContext = Context.getCommandContext();
-    
-    List<SignalEventSubscriptionEntity> subscriptionEntities = null;
-    if (processInstanceScope) {
-      subscriptionEntities = commandContext
-              .getEventSubscriptionEntityManager()
-              .findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalDefinition.getEventName());
-    } else {
-      subscriptionEntities = commandContext
-              .getEventSubscriptionEntityManager()
-              .findSignalEventSubscriptionsByEventName(signalDefinition.getEventName(), execution.getTenantId());
+    private static final long serialVersionUID = -2961893934810190972L;
+
+    protected final boolean processInstanceScope;
+    protected final EventSubscriptionDeclaration signalDefinition;
+
+    public IntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal, EventSubscriptionDeclaration signalDefinition) {
+        this.processInstanceScope = Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope());
+        this.signalDefinition = signalDefinition;
     }
-    
-    for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
-      signalEventSubscriptionEntity.eventReceived(null, signalDefinition.isAsync());
+
+    public void execute(ActivityExecution execution) throws Exception {
+
+        CommandContext commandContext = Context.getCommandContext();
+
+        List<SignalEventSubscriptionEntity> subscriptionEntities = null;
+        if (processInstanceScope) {
+            subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(),
+                    signalDefinition.getEventName());
+        } else {
+            subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByEventName(signalDefinition.getEventName(), execution.getTenantId());
+        }
+
+        for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
+            signalEventSubscriptionEntity.eventReceived(null, signalDefinition.isAsync());
+        }
+
+        if (execution.getActivity() != null) { // dont continue if process has
+                                               // already finished
+            leave(execution);
+        }
     }
-    
-    if (execution.getActivity() != null) { // dont continue if process has already finished
-      leave(execution);
-    }
-  }
- 
+
 }

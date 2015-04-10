@@ -44,173 +44,174 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class CreateAttachmentPopupWindow extends PopupWindow {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String taskId;
-  protected String processInstanceId;
+    protected String taskId;
+    protected String processInstanceId;
 
-  protected I18nManager i18nManager;
-  protected AttachmentRendererManager attachmentRendererManager;
-  protected transient TaskService taskService;
+    protected I18nManager i18nManager;
+    protected AttachmentRendererManager attachmentRendererManager;
+    protected transient TaskService taskService;
 
-  protected HorizontalLayout layout;
-  protected GridLayout detailLayout;
-  protected AttachmentEditorComponent currentEditor;
-  protected Table attachmentTypes;
-  protected Button okButton;
-  
-  public CreateAttachmentPopupWindow() {
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.attachmentRendererManager = ExplorerApp.get().getAttachmentRendererManager();
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    protected HorizontalLayout layout;
+    protected GridLayout detailLayout;
+    protected AttachmentEditorComponent currentEditor;
+    protected Table attachmentTypes;
+    protected Button okButton;
 
-    setCaption(i18nManager.getMessage(Messages.RELATED_CONTENT_ADD));
-    setWidth(700, UNITS_PIXELS);
-    setHeight(430, UNITS_PIXELS);
-    center();
-    setModal(true);
-    addStyleName(Reindeer.WINDOW_LIGHT);
+    public CreateAttachmentPopupWindow() {
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+        this.attachmentRendererManager = ExplorerApp.get().getAttachmentRendererManager();
+        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
 
-    layout = new HorizontalLayout();
-    layout.setSpacing(false);
-    layout.setMargin(true);
-    layout.setSizeFull();
-    setContent(layout);
+        setCaption(i18nManager.getMessage(Messages.RELATED_CONTENT_ADD));
+        setWidth(700, UNITS_PIXELS);
+        setHeight(430, UNITS_PIXELS);
+        center();
+        setModal(true);
+        addStyleName(Reindeer.WINDOW_LIGHT);
 
-    initTable();
+        layout = new HorizontalLayout();
+        layout.setSpacing(false);
+        layout.setMargin(true);
+        layout.setSizeFull();
+        setContent(layout);
 
-    detailLayout = new GridLayout(1,2);
-    detailLayout.setSizeFull();
-    detailLayout.setMargin(true);
-    detailLayout.setSpacing(true);
-    detailLayout.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_CREATE_DETAIL);
-    
-    layout.addComponent(detailLayout);
-    layout.setExpandRatio(detailLayout, 1.0f);
-    
-    detailLayout.setRowExpandRatio(0, 1.0f);
-    detailLayout.setColumnExpandRatio(0, 1.0f);
-    initActions();
-  }
+        initTable();
 
-  @Override
-  public void attach() {
-    super.attach();
-    if (attachmentTypes.size() > 0) {
-      attachmentTypes.select(attachmentTypes.firstItemId());
+        detailLayout = new GridLayout(1, 2);
+        detailLayout.setSizeFull();
+        detailLayout.setMargin(true);
+        detailLayout.setSpacing(true);
+        detailLayout.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_CREATE_DETAIL);
+
+        layout.addComponent(detailLayout);
+        layout.setExpandRatio(detailLayout, 1.0f);
+
+        detailLayout.setRowExpandRatio(0, 1.0f);
+        detailLayout.setColumnExpandRatio(0, 1.0f);
+        initActions();
     }
-  }
 
-  protected void initActions() {
-    okButton = new Button(i18nManager.getMessage(Messages.RELATED_CONTENT_CREATE));
-    detailLayout.addComponent(okButton, 0, 1);
-    okButton.setEnabled(false);
-    okButton.addListener(new ClickListener() {
-
-      private static final long serialVersionUID = 1L;
-
-      public void buttonClick(ClickEvent event) {
-        saveAttachment();
-      }
-    });
-    detailLayout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
-  }
-
-  protected void initTable() {
-    attachmentTypes = new Table();
-    attachmentTypes.setSizeUndefined();
-    attachmentTypes.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-    attachmentTypes.setSelectable(true);
-    attachmentTypes.setImmediate(true);
-    attachmentTypes.setNullSelectionAllowed(false);
-    attachmentTypes.setWidth(200, UNITS_PIXELS);
-    attachmentTypes.setHeight(100, UNITS_PERCENTAGE);
-
-    attachmentTypes.setCellStyleGenerator(new CellStyleGenerator() {
-      private static final long serialVersionUID = 1L;
-      public String getStyle(Object itemId, Object propertyId) {
-        if("name".equals(propertyId)) {
-          return ExplorerLayout.STYLE_RELATED_CONTENT_CREATE_LIST_LAST_COLUMN;
+    @Override
+    public void attach() {
+        super.attach();
+        if (attachmentTypes.size() > 0) {
+            attachmentTypes.select(attachmentTypes.firstItemId());
         }
-        return null;
-      }
-    });
-
-    attachmentTypes.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_CREATE_LIST);
-
-    attachmentTypes.addContainerProperty("type", Embedded.class, null);
-    attachmentTypes.setColumnWidth("type", 16);
-    attachmentTypes.addContainerProperty("name", String.class, null);
-
-    // Add all possible attachment types
-    for (AttachmentEditor editor : attachmentRendererManager.getAttachmentEditors()) {
-      String name = editor.getTitle(i18nManager);
-      Embedded image = null;
-
-      Resource resource = editor.getImage();
-      if (resource != null) {
-        image = new Embedded(null, resource);
-      }
-      Item item = attachmentTypes.addItem(editor.getName());
-      item.getItemProperty("type").setValue(image);
-      item.getItemProperty("name").setValue(name);
     }
 
-    // Add listener to show editor component
-    attachmentTypes.addListener(new ValueChangeListener() {
+    protected void initActions() {
+        okButton = new Button(i18nManager.getMessage(Messages.RELATED_CONTENT_CREATE));
+        detailLayout.addComponent(okButton, 0, 1);
+        okButton.setEnabled(false);
+        okButton.addListener(new ClickListener() {
 
-      private static final long serialVersionUID = 1L;
+            private static final long serialVersionUID = 1L;
 
-      public void valueChange(ValueChangeEvent event) {
-        String type = (String) event.getProperty().getValue();
-        selectType(type);
-      }
-    });
-
-    layout.addComponent(attachmentTypes);
-  }
-
-  protected void selectType(String type) {
-    if (type != null) {
-      setCurrentEditor(attachmentRendererManager.getEditor(type));
-    } else {
-      setCurrentEditor(null);
+            public void buttonClick(ClickEvent event) {
+                saveAttachment();
+            }
+        });
+        detailLayout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
     }
-  }
 
-  protected void setCurrentEditor(AttachmentEditor editor) {
-    AttachmentEditorComponent component = editor.getEditor(null, taskId, processInstanceId);
-    this.currentEditor = component;
-    detailLayout.removeComponent(detailLayout.getComponent(0, 0));
+    protected void initTable() {
+        attachmentTypes = new Table();
+        attachmentTypes.setSizeUndefined();
+        attachmentTypes.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+        attachmentTypes.setSelectable(true);
+        attachmentTypes.setImmediate(true);
+        attachmentTypes.setNullSelectionAllowed(false);
+        attachmentTypes.setWidth(200, UNITS_PIXELS);
+        attachmentTypes.setHeight(100, UNITS_PERCENTAGE);
 
-    if (currentEditor != null) {
-      currentEditor.setSizeFull();
-      detailLayout.addComponent(currentEditor, 0, 0);
-      okButton.setEnabled(true);
-    } else {
-      okButton.setEnabled(false);
+        attachmentTypes.setCellStyleGenerator(new CellStyleGenerator() {
+            private static final long serialVersionUID = 1L;
+
+            public String getStyle(Object itemId, Object propertyId) {
+                if ("name".equals(propertyId)) {
+                    return ExplorerLayout.STYLE_RELATED_CONTENT_CREATE_LIST_LAST_COLUMN;
+                }
+                return null;
+            }
+        });
+
+        attachmentTypes.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_CREATE_LIST);
+
+        attachmentTypes.addContainerProperty("type", Embedded.class, null);
+        attachmentTypes.setColumnWidth("type", 16);
+        attachmentTypes.addContainerProperty("name", String.class, null);
+
+        // Add all possible attachment types
+        for (AttachmentEditor editor : attachmentRendererManager.getAttachmentEditors()) {
+            String name = editor.getTitle(i18nManager);
+            Embedded image = null;
+
+            Resource resource = editor.getImage();
+            if (resource != null) {
+                image = new Embedded(null, resource);
+            }
+            Item item = attachmentTypes.addItem(editor.getName());
+            item.getItemProperty("type").setValue(image);
+            item.getItemProperty("name").setValue(name);
+        }
+
+        // Add listener to show editor component
+        attachmentTypes.addListener(new ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+                String type = (String) event.getProperty().getValue();
+                selectType(type);
+            }
+        });
+
+        layout.addComponent(attachmentTypes);
     }
-  }
 
-  protected void saveAttachment() {
-    try {
-      // Creation and persistence of attachment is done in editor
-      Attachment attachment = currentEditor.getAttachment();
-
-      fireEvent(new SubmitEvent(this, SubmitEvent.SUBMITTED, attachment));
-
-      // Finally, close window
-      close();
-    } catch (InvalidValueException ive) {
-      // Validation error, Editor UI will handle this.
+    protected void selectType(String type) {
+        if (type != null) {
+            setCurrentEditor(attachmentRendererManager.getEditor(type));
+        } else {
+            setCurrentEditor(null);
+        }
     }
-  }
 
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
+    protected void setCurrentEditor(AttachmentEditor editor) {
+        AttachmentEditorComponent component = editor.getEditor(null, taskId, processInstanceId);
+        this.currentEditor = component;
+        detailLayout.removeComponent(detailLayout.getComponent(0, 0));
 
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+        if (currentEditor != null) {
+            currentEditor.setSizeFull();
+            detailLayout.addComponent(currentEditor, 0, 0);
+            okButton.setEnabled(true);
+        } else {
+            okButton.setEnabled(false);
+        }
+    }
+
+    protected void saveAttachment() {
+        try {
+            // Creation and persistence of attachment is done in editor
+            Attachment attachment = currentEditor.getAttachment();
+
+            fireEvent(new SubmitEvent(this, SubmitEvent.SUBMITTED, attachment));
+
+            // Finally, close window
+            close();
+        } catch (InvalidValueException ive) {
+            // Validation error, Editor UI will handle this.
+        }
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 }

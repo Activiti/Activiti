@@ -82,8 +82,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     @Override
     protected CommandInterceptor createTransactionInterceptor() {
         if (transactionManager == null) {
-            throw new ActivitiException("transactionManager is required property for SpringProcessEngineConfiguration, use "
-                    + StandaloneProcessEngineConfiguration.class.getName() + " otherwise");
+            throw new ActivitiException("transactionManager is required property for SpringProcessEngineConfiguration, use " + StandaloneProcessEngineConfiguration.class.getName() + " otherwise");
         }
 
         return new SpringTransactionInterceptor(transactionManager);
@@ -100,8 +99,7 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     protected void initJpa() {
         super.initJpa();
         if (jpaEntityManagerFactory != null) {
-            sessionFactories.put(EntityManagerSession.class, new SpringEntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction,
-                    jpaCloseEntityManager));
+            sessionFactories.put(EntityManagerSession.class, new SpringEntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager));
         }
     }
 
@@ -165,13 +163,15 @@ public class SpringProcessEngineConfiguration extends ProcessEngineConfiguration
     }
 
     /**
-     * Gets the {@link AutoDeploymentStrategy} for the provided mode. This method
-     * may be overridden to implement custom deployment strategies if required,
-     * but implementors should take care not to return <code>null</code>.
-     *
-     * @param mode the mode to get the strategy for
+     * Gets the {@link AutoDeploymentStrategy} for the provided mode. This
+     * method may be overridden to implement custom deployment strategies if
+     * required, but implementors should take care not to return
+     * <code>null</code>.
+     * 
+     * @param mode
+     *            the mode to get the strategy for
      * @return the deployment strategy to use for the mode. Never
-     * <code>null</code>
+     *         <code>null</code>
      */
     protected AutoDeploymentStrategy getAutoDeploymentStrategy(final String mode) {
         AutoDeploymentStrategy result = new DefaultAutoDeploymentStrategy();

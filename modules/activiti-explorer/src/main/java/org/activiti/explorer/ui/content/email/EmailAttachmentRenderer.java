@@ -22,29 +22,27 @@ import org.activiti.explorer.ui.content.GenericAttachmentRenderer;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Component;
 
-
 /**
  * @author Frederik Heremans
  */
 public class EmailAttachmentRenderer extends GenericAttachmentRenderer {
-  
-  public static final String EMAIL_TYPE = "email";
-  
-  public boolean canRenderAttachment(String type) {
-    return EMAIL_TYPE.equals(type);
-  }
 
-  public String getName(I18nManager i18nManager) {
-    return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_EMAIL);
-  }
+    public static final String EMAIL_TYPE = "email";
 
-  public Resource getImage(Attachment attachment) {
-    return Images.IMAP;
-  }
+    public boolean canRenderAttachment(String type) {
+        return EMAIL_TYPE.equals(type);
+    }
 
- 
-  public Component getDetailComponent(Attachment attachment) {
-    return new EmailDetailPanel(attachment);
-  }
+    public String getName(I18nManager i18nManager) {
+        return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_EMAIL);
+    }
+
+    public Resource getImage(Attachment attachment) {
+        return Images.IMAP;
+    }
+
+    public Component getDetailComponent(Attachment attachment) {
+        return new EmailDetailPanel(attachment);
+    }
 
 }

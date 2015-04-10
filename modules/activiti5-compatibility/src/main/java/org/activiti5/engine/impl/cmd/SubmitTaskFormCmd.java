@@ -19,43 +19,41 @@ import org.activiti5.engine.impl.form.TaskFormHandler;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String taskId;
-  protected Map<String, String> properties;
-  protected boolean completeTask;
+    private static final long serialVersionUID = 1L;
 
-  public SubmitTaskFormCmd(String taskId, Map<String, String> properties, boolean completeTask) {
-    super(taskId);
-    this.taskId = taskId;
-    this.properties = properties;
-    this.completeTask = completeTask;
-  }
-  
-  protected Object execute(CommandContext commandContext, TaskEntity task) {
-    commandContext.getHistoryManager()
-      .reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
-    
-    TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-    taskFormHandler.submitFormProperties(properties, task.getExecution());
+    protected String taskId;
+    protected Map<String, String> properties;
+    protected boolean completeTask;
 
-    if (completeTask) {
-      task.complete(properties, false);
+    public SubmitTaskFormCmd(String taskId, Map<String, String> properties, boolean completeTask) {
+        super(taskId);
+        this.taskId = taskId;
+        this.properties = properties;
+        this.completeTask = completeTask;
     }
 
-    return null;
-  }
-  
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot submit a form to a suspended task";
-  }
-  
+    protected Object execute(CommandContext commandContext, TaskEntity task) {
+        commandContext.getHistoryManager().reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
+
+        TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
+        taskFormHandler.submitFormProperties(properties, task.getExecution());
+
+        if (completeTask) {
+            task.complete(properties, false);
+        }
+
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot submit a form to a suspended task";
+    }
+
 }

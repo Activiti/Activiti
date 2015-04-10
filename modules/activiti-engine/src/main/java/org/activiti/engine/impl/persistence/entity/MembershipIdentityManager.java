@@ -13,15 +13,13 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-
-
 /**
  * @author Joram Barrez
  */
 public interface MembershipIdentityManager {
 
-  void createMembership(String userId, String groupId);
+    void createMembership(String userId, String groupId);
 
-  void deleteMembership(String userId, String groupId);
+    void deleteMembership(String userId, String groupId);
 
 }

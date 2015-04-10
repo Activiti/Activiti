@@ -60,7 +60,7 @@ public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStr
 
     @Test
     public void testDeployResources() {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5 };
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         verify(repositoryServiceMock, times(1)).createDeployment();
@@ -74,7 +74,7 @@ public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStr
 
     @Test
     public void testDeployResourcesNoResources() {
-        final Resource[] resources = new Resource[]{};
+        final Resource[] resources = new Resource[] {};
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         verify(repositoryServiceMock, times(1)).createDeployment();
@@ -90,7 +90,7 @@ public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStr
     public void testDeployResourcesIOExceptionYieldsActivitiException() throws Exception {
         when(resourceMock3.getInputStream()).thenThrow(new IOException());
 
-        final Resource[] resources = new Resource[]{resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock3 };
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         fail("Expected exception for IOException");
@@ -101,7 +101,7 @@ public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStr
         when(resourceMock3.getFile()).thenThrow(new IOException());
         when(resourceMock3.getFilename()).thenReturn(resourceName3);
 
-        final Resource[] resources = new Resource[]{resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock3 };
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
     }
 

@@ -13,25 +13,27 @@
 
 package org.activiti.rest.service.api.identity;
 
-
 /**
  * @author Frederik Heremans
  */
 public class MembershipResponse extends MembershipRequest {
-  
-  protected String url;
-  protected String groupId;
-  
-  public void setGroupId(String groupId) {
-    this.groupId = groupId;
-  }
-  public String getGroupId() {
-    return groupId;
-  }
-  public String getUrl() {
-    return url;
-  }
-  public void setUrl(String url) {
-    this.url = url;
-  }
+
+    protected String url;
+    protected String groupId;
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }

@@ -19,7 +19,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-
 /**
  * @author Saeid Mirzaei
  */
@@ -30,10 +29,10 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ManagedNotification {
 
-  String name();
+    String name();
 
-  String description() default "";
+    String description() default "";
 
-  String[] notificationTypes();
+    String[] notificationTypes();
 
 }

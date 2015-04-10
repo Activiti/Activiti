@@ -17,19 +17,19 @@ import org.apache.camel.impl.DefaultConsumer;
 
 public class ActivitiConsumer extends DefaultConsumer {
 
-  public ActivitiConsumer(ActivitiEndpoint endpoint, Processor processor) {
-    super(endpoint, processor);
-  }
+    public ActivitiConsumer(ActivitiEndpoint endpoint, Processor processor) {
+        super(endpoint, processor);
+    }
 
-  @Override
-  protected void doStart() throws Exception {
-    super.doStart();
-    ((ActivitiEndpoint) getEndpoint()).addConsumer(this);
-  }
-  
-  @Override
-  protected void doStop() throws Exception {
-    super.doStop();
-    ((ActivitiEndpoint) getEndpoint()).removeConsumer();
-  }
+    @Override
+    protected void doStart() throws Exception {
+        super.doStart();
+        ((ActivitiEndpoint) getEndpoint()).addConsumer(this);
+    }
+
+    @Override
+    protected void doStop() throws Exception {
+        super.doStop();
+        ((ActivitiEndpoint) getEndpoint()).removeConsumer();
+    }
 }

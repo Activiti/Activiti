@@ -31,7 +31,6 @@ import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  * @author Saeid Mirzaei
@@ -39,132 +38,128 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class UserEntityManager extends AbstractEntityManager<UserEntity> implements UserIdentityManager {
 
-  public User createNewUser(String userId) {
-    return new UserEntity(userId);
-  }
-
-  public void insertUser(User user) {
-    getDbSqlSession().insert((PersistentObject) user);
-    
-    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, user));
+    public User createNewUser(String userId) {
+        return new UserEntity(userId);
     }
-  }
-  
-  public void updateUser(User updatedUser) {
-    CommandContext commandContext = Context.getCommandContext();
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    dbSqlSession.update((PersistentObject) updatedUser);
-    
-    if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-    	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-    			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedUser));
+
+    public void insertUser(User user) {
+        getDbSqlSession().insert((PersistentObject) user);
+
+        if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, user));
+            getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, user));
+        }
     }
-  }
 
-  public User findUserById(String userId) {
-    return (UserEntity) getDbSqlSession().selectOne("selectUserById", userId);
-  }
+    public void updateUser(User updatedUser) {
+        CommandContext commandContext = Context.getCommandContext();
+        DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+        dbSqlSession.update((PersistentObject) updatedUser);
 
-  @SuppressWarnings("unchecked")
-  public void deleteUser(String userId) {
-    UserEntity user = (UserEntity) findUserById(userId);
-    if (user != null) {
-      List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
-      for (IdentityInfoEntity identityInfo: identityInfos) {
-        getIdentityInfoManager().deleteIdentityInfo(identityInfo);
-      }
-      getDbSqlSession().delete("deleteMembershipsByUserId", userId);
-
-      user.delete();
-      
-      if(getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      	getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-      			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, user));
-      }
+        if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, updatedUser));
+        }
     }
-  }
-  
-  @SuppressWarnings("unchecked")
-  public List<User> findUserByQueryCriteria(UserQueryImpl query, Page page) {
-    return getDbSqlSession().selectList("selectUserByQueryCriteria", query, page);
-  }
-  
-  public long findUserCountByQueryCriteria(UserQueryImpl query) {
-    return (Long) getDbSqlSession().selectOne("selectUserCountByQueryCriteria", query);
-  }
-  
-  @SuppressWarnings("unchecked")
-  public List<Group> findGroupsByUser(String userId) {
-    return getDbSqlSession().selectList("selectGroupsByUserId", userId);
-  }
 
-  public UserQuery createNewUserQuery() {
-    return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
-  }
-
-  public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("userId", userId);
-    parameters.put("key", key);
-    return (IdentityInfoEntity) getDbSqlSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("userId", userId);
-    parameters.put("type", type);
-    return (List) getDbSqlSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
-  }
-  
-  public Boolean checkPassword(String userId, String password) {
-    User user = findUserById(userId);
-    if ((user != null) && (password != null) && (password.equals(user.getPassword()))) {
-      return true;
+    public User findUserById(String userId) {
+        return (UserEntity) getDbSqlSession().selectOne("selectUserById", userId);
     }
-    return false;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public List<User> findPotentialStarterUsers(String proceDefId) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("procDefId", proceDefId);
-    return  (List<User>) getDbSqlSession().selectOne("selectUserByQueryCriteria", parameters);
-    
-  }
 
-  @SuppressWarnings("unchecked")
-  public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectUserByNativeQuery", parameterMap, firstResult, maxResults);
-  }
+    @SuppressWarnings("unchecked")
+    public void deleteUser(String userId) {
+        UserEntity user = (UserEntity) findUserById(userId);
+        if (user != null) {
+            List<IdentityInfoEntity> identityInfos = getDbSqlSession().selectList("selectIdentityInfoByUserId", userId);
+            for (IdentityInfoEntity identityInfo : identityInfos) {
+                getIdentityInfoManager().deleteIdentityInfo(identityInfo);
+            }
+            getDbSqlSession().delete("deleteMembershipsByUserId", userId);
 
-  public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectUserCountByNativeQuery", parameterMap);
-  }
-  
-  @Override
-  public boolean isNewUser(User user) {
-  	return ((UserEntity) user).getRevision() == 0;
-  }
-  
-  @Override
-  public Picture getUserPicture(String userId) {
-  	UserEntity user = (UserEntity) findUserById(userId);
-    return user.getPicture();
-  }
-  
-  @Override
-  public void setUserPicture(String userId, Picture picture) {
-  	UserEntity user = (UserEntity) findUserById(userId);
-  	if(user == null) {
-  		throw new ActivitiObjectNotFoundException("user "+userId+" doesn't exist", User.class);
-  	}
-  		
-    user.setPicture(picture);
-  }
-  
+            user.delete();
+
+            if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+                getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, user));
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<User> findUserByQueryCriteria(UserQueryImpl query, Page page) {
+        return getDbSqlSession().selectList("selectUserByQueryCriteria", query, page);
+    }
+
+    public long findUserCountByQueryCriteria(UserQueryImpl query) {
+        return (Long) getDbSqlSession().selectOne("selectUserCountByQueryCriteria", query);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Group> findGroupsByUser(String userId) {
+        return getDbSqlSession().selectList("selectGroupsByUserId", userId);
+    }
+
+    public UserQuery createNewUserQuery() {
+        return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
+    }
+
+    public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("userId", userId);
+        parameters.put("key", key);
+        return (IdentityInfoEntity) getDbSqlSession().selectOne("selectIdentityInfoByUserIdAndKey", parameters);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("userId", userId);
+        parameters.put("type", type);
+        return (List) getDbSqlSession().getSqlSession().selectList("selectIdentityInfoKeysByUserIdAndType", parameters);
+    }
+
+    public Boolean checkPassword(String userId, String password) {
+        User user = findUserById(userId);
+        if ((user != null) && (password != null) && (password.equals(user.getPassword()))) {
+            return true;
+        }
+        return false;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<User> findPotentialStarterUsers(String proceDefId) {
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("procDefId", proceDefId);
+        return (List<User>) getDbSqlSession().selectOne("selectUserByQueryCriteria", parameters);
+
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+        return getDbSqlSession().selectListWithRawParameter("selectUserByNativeQuery", parameterMap, firstResult, maxResults);
+    }
+
+    public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
+        return (Long) getDbSqlSession().selectOne("selectUserCountByNativeQuery", parameterMap);
+    }
+
+    @Override
+    public boolean isNewUser(User user) {
+        return ((UserEntity) user).getRevision() == 0;
+    }
+
+    @Override
+    public Picture getUserPicture(String userId) {
+        UserEntity user = (UserEntity) findUserById(userId);
+        return user.getPicture();
+    }
+
+    @Override
+    public void setUserPicture(String userId, Picture picture) {
+        UserEntity user = (UserEntity) findUserById(userId);
+        if (user == null) {
+            throw new ActivitiObjectNotFoundException("user " + userId + " doesn't exist", User.class);
+        }
+
+        user.setPicture(picture);
+    }
+
 }

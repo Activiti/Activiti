@@ -102,9 +102,11 @@ public class SpringAutoDeployTest extends PvmTestCase {
         IoUtil.writeStringToFile(updatedBpmnFileContent, filePath);
 
         // Classic produced/consumer problem here:
-        // The file is already written in Java, but not yet completely persisted by
+        // The file is already written in Java, but not yet completely persisted
+        // by
         // the OS
-        // Constructing the new app context reads the same file which is sometimes
+        // Constructing the new app context reads the same file which is
+        // sometimes
         // not yet fully written to disk
         waitUntilFileIsWritten(filePath, updatedBpmnFileContent.length());
 
@@ -112,7 +114,8 @@ public class SpringAutoDeployTest extends PvmTestCase {
             applicationContext = new ClassPathXmlApplicationContext(CTX_NO_DROP_PATH);
             repositoryService = (RepositoryService) applicationContext.getBean("repositoryService");
         } finally {
-            // Reset file content such that future test are not seeing something funny
+            // Reset file content such that future test are not seeing something
+            // funny
             IoUtil.writeStringToFile(originalBpmnFileContent, filePath);
         }
 
@@ -146,7 +149,8 @@ public class SpringAutoDeployTest extends PvmTestCase {
         assertEquals(4, repositoryService.createProcessDefinitionQuery().count());
     }
 
-    // --Helper methods ----------------------------------------------------------
+    // --Helper methods
+    // ----------------------------------------------------------
 
     private void removeAllDeployments() {
         for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {

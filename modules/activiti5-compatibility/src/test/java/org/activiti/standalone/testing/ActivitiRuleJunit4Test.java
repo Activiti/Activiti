@@ -25,51 +25,50 @@ import org.activiti5.engine.test.Deployment;
 import org.junit.Rule;
 import org.junit.Test;
 
-
 /**
- * Test runners follow the this rule:
- *   - if the class extends Testcase, run as Junit 3
- *   - otherwise use Junit 4
- *   
+ * Test runners follow the this rule: - if the class extends Testcase, run as
+ * Junit 3 - otherwise use Junit 4
+ * 
  * So this test can be included in the regular test suite without problems.
  * 
  * @author Joram Barrez
  */
 public class ActivitiRuleJunit4Test {
-  
-  @Rule
-  public ActivitiRule activitiRule = new ActivitiRule();
-  
-  @Test
-  @Deployment
-  public void ruleUsageExample() {
-    RuntimeService runtimeService = activitiRule.getRuntimeService();
-    runtimeService.startProcessInstanceByKey("ruleUsage");
-    
-    TaskService taskService = activitiRule.getTaskService();
-    Task task = taskService.createTaskQuery().singleResult();
-    assertEquals("My Task", task.getName());
-    
-    taskService.complete(task.getId());
-    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-  }
 
-  //this is to show how JobTestHelper could be used to wait for jobs to be all processed
-  @Test
-  @Deployment(resources={"org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncTask.bpmn20.xml"})
-  public void testWaitForJobs() {
-    RuntimeService runtimeService = activitiRule.getRuntimeService();
-    ManagementService managementService = activitiRule.getManagementService();
-   
-    // start process 
-    runtimeService.startProcessInstanceByKey("asyncTask");
-   
-    // now there should be one job in the database:
-    assertEquals(1, managementService.createJobQuery().count());
-      
-    JobTestHelper.waitForJobExecutorToProcessAllJobs(activitiRule, 5000L, 500L);
-   
-    // the job is done
-    assertEquals(0, managementService.createJobQuery().count()); 
-  }
+    @Rule
+    public ActivitiRule activitiRule = new ActivitiRule();
+
+    @Test
+    @Deployment
+    public void ruleUsageExample() {
+        RuntimeService runtimeService = activitiRule.getRuntimeService();
+        runtimeService.startProcessInstanceByKey("ruleUsage");
+
+        TaskService taskService = activitiRule.getTaskService();
+        Task task = taskService.createTaskQuery().singleResult();
+        assertEquals("My Task", task.getName());
+
+        taskService.complete(task.getId());
+        assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    }
+
+    // this is to show how JobTestHelper could be used to wait for jobs to be
+    // all processed
+    @Test
+    @Deployment(resources = { "org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncTask.bpmn20.xml" })
+    public void testWaitForJobs() {
+        RuntimeService runtimeService = activitiRule.getRuntimeService();
+        ManagementService managementService = activitiRule.getManagementService();
+
+        // start process
+        runtimeService.startProcessInstanceByKey("asyncTask");
+
+        // now there should be one job in the database:
+        assertEquals(1, managementService.createJobQuery().count());
+
+        JobTestHelper.waitForJobExecutorToProcessAllJobs(activitiRule, 5000L, 500L);
+
+        // the job is done
+        assertEquals(0, managementService.createJobQuery().count());
+    }
 }

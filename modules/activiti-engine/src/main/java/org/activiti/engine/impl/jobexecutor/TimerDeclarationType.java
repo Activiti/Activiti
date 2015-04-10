@@ -19,11 +19,11 @@ import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 
 public enum TimerDeclarationType {
-  DATE(DueDateBusinessCalendar.NAME),DURATION(DurationBusinessCalendar.NAME),CYCLE(CycleBusinessCalendar.NAME);
+    DATE(DueDateBusinessCalendar.NAME), DURATION(DurationBusinessCalendar.NAME), CYCLE(CycleBusinessCalendar.NAME);
 
-  public final String calendarName;
+    public final String calendarName;
 
-  TimerDeclarationType(String caledarName) {
-    this.calendarName = caledarName;
-  }
+    TimerDeclarationType(String caledarName) {
+        this.calendarName = caledarName;
+    }
 }

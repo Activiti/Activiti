@@ -12,148 +12,148 @@
  */
 package org.activiti.validation;
 
-
 public class ValidationError {
 
-	protected String validatorSetName;
-	
-	protected String problem;
-	
-  // Default description in english. 
-	// Other languages can map the validatorSetName/validatorName to the translated version. 
-	protected String defaultDescription;
-	
-	protected String processDefinitionId;
-	
-	protected String processDefinitionName;
-	
-	protected int xmlLineNumber;
-	
-	protected int xmlColumnNumber;
-	
-	protected String activityId;
-	
-	protected String activityName;
-	
-	protected boolean isWarning;
-	
-	public String getValidatorSetName() {
-		return validatorSetName;
-	}
+    protected String validatorSetName;
 
-	public void setValidatorSetName(String validatorSetName) {
-		this.validatorSetName = validatorSetName;
-	}
+    protected String problem;
 
-	public String getProblem() {
-		return problem;
-	}
+    // Default description in english.
+    // Other languages can map the validatorSetName/validatorName to the
+    // translated version.
+    protected String defaultDescription;
 
-	public void setProblem(String problem) {
-		this.problem = problem;
-	}
+    protected String processDefinitionId;
 
-	public String getDefaultDescription() {
-		return defaultDescription;
-	}
+    protected String processDefinitionName;
 
-	public void setDefaultDescription(String defaultDescription) {
-		this.defaultDescription = defaultDescription;
-	}
+    protected int xmlLineNumber;
 
-	public String getProcessDefinitionId() {
-		return processDefinitionId;
-	}
+    protected int xmlColumnNumber;
 
-	public void setProcessDefinitionId(String processDefinitionId) {
-		this.processDefinitionId = processDefinitionId;
-	}
+    protected String activityId;
 
-	public String getProcessDefinitionName() {
-		return processDefinitionName;
-	}
+    protected String activityName;
 
-	public void setProcessDefinitionName(String processDefinitionName) {
-		this.processDefinitionName = processDefinitionName;
-	}
+    protected boolean isWarning;
 
-	public int getXmlLineNumber() {
-		return xmlLineNumber;
-	}
+    public String getValidatorSetName() {
+        return validatorSetName;
+    }
 
-	public void setXmlLineNumber(int xmlLineNumber) {
-		this.xmlLineNumber = xmlLineNumber;
-	}
+    public void setValidatorSetName(String validatorSetName) {
+        this.validatorSetName = validatorSetName;
+    }
 
-	public int getXmlColumnNumber() {
-		return xmlColumnNumber;
-	}
+    public String getProblem() {
+        return problem;
+    }
 
-	public void setXmlColumnNumber(int xmlColumnNumber) {
-		this.xmlColumnNumber = xmlColumnNumber;
-	}
+    public void setProblem(String problem) {
+        this.problem = problem;
+    }
 
-	public String getActivityId() {
-		return activityId;
-	}
+    public String getDefaultDescription() {
+        return defaultDescription;
+    }
 
-	public void setActivityId(String activityId) {
-		this.activityId = activityId;
-	}
+    public void setDefaultDescription(String defaultDescription) {
+        this.defaultDescription = defaultDescription;
+    }
 
-	public String getActivityName() {
-		return activityName;
-	}
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
 
-	public void setActivityName(String activityName) {
-		this.activityName = activityName;
-	}
-	
-	public boolean isWarning() {
-		return isWarning;
-	}
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
 
-	public void setWarning(boolean isWarning) {
-		this.isWarning = isWarning;
-	}
+    public String getProcessDefinitionName() {
+        return processDefinitionName;
+    }
 
-	@Override
-	public String toString() {
-		StringBuilder strb = new StringBuilder();
-		strb.append("[Validation set: '" + validatorSetName + "' | Problem: '" + problem + "'] : ");
-		strb.append(defaultDescription);
-		strb.append(" - [Extra info : ");
-		boolean extraInfoAlreadyPresent = false;
-		if (processDefinitionId != null) {
-			strb.append("processDefinitionId = " + processDefinitionId);
-			extraInfoAlreadyPresent = true;
-		}
-		if (processDefinitionName != null) {
-			if (extraInfoAlreadyPresent) {
-				strb.append(" | ");
-			}
-			strb.append("processDefinitionName = " + processDefinitionName + " | ");
-			extraInfoAlreadyPresent = true;
-		}
-		if (activityId != null) {
-			if (extraInfoAlreadyPresent) {
-				strb.append(" | ");
-			}
-			strb.append("id = " + activityId + " | ");
-			extraInfoAlreadyPresent = true;
-		}
-		if (activityName != null) {
-			if (extraInfoAlreadyPresent) {
-				strb.append(" | ");
-			}
-			strb.append("activityName = " + activityName + " | ");
-			extraInfoAlreadyPresent = true;
-		}
-		strb.append("]");
-		if (xmlLineNumber > 0 && xmlColumnNumber > 0) {
-			strb.append(" ( line: " + xmlLineNumber + ", column: " + xmlColumnNumber + ")");
-		}
-		return strb.toString();
-	}
-	
+    public void setProcessDefinitionName(String processDefinitionName) {
+        this.processDefinitionName = processDefinitionName;
+    }
+
+    public int getXmlLineNumber() {
+        return xmlLineNumber;
+    }
+
+    public void setXmlLineNumber(int xmlLineNumber) {
+        this.xmlLineNumber = xmlLineNumber;
+    }
+
+    public int getXmlColumnNumber() {
+        return xmlColumnNumber;
+    }
+
+    public void setXmlColumnNumber(int xmlColumnNumber) {
+        this.xmlColumnNumber = xmlColumnNumber;
+    }
+
+    public String getActivityId() {
+        return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
+
+    public String getActivityName() {
+        return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
+
+    public boolean isWarning() {
+        return isWarning;
+    }
+
+    public void setWarning(boolean isWarning) {
+        this.isWarning = isWarning;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder strb = new StringBuilder();
+        strb.append("[Validation set: '" + validatorSetName + "' | Problem: '" + problem + "'] : ");
+        strb.append(defaultDescription);
+        strb.append(" - [Extra info : ");
+        boolean extraInfoAlreadyPresent = false;
+        if (processDefinitionId != null) {
+            strb.append("processDefinitionId = " + processDefinitionId);
+            extraInfoAlreadyPresent = true;
+        }
+        if (processDefinitionName != null) {
+            if (extraInfoAlreadyPresent) {
+                strb.append(" | ");
+            }
+            strb.append("processDefinitionName = " + processDefinitionName + " | ");
+            extraInfoAlreadyPresent = true;
+        }
+        if (activityId != null) {
+            if (extraInfoAlreadyPresent) {
+                strb.append(" | ");
+            }
+            strb.append("id = " + activityId + " | ");
+            extraInfoAlreadyPresent = true;
+        }
+        if (activityName != null) {
+            if (extraInfoAlreadyPresent) {
+                strb.append(" | ");
+            }
+            strb.append("activityName = " + activityName + " | ");
+            extraInfoAlreadyPresent = true;
+        }
+        strb.append("]");
+        if (xmlLineNumber > 0 && xmlColumnNumber > 0) {
+            strb.append(" ( line: " + xmlLineNumber + ", column: " + xmlColumnNumber + ")");
+        }
+        return strb.toString();
+    }
+
 }

@@ -18,7 +18,6 @@ import org.activiti.engine.task.Attachment;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.ui.Component;
 
-
 /**
  * Component that is capable of rendering an editable piece of related content.
  * 
@@ -28,13 +27,13 @@ import com.vaadin.ui.Component;
  */
 public interface AttachmentEditorComponent extends Component {
 
-  /**
-   * Get the edited or created attachment based on the values filled in. <b>The
-   * editor should save the attachment when this method is called.</b>
-   * 
-   * @throws InvalidValueException
-   *           when validation of the values failed. Editor should show
-   *           error-message in component.
-   */
-  Attachment getAttachment() throws InvalidValueException;
+    /**
+     * Get the edited or created attachment based on the values filled in.
+     * <b>The editor should save the attachment when this method is called.</b>
+     * 
+     * @throws InvalidValueException
+     *             when validation of the values failed. Editor should show
+     *             error-message in component.
+     */
+    Attachment getAttachment() throws InvalidValueException;
 }

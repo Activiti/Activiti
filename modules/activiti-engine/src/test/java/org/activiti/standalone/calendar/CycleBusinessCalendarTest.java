@@ -23,34 +23,34 @@ import org.activiti.engine.runtime.Clock;
 
 public class CycleBusinessCalendarTest extends PvmTestCase {
 
-  public void testSimpleCron() throws Exception {
-    Clock testingClock = new DefaultClockImpl();
-    CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(testingClock);
+    public void testSimpleCron() throws Exception {
+        Clock testingClock = new DefaultClockImpl();
+        CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(testingClock);
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
-    Date now = simpleDateFormat.parse("2011 03 11 - 17:23");
-    testingClock.setCurrentTime(now);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
+        Date now = simpleDateFormat.parse("2011 03 11 - 17:23");
+        testingClock.setCurrentTime(now);
 
-    Date duedate = businessCalendar.resolveDuedate("0 0 0 1 * ?");
+        Date duedate = businessCalendar.resolveDuedate("0 0 0 1 * ?");
 
-    Date expectedDuedate = simpleDateFormat.parse("2011 04 1 - 00:00");
+        Date expectedDuedate = simpleDateFormat.parse("2011 04 1 - 00:00");
 
-    assertEquals(expectedDuedate, duedate);
-  }
+        assertEquals(expectedDuedate, duedate);
+    }
 
-  public void testSimpleDuration() throws Exception {
-    Clock testingClock = new DefaultClockImpl();
-    CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(testingClock);
+    public void testSimpleDuration() throws Exception {
+        Clock testingClock = new DefaultClockImpl();
+        CycleBusinessCalendar businessCalendar = new CycleBusinessCalendar(testingClock);
 
-    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
-    Date now = simpleDateFormat.parse("2010 06 11 - 17:23");
-    testingClock.setCurrentTime(now);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy MM dd - HH:mm");
+        Date now = simpleDateFormat.parse("2010 06 11 - 17:23");
+        testingClock.setCurrentTime(now);
 
-    Date duedate = businessCalendar.resolveDuedate("R/P2DT5H70M");
+        Date duedate = businessCalendar.resolveDuedate("R/P2DT5H70M");
 
-    Date expectedDuedate = simpleDateFormat.parse("2010 06 13 - 23:33");
+        Date expectedDuedate = simpleDateFormat.parse("2010 06 13 - 23:33");
 
-    assertEquals(expectedDuedate, duedate);
-  }
+        assertEquals(expectedDuedate, duedate);
+    }
 
 }

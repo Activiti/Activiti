@@ -19,40 +19,39 @@ import org.activiti.explorer.ui.MainWindow;
 import org.activiti.explorer.ui.alfresco.AlfrescoViewManager;
 import org.springframework.beans.factory.FactoryBean;
 
-
 /**
  * @author Joram Barrez
  */
 public class ViewManagerFactoryBean implements FactoryBean<ViewManager>, Serializable {
 
-  protected String environment;
-  protected MainWindow mainWindow;
-  
-  public ViewManager getObject() throws Exception {
-    DefaultViewManager viewManagerImpl;
-    if (environment.equals(Environments.ALFRESCO)) {
-      viewManagerImpl = new AlfrescoViewManager();
-    } else {
-      viewManagerImpl = new DefaultViewManager(); 
+    protected String environment;
+    protected MainWindow mainWindow;
+
+    public ViewManager getObject() throws Exception {
+        DefaultViewManager viewManagerImpl;
+        if (environment.equals(Environments.ALFRESCO)) {
+            viewManagerImpl = new AlfrescoViewManager();
+        } else {
+            viewManagerImpl = new DefaultViewManager();
+        }
+        viewManagerImpl.setMainWindow(mainWindow);
+        return viewManagerImpl;
     }
-    viewManagerImpl.setMainWindow(mainWindow);
-    return viewManagerImpl;
-  }
 
-  public Class<?> getObjectType() {
-    return ViewManager.class;
-  }
+    public Class<?> getObjectType() {
+        return ViewManager.class;
+    }
 
-  public boolean isSingleton() {
-    return true; // See https://jira.springsource.org/browse/SPR-5060
-  }
-  
-  public void setEnvironment(String environment) {
-    this.environment = environment;
-  }
-  
-  public void setMainWindow(MainWindow mainWindow) {
-    this.mainWindow = mainWindow;
-  }
+    public boolean isSingleton() {
+        return true; // See https://jira.springsource.org/browse/SPR-5060
+    }
+
+    public void setEnvironment(String environment) {
+        this.environment = environment;
+    }
+
+    public void setMainWindow(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
+    }
 
 }

@@ -16,35 +16,35 @@ package org.activiti.bpmn.model;
  * @author Tijs Rademakers
  */
 public class TextAnnotation extends Artifact {
-  
-  protected String text;
-  protected String textFormat;
-  
-  public String getText() {
-    return text;
-  }
-  
-  public void setText(String text) {
-    this.text = text;
-  }
-  
-  public String getTextFormat() {
-    return textFormat;
-  }
-  
-  public void setTextFormat(String textFormat) {
-    this.textFormat = textFormat;
-  }
-  
-  public TextAnnotation clone() {
-    TextAnnotation clone = new TextAnnotation();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  public void setValues(TextAnnotation otherElement) {
-    super.setValues(otherElement);
-    setText(otherElement.getText());
-    setTextFormat(otherElement.getTextFormat());
-  }
+
+    protected String text;
+    protected String textFormat;
+
+    public String getText() {
+        return text;
+    }
+
+    public void setText(String text) {
+        this.text = text;
+    }
+
+    public String getTextFormat() {
+        return textFormat;
+    }
+
+    public void setTextFormat(String textFormat) {
+        this.textFormat = textFormat;
+    }
+
+    public TextAnnotation clone() {
+        TextAnnotation clone = new TextAnnotation();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(TextAnnotation otherElement) {
+        super.setValues(otherElement);
+        setText(otherElement.getText());
+        setTextFormat(otherElement.getTextFormat());
+    }
 }

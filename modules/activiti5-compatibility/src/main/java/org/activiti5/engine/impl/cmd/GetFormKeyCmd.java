@@ -20,61 +20,59 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti5.engine.impl.task.TaskDefinition;
 
-
 /**
  * Command for retrieving start or task form keys.
- *
+ * 
  * @author Falko Menge (camunda)
  */
 public class GetFormKeyCmd implements Command<String> {
 
-  protected String taskDefinitionKey;
-  protected String processDefinitionId;
+    protected String taskDefinitionKey;
+    protected String processDefinitionId;
 
-  /**
-   * Retrieves a start form key.
-   */
-  public GetFormKeyCmd(String processDefinitionId) {
-    setProcessDefinitionId(processDefinitionId);
-  }
+    /**
+     * Retrieves a start form key.
+     */
+    public GetFormKeyCmd(String processDefinitionId) {
+        setProcessDefinitionId(processDefinitionId);
+    }
 
-  /**
-   * Retrieves a task form key.
-   */
-  public GetFormKeyCmd(String processDefinitionId, String taskDefinitionKey) {
-    setProcessDefinitionId(processDefinitionId);
-    if (taskDefinitionKey == null || taskDefinitionKey.length() < 1) {
-      throw new ActivitiIllegalArgumentException("The task definition key is mandatory, but '" + taskDefinitionKey + "' has been provided.");
+    /**
+     * Retrieves a task form key.
+     */
+    public GetFormKeyCmd(String processDefinitionId, String taskDefinitionKey) {
+        setProcessDefinitionId(processDefinitionId);
+        if (taskDefinitionKey == null || taskDefinitionKey.length() < 1) {
+            throw new ActivitiIllegalArgumentException("The task definition key is mandatory, but '" + taskDefinitionKey + "' has been provided.");
+        }
+        this.taskDefinitionKey = taskDefinitionKey;
     }
-    this.taskDefinitionKey = taskDefinitionKey;
-  }
 
-  protected void setProcessDefinitionId(String processDefinitionId) {
-    if (processDefinitionId == null || processDefinitionId.length() < 1) {
-      throw new ActivitiIllegalArgumentException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
+    protected void setProcessDefinitionId(String processDefinitionId) {
+        if (processDefinitionId == null || processDefinitionId.length() < 1) {
+            throw new ActivitiIllegalArgumentException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
+        }
+        this.processDefinitionId = processDefinitionId;
     }
-    this.processDefinitionId = processDefinitionId;
-  }
 
-  public String execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager()
-            .findDeployedProcessDefinitionById(processDefinitionId);
-    DefaultFormHandler formHandler;
-    if (taskDefinitionKey == null) {
-      // TODO: Maybe add getFormKey() to FormHandler interface to avoid the following cast
-      formHandler = (DefaultFormHandler) processDefinition.getStartFormHandler();
-    } else {
-      TaskDefinition taskDefinition = processDefinition.getTaskDefinitions().get(taskDefinitionKey);
-      // TODO: Maybe add getFormKey() to FormHandler interface to avoid the following cast
-      formHandler = (DefaultFormHandler) taskDefinition.getTaskFormHandler();
+    public String execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+        DefaultFormHandler formHandler;
+        if (taskDefinitionKey == null) {
+            // TODO: Maybe add getFormKey() to FormHandler interface to avoid
+            // the following cast
+            formHandler = (DefaultFormHandler) processDefinition.getStartFormHandler();
+        } else {
+            TaskDefinition taskDefinition = processDefinition.getTaskDefinitions().get(taskDefinitionKey);
+            // TODO: Maybe add getFormKey() to FormHandler interface to avoid
+            // the following cast
+            formHandler = (DefaultFormHandler) taskDefinition.getTaskFormHandler();
+        }
+        String formKey = null;
+        if (formHandler.getFormKey() != null) {
+            formKey = formHandler.getFormKey().getExpressionText();
+        }
+        return formKey;
     }
-    String formKey = null;
-    if (formHandler.getFormKey() != null) {
-      formKey = formHandler.getFormKey().getExpressionText();
-    }
-    return formKey;
-  }
 
 }

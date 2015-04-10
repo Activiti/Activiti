@@ -23,18 +23,16 @@ import org.activiti5.engine.task.Comment;
  */
 public class GetTaskCommentsByTypeCmd extends GetTaskCommentsCmd {
 
-  private static final long serialVersionUID = 1L;
-  protected String type;
-  
-  public GetTaskCommentsByTypeCmd(String taskId, String type) {
-    super(taskId);
-    this.type = type;
-  }
-  
-  public List<Comment> execute(CommandContext commandContext) {
-    return commandContext
-      .getCommentEntityManager()
-      .findCommentsByTaskIdAndType(taskId, type);
-  }
+    private static final long serialVersionUID = 1L;
+    protected String type;
+
+    public GetTaskCommentsByTypeCmd(String taskId, String type) {
+        super(taskId);
+        this.type = type;
+    }
+
+    public List<Comment> execute(CommandContext commandContext) {
+        return commandContext.getCommentEntityManager().findCommentsByTaskIdAndType(taskId, type);
+    }
 
 }

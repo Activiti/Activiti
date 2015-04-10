@@ -19,39 +19,39 @@ import java.util.Map;
 import org.activiti5.engine.query.QueryProperty;
 import org.activiti5.engine.repository.ProcessDefinitionQuery;
 
-
 /**
- * Contains the possible properties that can be used in a {@link ProcessDefinitionQuery}.
+ * Contains the possible properties that can be used in a
+ * {@link ProcessDefinitionQuery}.
  * 
  * @author Joram Barrez
  */
 public class ProcessDefinitionQueryProperty implements QueryProperty {
-  
-  private static final long serialVersionUID = 1L;
 
-  private static final Map<String, ProcessDefinitionQueryProperty> properties = new HashMap<String, ProcessDefinitionQueryProperty>();
-  
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_KEY = new ProcessDefinitionQueryProperty("RES.KEY_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_CATEGORY = new ProcessDefinitionQueryProperty("RES.CATEGORY_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_ID = new ProcessDefinitionQueryProperty("RES.ID_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_VERSION = new ProcessDefinitionQueryProperty("RES.VERSION_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_NAME = new ProcessDefinitionQueryProperty("RES.NAME_");
-  public static final ProcessDefinitionQueryProperty DEPLOYMENT_ID = new ProcessDefinitionQueryProperty("RES.DEPLOYMENT_ID_");
-  public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_TENANT_ID = new ProcessDefinitionQueryProperty("RES.TENANT_ID_");
+    private static final long serialVersionUID = 1L;
 
-  private String name;
+    private static final Map<String, ProcessDefinitionQueryProperty> properties = new HashMap<String, ProcessDefinitionQueryProperty>();
 
-  public ProcessDefinitionQueryProperty(String name) {
-    this.name = name;
-    properties.put(name, this);
-  }
+    public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_KEY = new ProcessDefinitionQueryProperty("RES.KEY_");
+    public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_CATEGORY = new ProcessDefinitionQueryProperty("RES.CATEGORY_");
+    public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_ID = new ProcessDefinitionQueryProperty("RES.ID_");
+    public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_VERSION = new ProcessDefinitionQueryProperty("RES.VERSION_");
+    public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_NAME = new ProcessDefinitionQueryProperty("RES.NAME_");
+    public static final ProcessDefinitionQueryProperty DEPLOYMENT_ID = new ProcessDefinitionQueryProperty("RES.DEPLOYMENT_ID_");
+    public static final ProcessDefinitionQueryProperty PROCESS_DEFINITION_TENANT_ID = new ProcessDefinitionQueryProperty("RES.TENANT_ID_");
 
-  public String getName() {
-    return name;
-  }
-  
-  public static ProcessDefinitionQueryProperty findByName(String propertyName) {
-    return properties.get(propertyName);
-  }
+    private String name;
+
+    public ProcessDefinitionQueryProperty(String name) {
+        this.name = name;
+        properties.put(name, this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static ProcessDefinitionQueryProperty findByName(String propertyName) {
+        return properties.get(propertyName);
+    }
 
 }

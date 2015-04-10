@@ -14,63 +14,73 @@ package org.activiti5.engine.task;
 
 import java.util.Date;
 
-
-
-/** Represents one task for a human user.
+/**
+ * Represents one task for a human user.
  * 
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
 public interface Task extends TaskInfo {
 
-  /**
-   * Default value used for priority when a new {@link Task} is created.
-   */
-  int DEFAULT_PRIORITY = 50;
-  
+    /**
+     * Default value used for priority when a new {@link Task} is created.
+     */
+    int DEFAULT_PRIORITY = 50;
 
-  /** Name or title of the task. */
-	void setName(String name);
-	
-  /** Change the description of the task */
-	void setDescription(String description);
-	
-	/** Sets the indication of how important/urgent this task is */
-	void setPriority(int priority);
-	
-  /** The {@link User.getId() userId} of the person that is responsible for this task. */
-  void setOwner(String owner);
-  
-	/** The {@link User.getId() userId} of the person to which this task is delegated. */
-	void setAssignee(String assignee);
-	
-	/** The current {@link DelegationState} for this task. */ 
-  DelegationState getDelegationState();
-  
-  /** The current {@link DelegationState} for this task. */ 
-  void setDelegationState(DelegationState delegationState);
-	
-	/** Change due date of the task. */
-	void setDueDate(Date dueDate);
-	
-	/** Change the category of the task. This is an optional field and allows to 'tag' tasks as belonging to a certain category. */
-	void setCategory(String category);
+    /** Name or title of the task. */
+    void setName(String name);
 
-	/** delegates this task to the given user and sets the {@link #getDelegationState() delegationState} to {@link DelegationState#PENDING}.
-	 * If no owner is set on the task, the owner is set to the current assignee of the task. */
-  void delegate(String userId);
-  
-  /** the parent task for which this task is a subtask */
-  void setParentTaskId(String parentTaskId);
-  
-  /** Change the tenantId of the task */
-  void setTenantId(String tenantId);
+    /** Change the description of the task */
+    void setDescription(String description);
 
-  /** Change the form key of the task */
-  void setFormKey(String formKey);
-  
-  /** Indicates whether this task is suspended or not. */
-	boolean isSuspended();
-  
- 
+    /** Sets the indication of how important/urgent this task is */
+    void setPriority(int priority);
+
+    /**
+     * The {@link User.getId() userId} of the person that is responsible for
+     * this task.
+     */
+    void setOwner(String owner);
+
+    /**
+     * The {@link User.getId() userId} of the person to which this task is
+     * delegated.
+     */
+    void setAssignee(String assignee);
+
+    /** The current {@link DelegationState} for this task. */
+    DelegationState getDelegationState();
+
+    /** The current {@link DelegationState} for this task. */
+    void setDelegationState(DelegationState delegationState);
+
+    /** Change due date of the task. */
+    void setDueDate(Date dueDate);
+
+    /**
+     * Change the category of the task. This is an optional field and allows to
+     * 'tag' tasks as belonging to a certain category.
+     */
+    void setCategory(String category);
+
+    /**
+     * delegates this task to the given user and sets the
+     * {@link #getDelegationState() delegationState} to
+     * {@link DelegationState#PENDING}. If no owner is set on the task, the
+     * owner is set to the current assignee of the task.
+     */
+    void delegate(String userId);
+
+    /** the parent task for which this task is a subtask */
+    void setParentTaskId(String parentTaskId);
+
+    /** Change the tenantId of the task */
+    void setTenantId(String tenantId);
+
+    /** Change the form key of the task */
+    void setFormKey(String formKey);
+
+    /** Indicates whether this task is suspended or not. */
+    boolean isSuspended();
+
 }

@@ -20,18 +20,18 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  * @author Tom Baeyens
  */
 public class ControlledCommand implements Command<Object> {
-  
-  protected ControllableThread controllableThread; 
-  protected Command<?> command;
-  
-  public ControlledCommand(ControllableThread controllableThread, Command<?> command) {
-    this.controllableThread = controllableThread;
-    this.command = command;
-  }
-  
-  public Object execute(CommandContext commandContext) {
-    Object result = command.execute(commandContext);
-    controllableThread.returnControlToTestThreadAndWait();
-    return result;
-  }
+
+    protected ControllableThread controllableThread;
+    protected Command<?> command;
+
+    public ControlledCommand(ControllableThread controllableThread, Command<?> command) {
+        this.controllableThread = controllableThread;
+        this.command = command;
+    }
+
+    public Object execute(CommandContext commandContext) {
+        Object result = command.execute(commandContext);
+        controllableThread.returnControlToTestThreadAndWait();
+        return result;
+    }
 }

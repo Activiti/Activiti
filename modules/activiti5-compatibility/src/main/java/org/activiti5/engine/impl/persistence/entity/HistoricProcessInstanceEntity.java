@@ -31,131 +31,135 @@ import org.activiti5.engine.impl.identity.Authentication;
  */
 public class HistoricProcessInstanceEntity extends HistoricScopeInstanceEntity implements HistoricProcessInstance, BulkDeleteable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String endActivityId;
-  protected String businessKey;
-  protected String startUserId;
-  protected String startActivityId;
-  protected String superProcessInstanceId;
-  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
-  protected String name;
-  protected List<HistoricVariableInstanceEntity> queryVariables;
+    private static final long serialVersionUID = 1L;
 
-  public HistoricProcessInstanceEntity() {
-  }
+    protected String endActivityId;
+    protected String businessKey;
+    protected String startUserId;
+    protected String startActivityId;
+    protected String superProcessInstanceId;
+    protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+    protected String name;
+    protected List<HistoricVariableInstanceEntity> queryVariables;
 
-  public HistoricProcessInstanceEntity(ExecutionEntity processInstance) {
-    id = processInstance.getId();
-    processInstanceId = processInstance.getId();
-    businessKey = processInstance.getBusinessKey();
-    processDefinitionId = processInstance.getProcessDefinitionId();
-    startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    startUserId = Authentication.getAuthenticatedUserId();
-    startActivityId = processInstance.getActivityId();
-    superProcessInstanceId = processInstance.getSuperExecution() != null ? processInstance.getSuperExecution().getProcessInstanceId() : null;
-    
-    // Inherit tenant id (if applicable)
-    if (processInstance.getTenantId() != null) {
-    	tenantId = processInstance.getTenantId();
+    public HistoricProcessInstanceEntity() {
     }
-  }
 
-  
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
-    persistentState.put("endTime", endTime);
-    persistentState.put("businessKey", businessKey);
-    persistentState.put("name", name);
-    persistentState.put("durationInMillis", durationInMillis);
-    persistentState.put("deleteReason", deleteReason);
-    persistentState.put("endStateName", endActivityId);
-    persistentState.put("superProcessInstanceId", superProcessInstanceId);
-    persistentState.put("processDefinitionId", processDefinitionId);
-    return persistentState;
-  }
+    public HistoricProcessInstanceEntity(ExecutionEntity processInstance) {
+        id = processInstance.getId();
+        processInstanceId = processInstance.getId();
+        businessKey = processInstance.getBusinessKey();
+        processDefinitionId = processInstance.getProcessDefinitionId();
+        startTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+        startUserId = Authentication.getAuthenticatedUserId();
+        startActivityId = processInstance.getActivityId();
+        superProcessInstanceId = processInstance.getSuperExecution() != null ? processInstance.getSuperExecution().getProcessInstanceId() : null;
 
-  // getters and setters //////////////////////////////////////////////////////
-  
-  
-  public String getEndActivityId() {
-    return endActivityId;
-  }
-  public void setEndActivityId(String endActivityId) {
-    this.endActivityId = endActivityId;
-  }
-
-  public String getBusinessKey() {
-    return businessKey;
-  }
-  public void setBusinessKey(String businessKey) {
-    this.businessKey = businessKey;
-  }
-  
-  public String getStartUserId() {
-    return startUserId;
-  }
-  public void setStartUserId(String startUserId) {
-    this.startUserId = startUserId;
-  }
-  
-  public String getStartActivityId() {
-    return startActivityId;
-  }
-  public void setStartActivityId(String startUserId) {
-    this.startActivityId = startUserId;
-  }
-  
-  public String getSuperProcessInstanceId() {
-    return superProcessInstanceId;
-  }
-  public void setSuperProcessInstanceId(String superProcessInstanceId) {
-    this.superProcessInstanceId = superProcessInstanceId;
-  }
-  
-  public String getTenantId() {
-		return tenantId;
-	}
-
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
-	
-	public String getName() {
-      return name;
-    }
-	
-	public void setName(String name) {
-      this.name = name;
-    }
-	
-	public Map<String, Object> getProcessVariables() {
-    Map<String, Object> variables = new HashMap<String, Object>();
-    if (queryVariables != null) {
-      for (HistoricVariableInstanceEntity variableInstance: queryVariables) {
-        if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
-          variables.put(variableInstance.getName(), variableInstance.getValue());
+        // Inherit tenant id (if applicable)
+        if (processInstance.getTenantId() != null) {
+            tenantId = processInstance.getTenantId();
         }
-      }
     }
-    return variables;
-  }
-  
-  public List<HistoricVariableInstanceEntity> getQueryVariables() {
-    if(queryVariables == null && Context.getCommandContext() != null) {
-      queryVariables = new HistoricVariableInitializingList();
+
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
+        persistentState.put("endTime", endTime);
+        persistentState.put("businessKey", businessKey);
+        persistentState.put("name", name);
+        persistentState.put("durationInMillis", durationInMillis);
+        persistentState.put("deleteReason", deleteReason);
+        persistentState.put("endStateName", endActivityId);
+        persistentState.put("superProcessInstanceId", superProcessInstanceId);
+        persistentState.put("processDefinitionId", processDefinitionId);
+        return persistentState;
     }
-    return queryVariables;
-  }
-  
-  public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
-    this.queryVariables = queryVariables;
-  }
 
-  // common methods  //////////////////////////////////////////////////////////
+    // getters and setters
+    // //////////////////////////////////////////////////////
 
-  @Override
-  public String toString() {
-    return "HistoricProcessInstanceEntity[superProcessInstanceId=" + superProcessInstanceId + "]";
-  }
+    public String getEndActivityId() {
+        return endActivityId;
+    }
+
+    public void setEndActivityId(String endActivityId) {
+        this.endActivityId = endActivityId;
+    }
+
+    public String getBusinessKey() {
+        return businessKey;
+    }
+
+    public void setBusinessKey(String businessKey) {
+        this.businessKey = businessKey;
+    }
+
+    public String getStartUserId() {
+        return startUserId;
+    }
+
+    public void setStartUserId(String startUserId) {
+        this.startUserId = startUserId;
+    }
+
+    public String getStartActivityId() {
+        return startActivityId;
+    }
+
+    public void setStartActivityId(String startUserId) {
+        this.startActivityId = startUserId;
+    }
+
+    public String getSuperProcessInstanceId() {
+        return superProcessInstanceId;
+    }
+
+    public void setSuperProcessInstanceId(String superProcessInstanceId) {
+        this.superProcessInstanceId = superProcessInstanceId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Map<String, Object> getProcessVariables() {
+        Map<String, Object> variables = new HashMap<String, Object>();
+        if (queryVariables != null) {
+            for (HistoricVariableInstanceEntity variableInstance : queryVariables) {
+                if (variableInstance.getId() != null && variableInstance.getTaskId() == null) {
+                    variables.put(variableInstance.getName(), variableInstance.getValue());
+                }
+            }
+        }
+        return variables;
+    }
+
+    public List<HistoricVariableInstanceEntity> getQueryVariables() {
+        if (queryVariables == null && Context.getCommandContext() != null) {
+            queryVariables = new HistoricVariableInitializingList();
+        }
+        return queryVariables;
+    }
+
+    public void setQueryVariables(List<HistoricVariableInstanceEntity> queryVariables) {
+        this.queryVariables = queryVariables;
+    }
+
+    // common methods //////////////////////////////////////////////////////////
+
+    @Override
+    public String toString() {
+        return "HistoricProcessInstanceEntity[superProcessInstanceId=" + superProcessInstanceId + "]";
+    }
 }

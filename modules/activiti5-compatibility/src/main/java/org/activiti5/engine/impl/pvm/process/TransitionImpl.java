@@ -21,82 +21,82 @@ import org.activiti5.engine.delegate.ExecutionListener;
 import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.impl.pvm.PvmTransition;
 
-
 /**
  * @author Tom Baeyens
  */
 public class TransitionImpl extends ProcessElementImpl implements PvmTransition {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected ActivityImpl source;
-  protected ActivityImpl destination;
-  protected List<ExecutionListener> executionListeners;
-  protected Expression skipExpression;
-  
-  /** Graphical information: a list of waypoints: x1, y1, x2, y2, x3, y3, .. */
-  protected List<Integer> waypoints = new ArrayList<Integer>();
+    private static final long serialVersionUID = 1L;
 
-  public TransitionImpl(String id, Expression skipExpression, ProcessDefinitionImpl processDefinition) {
-    super(id, processDefinition);
-    this.skipExpression = skipExpression;
-  }
+    protected ActivityImpl source;
+    protected ActivityImpl destination;
+    protected List<ExecutionListener> executionListeners;
+    protected Expression skipExpression;
 
-  public ActivityImpl getSource() {
-    return source;
-  }
+    /** Graphical information: a list of waypoints: x1, y1, x2, y2, x3, y3, .. */
+    protected List<Integer> waypoints = new ArrayList<Integer>();
 
-  public void setDestination(ActivityImpl destination) {
-    this.destination = destination;
-    destination.getIncomingTransitions().add(this);
-  }
-  
-  public void addExecutionListener(ExecutionListener executionListener) {
-    if (executionListeners==null) {
-      executionListeners = new ArrayList<ExecutionListener>();
+    public TransitionImpl(String id, Expression skipExpression, ProcessDefinitionImpl processDefinition) {
+        super(id, processDefinition);
+        this.skipExpression = skipExpression;
     }
-    executionListeners.add(executionListener);
-  }
 
-  public String toString() {
-    return "("+source.getId()+")--"+(id!=null?id+"-->(":">(")+destination.getId()+")";
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<ExecutionListener> getExecutionListeners() {
-    if (executionListeners==null) {
-      return Collections.EMPTY_LIST;
+    public ActivityImpl getSource() {
+        return source;
     }
-    return executionListeners;
-  }
 
-  // getters and setters //////////////////////////////////////////////////////
+    public void setDestination(ActivityImpl destination) {
+        this.destination = destination;
+        destination.getIncomingTransitions().add(this);
+    }
 
-  protected void setSource(ActivityImpl source) {
-    this.source = source;
-  }
+    public void addExecutionListener(ExecutionListener executionListener) {
+        if (executionListeners == null) {
+            executionListeners = new ArrayList<ExecutionListener>();
+        }
+        executionListeners.add(executionListener);
+    }
 
-  public ActivityImpl getDestination() {
-    return destination;
-  }
-  
-  public void setExecutionListeners(List<ExecutionListener> executionListeners) {
-    this.executionListeners = executionListeners;
-  }
+    public String toString() {
+        return "(" + source.getId() + ")--" + (id != null ? id + "-->(" : ">(") + destination.getId() + ")";
+    }
 
-  public List<Integer> getWaypoints() {
-    return waypoints;
-  }
-  
-  public void setWaypoints(List<Integer> waypoints) {
-    this.waypoints = waypoints;
-  }
+    @SuppressWarnings("unchecked")
+    public List<ExecutionListener> getExecutionListeners() {
+        if (executionListeners == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return executionListeners;
+    }
 
-  public Expression getSkipExpression() {
-    return skipExpression;
-  }
-  
-  public void setSkipExpression(Expression skipExpression) {
-    this.skipExpression = skipExpression;
-  }
+    // getters and setters
+    // //////////////////////////////////////////////////////
+
+    protected void setSource(ActivityImpl source) {
+        this.source = source;
+    }
+
+    public ActivityImpl getDestination() {
+        return destination;
+    }
+
+    public void setExecutionListeners(List<ExecutionListener> executionListeners) {
+        this.executionListeners = executionListeners;
+    }
+
+    public List<Integer> getWaypoints() {
+        return waypoints;
+    }
+
+    public void setWaypoints(List<Integer> waypoints) {
+        this.waypoints = waypoints;
+    }
+
+    public Expression getSkipExpression() {
+        return skipExpression;
+    }
+
+    public void setSkipExpression(Expression skipExpression) {
+        this.skipExpression = skipExpression;
+    }
 }

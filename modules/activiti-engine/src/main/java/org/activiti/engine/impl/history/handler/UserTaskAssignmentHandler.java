@@ -18,15 +18,13 @@ import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class UserTaskAssignmentHandler implements TaskListener {
 
-  public void notify(DelegateTask task) {
-   Context.getCommandContext().getHistoryManager()
-     .recordTaskAssignment((TaskEntity) task);
-  }
-  
+    public void notify(DelegateTask task) {
+        Context.getCommandContext().getHistoryManager().recordTaskAssignment((TaskEntity) task);
+    }
+
 }

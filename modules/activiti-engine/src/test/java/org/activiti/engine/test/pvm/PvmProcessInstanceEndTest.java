@@ -20,38 +20,27 @@ import org.activiti.engine.impl.test.PvmTestCase;
 import org.activiti.engine.test.pvm.activities.Automatic;
 import org.activiti.engine.test.pvm.activities.WaitState;
 
-
 /**
  * @author Tom Baeyens
  */
 public class PvmProcessInstanceEndTest extends PvmTestCase {
 
-  public void testSimpleProcessInstanceEnd() {
-    EventCollector eventCollector = new EventCollector();
-    
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-      .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-      .createActivity("start")
-        .initial()
-        .behavior(new Automatic())
-        .transition("wait")
-      .endActivity()
-      .createActivity("wait")
-        .behavior(new WaitState())
-        .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-        .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-      .endActivity()
-    .buildProcessDefinition();
-    
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-    processInstance.start();
+    public void testSimpleProcessInstanceEnd() {
+        EventCollector eventCollector = new EventCollector();
 
-    System.err.println(eventCollector);
-    
-    processInstance.deleteCascade("test");
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+                .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic()).transition("wait").endActivity()
+                .createActivity("wait").behavior(new WaitState()).executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+                .executionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).endActivity().buildProcessDefinition();
 
-    System.err.println();
-    System.err.println(eventCollector);
-  }
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.start();
+
+        System.err.println(eventCollector);
+
+        processInstance.deleteCascade("test");
+
+        System.err.println();
+        System.err.println(eventCollector);
+    }
 }

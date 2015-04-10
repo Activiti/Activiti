@@ -16,18 +16,17 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
-
 /**
  * @author Joram Barrez
  */
 public class InclusiveGatewayParseHandler extends AbstractActivityBpmnParseHandler<InclusiveGateway> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
-    return InclusiveGateway.class;
-  }
-  
-  protected void executeParse(BpmnParse bpmnParse, InclusiveGateway gateway) {
-	  gateway.setBehavior(bpmnParse.getActivityBehaviorFactory().createInclusiveGatewayActivityBehavior(gateway));
-  }
+
+    public Class<? extends BaseElement> getHandledType() {
+        return InclusiveGateway.class;
+    }
+
+    protected void executeParse(BpmnParse bpmnParse, InclusiveGateway gateway) {
+        gateway.setBehavior(bpmnParse.getActivityBehaviorFactory().createInclusiveGatewayActivityBehavior(gateway));
+    }
 
 }

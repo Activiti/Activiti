@@ -7,16 +7,16 @@ import java.io.Serializable;
  */
 public class ValueBean implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  private final String value;
+    private static final long serialVersionUID = 1L;
 
-  public ValueBean(String value) {
-    this.value = value;
-  }
+    private final String value;
 
-  public String getValue() {
-    return value;
-  }
+    public ValueBean(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 
 }

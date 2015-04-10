@@ -25,22 +25,22 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public class VariableRendererConfigurer implements InitializingBean, Serializable {
 
-  private VariableRenderer renderer;
-  private VariableRendererManager variableRendererManager;
-  
-  public void afterPropertiesSet() throws Exception {
-    if(variableRendererManager != null && renderer != null) {
-      variableRendererManager.addVariableRenderer(renderer);
-    } else {
-      throw new IllegalStateException("Both renderer and variableRenderManager should be set");
+    private VariableRenderer renderer;
+    private VariableRendererManager variableRendererManager;
+
+    public void afterPropertiesSet() throws Exception {
+        if (variableRendererManager != null && renderer != null) {
+            variableRendererManager.addVariableRenderer(renderer);
+        } else {
+            throw new IllegalStateException("Both renderer and variableRenderManager should be set");
+        }
     }
-  }
-  
-  public void setRenderer(VariableRenderer renderer) {
-    this.renderer = renderer;
-  }
-  
-  public void setVariableRendererManager(VariableRendererManager variableRendererManager) {
-    this.variableRendererManager = variableRendererManager;
-  }
+
+    public void setRenderer(VariableRenderer renderer) {
+        this.renderer = renderer;
+    }
+
+    public void setVariableRendererManager(VariableRendererManager variableRendererManager) {
+        this.variableRendererManager = variableRendererManager;
+    }
 }

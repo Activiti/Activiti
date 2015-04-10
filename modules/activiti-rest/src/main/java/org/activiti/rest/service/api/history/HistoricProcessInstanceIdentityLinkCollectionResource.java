@@ -27,28 +27,27 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Tijs Rademakers
  */
 @RestController
 public class HistoricProcessInstanceIdentityLinkCollectionResource {
 
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected HistoryService historyService;
-  
-  @RequestMapping(value="/history/historic-process-instances/{processInstanceId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
-  public List<HistoricIdentityLinkResponse> getProcessIdentityLinks(@PathVariable String processInstanceId, HttpServletRequest request) {
-    
-    List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
-    
-    if (identityLinks != null) {
-      return restResponseFactory.createHistoricIdentityLinkResponseList(identityLinks);
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected HistoryService historyService;
+
+    @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
+    public List<HistoricIdentityLinkResponse> getProcessIdentityLinks(@PathVariable String processInstanceId, HttpServletRequest request) {
+
+        List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForProcessInstance(processInstanceId);
+
+        if (identityLinks != null) {
+            return restResponseFactory.createHistoricIdentityLinkResponseList(identityLinks);
+        }
+
+        return new ArrayList<HistoricIdentityLinkResponse>();
     }
-    
-    return new ArrayList<HistoricIdentityLinkResponse>();
-  }
 }

@@ -21,21 +21,20 @@ import org.activiti.explorer.navigation.UriFragment;
  */
 public class AdministrationNavigator extends ManagementNavigator {
 
- public static final String MANAGEMENT_URI_PART = "admin_management";
-  
-  public String getTrigger() {
-    return MANAGEMENT_URI_PART;
-  }
-  
-  public void handleManagementNavigation(UriFragment uriFragment) {
-    String managementId = uriFragment.getUriPart(1);
-    
-    if(managementId != null) {
-      ExplorerApp.get().getViewManager().showAdministrationPage(managementId);
-    } else {
-      ExplorerApp.get().getViewManager().showAdministrationPage();
-    }
-  }
+    public static final String MANAGEMENT_URI_PART = "admin_management";
 
+    public String getTrigger() {
+        return MANAGEMENT_URI_PART;
+    }
+
+    public void handleManagementNavigation(UriFragment uriFragment) {
+        String managementId = uriFragment.getUriPart(1);
+
+        if (managementId != null) {
+            ExplorerApp.get().getViewManager().showAdministrationPage(managementId);
+        } else {
+            ExplorerApp.get().getViewManager().showAdministrationPage();
+        }
+    }
 
 }

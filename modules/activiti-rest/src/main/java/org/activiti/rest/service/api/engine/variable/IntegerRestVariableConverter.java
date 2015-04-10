@@ -15,43 +15,42 @@ package org.activiti.rest.service.api.engine.variable;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
-
 /**
  * @author Frederik Heremans
  */
 public class IntegerRestVariableConverter implements RestVariableConverter {
 
-  @Override
-  public String getRestTypeName() {
-    return "integer";
-  }
-
-  @Override
-  public Class< ? > getVariableType() {
-    return Integer.class;
-  }
-
-  @Override
-  public Object getVariableValue(RestVariable result) {
-    if(result.getValue() != null) {
-      if(!(result.getValue() instanceof Number)) {
-        throw new ActivitiIllegalArgumentException("Converter can only convert integers");
-      }
-      return ((Number) result.getValue()).intValue();
+    @Override
+    public String getRestTypeName() {
+        return "integer";
     }
-    return null;
-  }
 
-  @Override
-  public void convertVariableValue(Object variableValue, RestVariable result) {
-    if(variableValue != null) {
-      if(!(variableValue instanceof Integer)) {
-        throw new ActivitiIllegalArgumentException("Converter can only convert integers");
-      }
-      result.setValue(variableValue);
-    } else {
-      result.setValue(null);
+    @Override
+    public Class<?> getVariableType() {
+        return Integer.class;
     }
-  }
+
+    @Override
+    public Object getVariableValue(RestVariable result) {
+        if (result.getValue() != null) {
+            if (!(result.getValue() instanceof Number)) {
+                throw new ActivitiIllegalArgumentException("Converter can only convert integers");
+            }
+            return ((Number) result.getValue()).intValue();
+        }
+        return null;
+    }
+
+    @Override
+    public void convertVariableValue(Object variableValue, RestVariable result) {
+        if (variableValue != null) {
+            if (!(variableValue instanceof Integer)) {
+                throw new ActivitiIllegalArgumentException("Converter can only convert integers");
+            }
+            result.setValue(variableValue);
+        } else {
+            result.setValue(null);
+        }
+    }
 
 }

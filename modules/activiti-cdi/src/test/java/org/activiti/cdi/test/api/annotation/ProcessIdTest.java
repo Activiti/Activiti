@@ -27,11 +27,11 @@ import org.junit.runner.RunWith;
 @RunWith(Arquillian.class)
 public class ProcessIdTest extends CdiActivitiTestCase {
 
-  @Test
-  @Deployment
-  public void testProcessIdInjectable() {
-    getBeanInstance(BusinessProcess.class).startProcessByKey("keyOfTheProcess");    
-    Assert.assertNotNull(getBeanInstance("processInstanceId"));
-  }
-  
+    @Test
+    @Deployment
+    public void testProcessIdInjectable() {
+        getBeanInstance(BusinessProcess.class).startProcessByKey("keyOfTheProcess");
+        Assert.assertNotNull(getBeanInstance("processInstanceId"));
+    }
+
 }

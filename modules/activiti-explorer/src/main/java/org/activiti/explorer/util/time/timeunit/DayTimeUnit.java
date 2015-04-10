@@ -16,23 +16,22 @@ package org.activiti.explorer.util.time.timeunit;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.util.time.TimeUnit;
 
-
 /**
  * @author Frederik Heremans
  */
 public class DayTimeUnit implements TimeUnit {
 
-  private static final Long MILLIS_PER_DAY = 86400000L;
-  
-  public Long getNumberOfMillis() {
-    return MILLIS_PER_DAY;
-  }
+    private static final Long MILLIS_PER_DAY = 86400000L;
 
-  public String getMessageKey(Long numberOfUnits) {
-    if(numberOfUnits == 1) {
-      return Messages.TIME_UNIT_DAY;
-    } else {
-      return Messages.TIME_UNIT_DAYS;
+    public Long getNumberOfMillis() {
+        return MILLIS_PER_DAY;
     }
-  }
+
+    public String getMessageKey(Long numberOfUnits) {
+        if (numberOfUnits == 1) {
+            return Messages.TIME_UNIT_DAY;
+        } else {
+            return Messages.TIME_UNIT_DAYS;
+        }
+    }
 }

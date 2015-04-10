@@ -15,17 +15,16 @@ package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.delegate.VariableScope;
 
-
 /**
  * @author Tom Baeyens
  */
 public class VariableScopeResolverFactory implements ResolverFactory {
 
-  public Resolver createResolver(VariableScope variableScope) {
-    if (variableScope!=null) {
-      return new VariableScopeResolver(variableScope);
+    public Resolver createResolver(VariableScope variableScope) {
+        if (variableScope != null) {
+            return new VariableScopeResolver(variableScope);
+        }
+        return null;
     }
-    return null;
-  }
 
 }

@@ -15,8 +15,6 @@ package org.activiti.engine.impl.pvm.delegate;
 
 import org.activiti.engine.delegate.DelegateTask;
 
-
-
 /**
  * @deprecated use org.activiti.engine.delegate.TaskListener instead
  * 
@@ -24,9 +22,9 @@ import org.activiti.engine.delegate.DelegateTask;
  */
 public interface TaskListener {
 
-  String EVENTNAME_CREATE = "create";
-  String EVENTNAME_ASSIGNMENT = "assignment";
-  String EVENTNAME_COMPLETE = "complete";
-  
-  void notify(DelegateTask delegateTask);
+    String EVENTNAME_CREATE = "create";
+    String EVENTNAME_ASSIGNMENT = "assignment";
+    String EVENTNAME_COMPLETE = "complete";
+
+    void notify(DelegateTask delegateTask);
 }

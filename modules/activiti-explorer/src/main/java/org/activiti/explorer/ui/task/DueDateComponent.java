@@ -29,79 +29,76 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.DateField;
 import com.vaadin.ui.Label;
 
-
 /**
  * @author Joram Barrez
  */
 public class DueDateComponent extends CssLayout {
-  
-  
-  private static final long serialVersionUID = 1L;
-  protected Task task;
-  protected I18nManager i18nManager;
-  protected transient TaskService taskService;
-  
-  protected Label dueDateLabel;
-  protected DateField dueDateField;
 
-  public DueDateComponent(final Task task, final I18nManager i18nManager, final TaskService taskService) {
-    this.task = task;
-    this.i18nManager = i18nManager;
-    this.taskService = taskService;
-    
-    setSizeUndefined();
-    initDueDateLabel();
-    initDueDateField();
-    initLayoutClickListener();
-    initDueDateFieldListener();
-  }
-  
-  protected void initDueDateLabel() {
-    dueDateLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_DUEDATE_SHORT),
-            task.getDueDate(), i18nManager.getMessage(Messages.TASK_DUEDATE_UNKNOWN), false);
-    dueDateLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_DUEDATE);
-    dueDateLabel.setSizeUndefined();
-    dueDateLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    addComponent(dueDateLabel);
-  }
-  
-  protected void initDueDateField() {
-    dueDateField = new DateField();
-    if (task.getDueDate() != null) {
-      dueDateField.setValue(task.getDueDate());
-    } else {
-      dueDateField.setValue(new Date());
+    private static final long serialVersionUID = 1L;
+    protected Task task;
+    protected I18nManager i18nManager;
+    protected transient TaskService taskService;
+
+    protected Label dueDateLabel;
+    protected DateField dueDateField;
+
+    public DueDateComponent(final Task task, final I18nManager i18nManager, final TaskService taskService) {
+        this.task = task;
+        this.i18nManager = i18nManager;
+        this.taskService = taskService;
+
+        setSizeUndefined();
+        initDueDateLabel();
+        initDueDateField();
+        initLayoutClickListener();
+        initDueDateFieldListener();
     }
-    dueDateField.setWidth(125, UNITS_PIXELS);
-    dueDateField.setResolution(DateField.RESOLUTION_DAY);
-    dueDateField.setImmediate(true);
-  }
-  
-  protected void initLayoutClickListener() {
-    addListener(new LayoutClickListener() {
-      public void layoutClick(LayoutClickEvent event) {
-        if (event.getClickedComponent() != null && event.getClickedComponent().equals(dueDateLabel)) { 
-          // replace label with textfield
-          replaceComponent(dueDateLabel, dueDateField);
+
+    protected void initDueDateLabel() {
+        dueDateLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_DUEDATE_SHORT), task.getDueDate(), i18nManager.getMessage(Messages.TASK_DUEDATE_UNKNOWN), false);
+        dueDateLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_DUEDATE);
+        dueDateLabel.setSizeUndefined();
+        dueDateLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        addComponent(dueDateLabel);
+    }
+
+    protected void initDueDateField() {
+        dueDateField = new DateField();
+        if (task.getDueDate() != null) {
+            dueDateField.setValue(task.getDueDate());
+        } else {
+            dueDateField.setValue(new Date());
         }
-      }
-    });
-  }
-  
-  protected void initDueDateFieldListener() {
-    dueDateField.addListener(new ValueChangeListener() {
-      public void valueChange(ValueChangeEvent event) {
-        if (dueDateField.getValue() != null) {
-          // save new duedate
-          task.setDueDate((Date) dueDateField.getValue());
-          taskService.saveTask(task);
-          
-          // replace with new label
-          dueDateLabel.setValue(task.getDueDate());
-          replaceComponent(dueDateField, dueDateLabel);
-        }
-      }
-    });
-  }
-  
+        dueDateField.setWidth(125, UNITS_PIXELS);
+        dueDateField.setResolution(DateField.RESOLUTION_DAY);
+        dueDateField.setImmediate(true);
+    }
+
+    protected void initLayoutClickListener() {
+        addListener(new LayoutClickListener() {
+            public void layoutClick(LayoutClickEvent event) {
+                if (event.getClickedComponent() != null && event.getClickedComponent().equals(dueDateLabel)) {
+                    // replace label with textfield
+                    replaceComponent(dueDateLabel, dueDateField);
+                }
+            }
+        });
+    }
+
+    protected void initDueDateFieldListener() {
+        dueDateField.addListener(new ValueChangeListener() {
+            public void valueChange(ValueChangeEvent event) {
+                if (dueDateField.getValue() != null) {
+                    // save new duedate
+                    task.setDueDate((Date) dueDateField.getValue());
+                    taskService.saveTask(task);
+
+                    // replace with new label
+                    dueDateLabel.setValue(task.getDueDate());
+                    replaceComponent(dueDateField, dueDateLabel);
+                }
+            }
+        });
+    }
+
 }

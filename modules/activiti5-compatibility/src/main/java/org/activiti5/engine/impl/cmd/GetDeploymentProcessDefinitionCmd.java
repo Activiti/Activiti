@@ -19,23 +19,19 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinitionEntity>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
-  
-  public GetDeploymentProcessDefinitionCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
 
-  public ProcessDefinitionEntity execute(CommandContext commandContext) {
-    return commandContext
-      .getProcessEngineConfiguration()
-      .getDeploymentManager()
-      .findDeployedProcessDefinitionById(processDefinitionId);
-  }
+    public GetDeploymentProcessDefinitionCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
+
+    public ProcessDefinitionEntity execute(CommandContext commandContext) {
+        return commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+    }
 }

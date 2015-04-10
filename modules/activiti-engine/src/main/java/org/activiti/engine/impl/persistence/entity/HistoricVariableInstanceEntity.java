@@ -32,281 +32,281 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class HistoricVariableInstanceEntity implements ValueFields, HistoricVariableInstance, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String id;
-  protected int revision;
+    protected String id;
+    protected int revision;
 
-  protected String name;
-  protected VariableType variableType;
+    protected String name;
+    protected VariableType variableType;
 
-  protected String processInstanceId;
-  protected String executionId;
-  protected String taskId;
-  
-  protected Date createTime;
-  protected Date lastUpdatedTime;
-  
-  protected Long longValue;
-  protected Double doubleValue;
-  protected String textValue;
-  protected String textValue2;
-  protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
+    protected String processInstanceId;
+    protected String executionId;
+    protected String taskId;
 
-  protected Object cachedValue;
+    protected Date createTime;
+    protected Date lastUpdatedTime;
 
-  // Default constructor for SQL mapping
-  protected HistoricVariableInstanceEntity() {
-  }
+    protected Long longValue;
+    protected Double doubleValue;
+    protected String textValue;
+    protected String textValue2;
+    protected final ByteArrayRef byteArrayRef = new ByteArrayRef();
 
-  public static HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance) {
-    HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity();
-    historicVariableInstance.id = variableInstance.getId();
-    historicVariableInstance.processInstanceId = variableInstance.getProcessInstanceId();
-    historicVariableInstance.executionId = variableInstance.getExecutionId();
-    historicVariableInstance.taskId = variableInstance.getTaskId();
-    historicVariableInstance.revision = variableInstance.getRevision();
-    historicVariableInstance.name = variableInstance.getName();
-    historicVariableInstance.variableType = variableInstance.getType();
-    
-    historicVariableInstance.copyValue(variableInstance);
-    
-    Date time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    historicVariableInstance.setCreateTime(time);
-    historicVariableInstance.setLastUpdatedTime(time);
-    
-    Context.getCommandContext()
-      .getDbSqlSession()
-      .insert(historicVariableInstance);
-    
-    return historicVariableInstance;
-  }
-  
-  public void copyValue(VariableInstanceEntity variableInstance) {
-    this.textValue = variableInstance.getTextValue();
-    this.textValue2 = variableInstance.getTextValue2();
-    this.doubleValue = variableInstance.getDoubleValue();
-    this.longValue = variableInstance.getLongValue();
-    
-    this.variableType = variableInstance.getType();
-    if (variableInstance.getByteArrayValueId()!=null) {
-      setByteArrayValue(variableInstance.getByteArrayValue().getBytes());
+    protected Object cachedValue;
+
+    // Default constructor for SQL mapping
+    protected HistoricVariableInstanceEntity() {
     }
-    
-    this.lastUpdatedTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-  }
 
-  public void delete() {
-    Context
-      .getCommandContext()
-      .getDbSqlSession()
-      .delete(this);
-    
-    byteArrayRef.delete();
-  }
+    public static HistoricVariableInstanceEntity copyAndInsert(VariableInstanceEntity variableInstance) {
+        HistoricVariableInstanceEntity historicVariableInstance = new HistoricVariableInstanceEntity();
+        historicVariableInstance.id = variableInstance.getId();
+        historicVariableInstance.processInstanceId = variableInstance.getProcessInstanceId();
+        historicVariableInstance.executionId = variableInstance.getExecutionId();
+        historicVariableInstance.taskId = variableInstance.getTaskId();
+        historicVariableInstance.revision = variableInstance.getRevision();
+        historicVariableInstance.name = variableInstance.getName();
+        historicVariableInstance.variableType = variableInstance.getType();
 
-  public Object getPersistentState() {
-  	HashMap<String, Object> persistentState = new HashMap<String, Object>();
-  	
-  	persistentState.put("textValue", textValue);
-  	persistentState.put("textValue2", textValue2);
-  	persistentState.put("doubleValue", doubleValue);
-  	persistentState.put("longValue", longValue);
-  	persistentState.put("byteArrayRef", byteArrayRef.getId());
-  	
-  	persistentState.put("createTime", createTime);
-  	persistentState.put("lastUpdatedTime", lastUpdatedTime);
-  	
-  	return persistentState;
-  }
-  
-  public int getRevisionNext() {
-    return revision+1;
-  }
+        historicVariableInstance.copyValue(variableInstance);
 
-  public Object getValue() {
-    if (!variableType.isCachable() || cachedValue == null) {
-      cachedValue = variableType.getValue(this);
+        Date time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+        historicVariableInstance.setCreateTime(time);
+        historicVariableInstance.setLastUpdatedTime(time);
+
+        Context.getCommandContext().getDbSqlSession().insert(historicVariableInstance);
+
+        return historicVariableInstance;
     }
-    return cachedValue;
-  }
-  
-  // byte array value /////////////////////////////////////////////////////////
-  
-  @Override
-  public byte[] getBytes() {
-    return byteArrayRef.getBytes();
-  }
 
-  @Override
-  public void setBytes(byte[] bytes) {
-    byteArrayRef.setValue("hist.var-" + name, bytes);
-  }
-  
-  @Override @Deprecated
-  public ByteArrayEntity getByteArrayValue() {
-    return byteArrayRef.getEntity();
-  }
-  
-  @Override @Deprecated
-  public String getByteArrayValueId() {
-    return byteArrayRef.getId();
-  }
+    public void copyValue(VariableInstanceEntity variableInstance) {
+        this.textValue = variableInstance.getTextValue();
+        this.textValue2 = variableInstance.getTextValue2();
+        this.doubleValue = variableInstance.getDoubleValue();
+        this.longValue = variableInstance.getLongValue();
 
-  @Override @Deprecated
-  public void setByteArrayValue(byte[] bytes) {
-    setBytes(bytes);
-  }
+        this.variableType = variableInstance.getType();
+        if (variableInstance.getByteArrayValueId() != null) {
+            setByteArrayValue(variableInstance.getByteArrayValue().getBytes());
+        }
 
-  // getters and setters //////////////////////////////////////////////////////
-
-  public String getId() {
-    return id;
-  }
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-
-  public String getVariableTypeName() {
-    return (variableType != null ? variableType.getTypeName() : null);
-  }
-
-  public String getVariableName() {
-    return name;
-  }
-
-  public VariableType getVariableType() {
-    return variableType;
-  }
-
-  public int getRevision() {
-    return revision;
-  }
-
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-
-  public String getName() {
-    return name;
-  }
-
-  public Long getLongValue() {
-    return longValue;
-  }
-
-  public void setLongValue(Long longValue) {
-    this.longValue = longValue;
-  }
-
-  public Double getDoubleValue() {
-    return doubleValue;
-  }
-
-  public void setDoubleValue(Double doubleValue) {
-    this.doubleValue = doubleValue;
-  }
-
-  public String getTextValue() {
-    return textValue;
-  }
-
-  public void setTextValue(String textValue) {
-    this.textValue = textValue;
-  }
-
-  public String getTextValue2() {
-    return textValue2;
-  }
-
-  public void setTextValue2(String textValue2) {
-    this.textValue2 = textValue2;
-  }
-
-  public Object getCachedValue() {
-    return cachedValue;
-  }
-
-  public void setCachedValue(Object cachedValue) {
-    this.cachedValue = cachedValue;
-  }
-
-  public void setVariableType(VariableType variableType) {
-    this.variableType = variableType;
-  }
-
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-
-  public String getTaskId() {
-    return taskId;
-  }
-
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
-  
-  public Date getCreateTime() {
-		return createTime;
-	}
-
-	public void setCreateTime(Date createTime) {
-		this.createTime = createTime;
-	}
-
-	public Date getLastUpdatedTime() {
-		return lastUpdatedTime;
-	}
-
-	public void setLastUpdatedTime(Date lastUpdatedTime) {
-		this.lastUpdatedTime = lastUpdatedTime;
-	}
-
-	public String getExecutionId() {
-    return executionId;
-  }
-  
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
-  
-  public Date getTime() {
-    return getCreateTime();
-  }
-
-  // common methods  //////////////////////////////////////////////////////////
-
-  @Override
-  public String toString() {
-    StringBuilder sb = new StringBuilder();
-    sb.append("HistoricVariableInstanceEntity[");
-    sb.append("id=").append(id);
-    sb.append(", name=").append(name);
-    sb.append(", revision=").append(revision);
-    sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
-    if (longValue != null) {
-      sb.append(", longValue=").append(longValue);
+        this.lastUpdatedTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     }
-    if (doubleValue != null) {
-      sb.append(", doubleValue=").append(doubleValue);
+
+    public void delete() {
+        Context.getCommandContext().getDbSqlSession().delete(this);
+
+        byteArrayRef.delete();
     }
-    if (textValue != null) {
-      sb.append(", textValue=").append(StringUtils.abbreviate(textValue, 40));
+
+    public Object getPersistentState() {
+        HashMap<String, Object> persistentState = new HashMap<String, Object>();
+
+        persistentState.put("textValue", textValue);
+        persistentState.put("textValue2", textValue2);
+        persistentState.put("doubleValue", doubleValue);
+        persistentState.put("longValue", longValue);
+        persistentState.put("byteArrayRef", byteArrayRef.getId());
+
+        persistentState.put("createTime", createTime);
+        persistentState.put("lastUpdatedTime", lastUpdatedTime);
+
+        return persistentState;
     }
-    if (textValue2 != null) {
-      sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
+
+    public int getRevisionNext() {
+        return revision + 1;
     }
-    if (byteArrayRef.getId() != null) {
-      sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
+
+    public Object getValue() {
+        if (!variableType.isCachable() || cachedValue == null) {
+            cachedValue = variableType.getValue(this);
+        }
+        return cachedValue;
     }
-    sb.append("]");
-    return sb.toString();
-  }
-  
+
+    // byte array value
+    // /////////////////////////////////////////////////////////
+
+    @Override
+    public byte[] getBytes() {
+        return byteArrayRef.getBytes();
+    }
+
+    @Override
+    public void setBytes(byte[] bytes) {
+        byteArrayRef.setValue("hist.var-" + name, bytes);
+    }
+
+    @Override
+    @Deprecated
+    public ByteArrayEntity getByteArrayValue() {
+        return byteArrayRef.getEntity();
+    }
+
+    @Override
+    @Deprecated
+    public String getByteArrayValueId() {
+        return byteArrayRef.getId();
+    }
+
+    @Override
+    @Deprecated
+    public void setByteArrayValue(byte[] bytes) {
+        setBytes(bytes);
+    }
+
+    // getters and setters
+    // //////////////////////////////////////////////////////
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getVariableTypeName() {
+        return (variableType != null ? variableType.getTypeName() : null);
+    }
+
+    public String getVariableName() {
+        return name;
+    }
+
+    public VariableType getVariableType() {
+        return variableType;
+    }
+
+    public int getRevision() {
+        return revision;
+    }
+
+    public void setRevision(int revision) {
+        this.revision = revision;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Long getLongValue() {
+        return longValue;
+    }
+
+    public void setLongValue(Long longValue) {
+        this.longValue = longValue;
+    }
+
+    public Double getDoubleValue() {
+        return doubleValue;
+    }
+
+    public void setDoubleValue(Double doubleValue) {
+        this.doubleValue = doubleValue;
+    }
+
+    public String getTextValue() {
+        return textValue;
+    }
+
+    public void setTextValue(String textValue) {
+        this.textValue = textValue;
+    }
+
+    public String getTextValue2() {
+        return textValue2;
+    }
+
+    public void setTextValue2(String textValue2) {
+        this.textValue2 = textValue2;
+    }
+
+    public Object getCachedValue() {
+        return cachedValue;
+    }
+
+    public void setCachedValue(Object cachedValue) {
+        this.cachedValue = cachedValue;
+    }
+
+    public void setVariableType(VariableType variableType) {
+        this.variableType = variableType;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public Date getLastUpdatedTime() {
+        return lastUpdatedTime;
+    }
+
+    public void setLastUpdatedTime(Date lastUpdatedTime) {
+        this.lastUpdatedTime = lastUpdatedTime;
+    }
+
+    public String getExecutionId() {
+        return executionId;
+    }
+
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
+    }
+
+    public Date getTime() {
+        return getCreateTime();
+    }
+
+    // common methods //////////////////////////////////////////////////////////
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("HistoricVariableInstanceEntity[");
+        sb.append("id=").append(id);
+        sb.append(", name=").append(name);
+        sb.append(", revision=").append(revision);
+        sb.append(", type=").append(variableType != null ? variableType.getTypeName() : "null");
+        if (longValue != null) {
+            sb.append(", longValue=").append(longValue);
+        }
+        if (doubleValue != null) {
+            sb.append(", doubleValue=").append(doubleValue);
+        }
+        if (textValue != null) {
+            sb.append(", textValue=").append(StringUtils.abbreviate(textValue, 40));
+        }
+        if (textValue2 != null) {
+            sb.append(", textValue2=").append(StringUtils.abbreviate(textValue2, 40));
+        }
+        if (byteArrayRef.getId() != null) {
+            sb.append(", byteArrayValueId=").append(byteArrayRef.getId());
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
 }

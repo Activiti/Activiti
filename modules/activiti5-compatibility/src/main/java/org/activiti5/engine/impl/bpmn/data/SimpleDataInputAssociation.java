@@ -19,31 +19,32 @@ import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * A simple data input association between a source and a target with assignments
+ * A simple data input association between a source and a target with
+ * assignments
  * 
  * @author Esteban Robles Luna
  */
 public class SimpleDataInputAssociation extends AbstractDataAssociation {
-	
-  private static final long serialVersionUID = 1L;
 
-  protected List<Assignment> assignments = new ArrayList<Assignment>();
-  
-  public SimpleDataInputAssociation(Expression sourceExpression, String target) {
-    super(sourceExpression, target);
-  }
+    private static final long serialVersionUID = 1L;
 
-  public SimpleDataInputAssociation(String source, String target) {
-    super(source, target);
-  }
-  
-  public void addAssignment(Assignment assignment) {
-    this.assignments.add(assignment);
-  }
+    protected List<Assignment> assignments = new ArrayList<Assignment>();
 
-  public void evaluate(ActivityExecution execution) {
-    for (Assignment assignment : this.assignments) {
-      assignment.evaluate(execution);
+    public SimpleDataInputAssociation(Expression sourceExpression, String target) {
+        super(sourceExpression, target);
     }
-  }
+
+    public SimpleDataInputAssociation(String source, String target) {
+        super(source, target);
+    }
+
+    public void addAssignment(Assignment assignment) {
+        this.assignments.add(assignment);
+    }
+
+    public void evaluate(ActivityExecution execution) {
+        for (Assignment assignment : this.assignments) {
+            assignment.evaluate(execution);
+        }
+    }
 }

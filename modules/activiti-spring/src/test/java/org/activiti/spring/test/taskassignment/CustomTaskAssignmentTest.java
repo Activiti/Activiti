@@ -17,7 +17,6 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
-
 /**
  * @author Joram Barrez
  */
@@ -38,7 +37,6 @@ public class CustomTaskAssignmentTest extends SpringActivitiTestCase {
         assertEquals(1, taskService.createTaskQuery().taskCandidateUser("gonzo").count());
         assertEquals(0, taskService.createTaskQuery().taskCandidateUser("mispiggy").count());
     }
-
 
     @Deployment
     public void testSetCandidateGroupsThroughSpringService() {

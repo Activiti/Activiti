@@ -21,28 +21,31 @@ import org.activiti5.engine.test.Deployment;
  * @author Joram Barrez
  */
 public class CustomListenerFactoryTest extends ResourceActivitiTestCase {
-  
-  public CustomListenerFactoryTest() {
-    super("org/activiti/standalone/parsing/custom.listenerfactory.activiti.cfg.xml");
-  }
-  
-  // The custom activity factory will change this value
-  public static AtomicInteger COUNTER = new AtomicInteger(0);
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-    COUNTER.set(0);
-  }
-  
-  @Deployment
-  public void testCustomListenerFactory() {
-    int nrOfProcessInstances = 4;
-    for (int i=0; i<nrOfProcessInstances; i++) {
-      runtimeService.startProcessInstanceByKey("oneTaskProcess");
+
+    public CustomListenerFactoryTest() {
+        super("org/activiti/standalone/parsing/custom.listenerfactory.activiti.cfg.xml");
     }
-    
-    assertEquals(nrOfProcessInstances * 100, COUNTER.get()); // Each listener invocation will add 100
-  }
+
+    // The custom activity factory will change this value
+    public static AtomicInteger COUNTER = new AtomicInteger(0);
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
+        COUNTER.set(0);
+    }
+
+    @Deployment
+    public void testCustomListenerFactory() {
+        int nrOfProcessInstances = 4;
+        for (int i = 0; i < nrOfProcessInstances; i++) {
+            runtimeService.startProcessInstanceByKey("oneTaskProcess");
+        }
+
+        assertEquals(nrOfProcessInstances * 100, COUNTER.get()); // Each
+                                                                 // listener
+                                                                 // invocation
+                                                                 // will add 100
+    }
 
 }

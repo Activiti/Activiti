@@ -15,42 +15,41 @@ package org.activiti5.engine.repository;
 
 import java.util.List;
 
-
 /**
  * Stores waypoints of a diagram edge.
- *
+ * 
  * @author Falko Menge
  */
 public class DiagramEdge extends DiagramElement {
 
-  private static final long serialVersionUID = 1L;
-  
-  private List<DiagramEdgeWaypoint> waypoints;
+    private static final long serialVersionUID = 1L;
 
-  public DiagramEdge() {
-  }
+    private List<DiagramEdgeWaypoint> waypoints;
 
-  public DiagramEdge(String id, List<DiagramEdgeWaypoint> waypoints) {
-    super(id);
-    this.waypoints = waypoints;
-  }
+    public DiagramEdge() {
+    }
 
-  @Override
-  public boolean isNode() {
-    return false;
-  }
+    public DiagramEdge(String id, List<DiagramEdgeWaypoint> waypoints) {
+        super(id);
+        this.waypoints = waypoints;
+    }
 
-  @Override
-  public boolean isEdge() {
-    return true;
-  }
+    @Override
+    public boolean isNode() {
+        return false;
+    }
 
-  public List<DiagramEdgeWaypoint> getWaypoints() {
-    return waypoints;
-  }
+    @Override
+    public boolean isEdge() {
+        return true;
+    }
 
-  public void setWaypoints(List<DiagramEdgeWaypoint> waypoints) {
-    this.waypoints = waypoints;
-  }
+    public List<DiagramEdgeWaypoint> getWaypoints() {
+        return waypoints;
+    }
+
+    public void setWaypoints(List<DiagramEdgeWaypoint> waypoints) {
+        this.waypoints = waypoints;
+    }
 
 }

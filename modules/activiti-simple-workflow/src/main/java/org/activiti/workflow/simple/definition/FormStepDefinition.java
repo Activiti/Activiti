@@ -20,9 +20,9 @@ import org.activiti.workflow.simple.definition.form.FormDefinition;
  * @author Frederik Heremans
  */
 public interface FormStepDefinition extends StepDefinition {
-	
-	FormDefinition getForm();
-	
-	void setForm(FormDefinition form);
+
+    FormDefinition getForm();
+
+    void setForm(FormDefinition form);
 
 }

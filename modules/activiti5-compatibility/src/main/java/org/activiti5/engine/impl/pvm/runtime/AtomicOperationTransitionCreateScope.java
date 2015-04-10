@@ -16,36 +16,35 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Tom Baeyens
  */
 public class AtomicOperationTransitionCreateScope implements AtomicOperation {
-  
-  private static Logger log = LoggerFactory.getLogger(AtomicOperationTransitionCreateScope.class);
-  
-  public boolean isAsync(InterpretableExecution execution) {
-    ActivityImpl activity = (ActivityImpl) execution.getActivity();
-    return activity.isAsync();
-  }
 
-  public void execute(InterpretableExecution execution) {
-    InterpretableExecution propagatingExecution = null;
-    ActivityImpl activity = (ActivityImpl) execution.getActivity();
-    if (activity.isScope()) {
-      propagatingExecution = (InterpretableExecution) execution.createExecution();
-      propagatingExecution.setActivity(activity);
-      propagatingExecution.setTransition(execution.getTransition());
-      execution.setTransition(null);
-      execution.setActivity(null);
-      execution.setActive(false);
-      log.debug("create scope: parent {} continues as execution {}", execution, propagatingExecution);
-      propagatingExecution.initialize();
+    private static Logger log = LoggerFactory.getLogger(AtomicOperationTransitionCreateScope.class);
 
-    } else {
-      propagatingExecution = execution;
+    public boolean isAsync(InterpretableExecution execution) {
+        ActivityImpl activity = (ActivityImpl) execution.getActivity();
+        return activity.isAsync();
     }
 
-    propagatingExecution.performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_START);
-  }
+    public void execute(InterpretableExecution execution) {
+        InterpretableExecution propagatingExecution = null;
+        ActivityImpl activity = (ActivityImpl) execution.getActivity();
+        if (activity.isScope()) {
+            propagatingExecution = (InterpretableExecution) execution.createExecution();
+            propagatingExecution.setActivity(activity);
+            propagatingExecution.setTransition(execution.getTransition());
+            execution.setTransition(null);
+            execution.setActivity(null);
+            execution.setActive(false);
+            log.debug("create scope: parent {} continues as execution {}", execution, propagatingExecution);
+            propagatingExecution.initialize();
+
+        } else {
+            propagatingExecution = execution;
+        }
+
+        propagatingExecution.performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_START);
+    }
 }

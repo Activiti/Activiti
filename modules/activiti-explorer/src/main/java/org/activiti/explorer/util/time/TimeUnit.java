@@ -13,19 +13,18 @@
 
 package org.activiti.explorer.util.time;
 
-
 /**
  * @author Frederik Heremans
  */
 public interface TimeUnit {
 
-  /**
-   * Get the message-key to use to represent this time unit.
-   */
-  String getMessageKey(Long numberOfUnits);
-  
-  /**
-   * Get the number of milliseconds a single unit represents.
-   */
-  Long getNumberOfMillis();
+    /**
+     * Get the message-key to use to represent this time unit.
+     */
+    String getMessageKey(Long numberOfUnits);
+
+    /**
+     * Get the number of milliseconds a single unit represents.
+     */
+    Long getNumberOfMillis();
 }

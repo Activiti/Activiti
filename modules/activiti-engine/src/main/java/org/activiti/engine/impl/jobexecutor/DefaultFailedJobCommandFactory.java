@@ -19,11 +19,11 @@ import org.activiti.engine.impl.interceptor.Command;
 /**
  * @author Saeid Mirzaei
  */
-public class DefaultFailedJobCommandFactory implements FailedJobCommandFactory  {
+public class DefaultFailedJobCommandFactory implements FailedJobCommandFactory {
 
-	@Override
-	public Command<Object> getCommand(String jobId, Throwable exception) {
-	  return new JobRetryCmd(jobId, exception);
-	}
+    @Override
+    public Command<Object> getCommand(String jobId, Throwable exception) {
+        return new JobRetryCmd(jobId, exception);
+    }
 
 }

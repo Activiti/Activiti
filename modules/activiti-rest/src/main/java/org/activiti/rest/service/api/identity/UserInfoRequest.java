@@ -16,27 +16,28 @@ package org.activiti.rest.service.api.identity;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
-
 /**
  * @author Frederik Heremans
  */
 public class UserInfoRequest {
 
-  protected String key;
-  protected String value;
-  
-  
-  public void setKey(String key) {
-    this.key = key;
-  }
-  public String getKey() {
-    return key;
-  }
-  @JsonSerialize(include=Inclusion.NON_NULL)
-  public void setValue(String value) {
-    this.value = value;
-  }
-  public String getValue() {
-    return value;
-  }
+    protected String key;
+    protected String value;
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    @JsonSerialize(include = Inclusion.NON_NULL)
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
 }

@@ -30,84 +30,84 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  * @author Joram Barrez
  */
 public class WebServiceActivityBehavior extends AbstractBpmnActivityBehavior {
-  
-  public static final String CURRENT_MESSAGE = "org.activiti.engine.impl.bpmn.CURRENT_MESSAGE";
 
-  protected Operation operation;
-  
-  protected IOSpecification ioSpecification;
-  
-  protected List<AbstractDataAssociation> dataInputAssociations;
+    public static final String CURRENT_MESSAGE = "org.activiti.engine.impl.bpmn.CURRENT_MESSAGE";
 
-  protected List<AbstractDataAssociation> dataOutputAssociations;
+    protected Operation operation;
 
-  public WebServiceActivityBehavior() {
-    this.dataInputAssociations = new ArrayList<AbstractDataAssociation>();
-    this.dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
-  }
-  
-  public void addDataInputAssociation(AbstractDataAssociation dataAssociation) {
-    this.dataInputAssociations.add(dataAssociation);
-  }
-  
-  public void addDataOutputAssociation(AbstractDataAssociation dataAssociation) {
-    this.dataOutputAssociations.add(dataAssociation);
-  }
-  
-  /**
-   * {@inheritDoc}
-   */
-  public void execute(ActivityExecution execution) throws Exception {
-    MessageInstance message;
-    
-    if (ioSpecification != null) {
-      this.ioSpecification.initialize(execution);
-      ItemInstance inputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataInputName());
-      message = new MessageInstance(this.operation.getInMessage(), inputItem);
-    } else {
-      message = this.operation.getInMessage().createInstance();
+    protected IOSpecification ioSpecification;
+
+    protected List<AbstractDataAssociation> dataInputAssociations;
+
+    protected List<AbstractDataAssociation> dataOutputAssociations;
+
+    public WebServiceActivityBehavior() {
+        this.dataInputAssociations = new ArrayList<AbstractDataAssociation>();
+        this.dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
     }
-    
-    execution.setVariable(CURRENT_MESSAGE, message);
-    
-    this.fillMessage(message, execution);
-    
-    MessageInstance receivedMessage = this.operation.sendMessage(message);
 
-    execution.setVariable(CURRENT_MESSAGE, receivedMessage);
-
-    if (ioSpecification != null) {
-      String firstDataOutputName = this.ioSpecification.getFirstDataOutputName();
-      if (firstDataOutputName != null) {
-        ItemInstance outputItem = (ItemInstance) execution.getVariable(firstDataOutputName);
-        outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
-      }
+    public void addDataInputAssociation(AbstractDataAssociation dataAssociation) {
+        this.dataInputAssociations.add(dataAssociation);
     }
-    
-    this.returnMessage(receivedMessage, execution);
-    
-    execution.setVariable(CURRENT_MESSAGE, null);
-    leave(execution);
-  }
-  
-  private void returnMessage(MessageInstance message, ActivityExecution execution) {
-    for (AbstractDataAssociation dataAssociation : this.dataOutputAssociations) {
-      dataAssociation.evaluate(execution);
+
+    public void addDataOutputAssociation(AbstractDataAssociation dataAssociation) {
+        this.dataOutputAssociations.add(dataAssociation);
     }
-  }
 
-  private void fillMessage(MessageInstance message, ActivityExecution execution) {
-    for (AbstractDataAssociation dataAssociation : this.dataInputAssociations) {
-      dataAssociation.evaluate(execution);
+    /**
+     * {@inheritDoc}
+     */
+    public void execute(ActivityExecution execution) throws Exception {
+        MessageInstance message;
+
+        if (ioSpecification != null) {
+            this.ioSpecification.initialize(execution);
+            ItemInstance inputItem = (ItemInstance) execution.getVariable(this.ioSpecification.getFirstDataInputName());
+            message = new MessageInstance(this.operation.getInMessage(), inputItem);
+        } else {
+            message = this.operation.getInMessage().createInstance();
+        }
+
+        execution.setVariable(CURRENT_MESSAGE, message);
+
+        this.fillMessage(message, execution);
+
+        MessageInstance receivedMessage = this.operation.sendMessage(message);
+
+        execution.setVariable(CURRENT_MESSAGE, receivedMessage);
+
+        if (ioSpecification != null) {
+            String firstDataOutputName = this.ioSpecification.getFirstDataOutputName();
+            if (firstDataOutputName != null) {
+                ItemInstance outputItem = (ItemInstance) execution.getVariable(firstDataOutputName);
+                outputItem.getStructureInstance().loadFrom(receivedMessage.getStructureInstance().toArray());
+            }
+        }
+
+        this.returnMessage(receivedMessage, execution);
+
+        execution.setVariable(CURRENT_MESSAGE, null);
+        leave(execution);
     }
-  }
 
-  public void setIoSpecification(IOSpecification ioSpecification) {
-    this.ioSpecification = ioSpecification;
-  }
+    private void returnMessage(MessageInstance message, ActivityExecution execution) {
+        for (AbstractDataAssociation dataAssociation : this.dataOutputAssociations) {
+            dataAssociation.evaluate(execution);
+        }
+    }
 
-  public void setOperation(Operation operation) {
-    this.operation = operation;
-  }
-  
+    private void fillMessage(MessageInstance message, ActivityExecution execution) {
+        for (AbstractDataAssociation dataAssociation : this.dataInputAssociations) {
+            dataAssociation.evaluate(execution);
+        }
+    }
+
+    public void setIoSpecification(IOSpecification ioSpecification) {
+        this.ioSpecification = ioSpecification;
+    }
+
+    public void setOperation(Operation operation) {
+        this.operation = operation;
+    }
+
 }

@@ -20,26 +20,23 @@ import org.activiti.engine.identity.User;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public class CreateUserCmd implements Command<User>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String userId;
-  
-  public CreateUserCmd(String userId) {
-    if(userId == null) {
-      throw new ActivitiIllegalArgumentException("userId is null");
-    }
-    this.userId = userId;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public User execute(CommandContext commandContext) {
-    return commandContext
-      .getUserIdentityManager()
-      .createNewUser(userId);
-  }
+    protected String userId;
+
+    public CreateUserCmd(String userId) {
+        if (userId == null) {
+            throw new ActivitiIllegalArgumentException("userId is null");
+        }
+        this.userId = userId;
+    }
+
+    public User execute(CommandContext commandContext) {
+        return commandContext.getUserIdentityManager().createNewUser(userId);
+    }
 }

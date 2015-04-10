@@ -17,42 +17,40 @@ import javax.naming.directory.InitialDirContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Internal class used to simplify ldap calls by wrapping the
- * actual ldap logic in a {@link LDAPCallBack}.
+ * Internal class used to simplify ldap calls by wrapping the actual ldap logic
+ * in a {@link LDAPCallBack}.
  * 
  * @author Joram Barrez
  */
 public class LDAPTemplate {
-  
-  private static final Logger LOGGER = LoggerFactory.getLogger(LDAPTemplate.class);
-  
-  protected LDAPConfigurator ldapConfigurator;
-  
-  public LDAPTemplate(LDAPConfigurator ldapConfigurator) {
-    this.ldapConfigurator = ldapConfigurator;
-  }
-  
-  public <T> T execute(LDAPCallBack<T> ldapCallBack) {
-    InitialDirContext initialDirContext = null;
-    try {
-      initialDirContext = LDAPConnectionUtil.creatDirectoryContext(ldapConfigurator);
-    } catch (Exception e) {
-      LOGGER.info("Could not create LDAP connection : " + e.getMessage(), e);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LDAPTemplate.class);
+
+    protected LDAPConfigurator ldapConfigurator;
+
+    public LDAPTemplate(LDAPConfigurator ldapConfigurator) {
+        this.ldapConfigurator = ldapConfigurator;
     }
-    T result = ldapCallBack.executeInContext(initialDirContext);
-    LDAPConnectionUtil.closeDirectoryContext(initialDirContext);
-    return result;
-  }
 
-  
-  public LDAPConfigurator getLdapConfigurator() {
-    return ldapConfigurator;
-  }
+    public <T> T execute(LDAPCallBack<T> ldapCallBack) {
+        InitialDirContext initialDirContext = null;
+        try {
+            initialDirContext = LDAPConnectionUtil.creatDirectoryContext(ldapConfigurator);
+        } catch (Exception e) {
+            LOGGER.info("Could not create LDAP connection : " + e.getMessage(), e);
+        }
+        T result = ldapCallBack.executeInContext(initialDirContext);
+        LDAPConnectionUtil.closeDirectoryContext(initialDirContext);
+        return result;
+    }
 
-  public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
-    this.ldapConfigurator = ldapConfigurator;
-  }
+    public LDAPConfigurator getLdapConfigurator() {
+        return ldapConfigurator;
+    }
+
+    public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
+        this.ldapConfigurator = ldapConfigurator;
+    }
 
 }

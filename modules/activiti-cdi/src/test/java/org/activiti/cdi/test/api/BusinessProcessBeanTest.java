@@ -29,90 +29,89 @@ import org.junit.Test;
  */
 public class BusinessProcessBeanTest extends CdiActivitiTestCase {
 
-  /* General test asserting that the business process bean is functional */
-  @Test
-  @Deployment
-  public void test() throws Exception {
+    /* General test asserting that the business process bean is functional */
+    @Test
+    @Deployment
+    public void test() throws Exception {
 
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
-    // start the process
-    businessProcess.startProcessByKey("businessProcessBeanTest").getId();
+        // start the process
+        businessProcess.startProcessByKey("businessProcessBeanTest").getId();
 
-    // ensure that the process is started:
-    assertNotNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
+        // ensure that the process is started:
+        assertNotNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
 
-    // ensure that there is a single task waiting
-    Task task = processEngine.getTaskService().createTaskQuery().singleResult();
-    assertNotNull(task);
+        // ensure that there is a single task waiting
+        Task task = processEngine.getTaskService().createTaskQuery().singleResult();
+        assertNotNull(task);
 
-    String value = "value";
-    businessProcess.setVariable("key", value);
-    assertEquals(value, businessProcess.getVariable("key"));
+        String value = "value";
+        businessProcess.setVariable("key", value);
+        assertEquals(value, businessProcess.getVariable("key"));
 
-    // complete the task
-    assertEquals(task.getId(), businessProcess.startTask(task.getId()).getId());
-    businessProcess.completeTask();
+        // complete the task
+        assertEquals(task.getId(), businessProcess.startTask(task.getId()).getId());
+        businessProcess.completeTask();
 
-    // assert the task is completed
-    assertNull(processEngine.getTaskService().createTaskQuery().singleResult());
+        // assert the task is completed
+        assertNull(processEngine.getTaskService().createTaskQuery().singleResult());
 
-    // assert that the process is ended:
-    assertNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
+        // assert that the process is ended:
+        assertNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
 
-  }
-  
-  @Test
-  @Deployment
-  public void testProcessWithoutWaitState() {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+    }
 
-    // start the process
-    businessProcess.startProcessByKey("businessProcessBeanTest").getId();
+    @Test
+    @Deployment
+    public void testProcessWithoutWaitState() {
+        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
-    // assert that the process is ended:
-    assertNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
-  }
+        // start the process
+        businessProcess.startProcessByKey("businessProcessBeanTest").getId();
 
-  @Test
-  @Deployment(resources = "org/activiti/cdi/test/api/BusinessProcessBeanTest.test.bpmn20.xml")
-  public void testResolveProcessInstanceBean() {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+        // assert that the process is ended:
+        assertNull(processEngine.getRuntimeService().createProcessInstanceQuery().singleResult());
+    }
 
-    assertNull(getBeanInstance(ProcessInstance.class));
-    assertNull(getBeanInstance("processInstanceId"));
-    assertNull(getBeanInstance(Execution.class));
-    assertNull(getBeanInstance("executionId"));
+    @Test
+    @Deployment(resources = "org/activiti/cdi/test/api/BusinessProcessBeanTest.test.bpmn20.xml")
+    public void testResolveProcessInstanceBean() {
+        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
-    String pid = businessProcess.startProcessByKey("businessProcessBeanTest").getId();
+        assertNull(getBeanInstance(ProcessInstance.class));
+        assertNull(getBeanInstance("processInstanceId"));
+        assertNull(getBeanInstance(Execution.class));
+        assertNull(getBeanInstance("executionId"));
 
-    // assert that now we can resolve the ProcessInstance-bean
-    assertEquals(pid, getBeanInstance(ProcessInstance.class).getId());
-    assertEquals(pid, getBeanInstance("processInstanceId"));
-    assertEquals(pid, getBeanInstance(Execution.class).getId());
-    assertEquals(pid, getBeanInstance("executionId"));
+        String pid = businessProcess.startProcessByKey("businessProcessBeanTest").getId();
 
-    taskService.complete(taskService.createTaskQuery().singleResult().getId());
-  }
+        // assert that now we can resolve the ProcessInstance-bean
+        assertEquals(pid, getBeanInstance(ProcessInstance.class).getId());
+        assertEquals(pid, getBeanInstance("processInstanceId"));
+        assertEquals(pid, getBeanInstance(Execution.class).getId());
+        assertEquals(pid, getBeanInstance("executionId"));
 
-  @Test
-  @Deployment(resources = "org/activiti/cdi/test/api/BusinessProcessBeanTest.test.bpmn20.xml")
-  public void testResolveTaskBean() {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+        taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    }
 
-    assertNull(getBeanInstance(Task.class));
-    assertNull(getBeanInstance("taskId"));
-    
+    @Test
+    @Deployment(resources = "org/activiti/cdi/test/api/BusinessProcessBeanTest.test.bpmn20.xml")
+    public void testResolveTaskBean() {
+        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
-    businessProcess.startProcessByKey("businessProcessBeanTest");
-    String taskId = taskService.createTaskQuery().singleResult().getId();
-    
-    businessProcess.startTask(taskId);
+        assertNull(getBeanInstance(Task.class));
+        assertNull(getBeanInstance("taskId"));
 
-    // assert that now we can resolve the Task-bean
-    assertEquals(taskId, getBeanInstance(Task.class).getId());
-    assertEquals(taskId, getBeanInstance("taskId"));
+        businessProcess.startProcessByKey("businessProcessBeanTest");
+        String taskId = taskService.createTaskQuery().singleResult().getId();
 
-    taskService.complete(taskService.createTaskQuery().singleResult().getId());
-  }
+        businessProcess.startTask(taskId);
+
+        // assert that now we can resolve the Task-bean
+        assertEquals(taskId, getBeanInstance(Task.class).getId());
+        assertEquals(taskId, getBeanInstance("taskId"));
+
+        taskService.complete(taskService.createTaskQuery().singleResult().getId());
+    }
 }

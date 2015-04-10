@@ -30,66 +30,65 @@ import org.activiti.explorer.util.UriUtility;
  */
 public class UriFragment implements Serializable {
 
-  private List<String> uriParts;
-  private Map<String, String> parameters;
+    private List<String> uriParts;
+    private Map<String, String> parameters;
 
-  public UriFragment(String fragment) {
-    // Extract fragment parts
-    String fragmentUri = UriUtility.extractUri(fragment);
-    uriParts = UriUtility.getFragmentParts(fragmentUri);
+    public UriFragment(String fragment) {
+        // Extract fragment parts
+        String fragmentUri = UriUtility.extractUri(fragment);
+        uriParts = UriUtility.getFragmentParts(fragmentUri);
 
-    // Extract parameters
-    String queryString = UriUtility.extractQueryString(fragment);
-    parameters = UriUtility.parseQueryParameters(queryString, null);
-  }
-
-  public UriFragment(List<String> uriParts, Map<String, String> parameters) {
-    this.uriParts = uriParts;
-    this.parameters = parameters;
-  }
-  
-  public UriFragment(Map<String, String> parameters, String... uriParts) {
-    this.uriParts = new ArrayList<String>(Arrays.asList(uriParts));
-    this.parameters = parameters;
-  }
-  
-  public UriFragment(String... uriParts) {
-    this(new LinkedHashMap<String, String>(), uriParts);
-  }
-  
-  public void addParameter(String name, String value) {
-    parameters.put(name, value);
-  }
-  
-  public void addUriPart(String part) {
-    uriParts.add(part);
-  }
-
-  public List<String> getUriParts() {
-    return uriParts;
-  }
-
-  public Map<String, String> getParameters() {
-    return parameters;
-  }
-
-  
-  public String getParameter(String name) {
-    if (parameters != null) {
-      return parameters.get(name);
+        // Extract parameters
+        String queryString = UriUtility.extractQueryString(fragment);
+        parameters = UriUtility.parseQueryParameters(queryString, null);
     }
-    return null;
-  }
 
-  public String getUriPart(int index) {
-    if (index >= 0 && index < uriParts.size()) {
-      return uriParts.get(index);
+    public UriFragment(List<String> uriParts, Map<String, String> parameters) {
+        this.uriParts = uriParts;
+        this.parameters = parameters;
     }
-    return null;
-  }
 
-  @Override
-  public String toString() {
-    return UriUtility.getPath(uriParts) + UriUtility.getQueryString(parameters);
-  }
+    public UriFragment(Map<String, String> parameters, String... uriParts) {
+        this.uriParts = new ArrayList<String>(Arrays.asList(uriParts));
+        this.parameters = parameters;
+    }
+
+    public UriFragment(String... uriParts) {
+        this(new LinkedHashMap<String, String>(), uriParts);
+    }
+
+    public void addParameter(String name, String value) {
+        parameters.put(name, value);
+    }
+
+    public void addUriPart(String part) {
+        uriParts.add(part);
+    }
+
+    public List<String> getUriParts() {
+        return uriParts;
+    }
+
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public String getParameter(String name) {
+        if (parameters != null) {
+            return parameters.get(name);
+        }
+        return null;
+    }
+
+    public String getUriPart(int index) {
+        if (index >= 0 && index < uriParts.size()) {
+            return uriParts.get(index);
+        }
+        return null;
+    }
+
+    @Override
+    public String toString() {
+        return UriUtility.getPath(uriParts) + UriUtility.getQueryString(parameters);
+    }
 }

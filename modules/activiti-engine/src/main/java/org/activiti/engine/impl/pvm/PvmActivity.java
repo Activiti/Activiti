@@ -15,21 +15,20 @@ package org.activiti.engine.impl.pvm;
 
 import java.util.List;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface PvmActivity extends PvmScope {
-  
-  boolean isAsync();
-  
-  boolean isExclusive();
 
-  PvmScope getParent();
+    boolean isAsync();
 
-  List<PvmTransition> getIncomingTransitions();
+    boolean isExclusive();
 
-  List<PvmTransition> getOutgoingTransitions();
-  
-  PvmTransition findOutgoingTransition(String transitionId);
+    PvmScope getParent();
+
+    List<PvmTransition> getIncomingTransitions();
+
+    List<PvmTransition> getOutgoingTransitions();
+
+    PvmTransition findOutgoingTransition(String transitionId);
 }

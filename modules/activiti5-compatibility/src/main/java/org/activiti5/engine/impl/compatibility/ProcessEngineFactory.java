@@ -17,27 +17,27 @@ import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 
 public class ProcessEngineFactory {
-	
-	/**
-	 * Takes in an Activiti 6 process engine config, spits out an Activiti 5 Process engine.
-	 */
-	public static ProcessEngine buildProcessEngine(org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl activiti6Configuration) {
-		
-		// TODO: jta/spring/custom type
-		
-		ProcessEngineConfigurationImpl activiti5Configuration = null;
-		if (activiti6Configuration instanceof org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration) {
-			activiti5Configuration = new StandaloneProcessEngineConfiguration();
-			
-			activiti5Configuration.setDataSource(activiti6Configuration.getDataSource());
-			
-			
-		} else {
-			throw new RuntimeException("Unsupported process engine configuration");
-		}
-		
-		return activiti5Configuration.buildProcessEngine();
-		
-	}
+
+    /**
+     * Takes in an Activiti 6 process engine config, spits out an Activiti 5
+     * Process engine.
+     */
+    public static ProcessEngine buildProcessEngine(org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl activiti6Configuration) {
+
+        // TODO: jta/spring/custom type
+
+        ProcessEngineConfigurationImpl activiti5Configuration = null;
+        if (activiti6Configuration instanceof org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration) {
+            activiti5Configuration = new StandaloneProcessEngineConfiguration();
+
+            activiti5Configuration.setDataSource(activiti6Configuration.getDataSource());
+
+        } else {
+            throw new RuntimeException("Unsupported process engine configuration");
+        }
+
+        return activiti5Configuration.buildProcessEngine();
+
+    }
 
 }

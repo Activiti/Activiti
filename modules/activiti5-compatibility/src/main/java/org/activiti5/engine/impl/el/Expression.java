@@ -15,16 +15,15 @@ package org.activiti5.engine.impl.el;
 
 import org.activiti5.engine.delegate.VariableScope;
 
-
 /**
  * @author Frederik Heremans
  */
 public interface Expression extends org.activiti5.engine.delegate.Expression {
 
-   Object getValue(VariableScope variableScope);
-   
-   void setValue(Object value, VariableScope variableScope);
-   
-   String getExpressionText();
-   
+    Object getValue(VariableScope variableScope);
+
+    void setValue(Object value, VariableScope variableScope);
+
+    String getExpressionText();
+
 }

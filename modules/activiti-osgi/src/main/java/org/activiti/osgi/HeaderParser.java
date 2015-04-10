@@ -25,15 +25,16 @@ import java.util.Map;
 
 /**
  * Utility class to parse a standard OSGi header with paths.
- *
+ * 
  * @version $Rev$, $Date$
  */
-public class HeaderParser  {
+public class HeaderParser {
 
     /**
      * Parse a given OSGi header into a list of paths
-     *
-     * @param header the OSGi header to parse
+     * 
+     * @param header
+     *            the OSGi header to parse
      * @return the list of paths extracted from this header
      */
     public static List<PathElement> parseHeader(String header) {

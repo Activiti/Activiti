@@ -31,32 +31,32 @@ import org.activiti.engine.ProcessEngines;
  * @author Daniel Meyer
  */
 public class LocalProcessEngineLookup implements org.activiti.cdi.spi.ProcessEngineLookup {
-  
-  public int getPrecedence() {
-    return 10;
-  }
 
-  protected String processEngineName = ProcessEngines.NAME_DEFAULT;
-
-  @Override
-  public ProcessEngine getProcessEngine() {
-    return ProcessEngines.getProcessEngine(getProcessEngineName());
-  }
-
-  public String getProcessEngineName() {
-    return processEngineName;
-  }
-
-  public void setProcessEngineName(String processEngineName) {
-    this.processEngineName = processEngineName;
-  }
-
-  @Override
-  public void ungetProcessEngine() {
-    try {
-      ProcessEngines.getProcessEngine(getProcessEngineName()).close();
-    } catch (Exception e) {
-      throw new ActivitiException("Unable to close the local ProcessEngine", e);
+    public int getPrecedence() {
+        return 10;
     }
-  }
+
+    protected String processEngineName = ProcessEngines.NAME_DEFAULT;
+
+    @Override
+    public ProcessEngine getProcessEngine() {
+        return ProcessEngines.getProcessEngine(getProcessEngineName());
+    }
+
+    public String getProcessEngineName() {
+        return processEngineName;
+    }
+
+    public void setProcessEngineName(String processEngineName) {
+        this.processEngineName = processEngineName;
+    }
+
+    @Override
+    public void ungetProcessEngine() {
+        try {
+            ProcessEngines.getProcessEngine(getProcessEngineName()).close();
+        } catch (Exception e) {
+            throw new ActivitiException("Unable to close the local ProcessEngine", e);
+        }
+    }
 }

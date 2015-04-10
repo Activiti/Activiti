@@ -25,11 +25,11 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class BusinessKeyProducer {
 
-  @Produces
-  @Named
-  @BusinessKey
-  public String businessKey(ProcessInstance processInstance) {
-    return processInstance.getBusinessKey();
-  }
+    @Produces
+    @Named
+    @BusinessKey
+    public String businessKey(ProcessInstance processInstance) {
+        return processInstance.getBusinessKey();
+    }
 
 }

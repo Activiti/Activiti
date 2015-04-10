@@ -32,77 +32,78 @@ import org.activiti.cdi.BusinessProcess;
  * @author Daniel Meyer
  */
 public class ProcessVariableMap implements Map<String, Object> {
-  
-  @Inject private BusinessProcess businessProcess;
-  
-  @Override
-  public Object get(Object key) {
-    if(key == null) {
-      throw new IllegalArgumentException("This map does not support 'null' keys.");
+
+    @Inject
+    private BusinessProcess businessProcess;
+
+    @Override
+    public Object get(Object key) {
+        if (key == null) {
+            throw new IllegalArgumentException("This map does not support 'null' keys.");
+        }
+        return businessProcess.getVariable(key.toString());
     }
-    return businessProcess.getVariable(key.toString());
-  }
 
-  @Override
-  public Object put(String key, Object value) {
-    if(key == null) {
-      throw new IllegalArgumentException("This map does not support 'null' keys.");
+    @Override
+    public Object put(String key, Object value) {
+        if (key == null) {
+            throw new IllegalArgumentException("This map does not support 'null' keys.");
+        }
+        Object variableBefore = businessProcess.getVariable(key);
+        businessProcess.setVariable(key, value);
+        return variableBefore;
     }
-    Object variableBefore = businessProcess.getVariable(key);
-    businessProcess.setVariable(key, value);
-    return variableBefore;
-  }
-  
-  @Override
-  public void putAll(Map< ? extends String, ? extends Object> m) {
-    for (Map.Entry< ? extends String, ? extends Object> newEntry : m.entrySet()) {
-      businessProcess.setVariable(newEntry.getKey(), newEntry.getValue());      
+
+    @Override
+    public void putAll(Map<? extends String, ? extends Object> m) {
+        for (Map.Entry<? extends String, ? extends Object> newEntry : m.entrySet()) {
+            businessProcess.setVariable(newEntry.getKey(), newEntry.getValue());
+        }
     }
-  }
 
-  @Override
-  public int size() {
-    throw new UnsupportedOperationException(ProcessVariableMap.class.getName()+".size() is not supported.");
-  }
+    @Override
+    public int size() {
+        throw new UnsupportedOperationException(ProcessVariableMap.class.getName() + ".size() is not supported.");
+    }
 
-  @Override
-  public boolean isEmpty() {
-    throw new UnsupportedOperationException(ProcessVariableMap.class.getName()+".isEmpty() is not supported.");
-  }
+    @Override
+    public boolean isEmpty() {
+        throw new UnsupportedOperationException(ProcessVariableMap.class.getName() + ".isEmpty() is not supported.");
+    }
 
-  @Override
-  public boolean containsKey(Object key) {
-    throw new UnsupportedOperationException(ProcessVariableMap.class.getName()+".containsKey() is not supported.");
-  }
+    @Override
+    public boolean containsKey(Object key) {
+        throw new UnsupportedOperationException(ProcessVariableMap.class.getName() + ".containsKey() is not supported.");
+    }
 
-  @Override
-  public boolean containsValue(Object value) {
-    throw new UnsupportedOperationException(ProcessVariableMap.class.getName()+".containsValue() is not supported.");
-  }
+    @Override
+    public boolean containsValue(Object value) {
+        throw new UnsupportedOperationException(ProcessVariableMap.class.getName() + ".containsValue() is not supported.");
+    }
 
-  @Override
-  public Object remove(Object key) {
-    throw new UnsupportedOperationException("ProcessVariableMap.remove is unsupported. Use ProcessVariableMap.put(key, null)");    
-  }
+    @Override
+    public Object remove(Object key) {
+        throw new UnsupportedOperationException("ProcessVariableMap.remove is unsupported. Use ProcessVariableMap.put(key, null)");
+    }
 
-  @Override
-  public void clear() {
-    throw new UnsupportedOperationException(ProcessVariableMap.class.getName()+".clear() is not supported.");
-  }
+    @Override
+    public void clear() {
+        throw new UnsupportedOperationException(ProcessVariableMap.class.getName() + ".clear() is not supported.");
+    }
 
-  @Override
-  public Set<String> keySet() {
-    throw new UnsupportedOperationException(ProcessVariableMap.class.getName()+".keySet() is not supported.");
-  }
+    @Override
+    public Set<String> keySet() {
+        throw new UnsupportedOperationException(ProcessVariableMap.class.getName() + ".keySet() is not supported.");
+    }
 
-  @Override
-  public Collection<Object> values() {
-    throw new UnsupportedOperationException(ProcessVariableMap.class.getName()+".values() is not supported.");
-  }
+    @Override
+    public Collection<Object> values() {
+        throw new UnsupportedOperationException(ProcessVariableMap.class.getName() + ".values() is not supported.");
+    }
 
-  @Override
-  public Set<Map.Entry<String, Object>> entrySet() {
-    throw new UnsupportedOperationException(ProcessVariableMap.class.getName()+".entrySet() is not supported.");
-  }
+    @Override
+    public Set<Map.Entry<String, Object>> entrySet() {
+        throw new UnsupportedOperationException(ProcessVariableMap.class.getName() + ".entrySet() is not supported.");
+    }
 
 }

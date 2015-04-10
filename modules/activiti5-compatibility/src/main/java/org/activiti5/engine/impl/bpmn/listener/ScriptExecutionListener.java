@@ -20,44 +20,44 @@ import org.activiti5.engine.impl.el.Expression;
 import org.activiti5.engine.impl.scripting.ScriptingEngines;
 
 public class ScriptExecutionListener implements ExecutionListener {
-  
-  private static final long serialVersionUID = 1L;
 
-  private Expression script;
+    private static final long serialVersionUID = 1L;
 
-	private Expression language = null;
+    private Expression script;
 
-	private Expression resultVariable = null;
+    private Expression language = null;
 
-	@Override
-  public void notify(DelegateExecution execution) throws Exception {
-    
-		if (script == null) {
-			throw new IllegalArgumentException("The field 'script' should be set on the ExecutionListener");
-		}
+    private Expression resultVariable = null;
 
-		if (language == null) {
-			throw new IllegalArgumentException("The field 'language' should be set on the ExecutionListener");
-		}
+    @Override
+    public void notify(DelegateExecution execution) throws Exception {
 
-		ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+        if (script == null) {
+            throw new IllegalArgumentException("The field 'script' should be set on the ExecutionListener");
+        }
 
-		Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), execution);
+        if (language == null) {
+            throw new IllegalArgumentException("The field 'language' should be set on the ExecutionListener");
+        }
 
-		if (resultVariable != null) {
-		  execution.setVariable(resultVariable.getExpressionText(), result);
-		}
-	}
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
-	public void setScript(Expression script) {
-		this.script = script;
-	}
+        Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), execution);
 
-	public void setLanguage(Expression language) {
-		this.language = language;
-	}
+        if (resultVariable != null) {
+            execution.setVariable(resultVariable.getExpressionText(), result);
+        }
+    }
 
-	public void setResultVariable(Expression resultVariable) {
-		this.resultVariable = resultVariable;
-	}
+    public void setScript(Expression script) {
+        this.script = script;
+    }
+
+    public void setLanguage(Expression language) {
+        this.language = language;
+    }
+
+    public void setResultVariable(Expression resultVariable) {
+        this.resultVariable = resultVariable;
+    }
 }

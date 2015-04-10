@@ -18,25 +18,25 @@ package org.activiti.engine.impl.bpmn.data;
  * @author Esteban Robles Luna
  */
 public class PrimitiveStructureDefinition implements StructureDefinition {
-  
-  protected String id;
-  
-  protected Class<?> primitiveClass;
-  
-  public PrimitiveStructureDefinition(String id, Class<?> primitiveClass) {
-    this.id = id;
-    this.primitiveClass = primitiveClass;
-  }
-  
-  public String getId() {
-    return this.id;
-  }
-  
-  public Class<?> getPrimitiveClass() {
-    return primitiveClass;
-  }
 
-  public StructureInstance createInstance() {
-    return new PrimitiveStructureInstance(this);
-  }
+    protected String id;
+
+    protected Class<?> primitiveClass;
+
+    public PrimitiveStructureDefinition(String id, Class<?> primitiveClass) {
+        this.id = id;
+        this.primitiveClass = primitiveClass;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public Class<?> getPrimitiveClass() {
+        return primitiveClass;
+    }
+
+    public StructureInstance createInstance() {
+        return new PrimitiveStructureInstance(this);
+    }
 }

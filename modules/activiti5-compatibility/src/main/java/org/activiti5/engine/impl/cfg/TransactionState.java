@@ -12,15 +12,11 @@
  */
 package org.activiti5.engine.impl.cfg;
 
-
 /**
  * @author Tom Baeyens
  */
 public enum TransactionState {
 
-  COMMITTED,
-  ROLLED_BACK,
-  COMMITTING,
-  ROLLINGBACK
+    COMMITTED, ROLLED_BACK, COMMITTING, ROLLINGBACK
 
 }

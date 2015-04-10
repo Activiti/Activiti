@@ -59,7 +59,7 @@ public class SingleResourceAutoDeploymentStrategyTest extends AbstractAutoDeploy
 
     @Test
     public void testDeployResources() {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5 };
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         verify(repositoryServiceMock, times(5)).createDeployment();
@@ -77,7 +77,7 @@ public class SingleResourceAutoDeploymentStrategyTest extends AbstractAutoDeploy
 
     @Test
     public void testDeployResourcesNoResources() {
-        final Resource[] resources = new Resource[]{};
+        final Resource[] resources = new Resource[] {};
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         verify(repositoryServiceMock, never()).createDeployment();
@@ -93,7 +93,7 @@ public class SingleResourceAutoDeploymentStrategyTest extends AbstractAutoDeploy
     public void testDeployResourcesIOExceptionYieldsActivitiException() throws Exception {
         when(resourceMock3.getInputStream()).thenThrow(new IOException());
 
-        final Resource[] resources = new Resource[]{resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock3 };
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
     }
 

@@ -16,13 +16,15 @@ package org.activiti5.engine.impl.jobexecutor;
 import java.util.List;
 
 /**
- * <p>Strategy for handling jobs that were acquired but cannot be 
- * executed at this point (queue-size exceeded).</p> 
+ * <p>
+ * Strategy for handling jobs that were acquired but cannot be executed at this
+ * point (queue-size exceeded).
+ * </p>
  * 
  * @author Daniel Meyer
  */
 public interface RejectedJobsHandler {
 
-  public void jobsRejected(JobExecutor jobExecutor, List<String> jobIds);  
-  
+    public void jobsRejected(JobExecutor jobExecutor, List<String> jobIds);
+
 }

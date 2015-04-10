@@ -23,26 +23,26 @@ import org.activiti.engine.delegate.event.ActivitiSignalEvent;
  */
 public class ActivitiMessageEventImpl extends ActivitiActivityEventImpl implements ActivitiMessageEvent {
 
-	protected String messageName;
-	protected Object messageData;
-	
-	public ActivitiMessageEventImpl(ActivitiEventType type) {
-	  super(type);
-  }
-	
-	public void setMessageName(String messageName) {
-	  this.messageName = messageName;
-  }
-	
-	public String getMessageName() {
-	  return messageName;
-  }
-	
-	public void setMessageData(Object messageData) {
-	  this.messageData = messageData;
-  }
-	
-	public Object getMessageData() {
-	  return messageData;
-  }
+    protected String messageName;
+    protected Object messageData;
+
+    public ActivitiMessageEventImpl(ActivitiEventType type) {
+        super(type);
+    }
+
+    public void setMessageName(String messageName) {
+        this.messageName = messageName;
+    }
+
+    public String getMessageName() {
+        return messageName;
+    }
+
+    public void setMessageData(Object messageData) {
+        this.messageData = messageData;
+    }
+
+    public Object getMessageData() {
+        return messageData;
+    }
 }

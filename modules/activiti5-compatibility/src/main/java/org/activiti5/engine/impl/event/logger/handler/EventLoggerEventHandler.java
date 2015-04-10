@@ -12,13 +12,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @author Joram Barrez
  */
 public interface EventLoggerEventHandler {
-	
-	EventLogEntryEntity generateEventLogEntry(CommandContext commandContext);
-	
-	void setEvent(ActivitiEvent event);
-	
-	void setTimeStamp(Date timeStamp);
-	
-	void setObjectMapper(ObjectMapper objectMapper);
-	
+
+    EventLogEntryEntity generateEventLogEntry(CommandContext commandContext);
+
+    void setEvent(ActivitiEvent event);
+
+    void setTimeStamp(Date timeStamp);
+
+    void setObjectMapper(ObjectMapper objectMapper);
+
 }

@@ -31,50 +31,47 @@ import org.activiti5.engine.impl.persistence.entity.SignalEventSubscriptionEntit
  */
 public class SignalThrowingEventListener extends BaseDelegateEventListener {
 
-	protected String signalName;
-	protected boolean processInstanceScope = true;
+    protected String signalName;
+    protected boolean processInstanceScope = true;
 
-	@Override
-	public void onEvent(ActivitiEvent event) {
-		if (isValidEvent(event)) {
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (isValidEvent(event)) {
 
-			if (event.getProcessInstanceId() == null && processInstanceScope) {
-				throw new ActivitiIllegalArgumentException(
-				    "Cannot throw process-instance scoped signal, since the dispatched event is not part of an ongoing process instance");
-			}
+            if (event.getProcessInstanceId() == null && processInstanceScope) {
+                throw new ActivitiIllegalArgumentException("Cannot throw process-instance scoped signal, since the dispatched event is not part of an ongoing process instance");
+            }
 
-			CommandContext commandContext = Context.getCommandContext();
-			List<SignalEventSubscriptionEntity> subscriptionEntities = null;
-			if (processInstanceScope) {
-				subscriptionEntities = commandContext.getEventSubscriptionEntityManager()
-				    .findSignalEventSubscriptionsByProcessInstanceAndEventName(event.getProcessInstanceId(), signalName);
-			} else {
-				String tenantId = null;
-				if (event.getProcessDefinitionId() != null) {
-					ProcessDefinitionEntity processDefinitionEntity = commandContext.getProcessEngineConfiguration()
-							.getDeploymentManager().findDeployedProcessDefinitionById(event.getProcessDefinitionId());
-					tenantId = processDefinitionEntity.getTenantId();
-				}
-				subscriptionEntities = commandContext.getEventSubscriptionEntityManager()
-				    .findSignalEventSubscriptionsByEventName(signalName, tenantId);
-			}
+            CommandContext commandContext = Context.getCommandContext();
+            List<SignalEventSubscriptionEntity> subscriptionEntities = null;
+            if (processInstanceScope) {
+                subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByProcessInstanceAndEventName(event.getProcessInstanceId(), signalName);
+            } else {
+                String tenantId = null;
+                if (event.getProcessDefinitionId() != null) {
+                    ProcessDefinitionEntity processDefinitionEntity = commandContext.getProcessEngineConfiguration().getDeploymentManager()
+                            .findDeployedProcessDefinitionById(event.getProcessDefinitionId());
+                    tenantId = processDefinitionEntity.getTenantId();
+                }
+                subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByEventName(signalName, tenantId);
+            }
 
-			for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
-				signalEventSubscriptionEntity.eventReceived(null, false);
-			}
-		}
-	}
+            for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
+                signalEventSubscriptionEntity.eventReceived(null, false);
+            }
+        }
+    }
 
-	public void setSignalName(String signalName) {
-		this.signalName = signalName;
-	}
+    public void setSignalName(String signalName) {
+        this.signalName = signalName;
+    }
 
-	public void setProcessInstanceScope(boolean processInstanceScope) {
-		this.processInstanceScope = processInstanceScope;
-	}
+    public void setProcessInstanceScope(boolean processInstanceScope) {
+        this.processInstanceScope = processInstanceScope;
+    }
 
-	@Override
-	public boolean isFailOnException() {
-		return true;
-	}
+    @Override
+    public boolean isFailOnException() {
+        return true;
+    }
 }

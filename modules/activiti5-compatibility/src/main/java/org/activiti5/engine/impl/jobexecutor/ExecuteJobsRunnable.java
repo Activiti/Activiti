@@ -28,78 +28,78 @@ import org.slf4j.LoggerFactory;
  */
 public class ExecuteJobsRunnable implements Runnable {
 
-	private static Logger log = LoggerFactory.getLogger(ExecuteJobsRunnable.class);
+    private static Logger log = LoggerFactory.getLogger(ExecuteJobsRunnable.class);
 
-	private JobEntity job;
-	private List<String> jobIds;
-	private JobExecutor jobExecutor;
+    private JobEntity job;
+    private List<String> jobIds;
+    private JobExecutor jobExecutor;
 
-	public ExecuteJobsRunnable(JobExecutor jobExecutor, JobEntity job) {
-		this.jobExecutor = jobExecutor;
-		this.job = job;
-	}
+    public ExecuteJobsRunnable(JobExecutor jobExecutor, JobEntity job) {
+        this.jobExecutor = jobExecutor;
+        this.job = job;
+    }
 
-	public ExecuteJobsRunnable(JobExecutor jobExecutor, List<String> jobIds) {
-		this.jobExecutor = jobExecutor;
-		this.jobIds = jobIds;
-	}
+    public ExecuteJobsRunnable(JobExecutor jobExecutor, List<String> jobIds) {
+        this.jobExecutor = jobExecutor;
+        this.jobIds = jobIds;
+    }
 
-	public void run() {
-		if (jobIds != null) {
-			handleMultipleJobs();
-		}
-		if (job != null) {
-			handleSingleJob();
-		}
-	}
+    public void run() {
+        if (jobIds != null) {
+            handleMultipleJobs();
+        }
+        if (job != null) {
+            handleSingleJob();
+        }
+    }
 
-	protected void handleSingleJob() {
-		final SingleJobExecutorContext jobExecutorContext = new SingleJobExecutorContext();
-		final List<JobEntity> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
-		final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
+    protected void handleSingleJob() {
+        final SingleJobExecutorContext jobExecutorContext = new SingleJobExecutorContext();
+        final List<JobEntity> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
+        final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
 
-		currentProcessorJobQueue.add(job);
+        currentProcessorJobQueue.add(job);
 
-		Context.setJobExecutorContext(jobExecutorContext);
-		try {
-			while (!currentProcessorJobQueue.isEmpty()) {
+        Context.setJobExecutorContext(jobExecutorContext);
+        try {
+            while (!currentProcessorJobQueue.isEmpty()) {
 
-				JobEntity currentJob = currentProcessorJobQueue.remove(0);
-				try {
-					commandExecutor.execute(new ExecuteJobsCmd(currentJob));
-				} catch (Throwable e) {
-					log.error("exception during job execution: {}", e.getMessage(), e);
-				} finally {
-					jobExecutor.jobDone(currentJob);
-				}
-			}
-		} finally {
-			Context.removeJobExecutorContext();
-		}
-	}
+                JobEntity currentJob = currentProcessorJobQueue.remove(0);
+                try {
+                    commandExecutor.execute(new ExecuteJobsCmd(currentJob));
+                } catch (Throwable e) {
+                    log.error("exception during job execution: {}", e.getMessage(), e);
+                } finally {
+                    jobExecutor.jobDone(currentJob);
+                }
+            }
+        } finally {
+            Context.removeJobExecutorContext();
+        }
+    }
 
-	protected void handleMultipleJobs() {
-		final MultipleJobsExecutorContext jobExecutorContext = new MultipleJobsExecutorContext();
-		final List<String> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
-		final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
+    protected void handleMultipleJobs() {
+        final MultipleJobsExecutorContext jobExecutorContext = new MultipleJobsExecutorContext();
+        final List<String> currentProcessorJobQueue = jobExecutorContext.getCurrentProcessorJobQueue();
+        final CommandExecutor commandExecutor = jobExecutor.getCommandExecutor();
 
-		currentProcessorJobQueue.addAll(jobIds);
+        currentProcessorJobQueue.addAll(jobIds);
 
-		Context.setJobExecutorContext(jobExecutorContext);
-		try {
-			while (!currentProcessorJobQueue.isEmpty()) {
+        Context.setJobExecutorContext(jobExecutorContext);
+        try {
+            while (!currentProcessorJobQueue.isEmpty()) {
 
-				String currentJobId = currentProcessorJobQueue.remove(0);
-				try {
-					commandExecutor.execute(new ExecuteJobsCmd(currentJobId));
-				} catch (Throwable e) {
-					log.error("exception during job execution: {}", e.getMessage(), e);
-				} finally {
-					jobExecutor.jobDone(currentJobId);
-				}
-			}
-		} finally {
-			Context.removeJobExecutorContext();
-		}
-	}
+                String currentJobId = currentProcessorJobQueue.remove(0);
+                try {
+                    commandExecutor.execute(new ExecuteJobsCmd(currentJobId));
+                } catch (Throwable e) {
+                    log.error("exception during job execution: {}", e.getMessage(), e);
+                } finally {
+                    jobExecutor.jobDone(currentJobId);
+                }
+            }
+        } finally {
+            Context.removeJobExecutorContext();
+        }
+    }
 }

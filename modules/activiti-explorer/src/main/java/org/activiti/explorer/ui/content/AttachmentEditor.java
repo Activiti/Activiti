@@ -20,33 +20,33 @@ import org.activiti.explorer.I18nManager;
 
 import com.vaadin.terminal.Resource;
 
-
 public interface AttachmentEditor extends Serializable {
-  
-  /**
-   * Get the name of this editor. Only one editor with the same name can e used.
-   * The last one wit the same name added to {@link AttachmentRendererManager} will
-   * be used.
-   */
-  String getName();
-  
-  /**
-   * Gets the human-readable name for the type of related content
-   * this class is capable of rendering.
-   */
-  String getTitle(I18nManager i18nManager);
-    
-  /**
-   * Get the image to display in the list of possible editors.
-   */
-  Resource getImage();
-  
-  /**
-   * Get the component to display to edit the given attachment.
-   * 
-   * @param attachment the attachment to edit. Null if the editor should
-   * create a new attachment when submitted.
-   */
-  AttachmentEditorComponent getEditor(Attachment attachment, String taskId, String processInstanceId);
+
+    /**
+     * Get the name of this editor. Only one editor with the same name can e
+     * used. The last one wit the same name added to
+     * {@link AttachmentRendererManager} will be used.
+     */
+    String getName();
+
+    /**
+     * Gets the human-readable name for the type of related content this class
+     * is capable of rendering.
+     */
+    String getTitle(I18nManager i18nManager);
+
+    /**
+     * Get the image to display in the list of possible editors.
+     */
+    Resource getImage();
+
+    /**
+     * Get the component to display to edit the given attachment.
+     * 
+     * @param attachment
+     *            the attachment to edit. Null if the editor should create a new
+     *            attachment when submitted.
+     */
+    AttachmentEditorComponent getEditor(Attachment attachment, String taskId, String processInstanceId);
 
 }

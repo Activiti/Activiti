@@ -18,36 +18,32 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
-
 /**
  * @author Tom Baeyens
  */
 public class ExecutionContext {
 
-  protected ExecutionEntity execution;
-  
-  public ExecutionContext(InterpretableExecution execution) {
-    this.execution = (ExecutionEntity) execution;
-  }
-  
-  public ExecutionEntity getExecution() {
-    return execution;
-  }
+    protected ExecutionEntity execution;
 
-  public ExecutionEntity getProcessInstance() {
-    return execution.getProcessInstance();
-  }
+    public ExecutionContext(InterpretableExecution execution) {
+        this.execution = (ExecutionEntity) execution;
+    }
 
-  public ProcessDefinitionEntity getProcessDefinition() {
-    return (ProcessDefinitionEntity) execution.getProcessDefinition();
-  }
+    public ExecutionEntity getExecution() {
+        return execution;
+    }
 
-  public DeploymentEntity getDeployment() {
-    String deploymentId = getProcessDefinition().getDeploymentId();
-    DeploymentEntity deployment = Context
-      .getCommandContext()
-      .getDeploymentEntityManager()
-      .findDeploymentById(deploymentId);
-    return deployment;
-  }
+    public ExecutionEntity getProcessInstance() {
+        return execution.getProcessInstance();
+    }
+
+    public ProcessDefinitionEntity getProcessDefinition() {
+        return (ProcessDefinitionEntity) execution.getProcessDefinition();
+    }
+
+    public DeploymentEntity getDeployment() {
+        String deploymentId = getProcessDefinition().getDeploymentId();
+        DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findDeploymentById(deploymentId);
+        return deployment;
+    }
 }

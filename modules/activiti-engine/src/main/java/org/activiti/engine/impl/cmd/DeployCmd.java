@@ -36,149 +36,138 @@ import org.activiti.engine.repository.Deployment;
  */
 public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected DeploymentBuilderImpl deploymentBuilder;
+    private static final long serialVersionUID = 1L;
+    protected DeploymentBuilderImpl deploymentBuilder;
 
-  public DeployCmd(DeploymentBuilderImpl deploymentBuilder) {
-    this.deploymentBuilder = deploymentBuilder;
-  }
-
-  public Deployment execute(CommandContext commandContext) {
-    DeploymentEntity deployment = deploymentBuilder.getDeployment();
-
-    deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
-
-    if ( deploymentBuilder.isDuplicateFilterEnabled() ) {
-    	
-    	List<Deployment> existingDeployments = new ArrayList<Deployment>();
-      if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
-      	DeploymentEntity existingDeployment = commandContext
-     			 .getDeploymentEntityManager()
-     			 .findLatestDeploymentByName(deployment.getName());
-      	if (existingDeployment != null) {
-      		existingDeployments.add(existingDeployment);
-      	}
-      } else {
-      	 List<Deployment> deploymentList = commandContext
-             .getProcessEngineConfiguration().getRepositoryService()
-             .createDeploymentQuery()
-             .deploymentName(deployment.getName())
-             .deploymentTenantId(deployment.getTenantId())
-             .orderByDeploymentId().desc().list();
-      	 
-      	 if (!deploymentList.isEmpty()) {
-      		 existingDeployments.addAll(deploymentList);
-      	 }
-      }
-      		
-      DeploymentEntity existingDeployment = null;
-      if(!existingDeployments.isEmpty()) {
-        existingDeployment = (DeploymentEntity) existingDeployments.get(0);
-      }
-      
-      if ( (existingDeployment!=null)
-           && !deploymentsDiffer(deployment, existingDeployment)) {
-        return existingDeployment;
-      }
+    public DeployCmd(DeploymentBuilderImpl deploymentBuilder) {
+        this.deploymentBuilder = deploymentBuilder;
     }
 
-    deployment.setNew(true);
-    
-    // Save the data
-    commandContext
-      .getDeploymentEntityManager()
-      .insertDeployment(deployment);
-    
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-	    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
-    }
-    
-    // Deployment settings
-    Map<String, Object> deploymentSettings = new HashMap<String, Object>();
-    deploymentSettings.put(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED, deploymentBuilder.isBpmn20XsdValidationEnabled());
-    deploymentSettings.put(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED, deploymentBuilder.isProcessValidationEnabled());
-    
-    // Actually deploy
-    commandContext
-      .getProcessEngineConfiguration()
-      .getDeploymentManager()
-      .deploy(deployment, deploymentSettings);
-    
-    if (deploymentBuilder.getProcessDefinitionsActivationDate() != null) {
-      scheduleProcessDefinitionActivation(commandContext, deployment);
-    }
-    
-    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-	    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-	    		ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, deployment));
-    }
-    
-    return deployment;
-  }
+    public Deployment execute(CommandContext commandContext) {
+        DeploymentEntity deployment = deploymentBuilder.getDeployment();
 
-  protected boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
-    
-    if(deployment.getResources() == null || saved.getResources() == null) {
-      return true;
-    }
-    
-    Map<String, ResourceEntity> resources = deployment.getResources();
-    Map<String, ResourceEntity> savedResources = saved.getResources();
-    
-    for (String resourceName: resources.keySet()) {
-      ResourceEntity savedResource = savedResources.get(resourceName);
-      
-      if(savedResource == null) return true;
-      
-      if(!savedResource.isGenerated()) {
-        ResourceEntity resource = resources.get(resourceName);
-        
-        byte[] bytes = resource.getBytes();
-        byte[] savedBytes = savedResource.getBytes();
-        if (!Arrays.equals(bytes, savedBytes)) {
-          return true;
+        deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+
+        if (deploymentBuilder.isDuplicateFilterEnabled()) {
+
+            List<Deployment> existingDeployments = new ArrayList<Deployment>();
+            if (deployment.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(deployment.getTenantId())) {
+                DeploymentEntity existingDeployment = commandContext.getDeploymentEntityManager().findLatestDeploymentByName(deployment.getName());
+                if (existingDeployment != null) {
+                    existingDeployments.add(existingDeployment);
+                }
+            } else {
+                List<Deployment> deploymentList = commandContext.getProcessEngineConfiguration().getRepositoryService().createDeploymentQuery().deploymentName(deployment.getName())
+                        .deploymentTenantId(deployment.getTenantId()).orderByDeploymentId().desc().list();
+
+                if (!deploymentList.isEmpty()) {
+                    existingDeployments.addAll(deploymentList);
+                }
+            }
+
+            DeploymentEntity existingDeployment = null;
+            if (!existingDeployments.isEmpty()) {
+                existingDeployment = (DeploymentEntity) existingDeployments.get(0);
+            }
+
+            if ((existingDeployment != null) && !deploymentsDiffer(deployment, existingDeployment)) {
+                return existingDeployment;
+            }
         }
-      }
-    }
-    return false;
-  }
-  
-  protected void scheduleProcessDefinitionActivation(CommandContext commandContext, DeploymentEntity deployment) {
-    for (ProcessDefinitionEntity processDefinitionEntity : deployment.getDeployedArtifacts(ProcessDefinitionEntity.class)) {
-      
-      // If activation date is set, we first suspend all the process definition
-      SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = 
-              new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null, deployment.getTenantId());
-      suspendProcessDefinitionCmd.execute(commandContext);
-      
-      // And we schedule an activation at the provided date
-      ActivateProcessDefinitionCmd activateProcessDefinitionCmd =new ActivateProcessDefinitionCmd(
-      		processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate(), deployment.getTenantId());
-      activateProcessDefinitionCmd.execute(commandContext);
-    }
-  }
 
-//  private boolean resourcesDiffer(ByteArrayEntity value, ByteArrayEntity other) {
-//    if (value == null && other == null) {
-//      return false;
-//    }
-//    String bytes = createKey(value.getBytes());
-//    String savedBytes = other == null ? null : createKey(other.getBytes());
-//    return !bytes.equals(savedBytes);
-//  }
-//
-//  private String createKey(byte[] bytes) {
-//    if (bytes == null) {
-//      return "";
-//    }
-//    MessageDigest digest;
-//    try {
-//      digest = MessageDigest.getInstance("MD5");
-//    } catch (NoSuchAlgorithmException e) {
-//      throw new IllegalStateException("MD5 algorithm not available.  Fatal (should be in the JDK).");
-//    }
-//    bytes = digest.digest(bytes);
-//    return String.format("%032x", new BigInteger(1, bytes));
-//  }
+        deployment.setNew(true);
+
+        // Save the data
+        commandContext.getDeploymentEntityManager().insertDeployment(deployment);
+
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, deployment));
+        }
+
+        // Deployment settings
+        Map<String, Object> deploymentSettings = new HashMap<String, Object>();
+        deploymentSettings.put(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED, deploymentBuilder.isBpmn20XsdValidationEnabled());
+        deploymentSettings.put(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED, deploymentBuilder.isProcessValidationEnabled());
+
+        // Actually deploy
+        commandContext.getProcessEngineConfiguration().getDeploymentManager().deploy(deployment, deploymentSettings);
+
+        if (deploymentBuilder.getProcessDefinitionsActivationDate() != null) {
+            scheduleProcessDefinitionActivation(commandContext, deployment);
+        }
+
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, deployment));
+        }
+
+        return deployment;
+    }
+
+    protected boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
+
+        if (deployment.getResources() == null || saved.getResources() == null) {
+            return true;
+        }
+
+        Map<String, ResourceEntity> resources = deployment.getResources();
+        Map<String, ResourceEntity> savedResources = saved.getResources();
+
+        for (String resourceName : resources.keySet()) {
+            ResourceEntity savedResource = savedResources.get(resourceName);
+
+            if (savedResource == null)
+                return true;
+
+            if (!savedResource.isGenerated()) {
+                ResourceEntity resource = resources.get(resourceName);
+
+                byte[] bytes = resource.getBytes();
+                byte[] savedBytes = savedResource.getBytes();
+                if (!Arrays.equals(bytes, savedBytes)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    protected void scheduleProcessDefinitionActivation(CommandContext commandContext, DeploymentEntity deployment) {
+        for (ProcessDefinitionEntity processDefinitionEntity : deployment.getDeployedArtifacts(ProcessDefinitionEntity.class)) {
+
+            // If activation date is set, we first suspend all the process
+            // definition
+            SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = new SuspendProcessDefinitionCmd(processDefinitionEntity, false, null, deployment.getTenantId());
+            suspendProcessDefinitionCmd.execute(commandContext);
+
+            // And we schedule an activation at the provided date
+            ActivateProcessDefinitionCmd activateProcessDefinitionCmd = new ActivateProcessDefinitionCmd(processDefinitionEntity, false, deploymentBuilder.getProcessDefinitionsActivationDate(),
+                    deployment.getTenantId());
+            activateProcessDefinitionCmd.execute(commandContext);
+        }
+    }
+
+    // private boolean resourcesDiffer(ByteArrayEntity value, ByteArrayEntity
+    // other) {
+    // if (value == null && other == null) {
+    // return false;
+    // }
+    // String bytes = createKey(value.getBytes());
+    // String savedBytes = other == null ? null : createKey(other.getBytes());
+    // return !bytes.equals(savedBytes);
+    // }
+    //
+    // private String createKey(byte[] bytes) {
+    // if (bytes == null) {
+    // return "";
+    // }
+    // MessageDigest digest;
+    // try {
+    // digest = MessageDigest.getInstance("MD5");
+    // } catch (NoSuchAlgorithmException e) {
+    // throw new
+    // IllegalStateException("MD5 algorithm not available.  Fatal (should be in the JDK).");
+    // }
+    // bytes = digest.digest(bytes);
+    // return String.format("%032x", new BigInteger(1, bytes));
+    // }
 }

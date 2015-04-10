@@ -22,27 +22,25 @@ import org.activiti.explorer.ui.content.AttachmentEditorComponent;
 
 import com.vaadin.terminal.Resource;
 
-
-
 /**
  * @author Frederik Heremans
  */
 public class UrlAttachmentEditor implements AttachmentEditor {
 
-  public String getName() {
-    return UrlAttachmentRenderer.ATTACHMENT_TYPE;
-  }
+    public String getName() {
+        return UrlAttachmentRenderer.ATTACHMENT_TYPE;
+    }
 
-  public String getTitle(I18nManager i18nManager) {
-    return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL);
-  }
+    public String getTitle(I18nManager i18nManager) {
+        return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL);
+    }
 
-  public Resource getImage() {
-    return Images.RELATED_CONTENT_URL;
-  }
+    public Resource getImage() {
+        return Images.RELATED_CONTENT_URL;
+    }
 
-  public AttachmentEditorComponent getEditor(Attachment attachment, String taskId, String processInstanceId) {
-    return new UrlAttachmentEditorComponent(taskId, processInstanceId);
-  }
- 
+    public AttachmentEditorComponent getEditor(Attachment attachment, String taskId, String processInstanceId) {
+        return new UrlAttachmentEditorComponent(taskId, processInstanceId);
+    }
+
 }

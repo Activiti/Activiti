@@ -14,13 +14,13 @@ public class RestConfiguration {
 
     @Bean()
     public RestResponseFactory restResponseFactory() {
-      RestResponseFactory restResponseFactory = new RestResponseFactory();
-      return restResponseFactory;
+        RestResponseFactory restResponseFactory = new RestResponseFactory();
+        return restResponseFactory;
     }
 
     @Bean()
     public ContentTypeResolver contentTypeResolver() {
-      ContentTypeResolver resolver = new DefaultContentTypeResolver();
-      return resolver;
+        ContentTypeResolver resolver = new DefaultContentTypeResolver();
+        return resolver;
     }
 }

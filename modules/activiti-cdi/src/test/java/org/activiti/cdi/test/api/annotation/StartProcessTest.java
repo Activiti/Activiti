@@ -29,39 +29,39 @@ import static org.junit.Assert.*;
  */
 public class StartProcessTest extends CdiActivitiTestCase {
 
-  @Test
-  @Deployment(resources = "org/activiti/cdi/test/api/annotation/StartProcessTest.bpmn20.xml")
-  public void testStartProcessByKey() {
+    @Test
+    @Deployment(resources = "org/activiti/cdi/test/api/annotation/StartProcessTest.bpmn20.xml")
+    public void testStartProcessByKey() {
 
-    assertNull(runtimeService.createProcessInstanceQuery().singleResult());
+        assertNull(runtimeService.createProcessInstanceQuery().singleResult());
 
-    getBeanInstance(DeclarativeProcessController.class).startProcessByKey();
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+        getBeanInstance(DeclarativeProcessController.class).startProcessByKey();
+        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
-    assertNotNull(runtimeService.createProcessInstanceQuery().singleResult());
+        assertNotNull(runtimeService.createProcessInstanceQuery().singleResult());
 
-    assertEquals("Activiti", businessProcess.getVariable("name"));
-    
-    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
-    businessProcess.completeTask();
-  }
+        assertEquals("Activiti", businessProcess.getVariable("name"));
 
-  @Test
-  @Deployment(resources = "org/activiti/cdi/test/api/annotation/StartProcessTest.bpmn20.xml")
-  public void testStartProcessByName() {
+        businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
+        businessProcess.completeTask();
+    }
 
-    assertNull(runtimeService.createProcessInstanceQuery().singleResult());
+    @Test
+    @Deployment(resources = "org/activiti/cdi/test/api/annotation/StartProcessTest.bpmn20.xml")
+    public void testStartProcessByName() {
 
-    getBeanInstance(DeclarativeProcessController.class).startProcessByName();
+        assertNull(runtimeService.createProcessInstanceQuery().singleResult());
 
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+        getBeanInstance(DeclarativeProcessController.class).startProcessByName();
 
-    assertNotNull(runtimeService.createProcessInstanceQuery().singleResult());
+        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
-    assertEquals("Activiti", businessProcess.getVariable("name"));
+        assertNotNull(runtimeService.createProcessInstanceQuery().singleResult());
 
-    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());  
-    businessProcess.completeTask();
-  }
+        assertEquals("Activiti", businessProcess.getVariable("name"));
+
+        businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
+        businessProcess.completeTask();
+    }
 
 }

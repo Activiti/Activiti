@@ -22,27 +22,25 @@ import org.activiti5.engine.impl.context.Context;
  */
 public class ScriptCondition implements Condition {
 
-  private final String expression;
-  private final String language;
+    private final String expression;
+    private final String language;
 
-  public ScriptCondition(String expression, String language) {
-    this.expression = expression;
-    this.language = language;
-  }
+    public ScriptCondition(String expression, String language) {
+        this.expression = expression;
+        this.language = language;
+    }
 
-  public boolean evaluate(DelegateExecution execution) {
-    ScriptingEngines scriptingEngines = Context
-      .getProcessEngineConfiguration()
-      .getScriptingEngines();
-    
-    Object result = scriptingEngines.evaluate(expression, language, execution);
-    if (result == null) {
-      throw new ActivitiException("condition script returns null: " + expression);
+    public boolean evaluate(DelegateExecution execution) {
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+
+        Object result = scriptingEngines.evaluate(expression, language, execution);
+        if (result == null) {
+            throw new ActivitiException("condition script returns null: " + expression);
+        }
+        if (!(result instanceof Boolean)) {
+            throw new ActivitiException("condition script returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
+        }
+        return (Boolean) result;
     }
-    if (!(result instanceof Boolean)) {
-      throw new ActivitiException("condition script returns non-Boolean: " + result + " (" + result.getClass().getName() + ")");
-    }
-    return (Boolean) result;
-  }
 
 }

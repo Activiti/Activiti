@@ -21,29 +21,25 @@ import org.activiti5.engine.repository.Deployment;
  * @author Joram Barrez
  */
 public class CustomDeploymentCacheTest extends ResourceActivitiTestCase {
-  
-  public CustomDeploymentCacheTest() {
-    super("org/activiti/standalone/deploy/custom.deployment.cache.test.activiti.cfg.xml");
-  }
-  
-  public void testCustomDeploymentCacheUsed() {
-    CustomDeploymentCache customCache = (CustomDeploymentCache)
-              processEngineConfiguration.getProcessDefinitionCache();
-    assertNull(customCache.getCachedProcessDefinition());
 
-    String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile(
-            "/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
-    for (int i = 1; i <= 5; i++) {
-      repositoryService.createDeployment()
-              .addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i))
-              .deploy();
-      assertNotNull(customCache.getCachedProcessDefinition());
+    public CustomDeploymentCacheTest() {
+        super("org/activiti/standalone/deploy/custom.deployment.cache.test.activiti.cfg.xml");
     }
-    
-    // Cleanup
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
+
+    public void testCustomDeploymentCacheUsed() {
+        CustomDeploymentCache customCache = (CustomDeploymentCache) processEngineConfiguration.getProcessDefinitionCache();
+        assertNull(customCache.getCachedProcessDefinition());
+
+        String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile("/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
+        for (int i = 1; i <= 5; i++) {
+            repositoryService.createDeployment().addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i)).deploy();
+            assertNotNull(customCache.getCachedProcessDefinition());
+        }
+
+        // Cleanup
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
     }
-  }
-  
+
 }

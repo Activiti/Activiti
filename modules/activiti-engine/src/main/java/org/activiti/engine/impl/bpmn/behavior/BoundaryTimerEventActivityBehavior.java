@@ -28,25 +28,24 @@ import org.activiti.engine.impl.util.TimerUtil;
 public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBehavior {
 
     private static final long serialVersionUID = 910078083780300028L;
-    
-	protected TimerEventDefinition timerEventDefinition;
 
-	public BoundaryTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition, boolean interrupting) {
-		super(interrupting);
-		this.timerEventDefinition = timerEventDefinition;
-	}
+    protected TimerEventDefinition timerEventDefinition;
 
-	public void execute(ActivityExecution execution) {
+    public BoundaryTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition, boolean interrupting) {
+        super(interrupting);
+        this.timerEventDefinition = timerEventDefinition;
+    }
 
-		ExecutionEntity executionEntity = (ExecutionEntity) execution;
-		if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {
-			throw new ActivitiException("Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event");
-		}
+    public void execute(ActivityExecution execution) {
 
-		TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, 
-				interrupting, executionEntity, TriggerTimerEventJobHandler.TYPE, execution.getCurrentActivityId());
+        ExecutionEntity executionEntity = (ExecutionEntity) execution;
+        if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {
+            throw new ActivitiException("Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event");
+        }
 
-		Context.getCommandContext().getJobEntityManager().schedule(timer);
-	}
+        TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, interrupting, executionEntity, TriggerTimerEventJobHandler.TYPE, execution.getCurrentActivityId());
+
+        Context.getCommandContext().getJobEntityManager().schedule(timer);
+    }
 
 }

@@ -17,7 +17,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.bpmn.parser.Error;
 
-
 /**
  * Special exception that can be used to throw a BPMN Error from
  * {@link JavaDelegate}s and expressions.
@@ -32,37 +31,37 @@ import org.activiti.engine.impl.bpmn.parser.Error;
  * @author Falko Menge
  */
 public class BpmnError extends ActivitiException {
-  
-  private static final long serialVersionUID = 1L;
 
-  private String errorCode;
+    private static final long serialVersionUID = 1L;
 
-  public BpmnError(String errorCode) {
-    super("");
-    setErrorCode(errorCode);
-  }
-          
-  public BpmnError(String errorCode, String message) {
-    super(message + " (errorCode='" + errorCode + "')");
-    setErrorCode(errorCode);
-  }
+    private String errorCode;
 
-  protected void setErrorCode(String errorCode) {
-    if (errorCode == null) {
-      throw new ActivitiIllegalArgumentException("Error Code must not be null.");
+    public BpmnError(String errorCode) {
+        super("");
+        setErrorCode(errorCode);
     }
-    if (errorCode.length() < 1) {
-      throw new ActivitiIllegalArgumentException("Error Code must not be empty.");
+
+    public BpmnError(String errorCode, String message) {
+        super(message + " (errorCode='" + errorCode + "')");
+        setErrorCode(errorCode);
     }
-    this.errorCode = errorCode;
-  }
 
-  public String getErrorCode() {
-    return errorCode;
-  }
+    protected void setErrorCode(String errorCode) {
+        if (errorCode == null) {
+            throw new ActivitiIllegalArgumentException("Error Code must not be null.");
+        }
+        if (errorCode.length() < 1) {
+            throw new ActivitiIllegalArgumentException("Error Code must not be empty.");
+        }
+        this.errorCode = errorCode;
+    }
 
-  public String toString() {
-    return super.toString() + " (errorCode='" + errorCode + "')";
-  }
+    public String getErrorCode() {
+        return errorCode;
+    }
+
+    public String toString() {
+        return super.toString() + " (errorCode='" + errorCode + "')";
+    }
 
 }

@@ -37,36 +37,36 @@ import org.mockito.ArgumentCaptor;
 
 public class DefaultManagementMBeanAssemblerTest {
 
-  DefaultManagementMBeanAssembler defaultManagementMBeanAssembler = new DefaultManagementMBeanAssembler();
+    DefaultManagementMBeanAssembler defaultManagementMBeanAssembler = new DefaultManagementMBeanAssembler();
 
-  @Test
-  public void testHappyPath() throws MalformedObjectNameException, JMException {
-    TestMbean testMbean = new TestMbean();
-    ModelMBean mbean = defaultManagementMBeanAssembler.assemble(testMbean, new ObjectName("org.activiti.jmx.Mbeans:type=something"));
-    assertNotNull(mbean);
-    assertNotNull(mbean.getMBeanInfo());
-    assertNotNull(mbean.getMBeanInfo().getAttributes());
-    MBeanAttributeInfo[] attributes = mbean.getMBeanInfo().getAttributes();
-    assertEquals(2, attributes.length);
-    assertTrue((attributes[0].getName().equals("TestAttributeString") && attributes[1].getName().equals("TestAttributeBoolean") || (attributes[1].getName()
-            .equals("TestAttributeString") && attributes[0].getName().equals("TestAttributeBoolean"))));
-    assertNotNull(mbean.getMBeanInfo().getOperations());
-    MBeanOperationInfo[] operations = mbean.getMBeanInfo().getOperations();
-    assertNotNull(operations);
-    assertEquals(3, operations.length);
+    @Test
+    public void testHappyPath() throws MalformedObjectNameException, JMException {
+        TestMbean testMbean = new TestMbean();
+        ModelMBean mbean = defaultManagementMBeanAssembler.assemble(testMbean, new ObjectName("org.activiti.jmx.Mbeans:type=something"));
+        assertNotNull(mbean);
+        assertNotNull(mbean.getMBeanInfo());
+        assertNotNull(mbean.getMBeanInfo().getAttributes());
+        MBeanAttributeInfo[] attributes = mbean.getMBeanInfo().getAttributes();
+        assertEquals(2, attributes.length);
+        assertTrue((attributes[0].getName().equals("TestAttributeString") && attributes[1].getName().equals("TestAttributeBoolean") || (attributes[1].getName().equals("TestAttributeString") && attributes[0]
+                .getName().equals("TestAttributeBoolean"))));
+        assertNotNull(mbean.getMBeanInfo().getOperations());
+        MBeanOperationInfo[] operations = mbean.getMBeanInfo().getOperations();
+        assertNotNull(operations);
+        assertEquals(3, operations.length);
 
-  }
+    }
 
-  @Test
-  public void testNotificationAware() throws MalformedObjectNameException, JMException {
-    NotificationSenderAware mockedNotificationAwareMbean = mock(NotificationSenderAware.class);
-    ModelMBean modelBean = defaultManagementMBeanAssembler.assemble(mockedNotificationAwareMbean, new ObjectName("org.activiti.jmx.Mbeans:type=something"));
-    assertNotNull(modelBean);
-    ArgumentCaptor<NotificationSender> argument = ArgumentCaptor.forClass(NotificationSender.class);
-    verify(mockedNotificationAwareMbean).setNotificationSender(argument.capture());
-    assertNotNull(argument);
-    assertNotNull(argument.getValue());
+    @Test
+    public void testNotificationAware() throws MalformedObjectNameException, JMException {
+        NotificationSenderAware mockedNotificationAwareMbean = mock(NotificationSenderAware.class);
+        ModelMBean modelBean = defaultManagementMBeanAssembler.assemble(mockedNotificationAwareMbean, new ObjectName("org.activiti.jmx.Mbeans:type=something"));
+        assertNotNull(modelBean);
+        ArgumentCaptor<NotificationSender> argument = ArgumentCaptor.forClass(NotificationSender.class);
+        verify(mockedNotificationAwareMbean).setNotificationSender(argument.capture());
+        assertNotNull(argument);
+        assertNotNull(argument.getValue());
 
-  }
+    }
 
 }

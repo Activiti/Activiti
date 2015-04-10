@@ -48,133 +48,130 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class ConvertProcessDefinitionPopupWindow extends PopupWindow implements ModelDataJsonConstants {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-  protected transient RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
-  
-  protected I18nManager i18nManager;
-  protected NotificationManager notificationManager;
-  protected VerticalLayout windowLayout;
-  protected ProcessDefinition processDefinition;
-  
-  public ConvertProcessDefinitionPopupWindow(ProcessDefinition processDefinition) {
-    this.processDefinition = processDefinition;
-    this.windowLayout = (VerticalLayout) getContent();
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.notificationManager = ExplorerApp.get().getNotificationManager();
-    
-    initWindow();
-    addConvertWarning();
-    addButtons();
-  }
-  
-  protected void initWindow() {
-    windowLayout.setSpacing(true);
-    addStyleName(Reindeer.WINDOW_LIGHT);
-    setModal(true);
-    center();
-    
-    String name = processDefinition.getName();
-    if (StringUtils.isEmpty(name)) {
-      name = processDefinition.getKey();
+
+    private static final long serialVersionUID = 1L;
+
+    protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    protected transient RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
+
+    protected I18nManager i18nManager;
+    protected NotificationManager notificationManager;
+    protected VerticalLayout windowLayout;
+    protected ProcessDefinition processDefinition;
+
+    public ConvertProcessDefinitionPopupWindow(ProcessDefinition processDefinition) {
+        this.processDefinition = processDefinition;
+        this.windowLayout = (VerticalLayout) getContent();
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+        this.notificationManager = ExplorerApp.get().getNotificationManager();
+
+        initWindow();
+        addConvertWarning();
+        addButtons();
     }
-    setCaption(i18nManager.getMessage(Messages.PROCESS_CONVERT_POPUP_CAPTION, name));
-  }
-  
-  protected void addConvertWarning() {
-    Label convertLabel = new Label(i18nManager.getMessage(Messages.PROCESS_CONVERT_POPUP_MESSAGE));
-    convertLabel.addStyleName(Reindeer.LABEL_SMALL);
-    addComponent(convertLabel);
-    
-    // Some empty space
-    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-    addComponent(emptySpace);
-  }
-  
-  protected void addButtons() {
-    // Cancel
-    Button cancelButton = new Button(i18nManager.getMessage(Messages.BUTTON_CANCEL));
-    cancelButton.addStyleName(Reindeer.BUTTON_SMALL);
-    cancelButton.addListener(new ClickListener() {
-      
-      private static final long serialVersionUID = 1L;
-      
-      public void buttonClick(ClickEvent event) {
-        close();
-      }
-    });
-    
-    // Convert
-    Button convertButton = new Button(i18nManager.getMessage(Messages.PROCESS_CONVERT_POPUP_CONVERT_BUTTON));
-    convertButton.addStyleName(Reindeer.BUTTON_SMALL);
-    convertButton.addListener(new ClickListener() {
-      
-      private static final long serialVersionUID = 1L;
 
-      public void buttonClick(ClickEvent event) {
-        
-        try {
-          InputStream bpmnStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
-          XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
-          InputStreamReader in = new InputStreamReader(bpmnStream, "UTF-8");
-          XMLStreamReader xtr = xif.createXMLStreamReader(in);
-          BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
-          
-          if (bpmnModel.getMainProcess() == null || bpmnModel.getMainProcess().getId() == null) {
-            notificationManager.showErrorNotification(Messages.MODEL_IMPORT_FAILED, 
-                i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMN_EXPLANATION));
-          } else {
-          
-            if (bpmnModel.getLocationMap().isEmpty()) {
-              notificationManager.showErrorNotification(Messages.MODEL_IMPORT_INVALID_BPMNDI,
-                  i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMNDI_EXPLANATION));
-            } else {
-          
-              BpmnJsonConverter converter = new BpmnJsonConverter();
-              ObjectNode modelNode = converter.convertToJson(bpmnModel);
-              Model modelData = repositoryService.newModel();
-              
-              ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
-              modelObjectNode.put(MODEL_NAME, processDefinition.getName());
-              modelObjectNode.put(MODEL_REVISION, 1);
-              modelObjectNode.put(MODEL_DESCRIPTION, processDefinition.getDescription());
-              modelData.setMetaInfo(modelObjectNode.toString());
-              modelData.setName(processDefinition.getName());
-              
-              repositoryService.saveModel(modelData);
-              
-              repositoryService.addModelEditorSource(modelData.getId(), modelNode.toString().getBytes("utf-8"));
-              
-              close();
-              ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
+    protected void initWindow() {
+        windowLayout.setSpacing(true);
+        addStyleName(Reindeer.WINDOW_LIGHT);
+        setModal(true);
+        center();
 
-	          URL explorerURL = ExplorerApp.get().getURL();
-	          URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(),
-			          explorerURL.getPath().replace("/ui", "") + "modeler.html?modelId=" + modelData.getId());
-              ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
-            }
-          }
-          
-        } catch(Exception e) {
-          notificationManager.showErrorNotification("error", e);
+        String name = processDefinition.getName();
+        if (StringUtils.isEmpty(name)) {
+            name = processDefinition.getKey();
         }
-      }
-    });
-    
-    // Alignment
-    HorizontalLayout buttonLayout = new HorizontalLayout();
-    buttonLayout.setSpacing(true);
-    buttonLayout.addComponent(cancelButton);
-    buttonLayout.addComponent(convertButton);
-    addComponent(buttonLayout);
-    windowLayout.setComponentAlignment(buttonLayout, Alignment.BOTTOM_RIGHT);
-  }
+        setCaption(i18nManager.getMessage(Messages.PROCESS_CONVERT_POPUP_CAPTION, name));
+    }
+
+    protected void addConvertWarning() {
+        Label convertLabel = new Label(i18nManager.getMessage(Messages.PROCESS_CONVERT_POPUP_MESSAGE));
+        convertLabel.addStyleName(Reindeer.LABEL_SMALL);
+        addComponent(convertLabel);
+
+        // Some empty space
+        Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+        addComponent(emptySpace);
+    }
+
+    protected void addButtons() {
+        // Cancel
+        Button cancelButton = new Button(i18nManager.getMessage(Messages.BUTTON_CANCEL));
+        cancelButton.addStyleName(Reindeer.BUTTON_SMALL);
+        cancelButton.addListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+                close();
+            }
+        });
+
+        // Convert
+        Button convertButton = new Button(i18nManager.getMessage(Messages.PROCESS_CONVERT_POPUP_CONVERT_BUTTON));
+        convertButton.addStyleName(Reindeer.BUTTON_SMALL);
+        convertButton.addListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                try {
+                    InputStream bpmnStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
+                    XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
+                    InputStreamReader in = new InputStreamReader(bpmnStream, "UTF-8");
+                    XMLStreamReader xtr = xif.createXMLStreamReader(in);
+                    BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+
+                    if (bpmnModel.getMainProcess() == null || bpmnModel.getMainProcess().getId() == null) {
+                        notificationManager.showErrorNotification(Messages.MODEL_IMPORT_FAILED, i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMN_EXPLANATION));
+                    } else {
+
+                        if (bpmnModel.getLocationMap().isEmpty()) {
+                            notificationManager.showErrorNotification(Messages.MODEL_IMPORT_INVALID_BPMNDI, i18nManager.getMessage(Messages.MODEL_IMPORT_INVALID_BPMNDI_EXPLANATION));
+                        } else {
+
+                            BpmnJsonConverter converter = new BpmnJsonConverter();
+                            ObjectNode modelNode = converter.convertToJson(bpmnModel);
+                            Model modelData = repositoryService.newModel();
+
+                            ObjectNode modelObjectNode = new ObjectMapper().createObjectNode();
+                            modelObjectNode.put(MODEL_NAME, processDefinition.getName());
+                            modelObjectNode.put(MODEL_REVISION, 1);
+                            modelObjectNode.put(MODEL_DESCRIPTION, processDefinition.getDescription());
+                            modelData.setMetaInfo(modelObjectNode.toString());
+                            modelData.setName(processDefinition.getName());
+
+                            repositoryService.saveModel(modelData);
+
+                            repositoryService.addModelEditorSource(modelData.getId(), modelNode.toString().getBytes("utf-8"));
+
+                            close();
+                            ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
+
+                            URL explorerURL = ExplorerApp.get().getURL();
+                            URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(), explorerURL.getPath().replace("/ui", "") + "modeler.html?modelId="
+                                    + modelData.getId());
+                            ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
+                        }
+                    }
+
+                } catch (Exception e) {
+                    notificationManager.showErrorNotification("error", e);
+                }
+            }
+        });
+
+        // Alignment
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setSpacing(true);
+        buttonLayout.addComponent(cancelButton);
+        buttonLayout.addComponent(convertButton);
+        addComponent(buttonLayout);
+        windowLayout.setComponentAlignment(buttonLayout, Alignment.BOTTOM_RIGHT);
+    }
 
 }

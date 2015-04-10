@@ -27,83 +27,82 @@ import java.util.List;
 
 public class ClassLoaderWrapper extends ClassLoader {
 
-  private ClassLoader[] parents;
+    private ClassLoader[] parents;
 
-  public ClassLoaderWrapper(ClassLoader... parents) {
-    this.parents = parents;
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  protected synchronized Class loadClass(String name, boolean resolve)
-      throws ClassNotFoundException {
-    //
-    // Check if class is in the loaded classes cache
-    //
-    Class cachedClass = findLoadedClass(name);
-    if (cachedClass != null) {
-      if (resolve) {
-        resolveClass(cachedClass);
-      }
-      return cachedClass;
+    public ClassLoaderWrapper(ClassLoader... parents) {
+        this.parents = parents;
     }
 
-    //
-    // Check parent class loaders
-    //
-    for (int i = 0; i < parents.length; i++) {
-      ClassLoader parent = parents[i];
-      try {
-        Class clazz = parent.loadClass(name);
-        if (resolve) {
-          resolveClass(clazz);
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    protected synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
+        //
+        // Check if class is in the loaded classes cache
+        //
+        Class cachedClass = findLoadedClass(name);
+        if (cachedClass != null) {
+            if (resolve) {
+                resolveClass(cachedClass);
+            }
+            return cachedClass;
         }
-        return clazz;
-      } catch (ClassNotFoundException ignored) {
-        // this parent didn't have the class; try the next one
-      }
+
+        //
+        // Check parent class loaders
+        //
+        for (int i = 0; i < parents.length; i++) {
+            ClassLoader parent = parents[i];
+            try {
+                Class clazz = parent.loadClass(name);
+                if (resolve) {
+                    resolveClass(clazz);
+                }
+                return clazz;
+            } catch (ClassNotFoundException ignored) {
+                // this parent didn't have the class; try the next one
+            }
+        }
+
+        throw new ClassNotFoundException(name);
     }
 
-    throw new ClassNotFoundException(name);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public URL getResource(String name) {
+        //
+        // Check parent class loaders
+        //
+        for (int i = 0; i < parents.length; i++) {
+            ClassLoader parent = parents[i];
+            URL url = parent.getResource(name);
+            if (url != null) {
+                return url;
+            }
+        }
 
-  /**
-   * {@inheritDoc}
-   */
-  public URL getResource(String name) {
-    //
-    // Check parent class loaders
-    //
-    for (int i = 0; i < parents.length; i++) {
-      ClassLoader parent = parents[i];
-      URL url = parent.getResource(name);
-      if (url != null) {
-        return url;
-      }
+        return null;
     }
 
-    return null;
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public Enumeration findResources(String name) throws IOException {
+        List resources = new ArrayList();
 
-  /**
-   * {@inheritDoc}
-   */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public Enumeration findResources(String name) throws IOException {
-    List resources = new ArrayList();
+        //
+        // Add parent resources
+        //
+        for (int i = 0; i < parents.length; i++) {
+            ClassLoader parent = parents[i];
+            List parentResources = Collections.list(parent.getResources(name));
+            resources.addAll(parentResources);
+        }
 
-    //
-    // Add parent resources
-    //
-    for (int i = 0; i < parents.length; i++) {
-      ClassLoader parent = parents[i];
-      List parentResources = Collections.list(parent.getResources(name));
-      resources.addAll(parentResources);
+        return Collections.enumeration(resources);
     }
-
-    return Collections.enumeration(resources);
-  }
 
 }

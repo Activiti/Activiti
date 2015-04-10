@@ -15,26 +15,25 @@ package org.activiti.explorer.navigation;
 
 import org.activiti.explorer.ExplorerApp;
 
-
 /**
  * @author Joram Barrez
  */
 public class ActiveProcessDefinitionNavigator extends ManagementNavigator {
 
-  public static final String ACTIVE_PROC_DEF_URI_PART = "activeProcessDefinition";
-  
-  public String getTrigger() {
-    return ACTIVE_PROC_DEF_URI_PART;
-  }
-  
-  public void handleManagementNavigation(UriFragment uriFragment) {
-    String processDefinitionId = uriFragment.getUriPart(1);
-    
-    if(processDefinitionId != null) {
-      ExplorerApp.get().getViewManager().showActiveProcessDefinitionsPage(processDefinitionId);
-    } else {
-      ExplorerApp.get().getViewManager().showActiveProcessDefinitionsPage();
+    public static final String ACTIVE_PROC_DEF_URI_PART = "activeProcessDefinition";
+
+    public String getTrigger() {
+        return ACTIVE_PROC_DEF_URI_PART;
     }
-  }
+
+    public void handleManagementNavigation(UriFragment uriFragment) {
+        String processDefinitionId = uriFragment.getUriPart(1);
+
+        if (processDefinitionId != null) {
+            ExplorerApp.get().getViewManager().showActiveProcessDefinitionsPage(processDefinitionId);
+        } else {
+            ExplorerApp.get().getViewManager().showActiveProcessDefinitionsPage();
+        }
+    }
 
 }

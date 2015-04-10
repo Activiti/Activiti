@@ -25,76 +25,70 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class CdiBusinessProcessEvent implements BusinessProcessEvent {
 
-  protected final String activityId;
-  protected final ProcessDefinition processDefinition;
-  protected final String transitionName;
-  protected final String processInstanceId;
-  protected final String executionId;
-  protected final BusinessProcessEventType type;
-  protected final Date timeStamp;
-  protected final VariableScope variableScope;
-  
-  public CdiBusinessProcessEvent(String activityId, 
-                                     String transitionName,
-                                     ProcessDefinition processDefinition, 
-                                     VariableScope execution,
-                                     BusinessProcessEventType type,
-                                     String processInstanceId,
-                                     String executionId,
-                                     Date timeStamp) {
-      this.activityId = activityId;
-      this.transitionName = transitionName;
-      this.processInstanceId = processInstanceId;
-      this.executionId = executionId;
-      this.type = type;
-      this.timeStamp = timeStamp;
-      this.variableScope = execution;
-      this.processDefinition = processDefinition;
-  }
-  
-  @Override
-  public ProcessDefinition getProcessDefinition() {
-    return processDefinition;
-  }
+    protected final String activityId;
+    protected final ProcessDefinition processDefinition;
+    protected final String transitionName;
+    protected final String processInstanceId;
+    protected final String executionId;
+    protected final BusinessProcessEventType type;
+    protected final Date timeStamp;
+    protected final VariableScope variableScope;
 
-  @Override
-  public String getActivityId() {
-    return activityId;
-  }
+    public CdiBusinessProcessEvent(String activityId, String transitionName, ProcessDefinition processDefinition, VariableScope execution, BusinessProcessEventType type, String processInstanceId,
+            String executionId, Date timeStamp) {
+        this.activityId = activityId;
+        this.transitionName = transitionName;
+        this.processInstanceId = processInstanceId;
+        this.executionId = executionId;
+        this.type = type;
+        this.timeStamp = timeStamp;
+        this.variableScope = execution;
+        this.processDefinition = processDefinition;
+    }
 
-  @Override
-  public String getTransitionName() {
-    return transitionName;
-  }
+    @Override
+    public ProcessDefinition getProcessDefinition() {
+        return processDefinition;
+    }
 
-  @Override
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    @Override
+    public String getActivityId() {
+        return activityId;
+    }
 
-  @Override
-  public String getExecutionId() {
-    return executionId;
-  }
+    @Override
+    public String getTransitionName() {
+        return transitionName;
+    }
 
-  @Override
-  public BusinessProcessEventType getType() {
-    return type;
-  }
+    @Override
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  @Override
-  public Date getTimeStamp() {
-    return timeStamp;
-  }
+    @Override
+    public String getExecutionId() {
+        return executionId;
+    }
 
-  @Override
-  public String toString() {
-    return "Event '" + processDefinition.getKey() + "' ['" + type + "', " + (type == BusinessProcessEventType.TAKE ? transitionName : activityId) + "]";
-  }
-  
-  @Override
-  public VariableScope getVariableScope() {
-    return variableScope;
-  }
+    @Override
+    public BusinessProcessEventType getType() {
+        return type;
+    }
+
+    @Override
+    public Date getTimeStamp() {
+        return timeStamp;
+    }
+
+    @Override
+    public String toString() {
+        return "Event '" + processDefinition.getKey() + "' ['" + type + "', " + (type == BusinessProcessEventType.TAKE ? transitionName : activityId) + "]";
+    }
+
+    @Override
+    public VariableScope getVariableScope() {
+        return variableScope;
+    }
 
 }

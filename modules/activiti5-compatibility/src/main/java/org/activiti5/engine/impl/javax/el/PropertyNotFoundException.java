@@ -16,50 +16,51 @@
 package org.activiti5.engine.impl.javax.el;
 
 /**
- * Thrown when a property could not be found while evaluating a {@link ValueExpression} or
- * {@link MethodExpression}. For example, this could be triggered by an index out of bounds while
- * setting an array value, or by an unreadable property while getting the value of a JavaBeans
- * property.
+ * Thrown when a property could not be found while evaluating a
+ * {@link ValueExpression} or {@link MethodExpression}. For example, this could
+ * be triggered by an index out of bounds while setting an array value, or by an
+ * unreadable property while getting the value of a JavaBeans property.
  */
 public class PropertyNotFoundException extends ELException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Creates a PropertyNotFoundException with no detail message.
-	 */
-	public PropertyNotFoundException() {
-		super();
-	}
+    /**
+     * Creates a PropertyNotFoundException with no detail message.
+     */
+    public PropertyNotFoundException() {
+        super();
+    }
 
-	/**
-	 * Creates a PropertyNotFoundException with the provided detail message.
-	 * 
-	 * @param message
-	 *            the detail message
-	 */
-	public PropertyNotFoundException(String message) {
-		super(message);
-	}
+    /**
+     * Creates a PropertyNotFoundException with the provided detail message.
+     * 
+     * @param message
+     *            the detail message
+     */
+    public PropertyNotFoundException(String message) {
+        super(message);
+    }
 
-	/**
-	 * Creates a PropertyNotFoundException with the given root cause.
-	 * 
-	 * @param cause
-	 *            the originating cause of this exception
-	 */
-	public PropertyNotFoundException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Creates a PropertyNotFoundException with the given root cause.
+     * 
+     * @param cause
+     *            the originating cause of this exception
+     */
+    public PropertyNotFoundException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Creates a PropertyNotFoundException with the given detail message and root cause.
-	 * 
-	 * @param message
-	 *            the detail message
-	 * @param cause
-	 *            the originating cause of this exception
-	 */
-	public PropertyNotFoundException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Creates a PropertyNotFoundException with the given detail message and
+     * root cause.
+     * 
+     * @param message
+     *            the detail message
+     * @param cause
+     *            the originating cause of this exception
+     */
+    public PropertyNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

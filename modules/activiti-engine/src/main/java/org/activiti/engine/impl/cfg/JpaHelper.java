@@ -16,14 +16,13 @@ package org.activiti.engine.impl.cfg;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-
 /**
  * @author Tom Baeyens
  */
 public class JpaHelper {
 
-  public static EntityManagerFactory createEntityManagerFactory(String jpaPersistenceUnitName) {
-    return Persistence.createEntityManagerFactory(jpaPersistenceUnitName);
-  }
+    public static EntityManagerFactory createEntityManagerFactory(String jpaPersistenceUnitName) {
+        return Persistence.createEntityManagerFactory(jpaPersistenceUnitName);
+    }
 
 }

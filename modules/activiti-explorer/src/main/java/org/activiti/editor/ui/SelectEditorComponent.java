@@ -34,218 +34,211 @@ import com.vaadin.ui.themes.Reindeer;
  * @author Joram Barrez
  */
 public class SelectEditorComponent extends VerticalLayout {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected I18nManager i18nManager;
-  protected boolean enableHighlightWhenClicked;
-  
-  protected HorizontalLayout modelerLayout;
-  protected Button modelerButton;
-  protected Label modelerLabel;
-  protected Label modelerDescriptionLabel;
-  
-  protected HorizontalLayout tableEditorLayout;
-  protected Button tableEditorButton;
-  protected Label tableEditorLabel;
-  protected Label tableEditorDescriptionLabel;
-  
-  protected boolean modelerPreferred;
-  
-  protected EditorSelectedListener editorSelectedListener;
-  
-  public SelectEditorComponent() {
-    this(true);
-  }
-  
-  public SelectEditorComponent(boolean enableHighlightWhenClicked) {
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.enableHighlightWhenClicked = enableHighlightWhenClicked;
-    
-    createModelerEditorChoice();
-    addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
-    createTableDrivenEditorChoice();
-    
-    preferModeler(); // is default to select modeler
-  }
-  
-  protected void createModelerEditorChoice() {
-    modelerLayout = new HorizontalLayout();
-    modelerLayout.setWidth("300px");
-    modelerLayout.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    addComponent(modelerLayout);
-    
-    modelerButton = new Button();
-    modelerButton.setIcon(Images.PROCESS_EDITOR_BPMN);
-    modelerButton.setStyleName(Reindeer.BUTTON_LINK);
-    modelerLayout.addComponent(modelerButton);
-    modelerLayout.setComponentAlignment(modelerButton, Alignment.MIDDLE_LEFT);
-    
-    VerticalLayout modelerTextLayout = new VerticalLayout();
-    modelerLayout.addComponent(modelerTextLayout);
-    modelerLayout.setExpandRatio(modelerTextLayout, 1.0f);
-    
-    modelerLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_MODELER));
-    modelerLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    modelerTextLayout.addComponent(modelerLabel);
-    
-    modelerDescriptionLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_MODELER_DESCRIPTION));
-    modelerDescriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-    modelerDescriptionLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    modelerTextLayout.addComponent(modelerDescriptionLabel);
-    
-    modelerLayout.addListener(new LayoutClickListener() {
-      public void layoutClick(LayoutClickEvent event) {
-        preferModeler();
-      }
-    });
-    
-    modelerButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        preferModeler();
-      }
-    });
-  }
-  
-  protected void createTableDrivenEditorChoice() {
-    tableEditorLayout = new HorizontalLayout();
-    tableEditorLayout.setWidth("300px");
-    tableEditorLayout.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    addComponent(tableEditorLayout);
-    
-    tableEditorButton = new Button();
-    tableEditorButton.setIcon(Images.PROCESS_EDITOR_TABLE);
-    tableEditorButton.setStyleName(Reindeer.BUTTON_LINK);
-    tableEditorLayout.addComponent(tableEditorButton);
-    tableEditorLayout.setComponentAlignment(tableEditorButton, Alignment.MIDDLE_LEFT);
-    
-    VerticalLayout tableEditorTextLayout = new VerticalLayout();
-    tableEditorLayout.addComponent(tableEditorTextLayout);
-    tableEditorLayout.setExpandRatio(tableEditorTextLayout, 1.0f);
-    
-    tableEditorLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_TABLE));
-    tableEditorLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    tableEditorTextLayout.addComponent(tableEditorLabel);
-    
-    tableEditorDescriptionLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_TABLE_DESCRIPTION));
-    tableEditorDescriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-    tableEditorDescriptionLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    tableEditorTextLayout.addComponent(tableEditorDescriptionLabel);
-    
-    
-    tableEditorLayout.addListener(new LayoutClickListener() {
-      public void layoutClick(LayoutClickEvent event) {
-        preferTableDrivenEditor();
-      }
-    });
-    
-    tableEditorButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        preferTableDrivenEditor();
-      }
-    });
-  }
-  
-  public void preferModeler() {
-    if (!modelerPreferred) {
-      modelerPreferred = true;
-      
-      if (enableHighlightWhenClicked) {
-        selectEditor(modelerLayout);
-        deselectEditor(tableEditorLayout);
-      
-        modelerLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-        tableEditorLabel.removeStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-      }
+
+    private static final long serialVersionUID = 1L;
+
+    protected I18nManager i18nManager;
+    protected boolean enableHighlightWhenClicked;
+
+    protected HorizontalLayout modelerLayout;
+    protected Button modelerButton;
+    protected Label modelerLabel;
+    protected Label modelerDescriptionLabel;
+
+    protected HorizontalLayout tableEditorLayout;
+    protected Button tableEditorButton;
+    protected Label tableEditorLabel;
+    protected Label tableEditorDescriptionLabel;
+
+    protected boolean modelerPreferred;
+
+    protected EditorSelectedListener editorSelectedListener;
+
+    public SelectEditorComponent() {
+        this(true);
     }
-    
-    if (editorSelectedListener != null) {
-      editorSelectedListener.editorSelectionChanged();
+
+    public SelectEditorComponent(boolean enableHighlightWhenClicked) {
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+        this.enableHighlightWhenClicked = enableHighlightWhenClicked;
+
+        createModelerEditorChoice();
+        addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+        createTableDrivenEditorChoice();
+
+        preferModeler(); // is default to select modeler
     }
-  }
-  
-  public void preferTableDrivenEditor() {
-    if (modelerPreferred) {
-      modelerPreferred = false;
-      
-      if (enableHighlightWhenClicked) {
-        selectEditor(tableEditorLayout);
-        deselectEditor(modelerLayout);
-      
-        tableEditorLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-        modelerLabel.removeStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
-      }
+
+    protected void createModelerEditorChoice() {
+        modelerLayout = new HorizontalLayout();
+        modelerLayout.setWidth("300px");
+        modelerLayout.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        addComponent(modelerLayout);
+
+        modelerButton = new Button();
+        modelerButton.setIcon(Images.PROCESS_EDITOR_BPMN);
+        modelerButton.setStyleName(Reindeer.BUTTON_LINK);
+        modelerLayout.addComponent(modelerButton);
+        modelerLayout.setComponentAlignment(modelerButton, Alignment.MIDDLE_LEFT);
+
+        VerticalLayout modelerTextLayout = new VerticalLayout();
+        modelerLayout.addComponent(modelerTextLayout);
+        modelerLayout.setExpandRatio(modelerTextLayout, 1.0f);
+
+        modelerLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_MODELER));
+        modelerLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        modelerTextLayout.addComponent(modelerLabel);
+
+        modelerDescriptionLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_MODELER_DESCRIPTION));
+        modelerDescriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
+        modelerDescriptionLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        modelerTextLayout.addComponent(modelerDescriptionLabel);
+
+        modelerLayout.addListener(new LayoutClickListener() {
+            public void layoutClick(LayoutClickEvent event) {
+                preferModeler();
+            }
+        });
+
+        modelerButton.addListener(new ClickListener() {
+            public void buttonClick(ClickEvent event) {
+                preferModeler();
+            }
+        });
     }
-    
-    if (editorSelectedListener != null) {
-      editorSelectedListener.editorSelectionChanged();
+
+    protected void createTableDrivenEditorChoice() {
+        tableEditorLayout = new HorizontalLayout();
+        tableEditorLayout.setWidth("300px");
+        tableEditorLayout.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        addComponent(tableEditorLayout);
+
+        tableEditorButton = new Button();
+        tableEditorButton.setIcon(Images.PROCESS_EDITOR_TABLE);
+        tableEditorButton.setStyleName(Reindeer.BUTTON_LINK);
+        tableEditorLayout.addComponent(tableEditorButton);
+        tableEditorLayout.setComponentAlignment(tableEditorButton, Alignment.MIDDLE_LEFT);
+
+        VerticalLayout tableEditorTextLayout = new VerticalLayout();
+        tableEditorLayout.addComponent(tableEditorTextLayout);
+        tableEditorLayout.setExpandRatio(tableEditorTextLayout, 1.0f);
+
+        tableEditorLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_TABLE));
+        tableEditorLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        tableEditorTextLayout.addComponent(tableEditorLabel);
+
+        tableEditorDescriptionLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_TABLE_DESCRIPTION));
+        tableEditorDescriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
+        tableEditorDescriptionLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        tableEditorTextLayout.addComponent(tableEditorDescriptionLabel);
+
+        tableEditorLayout.addListener(new LayoutClickListener() {
+            public void layoutClick(LayoutClickEvent event) {
+                preferTableDrivenEditor();
+            }
+        });
+
+        tableEditorButton.addListener(new ClickListener() {
+            public void buttonClick(ClickEvent event) {
+                preferTableDrivenEditor();
+            }
+        });
     }
-  }
-  
-  protected void selectEditor(AbstractLayout editorLayout) {
-    editorLayout.addStyleName(ExplorerLayout.STYLE_PROCESS_EDITOR_CHOICE);
-  }
-  
-  protected void deselectEditor(AbstractLayout editorLayout) {
-    editorLayout.removeStyleName(ExplorerLayout.STYLE_PROCESS_EDITOR_CHOICE);
-  }
-  
-  public HorizontalLayout getModelerLayout() {
-    return modelerLayout;
-  }
-  
-  public Button getModelerButton() {
-    return modelerButton;
-  }
-  
-  public HorizontalLayout getTableEditorLayout() {
-    return tableEditorLayout;
-  }
-  
-  public Button getTableEditorButton() {
-    return tableEditorButton;
-  }
 
-  
-  public Label getModelerLabel() {
-    return modelerLabel;
-  }
+    public void preferModeler() {
+        if (!modelerPreferred) {
+            modelerPreferred = true;
 
-  
-  public Label getModelerDescriptionLabel() {
-    return modelerDescriptionLabel;
-  }
+            if (enableHighlightWhenClicked) {
+                selectEditor(modelerLayout);
+                deselectEditor(tableEditorLayout);
 
-  
-  public Label getTableEditorLabel() {
-    return tableEditorLabel;
-  }
+                modelerLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
+                tableEditorLabel.removeStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
+            }
+        }
 
-  
-  public Label getTableEditorDescriptionLabel() {
-    return tableEditorDescriptionLabel;
-  }
+        if (editorSelectedListener != null) {
+            editorSelectedListener.editorSelectionChanged();
+        }
+    }
 
-  
-  public boolean isModelerPreferred() {
-    return modelerPreferred;
-  }
-  
-  public EditorSelectedListener getEditorSelectedListener() {
-    return editorSelectedListener;
-  }
+    public void preferTableDrivenEditor() {
+        if (modelerPreferred) {
+            modelerPreferred = false;
 
-  public void setEditorSelectedListener(EditorSelectedListener editorSelectedListener) {
-    this.editorSelectedListener = editorSelectedListener;
-  }
+            if (enableHighlightWhenClicked) {
+                selectEditor(tableEditorLayout);
+                deselectEditor(modelerLayout);
 
-  
-  // Helper class
+                tableEditorLabel.addStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
+                modelerLabel.removeStyleName(ExplorerLayout.STYLE_LABEL_BOLD);
+            }
+        }
 
-  public static interface EditorSelectedListener {
-    
-    void editorSelectionChanged();
-    
-  }
-  
+        if (editorSelectedListener != null) {
+            editorSelectedListener.editorSelectionChanged();
+        }
+    }
+
+    protected void selectEditor(AbstractLayout editorLayout) {
+        editorLayout.addStyleName(ExplorerLayout.STYLE_PROCESS_EDITOR_CHOICE);
+    }
+
+    protected void deselectEditor(AbstractLayout editorLayout) {
+        editorLayout.removeStyleName(ExplorerLayout.STYLE_PROCESS_EDITOR_CHOICE);
+    }
+
+    public HorizontalLayout getModelerLayout() {
+        return modelerLayout;
+    }
+
+    public Button getModelerButton() {
+        return modelerButton;
+    }
+
+    public HorizontalLayout getTableEditorLayout() {
+        return tableEditorLayout;
+    }
+
+    public Button getTableEditorButton() {
+        return tableEditorButton;
+    }
+
+    public Label getModelerLabel() {
+        return modelerLabel;
+    }
+
+    public Label getModelerDescriptionLabel() {
+        return modelerDescriptionLabel;
+    }
+
+    public Label getTableEditorLabel() {
+        return tableEditorLabel;
+    }
+
+    public Label getTableEditorDescriptionLabel() {
+        return tableEditorDescriptionLabel;
+    }
+
+    public boolean isModelerPreferred() {
+        return modelerPreferred;
+    }
+
+    public EditorSelectedListener getEditorSelectedListener() {
+        return editorSelectedListener;
+    }
+
+    public void setEditorSelectedListener(EditorSelectedListener editorSelectedListener) {
+        this.editorSelectedListener = editorSelectedListener;
+    }
+
+    // Helper class
+
+    public static interface EditorSelectedListener {
+
+        void editorSelectionChanged();
+
+    }
+
 }

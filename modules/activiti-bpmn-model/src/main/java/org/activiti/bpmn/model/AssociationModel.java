@@ -12,15 +12,14 @@
  */
 package org.activiti.bpmn.model;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class AssociationModel {
 
-  public String id;
-  public AssociationDirection associationDirection;
-  public String sourceRef;
-  public String targetRef;
-  public Process parentProcess;
+    public String id;
+    public AssociationDirection associationDirection;
+    public String sourceRef;
+    public String targetRef;
+    public Process parentProcess;
 }

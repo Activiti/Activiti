@@ -16,8 +16,9 @@ import org.activiti.engine.FormService;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.runtime.ProcessInstance;
 
-/** An object structure representing an executable process composed of 
- * activities and transitions.
+/**
+ * An object structure representing an executable process composed of activities
+ * and transitions.
  * 
  * Business processes are often created with graphical editors that store the
  * process definition in certain file format. These files can be added to a
@@ -25,7 +26,8 @@ import org.activiti.engine.runtime.ProcessInstance;
  * file.
  * 
  * At deploy time, the engine will then parse the process definition files to an
- * executable instance of this class, that can be used to start a {@link ProcessInstance}.
+ * executable instance of this class, that can be used to start a
+ * {@link ProcessInstance}.
  * 
  * @author Tom Baeyens
  * @author Joram Barez
@@ -33,44 +35,55 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public interface ProcessDefinition {
 
-  /** unique identifier */
-  String getId();
+    /** unique identifier */
+    String getId();
 
-  /** category name which is derived from the targetNamespace attribute in the definitions element */
-  String getCategory();
-  
-  /** label used for display purposes */
-  String getName();
-  
-  /** unique name for all versions this process definitions */
-  String getKey();
-  
-  /** description of this process **/
-  String getDescription();
-  
-  /** version of this process definition */
-  int getVersion();
+    /**
+     * category name which is derived from the targetNamespace attribute in the
+     * definitions element
+     */
+    String getCategory();
 
-  /** name of {@link RepositoryService#getResourceAsStream(String, String) the resource} 
-   * of this process definition. */
-  String getResourceName();
+    /** label used for display purposes */
+    String getName();
 
-  /** The deployment in which this process definition is contained. */
-  String getDeploymentId();
-  
-  /** The resource name in the deployment of the diagram image (if any). */
-  String getDiagramResourceName();
+    /** unique name for all versions this process definitions */
+    String getKey();
 
-  /** Does this process definition has a {@link FormService#getStartFormData(String) start form key}. */
-  boolean hasStartFormKey();
-  
-  /** Does this process definition has a graphical notation defined (such that a diagram can be generated)? */
-  boolean hasGraphicalNotation();
-  
-  /** Returns true if the process definition is in suspended state. */
-  boolean isSuspended();
-  
-  /** The tenant identifier of this process definition */
-  String getTenantId();
-  
+    /** description of this process **/
+    String getDescription();
+
+    /** version of this process definition */
+    int getVersion();
+
+    /**
+     * name of {@link RepositoryService#getResourceAsStream(String, String) the
+     * resource} of this process definition.
+     */
+    String getResourceName();
+
+    /** The deployment in which this process definition is contained. */
+    String getDeploymentId();
+
+    /** The resource name in the deployment of the diagram image (if any). */
+    String getDiagramResourceName();
+
+    /**
+     * Does this process definition has a
+     * {@link FormService#getStartFormData(String) start form key}.
+     */
+    boolean hasStartFormKey();
+
+    /**
+     * Does this process definition has a graphical notation defined (such that
+     * a diagram can be generated)?
+     */
+    boolean hasGraphicalNotation();
+
+    /** Returns true if the process definition is in suspended state. */
+    boolean isSuspended();
+
+    /** The tenant identifier of this process definition */
+    String getTenantId();
+
 }

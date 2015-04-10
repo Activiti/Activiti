@@ -24,18 +24,18 @@ import com.vaadin.ui.Button.ClickEvent;
  */
 public class ShowFormClickListener implements Button.ClickListener {
 
-  private static final long serialVersionUID = 3881133002111623189L;
+    private static final long serialVersionUID = 3881133002111623189L;
 
-  protected TaskFormModel formModel;
-  protected Object taskItemId;
+    protected TaskFormModel formModel;
+    protected Object taskItemId;
 
-  public ShowFormClickListener(TaskFormModel formModel, Object taskItemId) {
-    this.formModel = formModel;
-    this.taskItemId = taskItemId;
-  }
+    public ShowFormClickListener(TaskFormModel formModel, Object taskItemId) {
+        this.formModel = formModel;
+        this.taskItemId = taskItemId;
+    }
 
-  public void buttonClick(ClickEvent event) {
-    ExplorerApp.get().getViewManager().showPopupWindow(new FormPopupWindow(taskItemId, formModel));
-  }
+    public void buttonClick(ClickEvent event) {
+        ExplorerApp.get().getViewManager().showPopupWindow(new FormPopupWindow(taskItemId, formModel));
+    }
 
 }

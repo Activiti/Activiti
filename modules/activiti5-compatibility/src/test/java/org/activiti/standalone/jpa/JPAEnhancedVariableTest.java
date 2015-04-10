@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Test for JPA enhancement support
- *
+ * 
  * @author <a href="mailto:eugene.khrustalev@gmail.com">Eugene Khrustalev</a>
  */
 public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
@@ -44,9 +44,7 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
 
             cachedProcessEngine = processEngineConfiguration.buildProcessEngine();
 
-            EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration
-                    .getSessionFactories()
-                    .get(EntityManagerSession.class);
+            EntityManagerSessionFactory entityManagerSessionFactory = (EntityManagerSessionFactory) processEngineConfiguration.getSessionFactories().get(EntityManagerSession.class);
 
             entityManagerFactory = entityManagerSessionFactory.getEntityManagerFactory();
 
@@ -92,16 +90,10 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
     }
 
     private Task getTask(ProcessInstance instance) {
-        return processEngine.getTaskService()
-                .createTaskQuery()
-                .processInstanceId(instance.getProcessInstanceId())
-                .includeProcessVariables()
-                .singleResult();
+        return processEngine.getTaskService().createTaskQuery().processInstanceId(instance.getProcessInstanceId()).includeProcessVariables().singleResult();
     }
 
-    @Deployment(resources = {
-            "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml"
-    })
+    @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
     public void testEnhancedEntityVariables() throws Exception {
         // test if enhancement is used
         if (FieldAccessJPAEntity.class == fieldEntity.getClass() || PropertyAccessJPAEntity.class == propertyEntity.getClass()) {
@@ -129,9 +121,7 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         }
     }
 
-    @Deployment(resources = {
-            "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml"
-    })
+    @Deployment(resources = { "org/activiti/standalone/jpa/JPAVariableTest.testStoreJPAEntityAsVariable.bpmn20.xml" })
     public void testEnhancedEntityListVariables() throws Exception {
         // test if enhancement is used
         if (FieldAccessJPAEntity.class == fieldEntity.getClass() || PropertyAccessJPAEntity.class == propertyEntity.getClass()) {
@@ -156,7 +146,8 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         assertTrue(list.get(0) instanceof PropertyAccessJPAEntity);
         assertTrue(list.get(1) instanceof PropertyAccessJPAEntity);
 
-        // start process with enhanced and persisted only jpa variables in the same list
+        // start process with enhanced and persisted only jpa variables in the
+        // same list
         params.putAll(Collections.singletonMap("list", Arrays.asList(fieldEntity, fieldEntity2)));
         instance = processEngine.getRuntimeService().startProcessInstanceByKey("JPAVariableProcess", params);
 
@@ -164,9 +155,9 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         list = (List) task.getProcessVariables().get("list");
         assertTrue(list.size() == 2);
         assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
-        assertTrue(((FieldAccessJPAEntity)list.get(0)).getId().equals(1L));
+        assertTrue(((FieldAccessJPAEntity) list.get(0)).getId().equals(1L));
         assertTrue(list.get(1) instanceof FieldAccessJPAEntity);
-        assertTrue(((FieldAccessJPAEntity)list.get(1)).getId().equals(2L));
+        assertTrue(((FieldAccessJPAEntity) list.get(1)).getId().equals(2L));
 
         // shuffle list and start a new process
         params.putAll(Collections.singletonMap("list", Arrays.asList(fieldEntity2, fieldEntity)));
@@ -176,9 +167,9 @@ public class JPAEnhancedVariableTest extends AbstractActivitiTestCase {
         list = (List) task.getProcessVariables().get("list");
         assertTrue(list.size() == 2);
         assertTrue(list.get(0) instanceof FieldAccessJPAEntity);
-        assertTrue(((FieldAccessJPAEntity)list.get(0)).getId().equals(2L));
+        assertTrue(((FieldAccessJPAEntity) list.get(0)).getId().equals(2L));
         assertTrue(list.get(1) instanceof FieldAccessJPAEntity);
-        assertTrue(((FieldAccessJPAEntity)list.get(1)).getId().equals(1L));
+        assertTrue(((FieldAccessJPAEntity) list.get(1)).getId().equals(1L));
 
         // start process with mixed jpa entities in list
         try {

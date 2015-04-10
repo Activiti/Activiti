@@ -17,35 +17,36 @@ import org.apache.ibatis.type.TypeReference;
  */
 public class ByteArrayRefTypeHandler extends TypeReference<ByteArrayRef> implements TypeHandler<ByteArrayRef> {
 
-  @Override
-  public void setParameter(PreparedStatement ps, int i, ByteArrayRef parameter, JdbcType jdbcType) throws SQLException {
-    ps.setString(i, getValueToSet(parameter));
-  }
-
-  private String getValueToSet(ByteArrayRef parameter) {
-    if (parameter == null) {
-      // Note that this should not happen: ByteArrayRefs should always be initialized.
-      return null;
+    @Override
+    public void setParameter(PreparedStatement ps, int i, ByteArrayRef parameter, JdbcType jdbcType) throws SQLException {
+        ps.setString(i, getValueToSet(parameter));
     }
-    return parameter.getId();
-  }
-  
-  @Override
-  public ByteArrayRef getResult(ResultSet rs, String columnName) throws SQLException {
-    String id = rs.getString(columnName);
-    return new ByteArrayRef(id);
-  }
 
-  @Override
-  public ByteArrayRef getResult(ResultSet rs, int columnIndex) throws SQLException {
-    String id = rs.getString(columnIndex);
-    return new ByteArrayRef(id);
-  }
+    private String getValueToSet(ByteArrayRef parameter) {
+        if (parameter == null) {
+            // Note that this should not happen: ByteArrayRefs should always be
+            // initialized.
+            return null;
+        }
+        return parameter.getId();
+    }
 
-  @Override
-  public ByteArrayRef getResult(CallableStatement cs, int columnIndex) throws SQLException {
-    String id = cs.getString(columnIndex);
-    return new ByteArrayRef(id);
-  }
+    @Override
+    public ByteArrayRef getResult(ResultSet rs, String columnName) throws SQLException {
+        String id = rs.getString(columnName);
+        return new ByteArrayRef(id);
+    }
+
+    @Override
+    public ByteArrayRef getResult(ResultSet rs, int columnIndex) throws SQLException {
+        String id = rs.getString(columnIndex);
+        return new ByteArrayRef(id);
+    }
+
+    @Override
+    public ByteArrayRef getResult(CallableStatement cs, int columnIndex) throws SQLException {
+        String id = cs.getString(columnIndex);
+        return new ByteArrayRef(id);
+    }
 
 }

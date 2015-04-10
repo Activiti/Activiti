@@ -16,28 +16,27 @@ package org.activiti.engine.impl.cmd;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */
-public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {  
+public class DelegateTaskCmd extends NeedsActiveTaskCmd<Object> {
 
-  private static final long serialVersionUID = 1L;
-  protected String userId;
-  
-  public DelegateTaskCmd(String taskId, String userId) {
-    super(taskId);
-    this.userId = userId;
-  }
-  
-  protected Object execute(CommandContext commandContext, TaskEntity task) {
-    task.delegate(userId);
-    return null;
-  }
-  
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot delegate a suspended task";
-  }
+    private static final long serialVersionUID = 1L;
+    protected String userId;
+
+    public DelegateTaskCmd(String taskId, String userId) {
+        super(taskId);
+        this.userId = userId;
+    }
+
+    protected Object execute(CommandContext commandContext, TaskEntity task) {
+        task.delegate(userId);
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot delegate a suspended task";
+    }
 
 }

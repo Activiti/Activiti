@@ -39,76 +39,76 @@ import org.mockito.MockitoAnnotations;
 
 public class DefaultManagementAgentTest {
 
-  @Mock
-  MBeanServer mbeanServer;
+    @Mock
+    MBeanServer mbeanServer;
 
-  @Mock
-  ObjectInstance instance;
+    @Mock
+    ObjectInstance instance;
 
-  Object object = "object";
-  ObjectName sourceObjectName;
-  ObjectName registeredObjectName;
-  ManagementAgent agent;
+    Object object = "object";
+    ObjectName sourceObjectName;
+    ObjectName registeredObjectName;
+    ManagementAgent agent;
 
-  @Before
-  public void initMocks() throws MalformedObjectNameException {
-    MockitoAnnotations.initMocks(this);
-    sourceObjectName = new ObjectName("domain", "key", "value");
-    registeredObjectName = new ObjectName("domain", "key", "otherValue");
-    JMXConfigurator jmxConfigurator = new JMXConfigurator();
-    agent = new DefaultManagementAgent(jmxConfigurator);
-    agent.setMBeanServer(mbeanServer);
+    @Before
+    public void initMocks() throws MalformedObjectNameException {
+        MockitoAnnotations.initMocks(this);
+        sourceObjectName = new ObjectName("domain", "key", "value");
+        registeredObjectName = new ObjectName("domain", "key", "otherValue");
+        JMXConfigurator jmxConfigurator = new JMXConfigurator();
+        agent = new DefaultManagementAgent(jmxConfigurator);
+        agent.setMBeanServer(mbeanServer);
 
-  }
+    }
 
-  @Test
-  public void testRegisterandUnregister() throws JMException {
-    reset();
+    @Test
+    public void testRegisterandUnregister() throws JMException {
+        reset();
 
-    // Register MBean and return different ObjectName
-    when(mbeanServer.isRegistered(sourceObjectName)).thenReturn(false);
-    when(mbeanServer.registerMBean(any(RequiredModelMBean.class), any(ObjectName.class))).thenReturn(instance);
+        // Register MBean and return different ObjectName
+        when(mbeanServer.isRegistered(sourceObjectName)).thenReturn(false);
+        when(mbeanServer.registerMBean(any(RequiredModelMBean.class), any(ObjectName.class))).thenReturn(instance);
 
-    when(instance.getObjectName()).thenReturn(registeredObjectName);
-    when(mbeanServer.isRegistered(registeredObjectName)).thenReturn(true);
+        when(instance.getObjectName()).thenReturn(registeredObjectName);
+        when(mbeanServer.isRegistered(registeredObjectName)).thenReturn(true);
 
-    agent.register(object, sourceObjectName);
+        agent.register(object, sourceObjectName);
 
-    verify(mbeanServer).isRegistered(sourceObjectName);
-    verify(mbeanServer).registerMBean(any(RequiredModelMBean.class), any(ObjectName.class));
+        verify(mbeanServer).isRegistered(sourceObjectName);
+        verify(mbeanServer).registerMBean(any(RequiredModelMBean.class), any(ObjectName.class));
 
-    assertTrue(agent.isRegistered(sourceObjectName));
+        assertTrue(agent.isRegistered(sourceObjectName));
 
-    agent.unregister(sourceObjectName);
-    verify(mbeanServer).unregisterMBean(registeredObjectName);
-    assertFalse(agent.isRegistered(sourceObjectName));
+        agent.unregister(sourceObjectName);
+        verify(mbeanServer).unregisterMBean(registeredObjectName);
+        assertFalse(agent.isRegistered(sourceObjectName));
 
-  }
+    }
 
-  @Test
-  public void testRegisterExisting() throws JMException {
-    reset(mbeanServer, instance);
+    @Test
+    public void testRegisterExisting() throws JMException {
+        reset(mbeanServer, instance);
 
-    // do not try to reregister it, if it already exists
-    when(mbeanServer.isRegistered(sourceObjectName)).thenReturn(true);
-    agent.register(object, sourceObjectName);
-    verify(mbeanServer, never()).registerMBean(object, sourceObjectName);
-  }
+        // do not try to reregister it, if it already exists
+        when(mbeanServer.isRegistered(sourceObjectName)).thenReturn(true);
+        agent.register(object, sourceObjectName);
+        verify(mbeanServer, never()).registerMBean(object, sourceObjectName);
+    }
 
-  @Test
-  public void testUnRegisterNotExisting() throws JMException {
-    reset(mbeanServer, instance);
+    @Test
+    public void testUnRegisterNotExisting() throws JMException {
+        reset(mbeanServer, instance);
 
-    // ... do not unregister if it does not exist
-    when(mbeanServer.isRegistered(sourceObjectName)).thenReturn(false);
-    when(instance.getObjectName()).thenReturn(registeredObjectName);
+        // ... do not unregister if it does not exist
+        when(mbeanServer.isRegistered(sourceObjectName)).thenReturn(false);
+        when(instance.getObjectName()).thenReturn(registeredObjectName);
 
-    agent.unregister(sourceObjectName);
-    verify(mbeanServer).isRegistered(sourceObjectName);
-    verify(mbeanServer, never()).unregisterMBean(registeredObjectName);
+        agent.unregister(sourceObjectName);
+        verify(mbeanServer).isRegistered(sourceObjectName);
+        verify(mbeanServer, never()).unregisterMBean(registeredObjectName);
 
-    assertFalse(agent.isRegistered(sourceObjectName));
+        assertFalse(agent.isRegistered(sourceObjectName));
 
-  }
+    }
 
 }

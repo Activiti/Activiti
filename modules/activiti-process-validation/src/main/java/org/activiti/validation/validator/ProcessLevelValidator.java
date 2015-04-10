@@ -22,14 +22,14 @@ import org.activiti.validation.ValidationError;
  * @author jbarrez
  */
 public abstract class ProcessLevelValidator extends ValidatorImpl {
-	
-	@Override
-	public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
-		for (Process process : bpmnModel.getProcesses()) {
-			executeValidation(bpmnModel, process, errors);
-		}
-	}
-	
-	protected abstract void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors);
-	
+
+    @Override
+    public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
+        for (Process process : bpmnModel.getProcesses()) {
+            executeValidation(bpmnModel, process, errors);
+        }
+    }
+
+    protected abstract void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors);
+
 }

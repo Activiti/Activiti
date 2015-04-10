@@ -18,32 +18,31 @@ import java.util.Map;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class ResolveTaskCmd extends NeedsActiveTaskCmd<Void> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected Map<String, Object> variables;
+    protected Map<String, Object> variables;
 
-  public ResolveTaskCmd(String taskId, Map<String, Object> variables) {
-    super(taskId);
-    this.variables = variables;
-  }
-  
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    if (variables != null) {
-      task.setVariables(variables);
+    public ResolveTaskCmd(String taskId, Map<String, Object> variables) {
+        super(taskId);
+        this.variables = variables;
     }
-    task.resolve();
-    return null;
-  }
 
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot resolve a suspended task";
-  }
-  
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        if (variables != null) {
+            task.setVariables(variables);
+        }
+        task.resolve();
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot resolve a suspended task";
+    }
+
 }

@@ -10,8 +10,9 @@ import org.springframework.util.Assert;
 import java.io.Serializable;
 
 /**
- * dumb object to demonstrate holding scoped state for the duration of a business process
- *
+ * dumb object to demonstrate holding scoped state for the duration of a
+ * business process
+ * 
  * @author Josh Long
  */
 public class StatefulObject implements Serializable, InitializingBean {
@@ -40,8 +41,7 @@ public class StatefulObject implements Serializable, InitializingBean {
 
         this.customerId = customerId;
 
-        logger.info("setting this {} instances 'customerId' to {}. The current executionId is {}",
-                StatefulObject.class.getName(), this.customerId, this.executionId);
+        logger.info("setting this {} instances 'customerId' to {}. The current executionId is {}", StatefulObject.class.getName(), this.customerId, this.executionId);
 
     }
 
@@ -50,13 +50,17 @@ public class StatefulObject implements Serializable, InitializingBean {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
 
         StatefulObject that = (StatefulObject) o;
 
-        if (visitedCount != that.visitedCount) return false;
-        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        if (visitedCount != that.visitedCount)
+            return false;
+        if (name != null ? !name.equals(that.name) : that.name != null)
+            return false;
 
         return true;
     }
@@ -70,10 +74,7 @@ public class StatefulObject implements Serializable, InitializingBean {
 
     @Override
     public String toString() {
-        return "StatefulObject{" +
-                "name='" + name + '\'' +
-                ", visitedCount=" + visitedCount +
-                '}';
+        return "StatefulObject{" + "name='" + name + '\'' + ", visitedCount=" + visitedCount + '}';
     }
 
     public void increment() {

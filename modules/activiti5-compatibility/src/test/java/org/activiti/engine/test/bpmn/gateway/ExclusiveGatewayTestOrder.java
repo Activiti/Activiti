@@ -15,38 +15,37 @@ package org.activiti.engine.test.bpmn.gateway;
 
 import java.io.Serializable;
 
-
 /**
  * @author Joram Barrez
  */
 public class ExclusiveGatewayTestOrder implements Serializable {
-  
-  private static final long serialVersionUID = 1L;
-  
-  private int price;
-  
-  public ExclusiveGatewayTestOrder(int price) {
-    this.price = price;
-  }
-  
-  public void setPrice(int price) {
-    this.price = price;
-  }
-  
-  public int getPrice() {
-    return price;
-  }
-  
-  public boolean isBasic() {
-    return price <= 100;
-  }
-  
-  public boolean isStandard() { 
-    return price > 100 && price < 250; 
-  }
-  
-  public boolean isGold() {
-    return price >= 250;
-  }
+
+    private static final long serialVersionUID = 1L;
+
+    private int price;
+
+    public ExclusiveGatewayTestOrder(int price) {
+        this.price = price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public boolean isBasic() {
+        return price <= 100;
+    }
+
+    public boolean isStandard() {
+        return price > 100 && price < 250;
+    }
+
+    public boolean isGold() {
+        return price >= 250;
+    }
 
 }

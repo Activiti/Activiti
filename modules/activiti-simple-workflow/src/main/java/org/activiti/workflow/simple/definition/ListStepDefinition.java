@@ -22,7 +22,6 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
-
 /**
  * @author Tijs Rademakers
  */
@@ -30,68 +29,69 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 @JsonTypeName("list")
 public class ListStepDefinition<T> extends AbstractStepDefinitionContainer<ListStepDefinition<T>> implements StepDefinition {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected StepListContainer<T> stepListContainer;
-  protected String name;
-  protected Map<String, Object> parameters = new HashMap<String, Object>();
-  
-  public ListStepDefinition() {}
-  
-  public ListStepDefinition(StepListContainer<T> stepListContainer) {
-    this.stepListContainer = stepListContainer;
-  }
-  
-  public T endList() {
-    if (stepListContainer == null) {
-      throw new SimpleWorkflowException("Can only call endList when inList was called on a workflow definition first");
+    private static final long serialVersionUID = 1L;
+
+    protected StepListContainer<T> stepListContainer;
+    protected String name;
+    protected Map<String, Object> parameters = new HashMap<String, Object>();
+
+    public ListStepDefinition() {
     }
-    
-    return (T) stepListContainer;
-  }
 
-  @Override
-  public ListStepDefinition<T> clone() {
-    ListStepDefinition<T> clone = new ListStepDefinition<T>();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  @Override
-  public void setValues(StepDefinition otherDefinition) {
-    if(!(otherDefinition instanceof ListStepDefinition)) {
-      throw new SimpleWorkflowException("An instance of SerialStepsDefinition is required to set values");
+    public ListStepDefinition(StepListContainer<T> stepListContainer) {
+        this.stepListContainer = stepListContainer;
     }
-    
-    ListStepDefinition<T> definition = (ListStepDefinition<T>) otherDefinition;
-    setId(definition.getId());
-    setName(definition.getName());
 
-    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
-    
-    steps = new ArrayList<StepDefinition>();
-    if (definition.getSteps() != null && !definition.getSteps().isEmpty()) {
-      for (StepDefinition stepDefinition : definition.getSteps()) {
-        steps.add(stepDefinition.clone());
-      }
+    public T endList() {
+        if (stepListContainer == null) {
+            throw new SimpleWorkflowException("Can only call endList when inList was called on a workflow definition first");
+        }
+
+        return (T) stepListContainer;
     }
-  }
-  
-  public String getName() {
-    return name;
-  }
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    @Override
+    public ListStepDefinition<T> clone() {
+        ListStepDefinition<T> clone = new ListStepDefinition<T>();
+        clone.setValues(this);
+        return clone;
+    }
 
-  @Override
-  @JsonSerialize(include=Inclusion.NON_EMPTY)
-  public Map<String, Object> getParameters() {
-    return parameters;
-  }
-  
-  public void setParameters(Map<String,Object> parameters) {
-    this.parameters = parameters;
-  }
+    @Override
+    public void setValues(StepDefinition otherDefinition) {
+        if (!(otherDefinition instanceof ListStepDefinition)) {
+            throw new SimpleWorkflowException("An instance of SerialStepsDefinition is required to set values");
+        }
+
+        ListStepDefinition<T> definition = (ListStepDefinition<T>) otherDefinition;
+        setId(definition.getId());
+        setName(definition.getName());
+
+        setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
+
+        steps = new ArrayList<StepDefinition>();
+        if (definition.getSteps() != null && !definition.getSteps().isEmpty()) {
+            for (StepDefinition stepDefinition : definition.getSteps()) {
+                steps.add(stepDefinition.clone());
+            }
+        }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    @Override
+    @JsonSerialize(include = Inclusion.NON_EMPTY)
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
 }

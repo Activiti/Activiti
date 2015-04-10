@@ -20,47 +20,46 @@ import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 
 import com.vaadin.ui.Label;
 
-
 /**
  * @author Joram Barrez
  */
 public class PriorityLabel extends Label {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected int priority;
-  protected I18nManager i18nManager;
 
-  public PriorityLabel(Task task, I18nManager i18nManager) {
-    this.i18nManager = i18nManager;
-    this.priority = task.getPriority();
-   
-    addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-    setSizeUndefined();
-    setValue(priority);
-  }
-  
-  public int getPriority() {
-    return priority;
-  }
-  
-  @Override
-  public void setValue(Object newValue) {
-    if (newValue instanceof Integer) {
-      priority = (Integer) newValue;
-      if (priority < Constants.TASK_PRIORITY_MEDIUM) {
-        super.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW));
-        addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_LOW);
-      } else if (priority == Constants.TASK_PRIORITY_MEDIUM) {
-        super.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM));
-        addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_MEDIUM);
-      } else if (priority > Constants.TASK_PRIORITY_MEDIUM) {
-        super.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_HIGH));
-        addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_HIGH);
-      }
-    } else {
-      throw new IllegalArgumentException("Can only set integer as new value for PriorityLabel");
+    private static final long serialVersionUID = 1L;
+
+    protected int priority;
+    protected I18nManager i18nManager;
+
+    public PriorityLabel(Task task, I18nManager i18nManager) {
+        this.i18nManager = i18nManager;
+        this.priority = task.getPriority();
+
+        addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        setSizeUndefined();
+        setValue(priority);
     }
-  }
+
+    public int getPriority() {
+        return priority;
+    }
+
+    @Override
+    public void setValue(Object newValue) {
+        if (newValue instanceof Integer) {
+            priority = (Integer) newValue;
+            if (priority < Constants.TASK_PRIORITY_MEDIUM) {
+                super.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_LOW));
+                addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_LOW);
+            } else if (priority == Constants.TASK_PRIORITY_MEDIUM) {
+                super.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_MEDIUM));
+                addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_MEDIUM);
+            } else if (priority > Constants.TASK_PRIORITY_MEDIUM) {
+                super.setValue(i18nManager.getMessage(Messages.TASK_PRIORITY_HIGH));
+                addStyleName(ExplorerLayout.STYLE_TASK_HEADER_PRIORITY_HIGH);
+            }
+        } else {
+            throw new IllegalArgumentException("Can only set integer as new value for PriorityLabel");
+        }
+    }
 
 }

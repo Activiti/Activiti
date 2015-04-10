@@ -19,38 +19,37 @@ import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.util.ObjectProperty;
 
-
 /**
  * @author Joram Barrez
  */
 public class MapItem implements Item {
-  
-  private static final long serialVersionUID = 5079849025046231994L;
-  
-  protected Map<? extends Object, Object> map;
-  
-  public MapItem(Map<? extends Object, Object> map) {
-    this.map = map;
-  }
-  
-  public Property getItemProperty(Object id) {
-    Object obj = map.get(id);
-    if (obj == null) {
-      return null;
+
+    private static final long serialVersionUID = 5079849025046231994L;
+
+    protected Map<? extends Object, Object> map;
+
+    public MapItem(Map<? extends Object, Object> map) {
+        this.map = map;
     }
-    return new ObjectProperty<Object>(obj);
-  }
 
-  public Collection< ? > getItemPropertyIds() {
-    return map.keySet();
-  }
+    public Property getItemProperty(Object id) {
+        Object obj = map.get(id);
+        if (obj == null) {
+            return null;
+        }
+        return new ObjectProperty<Object>(obj);
+    }
 
-  public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException();
-  }
+    public Collection<?> getItemPropertyIds() {
+        return map.keySet();
+    }
 
-  public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
-    throw new UnsupportedOperationException();
-  }
+    public boolean addItemProperty(Object id, Property property) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
+
+    public boolean removeItemProperty(Object id) throws UnsupportedOperationException {
+        throw new UnsupportedOperationException();
+    }
 
 }

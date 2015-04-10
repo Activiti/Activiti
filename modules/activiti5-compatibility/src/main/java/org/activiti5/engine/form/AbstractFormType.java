@@ -13,8 +13,6 @@
 
 package org.activiti5.engine.form;
 
-
-
 /**
  * Custom form types should extend this abstract class.
  * 
@@ -22,15 +20,15 @@ package org.activiti5.engine.form;
  * @author Joram Barrez
  */
 public abstract class AbstractFormType implements FormType {
-	
-  private static final long serialVersionUID = 1L;
 
-  public abstract Object convertFormValueToModelValue(String propertyValue);
+    private static final long serialVersionUID = 1L;
 
-  public abstract String convertModelValueToFormValue(Object modelValue);
+    public abstract Object convertFormValueToModelValue(String propertyValue);
 
-  public Object getInformation(String key) {
-    return null;
-  }
+    public abstract String convertModelValueToFormValue(Object modelValue);
+
+    public Object getInformation(String key) {
+        return null;
+    }
 
 }

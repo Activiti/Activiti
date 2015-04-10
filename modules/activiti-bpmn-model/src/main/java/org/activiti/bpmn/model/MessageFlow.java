@@ -17,67 +17,67 @@ package org.activiti.bpmn.model;
  */
 public class MessageFlow extends BaseElement {
 
-  protected String name;
-  protected String sourceRef;
-  protected String targetRef;
-  protected String messageRef;
-  
-  public MessageFlow() {
-  	
-  }
-  
-  public MessageFlow(String sourceRef, String targetRef) {
-  	this.sourceRef = sourceRef;
-  	this.targetRef = targetRef;
-  }
+    protected String name;
+    protected String sourceRef;
+    protected String targetRef;
+    protected String messageRef;
 
-  public String getName() {
-    return name;
-  }
+    public MessageFlow() {
 
-  public void setName(String name) {
-    this.name = name;
-  }
+    }
 
-  public String getSourceRef() {
-    return sourceRef;
-  }
-  
-  public void setSourceRef(String sourceRef) {
-    this.sourceRef = sourceRef;
-  }
-  
-  public String getTargetRef() {
-    return targetRef;
-  }
-  
-  public void setTargetRef(String targetRef) {
-    this.targetRef = targetRef;
-  }
-  
-  public String getMessageRef() {
-    return messageRef;
-  }
+    public MessageFlow(String sourceRef, String targetRef) {
+        this.sourceRef = sourceRef;
+        this.targetRef = targetRef;
+    }
 
-  public void setMessageRef(String messageRef) {
-    this.messageRef = messageRef;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public String toString() {
-    return sourceRef + " --> " + targetRef;
-  }
-  
-  public MessageFlow clone() {
-    MessageFlow clone = new MessageFlow();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  public void setValues(MessageFlow otherFlow) {
-    super.setValues(otherFlow);
-    setName(otherFlow.getName());
-    setSourceRef(otherFlow.getSourceRef());
-    setTargetRef(otherFlow.getTargetRef());
-    setMessageRef(otherFlow.getMessageRef());
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getSourceRef() {
+        return sourceRef;
+    }
+
+    public void setSourceRef(String sourceRef) {
+        this.sourceRef = sourceRef;
+    }
+
+    public String getTargetRef() {
+        return targetRef;
+    }
+
+    public void setTargetRef(String targetRef) {
+        this.targetRef = targetRef;
+    }
+
+    public String getMessageRef() {
+        return messageRef;
+    }
+
+    public void setMessageRef(String messageRef) {
+        this.messageRef = messageRef;
+    }
+
+    public String toString() {
+        return sourceRef + " --> " + targetRef;
+    }
+
+    public MessageFlow clone() {
+        MessageFlow clone = new MessageFlow();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(MessageFlow otherFlow) {
+        super.setValues(otherFlow);
+        setName(otherFlow.getName());
+        setSourceRef(otherFlow.getSourceRef());
+        setTargetRef(otherFlow.getTargetRef());
+        setMessageRef(otherFlow.getMessageRef());
+    }
 }

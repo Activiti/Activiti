@@ -29,51 +29,55 @@ import org.activiti.explorer.ui.task.TaskDetailPanel;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-
 /**
  * @author Joram Barrez
  */
 public class ChangeOwnershipListener implements ClickListener {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected Task task;
-  protected TaskDetailPanel taskDetailPanel;
-  protected I18nManager i18nManager;
-  
-  public ChangeOwnershipListener(Task task, TaskDetailPanel taskDetailPanel) { // changeAssigne == false -> changing owner
-    this.task = task;
-    this.taskDetailPanel = taskDetailPanel;
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-  }
-  
-  public void buttonClick(ClickEvent event) {
-    
-    List<String> ignoredIds = null;
-    if (task.getOwner() != null) {
-      ignoredIds = Arrays.asList(task.getOwner());
-    }
-    
-    final SelectUsersPopupWindow involvePeoplePopupWindow = 
-        new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER), false, ignoredIds);
-    
-    involvePeoplePopupWindow.addListener(new SubmitEventListener() {
-      private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-      protected void submitted(SubmitEvent event) {
-        // Update owner
-        String selectedUser = involvePeoplePopupWindow.getSelectedUserId();
-        task.setOwner(selectedUser);
-        ProcessEngines.getDefaultProcessEngine().getTaskService().setOwner(task.getId(), selectedUser);
-        
-        // Update UI
-        taskDetailPanel.notifyOwnerChanged();
-      }
-      protected void cancelled(SubmitEvent event) {
-      }
-    });
-    
-    ExplorerApp.get().getViewManager().showPopupWindow(involvePeoplePopupWindow);
-  }
-  
+    protected Task task;
+    protected TaskDetailPanel taskDetailPanel;
+    protected I18nManager i18nManager;
+
+    public ChangeOwnershipListener(Task task, TaskDetailPanel taskDetailPanel) { // changeAssigne
+                                                                                 // ==
+                                                                                 // false
+                                                                                 // ->
+                                                                                 // changing
+                                                                                 // owner
+        this.task = task;
+        this.taskDetailPanel = taskDetailPanel;
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+    }
+
+    public void buttonClick(ClickEvent event) {
+
+        List<String> ignoredIds = null;
+        if (task.getOwner() != null) {
+            ignoredIds = Arrays.asList(task.getOwner());
+        }
+
+        final SelectUsersPopupWindow involvePeoplePopupWindow = new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER), false, ignoredIds);
+
+        involvePeoplePopupWindow.addListener(new SubmitEventListener() {
+            private static final long serialVersionUID = 1L;
+
+            protected void submitted(SubmitEvent event) {
+                // Update owner
+                String selectedUser = involvePeoplePopupWindow.getSelectedUserId();
+                task.setOwner(selectedUser);
+                ProcessEngines.getDefaultProcessEngine().getTaskService().setOwner(task.getId(), selectedUser);
+
+                // Update UI
+                taskDetailPanel.notifyOwnerChanged();
+            }
+
+            protected void cancelled(SubmitEvent event) {
+            }
+        });
+
+        ExplorerApp.get().getViewManager().showPopupWindow(involvePeoplePopupWindow);
+    }
+
 }

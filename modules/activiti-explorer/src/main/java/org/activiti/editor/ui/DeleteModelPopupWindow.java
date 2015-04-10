@@ -30,84 +30,83 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class DeleteModelPopupWindow extends PopupWindow implements ModelDataJsonConstants {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected I18nManager i18nManager;
-  protected VerticalLayout windowLayout;
-  protected Model modelData;
-  
-  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-  
-  public DeleteModelPopupWindow(Model model) {
-    this.modelData = model;
-    this.windowLayout = (VerticalLayout) getContent();
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    
-    initWindow();
-    addDeleteWarning();
-    addButtons();
-  }
-  
-  protected void initWindow() {
-    windowLayout.setSpacing(true);
-    addStyleName(Reindeer.WINDOW_LIGHT);
-    setModal(true);
-    setWidth("300px");
-    center();
-    
-    setCaption(i18nManager.getMessage(Messages.PROCESS_DELETE_POPUP_CAPTION, modelData.getName()));
-  }
-  
-  protected void addDeleteWarning() {
-    Label deleteLabel = new Label(i18nManager.getMessage(Messages.PROCESS_DELETE_POPUP_MESSAGE));
-    deleteLabel.addStyleName(Reindeer.LABEL_SMALL);
-    addComponent(deleteLabel);
-    
-    // Some empty space
-    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-    addComponent(emptySpace);
-  }
-  
-  protected void addButtons() {
-    // Cancel
-    Button cancelButton = new Button(i18nManager.getMessage(Messages.BUTTON_CANCEL));
-    cancelButton.addStyleName(Reindeer.BUTTON_SMALL);
-    cancelButton.addListener(new ClickListener() {
-      
-      private static final long serialVersionUID = 1L;
-      
-      public void buttonClick(ClickEvent event) {
-        close();
-      }
-    });
-    
-    // Convert
-    Button deleteButton = new Button(i18nManager.getMessage(Messages.PROCESS_DELETE_POPUP_DELETE_BUTTON));
-    deleteButton.addStyleName(Reindeer.BUTTON_SMALL);
-    deleteButton.addListener(new ClickListener() {
-      
-      private static final long serialVersionUID = 1L;
 
-      public void buttonClick(ClickEvent event) {
-        repositoryService.deleteModel(modelData.getId());
-        close();
-        ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage();
-      }
-    });
-    
-    // Alignment
-    HorizontalLayout buttonLayout = new HorizontalLayout();
-    buttonLayout.setSpacing(true);
-    buttonLayout.addComponent(cancelButton);
-    buttonLayout.addComponent(deleteButton);
-    addComponent(buttonLayout);
-    windowLayout.setComponentAlignment(buttonLayout, Alignment.BOTTOM_RIGHT);
-  }
+    private static final long serialVersionUID = 1L;
+
+    protected I18nManager i18nManager;
+    protected VerticalLayout windowLayout;
+    protected Model modelData;
+
+    protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+
+    public DeleteModelPopupWindow(Model model) {
+        this.modelData = model;
+        this.windowLayout = (VerticalLayout) getContent();
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+
+        initWindow();
+        addDeleteWarning();
+        addButtons();
+    }
+
+    protected void initWindow() {
+        windowLayout.setSpacing(true);
+        addStyleName(Reindeer.WINDOW_LIGHT);
+        setModal(true);
+        setWidth("300px");
+        center();
+
+        setCaption(i18nManager.getMessage(Messages.PROCESS_DELETE_POPUP_CAPTION, modelData.getName()));
+    }
+
+    protected void addDeleteWarning() {
+        Label deleteLabel = new Label(i18nManager.getMessage(Messages.PROCESS_DELETE_POPUP_MESSAGE));
+        deleteLabel.addStyleName(Reindeer.LABEL_SMALL);
+        addComponent(deleteLabel);
+
+        // Some empty space
+        Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+        addComponent(emptySpace);
+    }
+
+    protected void addButtons() {
+        // Cancel
+        Button cancelButton = new Button(i18nManager.getMessage(Messages.BUTTON_CANCEL));
+        cancelButton.addStyleName(Reindeer.BUTTON_SMALL);
+        cancelButton.addListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+                close();
+            }
+        });
+
+        // Convert
+        Button deleteButton = new Button(i18nManager.getMessage(Messages.PROCESS_DELETE_POPUP_DELETE_BUTTON));
+        deleteButton.addStyleName(Reindeer.BUTTON_SMALL);
+        deleteButton.addListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+                repositoryService.deleteModel(modelData.getId());
+                close();
+                ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage();
+            }
+        });
+
+        // Alignment
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setSpacing(true);
+        buttonLayout.addComponent(cancelButton);
+        buttonLayout.addComponent(deleteButton);
+        addComponent(buttonLayout);
+        windowLayout.setComponentAlignment(buttonLayout, Alignment.BOTTOM_RIGHT);
+    }
 
 }

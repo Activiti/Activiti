@@ -23,18 +23,18 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class Assignment {
 
-  protected Expression fromExpression;
-  
-  protected Expression toExpression;
-  
-  public Assignment(Expression fromExpression, Expression toExpression) {
-    this.fromExpression = fromExpression;
-    this.toExpression = toExpression;
-  }
-  
-  public void evaluate(ActivityExecution execution) {
-    VariableScope variableScope = (VariableScope) execution;
-    Object value = this.fromExpression.getValue(variableScope);
-    this.toExpression.setValue(value, variableScope);
-  }
+    protected Expression fromExpression;
+
+    protected Expression toExpression;
+
+    public Assignment(Expression fromExpression, Expression toExpression) {
+        this.fromExpression = fromExpression;
+        this.toExpression = toExpression;
+    }
+
+    public void evaluate(ActivityExecution execution) {
+        VariableScope variableScope = (VariableScope) execution;
+        Object value = this.fromExpression.getValue(variableScope);
+        this.toExpression.setValue(value, variableScope);
+    }
 }

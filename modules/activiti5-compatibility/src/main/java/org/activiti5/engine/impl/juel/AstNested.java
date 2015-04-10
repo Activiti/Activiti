@@ -17,36 +17,35 @@ package org.activiti5.engine.impl.juel;
 
 import org.activiti5.engine.impl.javax.el.ELContext;
 
-
 public final class AstNested extends AstRightValue {
-	private final AstNode child;
+    private final AstNode child;
 
-	public AstNested(AstNode child) {
-		this.child = child;
-	}
+    public AstNested(AstNode child) {
+        this.child = child;
+    }
 
-	@Override
-	public Object eval(Bindings bindings, ELContext context) {
-		return child.eval(bindings, context);
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return child.eval(bindings, context);
+    }
 
-	@Override
-	public String toString() {
-		return "(...)";
-	}	
+    @Override
+    public String toString() {
+        return "(...)";
+    }
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append("(");
-		child.appendStructure(b, bindings);
-		b.append(")");
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append("(");
+        child.appendStructure(b, bindings);
+        b.append(")");
+    }
 
-	public int getCardinality() {
-		return 1;
-	}
+    public int getCardinality() {
+        return 1;
+    }
 
-	public AstNode getChild(int i) {
-		return i == 0 ? child : null;
-	}
+    public AstNode getChild(int i) {
+        return i == 0 ? child : null;
+    }
 }

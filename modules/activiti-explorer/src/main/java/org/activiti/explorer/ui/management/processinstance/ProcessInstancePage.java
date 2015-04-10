@@ -28,72 +28,81 @@ import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.ui.Table;
 
-
 /**
  * @author Joram Barrez
  */
 public class ProcessInstancePage extends ManagementPage {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected LazyLoadingContainer processInstanceContainer;
-  protected String processInstanceId; 
-  
-  public ProcessInstancePage() {
-    ExplorerApp.get().setCurrentUriFragment(
-      new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
-  }
-  
-  public ProcessInstancePage(String processInstanceId) {
-    this();
-    this.processInstanceId = processInstanceId;
-  }
-  
-  @Override
-  protected void initUi() {
-    super.initUi();
-    
-    if (processInstanceId == null) {
-      selectElement(0);
-    } else {
-      selectElement(processInstanceContainer.getIndexForObjectId(processInstanceId));
+    private static final long serialVersionUID = 1L;
+
+    protected LazyLoadingContainer processInstanceContainer;
+    protected String processInstanceId;
+
+    public ProcessInstancePage() {
+        ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
     }
-  }
-  
-  protected Table createList() {
-    final Table table = new Table();
-    
-    LazyLoadingQuery query = new ProcessInstanceListQuery();
-    processInstanceContainer = new LazyLoadingContainer(query);
-    table.setContainerDataSource(processInstanceContainer);
-    
-    table.addListener(new Property.ValueChangeListener() {
-      private static final long serialVersionUID = 1L;
-      public void valueChange(ValueChangeEvent event) {
-        Item item = table.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
-        if(item != null) {
-          String processInstanceId = (String) item.getItemProperty("id").getValue();
-          setDetailComponent(new AlfrescoProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
-          
-          // Update URL
-          ExplorerApp.get().setCurrentUriFragment(
-            new UriFragment(ProcessInstanceNavigator.PROCESS_INSTANCE_URL_PART, processInstanceId));
+
+    public ProcessInstancePage(String processInstanceId) {
+        this();
+        this.processInstanceId = processInstanceId;
+    }
+
+    @Override
+    protected void initUi() {
+        super.initUi();
+
+        if (processInstanceId == null) {
+            selectElement(0);
         } else {
-          // Nothing is selected
-          setDetailComponent(null);
-          ExplorerApp.get().setCurrentUriFragment(new UriFragment(ProcessInstanceNavigator.PROCESS_INSTANCE_URL_PART));
+            selectElement(processInstanceContainer.getIndexForObjectId(processInstanceId));
         }
-      }
-    });
-    
-    // Create column headers
-    table.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
-    table.setColumnWidth("icon", 22);
-    
-    table.addContainerProperty("name", String.class, null);
-    table.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-    
-    return table;
-  }
-  
+    }
+
+    protected Table createList() {
+        final Table table = new Table();
+
+        LazyLoadingQuery query = new ProcessInstanceListQuery();
+        processInstanceContainer = new LazyLoadingContainer(query);
+        table.setContainerDataSource(processInstanceContainer);
+
+        table.addListener(new Property.ValueChangeListener() {
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+                Item item = table.getItem(event.getProperty().getValue()); // the
+                                                                           // value
+                                                                           // of
+                                                                           // the
+                                                                           // property
+                                                                           // is
+                                                                           // the
+                                                                           // itemId
+                                                                           // of
+                                                                           // the
+                                                                           // table
+                                                                           // entry
+                if (item != null) {
+                    String processInstanceId = (String) item.getItemProperty("id").getValue();
+                    setDetailComponent(new AlfrescoProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
+
+                    // Update URL
+                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(ProcessInstanceNavigator.PROCESS_INSTANCE_URL_PART, processInstanceId));
+                } else {
+                    // Nothing is selected
+                    setDetailComponent(null);
+                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(ProcessInstanceNavigator.PROCESS_INSTANCE_URL_PART));
+                }
+            }
+        });
+
+        // Create column headers
+        table.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
+        table.setColumnWidth("icon", 22);
+
+        table.addContainerProperty("name", String.class, null);
+        table.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+
+        return table;
+    }
+
 }

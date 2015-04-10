@@ -10,28 +10,24 @@ import java.util.Map;
 
 public class NativeModelQueryImpl extends AbstractNativeQuery<NativeModelQuery, Model> implements NativeModelQuery {
 
-  private static final long serialVersionUID = 1L;
-  
-  public NativeModelQueryImpl(CommandContext commandContext) {
-    super(commandContext);
-  }
+    private static final long serialVersionUID = 1L;
 
-  public NativeModelQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
+    public NativeModelQueryImpl(CommandContext commandContext) {
+        super(commandContext);
+    }
 
- //results ////////////////////////////////////////////////////////////////
-  
-  public List<Model> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext
-      .getModelEntityManager()
-      .findModelsByNativeQuery(parameterMap, firstResult, maxResults);
-  }
-  
-  public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext
-      .getModelEntityManager()
-      .findModelCountByNativeQuery(parameterMap);
-  }
+    public NativeModelQueryImpl(CommandExecutor commandExecutor) {
+        super(commandExecutor);
+    }
+
+    // results ////////////////////////////////////////////////////////////////
+
+    public List<Model> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
+        return commandContext.getModelEntityManager().findModelsByNativeQuery(parameterMap, firstResult, maxResults);
+    }
+
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext.getModelEntityManager().findModelCountByNativeQuery(parameterMap);
+    }
 
 }

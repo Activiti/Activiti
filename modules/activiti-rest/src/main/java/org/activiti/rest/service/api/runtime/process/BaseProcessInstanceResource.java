@@ -35,170 +35,164 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class BaseProcessInstanceResource {
 
-  private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
+    private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 
-  static {
-    allowedSortProperties.put("processDefinitionId", ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
-    allowedSortProperties.put("processDefinitionKey", ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY);
-    allowedSortProperties.put("id", ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID);
-    allowedSortProperties.put("tenantId", ProcessInstanceQueryProperty.TENANT_ID);
-  }
-
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected RuntimeService runtimeService;
-  
-  protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest, 
-      Map<String, String> requestParams) {
-    
-    ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
-
-    // Populate query based on request
-    if (queryRequest.getProcessInstanceId() != null) {
-      query.processInstanceId(queryRequest.getProcessInstanceId());
-    }
-    if (queryRequest.getProcessDefinitionKey() != null) {
-      query.processDefinitionKey(queryRequest.getProcessDefinitionKey());
-    }
-    if (queryRequest.getProcessDefinitionId() != null) {
-      query.processDefinitionId(queryRequest.getProcessDefinitionId());
-    }
-    if (queryRequest.getProcessBusinessKey() != null) {
-      query.processInstanceBusinessKey(queryRequest.getProcessBusinessKey());
-    }
-    if (queryRequest.getInvolvedUser() != null) {
-      query.involvedUser(queryRequest.getInvolvedUser());
-    }
-    if (queryRequest.getSuspended() != null) {
-      if (queryRequest.getSuspended()) {
-        query.suspended();
-      } else {
-        query.active();
-      }
-    }
-    if (queryRequest.getSubProcessInstanceId() != null) {
-      query.subProcessInstanceId(queryRequest.getSubProcessInstanceId());
-    }
-    if (queryRequest.getSuperProcessInstanceId() != null) {
-      query.superProcessInstanceId(queryRequest.getSuperProcessInstanceId());
-    }
-    if (queryRequest.getExcludeSubprocesses() != null) {
-      query.excludeSubprocesses(queryRequest.getExcludeSubprocesses());
-    }
-    if (queryRequest.getIncludeProcessVariables() != null) {
-      if (queryRequest.getIncludeProcessVariables()) {
-        query.includeProcessVariables();
-      }
-    }
-    if (queryRequest.getVariables() != null) {
-      addVariables(query, queryRequest.getVariables());
-    }
-    
-    if(queryRequest.getTenantId() != null) {
-    	query.processInstanceTenantId(queryRequest.getTenantId());
-    }
-    
-    if(queryRequest.getTenantIdLike() != null) {
-    	query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
-    }
-    
-    if(Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
-    	query.processInstanceWithoutTenantId();
+    static {
+        allowedSortProperties.put("processDefinitionId", ProcessInstanceQueryProperty.PROCESS_DEFINITION_ID);
+        allowedSortProperties.put("processDefinitionKey", ProcessInstanceQueryProperty.PROCESS_DEFINITION_KEY);
+        allowedSortProperties.put("id", ProcessInstanceQueryProperty.PROCESS_INSTANCE_ID);
+        allowedSortProperties.put("tenantId", ProcessInstanceQueryProperty.TENANT_ID);
     }
 
-    return new ProcessInstancePaginateList(restResponseFactory)
-        .paginateList(requestParams, queryRequest, query, "id", allowedSortProperties);
-  }
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
 
-  protected void addVariables(ProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {
-    for (QueryVariable variable : variables) {
-      if (variable.getVariableOperation() == null) {
-        throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
-      }
-      if (variable.getValue() == null) {
-        throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
-      }
+    @Autowired
+    protected RuntimeService runtimeService;
 
-      boolean nameLess = variable.getName() == null;
+    protected DataResponse getQueryResponse(ProcessInstanceQueryRequest queryRequest, Map<String, String> requestParams) {
 
-      Object actualValue = restResponseFactory.getVariableValue(variable);
+        ProcessInstanceQuery query = runtimeService.createProcessInstanceQuery();
 
-      // A value-only query is only possible using equals-operator
-      if (nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
-        throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
-      }
-
-      switch (variable.getVariableOperation()) {
-
-      case EQUALS:
-        if (nameLess) {
-          processInstanceQuery.variableValueEquals(actualValue);
-        } else {
-          processInstanceQuery.variableValueEquals(variable.getName(), actualValue);
+        // Populate query based on request
+        if (queryRequest.getProcessInstanceId() != null) {
+            query.processInstanceId(queryRequest.getProcessInstanceId());
         }
-        break;
-
-      case EQUALS_IGNORE_CASE:
-        if (actualValue instanceof String) {
-          processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
-        } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                  + actualValue.getClass().getName());
+        if (queryRequest.getProcessDefinitionKey() != null) {
+            query.processDefinitionKey(queryRequest.getProcessDefinitionKey());
         }
-        break;
-
-      case NOT_EQUALS:
-        processInstanceQuery.variableValueNotEquals(variable.getName(), actualValue);
-        break;
-
-      case NOT_EQUALS_IGNORE_CASE:
-        if (actualValue instanceof String) {
-          processInstanceQuery.variableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
-        } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: "
-                  + actualValue.getClass().getName());
+        if (queryRequest.getProcessDefinitionId() != null) {
+            query.processDefinitionId(queryRequest.getProcessDefinitionId());
         }
-        break;
-        
-      case LIKE:
-        if (actualValue instanceof String) {
-          processInstanceQuery.variableValueLike(variable.getName(), (String) actualValue);
-        } else {
-          throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: "
-                  + actualValue.getClass().getName());
+        if (queryRequest.getProcessBusinessKey() != null) {
+            query.processInstanceBusinessKey(queryRequest.getProcessBusinessKey());
         }
-        break;
-        
-      case GREATER_THAN:
-        processInstanceQuery.variableValueGreaterThan(variable.getName(), actualValue);
-        break;
-        
-      case GREATER_THAN_OR_EQUALS:
-        processInstanceQuery.variableValueGreaterThanOrEqual(variable.getName(), actualValue);
-        break;
-        
-      case LESS_THAN:
-        processInstanceQuery.variableValueLessThan(variable.getName(), actualValue);
-        break;
-        
-      case LESS_THAN_OR_EQUALS:
-        processInstanceQuery.variableValueLessThanOrEqual(variable.getName(), actualValue);
-        break;
-        
-      default:
-        throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
-      }
+        if (queryRequest.getInvolvedUser() != null) {
+            query.involvedUser(queryRequest.getInvolvedUser());
+        }
+        if (queryRequest.getSuspended() != null) {
+            if (queryRequest.getSuspended()) {
+                query.suspended();
+            } else {
+                query.active();
+            }
+        }
+        if (queryRequest.getSubProcessInstanceId() != null) {
+            query.subProcessInstanceId(queryRequest.getSubProcessInstanceId());
+        }
+        if (queryRequest.getSuperProcessInstanceId() != null) {
+            query.superProcessInstanceId(queryRequest.getSuperProcessInstanceId());
+        }
+        if (queryRequest.getExcludeSubprocesses() != null) {
+            query.excludeSubprocesses(queryRequest.getExcludeSubprocesses());
+        }
+        if (queryRequest.getIncludeProcessVariables() != null) {
+            if (queryRequest.getIncludeProcessVariables()) {
+                query.includeProcessVariables();
+            }
+        }
+        if (queryRequest.getVariables() != null) {
+            addVariables(query, queryRequest.getVariables());
+        }
+
+        if (queryRequest.getTenantId() != null) {
+            query.processInstanceTenantId(queryRequest.getTenantId());
+        }
+
+        if (queryRequest.getTenantIdLike() != null) {
+            query.processInstanceTenantIdLike(queryRequest.getTenantIdLike());
+        }
+
+        if (Boolean.TRUE.equals(queryRequest.getWithoutTenantId())) {
+            query.processInstanceWithoutTenantId();
+        }
+
+        return new ProcessInstancePaginateList(restResponseFactory).paginateList(requestParams, queryRequest, query, "id", allowedSortProperties);
     }
-  }
-  
-  protected ProcessInstance getProcessInstanceFromRequest(String processInstanceId) { 
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery()
-           .processInstanceId(processInstanceId).singleResult();
-    if (processInstance == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.");
+
+    protected void addVariables(ProcessInstanceQuery processInstanceQuery, List<QueryVariable> variables) {
+        for (QueryVariable variable : variables) {
+            if (variable.getVariableOperation() == null) {
+                throw new ActivitiIllegalArgumentException("Variable operation is missing for variable: " + variable.getName());
+            }
+            if (variable.getValue() == null) {
+                throw new ActivitiIllegalArgumentException("Variable value is missing for variable: " + variable.getName());
+            }
+
+            boolean nameLess = variable.getName() == null;
+
+            Object actualValue = restResponseFactory.getVariableValue(variable);
+
+            // A value-only query is only possible using equals-operator
+            if (nameLess && variable.getVariableOperation() != QueryVariableOperation.EQUALS) {
+                throw new ActivitiIllegalArgumentException("Value-only query (without a variable-name) is only supported when using 'equals' operation.");
+            }
+
+            switch (variable.getVariableOperation()) {
+
+            case EQUALS:
+                if (nameLess) {
+                    processInstanceQuery.variableValueEquals(actualValue);
+                } else {
+                    processInstanceQuery.variableValueEquals(variable.getName(), actualValue);
+                }
+                break;
+
+            case EQUALS_IGNORE_CASE:
+                if (actualValue instanceof String) {
+                    processInstanceQuery.variableValueEqualsIgnoreCase(variable.getName(), (String) actualValue);
+                } else {
+                    throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+                }
+                break;
+
+            case NOT_EQUALS:
+                processInstanceQuery.variableValueNotEquals(variable.getName(), actualValue);
+                break;
+
+            case NOT_EQUALS_IGNORE_CASE:
+                if (actualValue instanceof String) {
+                    processInstanceQuery.variableValueNotEqualsIgnoreCase(variable.getName(), (String) actualValue);
+                } else {
+                    throw new ActivitiIllegalArgumentException("Only string variable values are supported when ignoring casing, but was: " + actualValue.getClass().getName());
+                }
+                break;
+
+            case LIKE:
+                if (actualValue instanceof String) {
+                    processInstanceQuery.variableValueLike(variable.getName(), (String) actualValue);
+                } else {
+                    throw new ActivitiIllegalArgumentException("Only string variable values are supported for like, but was: " + actualValue.getClass().getName());
+                }
+                break;
+
+            case GREATER_THAN:
+                processInstanceQuery.variableValueGreaterThan(variable.getName(), actualValue);
+                break;
+
+            case GREATER_THAN_OR_EQUALS:
+                processInstanceQuery.variableValueGreaterThanOrEqual(variable.getName(), actualValue);
+                break;
+
+            case LESS_THAN:
+                processInstanceQuery.variableValueLessThan(variable.getName(), actualValue);
+                break;
+
+            case LESS_THAN_OR_EQUALS:
+                processInstanceQuery.variableValueLessThanOrEqual(variable.getName(), actualValue);
+                break;
+
+            default:
+                throw new ActivitiIllegalArgumentException("Unsupported variable query operation: " + variable.getVariableOperation());
+            }
+        }
     }
-    return processInstance;
-  }
+
+    protected ProcessInstance getProcessInstanceFromRequest(String processInstanceId) {
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+        if (processInstance == null) {
+            throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.");
+        }
+        return processInstance;
+    }
 }

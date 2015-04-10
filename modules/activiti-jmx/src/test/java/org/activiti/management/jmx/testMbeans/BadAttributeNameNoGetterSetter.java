@@ -21,8 +21,8 @@ import org.activiti.management.jmx.annotations.ManagedAttribute;
 
 public class BadAttributeNameNoGetterSetter {
 
-  @ManagedAttribute(description = "test non public attribute description1")
-  public String setestAttribute1() {
-    return null;
-  }
+    @ManagedAttribute(description = "test non public attribute description1")
+    public String setestAttribute1() {
+        return null;
+    }
 }

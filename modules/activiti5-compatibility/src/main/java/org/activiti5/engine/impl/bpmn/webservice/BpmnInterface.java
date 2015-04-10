@@ -23,61 +23,61 @@ import java.util.Map;
  * @author Joram Barrez
  */
 public class BpmnInterface {
-  
-  protected String id;
-  
-  protected String name;
-  
-  protected BpmnInterfaceImplementation implementation;
-  
-  /**
-   * Mapping of the operations of this interface.
-   * The key of the map is the id of the operation, for easy retrieval.
-   */
-  protected Map<String, Operation> operations = new HashMap<String, Operation>();
-  
-  public BpmnInterface() {
-    
-  }
-  
-  public BpmnInterface(String id, String name) {
-    setId(id);
-    setName(name);
-  }
 
-  public String getId() {
-    return id;
-  }
+    protected String id;
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    protected String name;
 
-  public String getName() {
-    return name;
-  }
+    protected BpmnInterfaceImplementation implementation;
 
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  public void addOperation(Operation operation) {
-    operations.put(operation.getId(), operation);
-  }
-  
-  public Operation getOperation(String operationId) {
-    return operations.get(operationId);
-  }
-  
-  public Collection<Operation> getOperations() {
-    return operations.values();
-  }
+    /**
+     * Mapping of the operations of this interface. The key of the map is the id
+     * of the operation, for easy retrieval.
+     */
+    protected Map<String, Operation> operations = new HashMap<String, Operation>();
 
-  public BpmnInterfaceImplementation getImplementation() {
-    return implementation;
-  }
+    public BpmnInterface() {
 
-  public void setImplementation(BpmnInterfaceImplementation implementation) {
-    this.implementation = implementation;
-  }
+    }
+
+    public BpmnInterface(String id, String name) {
+        setId(id);
+        setName(name);
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void addOperation(Operation operation) {
+        operations.put(operation.getId(), operation);
+    }
+
+    public Operation getOperation(String operationId) {
+        return operations.get(operationId);
+    }
+
+    public Collection<Operation> getOperations() {
+        return operations.values();
+    }
+
+    public BpmnInterfaceImplementation getImplementation() {
+        return implementation;
+    }
+
+    public void setImplementation(BpmnInterfaceImplementation implementation) {
+        this.implementation = implementation;
+    }
 }

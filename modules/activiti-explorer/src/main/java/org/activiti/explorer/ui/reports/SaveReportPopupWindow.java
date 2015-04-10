@@ -33,141 +33,139 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * @author Joram Barrez
  */
 public class SaveReportPopupWindow extends PopupWindow {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected String processDefinitionId;
-  protected Map<String, String> originalFormProperties;
-  protected Component componentToDisableOnClose;
-  
-  protected TextField nameField;
 
-  public SaveReportPopupWindow() {
-    I18nManager i18nManager = ExplorerApp.get().getI18nManager();
-    setCaption(i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_CAPTION));
-    
-    VerticalLayout layout = new VerticalLayout();
-    addComponent(layout);
-    
-    createNameTextField(i18nManager, layout);
-    createSaveButton(i18nManager, layout);
-    
-    setModal(true);
-    center();
-    setResizable(false);
-    setWidth(400, UNITS_PIXELS);
-    setHeight(150, UNITS_PIXELS);
-    addStyleName(Reindeer.WINDOW_LIGHT);
-  }
+    private static final long serialVersionUID = 1L;
 
-  protected void createNameTextField(I18nManager i18nManager, VerticalLayout layout) {
-    HorizontalLayout fieldLayout = new HorizontalLayout();
-    fieldLayout.setWidth(100, UNITS_PERCENTAGE);
-    layout.addComponent(fieldLayout);
-    fieldLayout.addComponent(new Label(i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_NAME)));
-    nameField = new TextField();
-    nameField.setWidth(250, UNITS_PIXELS);
-    nameField.focus();
-    fieldLayout.addComponent(nameField);
-  }
+    protected String processDefinitionId;
+    protected Map<String, String> originalFormProperties;
+    protected Component componentToDisableOnClose;
 
-  protected void createSaveButton(final I18nManager i18nManager, final VerticalLayout layout) {
-    layout.addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
-    Button saveButton = new Button(i18nManager.getMessage(Messages.BUTTON_SAVE));
-    layout.addComponent(saveButton);
-    layout.setComponentAlignment(saveButton, Alignment.MIDDLE_CENTER);
-    
-    saveButton.addListener(new ClickListener() {
-      
-      private static final long serialVersionUID = 1L;
+    protected TextField nameField;
 
-      public void buttonClick(ClickEvent event) {
-        
-        String reportName = null; 
+    public SaveReportPopupWindow() {
+        I18nManager i18nManager = ExplorerApp.get().getI18nManager();
+        setCaption(i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_CAPTION));
 
-        // Validate
-        String error = null;
-        if (nameField.getValue() == null || ((String) nameField.getValue()).length() == 0) {
-          error = i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_NAME_EMPTY);
-        } else {
-          reportName = ExplorerApp.get().getLoggedInUser().getId() + "_" + nameField.getValue();
-          if (reportName.length() > 255) {
-            error = i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_NAME_TOO_LONG);
-          } else {
-            boolean nameUsed = ProcessEngines.getDefaultProcessEngine().getHistoryService()
-                    .createHistoricProcessInstanceQuery().processInstanceBusinessKey(reportName).count() != 0;
-            if (nameUsed) {
-              error = i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_NAME_EXISTS);
+        VerticalLayout layout = new VerticalLayout();
+        addComponent(layout);
+
+        createNameTextField(i18nManager, layout);
+        createSaveButton(i18nManager, layout);
+
+        setModal(true);
+        center();
+        setResizable(false);
+        setWidth(400, UNITS_PIXELS);
+        setHeight(150, UNITS_PIXELS);
+        addStyleName(Reindeer.WINDOW_LIGHT);
+    }
+
+    protected void createNameTextField(I18nManager i18nManager, VerticalLayout layout) {
+        HorizontalLayout fieldLayout = new HorizontalLayout();
+        fieldLayout.setWidth(100, UNITS_PERCENTAGE);
+        layout.addComponent(fieldLayout);
+        fieldLayout.addComponent(new Label(i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_NAME)));
+        nameField = new TextField();
+        nameField.setWidth(250, UNITS_PIXELS);
+        nameField.focus();
+        fieldLayout.addComponent(nameField);
+    }
+
+    protected void createSaveButton(final I18nManager i18nManager, final VerticalLayout layout) {
+        layout.addComponent(new Label("&nbsp", Label.CONTENT_XHTML));
+        Button saveButton = new Button(i18nManager.getMessage(Messages.BUTTON_SAVE));
+        layout.addComponent(saveButton);
+        layout.setComponentAlignment(saveButton, Alignment.MIDDLE_CENTER);
+
+        saveButton.addListener(new ClickListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void buttonClick(ClickEvent event) {
+
+                String reportName = null;
+
+                // Validate
+                String error = null;
+                if (nameField.getValue() == null || ((String) nameField.getValue()).length() == 0) {
+                    error = i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_NAME_EMPTY);
+                } else {
+                    reportName = ExplorerApp.get().getLoggedInUser().getId() + "_" + nameField.getValue();
+                    if (reportName.length() > 255) {
+                        error = i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_NAME_TOO_LONG);
+                    } else {
+                        boolean nameUsed = ProcessEngines.getDefaultProcessEngine().getHistoryService().createHistoricProcessInstanceQuery().processInstanceBusinessKey(reportName).count() != 0;
+                        if (nameUsed) {
+                            error = i18nManager.getMessage(Messages.REPORTING_SAVE_POPUP_NAME_EXISTS);
+                        }
+                    }
+                }
+
+                if (error != null) {
+
+                    setHeight(185, UNITS_PIXELS);
+                    layout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+
+                    Label errorLabel = new Label(error);
+                    errorLabel.addStyleName(ExplorerLayout.STYLE_ERROR);
+                    layout.addComponent(errorLabel);
+
+                } else {
+
+                    // Re-run reports to store the data for good now (the
+                    // previous process instance was deleted)
+                    if (originalFormProperties != null) {
+                        startProcessInstanceWithFormProperties(reportName);
+                    } else {
+                        startProcessInstance(reportName);
+                    }
+
+                    // Remove the popup
+                    if (componentToDisableOnClose != null) {
+                        componentToDisableOnClose.setEnabled(false);
+                    }
+                    close();
+
+                }
             }
-          }
-        }
-        
-        if (error != null) {
-          
-          setHeight(185, UNITS_PIXELS);
-          layout.addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
-          
-          Label errorLabel = new Label(error);
-          errorLabel.addStyleName(ExplorerLayout.STYLE_ERROR);
-          layout.addComponent(errorLabel);
-          
-        } else {
-        
-          // Re-run reports to store the data for good now (the previous process instance was deleted)
-          if (originalFormProperties != null) {
-            startProcessInstanceWithFormProperties(reportName);
-          } else {
-            startProcessInstance(reportName);
-          }
-          
-          // Remove the popup
-          if (componentToDisableOnClose != null) {
-            componentToDisableOnClose.setEnabled(false);
-          }
-          close();
-          
-        }
-      }
-      
-    });
-  }
-  
-  protected ProcessInstance startProcessInstanceWithFormProperties(String businessKey) {
-    return ProcessEngines.getDefaultProcessEngine().getFormService()
-            .submitStartFormData(processDefinitionId, businessKey, originalFormProperties);
-  }
-  
-  protected ProcessInstance startProcessInstance(String businessKey) {
-    return ProcessEngines.getDefaultProcessEngine().getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey);
-  }
 
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+        });
+    }
 
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-  
-  public Map<String, String> getOriginalFormProperties() {
-    return originalFormProperties;
-  }
+    protected ProcessInstance startProcessInstanceWithFormProperties(String businessKey) {
+        return ProcessEngines.getDefaultProcessEngine().getFormService().submitStartFormData(processDefinitionId, businessKey, originalFormProperties);
+    }
 
-  public void setOriginalFormProperties(Map<String, String> originalFormProperties) {
-    this.originalFormProperties = originalFormProperties;
-  }
-  
-  public Component getComponentToDisableOnClose() {
-    return componentToDisableOnClose;
-  }
+    protected ProcessInstance startProcessInstance(String businessKey) {
+        return ProcessEngines.getDefaultProcessEngine().getRuntimeService().startProcessInstanceById(processDefinitionId, businessKey);
+    }
 
-  public void setComponentToDisableOnClose(Component componentToDisableOnClose) {
-    this.componentToDisableOnClose = componentToDisableOnClose;
-  }
-  
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
+
+    public Map<String, String> getOriginalFormProperties() {
+        return originalFormProperties;
+    }
+
+    public void setOriginalFormProperties(Map<String, String> originalFormProperties) {
+        this.originalFormProperties = originalFormProperties;
+    }
+
+    public Component getComponentToDisableOnClose() {
+        return componentToDisableOnClose;
+    }
+
+    public void setComponentToDisableOnClose(Component componentToDisableOnClose) {
+        this.componentToDisableOnClose = componentToDisableOnClose;
+    }
+
 }

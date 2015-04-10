@@ -18,11 +18,9 @@ import org.activiti.explorer.ui.form.FormPropertiesForm.FormPropertiesEvent;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Component.Listener;
 
-
-
 /**
- * Listener that only handles {@link FormPropertiesEvent}. The handling
- * of the event is delegated on to handleFormSubmit and handleFormCancel methods
+ * Listener that only handles {@link FormPropertiesEvent}. The handling of the
+ * event is delegated on to handleFormSubmit and handleFormCancel methods
  * 
  * @see FormPropertiesForm
  * 
@@ -30,20 +28,20 @@ import com.vaadin.ui.Component.Listener;
  */
 public abstract class FormPropertiesEventListener implements Listener {
 
-  private static final long serialVersionUID = 7560512657831865244L;
+    private static final long serialVersionUID = 7560512657831865244L;
 
-  public final void componentEvent(Event event) {
-    if(event instanceof FormPropertiesEvent) {
-      FormPropertiesEvent propertyEvent = (FormPropertiesEvent) event;
-      if(FormPropertiesEvent.TYPE_SUBMIT.equals(propertyEvent.getType())) {
-        handleFormSubmit(propertyEvent);
-      } else {
-        handleFormCancel(propertyEvent);
-      }
+    public final void componentEvent(Event event) {
+        if (event instanceof FormPropertiesEvent) {
+            FormPropertiesEvent propertyEvent = (FormPropertiesEvent) event;
+            if (FormPropertiesEvent.TYPE_SUBMIT.equals(propertyEvent.getType())) {
+                handleFormSubmit(propertyEvent);
+            } else {
+                handleFormCancel(propertyEvent);
+            }
+        }
     }
-  }
-  
-  protected abstract void handleFormSubmit(FormPropertiesEvent event);
-  
-  protected abstract void handleFormCancel(FormPropertiesEvent event);
+
+    protected abstract void handleFormSubmit(FormPropertiesEvent event);
+
+    protected abstract void handleFormCancel(FormPropertiesEvent event);
 }

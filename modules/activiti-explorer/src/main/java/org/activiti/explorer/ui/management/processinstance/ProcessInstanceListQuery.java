@@ -28,61 +28,58 @@ import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
 
-
 /**
  * @author Joram Barrez
  */
 public class ProcessInstanceListQuery extends AbstractLazyLoadingQuery {
-  
-  protected transient RuntimeService runtimeService;
-  protected transient RepositoryService repositoryService;
-  
-  protected Map<String, String> cachedProcessDefinitionNames = new HashMap<String, String>();
-  
-  public ProcessInstanceListQuery() {
-    this.runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-  }
 
-  public int size() {
-    return (int) constructQuery().count();
-  }
+    protected transient RuntimeService runtimeService;
+    protected transient RepositoryService repositoryService;
 
-  public List<Item> loadItems(int start, int count) {
-    List<ProcessInstance> processInstances = constructQuery().listPage(start, count);
-    List<Item> items = new ArrayList<Item>();
-    for (ProcessInstance processInstance : processInstances) {
-      items.add(new ProcessInstanceListItem(processInstance, getProcessDefinitionName(processInstance.getProcessDefinitionId())));
+    protected Map<String, String> cachedProcessDefinitionNames = new HashMap<String, String>();
+
+    public ProcessInstanceListQuery() {
+        this.runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
+        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     }
-    return items;
-  }
 
-  public Item loadSingleResult(String id) {
-    ProcessInstance processInstance = constructQuery().processInstanceId(id).singleResult();
-    return new ProcessInstanceListItem(processInstance, processInstance.getProcessDefinitionId());
-  }
-
-  public void setSorting(Object[] propertyIds, boolean[] ascending) {
-    throw new UnsupportedOperationException();
-  }
-
-  protected ProcessInstanceQuery constructQuery() {
-    return runtimeService.createProcessInstanceQuery()
-      .orderByProcessInstanceId().asc();
-  }
-  
-  protected String getProcessDefinitionName(String processDefinitionId) {
-    if (!cachedProcessDefinitionNames.containsKey(processDefinitionId)) {
-      ProcessDefinition definition =  repositoryService.createProcessDefinitionQuery()
-      .processDefinitionId(processDefinitionId).singleResult();
-      
-      String name =definition.getName();
-      if(name != null) {
-        name = definition.getKey();
-      }
-      cachedProcessDefinitionNames.put(processDefinitionId, name);
+    public int size() {
+        return (int) constructQuery().count();
     }
-    return cachedProcessDefinitionNames.get(processDefinitionId);
-  }
+
+    public List<Item> loadItems(int start, int count) {
+        List<ProcessInstance> processInstances = constructQuery().listPage(start, count);
+        List<Item> items = new ArrayList<Item>();
+        for (ProcessInstance processInstance : processInstances) {
+            items.add(new ProcessInstanceListItem(processInstance, getProcessDefinitionName(processInstance.getProcessDefinitionId())));
+        }
+        return items;
+    }
+
+    public Item loadSingleResult(String id) {
+        ProcessInstance processInstance = constructQuery().processInstanceId(id).singleResult();
+        return new ProcessInstanceListItem(processInstance, processInstance.getProcessDefinitionId());
+    }
+
+    public void setSorting(Object[] propertyIds, boolean[] ascending) {
+        throw new UnsupportedOperationException();
+    }
+
+    protected ProcessInstanceQuery constructQuery() {
+        return runtimeService.createProcessInstanceQuery().orderByProcessInstanceId().asc();
+    }
+
+    protected String getProcessDefinitionName(String processDefinitionId) {
+        if (!cachedProcessDefinitionNames.containsKey(processDefinitionId)) {
+            ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
+
+            String name = definition.getName();
+            if (name != null) {
+                name = definition.getKey();
+            }
+            cachedProcessDefinitionNames.put(processDefinitionId, name);
+        }
+        return cachedProcessDefinitionNames.get(processDefinitionId);
+    }
 
 }

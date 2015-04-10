@@ -15,26 +15,29 @@ package org.activiti.workflow.simple.definition.form;
 import java.util.List;
 
 /**
- * Interface describing a container that can hold an ordered collection of 
+ * Interface describing a container that can hold an ordered collection of
  * form-property definitions.
  * 
  * @author Frederik Heremans
  */
 public interface FormPropertyDefinitionContainer {
 
-	/**
-	 * @return all definitions present in the container.
-	 */
-	List<FormPropertyDefinition> getFormPropertyDefinitions();
-	
-	/**
-	 * @param definition the form-property to add to the container.
-	 */
-	void addFormProperty(FormPropertyDefinition definition);
-	
-	/**
-	 * @param definition the definition to remove from the container.
-	 * @return true, if the definition was present in the container and was removed.
-	 */
-	boolean removeFormProperty(FormPropertyDefinition definition);
+    /**
+     * @return all definitions present in the container.
+     */
+    List<FormPropertyDefinition> getFormPropertyDefinitions();
+
+    /**
+     * @param definition
+     *            the form-property to add to the container.
+     */
+    void addFormProperty(FormPropertyDefinition definition);
+
+    /**
+     * @param definition
+     *            the definition to remove from the container.
+     * @return true, if the definition was present in the container and was
+     *         removed.
+     */
+    boolean removeFormProperty(FormPropertyDefinition definition);
 }

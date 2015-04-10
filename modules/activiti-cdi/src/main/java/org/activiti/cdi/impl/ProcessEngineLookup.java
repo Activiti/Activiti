@@ -14,11 +14,10 @@ package org.activiti.cdi.impl;
 
 import org.activiti.engine.ProcessEngine;
 
-
 /**
  * Represents a strategy for building or looking up a {@link ProcessEngine}.
  * 
- * Deprecated since 5.9. Use {@link org.activiti.cdi.spi.ProcessEngineLookup} 
+ * Deprecated since 5.9. Use {@link org.activiti.cdi.spi.ProcessEngineLookup}
  * 
  * 
  * @author Daniel Meyer
@@ -27,6 +26,5 @@ import org.activiti.engine.ProcessEngine;
  */
 @Deprecated
 public interface ProcessEngineLookup extends org.activiti.cdi.spi.ProcessEngineLookup {
-
 
 }

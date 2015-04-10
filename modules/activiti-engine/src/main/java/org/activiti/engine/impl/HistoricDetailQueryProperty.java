@@ -19,36 +19,36 @@ import java.util.Map;
 import org.activiti.engine.history.HistoricDetailQuery;
 import org.activiti.engine.query.QueryProperty;
 
-
 /**
- * Contains the possible properties which can be used in a {@link HistoricDetailQuery}.
+ * Contains the possible properties which can be used in a
+ * {@link HistoricDetailQuery}.
  * 
  * @author Tom Baeyens
  */
 public class HistoricDetailQueryProperty implements QueryProperty {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private static final Map<String, HistoricDetailQueryProperty> properties = new HashMap<String, HistoricDetailQueryProperty>();
+    private static final Map<String, HistoricDetailQueryProperty> properties = new HashMap<String, HistoricDetailQueryProperty>();
 
-  public static final HistoricDetailQueryProperty PROCESS_INSTANCE_ID = new HistoricDetailQueryProperty("PROC_INST_ID_");
-  public static final HistoricDetailQueryProperty VARIABLE_NAME = new HistoricDetailQueryProperty("NAME_");
-  public static final HistoricDetailQueryProperty VARIABLE_TYPE = new HistoricDetailQueryProperty("TYPE_");
-  public static final HistoricDetailQueryProperty VARIABLE_REVISION = new HistoricDetailQueryProperty("REV_");
-  public static final HistoricDetailQueryProperty TIME = new HistoricDetailQueryProperty("TIME_");
-  
-  private String name;
+    public static final HistoricDetailQueryProperty PROCESS_INSTANCE_ID = new HistoricDetailQueryProperty("PROC_INST_ID_");
+    public static final HistoricDetailQueryProperty VARIABLE_NAME = new HistoricDetailQueryProperty("NAME_");
+    public static final HistoricDetailQueryProperty VARIABLE_TYPE = new HistoricDetailQueryProperty("TYPE_");
+    public static final HistoricDetailQueryProperty VARIABLE_REVISION = new HistoricDetailQueryProperty("REV_");
+    public static final HistoricDetailQueryProperty TIME = new HistoricDetailQueryProperty("TIME_");
 
-  public HistoricDetailQueryProperty(String name) {
-    this.name = name;
-    properties.put(name, this);
-  }
+    private String name;
 
-  public String getName() {
-    return name;
-  }
-  
-  public static HistoricDetailQueryProperty findByName(String propertyName) {
-    return properties.get(propertyName);
-  }
+    public HistoricDetailQueryProperty(String name) {
+        this.name = name;
+        properties.put(name, this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static HistoricDetailQueryProperty findByName(String propertyName) {
+        return properties.get(propertyName);
+    }
 }

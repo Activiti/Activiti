@@ -15,14 +15,14 @@ package org.activiti5.engine.impl.delegate;
 import org.activiti5.engine.impl.interceptor.DelegateInterceptor;
 
 /**
- * Default implementation, simply proceeding the call. 
+ * Default implementation, simply proceeding the call.
  * 
  * @author Daniel Meyer
  */
 public class DefaultDelegateInterceptor implements DelegateInterceptor {
 
-  public void handleInvocation(DelegateInvocation invocation) throws Exception {
-    invocation.proceed();
-  }
+    public void handleInvocation(DelegateInvocation invocation) throws Exception {
+        invocation.proceed();
+    }
 
 }

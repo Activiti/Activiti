@@ -17,6 +17,6 @@ package org.activiti.explorer.ui.process.simple.editor;
  */
 public interface SimpleTableEditorConstants {
 
-  String TABLE_EDITOR_CATEGORY = "table-editor";
-  
+    String TABLE_EDITOR_CATEGORY = "table-editor";
+
 }

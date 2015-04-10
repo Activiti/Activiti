@@ -40,245 +40,240 @@ import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti5.engine.impl.util.ReflectUtil;
 
-
 /**
  * Helper class for bpmn constructs that allow class delegation.
- *
- * This class will lazily instantiate the referenced classes when needed at runtime.
+ * 
+ * This class will lazily instantiate the referenced classes when needed at
+ * runtime.
  * 
  * @author Joram Barrez
  * @author Falko Menge
  * @author Saeid Mirzaei
  */
 public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, SubProcessActivityBehavior {
-  
-  protected String className;
-  protected List<FieldDeclaration> fieldDeclarations;
-  protected ExecutionListener executionListenerInstance;
-  protected TaskListener taskListenerInstance;
-  protected ActivityBehavior activityBehaviorInstance;
-  protected Expression skipExpression;
-  protected List<MapExceptionEntry> mapExceptions;
 
-  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
-    this.className = className;
-    this.fieldDeclarations = fieldDeclarations;
-    this.skipExpression = skipExpression;
-   
-  }
+    protected String className;
+    protected List<FieldDeclaration> fieldDeclarations;
+    protected ExecutionListener executionListenerInstance;
+    protected TaskListener taskListenerInstance;
+    protected ActivityBehavior activityBehaviorInstance;
+    protected Expression skipExpression;
+    protected List<MapExceptionEntry> mapExceptions;
 
-  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
-    this(className, fieldDeclarations, skipExpression);
-    this.mapExceptions = mapExceptions;
-   
-  }
+    public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
+        this.className = className;
+        this.fieldDeclarations = fieldDeclarations;
+        this.skipExpression = skipExpression;
 
-  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
-    this(className, fieldDeclarations, null);
-  }
-  
-  public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
-    this(clazz.getName(), fieldDeclarations, null);
-  }
+    }
 
-  public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
-    this(clazz.getName(), fieldDeclarations, skipExpression);
-  }
+    public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
+        this(className, fieldDeclarations, skipExpression);
+        this.mapExceptions = mapExceptions;
 
-  // Execution listener
-  public void notify(DelegateExecution execution) throws Exception {
-    if (executionListenerInstance == null) {
-      executionListenerInstance = getExecutionListenerInstance();
     }
-    Context.getProcessEngineConfiguration()
-      .getDelegateInterceptor()
-      .handleInvocation(new ExecutionListenerInvocation(executionListenerInstance, execution));
-  }
 
-  protected ExecutionListener getExecutionListenerInstance() {
-    Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
-    if (delegateInstance instanceof ExecutionListener) {
-      return (ExecutionListener) delegateInstance; 
-    } else if (delegateInstance instanceof JavaDelegate) {
-      return new ServiceTaskJavaDelegateActivityBehavior((JavaDelegate) delegateInstance);
-    } else {
-      throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName()+" doesn't implement "+ExecutionListener.class+" nor "+JavaDelegate.class);
+    public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+        this(className, fieldDeclarations, null);
     }
-  }
-  
-  // Task listener
-  public void notify(DelegateTask delegateTask) {
-    if (taskListenerInstance == null) {
-      taskListenerInstance = getTaskListenerInstance();
-    }
-    try {
-      Context.getProcessEngineConfiguration()
-        .getDelegateInterceptor()
-        .handleInvocation(new TaskListenerInvocation(taskListenerInstance, delegateTask));
-    }catch (Exception e) {
-      throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
-    }
-  }
-  
-  protected TaskListener getTaskListenerInstance() {
-    Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
-    if (delegateInstance instanceof TaskListener) {
-      return (TaskListener) delegateInstance; 
-    } else {
-      throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName()+" doesn't implement "+TaskListener.class);
-    }
-  }
 
-  // Activity Behavior
-  public void execute(ActivityExecution execution) throws Exception {
-    boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
-    if (!isSkipExpressionEnabled || 
-            (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
-      
-      if (activityBehaviorInstance == null) {
-        activityBehaviorInstance = getActivityBehaviorInstance(execution);
-      }
-      
-      try {
-        activityBehaviorInstance.execute(execution);
-      } catch (BpmnError error) {
-        ErrorPropagation.propagateError(error, execution);
-      } catch (Exception e) {
-        if (!ErrorPropagation.mapException(e, execution, mapExceptions))
-            throw e;
-        
-      }
-      
+    public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
+        this(clazz.getName(), fieldDeclarations, null);
     }
-  }
 
-  // Signallable activity behavior
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    if (activityBehaviorInstance == null) {
-      activityBehaviorInstance = getActivityBehaviorInstance(execution);
+    public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
+        this(clazz.getName(), fieldDeclarations, skipExpression);
     }
-    
-    if (activityBehaviorInstance instanceof SignallableActivityBehavior) {
-      ((SignallableActivityBehavior) activityBehaviorInstance).signal(execution, signalName, signalData);
-    } else {
-      throw new ActivitiException("signal() can only be called on a " + SignallableActivityBehavior.class.getName() + " instance");
-    }
-  }
-  
-  // Subprocess activityBehaviour
-  
-  @Override
-  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-  	if (activityBehaviorInstance == null) {
-      activityBehaviorInstance = getActivityBehaviorInstance((ActivityExecution) execution);
-    }
-    
-    if (activityBehaviorInstance instanceof SubProcessActivityBehavior) {
-      ((SubProcessActivityBehavior) activityBehaviorInstance).completing(execution, subProcessInstance);
-    } else {
-      throw new ActivitiException("completing() can only be called on a " + SubProcessActivityBehavior.class.getName() + " instance");
-    }
-  }
-  
-  @Override
-  public void completed(ActivityExecution execution) throws Exception {
-  	if (activityBehaviorInstance == null) {
-      activityBehaviorInstance = getActivityBehaviorInstance(execution);
-    }
-    
-    if (activityBehaviorInstance instanceof SubProcessActivityBehavior) {
-      ((SubProcessActivityBehavior) activityBehaviorInstance).completed(execution);
-    } else {
-      throw new ActivitiException("completed() can only be called on a " + SubProcessActivityBehavior.class.getName() + " instance");
-    }
-  }
 
-  protected ActivityBehavior getActivityBehaviorInstance(ActivityExecution execution) {
-    Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
-    
-    if (delegateInstance instanceof ActivityBehavior) {
-      return determineBehaviour((ActivityBehavior) delegateInstance, execution);
-    } else if (delegateInstance instanceof JavaDelegate) {
-      return determineBehaviour(new ServiceTaskJavaDelegateActivityBehavior((JavaDelegate) delegateInstance), execution);
-    } else {
-      throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName()+" doesn't implement "+JavaDelegate.class.getName()+" nor "+ActivityBehavior.class.getName());
+    // Execution listener
+    public void notify(DelegateExecution execution) throws Exception {
+        if (executionListenerInstance == null) {
+            executionListenerInstance = getExecutionListenerInstance();
+        }
+        Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ExecutionListenerInvocation(executionListenerInstance, execution));
     }
-  }
-  
-  // Adds properties to the given delegation instance (eg multi instance) if needed
-  protected ActivityBehavior determineBehaviour(ActivityBehavior delegateInstance, ActivityExecution execution) {
-    if (hasMultiInstanceCharacteristics()) {
-      multiInstanceActivityBehavior.setInnerActivityBehavior((AbstractBpmnActivityBehavior) delegateInstance);
-      return multiInstanceActivityBehavior;
-    }
-    return delegateInstance;
-  }
-  
-  // --HELPER METHODS (also usable by external classes) ----------------------------------------
-  
-  public static Object instantiateDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
-    return instantiateDelegate(clazz.getName(), fieldDeclarations);
-  }
-  
-  public static Object instantiateDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
-    Object object = ReflectUtil.instantiate(className);
-    applyFieldDeclaration(fieldDeclarations, object);
-    return object;
-  }
-  
-  public static void applyFieldDeclaration(List<FieldDeclaration> fieldDeclarations, Object target) {
-    if(fieldDeclarations != null) {
-      for(FieldDeclaration declaration : fieldDeclarations) {
-        applyFieldDeclaration(declaration, target);
-      }
-    }
-  }
-  
-  public static void applyFieldDeclaration(FieldDeclaration declaration, Object target) {
-    Method setterMethod = ReflectUtil.getSetter(declaration.getName(), 
-      target.getClass(), declaration.getValue().getClass());
-    
-    if(setterMethod != null) {
-      try {
-        setterMethod.invoke(target, declaration.getValue());
-      } catch (IllegalArgumentException e) {
-        throw new ActivitiException("Error while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
-      } catch (IllegalAccessException e) {
-        throw new ActivitiException("Illegal acces when calling '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
-      } catch (InvocationTargetException e) {
-        throw new ActivitiException("Exception while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
-      }
-    } else {
-      Field field = ReflectUtil.getField(declaration.getName(), target);
-      if(field == null) {
-        throw new ActivitiIllegalArgumentException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + target.getClass().getName());
-      }
-      // Check if the delegate field's type is correct
-     if(!fieldTypeCompatible(declaration, field)) {
-       throw new ActivitiIllegalArgumentException("Incompatible type set on field declaration '" + declaration.getName() 
-          + "' for class " + target.getClass().getName() 
-          + ". Declared value has type " + declaration.getValue().getClass().getName() 
-          + ", while expecting " + field.getType().getName());
-     }
-     ReflectUtil.setField(field, target, declaration.getValue());
-    }
-  }
-  
-  public static boolean fieldTypeCompatible(FieldDeclaration declaration, Field field) {
-    if(declaration.getValue() != null) {
-      return field.getType().isAssignableFrom(declaration.getValue().getClass());
-    } else {      
-      // Null can be set any field type
-      return true;
-    }
-  }
 
-  /**
-   * returns the class name this {@link ClassDelegate} is configured to. Comes in handy if you want to
-   * check which delegates you already have e.g. in a list of listeners
-   */
-  public String getClassName() {
-    return className;
-  }
+    protected ExecutionListener getExecutionListenerInstance() {
+        Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+        if (delegateInstance instanceof ExecutionListener) {
+            return (ExecutionListener) delegateInstance;
+        } else if (delegateInstance instanceof JavaDelegate) {
+            return new ServiceTaskJavaDelegateActivityBehavior((JavaDelegate) delegateInstance);
+        } else {
+            throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + ExecutionListener.class + " nor " + JavaDelegate.class);
+        }
+    }
+
+    // Task listener
+    public void notify(DelegateTask delegateTask) {
+        if (taskListenerInstance == null) {
+            taskListenerInstance = getTaskListenerInstance();
+        }
+        try {
+            Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new TaskListenerInvocation(taskListenerInstance, delegateTask));
+        } catch (Exception e) {
+            throw new ActivitiException("Exception while invoking TaskListener: " + e.getMessage(), e);
+        }
+    }
+
+    protected TaskListener getTaskListenerInstance() {
+        Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+        if (delegateInstance instanceof TaskListener) {
+            return (TaskListener) delegateInstance;
+        } else {
+            throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + TaskListener.class);
+        }
+    }
+
+    // Activity Behavior
+    public void execute(ActivityExecution execution) throws Exception {
+        boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+        if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+
+            if (activityBehaviorInstance == null) {
+                activityBehaviorInstance = getActivityBehaviorInstance(execution);
+            }
+
+            try {
+                activityBehaviorInstance.execute(execution);
+            } catch (BpmnError error) {
+                ErrorPropagation.propagateError(error, execution);
+            } catch (Exception e) {
+                if (!ErrorPropagation.mapException(e, execution, mapExceptions))
+                    throw e;
+
+            }
+
+        }
+    }
+
+    // Signallable activity behavior
+    public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+        if (activityBehaviorInstance == null) {
+            activityBehaviorInstance = getActivityBehaviorInstance(execution);
+        }
+
+        if (activityBehaviorInstance instanceof SignallableActivityBehavior) {
+            ((SignallableActivityBehavior) activityBehaviorInstance).signal(execution, signalName, signalData);
+        } else {
+            throw new ActivitiException("signal() can only be called on a " + SignallableActivityBehavior.class.getName() + " instance");
+        }
+    }
+
+    // Subprocess activityBehaviour
+
+    @Override
+    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+        if (activityBehaviorInstance == null) {
+            activityBehaviorInstance = getActivityBehaviorInstance((ActivityExecution) execution);
+        }
+
+        if (activityBehaviorInstance instanceof SubProcessActivityBehavior) {
+            ((SubProcessActivityBehavior) activityBehaviorInstance).completing(execution, subProcessInstance);
+        } else {
+            throw new ActivitiException("completing() can only be called on a " + SubProcessActivityBehavior.class.getName() + " instance");
+        }
+    }
+
+    @Override
+    public void completed(ActivityExecution execution) throws Exception {
+        if (activityBehaviorInstance == null) {
+            activityBehaviorInstance = getActivityBehaviorInstance(execution);
+        }
+
+        if (activityBehaviorInstance instanceof SubProcessActivityBehavior) {
+            ((SubProcessActivityBehavior) activityBehaviorInstance).completed(execution);
+        } else {
+            throw new ActivitiException("completed() can only be called on a " + SubProcessActivityBehavior.class.getName() + " instance");
+        }
+    }
+
+    protected ActivityBehavior getActivityBehaviorInstance(ActivityExecution execution) {
+        Object delegateInstance = instantiateDelegate(className, fieldDeclarations);
+
+        if (delegateInstance instanceof ActivityBehavior) {
+            return determineBehaviour((ActivityBehavior) delegateInstance, execution);
+        } else if (delegateInstance instanceof JavaDelegate) {
+            return determineBehaviour(new ServiceTaskJavaDelegateActivityBehavior((JavaDelegate) delegateInstance), execution);
+        } else {
+            throw new ActivitiIllegalArgumentException(delegateInstance.getClass().getName() + " doesn't implement " + JavaDelegate.class.getName() + " nor " + ActivityBehavior.class.getName());
+        }
+    }
+
+    // Adds properties to the given delegation instance (eg multi instance) if
+    // needed
+    protected ActivityBehavior determineBehaviour(ActivityBehavior delegateInstance, ActivityExecution execution) {
+        if (hasMultiInstanceCharacteristics()) {
+            multiInstanceActivityBehavior.setInnerActivityBehavior((AbstractBpmnActivityBehavior) delegateInstance);
+            return multiInstanceActivityBehavior;
+        }
+        return delegateInstance;
+    }
+
+    // --HELPER METHODS (also usable by external classes)
+    // ----------------------------------------
+
+    public static Object instantiateDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
+        return instantiateDelegate(clazz.getName(), fieldDeclarations);
+    }
+
+    public static Object instantiateDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+        Object object = ReflectUtil.instantiate(className);
+        applyFieldDeclaration(fieldDeclarations, object);
+        return object;
+    }
+
+    public static void applyFieldDeclaration(List<FieldDeclaration> fieldDeclarations, Object target) {
+        if (fieldDeclarations != null) {
+            for (FieldDeclaration declaration : fieldDeclarations) {
+                applyFieldDeclaration(declaration, target);
+            }
+        }
+    }
+
+    public static void applyFieldDeclaration(FieldDeclaration declaration, Object target) {
+        Method setterMethod = ReflectUtil.getSetter(declaration.getName(), target.getClass(), declaration.getValue().getClass());
+
+        if (setterMethod != null) {
+            try {
+                setterMethod.invoke(target, declaration.getValue());
+            } catch (IllegalArgumentException e) {
+                throw new ActivitiException("Error while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
+            } catch (IllegalAccessException e) {
+                throw new ActivitiException("Illegal acces when calling '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
+            } catch (InvocationTargetException e) {
+                throw new ActivitiException("Exception while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
+            }
+        } else {
+            Field field = ReflectUtil.getField(declaration.getName(), target);
+            if (field == null) {
+                throw new ActivitiIllegalArgumentException("Field definition uses unexisting field '" + declaration.getName() + "' on class " + target.getClass().getName());
+            }
+            // Check if the delegate field's type is correct
+            if (!fieldTypeCompatible(declaration, field)) {
+                throw new ActivitiIllegalArgumentException("Incompatible type set on field declaration '" + declaration.getName() + "' for class " + target.getClass().getName()
+                        + ". Declared value has type " + declaration.getValue().getClass().getName() + ", while expecting " + field.getType().getName());
+            }
+            ReflectUtil.setField(field, target, declaration.getValue());
+        }
+    }
+
+    public static boolean fieldTypeCompatible(FieldDeclaration declaration, Field field) {
+        if (declaration.getValue() != null) {
+            return field.getType().isAssignableFrom(declaration.getValue().getClass());
+        } else {
+            // Null can be set any field type
+            return true;
+        }
+    }
+
+    /**
+     * returns the class name this {@link ClassDelegate} is configured to. Comes
+     * in handy if you want to check which delegates you already have e.g. in a
+     * list of listeners
+     */
+    public String getClassName() {
+        return className;
+    }
 
 }

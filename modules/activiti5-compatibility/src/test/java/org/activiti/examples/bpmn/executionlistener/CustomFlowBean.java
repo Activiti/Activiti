@@ -6,10 +6,10 @@ import org.activiti5.engine.delegate.DelegateExecution;
 
 public class CustomFlowBean implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public boolean executeLogic(String flowId, DelegateExecution execution) {
-    Object conditionsObject = execution.getVariable(flowId + "_activiti_conditions");
-    return conditionsObject != null;
-  }
+    public boolean executeLogic(String flowId, DelegateExecution execution) {
+        Object conditionsObject = execution.getVariable(flowId + "_activiti_conditions");
+        return conditionsObject != null;
+    }
 }

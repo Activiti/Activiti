@@ -17,7 +17,6 @@ import java.util.Date;
 
 import org.activiti5.engine.query.Query;
 
-
 /**
  * Allows programmatic querying of {@link Job}s.
  * 
@@ -25,102 +24,136 @@ import org.activiti5.engine.query.Query;
  * @author Falko Menge
  */
 public interface JobQuery extends Query<JobQuery, Job> {
-  
-  /** Only select jobs with the given id */
-  JobQuery jobId(String jobId);
-  
-  /** Only select jobs which exist for the given process instance. **/
-  JobQuery processInstanceId(String processInstanceId);
-  
-  /** Only select jobs which exist for the given execution */ 
-  JobQuery executionId(String executionId);
-  
-  /** Only select jobs which exist for the given process definition id */
-  JobQuery processDefinitionId(String processDefinitionid);
 
-  /** Only select jobs which have retries left */
-  JobQuery withRetriesLeft();
-  
-  /** Only select jobs which have no retries left */
-  JobQuery noRetriesLeft();
+    /** Only select jobs with the given id */
+    JobQuery jobId(String jobId);
 
-  /** Only select jobs which are executable, 
-   * ie. retries &gt; 0 and duedate is null or duedate is in the past **/
-  JobQuery executable();
+    /** Only select jobs which exist for the given process instance. **/
+    JobQuery processInstanceId(String processInstanceId);
 
-  /** Only select jobs that are timers. 
-   * Cannot be used together with {@link #messages()} */
-  JobQuery timers();
- 
-  /** Only select jobs that are messages. 
-   * Cannot be used together with {@link #timers()} */
-  JobQuery messages();
-  
-  /** Only select jobs where the duedate is lower than the given date. */
-  JobQuery duedateLowerThan(Date date);
-  
-  /** Only select jobs where the duedate is higher then the given date. */
-  JobQuery duedateHigherThan(Date date);
-  
-  /** Only select jobs where the duedate is lower then the given date.  
-   * @deprecated 
-   */
-  JobQuery duedateLowerThen(Date date);
-  
-  /** Only select jobs where the duedate is lower then or equals the given date.
-   * @deprecated 
-   */
-  JobQuery duedateLowerThenOrEquals(Date date);
-  
-  /** Only select jobs where the duedate is higher then the given date.
-   * @deprecated 
-   */
-  JobQuery duedateHigherThen(Date date);
-  
-  /** Only select jobs where the duedate is higher then or equals the given date.
-   * @deprecated 
-   */
-  JobQuery duedateHigherThenOrEquals(Date date);
-  
-  /** Only select jobs that failed due to an exception. */
-  JobQuery withException();
+    /** Only select jobs which exist for the given execution */
+    JobQuery executionId(String executionId);
 
-  /** Only select jobs that failed due to an exception with the given message. */
-  JobQuery exceptionMessage(String exceptionMessage);
-  
-  /**
-	 * Only select jobs that have the given tenant id.
-	 */
-  JobQuery jobTenantId(String tenantId);
+    /** Only select jobs which exist for the given process definition id */
+    JobQuery processDefinitionId(String processDefinitionid);
 
-	/**
-	 * Only select jobs with a tenant id like the given one.
-	 */
-  JobQuery jobTenantIdLike(String tenantIdLike);
-	
-	/**
-	 * Only select jobs that do not have a tenant id.
-	 */
-  JobQuery jobWithoutTenantId();
+    /** Only select jobs which have retries left */
+    JobQuery withRetriesLeft();
 
-  //sorting //////////////////////////////////////////
-  
-  /** Order by job id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderByJobId();
-  
-  /** Order by duedate (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderByJobDuedate();
-  
-  /** Order by retries (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderByJobRetries();
+    /** Only select jobs which have no retries left */
+    JobQuery noRetriesLeft();
 
-  /** Order by process instance id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderByProcessInstanceId();
-  
-  /** Order by execution id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderByExecutionId();
-  
-	/** Order by tenant id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  JobQuery orderByTenantId();
-  
+    /**
+     * Only select jobs which are executable, ie. retries &gt; 0 and duedate is
+     * null or duedate is in the past
+     **/
+    JobQuery executable();
+
+    /**
+     * Only select jobs that are timers. Cannot be used together with
+     * {@link #messages()}
+     */
+    JobQuery timers();
+
+    /**
+     * Only select jobs that are messages. Cannot be used together with
+     * {@link #timers()}
+     */
+    JobQuery messages();
+
+    /** Only select jobs where the duedate is lower than the given date. */
+    JobQuery duedateLowerThan(Date date);
+
+    /** Only select jobs where the duedate is higher then the given date. */
+    JobQuery duedateHigherThan(Date date);
+
+    /**
+     * Only select jobs where the duedate is lower then the given date.
+     * 
+     * @deprecated
+     */
+    JobQuery duedateLowerThen(Date date);
+
+    /**
+     * Only select jobs where the duedate is lower then or equals the given
+     * date.
+     * 
+     * @deprecated
+     */
+    JobQuery duedateLowerThenOrEquals(Date date);
+
+    /**
+     * Only select jobs where the duedate is higher then the given date.
+     * 
+     * @deprecated
+     */
+    JobQuery duedateHigherThen(Date date);
+
+    /**
+     * Only select jobs where the duedate is higher then or equals the given
+     * date.
+     * 
+     * @deprecated
+     */
+    JobQuery duedateHigherThenOrEquals(Date date);
+
+    /** Only select jobs that failed due to an exception. */
+    JobQuery withException();
+
+    /** Only select jobs that failed due to an exception with the given message. */
+    JobQuery exceptionMessage(String exceptionMessage);
+
+    /**
+     * Only select jobs that have the given tenant id.
+     */
+    JobQuery jobTenantId(String tenantId);
+
+    /**
+     * Only select jobs with a tenant id like the given one.
+     */
+    JobQuery jobTenantIdLike(String tenantIdLike);
+
+    /**
+     * Only select jobs that do not have a tenant id.
+     */
+    JobQuery jobWithoutTenantId();
+
+    // sorting //////////////////////////////////////////
+
+    /**
+     * Order by job id (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
+     */
+    JobQuery orderByJobId();
+
+    /**
+     * Order by duedate (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
+     */
+    JobQuery orderByJobDuedate();
+
+    /**
+     * Order by retries (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
+     */
+    JobQuery orderByJobRetries();
+
+    /**
+     * Order by process instance id (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
+     */
+    JobQuery orderByProcessInstanceId();
+
+    /**
+     * Order by execution id (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
+     */
+    JobQuery orderByExecutionId();
+
+    /**
+     * Order by tenant id (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
+     */
+    JobQuery orderByTenantId();
+
 }

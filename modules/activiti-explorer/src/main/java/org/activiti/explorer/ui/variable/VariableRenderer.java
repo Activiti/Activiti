@@ -14,7 +14,7 @@
 package org.activiti.explorer.ui.variable;
 
 /**
- * Class that is called when variables need to be rendered. Use these to show a 
+ * Class that is called when variables need to be rendered. Use these to show a
  * different representation than the default variable value (toString() call).
  * 
  * @see VariableRendererManager
@@ -23,13 +23,13 @@ package org.activiti.explorer.ui.variable;
  */
 public interface VariableRenderer {
 
-  /**
-   * Gets the type this renderer is capable of rendering.
-   */
-  Class<?> getVariableType();
-  
-  /**
-   * Gets the string-representation of this variable.
-   */
-  String getStringRepresentation(Object variable);
+    /**
+     * Gets the type this renderer is capable of rendering.
+     */
+    Class<?> getVariableType();
+
+    /**
+     * Gets the string-representation of this variable.
+     */
+    String getStringRepresentation(Object variable);
 }

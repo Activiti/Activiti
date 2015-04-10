@@ -44,84 +44,83 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HistoricTaskInstanceVariableDataResource {
 
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected HistoryService historyService;
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
 
-  @RequestMapping(value="/history/historic-task-instances/{taskId}/variables/{variableName}/data", method = RequestMethod.GET)
-  public @ResponseBody byte[] getVariableData(@PathVariable("taskId") String taskId, 
-      @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope, 
-      HttpServletRequest request, HttpServletResponse response) {
-  
-    try {
-      byte[] result = null;
-      RestVariable variable = getVariableFromRequest(true, taskId, variableName, scope, request);
-      if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
-        result = (byte[]) variable.getValue();
-        response.setContentType("application/octet-stream");
-        
-      } else if(RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
-        outputStream.writeObject(variable.getValue());
-        outputStream.close();
-        result = buffer.toByteArray();
-        response.setContentType("application/x-java-serialized-object");
-        
-      } else {
-        throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
-      }
-      return result;
-      
-    } catch(IOException ioe) {
-      // Re-throw IOException
-      throw new ActivitiException("Unexpected exception getting variable data", ioe);
+    @Autowired
+    protected HistoryService historyService;
+
+    @RequestMapping(value = "/history/historic-task-instances/{taskId}/variables/{variableName}/data", method = RequestMethod.GET)
+    public @ResponseBody
+    byte[] getVariableData(@PathVariable("taskId") String taskId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+            HttpServletRequest request, HttpServletResponse response) {
+
+        try {
+            byte[] result = null;
+            RestVariable variable = getVariableFromRequest(true, taskId, variableName, scope, request);
+            if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
+                result = (byte[]) variable.getValue();
+                response.setContentType("application/octet-stream");
+
+            } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
+                outputStream.writeObject(variable.getValue());
+                outputStream.close();
+                result = buffer.toByteArray();
+                response.setContentType("application/x-java-serialized-object");
+
+            } else {
+                throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
+            }
+            return result;
+
+        } catch (IOException ioe) {
+            // Re-throw IOException
+            throw new ActivitiException("Unexpected exception getting variable data", ioe);
+        }
     }
-  }
-  
-  public RestVariable getVariableFromRequest(boolean includeBinary, String taskId, String variableName, String scope, HttpServletRequest request) {
-    RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
-    HistoricTaskInstanceQuery taskQuery = historyService.createHistoricTaskInstanceQuery().taskId(taskId);
-    
-    if (variableScope != null) {
-      if (variableScope == RestVariableScope.GLOBAL) {
-        taskQuery.includeProcessVariables();
-      } else {
-        taskQuery.includeTaskLocalVariables();
-      }
-    } else {
-      taskQuery.includeTaskLocalVariables().includeProcessVariables();
+
+    public RestVariable getVariableFromRequest(boolean includeBinary, String taskId, String variableName, String scope, HttpServletRequest request) {
+        RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
+        HistoricTaskInstanceQuery taskQuery = historyService.createHistoricTaskInstanceQuery().taskId(taskId);
+
+        if (variableScope != null) {
+            if (variableScope == RestVariableScope.GLOBAL) {
+                taskQuery.includeProcessVariables();
+            } else {
+                taskQuery.includeTaskLocalVariables();
+            }
+        } else {
+            taskQuery.includeTaskLocalVariables().includeProcessVariables();
+        }
+
+        HistoricTaskInstance taskObject = taskQuery.singleResult();
+
+        if (taskObject == null) {
+            throw new ActivitiObjectNotFoundException("Historic task instance '" + taskId + "' couldn't be found.", HistoricTaskInstanceEntity.class);
+        }
+
+        Object value = null;
+        if (variableScope != null) {
+            if (variableScope == RestVariableScope.GLOBAL) {
+                value = taskObject.getProcessVariables().get(variableName);
+            } else {
+                value = taskObject.getTaskLocalVariables().get(variableName);
+            }
+        } else {
+            // look for local task variables first
+            if (taskObject.getTaskLocalVariables().containsKey(variableName)) {
+                value = taskObject.getTaskLocalVariables().get(variableName);
+            } else {
+                value = taskObject.getProcessVariables().get(variableName);
+            }
+        }
+
+        if (value == null) {
+            throw new ActivitiObjectNotFoundException("Historic task instance '" + taskId + "' variable value for " + variableName + " couldn't be found.", VariableInstanceEntity.class);
+        } else {
+            return restResponseFactory.createRestVariable(variableName, value, null, taskId, RestResponseFactory.VARIABLE_HISTORY_TASK, includeBinary);
+        }
     }
-    
-    HistoricTaskInstance taskObject = taskQuery.singleResult();
-    
-    if (taskObject == null) {
-      throw new ActivitiObjectNotFoundException("Historic task instance '" + taskId + "' couldn't be found.", HistoricTaskInstanceEntity.class);
-    }
-    
-    Object value = null;
-    if (variableScope != null) {
-      if (variableScope == RestVariableScope.GLOBAL) {
-        value = taskObject.getProcessVariables().get(variableName);
-      } else {
-        value = taskObject.getTaskLocalVariables().get(variableName);
-      }
-    } else {
-      // look for local task variables first
-      if (taskObject.getTaskLocalVariables().containsKey(variableName)) {
-        value = taskObject.getTaskLocalVariables().get(variableName);
-      } else {
-        value = taskObject.getProcessVariables().get(variableName);
-      }
-    }
-    
-    if (value == null) {
-      throw new ActivitiObjectNotFoundException("Historic task instance '" + taskId + "' variable value for " + variableName + " couldn't be found.", VariableInstanceEntity.class);
-    } else {
-      return restResponseFactory.createRestVariable(variableName, value, null, taskId, 
-          RestResponseFactory.VARIABLE_HISTORY_TASK, includeBinary);
-    }
-  }
 }

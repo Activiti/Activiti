@@ -20,34 +20,35 @@ import org.activiti5.engine.query.QueryProperty;
 import org.activiti5.engine.runtime.ExecutionQuery;
 
 /**
- * Contains the possible properties that can be used in a {@link ExecutionQuery}.
+ * Contains the possible properties that can be used in a {@link ExecutionQuery}
+ * .
  * 
  * @author Joram Barrez
  */
 public class ExecutionQueryProperty implements QueryProperty {
-  
-  private static final long serialVersionUID = 1L;
 
-  private static final Map<String, ExecutionQueryProperty> properties = new HashMap<String, ExecutionQueryProperty>();
+    private static final long serialVersionUID = 1L;
 
-  public static final ExecutionQueryProperty PROCESS_INSTANCE_ID = new ExecutionQueryProperty("RES.ID_");
-  public static final ExecutionQueryProperty PROCESS_DEFINITION_KEY = new ExecutionQueryProperty("ProcessDefinitionKey");
-  public static final ExecutionQueryProperty PROCESS_DEFINITION_ID = new ExecutionQueryProperty("ProcessDefinitionId");
-  public static final ExecutionQueryProperty TENANT_ID = new ExecutionQueryProperty("RES.TENANT_ID_");
-  
-  private String name;
+    private static final Map<String, ExecutionQueryProperty> properties = new HashMap<String, ExecutionQueryProperty>();
 
-  public ExecutionQueryProperty(String name) {
-    this.name = name;
-    properties.put(name, this);
-  }
+    public static final ExecutionQueryProperty PROCESS_INSTANCE_ID = new ExecutionQueryProperty("RES.ID_");
+    public static final ExecutionQueryProperty PROCESS_DEFINITION_KEY = new ExecutionQueryProperty("ProcessDefinitionKey");
+    public static final ExecutionQueryProperty PROCESS_DEFINITION_ID = new ExecutionQueryProperty("ProcessDefinitionId");
+    public static final ExecutionQueryProperty TENANT_ID = new ExecutionQueryProperty("RES.TENANT_ID_");
 
-  public String getName() {
-    return name;
-  }
-  
-  public static ExecutionQueryProperty findByName(String propertyName) {
-    return properties.get(propertyName);
-  }
+    private String name;
+
+    public ExecutionQueryProperty(String name) {
+        this.name = name;
+        properties.put(name, this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static ExecutionQueryProperty findByName(String propertyName) {
+        return properties.get(propertyName);
+    }
 
 }

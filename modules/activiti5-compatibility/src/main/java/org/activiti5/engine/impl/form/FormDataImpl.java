@@ -20,40 +20,42 @@ import java.util.List;
 import org.activiti5.engine.form.FormData;
 import org.activiti5.engine.form.FormProperty;
 
-
 /**
  * @author Tom Baeyens
  */
 public abstract class FormDataImpl implements FormData, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String formKey;
-  protected String deploymentId;
-  protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
-  
-  // getters and setters //////////////////////////////////////////////////////
-  
-  public String getFormKey() {
-    return formKey;
-  }
-  public String getDeploymentId() {
-    return deploymentId;
-  }
-  public List<FormProperty> getFormProperties() {
-    return formProperties;
-  }
-  
-  public void setFormKey(String formKey) {
-    this.formKey = formKey;
-  }
-  
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
-  
-  public void setFormProperties(List<FormProperty> formProperties) {
-    this.formProperties = formProperties;
-  }
+    private static final long serialVersionUID = 1L;
+
+    protected String formKey;
+    protected String deploymentId;
+    protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
+
+    // getters and setters
+    // //////////////////////////////////////////////////////
+
+    public String getFormKey() {
+        return formKey;
+    }
+
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    public List<FormProperty> getFormProperties() {
+        return formProperties;
+    }
+
+    public void setFormKey(String formKey) {
+        this.formKey = formKey;
+    }
+
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
+
+    public void setFormProperties(List<FormProperty> formProperties) {
+        this.formProperties = formProperties;
+    }
 
 }

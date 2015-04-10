@@ -16,27 +16,26 @@ import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * @author Saeid Mirzaei
  */
-public class ThrowCustomExceptionDelegate implements JavaDelegate{
+public class ThrowCustomExceptionDelegate implements JavaDelegate {
 
-  @Override
-  public void execute(DelegateExecution execution) throws Exception {
-    Object exceptionClassVar = execution.getVariable("exceptionClass");
-    if (exceptionClassVar == null)
-      return;
-              
-    String exceptionClassName = exceptionClassVar.toString();
-    
-    if (StringUtils.isNotEmpty(exceptionClassName))  {
-      Class<?> clazz = Class.forName(exceptionClassName);   
-      Exception exception = (Exception) clazz.newInstance();
-      throw  exception;
-              
+    @Override
+    public void execute(DelegateExecution execution) throws Exception {
+        Object exceptionClassVar = execution.getVariable("exceptionClass");
+        if (exceptionClassVar == null)
+            return;
+
+        String exceptionClassName = exceptionClassVar.toString();
+
+        if (StringUtils.isNotEmpty(exceptionClassName)) {
+            Class<?> clazz = Class.forName(exceptionClassName);
+            Exception exception = (Exception) clazz.newInstance();
+            throw exception;
+
+        }
+
     }
-    
-  }
 
 }

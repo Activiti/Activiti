@@ -15,31 +15,29 @@ package org.activiti5.engine.impl;
 import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 
-
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class ServiceImpl {
-	
-	protected ProcessEngineConfigurationImpl processEngineConfiguration;
-	
-	public ServiceImpl() {
-		
-	}
-	
-	public ServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
-		this.processEngineConfiguration = processEngineConfiguration;
-	}
 
-  protected CommandExecutor commandExecutor;
-  
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
-  }
+    protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
+    public ServiceImpl() {
+
+    }
+
+    public ServiceImpl(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
+
+    protected CommandExecutor commandExecutor;
+
+    public CommandExecutor getCommandExecutor() {
+        return commandExecutor;
+    }
+
+    public void setCommandExecutor(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
+    }
 }

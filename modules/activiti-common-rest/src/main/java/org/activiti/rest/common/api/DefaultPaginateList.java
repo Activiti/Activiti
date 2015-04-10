@@ -20,9 +20,9 @@ import java.util.List;
  */
 public class DefaultPaginateList extends AbstractPaginateList {
 
-  @SuppressWarnings("rawtypes")
-  @Override
-  protected List processList(List list) {
-    return list;
-  }
+    @SuppressWarnings("rawtypes")
+    @Override
+    protected List processList(List list) {
+        return list;
+    }
 }

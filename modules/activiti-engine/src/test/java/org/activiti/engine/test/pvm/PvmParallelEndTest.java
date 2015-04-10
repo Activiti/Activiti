@@ -21,48 +21,23 @@ import org.activiti.engine.test.pvm.activities.Automatic;
 import org.activiti.engine.test.pvm.activities.End;
 import org.activiti.engine.test.pvm.activities.ParallelGateway;
 
-
 /**
  * @author Tom Baeyens
  */
 public class PvmParallelEndTest extends PvmTestCase {
 
-  /**
-   *                   +----+
-   *              +--->|end1|
-   *              |    +----+
-   *              |        
-   * +-----+   +----+      
-   * |start|-->|fork|      
-   * +-----+   +----+      
-   *              |        
-   *              |    +----+
-   *              +--->|end2|
-   *                   +----+
-   */
-  public void testParallelEnd() {
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .createActivity("start")
-        .initial()
-        .behavior(new Automatic())
-        .transition("fork")
-      .endActivity()
-      .createActivity("fork")
-        .behavior(new ParallelGateway())
-        .transition("end1")
-        .transition("end2")
-      .endActivity()
-      .createActivity("end1")
-        .behavior(new End())
-      .endActivity()
-      .createActivity("end2")
-        .behavior(new End())
-      .endActivity()
-    .buildProcessDefinition();
-    
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
-    processInstance.start();
-    
-    assertTrue(processInstance.isEnded());
-  }
+    /**
+     * +----+ +--->|end1| | +----+ | +-----+ +----+ |start|-->|fork| +-----+
+     * +----+ | | +----+ +--->|end2| +----+
+     */
+    public void testParallelEnd() {
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("fork").endActivity().createActivity("fork")
+                .behavior(new ParallelGateway()).transition("end1").transition("end2").endActivity().createActivity("end1").behavior(new End()).endActivity().createActivity("end2")
+                .behavior(new End()).endActivity().buildProcessDefinition();
+
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.start();
+
+        assertTrue(processInstance.isEnded());
+    }
 }

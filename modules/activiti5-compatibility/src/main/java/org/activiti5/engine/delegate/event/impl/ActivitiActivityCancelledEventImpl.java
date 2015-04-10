@@ -16,24 +16,25 @@ import org.activiti5.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 
 /**
- * An {@link org.activiti5.engine.delegate.event.ActivitiActivityCancelledEvent} implementation.
- *
+ * An {@link org.activiti5.engine.delegate.event.ActivitiActivityCancelledEvent}
+ * implementation.
+ * 
  * @author martin.grofcik
  */
 public class ActivitiActivityCancelledEventImpl extends ActivitiActivityEventImpl implements ActivitiActivityCancelledEvent {
 
-	protected Object cause;
+    protected Object cause;
 
-	public ActivitiActivityCancelledEventImpl() {
-	  super(ActivitiEventType.ACTIVITY_CANCELLED);
-  }
+    public ActivitiActivityCancelledEventImpl() {
+        super(ActivitiEventType.ACTIVITY_CANCELLED);
+    }
 
-	public void setCause(Object cause) {
-	  this.cause = cause;
-  }
-	
-	public Object getCause() {
-	  return cause;
-  }
+    public void setCause(Object cause) {
+        this.cause = cause;
+    }
+
+    public Object getCause() {
+        return cause;
+    }
 
 }

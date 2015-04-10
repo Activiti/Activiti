@@ -9,22 +9,22 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 public class RetryFailingDelegate implements JavaDelegate {
 
-  public static final String EXCEPTION_MESSAGE = "Expected exception.";
-  
-	public static boolean shallThrow = false;
-	public static List<Long> times;
-	 
-	static public void resetTimeList() {
-	  times = new ArrayList<Long>();
-	}
+    public static final String EXCEPTION_MESSAGE = "Expected exception.";
 
-	@Override
-	public void execute(DelegateExecution execution) {
-	    	
-	  times.add(System.currentTimeMillis());
+    public static boolean shallThrow = false;
+    public static List<Long> times;
 
-	  if (shallThrow) {
-	    throw new ActivitiException(EXCEPTION_MESSAGE);
-	  }
-	}
+    static public void resetTimeList() {
+        times = new ArrayList<Long>();
+    }
+
+    @Override
+    public void execute(DelegateExecution execution) {
+
+        times.add(System.currentTimeMillis());
+
+        if (shallThrow) {
+            throw new ActivitiException(EXCEPTION_MESSAGE);
+        }
+    }
 }

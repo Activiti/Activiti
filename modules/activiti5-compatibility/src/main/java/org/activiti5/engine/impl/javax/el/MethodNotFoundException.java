@@ -16,47 +16,49 @@
 package org.activiti5.engine.impl.javax.el;
 
 /**
- * Thrown when a method could not be found while evaluating a {@link MethodExpression}.
+ * Thrown when a method could not be found while evaluating a
+ * {@link MethodExpression}.
  */
 public class MethodNotFoundException extends ELException {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	/**
-	 * Creates a MethodNotFoundException with no detail message.
-	 */
-	public MethodNotFoundException() {
-		super();
-	}
+    /**
+     * Creates a MethodNotFoundException with no detail message.
+     */
+    public MethodNotFoundException() {
+        super();
+    }
 
-	/**
-	 * Creates a MethodNotFoundException with the provided detail message.
-	 * 
-	 * @param message
-	 *            the detail message
-	 */
-	public MethodNotFoundException(String message) {
-		super(message);
-	}
+    /**
+     * Creates a MethodNotFoundException with the provided detail message.
+     * 
+     * @param message
+     *            the detail message
+     */
+    public MethodNotFoundException(String message) {
+        super(message);
+    }
 
-	/**
-	 * Creates a MethodNotFoundException with the given root cause.
-	 * 
-	 * @param cause
-	 *            the originating cause of this exception
-	 */
-	public MethodNotFoundException(Throwable cause) {
-		super(cause);
-	}
+    /**
+     * Creates a MethodNotFoundException with the given root cause.
+     * 
+     * @param cause
+     *            the originating cause of this exception
+     */
+    public MethodNotFoundException(Throwable cause) {
+        super(cause);
+    }
 
-	/**
-	 * Creates a MethodNotFoundException with the given detail message and root cause.
-	 * 
-	 * @param message
-	 *            the detail message
-	 * @param cause
-	 *            the originating cause of this exception
-	 */
-	public MethodNotFoundException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * Creates a MethodNotFoundException with the given detail message and root
+     * cause.
+     * 
+     * @param message
+     *            the detail message
+     * @param cause
+     *            the originating cause of this exception
+     */
+    public MethodNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

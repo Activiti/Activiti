@@ -15,32 +15,31 @@ package org.activiti.explorer.ui;
 import org.activiti.engine.ActivitiException;
 import org.activiti.explorer.Environments;
 
-
-
 /**
  * @author Joram Barrez
  */
-public abstract class NoParamComponentFactory<T> implements ComponentFactory<T>{
-  
-  protected Class<? extends T> clazz;
-  
-  public void initialise(String environment) {
-    if (environment.equals(Environments.ALFRESCO)) {
-      clazz = getAlfrescoComponentClass();
-    } else {
-      clazz = getDefaultComponentClass();
+public abstract class NoParamComponentFactory<T> implements ComponentFactory<T> {
+
+    protected Class<? extends T> clazz;
+
+    public void initialise(String environment) {
+        if (environment.equals(Environments.ALFRESCO)) {
+            clazz = getAlfrescoComponentClass();
+        } else {
+            clazz = getDefaultComponentClass();
+        }
     }
-  }
-  
-  public T create() {
-    try {
-      return clazz.newInstance();
-    } catch (Exception e) {
-      throw new ActivitiException("Couldn't instantiate class " + clazz, e); 
+
+    public T create() {
+        try {
+            return clazz.newInstance();
+        } catch (Exception e) {
+            throw new ActivitiException("Couldn't instantiate class " + clazz, e);
+        }
     }
-  }
-  
-  protected abstract Class<? extends T> getAlfrescoComponentClass();
-  protected abstract Class<? extends T> getDefaultComponentClass();
+
+    protected abstract Class<? extends T> getAlfrescoComponentClass();
+
+    protected abstract Class<? extends T> getDefaultComponentClass();
 
 }

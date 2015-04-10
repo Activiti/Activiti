@@ -12,13 +12,12 @@
  */
 package org.activiti.explorer;
 
-
 /**
  * @author Joram Barrez
  */
 public interface Environments {
-  
-  String ACTIVITI = "activiti";
-  String ALFRESCO = "alfresco";
+
+    String ACTIVITI = "activiti";
+    String ALFRESCO = "alfresco";
 
 }

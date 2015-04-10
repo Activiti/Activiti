@@ -25,47 +25,41 @@ import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti5.engine.impl.delegate.JavaDelegateInvocation;
 
-
 /**
  * @author Joram Barrez
  */
 public class DelegateExpressionExecutionListener implements ExecutionListener {
-  
-  protected Expression expression;
-  private final List<FieldDeclaration> fieldDeclarations;
-  
-  public DelegateExpressionExecutionListener(Expression expression, List<FieldDeclaration> fieldDeclarations) {
-    this.expression = expression;
-    this.fieldDeclarations = fieldDeclarations;
-  }
-  
-  public void notify(DelegateExecution execution) throws Exception {
-    // Note: we can't cache the result of the expression, because the
-    // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
-    Object delegate = expression.getValue(execution);
-    ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-    
-    if (delegate instanceof ExecutionListener) {
-      Context.getProcessEngineConfiguration()
-        .getDelegateInterceptor()
-        .handleInvocation(new ExecutionListenerInvocation((ExecutionListener) delegate, execution));
-    } else if (delegate instanceof JavaDelegate) {
-      Context.getProcessEngineConfiguration()
-        .getDelegateInterceptor()
-        .handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
-    } else {
-      throw new ActivitiIllegalArgumentException("Delegate expression " + expression 
-              + " did not resolve to an implementation of " + ExecutionListener.class 
-              + " nor " + JavaDelegate.class);
-    }
-  }
 
-  /**
-   * returns the expression text for this execution listener. Comes in handy if you want to
-   * check which listeners you already have.
-   */  
-  public String getExpressionText() {
-    return expression.getExpressionText();
-  }
+    protected Expression expression;
+    private final List<FieldDeclaration> fieldDeclarations;
+
+    public DelegateExpressionExecutionListener(Expression expression, List<FieldDeclaration> fieldDeclarations) {
+        this.expression = expression;
+        this.fieldDeclarations = fieldDeclarations;
+    }
+
+    public void notify(DelegateExecution execution) throws Exception {
+        // Note: we can't cache the result of the expression, because the
+        // execution can change: eg.
+        // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
+        Object delegate = expression.getValue(execution);
+        ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
+
+        if (delegate instanceof ExecutionListener) {
+            Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ExecutionListenerInvocation((ExecutionListener) delegate, execution));
+        } else if (delegate instanceof JavaDelegate) {
+            Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
+        } else {
+            throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did not resolve to an implementation of " + ExecutionListener.class + " nor " + JavaDelegate.class);
+        }
+    }
+
+    /**
+     * returns the expression text for this execution listener. Comes in handy
+     * if you want to check which listeners you already have.
+     */
+    public String getExpressionText() {
+        return expression.getExpressionText();
+    }
 
 }

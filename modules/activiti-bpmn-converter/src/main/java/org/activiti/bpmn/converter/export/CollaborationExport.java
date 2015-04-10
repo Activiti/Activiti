@@ -22,41 +22,41 @@ import org.apache.commons.lang3.StringUtils;
 
 public class CollaborationExport implements BpmnXMLConstants {
 
-  public static void writePools(BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    if (!model.getPools().isEmpty()) {
-      xtw.writeStartElement(ELEMENT_COLLABORATION);
-      xtw.writeAttribute(ATTRIBUTE_ID, "Collaboration");
-      for (Pool pool : model.getPools()) {
-        xtw.writeStartElement(ELEMENT_PARTICIPANT);
-        xtw.writeAttribute(ATTRIBUTE_ID, pool.getId());
-        if (StringUtils.isNotEmpty(pool.getName())) {
-          xtw.writeAttribute(ATTRIBUTE_NAME, pool.getName());
+    public static void writePools(BpmnModel model, XMLStreamWriter xtw) throws Exception {
+        if (!model.getPools().isEmpty()) {
+            xtw.writeStartElement(ELEMENT_COLLABORATION);
+            xtw.writeAttribute(ATTRIBUTE_ID, "Collaboration");
+            for (Pool pool : model.getPools()) {
+                xtw.writeStartElement(ELEMENT_PARTICIPANT);
+                xtw.writeAttribute(ATTRIBUTE_ID, pool.getId());
+                if (StringUtils.isNotEmpty(pool.getName())) {
+                    xtw.writeAttribute(ATTRIBUTE_NAME, pool.getName());
+                }
+                if (StringUtils.isNotEmpty(pool.getProcessRef())) {
+                    xtw.writeAttribute(ATTRIBUTE_PROCESS_REF, pool.getProcessRef());
+                }
+                xtw.writeEndElement();
+            }
+
+            for (MessageFlow messageFlow : model.getMessageFlows().values()) {
+                xtw.writeStartElement(ELEMENT_MESSAGE_FLOW);
+                xtw.writeAttribute(ATTRIBUTE_ID, messageFlow.getId());
+                if (StringUtils.isNotEmpty(messageFlow.getName())) {
+                    xtw.writeAttribute(ATTRIBUTE_NAME, messageFlow.getName());
+                }
+                if (StringUtils.isNotEmpty(messageFlow.getSourceRef())) {
+                    xtw.writeAttribute(ATTRIBUTE_FLOW_SOURCE_REF, messageFlow.getSourceRef());
+                }
+                if (StringUtils.isNotEmpty(messageFlow.getTargetRef())) {
+                    xtw.writeAttribute(ATTRIBUTE_FLOW_TARGET_REF, messageFlow.getTargetRef());
+                }
+                if (StringUtils.isNotEmpty(messageFlow.getMessageRef())) {
+                    xtw.writeAttribute(ATTRIBUTE_MESSAGE_REF, messageFlow.getMessageRef());
+                }
+                xtw.writeEndElement();
+            }
+
+            xtw.writeEndElement();
         }
-        if (StringUtils.isNotEmpty(pool.getProcessRef())) {
-          xtw.writeAttribute(ATTRIBUTE_PROCESS_REF, pool.getProcessRef());
-        }
-        xtw.writeEndElement();
-      }
-      
-      for (MessageFlow messageFlow : model.getMessageFlows().values()) {
-        xtw.writeStartElement(ELEMENT_MESSAGE_FLOW);
-        xtw.writeAttribute(ATTRIBUTE_ID, messageFlow.getId());
-        if (StringUtils.isNotEmpty(messageFlow.getName())) {
-          xtw.writeAttribute(ATTRIBUTE_NAME, messageFlow.getName());
-        }
-        if (StringUtils.isNotEmpty(messageFlow.getSourceRef())) {
-          xtw.writeAttribute(ATTRIBUTE_FLOW_SOURCE_REF, messageFlow.getSourceRef());
-        }
-        if (StringUtils.isNotEmpty(messageFlow.getTargetRef())) {
-          xtw.writeAttribute(ATTRIBUTE_FLOW_TARGET_REF, messageFlow.getTargetRef());
-        }
-        if (StringUtils.isNotEmpty(messageFlow.getMessageRef())) {
-          xtw.writeAttribute(ATTRIBUTE_MESSAGE_REF, messageFlow.getMessageRef());
-        }
-        xtw.writeEndElement();
-      }
-      
-      xtw.writeEndElement();
     }
-  }
 }

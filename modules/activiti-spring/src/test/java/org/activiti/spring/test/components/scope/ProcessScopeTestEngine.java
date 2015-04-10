@@ -1,6 +1,5 @@
 package org.activiti.spring.test.components.scope;
 
-
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
@@ -61,7 +60,6 @@ class ProcessScopeTestEngine {
         assertEquals(customerId, scopedObject.getCustomerId());
         return scopedObject;
     }
-
 
     private ProcessEngine processEngine;
     private RuntimeService runtimeService;

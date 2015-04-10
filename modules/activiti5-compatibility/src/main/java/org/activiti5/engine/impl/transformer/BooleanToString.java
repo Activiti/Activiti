@@ -19,11 +19,11 @@ package org.activiti5.engine.impl.transformer;
  */
 public class BooleanToString extends AbstractTransformer {
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return ((Boolean) anObject).toString();
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return ((Boolean) anObject).toString();
+    }
 }

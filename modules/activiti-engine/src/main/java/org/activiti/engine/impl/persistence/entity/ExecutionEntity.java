@@ -71,8 +71,8 @@ import org.slf4j.LoggerFactory;
  * @author Saeid Mirzaei
  */
 
-public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, ProcessInstance,
-        InterpretableExecution, PersistentObject, HasRevision {
+public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, ProcessInstance, InterpretableExecution, PersistentObject,
+        HasRevision {
 
     private static final long serialVersionUID = 1L;
 
@@ -303,10 +303,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         }
 
         if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, createdExecution));
-            Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, createdExecution));
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, createdExecution));
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, createdExecution));
         }
 
         return createdExecution;
@@ -326,8 +324,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(this, subProcessInstance);
 
         if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, subProcessInstance));
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, subProcessInstance));
         }
         return subProcessInstance;
     }
@@ -390,8 +387,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         }
 
         // create event subscriptions for the current scope
-        List<EventSubscriptionDeclaration> eventSubscriptionDeclarations = (List<EventSubscriptionDeclaration>) scope
-                .getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
+        List<EventSubscriptionDeclaration> eventSubscriptionDeclarations = (List<EventSubscriptionDeclaration>) scope.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
         if (eventSubscriptionDeclarations != null) {
             for (EventSubscriptionDeclaration eventSubscriptionDeclaration : eventSubscriptionDeclarations) {
                 if (!eventSubscriptionDeclaration.isStartEvent()) {
@@ -445,15 +441,14 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
             // If needed, dispatch an event indicating an activity was signalled
             boolean isUserTask = (activityBehavior instanceof UserTaskActivityBehavior)
-                    || ((activityBehavior instanceof MultiInstanceActivityBehavior) && ((MultiInstanceActivityBehavior) activityBehavior)
-                            .getInnerActivityBehavior() instanceof UserTaskActivityBehavior);
+                    || ((activityBehavior instanceof MultiInstanceActivityBehavior) && ((MultiInstanceActivityBehavior) activityBehavior).getInnerActivityBehavior() instanceof UserTaskActivityBehavior);
 
             if (!isUserTask && Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
                 Context.getProcessEngineConfiguration()
                         .getEventDispatcher()
                         .dispatchEvent(
-                                ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalledActivityId, signalName, signalData,
-                                        this.id, this.processInstanceId, this.processDefinitionId));
+                                ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalledActivityId, signalName, signalData, this.id, this.processInstanceId,
+                                        this.processDefinitionId));
             }
 
         } catch (RuntimeException e) {
@@ -631,11 +626,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
             Context.getProcessEngineConfiguration()
                     .getEventDispatcher()
                     .dispatchEvent(
-                            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, getActivity() != null ? getActivity().getId()
-                                    : getActivityId(), getActivity() != null ? (String) getActivity().getProperties().get("name") : null, getId(),
-                                    getProcessInstanceId(), getProcessDefinitionId(), getActivity() != null ? (String) getActivity().getProperties()
-                                            .get("type") : null, getActivity() != null ? getActivity().getActivityBehavior().getClass().getCanonicalName()
-                                            : null));
+                            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, getActivity() != null ? getActivity().getId() : getActivityId(),
+                                    getActivity() != null ? (String) getActivity().getProperties().get("name") : null, getId(), getProcessInstanceId(), getProcessDefinitionId(),
+                                    getActivity() != null ? (String) getActivity().getProperties().get("type") : null, getActivity() != null ? getActivity().getActivityBehavior().getClass()
+                                            .getCanonicalName() : null));
         }
     }
 
@@ -819,8 +813,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
      */
     protected void ensureProcessDefinitionInitialized() {
         if ((processDefinition == null) && (processDefinitionId != null)) {
-            ProcessDefinitionEntity deployedProcessDefinition = Context.getProcessEngineConfiguration().getDeploymentManager()
-                    .findDeployedProcessDefinitionById(processDefinitionId);
+            ProcessDefinitionEntity deployedProcessDefinition = Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
             setProcessDefinition(deployedProcessDefinition);
         }
     }
@@ -1009,8 +1002,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         removeIdentityLinks();
 
         if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
         }
 
         // finally delete this execution
@@ -1200,8 +1192,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
             Context.getProcessEngineConfiguration()
                     .getEventDispatcher()
                     .dispatchEvent(
-                            ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getType(),
-                                    result.getTaskId(), result.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
+                            ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_CREATED, variableName, value, result.getType(), result.getTaskId(), result.getExecutionId(),
+                                    getProcessInstanceId(), getProcessDefinitionId()));
         }
         return result;
     }
@@ -1215,9 +1207,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
             Context.getProcessEngineConfiguration()
                     .getEventDispatcher()
                     .dispatchEvent(
-                            ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value,
-                                    variableInstance.getType(), variableInstance.getTaskId(), variableInstance.getExecutionId(), getProcessInstanceId(),
-                                    getProcessDefinitionId()));
+                            ActivitiEventBuilder.createVariableEvent(ActivitiEventType.VARIABLE_UPDATED, variableInstance.getName(), value, variableInstance.getType(), variableInstance.getTaskId(),
+                                    variableInstance.getExecutionId(), getProcessInstanceId(), getProcessDefinitionId()));
         }
     }
 
@@ -1682,8 +1673,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
             Context.getCommandContext().getHistoryManager().updateProcessBusinessKeyInHistory(this);
 
             if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                Context.getProcessEngineConfiguration().getEventDispatcher()
-                        .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, this));
+                Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, this));
             }
 
             return bzKey;
@@ -1692,8 +1682,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
 
     public void deleteIdentityLink(String userId, String groupId, String type) {
-        List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager()
-                .findIdentityLinkByProcessInstanceUserGroupAndType(id, userId, groupId, type);
+        List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinkByProcessInstanceUserGroupAndType(id, userId, groupId, type);
 
         for (IdentityLinkEntity identityLink : identityLinks) {
             Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(identityLink, true);

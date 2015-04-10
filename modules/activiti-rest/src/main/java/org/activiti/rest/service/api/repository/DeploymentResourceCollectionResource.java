@@ -28,32 +28,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class DeploymentResourceCollectionResource {
-  
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected ContentTypeResolver contentTypeResolver;
-  
-  @Autowired
-  protected RepositoryService repositoryService;
 
-  @RequestMapping(value="/repository/deployments/{deploymentId}/resources", method = RequestMethod.GET, produces = "application/json")
-  public List<DeploymentResourceResponse> getDeploymentResources(@PathVariable String deploymentId, HttpServletRequest request) {
-    // Check if deployment exists
-    Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
-    if (deployment == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected ContentTypeResolver contentTypeResolver;
+
+    @Autowired
+    protected RepositoryService repositoryService;
+
+    @RequestMapping(value = "/repository/deployments/{deploymentId}/resources", method = RequestMethod.GET, produces = "application/json")
+    public List<DeploymentResourceResponse> getDeploymentResources(@PathVariable String deploymentId, HttpServletRequest request) {
+        // Check if deployment exists
+        Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+        if (deployment == null) {
+            throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
+        }
+
+        List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
+
+        return restResponseFactory.createDeploymentResourceResponseList(deploymentId, resourceList, contentTypeResolver);
     }
-    
-    List<String> resourceList = repositoryService.getDeploymentResourceNames(deploymentId);
-    
-    return restResponseFactory.createDeploymentResourceResponseList(deploymentId, resourceList, contentTypeResolver);
-  }
 }

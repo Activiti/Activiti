@@ -13,14 +13,13 @@
 
 package org.activiti5.engine.impl.pvm;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public interface PvmProcessDefinition extends ReadOnlyProcessDefinition {
 
-  String getDeploymentId();
-  PvmProcessInstance createProcessInstance();
+    String getDeploymentId();
+
+    PvmProcessInstance createProcessInstance();
 
 }

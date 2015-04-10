@@ -64,17 +64,13 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(BaseBpmnXMLConverter.class);
 
-    protected static final List<ExtensionAttribute> defaultElementAttributes = Arrays.asList(
-            new ExtensionAttribute(ATTRIBUTE_ID), new ExtensionAttribute(ATTRIBUTE_NAME));
+    protected static final List<ExtensionAttribute> defaultElementAttributes = Arrays.asList(new ExtensionAttribute(ATTRIBUTE_ID), new ExtensionAttribute(ATTRIBUTE_NAME));
 
-    protected static final List<ExtensionAttribute> defaultActivityAttributes = Arrays.asList(
-            new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS), 
-            new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE), 
-            new ExtensionAttribute(ATTRIBUTE_DEFAULT), 
-            new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION));
+    protected static final List<ExtensionAttribute> defaultActivityAttributes = Arrays.asList(new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_ASYNCHRONOUS),
+            new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE, ATTRIBUTE_ACTIVITY_EXCLUSIVE), new ExtensionAttribute(ATTRIBUTE_DEFAULT), new ExtensionAttribute(ACTIVITI_EXTENSIONS_NAMESPACE,
+                    ATTRIBUTE_ACTIVITY_ISFORCOMPENSATION));
 
-    public void convertToBpmnModel(XMLStreamReader xtr, BpmnModel model, Process activeProcess, 
-            List<SubProcess> activeSubProcessList) throws Exception {
+    public void convertToBpmnModel(XMLStreamReader xtr, BpmnModel model, Process activeProcess, List<SubProcess> activeSubProcessList) throws Exception {
 
         String elementId = xtr.getAttributeValue(null, ATTRIBUTE_ID);
         String elementName = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
@@ -204,8 +200,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
         didWriteExtensionStartElement = writeExtensionChildElements(baseElement, didWriteExtensionStartElement, xtw);
         didWriteExtensionStartElement = writeListeners(baseElement, didWriteExtensionStartElement, xtw);
-        didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(baseElement, didWriteExtensionStartElement,
-                model.getNamespaces(), xtw);
+        didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(baseElement, didWriteExtensionStartElement, model.getNamespaces(), xtw);
         if (baseElement instanceof Activity) {
             final Activity activity = (Activity) baseElement;
             FailedJobRetryCountExport.writeFailedJobRetryCount(activity, xtw);
@@ -235,8 +230,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
 
     protected abstract void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception;
 
-    protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw)
-            throws Exception {
+    protected boolean writeExtensionChildElements(BaseElement element, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
         return didWriteExtensionStartElement;
     }
 
@@ -248,8 +242,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         parseChildElements(elementName, parentElement, null, model, xtr);
     }
 
-    protected void parseChildElements(String elementName, BaseElement parentElement, Map<String, BaseChildElementParser> additionalParsers,
-            BpmnModel model, XMLStreamReader xtr) throws Exception {
+    protected void parseChildElements(String elementName, BaseElement parentElement, Map<String, BaseChildElementParser> additionalParsers, BpmnModel model, XMLStreamReader xtr) throws Exception {
 
         Map<String, BaseChildElementParser> childParsers = new HashMap<String, BaseChildElementParser>();
         if (additionalParsers != null) {
@@ -333,8 +326,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         return BpmnXMLUtil.convertToDelimitedString(stringList);
     }
 
-    protected boolean writeFormProperties(FlowElement flowElement, boolean didWriteExtensionStartElement, XMLStreamWriter xtw)
-            throws Exception {
+    protected boolean writeFormProperties(FlowElement flowElement, boolean didWriteExtensionStartElement, XMLStreamWriter xtw) throws Exception {
 
         List<FormProperty> propertyList = null;
         if (flowElement instanceof UserTask) {
@@ -394,8 +386,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         return ActivitiListenerExport.writeListeners(element, didWriteExtensionStartElement, xtw);
     }
 
-    protected void writeEventDefinitions(Event parentEvent, List<EventDefinition> eventDefinitions, BpmnModel model, XMLStreamWriter xtw)
-            throws Exception {
+    protected void writeEventDefinitions(Event parentEvent, List<EventDefinition> eventDefinitions, BpmnModel model, XMLStreamWriter xtw) throws Exception {
         for (EventDefinition eventDefinition : eventDefinitions) {
             if (eventDefinition instanceof TimerEventDefinition) {
                 writeTimerDefinition(parentEvent, (TimerEventDefinition) eventDefinition, xtw);
@@ -451,8 +442,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeEndElement();
     }
 
-    protected void writeCompensateDefinition(Event parentEvent, CompensateEventDefinition compensateEventDefinition, XMLStreamWriter xtw)
-            throws Exception {
+    protected void writeCompensateDefinition(Event parentEvent, CompensateEventDefinition compensateEventDefinition, XMLStreamWriter xtw) throws Exception {
         xtw.writeStartElement(ELEMENT_EVENT_COMPENSATEDEFINITION);
         writeDefaultAttribute(ATTRIBUTE_COMPENSATE_ACTIVITYREF, compensateEventDefinition.getActivityRef(), xtw);
         boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(compensateEventDefinition, false, xtw);
@@ -462,8 +452,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeEndElement();
     }
 
-    protected void writeMessageDefinition(Event parentEvent, MessageEventDefinition messageDefinition, BpmnModel model, XMLStreamWriter xtw)
-            throws Exception {
+    protected void writeMessageDefinition(Event parentEvent, MessageEventDefinition messageDefinition, BpmnModel model, XMLStreamWriter xtw) throws Exception {
         xtw.writeStartElement(ELEMENT_EVENT_MESSAGEDEFINITION);
 
         String messageRef = messageDefinition.getMessageRef();
@@ -500,8 +489,7 @@ public abstract class BaseBpmnXMLConverter implements BpmnXMLConstants {
         xtw.writeEndElement();
     }
 
-    protected void writeTerminateDefinition(Event parentEvent, TerminateEventDefinition terminateDefinition, XMLStreamWriter xtw)
-            throws Exception {
+    protected void writeTerminateDefinition(Event parentEvent, TerminateEventDefinition terminateDefinition, XMLStreamWriter xtw) throws Exception {
         xtw.writeStartElement(ELEMENT_EVENT_TERMINATEDEFINITION);
         boolean didWriteExtensionStartElement = BpmnXMLUtil.writeExtensionElements(terminateDefinition, false, xtw);
         if (didWriteExtensionStartElement) {

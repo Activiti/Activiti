@@ -44,30 +44,27 @@ public class BarDeploymentListener implements ArtifactUrlTransformer {
 
     public boolean canHandle(File artifact) {
         JarFile jar = null;
-    	try {
+        try {
             if (!artifact.getName().endsWith(".bar")) {
                 return false;
             }
             jar = new JarFile(artifact);
             // Only handle non OSGi bundles
             Manifest m = jar.getManifest();
-            if (m!= null && m.getMainAttributes().getValue(
-                    new Attributes.Name(BUNDLE_SYMBOLICNAME)) != null
-                    && m.getMainAttributes().getValue(
-                            new Attributes.Name(BUNDLE_VERSION)) != null) {
+            if (m != null && m.getMainAttributes().getValue(new Attributes.Name(BUNDLE_SYMBOLICNAME)) != null && m.getMainAttributes().getValue(new Attributes.Name(BUNDLE_VERSION)) != null) {
                 return false;
             }
             return true;
         } catch (Exception e) {
             return false;
         } finally {
-        	if(jar != null) {
-        		try {
-					jar.close();
-				} catch (IOException e) {
-					LOGGER.error("Unable to close jar", e);
-				}
-        	}
+            if (jar != null) {
+                try {
+                    jar.close();
+                } catch (IOException e) {
+                    LOGGER.error("Unable to close jar", e);
+                }
+            }
         }
     }
 

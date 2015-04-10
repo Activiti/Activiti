@@ -13,19 +13,18 @@
 
 package org.activiti.engine.impl.identity;
 
-
 /**
  * @author Tom Baeyens
  */
 public abstract class Authentication {
 
-  static ThreadLocal<String> authenticatedUserIdThreadLocal = new ThreadLocal<String>();
-  
-  public static void setAuthenticatedUserId(String authenticatedUserId) {
-    authenticatedUserIdThreadLocal.set(authenticatedUserId);
-  }
+    static ThreadLocal<String> authenticatedUserIdThreadLocal = new ThreadLocal<String>();
 
-  public static String getAuthenticatedUserId() {
-    return authenticatedUserIdThreadLocal.get();
-  }
+    public static void setAuthenticatedUserId(String authenticatedUserId) {
+        authenticatedUserIdThreadLocal.set(authenticatedUserId);
+    }
+
+    public static String getAuthenticatedUserId() {
+        return authenticatedUserIdThreadLocal.get();
+    }
 }

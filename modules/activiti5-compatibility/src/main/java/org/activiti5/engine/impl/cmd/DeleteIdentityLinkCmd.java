@@ -18,7 +18,6 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 import org.activiti5.engine.task.IdentityLinkType;
 
-
 /**
  * @author Tom Baeyens
  * @author Falko Menge
@@ -26,59 +25,58 @@ import org.activiti5.engine.task.IdentityLinkType;
  */
 public class DeleteIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected String userId;
-  
-  protected String groupId;
-  
-  protected String type;
-  
-  public DeleteIdentityLinkCmd(String taskId, String userId, String groupId, String type) {
-    super(taskId);
-    validateParams(userId, groupId, type, taskId);
-    this.taskId = taskId;
-    this.userId = userId;
-    this.groupId = groupId;
-    this.type = type;
-  }
-  
-  protected void validateParams(String userId, String groupId, String type, String taskId) {
-    if(taskId == null) {
-      throw new ActivitiIllegalArgumentException("taskId is null");
-    }
-    
-    if (type == null) {
-      throw new ActivitiIllegalArgumentException("type is required when adding a new task identity link");
-    }
-    
-    // Special treatment for assignee and owner: group cannot be used and userId may be null
-    if (IdentityLinkType.ASSIGNEE.equals(type) || IdentityLinkType.OWNER.equals(type)) {
-      if (groupId != null) {
-        throw new ActivitiIllegalArgumentException("Incompatible usage: cannot use type '" + type
-                + "' together with a groupId");
-      }
-    } else {
-      if (userId == null && groupId == null) {
-        throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
-      }
-    }
-  }
-  
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
+    protected String userId;
 
-    if (IdentityLinkType.ASSIGNEE.equals(type)) {
-      task.setAssignee(null, true, true);
-    } else if (IdentityLinkType.OWNER.equals(type)) {
-      task.setOwner(null, true);
-    } else {
-      task.deleteIdentityLink(userId, groupId, type);
+    protected String groupId;
+
+    protected String type;
+
+    public DeleteIdentityLinkCmd(String taskId, String userId, String groupId, String type) {
+        super(taskId);
+        validateParams(userId, groupId, type, taskId);
+        this.taskId = taskId;
+        this.userId = userId;
+        this.groupId = groupId;
+        this.type = type;
     }
-    
-    commandContext.getHistoryManager()
-      .createIdentityLinkComment(taskId, userId, groupId, type, false);
-    
-    return null;  
-  }
-  
+
+    protected void validateParams(String userId, String groupId, String type, String taskId) {
+        if (taskId == null) {
+            throw new ActivitiIllegalArgumentException("taskId is null");
+        }
+
+        if (type == null) {
+            throw new ActivitiIllegalArgumentException("type is required when adding a new task identity link");
+        }
+
+        // Special treatment for assignee and owner: group cannot be used and
+        // userId may be null
+        if (IdentityLinkType.ASSIGNEE.equals(type) || IdentityLinkType.OWNER.equals(type)) {
+            if (groupId != null) {
+                throw new ActivitiIllegalArgumentException("Incompatible usage: cannot use type '" + type + "' together with a groupId");
+            }
+        } else {
+            if (userId == null && groupId == null) {
+                throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
+            }
+        }
+    }
+
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+
+        if (IdentityLinkType.ASSIGNEE.equals(type)) {
+            task.setAssignee(null, true, true);
+        } else if (IdentityLinkType.OWNER.equals(type)) {
+            task.setOwner(null, true);
+        } else {
+            task.deleteIdentityLink(userId, groupId, type);
+        }
+
+        commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, false);
+
+        return null;
+    }
+
 }

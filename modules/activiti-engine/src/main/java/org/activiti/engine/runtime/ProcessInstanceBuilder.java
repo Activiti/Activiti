@@ -15,43 +15,48 @@ package org.activiti.engine.runtime;
 /**
  * Helper for starting new ProcessInstance.
  * 
- * An instance can be obtained through {@link org.activiti.engine.RuntimeService#createProcessInstanceBuilder()}.
+ * An instance can be obtained through
+ * {@link org.activiti.engine.RuntimeService#createProcessInstanceBuilder()}.
  * 
- * processDefinitionId or processDefinitionKey should be set before calling {@link #start()}
- * to start a process instance.
+ * processDefinitionId or processDefinitionKey should be set before calling
+ * {@link #start()} to start a process instance.
  * 
- *
+ * 
  * @author Bassam Al-Sarori
- *
+ * 
  */
 public interface ProcessInstanceBuilder {
 
-	/** Set the id of the process definition **/
-	ProcessInstanceBuilder processDefinitionId(String processDefinitionId);
-	
-	/** Set the key of the process definition, latest version of the process
-   * definition with the given key. If processDefinitionId was set this will
-   * be ignored **/
-	ProcessInstanceBuilder processDefinitionKey(String processDefinitionKey);
-	
-	/** Set the name of process instance **/
-	ProcessInstanceBuilder processInstanceName(String processInstanceName);
-	
-	/** Set the businessKey of process instance **/
-	ProcessInstanceBuilder businessKey(String businessKey);
-	
-	/** Set the tenantId of process instance **/
-	ProcessInstanceBuilder tenantId(String tenantId);
-	
-	/** Add a variable to the process instance **/
-	ProcessInstanceBuilder addVariable(String variableName, Object value);
-	
-	/** Start the process instance 
-	 * 
-	 * @throws ActivitiIllegalArgumentException
-	 * if processDefinitionKey and processDefinitionId are null
-	 * @throws ActivitiObjectNotFoundException
-	 * when no process definition is deployed with the given processDefinitionKey or processDefinitionId
-	 * **/
-	ProcessInstance start();
+    /** Set the id of the process definition **/
+    ProcessInstanceBuilder processDefinitionId(String processDefinitionId);
+
+    /**
+     * Set the key of the process definition, latest version of the process
+     * definition with the given key. If processDefinitionId was set this will
+     * be ignored
+     **/
+    ProcessInstanceBuilder processDefinitionKey(String processDefinitionKey);
+
+    /** Set the name of process instance **/
+    ProcessInstanceBuilder processInstanceName(String processInstanceName);
+
+    /** Set the businessKey of process instance **/
+    ProcessInstanceBuilder businessKey(String businessKey);
+
+    /** Set the tenantId of process instance **/
+    ProcessInstanceBuilder tenantId(String tenantId);
+
+    /** Add a variable to the process instance **/
+    ProcessInstanceBuilder addVariable(String variableName, Object value);
+
+    /**
+     * Start the process instance
+     * 
+     * @throws ActivitiIllegalArgumentException
+     *             if processDefinitionKey and processDefinitionId are null
+     * @throws ActivitiObjectNotFoundException
+     *             when no process definition is deployed with the given
+     *             processDefinitionKey or processDefinitionId
+     * **/
+    ProcessInstance start();
 }

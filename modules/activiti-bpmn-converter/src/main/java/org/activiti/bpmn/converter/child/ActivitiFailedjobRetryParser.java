@@ -8,20 +8,19 @@ import org.activiti.bpmn.model.BpmnModel;
 
 public class ActivitiFailedjobRetryParser extends BaseChildElementParser {
 
-	@Override
-	public String getElementName() {
-		return FAILED_JOB_RETRY_TIME_CYCLE;
-	}
+    @Override
+    public String getElementName() {
+        return FAILED_JOB_RETRY_TIME_CYCLE;
+    }
 
-	@Override
-	public void parseChildElement(XMLStreamReader xtr,
-         BaseElement parentElement, BpmnModel model) throws Exception {
-		 if (!(parentElement instanceof Activity)) 
+    @Override
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+        if (!(parentElement instanceof Activity))
             return;
-		 String cycle = xtr.getElementText();
-		 if (cycle == null | cycle.isEmpty())
-			 return;
-		 ((Activity) parentElement).setFailedJobRetryTimeCycleValue(cycle);
-	}
+        String cycle = xtr.getElementText();
+        if (cycle == null | cycle.isEmpty())
+            return;
+        ((Activity) parentElement).setFailedJobRetryTimeCycleValue(cycle);
+    }
 
 }

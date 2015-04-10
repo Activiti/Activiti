@@ -23,23 +23,23 @@ import org.activiti.engine.identity.User;
  */
 public class CreateUserAndMembershipTestDelegate implements JavaDelegate {
 
-  @Override
-  public void execute(DelegateExecution execution) {
+    @Override
+    public void execute(DelegateExecution execution) {
 
-    IdentityService identityService = execution.getEngineServices().getIdentityService();
-    
-    String username = "Kermit";
-    User user = identityService.newUser(username);
-    user.setPassword("123");
-    user.setFirstName("Manually");
-    user.setLastName("created");
-    identityService.saveUser(user);
-    
-    // Add admin group
-    Group group = identityService.newGroup("admin");
-    identityService.saveGroup(group);
+        IdentityService identityService = execution.getEngineServices().getIdentityService();
 
-    identityService.createMembership(username, "admin");
-  }
+        String username = "Kermit";
+        User user = identityService.newUser(username);
+        user.setPassword("123");
+        user.setFirstName("Manually");
+        user.setLastName("created");
+        identityService.saveUser(user);
+
+        // Add admin group
+        Group group = identityService.newGroup("admin");
+        identityService.saveGroup(group);
+
+        identityService.createMembership(username, "admin");
+    }
 
 }

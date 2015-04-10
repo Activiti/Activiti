@@ -33,6 +33,6 @@ import org.activiti5.engine.impl.delegate.DelegateInvocation;
  */
 public interface DelegateInterceptor {
 
-  public void handleInvocation(DelegateInvocation invocation) throws Exception;
+    public void handleInvocation(DelegateInvocation invocation) throws Exception;
 
 }

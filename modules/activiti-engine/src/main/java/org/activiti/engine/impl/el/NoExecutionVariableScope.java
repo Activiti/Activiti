@@ -20,170 +20,169 @@ import java.util.Set;
 
 import org.activiti.engine.delegate.VariableScope;
 
-
 /**
  * Variable-scope only used to resolve variables when NO execution is active but
- * expression-resolving is needed. This occurs eg. when start-form properties have default's
- * defined. Even though variables are not available yet, expressions should be resolved 
- * anyway.
+ * expression-resolving is needed. This occurs eg. when start-form properties
+ * have default's defined. Even though variables are not available yet,
+ * expressions should be resolved anyway.
  * 
  * @author Frederik Heremans
  */
 public class NoExecutionVariableScope implements VariableScope {
-  
-  private static final NoExecutionVariableScope INSTANCE = new NoExecutionVariableScope();
 
-  /**
-   * Since a {@link NoExecutionVariableScope} has no state, it's safe to use the same
-   * instance to prevent too many useless instances created.
-   */
-  public static NoExecutionVariableScope getSharedInstance()  {
-    return INSTANCE;
-  }
-  
-  @SuppressWarnings("unchecked")
-  public Map<String, Object> getVariables() {
-    return Collections.EMPTY_MAP;
-  }
+    private static final NoExecutionVariableScope INSTANCE = new NoExecutionVariableScope();
 
-  @SuppressWarnings("unchecked")
-  public Map<String, Object> getVariablesLocal() {
-    return Collections.EMPTY_MAP;
-  }
-  
-  @SuppressWarnings("unchecked")
-  @Override
-  public Map<String, Object> getVariables(Collection<String> variableNames) {
-  	return Collections.EMPTY_MAP;
-  }
+    /**
+     * Since a {@link NoExecutionVariableScope} has no state, it's safe to use
+     * the same instance to prevent too many useless instances created.
+     */
+    public static NoExecutionVariableScope getSharedInstance() {
+        return INSTANCE;
+    }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
-  	return Collections.EMPTY_MAP;
-  }
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getVariables() {
+        return Collections.EMPTY_MAP;
+    }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public Map<String, Object> getVariablesLocal(Collection<String> variableNames) {
-  	return Collections.EMPTY_MAP;
-  }
+    @SuppressWarnings("unchecked")
+    public Map<String, Object> getVariablesLocal() {
+        return Collections.EMPTY_MAP;
+    }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
-  	return Collections.EMPTY_MAP;
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> getVariables(Collection<String> variableNames) {
+        return Collections.EMPTY_MAP;
+    }
 
-  public Object getVariable(String variableName) {
-    return null;
-  }
-  
-  @Override
-  public Object getVariable(String variableName, boolean fetchAllVariables) {
-    return null;
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
+        return Collections.EMPTY_MAP;
+    }
 
-  public Object getVariableLocal(String variableName) {
-    return null;
-  }
-  
-  @Override
-  public Object getVariableLocal(String variableName, boolean fetchAllVariables) {
-    return null;
-  }
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> getVariablesLocal(Collection<String> variableNames) {
+        return Collections.EMPTY_MAP;
+    }
 
-	@Override
-	public <T> T getVariable(String variableName, Class<T> variableClass) {
-		return null;
-	}
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+        return Collections.EMPTY_MAP;
+    }
 
-	@Override
-	public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
-		return null;
-	}
+    public Object getVariable(String variableName) {
+        return null;
+    }
 
-  @SuppressWarnings("unchecked")
-  public Set<String> getVariableNames() {
-    return Collections.EMPTY_SET;
-  }
+    @Override
+    public Object getVariable(String variableName, boolean fetchAllVariables) {
+        return null;
+    }
 
-  public Set<String> getVariableNamesLocal() {
-    return null;
-  }
+    public Object getVariableLocal(String variableName) {
+        return null;
+    }
 
-  public void setVariable(String variableName, Object value) {
-    throw new UnsupportedOperationException("No execution active, no variables can be set");
-  }
-  
-  @Override
-  public void setVariable(String variableName, Object value, boolean fetchAllVariables) {
-  	throw new UnsupportedOperationException("No execution active, no variables can be set");
-  }
+    @Override
+    public Object getVariableLocal(String variableName, boolean fetchAllVariables) {
+        return null;
+    }
 
-  public Object setVariableLocal(String variableName, Object value) {
-    throw new UnsupportedOperationException("No execution active, no variables can be set");
-  }
-  
-  @Override
-  public Object setVariableLocal(String variableName, Object value, boolean fetchAllVariables) {
-  	throw new UnsupportedOperationException("No execution active, no variables can be set");
-  }
+    @Override
+    public <T> T getVariable(String variableName, Class<T> variableClass) {
+        return null;
+    }
 
-  public void setVariables(Map<String, ? extends Object> variables) {
-    throw new UnsupportedOperationException("No execution active, no variables can be set");
-  }
+    @Override
+    public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
+        return null;
+    }
 
-  public void setVariablesLocal(Map<String, ? extends Object> variables) {
-    throw new UnsupportedOperationException("No execution active, no variables can be set");
-  }
+    @SuppressWarnings("unchecked")
+    public Set<String> getVariableNames() {
+        return Collections.EMPTY_SET;
+    }
 
-  public boolean hasVariables() {
-    return false;
-  }
+    public Set<String> getVariableNamesLocal() {
+        return null;
+    }
 
-  public boolean hasVariablesLocal() {
-    return false;
-  }
+    public void setVariable(String variableName, Object value) {
+        throw new UnsupportedOperationException("No execution active, no variables can be set");
+    }
 
-  public boolean hasVariable(String variableName) {
-    return false;
-  }
+    @Override
+    public void setVariable(String variableName, Object value, boolean fetchAllVariables) {
+        throw new UnsupportedOperationException("No execution active, no variables can be set");
+    }
 
-  public boolean hasVariableLocal(String variableName) {
-    return false;
-  }
+    public Object setVariableLocal(String variableName, Object value) {
+        throw new UnsupportedOperationException("No execution active, no variables can be set");
+    }
 
-  public void createVariableLocal(String variableName, Object value) {
-    throw new UnsupportedOperationException("No execution active, no variables can be created");
-  }
+    @Override
+    public Object setVariableLocal(String variableName, Object value, boolean fetchAllVariables) {
+        throw new UnsupportedOperationException("No execution active, no variables can be set");
+    }
 
-  public void createVariablesLocal(Map<String, ? extends Object> variables) {
-    throw new UnsupportedOperationException("No execution active, no variables can be created");
-  }
+    public void setVariables(Map<String, ? extends Object> variables) {
+        throw new UnsupportedOperationException("No execution active, no variables can be set");
+    }
 
-  public void removeVariable(String variableName) {
-    throw new UnsupportedOperationException("No execution active, no variables can be removed");
-  }
+    public void setVariablesLocal(Map<String, ? extends Object> variables) {
+        throw new UnsupportedOperationException("No execution active, no variables can be set");
+    }
 
-  public void removeVariableLocal(String variableName) {
-    throw new UnsupportedOperationException("No execution active, no variables can be removed");
-  }
+    public boolean hasVariables() {
+        return false;
+    }
 
-  public void removeVariables() {
-    throw new UnsupportedOperationException("No execution active, no variables can be removed");
-  }
+    public boolean hasVariablesLocal() {
+        return false;
+    }
 
-  public void removeVariablesLocal() {
-    throw new UnsupportedOperationException("No execution active, no variables can be removed");
-  }
+    public boolean hasVariable(String variableName) {
+        return false;
+    }
 
-  public void removeVariables(Collection<String> variableNames) {
-    throw new UnsupportedOperationException("No execution active, no variables can be removed");
-  }
+    public boolean hasVariableLocal(String variableName) {
+        return false;
+    }
 
-  public void removeVariablesLocal(Collection<String> variableNames) {
-    throw new UnsupportedOperationException("No execution active, no variables can be removed");
-  }
+    public void createVariableLocal(String variableName, Object value) {
+        throw new UnsupportedOperationException("No execution active, no variables can be created");
+    }
+
+    public void createVariablesLocal(Map<String, ? extends Object> variables) {
+        throw new UnsupportedOperationException("No execution active, no variables can be created");
+    }
+
+    public void removeVariable(String variableName) {
+        throw new UnsupportedOperationException("No execution active, no variables can be removed");
+    }
+
+    public void removeVariableLocal(String variableName) {
+        throw new UnsupportedOperationException("No execution active, no variables can be removed");
+    }
+
+    public void removeVariables() {
+        throw new UnsupportedOperationException("No execution active, no variables can be removed");
+    }
+
+    public void removeVariablesLocal() {
+        throw new UnsupportedOperationException("No execution active, no variables can be removed");
+    }
+
+    public void removeVariables(Collection<String> variableNames) {
+        throw new UnsupportedOperationException("No execution active, no variables can be removed");
+    }
+
+    public void removeVariablesLocal(Collection<String> variableNames) {
+        throw new UnsupportedOperationException("No execution active, no variables can be removed");
+    }
 
 }

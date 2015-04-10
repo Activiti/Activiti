@@ -15,18 +15,17 @@ package org.activiti.examples.bpmn.servicetask;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 
-
 /**
  * @author Joram Barrez
  */
 public class ToUppercase implements JavaDelegate {
-  
-  private static final String VARIABLE_NAME = "input";
-  
-  public void execute(DelegateExecution execution) {
-    String var = (String) execution.getVariable(VARIABLE_NAME);
-    var = var.toUpperCase();
-    execution.setVariable(VARIABLE_NAME, var);
-  }
-  
+
+    private static final String VARIABLE_NAME = "input";
+
+    public void execute(DelegateExecution execution) {
+        String var = (String) execution.getVariable(VARIABLE_NAME);
+        var = var.toUpperCase();
+        execution.setVariable(VARIABLE_NAME, var);
+    }
+
 }

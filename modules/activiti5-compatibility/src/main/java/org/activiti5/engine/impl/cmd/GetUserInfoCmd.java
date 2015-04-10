@@ -19,26 +19,23 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GetUserInfoCmd implements Command<String>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String userId;
-  protected String key;
-  
-  public GetUserInfoCmd(String userId, String key) {
-    this.userId = userId;
-    this.key = key;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String userId;
+    protected String key;
 
-  public String execute(CommandContext commandContext) {
-    IdentityInfoEntity identityInfo = commandContext
-      .getIdentityInfoEntityManager()
-      .findUserInfoByUserIdAndKey(userId, key);
+    public GetUserInfoCmd(String userId, String key) {
+        this.userId = userId;
+        this.key = key;
+    }
 
-    return (identityInfo!=null ? identityInfo.getValue() : null);
-  }
+    public String execute(CommandContext commandContext) {
+        IdentityInfoEntity identityInfo = commandContext.getIdentityInfoEntityManager().findUserInfoByUserIdAndKey(userId, key);
+
+        return (identityInfo != null ? identityInfo.getValue() : null);
+    }
 }

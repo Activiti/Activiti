@@ -16,23 +16,22 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Tom Baeyens
  */
 public class Decision implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
-    PvmTransition transition;
-    String creditRating = (String) execution.getVariable("creditRating");
-    if (creditRating.equals("AAA+")) {
-      transition = execution.getActivity().findOutgoingTransition("wow");
-    } else if (creditRating.equals("Aaa-")) {
-      transition = execution.getActivity().findOutgoingTransition("nice");
-    } else {
-      transition = execution.getActivity().findOutgoingTransition("default");
-    }
+    public void execute(ActivityExecution execution) {
+        PvmTransition transition;
+        String creditRating = (String) execution.getVariable("creditRating");
+        if (creditRating.equals("AAA+")) {
+            transition = execution.getActivity().findOutgoingTransition("wow");
+        } else if (creditRating.equals("Aaa-")) {
+            transition = execution.getActivity().findOutgoingTransition("nice");
+        } else {
+            transition = execution.getActivity().findOutgoingTransition("default");
+        }
 
-    execution.take(transition);
-  }
+        execution.take(transition);
+    }
 }

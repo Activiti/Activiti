@@ -19,35 +19,33 @@ import org.slf4j.LoggerFactory;
  * @author Joram Barrez
  */
 public class DefaultActiviti5CompatibilityHandlerFactory implements Activiti5CompatibilityHandlerFactory {
-	
-	private static final Logger logger = LoggerFactory.getLogger(DefaultActiviti5CompatibilityHandlerFactory.class);
-	
-	protected String compatibilityHandlerClassName;
-	
-	@Override
-	public Activiti5CompatibilityHandler createActiviti5CompatibilityHandler() {
-		
-		if (compatibilityHandlerClassName == null) {
-			compatibilityHandlerClassName = "org.activiti5.engine.impl.compatibility.Activiti5CompatibilityHandlerImpl";
-		}
-		
-		try {
-	        Activiti5CompatibilityHandler handler = 
-	        		(Activiti5CompatibilityHandler) Class.forName(compatibilityHandlerClassName).newInstance();
-	        return handler;
-        } catch (Exception e) {
-        	logger.debug("Activiti 5 compatibility handler implementation not found or error during instantiation. " +
-        			"Error : " + e.getMessage() + ". Activiti 5 backwards compatibility disabled.");
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultActiviti5CompatibilityHandlerFactory.class);
+
+    protected String compatibilityHandlerClassName;
+
+    @Override
+    public Activiti5CompatibilityHandler createActiviti5CompatibilityHandler() {
+
+        if (compatibilityHandlerClassName == null) {
+            compatibilityHandlerClassName = "org.activiti5.engine.impl.compatibility.Activiti5CompatibilityHandlerImpl";
         }
-		return null;
-	}
 
-	public String getCompatibilityHandlerClassName() {
-		return compatibilityHandlerClassName;
-	}
+        try {
+            Activiti5CompatibilityHandler handler = (Activiti5CompatibilityHandler) Class.forName(compatibilityHandlerClassName).newInstance();
+            return handler;
+        } catch (Exception e) {
+            logger.debug("Activiti 5 compatibility handler implementation not found or error during instantiation. " + "Error : " + e.getMessage() + ". Activiti 5 backwards compatibility disabled.");
+        }
+        return null;
+    }
 
-	public void setCompatibilityHandlerClassName(String compatibilityHandlerClassName) {
-		this.compatibilityHandlerClassName = compatibilityHandlerClassName;
-	}
-	
+    public String getCompatibilityHandlerClassName() {
+        return compatibilityHandlerClassName;
+    }
+
+    public void setCompatibilityHandlerClassName(String compatibilityHandlerClassName) {
+        this.compatibilityHandlerClassName = compatibilityHandlerClassName;
+    }
+
 }

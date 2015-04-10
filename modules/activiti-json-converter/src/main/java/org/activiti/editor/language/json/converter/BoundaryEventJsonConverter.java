@@ -81,7 +81,7 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
         flowElementNode.put("dockers", dockersArrayNode);
 
         propertiesNode.put(PROPERTY_CANCEL_ACTIVITY, boundaryEvent.isCancelActivity());
-        
+
         addEventProperties(boundaryEvent, propertiesNode);
     }
 
@@ -91,14 +91,14 @@ public class BoundaryEventJsonConverter extends BaseBpmnJsonConverter {
         if (STENCIL_EVENT_BOUNDARY_TIMER.equals(stencilId)) {
             convertJsonToTimerDefinition(elementNode, boundaryEvent);
             boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
-            
+
         } else if (STENCIL_EVENT_BOUNDARY_ERROR.equals(stencilId)) {
             convertJsonToErrorDefinition(elementNode, boundaryEvent);
-            
+
         } else if (STENCIL_EVENT_BOUNDARY_SIGNAL.equals(stencilId)) {
             convertJsonToSignalDefinition(elementNode, boundaryEvent);
             boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));
-            
+
         } else if (STENCIL_EVENT_BOUNDARY_MESSAGE.equals(stencilId)) {
             convertJsonToMessageDefinition(elementNode, boundaryEvent);
             boundaryEvent.setCancelActivity(getPropertyValueAsBoolean(PROPERTY_CANCEL_ACTIVITY, elementNode));

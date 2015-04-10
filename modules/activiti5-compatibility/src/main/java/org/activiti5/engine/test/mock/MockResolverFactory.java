@@ -12,17 +12,18 @@
  */
 package org.activiti5.engine.test.mock;
 
-
 import org.activiti5.engine.delegate.VariableScope;
 import org.activiti5.engine.impl.scripting.Resolver;
 import org.activiti5.engine.impl.scripting.ResolverFactory;
 
 /**
  * This is a bridge resolver, making available any objects registered through
- * {@link org.activiti5.engine.test.mock.Mocks#register} inside scripts supported
- * by Activiti. <br>
+ * {@link org.activiti5.engine.test.mock.Mocks#register} inside scripts
+ * supported by Activiti. <br>
  * <br>
- * In order to use it, you need to declare it as ResolverFactory, for example by using activiti.cfg.xml like this: <br><br>
+ * In order to use it, you need to declare it as ResolverFactory, for example by
+ * using activiti.cfg.xml like this: <br>
+ * <br>
  * 
  * &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;<br>
  * &lt;beans xmlns=&quot;http://www.springframework.org/schema/beans&quot;<br>
@@ -60,20 +61,19 @@ import org.activiti5.engine.impl.scripting.ResolverFactory;
  * 
  */
 public class MockResolverFactory implements ResolverFactory {
-	@Override
-	public Resolver createResolver(VariableScope variableScope) {
-		return new Resolver() {
+    @Override
+    public Resolver createResolver(VariableScope variableScope) {
+        return new Resolver() {
 
-			@Override
-			public Object get(Object key) {
-				return Mocks.get(key);
-			}
+            @Override
+            public Object get(Object key) {
+                return Mocks.get(key);
+            }
 
-			@Override
-			public boolean containsKey(Object key) {
-				return Mocks.get(key) != null;
-			}
-		};
-	}
+            @Override
+            public boolean containsKey(Object key) {
+                return Mocks.get(key) != null;
+            }
+        };
+    }
 }
-

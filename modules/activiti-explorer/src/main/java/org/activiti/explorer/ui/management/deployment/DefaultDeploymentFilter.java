@@ -21,35 +21,31 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.explorer.ui.management.deployment.DeploymentListQuery.DeploymentListitem;
 
-
 /**
  * @author Frederik Heremans
  */
 public class DefaultDeploymentFilter implements DeploymentFilter, Serializable {
 
-  private static final long serialVersionUID = 9094140663326243967L;
-  
-  protected static final String PROPERTY_ID = "id";
-  protected static final String PROPERTY_NAME = "name";
-  protected static final String PROPERTY_KEY = "key";
-  
-  
-  public DeploymentQuery getQuery(RepositoryService repositoryService) {
-    return repositoryService.createDeploymentQuery()
-    .orderByDeploymentName().asc()
-    .orderByDeploymentId().asc();
-  }
+    private static final long serialVersionUID = 9094140663326243967L;
 
-  public DeploymentQuery getCountQuery(RepositoryService repositoryService) {
-    return repositoryService.createDeploymentQuery();
-  }
+    protected static final String PROPERTY_ID = "id";
+    protected static final String PROPERTY_NAME = "name";
+    protected static final String PROPERTY_KEY = "key";
 
-  public DeploymentListitem createItem(Deployment deployment) {
-    return new DeploymentListitem(deployment);
-  }
-  
-  public void beforeDeploy(DeploymentBuilder deployment) {
-    // Nothing special needs to be done with the deployment, by default
-  }
+    public DeploymentQuery getQuery(RepositoryService repositoryService) {
+        return repositoryService.createDeploymentQuery().orderByDeploymentName().asc().orderByDeploymentId().asc();
+    }
+
+    public DeploymentQuery getCountQuery(RepositoryService repositoryService) {
+        return repositoryService.createDeploymentQuery();
+    }
+
+    public DeploymentListitem createItem(Deployment deployment) {
+        return new DeploymentListitem(deployment);
+    }
+
+    public void beforeDeploy(DeploymentBuilder deployment) {
+        // Nothing special needs to be done with the deployment, by default
+    }
 
 }

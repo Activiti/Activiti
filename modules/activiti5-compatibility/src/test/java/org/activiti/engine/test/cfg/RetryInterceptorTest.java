@@ -28,20 +28,20 @@ import junit.framework.TestCase;
  */
 public class RetryInterceptorTest extends TestCase {
 
-  protected class CommandThrowingOptimisticLockingException implements Command<Void> {
-    public Void execute(CommandContext commandContext) {
-      throw new ActivitiOptimisticLockingException("");
+    protected class CommandThrowingOptimisticLockingException implements Command<Void> {
+        public Void execute(CommandContext commandContext) {
+            throw new ActivitiOptimisticLockingException("");
+        }
     }
-  }
 
-  public void testRetryInterceptor() {
-    RetryInterceptor retryInterceptor = new RetryInterceptor();
-    retryInterceptor.setNext(new CommandInvoker());
-    try {
-      retryInterceptor.execute(new CommandConfig(), new CommandThrowingOptimisticLockingException());
-      fail("ActivitiException expected.");
-    } catch (ActivitiException e) {
-      assertTrue(e.getMessage().contains(retryInterceptor.getNumOfRetries()+" retries failed"));
+    public void testRetryInterceptor() {
+        RetryInterceptor retryInterceptor = new RetryInterceptor();
+        retryInterceptor.setNext(new CommandInvoker());
+        try {
+            retryInterceptor.execute(new CommandConfig(), new CommandThrowingOptimisticLockingException());
+            fail("ActivitiException expected.");
+        } catch (ActivitiException e) {
+            assertTrue(e.getMessage().contains(retryInterceptor.getNumOfRetries() + " retries failed"));
+        }
     }
-  }
 }

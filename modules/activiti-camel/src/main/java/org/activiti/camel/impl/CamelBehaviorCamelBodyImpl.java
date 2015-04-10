@@ -17,19 +17,19 @@ import org.activiti.camel.ActivitiEndpoint;
 import org.activiti.camel.CamelBehavior;
 
 /**
- * This implementation of the CamelBehavior abstract class works by copying a single variable value into the Camel
- * Exchange body. The variable must be named "camelBody" to be copied into the Camel Exchange body on the producer
+ * This implementation of the CamelBehavior abstract class works by copying a
+ * single variable value into the Camel Exchange body. The variable must be
+ * named "camelBody" to be copied into the Camel Exchange body on the producer
  * side of the transfer (i.e. when handing control from Activiti to Camel).
  * 
  * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Saeid Mirzaei
  */
 public class CamelBehaviorCamelBodyImpl extends CamelBehavior {
-	
-	private static final long serialVersionUID = 1L;
 
-	@Override
-  protected void setPropertTargetVariable(ActivitiEndpoint endpoint) {
-    toTargetType = TargetType.BODY;
-  }
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void setPropertTargetVariable(ActivitiEndpoint endpoint) {
+        toTargetType = TargetType.BODY;
+    }
 }
-

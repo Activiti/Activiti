@@ -26,31 +26,30 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class ManualTaskJsonConverter extends BaseBpmnJsonConverter {
 
-  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap,
-      Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    
-    fillJsonTypes(convertersToBpmnMap);
-    fillBpmnTypes(convertersToJsonMap);
-  }
-  
-  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-    convertersToBpmnMap.put(STENCIL_TASK_MANUAL, ManualTaskJsonConverter.class);
-  }
-  
-  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-    convertersToJsonMap.put(ManualTask.class, ManualTaskJsonConverter.class);
-  }
-  
-  protected String getStencilId(BaseElement baseElement) {
-    return STENCIL_TASK_MANUAL;
-  }
-  
-  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
-  	
-  }
-  
-  protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-    ManualTask task = new ManualTask();
-    return task;
-  }
+    public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+
+        fillJsonTypes(convertersToBpmnMap);
+        fillBpmnTypes(convertersToJsonMap);
+    }
+
+    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+        convertersToBpmnMap.put(STENCIL_TASK_MANUAL, ManualTaskJsonConverter.class);
+    }
+
+    public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+        convertersToJsonMap.put(ManualTask.class, ManualTaskJsonConverter.class);
+    }
+
+    protected String getStencilId(BaseElement baseElement) {
+        return STENCIL_TASK_MANUAL;
+    }
+
+    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
+
+    }
+
+    protected FlowElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+        ManualTask task = new ManualTask();
+        return task;
+    }
 }

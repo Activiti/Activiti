@@ -27,51 +27,51 @@ import org.activiti.engine.impl.util.ReflectUtil;
  */
 public class WSService implements BpmnInterfaceImplementation {
 
-  protected String name;
+    protected String name;
 
-  protected String location;
+    protected String location;
 
-  protected Map<String, WSOperation> operations;
+    protected Map<String, WSOperation> operations;
 
-  protected String wsdlLocation;
+    protected String wsdlLocation;
 
-  protected SyncWebServiceClient client;
+    protected SyncWebServiceClient client;
 
-  public WSService(String name, String location, String wsdlLocation) {
-    this.name = name;
-    this.location = location;
-    this.operations = new HashMap<String, WSOperation>();
-    this.wsdlLocation = wsdlLocation;
-  }
-  
-  public WSService(String name, String location, SyncWebServiceClient client) {
-    this.name = name;
-    this.location = location;
-    this.operations = new HashMap<String, WSOperation>();
-    this.client = client;
-  }
-
-  public void addOperation(WSOperation operation) {
-    this.operations.put(operation.getName(), operation);
-  }
-
-  SyncWebServiceClient getClient() {
-    if (this.client == null) {
-      //TODO refactor to use configuration
-      SyncWebServiceClientFactory factory = (SyncWebServiceClientFactory) ReflectUtil.instantiate(ProcessEngineConfigurationImpl.DEFAULT_WS_SYNC_FACTORY);
-      this.client = factory.create(this.wsdlLocation);
+    public WSService(String name, String location, String wsdlLocation) {
+        this.name = name;
+        this.location = location;
+        this.operations = new HashMap<String, WSOperation>();
+        this.wsdlLocation = wsdlLocation;
     }
-    return this.client;
-  }
 
-  /**
-   * {@inheritDoc}
-   */
-  public String getName() {
-    return this.name;
-  }
-  
-  public String getLocation() {
-    return this.location;
-  }
+    public WSService(String name, String location, SyncWebServiceClient client) {
+        this.name = name;
+        this.location = location;
+        this.operations = new HashMap<String, WSOperation>();
+        this.client = client;
+    }
+
+    public void addOperation(WSOperation operation) {
+        this.operations.put(operation.getName(), operation);
+    }
+
+    SyncWebServiceClient getClient() {
+        if (this.client == null) {
+            // TODO refactor to use configuration
+            SyncWebServiceClientFactory factory = (SyncWebServiceClientFactory) ReflectUtil.instantiate(ProcessEngineConfigurationImpl.DEFAULT_WS_SYNC_FACTORY);
+            this.client = factory.create(this.wsdlLocation);
+        }
+        return this.client;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    public String getLocation() {
+        return this.location;
+    }
 }

@@ -16,59 +16,58 @@ package org.activiti.engine.impl.form;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.FormType;
 
-
 /**
  * @author Tom Baeyens
  */
 public class FormPropertyImpl implements FormProperty {
-  
-  protected String id;
-  protected String name;
-  protected FormType type;
-  protected boolean isRequired;
-  protected boolean isReadable;
-  protected boolean isWritable;
 
-  protected String value;
+    protected String id;
+    protected String name;
+    protected FormType type;
+    protected boolean isRequired;
+    protected boolean isReadable;
+    protected boolean isWritable;
 
-  public FormPropertyImpl(FormPropertyHandler formPropertyHandler) {
-    this.id = formPropertyHandler.getId();
-    this.name = formPropertyHandler.getName();
-    this.type = formPropertyHandler.getType();
-    this.isRequired = formPropertyHandler.isRequired();
-    this.isReadable = formPropertyHandler.isReadable();
-    this.isWritable = formPropertyHandler.isWritable();
-  }
+    protected String value;
 
-  public String getId() {
-    return id;
-  }
-  
-  public String getName() {
-    return name;
-  }
-  
-  public FormType getType() {
-    return type;
-  }
-  
-  public String getValue() {
-    return value;
-  }
-  
-  public boolean isRequired() {
-    return isRequired;
-  }
-  
-  public boolean isReadable() {
-    return isReadable;
-  }
-  
-  public void setValue(String value) {
-    this.value = value;
-  }
+    public FormPropertyImpl(FormPropertyHandler formPropertyHandler) {
+        this.id = formPropertyHandler.getId();
+        this.name = formPropertyHandler.getName();
+        this.type = formPropertyHandler.getType();
+        this.isRequired = formPropertyHandler.isRequired();
+        this.isReadable = formPropertyHandler.isReadable();
+        this.isWritable = formPropertyHandler.isWritable();
+    }
 
-  public boolean isWritable() {
-    return isWritable;
-  }
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public FormType getType() {
+        return type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public boolean isRequired() {
+        return isRequired;
+    }
+
+    public boolean isReadable() {
+        return isReadable;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public boolean isWritable() {
+        return isWritable;
+    }
 }

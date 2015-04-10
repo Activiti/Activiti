@@ -20,30 +20,35 @@ import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
- * Allows to hook into the parsing of one or more elements during the parsing of a BPMN 2.0 process.
- * For more details, see the userguide section on bpmn parse handlers.
+ * Allows to hook into the parsing of one or more elements during the parsing of
+ * a BPMN 2.0 process. For more details, see the userguide section on bpmn parse
+ * handlers.
  * 
- * Instances of this class can be injected into the {@link ProcessEngineConfigurationImpl}.
- * The handler will then be called whenever a BPMN 2.0 element is parsed that matches
- * the types returned by the {@link #getHandledTypes()} method.
+ * Instances of this class can be injected into the
+ * {@link ProcessEngineConfigurationImpl}. The handler will then be called
+ * whenever a BPMN 2.0 element is parsed that matches the types returned by the
+ * {@link #getHandledTypes()} method.
  * 
  * @see AbstractBpmnParseHandler
  * 
  * @author Joram Barrez
  */
 public interface BpmnParseHandler {
-  
-  /**
-   * The types for which this handler must be calleding during process parsing.
-   */
-  Collection<Class<? extends BaseElement>> getHandledTypes();
-  
-  /**
-   * The actual delegation method. The parser will calls this method on a
-   * match with the {@link #getHandledTypes()} return value.
-   * @param bpmnParse The {@link BpmnParse} instance that acts as container
-   *                  for all things produced during the parsing.
-   */
-  void parse(BpmnParse bpmnParse, BaseElement element);
+
+    /**
+     * The types for which this handler must be calleding during process
+     * parsing.
+     */
+    Collection<Class<? extends BaseElement>> getHandledTypes();
+
+    /**
+     * The actual delegation method. The parser will calls this method on a
+     * match with the {@link #getHandledTypes()} return value.
+     * 
+     * @param bpmnParse
+     *            The {@link BpmnParse} instance that acts as container for all
+     *            things produced during the parsing.
+     */
+    void parse(BpmnParse bpmnParse, BaseElement element);
 
 }

@@ -15,64 +15,63 @@ package org.activiti.explorer.reporting;
 import java.util.HashMap;
 import java.util.Map;
 
-
 /**
  * @author Joram Barrez
  */
 public class Dataset {
-  
-  protected String type;
-  
-  protected String description;
-  
-  protected String xaxis;
-  
-  protected String yaxis;
-  
-  protected Map<String, Number> data = new HashMap<String, Number>();
 
-  public String getType() {
-    return type;
-  }
-  
-  public void setType(String type) {
-    this.type = type;
-  }
-  
-  public String getDescription() {
-    return description;
-  }
-  
-  public void setDescription(String description) {
-    this.description = description;
-  }
-  
-  public Map<String, Number> getData() {
-    return data;
-  }
-  
-  public String getXaxis() {
-    return xaxis;
-  }
-  
-  public void setXaxis(String xaxis) {
-    this.xaxis = xaxis;
-  }
-  
-  public String getYaxis() {
-    return yaxis;
-  }
-  
-  public void setYaxis(String yaxis) {
-    this.yaxis = yaxis;
-  }
+    protected String type;
 
-  public void setData(Map<String, Number> data) {
-    this.data = data;
-  }
-  
-  public void add(String key, Number value) {
-    data.put(key, value);
-  }
+    protected String description;
+
+    protected String xaxis;
+
+    protected String yaxis;
+
+    protected Map<String, Number> data = new HashMap<String, Number>();
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public Map<String, Number> getData() {
+        return data;
+    }
+
+    public String getXaxis() {
+        return xaxis;
+    }
+
+    public void setXaxis(String xaxis) {
+        this.xaxis = xaxis;
+    }
+
+    public String getYaxis() {
+        return yaxis;
+    }
+
+    public void setYaxis(String yaxis) {
+        this.yaxis = yaxis;
+    }
+
+    public void setData(Map<String, Number> data) {
+        this.data = data;
+    }
+
+    public void add(String key, Number value) {
+        data.put(key, value);
+    }
 
 }

@@ -18,11 +18,10 @@ import java.util.Map;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface ServiceInvoker {
 
-  void invoke(String serviceType, Map<String,Object> parameters, ExecutionEntity execution, TaskEntity task);
+    void invoke(String serviceType, Map<String, Object> parameters, ExecutionEntity execution, TaskEntity task);
 }

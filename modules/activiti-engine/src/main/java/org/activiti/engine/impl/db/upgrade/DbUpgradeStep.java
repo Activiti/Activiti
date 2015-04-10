@@ -15,12 +15,11 @@ package org.activiti.engine.impl.db.upgrade;
 
 import org.activiti.engine.impl.db.DbSqlSession;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface DbUpgradeStep {
 
-  void execute(DbSqlSession dbSqlSession) throws Exception;
+    void execute(DbSqlSession dbSqlSession) throws Exception;
 
 }

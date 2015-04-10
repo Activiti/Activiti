@@ -21,36 +21,26 @@ import org.activiti5.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti5.engine.repository.Deployment;
 import org.drools.KnowledgeBase;
 
-
 /**
  * @author Tom Baeyens
  */
 public class RulesHelper {
 
-  public static KnowledgeBase findKnowledgeBaseByDeploymentId(String deploymentId) {
-    DeploymentCache<Object> knowledgeBaseCache = Context
-      .getProcessEngineConfiguration()
-      .getDeploymentManager()
-      .getKnowledgeBaseCache();
-  
-    KnowledgeBase knowledgeBase = (KnowledgeBase) knowledgeBaseCache.get(deploymentId);
-    if (knowledgeBase==null) {
-      DeploymentEntity deployment = Context
-        .getCommandContext()
-        .getDeploymentEntityManager()
-        .findDeploymentById(deploymentId);
-      if (deployment==null) {
-        throw new ActivitiObjectNotFoundException("no deployment with id "+deploymentId, Deployment.class);
-      }
-      Context
-        .getProcessEngineConfiguration()
-        .getDeploymentManager()
-        .deploy(deployment);
-      knowledgeBase = (KnowledgeBase) knowledgeBaseCache.get(deploymentId);
-      if (knowledgeBase==null) {
-        throw new ActivitiException("deployment "+deploymentId+" doesn't contain any rules");
-      }
+    public static KnowledgeBase findKnowledgeBaseByDeploymentId(String deploymentId) {
+        DeploymentCache<Object> knowledgeBaseCache = Context.getProcessEngineConfiguration().getDeploymentManager().getKnowledgeBaseCache();
+
+        KnowledgeBase knowledgeBase = (KnowledgeBase) knowledgeBaseCache.get(deploymentId);
+        if (knowledgeBase == null) {
+            DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findDeploymentById(deploymentId);
+            if (deployment == null) {
+                throw new ActivitiObjectNotFoundException("no deployment with id " + deploymentId, Deployment.class);
+            }
+            Context.getProcessEngineConfiguration().getDeploymentManager().deploy(deployment);
+            knowledgeBase = (KnowledgeBase) knowledgeBaseCache.get(deploymentId);
+            if (knowledgeBase == null) {
+                throw new ActivitiException("deployment " + deploymentId + " doesn't contain any rules");
+            }
+        }
+        return knowledgeBase;
     }
-    return knowledgeBase;
-  }
 }

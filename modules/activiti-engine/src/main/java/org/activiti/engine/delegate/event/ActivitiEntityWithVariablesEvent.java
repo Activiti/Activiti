@@ -14,19 +14,18 @@ package org.activiti.engine.delegate.event;
 
 import java.util.Map;
 
-
 /**
  * An {@link ActivitiEntityEvent} related to a single entity.
  * 
  * @author Tijs Rademakers
  */
 public interface ActivitiEntityWithVariablesEvent extends ActivitiEntityEvent {
-	
-	/**
-	 * @return the variables created together with the entity.
-	 */
-	@SuppressWarnings("rawtypes")
-  Map getVariables();
-	
-	boolean isLocalScope();
+
+    /**
+     * @return the variables created together with the entity.
+     */
+    @SuppressWarnings("rawtypes")
+    Map getVariables();
+
+    boolean isLocalScope();
 }

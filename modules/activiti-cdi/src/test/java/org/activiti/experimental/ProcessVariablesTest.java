@@ -25,21 +25,21 @@ import org.junit.Test;
 
 public class ProcessVariablesTest extends CdiActivitiTestCase {
 
-  @Ignore
-  @Test
-  @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
-  public void testResolveString() {
-    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+    @Ignore
+    @Test
+    @Deployment(resources = "org/activiti/cdi/BusinessProcessBeanTest.test.bpmn20.xml")
+    public void testResolveString() {
+        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
-    Map<String, Object> processVariables = new HashMap<String, Object>();
-    businessProcess.setVariable("testKeyString", "testValue");
-    businessProcess.startProcessByKey("businessProcessBeanTest", processVariables);    
-    businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
-    
-    InjectProcessVariable injectProcessVariables = getBeanInstance(InjectProcessVariable.class);
-    assertEquals("testValue", injectProcessVariables.testKeyString);
+        Map<String, Object> processVariables = new HashMap<String, Object>();
+        businessProcess.setVariable("testKeyString", "testValue");
+        businessProcess.startProcessByKey("businessProcessBeanTest", processVariables);
+        businessProcess.startTask(taskService.createTaskQuery().singleResult().getId());
 
-    businessProcess.completeTask();
-  }
+        InjectProcessVariable injectProcessVariables = getBeanInstance(InjectProcessVariable.class);
+        assertEquals("testValue", injectProcessVariables.testKeyString);
+
+        businessProcess.completeTask();
+    }
 
 }

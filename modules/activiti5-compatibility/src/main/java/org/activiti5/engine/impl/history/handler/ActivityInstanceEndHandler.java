@@ -18,14 +18,12 @@ import org.activiti5.engine.delegate.ExecutionListener;
 import org.activiti5.engine.impl.context.Context;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class ActivityInstanceEndHandler implements ExecutionListener {
 
-  public void notify(DelegateExecution execution) {
-    Context.getCommandContext().getHistoryManager()
-      .recordActivityEnd((ExecutionEntity) execution);
-  }
+    public void notify(DelegateExecution execution) {
+        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+    }
 }

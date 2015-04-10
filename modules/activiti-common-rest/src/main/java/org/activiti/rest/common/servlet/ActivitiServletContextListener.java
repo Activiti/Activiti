@@ -25,24 +25,24 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  */
 public class ActivitiServletContextListener implements ServletContextListener {
-  
-  protected static final Logger LOGGER = LoggerFactory.getLogger(ActivitiServletContextListener.class);
 
-  public void contextInitialized(ServletContextEvent event) {
-    LOGGER.info("Booting Activiti Process Engine");
-    ProcessEngine processEngine = null;
-    try {
-      processEngine = ProcessEngines.getDefaultProcessEngine();
-    } catch (Exception e) {
-      LOGGER.error("Error starting the Activiti REST API", e);
-    }
-    if (processEngine == null) {
-      LOGGER.error("Could not start the Activiti REST API");
-    }
-  }
+    protected static final Logger LOGGER = LoggerFactory.getLogger(ActivitiServletContextListener.class);
 
-  public void contextDestroyed(ServletContextEvent event) {
-    LOGGER.info("Destroying Activiti Process Engine");
-    ProcessEngines.destroy();
-  }
+    public void contextInitialized(ServletContextEvent event) {
+        LOGGER.info("Booting Activiti Process Engine");
+        ProcessEngine processEngine = null;
+        try {
+            processEngine = ProcessEngines.getDefaultProcessEngine();
+        } catch (Exception e) {
+            LOGGER.error("Error starting the Activiti REST API", e);
+        }
+        if (processEngine == null) {
+            LOGGER.error("Could not start the Activiti REST API");
+        }
+    }
+
+    public void contextDestroyed(ServletContextEvent event) {
+        LOGGER.info("Destroying Activiti Process Engine");
+        ProcessEngines.destroy();
+    }
 }

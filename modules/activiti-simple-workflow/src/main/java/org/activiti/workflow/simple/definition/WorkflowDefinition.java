@@ -28,141 +28,136 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * 
  * For example:
  * 
- *  WorkflowDefinition workflowDefinition = new WorkflowDefinition()
- *    .name("testWorkflow")
- *    .description("This is a test workflow")
- *    .inParallel()
- *      .addHumanStep("first task", "kermit")
- *      .addHumanStep("second step", "gonzo")
- *      .addHumanStep("thrid task", "mispiggy")
- *     .endParallel()
- *    .addHumanStep("Task in between", "kermit")
- *    .inParallel()
- *      .addHumanStep("fourth task", "gonzo")
- *      .addHumanStep("fifth step", "gonzo")
- *    .endParallel();
- *    
- * Feed this {@link WorkflowDefinition} instance to a {@link WorkflowDefinitionConversion}
- * and it will convert it a to a {@link BpmnModel}, which in it turn can be used
- * to generate valid BPMN 2.0 through the {@link BpmnXMLConverter}.
+ * WorkflowDefinition workflowDefinition = new WorkflowDefinition()
+ * .name("testWorkflow") .description("This is a test workflow") .inParallel()
+ * .addHumanStep("first task", "kermit") .addHumanStep("second step", "gonzo")
+ * .addHumanStep("thrid task", "mispiggy") .endParallel()
+ * .addHumanStep("Task in between", "kermit") .inParallel()
+ * .addHumanStep("fourth task", "gonzo") .addHumanStep("fifth step", "gonzo")
+ * .endParallel();
  * 
- * The reason why we're not just using the {@link BpmnModel} and it's related 
- * classes to generate bpmn 2.0 xml, is because this class and it's related classes 
- * are a layer on top of them, allowing to easily create patterns. Such patterns are 
- * for example a parallel block ({@link ParallelStepsDefinition}) or a choice step.
- * These can be expressed in their {@link BpmnModel} counterpart of course,
- * but these abstraction are much easier to read and use.
+ * Feed this {@link WorkflowDefinition} instance to a
+ * {@link WorkflowDefinitionConversion} and it will convert it a to a
+ * {@link BpmnModel}, which in it turn can be used to generate valid BPMN 2.0
+ * through the {@link BpmnXMLConverter}.
+ * 
+ * The reason why we're not just using the {@link BpmnModel} and it's related
+ * classes to generate bpmn 2.0 xml, is because this class and it's related
+ * classes are a layer on top of them, allowing to easily create patterns. Such
+ * patterns are for example a parallel block ({@link ParallelStepsDefinition})
+ * or a choice step. These can be expressed in their {@link BpmnModel}
+ * counterpart of course, but these abstraction are much easier to read and use.
  * 
  * @author Joram Barrez
  */
 public class WorkflowDefinition extends AbstractStepDefinitionContainer<WorkflowDefinition> {
 
-  protected String key;
-  protected String name;
-  protected String description;
-  protected String category;
-  protected FormDefinition startFormDefinition;
-  protected ParallelStepsDefinition currentParallelStepsDefinition;
-  protected ChoiceStepsDefinition currentChoiceStepsDefinition;
-  
-  protected Map<String, Object> parameters = new HashMap<String, Object>();
+    protected String key;
+    protected String name;
+    protected String description;
+    protected String category;
+    protected FormDefinition startFormDefinition;
+    protected ParallelStepsDefinition currentParallelStepsDefinition;
+    protected ChoiceStepsDefinition currentChoiceStepsDefinition;
 
-  public String getName() {
-    return name;
-  }
+    protected Map<String, Object> parameters = new HashMap<String, Object>();
 
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  public WorkflowDefinition name(String name) {
-    setName(name);
-    return this;
-  }
-  
-  public WorkflowDefinition id(String id) {
-    setId(id);
-    return this;
-  }
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-  
-  public String getId() {
-    return id;
-  }
-  
-  public WorkflowDefinition key(String key) {
-    setKey(key);
-    return this;
-  }
-  
-  public String getKey() {
-    return key;
-  }
-  
-  public void setKey(String key) {
-    this.key = key;
-  }
-  
-  public String getDescription() {
-    return description;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
-  
-  public WorkflowDefinition description(String description) {
-    setDescription(description);
-    return this;
-  }
-  
-  public String getCategory() {
-	return category;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public void setCategory(String category) {
-	this.category = category;
-  }
-  
-  public WorkflowDefinition category(String category) {
-	  setCategory(category);
-	  return this;
-  }
+    public WorkflowDefinition name(String name) {
+        setName(name);
+        return this;
+    }
 
-  @JsonInclude(Include.NON_EMPTY)
-  public Map<String, Object> getParameters() {
-	  return parameters;
-  }
-  
-  public void setParameters(Map<String, Object> parameters) {
-	  this.parameters = parameters;
-  }
-  
-  public ParallelStepsDefinition inParallel() {
-    currentParallelStepsDefinition = new ParallelStepsDefinition(this);
-    addStep(currentParallelStepsDefinition);
-    return currentParallelStepsDefinition;
-  }
-  
-  public ChoiceStepsDefinition inChoice() {
-    currentChoiceStepsDefinition = new ChoiceStepsDefinition(this);
-    addStep(currentChoiceStepsDefinition);
-    return currentChoiceStepsDefinition;
-  }
+    public WorkflowDefinition id(String id) {
+        setId(id);
+        return this;
+    }
 
-  public FormDefinition getStartFormDefinition() {
-	  return startFormDefinition;
-  }
-  
-  public void setStartFormDefinition(FormDefinition startFormDefinition) {
-	  this.startFormDefinition = startFormDefinition;
-  }
-  
-  public WorkflowDefinition startFormdefinition(FormDefinition startFormDefinition) {
-  	this.startFormDefinition = startFormDefinition;
-  	return this;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public WorkflowDefinition key(String key) {
+        setKey(key);
+        return this;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public WorkflowDefinition description(String description) {
+        setDescription(description);
+        return this;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public WorkflowDefinition category(String category) {
+        setCategory(category);
+        return this;
+    }
+
+    @JsonInclude(Include.NON_EMPTY)
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
+
+    public ParallelStepsDefinition inParallel() {
+        currentParallelStepsDefinition = new ParallelStepsDefinition(this);
+        addStep(currentParallelStepsDefinition);
+        return currentParallelStepsDefinition;
+    }
+
+    public ChoiceStepsDefinition inChoice() {
+        currentChoiceStepsDefinition = new ChoiceStepsDefinition(this);
+        addStep(currentChoiceStepsDefinition);
+        return currentChoiceStepsDefinition;
+    }
+
+    public FormDefinition getStartFormDefinition() {
+        return startFormDefinition;
+    }
+
+    public void setStartFormDefinition(FormDefinition startFormDefinition) {
+        this.startFormDefinition = startFormDefinition;
+    }
+
+    public WorkflowDefinition startFormdefinition(FormDefinition startFormDefinition) {
+        this.startFormDefinition = startFormDefinition;
+        return this;
+    }
 }

@@ -17,39 +17,38 @@ import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 import org.activiti.explorer.ui.management.ManagementMenuBar;
 
-
 /**
  * @author Joram Barrez
  */
 public class AlfrescoManagementMenuBar extends ManagementMenuBar {
 
-  private static final long serialVersionUID = 1L;
-  
-  public static final String ENTRY_PROCESS_DEFINITIONS = "processDefinitions"; 
-  public static final String ENTRY_PROCESS_INSTANCES = "processInstances";
+    private static final long serialVersionUID = 1L;
 
-  protected void initToolbarEntries() {
-    addDeploymentsToolbarEntry();
-    addJobsToolbarEntry();
-    addProcessDefinitionsEntry();
-    addProcessInstancesEntry();
-    addDatabaseToolbarEntry();
-  }
-  
-  protected void addProcessDefinitionsEntry() {
-    addToolbarEntry(ENTRY_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEPLOYED_DEFINITIONS), new ToolbarCommand() {
-      public void toolBarItemSelected() {
-        viewManager.showDeployedProcessDefinitionPage();
-      }
-    });
-  }
-  
-  protected void addProcessInstancesEntry() {
-    addToolbarEntry(ENTRY_PROCESS_INSTANCES, i18nManager.getMessage(Messages.PROCESS_MENU_INSTANCES), new ToolbarCommand() {
-      public void toolBarItemSelected() {
-        viewManager.showProcessInstancePage();
-      }
-    });
-  }
+    public static final String ENTRY_PROCESS_DEFINITIONS = "processDefinitions";
+    public static final String ENTRY_PROCESS_INSTANCES = "processInstances";
+
+    protected void initToolbarEntries() {
+        addDeploymentsToolbarEntry();
+        addJobsToolbarEntry();
+        addProcessDefinitionsEntry();
+        addProcessInstancesEntry();
+        addDatabaseToolbarEntry();
+    }
+
+    protected void addProcessDefinitionsEntry() {
+        addToolbarEntry(ENTRY_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEPLOYED_DEFINITIONS), new ToolbarCommand() {
+            public void toolBarItemSelected() {
+                viewManager.showDeployedProcessDefinitionPage();
+            }
+        });
+    }
+
+    protected void addProcessInstancesEntry() {
+        addToolbarEntry(ENTRY_PROCESS_INSTANCES, i18nManager.getMessage(Messages.PROCESS_MENU_INSTANCES), new ToolbarCommand() {
+            public void toolBarItemSelected() {
+                viewManager.showProcessInstancePage();
+            }
+        });
+    }
 
 }

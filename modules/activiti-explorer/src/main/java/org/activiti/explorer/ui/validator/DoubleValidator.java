@@ -15,25 +15,24 @@ package org.activiti.explorer.ui.validator;
 
 import com.vaadin.data.validator.AbstractStringValidator;
 
-
 /**
  * @author Frederik Heremans
  */
 public class DoubleValidator extends AbstractStringValidator {
 
-  private static final long serialVersionUID = 8306001395582004472L;
+    private static final long serialVersionUID = 8306001395582004472L;
 
-  public DoubleValidator(String errorMessage) {
-    super(errorMessage);
-  }
-
-  @Override
-  protected boolean isValidString(String value) {
-    try {
-        Double.parseDouble(value);
-        return true;
-    } catch (Exception e) {
-        return false;
+    public DoubleValidator(String errorMessage) {
+        super(errorMessage);
     }
-  }
+
+    @Override
+    protected boolean isValidString(String value) {
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
 }

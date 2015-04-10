@@ -32,98 +32,98 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class DeployModelPopupWindow extends PopupWindow {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  protected GridLayout layout;
-  protected Label descriptionLabel;
-  protected TextField processNameTextField;
-  protected CheckBox generateReportsCheckBox;
-  protected Button deployButton;
-  protected Button cancelButton;
+    protected GridLayout layout;
+    protected Label descriptionLabel;
+    protected TextField processNameTextField;
+    protected CheckBox generateReportsCheckBox;
+    protected Button deployButton;
+    protected Button cancelButton;
 
-  public DeployModelPopupWindow(Model modelData) {
-    setWidth(400, UNITS_PIXELS);
-    setModal(true);
-    setResizable(false);
+    public DeployModelPopupWindow(Model modelData) {
+        setWidth(400, UNITS_PIXELS);
+        setModal(true);
+        setResizable(false);
 
-    addStyleName(Reindeer.PANEL_LIGHT);
+        addStyleName(Reindeer.PANEL_LIGHT);
 
-    layout = new GridLayout(2, 2);
-    layout.setSpacing(true);
-    layout.setSizeFull();
-    layout.setMargin(false, false, true, false);
-    addComponent(layout);
-    
-    I18nManager i18nManager = ExplorerApp.get().getI18nManager();
-    setCaption(i18nManager.getMessage(Messages.MODEL_DEPLOY_POPUP_CAPTION));
-    
-    // Process name
-    Label nameLabel = new Label(i18nManager.getMessage(Messages.MODEL_DEPLOY_NAME));
-    layout.addComponent(nameLabel, 0, 0);
-    
-    processNameTextField = new TextField();
-    if (modelData.getName() != null) {
-      processNameTextField.setValue(modelData.getName());
+        layout = new GridLayout(2, 2);
+        layout.setSpacing(true);
+        layout.setSizeFull();
+        layout.setMargin(false, false, true, false);
+        addComponent(layout);
+
+        I18nManager i18nManager = ExplorerApp.get().getI18nManager();
+        setCaption(i18nManager.getMessage(Messages.MODEL_DEPLOY_POPUP_CAPTION));
+
+        // Process name
+        Label nameLabel = new Label(i18nManager.getMessage(Messages.MODEL_DEPLOY_NAME));
+        layout.addComponent(nameLabel, 0, 0);
+
+        processNameTextField = new TextField();
+        if (modelData.getName() != null) {
+            processNameTextField.setValue(modelData.getName());
+        }
+        processNameTextField.focus();
+        layout.addComponent(processNameTextField, 1, 0);
+
+        // Generate reports
+        Label generateReportsLabel = new Label(i18nManager.getMessage(Messages.MODEL_DEPLOY_GENERATE_REPORTS));
+        layout.addComponent(generateReportsLabel, 0, 1);
+
+        generateReportsCheckBox = new CheckBox();
+        generateReportsCheckBox.setValue(true);
+        layout.addComponent(generateReportsCheckBox, 1, 1);
+
+        // Buttons
+        initButtons(i18nManager);
     }
-    processNameTextField.focus();
-    layout.addComponent(processNameTextField, 1, 0);
-    
-    // Generate reports
-    Label generateReportsLabel = new Label(i18nManager.getMessage(Messages.MODEL_DEPLOY_GENERATE_REPORTS));
-    layout.addComponent(generateReportsLabel, 0, 1);
-    
-    generateReportsCheckBox = new CheckBox();
-    generateReportsCheckBox.setValue(true);
-    layout.addComponent(generateReportsCheckBox, 1, 1);
-    
-    // Buttons
-    initButtons(i18nManager);
-  }
 
-  /**
-   * Show the confirmation popup.
-   */
-  public void showPopupWindow() {
-    ExplorerApp.get().getViewManager().showPopupWindow(this);
-  }
+    /**
+     * Show the confirmation popup.
+     */
+    public void showPopupWindow() {
+        ExplorerApp.get().getViewManager().showPopupWindow(this);
+    }
 
-  protected void initButtons(I18nManager i18nManager) {
-    HorizontalLayout buttonLayout = new HorizontalLayout();
-    buttonLayout.setSpacing(true);
-    buttonLayout.setWidth(100, UNITS_PERCENTAGE);
-    addComponent(buttonLayout);
-    
-    deployButton = new Button(i18nManager.getMessage(Messages.MODEL_DEPLOY_BUTTON_DEPLOY));
-    buttonLayout.addComponent(deployButton);
-    buttonLayout.setComponentAlignment(deployButton, Alignment.BOTTOM_CENTER);
-  }
-  
-  public void closePopupWindow() {
-    close();
-  }
+    protected void initButtons(I18nManager i18nManager) {
+        HorizontalLayout buttonLayout = new HorizontalLayout();
+        buttonLayout.setSpacing(true);
+        buttonLayout.setWidth(100, UNITS_PERCENTAGE);
+        addComponent(buttonLayout);
 
-  public Button getDeployButton() {
-    return deployButton;
-  }
-  
-  public void setDeployButton(Button deployButton) {
-    this.deployButton = deployButton;
-  }
+        deployButton = new Button(i18nManager.getMessage(Messages.MODEL_DEPLOY_BUTTON_DEPLOY));
+        buttonLayout.addComponent(deployButton);
+        buttonLayout.setComponentAlignment(deployButton, Alignment.BOTTOM_CENTER);
+    }
 
-  public Button getCancelButton() {
-    return cancelButton;
-  }
+    public void closePopupWindow() {
+        close();
+    }
 
-  public void setCancelButton(Button cancelButton) {
-    this.cancelButton = cancelButton;
-  }
-  
-  public String getProcessName() {
-    return processNameTextField.getValue().toString();
-  }
-  
-  public boolean isGenerateReports() {
-    return generateReportsCheckBox.booleanValue();
-  }
-  
+    public Button getDeployButton() {
+        return deployButton;
+    }
+
+    public void setDeployButton(Button deployButton) {
+        this.deployButton = deployButton;
+    }
+
+    public Button getCancelButton() {
+        return cancelButton;
+    }
+
+    public void setCancelButton(Button cancelButton) {
+        this.cancelButton = cancelButton;
+    }
+
+    public String getProcessName() {
+        return processNameTextField.getValue().toString();
+    }
+
+    public boolean isGenerateReports() {
+        return generateReportsCheckBox.booleanValue();
+    }
+
 }

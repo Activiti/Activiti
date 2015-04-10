@@ -38,62 +38,61 @@ import org.springframework.stereotype.Component;
 @Component
 public class AttachmentRendererManager implements InitializingBean, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  private final List<AttachmentRenderer> renderers = new ArrayList<AttachmentRenderer>();
-  private final List<AttachmentEditor> editors = new ArrayList<AttachmentEditor>();
-  
-  private final Map<String, AttachmentEditor> editorMap = new HashMap<String, AttachmentEditor>();
-  private final AttachmentRenderer defaultAttachmentRenderer = new GenericAttachmentRenderer();
-  
-  public void addAttachmentRenderer(AttachmentRenderer renderer) {
-    renderers.add(renderer);
-  }
-  
-  public void addAttachmentEditor(AttachmentEditor editor) {
-    editors.add(editor);
-    editorMap.put(editor.getName(), editor);
-  }
+    private static final long serialVersionUID = 1L;
+    private final List<AttachmentRenderer> renderers = new ArrayList<AttachmentRenderer>();
+    private final List<AttachmentEditor> editors = new ArrayList<AttachmentEditor>();
 
-  public AttachmentRenderer getRenderer(Attachment attachment) {
-    return getRenderer(attachment.getType());
-  }
+    private final Map<String, AttachmentEditor> editorMap = new HashMap<String, AttachmentEditor>();
+    private final AttachmentRenderer defaultAttachmentRenderer = new GenericAttachmentRenderer();
 
-  public AttachmentRenderer getRenderer(String type) {
-    for(AttachmentRenderer renderer : renderers) {
-      if(renderer.canRenderAttachment(type)) {
-        return renderer;
-      }
+    public void addAttachmentRenderer(AttachmentRenderer renderer) {
+        renderers.add(renderer);
     }
-    return defaultAttachmentRenderer;
-  }
-  
-  /**
-   * Gets all attachment editors known. Returned in the order they 
-   * were added.
-   */
-  public List<AttachmentEditor> getAttachmentEditors() {
-    return Collections.unmodifiableList(editors);
-  }
 
-  public AttachmentEditor getEditor(String type) {
-    AttachmentEditor editor =  editorMap.get(type);
-    if(editor == null) {
-      throw new ActivitiException("No editor defined with the given name: " + editor);
+    public void addAttachmentEditor(AttachmentEditor editor) {
+        editors.add(editor);
+        editorMap.put(editor.getName(), editor);
     }
-    return editor;
-  }
-  
-  public void afterPropertiesSet() throws Exception {
-    // URL
-    addAttachmentRenderer(new UrlAttachmentRenderer());
-    addAttachmentEditor(new UrlAttachmentEditor());
-    
-    // Regular file upload
-    addAttachmentEditor(new FileAttachmentEditor());
-    
-    // Basic types
-    addAttachmentRenderer(new PdfAttachmentRenderer());
-    addAttachmentRenderer(new ImageAttachmentRenderer());
-    addAttachmentRenderer(new EmailAttachmentRenderer());
-  }
+
+    public AttachmentRenderer getRenderer(Attachment attachment) {
+        return getRenderer(attachment.getType());
+    }
+
+    public AttachmentRenderer getRenderer(String type) {
+        for (AttachmentRenderer renderer : renderers) {
+            if (renderer.canRenderAttachment(type)) {
+                return renderer;
+            }
+        }
+        return defaultAttachmentRenderer;
+    }
+
+    /**
+     * Gets all attachment editors known. Returned in the order they were added.
+     */
+    public List<AttachmentEditor> getAttachmentEditors() {
+        return Collections.unmodifiableList(editors);
+    }
+
+    public AttachmentEditor getEditor(String type) {
+        AttachmentEditor editor = editorMap.get(type);
+        if (editor == null) {
+            throw new ActivitiException("No editor defined with the given name: " + editor);
+        }
+        return editor;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        // URL
+        addAttachmentRenderer(new UrlAttachmentRenderer());
+        addAttachmentEditor(new UrlAttachmentEditor());
+
+        // Regular file upload
+        addAttachmentEditor(new FileAttachmentEditor());
+
+        // Basic types
+        addAttachmentRenderer(new PdfAttachmentRenderer());
+        addAttachmentRenderer(new ImageAttachmentRenderer());
+        addAttachmentRenderer(new EmailAttachmentRenderer());
+    }
 }

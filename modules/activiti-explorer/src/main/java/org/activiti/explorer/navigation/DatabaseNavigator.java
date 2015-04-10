@@ -20,20 +20,20 @@ import org.activiti.explorer.ExplorerApp;
  */
 public class DatabaseNavigator extends ManagementNavigator {
 
-  public static final String TABLE_URI_PART = "database";
-  
-  public String getTrigger() {
-    return TABLE_URI_PART;
-  }
-  
-  public void handleManagementNavigation(UriFragment uriFragment) {
-    String tableName = uriFragment.getUriPart(1);
+    public static final String TABLE_URI_PART = "database";
 
-    if (tableName != null) {
-      ExplorerApp.get().getViewManager().showDatabasePage(tableName);
-    } else {
-      ExplorerApp.get().getViewManager().showDatabasePage();
+    public String getTrigger() {
+        return TABLE_URI_PART;
     }
-  }
+
+    public void handleManagementNavigation(UriFragment uriFragment) {
+        String tableName = uriFragment.getUriPart(1);
+
+        if (tableName != null) {
+            ExplorerApp.get().getViewManager().showDatabasePage(tableName);
+        } else {
+            ExplorerApp.get().getViewManager().showDatabasePage();
+        }
+    }
 
 }

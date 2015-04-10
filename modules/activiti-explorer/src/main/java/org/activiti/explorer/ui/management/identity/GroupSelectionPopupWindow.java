@@ -32,78 +32,77 @@ import com.vaadin.ui.Table;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
- * Very simple popup window that allows to select groups.
- * Will probably be replaced in the future with something
- * more fancy (with search capatbilities etc)
+ * Very simple popup window that allows to select groups. Will probably be
+ * replaced in the future with something more fancy (with search capatbilities
+ * etc)
  * 
  * @author Joram Barrez
  */
 public class GroupSelectionPopupWindow extends PopupWindow {
-  
-  private static final long serialVersionUID = 1L;
-  protected transient IdentityService identityService;
-  protected I18nManager i18nManager;
-  protected String userId;
-  protected Table groupTable;
 
-  public GroupSelectionPopupWindow(IdentityService identityService, String userId) {
-    this.identityService = identityService;
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.userId = userId;
-    
-    setCaption(i18nManager.getMessage(Messages.USER_SELECT_GROUPS_POPUP, userId));
-    setModal(true);
-    center();
-    setWidth(500, UNITS_PIXELS);
-    setHeight(400, UNITS_PIXELS);
-    addStyleName(Reindeer.WINDOW_LIGHT);
-    ((VerticalLayout) getContent()).setSpacing(true);
-    
-    initGroupTable();
-    initSelectButton();
-  }
-  
-  protected void initGroupTable() {
-    groupTable = new Table();
-    groupTable.setNullSelectionAllowed(false);
-    groupTable.setSelectable(true);
-    groupTable.setMultiSelect(true);
-    groupTable.setSortDisabled(true);
-    groupTable.setWidth(460, UNITS_PIXELS);
-    groupTable.setHeight(275, UNITS_PIXELS);
-    addComponent(groupTable);
-    
-    GroupSelectionQuery query = new GroupSelectionQuery(identityService, userId);
-    LazyLoadingContainer container = new LazyLoadingContainer(query, 30);
-    groupTable.setContainerDataSource(container);
-    
-    groupTable.addContainerProperty("id", String.class, null);
-    groupTable.addContainerProperty("name", String.class, null);
-    groupTable.addContainerProperty("type", String.class, null);
-  }
-  
-  protected void initSelectButton() {
-    final Button selectButton = new Button(i18nManager.getMessage(Messages.USER_SELECT_GROUPS));
-    addComponent(selectButton);
-    ((VerticalLayout) getContent()).setComponentAlignment(selectButton, Alignment.BOTTOM_RIGHT);
-    
-    selectButton.addListener(new ClickListener() {
-      public void buttonClick(ClickEvent event) {
-        fireEvent(new SubmitEvent(selectButton, SubmitEvent.SUBMITTED));
-        close();
-      }
-    });
-  }
-  
-  @SuppressWarnings("unchecked")
-  public Set<String> getSelectedGroupIds() {
-    Set<String> groupIds = new HashSet<String>();
-    for (Object itemId : (Set<Object>)groupTable.getValue()) {
-      groupIds.add((String) groupTable.getItem(itemId).getItemProperty("id").getValue());
+    private static final long serialVersionUID = 1L;
+    protected transient IdentityService identityService;
+    protected I18nManager i18nManager;
+    protected String userId;
+    protected Table groupTable;
+
+    public GroupSelectionPopupWindow(IdentityService identityService, String userId) {
+        this.identityService = identityService;
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+        this.userId = userId;
+
+        setCaption(i18nManager.getMessage(Messages.USER_SELECT_GROUPS_POPUP, userId));
+        setModal(true);
+        center();
+        setWidth(500, UNITS_PIXELS);
+        setHeight(400, UNITS_PIXELS);
+        addStyleName(Reindeer.WINDOW_LIGHT);
+        ((VerticalLayout) getContent()).setSpacing(true);
+
+        initGroupTable();
+        initSelectButton();
     }
-    return groupIds;
-  }
+
+    protected void initGroupTable() {
+        groupTable = new Table();
+        groupTable.setNullSelectionAllowed(false);
+        groupTable.setSelectable(true);
+        groupTable.setMultiSelect(true);
+        groupTable.setSortDisabled(true);
+        groupTable.setWidth(460, UNITS_PIXELS);
+        groupTable.setHeight(275, UNITS_PIXELS);
+        addComponent(groupTable);
+
+        GroupSelectionQuery query = new GroupSelectionQuery(identityService, userId);
+        LazyLoadingContainer container = new LazyLoadingContainer(query, 30);
+        groupTable.setContainerDataSource(container);
+
+        groupTable.addContainerProperty("id", String.class, null);
+        groupTable.addContainerProperty("name", String.class, null);
+        groupTable.addContainerProperty("type", String.class, null);
+    }
+
+    protected void initSelectButton() {
+        final Button selectButton = new Button(i18nManager.getMessage(Messages.USER_SELECT_GROUPS));
+        addComponent(selectButton);
+        ((VerticalLayout) getContent()).setComponentAlignment(selectButton, Alignment.BOTTOM_RIGHT);
+
+        selectButton.addListener(new ClickListener() {
+            public void buttonClick(ClickEvent event) {
+                fireEvent(new SubmitEvent(selectButton, SubmitEvent.SUBMITTED));
+                close();
+            }
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public Set<String> getSelectedGroupIds() {
+        Set<String> groupIds = new HashSet<String>();
+        for (Object itemId : (Set<Object>) groupTable.getValue()) {
+            groupIds.add((String) groupTable.getItem(itemId).getItemProperty("id").getValue());
+        }
+        return groupIds;
+    }
 
 }

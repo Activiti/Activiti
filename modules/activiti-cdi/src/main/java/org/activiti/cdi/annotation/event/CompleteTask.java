@@ -22,7 +22,7 @@ import javax.inject.Qualifier;
  * 
  * <pre>
  * public void beforeCreditAccount(@Observes @CompleteTask(&quot;creditAccount&quot;) BusinessProcessEvent evt) {
- *   // ...
+ *     // ...
  * }
  * </pre>
  * 
@@ -31,6 +31,6 @@ import javax.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 public @interface CompleteTask {
-  /** the id of the task that has been completed */
-  public String value();
+    /** the id of the task that has been completed */
+    public String value();
 }

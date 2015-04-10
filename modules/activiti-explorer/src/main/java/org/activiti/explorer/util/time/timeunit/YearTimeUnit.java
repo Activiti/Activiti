@@ -16,23 +16,22 @@ package org.activiti.explorer.util.time.timeunit;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.util.time.TimeUnit;
 
-
 /**
  * @author Frederik Heremans
  */
 public class YearTimeUnit implements TimeUnit {
 
-  private static final Long MILLIS_PER_YEAR = 31536000000L;
-  
-  public Long getNumberOfMillis() {
-    return MILLIS_PER_YEAR;
-  }
+    private static final Long MILLIS_PER_YEAR = 31536000000L;
 
-  public String getMessageKey(Long numberOfUnits) {
-    if(numberOfUnits == 1) {
-      return Messages.TIME_UNIT_YEAR;
-    } else {
-      return Messages.TIME_UNIT_YEARS;
+    public Long getNumberOfMillis() {
+        return MILLIS_PER_YEAR;
     }
-  }
+
+    public String getMessageKey(Long numberOfUnits) {
+        if (numberOfUnits == 1) {
+            return Messages.TIME_UNIT_YEAR;
+        } else {
+            return Messages.TIME_UNIT_YEARS;
+        }
+    }
 }

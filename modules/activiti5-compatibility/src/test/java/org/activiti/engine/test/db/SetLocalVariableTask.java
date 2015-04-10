@@ -5,8 +5,8 @@ import org.activiti5.engine.delegate.JavaDelegate;
 
 public class SetLocalVariableTask implements JavaDelegate {
 
-	public void execute(DelegateExecution execution) throws Exception {
-	  execution.setVariableLocal("test", "test2");
-  }
+    public void execute(DelegateExecution execution) throws Exception {
+        execution.setVariableLocal("test", "test2");
+    }
 
 }

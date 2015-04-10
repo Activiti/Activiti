@@ -18,65 +18,87 @@ package org.activiti.engine.impl.juel;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELException;
 
-
 public class AstUnary extends AstRightValue {
-	public interface Operator {
-		public Object eval(Bindings bindings, ELContext context, AstNode node);		
-	}
-	public static abstract class SimpleOperator implements Operator {
-		public Object eval(Bindings bindings, ELContext context, AstNode node) {
-			return apply(bindings, node.eval(bindings, context));
-		}
+    public interface Operator {
+        public Object eval(Bindings bindings, ELContext context, AstNode node);
+    }
 
-		protected abstract Object apply(TypeConverter converter, Object o);
-	}
-	public static final Operator EMPTY = new SimpleOperator() {
-		@Override public Object apply(TypeConverter converter, Object o) { return BooleanOperations.empty(converter, o); }
-		@Override public String toString() { return "empty"; }
-	};
-	public static final Operator NEG = new SimpleOperator() {
-		@Override public Object apply(TypeConverter converter, Object o) { return NumberOperations.neg(converter, o); }
-		@Override public String toString() { return "-"; }
-	};
-	public static final Operator NOT = new SimpleOperator() {
-		@Override public Object apply(TypeConverter converter, Object o) { return !converter.convert(o, Boolean.class); }
-		@Override public String toString() { return "!"; }
-	};
+    public static abstract class SimpleOperator implements Operator {
+        public Object eval(Bindings bindings, ELContext context, AstNode node) {
+            return apply(bindings, node.eval(bindings, context));
+        }
 
-	private final Operator operator;
-	private final AstNode child;
+        protected abstract Object apply(TypeConverter converter, Object o);
+    }
 
-	public AstUnary(AstNode child, AstUnary.Operator operator) {
-		this.child = child;
-		this.operator = operator;
-	}
+    public static final Operator EMPTY = new SimpleOperator() {
+        @Override
+        public Object apply(TypeConverter converter, Object o) {
+            return BooleanOperations.empty(converter, o);
+        }
 
-	public Operator getOperator() {
-		return operator;
-	}
+        @Override
+        public String toString() {
+            return "empty";
+        }
+    };
+    public static final Operator NEG = new SimpleOperator() {
+        @Override
+        public Object apply(TypeConverter converter, Object o) {
+            return NumberOperations.neg(converter, o);
+        }
 
-	@Override
-	public Object eval(Bindings bindings, ELContext context) throws ELException {
-		return operator.eval(bindings, context, child);
-	}
+        @Override
+        public String toString() {
+            return "-";
+        }
+    };
+    public static final Operator NOT = new SimpleOperator() {
+        @Override
+        public Object apply(TypeConverter converter, Object o) {
+            return !converter.convert(o, Boolean.class);
+        }
 
-	@Override
-	public String toString() {
-		return "'" + operator.toString() + "'";
-	}	
+        @Override
+        public String toString() {
+            return "!";
+        }
+    };
 
-	@Override
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append(operator);
-		b.append(' ');
-		child.appendStructure(b, bindings);
-	}
+    private final Operator operator;
+    private final AstNode child;
 
-	public int getCardinality() {
-		return 1;
-	}
+    public AstUnary(AstNode child, AstUnary.Operator operator) {
+        this.child = child;
+        this.operator = operator;
+    }
 
-	public AstNode getChild(int i) {
-		return i == 0 ? child : null;
-	}
+    public Operator getOperator() {
+        return operator;
+    }
+
+    @Override
+    public Object eval(Bindings bindings, ELContext context) throws ELException {
+        return operator.eval(bindings, context, child);
+    }
+
+    @Override
+    public String toString() {
+        return "'" + operator.toString() + "'";
+    }
+
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append(operator);
+        b.append(' ');
+        child.appendStructure(b, bindings);
+    }
+
+    public int getCardinality() {
+        return 1;
+    }
+
+    public AstNode getChild(int i) {
+        return i == 0 ? child : null;
+    }
 }

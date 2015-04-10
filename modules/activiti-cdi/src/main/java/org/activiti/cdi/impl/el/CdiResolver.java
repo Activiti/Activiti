@@ -24,7 +24,6 @@ import org.activiti.cdi.impl.util.ProgrammaticBeanLookup;
 import org.activiti.engine.impl.javax.el.ELContext;
 import org.activiti.engine.impl.javax.el.ELResolver;
 
-
 /**
  * Resolver wrapping an instance of javax.el.ELResolver obtained from the
  * {@link BeanManager}. Allows activiti-engine to resolve Cdi-Beans.
@@ -33,82 +32,82 @@ import org.activiti.engine.impl.javax.el.ELResolver;
  */
 public class CdiResolver extends ELResolver {
 
-  protected javax.el.ELContext context;
+    protected javax.el.ELContext context;
 
-  public CdiResolver() {
-    context = new javax.el.ELContext() {
+    public CdiResolver() {
+        context = new javax.el.ELContext() {
 
-      @Override
-      public VariableMapper getVariableMapper() {
-        return null;
-      }
+            @Override
+            public VariableMapper getVariableMapper() {
+                return null;
+            }
 
-      @Override
-      public FunctionMapper getFunctionMapper() {
-        return null;
-      }
+            @Override
+            public FunctionMapper getFunctionMapper() {
+                return null;
+            }
 
-      @Override
-      public javax.el.ELResolver getELResolver() {
-        return getWrappedResolver();
-      }
-    };
-  }
-
-  protected BeanManager getBeanManager() {
-    return BeanManagerLookup.getBeanManager();
-  }
-
-  protected javax.el.ELResolver getWrappedResolver() {
-    BeanManager beanManager = getBeanManager();
-    javax.el.ELResolver resolver = beanManager.getELResolver();
-    return resolver;
-  }
-
-  @Override
-  public Class< ? > getCommonPropertyType(ELContext context, Object base) {
-    return getWrappedResolver().getCommonPropertyType(this.context, base);
-  }
-
-  @Override
-  public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
-    return getWrappedResolver().getFeatureDescriptors(this.context, base);
-  }
-
-  @Override
-  public Class< ? > getType(ELContext context, Object base, Object property) {
-    return getWrappedResolver().getType(this.context, base, property);
-  }
-
-  @Override
-  public Object getValue(ELContext context, Object base, Object property) {
-    try {
-      Object result = getWrappedResolver().getValue(this.context, base, property);
-      context.setPropertyResolved(result != null);
-      return result;
-    } catch (IllegalStateException e) {
-      // dependent scoped / EJBs
-      Object result = ProgrammaticBeanLookup.lookup(property.toString(), getBeanManager());
-      context.setPropertyResolved(result != null);
-      return result;
+            @Override
+            public javax.el.ELResolver getELResolver() {
+                return getWrappedResolver();
+            }
+        };
     }
-  }
 
-  @Override
-  public boolean isReadOnly(ELContext context, Object base, Object property) {
-    return getWrappedResolver().isReadOnly(this.context, base, property);
-  }
+    protected BeanManager getBeanManager() {
+        return BeanManagerLookup.getBeanManager();
+    }
 
-  @Override
-  public void setValue(ELContext context, Object base, Object property, Object value) {
-    getWrappedResolver().setValue(this.context, base, property, value);
-  }
+    protected javax.el.ELResolver getWrappedResolver() {
+        BeanManager beanManager = getBeanManager();
+        javax.el.ELResolver resolver = beanManager.getELResolver();
+        return resolver;
+    }
 
-  @Override
-  public Object invoke(ELContext context, Object base, Object method, java.lang.Class< ? >[] paramTypes, Object[] params) {
-    Object result = getWrappedResolver().invoke(this.context, base, method, paramTypes, params);
-    context.setPropertyResolved(result != null);
-    return result;
-  }
+    @Override
+    public Class<?> getCommonPropertyType(ELContext context, Object base) {
+        return getWrappedResolver().getCommonPropertyType(this.context, base);
+    }
+
+    @Override
+    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object base) {
+        return getWrappedResolver().getFeatureDescriptors(this.context, base);
+    }
+
+    @Override
+    public Class<?> getType(ELContext context, Object base, Object property) {
+        return getWrappedResolver().getType(this.context, base, property);
+    }
+
+    @Override
+    public Object getValue(ELContext context, Object base, Object property) {
+        try {
+            Object result = getWrappedResolver().getValue(this.context, base, property);
+            context.setPropertyResolved(result != null);
+            return result;
+        } catch (IllegalStateException e) {
+            // dependent scoped / EJBs
+            Object result = ProgrammaticBeanLookup.lookup(property.toString(), getBeanManager());
+            context.setPropertyResolved(result != null);
+            return result;
+        }
+    }
+
+    @Override
+    public boolean isReadOnly(ELContext context, Object base, Object property) {
+        return getWrappedResolver().isReadOnly(this.context, base, property);
+    }
+
+    @Override
+    public void setValue(ELContext context, Object base, Object property, Object value) {
+        getWrappedResolver().setValue(this.context, base, property, value);
+    }
+
+    @Override
+    public Object invoke(ELContext context, Object base, Object method, java.lang.Class<?>[] paramTypes, Object[] params) {
+        Object result = getWrappedResolver().invoke(this.context, base, method, paramTypes, params);
+        context.setPropertyResolved(result != null);
+        return result;
+    }
 
 }

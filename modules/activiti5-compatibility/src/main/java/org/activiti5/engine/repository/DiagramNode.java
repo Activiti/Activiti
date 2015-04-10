@@ -15,79 +15,79 @@ package org.activiti5.engine.repository;
 
 /**
  * Stores position and dimensions of a diagram node.
- *
+ * 
  * @author Falko Menge
  */
 public class DiagramNode extends DiagramElement {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private Double x = null;
-  private Double y = null;
-  private Double width = null;
-  private Double height = null;
+    private Double x = null;
+    private Double y = null;
+    private Double width = null;
+    private Double height = null;
 
-  public DiagramNode() {
-    super();
-  }
-  
-  public DiagramNode(String id) {
-    super(id);
-  }
+    public DiagramNode() {
+        super();
+    }
 
-  public DiagramNode(String id, Double x, Double y, Double width, Double height) {
-    super(id);
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-  }
+    public DiagramNode(String id) {
+        super(id);
+    }
 
-  public Double getX() {
-    return x;
-  }
+    public DiagramNode(String id, Double x, Double y, Double width, Double height) {
+        super(id);
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
 
-  public void setX(Double x) {
-    this.x = x;
-  }
+    public Double getX() {
+        return x;
+    }
 
-  public Double getY() {
-    return y;
-  }
+    public void setX(Double x) {
+        this.x = x;
+    }
 
-  public void setY(Double y) {
-    this.y = y;
-  }
+    public Double getY() {
+        return y;
+    }
 
-  public Double getWidth() {
-    return width;
-  }
+    public void setY(Double y) {
+        this.y = y;
+    }
 
-  public void setWidth(Double width) {
-    this.width = width;
-  }
+    public Double getWidth() {
+        return width;
+    }
 
-  public Double getHeight() {
-    return height;
-  }
+    public void setWidth(Double width) {
+        this.width = width;
+    }
 
-  public void setHeight(Double height) {
-    this.height = height;
-  }
-  
-  @Override
-  public String toString() {
-    return super.toString() + ", x=" + getX() + ", y=" + getY() + ", width=" + getWidth() + ", height=" + getHeight();
-  }
+    public Double getHeight() {
+        return height;
+    }
 
-  @Override
-  public boolean isNode() {
-    return true;
-  }
+    public void setHeight(Double height) {
+        this.height = height;
+    }
 
-  @Override
-  public boolean isEdge() {
-    return false;
-  }
+    @Override
+    public String toString() {
+        return super.toString() + ", x=" + getX() + ", y=" + getY() + ", width=" + getWidth() + ", height=" + getHeight();
+    }
+
+    @Override
+    public boolean isNode() {
+        return true;
+    }
+
+    @Override
+    public boolean isEdge() {
+        return false;
+    }
 
 }

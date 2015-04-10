@@ -21,33 +21,33 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 public class TestActivitiEntityEventListener implements ActivitiEventListener {
 
-	private List<ActivitiEvent> eventsReceived;
-	private Class<?> entityClass;
-	
-	public TestActivitiEntityEventListener(Class<?> entityClass) {
-		this.entityClass = entityClass;
-		
-		eventsReceived = new ArrayList<ActivitiEvent>();
-  }
-	
-	public List<ActivitiEvent> getEventsReceived() {
-	  return eventsReceived;
-  }
-	
-	public void clearEventsReceived() {
-		eventsReceived.clear();
-	}
-	
-	@Override
-	public void onEvent(ActivitiEvent event) {
-		if(event instanceof ActivitiEntityEvent && entityClass.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())) {
-			eventsReceived.add(event);
-		}
-	}
+    private List<ActivitiEvent> eventsReceived;
+    private Class<?> entityClass;
 
-	@Override
-	public boolean isFailOnException() {
-		return true;
-	}
+    public TestActivitiEntityEventListener(Class<?> entityClass) {
+        this.entityClass = entityClass;
+
+        eventsReceived = new ArrayList<ActivitiEvent>();
+    }
+
+    public List<ActivitiEvent> getEventsReceived() {
+        return eventsReceived;
+    }
+
+    public void clearEventsReceived() {
+        eventsReceived.clear();
+    }
+
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (event instanceof ActivitiEntityEvent && entityClass.isAssignableFrom(((ActivitiEntityEvent) event).getEntity().getClass())) {
+            eventsReceived.add(event);
+        }
+    }
+
+    @Override
+    public boolean isFailOnException() {
+        return true;
+    }
 
 }

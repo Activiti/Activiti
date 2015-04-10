@@ -13,19 +13,18 @@
 
 package org.activiti.explorer.navigation;
 
-
 /**
  * @author Frederik Heremans
  */
 public class DefaultNavigator implements Navigator {
 
-  public String getTrigger() {
-    // Handles all non-matched navigation events, we can return null.
-    return null;
-  }
+    public String getTrigger() {
+        // Handles all non-matched navigation events, we can return null.
+        return null;
+    }
 
-  public void handleNavigation(UriFragment uriFragment) {
-    // TODO: What should happen with unhandled URL's?
-  }
+    public void handleNavigation(UriFragment uriFragment) {
+        // TODO: What should happen with unhandled URL's?
+    }
 
 }

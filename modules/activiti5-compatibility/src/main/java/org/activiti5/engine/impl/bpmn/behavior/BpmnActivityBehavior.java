@@ -44,145 +44,144 @@ import org.slf4j.LoggerFactory;
  * @author Joram Barrez
  */
 public class BpmnActivityBehavior implements Serializable {
-  
-  private static final long serialVersionUID = 1L;
-  
-  private static Logger log = LoggerFactory.getLogger(BpmnActivityBehavior.class);
 
-  /**
-   * Performs the default outgoing BPMN 2.0 behavior, which is having parallel
-   * paths of executions for the outgoing sequence flow.
-   * 
-   * More precisely: every sequence flow that has a condition which evaluates to
-   * true (or which doesn't have a condition), is selected for continuation of
-   * the process instance. If multiple sequencer flow are selected, multiple,
-   * parallel paths of executions are created.
-   */
-  public void performDefaultOutgoingBehavior(ActivityExecution activityExecution) {
-    ActivityImpl activity = (ActivityImpl) activityExecution.getActivity();
-    if (!(activity.getActivityBehavior() instanceof IntermediateCatchEventActivityBehavior)) {
-      dispatchJobCanceledEvents(activityExecution);
-    }
-    performOutgoingBehavior(activityExecution, true, false, null);
-  }
+    private static final long serialVersionUID = 1L;
 
-  /**
-   * Performs the default outgoing BPMN 2.0 behavior (@see
-   * {@link #performDefaultOutgoingBehavior(ActivityExecution)}), but without
-   * checking the conditions on the outgoing sequence flow.
-   * 
-   * This means that every outgoing sequence flow is selected for continuing the
-   * process instance, regardless of having a condition or not. In case of
-   * multiple outgoing sequence flow, multiple parallel paths of executions will
-   * be created.
-   */
-  public void performIgnoreConditionsOutgoingBehavior(ActivityExecution activityExecution) {
-    performOutgoingBehavior(activityExecution, false, false, null);
-  }
+    private static Logger log = LoggerFactory.getLogger(BpmnActivityBehavior.class);
 
-  /**
-   * dispatch job canceled event for job associated with given execution entity
-   * @param activityExecution
-   */
-  protected void dispatchJobCanceledEvents(ActivityExecution activityExecution) {
-    if (activityExecution instanceof ExecutionEntity) {
-      List<JobEntity> jobs = ((ExecutionEntity) activityExecution).getJobs();
-      for (JobEntity job: jobs) {
-        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
+    /**
+     * Performs the default outgoing BPMN 2.0 behavior, which is having parallel
+     * paths of executions for the outgoing sequence flow.
+     * 
+     * More precisely: every sequence flow that has a condition which evaluates
+     * to true (or which doesn't have a condition), is selected for continuation
+     * of the process instance. If multiple sequencer flow are selected,
+     * multiple, parallel paths of executions are created.
+     */
+    public void performDefaultOutgoingBehavior(ActivityExecution activityExecution) {
+        ActivityImpl activity = (ActivityImpl) activityExecution.getActivity();
+        if (!(activity.getActivityBehavior() instanceof IntermediateCatchEventActivityBehavior)) {
+            dispatchJobCanceledEvents(activityExecution);
         }
-      }
-    }
-  }
-
-  /**
-   * Actual implementation of leaving an activity.
-   * 
-   * @param execution
-   *          The current execution context
-   * @param checkConditions
-   *          Whether or not to check conditions before determining whether or
-   *          not to take a transition.
-   * @param throwExceptionIfExecutionStuck
-   *          If true, an {@link ActivitiException} will be thrown in case no
-   *          transition could be found to leave the activity.
-   */
-  protected void performOutgoingBehavior(ActivityExecution execution, 
-          boolean checkConditions, boolean throwExceptionIfExecutionStuck, List<ActivityExecution> reusableExecutions) {
-
-    if (log.isDebugEnabled()) {
-      log.debug("Leaving activity '{}'", execution.getActivity().getId());
+        performOutgoingBehavior(activityExecution, true, false, null);
     }
 
-    String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
-    List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
+    /**
+     * Performs the default outgoing BPMN 2.0 behavior (@see
+     * {@link #performDefaultOutgoingBehavior(ActivityExecution)}), but without
+     * checking the conditions on the outgoing sequence flow.
+     * 
+     * This means that every outgoing sequence flow is selected for continuing
+     * the process instance, regardless of having a condition or not. In case of
+     * multiple outgoing sequence flow, multiple parallel paths of executions
+     * will be created.
+     */
+    public void performIgnoreConditionsOutgoingBehavior(ActivityExecution activityExecution) {
+        performOutgoingBehavior(activityExecution, false, false, null);
+    }
 
-    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    for (PvmTransition outgoingTransition : outgoingTransitions) {
-      Expression skipExpression = outgoingTransition.getSkipExpression();
-      
-      if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
-        if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
-          Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-          if (condition == null || !checkConditions || condition.evaluate(execution)) {
-            transitionsToTake.add(outgoingTransition);
-          }
+    /**
+     * dispatch job canceled event for job associated with given execution
+     * entity
+     * 
+     * @param activityExecution
+     */
+    protected void dispatchJobCanceledEvents(ActivityExecution activityExecution) {
+        if (activityExecution instanceof ExecutionEntity) {
+            List<JobEntity> jobs = ((ExecutionEntity) activityExecution).getJobs();
+            for (JobEntity job : jobs) {
+                if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+                    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
+                }
+            }
         }
-        
-      } else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)){
-        transitionsToTake.add(outgoingTransition);
-      }
     }
 
-    if (transitionsToTake.size() == 1) {
-      
-      execution.take(transitionsToTake.get(0));
+    /**
+     * Actual implementation of leaving an activity.
+     * 
+     * @param execution
+     *            The current execution context
+     * @param checkConditions
+     *            Whether or not to check conditions before determining whether
+     *            or not to take a transition.
+     * @param throwExceptionIfExecutionStuck
+     *            If true, an {@link ActivitiException} will be thrown in case
+     *            no transition could be found to leave the activity.
+     */
+    protected void performOutgoingBehavior(ActivityExecution execution, boolean checkConditions, boolean throwExceptionIfExecutionStuck, List<ActivityExecution> reusableExecutions) {
 
-    } else if (transitionsToTake.size() >= 1) {
-
-      execution.inactivate();
-      if (reusableExecutions == null || reusableExecutions.isEmpty()) {
-        execution.takeAll(transitionsToTake, Arrays.asList(execution));
-      } else {
-        execution.takeAll(transitionsToTake, reusableExecutions);
-      }
-
-    } else {
-
-      if (defaultSequenceFlow != null) {
-        PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
-        if (defaultTransition != null) {
-          execution.take(defaultTransition);
-        } else {
-          throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
+        if (log.isDebugEnabled()) {
+            log.debug("Leaving activity '{}'", execution.getActivity().getId());
         }
-      } else {
-        
-        Object isForCompensation = execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_IS_FOR_COMPENSATION);
-        if(isForCompensation != null && (Boolean) isForCompensation) {
-          if (execution instanceof ExecutionEntity) {
-            Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
-          }
-          InterpretableExecution parentExecution = (InterpretableExecution) execution.getParent();
-          ((InterpretableExecution)execution).remove();
-          parentExecution.signal("compensationDone", null);
+
+        String defaultSequenceFlow = (String) execution.getActivity().getProperty("default");
+        List<PvmTransition> transitionsToTake = new ArrayList<PvmTransition>();
+
+        List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+        for (PvmTransition outgoingTransition : outgoingTransitions) {
+            Expression skipExpression = outgoingTransition.getSkipExpression();
+
+            if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
+                if (defaultSequenceFlow == null || !outgoingTransition.getId().equals(defaultSequenceFlow)) {
+                    Condition condition = (Condition) outgoingTransition.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+                    if (condition == null || !checkConditions || condition.evaluate(execution)) {
+                        transitionsToTake.add(outgoingTransition);
+                    }
+                }
+
+            } else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
+                transitionsToTake.add(outgoingTransition);
+            }
+        }
+
+        if (transitionsToTake.size() == 1) {
+
+            execution.take(transitionsToTake.get(0));
+
+        } else if (transitionsToTake.size() >= 1) {
+
+            execution.inactivate();
+            if (reusableExecutions == null || reusableExecutions.isEmpty()) {
+                execution.takeAll(transitionsToTake, Arrays.asList(execution));
+            } else {
+                execution.takeAll(transitionsToTake, reusableExecutions);
+            }
 
         } else {
-          
-          if (log.isDebugEnabled()) {
-            log.debug("No outgoing sequence flow found for {}. Ending execution.", execution.getActivity().getId());
-          }
-          execution.end();
-          
-          if (throwExceptionIfExecutionStuck) {
-            throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId()
-                  + "' could be selected for continuing the process");
-          }
+
+            if (defaultSequenceFlow != null) {
+                PvmTransition defaultTransition = execution.getActivity().findOutgoingTransition(defaultSequenceFlow);
+                if (defaultTransition != null) {
+                    execution.take(defaultTransition);
+                } else {
+                    throw new ActivitiException("Default sequence flow '" + defaultSequenceFlow + "' could not be not found");
+                }
+            } else {
+
+                Object isForCompensation = execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_IS_FOR_COMPENSATION);
+                if (isForCompensation != null && (Boolean) isForCompensation) {
+                    if (execution instanceof ExecutionEntity) {
+                        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+                    }
+                    InterpretableExecution parentExecution = (InterpretableExecution) execution.getParent();
+                    ((InterpretableExecution) execution).remove();
+                    parentExecution.signal("compensationDone", null);
+
+                } else {
+
+                    if (log.isDebugEnabled()) {
+                        log.debug("No outgoing sequence flow found for {}. Ending execution.", execution.getActivity().getId());
+                    }
+                    execution.end();
+
+                    if (throwExceptionIfExecutionStuck) {
+                        throw new ActivitiException("No outgoing sequence flow of the inclusive gateway '" + execution.getActivity().getId() + "' could be selected for continuing the process");
+                    }
+                }
+
+            }
         }
-        
-      }
     }
-  }
 
 }

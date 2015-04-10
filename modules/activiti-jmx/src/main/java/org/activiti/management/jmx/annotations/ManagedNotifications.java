@@ -29,6 +29,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ManagedNotifications {
 
-  ManagedNotification[] value();
+    ManagedNotification[] value();
 
 }

@@ -19,8 +19,9 @@ import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
 import org.junit.Test;
 
 /**
- * Unit test for {@link BaseStepDefinitionConverter}. Since {@link BaseStepDefinitionConverter} is abstract, this test
- * uses a simple inner class to test basic functionality.
+ * Unit test for {@link BaseStepDefinitionConverter}. Since
+ * {@link BaseStepDefinitionConverter} is abstract, this test uses a simple
+ * inner class to test basic functionality.
  * 
  */
 public class BaseStepDefinitionConverterTest {
@@ -44,7 +45,7 @@ public class BaseStepDefinitionConverterTest {
         reason.setName("Reason");
         reason.setType("string");
         formDefinition.addFormProperty(reason);
-        
+
         BooleanPropertyDefinition validate = new BooleanPropertyDefinition();
         validate.setName("Validate");
         validate.setType("boolean");
@@ -70,13 +71,14 @@ public class BaseStepDefinitionConverterTest {
         assertEquals("Reject", secondValue.getName());
         assertEquals("false", secondValue.getId());
 
-        // Now confirm the second property, a non list property, is well formed as well.
+        // Now confirm the second property, a non list property, is well formed
+        // as well.
         FormProperty secondProperty = properties.get(1);
         assertNotNull(secondProperty);
         assertTrue(secondProperty.getFormValues().isEmpty());
         assertEquals("Reason", secondProperty.getName());
         assertEquals("string", secondProperty.getType());
-        
+
         FormProperty thirdProperty = properties.get(2);
         assertNotNull(thirdProperty);
         assertTrue(thirdProperty.getFormValues().isEmpty());
@@ -97,8 +99,7 @@ public class BaseStepDefinitionConverterTest {
         }
 
         @Override
-        protected UserTask createProcessArtifact(HumanStepDefinition stepDefinition,
-                WorkflowDefinitionConversion conversion) {
+        protected UserTask createProcessArtifact(HumanStepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
             // Does nothing for this unit test
             return null;
         }

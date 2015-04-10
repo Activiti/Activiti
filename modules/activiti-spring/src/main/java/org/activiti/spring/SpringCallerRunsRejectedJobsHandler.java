@@ -24,16 +24,17 @@ import org.slf4j.LoggerFactory;
  * @author Tijs Rademakers
  */
 public class SpringCallerRunsRejectedJobsHandler implements SpringRejectedJobsHandler {
-  
-  private static Logger log = LoggerFactory.getLogger(SpringCallerRunsRejectedJobsHandler.class);
 
-  public void jobRejected(AsyncExecutor asyncExecutor, JobEntity job) {
-    try {
-      // execute rejected work in caller thread (potentially blocking job acquisition)
-      new ExecuteAsyncRunnable(job, asyncExecutor.getCommandExecutor()).run();
-    } catch (Exception e) {
-      log.error("Failed to execute rejected job " + job.getId(), e);
+    private static Logger log = LoggerFactory.getLogger(SpringCallerRunsRejectedJobsHandler.class);
+
+    public void jobRejected(AsyncExecutor asyncExecutor, JobEntity job) {
+        try {
+            // execute rejected work in caller thread (potentially blocking job
+            // acquisition)
+            new ExecuteAsyncRunnable(job, asyncExecutor.getCommandExecutor()).run();
+        } catch (Exception e) {
+            log.error("Failed to execute rejected job " + job.getId(), e);
+        }
     }
-  }
 
 }

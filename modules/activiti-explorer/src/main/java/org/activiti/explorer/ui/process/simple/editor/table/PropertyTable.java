@@ -32,88 +32,88 @@ import com.vaadin.ui.Table;
  */
 public class PropertyTable extends Table {
 
-  private static final long serialVersionUID = 6521446909987945815L;
+    private static final long serialVersionUID = 6521446909987945815L;
 
-  public static final String ID_PROPERTY_NAME = "property";
-  public static final String ID_PROPERTY_TYPE = "type";
-  public static final String ID_PROPERTY_REQUIRED = "required";
-  public static final String ID_PROPERTY_ACTIONS = "actions";
-  
-  private static final String DEFAULT_PROPERTY_NAME = "My property";
-  
-  protected I18nManager i18nManager;
-  
-  public PropertyTable() {
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    
-    setEditable(true);
-    setColumnReorderingAllowed(true);
-    setPageLength(size());
+    public static final String ID_PROPERTY_NAME = "property";
+    public static final String ID_PROPERTY_TYPE = "type";
+    public static final String ID_PROPERTY_REQUIRED = "required";
+    public static final String ID_PROPERTY_ACTIONS = "actions";
 
-    addContainerProperty(ID_PROPERTY_NAME, String.class, null);
-    addContainerProperty(ID_PROPERTY_TYPE, ComboBox.class, null);
-    addContainerProperty(ID_PROPERTY_REQUIRED, CheckBox.class, null);
-    addContainerProperty(ID_PROPERTY_ACTIONS, HorizontalLayout.class, null);
+    private static final String DEFAULT_PROPERTY_NAME = "My property";
 
-    setColumnHeader(ID_PROPERTY_NAME, i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_NAME));
-    setColumnHeader(ID_PROPERTY_TYPE,  i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_TYPE));
-    setColumnHeader(ID_PROPERTY_REQUIRED,  i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_REQUIRED));
-    setColumnHeader(ID_PROPERTY_ACTIONS,  i18nManager.getMessage(Messages.PROCESS_EDITOR_ACTIONS));
-  }
+    protected I18nManager i18nManager;
 
-  public void addPropertyRow() {
-    addPropertyRow(null, null, null, null);
-  }
+    public PropertyTable() {
+        this.i18nManager = ExplorerApp.get().getI18nManager();
 
-  public void addPropertyRow(String propertyName, String propertyType, Boolean required) {
-    addPropertyRow(null, propertyName, propertyType, required);
-  }
+        setEditable(true);
+        setColumnReorderingAllowed(true);
+        setPageLength(size());
 
-  public void addPropertyRowAfter(Object itemId) {
-    addPropertyRow(itemId, null, null, null);
-  }
+        addContainerProperty(ID_PROPERTY_NAME, String.class, null);
+        addContainerProperty(ID_PROPERTY_TYPE, ComboBox.class, null);
+        addContainerProperty(ID_PROPERTY_REQUIRED, CheckBox.class, null);
+        addContainerProperty(ID_PROPERTY_ACTIONS, HorizontalLayout.class, null);
 
-  protected void addPropertyRow(Object itemId, String propertyName, String propertyType, Boolean required) {
-    Object newItemId = null;
-    if (itemId == null) { // add at the end of list
-      newItemId = addItem();
-    } else {
-      newItemId = addItemAfter(itemId);
+        setColumnHeader(ID_PROPERTY_NAME, i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_NAME));
+        setColumnHeader(ID_PROPERTY_TYPE, i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_TYPE));
+        setColumnHeader(ID_PROPERTY_REQUIRED, i18nManager.getMessage(Messages.PROCESS_EDITOR_PROPERTY_REQUIRED));
+        setColumnHeader(ID_PROPERTY_ACTIONS, i18nManager.getMessage(Messages.PROCESS_EDITOR_ACTIONS));
     }
-    Item newItem = getItem(newItemId);
 
-    // name
-    newItem.getItemProperty(ID_PROPERTY_NAME).setValue(propertyName == null ? DEFAULT_PROPERTY_NAME : propertyName);
-
-    // type
-    ComboBox typeComboBox = new ComboBox("", Arrays.asList("text", "number", "date"));
-    typeComboBox.setNullSelectionAllowed(false);
-    if (propertyType == null) {
-      typeComboBox.setValue(typeComboBox.getItemIds().iterator().next());
-    } else {
-      typeComboBox.setValue(propertyType);
+    public void addPropertyRow() {
+        addPropertyRow(null, null, null, null);
     }
-    newItem.getItemProperty(ID_PROPERTY_TYPE).setValue(typeComboBox);
 
-    // required
-    CheckBox requiredCheckBox = new CheckBox();
-    requiredCheckBox.setValue(required == null ? false : required);
-    newItem.getItemProperty(ID_PROPERTY_REQUIRED).setValue(requiredCheckBox);
+    public void addPropertyRow(String propertyName, String propertyType, Boolean required) {
+        addPropertyRow(null, propertyName, propertyType, required);
+    }
 
-    // actions
-    HorizontalLayout actionButtons = new HorizontalLayout();
+    public void addPropertyRowAfter(Object itemId) {
+        addPropertyRow(itemId, null, null, null);
+    }
 
-    Button deleteRowButton = new Button("-");
-    deleteRowButton.setData(newItemId);
-    deleteRowButton.addListener(new DeletePropertyClickListener(this));
-    actionButtons.addComponent(deleteRowButton);
+    protected void addPropertyRow(Object itemId, String propertyName, String propertyType, Boolean required) {
+        Object newItemId = null;
+        if (itemId == null) { // add at the end of list
+            newItemId = addItem();
+        } else {
+            newItemId = addItemAfter(itemId);
+        }
+        Item newItem = getItem(newItemId);
 
-    Button addRowButton = new Button("+");
-    addRowButton.setData(newItemId);
-    addRowButton.addListener(new AddPropertyClickListener(this));
-    actionButtons.addComponent(addRowButton);
+        // name
+        newItem.getItemProperty(ID_PROPERTY_NAME).setValue(propertyName == null ? DEFAULT_PROPERTY_NAME : propertyName);
 
-    newItem.getItemProperty(ID_PROPERTY_ACTIONS).setValue(actionButtons);
-  }
+        // type
+        ComboBox typeComboBox = new ComboBox("", Arrays.asList("text", "number", "date"));
+        typeComboBox.setNullSelectionAllowed(false);
+        if (propertyType == null) {
+            typeComboBox.setValue(typeComboBox.getItemIds().iterator().next());
+        } else {
+            typeComboBox.setValue(propertyType);
+        }
+        newItem.getItemProperty(ID_PROPERTY_TYPE).setValue(typeComboBox);
+
+        // required
+        CheckBox requiredCheckBox = new CheckBox();
+        requiredCheckBox.setValue(required == null ? false : required);
+        newItem.getItemProperty(ID_PROPERTY_REQUIRED).setValue(requiredCheckBox);
+
+        // actions
+        HorizontalLayout actionButtons = new HorizontalLayout();
+
+        Button deleteRowButton = new Button("-");
+        deleteRowButton.setData(newItemId);
+        deleteRowButton.addListener(new DeletePropertyClickListener(this));
+        actionButtons.addComponent(deleteRowButton);
+
+        Button addRowButton = new Button("+");
+        addRowButton.setData(newItemId);
+        addRowButton.addListener(new AddPropertyClickListener(this));
+        actionButtons.addComponent(addRowButton);
+
+        newItem.getItemProperty(ID_PROPERTY_ACTIONS).setValue(actionButtons);
+    }
 
 }

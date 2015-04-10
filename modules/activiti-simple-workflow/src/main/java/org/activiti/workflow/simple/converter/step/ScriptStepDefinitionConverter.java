@@ -18,36 +18,35 @@ import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.ScriptStepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 
-
 /**
  * @author Joram Barrez
  */
 public class ScriptStepDefinitionConverter extends BaseStepDefinitionConverter<ScriptStepDefinition, ScriptTask> {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public Class< ? extends StepDefinition> getHandledClass() {
-    return ScriptStepDefinition.class;
-  }
-
-  @Override
-  protected ScriptTask createProcessArtifact(ScriptStepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
-    
-    ScriptTask scriptTask = new ScriptTask();
-    scriptTask.setId(conversion.getUniqueNumberedId(ConversionConstants.SCRIPT_TASK_ID_PREFIX));
-    scriptTask.setName(stepDefinition.getName());
-    scriptTask.setScript(stepDefinition.getScript());
-    
-    if (stepDefinition.getScriptLanguage() != null) {
-      scriptTask.setScriptFormat(stepDefinition.getScriptLanguage());
-    } else {
-      scriptTask.setScriptFormat("JavaScript");
+    @Override
+    public Class<? extends StepDefinition> getHandledClass() {
+        return ScriptStepDefinition.class;
     }
-    
-    addFlowElement(conversion, scriptTask, true);
-    
-    return scriptTask;
-  }
-  
+
+    @Override
+    protected ScriptTask createProcessArtifact(ScriptStepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
+
+        ScriptTask scriptTask = new ScriptTask();
+        scriptTask.setId(conversion.getUniqueNumberedId(ConversionConstants.SCRIPT_TASK_ID_PREFIX));
+        scriptTask.setName(stepDefinition.getName());
+        scriptTask.setScript(stepDefinition.getScript());
+
+        if (stepDefinition.getScriptLanguage() != null) {
+            scriptTask.setScriptFormat(stepDefinition.getScriptLanguage());
+        } else {
+            scriptTask.setScriptFormat("JavaScript");
+        }
+
+        addFlowElement(conversion, scriptTask, true);
+
+        return scriptTask;
+    }
+
 }

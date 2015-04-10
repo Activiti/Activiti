@@ -13,7 +13,6 @@
 
 package org.activiti.spring;
 
-
 import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
@@ -22,7 +21,6 @@ import org.springframework.core.Ordered;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
-
 
 /**
  * @author Frederik Heremans
@@ -44,8 +42,10 @@ public class SpringTransactionContext implements TransactionContext {
         if (transactionSynchronizationAdapterOrder != null) {
             this.transactionSynchronizationAdapterOrder = transactionSynchronizationAdapterOrder;
         } else {
-            // Revert to default, which is a high number as the behaviour prior to adding the order would
-            // case the TransactionSynchronizationAdapter to be called AFTER all Adapters that implement Ordered
+            // Revert to default, which is a high number as the behaviour prior
+            // to adding the order would
+            // case the TransactionSynchronizationAdapter to be called AFTER all
+            // Adapters that implement Ordered
             this.transactionSynchronizationAdapterOrder = Integer.MAX_VALUE;
         }
     }

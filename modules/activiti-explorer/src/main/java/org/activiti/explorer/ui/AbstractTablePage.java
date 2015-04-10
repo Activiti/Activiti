@@ -15,7 +15,6 @@ package org.activiti.explorer.ui;
 import com.vaadin.ui.AbstractSelect;
 import com.vaadin.ui.Table;
 
-
 /**
  * Superclass for all pages that have a table on the left side of the page.
  * 
@@ -24,63 +23,62 @@ import com.vaadin.ui.Table;
  */
 public abstract class AbstractTablePage extends AbstractPage {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected Table table;
-  
-  protected AbstractSelect createSelectComponent() {
-    table = createList();
-    
-    // Set non-editable, selectable and full-size
-    table.setEditable(false);
-    table.setImmediate(true);
-    table.setSelectable(true);
-    table.setNullSelectionAllowed(false);
-    table.setSortDisabled(true);
-    table.setSizeFull();
-    return table;
-  }
-  
-  /**
-   * Concrete pages must implement this.
-   * The table that is returned will be used for the 
-   * list on the left side.
-   */
-  protected abstract Table createList();
-  
-  /**
-   * Refresh the list on the left side and selects the next element in the table.
-   * (useful when element of the list is deleted)
-   */
-  public void refreshSelectNext() {
-    Integer pageIndex = (Integer) table.getCurrentPageFirstItemId();
-    Integer selectedIndex = (Integer) table.getValue();
-    table.removeAllItems();
-    
-    // Remove all items
-    table.getContainerDataSource().removeAllItems();
-    
-    // Try to select the next one in the list
-    Integer max = table.getContainerDataSource().size();
-    if (max != 0) {
-      if(pageIndex > max) {
-        pageIndex = max -1;
-      }
-      if(selectedIndex > max) {
-        selectedIndex = max -1;
-      }
-      table.setCurrentPageFirstItemIndex(pageIndex);
-      selectElement(selectedIndex);
-    } else {
-      table.setCurrentPageFirstItemIndex(0);
+    private static final long serialVersionUID = 1L;
+
+    protected Table table;
+
+    protected AbstractSelect createSelectComponent() {
+        table = createList();
+
+        // Set non-editable, selectable and full-size
+        table.setEditable(false);
+        table.setImmediate(true);
+        table.setSelectable(true);
+        table.setNullSelectionAllowed(false);
+        table.setSortDisabled(true);
+        table.setSizeFull();
+        return table;
     }
-  }
-  
-  public void selectElement(int index) {
-    if (table.getContainerDataSource().size() > index) {
-      table.select(index);
-      table.setCurrentPageFirstItemId(index);
+
+    /**
+     * Concrete pages must implement this. The table that is returned will be
+     * used for the list on the left side.
+     */
+    protected abstract Table createList();
+
+    /**
+     * Refresh the list on the left side and selects the next element in the
+     * table. (useful when element of the list is deleted)
+     */
+    public void refreshSelectNext() {
+        Integer pageIndex = (Integer) table.getCurrentPageFirstItemId();
+        Integer selectedIndex = (Integer) table.getValue();
+        table.removeAllItems();
+
+        // Remove all items
+        table.getContainerDataSource().removeAllItems();
+
+        // Try to select the next one in the list
+        Integer max = table.getContainerDataSource().size();
+        if (max != 0) {
+            if (pageIndex > max) {
+                pageIndex = max - 1;
+            }
+            if (selectedIndex > max) {
+                selectedIndex = max - 1;
+            }
+            table.setCurrentPageFirstItemIndex(pageIndex);
+            selectElement(selectedIndex);
+        } else {
+            table.setCurrentPageFirstItemIndex(0);
+        }
     }
-  }
-  
+
+    public void selectElement(int index) {
+        if (table.getContainerDataSource().size() > index) {
+            table.select(index);
+            table.setCurrentPageFirstItemId(index);
+        }
+    }
+
 }

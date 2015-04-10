@@ -25,64 +25,60 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 
-
 /**
  * @author Daniel Meyer
  * @author Joram Barrez
  */
 public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected final Serializable payload;
-  protected final String messageName;
-  protected final boolean async;
-  
-  public MessageEventReceivedCmd(String messageName, String executionId, Map<String, Object> processVariables) {
-    super(executionId);
-    this.messageName = messageName;
-    
-    if (processVariables != null) {
-    	if (processVariables instanceof Serializable){
-    		this.payload = (Serializable) processVariables;
-    	}
-    	else{	
-    		this.payload = new HashMap<String, Object>(processVariables);
-    	}
-    		
-    }
-    else{
-    	this.payload = null;
-    }
-    this.async = false;
-  }
 
-  public MessageEventReceivedCmd(String messageName, String executionId, boolean async) {
-    super(executionId);
-    this.messageName = messageName;
-    this.payload = null;
-    this.async = async;
-  }
-  
-  protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
-    if(messageName == null) {
-      throw new ActivitiIllegalArgumentException("messageName cannot be null");
-    }
-    
-    List<EventSubscriptionEntity> eventSubscriptions = commandContext.getEventSubscriptionEntityManager()
-      .findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName, executionId);
-    
-    if(eventSubscriptions.isEmpty()) {
-      throw new ActivitiException("Execution with id '"+executionId+"' does not have a subscription to a message event with name '"+messageName+"'");
-    }
-    
-    // there can be only one:
-    EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptions.get(0);
-    
-    eventSubscriptionEntity.eventReceived(payload, async);
-    
-    return null;
-  }
+    private static final long serialVersionUID = 1L;
 
-  
+    protected final Serializable payload;
+    protected final String messageName;
+    protected final boolean async;
+
+    public MessageEventReceivedCmd(String messageName, String executionId, Map<String, Object> processVariables) {
+        super(executionId);
+        this.messageName = messageName;
+
+        if (processVariables != null) {
+            if (processVariables instanceof Serializable) {
+                this.payload = (Serializable) processVariables;
+            } else {
+                this.payload = new HashMap<String, Object>(processVariables);
+            }
+
+        } else {
+            this.payload = null;
+        }
+        this.async = false;
+    }
+
+    public MessageEventReceivedCmd(String messageName, String executionId, boolean async) {
+        super(executionId);
+        this.messageName = messageName;
+        this.payload = null;
+        this.async = async;
+    }
+
+    protected Void execute(CommandContext commandContext, ExecutionEntity execution) {
+        if (messageName == null) {
+            throw new ActivitiIllegalArgumentException("messageName cannot be null");
+        }
+
+        List<EventSubscriptionEntity> eventSubscriptions = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE,
+                messageName, executionId);
+
+        if (eventSubscriptions.isEmpty()) {
+            throw new ActivitiException("Execution with id '" + executionId + "' does not have a subscription to a message event with name '" + messageName + "'");
+        }
+
+        // there can be only one:
+        EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptions.get(0);
+
+        eventSubscriptionEntity.eventReceived(payload, async);
+
+        return null;
+    }
+
 }

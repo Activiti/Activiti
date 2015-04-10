@@ -25,16 +25,16 @@ import javax.persistence.Id;
 @Entity(name = "SQLDATE_ID_ENTITY")
 public class SQLDateIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private Date dateId;
+    @Id
+    @Column(name = "ID_")
+    private Date dateId;
 
-  public Date getDateId() {
-    return dateId;
-  }
+    public Date getDateId() {
+        return dateId;
+    }
 
-  public void setDateId(Date dateId) {
-    this.dateId = dateId;
-  }
+    public void setDateId(Date dateId) {
+        this.dateId = dateId;
+    }
 
 }

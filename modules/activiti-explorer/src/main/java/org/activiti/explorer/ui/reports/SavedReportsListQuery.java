@@ -25,50 +25,48 @@ import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
 
-
 /**
  * @author Frederik Heremans
  */
 public class SavedReportsListQuery extends AbstractLazyLoadingQuery {
-  
-  private static final long serialVersionUID = -7865037930384885968L;
 
-  protected transient HistoryService historyService;
-  
-  public SavedReportsListQuery() {
-    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
-  }
+    private static final long serialVersionUID = -7865037930384885968L;
 
-  public int size() {
-    return (int) createQuery().count();
-  }
+    protected transient HistoryService historyService;
 
-  public List<Item> loadItems(int start, int count) {
-    List<HistoricProcessInstance> processInstances = createQuery().listPage(start, count);
-
-    List<Item> reportItems = new ArrayList<Item>();
-    for (HistoricProcessInstance instance : processInstances) {
-      reportItems.add(new SavedReportListItem(instance));
+    public SavedReportsListQuery() {
+        this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
     }
-    
-    return reportItems;
-  }
-  
-  protected HistoricProcessInstanceQuery createQuery() {
-    // TODO: Add additional "processDefinitionCategory" on HistoricProcessInstanceQuery instead of
-    // using variables to find all completed reports. This is more robust and performant
-    return historyService.createHistoricProcessInstanceQuery()
-           .finished()
-           .startedBy(Authentication.getAuthenticatedUserId())
-           .variableValueNotEquals("reportData", null);
-  }
 
-  public Item loadSingleResult(String id) {
-    return new SavedReportListItem(historyService.createHistoricProcessInstanceQuery().processInstanceId(id).singleResult());
-  }
+    public int size() {
+        return (int) createQuery().count();
+    }
 
-  public void setSorting(Object[] propertyIds, boolean[] ascending) {
-    throw new UnsupportedOperationException();
-  }
-  
+    public List<Item> loadItems(int start, int count) {
+        List<HistoricProcessInstance> processInstances = createQuery().listPage(start, count);
+
+        List<Item> reportItems = new ArrayList<Item>();
+        for (HistoricProcessInstance instance : processInstances) {
+            reportItems.add(new SavedReportListItem(instance));
+        }
+
+        return reportItems;
+    }
+
+    protected HistoricProcessInstanceQuery createQuery() {
+        // TODO: Add additional "processDefinitionCategory" on
+        // HistoricProcessInstanceQuery instead of
+        // using variables to find all completed reports. This is more robust
+        // and performant
+        return historyService.createHistoricProcessInstanceQuery().finished().startedBy(Authentication.getAuthenticatedUserId()).variableValueNotEquals("reportData", null);
+    }
+
+    public Item loadSingleResult(String id) {
+        return new SavedReportListItem(historyService.createHistoricProcessInstanceQuery().processInstanceId(id).singleResult());
+    }
+
+    public void setSorting(Object[] propertyIds, boolean[] ascending) {
+        throw new UnsupportedOperationException();
+    }
+
 }

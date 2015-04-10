@@ -28,8 +28,9 @@ import java.util.List;
 public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase {
 
     /**
-     * This test will use the regular mechanism (delegateExecution.getProcessEngine().getRuntimeService())
-     * to obtain the {@link RuntimeService} to start a new process.
+     * This test will use the regular mechanism
+     * (delegateExecution.getProcessEngine().getRuntimeService()) to obtain the
+     * {@link RuntimeService} to start a new process.
      */
     @Deployment
     public void testUseRuntimeServiceNotInjectedInServiceTask() {
@@ -56,7 +57,8 @@ public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase 
     }
 
     /**
-     * This test will use the dependency injection of Spring to inject the runtime service in the Java delegate.
+     * This test will use the dependency injection of Spring to inject the
+     * runtime service in the Java delegate.
      */
     @Deployment
     public void testUseInjectedRuntimeServiceInServiceTask() {
@@ -95,6 +97,5 @@ public class UseActivitiServiceInServiceTaskTest extends SpringActivitiTestCase 
         // Starting the process should cause a rollback of both processes
         assertEquals(0, runtimeService.createProcessInstanceQuery().count());
     }
-
 
 }

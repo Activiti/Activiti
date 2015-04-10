@@ -15,14 +15,13 @@ package org.activiti.examples.bpmn.tasklistener;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 
-
 /**
  * @author Joram Barrez
  */
 public class CandidateGroupAssignment implements TaskListener {
-  
-  public void notify(DelegateTask delegateTask) {
-    delegateTask.addCandidateGroup("management");
-  }
+
+    public void notify(DelegateTask delegateTask) {
+        delegateTask.addCandidateGroup("management");
+    }
 
 }

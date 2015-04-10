@@ -25,22 +25,22 @@ import com.vaadin.ui.TextField;
  */
 public class StringFormPropertyRenderer extends AbstractFormPropertyRenderer {
 
-  public StringFormPropertyRenderer() {
-    super(StringFormType.class);
-  }
-
-  @Override
-  public Field getPropertyField(FormProperty formProperty) {
-    TextField textField = new TextField(getPropertyLabel(formProperty));
-    textField.setRequired(formProperty.isRequired());
-    textField.setEnabled(formProperty.isWritable());
-    textField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
-
-    if (formProperty.getValue() != null) {
-      textField.setValue(formProperty.getValue());
+    public StringFormPropertyRenderer() {
+        super(StringFormType.class);
     }
 
-    return textField;
-  }
+    @Override
+    public Field getPropertyField(FormProperty formProperty) {
+        TextField textField = new TextField(getPropertyLabel(formProperty));
+        textField.setRequired(formProperty.isRequired());
+        textField.setEnabled(formProperty.isWritable());
+        textField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
+
+        if (formProperty.getValue() != null) {
+            textField.setValue(formProperty.getValue());
+        }
+
+        return textField;
+    }
 
 }

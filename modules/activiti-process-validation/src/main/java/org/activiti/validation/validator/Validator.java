@@ -21,7 +21,7 @@ import org.activiti.validation.ValidationError;
  * @author jbarrez
  */
 public interface Validator {
-	
-	void validate(BpmnModel bpmnModel, List<ValidationError> errors);
+
+    void validate(BpmnModel bpmnModel, List<ValidationError> errors);
 
 }

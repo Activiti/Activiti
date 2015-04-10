@@ -20,41 +20,42 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 
 /**
- * Simple {@link ExecutionListener} that sets the current activity id and name attributes on the execution.
+ * Simple {@link ExecutionListener} that sets the current activity id and name
+ * attributes on the execution.
  * 
  * @author Tijs Rademakers
  */
 public class CurrentActivityExecutionListener implements ExecutionListener {
 
-  private static List<CurrentActivity> currentActivities = new ArrayList<CurrentActivity>();
+    private static List<CurrentActivity> currentActivities = new ArrayList<CurrentActivity>();
 
-  public static class CurrentActivity {
-    private final String activityId;
-    private final String activityName;
-    
-    public CurrentActivity(String activityId, String activityName) {
-      this.activityId = activityId;
-      this.activityName = activityName;
+    public static class CurrentActivity {
+        private final String activityId;
+        private final String activityName;
+
+        public CurrentActivity(String activityId, String activityName) {
+            this.activityId = activityId;
+            this.activityName = activityName;
+        }
+
+        public String getActivityId() {
+            return activityId;
+        }
+
+        public String getActivityName() {
+            return activityName;
+        }
     }
 
-    public String getActivityId() {
-      return activityId;
+    public void notify(DelegateExecution execution) {
+        currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), execution.getCurrentActivityName()));
     }
-    
-    public String getActivityName() {
-      return activityName;
-    }
-  }
-  
-  public void notify(DelegateExecution execution) {
-    currentActivities.add(new CurrentActivity(execution.getCurrentActivityId(), execution.getCurrentActivityName()));
-  }
 
-  public static List<CurrentActivity> getCurrentActivities() {
-    return currentActivities;
-  }
-  
-  public static void clear() {
-    currentActivities.clear();
-  }
+    public static List<CurrentActivity> getCurrentActivities() {
+        return currentActivities;
+    }
+
+    public static void clear() {
+        currentActivities.clear();
+    }
 }

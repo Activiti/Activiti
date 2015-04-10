@@ -22,31 +22,28 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLink;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class GetIdentityLinksForProcessDefinitionCmd implements Command<List<IdentityLink>>, Serializable {
-  
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
 
-  public GetIdentityLinksForProcessDefinitionCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-  
-  @SuppressWarnings({"unchecked", "rawtypes"})
-  public List<IdentityLink> execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
-        .getProcessDefinitionEntityManager()
-        .findProcessDefinitionById(processDefinitionId);
-      
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
+
+    public GetIdentityLinksForProcessDefinitionCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
-    
-    List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
-    return identityLinks;
-  }
-  
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public List<IdentityLink> execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findProcessDefinitionById(processDefinitionId);
+
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
+        }
+
+        List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
+        return identityLinks;
+    }
+
 }

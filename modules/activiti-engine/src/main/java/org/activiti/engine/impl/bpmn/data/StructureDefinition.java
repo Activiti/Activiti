@@ -19,15 +19,15 @@ package org.activiti.engine.impl.bpmn.data;
  */
 public interface StructureDefinition {
 
-  /**
-   * Obtains the id of this structure
-   * 
-   * @return the id of this structure
-   */
-  String getId();
+    /**
+     * Obtains the id of this structure
+     * 
+     * @return the id of this structure
+     */
+    String getId();
 
-  /**
-   * @return a new instance of this structure definition
-   */
-  StructureInstance createInstance();
+    /**
+     * @return a new instance of this structure definition
+     */
+    StructureInstance createInstance();
 }

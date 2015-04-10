@@ -22,34 +22,30 @@ import org.activiti5.engine.identity.User;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public class SetUserPictureCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String userId;
-  protected Picture picture;
-  
-  
-  public SetUserPictureCmd(String userId, Picture picture) {
-    this.userId = userId;
-    this.picture = picture;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String userId;
+    protected Picture picture;
 
-  public Object execute(CommandContext commandContext) {
-    if(userId == null) {
-      throw new ActivitiIllegalArgumentException("userId is null");
+    public SetUserPictureCmd(String userId, Picture picture) {
+        this.userId = userId;
+        this.picture = picture;
     }
-    User user = commandContext
-      .getUserIdentityManager()
-      .findUserById(userId);
-    if(user == null) {
-      throw new ActivitiObjectNotFoundException("user "+userId+" doesn't exist", User.class);
+
+    public Object execute(CommandContext commandContext) {
+        if (userId == null) {
+            throw new ActivitiIllegalArgumentException("userId is null");
+        }
+        User user = commandContext.getUserIdentityManager().findUserById(userId);
+        if (user == null) {
+            throw new ActivitiObjectNotFoundException("user " + userId + " doesn't exist", User.class);
+        }
+        commandContext.getUserIdentityManager().setUserPicture(userId, picture);
+        return null;
     }
-    commandContext.getUserIdentityManager().setUserPicture(userId, picture);
-    return null;
-  }
 
 }

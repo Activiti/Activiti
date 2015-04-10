@@ -19,31 +19,30 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.activiti.engine.task.Task;
 
-
 /**
  * @author Tom Baeyens
  */
 public class JsonTaskConverter extends JsonObjectConverter<Task> {
 
-  public Task toObject(Reader reader) {
-    throw new ActivitiException("not yet implemented");
-  }
+    public Task toObject(Reader reader) {
+        throw new ActivitiException("not yet implemented");
+    }
 
-  public JSONObject toJsonObject(Task task) {
-    TaskEntity taskEntity = (TaskEntity) task;
-    JSONObject jsonObject = new JSONObject();
-    jsonObject.put("id", taskEntity.getId());
-    jsonObject.put("dbversion", taskEntity.getRevision());
-    jsonObject.put("assignee", taskEntity.getAssignee());
-    jsonObject.put("name", taskEntity.getName());
-    jsonObject.put("priority", taskEntity.getPriority());      
-    jsonObject.put("createTime", taskEntity.getCreateTime());
-    if (taskEntity.getExecutionId()!=null) {
-      jsonObject.put("activityInstance", taskEntity.getExecutionId());
+    public JSONObject toJsonObject(Task task) {
+        TaskEntity taskEntity = (TaskEntity) task;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("id", taskEntity.getId());
+        jsonObject.put("dbversion", taskEntity.getRevision());
+        jsonObject.put("assignee", taskEntity.getAssignee());
+        jsonObject.put("name", taskEntity.getName());
+        jsonObject.put("priority", taskEntity.getPriority());
+        jsonObject.put("createTime", taskEntity.getCreateTime());
+        if (taskEntity.getExecutionId() != null) {
+            jsonObject.put("activityInstance", taskEntity.getExecutionId());
+        }
+        if (taskEntity.getProcessDefinitionId() != null) {
+            jsonObject.put("processDefinition", taskEntity.getProcessDefinitionId());
+        }
+        return jsonObject;
     }
-    if (taskEntity.getProcessDefinitionId()!=null) {
-      jsonObject.put("processDefinition", taskEntity.getProcessDefinitionId());
-    }
-    return jsonObject;
-  }
 }

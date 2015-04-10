@@ -17,22 +17,20 @@ import org.activiti.explorer.ui.custom.PopupWindow;
 
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * @author Joram Barrez
  */
 public class ProfilePopupWindow extends PopupWindow {
 
-  private static final long serialVersionUID = 3129077881658239761L;
-  
-  public ProfilePopupWindow(String userId) {
-    addStyleName(Reindeer.WINDOW_LIGHT);
-    setModal(true);
-    setHeight("80%");
-    setWidth("50%");
-    center();
-    addComponent(new ProfilePanel(userId));
-  }
-  
+    private static final long serialVersionUID = 3129077881658239761L;
+
+    public ProfilePopupWindow(String userId) {
+        addStyleName(Reindeer.WINDOW_LIGHT);
+        setModal(true);
+        setHeight("80%");
+        setWidth("50%");
+        center();
+        addComponent(new ProfilePanel(userId));
+    }
 
 }

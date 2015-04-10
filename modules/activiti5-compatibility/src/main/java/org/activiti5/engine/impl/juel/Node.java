@@ -12,22 +12,22 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.activiti5.engine.impl.juel;
 
 /**
  * Basic node interface.
- *
+ * 
  * @author Christoph Beck
  */
 public interface Node {
-	/**
-	 * Get the node's number of children.
-	 */
-	public int getCardinality();
-	
-	/**
-	 * Get i'th child
-	 */
-	public Node getChild(int i);
+    /**
+     * Get the node's number of children.
+     */
+    public int getCardinality();
+
+    /**
+     * Get i'th child
+     */
+    public Node getChild(int i);
 }

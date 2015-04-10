@@ -24,48 +24,48 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class ChartComponent extends VerticalLayout {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public ChartComponent(String title) {
+    public ChartComponent(String title) {
 
-    if (title != null) {
-      Label label = new Label(title);
-      label.addStyleName(Reindeer.LABEL_H2);
-      addComponent(label);
+        if (title != null) {
+            Label label = new Label(title);
+            label.addStyleName(Reindeer.LABEL_H2);
+            addComponent(label);
+        }
+
     }
 
-  }
+    public void addChart(String description, Component chart, String errorMessage) {
 
-  public void addChart(String description, Component chart, String errorMessage) {
+        addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+        addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
 
-    addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
-    addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+        // Description
+        if (description != null) {
+            Label label = new Label(description);
+            label.addStyleName(Reindeer.LABEL_H2);
+            addComponent(label);
 
-    // Description
-    if (description != null) {
-      Label label = new Label(description);
-      label.addStyleName(Reindeer.LABEL_H2);
-      addComponent(label);
+            addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+        }
 
-      addComponent(new Label("&nbsp;", Label.CONTENT_XHTML));
+        // Chart
+        if (chart != null) {
+            if (chart instanceof DCharts) {
+                // DCharts doesn't know how to size itself
+                chart.setWidth(600, UNITS_PIXELS);
+                chart.setHeight(450, UNITS_PIXELS);
+                ((DCharts) chart).show();
+            }
+            addComponent(chart);
+        }
+
+        // Error message
+        if (errorMessage != null) {
+            Label errorLabel = new Label(errorMessage);
+            addComponent(errorLabel);
+        }
     }
-
-    // Chart
-    if (chart != null) {
-      if (chart instanceof DCharts) {
-        // DCharts doesn't know how to size itself
-        chart.setWidth(600, UNITS_PIXELS);
-        chart.setHeight(450, UNITS_PIXELS);
-        ((DCharts) chart).show();
-      }
-      addComponent(chart);
-    }
-
-    // Error message
-    if (errorMessage != null) {
-      Label errorLabel = new Label(errorMessage);
-      addComponent(errorLabel);
-    }
-  }
 
 }

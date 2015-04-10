@@ -16,23 +16,22 @@ package org.activiti.explorer.util.time.timeunit;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.util.time.TimeUnit;
 
-
 /**
  * @author Frederik Heremans
  */
 public class WeekTimeUnit implements TimeUnit {
 
-  private static final Long MILLIS_PER_WEEK = 604800000L;
-  
-  public Long getNumberOfMillis() {
-    return MILLIS_PER_WEEK;
-  }
+    private static final Long MILLIS_PER_WEEK = 604800000L;
 
-  public String getMessageKey(Long numberOfUnits) {
-    if(numberOfUnits == 1) {
-      return Messages.TIME_UNIT_WEEK;
-    } else {
-      return Messages.TIME_UNIT_WEEKS;
+    public Long getNumberOfMillis() {
+        return MILLIS_PER_WEEK;
     }
-  }
+
+    public String getMessageKey(Long numberOfUnits) {
+        if (numberOfUnits == 1) {
+            return Messages.TIME_UNIT_WEEK;
+        } else {
+            return Messages.TIME_UNIT_WEEKS;
+        }
+    }
 }

@@ -21,62 +21,62 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 /**
- * A form-property with a value that is represented as single item selected
- * from a list of possible values.
- *  
+ * A form-property with a value that is represented as single item selected from
+ * a list of possible values.
+ * 
  * @author Frederik Heremans
  */
 @JsonTypeName("list")
 public class ListPropertyDefinition extends FormPropertyDefinition {
 
-	protected List<ListPropertyEntry> entries = new ArrayList<ListPropertyEntry>();
-	
-	public void setEntries(List<ListPropertyEntry> entries) {
-	  this.entries = entries;
-  }
-	
-	@JsonSerialize(contentAs=ListPropertyEntry.class)
-	public List<ListPropertyEntry> getEntries() {
-	  return entries;
-  }
-	
-	public void addEntry(ListPropertyEntry entry) {
-		entries.add(entry);
-	}
-	
-	@Override
-	public FormPropertyDefinition clone() {
-		ListPropertyDefinition clone = new ListPropertyDefinition();
-		clone.setValues(this);
-	  return clone;
-	}
-	
-	@Override
-	public void setValues(FormPropertyDefinition otherDefinition) {
-		if(!(otherDefinition instanceof ListPropertyDefinition)) {
-			throw new SimpleWorkflowException("An instance of ListPropertyDefinition is required to set values");
-		}
-		
-		ListPropertyDefinition datePropertyDefinition = (ListPropertyDefinition) otherDefinition;
-		setName(datePropertyDefinition.getName());
-		setMandatory(datePropertyDefinition.isMandatory());
-		setWritable(datePropertyDefinition.isWritable());
-		
-		// Copy the entries from the other definition
-		if(entries == null) {
-			entries = new ArrayList<ListPropertyEntry>();
-		} else {
-			entries.clear();
-		}
-		
-		if(datePropertyDefinition.getEntries() != null) {
-			ListPropertyEntry newEntry = null;
-			for(ListPropertyEntry entry : datePropertyDefinition.getEntries()) {
-				newEntry = new ListPropertyEntry(entry.getValue(), entry.getName());
-				entries.add(newEntry);
-			}
-		}
-		
-		setParameters(otherDefinition.cloneParameters());
-	}
+    protected List<ListPropertyEntry> entries = new ArrayList<ListPropertyEntry>();
+
+    public void setEntries(List<ListPropertyEntry> entries) {
+        this.entries = entries;
+    }
+
+    @JsonSerialize(contentAs = ListPropertyEntry.class)
+    public List<ListPropertyEntry> getEntries() {
+        return entries;
+    }
+
+    public void addEntry(ListPropertyEntry entry) {
+        entries.add(entry);
+    }
+
+    @Override
+    public FormPropertyDefinition clone() {
+        ListPropertyDefinition clone = new ListPropertyDefinition();
+        clone.setValues(this);
+        return clone;
+    }
+
+    @Override
+    public void setValues(FormPropertyDefinition otherDefinition) {
+        if (!(otherDefinition instanceof ListPropertyDefinition)) {
+            throw new SimpleWorkflowException("An instance of ListPropertyDefinition is required to set values");
+        }
+
+        ListPropertyDefinition datePropertyDefinition = (ListPropertyDefinition) otherDefinition;
+        setName(datePropertyDefinition.getName());
+        setMandatory(datePropertyDefinition.isMandatory());
+        setWritable(datePropertyDefinition.isWritable());
+
+        // Copy the entries from the other definition
+        if (entries == null) {
+            entries = new ArrayList<ListPropertyEntry>();
+        } else {
+            entries.clear();
+        }
+
+        if (datePropertyDefinition.getEntries() != null) {
+            ListPropertyEntry newEntry = null;
+            for (ListPropertyEntry entry : datePropertyDefinition.getEntries()) {
+                newEntry = new ListPropertyEntry(entry.getValue(), entry.getName());
+                entries.add(newEntry);
+            }
+        }
+
+        setParameters(otherDefinition.cloneParameters());
+    }
 }

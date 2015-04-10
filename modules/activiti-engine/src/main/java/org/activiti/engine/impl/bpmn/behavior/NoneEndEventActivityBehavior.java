@@ -15,14 +15,13 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Joram Barrez
  */
 public class NoneEndEventActivityBehavior extends FlowNodeActivityBehavior {
-  
-  public void execute(ActivityExecution execution) {
-    Context.getAgenda().planEndExecutionOperation(execution);
-  }
+
+    public void execute(ActivityExecution execution) {
+        Context.getAgenda().planEndExecutionOperation(execution);
+    }
 
 }

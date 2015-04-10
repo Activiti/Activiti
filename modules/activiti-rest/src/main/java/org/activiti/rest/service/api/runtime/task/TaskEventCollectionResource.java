@@ -24,16 +24,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class TaskEventCollectionResource extends TaskBaseResource {
 
-  @RequestMapping(value="/runtime/tasks/{taskId}/events", method = RequestMethod.GET, produces="application/json")
-  public List<EventResponse> getEvents(@PathVariable String taskId, HttpServletRequest request) {
-    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
-    return restResponseFactory.createEventResponseList(taskService.getTaskEvents(task.getId()));
-  }
+    @RequestMapping(value = "/runtime/tasks/{taskId}/events", method = RequestMethod.GET, produces = "application/json")
+    public List<EventResponse> getEvents(@PathVariable String taskId, HttpServletRequest request) {
+        HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+        return restResponseFactory.createEventResponseList(taskService.getTaskEvents(task.getId()));
+    }
 }

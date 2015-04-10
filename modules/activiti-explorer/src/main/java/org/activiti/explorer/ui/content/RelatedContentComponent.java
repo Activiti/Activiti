@@ -15,15 +15,14 @@ package org.activiti.explorer.ui.content;
 
 import org.activiti.engine.task.Attachment;
 
-
 /**
  * @author Frederik Heremans
  */
 public interface RelatedContentComponent {
 
-  /**
-   * Show the detail of the given attachment.
-   */
-  void showAttachmentDetail(Attachment attachment);
-  
+    /**
+     * Show the detail of the given attachment.
+     */
+    void showAttachmentDetail(Attachment attachment);
+
 }

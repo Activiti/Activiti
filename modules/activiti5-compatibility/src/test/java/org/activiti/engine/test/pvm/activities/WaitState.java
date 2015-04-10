@@ -17,17 +17,16 @@ import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
 
-
 /**
  * @author Tom Baeyens
  */
 public class WaitState implements SignallableActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
-  }
+    public void execute(ActivityExecution execution) throws Exception {
+    }
 
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
-    execution.take(transition);
-  }
+    public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+        PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
+        execution.take(transition);
+    }
 }

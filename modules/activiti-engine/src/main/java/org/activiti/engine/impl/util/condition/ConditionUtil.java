@@ -13,24 +13,23 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ConditionUtil {
 
-	public static boolean hasTrueCondition(SequenceFlow sequenceFlow, ActivityExecution execution) {
-		String conditionExpression = sequenceFlow.getConditionExpression();
-		if (StringUtils.isNotEmpty(conditionExpression)) {
-  		
-  		// TODO: should be done at parse time?
-  		Expression expression = Context.getProcessEngineConfiguration().getExpressionManager()
-  				.createExpression(sequenceFlow.getConditionExpression());
-  		Condition condition = new UelExpressionCondition(expression);
-  		if (condition == null || (condition != null && condition.evaluate(execution)) ) {
-  			return true;
-  		}
-  		
-  		return false;
-  		
-  	} else {
-  		return true;
-  	}
-		
-	}
-	
+    public static boolean hasTrueCondition(SequenceFlow sequenceFlow, ActivityExecution execution) {
+        String conditionExpression = sequenceFlow.getConditionExpression();
+        if (StringUtils.isNotEmpty(conditionExpression)) {
+
+            // TODO: should be done at parse time?
+            Expression expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(sequenceFlow.getConditionExpression());
+            Condition condition = new UelExpressionCondition(expression);
+            if (condition == null || (condition != null && condition.evaluate(execution))) {
+                return true;
+            }
+
+            return false;
+
+        } else {
+            return true;
+        }
+
+    }
+
 }

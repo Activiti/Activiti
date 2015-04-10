@@ -17,13 +17,12 @@ import org.activiti5.engine.delegate.Expression;
 import org.activiti5.engine.form.TaskFormData;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface TaskFormHandler extends FormHandler {
 
-  TaskFormData createTaskForm(TaskEntity task);
-  
-  Expression getFormKey();
+    TaskFormData createTaskForm(TaskEntity task);
+
+    Expression getFormKey();
 }

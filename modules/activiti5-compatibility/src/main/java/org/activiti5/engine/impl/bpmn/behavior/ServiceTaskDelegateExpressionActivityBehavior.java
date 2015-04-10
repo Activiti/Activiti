@@ -29,10 +29,9 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
 
-
 /**
- * {@link ActivityBehavior} used when 'delegateExpression' is used
- * for a serviceTask.
+ * {@link ActivityBehavior} used when 'delegateExpression' is used for a
+ * serviceTask.
  * 
  * @author Joram Barrez
  * @author Josh Long
@@ -40,78 +39,77 @@ import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
  * @author Falko Menge
  */
 public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityBehavior {
-  
-  protected Expression expression;
-  protected Expression skipExpression;
-  private final List<FieldDeclaration> fieldDeclarations;
 
-  public ServiceTaskDelegateExpressionActivityBehavior(Expression expression, Expression skipExpression, List<FieldDeclaration> fieldDeclarations) {
-    this.expression = expression;
-    this.skipExpression = skipExpression;
-    this.fieldDeclarations = fieldDeclarations;
-  }
+    protected Expression expression;
+    protected Expression skipExpression;
+    private final List<FieldDeclaration> fieldDeclarations;
 
-  @Override
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    Object delegate = expression.getValue(execution);
-    if( delegate instanceof SignallableActivityBehavior){
-      ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-      ((SignallableActivityBehavior) delegate).signal( execution , signalName , signalData);
+    public ServiceTaskDelegateExpressionActivityBehavior(Expression expression, Expression skipExpression, List<FieldDeclaration> fieldDeclarations) {
+        this.expression = expression;
+        this.skipExpression = skipExpression;
+        this.fieldDeclarations = fieldDeclarations;
     }
-  }
 
-	public void execute(ActivityExecution execution) throws Exception {
-
-    try {
-      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression); 
-      if (!isSkipExpressionEnabled || 
-              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
-        
-        // Note: we can't cache the result of the expression, because the
-        // execution can change: eg.
-        // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
+    @Override
+    public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
         Object delegate = expression.getValue(execution);
-        ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-
-        if (delegate instanceof ActivityBehavior) {
-
-          if(delegate instanceof AbstractBpmnActivityBehavior){
-            ((AbstractBpmnActivityBehavior) delegate).setMultiInstanceActivityBehavior(getMultiInstanceActivityBehavior());
-          }
-
-          Context.getProcessEngineConfiguration().getDelegateInterceptor()
-                  .handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
-
-        } else if (delegate instanceof JavaDelegate) {
-          Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
-          leave(execution);
-
-        } else {
-          throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did neither resolve to an implementation of "
-                  + ActivityBehavior.class + " nor " + JavaDelegate.class);
+        if (delegate instanceof SignallableActivityBehavior) {
+            ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
+            ((SignallableActivityBehavior) delegate).signal(execution, signalName, signalData);
         }
-      } else {
-        leave(execution);
-      }
-    } catch (Exception exc) {
-
-      Throwable cause = exc;
-      BpmnError error = null;
-      while (cause != null) {
-        if (cause instanceof BpmnError) {
-          error = (BpmnError) cause;
-          break;
-        }
-        cause = cause.getCause();
-      }
-
-      if (error != null) {
-        ErrorPropagation.propagateError(error, execution);
-      } else {
-        throw exc;
-      }
-
     }
-  }
+
+    public void execute(ActivityExecution execution) throws Exception {
+
+        try {
+            boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+            if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+
+                // Note: we can't cache the result of the expression, because
+                // the
+                // execution can change: eg.
+                // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
+                Object delegate = expression.getValue(execution);
+                ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
+
+                if (delegate instanceof ActivityBehavior) {
+
+                    if (delegate instanceof AbstractBpmnActivityBehavior) {
+                        ((AbstractBpmnActivityBehavior) delegate).setMultiInstanceActivityBehavior(getMultiInstanceActivityBehavior());
+                    }
+
+                    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
+
+                } else if (delegate instanceof JavaDelegate) {
+                    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
+                    leave(execution);
+
+                } else {
+                    throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did neither resolve to an implementation of " + ActivityBehavior.class + " nor "
+                            + JavaDelegate.class);
+                }
+            } else {
+                leave(execution);
+            }
+        } catch (Exception exc) {
+
+            Throwable cause = exc;
+            BpmnError error = null;
+            while (cause != null) {
+                if (cause instanceof BpmnError) {
+                    error = (BpmnError) cause;
+                    break;
+                }
+                cause = cause.getCause();
+            }
+
+            if (error != null) {
+                ErrorPropagation.propagateError(error, execution);
+            } else {
+                throw exc;
+            }
+
+        }
+    }
 
 }

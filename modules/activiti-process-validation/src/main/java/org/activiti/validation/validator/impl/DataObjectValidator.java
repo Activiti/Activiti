@@ -29,24 +29,24 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DataObjectValidator extends ProcessLevelValidator {
 
-	@Override
-	protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-		
-		// Gather data objects
-		List<ValuedDataObject> allDataObjects = new ArrayList<ValuedDataObject>();
-		allDataObjects.addAll(process.getDataObjects());
-		List<SubProcess> subProcesses = process.findFlowElementsOfType(SubProcess.class, true);
-		for (SubProcess subProcess : subProcesses) {
-			allDataObjects.addAll(subProcess.getDataObjects());
-		}
-		
-		// Validate
-		for (ValuedDataObject dataObject : allDataObjects) {
-			if (StringUtils.isEmpty(dataObject.getName())) {
-				addError(errors, Problems.DATA_OBJECT_MISSING_NAME, process, dataObject, "Name is mandatory for a data object");
-			}
-		}
-	
-	}
+    @Override
+    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+
+        // Gather data objects
+        List<ValuedDataObject> allDataObjects = new ArrayList<ValuedDataObject>();
+        allDataObjects.addAll(process.getDataObjects());
+        List<SubProcess> subProcesses = process.findFlowElementsOfType(SubProcess.class, true);
+        for (SubProcess subProcess : subProcesses) {
+            allDataObjects.addAll(subProcess.getDataObjects());
+        }
+
+        // Validate
+        for (ValuedDataObject dataObject : allDataObjects) {
+            if (StringUtils.isEmpty(dataObject.getName())) {
+                addError(errors, Problems.DATA_OBJECT_MISSING_NAME, process, dataObject, "Name is mandatory for a data object");
+            }
+        }
+
+    }
 
 }

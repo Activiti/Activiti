@@ -19,7 +19,6 @@ import java.lang.annotation.RetentionPolicy;
 import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
-
 /**
  * Annotation for qualifying injection points such that process variables are
  * injected. Requires a process instance to be managed
@@ -32,7 +31,8 @@ import javax.inject.Qualifier;
  * <p />
  * 
  * Can also be used to declare bean-properties to hold process variables in
- * combination with the {@link StartProcess} annotation: 
+ * combination with the {@link StartProcess} annotation:
+ * 
  * <pre>
  * {@code @ProcessVariable }
  * String accountNumber;  // will be added as a process 
@@ -41,7 +41,7 @@ import javax.inject.Qualifier;
  * {@code @StartProcess("billingProcess")}
  * public void startBillingProcess() {
  *  ...
- * } 
+ * }
  * </pre>
  * 
  * @author Daniel Meyer
@@ -51,11 +51,11 @@ import javax.inject.Qualifier;
 @Documented
 public @interface ProcessVariable {
 
-  /**
-   * The name of the process variable to look up. Defaults to the name of the
-   * annotated field or parameter
-   */
-  @Nonbinding
-  public String value() default "";
+    /**
+     * The name of the process variable to look up. Defaults to the name of the
+     * annotated field or parameter
+     */
+    @Nonbinding
+    public String value() default "";
 
 }

@@ -17,35 +17,34 @@ import org.activiti.explorer.DefaultViewManager;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.management.processinstance.ProcessInstancePage;
 
-
 /**
  * @author Joram Barrez
  */
 public class AlfrescoViewManager extends DefaultViewManager {
-  
-  public void showDefaultPage() {
-    mainWindow.showDefaultContent();
-    showDeploymentPage();
-  }
-  
-  @Override
-  public void showDeployedProcessDefinitionPage() {
-    switchView(new AlfrescoProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, AlfrescoManagementMenuBar.ENTRY_PROCESS_DEFINITIONS);
-  }
-  
-  @Override
-  public void showDeployedProcessDefinitionPage(String processDefinitionId) {
-    switchView(new AlfrescoProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, AlfrescoManagementMenuBar.ENTRY_PROCESS_DEFINITIONS);
-  }
-  
-  @Override
-  public void showProcessInstancePage() {
-    switchView(new ProcessInstancePage(), ViewManager.MAIN_NAVIGATION_MANAGE, AlfrescoManagementMenuBar.ENTRY_PROCESS_INSTANCES);
-  }
-  
-  @Override
-  public void showProcessInstancePage(String processInstanceId) {
-    switchView(new ProcessInstancePage(), ViewManager.MAIN_NAVIGATION_MANAGE, AlfrescoManagementMenuBar.ENTRY_PROCESS_INSTANCES);
-  }
-  
+
+    public void showDefaultPage() {
+        mainWindow.showDefaultContent();
+        showDeploymentPage();
+    }
+
+    @Override
+    public void showDeployedProcessDefinitionPage() {
+        switchView(new AlfrescoProcessDefinitionPage(), ViewManager.MAIN_NAVIGATION_PROCESS, AlfrescoManagementMenuBar.ENTRY_PROCESS_DEFINITIONS);
+    }
+
+    @Override
+    public void showDeployedProcessDefinitionPage(String processDefinitionId) {
+        switchView(new AlfrescoProcessDefinitionPage(processDefinitionId), ViewManager.MAIN_NAVIGATION_PROCESS, AlfrescoManagementMenuBar.ENTRY_PROCESS_DEFINITIONS);
+    }
+
+    @Override
+    public void showProcessInstancePage() {
+        switchView(new ProcessInstancePage(), ViewManager.MAIN_NAVIGATION_MANAGE, AlfrescoManagementMenuBar.ENTRY_PROCESS_INSTANCES);
+    }
+
+    @Override
+    public void showProcessInstancePage(String processInstanceId) {
+        switchView(new ProcessInstancePage(), ViewManager.MAIN_NAVIGATION_MANAGE, AlfrescoManagementMenuBar.ENTRY_PROCESS_INSTANCES);
+    }
+
 }

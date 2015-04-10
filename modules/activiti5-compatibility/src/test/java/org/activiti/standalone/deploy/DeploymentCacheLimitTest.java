@@ -23,37 +23,33 @@ import org.activiti5.engine.repository.Deployment;
  * @author Joram Barrez
  */
 public class DeploymentCacheLimitTest extends ResourceActivitiTestCase {
-  
-  public DeploymentCacheLimitTest() {
-    super("org/activiti/standalone/deploy/deployment.cache.limit.test.activiti.cfg.xml");
-  }
 
-  public void testDeploymentCacheLimit() {
-    int processDefinitionCacheLimit = 3; // This is set in the configuration above
-    
-    DefaultDeploymentCache<ProcessDefinitionEntity> processDefinitionCache = (DefaultDeploymentCache<ProcessDefinitionEntity>) 
-              processEngineConfiguration.getProcessDefinitionCache();
-    assertEquals(0, processDefinitionCache.size());
-    
-    
-    String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile(
-            "/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
-    for (int i = 1; i <= 5; i++) {
-      repositoryService.createDeployment()
-              .addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i))
-              .deploy();
-      
-      if (i < processDefinitionCacheLimit) {
-        assertEquals(i, processDefinitionCache.size());
-      } else {
-        assertEquals(processDefinitionCacheLimit, processDefinitionCache.size());
-      }
+    public DeploymentCacheLimitTest() {
+        super("org/activiti/standalone/deploy/deployment.cache.limit.test.activiti.cfg.xml");
     }
-    
-    // Cleanup
-    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-      repositoryService.deleteDeployment(deployment.getId(), true);
+
+    public void testDeploymentCacheLimit() {
+        int processDefinitionCacheLimit = 3; // This is set in the configuration
+                                             // above
+
+        DefaultDeploymentCache<ProcessDefinitionEntity> processDefinitionCache = (DefaultDeploymentCache<ProcessDefinitionEntity>) processEngineConfiguration.getProcessDefinitionCache();
+        assertEquals(0, processDefinitionCache.size());
+
+        String processDefinitionTemplate = DeploymentCacheTestUtil.readTemplateFile("/org/activiti/standalone/deploy/deploymentCacheTest.bpmn20.xml");
+        for (int i = 1; i <= 5; i++) {
+            repositoryService.createDeployment().addString("Process " + i + ".bpmn20.xml", MessageFormat.format(processDefinitionTemplate, i)).deploy();
+
+            if (i < processDefinitionCacheLimit) {
+                assertEquals(i, processDefinitionCache.size());
+            } else {
+                assertEquals(processDefinitionCacheLimit, processDefinitionCache.size());
+            }
+        }
+
+        // Cleanup
+        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+            repositoryService.deleteDeployment(deployment.getId(), true);
+        }
     }
-  }
-  
+
 }

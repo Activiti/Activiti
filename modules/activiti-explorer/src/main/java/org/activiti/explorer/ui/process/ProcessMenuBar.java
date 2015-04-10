@@ -20,48 +20,46 @@ import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.custom.ToolbarEntry.ToolbarCommand;
 
-
-
 /**
  * @author Joram Barrez
  */
 public class ProcessMenuBar extends ToolBar {
-  
-  private static final long serialVersionUID = 1L;
-  
-  public static final String ENTRY_MY_PROCESS_INSTANCES = "myProcessInstances";
-  public static final String DEPLOYED_PROCESS_DEFINITIONS = "deployedProcessDefinitions";
-  public static final String EDITOR_PROCESS_DEFINITIONS = "editorProcessDefinitions";
 
-  protected I18nManager i18nManager;
-  protected ViewManager viewManager;
-  
-  public ProcessMenuBar() {
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.viewManager = ExplorerApp.get().getViewManager();
-    
-    init();
-  }
-  
-  protected void init() {
-    setWidth("100%");
+    private static final long serialVersionUID = 1L;
 
-    addToolbarEntry(ENTRY_MY_PROCESS_INSTANCES, i18nManager.getMessage(Messages.PROCESS_MENU_MY_INSTANCES), new ToolbarCommand() {
-      public void toolBarItemSelected() {
-        viewManager.showMyProcessInstancesPage();
-      }
-    });
-    
-    addToolbarEntry(DEPLOYED_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEPLOYED_DEFINITIONS), new ToolbarCommand() {
-      public void toolBarItemSelected() {
-        viewManager.showDeployedProcessDefinitionPage();
-      }
-    });
-    
-    addToolbarEntry(EDITOR_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_EDITOR_DEFINITIONS), new ToolbarCommand() {
-      public void toolBarItemSelected() {
-        viewManager.showEditorProcessDefinitionPage();
-      }
-    });
-  }
+    public static final String ENTRY_MY_PROCESS_INSTANCES = "myProcessInstances";
+    public static final String DEPLOYED_PROCESS_DEFINITIONS = "deployedProcessDefinitions";
+    public static final String EDITOR_PROCESS_DEFINITIONS = "editorProcessDefinitions";
+
+    protected I18nManager i18nManager;
+    protected ViewManager viewManager;
+
+    public ProcessMenuBar() {
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+        this.viewManager = ExplorerApp.get().getViewManager();
+
+        init();
+    }
+
+    protected void init() {
+        setWidth("100%");
+
+        addToolbarEntry(ENTRY_MY_PROCESS_INSTANCES, i18nManager.getMessage(Messages.PROCESS_MENU_MY_INSTANCES), new ToolbarCommand() {
+            public void toolBarItemSelected() {
+                viewManager.showMyProcessInstancesPage();
+            }
+        });
+
+        addToolbarEntry(DEPLOYED_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_DEPLOYED_DEFINITIONS), new ToolbarCommand() {
+            public void toolBarItemSelected() {
+                viewManager.showDeployedProcessDefinitionPage();
+            }
+        });
+
+        addToolbarEntry(EDITOR_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.PROCESS_MENU_EDITOR_DEFINITIONS), new ToolbarCommand() {
+            public void toolBarItemSelected() {
+                viewManager.showEditorProcessDefinitionPage();
+            }
+        });
+    }
 }

@@ -18,54 +18,53 @@ import org.activiti.workflow.simple.exception.SimpleWorkflowException;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 
-
 /**
  * @author Joram Barrez
  */
 @JsonTypeName("script-step")
 public class ScriptStepDefinition extends AbstractNamedStepDefinition {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String script;
-  protected String scriptLanguage;
+    private static final long serialVersionUID = 1L;
 
-  public String getScript() {
-    return script;
-  }
+    protected String script;
+    protected String scriptLanguage;
 
-  public void setScript(String script) {
-    this.script = script;
-  }
-
-  public String getScriptLanguage() {
-    return scriptLanguage;
-  }
-
-  public void setScriptLanguage(String scriptLanguage) {
-    this.scriptLanguage = scriptLanguage;
-  }
-  
-  @Override
-  public StepDefinition clone() {
-    ScriptStepDefinition clone = new ScriptStepDefinition();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  @Override
-  public void setValues(StepDefinition otherDefinition) {
-    if(!(otherDefinition instanceof ScriptStepDefinition)) {
-      throw new SimpleWorkflowException("An instance of ScriptStepDefinition is required to set values");
+    public String getScript() {
+        return script;
     }
-    
-    ScriptStepDefinition stepDefinition = (ScriptStepDefinition) otherDefinition;
-    setId(stepDefinition.getId());
-    setName(stepDefinition.getName());
-    setScript(stepDefinition.getScript());
-    setScriptLanguage(stepDefinition.getScriptLanguage());
-    setStartsWithPrevious(stepDefinition.isStartsWithPrevious());
-    
-    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
-  }
+
+    public void setScript(String script) {
+        this.script = script;
+    }
+
+    public String getScriptLanguage() {
+        return scriptLanguage;
+    }
+
+    public void setScriptLanguage(String scriptLanguage) {
+        this.scriptLanguage = scriptLanguage;
+    }
+
+    @Override
+    public StepDefinition clone() {
+        ScriptStepDefinition clone = new ScriptStepDefinition();
+        clone.setValues(this);
+        return clone;
+    }
+
+    @Override
+    public void setValues(StepDefinition otherDefinition) {
+        if (!(otherDefinition instanceof ScriptStepDefinition)) {
+            throw new SimpleWorkflowException("An instance of ScriptStepDefinition is required to set values");
+        }
+
+        ScriptStepDefinition stepDefinition = (ScriptStepDefinition) otherDefinition;
+        setId(stepDefinition.getId());
+        setName(stepDefinition.getName());
+        setScript(stepDefinition.getScript());
+        setScriptLanguage(stepDefinition.getScriptLanguage());
+        setStartsWithPrevious(stepDefinition.isStartsWithPrevious());
+
+        setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
+    }
 }

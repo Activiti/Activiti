@@ -18,39 +18,38 @@ package org.activiti5.engine.impl.juel;
 import org.activiti5.engine.impl.javax.el.ELContext;
 import org.activiti5.engine.impl.javax.el.ELException;
 
-
 public class AstBracket extends AstProperty {
-	protected final AstNode property;
-	
-	public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict) {
-		super(base, lvalue, strict);
-		this.property = property;
-	}
+    protected final AstNode property;
 
-	@Override
-	protected Object getProperty(Bindings bindings, ELContext context) throws ELException {
-		return property.eval(bindings, context);
-	}
+    public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict) {
+        super(base, lvalue, strict);
+        this.property = property;
+    }
 
-	@Override
-	public String toString() {
-		return "[...]";
-	}	
+    @Override
+    protected Object getProperty(Bindings bindings, ELContext context) throws ELException {
+        return property.eval(bindings, context);
+    }
 
-	@Override 
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		getChild(0).appendStructure(b, bindings);
-		b.append("[");
-		getChild(1).appendStructure(b, bindings);
-		b.append("]");
-	}
+    @Override
+    public String toString() {
+        return "[...]";
+    }
 
-	public int getCardinality() {
-		return 2;
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        getChild(0).appendStructure(b, bindings);
+        b.append("[");
+        getChild(1).appendStructure(b, bindings);
+        b.append("]");
+    }
 
-	@Override
-	public AstNode getChild(int i) {
-		return i == 1 ? property : super.getChild(i);
-	}
+    public int getCardinality() {
+        return 2;
+    }
+
+    @Override
+    public AstNode getChild(int i) {
+        return i == 1 ? property : super.getChild(i);
+    }
 }

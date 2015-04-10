@@ -24,22 +24,20 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class DeleteHistoricTaskInstanceCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String taskId;
+    private static final long serialVersionUID = 1L;
+    protected String taskId;
 
-  public DeleteHistoricTaskInstanceCmd(String taskId) {
-    this.taskId = taskId;
-  }
-
-  public Object execute(CommandContext commandContext) {
-
-    if (taskId == null) {
-      throw new ActivitiIllegalArgumentException("taskId is null");
+    public DeleteHistoricTaskInstanceCmd(String taskId) {
+        this.taskId = taskId;
     }
-    commandContext
-      .getHistoricTaskInstanceEntityManager()
-      .deleteHistoricTaskInstanceById(taskId);
-    return null;
-  }
+
+    public Object execute(CommandContext commandContext) {
+
+        if (taskId == null) {
+            throw new ActivitiIllegalArgumentException("taskId is null");
+        }
+        commandContext.getHistoricTaskInstanceEntityManager().deleteHistoricTaskInstanceById(taskId);
+        return null;
+    }
 
 }

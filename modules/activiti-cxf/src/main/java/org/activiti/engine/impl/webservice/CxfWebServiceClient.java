@@ -15,7 +15,6 @@ package org.activiti.engine.impl.webservice;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
 
-
 /**
  * A CXF's synchronous web service client
  * 
@@ -23,18 +22,18 @@ import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
  */
 public class CxfWebServiceClient implements SyncWebServiceClient {
 
-  protected Client client;
-  
-  public CxfWebServiceClient(String wsdl) {
-    JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-    this.client = dcf.createClient(wsdl);
+    protected Client client;
+
+    public CxfWebServiceClient(String wsdl) {
+        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+        this.client = dcf.createClient(wsdl);
         this.client.getRequestContext().put("org.apache.cxf.stax.force-start-document", Boolean.TRUE);
-  }
-  
-  /**
-   * {@inheritDoc}}
-   */
-  public Object[] send(String methodName, Object[] arguments) throws Exception {
-    return client.invoke(methodName, arguments);
-  }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public Object[] send(String methodName, Object[] arguments) throws Exception {
+        return client.invoke(methodName, arguments);
+    }
 }

@@ -27,68 +27,65 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class ProcessInstanceResource extends BaseProcessInstanceResource {
 
-  @RequestMapping(value="/runtime/process-instances/{processInstanceId}", method = RequestMethod.GET, produces="application/json")
-  public ProcessInstanceResponse getProcessInstance(@PathVariable String processInstanceId, HttpServletRequest request) {
-    return restResponseFactory.createProcessInstanceResponse(getProcessInstanceFromRequest(processInstanceId));
-  }
-  
-  @RequestMapping(value="/runtime/process-instances/{processInstanceId}", method = RequestMethod.DELETE)
-  public void deleteProcessInstance(@PathVariable String processInstanceId, 
-      @RequestParam(value="deleteReason", required=false) String deleteReason, HttpServletResponse response) {
-    
-    ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
-    
-    runtimeService.deleteProcessInstance(processInstance.getId(), deleteReason);
-    response.setStatus(HttpStatus.NO_CONTENT.value());
-  }
-  
-  @RequestMapping(value="/runtime/process-instances/{processInstanceId}", method = RequestMethod.PUT, produces="application/json")
-  public ProcessInstanceResponse performProcessInstanceAction(@PathVariable String processInstanceId, 
-      @RequestBody ProcessInstanceActionRequest actionRequest, HttpServletRequest request) {
-    
-    ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
-    
-    if (ProcessInstanceActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
-      return activateProcessInstance(processInstance);
-      
-    } else if (ProcessInstanceActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
-      return suspendProcessInstance(processInstance);
+    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}", method = RequestMethod.GET, produces = "application/json")
+    public ProcessInstanceResponse getProcessInstance(@PathVariable String processInstanceId, HttpServletRequest request) {
+        return restResponseFactory.createProcessInstanceResponse(getProcessInstanceFromRequest(processInstanceId));
     }
-    throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
-  }
-  
-  protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance) {
-    if (!processInstance.isSuspended()) {
-      throw new ActivitiConflictException("Process instance with id '" + 
-          processInstance.getId() + "' is already active.");
-    }
-    runtimeService.activateProcessInstanceById(processInstance.getId());
-   
-    ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance);
-    
-    // No need to re-fetch the instance, just alter the suspended state of the result-object
-    response.setSuspended(false);
-    return response;
-  }
 
-  protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance) {
-    if (processInstance.isSuspended()) {
-      throw new ActivitiConflictException("Process instance with id '" + 
-          processInstance.getId() + "' is already suspended.");
+    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}", method = RequestMethod.DELETE)
+    public void deleteProcessInstance(@PathVariable String processInstanceId, @RequestParam(value = "deleteReason", required = false) String deleteReason, HttpServletResponse response) {
+
+        ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
+
+        runtimeService.deleteProcessInstance(processInstance.getId(), deleteReason);
+        response.setStatus(HttpStatus.NO_CONTENT.value());
     }
-    runtimeService.suspendProcessInstanceById(processInstance.getId());
-    
-    ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance);
-    
-    // No need to re-fetch the instance, just alter the suspended state of the result-object
-    response.setSuspended(true);
-    return response;
-  }
+
+    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}", method = RequestMethod.PUT, produces = "application/json")
+    public ProcessInstanceResponse performProcessInstanceAction(@PathVariable String processInstanceId, @RequestBody ProcessInstanceActionRequest actionRequest, HttpServletRequest request) {
+
+        ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
+
+        if (ProcessInstanceActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
+            return activateProcessInstance(processInstance);
+
+        } else if (ProcessInstanceActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
+            return suspendProcessInstance(processInstance);
+        }
+        throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
+    }
+
+    protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance) {
+        if (!processInstance.isSuspended()) {
+            throw new ActivitiConflictException("Process instance with id '" + processInstance.getId() + "' is already active.");
+        }
+        runtimeService.activateProcessInstanceById(processInstance.getId());
+
+        ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance);
+
+        // No need to re-fetch the instance, just alter the suspended state of
+        // the result-object
+        response.setSuspended(false);
+        return response;
+    }
+
+    protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance) {
+        if (processInstance.isSuspended()) {
+            throw new ActivitiConflictException("Process instance with id '" + processInstance.getId() + "' is already suspended.");
+        }
+        runtimeService.suspendProcessInstanceById(processInstance.getId());
+
+        ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance);
+
+        // No need to re-fetch the instance, just alter the suspended state of
+        // the result-object
+        response.setSuspended(true);
+        return response;
+    }
 }

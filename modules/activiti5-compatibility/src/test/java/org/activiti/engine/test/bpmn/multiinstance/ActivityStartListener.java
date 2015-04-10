@@ -16,18 +16,17 @@ package org.activiti.engine.test.bpmn.multiinstance;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.ExecutionListener;
 
-
 /**
  * @author Joram Barrez
  */
 public class ActivityStartListener implements ExecutionListener {
-  
-  public void notify(DelegateExecution execution) throws Exception {
-    Integer counter = (Integer) execution.getVariable("executionListenerCounter");
-    if (counter == null) {
-      counter = 0;
+
+    public void notify(DelegateExecution execution) throws Exception {
+        Integer counter = (Integer) execution.getVariable("executionListenerCounter");
+        if (counter == null) {
+            counter = 0;
+        }
+        execution.setVariable("executionListenerCounter", ++counter);
     }
-    execution.setVariable("executionListenerCounter", ++counter);
-  }
 
 }

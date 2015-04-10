@@ -26,35 +26,35 @@ import com.vaadin.ui.TextField;
  */
 public class LongFormPropertyRenderer extends AbstractFormPropertyRenderer {
 
-  public LongFormPropertyRenderer() {
-    super(LongFormType.class);
-  }
-
-  @Override
-  public Field getPropertyField(FormProperty formProperty) {
-    final TextField textField = new TextField(getPropertyLabel(formProperty));
-    textField.setRequired(formProperty.isRequired());
-    textField.setEnabled(formProperty.isWritable());
-    textField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
-    
-    if (formProperty.getValue() != null) {
-      textField.setValue(formProperty.getValue());
+    public LongFormPropertyRenderer() {
+        super(LongFormType.class);
     }
 
-    // Add validation of numeric value
-    textField.addValidator(new LongValidator("Value must be a long"));
-    textField.setImmediate(true);
+    @Override
+    public Field getPropertyField(FormProperty formProperty) {
+        final TextField textField = new TextField(getPropertyLabel(formProperty));
+        textField.setRequired(formProperty.isRequired());
+        textField.setEnabled(formProperty.isWritable());
+        textField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
 
-    return textField;
-  }
+        if (formProperty.getValue() != null) {
+            textField.setValue(formProperty.getValue());
+        }
 
-  protected boolean isLong(String value) {
-    try {
-      Long.parseLong(value);
-      return true;
-    } catch (NumberFormatException nfe) {
-      return false;
+        // Add validation of numeric value
+        textField.addValidator(new LongValidator("Value must be a long"));
+        textField.setImmediate(true);
+
+        return textField;
     }
-  }
+
+    protected boolean isLong(String value) {
+        try {
+            Long.parseLong(value);
+            return true;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
+    }
 
 }

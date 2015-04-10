@@ -18,62 +18,61 @@ import java.util.Set;
 
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class FormData implements Map<String, Object> {
-  
-  TaskEntity task;
 
-  public FormData(TaskEntity task) {
-    this.task = task;
-  }
+    TaskEntity task;
 
-  public void clear() {
-  }
+    public FormData(TaskEntity task) {
+        this.task = task;
+    }
 
-  public boolean containsKey(Object key) {
-    return false;
-  }
+    public void clear() {
+    }
 
-  public boolean containsValue(Object value) {
-    return false;
-  }
+    public boolean containsKey(Object key) {
+        return false;
+    }
 
-  public Set<Map.Entry<String, Object>> entrySet() {
-    return null;
-  }
+    public boolean containsValue(Object value) {
+        return false;
+    }
 
-  public Object get(Object key) {
-    return null;
-  }
+    public Set<Map.Entry<String, Object>> entrySet() {
+        return null;
+    }
 
-  public boolean isEmpty() {
-    return false;
-  }
+    public Object get(Object key) {
+        return null;
+    }
 
-  public Set<String> keySet() {
-    return null;
-  }
+    public boolean isEmpty() {
+        return false;
+    }
 
-  public Object put(String key, Object value) {
-    return null;
-  }
+    public Set<String> keySet() {
+        return null;
+    }
 
-  public void putAll(Map< ? extends String, ? extends Object> m) {
-  }
+    public Object put(String key, Object value) {
+        return null;
+    }
 
-  public Object remove(Object key) {
-    return null;
-  }
+    public void putAll(Map<? extends String, ? extends Object> m) {
+    }
 
-  public int size() {
-    return 0;
-  }
+    public Object remove(Object key) {
+        return null;
+    }
 
-  public Collection<Object> values() {
-    return null;
-  }
+    public int size() {
+        return 0;
+    }
+
+    public Collection<Object> values() {
+        return null;
+    }
 
 }

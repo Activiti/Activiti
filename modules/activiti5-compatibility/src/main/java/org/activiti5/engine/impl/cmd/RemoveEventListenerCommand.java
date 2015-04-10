@@ -23,24 +23,23 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  * @author Frederik Heremans
  */
 public class RemoveEventListenerCommand implements Command<Void> {
-	
-	protected ActivitiEventListener listener;
-	
-	public RemoveEventListenerCommand(ActivitiEventListener listener) {
-	  super();
-	  this.listener = listener;
-  }
 
-	@Override
-  public Void execute(CommandContext commandContext) {
-		if(listener == null) {
-			throw new ActivitiIllegalArgumentException("listener is null.");
-		}
-		
-		commandContext.getProcessEngineConfiguration()
-			.getEventDispatcher().removeEventListener(listener);
-		
-	  return null;
-  }
-	
+    protected ActivitiEventListener listener;
+
+    public RemoveEventListenerCommand(ActivitiEventListener listener) {
+        super();
+        this.listener = listener;
+    }
+
+    @Override
+    public Void execute(CommandContext commandContext) {
+        if (listener == null) {
+            throw new ActivitiIllegalArgumentException("listener is null.");
+        }
+
+        commandContext.getProcessEngineConfiguration().getEventDispatcher().removeEventListener(listener);
+
+        return null;
+    }
+
 }

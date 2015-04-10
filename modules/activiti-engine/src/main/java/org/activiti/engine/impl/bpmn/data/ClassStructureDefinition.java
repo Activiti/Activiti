@@ -19,39 +19,39 @@ package org.activiti.engine.impl.bpmn.data;
  */
 public class ClassStructureDefinition implements FieldBaseStructureDefinition {
 
-  protected String id;
+    protected String id;
 
-  protected Class< ? > classStructure;
+    protected Class<?> classStructure;
 
-  public ClassStructureDefinition(Class<?> classStructure) {
-    this(classStructure.getName(), classStructure);
-  }
-  
-  public ClassStructureDefinition(String id, Class<?> classStructure) {
-    this.id = id;
-    this.classStructure = classStructure;
-  }
+    public ClassStructureDefinition(Class<?> classStructure) {
+        this(classStructure.getName(), classStructure);
+    }
 
-  public String getId() {
-    return this.id;
-  }
+    public ClassStructureDefinition(String id, Class<?> classStructure) {
+        this.id = id;
+        this.classStructure = classStructure;
+    }
 
-  public int getFieldSize() {
-    // TODO
-    return 0;
-  }
+    public String getId() {
+        return this.id;
+    }
 
-  public String getFieldNameAt(int index) {
-    // TODO
-    return null;
-  }
+    public int getFieldSize() {
+        // TODO
+        return 0;
+    }
 
-  public Class< ? > getFieldTypeAt(int index) {
-    // TODO
-    return null;
-  }
+    public String getFieldNameAt(int index) {
+        // TODO
+        return null;
+    }
 
-  public StructureInstance createInstance() {
-    return new FieldBaseStructureInstance(this);
-  }
+    public Class<?> getFieldTypeAt(int index) {
+        // TODO
+        return null;
+    }
+
+    public StructureInstance createInstance() {
+        return new FieldBaseStructureInstance(this);
+    }
 }

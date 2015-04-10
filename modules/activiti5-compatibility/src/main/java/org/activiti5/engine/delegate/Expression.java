@@ -15,18 +15,15 @@ package org.activiti5.engine.delegate;
 
 import java.io.Serializable;
 
-
-
-
 /**
  * @author Frederik Heremans
  */
 public interface Expression extends Serializable {
 
-   Object getValue(VariableScope variableScope);
-   
-   void setValue(Object value, VariableScope variableScope);
-   
-   String getExpressionText();
-   
+    Object getValue(VariableScope variableScope);
+
+    void setValue(Object value, VariableScope variableScope);
+
+    String getExpressionText();
+
 }

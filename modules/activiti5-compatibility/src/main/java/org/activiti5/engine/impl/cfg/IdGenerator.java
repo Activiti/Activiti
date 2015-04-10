@@ -14,18 +14,17 @@ package org.activiti5.engine.impl.cfg;
 
 import org.activiti5.engine.impl.db.IdBlock;
 
-
 /**
  * generates {@link IdBlock}s that are used to assign ids to new objects.
  * 
- * The scope of an instance of this class is process engine,
- * which means that there is only one instance in one process engine instance.
+ * The scope of an instance of this class is process engine, which means that
+ * there is only one instance in one process engine instance.
  * 
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public interface IdGenerator {
 
-  String getNextId();
+    String getNextId();
 
 }

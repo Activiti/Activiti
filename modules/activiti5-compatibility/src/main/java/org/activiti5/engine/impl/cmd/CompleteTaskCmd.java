@@ -17,43 +17,42 @@ import java.util.Map;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Joram Barrez
  */
 public class CompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
-      
-  private static final long serialVersionUID = 1L;
-  protected Map<String, Object> variables;
-  protected boolean localScope;
-  
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
-    super(taskId);
-    this.variables = variables;
-  }
-  
-  public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
-    super(taskId);
-    this.variables = variables;
-    this.localScope = localScope;
-  }
-  
-  protected Void execute(CommandContext commandContext, TaskEntity task) {
-    if (variables!=null) {
-    	if (localScope) {
-    		task.setVariablesLocal(variables);
-    	} else {
-    		task.setExecutionVariables(variables);
-    	}
+
+    private static final long serialVersionUID = 1L;
+    protected Map<String, Object> variables;
+    protected boolean localScope;
+
+    public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
+        super(taskId);
+        this.variables = variables;
     }
-    
-    task.complete(variables, localScope);
-    return null;
-  }
-  
-  @Override
-  protected String getSuspendedTaskException() {
-    return "Cannot complete a suspended task";
-  }
+
+    public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
+        super(taskId);
+        this.variables = variables;
+        this.localScope = localScope;
+    }
+
+    protected Void execute(CommandContext commandContext, TaskEntity task) {
+        if (variables != null) {
+            if (localScope) {
+                task.setVariablesLocal(variables);
+            } else {
+                task.setExecutionVariables(variables);
+            }
+        }
+
+        task.complete(variables, localScope);
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedTaskException() {
+        return "Cannot complete a suspended task";
+    }
 
 }

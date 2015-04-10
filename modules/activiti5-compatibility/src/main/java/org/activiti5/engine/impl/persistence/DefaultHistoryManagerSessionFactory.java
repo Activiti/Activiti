@@ -9,14 +9,14 @@ import org.activiti5.engine.impl.interceptor.SessionFactory;
  * @author Joram Barrez
  */
 public class DefaultHistoryManagerSessionFactory implements SessionFactory {
-	
-	public java.lang.Class<?> getSessionType() {
-		return HistoryManager.class; 
-	}
-	
-	@Override
-	public Session openSession() {
-		return new DefaultHistoryManager();
-	}
+
+    public java.lang.Class<?> getSessionType() {
+        return HistoryManager.class;
+    }
+
+    @Override
+    public Session openSession() {
+        return new DefaultHistoryManager();
+    }
 
 }

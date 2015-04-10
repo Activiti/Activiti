@@ -22,25 +22,22 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.PropertyEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GetPropertiesCmd implements Command<Map<String, String>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  @SuppressWarnings("unchecked")
-  public Map<String, String> execute(CommandContext commandContext) {
-    List<PropertyEntity> propertyEntities = commandContext
-      .getDbSqlSession()
-      .selectList("selectProperties");
-    
-    Map<String, String> properties = new HashMap<String, String>();
-    for (PropertyEntity propertyEntity: propertyEntities) {
-      properties.put(propertyEntity.getName(), propertyEntity.getValue());
+    @SuppressWarnings("unchecked")
+    public Map<String, String> execute(CommandContext commandContext) {
+        List<PropertyEntity> propertyEntities = commandContext.getDbSqlSession().selectList("selectProperties");
+
+        Map<String, String> properties = new HashMap<String, String>();
+        for (PropertyEntity propertyEntity : propertyEntities) {
+            properties.put(propertyEntity.getName(), propertyEntity.getValue());
+        }
+        return properties;
     }
-    return properties;
-  }
 
 }

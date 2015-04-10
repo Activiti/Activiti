@@ -15,7 +15,6 @@ package org.activiti5.engine.impl.bpmn.webservice;
 import org.activiti5.engine.impl.bpmn.data.ItemInstance;
 import org.activiti5.engine.impl.bpmn.data.StructureInstance;
 
-
 /**
  * An instance of a {@link MessageDefinition}
  * 
@@ -23,20 +22,20 @@ import org.activiti5.engine.impl.bpmn.data.StructureInstance;
  */
 public class MessageInstance {
 
-  protected MessageDefinition message;
-  
-  protected ItemInstance item;
-  
-  public MessageInstance(MessageDefinition message, ItemInstance item) {
-    this.message = message;
-    this.item = item;
-  }
-  
-  public StructureInstance getStructureInstance() {
-    return this.item.getStructureInstance();
-  }
-  
-  public MessageDefinition getMessage() {
-    return this.message;
-  }
+    protected MessageDefinition message;
+
+    protected ItemInstance item;
+
+    public MessageInstance(MessageDefinition message, ItemInstance item) {
+        this.message = message;
+        this.item = item;
+    }
+
+    public StructureInstance getStructureInstance() {
+        return this.item.getStructureInstance();
+    }
+
+    public MessageDefinition getMessage() {
+        return this.message;
+    }
 }

@@ -28,40 +28,40 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultManagementMBeanAssembler implements ManagementMBeanAssembler {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementMBeanAssembler.class);
-  
-  protected final MBeanInfoAssembler assembler;
+    private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementMBeanAssembler.class);
 
-  public DefaultManagementMBeanAssembler() {
-    this.assembler = new MBeanInfoAssembler();
-  }
+    protected final MBeanInfoAssembler assembler;
 
-  public ModelMBean assemble(Object obj, ObjectName name) throws JMException {
-    ModelMBeanInfo mbi = null;
-
-    // use the default provided mbean which has been annotated with JMX
-    // annotations
-    LOG.trace("Assembling MBeanInfo for: {} from @ManagedResource object: {}", name, obj);
-    mbi = assembler.getMBeanInfo(obj, null, name.toString());
-
-    if (mbi == null) {
-      return null;
+    public DefaultManagementMBeanAssembler() {
+        this.assembler = new MBeanInfoAssembler();
     }
 
-    RequiredModelMBean mbean = new RequiredModelMBean(mbi);
+    public ModelMBean assemble(Object obj, ObjectName name) throws JMException {
+        ModelMBeanInfo mbi = null;
 
-    try {
-      mbean.setManagedResource(obj, "ObjectReference");
-    } catch (InvalidTargetObjectTypeException e) {
-      throw new JMException(e.getMessage());
+        // use the default provided mbean which has been annotated with JMX
+        // annotations
+        LOG.trace("Assembling MBeanInfo for: {} from @ManagedResource object: {}", name, obj);
+        mbi = assembler.getMBeanInfo(obj, null, name.toString());
+
+        if (mbi == null) {
+            return null;
+        }
+
+        RequiredModelMBean mbean = new RequiredModelMBean(mbi);
+
+        try {
+            mbean.setManagedResource(obj, "ObjectReference");
+        } catch (InvalidTargetObjectTypeException e) {
+            throw new JMException(e.getMessage());
+        }
+
+        // Allows the managed object to send notifications
+        if (obj instanceof NotificationSenderAware) {
+            ((NotificationSenderAware) obj).setNotificationSender(new NotificationSenderAdapter(mbean));
+        }
+
+        return mbean;
     }
-
-    // Allows the managed object to send notifications
-    if (obj instanceof NotificationSenderAware) {
-      ((NotificationSenderAware) obj).setNotificationSender(new NotificationSenderAdapter(mbean));
-    }
-
-    return mbean;
-  }
 
 }

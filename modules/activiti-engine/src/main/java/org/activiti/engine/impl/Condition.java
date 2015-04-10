@@ -16,12 +16,10 @@ import java.io.Serializable;
 
 import org.activiti.engine.delegate.DelegateExecution;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public interface Condition extends Serializable {
 
-  boolean evaluate(DelegateExecution execution);
+    boolean evaluate(DelegateExecution execution);
 }

@@ -20,13 +20,13 @@ import org.activiti5.engine.impl.persistence.entity.SuspensionState;
  */
 public class ActivateProcessInstanceCmd extends AbstractSetProcessInstanceStateCmd {
 
-  public ActivateProcessInstanceCmd(String executionId) {
-    super(executionId);
-  }
+    public ActivateProcessInstanceCmd(String executionId) {
+        super(executionId);
+    }
 
-  @Override
-  protected SuspensionState getNewState() {
-    return SuspensionState.ACTIVE;
-  }
+    @Override
+    protected SuspensionState getNewState() {
+        return SuspensionState.ACTIVE;
+    }
 
 }

@@ -23,66 +23,67 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 
 /**
- * Defines a block of steps of which one collection of steps is executed based on conditions.
+ * Defines a block of steps of which one collection of steps is executed based
+ * on conditions.
  * 
  * @author Tijs Rademakers
  */
 @JsonTypeName("choice-step")
 public class ChoiceStepsDefinition extends AbstractConditionStepListContainer<ChoiceStepsDefinition> implements StepDefinition {
 
-  private static final long serialVersionUID = 1L;
-  
-	protected WorkflowDefinition workflowDefinition;
-	protected Map<String, Object> parameters = new HashMap<String, Object>();
-  
-  public ChoiceStepsDefinition() {
-    
-  }
-  
-  public ChoiceStepsDefinition(WorkflowDefinition workflowDefinition) {
-    this.workflowDefinition = workflowDefinition;
-  }
-  
-  public WorkflowDefinition endChoice() {
-    if (workflowDefinition == null) {
-      throw new SimpleWorkflowException("Can only call endChoice when inChoice was called on a workflow definition first");
-    }
-    return workflowDefinition;
-  }
-  
-  @Override
-  public StepDefinition clone() {
-    ChoiceStepsDefinition clone = new ChoiceStepsDefinition();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  @Override
-  public void setValues(StepDefinition otherDefinition) {
-    if(!(otherDefinition instanceof ChoiceStepsDefinition)) {
-      throw new SimpleWorkflowException("An instance of ParallelStepsDefinition is required to set values");
-    }
-    
-    ChoiceStepsDefinition definition = (ChoiceStepsDefinition) otherDefinition;
-    setId(definition.getId());
+    private static final long serialVersionUID = 1L;
 
-    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
-    
-    steps = new ArrayList<ListConditionStepDefinition<ChoiceStepsDefinition>>();
-    if (definition.getStepList() != null && !definition.getStepList().isEmpty()) {
-      for (ListConditionStepDefinition<ChoiceStepsDefinition> stepDefinition : definition.getStepList()) {
-        steps.add(stepDefinition.clone());
-      }
+    protected WorkflowDefinition workflowDefinition;
+    protected Map<String, Object> parameters = new HashMap<String, Object>();
+
+    public ChoiceStepsDefinition() {
+
     }
-  }
-  
-  @Override
-  @JsonSerialize(include=Inclusion.NON_EMPTY)
-  public Map<String, Object> getParameters() {
-  	return parameters;
-  }
-  
-  public void setParameters(Map<String,Object> parameters) {
-  	this.parameters = parameters;
-  }
+
+    public ChoiceStepsDefinition(WorkflowDefinition workflowDefinition) {
+        this.workflowDefinition = workflowDefinition;
+    }
+
+    public WorkflowDefinition endChoice() {
+        if (workflowDefinition == null) {
+            throw new SimpleWorkflowException("Can only call endChoice when inChoice was called on a workflow definition first");
+        }
+        return workflowDefinition;
+    }
+
+    @Override
+    public StepDefinition clone() {
+        ChoiceStepsDefinition clone = new ChoiceStepsDefinition();
+        clone.setValues(this);
+        return clone;
+    }
+
+    @Override
+    public void setValues(StepDefinition otherDefinition) {
+        if (!(otherDefinition instanceof ChoiceStepsDefinition)) {
+            throw new SimpleWorkflowException("An instance of ParallelStepsDefinition is required to set values");
+        }
+
+        ChoiceStepsDefinition definition = (ChoiceStepsDefinition) otherDefinition;
+        setId(definition.getId());
+
+        setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
+
+        steps = new ArrayList<ListConditionStepDefinition<ChoiceStepsDefinition>>();
+        if (definition.getStepList() != null && !definition.getStepList().isEmpty()) {
+            for (ListConditionStepDefinition<ChoiceStepsDefinition> stepDefinition : definition.getStepList()) {
+                steps.add(stepDefinition.clone());
+            }
+        }
+    }
+
+    @Override
+    @JsonSerialize(include = Inclusion.NON_EMPTY)
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
 }

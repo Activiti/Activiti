@@ -22,42 +22,42 @@ import org.activiti5.engine.impl.bpmn.data.StructureDefinition;
  */
 public class MessageDefinition {
 
-  protected String id;
-  
-  protected ItemDefinition itemDefinition;
+    protected String id;
 
-  protected String name;
-  
-  public MessageDefinition(String id, String name) {
-    this.id = id;
-    this.name = name;
-  }
-  
-  public MessageInstance createInstance() {
-    return new MessageInstance(this, this.itemDefinition.createInstance());
-  }
-  
-  public ItemDefinition getItemDefinition() {
-    return this.itemDefinition;
-  }
+    protected ItemDefinition itemDefinition;
 
-  public StructureDefinition getStructureDefinition() {
-    return this.itemDefinition.getStructureDefinition();
-  }
-  
-  public void setItemDefinition(ItemDefinition itemDefinition) {
-    this.itemDefinition = itemDefinition;
-  }
+    protected String name;
 
-  public String getId() {
-    return this.id;
-  }
-  
-  public String getName() {
-    return name;
-  }
-  
-  public void setName(String name) {
-    this.name = name;
-  }
+    public MessageDefinition(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public MessageInstance createInstance() {
+        return new MessageInstance(this, this.itemDefinition.createInstance());
+    }
+
+    public ItemDefinition getItemDefinition() {
+        return this.itemDefinition;
+    }
+
+    public StructureDefinition getStructureDefinition() {
+        return this.itemDefinition.getStructureDefinition();
+    }
+
+    public void setItemDefinition(ItemDefinition itemDefinition) {
+        this.itemDefinition = itemDefinition;
+    }
+
+    public String getId() {
+        return this.id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

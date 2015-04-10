@@ -28,48 +28,47 @@ import org.apache.camel.component.mock.MockEndpoint;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-
 /**
- * @author Saeid Mirzaei  
+ * @author Saeid Mirzaei
  */
 
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class TestReturnValueFromActiviti extends SpringActivitiTestCase {
-  @Autowired
-  CamelContext camelContext;
-  
-  @Autowired
-  RuntimeService runtimeService;
+    @Autowired
+    CamelContext camelContext;
 
-  @EndpointInject(uri = "mock:result")
-  protected MockEndpoint resultEndpoint;
-  
-  @Produce(uri = "direct:startReturnResultTest")
-  protected ProducerTemplate template;
-  
-  public void setUp() throws Exception {
-    
-    camelContext.addRoutes(new RouteBuilder() {
+    @Autowired
+    RuntimeService runtimeService;
 
-      @Override
-      public void configure() throws Exception {
-        from("direct:startReturnResultTest").to("activiti:testResultProcess?var.return.exampleCamelReturnValue").to("mock:result");
-      }
-    });
-  }
-      
-  public void tearDown() throws Exception {
-    List<Route> routes = camelContext.getRoutes();
-    for (Route r: routes) {
-      camelContext.stopRoute(r.getId());
-      camelContext.removeRoute(r.getId());
+    @EndpointInject(uri = "mock:result")
+    protected MockEndpoint resultEndpoint;
+
+    @Produce(uri = "direct:startReturnResultTest")
+    protected ProducerTemplate template;
+
+    public void setUp() throws Exception {
+
+        camelContext.addRoutes(new RouteBuilder() {
+
+            @Override
+            public void configure() throws Exception {
+                from("direct:startReturnResultTest").to("activiti:testResultProcess?var.return.exampleCamelReturnValue").to("mock:result");
+            }
+        });
     }
-  }
 
-  @Deployment
-  public void testReturnResultFromNewProcess() throws Exception {
-    resultEndpoint.expectedPropertyReceived("exampleCamelReturnValue", "hello world.");
-    template.sendBody("hello");
-    resultEndpoint.assertIsSatisfied();
-  }
+    public void tearDown() throws Exception {
+        List<Route> routes = camelContext.getRoutes();
+        for (Route r : routes) {
+            camelContext.stopRoute(r.getId());
+            camelContext.removeRoute(r.getId());
+        }
+    }
+
+    @Deployment
+    public void testReturnResultFromNewProcess() throws Exception {
+        resultEndpoint.expectedPropertyReceived("exampleCamelReturnValue", "hello world.");
+        template.sendBody("hello");
+        resultEndpoint.assertIsSatisfied();
+    }
 }

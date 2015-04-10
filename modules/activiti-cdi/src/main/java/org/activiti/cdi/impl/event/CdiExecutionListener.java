@@ -41,62 +41,63 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class CdiExecutionListener implements ExecutionListener, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected final BusinessProcessEventType type;
-  protected final String transitionName;
-  protected final String activityId;
+    private static final long serialVersionUID = 1L;
 
-  public CdiExecutionListener(String transitionName) {
-    this.type = BusinessProcessEventType.TAKE;
-    this.transitionName = transitionName;
-    this.activityId = null;
-  }
+    protected final BusinessProcessEventType type;
+    protected final String transitionName;
+    protected final String activityId;
 
-  public CdiExecutionListener(String activityId, BusinessProcessEventType type) {
-    this.type = type;
-    this.transitionName = null;
-    this.activityId = activityId;
-  }
-
-  @Override
-  public void notify(DelegateExecution execution) {    
-    // test whether cdi is setup correclty. (if not, just do not deliver the event)    
-    try {
-      ProgrammaticBeanLookup.lookup(ProcessEngine.class);
-    }catch (Exception e) {
-      return;
+    public CdiExecutionListener(String transitionName) {
+        this.type = BusinessProcessEventType.TAKE;
+        this.transitionName = transitionName;
+        this.activityId = null;
     }
-    
-    BusinessProcessEvent event = createEvent(execution);
-    Annotation[] qualifiers = getQualifiers(event);           
-    getBeanManager().fireEvent(event, qualifiers);    
-  }
 
-  protected BusinessProcessEvent createEvent(DelegateExecution execution) {
-    ProcessDefinition processDefinition = Context.getExecutionContext().getProcessDefinition();
-    return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, execution, type, execution.getProcessInstanceId(), execution.getId(), new Date());
-  }
+    public CdiExecutionListener(String activityId, BusinessProcessEventType type) {
+        this.type = type;
+        this.transitionName = null;
+        this.activityId = activityId;
+    }
 
-  protected BeanManager getBeanManager() {
-    BeanManager bm = BeanManagerLookup.getBeanManager();
-    if (bm == null) {
-      throw new ActivitiException("No cdi bean manager avaiable, cannot publish event.");
-    }
-    return bm;
-  }
+    @Override
+    public void notify(DelegateExecution execution) {
+        // test whether cdi is setup correclty. (if not, just do not deliver the
+        // event)
+        try {
+            ProgrammaticBeanLookup.lookup(ProcessEngine.class);
+        } catch (Exception e) {
+            return;
+        }
 
-  protected Annotation[] getQualifiers(BusinessProcessEvent event) {
-    Annotation businessProcessQualifier = new BusinessProcessLiteral(event.getProcessDefinition().getKey());
-    if (type == BusinessProcessEventType.TAKE) {
-      return new Annotation[] {businessProcessQualifier, new TakeTransitionLiteral(transitionName) };
+        BusinessProcessEvent event = createEvent(execution);
+        Annotation[] qualifiers = getQualifiers(event);
+        getBeanManager().fireEvent(event, qualifiers);
     }
-    if (type == BusinessProcessEventType.START_ACTIVITY) {
-      return new Annotation[] {businessProcessQualifier, new StartActivityLiteral(activityId) };
+
+    protected BusinessProcessEvent createEvent(DelegateExecution execution) {
+        ProcessDefinition processDefinition = Context.getExecutionContext().getProcessDefinition();
+        return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, execution, type, execution.getProcessInstanceId(), execution.getId(), new Date());
     }
-    if (type == BusinessProcessEventType.END_ACTIVITY) {
-      return new Annotation[] {businessProcessQualifier, new EndActivityLiteral(activityId) };
+
+    protected BeanManager getBeanManager() {
+        BeanManager bm = BeanManagerLookup.getBeanManager();
+        if (bm == null) {
+            throw new ActivitiException("No cdi bean manager avaiable, cannot publish event.");
+        }
+        return bm;
     }
-    return new Annotation[] {};
-  }
+
+    protected Annotation[] getQualifiers(BusinessProcessEvent event) {
+        Annotation businessProcessQualifier = new BusinessProcessLiteral(event.getProcessDefinition().getKey());
+        if (type == BusinessProcessEventType.TAKE) {
+            return new Annotation[] { businessProcessQualifier, new TakeTransitionLiteral(transitionName) };
+        }
+        if (type == BusinessProcessEventType.START_ACTIVITY) {
+            return new Annotation[] { businessProcessQualifier, new StartActivityLiteral(activityId) };
+        }
+        if (type == BusinessProcessEventType.END_ACTIVITY) {
+            return new Annotation[] { businessProcessQualifier, new EndActivityLiteral(activityId) };
+        }
+        return new Annotation[] {};
+    }
 }

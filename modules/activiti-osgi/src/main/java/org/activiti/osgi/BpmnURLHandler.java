@@ -26,7 +26,7 @@ import java.net.URLConnection;
 
 /**
  * A URL handler to transform a BPMN xml definition into an osgi bundle
- *
+ * 
  * @author <a href="gnodet@gmail.com">Guillaume Nodet</a>
  */
 public class BpmnURLHandler extends AbstractURLStreamHandlerService {
@@ -39,15 +39,17 @@ public class BpmnURLHandler extends AbstractURLStreamHandlerService {
 
     /**
      * Open the connection for the given URL.
-     *
-     * @param url the url from which to open a connection.
+     * 
+     * @param url
+     *            the url from which to open a connection.
      * @return a connection on the specified URL.
-     * @throws IOException if an error occurs or if the URL is malformed.
+     * @throws IOException
+     *             if an error occurs or if the URL is malformed.
      */
     @Override
     public URLConnection openConnection(URL url) throws IOException {
         if (url.getPath() == null || url.getPath().trim().length() == 0) {
-            throw new MalformedURLException("Path can not be null or empty. Syntax: " + SYNTAX );
+            throw new MalformedURLException("Path can not be null or empty. Syntax: " + SYNTAX);
         }
         bpmnXmlURL = new URL(url.getPath());
 

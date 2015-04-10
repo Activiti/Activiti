@@ -21,14 +21,13 @@ import org.activiti.engine.form.TaskFormData;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public interface TaskFormHandler extends FormHandler {
 
-  TaskFormData createTaskForm(TaskEntity task);
-  
-  Expression getFormKey();
+    TaskFormData createTaskForm(TaskEntity task);
+
+    Expression getFormKey();
 }

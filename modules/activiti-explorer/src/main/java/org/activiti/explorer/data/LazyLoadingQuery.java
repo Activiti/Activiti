@@ -17,23 +17,22 @@ import java.util.List;
 
 import com.vaadin.data.Item;
 
-
 /**
  * Inspired on the LazyQueryContainer add-on for Vaadin
- * (https://github.com/tlaukkan/vaadin-lazyquerycontainer) 
+ * (https://github.com/tlaukkan/vaadin-lazyquerycontainer)
  * 
  * @author Joram Barrez
  */
 public interface LazyLoadingQuery extends Serializable {
-  
-  int size();
-  
-  List<Item> loadItems(int start, int count);
-  
-  Item loadSingleResult(String id);
-  
-  void setLazyLoadingContainer(LazyLoadingContainer lazyLoadingContainer);
-  
-  void setSorting(Object[] propertyIds, boolean[] ascending);
-  
+
+    int size();
+
+    List<Item> loadItems(int start, int count);
+
+    Item loadSingleResult(String id);
+
+    void setLazyLoadingContainer(LazyLoadingContainer lazyLoadingContainer);
+
+    void setSorting(Object[] propertyIds, boolean[] ascending);
+
 }

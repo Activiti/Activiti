@@ -14,18 +14,17 @@ package org.activiti.workflow.simple.definition;
 
 import java.util.List;
 
-
 /**
  * @author Joram Barrez
  */
 public interface StepDefinitionContainer<T> {
-  
-  List<StepDefinition> getSteps();
 
-  void addStep(StepDefinition stepDefinition);
+    List<StepDefinition> getSteps();
 
-  T addHumanStep(String name, String assignee);
+    void addStep(StepDefinition stepDefinition);
 
-  T addHumanStepForWorkflowInitiator(String name);
+    T addHumanStep(String name, String assignee);
+
+    T addHumanStepForWorkflowInitiator(String name);
 
 }

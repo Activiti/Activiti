@@ -32,29 +32,25 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GroupMembershipCollectionResource extends BaseGroupResource {
 
-  @RequestMapping(value="/identity/groups/{groupId}/members", method = RequestMethod.POST, produces = "application/json")
-  public MembershipResponse createMembership(@PathVariable String groupId, @RequestBody MembershipRequest memberShip,
-      HttpServletRequest request, HttpServletResponse response) {
-    
-    Group group = getGroupFromRequest(groupId);
-   
-    if(memberShip.getUserId() == null) {
-      throw new ActivitiIllegalArgumentException("UserId cannot be null.");
+    @RequestMapping(value = "/identity/groups/{groupId}/members", method = RequestMethod.POST, produces = "application/json")
+    public MembershipResponse createMembership(@PathVariable String groupId, @RequestBody MembershipRequest memberShip, HttpServletRequest request, HttpServletResponse response) {
+
+        Group group = getGroupFromRequest(groupId);
+
+        if (memberShip.getUserId() == null) {
+            throw new ActivitiIllegalArgumentException("UserId cannot be null.");
+        }
+
+        // Check if user is member of group since API doesn't return typed
+        // exception
+        if (identityService.createUserQuery().memberOfGroup(group.getId()).userId(memberShip.getUserId()).count() > 0) {
+
+            throw new ActivitiConflictException("User '" + memberShip.getUserId() + "' is already part of group '" + group.getId() + "'.");
+        }
+
+        identityService.createMembership(memberShip.getUserId(), group.getId());
+        response.setStatus(HttpStatus.CREATED.value());
+
+        return restResponseFactory.createMembershipResponse(memberShip.getUserId(), group.getId());
     }
-   
-    // Check if user is member of group since API doesn't return typed exception
-    if (identityService.createUserQuery()
-        .memberOfGroup(group.getId())
-        .userId(memberShip.getUserId())
-        .count() > 0) {
-     
-        throw new ActivitiConflictException("User '" + memberShip.getUserId() + 
-             "' is already part of group '" + group.getId() + "'.");
-    }
-   
-    identityService.createMembership(memberShip.getUserId(), group.getId());
-    response.setStatus(HttpStatus.CREATED.value());
-     
-    return restResponseFactory.createMembershipResponse(memberShip.getUserId(), group.getId());
-  }
 }

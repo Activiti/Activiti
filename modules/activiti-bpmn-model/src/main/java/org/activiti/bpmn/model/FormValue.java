@@ -12,30 +12,29 @@
  */
 package org.activiti.bpmn.model;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class FormValue extends BaseElement {
 
-  protected String name;
-  
-  public String getName() {
-    return name;
-  }
+    protected String name;
 
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  public FormValue clone() {
-    FormValue clone = new FormValue();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  public void setValues(FormValue otherValue) {
-    super.setValues(otherValue);
-    setName(otherValue.getName());
-  }
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public FormValue clone() {
+        FormValue clone = new FormValue();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(FormValue otherValue) {
+        super.setValues(otherValue);
+        setName(otherValue.getName());
+    }
 }

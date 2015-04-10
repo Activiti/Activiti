@@ -17,31 +17,30 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.Serializable;
 
-
 /**
  * @author Tom Baeyens
  */
 public class Picture implements Serializable {
 
-  private static final long serialVersionUID = 2384375526314443322L;
-  
-  protected byte[] bytes;
-  protected String mimeType;
+    private static final long serialVersionUID = 2384375526314443322L;
 
-  public Picture(byte[] bytes, String mimeType) {
-    this.bytes = bytes;
-    this.mimeType = mimeType;
-  }
+    protected byte[] bytes;
+    protected String mimeType;
 
-  public byte[] getBytes() {
-    return bytes;
-  }
-  
-  public InputStream getInputStream() {
-    return new ByteArrayInputStream(bytes);
-  }
+    public Picture(byte[] bytes, String mimeType) {
+        this.bytes = bytes;
+        this.mimeType = mimeType;
+    }
 
-  public String getMimeType() {
-    return mimeType;
-  }
+    public byte[] getBytes() {
+        return bytes;
+    }
+
+    public InputStream getInputStream() {
+        return new ByteArrayInputStream(bytes);
+    }
+
+    public String getMimeType() {
+        return mimeType;
+    }
 }

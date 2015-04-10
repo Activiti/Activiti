@@ -27,125 +27,126 @@ import org.slf4j.LoggerFactory;
  */
 public class ContinueProcessOperation extends AbstractOperation {
 
-	private static Logger logger = LoggerFactory.getLogger(ContinueProcessOperation.class);
-	
-	public ContinueProcessOperation(Agenda agenda, ActivityExecution execution) {
-		super(agenda, execution);
-	}
+    private static Logger logger = LoggerFactory.getLogger(ContinueProcessOperation.class);
 
-	@Override
-	public void run() {
+    public ContinueProcessOperation(Agenda agenda, ActivityExecution execution) {
+        super(agenda, execution);
+    }
 
-		FlowElement currentFlowElement = execution.getCurrentFlowElement();
+    @Override
+    public void run() {
 
-		if (currentFlowElement == null) {
-			currentFlowElement = findCurrentFlowElement(execution);
-		} else {
-			execution.setCurrentActivityId(currentFlowElement.getId());
-		}
+        FlowElement currentFlowElement = execution.getCurrentFlowElement();
 
-		if (currentFlowElement instanceof FlowNode) {
-			continueThroughFlowNode((FlowNode) currentFlowElement);
-		} else if (currentFlowElement instanceof SequenceFlow) {
-			continueThroughSequenceFlow((SequenceFlow) currentFlowElement);
-		} else {
-			throw new RuntimeException("Programmatic error: no current flow element found or invalid type: " + currentFlowElement + ". Halting.");
-		}
+        if (currentFlowElement == null) {
+            currentFlowElement = findCurrentFlowElement(execution);
+        } else {
+            execution.setCurrentActivityId(currentFlowElement.getId());
+        }
 
-	}
+        if (currentFlowElement instanceof FlowNode) {
+            continueThroughFlowNode((FlowNode) currentFlowElement);
+        } else if (currentFlowElement instanceof SequenceFlow) {
+            continueThroughSequenceFlow((SequenceFlow) currentFlowElement);
+        } else {
+            throw new RuntimeException("Programmatic error: no current flow element found or invalid type: " + currentFlowElement + ". Halting.");
+        }
 
-	private void continueThroughFlowNode(FlowNode flowNode) {
-		
-		// See if flowNode is an async activity and schedule as a job if that evaluates to true
-		if (flowNode instanceof Activity) {
-			Activity activity = (Activity) flowNode;
-			if (activity.isAsynchronous()) {
-				scheduleJob(activity);
-				return;
-			}
-		}
+    }
 
-		// Synchronous execution
+    private void continueThroughFlowNode(FlowNode flowNode) {
 
-		// Execute any boundary events
-		Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowNode);
-		if (boundaryEvents != null && boundaryEvents.size() > 0) {
-			executeBoundaryEvents(boundaryEvents);
-		}
+        // See if flowNode is an async activity and schedule as a job if that
+        // evaluates to true
+        if (flowNode instanceof Activity) {
+            Activity activity = (Activity) flowNode;
+            if (activity.isAsynchronous()) {
+                scheduleJob(activity);
+                return;
+            }
+        }
 
-		// Execute actual behavior
-		ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
-		logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
-		activityBehavior.execute(execution);
-	}
-	
-	protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {
-		FlowElement targetFlowElement = sequenceFlow.getTargetFlowElement();
-		execution.setCurrentFlowElement(targetFlowElement);
-		logger.debug("Sequence flow '{}' encountered. Continuing process by following it using execution {}", sequenceFlow.getId(), execution.getId());
-		agenda.planContinueProcessOperation(execution);
-	}
+        // Synchronous execution
 
-	protected void scheduleJob(Activity activity) {
-		MessageEntity message = new MessageEntity();
-		message.setExecutionId(execution.getId());
-		message.setProcessInstanceId(execution.getProcessInstanceId());
-		message.setProcessDefinitionId(execution.getProcessDefinitionId());
-		message.setExclusive(!activity.isNotExclusive());
-		message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
+        // Execute any boundary events
+        Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowNode);
+        if (boundaryEvents != null && boundaryEvents.size() > 0) {
+            executeBoundaryEvents(boundaryEvents);
+        }
 
-		// Inherit tenant id (if applicable)
-		if (execution.getTenantId() != null) {
-			message.setTenantId(execution.getTenantId());
-		}
+        // Execute actual behavior
+        ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
+        logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
+        activityBehavior.execute(execution);
+    }
 
-		Context.getCommandContext().getJobEntityManager().send(message);
-	}
+    protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {
+        FlowElement targetFlowElement = sequenceFlow.getTargetFlowElement();
+        execution.setCurrentFlowElement(targetFlowElement);
+        logger.debug("Sequence flow '{}' encountered. Continuing process by following it using execution {}", sequenceFlow.getId(), execution.getId());
+        agenda.planContinueProcessOperation(execution);
+    }
 
-	protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents) {
-		
-		// The parent execution becomes a scope, and a child execution iscreated for each of the boundary events
-		execution.setScope(true);
+    protected void scheduleJob(Activity activity) {
+        MessageEntity message = new MessageEntity();
+        message.setExecutionId(execution.getId());
+        message.setProcessInstanceId(execution.getProcessInstanceId());
+        message.setProcessDefinitionId(execution.getProcessDefinitionId());
+        message.setExclusive(!activity.isNotExclusive());
+        message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
 
-		ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+        // Inherit tenant id (if applicable)
+        if (execution.getTenantId() != null) {
+            message.setTenantId(execution.getTenantId());
+        }
 
-		for (BoundaryEvent boundaryEvent : boundaryEvents) {
+        Context.getCommandContext().getJobEntityManager().send(message);
+    }
 
-			ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
-			childExecutionEntity.setParentId(execution.getId());
-			childExecutionEntity.setCurrentFlowElement(boundaryEvent);
-			childExecutionEntity.setCurrentActivityId(boundaryEvent.getId());
-			childExecutionEntity.setScope(false);
+    protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents) {
 
-			ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
-			if (boundaryEventBehavior != null) {
-				logger.debug("Executing boundary event activityBehavior {} with execution {}", boundaryEventBehavior.getClass(), childExecutionEntity.getId());
-				boundaryEventBehavior.execute(childExecutionEntity);
-			} else {
-				throw new ActivitiException("No ActivityBehavior for boundary event " + boundaryEvent.getId());
-			}
-		}
+        // The parent execution becomes a scope, and a child execution iscreated
+        // for each of the boundary events
+        execution.setScope(true);
 
-	}
-	
-	protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowNode flowNode) {
-		org.activiti.bpmn.model.Process process = getProcessDefinition(processDefinitionId);
+        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
 
-		// This could be cached or could be done at parsing time
-		List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
-		Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
-		for (BoundaryEvent boundaryEvent : boundaryEvents) {
-			if (boundaryEvent.getAttachedToRefId() != null
-			        && boundaryEvent.getAttachedToRefId().equals(flowNode.getId())) {
-				results.add(boundaryEvent);
-			}
-		}
-		return results;
-	}
-	
-	protected org.activiti.bpmn.model.Process getProcessDefinition(String processDefinitionId) {
-		// TODO: must be extracted / cache should be accessed in another way
-		return ProcessDefinitionCacheUtil.getCachedProcess(processDefinitionId);
-	}
+        for (BoundaryEvent boundaryEvent : boundaryEvents) {
+
+            ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
+            childExecutionEntity.setParentId(execution.getId());
+            childExecutionEntity.setCurrentFlowElement(boundaryEvent);
+            childExecutionEntity.setCurrentActivityId(boundaryEvent.getId());
+            childExecutionEntity.setScope(false);
+
+            ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+            if (boundaryEventBehavior != null) {
+                logger.debug("Executing boundary event activityBehavior {} with execution {}", boundaryEventBehavior.getClass(), childExecutionEntity.getId());
+                boundaryEventBehavior.execute(childExecutionEntity);
+            } else {
+                throw new ActivitiException("No ActivityBehavior for boundary event " + boundaryEvent.getId());
+            }
+        }
+
+    }
+
+    protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowNode flowNode) {
+        org.activiti.bpmn.model.Process process = getProcessDefinition(processDefinitionId);
+
+        // This could be cached or could be done at parsing time
+        List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
+        Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+        for (BoundaryEvent boundaryEvent : boundaryEvents) {
+            if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowNode.getId())) {
+                results.add(boundaryEvent);
+            }
+        }
+        return results;
+    }
+
+    protected org.activiti.bpmn.model.Process getProcessDefinition(String processDefinitionId) {
+        // TODO: must be extracted / cache should be accessed in another way
+        return ProcessDefinitionCacheUtil.getCachedProcess(processDefinitionId);
+    }
 
 }

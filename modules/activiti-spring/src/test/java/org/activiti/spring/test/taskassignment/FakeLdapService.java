@@ -17,7 +17,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
  * @author Joram Barrez
  */

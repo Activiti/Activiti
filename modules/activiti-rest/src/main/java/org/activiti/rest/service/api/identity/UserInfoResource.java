@@ -35,61 +35,59 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserInfoResource extends BaseUserResource {
 
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected IdentityService identityService;
-  
-  @RequestMapping(value="/identity/users/{userId}/info/{key}", method = RequestMethod.GET, produces = "application/json")
-  public UserInfoResponse getUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, HttpServletRequest request) {
-    User user = getUserFromRequest(userId);
-    
-    String existingValue = identityService.getUserInfo(user.getId(), key);
-    if (existingValue == null) {
-      throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected IdentityService identityService;
+
+    @RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.GET, produces = "application/json")
+    public UserInfoResponse getUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, HttpServletRequest request) {
+        User user = getUserFromRequest(userId);
+
+        String existingValue = identityService.getUserInfo(user.getId(), key);
+        if (existingValue == null) {
+            throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
+        }
+
+        return restResponseFactory.createUserInfoResponse(key, existingValue, user.getId());
     }
-    
-    return restResponseFactory.createUserInfoResponse(key, existingValue, user.getId());
-  }
-  
-  
-  @RequestMapping(value="/identity/users/{userId}/info/{key}", method = RequestMethod.PUT, produces = "application/json")
-  public UserInfoResponse setUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, 
-      @RequestBody UserInfoRequest userRequest, HttpServletRequest request) {
-    
-    User user = getUserFromRequest(userId);
-    String validKey = getValidKeyFromRequest(user, key);
-    
-    if (userRequest.getValue() == null) {
-      throw new ActivitiIllegalArgumentException("The value cannot be null.");
+
+    @RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.PUT, produces = "application/json")
+    public UserInfoResponse setUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, @RequestBody UserInfoRequest userRequest, HttpServletRequest request) {
+
+        User user = getUserFromRequest(userId);
+        String validKey = getValidKeyFromRequest(user, key);
+
+        if (userRequest.getValue() == null) {
+            throw new ActivitiIllegalArgumentException("The value cannot be null.");
+        }
+
+        if (userRequest.getKey() == null || validKey.equals(userRequest.getKey())) {
+            identityService.setUserInfo(user.getId(), key, userRequest.getValue());
+        } else {
+            throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
+        }
+
+        return restResponseFactory.createUserInfoResponse(key, userRequest.getValue(), user.getId());
     }
-    
-    if (userRequest.getKey() == null || validKey.equals(userRequest.getKey())) {
-      identityService.setUserInfo(user.getId(), key, userRequest.getValue());
-    } else {
-      throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
+
+    @RequestMapping(value = "/identity/users/{userId}/info/{key}", method = RequestMethod.DELETE)
+    public void deleteUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, HttpServletResponse response) {
+        User user = getUserFromRequest(userId);
+        String validKey = getValidKeyFromRequest(user, key);
+
+        identityService.setUserInfo(user.getId(), validKey, null);
+
+        response.setStatus(HttpStatus.NO_CONTENT.value());
     }
-    
-    return restResponseFactory.createUserInfoResponse(key, userRequest.getValue(), user.getId());
-  }
-  
-  @RequestMapping(value="/identity/users/{userId}/info/{key}", method = RequestMethod.DELETE)
-  public void deleteUserInfo(@PathVariable("userId") String userId, @PathVariable("key") String key, HttpServletResponse response) {
-    User user = getUserFromRequest(userId);
-    String validKey = getValidKeyFromRequest(user, key);
-    
-    identityService.setUserInfo(user.getId(), validKey, null);
-    
-    response.setStatus(HttpStatus.NO_CONTENT.value());
-  }
-  
-  protected String getValidKeyFromRequest(User user, String key) {
-    String existingValue = identityService.getUserInfo(user.getId(), key);
-    if (existingValue == null) {
-      throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
+
+    protected String getValidKeyFromRequest(User user, String key) {
+        String existingValue = identityService.getUserInfo(user.getId(), key);
+        if (existingValue == null) {
+            throw new ActivitiObjectNotFoundException("User info with key '" + key + "' does not exists for user '" + user.getId() + "'.", null);
+        }
+
+        return key;
     }
-    
-    return key;
-  }
 }

@@ -28,69 +28,78 @@ import com.vaadin.ui.Table;
  * @author Joram Barrez
  */
 public class ActiveProcessDefinitionPage extends ManagementPage {
-  
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
-  protected Table processDefinitionTable;
-  protected LazyLoadingQuery processDefinitionListQuery;
-  protected LazyLoadingContainer processDefinitionListContainer;
-  
-  public ActiveProcessDefinitionPage() {
-    ExplorerApp.get().setCurrentUriFragment(
-            new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART));
-  }
-  
-  public ActiveProcessDefinitionPage(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
 
-  @Override
-  protected void initUi() {
-    super.initUi();
-    
-    if (processDefinitionId == null) {
-      selectElement(0);
-    } else {
-      selectElement(processDefinitionListContainer.getIndexForObjectId(processDefinitionId));
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
+    protected Table processDefinitionTable;
+    protected LazyLoadingQuery processDefinitionListQuery;
+    protected LazyLoadingContainer processDefinitionListContainer;
+
+    public ActiveProcessDefinitionPage() {
+        ExplorerApp.get().setCurrentUriFragment(new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART));
     }
-  }
 
-  protected Table createList() {
-    processDefinitionTable = new Table();
+    public ActiveProcessDefinitionPage(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
 
-    processDefinitionListQuery = new ActiveProcessDefinitionListQuery();
-    processDefinitionListContainer = new LazyLoadingContainer(processDefinitionListQuery);
-    processDefinitionTable.setContainerDataSource(processDefinitionListContainer);
-    
-    // Column headers
-    processDefinitionTable.addContainerProperty("name", String.class, null);
-    processDefinitionTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-            
-    // Listener to change right panel when clicked on a user
-    processDefinitionTable.addListener(new Property.ValueChangeListener() {
-      
-      private static final long serialVersionUID = 1L;
-      
-      public void valueChange(ValueChangeEvent event) {
-        Item item = processDefinitionTable.getItem(event.getProperty().getValue()); // the value of the property is the itemId of the table entry
-        if (item != null) {
-          String processDefinitionId = (String) item.getItemProperty("id").getValue();
-          setDetailComponent(new ActiveProcessDefinitionDetailPanel(processDefinitionId, ActiveProcessDefinitionPage.this));
-          
-          // Update URL
-          ExplorerApp.get().setCurrentUriFragment(
-                  new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART, processDefinitionId));
-          
+    @Override
+    protected void initUi() {
+        super.initUi();
+
+        if (processDefinitionId == null) {
+            selectElement(0);
         } else {
-          // Nothing selected
-          setDetailComponent(null);
-          ExplorerApp.get().setCurrentUriFragment(new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART));
+            selectElement(processDefinitionListContainer.getIndexForObjectId(processDefinitionId));
         }
-      }
-      
-    });
-    
-    return processDefinitionTable;
-  }
-  
+    }
+
+    protected Table createList() {
+        processDefinitionTable = new Table();
+
+        processDefinitionListQuery = new ActiveProcessDefinitionListQuery();
+        processDefinitionListContainer = new LazyLoadingContainer(processDefinitionListQuery);
+        processDefinitionTable.setContainerDataSource(processDefinitionListContainer);
+
+        // Column headers
+        processDefinitionTable.addContainerProperty("name", String.class, null);
+        processDefinitionTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+
+        // Listener to change right panel when clicked on a user
+        processDefinitionTable.addListener(new Property.ValueChangeListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void valueChange(ValueChangeEvent event) {
+                Item item = processDefinitionTable.getItem(event.getProperty().getValue()); // the
+                                                                                            // value
+                                                                                            // of
+                                                                                            // the
+                                                                                            // property
+                                                                                            // is
+                                                                                            // the
+                                                                                            // itemId
+                                                                                            // of
+                                                                                            // the
+                                                                                            // table
+                                                                                            // entry
+                if (item != null) {
+                    String processDefinitionId = (String) item.getItemProperty("id").getValue();
+                    setDetailComponent(new ActiveProcessDefinitionDetailPanel(processDefinitionId, ActiveProcessDefinitionPage.this));
+
+                    // Update URL
+                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART, processDefinitionId));
+
+                } else {
+                    // Nothing selected
+                    setDetailComponent(null);
+                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(ActiveProcessDefinitionNavigator.ACTIVE_PROC_DEF_URI_PART));
+                }
+            }
+
+        });
+
+        return processDefinitionTable;
+    }
+
 }

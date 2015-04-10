@@ -15,20 +15,19 @@ package org.activiti.engine.impl.pvm.runtime;
 
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
-
 /**
  * @author Daniel Meyer
  */
 public class StartingExecution {
-  
-  protected final ActivityImpl selectedInitial;
 
-  public StartingExecution(ActivityImpl selectedInitial) {
-    this.selectedInitial = selectedInitial;
-  }
+    protected final ActivityImpl selectedInitial;
 
-  public ActivityImpl getInitial() {
-    return selectedInitial;
-  }
-  
+    public StartingExecution(ActivityImpl selectedInitial) {
+        this.selectedInitial = selectedInitial;
+    }
+
+    public ActivityImpl getInitial() {
+        return selectedInitial;
+    }
+
 }

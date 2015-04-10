@@ -36,12 +36,13 @@ import org.activiti5.engine.history.ProcessInstanceHistoryLog;
 import org.activiti5.engine.history.ProcessInstanceHistoryLogQuery;
 import org.activiti5.engine.task.IdentityLink;
 
-/** 
- * Service exposing information about ongoing and past process instances.  This is different
- * from the runtime information in the sense that this runtime information only contains 
- * the actual runtime state at any given moment and it is optimized for runtime 
- * process execution performance.  The history information is optimized for easy 
- * querying and remains permanent in the persistent storage.
+/**
+ * Service exposing information about ongoing and past process instances. This
+ * is different from the runtime information in the sense that this runtime
+ * information only contains the actual runtime state at any given moment and it
+ * is optimized for runtime process execution performance. The history
+ * information is optimized for easy querying and remains permanent in the
+ * persistent storage.
  * 
  * @author Christian Stettler
  * @author Tom Baeyens
@@ -49,78 +50,101 @@ import org.activiti5.engine.task.IdentityLink;
  */
 public interface HistoryService {
 
-  /** Creates a new programmatic query to search for {@link HistoricProcessInstance}s. */
-  HistoricProcessInstanceQuery createHistoricProcessInstanceQuery();
+    /**
+     * Creates a new programmatic query to search for
+     * {@link HistoricProcessInstance}s.
+     */
+    HistoricProcessInstanceQuery createHistoricProcessInstanceQuery();
 
-  /** Creates a new programmatic query to search for {@link HistoricActivityInstance}s. */
-  HistoricActivityInstanceQuery createHistoricActivityInstanceQuery();
-  
-  /** Creates a new programmatic query to search for {@link HistoricTaskInstance}s. */
-  HistoricTaskInstanceQuery createHistoricTaskInstanceQuery();
+    /**
+     * Creates a new programmatic query to search for
+     * {@link HistoricActivityInstance}s.
+     */
+    HistoricActivityInstanceQuery createHistoricActivityInstanceQuery();
 
-  /** Creates a new programmatic query to search for {@link HistoricDetail}s. */
-  HistoricDetailQuery createHistoricDetailQuery();
+    /**
+     * Creates a new programmatic query to search for
+     * {@link HistoricTaskInstance}s.
+     */
+    HistoricTaskInstanceQuery createHistoricTaskInstanceQuery();
 
-  /**
-   * Returns a new {@link org.activiti5.engine.query.NativeQuery} for process definitions.
-   */
-  NativeHistoricDetailQuery createNativeHistoricDetailQuery();
-  
-  /** Creates a new programmatic query to search for {@link HistoricVariableInstance}s. */
-  HistoricVariableInstanceQuery createHistoricVariableInstanceQuery();
+    /** Creates a new programmatic query to search for {@link HistoricDetail}s. */
+    HistoricDetailQuery createHistoricDetailQuery();
 
-  /**
-   * Returns a new {@link org.activiti5.engine.query.NativeQuery} for process definitions.
-   */
-  NativeHistoricVariableInstanceQuery createNativeHistoricVariableInstanceQuery();
+    /**
+     * Returns a new {@link org.activiti5.engine.query.NativeQuery} for process
+     * definitions.
+     */
+    NativeHistoricDetailQuery createNativeHistoricDetailQuery();
 
-  /** Deletes historic task instance.  This might be useful for tasks that are 
-   * {@link TaskService#newTask() dynamically created} and then {@link TaskService#complete(String) completed}. 
-   * If the historic task instance doesn't exist, no exception is thrown and the 
-   * method returns normal.*/
-  void deleteHistoricTaskInstance(String taskId);
-  
-  /**
-   * Deletes historic process instance. All historic activities, historic task and
-   * historic details (variable updates, form properties) are deleted as well.
-   */
-  void deleteHistoricProcessInstance(String processInstanceId);
+    /**
+     * Creates a new programmatic query to search for
+     * {@link HistoricVariableInstance}s.
+     */
+    HistoricVariableInstanceQuery createHistoricVariableInstanceQuery();
 
-  /**
-   * creates a native query to search for {@link HistoricProcessInstance}s via SQL
-   */
-  NativeHistoricProcessInstanceQuery createNativeHistoricProcessInstanceQuery();
+    /**
+     * Returns a new {@link org.activiti5.engine.query.NativeQuery} for process
+     * definitions.
+     */
+    NativeHistoricVariableInstanceQuery createNativeHistoricVariableInstanceQuery();
 
-  /**
-   * creates a native query to search for {@link HistoricTaskInstance}s via SQL
-   */
-  NativeHistoricTaskInstanceQuery createNativeHistoricTaskInstanceQuery();
+    /**
+     * Deletes historic task instance. This might be useful for tasks that are
+     * {@link TaskService#newTask() dynamically created} and then
+     * {@link TaskService#complete(String) completed}. If the historic task
+     * instance doesn't exist, no exception is thrown and the method returns
+     * normal.
+     */
+    void deleteHistoricTaskInstance(String taskId);
 
-  /**
-   * creates a native query to search for {@link HistoricActivityInstance}s via SQL
-   */
-  NativeHistoricActivityInstanceQuery createNativeHistoricActivityInstanceQuery();
-  
-  /**
-   * Retrieves the {@link HistoricIdentityLink}s associated with the given task.
-   * Such an {@link IdentityLink} informs how a certain identity (eg. group or user)
-   * is associated with a certain task (eg. as candidate, assignee, etc.), even if the
-   * task is completed as opposed to {@link IdentityLink}s which only exist for active
-   * tasks.
-   */
-  List<HistoricIdentityLink> getHistoricIdentityLinksForTask(String taskId);
-  
-  /**
-   * Retrieves the {@link HistoricIdentityLink}s associated with the given process instance.
-   * Such an {@link IdentityLink} informs how a certain identity (eg. group or user)
-   * is associated with a certain process instance, even if the instance is completed as 
-   * opposed to {@link IdentityLink}s which only exist for active instances.
-   */
-  List<HistoricIdentityLink> getHistoricIdentityLinksForProcessInstance(String processInstanceId);
-  
-  /**
-   * Allows to retrieve the {@link ProcessInstanceHistoryLog} for one process instance.
-   */
-  ProcessInstanceHistoryLogQuery createProcessInstanceHistoryLogQuery(String processInstanceId);
-  
+    /**
+     * Deletes historic process instance. All historic activities, historic task
+     * and historic details (variable updates, form properties) are deleted as
+     * well.
+     */
+    void deleteHistoricProcessInstance(String processInstanceId);
+
+    /**
+     * creates a native query to search for {@link HistoricProcessInstance}s via
+     * SQL
+     */
+    NativeHistoricProcessInstanceQuery createNativeHistoricProcessInstanceQuery();
+
+    /**
+     * creates a native query to search for {@link HistoricTaskInstance}s via
+     * SQL
+     */
+    NativeHistoricTaskInstanceQuery createNativeHistoricTaskInstanceQuery();
+
+    /**
+     * creates a native query to search for {@link HistoricActivityInstance}s
+     * via SQL
+     */
+    NativeHistoricActivityInstanceQuery createNativeHistoricActivityInstanceQuery();
+
+    /**
+     * Retrieves the {@link HistoricIdentityLink}s associated with the given
+     * task. Such an {@link IdentityLink} informs how a certain identity (eg.
+     * group or user) is associated with a certain task (eg. as candidate,
+     * assignee, etc.), even if the task is completed as opposed to
+     * {@link IdentityLink}s which only exist for active tasks.
+     */
+    List<HistoricIdentityLink> getHistoricIdentityLinksForTask(String taskId);
+
+    /**
+     * Retrieves the {@link HistoricIdentityLink}s associated with the given
+     * process instance. Such an {@link IdentityLink} informs how a certain
+     * identity (eg. group or user) is associated with a certain process
+     * instance, even if the instance is completed as opposed to
+     * {@link IdentityLink}s which only exist for active instances.
+     */
+    List<HistoricIdentityLink> getHistoricIdentityLinksForProcessInstance(String processInstanceId);
+
+    /**
+     * Allows to retrieve the {@link ProcessInstanceHistoryLog} for one process
+     * instance.
+     */
+    ProcessInstanceHistoryLogQuery createProcessInstanceHistoryLogQuery(String processInstanceId);
+
 }

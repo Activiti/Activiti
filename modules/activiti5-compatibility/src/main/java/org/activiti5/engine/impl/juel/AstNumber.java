@@ -17,26 +17,25 @@ package org.activiti5.engine.impl.juel;
 
 import org.activiti5.engine.impl.javax.el.ELContext;
 
-
 public final class AstNumber extends AstLiteral {
-	private final Number value;
+    private final Number value;
 
-	public AstNumber(Number value) {
-		this.value = value;
-	}
+    public AstNumber(Number value) {
+        this.value = value;
+    }
 
-	@Override 
-	public Object eval(Bindings bindings, ELContext context) {
-		return value;
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return value;
+    }
 
-	@Override
-	public String toString() {
-		return value.toString();
-	}	
+    @Override
+    public String toString() {
+        return value.toString();
+    }
 
-	@Override 
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append(value);
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append(value);
+    }
 }

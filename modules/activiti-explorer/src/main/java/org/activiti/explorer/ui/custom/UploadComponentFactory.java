@@ -16,25 +16,24 @@ package org.activiti.explorer.ui.custom;
 import org.activiti.explorer.Environments;
 import org.activiti.explorer.ui.ComponentFactory;
 
-
 /**
  * @author Frederik Heremans
  */
 public class UploadComponentFactory implements ComponentFactory<UploadComponent> {
 
-  private static final long serialVersionUID = 1L;
-  protected boolean enableDrop = true; 
-          
-  @Override
-  public void initialise(String environment) {
-    if (environment.equals(Environments.ALFRESCO)) {
-      enableDrop = false;
-    }
-  }
+    private static final long serialVersionUID = 1L;
+    protected boolean enableDrop = true;
 
-  @Override
-  public UploadComponent create() {
-    return new UploadComponent(enableDrop);
-  }
+    @Override
+    public void initialise(String environment) {
+        if (environment.equals(Environments.ALFRESCO)) {
+            enableDrop = false;
+        }
+    }
+
+    @Override
+    public UploadComponent create() {
+        return new UploadComponent(enableDrop);
+    }
 
 }

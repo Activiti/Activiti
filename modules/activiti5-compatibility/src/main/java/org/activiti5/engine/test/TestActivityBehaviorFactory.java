@@ -93,293 +93,278 @@ import org.activiti5.engine.impl.test.NoOpServiceTask;
  * @author Joram Barrez
  */
 public class TestActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
-	
-	/** 
-	 * The ActivityBehaviorFactory that is constructed when the process engine was created
-	 * This class delegates to this instance, unless some mocking has been defined. 
-	 */
-	protected ActivityBehaviorFactory wrappedActivityBehaviorFactory;
-	
-	protected boolean allServiceTasksNoOp;
-	protected Map<String, String> mockedClassDelegatesMapping = new HashMap<String, String>();
-	protected Set<String> noOpServiceTaskIds = new HashSet<String>();
-	protected Set<String> noOpServiceTaskClassNames = new HashSet<String>();
-	
-	public TestActivityBehaviorFactory() {
-		
-	}
-	
-	public TestActivityBehaviorFactory(ActivityBehaviorFactory wrappedActivityBehaviorFactory) {
-		this.wrappedActivityBehaviorFactory = wrappedActivityBehaviorFactory;
-	}
-	
-	public ActivityBehaviorFactory getWrappedActivityBehaviorFactory() {
-		return wrappedActivityBehaviorFactory;
-	}
 
-	public void setWrappedActivityBehaviorFactory(
-			ActivityBehaviorFactory wrappedActivityBehaviorFactory) {
-		this.wrappedActivityBehaviorFactory = wrappedActivityBehaviorFactory;
-	}
+    /**
+     * The ActivityBehaviorFactory that is constructed when the process engine
+     * was created This class delegates to this instance, unless some mocking
+     * has been defined.
+     */
+    protected ActivityBehaviorFactory wrappedActivityBehaviorFactory;
 
-	@Override
-	public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
-		return wrappedActivityBehaviorFactory.createNoneStartEventActivityBehavior(startEvent);
-	}
+    protected boolean allServiceTasksNoOp;
+    protected Map<String, String> mockedClassDelegatesMapping = new HashMap<String, String>();
+    protected Set<String> noOpServiceTaskIds = new HashSet<String>();
+    protected Set<String> noOpServiceTaskClassNames = new HashSet<String>();
 
-	@Override
-	public EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent, String activityId) {
-		return wrappedActivityBehaviorFactory.createEventSubProcessStartEventActivityBehavior(startEvent, activityId);
-	}
+    public TestActivityBehaviorFactory() {
 
-	@Override
-	public TaskActivityBehavior createTaskActivityBehavior(Task task) {
-		return wrappedActivityBehaviorFactory.createTaskActivityBehavior(task);
-	}
+    }
 
-	@Override
-	public ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask) {
-		return wrappedActivityBehaviorFactory.createManualTaskActivityBehavior(manualTask);
-	}
+    public TestActivityBehaviorFactory(ActivityBehaviorFactory wrappedActivityBehaviorFactory) {
+        this.wrappedActivityBehaviorFactory = wrappedActivityBehaviorFactory;
+    }
 
-	@Override
-	public ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask) {
-		return wrappedActivityBehaviorFactory.createReceiveTaskActivityBehavior(receiveTask);
-	}
+    public ActivityBehaviorFactory getWrappedActivityBehaviorFactory() {
+        return wrappedActivityBehaviorFactory;
+    }
 
-	@Override
-	public UserTaskActivityBehavior createUserTaskActivityBehavior(
-			UserTask userTask, TaskDefinition taskDefinition) {
-		return wrappedActivityBehaviorFactory.createUserTaskActivityBehavior(userTask, taskDefinition);
-	}
+    public void setWrappedActivityBehaviorFactory(ActivityBehaviorFactory wrappedActivityBehaviorFactory) {
+        this.wrappedActivityBehaviorFactory = wrappedActivityBehaviorFactory;
+    }
 
-	@Override
-	public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask) {
-		
-		if (allServiceTasksNoOp 
-				|| noOpServiceTaskIds.contains(serviceTask.getId())
-				|| noOpServiceTaskClassNames.contains(serviceTask.getImplementation())) {
-			
-			return createNoOpServiceTask(serviceTask);
-			
-		} else if (serviceTask.getImplementation() != null && mockedClassDelegatesMapping.containsKey(serviceTask.getImplementation())) {
-				
-			return new ClassDelegate(mockedClassDelegatesMapping.get(serviceTask.getImplementation()),
-					createFieldDeclarations(serviceTask.getFieldExtensions()));
-			
-		}
-		
-		return wrappedActivityBehaviorFactory.createClassDelegateServiceTask(serviceTask);
-	}
+    @Override
+    public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
+        return wrappedActivityBehaviorFactory.createNoneStartEventActivityBehavior(startEvent);
+    }
 
-	private ClassDelegate createNoOpServiceTask(ServiceTask serviceTask) {
-	  List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
-	  fieldDeclarations.add(new FieldDeclaration("name", 
-	  		Expression.class.getName(), new FixedValue(serviceTask.getImplementation())));
-	  return new ClassDelegate(NoOpServiceTask.class, fieldDeclarations);
-  }
+    @Override
+    public EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent, String activityId) {
+        return wrappedActivityBehaviorFactory.createEventSubProcessStartEventActivityBehavior(startEvent, activityId);
+    }
 
-	@Override
-	public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask) {
-		return wrappedActivityBehaviorFactory.createServiceTaskDelegateExpressionActivityBehavior(serviceTask);
-	}
+    @Override
+    public TaskActivityBehavior createTaskActivityBehavior(Task task) {
+        return wrappedActivityBehaviorFactory.createTaskActivityBehavior(task);
+    }
 
-	@Override
-	public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask) {
-		return wrappedActivityBehaviorFactory.createServiceTaskExpressionActivityBehavior(serviceTask);
-	}
+    @Override
+    public ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask) {
+        return wrappedActivityBehaviorFactory.createManualTaskActivityBehavior(manualTask);
+    }
 
-	@Override
-	public WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask) {
-		return wrappedActivityBehaviorFactory.createWebServiceActivityBehavior(serviceTask);
-	}
+    @Override
+    public ReceiveTaskActivityBehavior createReceiveTaskActivityBehavior(ReceiveTask receiveTask) {
+        return wrappedActivityBehaviorFactory.createReceiveTaskActivityBehavior(receiveTask);
+    }
 
-	@Override
-	public WebServiceActivityBehavior createWebServiceActivityBehavior(SendTask sendTask) {
-		return wrappedActivityBehaviorFactory.createWebServiceActivityBehavior(sendTask);
-	}
+    @Override
+    public UserTaskActivityBehavior createUserTaskActivityBehavior(UserTask userTask, TaskDefinition taskDefinition) {
+        return wrappedActivityBehaviorFactory.createUserTaskActivityBehavior(userTask, taskDefinition);
+    }
 
-	@Override
-	public MailActivityBehavior createMailActivityBehavior(ServiceTask serviceTask) {
-		return wrappedActivityBehaviorFactory.createMailActivityBehavior(serviceTask);
-	}
+    @Override
+    public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask) {
 
-	@Override
-	public MailActivityBehavior createMailActivityBehavior(SendTask sendTask) {
-		return wrappedActivityBehaviorFactory.createMailActivityBehavior(sendTask);
-	}
+        if (allServiceTasksNoOp || noOpServiceTaskIds.contains(serviceTask.getId()) || noOpServiceTaskClassNames.contains(serviceTask.getImplementation())) {
 
-	@Override
-	public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask,BpmnModel bpmnModel) {
-		return wrappedActivityBehaviorFactory.createMuleActivityBehavior(serviceTask, bpmnModel);
-	}
+            return createNoOpServiceTask(serviceTask);
 
-	@Override
-	public ActivityBehavior createMuleActivityBehavior(SendTask sendTask,BpmnModel bpmnModel) {
-		return wrappedActivityBehaviorFactory.createMuleActivityBehavior(sendTask, bpmnModel);
-	}
+        } else if (serviceTask.getImplementation() != null && mockedClassDelegatesMapping.containsKey(serviceTask.getImplementation())) {
 
-	@Override
-	public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel) {
-		return wrappedActivityBehaviorFactory.createCamelActivityBehavior(serviceTask, bpmnModel);
-	}
+            return new ClassDelegate(mockedClassDelegatesMapping.get(serviceTask.getImplementation()), createFieldDeclarations(serviceTask.getFieldExtensions()));
 
-	@Override
-	public ActivityBehavior createCamelActivityBehavior(SendTask sendTask,BpmnModel bpmnModel) {
-		return wrappedActivityBehaviorFactory.createCamelActivityBehavior(sendTask, bpmnModel);
-	}
+        }
 
-	@Override
-	public ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask) {
-		return wrappedActivityBehaviorFactory.createShellActivityBehavior(serviceTask);
-	}
+        return wrappedActivityBehaviorFactory.createClassDelegateServiceTask(serviceTask);
+    }
 
-	@Override
-	public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
-		return wrappedActivityBehaviorFactory.createBusinessRuleTaskActivityBehavior(businessRuleTask);
-	}
+    private ClassDelegate createNoOpServiceTask(ServiceTask serviceTask) {
+        List<FieldDeclaration> fieldDeclarations = new ArrayList<FieldDeclaration>();
+        fieldDeclarations.add(new FieldDeclaration("name", Expression.class.getName(), new FixedValue(serviceTask.getImplementation())));
+        return new ClassDelegate(NoOpServiceTask.class, fieldDeclarations);
+    }
 
-	@Override
-	public ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask) {
-		return wrappedActivityBehaviorFactory.createScriptTaskActivityBehavior(scriptTask);
-	}
+    @Override
+    public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask) {
+        return wrappedActivityBehaviorFactory.createServiceTaskDelegateExpressionActivityBehavior(serviceTask);
+    }
 
-	@Override
-	public ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(ExclusiveGateway exclusiveGateway) {
-		return wrappedActivityBehaviorFactory.createExclusiveGatewayActivityBehavior(exclusiveGateway);
-	}
+    @Override
+    public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask) {
+        return wrappedActivityBehaviorFactory.createServiceTaskExpressionActivityBehavior(serviceTask);
+    }
 
-	@Override
-	public ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(ParallelGateway parallelGateway) {
-		return wrappedActivityBehaviorFactory.createParallelGatewayActivityBehavior(parallelGateway);
-	}
+    @Override
+    public WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask) {
+        return wrappedActivityBehaviorFactory.createWebServiceActivityBehavior(serviceTask);
+    }
 
-	@Override
-	public InclusiveGatewayActivityBehavior createInclusiveGatewayActivityBehavior(InclusiveGateway inclusiveGateway) {
-		return wrappedActivityBehaviorFactory.createInclusiveGatewayActivityBehavior(inclusiveGateway);
-	}
+    @Override
+    public WebServiceActivityBehavior createWebServiceActivityBehavior(SendTask sendTask) {
+        return wrappedActivityBehaviorFactory.createWebServiceActivityBehavior(sendTask);
+    }
 
-	@Override
-	public EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(EventGateway eventGateway) {
-		return wrappedActivityBehaviorFactory.createEventBasedGatewayActivityBehavior(eventGateway);
-	}
+    @Override
+    public MailActivityBehavior createMailActivityBehavior(ServiceTask serviceTask) {
+        return wrappedActivityBehaviorFactory.createMailActivityBehavior(serviceTask);
+    }
 
-	@Override
-	public SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(
-			ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
-		return wrappedActivityBehaviorFactory.createSequentialMultiInstanceBehavior(activity, innerActivityBehavior);
-	}
+    @Override
+    public MailActivityBehavior createMailActivityBehavior(SendTask sendTask) {
+        return wrappedActivityBehaviorFactory.createMailActivityBehavior(sendTask);
+    }
 
-	@Override
-	public ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(
-			ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
-		return wrappedActivityBehaviorFactory.createParallelMultiInstanceBehavior(activity, innerActivityBehavior);
-	}
+    @Override
+    public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel) {
+        return wrappedActivityBehaviorFactory.createMuleActivityBehavior(serviceTask, bpmnModel);
+    }
 
-	@Override
-	public SubProcessActivityBehavior createSubprocActivityBehavior(SubProcess subProcess) {
-		return wrappedActivityBehaviorFactory.createSubprocActivityBehavior(subProcess);
-	}
+    @Override
+    public ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel) {
+        return wrappedActivityBehaviorFactory.createMuleActivityBehavior(sendTask, bpmnModel);
+    }
 
-	@Override
-	public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity) {
-		return wrappedActivityBehaviorFactory.createCallActivityBehavior(callActivity);
-	}
+    @Override
+    public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel) {
+        return wrappedActivityBehaviorFactory.createCamelActivityBehavior(serviceTask, bpmnModel);
+    }
 
-	@Override
-	public TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction) {
-		return wrappedActivityBehaviorFactory.createTransactionActivityBehavior(transaction);
-	}
+    @Override
+    public ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel) {
+        return wrappedActivityBehaviorFactory.createCamelActivityBehavior(sendTask, bpmnModel);
+    }
 
-	@Override
-	public IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(
-			IntermediateCatchEvent intermediateCatchEvent) {
-		return wrappedActivityBehaviorFactory.createIntermediateCatchEventActivityBehavior(intermediateCatchEvent);
-	}
+    @Override
+    public ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask) {
+        return wrappedActivityBehaviorFactory.createShellActivityBehavior(serviceTask);
+    }
 
-	@Override
-	public IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(ThrowEvent throwEvent) {
-		return wrappedActivityBehaviorFactory.createIntermediateThrowNoneEventActivityBehavior(throwEvent);
-	}
+    @Override
+    public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
+        return wrappedActivityBehaviorFactory.createBusinessRuleTaskActivityBehavior(businessRuleTask);
+    }
 
-	@Override
-	public IntermediateThrowSignalEventActivityBehavior createIntermediateThrowSignalEventActivityBehavior(
-			ThrowEvent throwEvent, Signal signal,
-			EventSubscriptionDeclaration eventSubscriptionDeclaration) {
-		return wrappedActivityBehaviorFactory.createIntermediateThrowSignalEventActivityBehavior(
-				throwEvent, signal, eventSubscriptionDeclaration);
-	}
+    @Override
+    public ScriptTaskActivityBehavior createScriptTaskActivityBehavior(ScriptTask scriptTask) {
+        return wrappedActivityBehaviorFactory.createScriptTaskActivityBehavior(scriptTask);
+    }
 
-	@Override
-	public IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(
-			ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition) {
-		return wrappedActivityBehaviorFactory.createIntermediateThrowCompensationEventActivityBehavior(throwEvent, compensateEventDefinition);
-	}
+    @Override
+    public ExclusiveGatewayActivityBehavior createExclusiveGatewayActivityBehavior(ExclusiveGateway exclusiveGateway) {
+        return wrappedActivityBehaviorFactory.createExclusiveGatewayActivityBehavior(exclusiveGateway);
+    }
 
-	@Override
-	public NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent) {
-		return wrappedActivityBehaviorFactory.createNoneEndEventActivityBehavior(endEvent);
-	}
+    @Override
+    public ParallelGatewayActivityBehavior createParallelGatewayActivityBehavior(ParallelGateway parallelGateway) {
+        return wrappedActivityBehaviorFactory.createParallelGatewayActivityBehavior(parallelGateway);
+    }
 
-	@Override
-	public ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(
-			EndEvent endEvent, ErrorEventDefinition errorEventDefinition) {
-		return wrappedActivityBehaviorFactory.createErrorEndEventActivityBehavior(endEvent, errorEventDefinition);
-	}
+    @Override
+    public InclusiveGatewayActivityBehavior createInclusiveGatewayActivityBehavior(InclusiveGateway inclusiveGateway) {
+        return wrappedActivityBehaviorFactory.createInclusiveGatewayActivityBehavior(inclusiveGateway);
+    }
 
-	@Override
-	public CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(EndEvent endEvent) {
-		return wrappedActivityBehaviorFactory.createCancelEndEventActivityBehavior(endEvent);
-	}
+    @Override
+    public EventBasedGatewayActivityBehavior createEventBasedGatewayActivityBehavior(EventGateway eventGateway) {
+        return wrappedActivityBehaviorFactory.createEventBasedGatewayActivityBehavior(eventGateway);
+    }
 
-	@Override
-	public TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent) {
-		return wrappedActivityBehaviorFactory.createTerminateEndEventActivityBehavior(endEvent);
-	}
+    @Override
+    public SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+        return wrappedActivityBehaviorFactory.createSequentialMultiInstanceBehavior(activity, innerActivityBehavior);
+    }
 
-	@Override
-	public BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(
-			BoundaryEvent boundaryEvent, boolean interrupting,
-			ActivityImpl activity) {
-		return wrappedActivityBehaviorFactory.createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity);
-	}
+    @Override
+    public ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+        return wrappedActivityBehaviorFactory.createParallelMultiInstanceBehavior(activity, innerActivityBehavior);
+    }
 
-	@Override
-	public CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(
-			CancelEventDefinition cancelEventDefinition) {
-		return wrappedActivityBehaviorFactory.createCancelBoundaryEventActivityBehavior(cancelEventDefinition);
-	}
-	
-	// Mock support //////////////////////////////////////////////////////
-	
-	public void addClassDelegateMock(String originalClassFqn, Class<?> mockClass) {
-		mockedClassDelegatesMapping.put(originalClassFqn, mockClass.getName());
-	}
-	
-	public void addClassDelegateMock(String originalClassFqn, String mockedClassFqn) {
-		mockedClassDelegatesMapping.put(originalClassFqn, mockedClassFqn);
-	}
-	
-	public void addNoOpServiceTaskById(String id) {
-		noOpServiceTaskIds.add(id);
-	}
-	
-	public void addNoOpServiceTaskByClassName(String className) {
-		noOpServiceTaskClassNames.add(className);
-	}
-	
-	public void setAllServiceTasksNoOp() {
-		allServiceTasksNoOp = true;
-	}
-	
-	public void reset() {
-		this.mockedClassDelegatesMapping.clear();
-		
-		this.noOpServiceTaskIds.clear();
-		this.noOpServiceTaskClassNames.clear();
-		
-		allServiceTasksNoOp = false;
-		NoOpServiceTask.reset();
-	}
-	
+    @Override
+    public SubProcessActivityBehavior createSubprocActivityBehavior(SubProcess subProcess) {
+        return wrappedActivityBehaviorFactory.createSubprocActivityBehavior(subProcess);
+    }
+
+    @Override
+    public CallActivityBehavior createCallActivityBehavior(CallActivity callActivity) {
+        return wrappedActivityBehaviorFactory.createCallActivityBehavior(callActivity);
+    }
+
+    @Override
+    public TransactionActivityBehavior createTransactionActivityBehavior(Transaction transaction) {
+        return wrappedActivityBehaviorFactory.createTransactionActivityBehavior(transaction);
+    }
+
+    @Override
+    public IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent) {
+        return wrappedActivityBehaviorFactory.createIntermediateCatchEventActivityBehavior(intermediateCatchEvent);
+    }
+
+    @Override
+    public IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(ThrowEvent throwEvent) {
+        return wrappedActivityBehaviorFactory.createIntermediateThrowNoneEventActivityBehavior(throwEvent);
+    }
+
+    @Override
+    public IntermediateThrowSignalEventActivityBehavior createIntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal,
+            EventSubscriptionDeclaration eventSubscriptionDeclaration) {
+        return wrappedActivityBehaviorFactory.createIntermediateThrowSignalEventActivityBehavior(throwEvent, signal, eventSubscriptionDeclaration);
+    }
+
+    @Override
+    public IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition) {
+        return wrappedActivityBehaviorFactory.createIntermediateThrowCompensationEventActivityBehavior(throwEvent, compensateEventDefinition);
+    }
+
+    @Override
+    public NoneEndEventActivityBehavior createNoneEndEventActivityBehavior(EndEvent endEvent) {
+        return wrappedActivityBehaviorFactory.createNoneEndEventActivityBehavior(endEvent);
+    }
+
+    @Override
+    public ErrorEndEventActivityBehavior createErrorEndEventActivityBehavior(EndEvent endEvent, ErrorEventDefinition errorEventDefinition) {
+        return wrappedActivityBehaviorFactory.createErrorEndEventActivityBehavior(endEvent, errorEventDefinition);
+    }
+
+    @Override
+    public CancelEndEventActivityBehavior createCancelEndEventActivityBehavior(EndEvent endEvent) {
+        return wrappedActivityBehaviorFactory.createCancelEndEventActivityBehavior(endEvent);
+    }
+
+    @Override
+    public TerminateEndEventActivityBehavior createTerminateEndEventActivityBehavior(EndEvent endEvent) {
+        return wrappedActivityBehaviorFactory.createTerminateEndEventActivityBehavior(endEvent);
+    }
+
+    @Override
+    public BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent, boolean interrupting, ActivityImpl activity) {
+        return wrappedActivityBehaviorFactory.createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity);
+    }
+
+    @Override
+    public CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(CancelEventDefinition cancelEventDefinition) {
+        return wrappedActivityBehaviorFactory.createCancelBoundaryEventActivityBehavior(cancelEventDefinition);
+    }
+
+    // Mock support //////////////////////////////////////////////////////
+
+    public void addClassDelegateMock(String originalClassFqn, Class<?> mockClass) {
+        mockedClassDelegatesMapping.put(originalClassFqn, mockClass.getName());
+    }
+
+    public void addClassDelegateMock(String originalClassFqn, String mockedClassFqn) {
+        mockedClassDelegatesMapping.put(originalClassFqn, mockedClassFqn);
+    }
+
+    public void addNoOpServiceTaskById(String id) {
+        noOpServiceTaskIds.add(id);
+    }
+
+    public void addNoOpServiceTaskByClassName(String className) {
+        noOpServiceTaskClassNames.add(className);
+    }
+
+    public void setAllServiceTasksNoOp() {
+        allServiceTasksNoOp = true;
+    }
+
+    public void reset() {
+        this.mockedClassDelegatesMapping.clear();
+
+        this.noOpServiceTaskIds.clear();
+        this.noOpServiceTaskClassNames.clear();
+
+        allServiceTasksNoOp = false;
+        NoOpServiceTask.reset();
+    }
+
 }

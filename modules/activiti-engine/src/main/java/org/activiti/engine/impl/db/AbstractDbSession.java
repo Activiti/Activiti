@@ -16,16 +16,15 @@ package org.activiti.engine.impl.db;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Session;
 
-
 /**
  * @author Tom Baeyens
  */
 public abstract class AbstractDbSession implements Session {
 
-  protected DbSqlSession dbSqlSession;
+    protected DbSqlSession dbSqlSession;
 
-  public AbstractDbSession() {
-    this.dbSqlSession = Context.getCommandContext().getSession(DbSqlSession.class);
-  }
-  
+    public AbstractDbSession() {
+        this.dbSqlSession = Context.getCommandContext().getSession(DbSqlSession.class);
+    }
+
 }

@@ -18,23 +18,19 @@ import org.activiti5.engine.runtime.Execution;
 import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.test.Deployment;
 
-
 /**
  * @author Joram Barrez
  */
 public class ReceiveTaskTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testWaitStateBehavior() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
-    Execution execution = runtimeService.createExecutionQuery()
-      .processInstanceId(pi.getId())
-      .activityId("waitState")
-      .singleResult();
-    assertNotNull(execution);
-    
-    runtimeService.signal(execution.getId());
-    assertProcessEnded(pi.getId());
-  }
+    @Deployment
+    public void testWaitStateBehavior() {
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("receiveTask");
+        Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
+        assertNotNull(execution);
+
+        runtimeService.signal(execution.getId());
+        assertProcessEnded(pi.getId());
+    }
 
 }

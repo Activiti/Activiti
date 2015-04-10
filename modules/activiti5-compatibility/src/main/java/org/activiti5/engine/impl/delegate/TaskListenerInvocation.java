@@ -22,20 +22,20 @@ import org.activiti5.engine.delegate.TaskListener;
  */
 public class TaskListenerInvocation extends DelegateInvocation {
 
-  protected final TaskListener executionListenerInstance;
-  protected final DelegateTask delegateTask;
+    protected final TaskListener executionListenerInstance;
+    protected final DelegateTask delegateTask;
 
-  public TaskListenerInvocation(TaskListener executionListenerInstance, DelegateTask delegateTask) {
-    this.executionListenerInstance = executionListenerInstance;
-    this.delegateTask = delegateTask;
-  }
+    public TaskListenerInvocation(TaskListener executionListenerInstance, DelegateTask delegateTask) {
+        this.executionListenerInstance = executionListenerInstance;
+        this.delegateTask = delegateTask;
+    }
 
-  protected void invoke() throws Exception {
-    executionListenerInstance.notify(delegateTask);
-  }
-  
-  public Object getTarget() {
-    return executionListenerInstance;
-  }
+    protected void invoke() throws Exception {
+        executionListenerInstance.notify(delegateTask);
+    }
+
+    public Object getTarget() {
+        return executionListenerInstance;
+    }
 
 }

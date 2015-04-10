@@ -20,46 +20,46 @@ import java.util.Comparator;
  * @author Daniel Meyer
  */
 public class ErrorEventDefinition implements Serializable {
-  
-  public static Comparator<ErrorEventDefinition> comparator = new Comparator<ErrorEventDefinition>() {
-    public int compare(ErrorEventDefinition o1, ErrorEventDefinition o2) {
-      return o2.getPrecedence().compareTo(o1.getPrecedence());
-    }    
-  };
 
-  private static final long serialVersionUID = 1L;
+    public static Comparator<ErrorEventDefinition> comparator = new Comparator<ErrorEventDefinition>() {
+        public int compare(ErrorEventDefinition o1, ErrorEventDefinition o2) {
+            return o2.getPrecedence().compareTo(o1.getPrecedence());
+        }
+    };
 
-  protected final String handlerActivityId;
-  protected String errorCode;
-  protected Integer precedence =0;
+    private static final long serialVersionUID = 1L;
 
-  public ErrorEventDefinition(String handlerActivityId) {
-    this.handlerActivityId=handlerActivityId;
-  }
+    protected final String handlerActivityId;
+    protected String errorCode;
+    protected Integer precedence = 0;
 
-  public String getErrorCode() {
-    return errorCode;
-  }
+    public ErrorEventDefinition(String handlerActivityId) {
+        this.handlerActivityId = handlerActivityId;
+    }
 
-  public void setErrorCode(String errorCode) {
-    this.errorCode = errorCode;
-  }
+    public String getErrorCode() {
+        return errorCode;
+    }
 
-  public String getHandlerActivityId() {
-    return handlerActivityId;
-  }
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
 
-  public Integer getPrecedence() {
-    // handlers with error code take precedence over catchall-handlers
-    return precedence + (errorCode != null ? 1 : 0);
-  }
+    public String getHandlerActivityId() {
+        return handlerActivityId;
+    }
 
-  public void setPrecedence(Integer precedence) {
-    this.precedence = precedence;
-  }
+    public Integer getPrecedence() {
+        // handlers with error code take precedence over catchall-handlers
+        return precedence + (errorCode != null ? 1 : 0);
+    }
 
-  public boolean catches(String errorCode) {
-    return errorCode == null || this.errorCode == null || this.errorCode.equals(errorCode) ;
-  }
+    public void setPrecedence(Integer precedence) {
+        this.precedence = precedence;
+    }
+
+    public boolean catches(String errorCode) {
+        return errorCode == null || this.errorCode == null || this.errorCode.equals(errorCode);
+    }
 
 }

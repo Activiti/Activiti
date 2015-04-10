@@ -20,47 +20,47 @@ import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 public class TestMultipleActivitiEventListener implements ActivitiEventListener {
 
-	private List<ActivitiEvent> eventsReceived;
-	private List<Class<?>> entityClasses;
-	private List<Class<?>> eventClasses;
+    private List<ActivitiEvent> eventsReceived;
+    private List<Class<?>> entityClasses;
+    private List<Class<?>> eventClasses;
 
-	public TestMultipleActivitiEventListener() {
-		eventsReceived = new ArrayList<ActivitiEvent>();
-  }
+    public TestMultipleActivitiEventListener() {
+        eventsReceived = new ArrayList<ActivitiEvent>();
+    }
 
-	public List<ActivitiEvent> getEventsReceived() {
-	  return eventsReceived;
-  }
-	
-	public void clearEventsReceived() {
-		eventsReceived.clear();
-	}
-	
-	@Override
-	public void onEvent(ActivitiEvent event) {
-		if(isAssignableFrom(eventClasses, event) && isAssignableFrom(entityClasses, ((ActivitiEntityEvent) event).getEntity())) {
-			eventsReceived.add(event);
-		}
-	}
+    public List<ActivitiEvent> getEventsReceived() {
+        return eventsReceived;
+    }
 
-  private boolean isAssignableFrom(Collection<Class<?>>classes, Object entity) {
-    for (Class<?> itemClass : classes) {
-      if (itemClass.isAssignableFrom(entity.getClass()))
+    public void clearEventsReceived() {
+        eventsReceived.clear();
+    }
+
+    @Override
+    public void onEvent(ActivitiEvent event) {
+        if (isAssignableFrom(eventClasses, event) && isAssignableFrom(entityClasses, ((ActivitiEntityEvent) event).getEntity())) {
+            eventsReceived.add(event);
+        }
+    }
+
+    private boolean isAssignableFrom(Collection<Class<?>> classes, Object entity) {
+        for (Class<?> itemClass : classes) {
+            if (itemClass.isAssignableFrom(entity.getClass()))
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isFailOnException() {
         return true;
     }
-    return false;
-  }
 
-	@Override
-	public boolean isFailOnException() {
-		return true;
-	}
+    public void setEntityClasses(Class<?>... entityClasses) {
+        this.entityClasses = Arrays.asList(entityClasses);
+    }
 
-  public void setEntityClasses(Class<?>... entityClasses) {
-    this.entityClasses = Arrays.asList(entityClasses);
-  }
-
-  public void setEventClasses(Class<?>... eventClasses) {
-    this.eventClasses = Arrays.asList(eventClasses);
-  }
+    public void setEventClasses(Class<?>... eventClasses) {
+        this.eventClasses = Arrays.asList(eventClasses);
+    }
 }

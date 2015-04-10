@@ -19,26 +19,23 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.management.TableMetaData;
 
-
 /**
  * @author Joram Barrez
  */
 public class GetTableMetaDataCmd implements Command<TableMetaData>, Serializable {
-  
-  private static final long serialVersionUID = 1L;
-  protected String tableName;
-  
-  public GetTableMetaDataCmd(String tableName) {
-    this.tableName = tableName;
-  }
-  
-  public TableMetaData execute(CommandContext commandContext) {
-    if(tableName == null) {
-      throw new ActivitiIllegalArgumentException("tableName is null");
+
+    private static final long serialVersionUID = 1L;
+    protected String tableName;
+
+    public GetTableMetaDataCmd(String tableName) {
+        this.tableName = tableName;
     }
-    return commandContext
-      .getTableDataManager()
-      .getTableMetaData(tableName);
-  }
+
+    public TableMetaData execute(CommandContext commandContext) {
+        if (tableName == null) {
+            throw new ActivitiIllegalArgumentException("tableName is null");
+        }
+        return commandContext.getTableDataManager().getTableMetaData(tableName);
+    }
 
 }

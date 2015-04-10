@@ -18,10 +18,10 @@ package org.activiti5.engine.impl.interceptor;
  */
 public interface CommandInterceptor {
 
-  <T> T execute(CommandConfig config, Command<T> command);
- 
-  CommandInterceptor getNext();
+    <T> T execute(CommandConfig config, Command<T> command);
 
-  void setNext(CommandInterceptor next);
+    CommandInterceptor getNext();
+
+    void setNext(CommandInterceptor next);
 
 }

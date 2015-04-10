@@ -20,63 +20,76 @@ import java.util.Map;
 import org.activiti5.engine.IdentityService;
 import org.activiti5.engine.runtime.ProcessInstance;
 
-/** A single execution of a whole process definition that is stored permanently.
+/**
+ * A single execution of a whole process definition that is stored permanently.
  * 
  * @author Christian Stettler
  */
 public interface HistoricProcessInstance {
-  
-  /** The process instance id (== as the id for the runtime {@link ProcessInstance process instance}). */
-  String getId();
-  
-  /** The user provided unique reference to this process instance. */
-  String getBusinessKey();
 
-  /** The process definition reference. */
-  String getProcessDefinitionId();
+    /**
+     * The process instance id (== as the id for the runtime
+     * {@link ProcessInstance process instance}).
+     */
+    String getId();
 
-  /** The time the process was started. */
-  Date getStartTime();
+    /** The user provided unique reference to this process instance. */
+    String getBusinessKey();
 
-  /** The time the process was ended. */
-  Date getEndTime();
+    /** The process definition reference. */
+    String getProcessDefinitionId();
 
-  /** The difference between {@link #getEndTime()} and {@link #getStartTime()} . */
-  Long getDurationInMillis();
+    /** The time the process was started. */
+    Date getStartTime();
 
-  /** Reference to the activity in which this process instance ended.
-   *  Note that a process instance can have multiple end events, in this case it might not be deterministic
-   *  which activity id will be referenced here. Use a {@link HistoricActivityInstanceQuery} instead to query
-   *  for end events of the process instance (use the activityTYpe attribute)
-   *  */
-  @Deprecated
-  String getEndActivityId();
-  
-  /** The authenticated user that started this process instance. 
-   * @see IdentityService#setAuthenticatedUserId(String) */
-  String getStartUserId();
-  
-  /** The start activity. */
-  String getStartActivityId();
+    /** The time the process was ended. */
+    Date getEndTime();
 
-  /** Obtains the reason for the process instance's deletion. */
-  String getDeleteReason();
-  
-  /**
-   * The process instance id of a potential super process instance or null if no super process instance exists
-   */
-  String getSuperProcessInstanceId();
-  
-  /**
-   * The tenant identifier for the process instance.
-   */
-  String getTenantId();
-  
-  /**
-   * The name for the process instance.
-   */
-  String getName();
-  
-  /** Returns the process variables if requested in the process instance query */
-  Map<String, Object> getProcessVariables();
+    /**
+     * The difference between {@link #getEndTime()} and {@link #getStartTime()}
+     * .
+     */
+    Long getDurationInMillis();
+
+    /**
+     * Reference to the activity in which this process instance ended. Note that
+     * a process instance can have multiple end events, in this case it might
+     * not be deterministic which activity id will be referenced here. Use a
+     * {@link HistoricActivityInstanceQuery} instead to query for end events of
+     * the process instance (use the activityTYpe attribute)
+     * */
+    @Deprecated
+    String getEndActivityId();
+
+    /**
+     * The authenticated user that started this process instance.
+     * 
+     * @see IdentityService#setAuthenticatedUserId(String)
+     */
+    String getStartUserId();
+
+    /** The start activity. */
+    String getStartActivityId();
+
+    /** Obtains the reason for the process instance's deletion. */
+    String getDeleteReason();
+
+    /**
+     * The process instance id of a potential super process instance or null if
+     * no super process instance exists
+     */
+    String getSuperProcessInstanceId();
+
+    /**
+     * The tenant identifier for the process instance.
+     */
+    String getTenantId();
+
+    /**
+     * The name for the process instance.
+     */
+    String getName();
+
+    /** Returns the process variables if requested in the process instance query */
+    Map<String, Object> getProcessVariables();
 }

@@ -25,49 +25,48 @@ import org.activiti5.engine.impl.scripting.ScriptingEngines;
  */
 public class ScriptTaskListener implements TaskListener {
 
-	private static final long serialVersionUID = -8915149072830499057L;
+    private static final long serialVersionUID = -8915149072830499057L;
 
-  protected Expression script;
+    protected Expression script;
 
-  protected Expression language = null;
+    protected Expression language = null;
 
-  protected Expression resultVariable = null;
-  
-  protected boolean autoStoreVariables;
+    protected Expression resultVariable = null;
 
-	public void notify(DelegateTask delegateTask) {
-		if (script == null) {
-			throw new IllegalArgumentException("The field 'script' should be set on the TaskListener");
-		}
+    protected boolean autoStoreVariables;
 
-		if (language == null) {
-			throw new IllegalArgumentException("The field 'language' should be set on the TaskListener");
-		}
+    public void notify(DelegateTask delegateTask) {
+        if (script == null) {
+            throw new IllegalArgumentException("The field 'script' should be set on the TaskListener");
+        }
 
-		ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+        if (language == null) {
+            throw new IllegalArgumentException("The field 'language' should be set on the TaskListener");
+        }
 
-		Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask, autoStoreVariables);
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
-		if (resultVariable != null) {
-			delegateTask.setVariable(resultVariable.getExpressionText(), result);
-		}
-	}
-	
-	public void setScript(Expression script) {
-		this.script = script;
-	}
+        Object result = scriptingEngines.evaluate(script.getExpressionText(), language.getExpressionText(), delegateTask, autoStoreVariables);
 
-	public void setLanguage(Expression language) {
-		this.language = language;
-	}
+        if (resultVariable != null) {
+            delegateTask.setVariable(resultVariable.getExpressionText(), result);
+        }
+    }
 
-	public void setResultVariable(Expression resultVariable) {
-		this.resultVariable = resultVariable;
-	}
+    public void setScript(Expression script) {
+        this.script = script;
+    }
 
-  public void setAutoStoreVariables(boolean autoStoreVariables) {
-    this.autoStoreVariables = autoStoreVariables;
-  }
-	
-	
+    public void setLanguage(Expression language) {
+        this.language = language;
+    }
+
+    public void setResultVariable(Expression resultVariable) {
+        this.resultVariable = resultVariable;
+    }
+
+    public void setAutoStoreVariables(boolean autoStoreVariables) {
+        this.autoStoreVariables = autoStoreVariables;
+    }
+
 }

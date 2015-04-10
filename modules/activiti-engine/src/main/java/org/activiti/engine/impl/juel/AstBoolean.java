@@ -17,26 +17,25 @@ package org.activiti.engine.impl.juel;
 
 import org.activiti.engine.impl.javax.el.ELContext;
 
-
 public final class AstBoolean extends AstLiteral {
-	private final boolean value;
+    private final boolean value;
 
-	public AstBoolean(boolean value) {
-		this.value = value;
-	}
+    public AstBoolean(boolean value) {
+        this.value = value;
+    }
 
-	@Override 
-	public Object eval(Bindings bindings, ELContext context) {
-		return value;
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return value;
+    }
 
-	@Override
-	public String toString() {
-		return String.valueOf(value);
-	}	
+    @Override
+    public String toString() {
+        return String.valueOf(value);
+    }
 
-	@Override 
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append(value);
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append(value);
+    }
 }

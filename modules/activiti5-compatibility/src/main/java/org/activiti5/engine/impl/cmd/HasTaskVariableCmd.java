@@ -22,46 +22,43 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 import org.activiti5.engine.task.Task;
 
-
 /**
  * @author Frederik Heremans
  */
 public class HasTaskVariableCmd implements Command<Boolean>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String taskId;
-  protected String variableName;
-  protected boolean isLocal;
+    private static final long serialVersionUID = 1L;
+    protected String taskId;
+    protected String variableName;
+    protected boolean isLocal;
 
-  public HasTaskVariableCmd(String taskId, String variableName, boolean isLocal) {
-    this.taskId = taskId;
-    this.variableName = variableName;
-    this.isLocal = isLocal;
-  }
+    public HasTaskVariableCmd(String taskId, String variableName, boolean isLocal) {
+        this.taskId = taskId;
+        this.variableName = variableName;
+        this.isLocal = isLocal;
+    }
 
-  public Boolean execute(CommandContext commandContext) {
-    if(taskId == null) {
-      throw new ActivitiIllegalArgumentException("taskId is null");
+    public Boolean execute(CommandContext commandContext) {
+        if (taskId == null) {
+            throw new ActivitiIllegalArgumentException("taskId is null");
+        }
+        if (variableName == null) {
+            throw new ActivitiIllegalArgumentException("variableName is null");
+        }
+
+        TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+
+        if (task == null) {
+            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
+        }
+        boolean hasVariable = false;
+
+        if (isLocal) {
+            hasVariable = task.hasVariableLocal(variableName);
+        } else {
+            hasVariable = task.hasVariable(variableName);
+        }
+
+        return hasVariable;
     }
-    if(variableName == null) {
-      throw new ActivitiIllegalArgumentException("variableName is null");
-    }
-    
-    TaskEntity task = commandContext
-      .getTaskEntityManager()
-      .findTaskById(taskId);
-    
-    if (task==null) {
-      throw new ActivitiObjectNotFoundException("task "+taskId+" doesn't exist", Task.class);
-    }
-    boolean hasVariable = false;
-    
-    if (isLocal) {
-      hasVariable = task.hasVariableLocal(variableName);
-    } else {
-      hasVariable = task.hasVariable(variableName);
-    }
-    
-    return hasVariable;
-  }
 }

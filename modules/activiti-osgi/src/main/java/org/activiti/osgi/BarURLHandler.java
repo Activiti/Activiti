@@ -37,15 +37,17 @@ public class BarURLHandler extends AbstractURLStreamHandlerService {
 
     /**
      * Open the connection for the given URL.
-     *
-     * @param url the url from which to open a connection.
+     * 
+     * @param url
+     *            the url from which to open a connection.
      * @return a connection on the specified URL.
-     * @throws IOException if an error occurs or if the URL is malformed.
+     * @throws IOException
+     *             if an error occurs or if the URL is malformed.
      */
     @Override
     public URLConnection openConnection(URL url) throws IOException {
         if (url.getPath() == null || url.getPath().trim().length() == 0) {
-            throw new MalformedURLException("Path can not be null or empty. Syntax: " + SYNTAX );
+            throw new MalformedURLException("Path can not be null or empty. Syntax: " + SYNTAX);
         }
         barXmlURL = new URL(url.getPath());
 
@@ -70,22 +72,19 @@ public class BarURLHandler extends AbstractURLStreamHandlerService {
         @Override
         public InputStream getInputStream() throws IOException {
             final PipedInputStream pin = new PipedInputStream();
-            final PipedOutputStream pout = new PipedOutputStream( pin );
+            final PipedOutputStream pout = new PipedOutputStream(pin);
             new Thread() {
                 public void run() {
                     try {
                         BarTransformer.transform(barXmlURL, pout);
-                    }
-                    catch( Exception e ) {
-                        LOGGER.warn("Bundle cannot be generated" );
-                    }
-                    finally {
+                    } catch (Exception e) {
+                        LOGGER.warn("Bundle cannot be generated");
+                    } finally {
                         try {
                             pout.close();
-                        }
-                        catch( IOException ignore ) {
+                        } catch (IOException ignore) {
                             // if we get here something is very wrong
-                            LOGGER.error("Bundle cannot be generated", ignore );
+                            LOGGER.error("Bundle cannot be generated", ignore);
                         }
                     }
                 }

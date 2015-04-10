@@ -27,150 +27,81 @@ import org.activiti.engine.test.pvm.activities.EmbeddedSubProcess;
 import org.activiti.engine.test.pvm.activities.EventScopeCreatingSubprocess;
 import org.activiti.engine.test.pvm.activities.WaitState;
 
-
 /**
  * 
  * @author Daniel Meyer
  */
 public class PvmEventScopesTest extends PvmTestCase {
-  
-  /** 
-   * 
-   *                       create evt scope --+
-   *                                          |   
-   *                                          v                                        
-   *                                          
-   *           +------------------------------+
-   *           | embedded subprocess          |
-   * +-----+   |  +-----------+   +---------+ |   +----+   +---+
-   * |start|-->|  |startInside|-->|endInside| |-->|wait|-->|end|
-   * +-----+   |  +-----------+   +---------+ |   +----+   +---+
-   *           +------------------------------+
-   *           
-   *                                                           ^  
-   *                                                           |
-   *                                       destroy evt scope --+  
-   *           
-   */
-  public void testActivityEndDestroysEventScopes() {
-      PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .createActivity("start")
-        .initial()
-        .behavior(new Automatic())
-        .transition("embeddedsubprocess")
-      .endActivity()
-      .createActivity("embeddedsubprocess")
-        .scope()
-        .behavior(new EventScopeCreatingSubprocess())
-        .createActivity("startInside")
-          .behavior(new Automatic())
-          .transition("endInside")
-        .endActivity()
-         .createActivity("endInside")
-          .behavior(new Automatic())
-        .endActivity()       
-      .transition("wait")
-      .endActivity()
-      .createActivity("wait")
-        .behavior(new WaitState())
-        .transition("end")
-      .endActivity()
-      .createActivity("end")
-        .behavior(new Automatic())
-      .endActivity()
-    .buildProcessDefinition();
-    
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
-    processInstance.start();
-    
-    boolean eventScopeFound = false;
-    List<ExecutionImpl> executions = ((ExecutionImpl)processInstance).getExecutions();
-    for (ExecutionImpl executionImpl : executions) {
-      if(executionImpl.isEventScope()) {
-        eventScopeFound = true;
-        break;
-      }
+
+    /**
+     * 
+     * create evt scope --+ | v
+     * 
+     * +------------------------------+ | embedded subprocess | +-----+ |
+     * +-----------+ +---------+ | +----+ +---+ |start|-->|
+     * |startInside|-->|endInside| |-->|wait|-->|end| +-----+ | +-----------+
+     * +---------+ | +----+ +---+ +------------------------------+
+     * 
+     * ^ | destroy evt scope --+
+     * 
+     */
+    public void testActivityEndDestroysEventScopes() {
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("embeddedsubprocess").endActivity()
+                .createActivity("embeddedsubprocess").scope().behavior(new EventScopeCreatingSubprocess()).createActivity("startInside").behavior(new Automatic()).transition("endInside")
+                .endActivity().createActivity("endInside").behavior(new Automatic()).endActivity().transition("wait").endActivity().createActivity("wait").behavior(new WaitState()).transition("end")
+                .endActivity().createActivity("end").behavior(new Automatic()).endActivity().buildProcessDefinition();
+
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.start();
+
+        boolean eventScopeFound = false;
+        List<ExecutionImpl> executions = ((ExecutionImpl) processInstance).getExecutions();
+        for (ExecutionImpl executionImpl : executions) {
+            if (executionImpl.isEventScope()) {
+                eventScopeFound = true;
+                break;
+            }
+        }
+
+        assertTrue(eventScopeFound);
+
+        processInstance.signal(null, null);
+
+        assertTrue(processInstance.isEnded());
+
     }
-    
-    assertTrue(eventScopeFound);
-    
-    processInstance.signal(null, null);
 
-    assertTrue(processInstance.isEnded());
-         
-  }
-  
-  
-  /** 
-   *           +----------------------------------------------------------------------+
-   *           | embedded subprocess                                                  |
-   *           |                                                                      |
-   *           |                                create evt scope --+                  |
-   *           |                                                   |                  |
-   *           |                                                   v                  |
-   *           |                                                                      |
-   *           |                  +--------------------------------+                  |
-   *           |                  | nested embedded subprocess     |                  |
-   * +-----+   | +-----------+    |  +-----------------+           |   +----+   +---+ |   +---+
-   * |start|-->| |startInside|--> |  |startNestedInside|           |-->|wait|-->|end| |-->|end|
-   * +-----+   | +-----------+    |  +-----------------+           |   +----+   +---+ |   +---+
-   *           |                  +--------------------------------+                  |
-   *           |                                                                      |
-   *           +----------------------------------------------------------------------+
-   *           
-   *                                                                                  ^  
-   *                                                                                  |
-   *                                                              destroy evt scope --+  
-   */
-  public void testTransitionDestroysEventScope() {
-    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder()
-      .createActivity("start")
-        .initial()
-        .behavior(new Automatic())
-        .transition("embeddedsubprocess")
-      .endActivity()
-      .createActivity("embeddedsubprocess")
-        .scope()
-        .behavior(new EmbeddedSubProcess())
-        .createActivity("startInside")
-          .behavior(new Automatic())
-          .transition("nestedSubProcess")
-        .endActivity()
-          .createActivity("nestedSubProcess")
-          .scope()
-          .behavior(new EventScopeCreatingSubprocess())
-            .createActivity("startNestedInside")
-              .behavior(new Automatic())            
-              .endActivity()
-            .transition("wait")
-          .endActivity()
-          .createActivity("wait")
-            .behavior(new WaitState())
-            .transition("endInside")
-          .endActivity()
-          .createActivity("endInside")
-            .behavior(new Automatic())
-            .endActivity()
-      .transition("end")
-      .endActivity()
-      .createActivity("end")
-        .behavior(new Automatic())
-      .endActivity()
-    .buildProcessDefinition();
-    
-    PvmProcessInstance processInstance = processDefinition.createProcessInstance(); 
-    processInstance.start();
-    
-    List<String> expectedActiveActivityIds = new ArrayList<String>();
-    expectedActiveActivityIds.add("wait");
-    assertEquals(expectedActiveActivityIds, processInstance.findActiveActivityIds());
-    
+    /**
+     * +----------------------------------------------------------------------+
+     * | embedded subprocess | | | | create evt scope --+ | | | | | v | | | |
+     * +--------------------------------+ | | | nested embedded subprocess | |
+     * +-----+ | +-----------+ | +-----------------+ | +----+ +---+ | +---+
+     * |start|-->| |startInside|--> | |startNestedInside| |-->|wait|-->|end|
+     * |-->|end| +-----+ | +-----------+ | +-----------------+ | +----+ +---+ |
+     * +---+ | +--------------------------------+ | | |
+     * +----------------------------------------------------------------------+
+     * 
+     * ^ | destroy evt scope --+
+     */
+    public void testTransitionDestroysEventScope() {
+        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("embeddedsubprocess").endActivity()
+                .createActivity("embeddedsubprocess").scope().behavior(new EmbeddedSubProcess()).createActivity("startInside").behavior(new Automatic()).transition("nestedSubProcess").endActivity()
+                .createActivity("nestedSubProcess").scope().behavior(new EventScopeCreatingSubprocess()).createActivity("startNestedInside").behavior(new Automatic()).endActivity().transition("wait")
+                .endActivity().createActivity("wait").behavior(new WaitState()).transition("endInside").endActivity().createActivity("endInside").behavior(new Automatic()).endActivity()
+                .transition("end").endActivity().createActivity("end").behavior(new Automatic()).endActivity().buildProcessDefinition();
 
-    PvmExecution execution = processInstance.findExecution("wait");
-    execution.signal(null, null);
-    
-    assertTrue(processInstance.isEnded());
-    
-  }
+        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+        processInstance.start();
+
+        List<String> expectedActiveActivityIds = new ArrayList<String>();
+        expectedActiveActivityIds.add("wait");
+        assertEquals(expectedActiveActivityIds, processInstance.findActiveActivityIds());
+
+        PvmExecution execution = processInstance.findExecution("wait");
+        execution.signal(null, null);
+
+        assertTrue(processInstance.isEnded());
+
+    }
 
 }

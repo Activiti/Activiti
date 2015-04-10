@@ -22,16 +22,16 @@ import org.activiti.rest.service.api.RestResponseFactory;
  * @author Tijs Rademakers
  */
 public class HistoricActivityInstancePaginateList extends AbstractPaginateList {
-  
-  protected RestResponseFactory restResponseFactory;
-  
-  public HistoricActivityInstancePaginateList(RestResponseFactory restResponseFactory) {
-    this.restResponseFactory = restResponseFactory;
-  }
-  
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  @Override
-  protected List processList(List list) {
-    return restResponseFactory.createHistoricActivityInstanceResponseList(list);
-  }
+
+    protected RestResponseFactory restResponseFactory;
+
+    public HistoricActivityInstancePaginateList(RestResponseFactory restResponseFactory) {
+        this.restResponseFactory = restResponseFactory;
+    }
+
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    @Override
+    protected List processList(List list) {
+        return restResponseFactory.createHistoricActivityInstanceResponseList(list);
+    }
 }

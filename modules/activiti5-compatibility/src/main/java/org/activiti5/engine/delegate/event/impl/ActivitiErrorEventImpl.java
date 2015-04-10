@@ -17,23 +17,24 @@ import org.activiti5.engine.delegate.event.ActivitiEventType;
 
 /**
  * Implementation of an {@link ActivitiErrorEvent}.
+ * 
  * @author Frederik Heremans
  */
 public class ActivitiErrorEventImpl extends ActivitiActivityEventImpl implements ActivitiErrorEvent {
 
-	protected String errorCode;
-	
-	public ActivitiErrorEventImpl(ActivitiEventType type) {
-	  super(type);
-  }
-	
-	public void setErrorCode(String errorCode) {
-	  this.errorCode = errorCode;
-  }
-	
-	@Override
-	public String getErrorCode() {
-	  return errorCode;
-	}
+    protected String errorCode;
+
+    public ActivitiErrorEventImpl(ActivitiEventType type) {
+        super(type);
+    }
+
+    public void setErrorCode(String errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    @Override
+    public String getErrorCode() {
+        return errorCode;
+    }
 
 }

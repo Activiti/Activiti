@@ -27,47 +27,46 @@ import org.slf4j.LoggerFactory;
  * @author Joram Barrez
  */
 public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHandler<CompensateEventDefinition> {
-	
-	private static final Logger logger = LoggerFactory.getLogger(CompensateEventDefinitionParseHandler.class);
 
-  public Class< ? extends BaseElement> getHandledType() {
-    return CompensateEventDefinition.class;
-  }
+    private static final Logger logger = LoggerFactory.getLogger(CompensateEventDefinitionParseHandler.class);
 
-  protected void executeParse(BpmnParse bpmnParse, CompensateEventDefinition eventDefinition) {
-    
-    ScopeImpl scope = bpmnParse.getCurrentScope();
-    if(StringUtils.isNotEmpty(eventDefinition.getActivityRef())) {
-      if(scope.findActivity(eventDefinition.getActivityRef()) == null) {
-        logger.warn("Invalid attribute value for 'activityRef': no activity with id '" + eventDefinition.getActivityRef() +
-            "' in current scope " + scope.getId());
-      }
+    public Class<? extends BaseElement> getHandledType() {
+        return CompensateEventDefinition.class;
     }
-    
-    org.activiti5.engine.impl.bpmn.parser.CompensateEventDefinition compensateEventDefinition = 
-            new org.activiti5.engine.impl.bpmn.parser.CompensateEventDefinition();
-    compensateEventDefinition.setActivityRef(eventDefinition.getActivityRef());
-    compensateEventDefinition.setWaitForCompletion(eventDefinition.isWaitForCompletion());
-    
-    ActivityImpl activity = bpmnParse.getCurrentActivity();
-    if (bpmnParse.getCurrentFlowElement() instanceof ThrowEvent) {
-      
-      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowCompensationEventActivityBehavior((ThrowEvent) bpmnParse.getCurrentFlowElement(), compensateEventDefinition));
-      
-    } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-     
-      BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-      boolean interrupting = boundaryEvent.isCancelActivity();
-      
-      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
-      activity.setProperty("type", "compensationBoundaryCatch");
-      
-    } else {
-      
-      // What to do?
-      
+
+    protected void executeParse(BpmnParse bpmnParse, CompensateEventDefinition eventDefinition) {
+
+        ScopeImpl scope = bpmnParse.getCurrentScope();
+        if (StringUtils.isNotEmpty(eventDefinition.getActivityRef())) {
+            if (scope.findActivity(eventDefinition.getActivityRef()) == null) {
+                logger.warn("Invalid attribute value for 'activityRef': no activity with id '" + eventDefinition.getActivityRef() + "' in current scope " + scope.getId());
+            }
+        }
+
+        org.activiti5.engine.impl.bpmn.parser.CompensateEventDefinition compensateEventDefinition = new org.activiti5.engine.impl.bpmn.parser.CompensateEventDefinition();
+        compensateEventDefinition.setActivityRef(eventDefinition.getActivityRef());
+        compensateEventDefinition.setWaitForCompletion(eventDefinition.isWaitForCompletion());
+
+        ActivityImpl activity = bpmnParse.getCurrentActivity();
+        if (bpmnParse.getCurrentFlowElement() instanceof ThrowEvent) {
+
+            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowCompensationEventActivityBehavior((ThrowEvent) bpmnParse.getCurrentFlowElement(),
+                    compensateEventDefinition));
+
+        } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
+
+            BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
+            boolean interrupting = boundaryEvent.isCancelActivity();
+
+            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
+            activity.setProperty("type", "compensationBoundaryCatch");
+
+        } else {
+
+            // What to do?
+
+        }
+
     }
-    
-  }
-  
+
 }

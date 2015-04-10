@@ -13,19 +13,18 @@
 
 package org.activiti5.engine.impl.pvm;
 
-
 /**
  * @author Tom Baeyens
  */
 public class PvmException extends RuntimeException {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public PvmException(String message, Throwable cause) {
-    super(message, cause);
-  }
+    public PvmException(String message, Throwable cause) {
+        super(message, cause);
+    }
 
-  public PvmException(String message) {
-    super(message);
-  }
+    public PvmException(String message) {
+        super(message);
+    }
 }

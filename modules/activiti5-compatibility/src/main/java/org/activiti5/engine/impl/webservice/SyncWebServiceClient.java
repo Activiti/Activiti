@@ -12,21 +12,22 @@
  */
 package org.activiti5.engine.impl.webservice;
 
-
 /**
- * A dynamic web service client that allows to perform synchronous calls
- * to a specific web service.
+ * A dynamic web service client that allows to perform synchronous calls to a
+ * specific web service.
  * 
  * @author Esteban Robles Luna
  */
 public interface SyncWebServiceClient {
 
-  /**
-   * Synchronously invoke a web service method with some arguments. 
-   * 
-   * @param methodName a not null method name
-   * @param arguments a not null list of arguments
-   * @return the result of invoking the method of the web service
-   */
-  Object[] send(String methodName, Object[] arguments) throws Exception;
+    /**
+     * Synchronously invoke a web service method with some arguments.
+     * 
+     * @param methodName
+     *            a not null method name
+     * @param arguments
+     *            a not null list of arguments
+     * @return the result of invoking the method of the web service
+     */
+    Object[] send(String methodName, Object[] arguments) throws Exception;
 }

@@ -19,8 +19,8 @@ package org.activiti.engine.impl.bpmn.webservice;
  */
 public interface BpmnInterfaceImplementation {
 
-  /**
-   * @return the name of this implementation
-   */
-  String getName();
+    /**
+     * @return the name of this implementation
+     */
+    String getName();
 }

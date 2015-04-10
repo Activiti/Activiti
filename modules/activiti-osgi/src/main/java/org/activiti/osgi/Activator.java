@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * OSGi Activator
+ * 
  * @author <a href="gnodet@gmail.com">Guillaume Nodet</a>
  */
 public class Activator implements BundleActivator {
@@ -37,30 +38,14 @@ public class Activator implements BundleActivator {
     private List<Runnable> callbacks = new ArrayList<Runnable>();
 
     public void start(BundleContext context) throws Exception {
-        callbacks.add(new Service(
-                context,
-                URLStreamHandlerService.class.getName(),
-                new BpmnURLHandler(),
-                props("url.handler.protocol", "bpmn")));
-        callbacks.add(new Service(
-                context,
-                URLStreamHandlerService.class.getName(),
-                new BarURLHandler(),
-                props("url.handler.protocol", "bar")));
+        callbacks.add(new Service(context, URLStreamHandlerService.class.getName(), new BpmnURLHandler(), props("url.handler.protocol", "bpmn")));
+        callbacks.add(new Service(context, URLStreamHandlerService.class.getName(), new BarURLHandler(), props("url.handler.protocol", "bar")));
         try {
-            callbacks.add(new Service(
-                    context,
-                    new String[] { ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName() },
-                    new BpmnDeploymentListener(),
-                    null));
-            callbacks.add(new Service(
-                    context,
-                    new String[] { ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName() },
-                    new BarDeploymentListener(),
-                    null));
+            callbacks.add(new Service(context, new String[] { ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName() }, new BpmnDeploymentListener(), null));
+            callbacks.add(new Service(context, new String[] { ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName() }, new BarDeploymentListener(), null));
         } catch (NoClassDefFoundError e) {
-            LOGGER.warn("FileInstall package is not available, disabling fileinstall support" );
-            LOGGER.debug("FileInstall package is not available, disabling fileinstall support", e );
+            LOGGER.warn("FileInstall package is not available, disabling fileinstall support");
+            LOGGER.debug("FileInstall package is not available, disabling fileinstall support", e);
         }
         callbacks.add(new Tracker(new Extender(context)));
     }
@@ -71,10 +56,10 @@ public class Activator implements BundleActivator {
         }
     }
 
-    private static Dictionary<String,String> props(String... args) {
+    private static Dictionary<String, String> props(String... args) {
         Dictionary<String, String> props = new Hashtable<String, String>();
         for (int i = 0; i < args.length / 2; i++) {
-            props.put(args[2*i], args[2*i+1]);
+            props.put(args[2 * i], args[2 * i + 1]);
         }
         return props;
     }

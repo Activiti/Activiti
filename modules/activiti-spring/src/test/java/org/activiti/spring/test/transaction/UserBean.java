@@ -21,7 +21,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.sql.DataSource;
 
-
 /**
  * @author Tom Baeyens
  */
@@ -63,7 +62,8 @@ public class UserBean {
         taskService.complete(taskId);
     }
 
-    // getters and setters //////////////////////////////////////////////////////
+    // getters and setters
+    // //////////////////////////////////////////////////////
 
     @Required
     public void setRuntimeService(RuntimeService runtimeService) {

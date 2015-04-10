@@ -28,42 +28,42 @@ import org.osgi.framework.InvalidSyntaxException;
  */
 public class OsgiScriptingEngines extends ScriptingEngines {
 
-  public OsgiScriptingEngines(ScriptBindingsFactory scriptBindingsFactory) {
-    super(scriptBindingsFactory);
-  }
-
-  public OsgiScriptingEngines(ScriptEngineManager scriptEngineManager) {
-    super(scriptEngineManager);
-  }
-
-  @Override
-  public Object evaluate(String script, String language, VariableScope variableScope) {
-    Bindings bindings = createBindings(variableScope);
-    return evaluate(script, language, bindings);
-  }
-  
-  @Override
-  public Object evaluate(String script, String language, VariableScope variableScope, boolean storeScriptVariables) {
-    return evaluate(script, language, createBindings(variableScope, storeScriptVariables));
-  }
-  
-  @Override
-  protected Object evaluate(String script, String language, Bindings bindings) {
-    ScriptEngine scriptEngine = null;
-    try {
-      scriptEngine = Extender.resolveScriptEngine(language);
-    } catch (InvalidSyntaxException e) {
-      throw new ActivitiException("problem resolving scripting engine" + e.getMessage(), e);
-    }
-    
-    if (scriptEngine == null) {
-      return super.evaluate(script, language, bindings);
+    public OsgiScriptingEngines(ScriptBindingsFactory scriptBindingsFactory) {
+        super(scriptBindingsFactory);
     }
 
-    try {
-      return scriptEngine.eval(script, bindings);
-    } catch (ScriptException e) {
-      throw new ActivitiException("problem evaluating script: " + e.getMessage(), e);
+    public OsgiScriptingEngines(ScriptEngineManager scriptEngineManager) {
+        super(scriptEngineManager);
     }
-  }
+
+    @Override
+    public Object evaluate(String script, String language, VariableScope variableScope) {
+        Bindings bindings = createBindings(variableScope);
+        return evaluate(script, language, bindings);
+    }
+
+    @Override
+    public Object evaluate(String script, String language, VariableScope variableScope, boolean storeScriptVariables) {
+        return evaluate(script, language, createBindings(variableScope, storeScriptVariables));
+    }
+
+    @Override
+    protected Object evaluate(String script, String language, Bindings bindings) {
+        ScriptEngine scriptEngine = null;
+        try {
+            scriptEngine = Extender.resolveScriptEngine(language);
+        } catch (InvalidSyntaxException e) {
+            throw new ActivitiException("problem resolving scripting engine" + e.getMessage(), e);
+        }
+
+        if (scriptEngine == null) {
+            return super.evaluate(script, language, bindings);
+        }
+
+        try {
+            return scriptEngine.eval(script, bindings);
+        } catch (ScriptException e) {
+            throw new ActivitiException("problem evaluating script: " + e.getMessage(), e);
+        }
+    }
 }

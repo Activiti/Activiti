@@ -52,8 +52,12 @@ public class BarTransformer {
             while ((e = jis.getNextEntry()) != null) {
                 String n = e.getName();
                 int i = n.lastIndexOf('/');
-                if (-1 == i) {// Add root path if the .bpmn20.xml is in the root of the bar file and the value is example.bpmn20.xml
-                    paths.add("/"); //Extender#checkBundle calls the HeaderParser#parseHeader and it does not parse an empty string
+                if (-1 == i) {// Add root path if the .bpmn20.xml is in the root
+                              // of the bar file and the value is
+                              // example.bpmn20.xml
+                    paths.add("/"); // Extender#checkBundle calls the
+                                    // HeaderParser#parseHeader and it does not
+                                    // parse an empty string
                 } else if (i < n.length() - 1) {
                     paths.add(n.substring(0, i + 1));
                 }
@@ -99,13 +103,12 @@ public class BarTransformer {
             byte[] readBuffer = new byte[8192];
             while ((e = jis.getNextEntry()) != null) {
                 ZipEntry e2 = new ZipEntry(e.getName());
-//                e2.setMethod(ZipEntry.STORED);
-//                e2.setSize(e.getSize());
-//                e2.setCrc(e.getCrc());
+                // e2.setMethod(ZipEntry.STORED);
+                // e2.setSize(e.getSize());
+                // e2.setCrc(e.getCrc());
                 jos.putNextEntry(e2);
                 int bytesIn = jis.read(readBuffer);
-                while (bytesIn != -1)
-                {
+                while (bytesIn != -1) {
                     jos.write(readBuffer, 0, bytesIn);
                     bytesIn = jis.read(readBuffer);
                 }
@@ -127,12 +130,11 @@ public class BarTransformer {
         Matcher m = ARTIFACT_MATCHER.matcher(url);
         if (!m.matches()) {
             return new String[] { url, DEFAULT_VERSION };
-        }
-        else {
-            //System.err.println(m.groupCount());
-            //for (int i = 1; i <= m.groupCount(); i++) {
-            //    System.err.println("Group " + i + ": " + m.group(i));
-            //}
+        } else {
+            // System.err.println(m.groupCount());
+            // for (int i = 1; i <= m.groupCount(); i++) {
+            // System.err.println("Group " + i + ": " + m.group(i));
+            // }
 
             StringBuffer v = new StringBuffer();
             String d1 = m.group(1);

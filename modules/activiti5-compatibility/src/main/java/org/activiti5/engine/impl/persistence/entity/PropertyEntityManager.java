@@ -15,14 +15,13 @@ package org.activiti5.engine.impl.persistence.entity;
 
 import org.activiti5.engine.impl.persistence.AbstractManager;
 
-
 /**
  * @author Tom Baeyens
  */
 public class PropertyEntityManager extends AbstractManager {
 
-  public PropertyEntity findPropertyById(String propertyId) {
-    return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
-  }
+    public PropertyEntity findPropertyById(String propertyId) {
+        return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
+    }
 
 }

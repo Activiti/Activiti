@@ -23,160 +23,160 @@ import org.activiti5.engine.impl.db.HasRevision;
 import org.activiti5.engine.impl.db.PersistentObject;
 import org.activiti5.engine.repository.Model;
 
-
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
 public class ModelEntity implements Model, HasRevision, PersistentObject, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String id;
-  protected int revision = 1;
-  protected String name;
-  protected String key;
-  protected String category;
-  protected Date createTime;
-  protected Date lastUpdateTime;
-  protected Integer version = 1;
-  protected String metaInfo;
-  protected String deploymentId;
-  protected String editorSourceValueId;
-  protected String editorSourceExtraValueId;
-  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+    private static final long serialVersionUID = 1L;
 
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = new HashMap<String, Object>();
-    persistentState.put("name", this.name);
-    persistentState.put("key", key);
-    persistentState.put("category", this.category);
-    persistentState.put("createTime", this.createTime);
-    persistentState.put("lastUpdateTime", lastUpdateTime);
-    persistentState.put("version", this.version);
-    persistentState.put("metaInfo", this.metaInfo);
-    persistentState.put("deploymentId", deploymentId);
-    persistentState.put("editorSourceValueId", this.editorSourceValueId);
-    persistentState.put("editorSourceExtraValueId", this.editorSourceExtraValueId);
-    return persistentState;
-  }
+    protected String id;
+    protected int revision = 1;
+    protected String name;
+    protected String key;
+    protected String category;
+    protected Date createTime;
+    protected Date lastUpdateTime;
+    protected Integer version = 1;
+    protected String metaInfo;
+    protected String deploymentId;
+    protected String editorSourceValueId;
+    protected String editorSourceExtraValueId;
+    protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
-  // getters and setters //////////////////////////////////////////////////////
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = new HashMap<String, Object>();
+        persistentState.put("name", this.name);
+        persistentState.put("key", key);
+        persistentState.put("category", this.category);
+        persistentState.put("createTime", this.createTime);
+        persistentState.put("lastUpdateTime", lastUpdateTime);
+        persistentState.put("version", this.version);
+        persistentState.put("metaInfo", this.metaInfo);
+        persistentState.put("deploymentId", deploymentId);
+        persistentState.put("editorSourceValueId", this.editorSourceValueId);
+        persistentState.put("editorSourceExtraValueId", this.editorSourceExtraValueId);
+        return persistentState;
+    }
 
-  public String getId() {
-    return id;
-  }
-  
-  public void setId(String id) {
-    this.id = id;
-  }
-  
-  public String getName() {
-    return name;
-  }
-  
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  public String getKey() {
-    return key;
-  }
-  
-  public void setKey(String key) {
-    this.key = key;
-  }
+    // getters and setters
+    // //////////////////////////////////////////////////////
 
-  public String getCategory() {
-    return category;
-  }
+    public String getId() {
+        return id;
+    }
 
-  public void setCategory(String category) {
-    this.category = category;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  public Date getCreateTime() {
-    return createTime;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setCreateTime(Date createTime) {
-    this.createTime = createTime;
-  }
-  
-  public Date getLastUpdateTime() {
-    return lastUpdateTime;
-  }
-  
-  public void setLastUpdateTime(Date lastUpdateTime) {
-    this.lastUpdateTime = lastUpdateTime;
-  }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-  public Integer getVersion() {
-    return version;
-  }
+    public String getKey() {
+        return key;
+    }
 
-  public void setVersion(Integer version) {
-    this.version = version;
-  }
+    public void setKey(String key) {
+        this.key = key;
+    }
 
-  public String getMetaInfo() {
-    return metaInfo;
-  }
+    public String getCategory() {
+        return category;
+    }
 
-  public void setMetaInfo(String metaInfo) {
-    this.metaInfo = metaInfo;
-  }
-  
-  public String getDeploymentId() {
-    return deploymentId;
-  }
+    public void setCategory(String category) {
+        this.category = category;
+    }
 
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
+    public Date getCreateTime() {
+        return createTime;
+    }
 
-  public String getEditorSourceValueId() {
-    return editorSourceValueId;
-  }
-  
-  public void setEditorSourceValueId(String editorSourceValueId) {
-    this.editorSourceValueId = editorSourceValueId;
-  }
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
 
-  public String getEditorSourceExtraValueId() {
-    return editorSourceExtraValueId;
-  }
+    public Date getLastUpdateTime() {
+        return lastUpdateTime;
+    }
 
-  public void setEditorSourceExtraValueId(String editorSourceExtraValueId) {
-    this.editorSourceExtraValueId = editorSourceExtraValueId;
-  }
-  
-  public int getRevision() {
-    return revision;
-  }
-  
-  public int getRevisionNext() {
-    return revision + 1;
-  }
-  
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
+    public void setLastUpdateTime(Date lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
 
-	public String getTenantId() {
-		return tenantId;
-	}
+    public Integer getVersion() {
+        return version;
+    }
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
-	
-	public boolean hasEditorSource() {
-	  return this.editorSourceValueId != null;
-	}
-	
-	public boolean hasEditorSourceExtra() {
-	  return this.editorSourceExtraValueId != null;
-	}
-  
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public String getMetaInfo() {
+        return metaInfo;
+    }
+
+    public void setMetaInfo(String metaInfo) {
+        this.metaInfo = metaInfo;
+    }
+
+    public String getDeploymentId() {
+        return deploymentId;
+    }
+
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
+
+    public String getEditorSourceValueId() {
+        return editorSourceValueId;
+    }
+
+    public void setEditorSourceValueId(String editorSourceValueId) {
+        this.editorSourceValueId = editorSourceValueId;
+    }
+
+    public String getEditorSourceExtraValueId() {
+        return editorSourceExtraValueId;
+    }
+
+    public void setEditorSourceExtraValueId(String editorSourceExtraValueId) {
+        this.editorSourceExtraValueId = editorSourceExtraValueId;
+    }
+
+    public int getRevision() {
+        return revision;
+    }
+
+    public int getRevisionNext() {
+        return revision + 1;
+    }
+
+    public void setRevision(int revision) {
+        this.revision = revision;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public boolean hasEditorSource() {
+        return this.editorSourceValueId != null;
+    }
+
+    public boolean hasEditorSourceExtra() {
+        return this.editorSourceExtraValueId != null;
+    }
+
 }

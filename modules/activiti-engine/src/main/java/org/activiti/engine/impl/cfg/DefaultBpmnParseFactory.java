@@ -15,13 +15,12 @@ package org.activiti.engine.impl.cfg;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 
-
 /**
  * @author Nico Rehwaldt
  */
 public class DefaultBpmnParseFactory implements BpmnParseFactory {
 
-  public BpmnParse createBpmnParse(BpmnParser bpmnParser) {
-    return new BpmnParse(bpmnParser);
-  }
+    public BpmnParse createBpmnParse(BpmnParser bpmnParser) {
+        return new BpmnParse(bpmnParser);
+    }
 }

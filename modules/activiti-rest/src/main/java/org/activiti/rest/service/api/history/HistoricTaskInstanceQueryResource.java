@@ -24,18 +24,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
-
 /**
  * @author Tijs Rademakers
  */
 @RestController
 public class HistoricTaskInstanceQueryResource extends HistoricTaskInstanceBaseResource {
 
-  @RequestMapping(value="/query/historic-task-instances", method = RequestMethod.POST, produces = "application/json")
-  public DataResponse queryProcessInstances(@RequestBody HistoricTaskInstanceQueryRequest queryRequest, 
-      @RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
-  	
-    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/query/historic-task-instances", ""));
-  }
+    @RequestMapping(value = "/query/historic-task-instances", method = RequestMethod.POST, produces = "application/json")
+    public DataResponse queryProcessInstances(@RequestBody HistoricTaskInstanceQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+
+        return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/query/historic-task-instances", ""));
+    }
 }

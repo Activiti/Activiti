@@ -14,27 +14,26 @@ package org.activiti.image.util;
 
 import java.io.InputStream;
 
-
 /**
  * @author Tijs Rademakers
  */
 public abstract class ReflectUtil {
 
-  public static InputStream getResourceAsStream(String name) {
-    return getResourceAsStream(name, null);
-  }
-  
-  public static InputStream getResourceAsStream(String name, ClassLoader customClassLoader) {
-    InputStream resourceStream = null;
-    if (customClassLoader != null) {
-      resourceStream = customClassLoader.getResourceAsStream(name);
+    public static InputStream getResourceAsStream(String name) {
+        return getResourceAsStream(name, null);
     }
-    
-    if (resourceStream == null) {
-      // Try the current Thread context classloader
-      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      resourceStream = classLoader.getResourceAsStream(name);
+
+    public static InputStream getResourceAsStream(String name, ClassLoader customClassLoader) {
+        InputStream resourceStream = null;
+        if (customClassLoader != null) {
+            resourceStream = customClassLoader.getResourceAsStream(name);
+        }
+
+        if (resourceStream == null) {
+            // Try the current Thread context classloader
+            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+            resourceStream = classLoader.getResourceAsStream(name);
+        }
+        return resourceStream;
     }
-    return resourceStream;
-   }
 }

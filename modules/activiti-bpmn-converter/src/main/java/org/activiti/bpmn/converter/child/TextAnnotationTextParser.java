@@ -22,14 +22,15 @@ import org.activiti.bpmn.model.TextAnnotation;
  * @author Tijs Rademakers
  */
 public class TextAnnotationTextParser extends BaseChildElementParser {
-	
-  public String getElementName() {
-    return ELEMENT_TEXT_ANNOTATION_TEXT;
-  }
-  
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof TextAnnotation == false) return;
-    
-    ((TextAnnotation) parentElement).setText(xtr.getElementText());
-  }
+
+    public String getElementName() {
+        return ELEMENT_TEXT_ANNOTATION_TEXT;
+    }
+
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+        if (parentElement instanceof TextAnnotation == false)
+            return;
+
+        ((TextAnnotation) parentElement).setText(xtr.getElementText());
+    }
 }

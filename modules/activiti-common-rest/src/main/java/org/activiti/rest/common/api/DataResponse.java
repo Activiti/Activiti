@@ -17,60 +17,60 @@ package org.activiti.rest.common.api;
  * @author Tijs Rademakers
  */
 public class DataResponse {
-  
-  Object data;
-  long total;
-  int start;
-  String sort;
-  String order;
-  int size;
 
-  public Object getData() {
-    return data;
-  }
+    Object data;
+    long total;
+    int start;
+    String sort;
+    String order;
+    int size;
 
-  public DataResponse setData(Object data) {
-    this.data = data;
-    return this;
-  }
+    public Object getData() {
+        return data;
+    }
 
-  public long getTotal() {
-    return total;
-  }
+    public DataResponse setData(Object data) {
+        this.data = data;
+        return this;
+    }
 
-  public void setTotal(long total) {
-    this.total = total;
-  }
+    public long getTotal() {
+        return total;
+    }
 
-  public int getStart() {
-    return start;
-  }
+    public void setTotal(long total) {
+        this.total = total;
+    }
 
-  public void setStart(int start) {
-    this.start = start;
-  }
+    public int getStart() {
+        return start;
+    }
 
-  public String getSort() {
-    return sort;
-  }
+    public void setStart(int start) {
+        this.start = start;
+    }
 
-  public void setSort(String sort) {
-    this.sort = sort;
-  }
+    public String getSort() {
+        return sort;
+    }
 
-  public String getOrder() {
-    return order;
-  }
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
 
-  public void setOrder(String order) {
-    this.order = order;
-  }
+    public String getOrder() {
+        return order;
+    }
 
-  public int getSize() {
-    return size;
-  }
+    public void setOrder(String order) {
+        this.order = order;
+    }
 
-  public void setSize(int size) {
-    this.size = size;
-  }
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
 }

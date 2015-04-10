@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.history;
 
-
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,38 +23,37 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Tijs Rademakers
  */
 @RestController
 public class HistoricVariableInstanceCollectionResource extends HistoricVariableInstanceBaseResource {
 
-  @RequestMapping(value="/history/historic-variable-instances", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getHistoricActivityInstances(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
-    HistoricVariableInstanceQueryRequest query = new HistoricVariableInstanceQueryRequest();
+    @RequestMapping(value = "/history/historic-variable-instances", method = RequestMethod.GET, produces = "application/json")
+    public DataResponse getHistoricActivityInstances(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+        HistoricVariableInstanceQueryRequest query = new HistoricVariableInstanceQueryRequest();
 
-    // Populate query based on request
-    if (allRequestParams.get("excludeTaskVariables") != null) {
-      query.setExcludeTaskVariables(Boolean.valueOf(allRequestParams.get("excludeTaskVariables")));
+        // Populate query based on request
+        if (allRequestParams.get("excludeTaskVariables") != null) {
+            query.setExcludeTaskVariables(Boolean.valueOf(allRequestParams.get("excludeTaskVariables")));
+        }
+
+        if (allRequestParams.get("taskId") != null) {
+            query.setTaskId(allRequestParams.get("taskId"));
+        }
+
+        if (allRequestParams.get("processInstanceId") != null) {
+            query.setProcessInstanceId(allRequestParams.get("processInstanceId"));
+        }
+
+        if (allRequestParams.get("variableName") != null) {
+            query.setVariableName(allRequestParams.get("variableName"));
+        }
+
+        if (allRequestParams.get("variableNameLike") != null) {
+            query.setVariableNameLike(allRequestParams.get("variableNameLike"));
+        }
+
+        return getQueryResponse(query, allRequestParams);
     }
-    
-    if (allRequestParams.get("taskId") != null) {
-      query.setTaskId(allRequestParams.get("taskId"));
-    }
-    
-    if (allRequestParams.get("processInstanceId") != null) {
-      query.setProcessInstanceId(allRequestParams.get("processInstanceId"));
-    }
-    
-    if (allRequestParams.get("variableName") != null) {
-      query.setVariableName(allRequestParams.get("variableName"));
-    }
-    
-    if (allRequestParams.get("variableNameLike") != null) {
-      query.setVariableNameLike(allRequestParams.get("variableNameLike"));
-    }
-    
-    return getQueryResponse(query, allRequestParams);
-  }
 }

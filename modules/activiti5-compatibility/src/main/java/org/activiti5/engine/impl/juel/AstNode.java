@@ -17,26 +17,25 @@ package org.activiti5.engine.impl.juel;
 
 import org.activiti5.engine.impl.javax.el.ELContext;
 
-
 public abstract class AstNode implements ExpressionNode {
-	/**
-	 * evaluate and return the (optionally coerced) result.
-	 */
-	public final Object getValue(Bindings bindings, ELContext context, Class<?> type) {
-		Object value = eval(bindings, context);
-		if (type != null) {
-			value = bindings.convert(value, type);
-		}
-		return value;
-	}
+    /**
+     * evaluate and return the (optionally coerced) result.
+     */
+    public final Object getValue(Bindings bindings, ELContext context, Class<?> type) {
+        Object value = eval(bindings, context);
+        if (type != null) {
+            value = bindings.convert(value, type);
+        }
+        return value;
+    }
 
-	public abstract void appendStructure(StringBuilder builder, Bindings bindings);
+    public abstract void appendStructure(StringBuilder builder, Bindings bindings);
 
-	public abstract Object eval(Bindings bindings, ELContext context);
-  
-	public final String getStructuralId(Bindings bindings) {
-		StringBuilder builder = new StringBuilder();
-		appendStructure(builder, bindings);
-		return builder.toString();
-	}
+    public abstract Object eval(Bindings bindings, ELContext context);
+
+    public final String getStructuralId(Bindings bindings) {
+        StringBuilder builder = new StringBuilder();
+        appendStructure(builder, bindings);
+        return builder.toString();
+    }
 }

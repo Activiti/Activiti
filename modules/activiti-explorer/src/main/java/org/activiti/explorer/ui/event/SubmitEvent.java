@@ -16,42 +16,41 @@ package org.activiti.explorer.ui.event;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Component.Event;
 
-
 /**
- * Generic event to use when simething is submitted or cancelled. Optionally,
- * an object can be passed, representing data or state for this event.
+ * Generic event to use when simething is submitted or cancelled. Optionally, an
+ * object can be passed, representing data or state for this event.
  * 
  * @author Frederik Heremans
  */
 public class SubmitEvent extends Event {
 
-  private static final long serialVersionUID = 1L;
-  
-  public static final String SUBMITTED = "submit";
-  public static final String CANCELLED = "cancel";
-  
-  private String type;
-  private Object data;
-  
-  
-  public SubmitEvent(Component source, String type) {
-    this(source, type, null);
-  }
-  public SubmitEvent(Component source, String type, Object data) {
-    super(source);
-    this.type = type;
-    this.data = data;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public String getType() {
-    return type;
-  }
-  
-  /**
-   * Additional state or data for this event.
-   */
-  public Object getData() {
-    return data;
-  }
-  
+    public static final String SUBMITTED = "submit";
+    public static final String CANCELLED = "cancel";
+
+    private String type;
+    private Object data;
+
+    public SubmitEvent(Component source, String type) {
+        this(source, type, null);
+    }
+
+    public SubmitEvent(Component source, String type, Object data) {
+        super(source);
+        this.type = type;
+        this.data = data;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * Additional state or data for this event.
+     */
+    public Object getData() {
+        return data;
+    }
+
 }

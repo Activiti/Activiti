@@ -121,8 +121,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
         // Start and delete a process with a nested subprocess when it is not
         // yet ended
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess",
-                CollectionUtil.singletonMap("someVar", "abc"));
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("nestedSimpleSubProcess", CollectionUtil.singletonMap("someVar", "abc"));
         runtimeService.deleteProcessInstance(pi.getId(), "deleted");
 
         // After staring the process, the task in the inner subprocess must be
@@ -217,8 +216,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
         // After staring the process, the tasks in the subprocess should be
         // active
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("simpleParallelSubProcessWithTimer");
-        List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc()
-                .list();
+        List<Task> subProcessTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
 
         // Tasks are ordered by name (see query)
         Task taskA = subProcessTasks.get(0);
@@ -358,12 +356,14 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     }
 
     /**
-     * @see <a href="http://jira.codehaus.org/browse/ACT-1847">http://jira.codehaus.org/browse/ACT-1847</a>
+     * @see <a
+     *      href="http://jira.codehaus.org/browse/ACT-1847">http://jira.codehaus.org/browse/ACT-1847</a>
      */
     @Deployment
     public void testDataObjectScope() {
 
-        // After staring the process, the task in the subprocess should be active
+        // After staring the process, the task in the subprocess should be
+        // active
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("dataObjectScope");
 
         // get main process task
@@ -386,7 +386,8 @@ public class SubProcessTest extends PluggableActivitiTestCase {
             }
         }
 
-        // After completing the task in the main process, the subprocess scope initiates
+        // After completing the task in the main process, the subprocess scope
+        // initiates
         taskService.complete(currentTask.getId());
 
         // get subprocess task

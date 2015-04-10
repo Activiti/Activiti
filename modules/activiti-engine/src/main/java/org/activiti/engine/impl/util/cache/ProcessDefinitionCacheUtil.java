@@ -21,27 +21,26 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  * @author Joram Barrez
  */
 public class ProcessDefinitionCacheUtil {
-	
-	public static ProcessDefinitionEntity getCachedProcessDefinitionEntity(String processDefinitionId) {
-		ProcessDefinitionCacheEntry cacheEntry = getCacheEntry(processDefinitionId);
-		if (cacheEntry != null) {
-			return cacheEntry.getProcessDefinitionEntity();
-		} 
-		return null;
-	}
 
-	public static Process getCachedProcess(String processDefinitionId) {
-		ProcessDefinitionCacheEntry cacheEntry = getCacheEntry(processDefinitionId);
-		if (cacheEntry != null) {
-			return cacheEntry.getProcess();
-		} 
-		return null;
-	}
-	
-	public static ProcessDefinitionCacheEntry getCacheEntry(String processDefinitionId) {
-	    ProcessDefinitionCacheEntry cacheEntry = Context.getProcessEngineConfiguration()
-	    		.getProcessDefinitionCache().get(processDefinitionId);
-	    return cacheEntry;
+    public static ProcessDefinitionEntity getCachedProcessDefinitionEntity(String processDefinitionId) {
+        ProcessDefinitionCacheEntry cacheEntry = getCacheEntry(processDefinitionId);
+        if (cacheEntry != null) {
+            return cacheEntry.getProcessDefinitionEntity();
+        }
+        return null;
+    }
+
+    public static Process getCachedProcess(String processDefinitionId) {
+        ProcessDefinitionCacheEntry cacheEntry = getCacheEntry(processDefinitionId);
+        if (cacheEntry != null) {
+            return cacheEntry.getProcess();
+        }
+        return null;
+    }
+
+    public static ProcessDefinitionCacheEntry getCacheEntry(String processDefinitionId) {
+        ProcessDefinitionCacheEntry cacheEntry = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(processDefinitionId);
+        return cacheEntry;
     }
 
 }

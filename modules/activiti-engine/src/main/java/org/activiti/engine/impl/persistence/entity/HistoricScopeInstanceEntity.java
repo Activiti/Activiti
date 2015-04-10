@@ -25,64 +25,78 @@ import java.util.Date;
  */
 public abstract class HistoricScopeInstanceEntity implements PersistentObject, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String id;
-  protected String processInstanceId;
-  protected String processDefinitionId;
-  protected Date startTime;
-  protected Date endTime;
-  protected Long durationInMillis;
-  protected String deleteReason;
+    private static final long serialVersionUID = 1L;
 
-  public void markEnded(String deleteReason) {
-    this.deleteReason = deleteReason;
-    this.endTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    this.durationInMillis = endTime.getTime() - startTime.getTime();
-  }
-  
-  // getters and setters //////////////////////////////////////////////////////
+    protected String id;
+    protected String processInstanceId;
+    protected String processDefinitionId;
+    protected Date startTime;
+    protected Date endTime;
+    protected Long durationInMillis;
+    protected String deleteReason;
 
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
-  public Date getStartTime() {
-    return startTime;
-  }
-  public Date getEndTime() {
-    return endTime;
-  }
-  public Long getDurationInMillis() {
-    return durationInMillis;
-  }
-  public String getId() {
-    return id;
-  }
-  public void setId(String id) {
-    this.id = id;
-  }
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-  public void setStartTime(Date startTime) {
-    this.startTime = startTime;
-  }
-  public void setEndTime(Date endTime) {
-    this.endTime = endTime;
-  }
-  public void setDurationInMillis(Long durationInMillis) {
-    this.durationInMillis = durationInMillis;
-  }
-  public String getDeleteReason() {
-    return deleteReason;
-  }
-  public void setDeleteReason(String deleteReason) {
-    this.deleteReason = deleteReason;
-  }
+    public void markEnded(String deleteReason) {
+        this.deleteReason = deleteReason;
+        this.endTime = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+        this.durationInMillis = endTime.getTime() - startTime.getTime();
+    }
+
+    // getters and setters
+    // //////////////////////////////////////////////////////
+
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
+
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public Long getDurationInMillis() {
+        return durationInMillis;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public void setDurationInMillis(Long durationInMillis) {
+        this.durationInMillis = durationInMillis;
+    }
+
+    public String getDeleteReason() {
+        return deleteReason;
+    }
+
+    public void setDeleteReason(String deleteReason) {
+        this.deleteReason = deleteReason;
+    }
 }

@@ -22,50 +22,49 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  * @author Joram Barrez
  */
 public class ProcessDefinitionCacheEntry implements Serializable {
-	
+
     private static final long serialVersionUID = 6833801933658529070L;
-    
-	protected ProcessDefinitionEntity processDefinitionEntity;
-	protected Process process;
-	protected Date createTimestamp;
-	protected Date lastUsedTimestamp;
-	
-	public ProcessDefinitionCacheEntry(ProcessDefinitionEntity processDefinitionEntity, Process process) {
-		this.processDefinitionEntity = processDefinitionEntity;
-		this.process = process;
-	}
 
-	public ProcessDefinitionEntity getProcessDefinitionEntity() {
-		return processDefinitionEntity;
-	}
+    protected ProcessDefinitionEntity processDefinitionEntity;
+    protected Process process;
+    protected Date createTimestamp;
+    protected Date lastUsedTimestamp;
 
-	public void setProcessDefinitionEntity(
-	        ProcessDefinitionEntity processDefinitionEntity) {
-		this.processDefinitionEntity = processDefinitionEntity;
-	}
+    public ProcessDefinitionCacheEntry(ProcessDefinitionEntity processDefinitionEntity, Process process) {
+        this.processDefinitionEntity = processDefinitionEntity;
+        this.process = process;
+    }
 
-	public Process getProcess() {
-		return process;
-	}
+    public ProcessDefinitionEntity getProcessDefinitionEntity() {
+        return processDefinitionEntity;
+    }
 
-	public void setProcess(Process process) {
-		this.process = process;
-	}
+    public void setProcessDefinitionEntity(ProcessDefinitionEntity processDefinitionEntity) {
+        this.processDefinitionEntity = processDefinitionEntity;
+    }
 
-	public Date getCreateTimestamp() {
-		return createTimestamp;
-	}
+    public Process getProcess() {
+        return process;
+    }
 
-	public void setCreateTimestamp(Date createTimestamp) {
-		this.createTimestamp = createTimestamp;
-	}
+    public void setProcess(Process process) {
+        this.process = process;
+    }
 
-	public Date getLastUsedTimestamp() {
-		return lastUsedTimestamp;
-	}
+    public Date getCreateTimestamp() {
+        return createTimestamp;
+    }
 
-	public void setLastUsedTimestamp(Date lastUsedTimestamp) {
-		this.lastUsedTimestamp = lastUsedTimestamp;
-	}
-	
+    public void setCreateTimestamp(Date createTimestamp) {
+        this.createTimestamp = createTimestamp;
+    }
+
+    public Date getLastUsedTimestamp() {
+        return lastUsedTimestamp;
+    }
+
+    public void setLastUsedTimestamp(Date lastUsedTimestamp) {
+        this.lastUsedTimestamp = lastUsedTimestamp;
+    }
+
 }

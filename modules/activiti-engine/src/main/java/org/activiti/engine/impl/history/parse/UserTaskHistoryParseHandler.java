@@ -22,24 +22,26 @@ import org.activiti.engine.impl.history.handler.UserTaskAssignmentHandler;
 import org.activiti.engine.impl.history.handler.UserTaskIdHandler;
 import org.activiti.engine.impl.task.TaskDefinition;
 
-
 /**
  * @author Joram Barrez
  */
 public class UserTaskHistoryParseHandler extends AbstractBpmnParseHandler<UserTask> {
-  
-  protected static final UserTaskAssignmentHandler USER_TASK_ASSIGNMENT_HANDLER = new UserTaskAssignmentHandler();
-  
-  protected static final UserTaskIdHandler USER_TASK_ID_HANDLER = new UserTaskIdHandler();
-  
-  protected Class< ? extends BaseElement> getHandledType() {
-    return UserTask.class;
-  }
-  
-  protected void executeParse(BpmnParse bpmnParse, UserTask element) {
-//    TaskDefinition taskDefinition = (TaskDefinition) bpmnParse.getCurrentActivity().getProperty(UserTaskParseHandler.PROPERTY_TASK_DEFINITION);
-//    taskDefinition.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, USER_TASK_ASSIGNMENT_HANDLER);
-//    taskDefinition.addTaskListener(TaskListener.EVENTNAME_CREATE, USER_TASK_ID_HANDLER);
-  }
+
+    protected static final UserTaskAssignmentHandler USER_TASK_ASSIGNMENT_HANDLER = new UserTaskAssignmentHandler();
+
+    protected static final UserTaskIdHandler USER_TASK_ID_HANDLER = new UserTaskIdHandler();
+
+    protected Class<? extends BaseElement> getHandledType() {
+        return UserTask.class;
+    }
+
+    protected void executeParse(BpmnParse bpmnParse, UserTask element) {
+        // TaskDefinition taskDefinition = (TaskDefinition)
+        // bpmnParse.getCurrentActivity().getProperty(UserTaskParseHandler.PROPERTY_TASK_DEFINITION);
+        // taskDefinition.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT,
+        // USER_TASK_ASSIGNMENT_HANDLER);
+        // taskDefinition.addTaskListener(TaskListener.EVENTNAME_CREATE,
+        // USER_TASK_ID_HANDLER);
+    }
 
 }

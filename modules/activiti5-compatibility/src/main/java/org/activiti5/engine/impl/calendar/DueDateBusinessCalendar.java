@@ -19,27 +19,26 @@ import org.activiti5.engine.runtime.ClockReader;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 
-
 public class DueDateBusinessCalendar extends BusinessCalendarImpl {
 
-  public static final String NAME = "dueDate";
+    public static final String NAME = "dueDate";
 
-  public DueDateBusinessCalendar(ClockReader clockReader) {
-    super(clockReader);
-  }
-
-  @Override
-  public Date resolveDuedate(String duedate, int maxIterations) {
-    try {
-      // check if due period was specified
-      if(duedate.startsWith("P")){
-        return DateTime.now().plus(Period.parse(duedate)).toDate();
-      }
-
-      return DateTime.parse(duedate).toDate();
-
-    } catch (Exception e) {
-      throw new ActivitiException("couldn't resolve duedate: " + e.getMessage(), e);
+    public DueDateBusinessCalendar(ClockReader clockReader) {
+        super(clockReader);
     }
-  }
+
+    @Override
+    public Date resolveDuedate(String duedate, int maxIterations) {
+        try {
+            // check if due period was specified
+            if (duedate.startsWith("P")) {
+                return DateTime.now().plus(Period.parse(duedate)).toDate();
+            }
+
+            return DateTime.parse(duedate).toDate();
+
+        } catch (Exception e) {
+            throw new ActivitiException("couldn't resolve duedate: " + e.getMessage(), e);
+        }
+    }
 }

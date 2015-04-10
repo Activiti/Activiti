@@ -26,40 +26,40 @@ import com.vaadin.data.util.PropertysetItem;
 /**
  * @author Frederik Heremans
  */
-public  class SavedReportListItem extends PropertysetItem implements Comparable<SavedReportListItem> {
-  
-  private static final long serialVersionUID = 1L;
-  
-  public SavedReportListItem(HistoricProcessInstance historicProcessInstance) {
-    addItemProperty("id", new ObjectProperty<String>(historicProcessInstance.getId(), String.class));
-    addItemProperty("name", getNameProperty(historicProcessInstance));
-    
-    if(historicProcessInstance.getEndTime() == null) {
-      throw new ActivitiIllegalArgumentException("The given process-instance is not ended yet");
+public class SavedReportListItem extends PropertysetItem implements Comparable<SavedReportListItem> {
+
+    private static final long serialVersionUID = 1L;
+
+    public SavedReportListItem(HistoricProcessInstance historicProcessInstance) {
+        addItemProperty("id", new ObjectProperty<String>(historicProcessInstance.getId(), String.class));
+        addItemProperty("name", getNameProperty(historicProcessInstance));
+
+        if (historicProcessInstance.getEndTime() == null) {
+            throw new ActivitiIllegalArgumentException("The given process-instance is not ended yet");
+        }
+        addItemProperty("createTime", new ObjectProperty<Date>(historicProcessInstance.getEndTime(), Date.class));
     }
-    addItemProperty("createTime", new ObjectProperty<Date>(historicProcessInstance.getEndTime(), Date.class));
-  }
-  
-  public int compareTo(SavedReportListItem other) {
-     Date createTime = (Date) getItemProperty("createTime").getValue(); 
-     Date otherCreateTime = (Date) other.getItemProperty("createTime").getValue();
-     
-     return createTime.compareTo(otherCreateTime);
-  }
-  
-  protected Property getNameProperty(HistoricProcessInstance historicProcessInstance) {
-    return new ObjectProperty<String>(getReportDisplayName(historicProcessInstance), String.class);
-  }
-  
-  public static String getReportDisplayName(HistoricProcessInstance historicProcessInstance) {
-    if(historicProcessInstance.getBusinessKey() != null && !historicProcessInstance.getBusinessKey().isEmpty()) {
-      if(Authentication.getAuthenticatedUserId() != null) {
-        return historicProcessInstance.getBusinessKey().replaceFirst(Authentication.getAuthenticatedUserId() + "\\_", "");
-      } else {
-        return historicProcessInstance.getBusinessKey();
-      }
-    } else {
-      return DateFormat.getDateTimeInstance().format(historicProcessInstance.getEndTime());
+
+    public int compareTo(SavedReportListItem other) {
+        Date createTime = (Date) getItemProperty("createTime").getValue();
+        Date otherCreateTime = (Date) other.getItemProperty("createTime").getValue();
+
+        return createTime.compareTo(otherCreateTime);
     }
-  }
+
+    protected Property getNameProperty(HistoricProcessInstance historicProcessInstance) {
+        return new ObjectProperty<String>(getReportDisplayName(historicProcessInstance), String.class);
+    }
+
+    public static String getReportDisplayName(HistoricProcessInstance historicProcessInstance) {
+        if (historicProcessInstance.getBusinessKey() != null && !historicProcessInstance.getBusinessKey().isEmpty()) {
+            if (Authentication.getAuthenticatedUserId() != null) {
+                return historicProcessInstance.getBusinessKey().replaceFirst(Authentication.getAuthenticatedUserId() + "\\_", "");
+            } else {
+                return historicProcessInstance.getBusinessKey();
+            }
+        } else {
+            return DateFormat.getDateTimeInstance().format(historicProcessInstance.getEndTime());
+        }
+    }
 }

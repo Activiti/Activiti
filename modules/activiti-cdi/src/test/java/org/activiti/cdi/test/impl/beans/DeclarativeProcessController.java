@@ -22,25 +22,25 @@ import org.activiti.cdi.annotation.StartProcess;
  */
 public class DeclarativeProcessController {
 
-  @ProcessVariable
-  String name; // this is going to be set as a process variable
+    @ProcessVariable
+    String name; // this is going to be set as a process variable
 
-  @StartProcess(name = "Name of the Process")
-  public void startProcessByName() {
-    name = "Activiti";
-  }
+    @StartProcess(name = "Name of the Process")
+    public void startProcessByName() {
+        name = "Activiti";
+    }
 
-  @StartProcess("keyOfTheProcess")
-  public void startProcessByKey() {
-    name = "Activiti";
-  }
+    @StartProcess("keyOfTheProcess")
+    public void startProcessByKey() {
+        name = "Activiti";
+    }
 
-  @CompleteTask(endConversation = false)
-  public void completeTask() {
-  }
-  
-  @CompleteTask(endConversation = true)
-  public void completeTaskEndConversation() {
-  }
+    @CompleteTask(endConversation = false)
+    public void completeTask() {
+    }
+
+    @CompleteTask(endConversation = true)
+    public void completeTaskEndConversation() {
+    }
 
 }

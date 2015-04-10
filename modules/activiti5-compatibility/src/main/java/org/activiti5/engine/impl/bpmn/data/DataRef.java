@@ -19,13 +19,13 @@ package org.activiti5.engine.impl.bpmn.data;
  */
 public class DataRef {
 
-  protected String idRef;
-  
-  public DataRef(String idRef) {
-    this.idRef = idRef;
-  }
-  
-  public String getIdRef() {
-    return this.idRef;
-  }
+    protected String idRef;
+
+    public DataRef(String idRef) {
+        this.idRef = idRef;
+    }
+
+    public String getIdRef() {
+        return this.idRef;
+    }
 }

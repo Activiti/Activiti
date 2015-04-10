@@ -31,33 +31,28 @@ import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
  */
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
-  @Deployment
-  public void testAsyncInvocationWithDataFlowUEL() throws Exception {
-    assertEquals(-1, counter.getCount());
+    @Deployment
+    public void testAsyncInvocationWithDataFlowUEL() throws Exception {
+        assertEquals(-1, counter.getCount());
 
-    ProcessDefinitionEntity processDefinition = processEngineConfiguration
-      .getCommandExecutor()
-      .execute(new Command<ProcessDefinitionEntity>() {
-        public ProcessDefinitionEntity execute(CommandContext commandContext) {
-          return Context
-            .getProcessEngineConfiguration()
-            .getDeploymentManager()
-            .findDeployedLatestProcessDefinitionByKey("asyncWebServiceInvocationWithDataFlowUEL");
-        }
-      });
-    
-    ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
+        ProcessDefinitionEntity processDefinition = processEngineConfiguration.getCommandExecutor().execute(new Command<ProcessDefinitionEntity>() {
+            public ProcessDefinitionEntity execute(CommandContext commandContext) {
+                return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("asyncWebServiceInvocationWithDataFlowUEL");
+            }
+        });
 
-    ItemInstance itemInstance = itemDefinition.createInstance();
-    FieldBaseStructureInstance structureInstance = (FieldBaseStructureInstance) itemInstance.getStructureInstance();
-    structureInstance.setFieldValue("newCounterValue", 23);
+        ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("dataInputOfProcess", itemInstance);
+        ItemInstance itemInstance = itemDefinition.createInstance();
+        FieldBaseStructureInstance structureInstance = (FieldBaseStructureInstance) itemInstance.getStructureInstance();
+        structureInstance.setFieldValue("newCounterValue", 23);
 
-    processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithDataFlowUEL", variables);
-    waitForJobExecutorToProcessAllJobs(10000L, 250L);
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("dataInputOfProcess", itemInstance);
 
-    assertEquals(23, counter.getCount());
-  }
+        processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithDataFlowUEL", variables);
+        waitForJobExecutorToProcessAllJobs(10000L, 250L);
+
+        assertEquals(23, counter.getCount());
+    }
 }

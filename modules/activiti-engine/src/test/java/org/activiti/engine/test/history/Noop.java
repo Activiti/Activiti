@@ -17,15 +17,14 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Tom Baeyens
  */
 public class Noop implements ActivityBehavior {
 
-  public void execute(ActivityExecution execution) {
-    PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
-    execution.take(transition);
-  }
+    public void execute(ActivityExecution execution) {
+        PvmTransition transition = execution.getActivity().getOutgoingTransitions().get(0);
+        execution.take(transition);
+    }
 
 }

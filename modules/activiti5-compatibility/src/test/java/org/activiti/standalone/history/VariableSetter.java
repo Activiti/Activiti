@@ -21,31 +21,30 @@ import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 import org.activiti5.engine.impl.context.Context;
 
-
 /**
  * @author Tom Baeyens
  */
 public class VariableSetter implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) throws Exception {
-    
-    SimpleDateFormat sdf =  new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS");
-    // We set the time to check of the updated time is picked up in the history
-    Date updatedDate = sdf.parse("01/01/2001 01:23:46 000");
-    Context.getProcessEngineConfiguration().getClock().setCurrentTime(updatedDate);
-    
-    
-    execution.setVariable("aVariable", "updated value");
-    execution.setVariable("bVariable", 123);
-    execution.setVariable("cVariable", 12345L);
-    execution.setVariable("dVariable", 1234.567);
-    execution.setVariable("eVariable", (short)12);
-    
-    Date theDate =sdf.parse("01/01/2001 01:23:45 678");
-    execution.setVariable("fVariable", theDate);
-    
-    execution.setVariable("gVariable", new SerializableVariable("hello hello"));
-    execution.setVariable("hVariable", ";-)".getBytes());
-  }
+    public void execute(DelegateExecution execution) throws Exception {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss SSS");
+        // We set the time to check of the updated time is picked up in the
+        // history
+        Date updatedDate = sdf.parse("01/01/2001 01:23:46 000");
+        Context.getProcessEngineConfiguration().getClock().setCurrentTime(updatedDate);
+
+        execution.setVariable("aVariable", "updated value");
+        execution.setVariable("bVariable", 123);
+        execution.setVariable("cVariable", 12345L);
+        execution.setVariable("dVariable", 1234.567);
+        execution.setVariable("eVariable", (short) 12);
+
+        Date theDate = sdf.parse("01/01/2001 01:23:45 678");
+        execution.setVariable("fVariable", theDate);
+
+        execution.setVariable("gVariable", new SerializableVariable("hello hello"));
+        execution.setVariable("hVariable", ";-)".getBytes());
+    }
 
 }

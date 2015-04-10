@@ -33,6 +33,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ManagedResource {
 
-  String description() default "";
+    String description() default "";
 
 }

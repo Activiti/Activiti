@@ -10,29 +10,24 @@ import java.util.Map;
 
 public class NativeGroupQueryImpl extends AbstractNativeQuery<NativeGroupQuery, Group> implements NativeGroupQuery {
 
-  private static final long serialVersionUID = 1L;
-  
-  public NativeGroupQueryImpl(CommandContext commandContext) {
-    super(commandContext);
-  }
+    private static final long serialVersionUID = 1L;
 
-  public NativeGroupQueryImpl(CommandExecutor commandExecutor) {
-    super(commandExecutor);
-  }
+    public NativeGroupQueryImpl(CommandContext commandContext) {
+        super(commandContext);
+    }
 
+    public NativeGroupQueryImpl(CommandExecutor commandExecutor) {
+        super(commandExecutor);
+    }
 
- //results ////////////////////////////////////////////////////////////////
-  
-  public List<Group> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return commandContext
-      .getGroupIdentityManager()
-      .findGroupsByNativeQuery(parameterMap, firstResult, maxResults);
-  }
-  
-  public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-    return commandContext
-      .getGroupIdentityManager()
-      .findGroupCountByNativeQuery(parameterMap);
-  }
+    // results ////////////////////////////////////////////////////////////////
+
+    public List<Group> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
+        return commandContext.getGroupIdentityManager().findGroupsByNativeQuery(parameterMap, firstResult, maxResults);
+    }
+
+    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+        return commandContext.getGroupIdentityManager().findGroupCountByNativeQuery(parameterMap);
+    }
 
 }

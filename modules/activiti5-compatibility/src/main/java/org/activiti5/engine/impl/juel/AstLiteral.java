@@ -12,15 +12,15 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.activiti5.engine.impl.juel;
 
 public abstract class AstLiteral extends AstRightValue {
-	public final int getCardinality() {
-		return 0;
-	}
+    public final int getCardinality() {
+        return 0;
+    }
 
-	public final AstNode getChild(int i) {
-		return null;
-	}
+    public final AstNode getChild(int i) {
+        return null;
+    }
 }

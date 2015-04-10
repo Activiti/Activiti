@@ -19,40 +19,39 @@ import java.util.List;
 
 import org.activiti.engine.impl.javax.el.ELContext;
 
-
 public class AstComposite extends AstRightValue {
-	private final List<AstNode> nodes;
+    private final List<AstNode> nodes;
 
-	public AstComposite(List<AstNode> nodes) {
-		this.nodes = nodes;
-	}
+    public AstComposite(List<AstNode> nodes) {
+        this.nodes = nodes;
+    }
 
-	@Override 
-	public Object eval(Bindings bindings, ELContext context) {
-		StringBuilder b = new StringBuilder(16);
-		for (int i = 0; i < getCardinality(); i++) {
-			b.append(bindings.convert(nodes.get(i).eval(bindings, context), String.class));
-		}
-		return b.toString();
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        StringBuilder b = new StringBuilder(16);
+        for (int i = 0; i < getCardinality(); i++) {
+            b.append(bindings.convert(nodes.get(i).eval(bindings, context), String.class));
+        }
+        return b.toString();
+    }
 
-	@Override
-	public String toString() {
-		return "composite";
-	}	
+    @Override
+    public String toString() {
+        return "composite";
+    }
 
-	@Override 
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		for (int i = 0; i < getCardinality(); i++) {
-			nodes.get(i).appendStructure(b, bindings);
-		}
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        for (int i = 0; i < getCardinality(); i++) {
+            nodes.get(i).appendStructure(b, bindings);
+        }
+    }
 
-	public int getCardinality() {
-		return nodes.size();
-	}
+    public int getCardinality() {
+        return nodes.size();
+    }
 
-	public AstNode getChild(int i) {
-		return nodes.get(i);
-	}
+    public AstNode getChild(int i) {
+        return nodes.get(i);
+    }
 }

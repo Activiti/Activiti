@@ -23,110 +23,110 @@ import org.slf4j.LoggerFactory;
  */
 
 public class JMXConfigurator extends AbstractProcessEngineConfigurator {
-  
-  public static final String DEFAUL_JMX_DOMAIN = "DefaultDomain";
-  
-  //jmx (rmi server connection) port
-  protected Integer connectorPort = -1;
 
-  // jmx domain name
-  protected String domain = "org.activiti.jmx.Mbeans";
-  
-  // the domain name for the activiti mbeans
-  protected String mbeanDomain = DEFAUL_JMX_DOMAIN;
+    public static final String DEFAUL_JMX_DOMAIN = "DefaultDomain";
 
-  // JMX service URL path
-  protected String serviceUrlPath = "/jmxrmi/activiti";
+    // jmx (rmi server connection) port
+    protected Integer connectorPort = -1;
 
-  protected Boolean createConnector = true;
+    // jmx domain name
+    protected String domain = "org.activiti.jmx.Mbeans";
 
-  protected ProcessEngineConfiguration processEngineConfig;
+    // the domain name for the activiti mbeans
+    protected String mbeanDomain = DEFAUL_JMX_DOMAIN;
 
-  protected ManagementAgent managementAgent;
+    // JMX service URL path
+    protected String serviceUrlPath = "/jmxrmi/activiti";
 
-  public ProcessEngineConfiguration getProcessEngineConfig() {
-    return processEngineConfig;
-  }
+    protected Boolean createConnector = true;
 
-  public void setProcessEngineConfig(ProcessEngineConfiguration processEngineConfig) {
-    this.processEngineConfig = processEngineConfig;
-  }
+    protected ProcessEngineConfiguration processEngineConfig;
 
-  private static final Logger LOG = LoggerFactory.getLogger(JMXConfigurator.class);
+    protected ManagementAgent managementAgent;
 
-  // disable jmx
-  private boolean disabled = false;
-
-  public String getDomain() {
-    return domain;
-  }
-
-  public void setDomain(String domain) {
-    this.domain = domain;
-  }
-
-  public String getMbeanDomain() {
-    return mbeanDomain;
-  }
-
-  public Boolean getCreateConnector() {
-    return createConnector;
-  }
-
-  public void setCreateConnector(Boolean createConnector) {
-    this.createConnector = createConnector;
-  }
-
-  public void setMbeanDomain(String mbeanDomain) {
-    this.mbeanDomain = mbeanDomain;
-  }
-
-  // jmx (rmi registry) port
-  private Integer registryPort = 1099;
-
-  public Integer getRegistryPort() {
-    return registryPort;
-  }
-
-  public void setRegistryPort(Integer registryPort) {
-    this.registryPort = registryPort;
-  }
-
-  public String getServiceUrlPath() {
-    return serviceUrlPath;
-  }
-
-  public void setServiceUrlPath(String serviceUrlPath) {
-    this.serviceUrlPath = serviceUrlPath;
-  }
-
-  public Integer getConnectorPort() {
-    return connectorPort;
-  }
-
-  public void setConnectorPort(Integer connectorPort) {
-    this.connectorPort = connectorPort;
-  }
-
-  @Override
-  public void beforeInit(ProcessEngineConfigurationImpl arg0) {
-    // nothing to do
-  }
-
-  @Override
-  public void configure(ProcessEngineConfigurationImpl processEngineConfig) {
-    try {
-      this.processEngineConfig = processEngineConfig;
-      if (!disabled) {
-        managementAgent = new DefaultManagementAgent(this);
-        managementAgent.doStart();
-
-        managementAgent.findAndRegisterMbeans();
-      }
-    } catch (Exception e) {
-      LOG.warn("error in initializing jmx. Continue with partial or no JMX configuration", e);
+    public ProcessEngineConfiguration getProcessEngineConfig() {
+        return processEngineConfig;
     }
 
-  }
+    public void setProcessEngineConfig(ProcessEngineConfiguration processEngineConfig) {
+        this.processEngineConfig = processEngineConfig;
+    }
+
+    private static final Logger LOG = LoggerFactory.getLogger(JMXConfigurator.class);
+
+    // disable jmx
+    private boolean disabled = false;
+
+    public String getDomain() {
+        return domain;
+    }
+
+    public void setDomain(String domain) {
+        this.domain = domain;
+    }
+
+    public String getMbeanDomain() {
+        return mbeanDomain;
+    }
+
+    public Boolean getCreateConnector() {
+        return createConnector;
+    }
+
+    public void setCreateConnector(Boolean createConnector) {
+        this.createConnector = createConnector;
+    }
+
+    public void setMbeanDomain(String mbeanDomain) {
+        this.mbeanDomain = mbeanDomain;
+    }
+
+    // jmx (rmi registry) port
+    private Integer registryPort = 1099;
+
+    public Integer getRegistryPort() {
+        return registryPort;
+    }
+
+    public void setRegistryPort(Integer registryPort) {
+        this.registryPort = registryPort;
+    }
+
+    public String getServiceUrlPath() {
+        return serviceUrlPath;
+    }
+
+    public void setServiceUrlPath(String serviceUrlPath) {
+        this.serviceUrlPath = serviceUrlPath;
+    }
+
+    public Integer getConnectorPort() {
+        return connectorPort;
+    }
+
+    public void setConnectorPort(Integer connectorPort) {
+        this.connectorPort = connectorPort;
+    }
+
+    @Override
+    public void beforeInit(ProcessEngineConfigurationImpl arg0) {
+        // nothing to do
+    }
+
+    @Override
+    public void configure(ProcessEngineConfigurationImpl processEngineConfig) {
+        try {
+            this.processEngineConfig = processEngineConfig;
+            if (!disabled) {
+                managementAgent = new DefaultManagementAgent(this);
+                managementAgent.doStart();
+
+                managementAgent.findAndRegisterMbeans();
+            }
+        } catch (Exception e) {
+            LOG.warn("error in initializing jmx. Continue with partial or no JMX configuration", e);
+        }
+
+    }
 
 }

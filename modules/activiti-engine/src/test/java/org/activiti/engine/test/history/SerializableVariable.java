@@ -15,43 +15,42 @@ package org.activiti.engine.test.history;
 
 import java.io.Serializable;
 
-
 /**
  * @author Tom Baeyens
  */
 public class SerializableVariable implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  public String text;
+    private static final long serialVersionUID = 1L;
 
-  public SerializableVariable(String text) {
-    super();
-    this.text = text;
-  }
+    public String text;
 
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((text == null) ? 0 : text.hashCode());
-    return result;
-  }
+    public SerializableVariable(String text) {
+        super();
+        this.text = text;
+    }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    SerializableVariable other = (SerializableVariable) obj;
-    if (text == null) {
-      if (other.text != null)
-        return false;
-    } else if (!text.equals(other.text))
-      return false;
-    return true;
-  }
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((text == null) ? 0 : text.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        SerializableVariable other = (SerializableVariable) obj;
+        if (text == null) {
+            if (other.text != null)
+                return false;
+        } else if (!text.equals(other.text))
+            return false;
+        return true;
+    }
 }

@@ -28,46 +28,46 @@ import org.activiti.explorer.ui.task.SubTaskComponent;
 import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.event.MouseEvents.ClickListener;
 
-
 /**
- * Listener attached to the delete icon for a subtask.
- * Used in the {@link SubTaskComponent}.
+ * Listener attached to the delete icon for a subtask. Used in the
+ * {@link SubTaskComponent}.
  * 
  * @author Joram Barrez
  */
 public class DeleteSubTaskClickListener implements ClickListener {
-  
-  private static final long serialVersionUID = 1L;
-  
-  protected HistoricTaskInstance subTask;
-  protected SubTaskComponent subTaskComponent;
-  
-  public DeleteSubTaskClickListener(HistoricTaskInstance subTask, SubTaskComponent subTaskComponent) {
-    this.subTask = subTask;
-    this.subTaskComponent = subTaskComponent;
-  }
 
-  public void click(ClickEvent event) {
-    I18nManager i18nManager = ExplorerApp.get().getI18nManager();
-    ViewManager viewManager = ExplorerApp.get().getViewManager();
-    final TaskService taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-    
-    ConfirmationDialogPopupWindow popup = new ConfirmationDialogPopupWindow(
-            i18nManager.getMessage(Messages.TASK_CONFIRM_DELETE_SUBTASK, subTask.getName()));
-    popup.addListener(new ConfirmationEventListener() {
-      private static final long serialVersionUID = 1L;
-      protected void rejected(ConfirmationEvent event) {
-      }
-      protected void confirmed(ConfirmationEvent event) {
-        // delete subtask
-        taskService.deleteTask(subTask.getId());
-        
-        // Refresh UI
-        subTaskComponent.refreshSubTasks();
-      }
-    });
-    
-    viewManager.showPopupWindow(popup);
-  }
+    private static final long serialVersionUID = 1L;
+
+    protected HistoricTaskInstance subTask;
+    protected SubTaskComponent subTaskComponent;
+
+    public DeleteSubTaskClickListener(HistoricTaskInstance subTask, SubTaskComponent subTaskComponent) {
+        this.subTask = subTask;
+        this.subTaskComponent = subTaskComponent;
+    }
+
+    public void click(ClickEvent event) {
+        I18nManager i18nManager = ExplorerApp.get().getI18nManager();
+        ViewManager viewManager = ExplorerApp.get().getViewManager();
+        final TaskService taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+
+        ConfirmationDialogPopupWindow popup = new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.TASK_CONFIRM_DELETE_SUBTASK, subTask.getName()));
+        popup.addListener(new ConfirmationEventListener() {
+            private static final long serialVersionUID = 1L;
+
+            protected void rejected(ConfirmationEvent event) {
+            }
+
+            protected void confirmed(ConfirmationEvent event) {
+                // delete subtask
+                taskService.deleteTask(subTask.getId());
+
+                // Refresh UI
+                subTaskComponent.refreshSubTasks();
+            }
+        });
+
+        viewManager.showPopupWindow(popup);
+    }
 
 }

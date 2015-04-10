@@ -25,51 +25,54 @@ import org.activiti.engine.test.Deployment;
  * @author Frederik Heremans
  */
 public class ExpressionManagerTest extends PluggableActivitiTestCase {
-  
-  @Override
-  protected void setUp() throws Exception {
-    super.setUp();
-  }
-  
-  @Deployment
-  public void testMethodExpressions() {
-    // Process contains 2 service tasks. one containing a method with no params, the other
-    // contains a method with 2 params. When the process completes without exception,
-    // test passed.
-    Map<String, Object> vars = new HashMap<String, Object>();
-    vars.put("aString", "abcdefgh");
-    runtimeService.startProcessInstanceByKey("methodExpressionProcess", vars);
-    
-    assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("methodExpressionProcess").count());
-  }
-  
-  @Deployment
-  public void testExecutionAvailable() {
-    Map<String, Object> vars = new HashMap<String, Object>();
-   
-    vars.put("myVar", new ExecutionTestVariable());
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testExecutionAvailableProcess", vars);
-    
-    // Check of the testMethod has been called with the current execution
-    String value = (String) runtimeService.getVariable(processInstance.getId(), "testVar");
-    assertNotNull(value);
-    assertEquals("myValue", value);
-  }
-  
-  @Deployment
-  public void testAuthenticatedUserIdAvailable() {
-    try {
-      // Setup authentication
-      Authentication.setAuthenticatedUserId("frederik");
-      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testAuthenticatedUserIdAvailableProcess");
-      
-      // Check if the variable that has been set in service-task is the authenticated user
-      String value = (String) runtimeService.getVariable(processInstance.getId(), "theUser");
-      assertNotNull(value);
-      assertEquals("frederik", value);
-    } finally {
-      // Cleanup
-      Authentication.setAuthenticatedUserId(null);
+
+    @Override
+    protected void setUp() throws Exception {
+        super.setUp();
     }
-  }
+
+    @Deployment
+    public void testMethodExpressions() {
+        // Process contains 2 service tasks. one containing a method with no
+        // params, the other
+        // contains a method with 2 params. When the process completes without
+        // exception,
+        // test passed.
+        Map<String, Object> vars = new HashMap<String, Object>();
+        vars.put("aString", "abcdefgh");
+        runtimeService.startProcessInstanceByKey("methodExpressionProcess", vars);
+
+        assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey("methodExpressionProcess").count());
+    }
+
+    @Deployment
+    public void testExecutionAvailable() {
+        Map<String, Object> vars = new HashMap<String, Object>();
+
+        vars.put("myVar", new ExecutionTestVariable());
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testExecutionAvailableProcess", vars);
+
+        // Check of the testMethod has been called with the current execution
+        String value = (String) runtimeService.getVariable(processInstance.getId(), "testVar");
+        assertNotNull(value);
+        assertEquals("myValue", value);
+    }
+
+    @Deployment
+    public void testAuthenticatedUserIdAvailable() {
+        try {
+            // Setup authentication
+            Authentication.setAuthenticatedUserId("frederik");
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testAuthenticatedUserIdAvailableProcess");
+
+            // Check if the variable that has been set in service-task is the
+            // authenticated user
+            String value = (String) runtimeService.getVariable(processInstance.getId(), "theUser");
+            assertNotNull(value);
+            assertEquals("frederik", value);
+        } finally {
+            // Cleanup
+            Authentication.setAuthenticatedUserId(null);
+        }
+    }
 }

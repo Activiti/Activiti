@@ -29,31 +29,31 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class PingPongTest extends SpringActivitiTestCase {
 
-	@Autowired
-	protected CamelContext camelContext;
+    @Autowired
+    protected CamelContext camelContext;
 
-	public void  setUp() throws Exception {
-	  camelContext.addRoutes(new RouteBuilder() {
+    public void setUp() throws Exception {
+        camelContext.addRoutes(new RouteBuilder() {
 
-	    @Override
-	    public void configure() throws Exception {
-	      from("activiti:PingPongProcess:ping").transform().simple("${property.input} World");		
-	    }
-	  });
-	}
-	
-	@Deployment
-	public void testPingPong() {
-		Map<String, Object> variables = new HashMap<String, Object>();
-	
-		variables.put("input", "Hello");
-		Map<String, String> outputMap = new HashMap<String, String>();
-		variables.put("outputMap", outputMap);
-		
-		runtimeService.startProcessInstanceByKey("PingPongProcess", variables);
-		assertEquals(1, outputMap.size());
-		assertNotNull(outputMap.get("outputValue"));
-		assertEquals("Hello World", outputMap.get("outputValue"));
-	}
+            @Override
+            public void configure() throws Exception {
+                from("activiti:PingPongProcess:ping").transform().simple("${property.input} World");
+            }
+        });
+    }
+
+    @Deployment
+    public void testPingPong() {
+        Map<String, Object> variables = new HashMap<String, Object>();
+
+        variables.put("input", "Hello");
+        Map<String, String> outputMap = new HashMap<String, String>();
+        variables.put("outputMap", outputMap);
+
+        runtimeService.startProcessInstanceByKey("PingPongProcess", variables);
+        assertEquals(1, outputMap.size());
+        assertNotNull(outputMap.get("outputValue"));
+        assertEquals("Hello World", outputMap.get("outputValue"));
+    }
 
 }

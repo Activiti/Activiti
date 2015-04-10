@@ -23,32 +23,31 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.AttachmentEntity;
 import org.activiti5.engine.impl.persistence.entity.ByteArrayEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GetAttachmentContentCmd implements Command<InputStream>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String attachmentId;
-  
-  public GetAttachmentContentCmd(String attachmentId) {
-    this.attachmentId = attachmentId;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String attachmentId;
 
-  public InputStream execute(CommandContext commandContext) {
-    DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
-    AttachmentEntity attachment = dbSqlSession.selectById(AttachmentEntity.class, attachmentId);
-    
-    String contentId = attachment.getContentId();
-    if (contentId==null) {
-      return null;
+    public GetAttachmentContentCmd(String attachmentId) {
+        this.attachmentId = attachmentId;
     }
-    
-    ByteArrayEntity byteArray = dbSqlSession.selectById(ByteArrayEntity.class, contentId);
-    byte[] bytes = byteArray.getBytes();
-    
-    return new ByteArrayInputStream(bytes);
-  }
+
+    public InputStream execute(CommandContext commandContext) {
+        DbSqlSession dbSqlSession = commandContext.getDbSqlSession();
+        AttachmentEntity attachment = dbSqlSession.selectById(AttachmentEntity.class, attachmentId);
+
+        String contentId = attachment.getContentId();
+        if (contentId == null) {
+            return null;
+        }
+
+        ByteArrayEntity byteArray = dbSqlSession.selectById(ByteArrayEntity.class, contentId);
+        byte[] bytes = byteArray.getBytes();
+
+        return new ByteArrayInputStream(bytes);
+    }
 
 }

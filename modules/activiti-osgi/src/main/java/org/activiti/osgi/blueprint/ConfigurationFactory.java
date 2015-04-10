@@ -11,23 +11,22 @@ public class ConfigurationFactory {
     boolean jobExecutorActivate = true;
 
     public StandaloneProcessEngineConfiguration getConfiguration() {
-  		StandaloneProcessEngineConfiguration conf =
-              new StandaloneProcessEngineConfiguration();
-      conf.setDataSource(dataSource);
-      conf.setDatabaseSchemaUpdate(databaseSchemaUpdate);
-      conf.setJobExecutorActivate(jobExecutorActivate);
-      return conf;
+        StandaloneProcessEngineConfiguration conf = new StandaloneProcessEngineConfiguration();
+        conf.setDataSource(dataSource);
+        conf.setDatabaseSchemaUpdate(databaseSchemaUpdate);
+        conf.setJobExecutorActivate(jobExecutorActivate);
+        return conf;
     }
 
     public void setDataSource(DataSource dataSource) {
-       this.dataSource = dataSource;
+        this.dataSource = dataSource;
     }
 
     public void setDatabaseSchemaUpdate(String databaseSchemaUpdate) {
-      this.databaseSchemaUpdate = databaseSchemaUpdate;
+        this.databaseSchemaUpdate = databaseSchemaUpdate;
     }
 
     public void setJobExecutorActivate(boolean jobExecutorActivate) {
-      this.jobExecutorActivate = jobExecutorActivate;
+        this.jobExecutorActivate = jobExecutorActivate;
     }
 }

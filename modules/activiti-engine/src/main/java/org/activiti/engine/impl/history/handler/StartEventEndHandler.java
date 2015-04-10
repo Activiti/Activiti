@@ -18,18 +18,16 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
-
 /**
  * @author Tom Baeyens
  */
 public class StartEventEndHandler implements ExecutionListener {
 
-  public void notify(DelegateExecution execution) {
-    String executionId = execution.getId();
-    String activityId = ((ExecutionEntity)execution).getActivityId();
-    
-    Context.getCommandContext().getHistoryManager()
-      .recordStartEventEnded(executionId, activityId);
-  }
+    public void notify(DelegateExecution execution) {
+        String executionId = execution.getId();
+        String activityId = ((ExecutionEntity) execution).getActivityId();
+
+        Context.getCommandContext().getHistoryManager().recordStartEventEnded(executionId, activityId);
+    }
 
 }

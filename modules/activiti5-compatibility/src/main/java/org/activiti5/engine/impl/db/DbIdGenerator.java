@@ -18,54 +18,53 @@ import org.activiti5.engine.impl.cmd.GetNextIdBlockCmd;
 import org.activiti5.engine.impl.interceptor.CommandConfig;
 import org.activiti5.engine.impl.interceptor.CommandExecutor;
 
-
 /**
  * @author Tom Baeyens
  */
 public class DbIdGenerator implements IdGenerator {
 
-  protected int idBlockSize;
-  protected long nextId = 0;
-  protected long lastId = -1;
-  
-  protected CommandExecutor commandExecutor;
-  protected CommandConfig commandConfig;
-  
-  public synchronized String getNextId() {
-    if (lastId<nextId) {
-      getNewBlock();
+    protected int idBlockSize;
+    protected long nextId = 0;
+    protected long lastId = -1;
+
+    protected CommandExecutor commandExecutor;
+    protected CommandConfig commandConfig;
+
+    public synchronized String getNextId() {
+        if (lastId < nextId) {
+            getNewBlock();
+        }
+        long _nextId = nextId++;
+        return Long.toString(_nextId);
     }
-    long _nextId = nextId++;
-    return Long.toString(_nextId);
-  }
 
-  protected synchronized void getNewBlock() {
-    IdBlock idBlock = commandExecutor.execute(commandConfig, new GetNextIdBlockCmd(idBlockSize));
-    this.nextId = idBlock.getNextId();
-    this.lastId = idBlock.getLastId();
-  }
+    protected synchronized void getNewBlock() {
+        IdBlock idBlock = commandExecutor.execute(commandConfig, new GetNextIdBlockCmd(idBlockSize));
+        this.nextId = idBlock.getNextId();
+        this.lastId = idBlock.getLastId();
+    }
 
-  public int getIdBlockSize() {
-    return idBlockSize;
-  }
+    public int getIdBlockSize() {
+        return idBlockSize;
+    }
 
-  public void setIdBlockSize(int idBlockSize) {
-    this.idBlockSize = idBlockSize;
-  }
-  
-  public CommandExecutor getCommandExecutor() {
-    return commandExecutor;
-  }
+    public void setIdBlockSize(int idBlockSize) {
+        this.idBlockSize = idBlockSize;
+    }
 
-  public void setCommandExecutor(CommandExecutor commandExecutor) {
-    this.commandExecutor = commandExecutor;
-  }
-  
-  public CommandConfig getCommandConfig() {
-    return commandConfig;
-  }
-  
-  public void setCommandConfig(CommandConfig commandConfig) {
-    this.commandConfig = commandConfig;
-  }
+    public CommandExecutor getCommandExecutor() {
+        return commandExecutor;
+    }
+
+    public void setCommandExecutor(CommandExecutor commandExecutor) {
+        this.commandExecutor = commandExecutor;
+    }
+
+    public CommandConfig getCommandConfig() {
+        return commandConfig;
+    }
+
+    public void setCommandConfig(CommandConfig commandConfig) {
+        this.commandConfig = commandConfig;
+    }
 }

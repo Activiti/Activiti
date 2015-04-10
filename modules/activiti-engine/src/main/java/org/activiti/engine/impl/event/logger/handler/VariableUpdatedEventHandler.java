@@ -10,14 +10,13 @@ import org.activiti.engine.impl.persistence.entity.EventLogEntryEntity;
  * @author Joram Barrez
  */
 public class VariableUpdatedEventHandler extends VariableEventHandler {
-	
-	@Override
-	public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
-		ActivitiVariableEvent variableEvent = (ActivitiVariableEvent) event;
-		Map<String, Object> data = createData(variableEvent);
 
-    return createEventLogEntry(variableEvent.getProcessDefinitionId(), variableEvent.getProcessInstanceId(), 
-    		variableEvent.getExecutionId(), variableEvent.getTaskId(), data);
-	}
+    @Override
+    public EventLogEntryEntity generateEventLogEntry(CommandContext commandContext) {
+        ActivitiVariableEvent variableEvent = (ActivitiVariableEvent) event;
+        Map<String, Object> data = createData(variableEvent);
+
+        return createEventLogEntry(variableEvent.getProcessDefinitionId(), variableEvent.getProcessInstanceId(), variableEvent.getExecutionId(), variableEvent.getTaskId(), data);
+    }
 
 }

@@ -23,67 +23,68 @@ import com.vaadin.ui.Upload.Receiver;
 import com.vaadin.ui.Upload.StartedListener;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * @author Tijs Rademakers
  */
-public class ImportPopupWindow extends PopupWindow { 
-  
-  private static final long serialVersionUID = 1L;
-  
-  // Services
-  protected I18nManager i18nManager;
-  protected ImportComponent importComponent;
+public class ImportPopupWindow extends PopupWindow {
 
-  public ImportPopupWindow(String caption, String description, Receiver receiver) {
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    
-    init(caption, description, receiver);
-    
-    importComponent.addFinishedListener(new FinishedListener() {
-      
-      private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-      public void uploadFinished(FinishedEvent event) {
-        close();
-      }
-    });
-  }
+    // Services
+    protected I18nManager i18nManager;
+    protected ImportComponent importComponent;
 
-  // UI initialisation ----------------------------------------------------------------------------
-  protected void init(String caption, String description, Receiver receiver) {
-    importComponent = new ImportComponent(description, receiver);
-    importComponent.setSizeFull();
-    initWindow(caption);
-  }
+    public ImportPopupWindow(String caption, String description, Receiver receiver) {
+        this.i18nManager = ExplorerApp.get().getI18nManager();
 
-  protected void initWindow(String caption) {
-    // Fixed width/height since otherwise the layout can be screwed by the drag and drop
-    setWidth("300px");
-    setHeight("200px");
-    addStyleName(Reindeer.WINDOW_LIGHT);
-    setModal(true);
-    center();
-    setCaption(caption);
-    
-    setContent(importComponent);
-  }
-  
-  
-  // Upload Listeners ----------------------------------------------------------------------------
-  public void addFinishedListener(FinishedListener finishedListener) {
-    importComponent.addFinishedListener(finishedListener);
-  }
-  
-  public void addStartedListener(StartedListener startedListener) {
-    importComponent.addStartedListener(startedListener);
-  }
-  
-  public void addFailedListener(FailedListener failedListener) {
-    importComponent.addFailedListener(failedListener);
-  }
-  
-  public void addProgressListener(ProgressListener progressListener) {
-    importComponent.addProgressListener(progressListener);
-  }  
+        init(caption, description, receiver);
+
+        importComponent.addFinishedListener(new FinishedListener() {
+
+            private static final long serialVersionUID = 1L;
+
+            public void uploadFinished(FinishedEvent event) {
+                close();
+            }
+        });
+    }
+
+    // UI initialisation
+    // ----------------------------------------------------------------------------
+    protected void init(String caption, String description, Receiver receiver) {
+        importComponent = new ImportComponent(description, receiver);
+        importComponent.setSizeFull();
+        initWindow(caption);
+    }
+
+    protected void initWindow(String caption) {
+        // Fixed width/height since otherwise the layout can be screwed by the
+        // drag and drop
+        setWidth("300px");
+        setHeight("200px");
+        addStyleName(Reindeer.WINDOW_LIGHT);
+        setModal(true);
+        center();
+        setCaption(caption);
+
+        setContent(importComponent);
+    }
+
+    // Upload Listeners
+    // ----------------------------------------------------------------------------
+    public void addFinishedListener(FinishedListener finishedListener) {
+        importComponent.addFinishedListener(finishedListener);
+    }
+
+    public void addStartedListener(StartedListener startedListener) {
+        importComponent.addStartedListener(startedListener);
+    }
+
+    public void addFailedListener(FailedListener failedListener) {
+        importComponent.addFailedListener(failedListener);
+    }
+
+    public void addProgressListener(ProgressListener progressListener) {
+        importComponent.addProgressListener(progressListener);
+    }
 }

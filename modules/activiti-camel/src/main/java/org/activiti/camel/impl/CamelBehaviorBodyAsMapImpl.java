@@ -17,19 +17,19 @@ import org.activiti.camel.ActivitiEndpoint;
 import org.activiti.camel.CamelBehavior;
 
 /**
- * This implementation of the CamelBehavior abstract class works by copying variables into Camel using a 
- * Map<String,Object> object in the Camel Exchange body.
+ * This implementation of the CamelBehavior abstract class works by copying
+ * variables into Camel using a Map<String,Object> object in the Camel Exchange
+ * body.
  * 
  * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Saeid Mirzaei
  */
 public class CamelBehaviorBodyAsMapImpl extends CamelBehavior {
-	
-	private static final long serialVersionUID = 1L;
-	
-	@Override
-  protected void setPropertTargetVariable(ActivitiEndpoint endpoint) {
-    toTargetType = TargetType.BODY_AS_MAP;
-  }
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected void setPropertTargetVariable(ActivitiEndpoint endpoint) {
+        toTargetType = TargetType.BODY_AS_MAP;
+    }
 
 }
-

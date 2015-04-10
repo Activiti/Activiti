@@ -19,18 +19,15 @@ import org.activiti.engine.identity.UserQuery;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public class CreateUserQueryCmd implements Command<UserQuery>, Serializable {
-  
-  private static final long serialVersionUID = 1L;
 
-  public UserQuery execute(CommandContext commandContext) {
-    return commandContext
-      .getUserIdentityManager()
-      .createNewUserQuery();
-  }
+    private static final long serialVersionUID = 1L;
+
+    public UserQuery execute(CommandContext commandContext) {
+        return commandContext.getUserIdentityManager().createNewUserQuery();
+    }
 
 }

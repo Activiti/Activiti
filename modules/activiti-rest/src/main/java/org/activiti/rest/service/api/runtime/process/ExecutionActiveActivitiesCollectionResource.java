@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.runtime.process;
 
-
 import java.util.List;
 
 import org.activiti.engine.runtime.Execution;
@@ -22,16 +21,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class ExecutionActiveActivitiesCollectionResource extends ExecutionBaseResource {
 
-  @RequestMapping(value="/runtime/executions/{executionId}/activities", method = RequestMethod.GET, produces="application/json")
-  public List<String> getActiveActivities(@PathVariable String executionId) {
-    Execution execution = getExecutionFromRequest(executionId);
-    return runtimeService.getActiveActivityIds(execution.getId());
-  }
+    @RequestMapping(value = "/runtime/executions/{executionId}/activities", method = RequestMethod.GET, produces = "application/json")
+    public List<String> getActiveActivities(@PathVariable String executionId) {
+        Execution execution = getExecutionFromRequest(executionId);
+        return runtimeService.getActiveActivityIds(execution.getId());
+    }
 }

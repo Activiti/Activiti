@@ -29,112 +29,109 @@ import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.themes.Reindeer;
 
-
 /**
  * @author Tijs Rademakers
  * @author Joram Barrez
  */
 public class EditModelClickListener implements ClickListener {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected static final Logger LOGGER = LoggerFactory.getLogger(EditModelClickListener.class);
-  
-  protected Model model;
-  protected NotificationManager notificationManager;
-  
-  public EditModelClickListener(Model model) {
-    this.notificationManager = ExplorerApp.get().getNotificationManager(); 
-    this.model = model;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public void buttonClick(ClickEvent event) {
-    if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(model.getCategory())) {
-      showSelectEditorPopupWindow();
-    } else {
-	    try {
-		    showModeler();
-	    } catch (MalformedURLException e) {
-	      LOGGER.error("Error showing modeler", e);
-		    ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_EDITOR_LOADING_ERROR, e);
-	    }
+    protected static final Logger LOGGER = LoggerFactory.getLogger(EditModelClickListener.class);
+
+    protected Model model;
+    protected NotificationManager notificationManager;
+
+    public EditModelClickListener(Model model) {
+        this.notificationManager = ExplorerApp.get().getNotificationManager();
+        this.model = model;
     }
-  }
 
-  protected WorkflowDefinition loadWorkflowDefinition() throws JsonProcessingException, IOException {
-    RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    return ExplorerApp.get().getSimpleWorkflowJsonConverter().readWorkflowDefinition(repositoryService.getModelEditorSource(model.getId()));
-  }
-  
-  protected void showSelectEditorPopupWindow() {
-    final PopupWindow selectEditorPopupWindow = new PopupWindow();
-    selectEditorPopupWindow.setModal(true);
-    selectEditorPopupWindow.setResizable(false);
-    selectEditorPopupWindow.setWidth("350px");
-    selectEditorPopupWindow.setHeight("250px");
-    selectEditorPopupWindow.addStyleName(Reindeer.PANEL_LIGHT);
-    selectEditorPopupWindow.center();
-    
-    final SelectEditorComponent selectEditorComponent = new SelectEditorComponent(false);
-    selectEditorComponent.getModelerDescriptionLabel().setValue(
-            ExplorerApp.get().getI18nManager().getMessage(Messages.PROCESS_EDITOR_CONVERSION_WARNING_MODELER));
-    selectEditorComponent.getModelerDescriptionLabel().addStyleName(ExplorerLayout.STYLE_LABEL_RED);
-    selectEditorComponent.preferTableDrivenEditor();
-    selectEditorPopupWindow.getContent().addComponent(selectEditorComponent);
-    
-    selectEditorComponent.setEditorSelectedListener(new EditorSelectedListener() {
-      public void editorSelectionChanged() {
-        
-        try {
-          WorkflowDefinition workflowDefinition = loadWorkflowDefinition();
-        
-          // When using the modeler, the format must first be converted to the modeler json format
-          if (selectEditorComponent.isModelerPreferred()) {
-             
-            WorkflowDefinitionConversion conversion = ExplorerApp.get()
-                    .getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
-            conversion.convert();
-            
-            RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-            model.setCategory(null);
-            
-            ObjectMapper objectMapper = new ObjectMapper();
-            ObjectNode metaInfoJson = objectMapper.createObjectNode();
-            metaInfoJson.put("name", model.getName());
-            model.setMetaInfo(metaInfoJson.toString());
-            repositoryService.saveModel(model);
-            
-            BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
-            ObjectNode json = bpmnJsonConverter.convertToJson(conversion.getBpmnModel());
-            repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
-            
-            // Show modeler
-            showModeler();
-            
-          } else {
-            
-            // Load and show table editor
-            ExplorerApp.get().getViewManager().showSimpleTableProcessEditor(model.getId(), workflowDefinition);
-            
-          }
-        } catch (Exception e) {
-          LOGGER.error("Error showing editor", e);
-          ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_EDITOR_LOADING_ERROR, e);
-        } finally {
-          ExplorerApp.get().getMainWindow().removeWindow(selectEditorPopupWindow);
+    public void buttonClick(ClickEvent event) {
+        if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(model.getCategory())) {
+            showSelectEditorPopupWindow();
+        } else {
+            try {
+                showModeler();
+            } catch (MalformedURLException e) {
+                LOGGER.error("Error showing modeler", e);
+                ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_EDITOR_LOADING_ERROR, e);
+            }
         }
-        
-      }
-    });
-    
-    ExplorerApp.get().getViewManager().showPopupWindow(selectEditorPopupWindow);
-  }
-  
-  protected void showModeler() throws MalformedURLException {
-	  URL explorerURL = ExplorerApp.get().getURL();
-	  URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(),
-			  explorerURL.getPath().replace("/ui",  "") + "modeler.html?modelId=" + model.getId());
-    ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
-  }
-  
+    }
+
+    protected WorkflowDefinition loadWorkflowDefinition() throws JsonProcessingException, IOException {
+        RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+        return ExplorerApp.get().getSimpleWorkflowJsonConverter().readWorkflowDefinition(repositoryService.getModelEditorSource(model.getId()));
+    }
+
+    protected void showSelectEditorPopupWindow() {
+        final PopupWindow selectEditorPopupWindow = new PopupWindow();
+        selectEditorPopupWindow.setModal(true);
+        selectEditorPopupWindow.setResizable(false);
+        selectEditorPopupWindow.setWidth("350px");
+        selectEditorPopupWindow.setHeight("250px");
+        selectEditorPopupWindow.addStyleName(Reindeer.PANEL_LIGHT);
+        selectEditorPopupWindow.center();
+
+        final SelectEditorComponent selectEditorComponent = new SelectEditorComponent(false);
+        selectEditorComponent.getModelerDescriptionLabel().setValue(ExplorerApp.get().getI18nManager().getMessage(Messages.PROCESS_EDITOR_CONVERSION_WARNING_MODELER));
+        selectEditorComponent.getModelerDescriptionLabel().addStyleName(ExplorerLayout.STYLE_LABEL_RED);
+        selectEditorComponent.preferTableDrivenEditor();
+        selectEditorPopupWindow.getContent().addComponent(selectEditorComponent);
+
+        selectEditorComponent.setEditorSelectedListener(new EditorSelectedListener() {
+            public void editorSelectionChanged() {
+
+                try {
+                    WorkflowDefinition workflowDefinition = loadWorkflowDefinition();
+
+                    // When using the modeler, the format must first be
+                    // converted to the modeler json format
+                    if (selectEditorComponent.isModelerPreferred()) {
+
+                        WorkflowDefinitionConversion conversion = ExplorerApp.get().getWorkflowDefinitionConversionFactory().createWorkflowDefinitionConversion(workflowDefinition);
+                        conversion.convert();
+
+                        RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+                        model.setCategory(null);
+
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        ObjectNode metaInfoJson = objectMapper.createObjectNode();
+                        metaInfoJson.put("name", model.getName());
+                        model.setMetaInfo(metaInfoJson.toString());
+                        repositoryService.saveModel(model);
+
+                        BpmnJsonConverter bpmnJsonConverter = new BpmnJsonConverter();
+                        ObjectNode json = bpmnJsonConverter.convertToJson(conversion.getBpmnModel());
+                        repositoryService.addModelEditorSource(model.getId(), json.toString().getBytes("utf-8"));
+
+                        // Show modeler
+                        showModeler();
+
+                    } else {
+
+                        // Load and show table editor
+                        ExplorerApp.get().getViewManager().showSimpleTableProcessEditor(model.getId(), workflowDefinition);
+
+                    }
+                } catch (Exception e) {
+                    LOGGER.error("Error showing editor", e);
+                    ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_EDITOR_LOADING_ERROR, e);
+                } finally {
+                    ExplorerApp.get().getMainWindow().removeWindow(selectEditorPopupWindow);
+                }
+
+            }
+        });
+
+        ExplorerApp.get().getViewManager().showPopupWindow(selectEditorPopupWindow);
+    }
+
+    protected void showModeler() throws MalformedURLException {
+        URL explorerURL = ExplorerApp.get().getURL();
+        URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(), explorerURL.getPath().replace("/ui", "") + "modeler.html?modelId=" + model.getId());
+        ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
+    }
+
 }

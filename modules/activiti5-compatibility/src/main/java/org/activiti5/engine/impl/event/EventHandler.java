@@ -16,14 +16,13 @@ package org.activiti5.engine.impl.event;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntity;
 
-
 /**
  * @author Daniel Meyer
  */
 public interface EventHandler {
-  
-  public String getEventHandlerType();
-  
-  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext);
+
+    public String getEventHandlerType();
+
+    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext);
 
 }

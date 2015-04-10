@@ -28,103 +28,99 @@ import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * @author Tom Baeyens
  */
 public class DefaultFormHandler implements FormHandler {
-  
-  protected Expression formKey;
-  protected String deploymentId;
-  protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
-  
-  public void parseConfiguration(List<org.activiti.bpmn.model.FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition) {
-    this.deploymentId = deployment.getId();
-    
-    ExpressionManager expressionManager = Context
-        .getProcessEngineConfiguration()
-        .getExpressionManager();
-    
-    if (StringUtils.isNotEmpty(formKey)) {
-      this.formKey = expressionManager.createExpression(formKey);
+
+    protected Expression formKey;
+    protected String deploymentId;
+    protected List<FormPropertyHandler> formPropertyHandlers = new ArrayList<FormPropertyHandler>();
+
+    public void parseConfiguration(List<org.activiti.bpmn.model.FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition) {
+        this.deploymentId = deployment.getId();
+
+        ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
+
+        if (StringUtils.isNotEmpty(formKey)) {
+            this.formKey = expressionManager.createExpression(formKey);
+        }
+
+        FormTypes formTypes = Context.getProcessEngineConfiguration().getFormTypes();
+
+        for (org.activiti.bpmn.model.FormProperty formProperty : formProperties) {
+            FormPropertyHandler formPropertyHandler = new FormPropertyHandler();
+            formPropertyHandler.setId(formProperty.getId());
+            formPropertyHandler.setName(formProperty.getName());
+
+            AbstractFormType type = formTypes.parseFormPropertyType(formProperty);
+            formPropertyHandler.setType(type);
+            formPropertyHandler.setRequired(formProperty.isRequired());
+            formPropertyHandler.setReadable(formProperty.isReadable());
+            formPropertyHandler.setWritable(formProperty.isWriteable());
+            formPropertyHandler.setVariableName(formProperty.getVariable());
+
+            if (StringUtils.isNotEmpty(formProperty.getExpression())) {
+                Expression expression = expressionManager.createExpression(formProperty.getExpression());
+                formPropertyHandler.setVariableExpression(expression);
+            }
+
+            if (StringUtils.isNotEmpty(formProperty.getDefaultExpression())) {
+                Expression defaultExpression = expressionManager.createExpression(formProperty.getDefaultExpression());
+                formPropertyHandler.setDefaultExpression(defaultExpression);
+            }
+
+            formPropertyHandlers.add(formPropertyHandler);
+        }
     }
-    
-    FormTypes formTypes = Context
-      .getProcessEngineConfiguration()
-      .getFormTypes();
-    
-    for (org.activiti.bpmn.model.FormProperty formProperty : formProperties) {
-      FormPropertyHandler formPropertyHandler = new FormPropertyHandler();
-      formPropertyHandler.setId(formProperty.getId());
-      formPropertyHandler.setName(formProperty.getName());
-      
-      AbstractFormType type = formTypes.parseFormPropertyType(formProperty);
-      formPropertyHandler.setType(type);
-      formPropertyHandler.setRequired(formProperty.isRequired());
-      formPropertyHandler.setReadable(formProperty.isReadable());
-      formPropertyHandler.setWritable(formProperty.isWriteable());
-      formPropertyHandler.setVariableName(formProperty.getVariable());
 
-      if (StringUtils.isNotEmpty(formProperty.getExpression())) {
-        Expression expression = expressionManager.createExpression(formProperty.getExpression());
-        formPropertyHandler.setVariableExpression(expression);
-      }
-
-      if (StringUtils.isNotEmpty(formProperty.getDefaultExpression())) {
-        Expression defaultExpression = expressionManager.createExpression(formProperty.getDefaultExpression());
-        formPropertyHandler.setDefaultExpression(defaultExpression);
-      }
-
-      formPropertyHandlers.add(formPropertyHandler);
+    protected void initializeFormProperties(FormDataImpl formData, ExecutionEntity execution) {
+        List<FormProperty> formProperties = new ArrayList<FormProperty>();
+        for (FormPropertyHandler formPropertyHandler : formPropertyHandlers) {
+            if (formPropertyHandler.isReadable()) {
+                FormProperty formProperty = formPropertyHandler.createFormProperty(execution);
+                formProperties.add(formProperty);
+            }
+        }
+        formData.setFormProperties(formProperties);
     }
-  }
 
-  protected void initializeFormProperties(FormDataImpl formData, ExecutionEntity execution) {
-    List<FormProperty> formProperties = new ArrayList<FormProperty>();
-    for (FormPropertyHandler formPropertyHandler: formPropertyHandlers) {
-      if (formPropertyHandler.isReadable()) {
-        FormProperty formProperty = formPropertyHandler.createFormProperty(execution);
-        formProperties.add(formProperty);
-      }
+    public void submitFormProperties(Map<String, String> properties, ExecutionEntity execution) {
+        Map<String, String> propertiesCopy = new HashMap<String, String>(properties);
+        for (FormPropertyHandler formPropertyHandler : formPropertyHandlers) {
+            // submitFormProperty will remove all the keys which it takes care
+            // of
+            formPropertyHandler.submitFormProperty(execution, propertiesCopy);
+        }
+        for (String propertyId : propertiesCopy.keySet()) {
+            execution.setVariable(propertyId, propertiesCopy.get(propertyId));
+        }
     }
-    formData.setFormProperties(formProperties);
-  }
 
-  public void submitFormProperties(Map<String, String> properties, ExecutionEntity execution) {
-    Map<String, String> propertiesCopy = new HashMap<String, String>(properties);
-    for (FormPropertyHandler formPropertyHandler: formPropertyHandlers) {
-      // submitFormProperty will remove all the keys which it takes care of
-      formPropertyHandler.submitFormProperty(execution, propertiesCopy);
+    // getters and setters
+    // //////////////////////////////////////////////////////
+
+    public Expression getFormKey() {
+        return formKey;
     }
-    for (String propertyId: propertiesCopy.keySet()) {
-      execution.setVariable(propertyId, propertiesCopy.get(propertyId));
+
+    public void setFormKey(Expression formKey) {
+        this.formKey = formKey;
     }
-  }
 
+    public String getDeploymentId() {
+        return deploymentId;
+    }
 
-  // getters and setters //////////////////////////////////////////////////////
-  
-  public Expression getFormKey() {
-    return formKey;
-  }
-  
-  public void setFormKey(Expression formKey) {
-    this.formKey = formKey;
-  }
-  
-  public String getDeploymentId() {
-    return deploymentId;
-  }
-  
-  public void setDeploymentId(String deploymentId) {
-    this.deploymentId = deploymentId;
-  }
-  
-  public List<FormPropertyHandler> getFormPropertyHandlers() {
-    return formPropertyHandlers;
-  }
-  
-  public void setFormPropertyHandlers(List<FormPropertyHandler> formPropertyHandlers) {
-    this.formPropertyHandlers = formPropertyHandlers;
-  }
+    public void setDeploymentId(String deploymentId) {
+        this.deploymentId = deploymentId;
+    }
+
+    public List<FormPropertyHandler> getFormPropertyHandlers() {
+        return formPropertyHandlers;
+    }
+
+    public void setFormPropertyHandlers(List<FormPropertyHandler> formPropertyHandlers) {
+        this.formPropertyHandlers = formPropertyHandlers;
+    }
 }

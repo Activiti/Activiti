@@ -16,41 +16,42 @@ import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.SignallableActivityBehavior;
 
-
 /**
- * Superclass for all 'connectable' BPMN 2.0 process elements: tasks, gateways and events.
- * This means that any subclass can be the source or target of a sequenceflow.
+ * Superclass for all 'connectable' BPMN 2.0 process elements: tasks, gateways
+ * and events. This means that any subclass can be the source or target of a
+ * sequenceflow.
  * 
  * Corresponds with the notion of the 'flownode' in BPMN 2.0.
  * 
  * @author Joram Barrez
  */
 public abstract class FlowNodeActivityBehavior implements SignallableActivityBehavior {
-  
-  protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
-  
-  /**
-   * Default behaviour: just leave the activity with no extra functionality.
-   */
-  public void execute(ActivityExecution execution) throws Exception {
-    leave(execution);
-  }
-  
-  /**
-   * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on the
-   * outgoing sequence flow and take those that evaluate to true.
-   */
-  protected void leave(ActivityExecution execution) {
-    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
-  }
-  
-  protected void leaveIgnoreConditions(ActivityExecution activityContext) {
-    bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
-  }
 
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    // concrete activity behaviours that do accept signals should override this method;
-    throw new ActivitiException("this activity doesn't accept signals");
-  }
-  
+    protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
+
+    /**
+     * Default behaviour: just leave the activity with no extra functionality.
+     */
+    public void execute(ActivityExecution execution) throws Exception {
+        leave(execution);
+    }
+
+    /**
+     * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on
+     * the outgoing sequence flow and take those that evaluate to true.
+     */
+    protected void leave(ActivityExecution execution) {
+        bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
+    }
+
+    protected void leaveIgnoreConditions(ActivityExecution activityContext) {
+        bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
+    }
+
+    public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+        // concrete activity behaviours that do accept signals should override
+        // this method;
+        throw new ActivitiException("this activity doesn't accept signals");
+    }
+
 }

@@ -12,20 +12,19 @@
  */
 package org.activiti5.engine.impl.persistence.deploy;
 
-
 /**
  * Interface for cache implementations.
  * 
  * @author Joram Barrez
  */
 public interface DeploymentCache<T> {
-  
-  T get(String id);
 
-  void add(String id, T object);
+    T get(String id);
 
-  void remove(String id);
-  
-  void clear();
-  
+    void add(String id, T object);
+
+    void remove(String id);
+
+    void clear();
+
 }

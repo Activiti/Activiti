@@ -16,7 +16,6 @@ package org.activiti.examples.bpmn.servicetask;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 
-
 /**
  * Delegate that gets the business-key from the delegate-execution and puts the
  * value in a variable.
@@ -25,7 +24,7 @@ import org.activiti5.engine.delegate.JavaDelegate;
  */
 public class BusinessKeyCheckJavaDelegate implements JavaDelegate {
 
-  public void execute(DelegateExecution execution) throws Exception {
-    execution.setVariable("businessKeySetOnExecution", execution.getProcessBusinessKey());
-  }
+    public void execute(DelegateExecution execution) throws Exception {
+        execution.setVariable("businessKeySetOnExecution", execution.getProcessBusinessKey());
+    }
 }

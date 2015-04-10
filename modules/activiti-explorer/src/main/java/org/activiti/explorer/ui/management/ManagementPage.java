@@ -16,17 +16,16 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.ui.AbstractTablePage;
 import org.activiti.explorer.ui.custom.ToolBar;
 
-
 /**
  * @author Joram Barrez
  */
 public abstract class ManagementPage extends AbstractTablePage {
-  
-  private static final long serialVersionUID = 1L;
-  
-  @Override
-  protected ToolBar createMenuBar() {
-    return ExplorerApp.get().getComponentFactory(ManagementMenuBarFactory.class).create();
-  }
-  
+
+    private static final long serialVersionUID = 1L;
+
+    @Override
+    protected ToolBar createMenuBar() {
+        return ExplorerApp.get().getComponentFactory(ManagementMenuBarFactory.class).create();
+    }
+
 }

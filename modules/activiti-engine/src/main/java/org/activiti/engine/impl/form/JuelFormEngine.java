@@ -24,55 +24,51 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 
-
 /**
  * @author Tom Baeyens
  */
 public class JuelFormEngine implements FormEngine {
 
-  public String getName() {
-    return "juel";
-  }
+    public String getName() {
+        return "juel";
+    }
 
-  public Object renderStartForm(StartFormData startForm) {
-    if (startForm.getFormKey()==null) {
-      return null;
+    public Object renderStartForm(StartFormData startForm) {
+        if (startForm.getFormKey() == null) {
+            return null;
+        }
+        String formTemplateString = getFormTemplateString(startForm, startForm.getFormKey());
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+        return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, null);
     }
-    String formTemplateString = getFormTemplateString(startForm, startForm.getFormKey());
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-    return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, null);
-  }
 
-  public Object renderTaskForm(TaskFormData taskForm) {
-    if (taskForm.getFormKey()==null) {
-      return null;
+    public Object renderTaskForm(TaskFormData taskForm) {
+        if (taskForm.getFormKey() == null) {
+            return null;
+        }
+        String formTemplateString = getFormTemplateString(taskForm, taskForm.getFormKey());
+        ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
+        TaskEntity task = (TaskEntity) taskForm.getTask();
+        return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, task.getExecution());
     }
-    String formTemplateString = getFormTemplateString(taskForm, taskForm.getFormKey());
-    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
-    TaskEntity task = (TaskEntity) taskForm.getTask();
-    return scriptingEngines.evaluate(formTemplateString, ScriptingEngines.DEFAULT_SCRIPTING_LANGUAGE, task.getExecution());
-  }
 
-  protected String getFormTemplateString(FormData formInstance, String formKey) {
-    String deploymentId = formInstance.getDeploymentId();
-    
-    ResourceEntity resourceStream = Context
-      .getCommandContext()
-      .getResourceEntityManager()
-      .findResourceByDeploymentIdAndResourceName(deploymentId, formKey);
-    
-    if (resourceStream == null) {
-      throw new ActivitiObjectNotFoundException("Form with formKey '"+formKey+"' does not exist", String.class);
+    protected String getFormTemplateString(FormData formInstance, String formKey) {
+        String deploymentId = formInstance.getDeploymentId();
+
+        ResourceEntity resourceStream = Context.getCommandContext().getResourceEntityManager().findResourceByDeploymentIdAndResourceName(deploymentId, formKey);
+
+        if (resourceStream == null) {
+            throw new ActivitiObjectNotFoundException("Form with formKey '" + formKey + "' does not exist", String.class);
+        }
+
+        byte[] resourceBytes = resourceStream.getBytes();
+        String encoding = "UTF-8";
+        String formTemplateString = "";
+        try {
+            formTemplateString = new String(resourceBytes, encoding);
+        } catch (UnsupportedEncodingException e) {
+            throw new ActivitiException("Unsupported encoding of :" + encoding, e);
+        }
+        return formTemplateString;
     }
-    
-    byte[] resourceBytes = resourceStream.getBytes();
-    String encoding = "UTF-8";
-    String formTemplateString = "";
-    try {
-      formTemplateString = new String(resourceBytes, encoding);
-    } catch (UnsupportedEncodingException e) {
-      throw new ActivitiException("Unsupported encoding of :" + encoding, e);
-    }
-    return formTemplateString;
-  }
 }

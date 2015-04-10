@@ -16,25 +16,25 @@ import org.junit.Test;
 
 public class InCompleteSignalConverterTest extends AbstractConverterTest {
 
-  @Test
-  public void convertXMLToModel() throws Exception {
-    BpmnModel bpmnModel = readXMLFile();
-    validateModel(bpmnModel);
-  }
-  
-  protected String getResource() {
-    return "incompletesignalmodel.bpmn";
-  }
-  
-  private void validateModel(BpmnModel model) {
-    FlowElement flowElement = model.getMainProcess().getFlowElement("task");
-    assertNotNull(flowElement);
-    assertTrue(flowElement instanceof UserTask);
-    assertEquals("task", flowElement.getId());
+    @Test
+    public void convertXMLToModel() throws Exception {
+        BpmnModel bpmnModel = readXMLFile();
+        validateModel(bpmnModel);
+    }
 
-    ProcessValidator processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
-    List<ValidationError> errors = processValidator.validate(model);
-    assertNotNull(errors);
-    assertEquals(2, errors.size());
-  }
+    protected String getResource() {
+        return "incompletesignalmodel.bpmn";
+    }
+
+    private void validateModel(BpmnModel model) {
+        FlowElement flowElement = model.getMainProcess().getFlowElement("task");
+        assertNotNull(flowElement);
+        assertTrue(flowElement instanceof UserTask);
+        assertEquals("task", flowElement.getId());
+
+        ProcessValidator processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
+        List<ValidationError> errors = processValidator.validate(model);
+        assertNotNull(errors);
+        assertEquals(2, errors.size());
+    }
 }

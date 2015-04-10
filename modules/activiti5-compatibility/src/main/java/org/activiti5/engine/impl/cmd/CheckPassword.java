@@ -17,24 +17,23 @@ import java.io.Serializable;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public class CheckPassword implements Command<Boolean>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  String userId;
-  String password;
-  
-  public CheckPassword(String userId, String password) {
-    this.userId = userId;
-    this.password = password;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public Boolean execute(CommandContext commandContext) {
-    return commandContext.getUserIdentityManager().checkPassword(userId, password);
-  }
+    String userId;
+    String password;
+
+    public CheckPassword(String userId, String password) {
+        this.userId = userId;
+        this.password = password;
+    }
+
+    public Boolean execute(CommandContext commandContext) {
+        return commandContext.getUserIdentityManager().checkPassword(userId, password);
+    }
 
 }

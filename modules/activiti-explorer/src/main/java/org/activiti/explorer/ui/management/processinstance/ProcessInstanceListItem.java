@@ -22,20 +22,20 @@ import com.vaadin.data.util.PropertysetItem;
  */
 class ProcessInstanceListItem extends PropertysetItem implements Comparable<ProcessInstanceListItem> {
 
-  private static final long serialVersionUID = 1L;
-  
-  public static final String PROPERTY_ID = "id";
-  public static final String PROPERTY_NAME = "name";
-  
-  public ProcessInstanceListItem(final ProcessInstance processInstance, final String processDefinitionName) {
-    addItemProperty(PROPERTY_ID, new ObjectProperty<String>(processInstance.getId(), String.class));
-    addItemProperty(PROPERTY_NAME, new ObjectProperty<String>(processDefinitionName + " (id=" + processInstance.getId() +")", String.class));
-  }
+    private static final long serialVersionUID = 1L;
 
-  public int compareTo(ProcessInstanceListItem other) {
-    // process instances are ordered by id
-    String id = (String) getItemProperty("id").getValue();
-    String otherId = (String) other.getItemProperty("id").getValue();
-    return id.compareTo(otherId);
-  }
+    public static final String PROPERTY_ID = "id";
+    public static final String PROPERTY_NAME = "name";
+
+    public ProcessInstanceListItem(final ProcessInstance processInstance, final String processDefinitionName) {
+        addItemProperty(PROPERTY_ID, new ObjectProperty<String>(processInstance.getId(), String.class));
+        addItemProperty(PROPERTY_NAME, new ObjectProperty<String>(processDefinitionName + " (id=" + processInstance.getId() + ")", String.class));
+    }
+
+    public int compareTo(ProcessInstanceListItem other) {
+        // process instances are ordered by id
+        String id = (String) getItemProperty("id").getValue();
+        String otherId = (String) other.getItemProperty("id").getValue();
+        return id.compareTo(otherId);
+    }
 }

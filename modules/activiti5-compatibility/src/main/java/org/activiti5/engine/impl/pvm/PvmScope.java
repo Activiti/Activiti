@@ -15,14 +15,13 @@ package org.activiti5.engine.impl.pvm;
 
 import java.util.List;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface PvmScope extends PvmProcessElement {
 
-  List<? extends PvmActivity> getActivities();
-  
-  PvmActivity findActivity(String activityId);
+    List<? extends PvmActivity> getActivities();
+
+    PvmActivity findActivity(String activityId);
 
 }

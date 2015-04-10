@@ -11,7 +11,6 @@
  * limitations under the License.
  */
 
-
 package org.activiti5.engine.impl.test;
 
 import java.util.Timer;
@@ -25,189 +24,188 @@ import org.activiti5.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti5.engine.impl.jobexecutor.JobExecutor;
 import org.activiti5.engine.test.ActivitiRule;
 
-
-
 /**
  * @author Joram Barrez
  * @author Tijs Rademakers
  * @author Saeid Mirzaei
  */
 
-// This helper class helps sharing the same code for jobExector test helpers, between Junit3 and junit 4 test support classes
+// This helper class helps sharing the same code for jobExector test helpers,
+// between Junit3 and junit 4 test support classes
 public class JobTestHelper {
 
-  public static void waitForJobExecutorToProcessAllJobs(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
-    waitForJobExecutorToProcessAllJobs(activitiRule.getProcessEngine().getProcessEngineConfiguration(), 
-        activitiRule.getManagementService(), maxMillisToWait, intervalMillis);
-  }
-  
-  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, 
-      ManagementService managementService, long maxMillisToWait, long intervalMillis) {
-   
-  	waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
-   
-  }
-
-  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, 
-      ManagementService managementService, long maxMillisToWait, long intervalMillis, boolean shutdownExecutorWhenFinished) {
-    
-    JobExecutor jobExecutor = null;
-    AsyncExecutor asyncExecutor = null;
-    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-      jobExecutor = processEngineConfiguration.getJobExecutor();
-      jobExecutor.start();
-      
-    } else {
-      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-      asyncExecutor.start();
+    public static void waitForJobExecutorToProcessAllJobs(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
+        waitForJobExecutorToProcessAllJobs(activitiRule.getProcessEngine().getProcessEngineConfiguration(), activitiRule.getManagementService(), maxMillisToWait, intervalMillis);
     }
 
-    try {
-      Timer timer = new Timer();
-      InteruptTask task = new InteruptTask(Thread.currentThread());
-      timer.schedule(task, maxMillisToWait);
-      boolean areJobsAvailable = true;
-      try {
-        while (areJobsAvailable && !task.isTimeLimitExceeded()) {
-          Thread.sleep(intervalMillis);
-          try {
-            areJobsAvailable = areJobsAvailable(managementService);
-          } catch(Throwable t) {
-            // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
-            // isolation level doesn't allow READ of the table
-          }
+    public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis) {
+
+        waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
+
+    }
+
+    public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis,
+            boolean shutdownExecutorWhenFinished) {
+
+        JobExecutor jobExecutor = null;
+        AsyncExecutor asyncExecutor = null;
+        if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+            jobExecutor = processEngineConfiguration.getJobExecutor();
+            jobExecutor.start();
+
+        } else {
+            asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+            asyncExecutor.start();
         }
-      } catch (InterruptedException e) {
-        // ignore
-      } finally {
-        timer.cancel();
-      }
-      if (areJobsAvailable) {
-        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
-      }
 
-    } finally {
-    	if (shutdownExecutorWhenFinished) {
-	      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-	        jobExecutor.shutdown();
-	      } else {
-	        asyncExecutor.shutdown();
-	      }
-    	}
-    }
-  }
+        try {
+            Timer timer = new Timer();
+            InteruptTask task = new InteruptTask(Thread.currentThread());
+            timer.schedule(task, maxMillisToWait);
+            boolean areJobsAvailable = true;
+            try {
+                while (areJobsAvailable && !task.isTimeLimitExceeded()) {
+                    Thread.sleep(intervalMillis);
+                    try {
+                        areJobsAvailable = areJobsAvailable(managementService);
+                    } catch (Throwable t) {
+                        // Ignore, possible that exception occurs due to
+                        // locking/updating of table on MSSQL when
+                        // isolation level doesn't allow READ of the table
+                    }
+                }
+            } catch (InterruptedException e) {
+                // ignore
+            } finally {
+                timer.cancel();
+            }
+            if (areJobsAvailable) {
+                throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
+            }
 
-  public static void waitForJobExecutorOnCondition(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    waitForJobExecutorOnCondition(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis, condition);
-  }
-  
-  public static void waitForJobExecutorOnCondition(ProcessEngineConfiguration processEngineConfiguration, 
-      long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-    
-    JobExecutor jobExecutor = null;
-    AsyncExecutor asyncExecutor = null;
-    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-      jobExecutor = processEngineConfiguration.getJobExecutor();
-      jobExecutor.start();
-      
-    } else {
-      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-      asyncExecutor.start();
-    }
-
-    try {
-      Timer timer = new Timer();
-      InteruptTask task = new InteruptTask(Thread.currentThread());
-      timer.schedule(task, maxMillisToWait);
-      boolean conditionIsViolated = true;
-      try {
-        while (conditionIsViolated) {
-          Thread.sleep(intervalMillis);
-          conditionIsViolated = !condition.call();
+        } finally {
+            if (shutdownExecutorWhenFinished) {
+                if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+                    jobExecutor.shutdown();
+                } else {
+                    asyncExecutor.shutdown();
+                }
+            }
         }
-      } catch (InterruptedException e) {
-        // ignore
-      } catch (Exception e) {
-        throw new ActivitiException("Exception while waiting on condition: "+e.getMessage(), e);
-      } finally {
-        timer.cancel();
-      }
-      
-      if (conditionIsViolated) {
-        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
-      }
-
-    } finally {
-      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-        jobExecutor.shutdown();
-      } else {
-        asyncExecutor.shutdown();
-      }
-    }
-  }
-  
-  public static void executeJobExecutorForTime(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
-    executeJobExecutorForTime(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis);
-  }
-  
-  public static void executeJobExecutorForTime(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = null;
-    AsyncExecutor asyncExecutor = null;
-    if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-      jobExecutor = processEngineConfiguration.getJobExecutor();
-      jobExecutor.start();
-      
-    } else {
-      asyncExecutor = processEngineConfiguration.getAsyncExecutor();
-      asyncExecutor.start();
     }
 
-    try {
-      Timer timer = new Timer();
-      InteruptTask task = new InteruptTask(Thread.currentThread());
-      timer.schedule(task, maxMillisToWait);
-      try {
-        while (!task.isTimeLimitExceeded()) {
-          Thread.sleep(intervalMillis);
+    public static void waitForJobExecutorOnCondition(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
+        waitForJobExecutorOnCondition(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis, condition);
+    }
+
+    public static void waitForJobExecutorOnCondition(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
+
+        JobExecutor jobExecutor = null;
+        AsyncExecutor asyncExecutor = null;
+        if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+            jobExecutor = processEngineConfiguration.getJobExecutor();
+            jobExecutor.start();
+
+        } else {
+            asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+            asyncExecutor.start();
         }
-      } catch (InterruptedException e) {
-        // ignore
-      } finally {
-        timer.cancel();
-      }
 
-    } finally {
-      if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
-        jobExecutor.shutdown();
-      } else {
-        asyncExecutor.shutdown();
-      }
+        try {
+            Timer timer = new Timer();
+            InteruptTask task = new InteruptTask(Thread.currentThread());
+            timer.schedule(task, maxMillisToWait);
+            boolean conditionIsViolated = true;
+            try {
+                while (conditionIsViolated) {
+                    Thread.sleep(intervalMillis);
+                    conditionIsViolated = !condition.call();
+                }
+            } catch (InterruptedException e) {
+                // ignore
+            } catch (Exception e) {
+                throw new ActivitiException("Exception while waiting on condition: " + e.getMessage(), e);
+            } finally {
+                timer.cancel();
+            }
+
+            if (conditionIsViolated) {
+                throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
+            }
+
+        } finally {
+            if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+                jobExecutor.shutdown();
+            } else {
+                asyncExecutor.shutdown();
+            }
+        }
     }
-  }
 
-  public static boolean areJobsAvailable(ActivitiRule activitiRule) {
-    return areJobsAvailable(activitiRule.getManagementService());
-    
-  }
-
-  public static boolean areJobsAvailable(ManagementService managementService) {
-    return !managementService.createJobQuery().list().isEmpty();
-  }
-
-  private static class InteruptTask extends TimerTask {
-
-    protected boolean timeLimitExceeded = false;
-    protected Thread thread;
-
-    public InteruptTask(Thread thread) {
-      this.thread = thread;
+    public static void executeJobExecutorForTime(ActivitiRule activitiRule, long maxMillisToWait, long intervalMillis) {
+        executeJobExecutorForTime(activitiRule.getProcessEngine().getProcessEngineConfiguration(), maxMillisToWait, intervalMillis);
     }
-    public boolean isTimeLimitExceeded() {
-      return timeLimitExceeded;
+
+    public static void executeJobExecutorForTime(ProcessEngineConfiguration processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
+        JobExecutor jobExecutor = null;
+        AsyncExecutor asyncExecutor = null;
+        if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+            jobExecutor = processEngineConfiguration.getJobExecutor();
+            jobExecutor.start();
+
+        } else {
+            asyncExecutor = processEngineConfiguration.getAsyncExecutor();
+            asyncExecutor.start();
+        }
+
+        try {
+            Timer timer = new Timer();
+            InteruptTask task = new InteruptTask(Thread.currentThread());
+            timer.schedule(task, maxMillisToWait);
+            try {
+                while (!task.isTimeLimitExceeded()) {
+                    Thread.sleep(intervalMillis);
+                }
+            } catch (InterruptedException e) {
+                // ignore
+            } finally {
+                timer.cancel();
+            }
+
+        } finally {
+            if (processEngineConfiguration.isAsyncExecutorEnabled() == false) {
+                jobExecutor.shutdown();
+            } else {
+                asyncExecutor.shutdown();
+            }
+        }
     }
-    public void run() {
-      timeLimitExceeded = true;
-      thread.interrupt();
+
+    public static boolean areJobsAvailable(ActivitiRule activitiRule) {
+        return areJobsAvailable(activitiRule.getManagementService());
+
     }
-  }
+
+    public static boolean areJobsAvailable(ManagementService managementService) {
+        return !managementService.createJobQuery().list().isEmpty();
+    }
+
+    private static class InteruptTask extends TimerTask {
+
+        protected boolean timeLimitExceeded = false;
+        protected Thread thread;
+
+        public InteruptTask(Thread thread) {
+            this.thread = thread;
+        }
+
+        public boolean isTimeLimitExceeded() {
+            return timeLimitExceeded;
+        }
+
+        public void run() {
+            timeLimitExceeded = true;
+            thread.interrupt();
+        }
+    }
 }

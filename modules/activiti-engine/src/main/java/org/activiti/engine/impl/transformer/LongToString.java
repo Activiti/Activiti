@@ -19,11 +19,11 @@ package org.activiti.engine.impl.transformer;
  */
 public class LongToString extends AbstractTransformer {
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  protected Object primTransform(Object anObject) throws Exception {
-    return ((Long) anObject).toString();
-  }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected Object primTransform(Object anObject) throws Exception {
+        return ((Long) anObject).toString();
+    }
 }

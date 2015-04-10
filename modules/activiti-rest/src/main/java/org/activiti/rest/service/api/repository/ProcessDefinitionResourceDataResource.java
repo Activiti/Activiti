@@ -29,23 +29,23 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProcessDefinitionResourceDataResource extends BaseDeploymentResourceDataResource {
 
-  @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/resourcedata", method = RequestMethod.GET)
-  public @ResponseBody byte[] getProcessDefinitionResource(@PathVariable String processDefinitionId, HttpServletResponse response) {
-    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-    return getDeploymentResourceData(processDefinition.getDeploymentId(), processDefinition.getResourceName(), response);
-  }
-  
-  /**
-   * Returns the {@link ProcessDefinition} that is requested. Throws the right exceptions
-   * when bad request was made or definition is not found.
-   */
-  protected ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
-    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery()
-            .processDefinitionId(processDefinitionId).singleResult();
-   
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
+    @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/resourcedata", method = RequestMethod.GET)
+    public @ResponseBody
+    byte[] getProcessDefinitionResource(@PathVariable String processDefinitionId, HttpServletResponse response) {
+        ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
+        return getDeploymentResourceData(processDefinition.getDeploymentId(), processDefinition.getResourceName(), response);
     }
-    return processDefinition;
-  }
+
+    /**
+     * Returns the {@link ProcessDefinition} that is requested. Throws the right
+     * exceptions when bad request was made or definition is not found.
+     */
+    protected ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
+        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(processDefinitionId).singleResult();
+
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
+        }
+        return processDefinition;
+    }
 }

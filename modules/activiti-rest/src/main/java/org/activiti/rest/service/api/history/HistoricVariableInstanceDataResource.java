@@ -39,51 +39,50 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class HistoricVariableInstanceDataResource {
-  
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected HistoryService historyService;
 
-  @RequestMapping(value="/history/historic-variable-instances/{varInstanceId}/data", method = RequestMethod.GET)
-  public @ResponseBody byte[] getVariableData(@PathVariable("varInstanceId") String varInstanceId, 
-      HttpServletRequest request, HttpServletResponse response) {
-    
-    try {
-      byte[] result = null;
-      RestVariable variable = getVariableFromRequest(true, varInstanceId, request);
-      if(RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
-        result = (byte[]) variable.getValue();
-        response.setContentType("application/octet-stream");
-        
-      } else if(RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
-        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-        ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
-        outputStream.writeObject(variable.getValue());
-        outputStream.close();
-        result = buffer.toByteArray();
-        response.setContentType("application/x-java-serialized-object");
-        
-      } else {
-        throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
-      }
-      return result;
-      
-    } catch(IOException ioe) {
-      // Re-throw IOException
-      throw new ActivitiException("Unexpected exception getting variable data", ioe);
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected HistoryService historyService;
+
+    @RequestMapping(value = "/history/historic-variable-instances/{varInstanceId}/data", method = RequestMethod.GET)
+    public @ResponseBody
+    byte[] getVariableData(@PathVariable("varInstanceId") String varInstanceId, HttpServletRequest request, HttpServletResponse response) {
+
+        try {
+            byte[] result = null;
+            RestVariable variable = getVariableFromRequest(true, varInstanceId, request);
+            if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
+                result = (byte[]) variable.getValue();
+                response.setContentType("application/octet-stream");
+
+            } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
+                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+                ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
+                outputStream.writeObject(variable.getValue());
+                outputStream.close();
+                result = buffer.toByteArray();
+                response.setContentType("application/x-java-serialized-object");
+
+            } else {
+                throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
+            }
+            return result;
+
+        } catch (IOException ioe) {
+            // Re-throw IOException
+            throw new ActivitiException("Unexpected exception getting variable data", ioe);
+        }
     }
-  }
-  
-  public RestVariable getVariableFromRequest(boolean includeBinary, String varInstanceId, HttpServletRequest request) {
-    HistoricVariableInstance varObject = historyService.createHistoricVariableInstanceQuery().id(varInstanceId).singleResult();
-    
-    if (varObject == null) {
-      throw new ActivitiObjectNotFoundException("Historic variable instance '" + varInstanceId + "' couldn't be found.", VariableInstanceEntity.class);
-    } else {
-      return restResponseFactory.createRestVariable(varObject.getVariableName(), varObject.getValue(), null, varInstanceId, 
-          RestResponseFactory.VARIABLE_HISTORY_VARINSTANCE, includeBinary);
+
+    public RestVariable getVariableFromRequest(boolean includeBinary, String varInstanceId, HttpServletRequest request) {
+        HistoricVariableInstance varObject = historyService.createHistoricVariableInstanceQuery().id(varInstanceId).singleResult();
+
+        if (varObject == null) {
+            throw new ActivitiObjectNotFoundException("Historic variable instance '" + varInstanceId + "' couldn't be found.", VariableInstanceEntity.class);
+        } else {
+            return restResponseFactory.createRestVariable(varObject.getVariableName(), varObject.getValue(), null, varInstanceId, RestResponseFactory.VARIABLE_HISTORY_VARINSTANCE, includeBinary);
+        }
     }
-  }
 }

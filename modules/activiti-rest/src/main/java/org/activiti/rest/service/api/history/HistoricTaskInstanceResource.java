@@ -27,36 +27,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Tijs Rademakers
  */
 @RestController
 public class HistoricTaskInstanceResource {
 
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected HistoryService historyService;
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
 
-  @RequestMapping(value="/history/historic-task-instances/{taskId}", method = RequestMethod.GET, produces = "application/json")
-  public HistoricTaskInstanceResponse getTaskInstance(@PathVariable String taskId, HttpServletRequest request) {
-    return restResponseFactory.createHistoricTaskInstanceResponse(getHistoricTaskInstanceFromRequest(taskId));
-  }
-  
-  @RequestMapping(value="/history/historic-task-instances/{taskId}", method = RequestMethod.DELETE)
-  public void deleteTaskInstance(@PathVariable String taskId, HttpServletResponse response) {
-    historyService.deleteHistoricTaskInstance(taskId);
-    response.setStatus(HttpStatus.NO_CONTENT.value());
-  }
-  
-  protected HistoricTaskInstance getHistoricTaskInstanceFromRequest(String taskId) {
-    HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery()
-           .taskId(taskId).singleResult();
-    if (taskInstance == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a task instance with id '" + taskId + "'.", HistoricTaskInstance.class);
+    @Autowired
+    protected HistoryService historyService;
+
+    @RequestMapping(value = "/history/historic-task-instances/{taskId}", method = RequestMethod.GET, produces = "application/json")
+    public HistoricTaskInstanceResponse getTaskInstance(@PathVariable String taskId, HttpServletRequest request) {
+        return restResponseFactory.createHistoricTaskInstanceResponse(getHistoricTaskInstanceFromRequest(taskId));
     }
-    return taskInstance;
-  }
+
+    @RequestMapping(value = "/history/historic-task-instances/{taskId}", method = RequestMethod.DELETE)
+    public void deleteTaskInstance(@PathVariable String taskId, HttpServletResponse response) {
+        historyService.deleteHistoricTaskInstance(taskId);
+        response.setStatus(HttpStatus.NO_CONTENT.value());
+    }
+
+    protected HistoricTaskInstance getHistoricTaskInstanceFromRequest(String taskId) {
+        HistoricTaskInstance taskInstance = historyService.createHistoricTaskInstanceQuery().taskId(taskId).singleResult();
+        if (taskInstance == null) {
+            throw new ActivitiObjectNotFoundException("Could not find a task instance with id '" + taskId + "'.", HistoricTaskInstance.class);
+        }
+        return taskInstance;
+    }
 }

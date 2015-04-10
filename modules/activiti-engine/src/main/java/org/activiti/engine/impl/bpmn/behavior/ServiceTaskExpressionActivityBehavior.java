@@ -31,46 +31,45 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {
 
-  protected Expression expression;
-  protected Expression skipExpression;
-  protected String resultVariable;
+    protected Expression expression;
+    protected Expression skipExpression;
+    protected String resultVariable;
 
-  public ServiceTaskExpressionActivityBehavior(Expression expression, Expression skipExpression, String resultVariable) {
-    this.expression = expression;
-    this.skipExpression = skipExpression;
-    this.resultVariable = resultVariable;
-  }
-
-  public void execute(ActivityExecution execution) {
-    Object value = null;
-    try {
-      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
-      if (!isSkipExpressionEnabled || 
-              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
-        value = expression.getValue(execution);
-        if (resultVariable != null) {
-          execution.setVariable(resultVariable, value);
-        }
-      }
-
-      leave(execution);
-    } catch (Exception exc) {
-
-      Throwable cause = exc;
-      BpmnError error = null;
-      while (cause != null) {
-        if (cause instanceof BpmnError) {
-          error = (BpmnError) cause;
-          break;
-        }
-        cause = cause.getCause();
-      }
-
-      if (error != null) {
-        ErrorPropagation.propagateError(error, execution);
-      } else {
-    	  throw new RuntimeException(exc);
-      }
+    public ServiceTaskExpressionActivityBehavior(Expression expression, Expression skipExpression, String resultVariable) {
+        this.expression = expression;
+        this.skipExpression = skipExpression;
+        this.resultVariable = resultVariable;
     }
-  }
+
+    public void execute(ActivityExecution execution) {
+        Object value = null;
+        try {
+            boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+            if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+                value = expression.getValue(execution);
+                if (resultVariable != null) {
+                    execution.setVariable(resultVariable, value);
+                }
+            }
+
+            leave(execution);
+        } catch (Exception exc) {
+
+            Throwable cause = exc;
+            BpmnError error = null;
+            while (cause != null) {
+                if (cause instanceof BpmnError) {
+                    error = (BpmnError) cause;
+                    break;
+                }
+                cause = cause.getCause();
+            }
+
+            if (error != null) {
+                ErrorPropagation.propagateError(error, execution);
+            } else {
+                throw new RuntimeException(exc);
+            }
+        }
+    }
 }

@@ -15,11 +15,10 @@ package org.activiti.engine.impl.scripting;
 
 import org.activiti.engine.delegate.VariableScope;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface ResolverFactory {
 
-  Resolver createResolver(VariableScope variableScope);
+    Resolver createResolver(VariableScope variableScope);
 }

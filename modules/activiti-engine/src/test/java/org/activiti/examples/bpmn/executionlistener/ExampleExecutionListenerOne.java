@@ -23,9 +23,9 @@ import org.activiti.engine.delegate.ExecutionListener;
  */
 public class ExampleExecutionListenerOne implements ExecutionListener {
 
-  public void notify(DelegateExecution execution) {
-    execution.setVariable("variableSetInExecutionListener", "firstValue");
-    execution.setVariable("eventNameReceived", execution.getEventName());
-    execution.setVariable("businessKeyInExecution", execution.getProcessBusinessKey());
-  }
+    public void notify(DelegateExecution execution) {
+        execution.setVariable("variableSetInExecutionListener", "firstValue");
+        execution.setVariable("eventNameReceived", execution.getEventName());
+        execution.setVariable("businessKeyInExecution", execution.getProcessBusinessKey());
+    }
 }

@@ -16,7 +16,6 @@ package org.activiti.explorer.ui.alfresco;
 import org.activiti.explorer.ui.custom.ToolBar;
 import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 
-
 /**
  * Page specifically to be used within the Alfresco Activiti admin UI.
  * 
@@ -26,25 +25,27 @@ import org.activiti.explorer.ui.process.ProcessDefinitionPage;
  */
 public class AlfrescoProcessDefinitionPage extends ProcessDefinitionPage {
 
-  private static final long serialVersionUID = 1L;
-  
-  public AlfrescoProcessDefinitionPage() {
-    super();
-  }
-  
-  public AlfrescoProcessDefinitionPage(String processDefinitionId) {
-    super(processDefinitionId);
-  }
-  
-  @Override
-  protected ToolBar createMenuBar() {
-    return new AlfrescoManagementMenuBar(); // Process Definition page lives in mgmt section for Alfresco UI
-  }
-  
-  protected void showProcessDefinitionDetail(String processDefinitionId) {
-    detailPanel = new AlfrescoProcessDefinitionDetailPanel(processDefinitionId, this);
-    setDetailComponent(detailPanel);
-    changeUrl(processDefinitionId);
-  }
+    private static final long serialVersionUID = 1L;
+
+    public AlfrescoProcessDefinitionPage() {
+        super();
+    }
+
+    public AlfrescoProcessDefinitionPage(String processDefinitionId) {
+        super(processDefinitionId);
+    }
+
+    @Override
+    protected ToolBar createMenuBar() {
+        return new AlfrescoManagementMenuBar(); // Process Definition page lives
+                                                // in mgmt section for Alfresco
+                                                // UI
+    }
+
+    protected void showProcessDefinitionDetail(String processDefinitionId) {
+        detailPanel = new AlfrescoProcessDefinitionDetailPanel(processDefinitionId, this);
+        setDetailComponent(detailPanel);
+        changeUrl(processDefinitionId);
+    }
 
 }

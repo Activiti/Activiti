@@ -16,23 +16,22 @@ package org.activiti.explorer.util.time.timeunit;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.util.time.TimeUnit;
 
-
 /**
  * @author Frederik Heremans
  */
 public class MonthTimeUnit implements TimeUnit {
 
-  private static final Long MILLIS_PER_MONTH = 2592000000L;
-  
-  public Long getNumberOfMillis() {
-    return MILLIS_PER_MONTH;
-  }
+    private static final Long MILLIS_PER_MONTH = 2592000000L;
 
-  public String getMessageKey(Long numberOfUnits) {
-    if(numberOfUnits == 1) {
-      return Messages.TIME_UNIT_MONTH;
-    } else {
-      return Messages.TIME_UNIT_MONTHS;
+    public Long getNumberOfMillis() {
+        return MILLIS_PER_MONTH;
     }
-  }
+
+    public String getMessageKey(Long numberOfUnits) {
+        if (numberOfUnits == 1) {
+            return Messages.TIME_UNIT_MONTH;
+        } else {
+            return Messages.TIME_UNIT_MONTHS;
+        }
+    }
 }

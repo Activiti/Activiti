@@ -64,8 +64,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
         PvmScope scopeActivitiy = compensationHandlder.getParent();
         ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope(executionEntity, scopeActivitiy);
 
-        CompensateEventSubscriptionEntity compensateEventSubscriptionEntity = CompensateEventSubscriptionEntity
-                .createAndInsert(scopeExecution);
+        CompensateEventSubscriptionEntity compensateEventSubscriptionEntity = CompensateEventSubscriptionEntity.createAndInsert(scopeExecution);
         compensateEventSubscriptionEntity.setActivity(compensationHandlder);
     }
 

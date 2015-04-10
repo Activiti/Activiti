@@ -34,113 +34,109 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserTask> {
 
-	public Class<? extends BaseElement> getHandledType() {
-		return UserTask.class;
-	}
+    public Class<? extends BaseElement> getHandledType() {
+        return UserTask.class;
+    }
 
-	@Override
-	protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
-		TaskDefinition taskDefinition = parseTaskDefinition(bpmnParse, userTask, userTask.getId(), 
-				(ProcessDefinitionEntity) bpmnParse.getCurrentScope().getProcessDefinition());
-		userTask.setBehavior(bpmnParse.getActivityBehaviorFactory()
-				.createUserTaskActivityBehavior(userTask, taskDefinition));
-	}
+    @Override
+    protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
+        TaskDefinition taskDefinition = parseTaskDefinition(bpmnParse, userTask, userTask.getId(), (ProcessDefinitionEntity) bpmnParse.getCurrentScope().getProcessDefinition());
+        userTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createUserTaskActivityBehavior(userTask, taskDefinition));
+    }
 
-	public TaskDefinition parseTaskDefinition(BpmnParse bpmnParse, UserTask userTask, 
-			String taskDefinitionKey, ProcessDefinitionEntity processDefinition) {
-		
-		TaskFormHandler taskFormHandler = new DefaultTaskFormHandler();
-		taskFormHandler.parseConfiguration(userTask.getFormProperties(),
-				userTask.getFormKey(), bpmnParse.getDeployment(),processDefinition);
+    public TaskDefinition parseTaskDefinition(BpmnParse bpmnParse, UserTask userTask, String taskDefinitionKey, ProcessDefinitionEntity processDefinition) {
 
-		TaskDefinition taskDefinition = new TaskDefinition(taskFormHandler);
+        TaskFormHandler taskFormHandler = new DefaultTaskFormHandler();
+        taskFormHandler.parseConfiguration(userTask.getFormProperties(), userTask.getFormKey(), bpmnParse.getDeployment(), processDefinition);
 
-		taskDefinition.setKey(taskDefinitionKey);
-		processDefinition.getTaskDefinitions().put(taskDefinitionKey, taskDefinition);
-		ExpressionManager expressionManager = bpmnParse.getExpressionManager();
+        TaskDefinition taskDefinition = new TaskDefinition(taskFormHandler);
 
-		if (StringUtils.isNotEmpty(userTask.getName())) {
-			taskDefinition.setNameExpression(expressionManager.createExpression(userTask.getName()));
-		}
+        taskDefinition.setKey(taskDefinitionKey);
+        processDefinition.getTaskDefinitions().put(taskDefinitionKey, taskDefinition);
+        ExpressionManager expressionManager = bpmnParse.getExpressionManager();
 
-		if (StringUtils.isNotEmpty(userTask.getDocumentation())) {
-			taskDefinition.setDescriptionExpression(expressionManager.createExpression(userTask.getDocumentation()));
-		}
+        if (StringUtils.isNotEmpty(userTask.getName())) {
+            taskDefinition.setNameExpression(expressionManager.createExpression(userTask.getName()));
+        }
 
-		if (StringUtils.isNotEmpty(userTask.getAssignee())) {
-			taskDefinition.setAssigneeExpression(expressionManager.createExpression(userTask.getAssignee()));
-		}
-		if (StringUtils.isNotEmpty(userTask.getOwner())) {
-			taskDefinition.setOwnerExpression(expressionManager.createExpression(userTask.getOwner()));
-		}
-		for (String candidateUser : userTask.getCandidateUsers()) {
-			taskDefinition.addCandidateUserIdExpression(expressionManager.createExpression(candidateUser));
-		}
-		for (String candidateGroup : userTask.getCandidateGroups()) {
-			taskDefinition.addCandidateGroupIdExpression(expressionManager.createExpression(candidateGroup));
-		}
+        if (StringUtils.isNotEmpty(userTask.getDocumentation())) {
+            taskDefinition.setDescriptionExpression(expressionManager.createExpression(userTask.getDocumentation()));
+        }
 
-		// Activiti custom extension
+        if (StringUtils.isNotEmpty(userTask.getAssignee())) {
+            taskDefinition.setAssigneeExpression(expressionManager.createExpression(userTask.getAssignee()));
+        }
+        if (StringUtils.isNotEmpty(userTask.getOwner())) {
+            taskDefinition.setOwnerExpression(expressionManager.createExpression(userTask.getOwner()));
+        }
+        for (String candidateUser : userTask.getCandidateUsers()) {
+            taskDefinition.addCandidateUserIdExpression(expressionManager.createExpression(candidateUser));
+        }
+        for (String candidateGroup : userTask.getCandidateGroups()) {
+            taskDefinition.addCandidateGroupIdExpression(expressionManager.createExpression(candidateGroup));
+        }
 
-		// Task listeners
-		for (ActivitiListener taskListener : userTask.getTaskListeners()) {
-			taskDefinition.addTaskListener(taskListener.getEvent(), createTaskListener(bpmnParse, taskListener, userTask.getId()));
-		}
+        // Activiti custom extension
 
-		// Due date
-		if (StringUtils.isNotEmpty(userTask.getDueDate())) {
-			taskDefinition.setDueDateExpression(expressionManager.createExpression(userTask.getDueDate()));
-		}
+        // Task listeners
+        for (ActivitiListener taskListener : userTask.getTaskListeners()) {
+            taskDefinition.addTaskListener(taskListener.getEvent(), createTaskListener(bpmnParse, taskListener, userTask.getId()));
+        }
 
-		// Category
-		if (StringUtils.isNotEmpty(userTask.getCategory())) {
-			taskDefinition.setCategoryExpression(expressionManager.createExpression(userTask.getCategory()));
-		}
+        // Due date
+        if (StringUtils.isNotEmpty(userTask.getDueDate())) {
+            taskDefinition.setDueDateExpression(expressionManager.createExpression(userTask.getDueDate()));
+        }
 
-		// Priority
-		if (StringUtils.isNotEmpty(userTask.getPriority())) {
-			taskDefinition.setPriorityExpression(expressionManager.createExpression(userTask.getPriority()));
-		}
+        // Category
+        if (StringUtils.isNotEmpty(userTask.getCategory())) {
+            taskDefinition.setCategoryExpression(expressionManager.createExpression(userTask.getCategory()));
+        }
 
-		if (StringUtils.isNotEmpty(userTask.getFormKey())) {
-			taskDefinition.setFormKeyExpression(expressionManager.createExpression(userTask.getFormKey()));
-		}
+        // Priority
+        if (StringUtils.isNotEmpty(userTask.getPriority())) {
+            taskDefinition.setPriorityExpression(expressionManager.createExpression(userTask.getPriority()));
+        }
 
-		// CustomUserIdentityLinks
-		for (String customUserIdentityLinkType : userTask.getCustomUserIdentityLinks().keySet()) {
-			Set<Expression> userIdentityLinkExpression = new HashSet<Expression>();
-			for (String userIdentityLink : userTask.getCustomUserIdentityLinks().get(customUserIdentityLinkType)) {
-				userIdentityLinkExpression.add(expressionManager.createExpression(userIdentityLink));
-			}
-			taskDefinition.addCustomUserIdentityLinkExpression(customUserIdentityLinkType, userIdentityLinkExpression);
-		}
+        if (StringUtils.isNotEmpty(userTask.getFormKey())) {
+            taskDefinition.setFormKeyExpression(expressionManager.createExpression(userTask.getFormKey()));
+        }
 
-		// CustomGroupIdentityLinks
-		for (String customGroupIdentityLinkType : userTask.getCustomGroupIdentityLinks().keySet()) {
-			Set<Expression> groupIdentityLinkExpression = new HashSet<Expression>();
-			for (String groupIdentityLink : userTask.getCustomGroupIdentityLinks().get(customGroupIdentityLinkType)) {
-				groupIdentityLinkExpression.add(expressionManager.createExpression(groupIdentityLink));
-			}
-			taskDefinition.addCustomGroupIdentityLinkExpression(customGroupIdentityLinkType, groupIdentityLinkExpression);
-		}
+        // CustomUserIdentityLinks
+        for (String customUserIdentityLinkType : userTask.getCustomUserIdentityLinks().keySet()) {
+            Set<Expression> userIdentityLinkExpression = new HashSet<Expression>();
+            for (String userIdentityLink : userTask.getCustomUserIdentityLinks().get(customUserIdentityLinkType)) {
+                userIdentityLinkExpression.add(expressionManager.createExpression(userIdentityLink));
+            }
+            taskDefinition.addCustomUserIdentityLinkExpression(customUserIdentityLinkType, userIdentityLinkExpression);
+        }
 
-		if (StringUtils.isNotEmpty(userTask.getSkipExpression())) {
-			taskDefinition.setSkipExpression(expressionManager.createExpression(userTask.getSkipExpression()));
-		}
+        // CustomGroupIdentityLinks
+        for (String customGroupIdentityLinkType : userTask.getCustomGroupIdentityLinks().keySet()) {
+            Set<Expression> groupIdentityLinkExpression = new HashSet<Expression>();
+            for (String groupIdentityLink : userTask.getCustomGroupIdentityLinks().get(customGroupIdentityLinkType)) {
+                groupIdentityLinkExpression.add(expressionManager.createExpression(groupIdentityLink));
+            }
+            taskDefinition.addCustomGroupIdentityLinkExpression(customGroupIdentityLinkType, groupIdentityLinkExpression);
+        }
 
-		return taskDefinition;
-	}
+        if (StringUtils.isNotEmpty(userTask.getSkipExpression())) {
+            taskDefinition.setSkipExpression(expressionManager.createExpression(userTask.getSkipExpression()));
+        }
 
-	protected TaskListener createTaskListener(BpmnParse bpmnParse, ActivitiListener activitiListener, String taskId) {
-		TaskListener taskListener = null;
+        return taskDefinition;
+    }
 
-		if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-			taskListener = bpmnParse.getListenerFactory().createClassDelegateTaskListener(activitiListener);
-		} else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-			taskListener = bpmnParse.getListenerFactory().createExpressionTaskListener(activitiListener);
-		} else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-			taskListener = bpmnParse.getListenerFactory().createDelegateExpressionTaskListener(activitiListener);
-		}
-		return taskListener;
-	}
+    protected TaskListener createTaskListener(BpmnParse bpmnParse, ActivitiListener activitiListener, String taskId) {
+        TaskListener taskListener = null;
+
+        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            taskListener = bpmnParse.getListenerFactory().createClassDelegateTaskListener(activitiListener);
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            taskListener = bpmnParse.getListenerFactory().createExpressionTaskListener(activitiListener);
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            taskListener = bpmnParse.getListenerFactory().createDelegateExpressionTaskListener(activitiListener);
+        }
+        return taskListener;
+    }
 }

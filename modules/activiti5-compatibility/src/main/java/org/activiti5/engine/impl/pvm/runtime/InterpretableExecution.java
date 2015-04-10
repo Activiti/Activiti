@@ -22,63 +22,66 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 import org.activiti5.engine.impl.pvm.process.ProcessDefinitionImpl;
 import org.activiti5.engine.impl.pvm.process.TransitionImpl;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface InterpretableExecution extends ActivityExecution, ExecutionListenerExecution, PvmProcessInstance {
 
-  void take(PvmTransition transition);
-  
-  void take(PvmTransition transition, boolean fireActivityCompletedEvent);
+    void take(PvmTransition transition);
 
-  void setEventName(String eventName);
+    void take(PvmTransition transition, boolean fireActivityCompletedEvent);
 
-  void setEventSource(PvmProcessElement element);
+    void setEventName(String eventName);
 
-  Integer getExecutionListenerIndex();
-  void setExecutionListenerIndex(Integer executionListenerIndex);
+    void setEventSource(PvmProcessElement element);
 
-  ProcessDefinitionImpl getProcessDefinition();
+    Integer getExecutionListenerIndex();
 
-  void setActivity(ActivityImpl activity);
+    void setExecutionListenerIndex(Integer executionListenerIndex);
 
-  void performOperation(AtomicOperation etomicOperation);
+    ProcessDefinitionImpl getProcessDefinition();
 
-  boolean isScope();
+    void setActivity(ActivityImpl activity);
 
-  void destroy();
+    void performOperation(AtomicOperation etomicOperation);
 
-  void remove();
+    boolean isScope();
 
-  InterpretableExecution getReplacedBy();
-  void setReplacedBy(InterpretableExecution replacedBy);
+    void destroy();
 
-  InterpretableExecution getSubProcessInstance();
-  void setSubProcessInstance(InterpretableExecution subProcessInstance);
+    void remove();
 
-  InterpretableExecution getSuperExecution();
+    InterpretableExecution getReplacedBy();
 
-  void deleteCascade(String deleteReason);
-  
-  boolean isDeleteRoot();
+    void setReplacedBy(InterpretableExecution replacedBy);
 
-  TransitionImpl getTransition();
-  void setTransition(TransitionImpl object);
+    InterpretableExecution getSubProcessInstance();
 
-  void initialize();
+    void setSubProcessInstance(InterpretableExecution subProcessInstance);
 
-  void setParent(InterpretableExecution parent);
+    InterpretableExecution getSuperExecution();
 
-  void setProcessDefinition(ProcessDefinitionImpl processDefinitionImpl);
+    void deleteCascade(String deleteReason);
 
-  void setProcessInstance(InterpretableExecution processInstance);
-  
-  boolean isEventScope();
-  
-  void setEventScope(boolean isEventScope);
-  
-  StartingExecution getStartingExecution();
-  
-  void disposeStartingExecution();
+    boolean isDeleteRoot();
+
+    TransitionImpl getTransition();
+
+    void setTransition(TransitionImpl object);
+
+    void initialize();
+
+    void setParent(InterpretableExecution parent);
+
+    void setProcessDefinition(ProcessDefinitionImpl processDefinitionImpl);
+
+    void setProcessInstance(InterpretableExecution processInstance);
+
+    boolean isEventScope();
+
+    void setEventScope(boolean isEventScope);
+
+    StartingExecution getStartingExecution();
+
+    void disposeStartingExecution();
 }

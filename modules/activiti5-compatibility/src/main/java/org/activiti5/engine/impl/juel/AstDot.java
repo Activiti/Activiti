@@ -18,33 +18,32 @@ package org.activiti5.engine.impl.juel;
 import org.activiti5.engine.impl.javax.el.ELContext;
 import org.activiti5.engine.impl.javax.el.ELException;
 
-
 public class AstDot extends AstProperty {
-	protected final String property;
-	
-	public AstDot(AstNode base, String property, boolean lvalue) {
-		super(base, lvalue, true);
-		this.property = property;
-	}
+    protected final String property;
 
-	@Override
-	protected String getProperty(Bindings bindings, ELContext context) throws ELException {
-		return property;
-	}
+    public AstDot(AstNode base, String property, boolean lvalue) {
+        super(base, lvalue, true);
+        this.property = property;
+    }
 
-	@Override
-	public String toString() {
-		return ". " + property;
-	}
+    @Override
+    protected String getProperty(Bindings bindings, ELContext context) throws ELException {
+        return property;
+    }
 
-	@Override 
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		getChild(0).appendStructure(b, bindings);
-		b.append(".");
-		b.append(property);
-	}
+    @Override
+    public String toString() {
+        return ". " + property;
+    }
 
-	public int getCardinality() {
-		return 1;
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        getChild(0).appendStructure(b, bindings);
+        b.append(".");
+        b.append(property);
+    }
+
+    public int getCardinality() {
+        return 1;
+    }
 }

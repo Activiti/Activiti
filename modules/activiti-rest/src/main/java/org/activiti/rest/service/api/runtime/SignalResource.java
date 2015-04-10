@@ -31,54 +31,55 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * Resource for notifying the engine a signal event has been received, independent of an execution.
+ * Resource for notifying the engine a signal event has been received,
+ * independent of an execution.
  * 
  * @author Frederik Heremans
  */
 @RestController
 public class SignalResource {
-  
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected RuntimeService runtimeService;
 
-  @RequestMapping(value="/runtime/signals", method = RequestMethod.POST)
-  public void signalEventReceived(@RequestBody SignalEventReceivedRequest signalRequest, HttpServletResponse response) {
-    if (signalRequest.getSignalName() == null) {
-    	throw new ActivitiIllegalArgumentException("signalName is required");
-    }
-    
-    Map<String, Object> signalVariables = null;
-    if (signalRequest.getVariables() != null) {
-      signalVariables = new HashMap<String, Object>();
-      for (RestVariable variable : signalRequest.getVariables()) {
-        if (variable.getName() == null) {
-          throw new ActivitiIllegalArgumentException("Variable name is required.");
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected RuntimeService runtimeService;
+
+    @RequestMapping(value = "/runtime/signals", method = RequestMethod.POST)
+    public void signalEventReceived(@RequestBody SignalEventReceivedRequest signalRequest, HttpServletResponse response) {
+        if (signalRequest.getSignalName() == null) {
+            throw new ActivitiIllegalArgumentException("signalName is required");
         }
-        signalVariables.put(variable.getName(), restResponseFactory.getVariableValue(variable));
-      }
+
+        Map<String, Object> signalVariables = null;
+        if (signalRequest.getVariables() != null) {
+            signalVariables = new HashMap<String, Object>();
+            for (RestVariable variable : signalRequest.getVariables()) {
+                if (variable.getName() == null) {
+                    throw new ActivitiIllegalArgumentException("Variable name is required.");
+                }
+                signalVariables.put(variable.getName(), restResponseFactory.getVariableValue(variable));
+            }
+        }
+
+        if (signalRequest.isAsync()) {
+            if (signalVariables != null) {
+                throw new ActivitiIllegalArgumentException("Async signals cannot take variables as payload");
+            }
+
+            if (signalRequest.isCustomTenantSet()) {
+                runtimeService.signalEventReceivedAsyncWithTenantId(signalRequest.getSignalName(), signalRequest.getTenantId());
+            } else {
+                runtimeService.signalEventReceivedAsync(signalRequest.getSignalName());
+            }
+            response.setStatus(HttpStatus.ACCEPTED.value());
+        } else {
+            if (signalRequest.isCustomTenantSet()) {
+                runtimeService.signalEventReceivedWithTenantId(signalRequest.getSignalName(), signalVariables, signalRequest.getTenantId());
+            } else {
+                runtimeService.signalEventReceived(signalRequest.getSignalName(), signalVariables);
+            }
+            response.setStatus(HttpStatus.NO_CONTENT.value());
+        }
     }
-    
-    if (signalRequest.isAsync()) {
-    	if(signalVariables != null) {
-    		throw new ActivitiIllegalArgumentException("Async signals cannot take variables as payload");
-    	}
-    	
-    	if (signalRequest.isCustomTenantSet()) {
-    	  runtimeService.signalEventReceivedAsyncWithTenantId(signalRequest.getSignalName(), signalRequest.getTenantId());
-    	} else {
-    	  runtimeService.signalEventReceivedAsync(signalRequest.getSignalName());
-    	}
-    	response.setStatus(HttpStatus.ACCEPTED.value());
-    } else {
-    	if (signalRequest.isCustomTenantSet()) {
-    		runtimeService.signalEventReceivedWithTenantId(signalRequest.getSignalName(), signalVariables, signalRequest.getTenantId());
-    	} else {
-    		runtimeService.signalEventReceived(signalRequest.getSignalName(), signalVariables);
-    	}
-    	response.setStatus(HttpStatus.NO_CONTENT.value());
-    }
-  }
 }

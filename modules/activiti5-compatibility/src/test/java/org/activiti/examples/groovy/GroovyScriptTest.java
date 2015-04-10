@@ -18,28 +18,27 @@ import org.activiti5.engine.impl.util.CollectionUtil;
 import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.test.Deployment;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GroovyScriptTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testScriptExecution() {
-    int[] inputArray = new int[] {1, 2, 3, 4, 5};
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
+    @Deployment
+    public void testScriptExecution() {
+        int[] inputArray = new int[] { 1, 2, 3, 4, 5 };
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("scriptExecution", CollectionUtil.singletonMap("inputArray", inputArray));
 
-    Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");
-    assertEquals(15, result.intValue());
-  }
+        Integer result = (Integer) runtimeService.getVariable(pi.getId(), "sum");
+        assertEquals(15, result.intValue());
+    }
 
-  @Deployment
-  public void testSetVariableThroughExecutionInScript() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptVariableThroughExecution");
+    @Deployment
+    public void testSetVariableThroughExecutionInScript() {
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("setScriptVariableThroughExecution");
 
-    // Since 'def' is used, the 'scriptVar' will be script local
-    // and not automatically stored as a process variable.
-    assertNull(runtimeService.getVariable(pi.getId(), "scriptVar"));
-    assertEquals("test123", runtimeService.getVariable(pi.getId(), "myVar"));
-  }
+        // Since 'def' is used, the 'scriptVar' will be script local
+        // and not automatically stored as a process variable.
+        assertNull(runtimeService.getVariable(pi.getId(), "scriptVar"));
+        assertEquals("test123", runtimeService.getVariable(pi.getId(), "myVar"));
+    }
 }

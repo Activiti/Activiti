@@ -23,62 +23,62 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 
-
 /**
  * @author Joram Barrez
  */
 public class BpmnParseHandlers {
-  
-  private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BpmnParseHandlers.class);
-  
-  protected Map<Class<? extends BaseElement>, List<BpmnParseHandler>> parseHandlers;
-  
-  public BpmnParseHandlers() {
-    this.parseHandlers = new HashMap<Class<? extends BaseElement>, List<BpmnParseHandler>>();
-  }
-  
-  public List<BpmnParseHandler> getHandlersFor(Class<? extends BaseElement> clazz) {
-    return parseHandlers.get(clazz);
-  }
-  
-  public void addHandlers(List<BpmnParseHandler> bpmnParseHandlers) {
-    for (BpmnParseHandler bpmnParseHandler : bpmnParseHandlers) {
-      addHandler(bpmnParseHandler);
+
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(BpmnParseHandlers.class);
+
+    protected Map<Class<? extends BaseElement>, List<BpmnParseHandler>> parseHandlers;
+
+    public BpmnParseHandlers() {
+        this.parseHandlers = new HashMap<Class<? extends BaseElement>, List<BpmnParseHandler>>();
     }
-  }
-  
-  public void addHandler(BpmnParseHandler bpmnParseHandler) {
-    for (Class<? extends BaseElement> type : bpmnParseHandler.getHandledTypes()) {
-      List<BpmnParseHandler> handlers = parseHandlers.get(type);
-      if (handlers == null) {
-        handlers = new ArrayList<BpmnParseHandler>();
-        parseHandlers.put(type, handlers);
-      }
-      handlers.add(bpmnParseHandler);
+
+    public List<BpmnParseHandler> getHandlersFor(Class<? extends BaseElement> clazz) {
+        return parseHandlers.get(clazz);
     }
-  }
-  
-  public void parseElement(BpmnParse bpmnParse, BaseElement element) {
-    
-    if (element instanceof DataObject) {
-      // ignore DataObject elements because they are processed on Process and Sub process level
-      return;
+
+    public void addHandlers(List<BpmnParseHandler> bpmnParseHandlers) {
+        for (BpmnParseHandler bpmnParseHandler : bpmnParseHandlers) {
+            addHandler(bpmnParseHandler);
+        }
     }
-    
-    if (element instanceof FlowElement) {
-      bpmnParse.setCurrentFlowElement((FlowElement) element);
+
+    public void addHandler(BpmnParseHandler bpmnParseHandler) {
+        for (Class<? extends BaseElement> type : bpmnParseHandler.getHandledTypes()) {
+            List<BpmnParseHandler> handlers = parseHandlers.get(type);
+            if (handlers == null) {
+                handlers = new ArrayList<BpmnParseHandler>();
+                parseHandlers.put(type, handlers);
+            }
+            handlers.add(bpmnParseHandler);
+        }
     }
-    
-    // Execute parse handlers
-    List<BpmnParseHandler> handlers = parseHandlers.get(element.getClass());
-    
-    if (handlers == null) {
-      LOGGER.warn("Could not find matching parse handler for + " + element.getId() + " this is likely a bug.");
-    } else {
-      for (BpmnParseHandler handler : handlers) {
-        handler.parse(bpmnParse, element);
-      }
+
+    public void parseElement(BpmnParse bpmnParse, BaseElement element) {
+
+        if (element instanceof DataObject) {
+            // ignore DataObject elements because they are processed on Process
+            // and Sub process level
+            return;
+        }
+
+        if (element instanceof FlowElement) {
+            bpmnParse.setCurrentFlowElement((FlowElement) element);
+        }
+
+        // Execute parse handlers
+        List<BpmnParseHandler> handlers = parseHandlers.get(element.getClass());
+
+        if (handlers == null) {
+            LOGGER.warn("Could not find matching parse handler for + " + element.getId() + " this is likely a bug.");
+        } else {
+            for (BpmnParseHandler handler : handlers) {
+                handler.parse(bpmnParse, element);
+            }
+        }
     }
-  }
 
 }

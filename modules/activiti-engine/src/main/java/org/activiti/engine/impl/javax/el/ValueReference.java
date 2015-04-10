@@ -23,21 +23,21 @@ import java.io.Serializable;
  * @since 2.2
  */
 public class ValueReference implements Serializable {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	private Object base;
-	private Object property;
+    private Object base;
+    private Object property;
 
-	public ValueReference(Object base, Object property) {
-		this.base = base;
-		this.property = property;
-	}
+    public ValueReference(Object base, Object property) {
+        this.base = base;
+        this.property = property;
+    }
 
-	public Object getBase() {
-		return base;
-	}
+    public Object getBase() {
+        return base;
+    }
 
-	public Object getProperty() {
-		return property;
-	}
+    public Object getProperty() {
+        return property;
+    }
 }

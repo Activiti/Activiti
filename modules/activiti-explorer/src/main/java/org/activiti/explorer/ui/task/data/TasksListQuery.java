@@ -14,15 +14,14 @@ package org.activiti.explorer.ui.task.data;
 
 import org.activiti.engine.task.TaskQuery;
 
-
 /**
  * @author Joram Barrez
  */
 public class TasksListQuery extends AbstractTaskListQuery {
-  
-  @Override
-  protected TaskQuery getQuery() {
-    return taskService.createTaskQuery().taskOwner(userId).orderByTaskId().asc();
-  }
-  
+
+    @Override
+    protected TaskQuery getQuery() {
+        return taskService.createTaskQuery().taskOwner(userId).orderByTaskId().asc();
+    }
+
 }

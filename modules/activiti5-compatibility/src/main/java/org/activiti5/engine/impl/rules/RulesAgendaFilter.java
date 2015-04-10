@@ -24,26 +24,27 @@ import org.drools.runtime.rule.AgendaFilter;
  */
 public class RulesAgendaFilter implements AgendaFilter {
 
-  protected List<String> suffixList = new ArrayList<String>();
-  protected boolean accept;
+    protected List<String> suffixList = new ArrayList<String>();
+    protected boolean accept;
 
-  public RulesAgendaFilter() {}
-
-  public boolean accept(Activation activation) {
-    String ruleName = activation.getRule().getName();
-    for (String suffix : suffixList) {
-      if (ruleName.endsWith(suffix)) {
-        return this.accept;
-      }
+    public RulesAgendaFilter() {
     }
-    return !this.accept;
-  }
-  
-  public void addSuffic(String suffix) {
-    this.suffixList.add(suffix);
-  }
-  
-  public void setAccept(boolean accept) {
-    this.accept = accept;
-  }
+
+    public boolean accept(Activation activation) {
+        String ruleName = activation.getRule().getName();
+        for (String suffix : suffixList) {
+            if (ruleName.endsWith(suffix)) {
+                return this.accept;
+            }
+        }
+        return !this.accept;
+    }
+
+    public void addSuffic(String suffix) {
+        this.suffixList.add(suffix);
+    }
+
+    public void setAccept(boolean accept) {
+        this.accept = accept;
+    }
 }

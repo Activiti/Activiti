@@ -21,45 +21,47 @@ import org.activiti.explorer.I18nManager;
 import com.vaadin.terminal.Resource;
 import com.vaadin.ui.Component;
 
-
 /**
- * Representing a class that is capable of rendering related content ({@link Attachment}s)
- * for a certain type in different contexts: overview link, edit/add and detail.
+ * Representing a class that is capable of rendering related content (
+ * {@link Attachment}s) for a certain type in different contexts: overview link,
+ * edit/add and detail.
  * 
  * @author Frederik Heremans
  */
 public interface AttachmentRenderer extends Serializable {
 
-  /**
-   * Returns true if this renderer is capable of rendering attachments of the given type.
-   */
-  boolean canRenderAttachment(String type);
-  
-  /**
-   * Gets the human-readable name for the type of related content
-   * this class is capable of rendering.
-   */
-  String getName(I18nManager i18nManager);
-    
-  /**
-   * Get the image to display in the list of related content for
-   * the given attachment.
-   * 
-   * @param attachment the attachment to get the image for. When null is
-   * passed, the image for a new attachment (of the type this class is capable of
-   * rendering) is expected to be returned.
-   */
-  Resource getImage(Attachment attachment);
-  
-  /**
-   * Get the component that is used in the related content overview list.
-   * Use the passed parent for calling back to show detail.
-   */
-  Component getOverviewComponent(Attachment attachment, RelatedContentComponent parent);
-  
-  /**
-   * Get the component to render when viewing the details of the
-   * related content for the type this renderer is responsible for.
-   */
-  Component getDetailComponent(Attachment attachment);
+    /**
+     * Returns true if this renderer is capable of rendering attachments of the
+     * given type.
+     */
+    boolean canRenderAttachment(String type);
+
+    /**
+     * Gets the human-readable name for the type of related content this class
+     * is capable of rendering.
+     */
+    String getName(I18nManager i18nManager);
+
+    /**
+     * Get the image to display in the list of related content for the given
+     * attachment.
+     * 
+     * @param attachment
+     *            the attachment to get the image for. When null is passed, the
+     *            image for a new attachment (of the type this class is capable
+     *            of rendering) is expected to be returned.
+     */
+    Resource getImage(Attachment attachment);
+
+    /**
+     * Get the component that is used in the related content overview list. Use
+     * the passed parent for calling back to show detail.
+     */
+    Component getOverviewComponent(Attachment attachment, RelatedContentComponent parent);
+
+    /**
+     * Get the component to render when viewing the details of the related
+     * content for the type this renderer is responsible for.
+     */
+    Component getDetailComponent(Attachment attachment);
 }

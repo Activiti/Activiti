@@ -13,14 +13,13 @@
 
 package org.activiti.engine.impl.pvm;
 
-
 /**
  * @author Tom Baeyens
  */
 public class PvmEvent {
 
-  public static final String EVENTNAME_START = "start";
-  public static final String EVENTNAME_END = "end";
-  public static final String EVENTNAME_TAKE = "take";
+    public static final String EVENTNAME_START = "start";
+    public static final String EVENTNAME_END = "end";
+    public static final String EVENTNAME_TAKE = "take";
 
 }

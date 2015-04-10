@@ -14,16 +14,16 @@ package org.activiti.cdi.annotation.event;
 
 import javax.enterprise.util.AnnotationLiteral;
 
-
 public class StartActivityLiteral extends AnnotationLiteral<StartActivity> implements StartActivity {
-  
-  protected final String activityId;    
-  
-  public StartActivityLiteral(String activityId) {
-    this.activityId = activityId;
-  }
-  @Override
-  public String value() {
-    return activityId != null ? activityId : "";
-  }
+
+    protected final String activityId;
+
+    public StartActivityLiteral(String activityId) {
+        this.activityId = activityId;
+    }
+
+    @Override
+    public String value() {
+        return activityId != null ? activityId : "";
+    }
 }

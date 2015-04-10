@@ -13,7 +13,8 @@
 package org.activiti.rest.common.api;
 
 /**
- * Interface representing a paginated request object, use when paging is needed without using URL-parameters.
+ * Interface representing a paginated request object, use when paging is needed
+ * without using URL-parameters.
  * 
  * @see AbstractPaginateList
  * 
@@ -21,43 +22,43 @@ package org.activiti.rest.common.api;
  */
 public class PaginateRequest {
 
-	protected Integer start;
-	
-	protected Integer size;
-	
-	protected String sort;
-	
-	protected String order;
+    protected Integer start;
 
-	public Integer getStart() {
-		return start;
-	}
+    protected Integer size;
 
-	public void setStart(Integer start) {
-		this.start = start;
-	}
+    protected String sort;
 
-	public Integer getSize() {
-		return size;
-	}
+    protected String order;
 
-	public void setSize(Integer size) {
-		this.size = size;
-	}
+    public Integer getStart() {
+        return start;
+    }
 
-	public String getSort() {
-		return sort;
-	}
+    public void setStart(Integer start) {
+        this.start = start;
+    }
 
-	public void setSort(String sort) {
-		this.sort = sort;
-	}
+    public Integer getSize() {
+        return size;
+    }
 
-	public String getOrder() {
-		return order;
-	}
+    public void setSize(Integer size) {
+        this.size = size;
+    }
 
-	public void setOrder(String order) {
-		this.order = order;
-	}
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sort) {
+        this.sort = sort;
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
 }

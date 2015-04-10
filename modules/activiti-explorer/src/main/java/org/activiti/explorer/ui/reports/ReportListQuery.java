@@ -24,51 +24,46 @@ import org.activiti.explorer.data.AbstractLazyLoadingQuery;
 
 import com.vaadin.data.Item;
 
-
 /**
  * @author Joram Barrez
  */
 public class ReportListQuery extends AbstractLazyLoadingQuery {
-  
-  private static final long serialVersionUID = -7865037930384885968L;
 
-  private static final String REPORT_PROCESS_CATEGORY = "activiti-report";
-  
-  protected transient RepositoryService repositoryService;
-  
-  public ReportListQuery() {
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-  }
+    private static final long serialVersionUID = -7865037930384885968L;
 
-  public int size() {
-    return (int) createQuery().count();
-  }
+    private static final String REPORT_PROCESS_CATEGORY = "activiti-report";
 
-  public List<Item> loadItems(int start, int count) {
-    List<ProcessDefinition> processDefinitions = createQuery().listPage(start, count);
+    protected transient RepositoryService repositoryService;
 
-    List<Item> reportItems = new ArrayList<Item>();
-    for (ProcessDefinition processDefinition : processDefinitions) {
-      reportItems.add(new ReportListItem(processDefinition));
+    public ReportListQuery() {
+        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
     }
-    
-    return reportItems;
-  }
-  
-  protected ProcessDefinitionQuery createQuery() {
-    return repositoryService.createProcessDefinitionQuery()
-            .processDefinitionCategory(REPORT_PROCESS_CATEGORY)
-            .latestVersion()
-            .orderByProcessDefinitionName().asc();
-  }
 
-  public Item loadSingleResult(String id) {
-    return new ReportListItem(repositoryService.createProcessDefinitionQuery()
-            .processDefinitionId(id).singleResult());
-  }
+    public int size() {
+        return (int) createQuery().count();
+    }
 
-  public void setSorting(Object[] propertyIds, boolean[] ascending) {
-    throw new UnsupportedOperationException();
-  }
-  
+    public List<Item> loadItems(int start, int count) {
+        List<ProcessDefinition> processDefinitions = createQuery().listPage(start, count);
+
+        List<Item> reportItems = new ArrayList<Item>();
+        for (ProcessDefinition processDefinition : processDefinitions) {
+            reportItems.add(new ReportListItem(processDefinition));
+        }
+
+        return reportItems;
+    }
+
+    protected ProcessDefinitionQuery createQuery() {
+        return repositoryService.createProcessDefinitionQuery().processDefinitionCategory(REPORT_PROCESS_CATEGORY).latestVersion().orderByProcessDefinitionName().asc();
+    }
+
+    public Item loadSingleResult(String id) {
+        return new ReportListItem(repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult());
+    }
+
+    public void setSorting(Object[] propertyIds, boolean[] ascending) {
+        throw new UnsupportedOperationException();
+    }
+
 }

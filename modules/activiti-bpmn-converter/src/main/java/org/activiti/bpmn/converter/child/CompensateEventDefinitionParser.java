@@ -26,22 +26,23 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class CompensateEventDefinitionParser extends BaseChildElementParser {
 
-  public String getElementName() {
-    return ELEMENT_EVENT_COMPENSATEDEFINITION;
-  }
-  
-  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-    if (parentElement instanceof Event == false) return;
-    
-    CompensateEventDefinition eventDefinition = new CompensateEventDefinition();
-    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-    eventDefinition.setActivityRef(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_ACTIVITYREF));
-    if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION))) {
-      eventDefinition.setWaitForCompletion(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION)));
+    public String getElementName() {
+        return ELEMENT_EVENT_COMPENSATEDEFINITION;
     }
-    
-    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_COMPENSATEDEFINITION, eventDefinition, xtr, model);
-    
-    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
-  }
+
+    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+        if (parentElement instanceof Event == false)
+            return;
+
+        CompensateEventDefinition eventDefinition = new CompensateEventDefinition();
+        BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+        eventDefinition.setActivityRef(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_ACTIVITYREF));
+        if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION))) {
+            eventDefinition.setWaitForCompletion(Boolean.parseBoolean(xtr.getAttributeValue(null, ATTRIBUTE_COMPENSATE_WAITFORCOMPLETION)));
+        }
+
+        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_COMPENSATEDEFINITION, eventDefinition, xtr, model);
+
+        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+    }
 }

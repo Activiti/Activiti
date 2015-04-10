@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.runtime;
 
-
-
 /**
  * Represent a 'path of execution' in a process instance.
  * 
@@ -22,40 +20,45 @@ package org.activiti.engine.runtime;
  * @author Joram Barrez
  */
 public interface Execution {
-  
-  /**
-   * The unique identifier of the execution.
-   */
-  String getId();
-  
-  /**
-   * Indicates if the execution is suspended.
-   */
-  boolean isSuspended();
-  
-  /**
-   * Indicates if the execution is ended.
-   */
-  boolean isEnded();
-  
-  /**
-   * Returns the id of the activity where the execution currently is at.
-   * Returns null if the execution is not a 'leaf' execution (eg concurrent parent).
-   */
-  String getActivityId();
-  
-  /** Id of the root of the execution tree representing the process instance.
-   * It is the same as {@link #getId()} if this execution is the process instance. */ 
-  String getProcessInstanceId();
-  
-  /**
-   * Gets the id of the parent of this execution. If null, the execution represents a process-instance.
-   */
-  String getParentId();
-  
-  /** 
-   * The tenant identifier of this process instance 
-   */
-  String getTenantId();
-  
+
+    /**
+     * The unique identifier of the execution.
+     */
+    String getId();
+
+    /**
+     * Indicates if the execution is suspended.
+     */
+    boolean isSuspended();
+
+    /**
+     * Indicates if the execution is ended.
+     */
+    boolean isEnded();
+
+    /**
+     * Returns the id of the activity where the execution currently is at.
+     * Returns null if the execution is not a 'leaf' execution (eg concurrent
+     * parent).
+     */
+    String getActivityId();
+
+    /**
+     * Id of the root of the execution tree representing the process instance.
+     * It is the same as {@link #getId()} if this execution is the process
+     * instance.
+     */
+    String getProcessInstanceId();
+
+    /**
+     * Gets the id of the parent of this execution. If null, the execution
+     * represents a process-instance.
+     */
+    String getParentId();
+
+    /**
+     * The tenant identifier of this process instance
+     */
+    String getTenantId();
+
 }

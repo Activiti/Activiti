@@ -12,16 +12,15 @@
  */
 package org.activiti5.engine.delegate.event;
 
-
 /**
  * An {@link ActivitiEvent} related to a single entity.
  * 
  * @author Frederik Heremans
  */
 public interface ActivitiEntityEvent extends ActivitiEvent {
-	
-	/**
-	 * @return the entity that is targeted by this event.
-	 */
-	Object getEntity();
+
+    /**
+     * @return the entity that is targeted by this event.
+     */
+    Object getEntity();
 }

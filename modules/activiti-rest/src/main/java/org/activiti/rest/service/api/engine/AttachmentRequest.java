@@ -13,47 +13,46 @@
 
 package org.activiti.rest.service.api.engine;
 
-
 /**
  * @author Frederik Heremans
  */
 public class AttachmentRequest {
 
-  private String name;
-  private String description;
-  private String type;
-  private String externalUrl;
-  
-  public String getName() {
-    return name;
-  }
-  
-  public void setName(String name) {
-    this.name = name;
-  }
-  
-  public String getDescription() {
-    return description;
-  }
-  
-  public void setDescription(String description) {
-    this.description = description;
-  }
-  
-  public String getType() {
-    return type;
-  }
-  
-  public void setType(String type) {
-    this.type = type;
-  }
-  
-  public String getExternalUrl() {
-    return externalUrl;
-  }
-  
-  public void setExternalUrl(String externalUrl) {
-    this.externalUrl = externalUrl;
-  }
-  
+    private String name;
+    private String description;
+    private String type;
+    private String externalUrl;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getExternalUrl() {
+        return externalUrl;
+    }
+
+    public void setExternalUrl(String externalUrl) {
+        this.externalUrl = externalUrl;
+    }
+
 }

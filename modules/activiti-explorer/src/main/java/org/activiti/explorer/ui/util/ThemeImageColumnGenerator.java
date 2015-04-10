@@ -23,44 +23,44 @@ import com.vaadin.ui.Embedded;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.Table.ColumnGenerator;
 
-
 /**
  * A {@link ColumnGenerator} that always returns the same component to render,
- * which is an {@link Embeddable} containing the theme image passed in the constructor.
+ * which is an {@link Embeddable} containing the theme image passed in the
+ * constructor.
  * 
  * @author Frederik Heremans
  * @author Joram Barrez
  */
 public class ThemeImageColumnGenerator implements ColumnGenerator {
 
-  private static final long serialVersionUID = -7742412844347541389L;
-  
-  protected Resource image;
-  protected ClickListener clickListener;
- 
-  public ThemeImageColumnGenerator(String imageName) {
-    image = new ThemeResource(imageName);
-  }
-  
-  public ThemeImageColumnGenerator(Resource image) {
-    this.image = image;
-  }
-  
-  public ThemeImageColumnGenerator(Resource image, ClickListener clickListener) {
-    this(image);
-    this.clickListener = clickListener;
-  }
-  
-  public Component generateCell(Table source, Object itemId, Object columnId) {
-    Embedded embedded = new Embedded(null, image);
-    
-    if (clickListener != null) {
-      embedded.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-      embedded.setData(itemId);
-      embedded.addListener(clickListener);
+    private static final long serialVersionUID = -7742412844347541389L;
+
+    protected Resource image;
+    protected ClickListener clickListener;
+
+    public ThemeImageColumnGenerator(String imageName) {
+        image = new ThemeResource(imageName);
     }
-    
-    return embedded;
-  }
+
+    public ThemeImageColumnGenerator(Resource image) {
+        this.image = image;
+    }
+
+    public ThemeImageColumnGenerator(Resource image, ClickListener clickListener) {
+        this(image);
+        this.clickListener = clickListener;
+    }
+
+    public Component generateCell(Table source, Object itemId, Object columnId) {
+        Embedded embedded = new Embedded(null, image);
+
+        if (clickListener != null) {
+            embedded.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+            embedded.setData(itemId);
+            embedded.addListener(clickListener);
+        }
+
+        return embedded;
+    }
 
 }

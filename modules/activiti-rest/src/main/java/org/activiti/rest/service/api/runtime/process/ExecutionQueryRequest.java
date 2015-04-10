@@ -21,152 +21,137 @@ import org.activiti.rest.service.api.engine.variable.QueryVariable;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
-
 /**
  * @author Frederik Heremans
  */
 public class ExecutionQueryRequest extends PaginateRequest {
-  private String id;
-  private String activityId;
-  private String parentId;
-  private String processInstanceId;
-  private String processBusinessKey;
-  private String processDefinitionId;
-  private String processDefinitionKey;
-  private String signalEventSubscriptionName;
-  private String messageEventSubscriptionName;
-  private List<QueryVariable> variables;
-  private List<QueryVariable> processInstanceVariables;
-  private String tenantId;
-  private String tenantIdLike;
-  private Boolean withoutTenantId;
-  
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
-  public List<QueryVariable> getVariables() {
-    return variables;
-  }
-  
-  public void setVariables(List<QueryVariable> variables) {
-    this.variables = variables;
-  }
-  
-  public List<QueryVariable> getProcessInstanceVariables() {
-    return processInstanceVariables;
-  }
-  @JsonTypeInfo(use=Id.CLASS, defaultImpl=QueryVariable.class)  
-  public void setProcessInstanceVariables(List<QueryVariable> processInstanceVariables) {
-    this.processInstanceVariables = processInstanceVariables;
-  }
+    private String id;
+    private String activityId;
+    private String parentId;
+    private String processInstanceId;
+    private String processBusinessKey;
+    private String processDefinitionId;
+    private String processDefinitionKey;
+    private String signalEventSubscriptionName;
+    private String messageEventSubscriptionName;
+    private List<QueryVariable> variables;
+    private List<QueryVariable> processInstanceVariables;
+    private String tenantId;
+    private String tenantIdLike;
+    private Boolean withoutTenantId;
 
-  
-  public String getId() {
-    return id;
-  }
+    @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
+    public List<QueryVariable> getVariables() {
+        return variables;
+    }
 
-  
-  public void setId(String id) {
-    this.id = id;
-  }
+    public void setVariables(List<QueryVariable> variables) {
+        this.variables = variables;
+    }
 
-  
-  public String getProcessInstanceId() {
-    return processInstanceId;
-  }
+    public List<QueryVariable> getProcessInstanceVariables() {
+        return processInstanceVariables;
+    }
 
-  
-  public void setProcessInstanceId(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+    @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
+    public void setProcessInstanceVariables(List<QueryVariable> processInstanceVariables) {
+        this.processInstanceVariables = processInstanceVariables;
+    }
 
-  
-  public String getProcessBusinessKey() {
-    return processBusinessKey;
-  }
+    public String getId() {
+        return id;
+    }
 
-  
-  public void setProcessBusinessKey(String processBusinessKey) {
-    this.processBusinessKey = processBusinessKey;
-  }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-  
-  public String getProcessDefinitionId() {
-    return processDefinitionId;
-  }
+    public String getProcessInstanceId() {
+        return processInstanceId;
+    }
 
-  
-  public void setProcessDefinitionId(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
+    public void setProcessInstanceId(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
 
-  
-  public String getProcessDefinitionKey() {
-    return processDefinitionKey;
-  }
+    public String getProcessBusinessKey() {
+        return processBusinessKey;
+    }
 
-  
-  public void setProcessDefinitionKey(String processDefinitionKey) {
-    this.processDefinitionKey = processDefinitionKey;
-  }
+    public void setProcessBusinessKey(String processBusinessKey) {
+        this.processBusinessKey = processBusinessKey;
+    }
 
-  
-  public String getSignalEventSubscriptionName() {
-    return signalEventSubscriptionName;
-  }
+    public String getProcessDefinitionId() {
+        return processDefinitionId;
+    }
 
-  
-  public void setSignalEventSubscriptionName(String signalEventSubscriptionName) {
-    this.signalEventSubscriptionName = signalEventSubscriptionName;
-  }
+    public void setProcessDefinitionId(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
+    }
 
-  
-  public String getMessageEventSubscriptionName() {
-    return messageEventSubscriptionName;
-  }
+    public String getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
 
-  
-  public void setMessageEventSubscriptionName(String messageEventSubscriptionName) {
-    this.messageEventSubscriptionName = messageEventSubscriptionName;
-  }
-  
-  
-  public String getActivityId() {
-    return activityId;
-  }
-  
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
-  }
-  
-  public String getParentId() {
-    return parentId;
-  }
-  
-  public void setParentId(String parentId) {
-    this.parentId = parentId;
-  }
+    public void setProcessDefinitionKey(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
+    }
 
-	public String getTenantId() {
-		return tenantId;
-	}
+    public String getSignalEventSubscriptionName() {
+        return signalEventSubscriptionName;
+    }
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
+    public void setSignalEventSubscriptionName(String signalEventSubscriptionName) {
+        this.signalEventSubscriptionName = signalEventSubscriptionName;
+    }
 
-	public String getTenantIdLike() {
-		return tenantIdLike;
-	}
+    public String getMessageEventSubscriptionName() {
+        return messageEventSubscriptionName;
+    }
 
-	public void setTenantIdLike(String tenantIdLike) {
-		this.tenantIdLike = tenantIdLike;
-	}
+    public void setMessageEventSubscriptionName(String messageEventSubscriptionName) {
+        this.messageEventSubscriptionName = messageEventSubscriptionName;
+    }
 
-	public Boolean getWithoutTenantId() {
-		return withoutTenantId;
-	}
+    public String getActivityId() {
+        return activityId;
+    }
 
-	public void setWithoutTenantId(Boolean withoutTenantId) {
-		this.withoutTenantId = withoutTenantId;
-	}
-  
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public String getTenantIdLike() {
+        return tenantIdLike;
+    }
+
+    public void setTenantIdLike(String tenantIdLike) {
+        this.tenantIdLike = tenantIdLike;
+    }
+
+    public Boolean getWithoutTenantId() {
+        return withoutTenantId;
+    }
+
+    public void setWithoutTenantId(Boolean withoutTenantId) {
+        this.withoutTenantId = withoutTenantId;
+    }
+
 }

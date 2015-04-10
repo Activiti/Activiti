@@ -7,91 +7,91 @@ import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
  * @author Joram Barrez
  */
 public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl implements ActivitiSequenceFlowTakenEvent {
-	
-	protected String id;
-	protected String sourceActivityId;
-	protected String sourceActivityName;
-	protected String sourceActivityType;
-	protected String sourceActivityBehaviorClass;
-	protected String targetActivityId;
-	protected String targetActivityName;
-	protected String targetActivityType;
-	protected String targetActivityBehaviorClass;
-	
-	public ActivitiSequenceFlowTakenEventImpl(ActivitiEventType type) {
-	  super(type);
-  }
 
-	public String getId() {
-		return id;
-	}
+    protected String id;
+    protected String sourceActivityId;
+    protected String sourceActivityName;
+    protected String sourceActivityType;
+    protected String sourceActivityBehaviorClass;
+    protected String targetActivityId;
+    protected String targetActivityName;
+    protected String targetActivityType;
+    protected String targetActivityBehaviorClass;
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public ActivitiSequenceFlowTakenEventImpl(ActivitiEventType type) {
+        super(type);
+    }
 
-	public String getSourceActivityId() {
-		return sourceActivityId;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setSourceActivityId(String sourceActivityId) {
-		this.sourceActivityId = sourceActivityId;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getSourceActivityName() {
-		return sourceActivityName;
-	}
+    public String getSourceActivityId() {
+        return sourceActivityId;
+    }
 
-	public void setSourceActivityName(String sourceActivityName) {
-		this.sourceActivityName = sourceActivityName;
-	}
+    public void setSourceActivityId(String sourceActivityId) {
+        this.sourceActivityId = sourceActivityId;
+    }
 
-	public String getSourceActivityType() {
-		return sourceActivityType;
-	}
+    public String getSourceActivityName() {
+        return sourceActivityName;
+    }
 
-	public void setSourceActivityType(String sourceActivityType) {
-		this.sourceActivityType = sourceActivityType;
-	}
+    public void setSourceActivityName(String sourceActivityName) {
+        this.sourceActivityName = sourceActivityName;
+    }
 
-	public String getSourceActivityBehaviorClass() {
-		return sourceActivityBehaviorClass;
-	}
+    public String getSourceActivityType() {
+        return sourceActivityType;
+    }
 
-	public void setSourceActivityBehaviorClass(String sourceActivityBehaviorClass) {
-		this.sourceActivityBehaviorClass = sourceActivityBehaviorClass;
-	}
+    public void setSourceActivityType(String sourceActivityType) {
+        this.sourceActivityType = sourceActivityType;
+    }
 
-	public String getTargetActivityId() {
-		return targetActivityId;
-	}
+    public String getSourceActivityBehaviorClass() {
+        return sourceActivityBehaviorClass;
+    }
 
-	public void setTargetActivityId(String targetActivityId) {
-		this.targetActivityId = targetActivityId;
-	}
+    public void setSourceActivityBehaviorClass(String sourceActivityBehaviorClass) {
+        this.sourceActivityBehaviorClass = sourceActivityBehaviorClass;
+    }
 
-	public String getTargetActivityName() {
-		return targetActivityName;
-	}
+    public String getTargetActivityId() {
+        return targetActivityId;
+    }
 
-	public void setTargetActivityName(String targetActivityName) {
-		this.targetActivityName = targetActivityName;
-	}
+    public void setTargetActivityId(String targetActivityId) {
+        this.targetActivityId = targetActivityId;
+    }
 
-	public String getTargetActivityType() {
-		return targetActivityType;
-	}
+    public String getTargetActivityName() {
+        return targetActivityName;
+    }
 
-	public void setTargetActivityType(String targetActivityType) {
-		this.targetActivityType = targetActivityType;
-	}
+    public void setTargetActivityName(String targetActivityName) {
+        this.targetActivityName = targetActivityName;
+    }
 
-	public String getTargetActivityBehaviorClass() {
-		return targetActivityBehaviorClass;
-	}
+    public String getTargetActivityType() {
+        return targetActivityType;
+    }
 
-	public void setTargetActivityBehaviorClass(String targetActivityBehaviorClass) {
-		this.targetActivityBehaviorClass = targetActivityBehaviorClass;
-	}
-	
+    public void setTargetActivityType(String targetActivityType) {
+        this.targetActivityType = targetActivityType;
+    }
+
+    public String getTargetActivityBehaviorClass() {
+        return targetActivityBehaviorClass;
+    }
+
+    public void setTargetActivityBehaviorClass(String targetActivityBehaviorClass) {
+        this.targetActivityBehaviorClass = targetActivityBehaviorClass;
+    }
+
 }

@@ -15,19 +15,21 @@ package org.activiti.engine.test.cmd;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
+
 /**
  * @author Saeid Mirzaei
  */
 public class FailingDelegate implements JavaDelegate {
 
-  public static final String EXCEPTION_MESSAGE = "Expected exception.";
+    public static final String EXCEPTION_MESSAGE = "Expected exception.";
+
     @Override
-	public void execute(DelegateExecution execution) throws Exception {
-	  Boolean fail = (Boolean) execution.getVariable("fail");
+    public void execute(DelegateExecution execution) throws Exception {
+        Boolean fail = (Boolean) execution.getVariable("fail");
 
-	  if (fail == null || fail) {
-	      throw new ActivitiException(EXCEPTION_MESSAGE);
-	  }
+        if (fail == null || fail) {
+            throw new ActivitiException(EXCEPTION_MESSAGE);
+        }
 
-	}
+    }
 }

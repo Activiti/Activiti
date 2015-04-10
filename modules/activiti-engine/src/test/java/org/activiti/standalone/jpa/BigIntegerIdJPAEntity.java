@@ -25,16 +25,16 @@ import javax.persistence.Id;
 @Entity(name = "BIGINT_ID_ENTITY")
 public class BigIntegerIdJPAEntity {
 
-  @Id
-  @Column(name = "ID_")
-  private BigInteger bigIntegerId;
+    @Id
+    @Column(name = "ID_")
+    private BigInteger bigIntegerId;
 
-  public BigInteger getBigIntegerId() {
-    return bigIntegerId;
-  }
+    public BigInteger getBigIntegerId() {
+        return bigIntegerId;
+    }
 
-  public void setBigIntegerId(BigInteger bigIntegerId) {
-    this.bigIntegerId = bigIntegerId;
-  }
+    public void setBigIntegerId(BigInteger bigIntegerId) {
+        this.bigIntegerId = bigIntegerId;
+    }
 
 }

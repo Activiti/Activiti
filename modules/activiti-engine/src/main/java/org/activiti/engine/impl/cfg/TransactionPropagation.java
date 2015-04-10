@@ -13,14 +13,13 @@
 package org.activiti.engine.impl.cfg;
 
 /**
- * Enumeration that represents the transaction propagation behaviours supported by the command executor. 
+ * Enumeration that represents the transaction propagation behaviours supported
+ * by the command executor.
  * 
  * @author Marcus Klimstra (CGI)
  */
 public enum TransactionPropagation {
-  
-  REQUIRED,
-  REQUIRES_NEW,
-  NOT_SUPPORTED,
-  
+
+    REQUIRED, REQUIRES_NEW, NOT_SUPPORTED,
+
 }

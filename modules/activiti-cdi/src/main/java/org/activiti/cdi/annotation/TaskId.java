@@ -25,15 +25,17 @@ import org.activiti.engine.task.Task;
  * Qualifier annotation for injecting the current taskId.
  * <p />
  * Example:
+ * 
  * <pre>
  * {@code @Inject} @TaskId String currentTaskId
  * </pre>
  * 
  * Note that the current {@link Task} is also available for injection:
+ * 
  * <pre>
  * {@code @Inject} Task task;
  * </pre>
- *
+ * 
  * @author Daniel Meyer
  */
 @Qualifier

@@ -15,29 +15,28 @@ package org.activiti.standalone.rules;
 
 import java.io.Serializable;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class Order implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  private int itemCount;
-  private boolean valid;
-  
-  public int getItemCount() {
-    return itemCount;
-  }
+    private static final long serialVersionUID = 1L;
+    private int itemCount;
+    private boolean valid;
 
-  public void setItemCount(int itemCount) {
-    this.itemCount = itemCount;
-  }
+    public int getItemCount() {
+        return itemCount;
+    }
 
-  public boolean isValid() {
-    return valid;
-  }
-  
-  public void setValid(boolean valid) {
-    this.valid = valid;
-  }
+    public void setItemCount(int itemCount) {
+        this.itemCount = itemCount;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
 }

@@ -14,26 +14,26 @@ package org.activiti5.engine.impl.persistence.entity;
 
 import org.activiti5.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public class MessageEntity extends JobEntity {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private String repeat = null;
-  
-  @Override
-  public void execute(CommandContext commandContext) {
-    super.execute(commandContext);
-    delete();
-  }
+    private String repeat = null;
 
-  public String getRepeat() {
-    return repeat;
-  }
-  public void setRepeat(String repeat) {
-    this.repeat = repeat;
-  }
+    @Override
+    public void execute(CommandContext commandContext) {
+        super.execute(commandContext);
+        delete();
+    }
+
+    public String getRepeat() {
+        return repeat;
+    }
+
+    public void setRepeat(String repeat) {
+        this.repeat = repeat;
+    }
 }

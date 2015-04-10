@@ -23,52 +23,52 @@ import java.lang.reflect.Method;
  */
 public class EntityMetaData {
 
-  private boolean isJPAEntity = false;
-  private Class< ? > entityClass;
-  private Method idMethod;
-  private Field idField;
+    private boolean isJPAEntity = false;
+    private Class<?> entityClass;
+    private Method idMethod;
+    private Field idField;
 
-  public boolean isJPAEntity() {
-    return isJPAEntity;
-  }
+    public boolean isJPAEntity() {
+        return isJPAEntity;
+    }
 
-  public void setJPAEntity(boolean isJPAEntity) {
-    this.isJPAEntity = isJPAEntity;
-  }
+    public void setJPAEntity(boolean isJPAEntity) {
+        this.isJPAEntity = isJPAEntity;
+    }
 
-  public Class< ? > getEntityClass() {
-    return entityClass;
-  }
+    public Class<?> getEntityClass() {
+        return entityClass;
+    }
 
-  public void setEntityClass(Class< ? > entityClass) {
-    this.entityClass = entityClass;
-  }
+    public void setEntityClass(Class<?> entityClass) {
+        this.entityClass = entityClass;
+    }
 
-  public Method getIdMethod() {
-    return idMethod;
-  }
+    public Method getIdMethod() {
+        return idMethod;
+    }
 
-  public void setIdMethod(Method idMethod) {
-    this.idMethod = idMethod;
-    idMethod.setAccessible(true);
-  }
+    public void setIdMethod(Method idMethod) {
+        this.idMethod = idMethod;
+        idMethod.setAccessible(true);
+    }
 
-  public Field getIdField() {
-    return idField;
-  }
+    public Field getIdField() {
+        return idField;
+    }
 
-  public void setIdField(Field idField) {
-    this.idField = idField;
-    idField.setAccessible(true);
-  }
+    public void setIdField(Field idField) {
+        this.idField = idField;
+        idField.setAccessible(true);
+    }
 
-  public Class<?> getIdType() {
-    Class<?> idType = null;
-    if(idField != null) {
-      idType = idField.getType();
-    } else if (idMethod != null) {
-      idType = idMethod.getReturnType();
-    } 
-    return idType;
-  }
+    public Class<?> getIdType() {
+        Class<?> idType = null;
+        if (idField != null) {
+            idType = idField.getType();
+        } else if (idMethod != null) {
+            idType = idMethod.getReturnType();
+        }
+        return idType;
+    }
 }

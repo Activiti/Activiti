@@ -9,12 +9,12 @@ import java.util.TimeZone;
  */
 public interface ClockReader {
 
-  Date getCurrentTime();
+    Date getCurrentTime();
 
-  Calendar getCurrentCalendar();
-  
-  Calendar getCurrentCalendar(TimeZone timeZone);
-  
-  TimeZone getCurrentTimeZone();
+    Calendar getCurrentCalendar();
+
+    Calendar getCurrentCalendar(TimeZone timeZone);
+
+    TimeZone getCurrentTimeZone();
 
 }

@@ -26,28 +26,29 @@ import org.activiti5.engine.test.Deployment;
  */
 public class TaskPriorityExtensionsTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testPriorityExtension() throws Exception {
-    testPriorityExtension(25);
-    testPriorityExtension(75);
-  }
+    @Deployment
+    public void testPriorityExtension() throws Exception {
+        testPriorityExtension(25);
+        testPriorityExtension(75);
+    }
 
-  private void testPriorityExtension(int priority) throws Exception {
-    final Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("taskPriority", priority);
+    private void testPriorityExtension(int priority) throws Exception {
+        final Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("taskPriority", priority);
 
-    // Start process-instance, passing priority that should be used as task priority
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskPriorityExtension", variables);
+        // Start process-instance, passing priority that should be used as task
+        // priority
+        final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskPriorityExtension", variables);
 
-    final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    assertEquals(priority, task.getPriority());
-  }
+        assertEquals(priority, task.getPriority());
+    }
 
-  @Deployment
-  public void testPriorityExtensionString() throws Exception {
-    final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskPriorityExtensionString");
-    final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-    assertEquals(42, task.getPriority());
-  }
+    @Deployment
+    public void testPriorityExtensionString() throws Exception {
+        final ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskPriorityExtensionString");
+        final Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+        assertEquals(42, task.getPriority());
+    }
 }

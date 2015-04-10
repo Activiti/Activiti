@@ -16,40 +16,40 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.pvm.process.TransitionImpl;
 
-
 /**
  * @author Tom Baeyens
  */
 public class AtomicOperationTransitionNotifyListenerStart extends AbstractEventAtomicOperation {
-  
-  @Override
-  protected ScopeImpl getScope(InterpretableExecution execution) {
-    return (ScopeImpl) execution.getActivity();
-  }
 
-  @Override
-  protected String getEventName() {
-    return org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START;
-  }
-
-  @Override
-  protected void eventNotificationsCompleted(InterpretableExecution execution) {
-    TransitionImpl transition = execution.getTransition();
-    ActivityImpl destination = null;
-    if(transition == null) { // this is null after async cont. -> transition is not stored in execution
-      destination = (ActivityImpl) execution.getActivity();
-    } else {
-      destination = transition.getDestination();
-    }    
-    ActivityImpl activity = (ActivityImpl) execution.getActivity();
-    if (activity!=destination) {
-      ActivityImpl nextScope = AtomicOperationTransitionNotifyListenerTake.findNextScope(activity, destination);
-      execution.setActivity(nextScope);
-      execution.performOperation(TRANSITION_CREATE_SCOPE);
-    } else {
-      execution.setTransition(null);
-      execution.setActivity(destination);
-      execution.performOperation(ACTIVITY_EXECUTE);
+    @Override
+    protected ScopeImpl getScope(InterpretableExecution execution) {
+        return (ScopeImpl) execution.getActivity();
     }
-  }
+
+    @Override
+    protected String getEventName() {
+        return org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START;
+    }
+
+    @Override
+    protected void eventNotificationsCompleted(InterpretableExecution execution) {
+        TransitionImpl transition = execution.getTransition();
+        ActivityImpl destination = null;
+        if (transition == null) { // this is null after async cont. ->
+                                  // transition is not stored in execution
+            destination = (ActivityImpl) execution.getActivity();
+        } else {
+            destination = transition.getDestination();
+        }
+        ActivityImpl activity = (ActivityImpl) execution.getActivity();
+        if (activity != destination) {
+            ActivityImpl nextScope = AtomicOperationTransitionNotifyListenerTake.findNextScope(activity, destination);
+            execution.setActivity(nextScope);
+            execution.performOperation(TRANSITION_CREATE_SCOPE);
+        } else {
+            execution.setTransition(null);
+            execution.setActivity(destination);
+            execution.performOperation(ACTIVITY_EXECUTE);
+        }
+    }
 }

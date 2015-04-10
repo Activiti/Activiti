@@ -23,8 +23,8 @@ import org.activiti.management.jmx.annotations.ManagedResource;
 @ManagedResource(description = "test description")
 public class BadAttributeSetterHavinReturn {
 
-  @ManagedAttribute(description = "test attribute getter having parameter description")
-  public String setSomething(String st) {
-    return null;
-  }
+    @ManagedAttribute(description = "test attribute getter having parameter description")
+    public String setSomething(String st) {
+        return null;
+    }
 }

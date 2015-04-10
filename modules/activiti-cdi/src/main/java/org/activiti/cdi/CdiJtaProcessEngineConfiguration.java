@@ -19,8 +19,8 @@ import org.activiti.engine.impl.cfg.JtaProcessEngineConfiguration;
  */
 public class CdiJtaProcessEngineConfiguration extends JtaProcessEngineConfiguration {
 
-  @Override
-  protected void initExpressionManager() {
-    expressionManager = new CdiExpressionManager();    
-  }
+    @Override
+    protected void initExpressionManager() {
+        expressionManager = new CdiExpressionManager();
+    }
 }

@@ -23,8 +23,8 @@ import org.activiti.management.jmx.annotations.ManagedResource;
 @ManagedResource(description = "test description")
 public class BadAttributeGetterHavinParameter {
 
-  @ManagedAttribute(description = "test attribute getter having parameter description")
-  public Boolean isTestAttributeBoolean(String st) {
-    return null;
-  }
+    @ManagedAttribute(description = "test attribute getter having parameter description")
+    public Boolean isTestAttributeBoolean(String st) {
+        return null;
+    }
 }

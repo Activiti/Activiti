@@ -13,73 +13,72 @@
 
 package org.activiti.engine.cfg;
 
-
 /**
  * @author Tom Baeyens
  */
 public class MailServerInfo {
 
-  protected String mailServerDefaultFrom;
-  protected String mailServerHost;
-  protected int mailServerPort;
-  protected String mailServerUsername;
-  protected String mailServerPassword;
-  protected boolean mailServerUseSSL = false;
-  protected boolean mailServerUseTLS = false;
-  
-  public String getMailServerDefaultFrom() {
-    return mailServerDefaultFrom;
-  }
-  
-  public void setMailServerDefaultFrom(String mailServerDefaultFrom) {
-    this.mailServerDefaultFrom = mailServerDefaultFrom;
-  }
-  
-  public String getMailServerHost() {
-    return mailServerHost;
-  }
-  
-  public void setMailServerHost(String mailServerHost) {
-    this.mailServerHost = mailServerHost;
-  }
-  
-  public int getMailServerPort() {
-    return mailServerPort;
-  }
-  
-  public void setMailServerPort(int mailServerPort) {
-    this.mailServerPort = mailServerPort;
-  }
-  
-  public String getMailServerUsername() {
-    return mailServerUsername;
-  }
-  
-  public void setMailServerUsername(String mailServerUsername) {
-    this.mailServerUsername = mailServerUsername;
-  }
-  
-  public String getMailServerPassword() {
-    return mailServerPassword;
-  }
-  
-  public void setMailServerPassword(String mailServerPassword) {
-    this.mailServerPassword = mailServerPassword;
-  }
+    protected String mailServerDefaultFrom;
+    protected String mailServerHost;
+    protected int mailServerPort;
+    protected String mailServerUsername;
+    protected String mailServerPassword;
+    protected boolean mailServerUseSSL = false;
+    protected boolean mailServerUseTLS = false;
 
-  public boolean isMailServerUseSSL() {
-    return mailServerUseSSL;
-  }
+    public String getMailServerDefaultFrom() {
+        return mailServerDefaultFrom;
+    }
 
-  public void setMailServerUseSSL(boolean mailServerUseSSL) {
-    this.mailServerUseSSL = mailServerUseSSL;
-  }
+    public void setMailServerDefaultFrom(String mailServerDefaultFrom) {
+        this.mailServerDefaultFrom = mailServerDefaultFrom;
+    }
 
-  public boolean isMailServerUseTLS() {
-    return mailServerUseTLS;
-  }
+    public String getMailServerHost() {
+        return mailServerHost;
+    }
 
-  public void setMailServerUseTLS(boolean mailServerUseTLS) {
-    this.mailServerUseTLS = mailServerUseTLS;
-  }
+    public void setMailServerHost(String mailServerHost) {
+        this.mailServerHost = mailServerHost;
+    }
+
+    public int getMailServerPort() {
+        return mailServerPort;
+    }
+
+    public void setMailServerPort(int mailServerPort) {
+        this.mailServerPort = mailServerPort;
+    }
+
+    public String getMailServerUsername() {
+        return mailServerUsername;
+    }
+
+    public void setMailServerUsername(String mailServerUsername) {
+        this.mailServerUsername = mailServerUsername;
+    }
+
+    public String getMailServerPassword() {
+        return mailServerPassword;
+    }
+
+    public void setMailServerPassword(String mailServerPassword) {
+        this.mailServerPassword = mailServerPassword;
+    }
+
+    public boolean isMailServerUseSSL() {
+        return mailServerUseSSL;
+    }
+
+    public void setMailServerUseSSL(boolean mailServerUseSSL) {
+        this.mailServerUseSSL = mailServerUseSSL;
+    }
+
+    public boolean isMailServerUseTLS() {
+        return mailServerUseTLS;
+    }
+
+    public void setMailServerUseTLS(boolean mailServerUseTLS) {
+        this.mailServerUseTLS = mailServerUseTLS;
+    }
 }

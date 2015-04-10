@@ -12,7 +12,6 @@
  */
 package org.activiti5.engine.impl.bpmn.data;
 
-
 /**
  * An instance of {@link ItemDefinition}
  * 
@@ -20,32 +19,32 @@ package org.activiti5.engine.impl.bpmn.data;
  */
 public class ItemInstance {
 
-  protected ItemDefinition item;
+    protected ItemDefinition item;
 
-  protected StructureInstance structureInstance;
+    protected StructureInstance structureInstance;
 
-  public ItemInstance(ItemDefinition item, StructureInstance structureInstance) {
-    this.item = item;
-    this.structureInstance = structureInstance;
-  }
+    public ItemInstance(ItemDefinition item, StructureInstance structureInstance) {
+        this.item = item;
+        this.structureInstance = structureInstance;
+    }
 
-  public ItemDefinition getItem() {
-    return this.item;
-  }
+    public ItemDefinition getItem() {
+        return this.item;
+    }
 
-  public StructureInstance getStructureInstance() {
-    return this.structureInstance;
-  }
-  
-  private FieldBaseStructureInstance getFieldBaseStructureInstance() {
-    return (FieldBaseStructureInstance) this.structureInstance;
-  }
-  
-  public Object getFieldValue(String fieldName) {
-    return this.getFieldBaseStructureInstance().getFieldValue(fieldName);
-  }
+    public StructureInstance getStructureInstance() {
+        return this.structureInstance;
+    }
 
-  public void setFieldValue(String fieldName, Object value) {
-    this.getFieldBaseStructureInstance().setFieldValue(fieldName, value);
-  }
+    private FieldBaseStructureInstance getFieldBaseStructureInstance() {
+        return (FieldBaseStructureInstance) this.structureInstance;
+    }
+
+    public Object getFieldValue(String fieldName) {
+        return this.getFieldBaseStructureInstance().getFieldValue(fieldName);
+    }
+
+    public void setFieldValue(String fieldName, Object value) {
+        this.getFieldBaseStructureInstance().setFieldValue(fieldName, value);
+    }
 }

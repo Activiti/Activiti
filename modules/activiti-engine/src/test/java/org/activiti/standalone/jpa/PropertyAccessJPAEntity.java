@@ -25,30 +25,30 @@ import javax.persistence.Id;
 @Entity(name = "JPA_ENTITY_P")
 public class PropertyAccessJPAEntity {
 
-  private Long id;
+    private Long id;
 
-  private String value;
+    private String value;
 
-  public PropertyAccessJPAEntity() {
-    // Empty constructor needed for JPA
-  }
+    public PropertyAccessJPAEntity() {
+        // Empty constructor needed for JPA
+    }
 
-  @Id
-  @Column(name = "ID_")
-  public Long getId() {
-    return id;
-  }
+    @Id
+    @Column(name = "ID_")
+    public Long getId() {
+        return id;
+    }
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-  public String getValue() {
-    return value;
-  }
+    public String getValue() {
+        return value;
+    }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
+    public void setValue(String value) {
+        this.value = value;
+    }
 
 }

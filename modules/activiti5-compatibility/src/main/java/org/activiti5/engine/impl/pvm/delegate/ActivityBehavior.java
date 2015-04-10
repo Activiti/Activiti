@@ -14,11 +14,10 @@ package org.activiti5.engine.impl.pvm.delegate;
 
 import java.io.Serializable;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface ActivityBehavior extends Serializable {
 
-  void execute(ActivityExecution execution) throws Exception;
+    void execute(ActivityExecution execution) throws Exception;
 }

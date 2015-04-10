@@ -21,9 +21,9 @@ import org.activiti.management.jmx.annotations.ManagedAttribute;
 
 public class BadAttributeGetterNameNotCapital {
 
-  @ManagedAttribute
-  public String getestAttribute1() {
-    return null;
-  }
+    @ManagedAttribute
+    public String getestAttribute1() {
+        return null;
+    }
 
 }

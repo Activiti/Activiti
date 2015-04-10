@@ -19,9 +19,9 @@ import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
  */
 public class CdiStandaloneProcessEngineConfiguration extends StandaloneProcessEngineConfiguration {
 
-  @Override
-  protected void initExpressionManager() {
-    expressionManager = new CdiExpressionManager();
-  }
+    @Override
+    protected void initExpressionManager() {
+        expressionManager = new CdiExpressionManager();
+    }
 
 }

@@ -20,22 +20,19 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.task.Event;
 
-
 /**
  * @author Tom Baeyens
  */
-public class GetProcessInstanceEventsCmd implements Command<List<Event>>, Serializable {  
+public class GetProcessInstanceEventsCmd implements Command<List<Event>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processInstanceId;
-  
-  public GetProcessInstanceEventsCmd(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String processInstanceId;
 
-  public List<Event> execute(CommandContext commandContext) {
-    return commandContext
-      .getCommentEntityManager()
-      .findEventsByProcessInstanceId(processInstanceId);
-  }
+    public GetProcessInstanceEventsCmd(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
+    }
+
+    public List<Event> execute(CommandContext commandContext) {
+        return commandContext.getCommentEntityManager().findEventsByProcessInstanceId(processInstanceId);
+    }
 }

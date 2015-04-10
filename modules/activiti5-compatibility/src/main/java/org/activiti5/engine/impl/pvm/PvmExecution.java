@@ -15,19 +15,20 @@ package org.activiti5.engine.impl.pvm;
 
 import java.util.Map;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public interface PvmExecution {
 
-  void signal(String signalName, Object signalData);
+    void signal(String signalName, Object signalData);
 
-  PvmActivity getActivity();
-  
-  boolean hasVariable(String variableName);
-  void setVariable(String variableName, Object value);
-  Object getVariable(String variableName);
-  Map<String, Object> getVariables();
+    PvmActivity getActivity();
+
+    boolean hasVariable(String variableName);
+
+    void setVariable(String variableName, Object value);
+
+    Object getVariable(String variableName);
+
+    Map<String, Object> getVariables();
 }

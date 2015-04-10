@@ -22,34 +22,30 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.repository.DiagramLayout;
 
-
 /**
  * Provides positions and dimensions of elements in a process diagram as
  * provided by {@link GetDeploymentProcessDiagramCmd}.
- *
+ * 
  * This command requires a process model and a diagram image to be deployed.
+ * 
  * @author Falko Menge
  */
 public class GetDeploymentProcessDiagramLayoutCmd implements Command<DiagramLayout>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processDefinitionId;
+    private static final long serialVersionUID = 1L;
+    protected String processDefinitionId;
 
-  public GetDeploymentProcessDiagramLayoutCmd(String processDefinitionId) {
-    if (processDefinitionId == null || processDefinitionId.length() < 1) {
-      throw new ActivitiException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
+    public GetDeploymentProcessDiagramLayoutCmd(String processDefinitionId) {
+        if (processDefinitionId == null || processDefinitionId.length() < 1) {
+            throw new ActivitiException("The process definition id is mandatory, but '" + processDefinitionId + "' has been provided.");
+        }
+        this.processDefinitionId = processDefinitionId;
     }
-    this.processDefinitionId = processDefinitionId;
-  }
 
-  public DiagramLayout execute(CommandContext commandContext) {
-    InputStream processModelStream =
-            new GetDeploymentProcessModelCmd(processDefinitionId)
-            .execute(commandContext);
-    InputStream processDiagramStream =
-            new GetDeploymentProcessDiagramCmd(processDefinitionId)
-            .execute(commandContext);
-    return new ProcessDiagramLayoutFactory().getProcessDiagramLayout(processModelStream, processDiagramStream);
-  }
+    public DiagramLayout execute(CommandContext commandContext) {
+        InputStream processModelStream = new GetDeploymentProcessModelCmd(processDefinitionId).execute(commandContext);
+        InputStream processDiagramStream = new GetDeploymentProcessDiagramCmd(processDefinitionId).execute(commandContext);
+        return new ProcessDiagramLayoutFactory().getProcessDiagramLayout(processModelStream, processDiagramStream);
+    }
 
 }

@@ -16,17 +16,13 @@ package org.activiti.engine.impl.db;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
-
 /**
  * @author Tom Baeyens
  */
 public class DbSchemaCreate {
 
-  public static void main(String[] args) {
-    ProcessEngineConfiguration
-      .createProcessEngineConfigurationFromResourceDefault()
-      .setDatabaseSchemaUpdate(ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE)
-      .buildProcessEngine();
-  }
+    public static void main(String[] args) {
+        ProcessEngineConfiguration.createProcessEngineConfigurationFromResourceDefault().setDatabaseSchemaUpdate(ProcessEngineConfigurationImpl.DB_SCHEMA_UPDATE_CREATE).buildProcessEngine();
+    }
 
 }

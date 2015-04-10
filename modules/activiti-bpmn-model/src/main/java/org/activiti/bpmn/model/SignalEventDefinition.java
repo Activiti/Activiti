@@ -17,34 +17,34 @@ package org.activiti.bpmn.model;
  */
 public class SignalEventDefinition extends EventDefinition {
 
-  protected String signalRef;
-  protected boolean async;
+    protected String signalRef;
+    protected boolean async;
 
-  public String getSignalRef() {
-    return signalRef;
-  }
+    public String getSignalRef() {
+        return signalRef;
+    }
 
-  public void setSignalRef(String signalRef) {
-    this.signalRef = signalRef;
-  }
+    public void setSignalRef(String signalRef) {
+        this.signalRef = signalRef;
+    }
 
-  public boolean isAsync() {
-    return async;
-  }
+    public boolean isAsync() {
+        return async;
+    }
 
-  public void setAsync(boolean async) {
-    this.async = async;
-  }
-  
-  public SignalEventDefinition clone() {
-    SignalEventDefinition clone = new SignalEventDefinition();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  public void setValues(SignalEventDefinition otherDefinition) {
-    super.setValues(otherDefinition);
-    setSignalRef(otherDefinition.getSignalRef());
-    setAsync(otherDefinition.isAsync());
-  }
+    public void setAsync(boolean async) {
+        this.async = async;
+    }
+
+    public SignalEventDefinition clone() {
+        SignalEventDefinition clone = new SignalEventDefinition();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(SignalEventDefinition otherDefinition) {
+        super.setValues(otherDefinition);
+        setSignalRef(otherDefinition.getSignalRef());
+        setAsync(otherDefinition.isAsync());
+    }
 }

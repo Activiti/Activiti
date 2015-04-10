@@ -18,23 +18,22 @@ import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 
-
 /**
  * @author Joram Barrez
  */
 public class InclusiveGatewayParseHandler extends AbstractActivityBpmnParseHandler<InclusiveGateway> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
-    return InclusiveGateway.class;
-  }
-  
-  protected void executeParse(BpmnParse bpmnParse, InclusiveGateway gateway) {
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE);
-    
-    activity.setAsync(gateway.isAsynchronous());
-    activity.setExclusive(!gateway.isNotExclusive());
-    
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createInclusiveGatewayActivityBehavior(gateway));
-  }
+
+    public Class<? extends BaseElement> getHandledType() {
+        return InclusiveGateway.class;
+    }
+
+    protected void executeParse(BpmnParse bpmnParse, InclusiveGateway gateway) {
+        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE);
+
+        activity.setAsync(gateway.isAsynchronous());
+        activity.setExclusive(!gateway.isNotExclusive());
+
+        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createInclusiveGatewayActivityBehavior(gateway));
+    }
 
 }

@@ -12,34 +12,34 @@ import org.activiti.engine.test.Deployment;
  */
 public class MethodExpressionServiceTaskTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testSetServiceResultToProcessVariables() {
-    Map<String,Object> variables = new HashMap<String, Object>();
-    variables.put("okReturningService", new OkReturningService());
+    @Deployment
+    public void testSetServiceResultToProcessVariables() {
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("okReturningService", new OkReturningService());
 
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariables", variables);
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariables", variables);
 
-    assertEquals("ok", runtimeService.getVariable(pi.getId(), "result"));
-  }
+        assertEquals("ok", runtimeService.getVariable(pi.getId(), "result"));
+    }
 
-  @Deployment
-  public void testSetServiceResultToProcessVariablesWithSkipExpression() {
-    Map<String,Object> variables = new HashMap<String, Object>();
-    variables.put("okReturningService", new OkReturningService());
-    variables.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", false);
+    @Deployment
+    public void testSetServiceResultToProcessVariablesWithSkipExpression() {
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("okReturningService", new OkReturningService());
+        variables.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", false);
 
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariablesWithSkipExpression", variables);
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariablesWithSkipExpression", variables);
 
-    assertEquals("ok", runtimeService.getVariable(pi.getId(), "result"));
-    
-    Map<String,Object> variables2 = new HashMap<String, Object>();
-    variables2.put("okReturningService", new OkReturningService());
-    variables2.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
-    variables2.put("skip", true);
+        assertEquals("ok", runtimeService.getVariable(pi.getId(), "result"));
 
-    ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariablesWithSkipExpression", variables2);
+        Map<String, Object> variables2 = new HashMap<String, Object>();
+        variables2.put("okReturningService", new OkReturningService());
+        variables2.put("_ACTIVITI_SKIP_EXPRESSION_ENABLED", true);
+        variables2.put("skip", true);
 
-    assertEquals(null, runtimeService.getVariable(pi2.getId(), "result"));
-    
-  }  
+        ProcessInstance pi2 = runtimeService.startProcessInstanceByKey("setServiceResultToProcessVariablesWithSkipExpression", variables2);
+
+        assertEquals(null, runtimeService.getVariable(pi2.getId(), "result"));
+
+    }
 }

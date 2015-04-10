@@ -28,64 +28,58 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
-
-
 /**
  * @author Daniel Meyer
  * @author Joram Barrez
  */
 public class SignalEventHandler extends AbstractEventHandler {
-  
-  public static final String EVENT_HANDLER_TYPE = "signal";
 
-  public String getEventHandlerType() {
-    return EVENT_HANDLER_TYPE;
-  }
-  
-  @Override
-  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
-  	if (eventSubscription.getExecutionId() != null) {
-  		super.handleEvent(eventSubscription, payload, commandContext);
-  	} else if (eventSubscription.getProcessDefinitionId() != null) {
-  		// Start event
-  		String processDefinitionId = eventSubscription.getProcessDefinitionId();
-  		DeploymentManager deploymentCache = Context
-           .getProcessEngineConfiguration()
-           .getDeploymentManager();
-         
-  		ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
-  		if (processDefinition == null) {
-  			throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
-  		}
-  		
-  		Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinition.getId());
-  		if (process == null) {
-            throw new ActivitiException("Cannot start process instance. Process model "
-                    + processDefinition.getName() + " (id = " + processDefinition.getId() + ") could not be found");
+    public static final String EVENT_HANDLER_TYPE = "signal";
+
+    public String getEventHandlerType() {
+        return EVENT_HANDLER_TYPE;
+    }
+
+    @Override
+    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
+        if (eventSubscription.getExecutionId() != null) {
+            super.handleEvent(eventSubscription, payload, commandContext);
+        } else if (eventSubscription.getProcessDefinitionId() != null) {
+            // Start event
+            String processDefinitionId = eventSubscription.getProcessDefinitionId();
+            DeploymentManager deploymentCache = Context.getProcessEngineConfiguration().getDeploymentManager();
+
+            ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
+            if (processDefinition == null) {
+                throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
+            }
+
+            Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinition.getId());
+            if (process == null) {
+                throw new ActivitiException("Cannot start process instance. Process model " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") could not be found");
+            }
+
+            FlowElement signalFlowElement = process.getFlowElement(eventSubscription.getActivityId());
+            if (signalFlowElement == null) {
+                throw new ActivitiException("No activity found in process definition " + processDefinition.getId() + " for activity id " + eventSubscription.getActivityId());
+            }
+
+            ExecutionEntity processInstance = processDefinition.createProcessInstance(null, signalFlowElement);
+            if (processInstance == null) {
+                throw new ActivitiException("Could not handle signal: no process instance started");
+            }
+
+            if (payload != null) {
+                if (payload instanceof Map) {
+                    Map<String, Object> variables = (Map<String, Object>) payload;
+                    processInstance.setVariables(variables);
+                }
+            }
+
+            processInstance.start();
+        } else {
+            throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
         }
-  		
-  		FlowElement signalFlowElement = process.getFlowElement(eventSubscription.getActivityId());
-        if (signalFlowElement == null) {
-            throw new ActivitiException("No activity found in process definition " + processDefinition.getId() +
-                    " for activity id " + eventSubscription.getActivityId());
-        }
-        
-  		ExecutionEntity processInstance = processDefinition.createProcessInstance(null, signalFlowElement);
-  		if (processInstance == null) {
-  			throw new ActivitiException("Could not handle signal: no process instance started");
-  		}
-  		
-  		if (payload != null) {
-  			if (payload instanceof Map) {
-  				Map<String, Object> variables = (Map<String, Object>) payload;
-  				processInstance.setVariables(variables);
-  			}
-  		}
-  		
-  		processInstance.start();
-  	} else {
-  		throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
-  	}
-  }
+    }
 
 }

@@ -12,7 +12,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */ 
+ */
 package org.activiti5.engine.impl.juel;
 
 import java.io.Serializable;
@@ -20,16 +20,19 @@ import java.io.Serializable;
 import org.activiti5.engine.impl.javax.el.ELException;
 
 public interface TypeConverter extends Serializable {
-	/**
-	 * Default conversions as from JSR245.
-	 */
-	public static final TypeConverter DEFAULT = new TypeConverterImpl();
-	
-	/**
-	 * Convert the given input value to the specified target type.
-	 * @param value input value
-	 * @param type target type
-	 * @return conversion result
-	 */
-	public <T> T convert(Object value, Class<T> type) throws ELException;
+    /**
+     * Default conversions as from JSR245.
+     */
+    public static final TypeConverter DEFAULT = new TypeConverterImpl();
+
+    /**
+     * Convert the given input value to the specified target type.
+     * 
+     * @param value
+     *            input value
+     * @param type
+     *            target type
+     * @return conversion result
+     */
+    public <T> T convert(Object value, Class<T> type) throws ELException;
 }

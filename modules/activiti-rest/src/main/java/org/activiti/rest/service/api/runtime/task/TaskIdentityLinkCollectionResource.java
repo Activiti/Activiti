@@ -28,46 +28,43 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-
 /**
  * @author Frederik Heremans
  */
 @RestController
 public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
 
-  @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks", method = RequestMethod.GET, produces="application/json")
-  public List<RestIdentityLink> getIdentityLinks(@PathVariable("taskId") String taskId, HttpServletRequest request) {
-    Task task = getTaskFromRequest(taskId);
-    return restResponseFactory.createRestIdentityLinks(taskService.getIdentityLinksForTask(task.getId()));
-  }
-  
-  @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks", method = RequestMethod.POST, produces="application/json")
-  public RestIdentityLink createIdentityLink(@PathVariable("taskId") String taskId, 
-      @RequestBody RestIdentityLink identityLink, HttpServletRequest request, HttpServletResponse response) {
-    
-    Task task = getTaskFromRequest(taskId);
-    
-    if (identityLink.getGroup() == null && identityLink.getUser() == null) {
-      throw new ActivitiIllegalArgumentException("A group or a user is required to create an identity link.");
-    }
-    
-    if (identityLink.getGroup() != null && identityLink.getUser() != null) {
-      throw new ActivitiIllegalArgumentException("Only one of user or group can be used to create an identity link.");
-    }
-    
-    if (identityLink.getType() == null) {
-      throw new ActivitiIllegalArgumentException("The identity link type is required.");
+    @RequestMapping(value = "/runtime/tasks/{taskId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
+    public List<RestIdentityLink> getIdentityLinks(@PathVariable("taskId") String taskId, HttpServletRequest request) {
+        Task task = getTaskFromRequest(taskId);
+        return restResponseFactory.createRestIdentityLinks(taskService.getIdentityLinksForTask(task.getId()));
     }
 
-    if (identityLink.getGroup() != null) {
-      taskService.addGroupIdentityLink(task.getId(), identityLink.getGroup(), identityLink.getType());
-    } else {
-      taskService.addUserIdentityLink(task.getId(), identityLink.getUser(), identityLink.getType());
+    @RequestMapping(value = "/runtime/tasks/{taskId}/identitylinks", method = RequestMethod.POST, produces = "application/json")
+    public RestIdentityLink createIdentityLink(@PathVariable("taskId") String taskId, @RequestBody RestIdentityLink identityLink, HttpServletRequest request, HttpServletResponse response) {
+
+        Task task = getTaskFromRequest(taskId);
+
+        if (identityLink.getGroup() == null && identityLink.getUser() == null) {
+            throw new ActivitiIllegalArgumentException("A group or a user is required to create an identity link.");
+        }
+
+        if (identityLink.getGroup() != null && identityLink.getUser() != null) {
+            throw new ActivitiIllegalArgumentException("Only one of user or group can be used to create an identity link.");
+        }
+
+        if (identityLink.getType() == null) {
+            throw new ActivitiIllegalArgumentException("The identity link type is required.");
+        }
+
+        if (identityLink.getGroup() != null) {
+            taskService.addGroupIdentityLink(task.getId(), identityLink.getGroup(), identityLink.getType());
+        } else {
+            taskService.addUserIdentityLink(task.getId(), identityLink.getUser(), identityLink.getType());
+        }
+
+        response.setStatus(HttpStatus.CREATED.value());
+
+        return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), identityLink.getGroup(), task.getId(), null, null);
     }
-    
-    response.setStatus(HttpStatus.CREATED.value());
-    
-    return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), 
-        identityLink.getGroup(), task.getId(), null, null);
-  }
 }

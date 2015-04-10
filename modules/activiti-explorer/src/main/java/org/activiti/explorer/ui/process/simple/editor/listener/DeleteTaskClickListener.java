@@ -22,19 +22,19 @@ import com.vaadin.ui.Button.ClickEvent;
  */
 public class DeleteTaskClickListener implements Button.ClickListener {
 
-  private static final long serialVersionUID = 8903617821112289058L;
+    private static final long serialVersionUID = 8903617821112289058L;
 
-  protected TaskTable taskTable;
+    protected TaskTable taskTable;
 
-  public DeleteTaskClickListener(TaskTable taskTable) {
-    this.taskTable = taskTable;
-  }
-
-  public void buttonClick(ClickEvent event) {
-    if (taskTable.size() > 1) {
-      Object id = event.getButton().getData();
-      taskTable.removeItem(id);
+    public DeleteTaskClickListener(TaskTable taskTable) {
+        this.taskTable = taskTable;
     }
-  }
+
+    public void buttonClick(ClickEvent event) {
+        if (taskTable.size() > 1) {
+            Object id = event.getButton().getData();
+            taskTable.removeItem(id);
+        }
+    }
 
 }

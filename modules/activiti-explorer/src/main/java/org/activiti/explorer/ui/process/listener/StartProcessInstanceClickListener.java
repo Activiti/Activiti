@@ -31,65 +31,60 @@ import org.activiti.explorer.ui.process.ProcessDefinitionPage;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 
-
 /**
  * @author Frederik Heremans
  * @author Joram Barrez
  */
 public class StartProcessInstanceClickListener implements ClickListener {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected transient RuntimeService runtimeService;
-  protected transient TaskService taskService;
-  protected transient FormService formService;
-  protected NotificationManager notificationManager;
-  
-  protected ProcessDefinition processDefinition;
-  protected ProcessDefinitionPage parentPage;
-  
-  
-  public StartProcessInstanceClickListener(ProcessDefinition processDefinition, ProcessDefinitionPage processDefinitionPage) {
-    this.runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
-    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-    this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
-    this.notificationManager = ExplorerApp.get().getNotificationManager(); 
-    
-    this.processDefinition = processDefinition;
-    this.parentPage = processDefinitionPage;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public void buttonClick(ClickEvent event) {
-    // Check if process-definition defines a start-form
-    
-    StartFormData startFormData = formService.getStartFormData(processDefinition.getId());
-    if(startFormData != null && ((startFormData.getFormProperties() != null && !startFormData.getFormProperties().isEmpty()) || startFormData.getFormKey() != null)) {
-      parentPage.showStartForm(processDefinition, startFormData);
-    } else {
-      // Just start the process-instance since it has no form.
-      // TODO: Error handling
-      ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
-      
-      // Show notification of success
-      notificationManager.showInformationNotification(Messages.PROCESS_STARTED_NOTIFICATION, getProcessDisplayName(processDefinition));
-      
-      // Switch to inbox page in case a task of this process was created
-      List<Task> loggedInUsersTasks = taskService.createTaskQuery()
-        .taskAssignee(ExplorerApp.get().getLoggedInUser().getId())
-        .processInstanceId(processInstance.getId())
-        .list();
-      if (!loggedInUsersTasks.isEmpty()) {
-        ExplorerApp.get().getViewManager().showInboxPage(loggedInUsersTasks.get(0).getId());
-      }
+    protected transient RuntimeService runtimeService;
+    protected transient TaskService taskService;
+    protected transient FormService formService;
+    protected NotificationManager notificationManager;
+
+    protected ProcessDefinition processDefinition;
+    protected ProcessDefinitionPage parentPage;
+
+    public StartProcessInstanceClickListener(ProcessDefinition processDefinition, ProcessDefinitionPage processDefinitionPage) {
+        this.runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
+        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+        this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
+        this.notificationManager = ExplorerApp.get().getNotificationManager();
+
+        this.processDefinition = processDefinition;
+        this.parentPage = processDefinitionPage;
     }
-  }
-  
-  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
-    if(processDefinition.getName() != null) {
-      return processDefinition.getName();
-    } else {
-      return processDefinition.getKey();
+
+    public void buttonClick(ClickEvent event) {
+        // Check if process-definition defines a start-form
+
+        StartFormData startFormData = formService.getStartFormData(processDefinition.getId());
+        if (startFormData != null && ((startFormData.getFormProperties() != null && !startFormData.getFormProperties().isEmpty()) || startFormData.getFormKey() != null)) {
+            parentPage.showStartForm(processDefinition, startFormData);
+        } else {
+            // Just start the process-instance since it has no form.
+            // TODO: Error handling
+            ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinition.getId());
+
+            // Show notification of success
+            notificationManager.showInformationNotification(Messages.PROCESS_STARTED_NOTIFICATION, getProcessDisplayName(processDefinition));
+
+            // Switch to inbox page in case a task of this process was created
+            List<Task> loggedInUsersTasks = taskService.createTaskQuery().taskAssignee(ExplorerApp.get().getLoggedInUser().getId()).processInstanceId(processInstance.getId()).list();
+            if (!loggedInUsersTasks.isEmpty()) {
+                ExplorerApp.get().getViewManager().showInboxPage(loggedInUsersTasks.get(0).getId());
+            }
+        }
     }
-  }
+
+    protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+        if (processDefinition.getName() != null) {
+            return processDefinition.getName();
+        } else {
+            return processDefinition.getKey();
+        }
+    }
 
 }

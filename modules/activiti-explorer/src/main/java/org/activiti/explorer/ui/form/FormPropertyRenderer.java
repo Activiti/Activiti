@@ -20,45 +20,45 @@ import org.activiti.engine.form.FormType;
 
 import com.vaadin.ui.Field;
 
-
 /**
- * Interface for rendering a {@link FormProperty} of a certain type in the Vaadin UI.
+ * Interface for rendering a {@link FormProperty} of a certain type in the
+ * Vaadin UI.
  * 
  * @author Frederik Heremans
  */
 public interface FormPropertyRenderer extends Serializable {
 
-  /**
-   * The form type this renderer should be used for.
-   */
-  Class<? extends FormType> getFormType();
-  
-  /**
-   * The component to show for the given form-property. Return null if
-   * the form-property (and it's label) shouldn't be rendered. 
-   */
-  Field getPropertyField(FormProperty formProperty);
-  
-  /**
-   * The label to use for the form-property.
-   */
-  String getPropertyLabel(FormProperty formProperty);
-  
-  /**
-   * Extract the string representation of the value set in the field, for the 
-   * given form property. This value is used as form property value when submitting
-   * the (start)form to activiti. The field is the one created by 
-   * {@link FormPropertyRenderer#getPropertyField(FormProperty)}.
-   */
-  String getFieldValue(FormProperty formProperty, Field field);
+    /**
+     * The form type this renderer should be used for.
+     */
+    Class<? extends FormType> getFormType();
 
-  /**
-   * Get the Vaadin form that contains this renderer
-   */
-  com.vaadin.ui.Form getForm();
-  
-  /**
-   * Set the Vaadin form that contains this renderer
-   */
-  void setForm(com.vaadin.ui.Form p_form);
+    /**
+     * The component to show for the given form-property. Return null if the
+     * form-property (and it's label) shouldn't be rendered.
+     */
+    Field getPropertyField(FormProperty formProperty);
+
+    /**
+     * The label to use for the form-property.
+     */
+    String getPropertyLabel(FormProperty formProperty);
+
+    /**
+     * Extract the string representation of the value set in the field, for the
+     * given form property. This value is used as form property value when
+     * submitting the (start)form to activiti. The field is the one created by
+     * {@link FormPropertyRenderer#getPropertyField(FormProperty)}.
+     */
+    String getFieldValue(FormProperty formProperty, Field field);
+
+    /**
+     * Get the Vaadin form that contains this renderer
+     */
+    com.vaadin.ui.Form getForm();
+
+    /**
+     * Set the Vaadin form that contains this renderer
+     */
+    void setForm(com.vaadin.ui.Form p_form);
 }

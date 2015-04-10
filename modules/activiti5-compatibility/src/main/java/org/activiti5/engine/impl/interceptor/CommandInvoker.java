@@ -19,19 +19,19 @@ import org.activiti5.engine.impl.context.Context;
  */
 public class CommandInvoker extends AbstractCommandInterceptor {
 
-  @Override
-  public <T> T execute(CommandConfig config, Command<T> command) {
-    return command.execute(Context.getCommandContext());
-  }
+    @Override
+    public <T> T execute(CommandConfig config, Command<T> command) {
+        return command.execute(Context.getCommandContext());
+    }
 
-  @Override
-  public CommandInterceptor getNext() {
-    return null;
-  }
+    @Override
+    public CommandInterceptor getNext() {
+        return null;
+    }
 
-  @Override
-  public void setNext(CommandInterceptor next) {
-    throw new UnsupportedOperationException("CommandInvoker must be the last interceptor in the chain");
-  }
+    @Override
+    public void setNext(CommandInterceptor next) {
+        throw new UnsupportedOperationException("CommandInvoker must be the last interceptor in the chain");
+    }
 
 }

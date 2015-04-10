@@ -18,23 +18,22 @@ import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
-
 /**
  * @author Joram Barrez
  */
 public class BusinessRuleParseHandler extends AbstractActivityBpmnParseHandler<BusinessRuleTask> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
-    return BusinessRuleTask.class;
-  }
-  
-  @Override
-  protected void executeParse(BpmnParse bpmnParse, BusinessRuleTask businessRuleTask) {
-    
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, businessRuleTask, BpmnXMLConstants.ELEMENT_TASK_BUSINESSRULE);
-    activity.setAsync(businessRuleTask.isAsynchronous());
-    activity.setExclusive(!businessRuleTask.isNotExclusive());
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBusinessRuleTaskActivityBehavior(businessRuleTask));
-  }
+
+    public Class<? extends BaseElement> getHandledType() {
+        return BusinessRuleTask.class;
+    }
+
+    @Override
+    protected void executeParse(BpmnParse bpmnParse, BusinessRuleTask businessRuleTask) {
+
+        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, businessRuleTask, BpmnXMLConstants.ELEMENT_TASK_BUSINESSRULE);
+        activity.setAsync(businessRuleTask.isAsynchronous());
+        activity.setExclusive(!businessRuleTask.isNotExclusive());
+        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBusinessRuleTaskActivityBehavior(businessRuleTask));
+    }
 
 }

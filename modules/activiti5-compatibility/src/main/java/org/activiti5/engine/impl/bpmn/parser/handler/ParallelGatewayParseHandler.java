@@ -18,23 +18,22 @@ import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti5.engine.impl.pvm.process.ActivityImpl;
 
-
 /**
  * @author Joram Barrez
  */
 public class ParallelGatewayParseHandler extends AbstractActivityBpmnParseHandler<ParallelGateway> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
-    return ParallelGateway.class;
-  }
-  
-  protected void executeParse(BpmnParse bpmnParse, ParallelGateway gateway) {
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL);
-    
-    activity.setAsync(gateway.isAsynchronous());
-    activity.setExclusive(!gateway.isNotExclusive());
-    
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createParallelGatewayActivityBehavior(gateway));
-  }
+
+    public Class<? extends BaseElement> getHandledType() {
+        return ParallelGateway.class;
+    }
+
+    protected void executeParse(BpmnParse bpmnParse, ParallelGateway gateway) {
+        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL);
+
+        activity.setAsync(gateway.isAsynchronous());
+        activity.setExclusive(!gateway.isNotExclusive());
+
+        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createParallelGatewayActivityBehavior(gateway));
+    }
 
 }

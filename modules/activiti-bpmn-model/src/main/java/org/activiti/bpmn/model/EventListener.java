@@ -12,54 +12,61 @@
  */
 package org.activiti.bpmn.model;
 
-
 /**
- * Element for defining an event listener to hook in to the global event-mechanism.
+ * Element for defining an event listener to hook in to the global
+ * event-mechanism.
  * 
  * @author Frederik Heremans
  */
 public class EventListener extends BaseElement {
 
-  protected String events;
-  protected String implementationType;
-  protected String implementation;
-  protected String entityType;
+    protected String events;
+    protected String implementationType;
+    protected String implementation;
+    protected String entityType;
 
-  public String getEvents() {
-    return events;
-  }
-  public void setEvents(String events) {
-    this.events = events;
-  }
-  public String getImplementationType() {
-    return implementationType;
-  }
-  public void setImplementationType(String implementationType) {
-    this.implementationType = implementationType;
-  }
-  public String getImplementation() {
-    return implementation;
-  }
-  public void setImplementation(String implementation) {
-    this.implementation = implementation;
-  }
-  public void setEntityType(String entityType) {
-	  this.entityType = entityType;
-  }
-  public String getEntityType() {
-	  return entityType;
-  }
-  
-  public EventListener clone() {
-    EventListener clone = new EventListener();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  public void setValues(EventListener otherListener) {
-    setEvents(otherListener.getEvents());
-    setImplementation(otherListener.getImplementation());
-    setImplementationType(otherListener.getImplementationType());
-    setEntityType(otherListener.getEntityType());
-  }
+    public String getEvents() {
+        return events;
+    }
+
+    public void setEvents(String events) {
+        this.events = events;
+    }
+
+    public String getImplementationType() {
+        return implementationType;
+    }
+
+    public void setImplementationType(String implementationType) {
+        this.implementationType = implementationType;
+    }
+
+    public String getImplementation() {
+        return implementation;
+    }
+
+    public void setImplementation(String implementation) {
+        this.implementation = implementation;
+    }
+
+    public void setEntityType(String entityType) {
+        this.entityType = entityType;
+    }
+
+    public String getEntityType() {
+        return entityType;
+    }
+
+    public EventListener clone() {
+        EventListener clone = new EventListener();
+        clone.setValues(this);
+        return clone;
+    }
+
+    public void setValues(EventListener otherListener) {
+        setEvents(otherListener.getEvents());
+        setImplementation(otherListener.getImplementation());
+        setImplementationType(otherListener.getImplementationType());
+        setEntityType(otherListener.getEntityType());
+    }
 }

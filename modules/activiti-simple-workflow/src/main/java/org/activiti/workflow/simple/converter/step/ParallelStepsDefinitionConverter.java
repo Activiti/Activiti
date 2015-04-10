@@ -24,81 +24,79 @@ import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 
 /**
- * {@link StepDefinitionConverter} for converting a {@link ParallelStepsDefinition} to the following BPMN 2.0 structure:
+ * {@link StepDefinitionConverter} for converting a
+ * {@link ParallelStepsDefinition} to the following BPMN 2.0 structure:
  * 
- *      __ t1___
- *      |       |
- *   + -- ...---+-
- *      |       |
- *      - txxx---
+ * __ t1___ | | + -- ...---+- | | - txxx---
  * 
  * @author Joram Barrez
  */
 public class ParallelStepsDefinitionConverter extends BaseStepDefinitionConverter<ParallelStepsDefinition, ParallelGateway> {
-  
-  private static final long serialVersionUID = 1L;
-  
-	private static final String PARALLEL_GATEWAY_PREFIX = "parallelGateway";
 
-  public Class< ? extends StepDefinition> getHandledClass() {
-    return ParallelStepsDefinition.class;
-  }
+    private static final long serialVersionUID = 1L;
 
-  protected ParallelGateway createProcessArtifact(ParallelStepsDefinition parallelStepsDefinition, WorkflowDefinitionConversion conversion) {
+    private static final String PARALLEL_GATEWAY_PREFIX = "parallelGateway";
 
-    // First parallel gateway
-    ParallelGateway forkGateway = createParallelGateway(conversion);
-    
-    // Sequence flow from last activity to first gateway
-    addSequenceFlow(conversion, conversion.getLastActivityId(), forkGateway.getId());
-    conversion.setLastActivityId(forkGateway.getId());
-
-    // Convert all other steps, disabling activity id updates which makes all 
-    // generated steps have a sequence flow to the first gateway
-    WorkflowDefinitionConversionFactory conversionFactory = conversion.getConversionFactory();
-    List<FlowElement> endElements = new ArrayList<FlowElement>();
-    for (ListStepDefinition<ParallelStepsDefinition> stepListDefinition : parallelStepsDefinition.getStepList()) {
-      
-      for (int i = 0; i < stepListDefinition.getSteps().size(); i++) {
-        if (i == 0) {
-          conversion.setSequenceflowGenerationEnabled(false);
-        } else {
-          conversion.setSequenceflowGenerationEnabled(true);
-        }
-        StepDefinition step = stepListDefinition.getSteps().get(i);
-        FlowElement flowElement = (FlowElement) conversionFactory.getStepConverterFor(step).convertStepDefinition(step, conversion);
-        
-        if (i == 0) {
-          addSequenceFlow(conversion, forkGateway.getId(), flowElement.getId());
-        }
-        
-        if ((i + 1) == stepListDefinition.getSteps().size()) {
-          endElements.add(flowElement);
-        }
-      }
+    public Class<? extends StepDefinition> getHandledClass() {
+        return ParallelStepsDefinition.class;
     }
-    
-    conversion.setSequenceflowGenerationEnabled(false);
-    
-    // Second parallel gateway
-    ParallelGateway joinGateway = createParallelGateway(conversion);
-    conversion.setLastActivityId(joinGateway.getId());
-    
-    conversion.setSequenceflowGenerationEnabled(true);
-    
-    // Create sequence flow from all generated steps to the second gateway
-    for (FlowElement endElement : endElements) {
-      addSequenceFlow(conversion, endElement.getId(), joinGateway.getId());
+
+    protected ParallelGateway createProcessArtifact(ParallelStepsDefinition parallelStepsDefinition, WorkflowDefinitionConversion conversion) {
+
+        // First parallel gateway
+        ParallelGateway forkGateway = createParallelGateway(conversion);
+
+        // Sequence flow from last activity to first gateway
+        addSequenceFlow(conversion, conversion.getLastActivityId(), forkGateway.getId());
+        conversion.setLastActivityId(forkGateway.getId());
+
+        // Convert all other steps, disabling activity id updates which makes
+        // all
+        // generated steps have a sequence flow to the first gateway
+        WorkflowDefinitionConversionFactory conversionFactory = conversion.getConversionFactory();
+        List<FlowElement> endElements = new ArrayList<FlowElement>();
+        for (ListStepDefinition<ParallelStepsDefinition> stepListDefinition : parallelStepsDefinition.getStepList()) {
+
+            for (int i = 0; i < stepListDefinition.getSteps().size(); i++) {
+                if (i == 0) {
+                    conversion.setSequenceflowGenerationEnabled(false);
+                } else {
+                    conversion.setSequenceflowGenerationEnabled(true);
+                }
+                StepDefinition step = stepListDefinition.getSteps().get(i);
+                FlowElement flowElement = (FlowElement) conversionFactory.getStepConverterFor(step).convertStepDefinition(step, conversion);
+
+                if (i == 0) {
+                    addSequenceFlow(conversion, forkGateway.getId(), flowElement.getId());
+                }
+
+                if ((i + 1) == stepListDefinition.getSteps().size()) {
+                    endElements.add(flowElement);
+                }
+            }
+        }
+
+        conversion.setSequenceflowGenerationEnabled(false);
+
+        // Second parallel gateway
+        ParallelGateway joinGateway = createParallelGateway(conversion);
+        conversion.setLastActivityId(joinGateway.getId());
+
+        conversion.setSequenceflowGenerationEnabled(true);
+
+        // Create sequence flow from all generated steps to the second gateway
+        for (FlowElement endElement : endElements) {
+            addSequenceFlow(conversion, endElement.getId(), joinGateway.getId());
+        }
+
+        return forkGateway;
     }
-    
-    return forkGateway;
-  }
-  
-  protected ParallelGateway createParallelGateway(WorkflowDefinitionConversion conversion) {
-    ParallelGateway parallelGateway = new ParallelGateway();
-    parallelGateway.setId(conversion.getUniqueNumberedId(PARALLEL_GATEWAY_PREFIX));
-    conversion.getProcess().addFlowElement(parallelGateway);
-    return parallelGateway;
-  }
-  
+
+    protected ParallelGateway createParallelGateway(WorkflowDefinitionConversion conversion) {
+        ParallelGateway parallelGateway = new ParallelGateway();
+        parallelGateway.setId(conversion.getUniqueNumberedId(PARALLEL_GATEWAY_PREFIX));
+        conversion.getProcess().addFlowElement(parallelGateway);
+        return parallelGateway;
+    }
+
 }

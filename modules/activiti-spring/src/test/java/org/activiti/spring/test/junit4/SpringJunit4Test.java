@@ -30,7 +30,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-
 /**
  * @author Joram Barrez
  */
@@ -53,7 +52,8 @@ public class SpringJunit4Test {
 
     @After
     public void closeProcessEngine() {
-        // Required, since all the other tests seem to do a specific drop on the end
+        // Required, since all the other tests seem to do a specific drop on the
+        // end
         processEngine.close();
     }
 
@@ -64,7 +64,8 @@ public class SpringJunit4Test {
         Task task = taskService.createTaskQuery().singleResult();
         assertEquals("My Task", task.getName());
 
-        // ACT-1186: ActivitiRule services not initialized when using SpringJUnit4ClassRunner together with @ContextConfiguration
+        // ACT-1186: ActivitiRule services not initialized when using
+        // SpringJUnit4ClassRunner together with @ContextConfiguration
         assertNotNull(activitiSpringRule.getRuntimeService());
 
         taskService.complete(task.getId());

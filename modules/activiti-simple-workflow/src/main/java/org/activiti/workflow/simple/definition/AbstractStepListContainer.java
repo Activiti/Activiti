@@ -21,35 +21,35 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author Tijs Rademakers
  */
 public abstract class AbstractStepListContainer<T> implements StepListContainer<T> {
-  
-  protected String id;
-  protected List<ListStepDefinition<T>> steps;
-  protected ListStepDefinition<T> currentListStepDefinition;
-  
-  public AbstractStepListContainer() {
-    this.steps = new ArrayList<ListStepDefinition<T>>();
-  }
-    
-  public String getId() {
-    return id;
-  }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    protected String id;
+    protected List<ListStepDefinition<T>> steps;
+    protected ListStepDefinition<T> currentListStepDefinition;
 
-  public void addStepList(ListStepDefinition<T> stepDefinition) {
-    steps.add(stepDefinition);
-  }
+    public AbstractStepListContainer() {
+        this.steps = new ArrayList<ListStepDefinition<T>>();
+    }
 
-  @JsonSerialize(contentAs=ListStepDefinition.class)
-  public List<ListStepDefinition<T>> getStepList() {
-    return steps;
-  }
-  
-  public ListStepDefinition<T> inList() {
-    currentListStepDefinition = new ListStepDefinition<T>(this);
-    addStepList(currentListStepDefinition);
-    return currentListStepDefinition;
-  }
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void addStepList(ListStepDefinition<T> stepDefinition) {
+        steps.add(stepDefinition);
+    }
+
+    @JsonSerialize(contentAs = ListStepDefinition.class)
+    public List<ListStepDefinition<T>> getStepList() {
+        return steps;
+    }
+
+    public ListStepDefinition<T> inList() {
+        currentListStepDefinition = new ListStepDefinition<T>(this);
+        addStepList(currentListStepDefinition);
+        return currentListStepDefinition;
+    }
 }

@@ -22,52 +22,50 @@ import org.activiti5.engine.impl.pvm.PvmTransition;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti5.engine.impl.pvm.delegate.CompositeActivityBehavior;
 
-
 /**
  * @author Tom Baeyens
  */
 public class EmbeddedSubProcess implements CompositeActivityBehavior {
 
-  public void execute(ActivityExecution execution) throws Exception {
-    List<PvmActivity> startActivities = new ArrayList<PvmActivity>();
-    for (PvmActivity activity: execution.getActivity().getActivities()) {
-      if (activity.getIncomingTransitions().isEmpty()) {
-        startActivities.add(activity);
-      }
-    }
-    
-    for (PvmActivity startActivity: startActivities) {
-      execution.executeActivity(startActivity);
-    }
-  }
+    public void execute(ActivityExecution execution) throws Exception {
+        List<PvmActivity> startActivities = new ArrayList<PvmActivity>();
+        for (PvmActivity activity : execution.getActivity().getActivities()) {
+            if (activity.getIncomingTransitions().isEmpty()) {
+                startActivities.add(activity);
+            }
+        }
 
-  @SuppressWarnings("unchecked")
-  public void lastExecutionEnded(ActivityExecution execution) {
-    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    if(outgoingTransitions.isEmpty()) {
-      execution.end();
-    }else {
-      execution.takeAll(outgoingTransitions, Collections.EMPTY_LIST);
+        for (PvmActivity startActivity : startActivities) {
+            execution.executeActivity(startActivity);
+        }
     }
-  }
 
-
-  // used by timers
-  @SuppressWarnings("unchecked")
-  public void timerFires(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    PvmActivity timerActivity = execution.getActivity();
-    boolean isInterrupting = (Boolean) timerActivity.getProperty("isInterrupting");
-    List<ActivityExecution> recyclableExecutions;
-    if (isInterrupting) {
-      recyclableExecutions = removeAllExecutions(execution);
-    } else {
-      recyclableExecutions = Collections.EMPTY_LIST;
+    @SuppressWarnings("unchecked")
+    public void lastExecutionEnded(ActivityExecution execution) {
+        List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+        if (outgoingTransitions.isEmpty()) {
+            execution.end();
+        } else {
+            execution.takeAll(outgoingTransitions, Collections.EMPTY_LIST);
+        }
     }
-    execution.takeAll(timerActivity.getOutgoingTransitions(), recyclableExecutions);
-  }
 
-  private List<ActivityExecution> removeAllExecutions(ActivityExecution execution) {
-    return null;
-  }
+    // used by timers
+    @SuppressWarnings("unchecked")
+    public void timerFires(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+        PvmActivity timerActivity = execution.getActivity();
+        boolean isInterrupting = (Boolean) timerActivity.getProperty("isInterrupting");
+        List<ActivityExecution> recyclableExecutions;
+        if (isInterrupting) {
+            recyclableExecutions = removeAllExecutions(execution);
+        } else {
+            recyclableExecutions = Collections.EMPTY_LIST;
+        }
+        execution.takeAll(timerActivity.getOutgoingTransitions(), recyclableExecutions);
+    }
+
+    private List<ActivityExecution> removeAllExecutions(ActivityExecution execution) {
+        return null;
+    }
 
 }

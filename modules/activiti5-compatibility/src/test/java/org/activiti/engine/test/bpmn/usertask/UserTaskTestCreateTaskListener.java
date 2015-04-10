@@ -17,8 +17,6 @@ import org.activiti5.engine.delegate.DelegateTask;
 import org.activiti5.engine.delegate.TaskListener;
 import org.activiti5.engine.impl.el.Expression;
 
-
-
 /**
  * @author Saeid Mirzaei
  */
@@ -30,22 +28,20 @@ import org.activiti5.engine.impl.el.Expression;
 
 public class UserTaskTestCreateTaskListener implements TaskListener {
 
-  private static final long serialVersionUID = 1L;
-  private Expression expression;
-	
-	@Override
-	public void notify(DelegateTask delegateTask) {
-		
-		if (this.expression != null && this.expression.getValue(delegateTask) != null) {
-			// get the expression variable 
-			String expression = this.expression.getValue(delegateTask).toString();
-			
-			// this expression will be evaluated when completing the task
-			delegateTask.setVariableLocal("validationRule", expression);
-		}
-		
-	}
-	
+    private static final long serialVersionUID = 1L;
+    private Expression expression;
+
+    @Override
+    public void notify(DelegateTask delegateTask) {
+
+        if (this.expression != null && this.expression.getValue(delegateTask) != null) {
+            // get the expression variable
+            String expression = this.expression.getValue(delegateTask).toString();
+
+            // this expression will be evaluated when completing the task
+            delegateTask.setVariableLocal("validationRule", expression);
+        }
+
+    }
+
 }
-
-

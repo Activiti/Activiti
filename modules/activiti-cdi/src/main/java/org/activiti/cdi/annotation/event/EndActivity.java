@@ -22,7 +22,7 @@ import javax.inject.Qualifier;
  * 
  * <pre>
  * public void onCreditAccountCompleted(@Observes @EndActivity(&quot;creditAccount&quot;) BusinessProcessEvent evt) {
- *   // ...
+ *     // ...
  * }
  * </pre>
  * 
@@ -31,6 +31,6 @@ import javax.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 public @interface EndActivity {
-  /** the id of the activity that is being left / was left */
-  public String value();
+    /** the id of the activity that is being left / was left */
+    public String value();
 }

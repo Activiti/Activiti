@@ -18,66 +18,69 @@ import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.db.HasRevision;
 import org.activiti5.engine.impl.db.PersistentObject;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public class PropertyEntity implements PersistentObject, HasRevision, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  String name;
-  int revision;
-  String value;
+    private static final long serialVersionUID = 1L;
 
-  public PropertyEntity() {
-  }
+    String name;
+    int revision;
+    String value;
 
-  public PropertyEntity(String name, String value) {
-    this.name = name;
-    this.value = value;
-  }
+    public PropertyEntity() {
+    }
 
-  public String getName() {
-    return name;
-  }
-  public int getRevision() {
-    return revision;
-  }
-  public void setRevision(int revision) {
-    this.revision = revision;
-  }
-  public String getValue() {
-    return value;
-  }
-  public void setValue(String value) {
-    this.value = value;
-  }
-  
-  // persistent object methods ////////////////////////////////////////////////
+    public PropertyEntity(String name, String value) {
+        this.name = name;
+        this.value = value;
+    }
 
-  public String getId() {
-    return name;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public Object getPersistentState() {
-    return value;
-  }
+    public int getRevision() {
+        return revision;
+    }
 
-  public void setId(String id) {
-    throw new ActivitiException("only provided id generation allowed for properties");
-  }
-  
-  public int getRevisionNext() {
-    return revision+1;
-  }
+    public void setRevision(int revision) {
+        this.revision = revision;
+    }
 
-  // common methods  //////////////////////////////////////////////////////////
+    public String getValue() {
+        return value;
+    }
 
-  @Override
-  public String toString() {
-    return "PropertyEntity[name=" + name + ", value=" + value + "]";
-  }
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    // persistent object methods
+    // ////////////////////////////////////////////////
+
+    public String getId() {
+        return name;
+    }
+
+    public Object getPersistentState() {
+        return value;
+    }
+
+    public void setId(String id) {
+        throw new ActivitiException("only provided id generation allowed for properties");
+    }
+
+    public int getRevisionNext() {
+        return revision + 1;
+    }
+
+    // common methods //////////////////////////////////////////////////////////
+
+    @Override
+    public String toString() {
+        return "PropertyEntity[name=" + name + ", value=" + value + "]";
+    }
 
 }

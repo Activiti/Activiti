@@ -18,41 +18,40 @@ package org.activiti5.engine.impl.juel;
 import org.activiti5.engine.impl.javax.el.ELContext;
 import org.activiti5.engine.impl.javax.el.ELException;
 
-
 public class AstChoice extends AstRightValue {
-	private final AstNode question, yes, no;
-	
-	public AstChoice(AstNode question, AstNode yes, AstNode no) {
-		this.question = question;
-		this.yes = yes;
-		this.no = no;
-	}
+    private final AstNode question, yes, no;
 
-	@Override 
-	public Object eval(Bindings bindings, ELContext context) throws ELException {
-		Boolean value = bindings.convert(question.eval(bindings, context), Boolean.class);
-		return value.booleanValue() ? yes.eval(bindings, context) : no.eval(bindings, context);
-	}
+    public AstChoice(AstNode question, AstNode yes, AstNode no) {
+        this.question = question;
+        this.yes = yes;
+        this.no = no;
+    }
 
-	@Override
-	public String toString() {
-		return "?";
-	}	
+    @Override
+    public Object eval(Bindings bindings, ELContext context) throws ELException {
+        Boolean value = bindings.convert(question.eval(bindings, context), Boolean.class);
+        return value.booleanValue() ? yes.eval(bindings, context) : no.eval(bindings, context);
+    }
 
-	@Override 
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		question.appendStructure(b, bindings);
-		b.append(" ? ");
-		yes.appendStructure(b, bindings);
-		b.append(" : ");
-		no.appendStructure(b, bindings);
-	}
+    @Override
+    public String toString() {
+        return "?";
+    }
 
-	public int getCardinality() {
-		return 3;
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        question.appendStructure(b, bindings);
+        b.append(" ? ");
+        yes.appendStructure(b, bindings);
+        b.append(" : ");
+        no.appendStructure(b, bindings);
+    }
 
-	public AstNode getChild(int i) {
-		return i == 0 ? question : i == 1 ? yes : i == 2 ? no : null;
-	}
+    public int getCardinality() {
+        return 3;
+    }
+
+    public AstNode getChild(int i) {
+        return i == 0 ? question : i == 1 ? yes : i == 2 ? no : null;
+    }
 }

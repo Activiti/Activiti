@@ -16,21 +16,20 @@ package org.activiti5.engine.impl.scripting;
 import org.activiti5.engine.delegate.VariableScope;
 import org.activiti5.engine.impl.context.Context;
 
-
 /**
  * @author Tom Baeyens
  */
 public class BeansResolverFactory implements ResolverFactory, Resolver {
 
-  public Resolver createResolver(VariableScope variableScope) {
-    return this;
-  }
+    public Resolver createResolver(VariableScope variableScope) {
+        return this;
+    }
 
-  public boolean containsKey(Object key) {
-    return Context.getProcessEngineConfiguration().getBeans().containsKey(key);
-  }
+    public boolean containsKey(Object key) {
+        return Context.getProcessEngineConfiguration().getBeans().containsKey(key);
+    }
 
-  public Object get(Object key) {
-    return Context.getProcessEngineConfiguration().getBeans().get(key);
-  }
+    public Object get(Object key) {
+        return Context.getProcessEngineConfiguration().getBeans().get(key);
+    }
 }

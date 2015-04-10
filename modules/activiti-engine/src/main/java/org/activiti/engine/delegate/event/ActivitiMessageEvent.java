@@ -12,7 +12,6 @@
  */
 package org.activiti.engine.delegate.event;
 
-
 /**
  * An {@link ActivitiEvent} related to an message being sent to an activity.
  * 
@@ -20,14 +19,15 @@ package org.activiti.engine.delegate.event;
  */
 public interface ActivitiMessageEvent extends ActivitiActivityEvent {
 
-	/**
-	 * @return the name of the message.
-	 */
-	public String getMessageName();
-	
-	/**
-	 * @return the payload that was passed when sending the message. Returns null, if no payload was passed.
-	 */
-	public Object getMessageData();
+    /**
+     * @return the name of the message.
+     */
+    public String getMessageName();
+
+    /**
+     * @return the payload that was passed when sending the message. Returns
+     *         null, if no payload was passed.
+     */
+    public Object getMessageData();
 
 }

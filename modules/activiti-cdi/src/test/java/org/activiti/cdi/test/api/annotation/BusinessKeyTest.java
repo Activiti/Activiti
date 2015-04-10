@@ -24,16 +24,16 @@ import org.junit.Test;
  * @author Daniel Meyer
  */
 public class BusinessKeyTest extends CdiActivitiTestCase {
-  
-  @Test
-  @Deployment
-  public void testBusinessKeyInjectable() {
-    String businessKey = "Activiti";
-    String pid = runtimeService.startProcessInstanceByKey("keyOfTheProcess", businessKey).getId();
-    getBeanInstance(BusinessProcess.class).associateExecutionById(pid);
-    
-    // assert that now the businessKey-Bean can be looked up:
-    Assert.assertEquals(businessKey, ProgrammaticBeanLookup.lookup("businessKey"));
-    
-  } 
+
+    @Test
+    @Deployment
+    public void testBusinessKeyInjectable() {
+        String businessKey = "Activiti";
+        String pid = runtimeService.startProcessInstanceByKey("keyOfTheProcess", businessKey).getId();
+        getBeanInstance(BusinessProcess.class).associateExecutionById(pid);
+
+        // assert that now the businessKey-Bean can be looked up:
+        Assert.assertEquals(businessKey, ProgrammaticBeanLookup.lookup("businessKey"));
+
+    }
 }

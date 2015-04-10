@@ -23,41 +23,42 @@ import org.activiti5.engine.impl.interceptor.DelegateInterceptor;
  */
 public abstract class DelegateInvocation {
 
-  protected Object invocationResult;
-  protected Object[] invocationParameters;
+    protected Object invocationResult;
+    protected Object[] invocationParameters;
 
-  /**
-   * make the invocation proceed, performing the actual invocation of the user
-   * code.
-   * 
-   * @throws Exception
-   *           the exception thrown by the user code
-   */
-  public void proceed() throws Exception {
-    invoke();
-  }
+    /**
+     * make the invocation proceed, performing the actual invocation of the user
+     * code.
+     * 
+     * @throws Exception
+     *             the exception thrown by the user code
+     */
+    public void proceed() throws Exception {
+        invoke();
+    }
 
-  protected abstract void invoke() throws Exception;
+    protected abstract void invoke() throws Exception;
 
-  /**
-   * @return the result of the invocation (can be null if the invocation does
-   *         not return a result)
-   */
-  public Object getInvocationResult() {
-    return invocationResult;
-  }
+    /**
+     * @return the result of the invocation (can be null if the invocation does
+     *         not return a result)
+     */
+    public Object getInvocationResult() {
+        return invocationResult;
+    }
 
-  /**
-   * @return an array of invocation parameters (null if the invocation takes no
-   *         parameters)
-   */
-  public Object[] getInvocationParameters() {
-    return invocationParameters;
-  }
-  
-  /**
-   * returns the target of the current invocation, ie. JavaDelegate, ValueExpression ... 
-   */
-  public abstract Object getTarget();
+    /**
+     * @return an array of invocation parameters (null if the invocation takes
+     *         no parameters)
+     */
+    public Object[] getInvocationParameters() {
+        return invocationParameters;
+    }
+
+    /**
+     * returns the target of the current invocation, ie. JavaDelegate,
+     * ValueExpression ...
+     */
+    public abstract Object getTarget();
 
 }

@@ -21,63 +21,54 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.vaadin.ui.Window.Notification;
 
-
 /**
  * @author Joram Barrez
  */
 public class NotificationManager implements Serializable {
-  
-  private static final long serialVersionUID = 1L;
 
-  @Autowired
-  protected MainWindow mainWindow;
-  
-  @Autowired
-  protected I18nManager i18nManager;
-  
-  public void showErrorNotification(String captionKey, String description) {
-    mainWindow.showNotification(i18nManager.getMessage(captionKey), 
-            "<br/>" + description, 
-            Notification.TYPE_ERROR_MESSAGE);
-  }
-  
-  public void showErrorNotification(String captionKey, Exception exception) {
-    mainWindow.showNotification(i18nManager.getMessage(captionKey), 
-            "<br/>" + exception.getMessage(), 
-            Notification.TYPE_ERROR_MESSAGE);
-  }
-  
-  public void showWarningNotification(String captionKey, String descriptionKey) {
-    Notification notification = new Notification(i18nManager.getMessage(captionKey), 
-            i18nManager.getMessage(descriptionKey), 
-            Notification.TYPE_WARNING_MESSAGE);
-    notification.setDelayMsec(-1); // click to hide
-    mainWindow.showNotification(notification);
-  }
-  
-  public void showWarningNotification(String captionKey, String descriptionKey, Object ... params) {
-    Notification notification = new Notification(i18nManager.getMessage(captionKey) + "<br/>", 
-            MessageFormat.format(i18nManager.getMessage(descriptionKey), params), 
-            Notification.TYPE_WARNING_MESSAGE);
-    notification.setDelayMsec(5000); // click to hide
-    mainWindow.showNotification(notification);
-  }
-  
-  public void showInformationNotification(String key) {
-    mainWindow.showNotification(i18nManager.getMessage(key), Notification.TYPE_HUMANIZED_MESSAGE);
-  }
-  
-  public void showInformationNotification(String key, Object ... params) {
-    mainWindow.showNotification(MessageFormat.format(i18nManager.getMessage(key), params),
-            Notification.TYPE_HUMANIZED_MESSAGE);
-  }
-  
-  public void setMainWindow(MainWindow mainWindow) {
-    this.mainWindow = mainWindow;
-  }
-  
-  public void setI18nManager(I18nManager i18nManager) {
-    this.i18nManager = i18nManager;
-  }
-  
+    private static final long serialVersionUID = 1L;
+
+    @Autowired
+    protected MainWindow mainWindow;
+
+    @Autowired
+    protected I18nManager i18nManager;
+
+    public void showErrorNotification(String captionKey, String description) {
+        mainWindow.showNotification(i18nManager.getMessage(captionKey), "<br/>" + description, Notification.TYPE_ERROR_MESSAGE);
+    }
+
+    public void showErrorNotification(String captionKey, Exception exception) {
+        mainWindow.showNotification(i18nManager.getMessage(captionKey), "<br/>" + exception.getMessage(), Notification.TYPE_ERROR_MESSAGE);
+    }
+
+    public void showWarningNotification(String captionKey, String descriptionKey) {
+        Notification notification = new Notification(i18nManager.getMessage(captionKey), i18nManager.getMessage(descriptionKey), Notification.TYPE_WARNING_MESSAGE);
+        notification.setDelayMsec(-1); // click to hide
+        mainWindow.showNotification(notification);
+    }
+
+    public void showWarningNotification(String captionKey, String descriptionKey, Object... params) {
+        Notification notification = new Notification(i18nManager.getMessage(captionKey) + "<br/>", MessageFormat.format(i18nManager.getMessage(descriptionKey), params),
+                Notification.TYPE_WARNING_MESSAGE);
+        notification.setDelayMsec(5000); // click to hide
+        mainWindow.showNotification(notification);
+    }
+
+    public void showInformationNotification(String key) {
+        mainWindow.showNotification(i18nManager.getMessage(key), Notification.TYPE_HUMANIZED_MESSAGE);
+    }
+
+    public void showInformationNotification(String key, Object... params) {
+        mainWindow.showNotification(MessageFormat.format(i18nManager.getMessage(key), params), Notification.TYPE_HUMANIZED_MESSAGE);
+    }
+
+    public void setMainWindow(MainWindow mainWindow) {
+        this.mainWindow = mainWindow;
+    }
+
+    public void setI18nManager(I18nManager i18nManager) {
+        this.i18nManager = i18nManager;
+    }
+
 }

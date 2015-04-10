@@ -21,49 +21,46 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class AddIdentityLinkForProcessDefinitionCmd implements Command<Void>, Serializable {
-  
-  private static final long serialVersionUID = 1L;
 
-  protected String processDefinitionId;
-  
-  protected String userId;
-  
-  protected String groupId;
-  
-  public AddIdentityLinkForProcessDefinitionCmd(String processDefinitionId, String userId, String groupId) {
-    validateParams(userId, groupId, processDefinitionId);
-    this.processDefinitionId = processDefinitionId;
-    this.userId = userId;
-    this.groupId = groupId;
-  }
-  
-  protected void validateParams(String userId, String groupId, String processDefinitionId) {
-    if(processDefinitionId == null) {
-      throw new ActivitiIllegalArgumentException("processDefinitionId is null");
+    private static final long serialVersionUID = 1L;
+
+    protected String processDefinitionId;
+
+    protected String userId;
+
+    protected String groupId;
+
+    public AddIdentityLinkForProcessDefinitionCmd(String processDefinitionId, String userId, String groupId) {
+        validateParams(userId, groupId, processDefinitionId);
+        this.processDefinitionId = processDefinitionId;
+        this.userId = userId;
+        this.groupId = groupId;
     }
-    
-    if (userId == null && groupId == null) {
-      throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
+
+    protected void validateParams(String userId, String groupId, String processDefinitionId) {
+        if (processDefinitionId == null) {
+            throw new ActivitiIllegalArgumentException("processDefinitionId is null");
+        }
+
+        if (userId == null && groupId == null) {
+            throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
+        }
     }
-  }
-  
-  public Void execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
-      .getProcessDefinitionEntityManager()
-      .findProcessDefinitionById(processDefinitionId);
-    
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
+
+    public Void execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findProcessDefinitionById(processDefinitionId);
+
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
+        }
+
+        processDefinition.addIdentityLink(userId, groupId);
+
+        return null;
     }
-    
-    processDefinition.addIdentityLink(userId, groupId);
-    
-    return null;  
-  }
-  
+
 }

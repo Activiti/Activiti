@@ -29,131 +29,128 @@ import org.activiti.engine.impl.pvm.PvmTransition;
  */
 public interface ActivityExecution extends DelegateExecution {
 
-	FlowElement getCurrentFlowElement();
+    FlowElement getCurrentFlowElement();
 
-	void setCurrentFlowElement(FlowElement flowElement);
-	
-	void setCurrentActivityId(String activityId);
+    void setCurrentFlowElement(FlowElement flowElement);
 
-	/* Process instance/activity/transition retrieval */
+    void setCurrentActivityId(String activityId);
 
-	/**
-	 * returns the current {@link PvmActivity} of the execution.
-	 */
-	PvmActivity getActivity();
+    /* Process instance/activity/transition retrieval */
 
-	/**
-	 * leaves the current activity by taking the given transition.
-	 */
-	void take(PvmTransition transition);
+    /**
+     * returns the current {@link PvmActivity} of the execution.
+     */
+    PvmActivity getActivity();
 
-	/* Execution management */
+    /**
+     * leaves the current activity by taking the given transition.
+     */
+    void take(PvmTransition transition);
 
-	/**
-	 * creates a new execution. This execution will be the parent of the newly
-	 * created execution. properties processDefinition, processInstance and
-	 * activity will be initialized.
-	 */
-	ActivityExecution createExecution();
+    /* Execution management */
 
-	/**
-	 * creates a new sub process instance. The current execution will be the
-	 * super execution of the created execution.
-	 * 
-	 * @param processDefinition
-	 *            The {@link PvmProcessDefinition} of the subprocess.
-	 */
-	PvmProcessInstance createSubProcessInstance(
-	        PvmProcessDefinition processDefinition);
+    /**
+     * creates a new execution. This execution will be the parent of the newly
+     * created execution. properties processDefinition, processInstance and
+     * activity will be initialized.
+     */
+    ActivityExecution createExecution();
 
-	/**
-	 * returns the parent of this execution, or null if there no parent.
-	 */
-	ActivityExecution getParent();
+    /**
+     * creates a new sub process instance. The current execution will be the
+     * super execution of the created execution.
+     * 
+     * @param processDefinition
+     *            The {@link PvmProcessDefinition} of the subprocess.
+     */
+    PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition);
 
-	/**
-	 * returns the list of execution of which this execution the parent of.
-	 */
-	List<? extends ActivityExecution> getExecutions();
+    /**
+     * returns the parent of this execution, or null if there no parent.
+     */
+    ActivityExecution getParent();
 
-	/**
-	 * ends this execution.
-	 */
-	void end();
+    /**
+     * returns the list of execution of which this execution the parent of.
+     */
+    List<? extends ActivityExecution> getExecutions();
 
-	/* State management */
+    /**
+     * ends this execution.
+     */
+    void end();
 
-	/**
-	 * makes this execution active or inactive.
-	 */
-	void setActive(boolean isActive);
+    /* State management */
 
-	/**
-	 * returns whether this execution is currently active.
-	 */
-	boolean isActive();
+    /**
+     * makes this execution active or inactive.
+     */
+    void setActive(boolean isActive);
 
-	/**
-	 * returns whether this execution has ended or not.
-	 */
-	boolean isEnded();
+    /**
+     * returns whether this execution is currently active.
+     */
+    boolean isActive();
 
-	/**
-	 * changes the concurrent indicator on this execution.
-	 */
-	void setConcurrent(boolean isConcurrent);
+    /**
+     * returns whether this execution has ended or not.
+     */
+    boolean isEnded();
 
-	/**
-	 * returns whether this execution is concurrent or not.
-	 */
-	boolean isConcurrent();
+    /**
+     * changes the concurrent indicator on this execution.
+     */
+    void setConcurrent(boolean isConcurrent);
 
-	/**
-	 * returns whether this execution is a process instance or not.
-	 */
-	boolean isProcessInstanceType();
+    /**
+     * returns whether this execution is concurrent or not.
+     */
+    boolean isConcurrent();
 
-	/**
-	 * Inactivates this execution. This is useful for example in a join: the
-	 * execution still exists, but it is not longer active.
-	 */
-	void inactivate();
+    /**
+     * returns whether this execution is a process instance or not.
+     */
+    boolean isProcessInstanceType();
 
-	/**
-	 * Returns whether this execution is a scope.
-	 */
-	boolean isScope();
+    /**
+     * Inactivates this execution. This is useful for example in a join: the
+     * execution still exists, but it is not longer active.
+     */
+    void inactivate();
 
-	/**
-	 * Changes whether this execution is a scope or not
-	 */
-	void setScope(boolean isScope);
+    /**
+     * Returns whether this execution is a scope.
+     */
+    boolean isScope();
 
-	/**
-	 * Retrieves all executions which are concurrent and inactive at the given
-	 * activity.
-	 */
-	List<ActivityExecution> findInactiveConcurrentExecutions(
-	        PvmActivity activity);
+    /**
+     * Changes whether this execution is a scope or not
+     */
+    void setScope(boolean isScope);
 
-	/**
-	 * Takes the given outgoing transitions, and potentially reusing the given
-	 * list of executions that were previously joined.
-	 */
-	void takeAll(List<PvmTransition> outgoingTransitions,
-	        List<ActivityExecution> joinedExecutions);
+    /**
+     * Retrieves all executions which are concurrent and inactive at the given
+     * activity.
+     */
+    List<ActivityExecution> findInactiveConcurrentExecutions(PvmActivity activity);
 
-	/**
-	 * Executes the {@link ActivityBehavior} associated with the given activity.
-	 */
-	void executeActivity(PvmActivity activity);
+    /**
+     * Takes the given outgoing transitions, and potentially reusing the given
+     * list of executions that were previously joined.
+     */
+    void takeAll(List<PvmTransition> outgoingTransitions, List<ActivityExecution> joinedExecutions);
 
-	/**
-	 * Called when an execution is interrupted.
-	 * 
-	 * Performs destroy scope behavior: all child executions and sub-process
-	 * instances and other related resources are removed. The execution itself
-	 * can continue execution.
-	 */
-	void destroyScope(String string);
+    /**
+     * Executes the {@link ActivityBehavior} associated with the given activity.
+     */
+    void executeActivity(PvmActivity activity);
+
+    /**
+     * Called when an execution is interrupted.
+     * 
+     * Performs destroy scope behavior: all child executions and sub-process
+     * instances and other related resources are removed. The execution itself
+     * can continue execution.
+     */
+    void destroyScope(String string);
 }

@@ -25,29 +25,27 @@ import org.junit.Test;
  * @author Tijs Rademakers
  */
 public class MuleHttpBasicAuthTest extends AbstractMuleTest {
-  
-  @Test
-  public void httpWithBasicAuth() throws Exception {
-    Assert.assertTrue(muleContext.isStarted());
-    
-    ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-    Deployment deployment = processEngine.getRepositoryService().createDeployment()
-         .addClasspathResource("org/activiti/mule/testHttpBasicAuth.bpmn20.xml")
-         .deploy();
-    RuntimeService runtimeService = processEngine.getRuntimeService();
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("muleProcess");
-    Assert.assertFalse(processInstance.isEnded());
-    Object result = runtimeService.getVariable(processInstance.getProcessInstanceId(), "theVariable");
-    Assert.assertEquals(10, result);
-    runtimeService.deleteProcessInstance(processInstance.getId(), "test");
-    processEngine.getHistoryService().deleteHistoricProcessInstance(processInstance.getId());
-    processEngine.getRepositoryService().deleteDeployment(deployment.getId());
-    assertAndEnsureCleanDb(processEngine);
-    ProcessEngines.destroy();
-  }
-  
-  @Override
-  protected String getConfigResources() {
-    return "mule-http-basicauth-config.xml";
-  }
+
+    @Test
+    public void httpWithBasicAuth() throws Exception {
+        Assert.assertTrue(muleContext.isStarted());
+
+        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+        Deployment deployment = processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/mule/testHttpBasicAuth.bpmn20.xml").deploy();
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("muleProcess");
+        Assert.assertFalse(processInstance.isEnded());
+        Object result = runtimeService.getVariable(processInstance.getProcessInstanceId(), "theVariable");
+        Assert.assertEquals(10, result);
+        runtimeService.deleteProcessInstance(processInstance.getId(), "test");
+        processEngine.getHistoryService().deleteHistoricProcessInstance(processInstance.getId());
+        processEngine.getRepositoryService().deleteDeployment(deployment.getId());
+        assertAndEnsureCleanDb(processEngine);
+        ProcessEngines.destroy();
+    }
+
+    @Override
+    protected String getConfigResources() {
+        return "mule-http-basicauth-config.xml";
+    }
 }

@@ -30,36 +30,36 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserResource extends BaseUserResource {
 
-  @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.GET, produces = "application/json")
-  public UserResponse getUser(@PathVariable String userId, HttpServletRequest request) {
-    return restResponseFactory.createUserResponse(getUserFromRequest(userId), false);
-  }
-  
-  @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.PUT, produces = "application/json")
-  public UserResponse updateUser(@PathVariable String userId, @RequestBody UserRequest userRequest, HttpServletRequest request) {
-    User user = getUserFromRequest(userId);
-    if (userRequest.isEmailChanged()) {
-      user.setEmail(userRequest.getEmail());
+    @RequestMapping(value = "/identity/users/{userId}", method = RequestMethod.GET, produces = "application/json")
+    public UserResponse getUser(@PathVariable String userId, HttpServletRequest request) {
+        return restResponseFactory.createUserResponse(getUserFromRequest(userId), false);
     }
-    if (userRequest.isFirstNameChanged()) {
-      user.setFirstName(userRequest.getFirstName());
+
+    @RequestMapping(value = "/identity/users/{userId}", method = RequestMethod.PUT, produces = "application/json")
+    public UserResponse updateUser(@PathVariable String userId, @RequestBody UserRequest userRequest, HttpServletRequest request) {
+        User user = getUserFromRequest(userId);
+        if (userRequest.isEmailChanged()) {
+            user.setEmail(userRequest.getEmail());
+        }
+        if (userRequest.isFirstNameChanged()) {
+            user.setFirstName(userRequest.getFirstName());
+        }
+        if (userRequest.isLastNameChanged()) {
+            user.setLastName(userRequest.getLastName());
+        }
+        if (userRequest.isPasswordChanged()) {
+            user.setPassword(userRequest.getPassword());
+        }
+
+        identityService.saveUser(user);
+
+        return restResponseFactory.createUserResponse(user, false);
     }
-    if (userRequest.isLastNameChanged()) {
-      user.setLastName(userRequest.getLastName());
+
+    @RequestMapping(value = "/identity/users/{userId}", method = RequestMethod.DELETE)
+    public void deleteUser(@PathVariable String userId, HttpServletResponse response) {
+        User user = getUserFromRequest(userId);
+        identityService.deleteUser(user.getId());
+        response.setStatus(HttpStatus.NO_CONTENT.value());
     }
-    if (userRequest.isPasswordChanged()) {
-      user.setPassword(userRequest.getPassword());
-    }
-    
-    identityService.saveUser(user);
-    
-    return restResponseFactory.createUserResponse(user, false);
-  }
-  
-  @RequestMapping(value="/identity/users/{userId}", method = RequestMethod.DELETE)
-  public void deleteUser(@PathVariable String userId, HttpServletResponse response) {
-    User user = getUserFromRequest(userId);
-    identityService.deleteUser(user.getId());
-    response.setStatus(HttpStatus.NO_CONTENT.value());
-  }
 }

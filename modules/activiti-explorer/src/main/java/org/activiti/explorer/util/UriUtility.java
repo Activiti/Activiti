@@ -28,144 +28,144 @@ import java.util.Scanner;
  */
 public class UriUtility {
 
-  private static final String PARAMETER_SEPARATOR = "&";
-  private static final String QUERY_STRING_SEPARATOR = "?";
-  private static final String NAME_VALUE_SEPARATOR = "=";
-  private static final String URL_PART_SEPARATOR = "/";
+    private static final String PARAMETER_SEPARATOR = "&";
+    private static final String QUERY_STRING_SEPARATOR = "?";
+    private static final String NAME_VALUE_SEPARATOR = "=";
+    private static final String URL_PART_SEPARATOR = "/";
 
-  /**
-   * Get path fragments. eg: "/task/inbox/123" will return a list with three
-   * values: "task", "inbox" and "123" in that order.
-   */
-  public static List<String> getFragmentParts(String url) {
-    if (url != null) {
-      List<String> parts = new ArrayList<String>();
-      String[] partsArray = url.split(URL_PART_SEPARATOR);
-      for (String part : partsArray) {
-        if (part.length() > 0) {
-          parts.add(part);
+    /**
+     * Get path fragments. eg: "/task/inbox/123" will return a list with three
+     * values: "task", "inbox" and "123" in that order.
+     */
+    public static List<String> getFragmentParts(String url) {
+        if (url != null) {
+            List<String> parts = new ArrayList<String>();
+            String[] partsArray = url.split(URL_PART_SEPARATOR);
+            for (String part : partsArray) {
+                if (part.length() > 0) {
+                    parts.add(part);
+                }
+            }
+            return parts;
         }
-      }
-      return parts;
+        return null;
     }
-    return null;
-  }
 
-  /**
-   * Extracts the query parameters from the given url fragment.
-   */
-  public static String extractQueryString(String fragment) {
-    if (fragment != null) {
-      int firstIndex = fragment.indexOf(QUERY_STRING_SEPARATOR);
-      if (firstIndex >= 0) {
-        return fragment.substring(firstIndex);
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Extracts uri from the given url fragment, without the query params.
-   */
-  public static String extractUri(String fragment) {
-    if (fragment != null) {
-      int firstIndex = fragment.indexOf(QUERY_STRING_SEPARATOR);
-      if (firstIndex >= 0) {
-        return fragment.substring(0, firstIndex);
-      } else {
-        // No query string present, use full fragment
-        return fragment;
-      }
-    }
-    return null;
-  }
-
-  /**
-   * Parses the parameters from the given url query string. When no encoding is
-   * passed, default UTF-8 is used. Based on the implementation in Commons
-   * httpclient UrlEncodedUtils.
-   */
-  public static Map<String, String> parseQueryParameters(String queryString, String encoding) {
-    Map<String, String> parameters = new LinkedHashMap<String, String>();
-    if (queryString != null) {
-      // Remove '?' if present at beginning of query-string
-      if(queryString.startsWith(QUERY_STRING_SEPARATOR)) {
-        queryString = queryString.substring(1);
-      }
-      
-      Scanner scanner = new Scanner(queryString);
-      scanner.useDelimiter(PARAMETER_SEPARATOR);
-      while (scanner.hasNext()) {
-        final String[] nameValue = scanner.next().split(NAME_VALUE_SEPARATOR);
-        if (nameValue.length == 0 || nameValue.length > 2)
-          throw new IllegalArgumentException("bad parameter");
-
-        final String name = decode(nameValue[0], encoding);
-        String value = null;
-        if (nameValue.length == 2) {
-          value = decode(nameValue[1], encoding);
+    /**
+     * Extracts the query parameters from the given url fragment.
+     */
+    public static String extractQueryString(String fragment) {
+        if (fragment != null) {
+            int firstIndex = fragment.indexOf(QUERY_STRING_SEPARATOR);
+            if (firstIndex >= 0) {
+                return fragment.substring(firstIndex);
+            }
         }
-        parameters.put(name, value);
-      }
+        return null;
     }
-    return parameters;
-  }
 
-  /**
-   * Gets a valid query-string based on the given parameters.
-   */
-  public static String getQueryString(Map<String, String> parameters) {
-    StringBuilder result = new StringBuilder();
-
-    if (parameters != null) {
-      for (Entry<String, String> param : parameters.entrySet()) {
-        final String encodedName = encode(param.getKey(), null);
-        final String value = param.getValue();
-        final String encodedValue = value != null ? encode(value, null) : "";
-        if (result.length() > 0) {
-          result.append(PARAMETER_SEPARATOR);
-        } else {
-          result.append(QUERY_STRING_SEPARATOR);
+    /**
+     * Extracts uri from the given url fragment, without the query params.
+     */
+    public static String extractUri(String fragment) {
+        if (fragment != null) {
+            int firstIndex = fragment.indexOf(QUERY_STRING_SEPARATOR);
+            if (firstIndex >= 0) {
+                return fragment.substring(0, firstIndex);
+            } else {
+                // No query string present, use full fragment
+                return fragment;
+            }
         }
-        result.append(encodedName);
-        result.append(NAME_VALUE_SEPARATOR);
-        result.append(encodedValue);
-      }
+        return null;
     }
 
-    return result.toString();
-  }
+    /**
+     * Parses the parameters from the given url query string. When no encoding
+     * is passed, default UTF-8 is used. Based on the implementation in Commons
+     * httpclient UrlEncodedUtils.
+     */
+    public static Map<String, String> parseQueryParameters(String queryString, String encoding) {
+        Map<String, String> parameters = new LinkedHashMap<String, String>();
+        if (queryString != null) {
+            // Remove '?' if present at beginning of query-string
+            if (queryString.startsWith(QUERY_STRING_SEPARATOR)) {
+                queryString = queryString.substring(1);
+            }
 
-  /**
-   * Gets full path based on the given parts.
-   */
-  public static String getPath(List<String> parts) {
-    if (parts != null) {
-      StringBuilder result = new StringBuilder();
-      for (String part : parts) {
-        if(result.length() > 0) {
-          result.append(URL_PART_SEPARATOR);
+            Scanner scanner = new Scanner(queryString);
+            scanner.useDelimiter(PARAMETER_SEPARATOR);
+            while (scanner.hasNext()) {
+                final String[] nameValue = scanner.next().split(NAME_VALUE_SEPARATOR);
+                if (nameValue.length == 0 || nameValue.length > 2)
+                    throw new IllegalArgumentException("bad parameter");
+
+                final String name = decode(nameValue[0], encoding);
+                String value = null;
+                if (nameValue.length == 2) {
+                    value = decode(nameValue[1], encoding);
+                }
+                parameters.put(name, value);
+            }
         }
-        result.append(part);
-      }
-      return result.toString();
+        return parameters;
     }
-    return "";
-  }
 
-  private static String decode(final String content, final String encoding) {
-    try {
-      return URLDecoder.decode(content, encoding != null ? encoding : "UTF-8");
-    } catch (UnsupportedEncodingException problem) {
-      throw new IllegalArgumentException(problem);
-    }
-  }
+    /**
+     * Gets a valid query-string based on the given parameters.
+     */
+    public static String getQueryString(Map<String, String> parameters) {
+        StringBuilder result = new StringBuilder();
 
-  private static String encode(final String content, final String encoding) {
-    try {
-      return URLEncoder.encode(content, encoding != null ? encoding : "UTF-8");
-    } catch (UnsupportedEncodingException problem) {
-      throw new IllegalArgumentException(problem);
+        if (parameters != null) {
+            for (Entry<String, String> param : parameters.entrySet()) {
+                final String encodedName = encode(param.getKey(), null);
+                final String value = param.getValue();
+                final String encodedValue = value != null ? encode(value, null) : "";
+                if (result.length() > 0) {
+                    result.append(PARAMETER_SEPARATOR);
+                } else {
+                    result.append(QUERY_STRING_SEPARATOR);
+                }
+                result.append(encodedName);
+                result.append(NAME_VALUE_SEPARATOR);
+                result.append(encodedValue);
+            }
+        }
+
+        return result.toString();
     }
-  }
+
+    /**
+     * Gets full path based on the given parts.
+     */
+    public static String getPath(List<String> parts) {
+        if (parts != null) {
+            StringBuilder result = new StringBuilder();
+            for (String part : parts) {
+                if (result.length() > 0) {
+                    result.append(URL_PART_SEPARATOR);
+                }
+                result.append(part);
+            }
+            return result.toString();
+        }
+        return "";
+    }
+
+    private static String decode(final String content, final String encoding) {
+        try {
+            return URLDecoder.decode(content, encoding != null ? encoding : "UTF-8");
+        } catch (UnsupportedEncodingException problem) {
+            throw new IllegalArgumentException(problem);
+        }
+    }
+
+    private static String encode(final String content, final String encoding) {
+        try {
+            return URLEncoder.encode(content, encoding != null ? encoding : "UTF-8");
+        } catch (UnsupportedEncodingException problem) {
+            throw new IllegalArgumentException(problem);
+        }
+    }
 }

@@ -18,24 +18,25 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 
 /**
- * Base class for all {@link ActivitiEvent} implementations, related to entities.
+ * Base class for all {@link ActivitiEvent} implementations, related to
+ * entities.
  * 
  * @author Frederik Heremans
  */
 public class ActivitiEntityEventImpl extends ActivitiEventImpl implements ActivitiEntityEvent {
 
-	protected Object entity;
-	
-	public ActivitiEntityEventImpl(Object entity, ActivitiEventType type) {
-		super(type);
-		if(entity == null) {
-			throw new ActivitiIllegalArgumentException("Entity cannot be null.");
-		}
-	  this.entity = entity;
-  }
-	
-	@Override
-	public Object getEntity() {
-		return entity;
-	}
+    protected Object entity;
+
+    public ActivitiEntityEventImpl(Object entity, ActivitiEventType type) {
+        super(type);
+        if (entity == null) {
+            throw new ActivitiIllegalArgumentException("Entity cannot be null.");
+        }
+        this.entity = entity;
+    }
+
+    @Override
+    public Object getEntity() {
+        return entity;
+    }
 }

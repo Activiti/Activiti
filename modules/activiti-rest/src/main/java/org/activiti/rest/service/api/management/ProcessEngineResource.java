@@ -28,29 +28,30 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 public class ProcessEngineResource {
-  
-  @Autowired @Qualifier("processEngine")
-  protected ProcessEngine engine;
 
-  @RequestMapping(value="/management/engine", method = RequestMethod.GET, produces = "application/json")
-  public ProcessEngineInfoResponse getEngineInfo() {
-    ProcessEngineInfoResponse response = new ProcessEngineInfoResponse();
-    
-    try {
-      ProcessEngineInfo engineInfo = ProcessEngines.getProcessEngineInfo(engine.getName());
-      if (engineInfo != null) {
-        response.setName(engineInfo.getName());
-        response.setResourceUrl(engineInfo.getResourceUrl());
-        response.setException(engineInfo.getException());
-      } else {
-        // Revert to using process-engine directly
-        response.setName(engine.getName());
-      }
-    } catch (Exception e) {
-      throw new ActivitiException("Error retrieving process info", e);
+    @Autowired
+    @Qualifier("processEngine")
+    protected ProcessEngine engine;
+
+    @RequestMapping(value = "/management/engine", method = RequestMethod.GET, produces = "application/json")
+    public ProcessEngineInfoResponse getEngineInfo() {
+        ProcessEngineInfoResponse response = new ProcessEngineInfoResponse();
+
+        try {
+            ProcessEngineInfo engineInfo = ProcessEngines.getProcessEngineInfo(engine.getName());
+            if (engineInfo != null) {
+                response.setName(engineInfo.getName());
+                response.setResourceUrl(engineInfo.getResourceUrl());
+                response.setException(engineInfo.getException());
+            } else {
+                // Revert to using process-engine directly
+                response.setName(engine.getName());
+            }
+        } catch (Exception e) {
+            throw new ActivitiException("Error retrieving process info", e);
+        }
+
+        response.setVersion(ProcessEngine.VERSION);
+        return response;
     }
-   
-    response.setVersion(ProcessEngine.VERSION);
-    return response;
-  }
 }

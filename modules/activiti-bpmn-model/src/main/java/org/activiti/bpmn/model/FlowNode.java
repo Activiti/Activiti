@@ -21,26 +21,26 @@ import java.util.List;
  */
 public abstract class FlowNode extends FlowElement {
 
-	protected Object behavior;
-	
-	protected SubProcess subProcess;
+    protected Object behavior;
 
-	protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
-	protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
+    protected SubProcess subProcess;
 
-	public FlowNode() {
-		
-	}
-	
-	public Object getBehavior() {
-		return behavior;
-	}
+    protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
+    protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
 
-	public void setBehavior(Object behavior) {
-		this.behavior = behavior;
-	}
+    public FlowNode() {
 
-	public SubProcess getSubProcess() {
+    }
+
+    public Object getBehavior() {
+        return behavior;
+    }
+
+    public void setBehavior(Object behavior) {
+        this.behavior = behavior;
+    }
+
+    public SubProcess getSubProcess() {
         return subProcess;
     }
 
@@ -49,22 +49,22 @@ public abstract class FlowNode extends FlowElement {
     }
 
     public List<SequenceFlow> getIncomingFlows() {
-		return incomingFlows;
-	}
+        return incomingFlows;
+    }
 
-	public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
-		this.incomingFlows = incomingFlows;
-	}
+    public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
+        this.incomingFlows = incomingFlows;
+    }
 
-	public List<SequenceFlow> getOutgoingFlows() {
-		return outgoingFlows;
-	}
+    public List<SequenceFlow> getOutgoingFlows() {
+        return outgoingFlows;
+    }
 
-	public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
-		this.outgoingFlows = outgoingFlows;
-	}
+    public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
+        this.outgoingFlows = outgoingFlows;
+    }
 
-	public void setValues(FlowNode otherNode) {
-		super.setValues(otherNode);
-	}
+    public void setValues(FlowNode otherNode) {
+        super.setValues(otherNode);
+    }
 }

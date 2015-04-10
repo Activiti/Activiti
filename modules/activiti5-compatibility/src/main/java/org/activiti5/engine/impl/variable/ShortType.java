@@ -12,45 +12,42 @@
  */
 package org.activiti5.engine.impl.variable;
 
-
-
 /**
  * @author Joram Barrez
  */
 public class ShortType implements VariableType {
 
-  private static final long serialVersionUID = 1L;
-  
-  public String getTypeName() {
-    return "short";
-  }
+    private static final long serialVersionUID = 1L;
 
-  public boolean isCachable() {
-    return true;
-  }
-
-  public Object getValue(ValueFields valueFields) {
-    if(valueFields.getLongValue() != null) {
-      return new Short(valueFields.getLongValue().shortValue());      
+    public String getTypeName() {
+        return "short";
     }
-    return null;
-  }
 
-  public void setValue(Object value, ValueFields valueFields) {
-    if (value!=null) {
-      valueFields.setLongValue(((Short) value).longValue());
-      valueFields.setTextValue(value.toString());
-    } else {
-      valueFields.setLongValue(null);
-      valueFields.setTextValue(null);
-    }      
-  }
-
-  public boolean isAbleToStore(Object value) {
-    if (value==null) {
-      return true;
+    public boolean isCachable() {
+        return true;
     }
-    return Short.class.isAssignableFrom(value.getClass())
-           || short.class.isAssignableFrom(value.getClass());
-  }
+
+    public Object getValue(ValueFields valueFields) {
+        if (valueFields.getLongValue() != null) {
+            return new Short(valueFields.getLongValue().shortValue());
+        }
+        return null;
+    }
+
+    public void setValue(Object value, ValueFields valueFields) {
+        if (value != null) {
+            valueFields.setLongValue(((Short) value).longValue());
+            valueFields.setTextValue(value.toString());
+        } else {
+            valueFields.setLongValue(null);
+            valueFields.setTextValue(null);
+        }
+    }
+
+    public boolean isAbleToStore(Object value) {
+        if (value == null) {
+            return true;
+        }
+        return Short.class.isAssignableFrom(value.getClass()) || short.class.isAssignableFrom(value.getClass());
+    }
 }

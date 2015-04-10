@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;
 
-
 public class Delegate1 implements JavaDelegate, InitializingBean {
 
     private Logger log = LoggerFactory.getLogger(getClass());
@@ -21,7 +20,6 @@ public class Delegate1 implements JavaDelegate, InitializingBean {
 
     @Autowired
     private StatefulObject statefulObject;
-
 
     public void execute(DelegateExecution execution) {
 

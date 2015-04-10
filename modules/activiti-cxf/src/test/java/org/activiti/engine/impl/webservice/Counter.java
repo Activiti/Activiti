@@ -18,44 +18,47 @@ import javax.jws.WebService;
 
 /**
  * A simple Counter WS that starts the counter in -1
- *
+ * 
  * @author Esteban Robles Luna
  */
 @WebService
 public interface Counter {
 
-  /**
-   * Increase the counter in 1
-   */
-  void inc();
+    /**
+     * Increase the counter in 1
+     */
+    void inc();
 
-  /**
-   * Returns the current count
-   *
-   * @return the count
-   */
-  @WebResult(name="count")
-  int getCount();
+    /**
+     * Returns the current count
+     * 
+     * @return the count
+     */
+    @WebResult(name = "count")
+    int getCount();
 
-  /**
-   * Resets the counter to 0
-   */
-  void reset();
+    /**
+     * Resets the counter to 0
+     */
+    void reset();
 
-  /**
-   * Sets the counter to value
-   *
-   * @param value the value of the new counter
-   */
-  void setTo(@WebParam(name="value") int value);
+    /**
+     * Sets the counter to value
+     * 
+     * @param value
+     *            the value of the new counter
+     */
+    void setTo(@WebParam(name = "value") int value);
 
-  /**
-   * Returns a formated string composed of prefix + current count + suffix
-   *
-   * @param prefix the prefix
-   * @param suffix the suffix
-   * @return the formated string
-   */
-  @WebResult(name="prettyPrint")
-  String prettyPrintCount(@WebParam(name="prefix") String prefix, @WebParam(name="suffix") String suffix);
+    /**
+     * Returns a formated string composed of prefix + current count + suffix
+     * 
+     * @param prefix
+     *            the prefix
+     * @param suffix
+     *            the suffix
+     * @return the formated string
+     */
+    @WebResult(name = "prettyPrint")
+    String prettyPrintCount(@WebParam(name = "prefix") String prefix, @WebParam(name = "suffix") String suffix);
 }

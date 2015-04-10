@@ -40,7 +40,6 @@ public class ImportExportTest extends ResourceActivitiTestCase {
         super.tearDown();
     }
 
-
     protected String getResource() {
         return "org/activiti/engine/test/bpmn/usertask/ImportExportTest.testImportExport.bpmn20.xml";
     }

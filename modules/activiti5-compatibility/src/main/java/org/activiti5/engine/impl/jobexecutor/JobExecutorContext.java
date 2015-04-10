@@ -19,10 +19,10 @@ import org.activiti5.engine.impl.persistence.entity.JobEntity;
  */
 public interface JobExecutorContext {
 
-	boolean isExecutingExclusiveJob();
-     
-  void setCurrentJob(JobEntity currentJob);
-    
-  JobEntity getCurrentJob();
- 
+    boolean isExecutingExclusiveJob();
+
+    void setCurrentJob(JobEntity currentJob);
+
+    JobEntity getCurrentJob();
+
 }

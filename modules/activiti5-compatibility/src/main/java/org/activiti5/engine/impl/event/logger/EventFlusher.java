@@ -9,11 +9,11 @@ import org.activiti5.engine.impl.interceptor.CommandContextCloseListener;
  * @author Joram Barrez
  */
 public interface EventFlusher extends CommandContextCloseListener {
-	
-	List<EventLoggerEventHandler> getEventHandlers();
 
-	void setEventHandlers(List<EventLoggerEventHandler> eventHandlers);
-	
-	void addEventHandler(EventLoggerEventHandler databaseEventLoggerEventHandler);
-	
+    List<EventLoggerEventHandler> getEventHandlers();
+
+    void setEventHandlers(List<EventLoggerEventHandler> eventHandlers);
+
+    void addEventHandler(EventLoggerEventHandler databaseEventLoggerEventHandler);
+
 }

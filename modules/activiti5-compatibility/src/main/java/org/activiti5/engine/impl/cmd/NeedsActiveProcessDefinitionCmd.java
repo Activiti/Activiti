@@ -26,36 +26,32 @@ import org.activiti5.engine.repository.ProcessDefinition;
  */
 public abstract class NeedsActiveProcessDefinitionCmd<T> implements Command<T>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String processDefinitionId;
-  
-  public NeedsActiveProcessDefinitionCmd(String processDefinitionId) {
-    this.processDefinitionId = processDefinitionId;
-  }
-  
-  public T execute(CommandContext commandContext) {
-    ProcessDefinitionEntity processDefinition = commandContext
-            .getProcessEngineConfiguration()
-            .getDeploymentManager()
-            .findDeployedProcessDefinitionById(processDefinitionId);
+    private static final long serialVersionUID = 1L;
 
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
+    protected String processDefinitionId;
+
+    public NeedsActiveProcessDefinitionCmd(String processDefinitionId) {
+        this.processDefinitionId = processDefinitionId;
     }
-    
-    if (processDefinition.isSuspended()) {
-      throw new ActivitiException("Cannot execute operation because process definition '" 
-              + processDefinition.getName() + "' (id=" + processDefinition.getId() + ") is supended");
+
+    public T execute(CommandContext commandContext) {
+        ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
+        }
+
+        if (processDefinition.isSuspended()) {
+            throw new ActivitiException("Cannot execute operation because process definition '" + processDefinition.getName() + "' (id=" + processDefinition.getId() + ") is supended");
+        }
+
+        return execute(commandContext, processDefinition);
     }
-    
-    return execute(commandContext, processDefinition);
-  }
-  
-  /**
-   * Subclasses should implement this. The provided {@link ProcessDefinition} is 
-   * guaranteed to be an active process definition (ie. not suspended).
-   */
-  protected abstract T execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition);
+
+    /**
+     * Subclasses should implement this. The provided {@link ProcessDefinition}
+     * is guaranteed to be an active process definition (ie. not suspended).
+     */
+    protected abstract T execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition);
 
 }

@@ -21,35 +21,35 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  * @author Tijs Rademakers
  */
 public abstract class AbstractConditionStepListContainer<T> implements ConditionStepListContainer<T> {
-  
-  protected String id;
-  protected List<ListConditionStepDefinition<T>> steps;
-  protected ListConditionStepDefinition<T> currentListStepDefinition;
-  
-  public AbstractConditionStepListContainer() {
-    this.steps = new ArrayList<ListConditionStepDefinition<T>>();
-  }
-    
-  public String getId() {
-    return id;
-  }
 
-  public void setId(String id) {
-    this.id = id;
-  }
+    protected String id;
+    protected List<ListConditionStepDefinition<T>> steps;
+    protected ListConditionStepDefinition<T> currentListStepDefinition;
 
-  public void addStepList(ListConditionStepDefinition<T> stepDefinition) {
-    steps.add(stepDefinition);
-  }
+    public AbstractConditionStepListContainer() {
+        this.steps = new ArrayList<ListConditionStepDefinition<T>>();
+    }
 
-  @JsonSerialize(contentAs=ListConditionStepDefinition.class)
-  public List<ListConditionStepDefinition<T>> getStepList() {
-    return steps;
-  }
-  
-  public ListConditionStepDefinition<T> inList() {
-    currentListStepDefinition = new ListConditionStepDefinition<T>(this);
-    addStepList(currentListStepDefinition);
-    return currentListStepDefinition;
-  }
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void addStepList(ListConditionStepDefinition<T> stepDefinition) {
+        steps.add(stepDefinition);
+    }
+
+    @JsonSerialize(contentAs = ListConditionStepDefinition.class)
+    public List<ListConditionStepDefinition<T>> getStepList() {
+        return steps;
+    }
+
+    public ListConditionStepDefinition<T> inList() {
+        currentListStepDefinition = new ListConditionStepDefinition<T>(this);
+        addStepList(currentListStepDefinition);
+        return currentListStepDefinition;
+    }
 }

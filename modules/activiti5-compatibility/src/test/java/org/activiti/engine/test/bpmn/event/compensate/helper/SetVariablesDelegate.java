@@ -19,22 +19,21 @@ import java.util.Map;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 
-
 /**
  * @author Daniel Meyer
  */
 public class SetVariablesDelegate implements JavaDelegate {
-  
-  public static Map<Object, Integer> variablesMap = new HashMap<Object, Integer>(); 
-  
-  // activiti creates a single instance of the delegate
-  protected int lastInt = 0;
 
-  public void execute(DelegateExecution execution) throws Exception {
-    Object nrOfCompletedInstances = execution.getVariableLocal("nrOfCompletedInstances");    
-    variablesMap.put(nrOfCompletedInstances, lastInt);    
-    execution.setVariableLocal("variable", lastInt);    
-    lastInt++;
-  }
+    public static Map<Object, Integer> variablesMap = new HashMap<Object, Integer>();
+
+    // activiti creates a single instance of the delegate
+    protected int lastInt = 0;
+
+    public void execute(DelegateExecution execution) throws Exception {
+        Object nrOfCompletedInstances = execution.getVariableLocal("nrOfCompletedInstances");
+        variablesMap.put(nrOfCompletedInstances, lastInt);
+        execution.setVariableLocal("variable", lastInt);
+        lastInt++;
+    }
 
 }

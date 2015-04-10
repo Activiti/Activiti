@@ -19,35 +19,32 @@ import org.activiti5.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Tom Baeyens
  */
 public class TweetExceptionHandler implements JobHandler {
-  
-  private static Logger log = LoggerFactory.getLogger(TweetExceptionHandler.class);
-  
-  protected int exceptionsRemaining = 2;
 
-  public String getType() {
-    return "tweet-exception";
-  }
+    private static Logger log = LoggerFactory.getLogger(TweetExceptionHandler.class);
 
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    if (exceptionsRemaining>0) {
-      exceptionsRemaining--;
-      throw new RuntimeException("exception remaining: "+exceptionsRemaining);
+    protected int exceptionsRemaining = 2;
+
+    public String getType() {
+        return "tweet-exception";
     }
-    log.info("no more exceptions to throw."); 
-  }
 
-  
-  public int getExceptionsRemaining() {
-    return exceptionsRemaining;
-  }
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+        if (exceptionsRemaining > 0) {
+            exceptionsRemaining--;
+            throw new RuntimeException("exception remaining: " + exceptionsRemaining);
+        }
+        log.info("no more exceptions to throw.");
+    }
 
-  
-  public void setExceptionsRemaining(int exceptionsRemaining) {
-    this.exceptionsRemaining = exceptionsRemaining;
-  }
+    public int getExceptionsRemaining() {
+        return exceptionsRemaining;
+    }
+
+    public void setExceptionsRemaining(int exceptionsRemaining) {
+        this.exceptionsRemaining = exceptionsRemaining;
+    }
 }

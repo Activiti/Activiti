@@ -23,27 +23,26 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 /**
  * @author Esteban Robles Luna
  */
-public abstract class AbstractWebServiceTaskTest extends
-		PluggableActivitiTestCase {
+public abstract class AbstractWebServiceTaskTest extends PluggableActivitiTestCase {
 
-	protected Counter counter;
-	private Server server;
+    protected Counter counter;
+    private Server server;
 
-	@Override
-	protected void initializeProcessEngine() {
-		super.initializeProcessEngine();
+    @Override
+    protected void initializeProcessEngine() {
+        super.initializeProcessEngine();
 
-		counter = new CounterImpl();
-		JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
-		svrFactory.setServiceClass(Counter.class);
-		svrFactory.setAddress("http://localhost:63081/counter");
-		svrFactory.setServiceBean(counter);
-		svrFactory.getInInterceptors().add(new LoggingInInterceptor());
-		svrFactory.getOutInterceptors().add(new LoggingOutInterceptor());
-		server = svrFactory.create();
-		server.start();
-	}
-	
+        counter = new CounterImpl();
+        JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
+        svrFactory.setServiceClass(Counter.class);
+        svrFactory.setAddress("http://localhost:63081/counter");
+        svrFactory.setServiceBean(counter);
+        svrFactory.getInInterceptors().add(new LoggingInInterceptor());
+        svrFactory.getOutInterceptors().add(new LoggingOutInterceptor());
+        server = svrFactory.create();
+        server.start();
+    }
+
     @Override
     protected void tearDown() throws Exception {
         super.tearDown();
@@ -51,47 +50,47 @@ public abstract class AbstractWebServiceTaskTest extends
         server.destroy();
     }
 
-	// @Override
-	// protected void setUp() throws Exception {
-	// super.setUp();
-	// MuleContextFactory muleContextFactory = new DefaultMuleContextFactory();
-	// List<ConfigurationBuilder> builders = new
-	// ArrayList<ConfigurationBuilder>();
-	// builders.add(new
-	// SpringXmlConfigurationBuilder("org/activiti/test/mule/mule-cxf-webservice-config.xml"));
-	// MuleContextBuilder contextBuilder = new DefaultMuleContextBuilder();
-	// context = muleContextFactory.createMuleContext(builders, contextBuilder);
-	// context.start();
-	//    
-	// DeploymentBuilder deploymentBuilder =
-	// processEngine.getRepositoryService()
-	// .createDeployment()
-	// .name(ClassNameUtil.getClassNameWithoutPackage(this.getClass()) + "." +
-	// this.getName());
-	//  
-	// String resource =
-	// TestHelper.getBpmnProcessDefinitionResource(this.getClass(),
-	// this.getName());
-	// deploymentBuilder.addClasspathResource(resource);
-	//
-	// DeploymentBuilderImpl impl = (DeploymentBuilderImpl) deploymentBuilder;
-	// impl.getDeployment().setValidatingSchema(this.isValidating());
-	//    
-	// deploymentId = deploymentBuilder.deploy().getId();
-	//    
-	// counter = (Counter)
-	// context.getRegistry().lookupObject(org.mule.component.DefaultJavaComponent.class).getObjectFactory().getInstance(context);
-	//    
-	// counter.initialize();
-	// }
+    // @Override
+    // protected void setUp() throws Exception {
+    // super.setUp();
+    // MuleContextFactory muleContextFactory = new DefaultMuleContextFactory();
+    // List<ConfigurationBuilder> builders = new
+    // ArrayList<ConfigurationBuilder>();
+    // builders.add(new
+    // SpringXmlConfigurationBuilder("org/activiti/test/mule/mule-cxf-webservice-config.xml"));
+    // MuleContextBuilder contextBuilder = new DefaultMuleContextBuilder();
+    // context = muleContextFactory.createMuleContext(builders, contextBuilder);
+    // context.start();
+    //
+    // DeploymentBuilder deploymentBuilder =
+    // processEngine.getRepositoryService()
+    // .createDeployment()
+    // .name(ClassNameUtil.getClassNameWithoutPackage(this.getClass()) + "." +
+    // this.getName());
+    //
+    // String resource =
+    // TestHelper.getBpmnProcessDefinitionResource(this.getClass(),
+    // this.getName());
+    // deploymentBuilder.addClasspathResource(resource);
+    //
+    // DeploymentBuilderImpl impl = (DeploymentBuilderImpl) deploymentBuilder;
+    // impl.getDeployment().setValidatingSchema(this.isValidating());
+    //
+    // deploymentId = deploymentBuilder.deploy().getId();
+    //
+    // counter = (Counter)
+    // context.getRegistry().lookupObject(org.mule.component.DefaultJavaComponent.class).getObjectFactory().getInstance(context);
+    //
+    // counter.initialize();
+    // }
 
-	protected boolean isValidating() {
-		return true;
-	}
+    protected boolean isValidating() {
+        return true;
+    }
 
-	// @Override
-	// protected void tearDown() throws Exception {
-	// super.tearDown();
-	// context.stop();
-	// }
+    // @Override
+    // protected void tearDown() throws Exception {
+    // super.tearDown();
+    // context.stop();
+    // }
 }

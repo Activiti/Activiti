@@ -20,80 +20,79 @@ import org.activiti.engine.impl.javax.el.ELException;
 import org.activiti.engine.impl.javax.el.MethodInfo;
 import org.activiti.engine.impl.javax.el.ValueReference;
 
-
 public final class AstText extends AstNode {
-	private final String value;
+    private final String value;
 
-	public AstText(String value) {
-		this.value = value;
-	}
+    public AstText(String value) {
+        this.value = value;
+    }
 
-	public boolean isLiteralText() {
-		return true;
-	}
+    public boolean isLiteralText() {
+        return true;
+    }
 
-	public boolean isLeftValue() {
-		return false;
-	}
-	
-	public boolean isMethodInvocation() {
-		return false;
-	}
+    public boolean isLeftValue() {
+        return false;
+    }
 
-	public Class<?> getType(Bindings bindings, ELContext context) {
-		return null;
-	}
+    public boolean isMethodInvocation() {
+        return false;
+    }
 
-	public boolean isReadOnly(Bindings bindings, ELContext context) {
-		return true;
-	}
+    public Class<?> getType(Bindings bindings, ELContext context) {
+        return null;
+    }
 
-	public void setValue(Bindings bindings, ELContext context, Object value) {
-		throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
-	}
+    public boolean isReadOnly(Bindings bindings, ELContext context) {
+        return true;
+    }
 
-	public ValueReference getValueReference(Bindings bindings, ELContext context) {
-		return null;
-	}
-	
-	@Override 
-	public Object eval(Bindings bindings, ELContext context) {
-		return value;
-	}
+    public void setValue(Bindings bindings, ELContext context, Object value) {
+        throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
+    }
 
-	public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
-		return null;
-	}
+    public ValueReference getValueReference(Bindings bindings, ELContext context) {
+        return null;
+    }
 
-	public Object invoke(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes, Object[] paramValues) {
-		return returnType == null ? value : bindings.convert(value, returnType);
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return value;
+    }
 
-	@Override
-	public String toString() {
-		return "\"" + value + "\"";
-	}	
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
+        return null;
+    }
 
-	@Override 
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		int end = value.length() - 1;
-		for (int i = 0; i < end; i++) {
-			char c = value.charAt(i);
-			if ((c == '#' || c == '$') && value.charAt(i + 1) == '{') {
-				b.append('\\');
-			}
-			b.append(c);
-		}
-		if (end >= 0) {
-			b.append(value.charAt(end));
-		}
-	}
+    public Object invoke(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes, Object[] paramValues) {
+        return returnType == null ? value : bindings.convert(value, returnType);
+    }
 
-	public int getCardinality() {
-		return 0;
-	}
+    @Override
+    public String toString() {
+        return "\"" + value + "\"";
+    }
 
-	public AstNode getChild(int i) {
-		return null;
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        int end = value.length() - 1;
+        for (int i = 0; i < end; i++) {
+            char c = value.charAt(i);
+            if ((c == '#' || c == '$') && value.charAt(i + 1) == '{') {
+                b.append('\\');
+            }
+            b.append(c);
+        }
+        if (end >= 0) {
+            b.append(value.charAt(end));
+        }
+    }
+
+    public int getCardinality() {
+        return 0;
+    }
+
+    public AstNode getChild(int i) {
+        return null;
+    }
 }

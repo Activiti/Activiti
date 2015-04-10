@@ -18,38 +18,37 @@ import java.util.Locale;
 
 import org.springframework.context.MessageSource;
 
-
 /**
  * @author Joram Barrez
  */
 public class I18nManager implements Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected MessageSource messageSource;
-  protected Locale locale;
-  
-  public String getMessage(String key) {
-    checkLocale();
-    return messageSource.getMessage(key, null, locale);
-  }
+    private static final long serialVersionUID = 1L;
+    protected MessageSource messageSource;
+    protected Locale locale;
 
-  public String getMessage(String key, Object... arguments) {
-    checkLocale();
-    return messageSource.getMessage(key, arguments, locale);
-  }
-  
-  public void setLocale(Locale locale) {
-    this.locale = locale;
-  }
-  
-  protected void checkLocale() {
-    if (locale == null) {
-      locale = ExplorerApp.get().getLocale();
+    public String getMessage(String key) {
+        checkLocale();
+        return messageSource.getMessage(key, null, locale);
     }
-  }
-  
-  public void setMessageSource(MessageSource messageSource) {
-    this.messageSource = messageSource;
-  }
-  
+
+    public String getMessage(String key, Object... arguments) {
+        checkLocale();
+        return messageSource.getMessage(key, arguments, locale);
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+    protected void checkLocale() {
+        if (locale == null) {
+            locale = ExplorerApp.get().getLocale();
+        }
+    }
+
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
+
 }

@@ -17,51 +17,66 @@ import java.util.Date;
 
 import org.activiti5.engine.TaskService;
 
-
-
-/** Any type of content that is be associated with
- * a task or with a process instance.
+/**
+ * Any type of content that is be associated with a task or with a process
+ * instance.
  * 
  * @author Tom Baeyens
  */
 public interface Attachment {
 
-  /** unique id for this attachment */
-  String getId();
-  
-  /** free user defined short (max 255 chars) name for this attachment */
-  String getName();
+    /** unique id for this attachment */
+    String getId();
 
-  /** free user defined short (max 255 chars) name for this attachment */
-  void setName(String name);
-  
-  /** long (max 255 chars) explanation what this attachment is about in context of the task and/or process instance it's linked to. */
-  String getDescription();
+    /** free user defined short (max 255 chars) name for this attachment */
+    String getName();
 
-  /** long (max 255 chars) explanation what this attachment is about in context of the task and/or process instance it's linked to. */
-  void setDescription(String description);
+    /** free user defined short (max 255 chars) name for this attachment */
+    void setName(String name);
 
-  /** indication of the type of content that this attachment refers to. Can be mime type or any other indication. */
-  String getType();  
-  
-  /** reference to the task to which this attachment is associated. */
-  String getTaskId();
+    /**
+     * long (max 255 chars) explanation what this attachment is about in context
+     * of the task and/or process instance it's linked to.
+     */
+    String getDescription();
 
-  /** reference to the process instance to which this attachment is associated. */
-  String getProcessInstanceId();
+    /**
+     * long (max 255 chars) explanation what this attachment is about in context
+     * of the task and/or process instance it's linked to.
+     */
+    void setDescription(String description);
 
-  /** the remote URL in case this is remote content.  If the attachment content was 
-   * {@link TaskService#createAttachment(String, String, String, String, String, java.io.InputStream) uploaded with an input stream}, 
-   * then this method returns null and the content can be fetched with {@link TaskService#getAttachmentContent(String)}. */
-  String getUrl();
-  
-  /** reference to the user who created this attachment. */
-  String getUserId();
+    /**
+     * indication of the type of content that this attachment refers to. Can be
+     * mime type or any other indication.
+     */
+    String getType();
 
-  /** timestamp when this attachment was created */
-  Date getTime();
-  
-  /** timestamp when this attachment was created */
-  void setTime(Date time);
+    /** reference to the task to which this attachment is associated. */
+    String getTaskId();
+
+    /**
+     * reference to the process instance to which this attachment is associated.
+     */
+    String getProcessInstanceId();
+
+    /**
+     * the remote URL in case this is remote content. If the attachment content
+     * was
+     * {@link TaskService#createAttachment(String, String, String, String, String, java.io.InputStream)
+     * uploaded with an input stream}, then this method returns null and the
+     * content can be fetched with
+     * {@link TaskService#getAttachmentContent(String)}.
+     */
+    String getUrl();
+
+    /** reference to the user who created this attachment. */
+    String getUserId();
+
+    /** timestamp when this attachment was created */
+    Date getTime();
+
+    /** timestamp when this attachment was created */
+    void setTime(Date time);
 
 }

@@ -17,35 +17,34 @@ package org.activiti5.engine.impl.juel;
 
 import org.activiti5.engine.impl.javax.el.ELContext;
 
-
 public final class AstString extends AstLiteral {
-	private final String value;
+    private final String value;
 
-	public AstString(String value) {
-		this.value = value;
-	}
+    public AstString(String value) {
+        this.value = value;
+    }
 
-	@Override 
-	public Object eval(Bindings bindings, ELContext context) {
-		return value;
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return value;
+    }
 
-	@Override
-	public String toString() {
-		return "\"" + value + "\"";
-	}	
+    @Override
+    public String toString() {
+        return "\"" + value + "\"";
+    }
 
-	@Override 
-	public void appendStructure(StringBuilder b, Bindings bindings) {
-		b.append("'");
-		int length = value.length();
-		for (int i = 0; i < length; i++) {
-			char c = value.charAt(i);
-			if (c == '\\' || c == '\'') {
-				b.append('\\');
-			}
-			b.append(c);
-		}
-		b.append("'");
-	}
+    @Override
+    public void appendStructure(StringBuilder b, Bindings bindings) {
+        b.append("'");
+        int length = value.length();
+        for (int i = 0; i < length; i++) {
+            char c = value.charAt(i);
+            if (c == '\\' || c == '\'') {
+                b.append('\\');
+            }
+            b.append(c);
+        }
+        b.append("'");
+    }
 }

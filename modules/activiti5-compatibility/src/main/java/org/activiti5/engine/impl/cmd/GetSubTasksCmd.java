@@ -20,23 +20,20 @@ import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.task.Task;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GetSubTasksCmd implements Command<List<Task>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String parentTaskId;
-  
-  public GetSubTasksCmd(String parentTaskId) {
-    this.parentTaskId = parentTaskId;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String parentTaskId;
 
-  public List<Task> execute(CommandContext commandContext) {
-    return commandContext
-      .getTaskEntityManager()
-      .findTasksByParentTaskId(parentTaskId);
-  }
+    public GetSubTasksCmd(String parentTaskId) {
+        this.parentTaskId = parentTaskId;
+    }
+
+    public List<Task> execute(CommandContext commandContext) {
+        return commandContext.getTaskEntityManager().findTasksByParentTaskId(parentTaskId);
+    }
 
 }

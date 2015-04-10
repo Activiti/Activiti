@@ -15,16 +15,15 @@ package org.activiti5.engine.impl.pvm;
 
 import java.io.Serializable;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface PvmProcessElement extends Serializable {
 
-  String getId();
-  
-  PvmProcessDefinition getProcessDefinition();
-  
-  Object getProperty(String name);
+    String getId();
+
+    PvmProcessDefinition getProcessDefinition();
+
+    Object getProperty(String name);
 
 }

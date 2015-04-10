@@ -27,92 +27,91 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
  * @author Joram Barrez
  * @author Frederik Heremans
  */
-@JsonTypeInfo(use=Id.NAME, include=As.PROPERTY, property="type")
+@JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "type")
 public abstract class FormPropertyDefinition {
 
-  protected String name;
-  protected String displayName;
-  protected boolean mandatory;
-  protected boolean writable;
-  protected String type;
-  protected String value;
-  
-  protected Map<String, Object> parameters = new HashMap<String, Object>(); 
-  
-  public String getName() {
-    return name;
-  }
+    protected String name;
+    protected String displayName;
+    protected boolean mandatory;
+    protected boolean writable;
+    protected String type;
+    protected String value;
 
-  public void setName(String propertyName) {
-    this.name = propertyName;
-  }
+    protected Map<String, Object> parameters = new HashMap<String, Object>();
 
-  public String getDisplayName() {
-	return displayName;
-  }
+    public String getName() {
+        return name;
+    }
 
-  public void setDisplayName(String displayName) {
-	this.displayName = displayName;
-  }
+    public void setName(String propertyName) {
+        this.name = propertyName;
+    }
 
-public boolean isMandatory() {
-    return mandatory;
-  }
+    public String getDisplayName() {
+        return displayName;
+    }
 
-  public void setMandatory(boolean required) {
-    this.mandatory = required;
-  }
-  
-  public boolean isWritable() {
-	  return writable;
-  }
-  
-  public void setWritable(boolean writable) {
-	  this.writable = writable;
-  }
-  
-  public String getType() {
-	return type;
-  }
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
 
-  public void setType(String type) {
-	this.type = type;
-  }
-  
-  
-  public String getValue() {
-	return value;
-  }
+    public boolean isMandatory() {
+        return mandatory;
+    }
 
-  public void setValue(String value) {
-	this.value = value;
-  }
+    public void setMandatory(boolean required) {
+        this.mandatory = required;
+    }
 
-public void setParameters(Map<String, Object> parameters) {
-	  this.parameters = parameters;
-  }
-  
-  @JsonInclude(Include.NON_EMPTY)
-  public Map<String, Object> getParameters() {
-	  return parameters;
-  }
-  
-  /**
-   * Create a close of this {@link FormPropertyDefinition} instance.
-   */
-  public abstract FormPropertyDefinition clone();
-  
-  /**
-   * Sets the properties of this {@link FormPropertyDefinition} instance based in the
-   * properties present in the given definition. 
-   */
-  public abstract void setValues(FormPropertyDefinition otherDefinition);
-  
-  protected Map<String, Object> cloneParameters() {
-  	Map<String, Object> result = new HashMap<String, Object>();
-  	if(parameters != null && !parameters.isEmpty()) {
-  		result.putAll(parameters);
-  	}
-  	return result;
-  }
+    public boolean isWritable() {
+        return writable;
+    }
+
+    public void setWritable(boolean writable) {
+        this.writable = writable;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
+
+    @JsonInclude(Include.NON_EMPTY)
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Create a close of this {@link FormPropertyDefinition} instance.
+     */
+    public abstract FormPropertyDefinition clone();
+
+    /**
+     * Sets the properties of this {@link FormPropertyDefinition} instance based
+     * in the properties present in the given definition.
+     */
+    public abstract void setValues(FormPropertyDefinition otherDefinition);
+
+    protected Map<String, Object> cloneParameters() {
+        Map<String, Object> result = new HashMap<String, Object>();
+        if (parameters != null && !parameters.isEmpty()) {
+            result.putAll(parameters);
+        }
+        return result;
+    }
 }

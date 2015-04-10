@@ -22,46 +22,45 @@ import org.activiti.engine.impl.HistoricActivityInstanceQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.history.HistoryLevel;
 
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
 public class HistoricActivityInstanceEntityManager extends AbstractEntityManager<HistoricActivityInstanceEntity> {
 
-  public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
-    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      getDbSqlSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
+    public void deleteHistoricActivityInstancesByProcessInstanceId(String historicProcessInstanceId) {
+        if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+            getDbSqlSession().delete("deleteHistoricActivityInstancesByProcessInstanceId", historicProcessInstanceId);
+        }
     }
-  }
-  
-  public void insertHistoricActivityInstance(HistoricActivityInstanceEntity historicActivityInstance) {
-    getDbSqlSession().insert(historicActivityInstance);
-  }
 
-  public HistoricActivityInstanceEntity findHistoricActivityInstance(String activityId, String processInstanceId) {
-    Map<String, String> parameters = new HashMap<String, String>();
-    parameters.put("activityId", activityId);
-    parameters.put("processInstanceId", processInstanceId);
-  
-    return (HistoricActivityInstanceEntity) getDbSqlSession().selectOne("selectHistoricActivityInstance", parameters);
-  }
+    public void insertHistoricActivityInstance(HistoricActivityInstanceEntity historicActivityInstance) {
+        getDbSqlSession().insert(historicActivityInstance);
+    }
 
-  public long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByQueryCriteria", historicActivityInstanceQuery);
-  }
+    public HistoricActivityInstanceEntity findHistoricActivityInstance(String activityId, String processInstanceId) {
+        Map<String, String> parameters = new HashMap<String, String>();
+        parameters.put("activityId", activityId);
+        parameters.put("processInstanceId", processInstanceId);
 
-  @SuppressWarnings("unchecked")
-  public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
-    return getDbSqlSession().selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
-  }
+        return (HistoricActivityInstanceEntity) getDbSqlSession().selectOne("selectHistoricActivityInstance", parameters);
+    }
 
-  @SuppressWarnings("unchecked")
-  public List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-    return getDbSqlSession().selectListWithRawParameter("selectHistoricActivityInstanceByNativeQuery", parameterMap, firstResult, maxResults);
-  }
+    public long findHistoricActivityInstanceCountByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery) {
+        return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByQueryCriteria", historicActivityInstanceQuery);
+    }
 
-  public long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
-    return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByNativeQuery", parameterMap);
-  }
+    @SuppressWarnings("unchecked")
+    public List<HistoricActivityInstance> findHistoricActivityInstancesByQueryCriteria(HistoricActivityInstanceQueryImpl historicActivityInstanceQuery, Page page) {
+        return getDbSqlSession().selectList("selectHistoricActivityInstancesByQueryCriteria", historicActivityInstanceQuery, page);
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<HistoricActivityInstance> findHistoricActivityInstancesByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+        return getDbSqlSession().selectListWithRawParameter("selectHistoricActivityInstanceByNativeQuery", parameterMap, firstResult, maxResults);
+    }
+
+    public long findHistoricActivityInstanceCountByNativeQuery(Map<String, Object> parameterMap) {
+        return (Long) getDbSqlSession().selectOne("selectHistoricActivityInstanceCountByNativeQuery", parameterMap);
+    }
 }

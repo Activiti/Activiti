@@ -23,48 +23,48 @@ import org.activiti5.engine.impl.variable.VariableType;
  */
 public class ActivitiVariableEventImpl extends ActivitiEventImpl implements ActivitiVariableEvent {
 
-	protected String variableName;
-	protected Object variableValue;
-	protected VariableType variableType;
-	protected String taskId;
-	
-	public ActivitiVariableEventImpl(ActivitiEventType type) {
-	  super(type);
-  }
+    protected String variableName;
+    protected Object variableValue;
+    protected VariableType variableType;
+    protected String taskId;
 
-	@Override
-	public String getVariableName() {
-		return variableName;
-	}
-	
-	public void setVariableName(String variableName) {
-	  this.variableName = variableName;
-  }
+    public ActivitiVariableEventImpl(ActivitiEventType type) {
+        super(type);
+    }
 
-	@Override
-	public Object getVariableValue() {
-		return variableValue;
-	}
-	
-	public void setVariableValue(Object variableValue) {
-	  this.variableValue = variableValue;
-  }
-	
-	public VariableType getVariableType() {
-		return variableType;
-	}
+    @Override
+    public String getVariableName() {
+        return variableName;
+    }
 
-	public void setVariableType(VariableType variableType) {
-		this.variableType = variableType;
-	}
+    public void setVariableName(String variableName) {
+        this.variableName = variableName;
+    }
 
-	@Override
-	public String getTaskId() {
-		return taskId;
-	}
-	
-	public void setTaskId(String taskId) {
-	  this.taskId = taskId;
-  }
+    @Override
+    public Object getVariableValue() {
+        return variableValue;
+    }
+
+    public void setVariableValue(Object variableValue) {
+        this.variableValue = variableValue;
+    }
+
+    public VariableType getVariableType() {
+        return variableType;
+    }
+
+    public void setVariableType(VariableType variableType) {
+        this.variableType = variableType;
+    }
+
+    @Override
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
 
 }

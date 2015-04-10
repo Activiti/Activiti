@@ -16,7 +16,6 @@ package org.activiti.engine.test.bpmn.event.error.mapError;
  * @author Saeid Mirzaei
  */
 
-public class BoundaryErrorParentException extends Exception{
-  
+public class BoundaryErrorParentException extends Exception {
 
 }

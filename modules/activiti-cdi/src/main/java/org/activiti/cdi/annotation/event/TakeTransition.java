@@ -22,7 +22,7 @@ import javax.inject.Qualifier;
  * 
  * <pre>
  * public void onTakeT1(@Observes @TakeTransition(&quot;t1&quot;) BusinessProcessEvent evt) {
- *   // ...
+ *     // ...
  * }
  * </pre>
  * 
@@ -31,6 +31,6 @@ import javax.inject.Qualifier;
 @Retention(RetentionPolicy.RUNTIME)
 @Qualifier
 public @interface TakeTransition {
-  /** the id of the transition that is being taken */
-  public String value();
+    /** the id of the transition that is being taken */
+    public String value();
 }

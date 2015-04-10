@@ -14,16 +14,15 @@ package org.activiti.engine.impl.webservice;
 
 /**
  * A CXF factory for {@link SyncWebServiceClient}
- *
+ * 
  * @author Esteban Robles Luna
  */
 public class CxfWebServiceClientFactory implements SyncWebServiceClientFactory {
 
-  
-  /**
-   * {@inheritDoc}
-   */
-  public SyncWebServiceClient create(String wsdl) {
-    return new CxfWebServiceClient(wsdl);
-  }
+    /**
+     * {@inheritDoc}
+     */
+    public SyncWebServiceClient create(String wsdl) {
+        return new CxfWebServiceClient(wsdl);
+    }
 }

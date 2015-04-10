@@ -20,36 +20,33 @@ import org.activiti5.engine.impl.persistence.entity.CompensateEventSubscriptionE
 import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
  * @author Daniel Meyer
  */
-public class CancelBoundaryEventActivityBehavior  extends FlowNodeActivityBehavior {
-    
-  @Override
-  public void execute(ActivityExecution execution) throws Exception {
-           
-      List<CompensateEventSubscriptionEntity> eventSubscriptions = ((ExecutionEntity)execution).getCompensateEventSubscriptions();
-      
-      if(eventSubscriptions.isEmpty()) {
-        leave(execution);                
-      } else {
-        // cancel boundary is always sync
-        ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);        
-      }
-        
-    
-  }
-  
-  @Override
-  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
-    // join compensating executions    
-    if(execution.getExecutions().isEmpty()) {
-      leave(execution);   
-    } else {      
-      ((ExecutionEntity)execution).forceUpdate();  
+public class CancelBoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
+
+    @Override
+    public void execute(ActivityExecution execution) throws Exception {
+
+        List<CompensateEventSubscriptionEntity> eventSubscriptions = ((ExecutionEntity) execution).getCompensateEventSubscriptions();
+
+        if (eventSubscriptions.isEmpty()) {
+            leave(execution);
+        } else {
+            // cancel boundary is always sync
+            ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
+        }
+
     }
-  }
-  
+
+    @Override
+    public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+        // join compensating executions
+        if (execution.getExecutions().isEmpty()) {
+            leave(execution);
+        } else {
+            ((ExecutionEntity) execution).forceUpdate();
+        }
+    }
 
 }

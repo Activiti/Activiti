@@ -27,52 +27,48 @@ import org.activiti5.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 public class TimerStartEventJobHandler extends TimerEventHandler implements JobHandler {
 
-  private static Logger log = LoggerFactory.getLogger(TimerStartEventJobHandler.class);
+    private static Logger log = LoggerFactory.getLogger(TimerStartEventJobHandler.class);
 
-  public static final String TYPE = "timer-start-event";
+    public static final String TYPE = "timer-start-event";
 
-  public String getType() {
-    return TYPE;
-  }
-  
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    DeploymentManager deploymentCache = Context
-            .getProcessEngineConfiguration()
-            .getDeploymentManager();
-
-    String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
-
-    ProcessDefinition processDefinition = null;
-    if (job.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(job.getTenantId())) {
-    		processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(nestedActivityId);
-    } else {
-    	processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(nestedActivityId, job.getTenantId());
+    public String getType() {
+        return TYPE;
     }
-    
-    if (processDefinition == null) {
-    	throw new ActivitiException("Could not find process definition needed for timer start event");
-    }
-    
-    try {
-      if(!processDefinition.isSuspended()) {
-        if (commandContext.getEventDispatcher().isEnabled()) {
-          commandContext.getEventDispatcher().dispatchEvent(
-            ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+        DeploymentManager deploymentCache = Context.getProcessEngineConfiguration().getDeploymentManager();
+
+        String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
+
+        ProcessDefinition processDefinition = null;
+        if (job.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(job.getTenantId())) {
+            processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(nestedActivityId);
+        } else {
+            processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(nestedActivityId, job.getTenantId());
         }
 
-        new StartProcessInstanceCmd(nestedActivityId, null, null, null, job.getTenantId()).execute(commandContext);
-      } else {
-        log.debug("ignoring timer of suspended process definition {}", processDefinition.getName());
-      }
-    } catch (RuntimeException e) {
-      log.error("exception during timer execution", e);
-      throw e;
-    } catch (Exception e) {
-      log.error("exception during timer execution", e);
-      throw new ActivitiException("exception during timer execution: " + e.getMessage(), e);
+        if (processDefinition == null) {
+            throw new ActivitiException("Could not find process definition needed for timer start event");
+        }
+
+        try {
+            if (!processDefinition.isSuspended()) {
+                if (commandContext.getEventDispatcher().isEnabled()) {
+                    commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+                }
+
+                new StartProcessInstanceCmd(nestedActivityId, null, null, null, job.getTenantId()).execute(commandContext);
+            } else {
+                log.debug("ignoring timer of suspended process definition {}", processDefinition.getName());
+            }
+        } catch (RuntimeException e) {
+            log.error("exception during timer execution", e);
+            throw e;
+        } catch (Exception e) {
+            log.error("exception during timer execution", e);
+            throw new ActivitiException("exception during timer execution: " + e.getMessage(), e);
+        }
     }
-  }
 }

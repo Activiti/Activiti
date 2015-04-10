@@ -26,55 +26,52 @@ import org.activiti5.engine.impl.pvm.process.ScopeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * @author Joram Barrez
  */
 public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
-  
-	private static final Logger logger = LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
-	
-  public Class< ? extends BaseElement> getHandledType() {
-    return IntermediateCatchEvent.class;
-  }
-  
-  protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
-    
-    BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-    ActivityImpl nestedActivity = null;
-    EventDefinition eventDefinition = null;
-    if (!event.getEventDefinitions().isEmpty()) {
-      eventDefinition = event.getEventDefinitions().get(0);
+
+    private static final Logger logger = LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
+
+    public Class<? extends BaseElement> getHandledType() {
+        return IntermediateCatchEvent.class;
     }
-   
-    if (eventDefinition == null) {
-      
-      nestedActivity = createActivityOnCurrentScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH);
-      
-    } else {
-      
-      ScopeImpl scope = bpmnParse.getCurrentScope();
-      String eventBasedGatewayId = getPrecedingEventBasedGateway(bpmnParse, event);
-      if (eventBasedGatewayId  != null) {
-        ActivityImpl gatewayActivity = scope.findActivity(eventBasedGatewayId);
-        nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, gatewayActivity);
-      } else {
-        nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, scope);
-      }
-      
-      // Catch event behavior is the same for all types
-      nestedActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
-      
-      if (eventDefinition instanceof TimerEventDefinition
-              || eventDefinition instanceof SignalEventDefinition
-              || eventDefinition instanceof MessageEventDefinition) {
-        
-        bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
-        
-      } else {
-        logger.warn("Unsupported intermediate catch event type for event " + event.getId());
-      }
+
+    protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
+
+        BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+        ActivityImpl nestedActivity = null;
+        EventDefinition eventDefinition = null;
+        if (!event.getEventDefinitions().isEmpty()) {
+            eventDefinition = event.getEventDefinitions().get(0);
+        }
+
+        if (eventDefinition == null) {
+
+            nestedActivity = createActivityOnCurrentScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH);
+
+        } else {
+
+            ScopeImpl scope = bpmnParse.getCurrentScope();
+            String eventBasedGatewayId = getPrecedingEventBasedGateway(bpmnParse, event);
+            if (eventBasedGatewayId != null) {
+                ActivityImpl gatewayActivity = scope.findActivity(eventBasedGatewayId);
+                nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, gatewayActivity);
+            } else {
+                nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, scope);
+            }
+
+            // Catch event behavior is the same for all types
+            nestedActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
+
+            if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || eventDefinition instanceof MessageEventDefinition) {
+
+                bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
+
+            } else {
+                logger.warn("Unsupported intermediate catch event type for event " + event.getId());
+            }
+        }
     }
-  }
-  
+
 }

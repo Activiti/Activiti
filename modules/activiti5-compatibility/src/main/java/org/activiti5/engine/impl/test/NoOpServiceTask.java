@@ -26,28 +26,28 @@ import org.activiti5.engine.delegate.JavaDelegate;
  */
 public class NoOpServiceTask implements JavaDelegate {
 
-	public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
-	public static List<String> NAMES = Collections.synchronizedList(new ArrayList<String>());  
-	
-	protected Expression name;
-	
-	@Override
-	public void execute(DelegateExecution execution) throws Exception {
-		CALL_COUNT.incrementAndGet();
-		NAMES.add((String)name.getValue(execution));
-	}
+    public static AtomicInteger CALL_COUNT = new AtomicInteger(0);
+    public static List<String> NAMES = Collections.synchronizedList(new ArrayList<String>());
 
-	public Expression getName() {
-		return name;
-	}
+    protected Expression name;
 
-	public void setName(Expression name) {
-		this.name = name;
-	}
-	
-	public static void reset() {
-		CALL_COUNT.set(0);
-		NAMES.clear();
-	}
-	
+    @Override
+    public void execute(DelegateExecution execution) throws Exception {
+        CALL_COUNT.incrementAndGet();
+        NAMES.add((String) name.getValue(execution));
+    }
+
+    public Expression getName() {
+        return name;
+    }
+
+    public void setName(Expression name) {
+        this.name = name;
+    }
+
+    public static void reset() {
+        CALL_COUNT.set(0);
+        NAMES.clear();
+    }
+
 }

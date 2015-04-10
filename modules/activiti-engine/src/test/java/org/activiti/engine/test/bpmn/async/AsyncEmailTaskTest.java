@@ -26,42 +26,40 @@ import org.subethamail.wiser.WiserMessage;
  * @author Daniel Meyer
  */
 public class AsyncEmailTaskTest extends EmailTestCase {
-  
-  // copied from org.activiti.engine.test.bpmn.mail.EmailServiceTaskTest
-  @Deployment
-  public void testSimpleTextMail() throws Exception {
-    String procId = runtimeService.startProcessInstanceByKey("simpleTextOnly").getId();
-    
-    List<WiserMessage> messages = wiser.getMessages();
-    assertEquals(0, messages.size());
-    
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
-    
-    messages = wiser.getMessages();
-    assertEquals(1, messages.size());
-    
-    WiserMessage message = messages.get(0);
-    EmailServiceTaskTest.assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost",
-            Arrays.asList("kermit@activiti.org"), null);
-    assertProcessEnded(procId);
-  }
-  
-  // copied from org.activiti.engine.test.bpmn.mail.EmailSendTaskTest
-  @Deployment
-  public void testSimpleTextMailSendTask() throws Exception {
-    runtimeService.startProcessInstanceByKey("simpleTextOnly");
-    
-    List<WiserMessage> messages = wiser.getMessages();
-    assertEquals(0, messages.size());
-    
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
-    
-    messages = wiser.getMessages();
-    assertEquals(1, messages.size());
-    
-    WiserMessage message = messages.get(0);
-    EmailServiceTaskTest.assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost",
-            Arrays.asList("kermit@activiti.org"), null);
-  }
+
+    // copied from org.activiti.engine.test.bpmn.mail.EmailServiceTaskTest
+    @Deployment
+    public void testSimpleTextMail() throws Exception {
+        String procId = runtimeService.startProcessInstanceByKey("simpleTextOnly").getId();
+
+        List<WiserMessage> messages = wiser.getMessages();
+        assertEquals(0, messages.size());
+
+        waitForJobExecutorToProcessAllJobs(5000L, 25L);
+
+        messages = wiser.getMessages();
+        assertEquals(1, messages.size());
+
+        WiserMessage message = messages.get(0);
+        EmailServiceTaskTest.assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
+        assertProcessEnded(procId);
+    }
+
+    // copied from org.activiti.engine.test.bpmn.mail.EmailSendTaskTest
+    @Deployment
+    public void testSimpleTextMailSendTask() throws Exception {
+        runtimeService.startProcessInstanceByKey("simpleTextOnly");
+
+        List<WiserMessage> messages = wiser.getMessages();
+        assertEquals(0, messages.size());
+
+        waitForJobExecutorToProcessAllJobs(5000L, 25L);
+
+        messages = wiser.getMessages();
+        assertEquals(1, messages.size());
+
+        WiserMessage message = messages.get(0);
+        EmailServiceTaskTest.assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
+    }
 
 }

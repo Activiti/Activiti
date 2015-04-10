@@ -22,92 +22,94 @@ import org.activiti.engine.impl.javax.el.MethodNotFoundException;
 import org.activiti.engine.impl.javax.el.PropertyNotFoundException;
 import org.activiti.engine.impl.javax.el.ValueReference;
 
-
 public class AstMethod extends AstNode {
-	private final AstProperty property;
-	private final AstParameters params;
-	
-	public AstMethod(AstProperty property, AstParameters params) {
-		this.property = property;
-		this.params = params;
-	}
+    private final AstProperty property;
+    private final AstParameters params;
 
-	public boolean isLiteralText() {
-		return false;
-	}
+    public AstMethod(AstProperty property, AstParameters params) {
+        this.property = property;
+        this.params = params;
+    }
 
-	public Class<?> getType(Bindings bindings, ELContext context) {
-		return null;
-	}
+    public boolean isLiteralText() {
+        return false;
+    }
 
-	public boolean isReadOnly(Bindings bindings, ELContext context) {
-		return true;
-	}
+    public Class<?> getType(Bindings bindings, ELContext context) {
+        return null;
+    }
 
-	public void setValue(Bindings bindings, ELContext context, Object value) {
-		throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
-	}
+    public boolean isReadOnly(Bindings bindings, ELContext context) {
+        return true;
+    }
 
-	public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
-		return null;
-	}
+    public void setValue(Bindings bindings, ELContext context, Object value) {
+        throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
+    }
 
-	public boolean isLeftValue() {
-		return false;
-	}
-	
-	public boolean isMethodInvocation() {
-		return true;
-	}
-	
-	public final ValueReference getValueReference(Bindings bindings, ELContext context) {
-		return null;
-	}
+    public MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
+        return null;
+    }
 
-	@Override
-	public void appendStructure(StringBuilder builder, Bindings bindings) {
-		property.appendStructure(builder, bindings);
-		params.appendStructure(builder, bindings);
-	}
+    public boolean isLeftValue() {
+        return false;
+    }
 
-	@Override
-	public Object eval(Bindings bindings, ELContext context) {
-		return invoke(bindings, context, null, null, null);
-	}
+    public boolean isMethodInvocation() {
+        return true;
+    }
 
-	public Object invoke(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes, Object[] paramValues) {
-		Object base = property.getPrefix().eval(bindings, context);
-		if (base == null) {
-			throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", property.getPrefix()));
-		}
-		Object method = property.getProperty(bindings, context);
-		if (method == null) {
-			throw new PropertyNotFoundException(LocalMessages.get("error.property.method.notfound", "null", base));
-		}
-		String name = bindings.convert(method, String.class);
-		paramValues = params.eval(bindings, context);
+    public final ValueReference getValueReference(Bindings bindings, ELContext context) {
+        return null;
+    }
 
-		context.setPropertyResolved(false);
-		Object result = context.getELResolver().invoke(context, base, name, paramTypes, paramValues);
-		if (!context.isPropertyResolved()) {
-			throw new MethodNotFoundException(LocalMessages.get("error.property.method.notfound", name, base.getClass()));
-		}
-//		if (returnType != null && !returnType.isInstance(result)) { // should we check returnType for method invocations?
-//			throw new MethodNotFoundException(LocalMessages.get("error.property.method.notfound", name, base.getClass()));
-//		}
-		return result;
-	}
+    @Override
+    public void appendStructure(StringBuilder builder, Bindings bindings) {
+        property.appendStructure(builder, bindings);
+        params.appendStructure(builder, bindings);
+    }
 
-	public int getCardinality() {
-		return 2;
-	}
+    @Override
+    public Object eval(Bindings bindings, ELContext context) {
+        return invoke(bindings, context, null, null, null);
+    }
 
-	public Node getChild(int i) {
-		return i == 0 ? property : i == 1 ? params : null;
-	}
+    public Object invoke(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes, Object[] paramValues) {
+        Object base = property.getPrefix().eval(bindings, context);
+        if (base == null) {
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.base.null", property.getPrefix()));
+        }
+        Object method = property.getProperty(bindings, context);
+        if (method == null) {
+            throw new PropertyNotFoundException(LocalMessages.get("error.property.method.notfound", "null", base));
+        }
+        String name = bindings.convert(method, String.class);
+        paramValues = params.eval(bindings, context);
 
-	@Override
-	public String toString() {
-		return "<method>";
-	}
+        context.setPropertyResolved(false);
+        Object result = context.getELResolver().invoke(context, base, name, paramTypes, paramValues);
+        if (!context.isPropertyResolved()) {
+            throw new MethodNotFoundException(LocalMessages.get("error.property.method.notfound", name, base.getClass()));
+        }
+        // if (returnType != null && !returnType.isInstance(result)) { // should
+        // we check returnType for method invocations?
+        // throw new
+        // MethodNotFoundException(LocalMessages.get("error.property.method.notfound",
+        // name, base.getClass()));
+        // }
+        return result;
+    }
+
+    public int getCardinality() {
+        return 2;
+    }
+
+    public Node getChild(int i) {
+        return i == 0 ? property : i == 1 ? params : null;
+    }
+
+    @Override
+    public String toString() {
+        return "<method>";
+    }
 }

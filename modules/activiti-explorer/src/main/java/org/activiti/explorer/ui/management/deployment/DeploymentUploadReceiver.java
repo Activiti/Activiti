@@ -33,85 +33,84 @@ import com.vaadin.ui.Upload.FinishedEvent;
 import com.vaadin.ui.Upload.FinishedListener;
 import com.vaadin.ui.Upload.Receiver;
 
-
 /**
  * @author Joram Barrez
  */
 public class DeploymentUploadReceiver implements Receiver, FinishedListener {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected transient RepositoryService repositoryService;
-  protected I18nManager i18nManager;
-  protected NotificationManager notificationManager;
-  protected ViewManager viewManager;
-  
-  // Will be assigned during upload
-  protected ByteArrayOutputStream outputStream;
-  protected String fileName;
-  
-  // Will be assigned after deployment
-  protected boolean validFile = false;
-  protected Deployment deployment;
-  
-  public DeploymentUploadReceiver() {
-    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-    this.i18nManager = ExplorerApp.get().getI18nManager();
-    this.notificationManager = ExplorerApp.get().getNotificationManager();
-    this.viewManager = ExplorerApp.get().getViewManager();
-  }
-  
-  public OutputStream receiveUpload(String filename, String mimeType) {
-    this.fileName = filename;
-    this.outputStream = new ByteArrayOutputStream();
-    return outputStream;
-  }
+    private static final long serialVersionUID = 1L;
 
-  public void uploadFinished(FinishedEvent event) {
-    deployUploadedFile();
-    if (validFile) {
-      showUploadedDeployment();
+    protected transient RepositoryService repositoryService;
+    protected I18nManager i18nManager;
+    protected NotificationManager notificationManager;
+    protected ViewManager viewManager;
+
+    // Will be assigned during upload
+    protected ByteArrayOutputStream outputStream;
+    protected String fileName;
+
+    // Will be assigned after deployment
+    protected boolean validFile = false;
+    protected Deployment deployment;
+
+    public DeploymentUploadReceiver() {
+        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+        this.i18nManager = ExplorerApp.get().getI18nManager();
+        this.notificationManager = ExplorerApp.get().getNotificationManager();
+        this.viewManager = ExplorerApp.get().getViewManager();
     }
-  }
 
-  protected void deployUploadedFile() {
-    DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(fileName);
-    DeploymentFilter deploymentFilter = ExplorerApp.get().getComponentFactory(DeploymentFilterFactory.class).create();
-    try {
-      try {
-        if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
-          validFile = true;
-          deploymentBuilder.addInputStream(fileName, new ByteArrayInputStream(outputStream.toByteArray()));
-        } else if (fileName.endsWith(".bar") || fileName.endsWith(".zip")) {
-          validFile = true;
-          deploymentBuilder.addZipInputStream(new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray())));
-        } else {
-          notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE,
-              i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION));
+    public OutputStream receiveUpload(String filename, String mimeType) {
+        this.fileName = filename;
+        this.outputStream = new ByteArrayOutputStream();
+        return outputStream;
+    }
+
+    public void uploadFinished(FinishedEvent event) {
+        deployUploadedFile();
+        if (validFile) {
+            showUploadedDeployment();
         }
-        
-        // If the deployment is valid, run it through the beforeDeploy and actually deploy it in Activiti
-        if(validFile) {
-          deploymentFilter.beforeDeploy(deploymentBuilder);
-          deployment = deploymentBuilder.deploy();
-        }
-      } catch (ActivitiException e) {
-        String errorMsg = e.getMessage().replace(System.getProperty("line.separator"), "<br/>");
-        notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_FAILED, errorMsg);
-      }
-    } finally {
-      if (outputStream != null) {
+    }
+
+    protected void deployUploadedFile() {
+        DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().name(fileName);
+        DeploymentFilter deploymentFilter = ExplorerApp.get().getComponentFactory(DeploymentFilterFactory.class).create();
         try {
-          outputStream.close();
-        } catch (IOException e) {
-          notificationManager.showErrorNotification("Server-side error", e.getMessage());
+            try {
+                if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
+                    validFile = true;
+                    deploymentBuilder.addInputStream(fileName, new ByteArrayInputStream(outputStream.toByteArray()));
+                } else if (fileName.endsWith(".bar") || fileName.endsWith(".zip")) {
+                    validFile = true;
+                    deploymentBuilder.addZipInputStream(new ZipInputStream(new ByteArrayInputStream(outputStream.toByteArray())));
+                } else {
+                    notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE, i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_INVALID_FILE_EXPLANATION));
+                }
+
+                // If the deployment is valid, run it through the beforeDeploy
+                // and actually deploy it in Activiti
+                if (validFile) {
+                    deploymentFilter.beforeDeploy(deploymentBuilder);
+                    deployment = deploymentBuilder.deploy();
+                }
+            } catch (ActivitiException e) {
+                String errorMsg = e.getMessage().replace(System.getProperty("line.separator"), "<br/>");
+                notificationManager.showErrorNotification(Messages.DEPLOYMENT_UPLOAD_FAILED, errorMsg);
+            }
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    notificationManager.showErrorNotification("Server-side error", e.getMessage());
+                }
+            }
         }
-      }
     }
-  }
-  
-  protected void showUploadedDeployment() {
-    viewManager.showDeploymentPage(deployment.getId());
-  }
-  
+
+    protected void showUploadedDeployment() {
+        viewManager.showDeploymentPage(deployment.getId());
+    }
+
 }

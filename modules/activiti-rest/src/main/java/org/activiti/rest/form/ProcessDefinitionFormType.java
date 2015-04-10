@@ -20,46 +20,41 @@ import org.activiti.engine.form.AbstractFormType;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 
-
 /**
  * @author Joram Barrez
  */
 public class ProcessDefinitionFormType extends AbstractFormType {
-	
-  private static final long serialVersionUID = 1L;
 
-  public static final String TYPE_NAME = "processDefinition";
-  
-  public String getName() {
-    return TYPE_NAME;
-  }
+    private static final long serialVersionUID = 1L;
 
-  @Override
-  public Object convertFormValueToModelValue(String propertyValue) {
-    if(propertyValue != null) {
-      ProcessDefinition processDefinition = ProcessEngines.getDefaultProcessEngine()
-              .getRepositoryService()
-              .createProcessDefinitionQuery()
-              .processDefinitionId(propertyValue)
-              .singleResult();
-      
-      if(processDefinition == null) {
-        throw new ActivitiObjectNotFoundException("Process definition with id " + propertyValue + " does not exist", ProcessDefinitionEntity.class);
-      }
-      
-      return processDefinition;
-    }
-    return null;
-  }
+    public static final String TYPE_NAME = "processDefinition";
 
-  @Override
-  public String convertModelValueToFormValue(Object modelValue) {
-    if (modelValue == null) {
-      return null;
+    public String getName() {
+        return TYPE_NAME;
     }
-    if (!(modelValue instanceof ProcessDefinition)) {
-      throw new ActivitiIllegalArgumentException("This form type only support process definitions, but is " + modelValue.getClass());
+
+    @Override
+    public Object convertFormValueToModelValue(String propertyValue) {
+        if (propertyValue != null) {
+            ProcessDefinition processDefinition = ProcessEngines.getDefaultProcessEngine().getRepositoryService().createProcessDefinitionQuery().processDefinitionId(propertyValue).singleResult();
+
+            if (processDefinition == null) {
+                throw new ActivitiObjectNotFoundException("Process definition with id " + propertyValue + " does not exist", ProcessDefinitionEntity.class);
+            }
+
+            return processDefinition;
+        }
+        return null;
     }
-    return ((ProcessDefinition) modelValue).getId();
-  }
+
+    @Override
+    public String convertModelValueToFormValue(Object modelValue) {
+        if (modelValue == null) {
+            return null;
+        }
+        if (!(modelValue instanceof ProcessDefinition)) {
+            throw new ActivitiIllegalArgumentException("This form type only support process definitions, but is " + modelValue.getClass());
+        }
+        return ((ProcessDefinition) modelValue).getId();
+    }
 }

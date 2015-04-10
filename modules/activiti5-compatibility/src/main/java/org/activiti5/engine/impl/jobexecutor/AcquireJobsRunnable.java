@@ -12,24 +12,22 @@
  */
 package org.activiti5.engine.impl.jobexecutor;
 
-
 /**
- * @author Joram Barrez 
+ * @author Joram Barrez
  */
 public interface AcquireJobsRunnable extends Runnable {
 
-	/** 
-   * Called by the job executor when a new job was added by the 
-   * process engine to which this job executor belongs. 
-   * This is a hint, that for example the acquiring needs to start again 
-   * when it would be sleeping.
-   */
-	void jobWasAdded();
-	
-	/**
-	 * Called when the job executor is shutting down and the job
-	 * acquiring needs to be shut down too.
-	 */
-	void stop();
- 
+    /**
+     * Called by the job executor when a new job was added by the process engine
+     * to which this job executor belongs. This is a hint, that for example the
+     * acquiring needs to start again when it would be sleeping.
+     */
+    void jobWasAdded();
+
+    /**
+     * Called when the job executor is shutting down and the job acquiring needs
+     * to be shut down too.
+     */
+    void stop();
+
 }

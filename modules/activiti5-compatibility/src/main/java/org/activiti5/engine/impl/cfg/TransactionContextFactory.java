@@ -14,12 +14,11 @@ package org.activiti5.engine.impl.cfg;
 
 import org.activiti5.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface TransactionContextFactory {
 
-  TransactionContext openTransactionContext(CommandContext commandContext);
+    TransactionContext openTransactionContext(CommandContext commandContext);
 
 }

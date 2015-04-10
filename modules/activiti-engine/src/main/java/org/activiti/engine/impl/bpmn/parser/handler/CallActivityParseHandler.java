@@ -18,22 +18,21 @@ import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
-
 /**
  * @author Joram Barrez
  */
 public class CallActivityParseHandler extends AbstractActivityBpmnParseHandler<CallActivity> {
-  
-  public Class< ? extends BaseElement> getHandledType() {
-    return CallActivity.class;
-  }
-  
-  protected void executeParse(BpmnParse bpmnParse, CallActivity callActivity) {
-    
-    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, callActivity, BpmnXMLConstants.ELEMENT_CALL_ACTIVITY);
-    activity.setScope(true);
-    activity.setAsync(callActivity.isAsynchronous());
-    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCallActivityBehavior(callActivity));
-  }
+
+    public Class<? extends BaseElement> getHandledType() {
+        return CallActivity.class;
+    }
+
+    protected void executeParse(BpmnParse bpmnParse, CallActivity callActivity) {
+
+        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, callActivity, BpmnXMLConstants.ELEMENT_CALL_ACTIVITY);
+        activity.setScope(true);
+        activity.setAsync(callActivity.isAsynchronous());
+        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCallActivityBehavior(callActivity));
+    }
 
 }

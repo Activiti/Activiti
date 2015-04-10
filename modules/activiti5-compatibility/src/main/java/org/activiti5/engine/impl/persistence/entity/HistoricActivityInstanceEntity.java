@@ -27,95 +27,103 @@ import org.activiti5.engine.history.HistoricActivityInstance;
  */
 public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity implements HistoricActivityInstance {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String activityId;
-  protected String activityName;
-  protected String activityType;
-  protected String executionId;
-  protected String assignee;
-  protected String taskId;
-  protected String calledProcessInstanceId;
-  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
-  
-  public Object getPersistentState() {
-    Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
-    persistentState.put("endTime", endTime);
-    persistentState.put("durationInMillis", durationInMillis);
-    persistentState.put("deleteReason", deleteReason);
-    persistentState.put("executionId", executionId);
-    persistentState.put("assignee", assignee);
-    return persistentState;
-  }
+    private static final long serialVersionUID = 1L;
 
-  // getters and setters //////////////////////////////////////////////////////
-  
-  public String getActivityId() {
-    return activityId;
-  }
-  public void setActivityId(String activityId) {
-    this.activityId = activityId;
-  }
+    protected String activityId;
+    protected String activityName;
+    protected String activityType;
+    protected String executionId;
+    protected String assignee;
+    protected String taskId;
+    protected String calledProcessInstanceId;
+    protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
-  public String getActivityName() {
-    return activityName;
-  }
-  public void setActivityName(String activityName) {
-    this.activityName = activityName;
-  }
+    public Object getPersistentState() {
+        Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();
+        persistentState.put("endTime", endTime);
+        persistentState.put("durationInMillis", durationInMillis);
+        persistentState.put("deleteReason", deleteReason);
+        persistentState.put("executionId", executionId);
+        persistentState.put("assignee", assignee);
+        return persistentState;
+    }
 
-  public String getActivityType() {
-    return activityType;
-  }
-  public void setActivityType(String activityType) {
-    this.activityType = activityType;
-  }
-  
-  public String getExecutionId() {
-    return executionId;
-  }
-  public void setExecutionId(String executionId) {
-    this.executionId = executionId;
-  }
-  
-  public String getAssignee() {
-    return assignee;
-  }
-  public void setAssignee(String assignee) {
-    this.assignee = assignee;
-  }
+    // getters and setters
+    // //////////////////////////////////////////////////////
 
-  public String getTaskId() {
-    return taskId;
-  }
-  public void setTaskId(String taskId) {
-    this.taskId = taskId;
-  }
+    public String getActivityId() {
+        return activityId;
+    }
 
-  public String getCalledProcessInstanceId() {
-    return calledProcessInstanceId;
-  }
-  public void setCalledProcessInstanceId(String calledProcessInstanceId) {
-    this.calledProcessInstanceId = calledProcessInstanceId;
-  }
+    public void setActivityId(String activityId) {
+        this.activityId = activityId;
+    }
 
-  public String getTenantId() {
-		return tenantId;
-	}
+    public String getActivityName() {
+        return activityName;
+    }
 
-	public void setTenantId(String tenantId) {
-		this.tenantId = tenantId;
-	}
-	
-	public Date getTime() {
-		return getStartTime();
-	}
-	
-	// common methods  //////////////////////////////////////////////////////////
+    public void setActivityName(String activityName) {
+        this.activityName = activityName;
+    }
 
-	@Override
-  public String toString() {
-    return "HistoricActivityInstanceEntity[activityId=" + activityId + ", activityName=" + activityName + "]";
-  }
+    public String getActivityType() {
+        return activityType;
+    }
+
+    public void setActivityType(String activityType) {
+        this.activityType = activityType;
+    }
+
+    public String getExecutionId() {
+        return executionId;
+    }
+
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
+    }
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
+
+    public String getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(String taskId) {
+        this.taskId = taskId;
+    }
+
+    public String getCalledProcessInstanceId() {
+        return calledProcessInstanceId;
+    }
+
+    public void setCalledProcessInstanceId(String calledProcessInstanceId) {
+        this.calledProcessInstanceId = calledProcessInstanceId;
+    }
+
+    public String getTenantId() {
+        return tenantId;
+    }
+
+    public void setTenantId(String tenantId) {
+        this.tenantId = tenantId;
+    }
+
+    public Date getTime() {
+        return getStartTime();
+    }
+
+    // common methods //////////////////////////////////////////////////////////
+
+    @Override
+    public String toString() {
+        return "HistoricActivityInstanceEntity[activityId=" + activityId + ", activityName=" + activityName + "]";
+    }
 
 }

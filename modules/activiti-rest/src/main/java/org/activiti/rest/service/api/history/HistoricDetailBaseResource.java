@@ -29,50 +29,49 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class HistoricDetailBaseResource {
 
-  private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
+    private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
 
-  static {
-    allowedSortProperties.put("processInstanceId", HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
-    allowedSortProperties.put("time", HistoricDetailQueryProperty.TIME);
-    allowedSortProperties.put("name", HistoricDetailQueryProperty.VARIABLE_NAME);
-    allowedSortProperties.put("revision", HistoricDetailQueryProperty.VARIABLE_REVISION);
-    allowedSortProperties.put("variableType", HistoricDetailQueryProperty.VARIABLE_TYPE);
-  }
-  
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected HistoryService historyService;
-
-  protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Map<String,String> allRequestParams) {
-    HistoricDetailQuery query = historyService.createHistoricDetailQuery();
-
-    // Populate query based on request
-    if (queryRequest.getProcessInstanceId() != null) {
-      query.processInstanceId(queryRequest.getProcessInstanceId());
-    }
-    if (queryRequest.getExecutionId() != null) {
-      query.executionId(queryRequest.getExecutionId());
-    }
-    if (queryRequest.getActivityInstanceId() != null) {
-      query.activityInstanceId(queryRequest.getActivityInstanceId());
-    }
-    if (queryRequest.getTaskId() != null) {
-      query.taskId(queryRequest.getTaskId());
-    }
-    if (queryRequest.getSelectOnlyFormProperties() != null) {
-      if (queryRequest.getSelectOnlyFormProperties()) {
-        query.formProperties();
-      }
-    }
-    if (queryRequest.getSelectOnlyVariableUpdates() != null) {
-      if (queryRequest.getSelectOnlyVariableUpdates()) {
-        query.variableUpdates();
-      }
+    static {
+        allowedSortProperties.put("processInstanceId", HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
+        allowedSortProperties.put("time", HistoricDetailQueryProperty.TIME);
+        allowedSortProperties.put("name", HistoricDetailQueryProperty.VARIABLE_NAME);
+        allowedSortProperties.put("revision", HistoricDetailQueryProperty.VARIABLE_REVISION);
+        allowedSortProperties.put("variableType", HistoricDetailQueryProperty.VARIABLE_TYPE);
     }
 
-    return new HistoricDetailPaginateList(restResponseFactory).paginateList(
-        allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
-  }
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected HistoryService historyService;
+
+    protected DataResponse getQueryResponse(HistoricDetailQueryRequest queryRequest, Map<String, String> allRequestParams) {
+        HistoricDetailQuery query = historyService.createHistoricDetailQuery();
+
+        // Populate query based on request
+        if (queryRequest.getProcessInstanceId() != null) {
+            query.processInstanceId(queryRequest.getProcessInstanceId());
+        }
+        if (queryRequest.getExecutionId() != null) {
+            query.executionId(queryRequest.getExecutionId());
+        }
+        if (queryRequest.getActivityInstanceId() != null) {
+            query.activityInstanceId(queryRequest.getActivityInstanceId());
+        }
+        if (queryRequest.getTaskId() != null) {
+            query.taskId(queryRequest.getTaskId());
+        }
+        if (queryRequest.getSelectOnlyFormProperties() != null) {
+            if (queryRequest.getSelectOnlyFormProperties()) {
+                query.formProperties();
+            }
+        }
+        if (queryRequest.getSelectOnlyVariableUpdates() != null) {
+            if (queryRequest.getSelectOnlyVariableUpdates()) {
+                query.variableUpdates();
+            }
+        }
+
+        return new HistoricDetailPaginateList(restResponseFactory).paginateList(allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
+    }
 }

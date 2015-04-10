@@ -23,20 +23,19 @@ import org.activiti5.engine.impl.util.json.JSONObject;
  */
 public class TimerSuspendProcessDefinitionHandler extends TimerChangeProcessDefinitionSuspensionStateJobHandler {
 
-  public static final String TYPE = "suspend-processdefinition";
-  
-  public String getType() {
-    return TYPE;
-  }
-  
-  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
-    JSONObject cfgJson = new JSONObject(configuration);
-    String processDefinitionId = job.getProcessDefinitionId();
-    boolean suspendProcessInstances = getIncludeProcessInstances(cfgJson);
-    
-    SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = 
-            new SuspendProcessDefinitionCmd(processDefinitionId, null, suspendProcessInstances, null, job.getTenantId());
-    suspendProcessDefinitionCmd.execute(commandContext);
-  }
-  
+    public static final String TYPE = "suspend-processdefinition";
+
+    public String getType() {
+        return TYPE;
+    }
+
+    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+        JSONObject cfgJson = new JSONObject(configuration);
+        String processDefinitionId = job.getProcessDefinitionId();
+        boolean suspendProcessInstances = getIncludeProcessInstances(cfgJson);
+
+        SuspendProcessDefinitionCmd suspendProcessDefinitionCmd = new SuspendProcessDefinitionCmd(processDefinitionId, null, suspendProcessInstances, null, job.getTenantId());
+        suspendProcessDefinitionCmd.execute(commandContext);
+    }
+
 }

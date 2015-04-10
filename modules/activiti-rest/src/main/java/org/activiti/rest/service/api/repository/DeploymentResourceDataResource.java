@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DeploymentResourceDataResource extends BaseDeploymentResourceDataResource {
 
-  @RequestMapping(value="/repository/deployments/{deploymentId}/resourcedata/{resourceId}", method = RequestMethod.GET)
-  public @ResponseBody byte[] getDeploymentResource(@PathVariable("deploymentId") String deploymentId, 
-      @PathVariable("resourceId") String resourceId, HttpServletResponse response) {
-    
-    return getDeploymentResourceData(deploymentId, resourceId, response);
-  }
+    @RequestMapping(value = "/repository/deployments/{deploymentId}/resourcedata/{resourceId}", method = RequestMethod.GET)
+    public @ResponseBody
+    byte[] getDeploymentResource(@PathVariable("deploymentId") String deploymentId, @PathVariable("resourceId") String resourceId, HttpServletResponse response) {
+
+        return getDeploymentResourceData(deploymentId, resourceId, response);
+    }
 }

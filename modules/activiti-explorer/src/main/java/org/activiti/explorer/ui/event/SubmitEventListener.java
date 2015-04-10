@@ -16,7 +16,6 @@ package org.activiti.explorer.ui.event;
 import com.vaadin.ui.Component.Event;
 import com.vaadin.ui.Component.Listener;
 
-
 /**
  * Listener that listens to {@link SubmitEvent}s and delegates to
  * {@link #submitted(SubmitEvent)} or {@link #cancelled(SubmitEvent)} methods.
@@ -25,27 +24,27 @@ import com.vaadin.ui.Component.Listener;
  */
 public abstract class SubmitEventListener implements Listener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  public final void componentEvent(Event event) {
-    if(event instanceof SubmitEvent) {
-      SubmitEvent gfe = (SubmitEvent) event;
-      if(SubmitEvent.SUBMITTED.equals(gfe.getType())) {
-         submitted(gfe);
-      } else {
-        cancelled(gfe);
-      }
+    public final void componentEvent(Event event) {
+        if (event instanceof SubmitEvent) {
+            SubmitEvent gfe = (SubmitEvent) event;
+            if (SubmitEvent.SUBMITTED.equals(gfe.getType())) {
+                submitted(gfe);
+            } else {
+                cancelled(gfe);
+            }
+        }
     }
-  }
-  
-  /**
-   * Called when form is submitted.
-   */
-  protected abstract void submitted(SubmitEvent event);
-  
-  /**
-   * Called when form is cancelled.
-   */
-  protected abstract void cancelled(SubmitEvent event);
-  
+
+    /**
+     * Called when form is submitted.
+     */
+    protected abstract void submitted(SubmitEvent event);
+
+    /**
+     * Called when form is cancelled.
+     */
+    protected abstract void cancelled(SubmitEvent event);
+
 }

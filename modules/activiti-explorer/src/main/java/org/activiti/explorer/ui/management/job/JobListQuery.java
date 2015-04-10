@@ -27,99 +27,94 @@ import com.vaadin.data.Item;
 import com.vaadin.data.util.ObjectProperty;
 import com.vaadin.data.util.PropertysetItem;
 
-
 /**
  * @author Frederik Heremans
  */
 public class JobListQuery extends AbstractLazyLoadingQuery {
-  
-  protected transient ManagementService managementService;
-  
-  public JobListQuery() {
-    this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
-  }
 
-  public int size() {
-    return (int) managementService.createJobQuery().count();
-  }
+    protected transient ManagementService managementService;
 
-  public List<Item> loadItems(int start, int count) {
-    List<Job> jobs = managementService.createJobQuery()
-      .orderByJobDuedate().asc()
-      .orderByJobId().asc()
-      .list();
-    
-    List<Item> items = new ArrayList<Item>();
-    for (Job job : jobs) {
-      items.add(new JobListItem(job));
-    }
-    return items;
-  }
-
-  public Item loadSingleResult(String id) {
-    Job job = managementService.createJobQuery().jobId(id).singleResult();
-    if (job != null) {
-      return new JobListItem(job);      
-    }
-    return null;
-  }
-  
-  public void setSorting(Object[] propertyIds, boolean[] ascending) {
-    throw new UnsupportedOperationException();
-  }
-  
-  class JobListItem extends PropertysetItem implements Comparable<JobListItem> {
-    
-    private static final long serialVersionUID = 1L;
-    
-    
-    public JobListItem(Job job) {
-      addItemProperty("id", new ObjectProperty<String>(job.getId(), String.class));
-      addItemProperty("dueDate", new ObjectProperty<Date>(job.getDuedate(), Date.class));
-      addItemProperty("name", new ObjectProperty<String>(getName(job), String.class));
-    }
-    
-    private String getName(Job theJob) {
-      if(theJob instanceof TimerEntity) {
-        return "Timer job " + theJob.getId();
-      } else if (theJob instanceof MessageEntity) {
-        return "Message job " + theJob.getId();
-      } else {
-        return "Job " + theJob.getId();
-      }
+    public JobListQuery() {
+        this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
     }
 
-    public int compareTo(JobListItem other) {
-      Date dueDate = (Date) getItemProperty("dueDate").getValue();
-      Date otherDueDate = (Date) other.getItemProperty("dueDate").getValue();
-      
-      int comparison = compareObjects(dueDate, otherDueDate);
-      if (comparison != 0) {
-        return comparison;
-      } else {
-        String id = (String) getItemProperty("id").getValue();
-        String otherId = (String) other.getItemProperty("id").getValue();
-        return id.compareTo(otherId);
-      }
+    public int size() {
+        return (int) managementService.createJobQuery().count();
     }
-    
-    @SuppressWarnings("unchecked")
-    private <T extends Object> int  compareObjects(Comparable<T> object, Comparable<T> other) {
-      if(object != null) {
-        if(other != null) {
-          return object.compareTo((T)other);
-        } else {
-          return 1;
+
+    public List<Item> loadItems(int start, int count) {
+        List<Job> jobs = managementService.createJobQuery().orderByJobDuedate().asc().orderByJobId().asc().list();
+
+        List<Item> items = new ArrayList<Item>();
+        for (Job job : jobs) {
+            items.add(new JobListItem(job));
         }
-      } else {
-        if(other == null) {
-          return 0;
-        } else {
-          // Null is smaller than non-null value
-          return -1;
-        }
-      }
+        return items;
     }
-  }
-  
+
+    public Item loadSingleResult(String id) {
+        Job job = managementService.createJobQuery().jobId(id).singleResult();
+        if (job != null) {
+            return new JobListItem(job);
+        }
+        return null;
+    }
+
+    public void setSorting(Object[] propertyIds, boolean[] ascending) {
+        throw new UnsupportedOperationException();
+    }
+
+    class JobListItem extends PropertysetItem implements Comparable<JobListItem> {
+
+        private static final long serialVersionUID = 1L;
+
+        public JobListItem(Job job) {
+            addItemProperty("id", new ObjectProperty<String>(job.getId(), String.class));
+            addItemProperty("dueDate", new ObjectProperty<Date>(job.getDuedate(), Date.class));
+            addItemProperty("name", new ObjectProperty<String>(getName(job), String.class));
+        }
+
+        private String getName(Job theJob) {
+            if (theJob instanceof TimerEntity) {
+                return "Timer job " + theJob.getId();
+            } else if (theJob instanceof MessageEntity) {
+                return "Message job " + theJob.getId();
+            } else {
+                return "Job " + theJob.getId();
+            }
+        }
+
+        public int compareTo(JobListItem other) {
+            Date dueDate = (Date) getItemProperty("dueDate").getValue();
+            Date otherDueDate = (Date) other.getItemProperty("dueDate").getValue();
+
+            int comparison = compareObjects(dueDate, otherDueDate);
+            if (comparison != 0) {
+                return comparison;
+            } else {
+                String id = (String) getItemProperty("id").getValue();
+                String otherId = (String) other.getItemProperty("id").getValue();
+                return id.compareTo(otherId);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        private <T extends Object> int compareObjects(Comparable<T> object, Comparable<T> other) {
+            if (object != null) {
+                if (other != null) {
+                    return object.compareTo((T) other);
+                } else {
+                    return 1;
+                }
+            } else {
+                if (other == null) {
+                    return 0;
+                } else {
+                    // Null is smaller than non-null value
+                    return -1;
+                }
+            }
+        }
+    }
+
 }

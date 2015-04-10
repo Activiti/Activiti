@@ -24,30 +24,30 @@ import org.activiti.bpmn.model.ExclusiveGateway;
  * @author Tijs Rademakers
  */
 public class ExclusiveGatewayXMLConverter extends BaseBpmnXMLConverter {
-  
-  public Class<? extends BaseElement> getBpmnElementType() {
-    return ExclusiveGateway.class;
-  }
-  
-  @Override
-  protected String getXMLElementName() {
-    return ELEMENT_GATEWAY_EXCLUSIVE;
-  }
-  
-  @Override
-  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-    ExclusiveGateway gateway = new ExclusiveGateway();
-    BpmnXMLUtil.addXMLLocation(gateway, xtr);
-    parseChildElements(getXMLElementName(), gateway, model, xtr);
-    return gateway;
-  }
 
-  @Override
-  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-  }
-  
-  @Override
-  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    
-  }
+    public Class<? extends BaseElement> getBpmnElementType() {
+        return ExclusiveGateway.class;
+    }
+
+    @Override
+    protected String getXMLElementName() {
+        return ELEMENT_GATEWAY_EXCLUSIVE;
+    }
+
+    @Override
+    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
+        ExclusiveGateway gateway = new ExclusiveGateway();
+        BpmnXMLUtil.addXMLLocation(gateway, xtr);
+        parseChildElements(getXMLElementName(), gateway, model, xtr);
+        return gateway;
+    }
+
+    @Override
+    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+    }
+
+    @Override
+    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+
+    }
 }

@@ -17,17 +17,17 @@ import org.activiti.camel.ActivitiEndpoint;
 import org.activiti.camel.CamelBehavior;
 
 /**
- * This implementation of the CamelBehavior abstract class works just like CamelBehaviour does; it copies variables 
- * into Camel as properties.
+ * This implementation of the CamelBehavior abstract class works just like
+ * CamelBehaviour does; it copies variables into Camel as properties.
  * 
  * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Saeid Mirzaei
  */
 public class CamelBehaviorDefaultImpl extends CamelBehavior {
-	
-	private static final long serialVersionUID = 003L;
 
-  @Override
-  protected void setPropertTargetVariable(ActivitiEndpoint endpoint) {
-    toTargetType = TargetType.PROPERTIES;
-  }
+    private static final long serialVersionUID = 003L;
+
+    @Override
+    protected void setPropertTargetVariable(ActivitiEndpoint endpoint) {
+        toTargetType = TargetType.PROPERTIES;
+    }
 }

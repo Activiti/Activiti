@@ -23,49 +23,49 @@ import org.activiti.engine.test.Deployment;
 
 public class ProcessInstanceUpdateBusinessKeyTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testProcessInstanceUpdateBusinessKey() {
-    runtimeService.startProcessInstanceByKey("businessKeyProcess");
+    @Deployment
+    public void testProcessInstanceUpdateBusinessKey() {
+        runtimeService.startProcessInstanceByKey("businessKeyProcess");
 
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertEquals("bzKey", processInstance.getBusinessKey());
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
+        assertEquals("bzKey", processInstance.getBusinessKey());
 
-    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
-      assertEquals("bzKey", historicProcessInstance.getBusinessKey());
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
+            assertEquals("bzKey", historicProcessInstance.getBusinessKey());
+        }
     }
-  }
-  
-  @Deployment
-  public void testUpdateExistingBusinessKey() {
-    runtimeService.startProcessInstanceByKey("businessKeyProcess", "testKey");
 
-    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertEquals("testKey", processInstance.getBusinessKey());
+    @Deployment
+    public void testUpdateExistingBusinessKey() {
+        runtimeService.startProcessInstanceByKey("businessKeyProcess", "testKey");
 
-    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
-      assertEquals("testKey", historicProcessInstance.getBusinessKey());
+        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
+        assertEquals("testKey", processInstance.getBusinessKey());
+
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
+            assertEquals("testKey", historicProcessInstance.getBusinessKey());
+        }
+
+        runtimeService.updateBusinessKey(processInstance.getId(), "newKey");
+
+        processInstance = runtimeService.createProcessInstanceQuery().singleResult();
+        assertEquals("newKey", processInstance.getBusinessKey());
+
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+            HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
+            assertEquals("newKey", historicProcessInstance.getBusinessKey());
+        }
     }
-    
-    runtimeService.updateBusinessKey(processInstance.getId(), "newKey");
-    
-    processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-    assertEquals("newKey", processInstance.getBusinessKey());
-    
-    if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().singleResult();
-      assertEquals("newKey", historicProcessInstance.getBusinessKey());
-    }
-  }
 
-  public static class UpdateBusinessKeyExecutionListener implements ExecutionListener {
-    
-    private static final long serialVersionUID = 1L;
+    public static class UpdateBusinessKeyExecutionListener implements ExecutionListener {
 
-    public void notify(DelegateExecution delegateExecution) {
-      ((ExecutionEntity) delegateExecution).updateProcessBusinessKey("bzKey");
+        private static final long serialVersionUID = 1L;
+
+        public void notify(DelegateExecution delegateExecution) {
+            ((ExecutionEntity) delegateExecution).updateProcessBusinessKey("bzKey");
+        }
     }
-  }
 
 }

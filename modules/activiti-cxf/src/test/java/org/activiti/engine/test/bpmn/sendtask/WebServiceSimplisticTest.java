@@ -24,20 +24,20 @@ import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
  */
 public class WebServiceSimplisticTest extends AbstractWebServiceTaskTest {
 
-  protected boolean isValidating() {
-    return false;
-  }
-  
-  @Deployment
-  public void testAsyncInvocationWithSimplisticDataFlow() throws Exception {
-    assertEquals(-1, counter.getCount());
+    protected boolean isValidating() {
+        return false;
+    }
 
-    Map<String, Object> variables = new HashMap<String, Object>();
-    variables.put("NewCounterValueVariable", 23);
+    @Deployment
+    public void testAsyncInvocationWithSimplisticDataFlow() throws Exception {
+        assertEquals(-1, counter.getCount());
 
-    processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithSimplisticDataFlow", variables);
-    waitForJobExecutorToProcessAllJobs(10000L, 250L);
+        Map<String, Object> variables = new HashMap<String, Object>();
+        variables.put("NewCounterValueVariable", 23);
 
-    assertEquals(23, counter.getCount());
-  }
+        processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithSimplisticDataFlow", variables);
+        waitForJobExecutorToProcessAllJobs(10000L, 250L);
+
+        assertEquals(23, counter.getCount());
+    }
 }

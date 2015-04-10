@@ -18,25 +18,22 @@ import java.io.Serializable;
 import org.activiti5.engine.impl.interceptor.Command;
 import org.activiti5.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tom Baeyens
  */
 public class DeleteUserInfoCmd implements Command<Object>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String userId;
-  protected String key;
-  
-  public DeleteUserInfoCmd(String userId, String key) {
-    this.userId = userId;
-    this.key = key;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String userId;
+    protected String key;
 
-  public String execute(CommandContext commandContext) {
-    commandContext
-      .getIdentityInfoEntityManager()
-      .deleteUserInfoByUserIdAndKey(userId, key);
-    return null;
-  }
+    public DeleteUserInfoCmd(String userId, String key) {
+        this.userId = userId;
+        this.key = key;
+    }
+
+    public String execute(CommandContext commandContext) {
+        commandContext.getIdentityInfoEntityManager().deleteUserInfoByUserIdAndKey(userId, key);
+        return null;
+    }
 }

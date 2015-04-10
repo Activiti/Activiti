@@ -19,34 +19,30 @@ import org.activiti5.engine.runtime.ProcessInstance;
 import org.activiti5.engine.task.Task;
 import org.activiti5.engine.test.Deployment;
 
-
 /**
  * Simple process test to validate the current implementation protoype.
  * 
- * @author Joram Barrez 
+ * @author Joram Barrez
  */
 public class TaskAssigneeTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testTaskAssignee() {    
-    
-    // Start process instance
-    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeExampleProcess");
+    @Deployment
+    public void testTaskAssignee() {
 
-    // Get task list
-    List<Task> tasks = taskService
-      .createTaskQuery()
-      .taskAssignee("kermit")
-      .list();
-    assertEquals(1, tasks.size());
-    Task myTask = tasks.get(0);
-    assertEquals("Schedule meeting", myTask.getName());
-    assertEquals("Schedule an engineering meeting for next week with the new hire.", myTask.getDescription());
+        // Start process instance
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeExampleProcess");
 
-    // Complete task. Process is now finished
-    taskService.complete(myTask.getId());
-    // assert if the process instance completed
-    assertProcessEnded(processInstance.getId());
-  }
+        // Get task list
+        List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+        assertEquals(1, tasks.size());
+        Task myTask = tasks.get(0);
+        assertEquals("Schedule meeting", myTask.getName());
+        assertEquals("Schedule an engineering meeting for next week with the new hire.", myTask.getDescription());
+
+        // Complete task. Process is now finished
+        taskService.complete(myTask.getId());
+        // assert if the process instance completed
+        assertProcessEnded(processInstance.getId());
+    }
 
 }

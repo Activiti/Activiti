@@ -19,15 +19,16 @@ import javax.persistence.EntityManagerFactory;
 import org.activiti5.engine.ActivitiException;
 import org.activiti5.engine.impl.interceptor.Session;
 
-
 /**
  * @author Frederik Heremans
  */
 public interface EntityManagerSession extends Session {
-  /**
-   * Get an {@link EntityManager} instance associated with this session.
-   * @throws ActivitiException when no {@link EntityManagerFactory} instance 
-   * is configured for the process engine.
-   */
-  EntityManager getEntityManager();
+    /**
+     * Get an {@link EntityManager} instance associated with this session.
+     * 
+     * @throws ActivitiException
+     *             when no {@link EntityManagerFactory} instance is configured
+     *             for the process engine.
+     */
+    EntityManager getEntityManager();
 }

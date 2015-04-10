@@ -21,22 +21,22 @@ import org.activiti5.engine.impl.persistence.AbstractManager;
  */
 public class ByteArrayEntityManager extends AbstractManager {
 
-  public ByteArrayEntity findById(String byteArrayEntityId) {
-    return getDbSqlSession().selectById(ByteArrayEntity.class, byteArrayEntityId);
-  }
-  
-  /**
-   * Deletes the {@link ByteArrayEntity} with the given id from the database.
-   * Important: this operation will NOT do any optimistic locking, to avoid loading the 
-   * bytes in memory. So use this method only in conjunction with an entity that has
-   * optimistic locking!.
-   */
-  public void deleteByteArrayById(String byteArrayEntityId) {
-    getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId);
-  }
-  
-  public void deleteByteArray(ByteArrayEntity byteArray) {
-    getDbSqlSession().delete(byteArray);
-  }
+    public ByteArrayEntity findById(String byteArrayEntityId) {
+        return getDbSqlSession().selectById(ByteArrayEntity.class, byteArrayEntityId);
+    }
+
+    /**
+     * Deletes the {@link ByteArrayEntity} with the given id from the database.
+     * Important: this operation will NOT do any optimistic locking, to avoid
+     * loading the bytes in memory. So use this method only in conjunction with
+     * an entity that has optimistic locking!.
+     */
+    public void deleteByteArrayById(String byteArrayEntityId) {
+        getDbSqlSession().delete("deleteByteArrayNoRevisionCheck", byteArrayEntityId);
+    }
+
+    public void deleteByteArray(ByteArrayEntity byteArray) {
+        getDbSqlSession().delete(byteArray);
+    }
 
 }

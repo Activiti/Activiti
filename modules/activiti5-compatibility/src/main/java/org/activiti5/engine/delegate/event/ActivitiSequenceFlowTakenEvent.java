@@ -12,31 +12,30 @@
  */
 package org.activiti5.engine.delegate.event;
 
-
 /**
- * An {@link ActivitiEvent} that indicates a certain sequence flow has been taken.
+ * An {@link ActivitiEvent} that indicates a certain sequence flow has been
+ * taken.
  * 
  * @author Frederik Heremans
  */
 public interface ActivitiSequenceFlowTakenEvent extends ActivitiEvent {
-	
-	String getId();
-	
-	String getSourceActivityId();
-	
-	String getSourceActivityName();
-	
-	String getSourceActivityType();
-	
-	String getSourceActivityBehaviorClass();
-	
-	String getTargetActivityId();
-	
-	String getTargetActivityName();
-	
-	String getTargetActivityType();
-	
-	String getTargetActivityBehaviorClass();
-	
-	
+
+    String getId();
+
+    String getSourceActivityId();
+
+    String getSourceActivityName();
+
+    String getSourceActivityType();
+
+    String getSourceActivityBehaviorClass();
+
+    String getTargetActivityId();
+
+    String getTargetActivityName();
+
+    String getTargetActivityType();
+
+    String getTargetActivityBehaviorClass();
+
 }

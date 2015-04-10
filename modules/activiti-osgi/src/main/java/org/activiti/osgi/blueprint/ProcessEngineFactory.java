@@ -34,12 +34,7 @@ public class ProcessEngineFactory {
         try {
             ClassLoader cl = new BundleDelegatingClassLoader(bundle);
 
-            Thread.currentThread().setContextClassLoader(new ClassLoaderWrapper(
-                    cl,
-                    ProcessEngineFactory.class.getClassLoader(),
-                    ProcessEngineConfiguration.class.getClassLoader(),
-                    previous
-            ));
+            Thread.currentThread().setContextClassLoader(new ClassLoaderWrapper(cl, ProcessEngineFactory.class.getClassLoader(), ProcessEngineConfiguration.class.getClassLoader(), previous));
 
             processEngineConfiguration.setClassLoader(cl);
 
@@ -67,7 +62,6 @@ public class ProcessEngineFactory {
     public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
         this.processEngineConfiguration = processEngineConfiguration;
     }
-
 
     public Bundle getBundle() {
         return bundle;

@@ -21,36 +21,31 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.task.Comment;
 import org.apache.commons.lang3.StringUtils;
 
-
 /**
  * @author Tom Baeyens
  */
 public class GetProcessInstanceCommentsCmd implements Command<List<Comment>>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  protected String processInstanceId;
-  protected String type;
-  
-  public GetProcessInstanceCommentsCmd(String processInstanceId) {
-    this.processInstanceId = processInstanceId;
-  }
+    private static final long serialVersionUID = 1L;
+    protected String processInstanceId;
+    protected String type;
 
-  public GetProcessInstanceCommentsCmd(String processInstanceId, String type) {
-    this.processInstanceId = processInstanceId;
-    this.type = type;
-  }
-
-  @SuppressWarnings("unchecked")
-  public List<Comment> execute(CommandContext commandContext) {
-    if (StringUtils.isNotBlank(type)) {
-      List<Comment> commentsByProcessInstanceId = commandContext
-          .getCommentEntityManager()
-          .findCommentsByProcessInstanceId(processInstanceId, type);
-      return commentsByProcessInstanceId;
-    } else {
-      return commandContext
-        .getCommentEntityManager()
-        .findCommentsByProcessInstanceId(processInstanceId);
+    public GetProcessInstanceCommentsCmd(String processInstanceId) {
+        this.processInstanceId = processInstanceId;
     }
-  }
+
+    public GetProcessInstanceCommentsCmd(String processInstanceId, String type) {
+        this.processInstanceId = processInstanceId;
+        this.type = type;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<Comment> execute(CommandContext commandContext) {
+        if (StringUtils.isNotBlank(type)) {
+            List<Comment> commentsByProcessInstanceId = commandContext.getCommentEntityManager().findCommentsByProcessInstanceId(processInstanceId, type);
+            return commentsByProcessInstanceId;
+        } else {
+            return commandContext.getCommentEntityManager().findCommentsByProcessInstanceId(processInstanceId);
+        }
+    }
 }

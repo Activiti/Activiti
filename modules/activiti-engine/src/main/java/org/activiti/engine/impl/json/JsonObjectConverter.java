@@ -17,24 +17,24 @@ import java.io.Writer;
 
 import org.activiti.engine.impl.util.json.JSONObject;
 
-
 /**
  * @author Tom Baeyens
  */
-public abstract class JsonObjectConverter <T> {
+public abstract class JsonObjectConverter<T> {
 
-  public void toJson(T object, Writer writer) {
-    toJsonObject(object).write(writer);
-  }
-  
-  public String toJson(T object) {
-    return toJsonObject(object).toString();
-  }
-  
-  public String toJson(T object, int indentFactor) {
-    return toJsonObject(object).toString(indentFactor);
-  }
-  
-  public abstract JSONObject toJsonObject(T object);
-  public abstract T toObject(Reader reader);
+    public void toJson(T object, Writer writer) {
+        toJsonObject(object).write(writer);
+    }
+
+    public String toJson(T object) {
+        return toJsonObject(object).toString();
+    }
+
+    public String toJson(T object, int indentFactor) {
+        return toJsonObject(object).toString(indentFactor);
+    }
+
+    public abstract JSONObject toJsonObject(T object);
+
+    public abstract T toObject(Reader reader);
 }

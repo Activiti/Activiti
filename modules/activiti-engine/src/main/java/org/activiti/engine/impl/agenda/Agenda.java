@@ -24,80 +24,80 @@ import org.slf4j.LoggerFactory;
  * @author Joram Barrez
  */
 public class Agenda {
-	
-	private static final Logger logger = LoggerFactory.getLogger(Agenda.class);
-	
-	protected CommandContext commandContext;
-	
-	protected LinkedList<Runnable> operations = new LinkedList<Runnable>();
-	
-	public Agenda(CommandContext commandContext) {
-		this.commandContext = commandContext;
-	}
-	
-	public boolean isEmpty() {
-		return operations.isEmpty();
-	}
-	
-	public Runnable getNextOperation() {
-		return operations.poll();
-	}
-	
-	/**
-	 * Generic method to plan a {@link Runnable}.
-	 */
-	public void planOperation(Runnable operation) {
-		planOperation(operation, null);
-	}
-	
-	/**
-	 * Generic method to plan a {@link Runnable}.
-	 */
-	public void planOperation(Runnable operation, ExecutionEntity executionEntity) {
-		operations.add(operation);
-		logger.debug("Operation {} added to agenda", operation.getClass());
-		
-		if (executionEntity != null) {
-			commandContext.addInvolvedExecution(executionEntity);
-		}
-	}
-	
-	/* SPECIFIC operations */
-	
-	public void planContinueProcessOperation(ActivityExecution execution) {
-		planOperation(new ContinueProcessOperation(this, execution), (ExecutionEntity) execution);
-	}
-	
-	public void planTakeOutgoingSequenceFlowsOperation(ActivityExecution execution, boolean evaluateConditions) {
-		planOperation(new TakeOutgoingSequenceFlowsOperation(this, execution, evaluateConditions), (ExecutionEntity) execution);
-	}
-	
-	public void planEndExecutionOperation(ActivityExecution execution) {
-		planOperation(new EndExecutionOperation(this, execution), (ExecutionEntity) execution);
-	}
-	
-	public void planTriggerExecutionOperation(ActivityExecution execution) {
-		planOperation(new TriggerExecutionOperation(this, execution), (ExecutionEntity) execution);
-	}
-	
-	public void planDestroyScopeOperation(ActivityExecution execution) {
-		planOperation(new DestroyScopeOperation(this, execution), (ExecutionEntity) execution);
-	}
-	
-	public void planExecuteInactiveBehaviorsOperation() {
-		planOperation(new ExecuteInactiveBehaviorsOperation(this));
-	}
 
-	public CommandContext getCommandContext() {
-		return commandContext;
-	}
+    private static final Logger logger = LoggerFactory.getLogger(Agenda.class);
 
-	public void setCommandContext(CommandContext commandContext) {
-		this.commandContext = commandContext;
-	}
+    protected CommandContext commandContext;
 
-	public LinkedList<Runnable> getOperations() {
-		return operations;
-	}
+    protected LinkedList<Runnable> operations = new LinkedList<Runnable>();
+
+    public Agenda(CommandContext commandContext) {
+        this.commandContext = commandContext;
+    }
+
+    public boolean isEmpty() {
+        return operations.isEmpty();
+    }
+
+    public Runnable getNextOperation() {
+        return operations.poll();
+    }
+
+    /**
+     * Generic method to plan a {@link Runnable}.
+     */
+    public void planOperation(Runnable operation) {
+        planOperation(operation, null);
+    }
+
+    /**
+     * Generic method to plan a {@link Runnable}.
+     */
+    public void planOperation(Runnable operation, ExecutionEntity executionEntity) {
+        operations.add(operation);
+        logger.debug("Operation {} added to agenda", operation.getClass());
+
+        if (executionEntity != null) {
+            commandContext.addInvolvedExecution(executionEntity);
+        }
+    }
+
+    /* SPECIFIC operations */
+
+    public void planContinueProcessOperation(ActivityExecution execution) {
+        planOperation(new ContinueProcessOperation(this, execution), (ExecutionEntity) execution);
+    }
+
+    public void planTakeOutgoingSequenceFlowsOperation(ActivityExecution execution, boolean evaluateConditions) {
+        planOperation(new TakeOutgoingSequenceFlowsOperation(this, execution, evaluateConditions), (ExecutionEntity) execution);
+    }
+
+    public void planEndExecutionOperation(ActivityExecution execution) {
+        planOperation(new EndExecutionOperation(this, execution), (ExecutionEntity) execution);
+    }
+
+    public void planTriggerExecutionOperation(ActivityExecution execution) {
+        planOperation(new TriggerExecutionOperation(this, execution), (ExecutionEntity) execution);
+    }
+
+    public void planDestroyScopeOperation(ActivityExecution execution) {
+        planOperation(new DestroyScopeOperation(this, execution), (ExecutionEntity) execution);
+    }
+
+    public void planExecuteInactiveBehaviorsOperation() {
+        planOperation(new ExecuteInactiveBehaviorsOperation(this));
+    }
+
+    public CommandContext getCommandContext() {
+        return commandContext;
+    }
+
+    public void setCommandContext(CommandContext commandContext) {
+        this.commandContext = commandContext;
+    }
+
+    public LinkedList<Runnable> getOperations() {
+        return operations;
+    }
 
 }

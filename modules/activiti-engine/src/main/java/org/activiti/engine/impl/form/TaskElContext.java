@@ -16,20 +16,18 @@ import org.activiti.engine.impl.javax.el.VariableMapper;
 import org.activiti.engine.impl.juel.SimpleContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 
-
-
 /**
  * @author Tom Baeyens
  */
 public class TaskElContext extends SimpleContext {
-  
-  TaskVariableMapper taskVariableMapper;
-  
-  public TaskElContext(TaskEntity task) {
-    this.taskVariableMapper = new TaskVariableMapper(task);
-  }
 
-  public VariableMapper getVariableMapper() {
-    return taskVariableMapper;
-  }
+    TaskVariableMapper taskVariableMapper;
+
+    public TaskElContext(TaskEntity task) {
+        this.taskVariableMapper = new TaskVariableMapper(task);
+    }
+
+    public VariableMapper getVariableMapper() {
+        return taskVariableMapper;
+    }
 }

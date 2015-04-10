@@ -26,27 +26,27 @@ import org.activiti.management.jmx.annotations.NotificationSenderAware;
 @ManagedResource(description = "test description")
 public class NotificationAwareMBean implements NotificationSenderAware {
 
-  NotificationSender capturedSender;
+    NotificationSender capturedSender;
 
-  @ManagedAttribute(description = "test attribute String description")
-  public String getTestAttributeString() {
-    return null;
+    @ManagedAttribute(description = "test attribute String description")
+    public String getTestAttributeString() {
+        return null;
 
-  }
+    }
 
-  @ManagedAttribute(description = "test attribute Boolean description")
-  public Boolean isTestAttributeBoolean() {
-    return null;
-  }
+    @ManagedAttribute(description = "test attribute Boolean description")
+    public Boolean isTestAttributeBoolean() {
+        return null;
+    }
 
-  @ManagedOperation(description = "test operation description")
-  public void getTestOperation() {
+    @ManagedOperation(description = "test operation description")
+    public void getTestOperation() {
 
-  }
+    }
 
-  @Override
-  public void setNotificationSender(NotificationSender sender) {
-    capturedSender = sender;
-  }
+    @Override
+    public void setNotificationSender(NotificationSender sender) {
+        capturedSender = sender;
+    }
 
 }

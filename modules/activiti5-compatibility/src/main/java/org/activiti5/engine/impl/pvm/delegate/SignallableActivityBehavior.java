@@ -12,12 +12,11 @@
  */
 package org.activiti5.engine.impl.pvm.delegate;
 
-
 /**
  * @author Tom Baeyens
  */
 public interface SignallableActivityBehavior extends ActivityBehavior {
 
-  void signal(ActivityExecution execution, String signalEvent, Object signalData) throws Exception;
-  
+    void signal(ActivityExecution execution, String signalEvent, Object signalData) throws Exception;
+
 }

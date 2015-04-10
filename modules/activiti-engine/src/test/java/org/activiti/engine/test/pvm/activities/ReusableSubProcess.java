@@ -22,32 +22,32 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 
-
 /**
  * @author Tom Baeyens
  */
 public class ReusableSubProcess implements SubProcessActivityBehavior {
 
-  PvmProcessDefinition processDefinition;
-  
-  public ReusableSubProcess(PvmProcessDefinition processDefinition) {
-    this.processDefinition = processDefinition;
-  }
+    PvmProcessDefinition processDefinition;
 
-  public void execute(ActivityExecution execution) {
-    PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
-    
-    // TODO set variables
-    
-    subProcessInstance.start();
-  }
+    public ReusableSubProcess(PvmProcessDefinition processDefinition) {
+        this.processDefinition = processDefinition;
+    }
 
-  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-    // TODO extract information from the subprocess and inject it into the superprocess
-  }
+    public void execute(ActivityExecution execution) {
+        PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
 
-  public void completed(ActivityExecution execution) throws Exception {
-    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-    execution.takeAll(outgoingTransitions, null);
-  }
+        // TODO set variables
+
+        subProcessInstance.start();
+    }
+
+    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+        // TODO extract information from the subprocess and inject it into the
+        // superprocess
+    }
+
+    public void completed(ActivityExecution execution) throws Exception {
+        List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+        execution.takeAll(outgoingTransitions, null);
+    }
 }

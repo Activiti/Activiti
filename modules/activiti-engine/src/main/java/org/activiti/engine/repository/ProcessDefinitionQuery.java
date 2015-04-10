@@ -27,145 +27,178 @@ import org.activiti.engine.query.Query;
  * @author Saeid Mirzaei
  */
 public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, ProcessDefinition> {
-  
-  /** Only select process definiton with the given id.  */
-  ProcessDefinitionQuery processDefinitionId(String processDefinitionId);
-  
-  /** Only select process definitions with the given category. */
-  ProcessDefinitionQuery processDefinitionCategory(String processDefinitionCategory);
-  
-  /**
-   * Only select process definitions where the category matches the given parameter.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%
-   */
-  ProcessDefinitionQuery processDefinitionCategoryLike(String processDefinitionCategoryLike);
 
-  /** Only select deployments that have a different category then the given one. 
-   * @see DeploymentBuilder#category(String) */
-  ProcessDefinitionQuery processDefinitionCategoryNotEquals(String categoryNotEquals);
+    /** Only select process definiton with the given id. */
+    ProcessDefinitionQuery processDefinitionId(String processDefinitionId);
 
-  /** Only select process definitions with the given name. */
-  ProcessDefinitionQuery processDefinitionName(String processDefinitionName);
-  
-  /**
-   * Only select process definitions where the name matches the given parameter.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%
-   */
-  ProcessDefinitionQuery processDefinitionNameLike(String processDefinitionNameLike);
+    /** Only select process definitions with the given category. */
+    ProcessDefinitionQuery processDefinitionCategory(String processDefinitionCategory);
 
-  /**
-   * Only select process definitions that are deployed in a deployment with the
-   * given deployment id
-   */
-  ProcessDefinitionQuery deploymentId(String deploymentId);
-  
-  /** Select process definitions that are deployed in deployments with the given set of ids */
-  ProcessDefinitionQuery deploymentIds(Set<String> deploymentIds);
+    /**
+     * Only select process definitions where the category matches the given
+     * parameter. The syntax that should be used is the same as in SQL, eg.
+     * %activiti%
+     */
+    ProcessDefinitionQuery processDefinitionCategoryLike(String processDefinitionCategoryLike);
 
-  /**
-   * Only select process definition with the given key.
-   */
-  ProcessDefinitionQuery processDefinitionKey(String processDefinitionKey);
+    /**
+     * Only select deployments that have a different category then the given
+     * one.
+     * 
+     * @see DeploymentBuilder#category(String)
+     */
+    ProcessDefinitionQuery processDefinitionCategoryNotEquals(String categoryNotEquals);
 
-  /**
-   * Only select process definitions where the key matches the given parameter.
-   * The syntax that should be used is the same as in SQL, eg. %activiti%
-   */
-  ProcessDefinitionQuery processDefinitionKeyLike(String processDefinitionKeyLike);
-  
-  /**
-   * Only select process definition with a certain version.
-   * Particulary useful when used in combination with {@link #processDefinitionKey(String)}
-   */
-  ProcessDefinitionQuery processDefinitionVersion(Integer processDefinitionVersion);
-  
-  /**
-   * Only select the process definitions which are the latest deployed
-   * (ie. which have the highest version number for the given key).
-   * 
-   * Can only be used in combination with {@link #processDefinitionKey(String)} of {@link #processDefinitionKeyLike(String)}.
-   * Can also be used without any other criteria (ie. query.latest().list()), which
-   * will then give all the latest versions of all the deployed process definitions.
-   * 
-   * @throws ActivitiIllegalArgumentException if used in combination with  {@link #groupId(string)}, {@link #processDefinitionVersion(int)}
-   *                           or {@link #deploymentId(String)}
-   */
-  ProcessDefinitionQuery latestVersion();
-  
-  /** Only select process definition with the given resource name. */
-  ProcessDefinitionQuery processDefinitionResourceName(String resourceName);
+    /** Only select process definitions with the given name. */
+    ProcessDefinitionQuery processDefinitionName(String processDefinitionName);
 
-  /** Only select process definition with a resource name like the given . */
-  ProcessDefinitionQuery processDefinitionResourceNameLike(String resourceNameLike);
-  
-  /**
-   * Only selects process definitions which given userId is authoriezed to start
-   */
-  ProcessDefinitionQuery startableByUser(String userId);
+    /**
+     * Only select process definitions where the name matches the given
+     * parameter. The syntax that should be used is the same as in SQL, eg.
+     * %activiti%
+     */
+    ProcessDefinitionQuery processDefinitionNameLike(String processDefinitionNameLike);
 
-  /**
-   * Only selects process definitions which are suspended
-   */
-  ProcessDefinitionQuery suspended();
-  
-  /**
-   * Only selects process definitions which are active
-   */
-  ProcessDefinitionQuery active();
-  
-	/**
-	 * Only select process definitions that have the given tenant id.
-	 */
-  ProcessDefinitionQuery processDefinitionTenantId(String tenantId);
+    /**
+     * Only select process definitions that are deployed in a deployment with
+     * the given deployment id
+     */
+    ProcessDefinitionQuery deploymentId(String deploymentId);
 
-	/**
-	 * Only select process definitions with a tenant id like the given one.
-	 */
-  ProcessDefinitionQuery processDefinitionTenantIdLike(String tenantIdLike);
-	
-	/**
-	 * Only select process definitions that do not have a tenant id.
-	 */
-  ProcessDefinitionQuery processDefinitionWithoutTenantId();
-  
-  // Support for event subscriptions /////////////////////////////////////
-  
-  /**
-   * @see #messageEventSubscriptionName(String)
-   */
-  @Deprecated
-  ProcessDefinitionQuery messageEventSubscription(String messageName);
-  
-  /**
-   * Selects the single process definition which has a start message event 
-   * with the messageName.
-   */
-  ProcessDefinitionQuery messageEventSubscriptionName(String messageName);
+    /**
+     * Select process definitions that are deployed in deployments with the
+     * given set of ids
+     */
+    ProcessDefinitionQuery deploymentIds(Set<String> deploymentIds);
 
-  // ordering ////////////////////////////////////////////////////////////
-  
-  /** Order by the category of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ProcessDefinitionQuery orderByProcessDefinitionCategory();
-  
-  /** Order by process definition key (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ProcessDefinitionQuery orderByProcessDefinitionKey();
+    /**
+     * Only select process definition with the given key.
+     */
+    ProcessDefinitionQuery processDefinitionKey(String processDefinitionKey);
 
-  /** Order by the id of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ProcessDefinitionQuery orderByProcessDefinitionId();
-  
-  /** Order by the version of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ProcessDefinitionQuery orderByProcessDefinitionVersion();
-  
-  /** Order by the name of the process definitions (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ProcessDefinitionQuery orderByProcessDefinitionName();
-  
-  /** Order by deployment id (needs to be followed by {@link #asc()} or {@link #desc()}). */
-  ProcessDefinitionQuery orderByDeploymentId();
-  
-	/**
-	 * Order by tenant id (needs to be followed by {@link #asc()} or
-	 * {@link #desc()}).
-	 */
-  ProcessDefinitionQuery orderByTenantId();
-  
+    /**
+     * Only select process definitions where the key matches the given
+     * parameter. The syntax that should be used is the same as in SQL, eg.
+     * %activiti%
+     */
+    ProcessDefinitionQuery processDefinitionKeyLike(String processDefinitionKeyLike);
+
+    /**
+     * Only select process definition with a certain version. Particulary useful
+     * when used in combination with {@link #processDefinitionKey(String)}
+     */
+    ProcessDefinitionQuery processDefinitionVersion(Integer processDefinitionVersion);
+
+    /**
+     * Only select the process definitions which are the latest deployed (ie.
+     * which have the highest version number for the given key).
+     * 
+     * Can only be used in combination with
+     * {@link #processDefinitionKey(String)} of
+     * {@link #processDefinitionKeyLike(String)}. Can also be used without any
+     * other criteria (ie. query.latest().list()), which will then give all the
+     * latest versions of all the deployed process definitions.
+     * 
+     * @throws ActivitiIllegalArgumentException
+     *             if used in combination with {@link #groupId(string)},
+     *             {@link #processDefinitionVersion(int)} or
+     *             {@link #deploymentId(String)}
+     */
+    ProcessDefinitionQuery latestVersion();
+
+    /** Only select process definition with the given resource name. */
+    ProcessDefinitionQuery processDefinitionResourceName(String resourceName);
+
+    /** Only select process definition with a resource name like the given . */
+    ProcessDefinitionQuery processDefinitionResourceNameLike(String resourceNameLike);
+
+    /**
+     * Only selects process definitions which given userId is authoriezed to
+     * start
+     */
+    ProcessDefinitionQuery startableByUser(String userId);
+
+    /**
+     * Only selects process definitions which are suspended
+     */
+    ProcessDefinitionQuery suspended();
+
+    /**
+     * Only selects process definitions which are active
+     */
+    ProcessDefinitionQuery active();
+
+    /**
+     * Only select process definitions that have the given tenant id.
+     */
+    ProcessDefinitionQuery processDefinitionTenantId(String tenantId);
+
+    /**
+     * Only select process definitions with a tenant id like the given one.
+     */
+    ProcessDefinitionQuery processDefinitionTenantIdLike(String tenantIdLike);
+
+    /**
+     * Only select process definitions that do not have a tenant id.
+     */
+    ProcessDefinitionQuery processDefinitionWithoutTenantId();
+
+    // Support for event subscriptions /////////////////////////////////////
+
+    /**
+     * @see #messageEventSubscriptionName(String)
+     */
+    @Deprecated
+    ProcessDefinitionQuery messageEventSubscription(String messageName);
+
+    /**
+     * Selects the single process definition which has a start message event
+     * with the messageName.
+     */
+    ProcessDefinitionQuery messageEventSubscriptionName(String messageName);
+
+    // ordering ////////////////////////////////////////////////////////////
+
+    /**
+     * Order by the category of the process definitions (needs to be followed by
+     * {@link #asc()} or {@link #desc()}).
+     */
+    ProcessDefinitionQuery orderByProcessDefinitionCategory();
+
+    /**
+     * Order by process definition key (needs to be followed by {@link #asc()}
+     * or {@link #desc()}).
+     */
+    ProcessDefinitionQuery orderByProcessDefinitionKey();
+
+    /**
+     * Order by the id of the process definitions (needs to be followed by
+     * {@link #asc()} or {@link #desc()}).
+     */
+    ProcessDefinitionQuery orderByProcessDefinitionId();
+
+    /**
+     * Order by the version of the process definitions (needs to be followed by
+     * {@link #asc()} or {@link #desc()}).
+     */
+    ProcessDefinitionQuery orderByProcessDefinitionVersion();
+
+    /**
+     * Order by the name of the process definitions (needs to be followed by
+     * {@link #asc()} or {@link #desc()}).
+     */
+    ProcessDefinitionQuery orderByProcessDefinitionName();
+
+    /**
+     * Order by deployment id (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
+     */
+    ProcessDefinitionQuery orderByDeploymentId();
+
+    /**
+     * Order by tenant id (needs to be followed by {@link #asc()} or
+     * {@link #desc()}).
+     */
+    ProcessDefinitionQuery orderByTenantId();
+
 }

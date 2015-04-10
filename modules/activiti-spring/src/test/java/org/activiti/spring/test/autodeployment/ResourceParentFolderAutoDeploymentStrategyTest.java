@@ -75,7 +75,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResources_Separate() {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2 };
 
         when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
         when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
@@ -93,7 +93,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResources_Joined() {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2 };
 
         when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
         when(fileMock2.getParentFile()).thenReturn(parentFile1Mock);
@@ -110,7 +110,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResources_AllInOne() {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5 };
 
         when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
         when(fileMock2.getParentFile()).thenReturn(parentFile1Mock);
@@ -131,7 +131,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResources_Mixed() {
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2, resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3 };
 
         when(fileMock1.getParentFile()).thenReturn(parentFile1Mock);
         when(fileMock2.getParentFile()).thenReturn(parentFile2Mock);
@@ -152,7 +152,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
     @Test
     public void testDeployResources_NoParent() {
 
-        final Resource[] resources = new Resource[]{resourceMock1, resourceMock2, resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3 };
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         when(fileMock1.getParentFile()).thenReturn(null);
@@ -173,7 +173,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
 
     @Test
     public void testDeployResourcesNoResources() {
-        final Resource[] resources = new Resource[]{};
+        final Resource[] resources = new Resource[] {};
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         verify(repositoryServiceMock, never()).createDeployment();
@@ -190,7 +190,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
         when(resourceMock3.getFile()).thenThrow(new IOException());
         when(resourceMock3.getFilename()).thenReturn(resourceName3);
 
-        final Resource[] resources = new Resource[]{resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock3 };
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
         verify(repositoryServiceMock, times(1)).createDeployment();
@@ -204,7 +204,7 @@ public class ResourceParentFolderAutoDeploymentStrategyTest extends AbstractAuto
     public void testDeployResourcesIOExceptionYieldsActivitiException() throws Exception {
         when(resourceMock3.getInputStream()).thenThrow(new IOException());
 
-        final Resource[] resources = new Resource[]{resourceMock3};
+        final Resource[] resources = new Resource[] { resourceMock3 };
         classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
     }
 

@@ -74,293 +74,286 @@ import org.junit.runners.model.Statement;
  * 
  * <p>
  * The activitiRule also lets you {@link ActivitiRule#setCurrentTime(Date) set
- * the current time used by the process engine}. This can be handy to control the
- * exact time that is used by the engine in order to verify e.g. e.g. due dates
- * of timers. Or start, end and duration times in the history service. In the
- * tearDown, the internal clock will automatically be reset to use the current
- * system time rather then the time that was set during a test method.
+ * the current time used by the process engine}. This can be handy to control
+ * the exact time that is used by the engine in order to verify e.g. e.g. due
+ * dates of timers. Or start, end and duration times in the history service. In
+ * the tearDown, the internal clock will automatically be reset to use the
+ * current system time rather then the time that was set during a test method.
  * </p>
  * 
  * @author Tom Baeyens
  */
 public class ActivitiRule implements TestRule {
 
-	protected String configurationResource = "activiti.cfg.xml";
-	protected String deploymentId = null;
+    protected String configurationResource = "activiti.cfg.xml";
+    protected String deploymentId = null;
 
-  protected ProcessEngineConfiguration processEngineConfiguration;
-	protected ProcessEngine processEngine;
-	protected RepositoryService repositoryService;
-	protected RuntimeService runtimeService;
-	protected TaskService taskService;
-	protected HistoryService historyService;
-	protected IdentityService identityService;
-	protected ManagementService managementService;
-	protected FormService formService;
+    protected ProcessEngineConfiguration processEngineConfiguration;
+    protected ProcessEngine processEngine;
+    protected RepositoryService repositoryService;
+    protected RuntimeService runtimeService;
+    protected TaskService taskService;
+    protected HistoryService historyService;
+    protected IdentityService identityService;
+    protected ManagementService managementService;
+    protected FormService formService;
 
-	protected ActivitiMockSupport mockSupport;
+    protected ActivitiMockSupport mockSupport;
 
-  public ActivitiRule() {
-	}
-
-	public ActivitiRule(String configurationResource) {
-		this.configurationResource = configurationResource;
-	}
-
-	public ActivitiRule(ProcessEngine processEngine) {
-	  setProcessEngine(processEngine);
-	}
-
-	/**
-	 * Implementation based on {@link TestWatcher}.
-	 */
-	@Override
-	public Statement apply(final Statement base, final Description description) {
-		return new Statement() {
-			@Override
-			public void evaluate() throws Throwable {
-				List<Throwable> errors = new ArrayList<Throwable>();
-
-				startingQuietly(description, errors);
-				try {
-					base.evaluate();
-					succeededQuietly(description, errors);
-				} catch (AssumptionViolatedException e) {
-					errors.add(e);
-					skippedQuietly(e, description, errors);
-				} catch (Throwable t) {
-					errors.add(t);
-					failedQuietly(t, description, errors);
-				} finally {
-					finishedQuietly(description, errors);
-				}
-
-				MultipleFailureException.assertEmpty(errors);
-			}
-		};
-	}
-
-	private void succeededQuietly(Description description, List<Throwable> errors) {
-		try {
-			succeeded(description);
-		} catch (Throwable t) {
-			errors.add(t);
-		}
-	}
-
-	private void failedQuietly(Throwable t, Description description,
-	    List<Throwable> errors) {
-		try {
-			failed(t, description);
-		} catch (Throwable t1) {
-			errors.add(t1);
-		}
-	}
-
-	private void skippedQuietly(AssumptionViolatedException e,
-	    Description description, List<Throwable> errors) {
-		try {
-			skipped(e, description);
-		} catch (Throwable t) {
-			errors.add(t);
-		}
-	}
-
-	private void startingQuietly(Description description, List<Throwable> errors) {
-		try {
-			starting(description);
-		} catch (Throwable t) {
-			errors.add(t);
-		}
-	}
-
-	private void finishedQuietly(Description description, List<Throwable> errors) {
-		try {
-			finished(description);
-		} catch (Throwable t) {
-			errors.add(t);
-		}
-	}
-
-	/**
-	 * Invoked when a test succeeds
-	 */
-	protected void succeeded(Description description) {
-	}
-
-	/**
-	 * Invoked when a test fails
-	 */
-	protected void failed(Throwable e, Description description) {
-	}
-
-	/**
-	 * Invoked when a test is skipped due to a failed assumption.
-	 */
-	protected void skipped(AssumptionViolatedException e, Description description) {
-	}
-
-	protected void starting(Description description) {
-		if (processEngine == null) {
-			initializeProcessEngine();
-    }
-		
-		if (processEngineConfiguration == null) {
-		  initializeServices();
-		}
-
-		if (mockSupport == null) {
-			initializeMockSupport();
-		}
-		
-		// Allow for mock configuration
-		configureProcessEngine();
-		
-		// Allow for annotations
-		try {
-	    TestHelper.annotationMockSupportSetup(Class.forName(description.getClassName()), description.getMethodName(), mockSupport);
-    } catch (ClassNotFoundException e) {
-    	throw new ActivitiException("Programmatic error: could not instantiate "
-			    + description.getClassName(), e);
+    public ActivitiRule() {
     }
 
-		try {
-			deploymentId = TestHelper.annotationDeploymentSetUp(processEngine,
-			    Class.forName(description.getClassName()), description.getMethodName());
-		} catch (ClassNotFoundException e) {
-			throw new ActivitiException("Programmatic error: could not instantiate "
-			    + description.getClassName(), e);
-		}
-	}
+    public ActivitiRule(String configurationResource) {
+        this.configurationResource = configurationResource;
+    }
 
-	protected void initializeProcessEngine() {
-		processEngine = TestHelper.getProcessEngine(configurationResource);
-	}
+    public ActivitiRule(ProcessEngine processEngine) {
+        setProcessEngine(processEngine);
+    }
 
-	protected void initializeServices() {
-    processEngineConfiguration = processEngine.getProcessEngineConfiguration();
-		repositoryService = processEngine.getRepositoryService();
-		runtimeService = processEngine.getRuntimeService();
-		taskService = processEngine.getTaskService();
-		historyService = processEngine.getHistoryService();
-		identityService = processEngine.getIdentityService();
-		managementService = processEngine.getManagementService();
-		formService = processEngine.getFormService();
-	}
+    /**
+     * Implementation based on {@link TestWatcher}.
+     */
+    @Override
+    public Statement apply(final Statement base, final Description description) {
+        return new Statement() {
+            @Override
+            public void evaluate() throws Throwable {
+                List<Throwable> errors = new ArrayList<Throwable>();
 
-	protected void initializeMockSupport() {
-		if (ActivitiMockSupport.isMockSupportPossible(processEngine)) {
-			this.mockSupport = new ActivitiMockSupport(processEngine);
-		}
-	}
-	
-	protected void configureProcessEngine() {
-		/** meant to be overridden */
-	}
+                startingQuietly(description, errors);
+                try {
+                    base.evaluate();
+                    succeededQuietly(description, errors);
+                } catch (AssumptionViolatedException e) {
+                    errors.add(e);
+                    skippedQuietly(e, description, errors);
+                } catch (Throwable t) {
+                    errors.add(t);
+                    failedQuietly(t, description, errors);
+                } finally {
+                    finishedQuietly(description, errors);
+                }
 
-	protected void finished(Description description) {
+                MultipleFailureException.assertEmpty(errors);
+            }
+        };
+    }
 
-		// Remove the test deployment
-		try {
-			TestHelper.annotationDeploymentTearDown(processEngine, deploymentId,
-			    Class.forName(description.getClassName()), description.getMethodName());
-		} catch (ClassNotFoundException e) {
-			throw new ActivitiException("Programmatic error: could not instantiate "
-			    + description.getClassName(), e);
-		}
+    private void succeededQuietly(Description description, List<Throwable> errors) {
+        try {
+            succeeded(description);
+        } catch (Throwable t) {
+            errors.add(t);
+        }
+    }
 
-		// Reset internal clock
-		processEngineConfiguration.getClock().reset();
+    private void failedQuietly(Throwable t, Description description, List<Throwable> errors) {
+        try {
+            failed(t, description);
+        } catch (Throwable t1) {
+            errors.add(t1);
+        }
+    }
 
-		// Rest mocks
-		if (mockSupport != null) {
-			TestHelper.annotationMockSupportTeardown(mockSupport);
-		}
-	}
+    private void skippedQuietly(AssumptionViolatedException e, Description description, List<Throwable> errors) {
+        try {
+            skipped(e, description);
+        } catch (Throwable t) {
+            errors.add(t);
+        }
+    }
 
-	public void setCurrentTime(Date currentTime) {
-		processEngineConfiguration.getClock().setCurrentTime(currentTime);
-	}
+    private void startingQuietly(Description description, List<Throwable> errors) {
+        try {
+            starting(description);
+        } catch (Throwable t) {
+            errors.add(t);
+        }
+    }
 
-	public String getConfigurationResource() {
-		return configurationResource;
-	}
+    private void finishedQuietly(Description description, List<Throwable> errors) {
+        try {
+            finished(description);
+        } catch (Throwable t) {
+            errors.add(t);
+        }
+    }
 
-	public void setConfigurationResource(String configurationResource) {
-		this.configurationResource = configurationResource;
-	}
+    /**
+     * Invoked when a test succeeds
+     */
+    protected void succeeded(Description description) {
+    }
 
-	public ProcessEngine getProcessEngine() {
-		return processEngine;
-	}
+    /**
+     * Invoked when a test fails
+     */
+    protected void failed(Throwable e, Description description) {
+    }
 
-	public void setProcessEngine(ProcessEngine processEngine) {
-		this.processEngine = processEngine;
-		initializeServices();
-	}
+    /**
+     * Invoked when a test is skipped due to a failed assumption.
+     */
+    protected void skipped(AssumptionViolatedException e, Description description) {
+    }
 
-	public RepositoryService getRepositoryService() {
-		return repositoryService;
-	}
+    protected void starting(Description description) {
+        if (processEngine == null) {
+            initializeProcessEngine();
+        }
 
-	public void setRepositoryService(RepositoryService repositoryService) {
-		this.repositoryService = repositoryService;
-	}
+        if (processEngineConfiguration == null) {
+            initializeServices();
+        }
 
-	public RuntimeService getRuntimeService() {
-		return runtimeService;
-	}
+        if (mockSupport == null) {
+            initializeMockSupport();
+        }
 
-	public void setRuntimeService(RuntimeService runtimeService) {
-		this.runtimeService = runtimeService;
-	}
+        // Allow for mock configuration
+        configureProcessEngine();
 
-	public TaskService getTaskService() {
-		return taskService;
-	}
+        // Allow for annotations
+        try {
+            TestHelper.annotationMockSupportSetup(Class.forName(description.getClassName()), description.getMethodName(), mockSupport);
+        } catch (ClassNotFoundException e) {
+            throw new ActivitiException("Programmatic error: could not instantiate " + description.getClassName(), e);
+        }
 
-	public void setTaskService(TaskService taskService) {
-		this.taskService = taskService;
-	}
+        try {
+            deploymentId = TestHelper.annotationDeploymentSetUp(processEngine, Class.forName(description.getClassName()), description.getMethodName());
+        } catch (ClassNotFoundException e) {
+            throw new ActivitiException("Programmatic error: could not instantiate " + description.getClassName(), e);
+        }
+    }
 
-	public HistoryService getHistoryService() {
-		return historyService;
-	}
+    protected void initializeProcessEngine() {
+        processEngine = TestHelper.getProcessEngine(configurationResource);
+    }
 
-	public void setHistoricDataService(HistoryService historicDataService) {
-		this.historyService = historicDataService;
-	}
+    protected void initializeServices() {
+        processEngineConfiguration = processEngine.getProcessEngineConfiguration();
+        repositoryService = processEngine.getRepositoryService();
+        runtimeService = processEngine.getRuntimeService();
+        taskService = processEngine.getTaskService();
+        historyService = processEngine.getHistoryService();
+        identityService = processEngine.getIdentityService();
+        managementService = processEngine.getManagementService();
+        formService = processEngine.getFormService();
+    }
 
-	public IdentityService getIdentityService() {
-		return identityService;
-	}
+    protected void initializeMockSupport() {
+        if (ActivitiMockSupport.isMockSupportPossible(processEngine)) {
+            this.mockSupport = new ActivitiMockSupport(processEngine);
+        }
+    }
 
-	public void setIdentityService(IdentityService identityService) {
-		this.identityService = identityService;
-	}
+    protected void configureProcessEngine() {
+        /** meant to be overridden */
+    }
 
-	public ManagementService getManagementService() {
-		return managementService;
-	}
+    protected void finished(Description description) {
 
-	public FormService getFormService() {
-		return formService;
-	}
+        // Remove the test deployment
+        try {
+            TestHelper.annotationDeploymentTearDown(processEngine, deploymentId, Class.forName(description.getClassName()), description.getMethodName());
+        } catch (ClassNotFoundException e) {
+            throw new ActivitiException("Programmatic error: could not instantiate " + description.getClassName(), e);
+        }
 
-	public void setManagementService(ManagementService managementService) {
-		this.managementService = managementService;
-	}
+        // Reset internal clock
+        processEngineConfiguration.getClock().reset();
 
-  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    this.processEngineConfiguration = processEngineConfiguration;
-  }
+        // Rest mocks
+        if (mockSupport != null) {
+            TestHelper.annotationMockSupportTeardown(mockSupport);
+        }
+    }
 
-  public ActivitiMockSupport getMockSupport() {
-		return mockSupport;
-	}
+    public void setCurrentTime(Date currentTime) {
+        processEngineConfiguration.getClock().setCurrentTime(currentTime);
+    }
 
-	public ActivitiMockSupport mockSupport() {
-		return mockSupport;
-	}
+    public String getConfigurationResource() {
+        return configurationResource;
+    }
+
+    public void setConfigurationResource(String configurationResource) {
+        this.configurationResource = configurationResource;
+    }
+
+    public ProcessEngine getProcessEngine() {
+        return processEngine;
+    }
+
+    public void setProcessEngine(ProcessEngine processEngine) {
+        this.processEngine = processEngine;
+        initializeServices();
+    }
+
+    public RepositoryService getRepositoryService() {
+        return repositoryService;
+    }
+
+    public void setRepositoryService(RepositoryService repositoryService) {
+        this.repositoryService = repositoryService;
+    }
+
+    public RuntimeService getRuntimeService() {
+        return runtimeService;
+    }
+
+    public void setRuntimeService(RuntimeService runtimeService) {
+        this.runtimeService = runtimeService;
+    }
+
+    public TaskService getTaskService() {
+        return taskService;
+    }
+
+    public void setTaskService(TaskService taskService) {
+        this.taskService = taskService;
+    }
+
+    public HistoryService getHistoryService() {
+        return historyService;
+    }
+
+    public void setHistoricDataService(HistoryService historicDataService) {
+        this.historyService = historicDataService;
+    }
+
+    public IdentityService getIdentityService() {
+        return identityService;
+    }
+
+    public void setIdentityService(IdentityService identityService) {
+        this.identityService = identityService;
+    }
+
+    public ManagementService getManagementService() {
+        return managementService;
+    }
+
+    public FormService getFormService() {
+        return formService;
+    }
+
+    public void setManagementService(ManagementService managementService) {
+        this.managementService = managementService;
+    }
+
+    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+        this.processEngineConfiguration = processEngineConfiguration;
+    }
+
+    public ActivitiMockSupport getMockSupport() {
+        return mockSupport;
+    }
+
+    public ActivitiMockSupport mockSupport() {
+        return mockSupport;
+    }
 
 }

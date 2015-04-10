@@ -15,22 +15,21 @@ package org.activiti.engine.test.bpmn.multiinstance;
 import org.activiti5.engine.delegate.DelegateExecution;
 import org.activiti5.engine.delegate.JavaDelegate;
 
-
 /**
  * @author Joram Barrez
  */
 public class MultiInstanceDelegate implements JavaDelegate {
-  
-  public void execute(DelegateExecution execution) throws Exception {
-    Integer result = (Integer) execution.getVariable("result");
-    
-    Integer item = (Integer) execution.getVariable("item");
-    if (item != null) {
-      result = result * item;
-    } else {
-      result = result * 2;
+
+    public void execute(DelegateExecution execution) throws Exception {
+        Integer result = (Integer) execution.getVariable("result");
+
+        Integer item = (Integer) execution.getVariable("item");
+        if (item != null) {
+            result = result * item;
+        } else {
+            result = result * 2;
+        }
+        execution.setVariable("result", result);
     }
-    execution.setVariable("result", result);
-  }
 
 }

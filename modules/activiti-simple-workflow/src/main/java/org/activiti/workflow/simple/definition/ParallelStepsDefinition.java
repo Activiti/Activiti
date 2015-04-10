@@ -30,59 +30,59 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 @JsonTypeName("parallel-step")
 public class ParallelStepsDefinition extends AbstractStepListContainer<ParallelStepsDefinition> implements StepDefinition {
 
-  private static final long serialVersionUID = 1L;
-  
-	protected WorkflowDefinition workflowDefinition;
-	protected Map<String, Object> parameters = new HashMap<String, Object>();
-  
-  public ParallelStepsDefinition() {
-    
-  }
-  
-  public ParallelStepsDefinition(WorkflowDefinition workflowDefinition) {
-    this.workflowDefinition = workflowDefinition;
-  }
-  
-  public WorkflowDefinition endParallel() {
-    if (workflowDefinition == null) {
-      throw new SimpleWorkflowException("Can only call endParallel when inParallel was called on a workflow definition first");
-    }
-    return workflowDefinition;
-  }
-  
-  @Override
-  public StepDefinition clone() {
-    ParallelStepsDefinition clone = new ParallelStepsDefinition();
-    clone.setValues(this);
-    return clone;
-  }
-  
-  @Override
-  public void setValues(StepDefinition otherDefinition) {
-    if(!(otherDefinition instanceof ParallelStepsDefinition)) {
-      throw new SimpleWorkflowException("An instance of ParallelStepsDefinition is required to set values");
-    }
-    
-    ParallelStepsDefinition definition = (ParallelStepsDefinition) otherDefinition;
-    setId(definition.getId());
+    private static final long serialVersionUID = 1L;
 
-    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
-    
-    steps = new ArrayList<ListStepDefinition<ParallelStepsDefinition>>();
-    if (definition.getStepList() != null && !definition.getStepList().isEmpty()) {
-      for (ListStepDefinition<ParallelStepsDefinition> stepDefinition : definition.getStepList()) {
-        steps.add(stepDefinition.clone());
-      }
+    protected WorkflowDefinition workflowDefinition;
+    protected Map<String, Object> parameters = new HashMap<String, Object>();
+
+    public ParallelStepsDefinition() {
+
     }
-  }
-  
-  @Override
-  @JsonSerialize(include=Inclusion.NON_EMPTY)
-  public Map<String, Object> getParameters() {
-  	return parameters;
-  }
-  
-  public void setParameters(Map<String,Object> parameters) {
-  	this.parameters = parameters;
-  }
+
+    public ParallelStepsDefinition(WorkflowDefinition workflowDefinition) {
+        this.workflowDefinition = workflowDefinition;
+    }
+
+    public WorkflowDefinition endParallel() {
+        if (workflowDefinition == null) {
+            throw new SimpleWorkflowException("Can only call endParallel when inParallel was called on a workflow definition first");
+        }
+        return workflowDefinition;
+    }
+
+    @Override
+    public StepDefinition clone() {
+        ParallelStepsDefinition clone = new ParallelStepsDefinition();
+        clone.setValues(this);
+        return clone;
+    }
+
+    @Override
+    public void setValues(StepDefinition otherDefinition) {
+        if (!(otherDefinition instanceof ParallelStepsDefinition)) {
+            throw new SimpleWorkflowException("An instance of ParallelStepsDefinition is required to set values");
+        }
+
+        ParallelStepsDefinition definition = (ParallelStepsDefinition) otherDefinition;
+        setId(definition.getId());
+
+        setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
+
+        steps = new ArrayList<ListStepDefinition<ParallelStepsDefinition>>();
+        if (definition.getStepList() != null && !definition.getStepList().isEmpty()) {
+            for (ListStepDefinition<ParallelStepsDefinition> stepDefinition : definition.getStepList()) {
+                steps.add(stepDefinition.clone());
+            }
+        }
+    }
+
+    @Override
+    @JsonSerialize(include = Inclusion.NON_EMPTY)
+    public Map<String, Object> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, Object> parameters) {
+        this.parameters = parameters;
+    }
 }

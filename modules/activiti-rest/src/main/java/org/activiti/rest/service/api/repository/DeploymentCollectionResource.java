@@ -46,109 +46,106 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
  */
 @RestController
 public class DeploymentCollectionResource {
-  
-  protected static final String DEPRECATED_API_DEPLOYMENT_SEGMENT = "deployment";
-  
-  private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
-  
-  static {
-    allowedSortProperties.put("id", DeploymentQueryProperty.DEPLOYMENT_ID);
-    allowedSortProperties.put("name", DeploymentQueryProperty.DEPLOYMENT_NAME);
-    allowedSortProperties.put("deployTime", DeploymentQueryProperty.DEPLOY_TIME);
-    allowedSortProperties.put("tenantId", DeploymentQueryProperty.DEPLOYMENT_TENANT_ID);
-  }
-  
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected RepositoryService repositoryService;
-  
-  @RequestMapping(value="/repository/deployments", method = RequestMethod.GET, produces = "application/json")
-  public DataResponse getDeployments(@RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
-    DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
-    
-    // Apply filters
-    if (allRequestParams.containsKey("name")) {
-      deploymentQuery.deploymentName(allRequestParams.get("name"));
-    }
-    if (allRequestParams.containsKey("nameLike")) {
-      deploymentQuery.deploymentNameLike(allRequestParams.get("nameLike"));
-    }
-    if (allRequestParams.containsKey("category")) {
-      deploymentQuery.deploymentCategory(allRequestParams.get("category"));
-    }
-    if (allRequestParams.containsKey("categoryNotEquals")) {
-      deploymentQuery.deploymentCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
-    }
-    if (allRequestParams.containsKey("tenantId")) {
-      deploymentQuery.deploymentTenantId(allRequestParams.get("tenantId"));
-    }
-    if (allRequestParams.containsKey("tenantIdLike")) {
-      deploymentQuery.deploymentTenantIdLike(allRequestParams.get("tenantIdLike"));
-    }
-    if (allRequestParams.containsKey("withoutTenantId")) {
-    	Boolean withoutTenantId = Boolean.valueOf(allRequestParams.get("withoutTenantId"));
-    	if (withoutTenantId) {
-    		deploymentQuery.deploymentWithoutTenantId();
-    	}
+
+    protected static final String DEPRECATED_API_DEPLOYMENT_SEGMENT = "deployment";
+
+    private static Map<String, QueryProperty> allowedSortProperties = new HashMap<String, QueryProperty>();
+
+    static {
+        allowedSortProperties.put("id", DeploymentQueryProperty.DEPLOYMENT_ID);
+        allowedSortProperties.put("name", DeploymentQueryProperty.DEPLOYMENT_NAME);
+        allowedSortProperties.put("deployTime", DeploymentQueryProperty.DEPLOY_TIME);
+        allowedSortProperties.put("tenantId", DeploymentQueryProperty.DEPLOYMENT_TENANT_ID);
     }
 
-    DataResponse response = new DeploymentsPaginateList(restResponseFactory)
-        .paginateList(allRequestParams, deploymentQuery, "id", allowedSortProperties);
-    return response;
-  }
-  
-  @RequestMapping(value="/repository/deployments", method = RequestMethod.POST, produces = "application/json")
-  public DeploymentResponse uploadDeployment(@RequestParam(value="tenantId", required=false) String tenantId, 
-      HttpServletRequest request, HttpServletResponse response) {
-    
-    if (request instanceof MultipartHttpServletRequest == false) {
-      throw new ActivitiIllegalArgumentException("Multipart request is required");
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected RepositoryService repositoryService;
+
+    @RequestMapping(value = "/repository/deployments", method = RequestMethod.GET, produces = "application/json")
+    public DataResponse getDeployments(@RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+        DeploymentQuery deploymentQuery = repositoryService.createDeploymentQuery();
+
+        // Apply filters
+        if (allRequestParams.containsKey("name")) {
+            deploymentQuery.deploymentName(allRequestParams.get("name"));
+        }
+        if (allRequestParams.containsKey("nameLike")) {
+            deploymentQuery.deploymentNameLike(allRequestParams.get("nameLike"));
+        }
+        if (allRequestParams.containsKey("category")) {
+            deploymentQuery.deploymentCategory(allRequestParams.get("category"));
+        }
+        if (allRequestParams.containsKey("categoryNotEquals")) {
+            deploymentQuery.deploymentCategoryNotEquals(allRequestParams.get("categoryNotEquals"));
+        }
+        if (allRequestParams.containsKey("tenantId")) {
+            deploymentQuery.deploymentTenantId(allRequestParams.get("tenantId"));
+        }
+        if (allRequestParams.containsKey("tenantIdLike")) {
+            deploymentQuery.deploymentTenantIdLike(allRequestParams.get("tenantIdLike"));
+        }
+        if (allRequestParams.containsKey("withoutTenantId")) {
+            Boolean withoutTenantId = Boolean.valueOf(allRequestParams.get("withoutTenantId"));
+            if (withoutTenantId) {
+                deploymentQuery.deploymentWithoutTenantId();
+            }
+        }
+
+        DataResponse response = new DeploymentsPaginateList(restResponseFactory).paginateList(allRequestParams, deploymentQuery, "id", allowedSortProperties);
+        return response;
     }
-    
-    MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
-    
-    if (multipartRequest.getFileMap().size() == 0) {
-      throw new ActivitiIllegalArgumentException("Multipart request with file content is required");
+
+    @RequestMapping(value = "/repository/deployments", method = RequestMethod.POST, produces = "application/json")
+    public DeploymentResponse uploadDeployment(@RequestParam(value = "tenantId", required = false) String tenantId, HttpServletRequest request, HttpServletResponse response) {
+
+        if (request instanceof MultipartHttpServletRequest == false) {
+            throw new ActivitiIllegalArgumentException("Multipart request is required");
+        }
+
+        MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+
+        if (multipartRequest.getFileMap().size() == 0) {
+            throw new ActivitiIllegalArgumentException("Multipart request with file content is required");
+        }
+
+        MultipartFile file = multipartRequest.getFileMap().values().iterator().next();
+
+        try {
+            DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
+            String fileName = file.getOriginalFilename();
+            if (StringUtils.isEmpty(fileName)
+                    || !(fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn") || fileName.toLowerCase().endsWith(".bar") || fileName.toLowerCase().endsWith(".zip"))) {
+
+                fileName = file.getName();
+            }
+
+            if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
+                deploymentBuilder.addInputStream(fileName, file.getInputStream());
+            } else if (fileName.toLowerCase().endsWith(".bar") || fileName.toLowerCase().endsWith(".zip")) {
+                deploymentBuilder.addZipInputStream(new ZipInputStream(file.getInputStream()));
+            } else {
+                throw new ActivitiIllegalArgumentException("File must be of type .bpmn20.xml, .bpmn, .bar or .zip");
+            }
+            deploymentBuilder.name(fileName);
+
+            if (tenantId != null) {
+                deploymentBuilder.tenantId(tenantId);
+            }
+
+            Deployment deployment = deploymentBuilder.deploy();
+
+            response.setStatus(HttpStatus.CREATED.value());
+
+            return restResponseFactory.createDeploymentResponse(deployment);
+
+        } catch (Exception e) {
+            if (e instanceof ActivitiException) {
+                throw (ActivitiException) e;
+            }
+            throw new ActivitiException(e.getMessage(), e);
+        }
     }
-    
-    MultipartFile file = multipartRequest.getFileMap().values().iterator().next();
-    
-    try {
-      DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
-      String fileName = file.getOriginalFilename();
-      if (StringUtils.isEmpty(fileName) || !(
-          fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn") || 
-          fileName.toLowerCase().endsWith(".bar") || fileName.toLowerCase().endsWith(".zip"))) {
-        
-        fileName = file.getName();
-      }
-      
-      if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
-        deploymentBuilder.addInputStream(fileName, file.getInputStream());
-      } else if (fileName.toLowerCase().endsWith(".bar") || fileName.toLowerCase().endsWith(".zip")) {
-        deploymentBuilder.addZipInputStream(new ZipInputStream(file.getInputStream()));
-      } else {
-        throw new ActivitiIllegalArgumentException("File must be of type .bpmn20.xml, .bpmn, .bar or .zip");
-      }
-      deploymentBuilder.name(fileName);
-      
-      if(tenantId != null) {
-      	deploymentBuilder.tenantId(tenantId);
-      }
-      
-      Deployment deployment = deploymentBuilder.deploy();
-      
-      response.setStatus(HttpStatus.CREATED.value());
-      
-      return restResponseFactory.createDeploymentResponse(deployment);
-      
-    } catch (Exception e) {
-      if (e instanceof ActivitiException) {
-        throw (ActivitiException) e;
-      }
-      throw new ActivitiException(e.getMessage(), e);
-    }
-  }
 }

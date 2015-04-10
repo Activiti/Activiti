@@ -23,23 +23,24 @@ import org.activiti5.engine.test.Deployment;
  */
 public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
-  @Deployment
-  public void testInterruptingTimerDuration() {
-    
-    // Start process instance
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("escalationExample");
+    @Deployment
+    public void testInterruptingTimerDuration() {
 
-    // There should be one task, with a timer : first line support
-    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    assertEquals("First line support", task.getName());
+        // Start process instance
+        ProcessInstance pi = runtimeService.startProcessInstanceByKey("escalationExample");
 
-    // Manually execute the job
-    Job timer = managementService.createJobQuery().singleResult();
-    managementService.executeJob(timer.getId());
+        // There should be one task, with a timer : first line support
+        Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+        assertEquals("First line support", task.getName());
 
-    // The timer has fired, and the second task (secondlinesupport) now exists
-    task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-    assertEquals("Handle escalated issue", task.getName());
-  }
+        // Manually execute the job
+        Job timer = managementService.createJobQuery().singleResult();
+        managementService.executeJob(timer.getId());
+
+        // The timer has fired, and the second task (secondlinesupport) now
+        // exists
+        task = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+        assertEquals("Handle escalated issue", task.getName());
+    }
 
 }

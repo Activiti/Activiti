@@ -21,6 +21,7 @@ import javax.inject.Qualifier;
 
 /**
  * Qualifier annotation for injecting a business key:
+ * 
  * <pre>
  *  {@code @Inject} {@code @BusinessKey} String bky;
  * </pre>

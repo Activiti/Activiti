@@ -14,34 +14,34 @@
 package org.activiti5.engine;
 
 /**
- * Runtime exception indicating the requested class was not found or an error occurred
- * while loading the class.
+ * Runtime exception indicating the requested class was not found or an error
+ * occurred while loading the class.
  * 
  * @author Frederik Heremans
  */
 public class ActivitiClassLoadingException extends ActivitiException {
 
-  private static final long serialVersionUID = 1L;
-  protected String className;
-  
-  public ActivitiClassLoadingException(String className, Throwable cause) {
-    super(getExceptionMessageMessage(className, cause), cause);
-    this.className = className;
-  }
- 
-  /**
-   * Returns the name of the class this exception is related to.
-   */
-  public String getClassName() {
-    return className;
-  }
-  
-  private static String getExceptionMessageMessage(String className, Throwable cause) {
-    if(cause instanceof ClassNotFoundException) {
-      return "Class not found: " + className;
-    } else {
-      return "Could not load class: " + className;
+    private static final long serialVersionUID = 1L;
+    protected String className;
+
+    public ActivitiClassLoadingException(String className, Throwable cause) {
+        super(getExceptionMessageMessage(className, cause), cause);
+        this.className = className;
     }
-  }
+
+    /**
+     * Returns the name of the class this exception is related to.
+     */
+    public String getClassName() {
+        return className;
+    }
+
+    private static String getExceptionMessageMessage(String className, Throwable cause) {
+        if (cause instanceof ClassNotFoundException) {
+            return "Class not found: " + className;
+        } else {
+            return "Could not load class: " + className;
+        }
+    }
 
 }

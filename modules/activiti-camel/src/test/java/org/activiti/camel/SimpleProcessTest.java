@@ -31,79 +31,74 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class SimpleProcessTest extends SpringActivitiTestCase {
 
-  @Autowired 
-  protected CamelContext camelContext;
-	
-  protected MockEndpoint service1;
+    @Autowired
+    protected CamelContext camelContext;
 
-  protected MockEndpoint service2;
+    protected MockEndpoint service1;
 
-  public void setUp() throws Exception {
-    service1 = (MockEndpoint) camelContext.getEndpoint("mock:service1");
-    service1.reset();
-    service2 = (MockEndpoint) camelContext.getEndpoint("mock:service2");
-    service2.reset();
-    camelContext.addRoutes(new RouteBuilder() {
+    protected MockEndpoint service2;
 
-  		@Override
-  		public void configure() throws Exception {
-  		  from("direct:start").to("activiti:camelProcess");	   	
-        from("activiti:camelProcess:serviceTask1").setBody().property("var1")
-          .to("mock:service1").setProperty("var2").constant("var2")
-          .setBody().properties();
-        from("direct:receive").to("activiti:camelProcess:receive");
-        from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true")
-          .to("mock:service2");
-  		}
-  	});
-  }
-  
-  public void tearDown() throws Exception {
-    List<Route> routes = camelContext.getRoutes();
-    for (Route r: routes) {
-      camelContext.stopRoute(r.getId());
-      camelContext.removeRoute(r.getId());
+    public void setUp() throws Exception {
+        service1 = (MockEndpoint) camelContext.getEndpoint("mock:service1");
+        service1.reset();
+        service2 = (MockEndpoint) camelContext.getEndpoint("mock:service2");
+        service2.reset();
+        camelContext.addRoutes(new RouteBuilder() {
+
+            @Override
+            public void configure() throws Exception {
+                from("direct:start").to("activiti:camelProcess");
+                from("activiti:camelProcess:serviceTask1").setBody().property("var1").to("mock:service1").setProperty("var2").constant("var2").setBody().properties();
+                from("direct:receive").to("activiti:camelProcess:receive");
+                from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true").to("mock:service2");
+            }
+        });
     }
-  }
-  
-  @Deployment(resources = {"process/example.bpmn20.xml"})
-  public void testRunProcess() throws Exception {
-    CamelContext ctx = applicationContext.getBean(CamelContext.class);
-    ProducerTemplate tpl = ctx.createProducerTemplate();
-    service1.expectedBodiesReceived("ala");
 
-    Exchange exchange = ctx.getEndpoint("direct:start").createExchange();
-    exchange.getIn().setBody(Collections.singletonMap("var1", "ala"));
-    tpl.send("direct:start", exchange);   
-    String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
+    public void tearDown() throws Exception {
+        List<Route> routes = camelContext.getRoutes();
+        for (Route r : routes) {
+            camelContext.stopRoute(r.getId());
+            camelContext.removeRoute(r.getId());
+        }
+    }
 
-   
-    tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
+    @Deployment(resources = { "process/example.bpmn20.xml" })
+    public void testRunProcess() throws Exception {
+        CamelContext ctx = applicationContext.getBean(CamelContext.class);
+        ProducerTemplate tpl = ctx.createProducerTemplate();
+        service1.expectedBodiesReceived("ala");
 
-    assertProcessEnded(instanceId);
+        Exchange exchange = ctx.getEndpoint("direct:start").createExchange();
+        exchange.getIn().setBody(Collections.singletonMap("var1", "ala"));
+        tpl.send("direct:start", exchange);
+        String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
 
-    service1.assertIsSatisfied();
-    Map<?, ?> m = service2.getExchanges().get(0).getIn().getBody(Map.class);
-    assertEquals("ala", m.get("var1"));
-    assertEquals("var2", m.get("var2"));
-  }
+        tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
 
-  @Deployment(resources = {"process/example.bpmn20.xml"})
-  public void testRunProcessByKey() throws Exception {
-    CamelContext ctx = applicationContext.getBean(CamelContext.class);
-    ProducerTemplate tpl = ctx.createProducerTemplate();
-    MockEndpoint me = (MockEndpoint) ctx.getEndpoint("mock:service1");
-    me.expectedBodiesReceived("ala");
+        assertProcessEnded(instanceId);
 
-    tpl.sendBodyAndProperty("direct:start", Collections.singletonMap("var1", "ala"), ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
+        service1.assertIsSatisfied();
+        Map<?, ?> m = service2.getExchanges().get(0).getIn().getBody(Map.class);
+        assertEquals("ala", m.get("var1"));
+        assertEquals("var2", m.get("var2"));
+    }
 
-    String instanceId = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("key1")
-        .singleResult().getProcessInstanceId();
-    tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
+    @Deployment(resources = { "process/example.bpmn20.xml" })
+    public void testRunProcessByKey() throws Exception {
+        CamelContext ctx = applicationContext.getBean(CamelContext.class);
+        ProducerTemplate tpl = ctx.createProducerTemplate();
+        MockEndpoint me = (MockEndpoint) ctx.getEndpoint("mock:service1");
+        me.expectedBodiesReceived("ala");
 
-    assertProcessEnded(instanceId);
+        tpl.sendBodyAndProperty("direct:start", Collections.singletonMap("var1", "ala"), ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
 
-    me.assertIsSatisfied();
-  }
+        String instanceId = runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("key1").singleResult().getProcessInstanceId();
+        tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_KEY_PROPERTY, "key1");
+
+        assertProcessEnded(instanceId);
+
+        me.assertIsSatisfied();
+    }
 
 }

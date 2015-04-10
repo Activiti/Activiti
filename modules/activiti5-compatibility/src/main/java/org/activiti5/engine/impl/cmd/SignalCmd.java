@@ -23,30 +23,30 @@ import java.util.Map;
  */
 public class SignalCmd extends NeedsActiveExecutionCmd<Object> {
 
-  private static final long serialVersionUID = 1L;
-  
-  protected String signalName;
-  protected Object signalData;
-  protected final Map<String, Object> processVariables;
-  
-  public SignalCmd(String executionId, String signalName, Object signalData, Map<String, Object> processVariables) {
-    super(executionId);
-    this.signalName = signalName;
-    this.signalData = signalData;
-    this.processVariables = processVariables;
-  }
-  
-  protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
-    if(processVariables != null) {
-      execution.setVariables(processVariables);
+    private static final long serialVersionUID = 1L;
+
+    protected String signalName;
+    protected Object signalData;
+    protected final Map<String, Object> processVariables;
+
+    public SignalCmd(String executionId, String signalName, Object signalData, Map<String, Object> processVariables) {
+        super(executionId);
+        this.signalName = signalName;
+        this.signalData = signalData;
+        this.processVariables = processVariables;
     }
-    execution.signal(signalName, signalData);
-    return null;
-  }
-  
-  @Override
-  protected String getSuspendedExceptionMessage() {
-    return "Cannot signal an execution that is suspended";
-  }
+
+    protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
+        if (processVariables != null) {
+            execution.setVariables(processVariables);
+        }
+        execution.signal(signalName, signalData);
+        return null;
+    }
+
+    @Override
+    protected String getSuspendedExceptionMessage() {
+        return "Cannot signal an execution that is suspended";
+    }
 
 }

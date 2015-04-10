@@ -19,28 +19,27 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.service.api.RestResponseFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-
 /**
  * @author Tijs Rademakers
  */
 public class BaseProcessDefinitionResource {
-  
-  @Autowired
-  protected RestResponseFactory restResponseFactory;
-  
-  @Autowired
-  protected RepositoryService repositoryService;
 
-  /**
-   * Returns the {@link ProcessDefinition} that is requested. Throws the right exceptions
-   * when bad request was made or definition is not found.
-   */
-  protected ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
-    ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
-   
-    if (processDefinition == null) {
-      throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
+    @Autowired
+    protected RestResponseFactory restResponseFactory;
+
+    @Autowired
+    protected RepositoryService repositoryService;
+
+    /**
+     * Returns the {@link ProcessDefinition} that is requested. Throws the right
+     * exceptions when bad request was made or definition is not found.
+     */
+    protected ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
+        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+
+        if (processDefinition == null) {
+            throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
+        }
+        return processDefinition;
     }
-    return processDefinition;
-  }
 }

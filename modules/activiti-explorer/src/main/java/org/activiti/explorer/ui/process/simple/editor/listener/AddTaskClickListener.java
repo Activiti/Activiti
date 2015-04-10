@@ -22,17 +22,17 @@ import com.vaadin.ui.Button.ClickEvent;
  */
 public class AddTaskClickListener implements Button.ClickListener {
 
-  private static final long serialVersionUID = 7191125475609217512L;
+    private static final long serialVersionUID = 7191125475609217512L;
 
-  protected TaskTable taskTable;
+    protected TaskTable taskTable;
 
-  public AddTaskClickListener(TaskTable taskTable) {
-    this.taskTable = taskTable;
-  }
+    public AddTaskClickListener(TaskTable taskTable) {
+        this.taskTable = taskTable;
+    }
 
-  public void buttonClick(ClickEvent event) {
-    Object itemId = event.getButton().getData();
-    taskTable.addDefaultTaskRowAfter(itemId);
-  }
+    public void buttonClick(ClickEvent event) {
+        Object itemId = event.getButton().getData();
+        taskTable.addDefaultTaskRowAfter(itemId);
+    }
 
 }

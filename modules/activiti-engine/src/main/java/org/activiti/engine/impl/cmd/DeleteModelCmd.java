@@ -18,26 +18,25 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 
-
 /**
  * @author Tijs Rademakers
  */
-public class DeleteModelCmd implements Command<Void>, Serializable  {
+public class DeleteModelCmd implements Command<Void>, Serializable {
 
-  private static final long serialVersionUID = 1L;
-  String modelId;
-  
-  public DeleteModelCmd(String modelId) {
-    this.modelId = modelId;
-  }
-  
-  public Void execute(CommandContext commandContext) {
-    if(modelId == null) {
-      throw new ActivitiIllegalArgumentException("modelId is null");
+    private static final long serialVersionUID = 1L;
+    String modelId;
+
+    public DeleteModelCmd(String modelId) {
+        this.modelId = modelId;
     }
-    commandContext.getModelEntityManager().deleteModel(modelId);
-    
-    return null;
-  }
+
+    public Void execute(CommandContext commandContext) {
+        if (modelId == null) {
+            throw new ActivitiIllegalArgumentException("modelId is null");
+        }
+        commandContext.getModelEntityManager().deleteModel(modelId);
+
+        return null;
+    }
 
 }

@@ -23,62 +23,62 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Configuration
-@ComponentScan({"org.activiti.rest.exception", "org.activiti.rest.service.api"})
+@ComponentScan({ "org.activiti.rest.exception", "org.activiti.rest.service.api" })
 @EnableAsync
 public class DispatcherServletConfiguration extends WebMvcConfigurationSupport {
 
-  private final Logger log = LoggerFactory.getLogger(DispatcherServletConfiguration.class);
+    private final Logger log = LoggerFactory.getLogger(DispatcherServletConfiguration.class);
 
-  @Autowired
-  private ObjectMapper objectMapper;
-  
-  @Autowired
-  private Environment environment;
+    @Autowired
+    private ObjectMapper objectMapper;
 
-  @Bean
-  public SessionLocaleResolver localeResolver() {
-    return new SessionLocaleResolver();
-  }
+    @Autowired
+    private Environment environment;
 
-  @Bean
-  public LocaleChangeInterceptor localeChangeInterceptor() {
-    log.debug("Configuring localeChangeInterceptor");
-    LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
-    localeChangeInterceptor.setParamName("language");
-    return localeChangeInterceptor;
-  }
-
-  @Bean
-  public MultipartResolver multipartResolver() {
-    PutAwareCommonsMultipartResolver multipartResolver = new PutAwareCommonsMultipartResolver();
-    return multipartResolver;
-  }
-
-  @Bean
-  public RequestMappingHandlerMapping requestMappingHandlerMapping() {
-    log.debug("Creating requestMappingHandlerMapping");
-    RequestMappingHandlerMapping requestMappingHandlerMapping = new RequestMappingHandlerMapping();
-    requestMappingHandlerMapping.setUseSuffixPatternMatch(false);
-    Object[] interceptors = {localeChangeInterceptor()};
-    requestMappingHandlerMapping.setInterceptors(interceptors);
-    return requestMappingHandlerMapping;
-  }
-  
-  @Override
-  public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-    addDefaultHttpMessageConverters(converters);
-    for (HttpMessageConverter<?> converter: converters) {
-      if (converter instanceof MappingJackson2HttpMessageConverter) {
-        MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = (MappingJackson2HttpMessageConverter) converter;
-        jackson2HttpMessageConverter.setObjectMapper(objectMapper);
-        break;
-      }
+    @Bean
+    public SessionLocaleResolver localeResolver() {
+        return new SessionLocaleResolver();
     }
-  }
 
-  @Override
-  protected void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-    configurer.favorPathExtension(false);
-  }
-  
+    @Bean
+    public LocaleChangeInterceptor localeChangeInterceptor() {
+        log.debug("Configuring localeChangeInterceptor");
+        LocaleChangeInterceptor localeChangeInterceptor = new LocaleChangeInterceptor();
+        localeChangeInterceptor.setParamName("language");
+        return localeChangeInterceptor;
+    }
+
+    @Bean
+    public MultipartResolver multipartResolver() {
+        PutAwareCommonsMultipartResolver multipartResolver = new PutAwareCommonsMultipartResolver();
+        return multipartResolver;
+    }
+
+    @Bean
+    public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+        log.debug("Creating requestMappingHandlerMapping");
+        RequestMappingHandlerMapping requestMappingHandlerMapping = new RequestMappingHandlerMapping();
+        requestMappingHandlerMapping.setUseSuffixPatternMatch(false);
+        Object[] interceptors = { localeChangeInterceptor() };
+        requestMappingHandlerMapping.setInterceptors(interceptors);
+        return requestMappingHandlerMapping;
+    }
+
+    @Override
+    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+        addDefaultHttpMessageConverters(converters);
+        for (HttpMessageConverter<?> converter : converters) {
+            if (converter instanceof MappingJackson2HttpMessageConverter) {
+                MappingJackson2HttpMessageConverter jackson2HttpMessageConverter = (MappingJackson2HttpMessageConverter) converter;
+                jackson2HttpMessageConverter.setObjectMapper(objectMapper);
+                break;
+            }
+        }
+    }
+
+    @Override
+    protected void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.favorPathExtension(false);
+    }
+
 }
