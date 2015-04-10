@@ -1,1 +1,0 @@
-alter table ACT_HI_ATTACHMENT add TIME_ TIMESTAMP(6);
