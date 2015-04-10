@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.test.bpmn.event.end;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,6 +140,53 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     assertEquals(1, executionEntities);
     
     Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(pi.getId());
+  }
+  
+  @Deployment
+  public void testTerminateInSubProcessWithBoundary() throws Exception {
+    serviceTaskInvokedCount = 0;
+    
+    Date startTime = new Date();
+    
+    // Test terminating process
+    
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventWithBoundary");
+
+    assertEquals(3, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
+    
+    // Set clock time to '1 hour and 5 seconds' ahead to fire timer
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    
+    // timer has fired
+    assertEquals(0L, managementService.createJobQuery().count());
+    
+    assertProcessEnded(pi.getId());
+    
+    // Test terminating subprocess
+    
+    pi = runtimeService.startProcessInstanceByKey("terminateEndEventWithBoundary");
+
+    assertEquals(3, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
+    
+    // a job for boundary event timer should exist 
+    assertEquals(1L, managementService.createJobQuery().count());
+    
+    // Complete sub process task that leads to a terminate end event
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTermInnerTask").singleResult();
+    taskService.complete(task.getId());
+    
+    // 'preEndInnerTask' task in subprocess should have been terminated, only outerTask should exist
+    assertEquals(1, taskService.createTaskQuery().processInstanceId(pi.getId()).count());
+    
+    // job for boundary event timer should have been removed  
+    assertEquals(0L, managementService.createJobQuery().count());
+    
+    // complete outerTask
+    task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("outerTask").singleResult();
     taskService.complete(task.getId());
     
     assertProcessEnded(pi.getId());
