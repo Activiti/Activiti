@@ -40,7 +40,7 @@ public class NewEngineApp {
 		
 		// Start a process in new engine 
 	    
-	    System.out.println("Starting process instance from old engine ...");
+	    System.out.println("Starting process instance from new engine ...");
 	    RepositoryService repositoryService = processEngine.getRepositoryService();
 	    repositoryService.createDeployment().addClasspathResource("oneTaskProcess.bpmn20.xml").deploy();
 	    
