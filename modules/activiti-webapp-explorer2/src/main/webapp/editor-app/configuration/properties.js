@@ -83,5 +83,21 @@ KISBPM.PROPERTY_CONFIG =
     "oryx-conditionsequenceflow-complex" : {
         "readModeTemplateUrl": "editor-app/configuration/properties/condition-expression-display-template.html",
         "writeModeTemplateUrl": "editor-app/configuration/properties/condition-expression-write-template.html"
+    },
+    "oryx-signaldefinitions-multiplecomplex" : {
+        "readModeTemplateUrl": "editor-app/configuration/properties/signal-definitions-display-template.html",
+        "writeModeTemplateUrl": "editor-app/configuration/properties/signal-definitions-write-template.html"
+    },
+    "oryx-signalref-string" : {
+        "readModeTemplateUrl": "editor-app/configuration/properties/default-value-display-template.html",
+        "writeModeTemplateUrl": "editor-app/configuration/properties/signal-property-write-template.html"
+    },
+    "oryx-messagedefinitions-multiplecomplex" : {
+        "readModeTemplateUrl": "editor-app/configuration/properties/message-definitions-display-template.html",
+        "writeModeTemplateUrl": "editor-app/configuration/properties/message-definitions-write-template.html"
+    },
+    "oryx-messageref-string" : {
+        "readModeTemplateUrl": "editor-app/configuration/properties/default-value-display-template.html",
+        "writeModeTemplateUrl": "editor-app/configuration/properties/message-property-write-template.html"
     }
 };
