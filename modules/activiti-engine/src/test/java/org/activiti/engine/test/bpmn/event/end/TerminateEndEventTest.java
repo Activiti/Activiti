@@ -12,7 +12,9 @@
  */
 package org.activiti.engine.test.bpmn.event.end;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -20,6 +22,9 @@ import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Nico Rehwaldt
@@ -89,7 +94,40 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
     
     assertProcessEnded(pi.getId());
   }
-  
+
+  @Deployment(resources = {
+          "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInExclusiveGatewayWithCallActivity.bpmn",
+          "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessNoTerminate.bpmn"
+  })
+  public void testTerminateInExclusiveGatewayWithCallActivity() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample-terminateAfterExclusiveGateway");
+
+    long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
+    assertEquals(4, executionEntities);
+
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("input", 1);
+    taskService.complete(task.getId(), variables);
+
+    assertProcessEnded(pi.getId());
+  }
+
+  @Deployment
+  public void testTerminateInExclusiveGatewayWithMultiInstanceSubProcess() throws Exception {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample-terminateAfterExclusiveGateway");
+
+    long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
+    assertEquals(14, executionEntities);
+
+    Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("input", 1);
+    taskService.complete(task.getId(), variables);
+
+    assertProcessEnded(pi.getId());
+  }
+
   @Deployment
   public void testTerminateInSubProcess() throws Exception {
     serviceTaskInvokedCount = 0;
@@ -139,6 +177,24 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
       taskService.complete(t.getId());
     }
     
+    assertProcessEnded(pi.getId());
+  }
+
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrentCallActivity.bpmn",
+          "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateAfterUserTask.bpmn",
+          "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml"})
+  public void testTerminateInCallActivityConcurrentCallActivity() throws Exception {
+    serviceTaskInvokedCount = 0;
+
+    // GIVEN - process instance starts and creates 2 subProcessInstances (with 2 user tasks - preTerminate and my task)
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventInCallActivityConcurrentCallActivity");
+    assertThat(runtimeService.createProcessInstanceQuery().superProcessInstanceId(pi.getId()).list().size(), is(2));
+
+    // WHEN - complete -> terminate end event
+    Task preTerminate = taskService.createTaskQuery().taskName("preTerminate").singleResult();
+    taskService.complete(preTerminate.getId());
+
+    //THEN - super process is finished together with subprocesses
     assertProcessEnded(pi.getId());
   }
   
