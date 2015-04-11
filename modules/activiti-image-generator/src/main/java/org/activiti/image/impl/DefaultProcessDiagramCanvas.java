@@ -217,26 +217,26 @@ public class DefaultProcessDiagramCanvas {
     LABEL_FONT = new Font(labelFontName, Font.ITALIC, 10);
     
     try {
-      USERTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/userTask.png", customClassLoader));
-      SCRIPTTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/scriptTask.png", customClassLoader));
-      SERVICETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/serviceTask.png", customClassLoader));
-      RECEIVETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/receiveTask.png", customClassLoader));
-      SENDTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/sendTask.png", customClassLoader));
-      MANUALTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/manualTask.png", customClassLoader));
-      BUSINESS_RULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/businessRuleTask.png", customClassLoader));
-      SHELL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/shellTask.png", customClassLoader));
-      CAMEL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/camelTask.png", customClassLoader));
-      MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/muleTask.png", customClassLoader));
+      USERTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/userTask.png", customClassLoader));
+      SCRIPTTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/scriptTask.png", customClassLoader));
+      SERVICETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/serviceTask.png", customClassLoader));
+      RECEIVETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/receiveTask.png", customClassLoader));
+      SENDTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/sendTask.png", customClassLoader));
+      MANUALTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/manualTask.png", customClassLoader));
+      BUSINESS_RULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/businessRuleTask.png", customClassLoader));
+      SHELL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/shellTask.png", customClassLoader));
+      CAMEL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/camelTask.png", customClassLoader));
+      MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/muleTask.png", customClassLoader));
       
-      TIMER_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/timer.png", customClassLoader));
-      COMPENSATE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/compensate-throw.png", customClassLoader));
-      COMPENSATE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/compensate.png", customClassLoader));
-      ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error-throw.png", customClassLoader));
-      ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error.png", customClassLoader));
-      MESSAGE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/message-throw.png", customClassLoader));
-      MESSAGE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/message.png", customClassLoader));
-      SIGNAL_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/signal-throw.png", customClassLoader));
-      SIGNAL_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/signal.png", customClassLoader));
+      TIMER_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/timer.png", customClassLoader));
+      COMPENSATE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/compensate-throw.png", customClassLoader));
+      COMPENSATE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/compensate.png", customClassLoader));
+      ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/error-throw.png", customClassLoader));
+      ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/error.png", customClassLoader));
+      MESSAGE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/message-throw.png", customClassLoader));
+      MESSAGE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/message.png", customClassLoader));
+      SIGNAL_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/signal-throw.png", customClassLoader));
+      SIGNAL_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("/org/activiti/icons/signal.png", customClassLoader));
     } catch (IOException e) {
       LOGGER.warn("Could not load image for process diagram creation: {}", e.getMessage());
     }
