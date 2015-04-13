@@ -81,8 +81,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
         // Fork
 
         // TODO: Verify if this is the correct place! Seems out of place here!
-        // Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity)
-        // execution);
+        // Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
 
         if (nbrOfExecutionsCurrentlyJoined == nbrOfExecutionsToJoin) {
 
@@ -104,15 +103,8 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
                 }
             }
 
-            // TODO: potential optimization here: reuse more then 1 execution,
-            // only 1 currently
-            Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, false); // false
-                                                                                          // ->
-                                                                                          // ignoring
-                                                                                          // conditions
-                                                                                          // on
-                                                                                          // parallel
-                                                                                          // gw
+            // TODO: potential optimization here: reuse more then 1 execution, only 1 currently
+            Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, false); // false -> ignoring conditions on parallel gw
 
         } else if (log.isDebugEnabled()) {
             log.debug("parallel gateway '{}' does not activate: {} of {} joined", execution.getCurrentActivityId(), nbrOfExecutionsCurrentlyJoined, nbrOfExecutionsToJoin);

@@ -1486,4 +1486,12 @@ public class DbSqlSession implements Session {
         this.isOptimizeDeleteOperationsEnabled = isOptimizeDeleteOperationsEnabled;
     }
 
+	public List<PersistentObject> getInsertedObjects() {
+		return insertedObjects;
+	}
+
+	public void setInsertedObjects(List<PersistentObject> insertedObjects) {
+		this.insertedObjects = insertedObjects;
+	}
+    
 }

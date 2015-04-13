@@ -30,7 +30,7 @@ public class ProcessExecutionLoggerConfigurator extends AbstractProcessEngineCon
 
 	@Override
     public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
-		processEngineConfiguration.getEventDispatcher().addEventListener(new LoggingEntityCreatedEventListener(processExecutionLogger));
+		processEngineConfiguration.getEventDispatcher().addEventListener(new DebugInfoEntityEventListener(processExecutionLogger));
     }
 
 	public ProcessExecutionLogger getProcessExecutionLogger() {

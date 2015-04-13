@@ -20,11 +20,11 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * @author jbarrez
  */
-public class LoggingEntityCreatedEventListener extends BaseEntityEventListener {
+public class DebugInfoEntityEventListener extends BaseEntityEventListener {
 
 	protected ProcessExecutionLogger processExecutionLogger;
 	
-	public LoggingEntityCreatedEventListener(ProcessExecutionLogger processExecutionLogger) {
+	public DebugInfoEntityEventListener(ProcessExecutionLogger processExecutionLogger) {
 		this.processExecutionLogger = processExecutionLogger;
     }
 	

@@ -45,7 +45,10 @@ public class DebugInfoExecutionTree {
 		/* See http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram */
 		public void print(Logger logger) {
 			logger.info("");
-			print(logger, "", true);
+			logger.info(id);
+			for (DebugInfoExecutionTreeNode childNode : childNodes) {
+				childNode.print(logger, "", true);
+			}
 			logger.info("");
 		}
 

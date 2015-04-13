@@ -221,26 +221,7 @@ public class Activiti6Tests extends AbstractActvitiTest {
         job = managementService.createJobQuery().singleResult();
         managementService.executeJob(job.getId());
 
-        tasks = taskService.createTaskQuery().orderByTaskName().desc().list(); // Note
-                                                                               // the
-                                                                               // 'desc()'
-                                                                               // here:
-                                                                               // Task
-                                                                               // B,
-                                                                               // Task
-                                                                               // A
-                                                                               // will
-                                                                               // be
-                                                                               // the
-                                                                               // result
-                                                                               // (task
-                                                                               // b
-                                                                               // being
-                                                                               // associated
-                                                                               // with
-                                                                               // the
-                                                                               // child
-                                                                               // execution)
+        tasks = taskService.createTaskQuery().orderByTaskName().desc().list(); // Not the desc() here: Task B, Task A will be the result (task b being associated with the child execution) 
         for (Task task : tasks) {
             taskService.complete(task.getId());
         }

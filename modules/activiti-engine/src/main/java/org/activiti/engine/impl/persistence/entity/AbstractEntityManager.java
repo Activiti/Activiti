@@ -22,13 +22,20 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
      */
 
     public Class<Entity> getManagedPersistentObject() {
-        // Cannot make abstract cause some managers don't use db persistence (eg
-        // ldap)
+        // Cannot make abstract cause some managers don't use db persistence (eg ldap)
         throw new UnsupportedOperationException();
     }
 
     public void insert(Entity entity) {
+        insert(entity, true);
+    }
+    
+    public void insert(Entity entity, boolean fireCreateEvent) {
         getDbSqlSession().insert(entity);
+        
+        if (fireCreateEvent && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, entity));
+        }
     }
 
     public void delete(Entity entity, boolean fireDeleteEvent) {

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ProcessExecutionLogger {
 
-	private static final Logger logger = LoggerFactory.getLogger(LoggingCommandInvoker.class);
+	private static final Logger logger = LoggerFactory.getLogger(ProcessExecutionLogger.class);
 	
 	protected Map<String, List<DebugInfo>> debugInfoMap = new HashMap<String, List<DebugInfo>>();
 	
