@@ -34,7 +34,7 @@ public class TriggerExecutionOperation extends AbstractOperation {
             if (activityBehavior instanceof TriggerableActivityBehavior) {
                 ((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);
             } else {
-                throw new RuntimeException("Invalid behavior: " + activityBehavior + " should implement " + TriggerableActivityBehavior.class.getCanonicalName());
+                throw new ActivitiException("Invalid behavior: " + activityBehavior + " should implement " + TriggerableActivityBehavior.class.getCanonicalName());
             }
 
         } else {

@@ -12,19 +12,11 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.FlowNode;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 
 /**
  * @author Joram Barrez
  */
 public abstract class AbstractFlowNodeBpmnParseHandler<T extends FlowNode> extends AbstractBpmnParseHandler<T> {
-
-    @Override
-    public void parse(BpmnParse bpmnParse, BaseElement element) {
-        super.parse(bpmnParse, element);
-        createExecutionListenersOnScope(bpmnParse, ((FlowNode) element).getExecutionListeners(), findActivity(bpmnParse, element.getId()));
-    }
 
 }

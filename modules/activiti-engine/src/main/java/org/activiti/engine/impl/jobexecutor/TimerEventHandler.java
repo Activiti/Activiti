@@ -31,7 +31,7 @@ public class TimerEventHandler {
         return cfgJson.toString();
     }
 
-    public String setActivityIdToConfiguration(String jobHandlerConfiguration, String activityId) {
+    public static String setActivityIdToConfiguration(String jobHandlerConfiguration, String activityId) {
         try {
             JSONObject cfgJson = new JSONObject(jobHandlerConfiguration);
             cfgJson.put(PROPERTYNAME_TIMER_ACTIVITY_ID, activityId);
@@ -50,7 +50,7 @@ public class TimerEventHandler {
         }
     }
 
-    public String setEndDateToConfiguration(String jobHandlerConfiguration, String endDate) {
+    public static String setEndDateToConfiguration(String jobHandlerConfiguration, String endDate) {
         JSONObject cfgJson = null;
         try {
             cfgJson = new JSONObject(jobHandlerConfiguration);

@@ -66,7 +66,7 @@ public abstract class AbstractOperation implements Runnable {
 
     protected void deleteExecution(CommandContext commandContext, ExecutionEntity executionEntity) {
         deleteDataRelatedToExecution(commandContext, executionEntity);
-        commandContext.getExecutionEntityManager().delete(executionEntity); // TODO: What about delete reason
+        commandContext.getExecutionEntityManager().delete(executionEntity); // TODO: what about delete reason?
     }
 
     protected void deleteProcessInstanceExecutionEntity(CommandContext commandContext, ExecutionEntityManager executionEntityManager, String processInstanceId) {
