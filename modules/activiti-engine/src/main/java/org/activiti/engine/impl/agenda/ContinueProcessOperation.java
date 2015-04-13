@@ -15,6 +15,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -36,13 +37,13 @@ public class ContinueProcessOperation extends AbstractOperation {
     
     protected boolean forceSynchronousOperation;
 
-    public ContinueProcessOperation(Agenda agenda, ActivityExecution execution, boolean forceSynchronousOperation) {
-        super(agenda, execution);
+    public ContinueProcessOperation(CommandContext commandContext, ActivityExecution execution, boolean forceSynchronousOperation) {
+        super(commandContext, execution);
         this.forceSynchronousOperation = forceSynchronousOperation;
     }
     
-    public ContinueProcessOperation(Agenda agenda, ActivityExecution execution) {
-        this(agenda, execution, false);
+    public ContinueProcessOperation(CommandContext commandContext, ActivityExecution execution) {
+        this(commandContext, execution, false);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class ContinueProcessOperation extends AbstractOperation {
             message.setTenantId(execution.getTenantId());
         }
 
-        Context.getCommandContext().getJobEntityManager().send(message);
+        commandContext.getJobEntityManager().send(message);
     }
     
     protected void executeExecutionListeners(List<ActivitiListener> listeners, ExecutionEntity execution) {
@@ -152,7 +153,7 @@ public class ContinueProcessOperation extends AbstractOperation {
         // for each of the boundary events
         execution.setScope(true);
 
-        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
 

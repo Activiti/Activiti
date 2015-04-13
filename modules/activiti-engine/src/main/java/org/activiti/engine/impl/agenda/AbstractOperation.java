@@ -37,6 +37,7 @@ import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
  */
 public abstract class AbstractOperation implements Runnable {
 
+	protected CommandContext commandContext;
     protected Agenda agenda;
     protected ActivityExecution execution;
 
@@ -44,9 +45,10 @@ public abstract class AbstractOperation implements Runnable {
 
     }
 
-    public AbstractOperation(Agenda agenda, ActivityExecution execution) {
-        this.agenda = agenda;
+    public AbstractOperation(CommandContext commandContext, ActivityExecution execution) {
+    	this.commandContext = commandContext;
         this.execution = execution;
+        this.agenda = commandContext.getAgenda();
     }
 
     /**
@@ -133,8 +135,16 @@ public abstract class AbstractOperation implements Runnable {
             jobEntityManager.delete(job);
         }
     }
+    
+    public CommandContext getCommandContext() {
+		return commandContext;
+	}
 
-    public Agenda getAgenda() {
+	public void setCommandContext(CommandContext commandContext) {
+		this.commandContext = commandContext;
+	}
+
+	public Agenda getAgenda() {
         return agenda;
     }
 
