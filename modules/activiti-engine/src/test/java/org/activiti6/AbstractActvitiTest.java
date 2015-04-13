@@ -1,6 +1,7 @@
 package org.activiti6;
 
 import java.sql.SQLException;
+import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.FormService;
@@ -71,15 +72,18 @@ public class AbstractActvitiTest {
     public void logCommandInvokerDebugInfo() {
     	
     	ProcessExecutionLoggerConfigurator loggerConfigurator = null;
-    	for (ProcessEngineConfigurator configurator : ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getConfigurators()) {
-    		if (configurator instanceof ProcessExecutionLoggerConfigurator) {
-    			loggerConfigurator = (ProcessExecutionLoggerConfigurator) configurator;
-    			break;
-    		}
-    	}
-    	
-    	if (loggerConfigurator != null) {
-    		loggerConfigurator.getProcessExecutionLogger().logDebugInfo(true);
+    	List<ProcessEngineConfigurator> configurators = ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getConfigurators();
+    	if (configurators != null && configurators.size() > 0) {
+	    	for (ProcessEngineConfigurator configurator : configurators) {
+	    		if (configurator instanceof ProcessExecutionLoggerConfigurator) {
+	    			loggerConfigurator = (ProcessExecutionLoggerConfigurator) configurator;
+	    			break;
+	    		}
+	    	}
+	    	
+	    	if (loggerConfigurator != null) {
+	    		loggerConfigurator.getProcessExecutionLogger().logDebugInfo(true);
+	    	}
     	}
     }
 
