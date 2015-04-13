@@ -12,10 +12,10 @@ import org.activiti.engine.ProcessEngineLifecycleListener;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
+import org.activiti.engine.cfg.ProcessEngineConfigurator;
 import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
-import org.activiti.engine.impl.interceptor.DebugCommandInvoker;
 import org.activiti.engine.test.ActivitiRule;
+import org.activiti.engine.test.impl.logger.ProcessExecutionLoggerConfigurator;
 import org.h2.tools.Server;
 import org.junit.After;
 import org.junit.Before;
@@ -69,11 +69,17 @@ public class AbstractActvitiTest {
     
     @After
     public void logCommandInvokerDebugInfo() {
-    	CommandInterceptor commandInterceptor = ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getCommandInvoker();
-    	if (commandInterceptor instanceof DebugCommandInvoker) {
-    		DebugCommandInvoker debugCommandInvoker = (DebugCommandInvoker) commandInterceptor;
-    		debugCommandInvoker.logDebugInfo();
-    		debugCommandInvoker.clear();
+    	
+    	ProcessExecutionLoggerConfigurator loggerConfigurator = null;
+    	for (ProcessEngineConfigurator configurator : ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getConfigurators()) {
+    		if (configurator instanceof ProcessExecutionLoggerConfigurator) {
+    			loggerConfigurator = (ProcessExecutionLoggerConfigurator) configurator;
+    			break;
+    		}
+    	}
+    	
+    	if (loggerConfigurator != null) {
+    		loggerConfigurator.getProcessExecutionLogger().logDebugInfo(true);
     	}
     }
 

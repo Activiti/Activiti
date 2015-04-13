@@ -55,7 +55,7 @@ public class CommandInvoker extends AbstractCommandInterceptor {
         }
     }
 
-	protected void executeOperation(Runnable runnable) {
+	public void executeOperation(Runnable runnable) {
 	    runnable.run();
     }
 

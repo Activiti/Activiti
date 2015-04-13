@@ -14,10 +14,13 @@
 
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="drop-create" />
-    
-    <property name="commandInvoker">
-    	<bean class="org.activiti.engine.impl.interceptor.DebugCommandInvoker" />
-    </property>
+
+	<!-- Test logger -->
+	<property name="configurators">
+		<list>
+			<bean class="org.activiti.engine.test.impl.logger.ProcessExecutionLoggerConfigurator" />
+		</list>
+	</property>    
 
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />

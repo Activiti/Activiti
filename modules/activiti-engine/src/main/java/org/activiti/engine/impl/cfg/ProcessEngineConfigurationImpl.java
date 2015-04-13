@@ -294,18 +294,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     // Configurators
     // ////////////////////////////////////////////////////////////
 
-    protected boolean enableConfiguratorServiceLoader = true; // Enabled by
-                                                              // default. In
-                                                              // certain
-                                                              // environments
-                                                              // this should be
-                                                              // set to false
-                                                              // (eg osgi)
-    protected List<ProcessEngineConfigurator> configurators; // The injected
-                                                             // configurators
-    protected List<ProcessEngineConfigurator> allConfigurators; // Including
-                                                                // auto-discovered
-                                                                // configurators
+    protected boolean enableConfiguratorServiceLoader = true; // Enabled by default. In certain environments this should be set to false (eg osgi)
+    protected List<ProcessEngineConfigurator> configurators; // The injected configurators
+    protected List<ProcessEngineConfigurator> allConfigurators; // Including auto-discovered configurators
 
     // DEPLOYERS
     // ////////////////////////////////////////////////////////////////
