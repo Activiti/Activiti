@@ -12,13 +12,26 @@
  */
 package org.activiti.engine.test.impl.logger;
 
-import org.slf4j.Logger;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author jbarrez
  */
-public interface DebugInfo {
+public abstract class AbstractDebugInfo implements DebugInfo {
 	
-	void printOut(Logger logger);
+	protected List<DebugInfoExecutionTree> executionTrees = new ArrayList<DebugInfoExecutionTree>();
+
+	public List<DebugInfoExecutionTree> getExecutionTrees() {
+		return executionTrees;
+	}
+
+	public void setExecutionTrees(List<DebugInfoExecutionTree> executionTrees) {
+		this.executionTrees = executionTrees;
+	}
+	
+	public void addExecutionTree(DebugInfoExecutionTree executionTree) {
+		executionTrees.add(executionTree);
+	}
 
 }

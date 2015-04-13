@@ -29,13 +29,13 @@ public class LoggingCommandInvoker extends CommandInvoker {
 	@Override
 	public void executeOperation(Runnable runnable) {
 		
-		DebugInfo debugInfo = null;
+		DebugInfoOperationExecuted debugInfo = null;
 		if (runnable instanceof AbstractOperation) {
 			
-			debugInfo = new DebugInfo((AbstractOperation) runnable);
+			debugInfo = new DebugInfoOperationExecuted((AbstractOperation) runnable);
 			debugInfo.setPreExecutionTime(System.currentTimeMillis());
 			
-			processExecutionLogger.addDebugInfo(debugInfo);
+			processExecutionLogger.addDebugInfo(debugInfo, true);
 		}
 		
 	    super.executeOperation(runnable);

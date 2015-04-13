@@ -14,8 +14,6 @@ package org.activiti.engine.test.impl.logger;
 
 import org.activiti.engine.cfg.AbstractProcessEngineConfigurator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.interceptor.CommandInterceptor;
-import org.activiti.engine.impl.interceptor.CommandInvoker;
 
 /**
  * @author jbarrez
@@ -32,7 +30,7 @@ public class ProcessExecutionLoggerConfigurator extends AbstractProcessEngineCon
 
 	@Override
     public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
-		
+		processEngineConfiguration.getEventDispatcher().addEventListener(new LoggingEntityCreatedEventListener(processExecutionLogger));
     }
 
 	public ProcessExecutionLogger getProcessExecutionLogger() {
