@@ -22,6 +22,7 @@ import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -45,7 +46,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         // After setting the clock to time '50minutes and 5 seconds', the second
         // timer should fire
         processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((50 * 60 * 1000) + 5000)));
-        waitForJobExecutorToProcessAllJobs(5000L, 25L);
+        waitForJobExecutorToProcessAllJobs(5000L, 200L);
 
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
         assertEquals(1, pi.size());
@@ -59,9 +60,9 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         // After process start, there should be timer created
         JobQuery jobQuery = managementService.createJobQuery();
         assertEquals(1, jobQuery.count());
-
+        
         processEngineConfiguration.getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
-        waitForJobExecutorToProcessAllJobs(5000L, 25L);
+        waitForJobExecutorToProcessAllJobs(5000L, 200L);
 
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
         assertEquals(1, pi.size());
@@ -131,7 +132,7 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         assertEquals(1, jobQuery.count());
 
         processEngineConfiguration.getClock().setCurrentTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("15/11/2036 11:12:30"));
-        waitForJobExecutorToProcessAllJobs(5000L, 25L);
+        waitForJobExecutorToProcessAllJobs(5000L, 200L);
 
         List<ProcessInstance> pi = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").list();
         assertEquals(1, pi.size());
@@ -148,10 +149,10 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         assertEquals(1, jobQuery.count());
 
         // we deploy new process version, with some small change
-        String process = new String(IoUtil.readInputStream(getClass().getResourceAsStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml"), "")).replaceAll("beforeChange",
-                "changed");
-        String id = repositoryService.createDeployment().addInputStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml", new ByteArrayInputStream(process.getBytes())).deploy()
-                .getId();
+        String process = new String(IoUtil.readInputStream(getClass().getResourceAsStream(
+                "StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml"), "")).replaceAll("beforeChange","changed");
+        String id = repositoryService.createDeployment().addInputStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml", 
+                new ByteArrayInputStream(process.getBytes())).deploy().getId();
 
         assertEquals(1, jobQuery.count());
 
@@ -161,8 +162,13 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
                 // we check that correct version was started
                 ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").singleResult();
                 if (processInstance != null) {
-                    String pi = processInstance.getProcessInstanceId();
-                    return "changed".equals(runtimeService.getActiveActivityIds(pi).get(0));
+                    String pi = processInstance.getId();
+                    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi).singleResult();
+                    if (execution != null) {
+                        return "changed".equals(execution.getActivityId());
+                    } else {
+                        return false;
+                    }
                 } else {
                     return false;
                 }

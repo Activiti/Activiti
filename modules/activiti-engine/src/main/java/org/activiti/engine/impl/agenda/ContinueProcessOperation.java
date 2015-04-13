@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -18,6 +22,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,9 +33,16 @@ import org.slf4j.LoggerFactory;
 public class ContinueProcessOperation extends AbstractOperation {
 
     private static Logger logger = LoggerFactory.getLogger(ContinueProcessOperation.class);
+    
+    protected boolean forceSynchronousOperation;
 
-    public ContinueProcessOperation(Agenda agenda, ActivityExecution execution) {
+    public ContinueProcessOperation(Agenda agenda, ActivityExecution execution, boolean forceSynchronousOperation) {
         super(agenda, execution);
+        this.forceSynchronousOperation = forceSynchronousOperation;
+    }
+    
+    public ContinueProcessOperation(Agenda agenda, ActivityExecution execution) {
+        this(agenda, execution, false);
     }
 
     @Override
@@ -58,7 +70,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
         // See if flowNode is an async activity and schedule as a job if that
         // evaluates to true
-        if (flowNode instanceof Activity) {
+        if (!forceSynchronousOperation && flowNode instanceof Activity) {
             Activity activity = (Activity) flowNode;
             if (activity.isAsynchronous()) {
                 scheduleJob(activity);
@@ -67,17 +79,26 @@ public class ContinueProcessOperation extends AbstractOperation {
         }
 
         // Synchronous execution
+        
+        if (CollectionUtils.isNotEmpty(flowNode.getExecutionListeners())) {
+            executeExecutionListeners(flowNode.getExecutionListeners(), (ExecutionEntity) execution);
+        }
 
         // Execute any boundary events
         Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowNode);
-        if (boundaryEvents != null && boundaryEvents.size() > 0) {
+        if (CollectionUtils.isNotEmpty(boundaryEvents)) {
             executeBoundaryEvents(boundaryEvents);
         }
 
         // Execute actual behavior
         ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
-        logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
-        activityBehavior.execute(execution);
+        if (activityBehavior != null) {
+            logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
+            activityBehavior.execute(execution);
+        } else {
+            logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
+            Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
+        }
     }
 
     protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {
@@ -101,6 +122,28 @@ public class ContinueProcessOperation extends AbstractOperation {
         }
 
         Context.getCommandContext().getJobEntityManager().send(message);
+    }
+    
+    protected void executeExecutionListeners(List<ActivitiListener> listeners, ExecutionEntity execution) {
+        ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
+        for (ActivitiListener activitiListener : listeners) {
+            ExecutionListener executionListener = null;
+
+            if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+                executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
+            } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+                executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
+            } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+                executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+            }
+            
+            if (executionListener != null) {
+                execution.setEventName(activitiListener.getEvent());
+                executionListener.notify(execution);
+            }
+        }
+        
+        execution.setEventName(null);
     }
 
     protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents) {

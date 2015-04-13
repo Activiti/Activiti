@@ -67,6 +67,10 @@ public class Agenda {
     public void planContinueProcessOperation(ActivityExecution execution) {
         planOperation(new ContinueProcessOperation(this, execution), (ExecutionEntity) execution);
     }
+    
+    public void planContinueProcessSynchronousOperation(ActivityExecution execution) {
+        planOperation(new ContinueProcessOperation(this, execution, true), (ExecutionEntity) execution);
+    }
 
     public void planTakeOutgoingSequenceFlowsOperation(ActivityExecution execution, boolean evaluateConditions) {
         planOperation(new TakeOutgoingSequenceFlowsOperation(this, execution, evaluateConditions), (ExecutionEntity) execution);

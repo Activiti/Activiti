@@ -20,6 +20,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
@@ -38,7 +42,7 @@ import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.event.SignalEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.deploy.Deployer;
 import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
@@ -52,8 +56,10 @@ import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.IdentityLinkType;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,7 +215,7 @@ public class BpmnDeployer implements Deployer {
                 }
 
                 removeObsoleteTimers(processDefinition);
-                addTimerDeclarations(processDefinition, timers);
+                addTimerDeclarations(processDefinition, processModels.get(processDefinition.getKey()), timers);
 
                 removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
                 addMessageEventSubscriptions(processDefinition);
@@ -259,20 +265,25 @@ public class BpmnDeployer implements Deployer {
         }
     }
 
-    @SuppressWarnings("unchecked")
-    protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition, List<TimerEntity> timers) {
-        List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
-        if (timerDeclarations != null) {
-            for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
-                TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
-                timer.setProcessDefinitionId(processDefinition.getId());
-
-                // Inherit timer (if appliccable)
-                if (processDefinition.getTenantId() != null) {
-                    timer.setTenantId(processDefinition.getTenantId());
+    protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, List<TimerEntity> timers) {
+        if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
+            for (FlowElement element : process.getFlowElements()) {
+                if (element instanceof StartEvent) {
+                    StartEvent startEvent = (StartEvent) element;
+                    if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                        if (eventDefinition instanceof TimerEventDefinition) {
+                            TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, 
+                                    TimerStartEventJobHandler.TYPE, TimerEventHandler.createConfiguration(processDefinition.getKey(), null));
+                            timer.setProcessDefinitionId(processDefinition.getId());
+                            
+                            if (processDefinition.getTenantId() != null) {
+                                timer.setTenantId(processDefinition.getTenantId());
+                            }
+                            timers.add(timer);
+                        }
+                    }
                 }
-
-                timers.add(timer);
             }
         }
     }

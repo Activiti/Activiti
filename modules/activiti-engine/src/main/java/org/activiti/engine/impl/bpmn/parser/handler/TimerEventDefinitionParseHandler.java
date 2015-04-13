@@ -18,7 +18,6 @@ import java.util.List;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
-import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -43,30 +42,7 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
 
     protected void executeParse(BpmnParse bpmnParse, TimerEventDefinition timerEventDefinition) {
 
-        if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
-
-            throw new RuntimeException("Need to implement");
-
-            // ProcessDefinitionEntity processDefinition = bpmnParse
-            // .getCurrentProcessDefinition();
-            // timerActivity.setProperty("type", "startTimerEvent");
-            // TimerDeclarationImpl timerDeclaration = createTimer(bpmnParse,
-            // timerEventDefinition, timerActivity,
-            // TimerStartEventJobHandler.TYPE);
-            // timerDeclaration.setJobHandlerConfiguration(processDefinition
-            // .getKey());
-            //
-            // List<TimerDeclarationImpl> timerDeclarations =
-            // (List<TimerDeclarationImpl>) processDefinition
-            // .getProperty(PROPERTYNAME_START_TIMER);
-            // if (timerDeclarations == null) {
-            // timerDeclarations = new ArrayList<TimerDeclarationImpl>();
-            // processDefinition.setProperty(PROPERTYNAME_START_TIMER,
-            // timerDeclarations);
-            // }
-            // timerDeclarations.add(timerDeclaration);
-
-        } else if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
+        if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
 
             throw new RuntimeException("Need to implement");
 
@@ -115,8 +91,7 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
         }
 
         // Parse the timer declaration
-        // TODO move the timer declaration into the bpmn activity or next to the
-        // TimerSession
+        // TODO move the timer declaration into the bpmn activity or next to the TimerSession
         TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(expression, type, jobHandlerType);
         timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
         timerDeclaration.setExclusive(true);
