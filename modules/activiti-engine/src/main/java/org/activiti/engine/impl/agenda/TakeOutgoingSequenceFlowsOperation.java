@@ -24,8 +24,8 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
     protected boolean evaluateConditions;
 
-    public TakeOutgoingSequenceFlowsOperation(Agenda agenda, ActivityExecution activityExecution, boolean evaluateConditions) {
-        super(agenda, activityExecution);
+    public TakeOutgoingSequenceFlowsOperation(CommandContext commandContext, ActivityExecution activityExecution, boolean evaluateConditions) {
+        super(commandContext, activityExecution);
         this.evaluateConditions = evaluateConditions;
     }
 
@@ -78,7 +78,6 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         // Leave, and reuse the incoming sequence flow, make executions for all
         // the others (if applicable)
 
-        CommandContext commandContext = Context.getCommandContext();
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
         List<ExecutionEntity> outgoingExecutions = new ArrayList<ExecutionEntity>(flowNode.getOutgoingFlows().size());
 

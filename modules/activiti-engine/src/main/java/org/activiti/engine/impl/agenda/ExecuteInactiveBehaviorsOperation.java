@@ -22,8 +22,8 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
 
     protected Collection<ExecutionEntity> involvedExecutions;
 
-    public ExecuteInactiveBehaviorsOperation(Agenda agenda) {
-        super(agenda, null);
+    public ExecuteInactiveBehaviorsOperation(CommandContext commandContext) {
+        super(commandContext, null);
         this.involvedExecutions = agenda.getCommandContext().getInvolvedExecutions();
     }
 
@@ -37,7 +37,6 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
          * executions inactive in those 3) Execute the inactivated behavior
          */
 
-        CommandContext commandContext = Context.getCommandContext();
         for (ExecutionEntity executionEntity : involvedExecutions) {
 
             Process process = ProcessDefinitionCacheUtil.getCachedProcess(executionEntity.getProcessDefinitionId());

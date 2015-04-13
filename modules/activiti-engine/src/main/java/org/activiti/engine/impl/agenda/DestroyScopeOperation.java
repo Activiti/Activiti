@@ -19,8 +19,8 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class DestroyScopeOperation extends AbstractOperation {
 
-    public DestroyScopeOperation(Agenda agenda, ActivityExecution execution) {
-        super(agenda, execution);
+    public DestroyScopeOperation(CommandContext commandContext, ActivityExecution execution) {
+        super(commandContext, execution);
     }
 
     @Override
@@ -33,7 +33,6 @@ public class DestroyScopeOperation extends AbstractOperation {
         // where isScope = true
 
         // Find parent scope execution
-        CommandContext commandContext = Context.getCommandContext();
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         ExecutionEntity parentScopeExecution = null;

@@ -65,27 +65,27 @@ public class Agenda {
     /* SPECIFIC operations */
 
     public void planContinueProcessOperation(ActivityExecution execution) {
-        planOperation(new ContinueProcessOperation(this, execution), (ExecutionEntity) execution);
+        planOperation(new ContinueProcessOperation(commandContext, execution), (ExecutionEntity) execution);
     }
 
     public void planTakeOutgoingSequenceFlowsOperation(ActivityExecution execution, boolean evaluateConditions) {
-        planOperation(new TakeOutgoingSequenceFlowsOperation(this, execution, evaluateConditions), (ExecutionEntity) execution);
+        planOperation(new TakeOutgoingSequenceFlowsOperation(commandContext, execution, evaluateConditions), (ExecutionEntity) execution);
     }
 
     public void planEndExecutionOperation(ActivityExecution execution) {
-        planOperation(new EndExecutionOperation(this, execution), (ExecutionEntity) execution);
+        planOperation(new EndExecutionOperation(commandContext, execution), (ExecutionEntity) execution);
     }
 
     public void planTriggerExecutionOperation(ActivityExecution execution) {
-        planOperation(new TriggerExecutionOperation(this, execution), (ExecutionEntity) execution);
+        planOperation(new TriggerExecutionOperation(commandContext, execution), (ExecutionEntity) execution);
     }
 
     public void planDestroyScopeOperation(ActivityExecution execution) {
-        planOperation(new DestroyScopeOperation(this, execution), (ExecutionEntity) execution);
+        planOperation(new DestroyScopeOperation(commandContext, execution), (ExecutionEntity) execution);
     }
 
     public void planExecuteInactiveBehaviorsOperation() {
-        planOperation(new ExecuteInactiveBehaviorsOperation(this));
+        planOperation(new ExecuteInactiveBehaviorsOperation(commandContext));
     }
 
     public CommandContext getCommandContext() {

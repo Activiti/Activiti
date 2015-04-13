@@ -11,6 +11,7 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -29,8 +30,8 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     private static Logger logger = LoggerFactory.getLogger(ContinueProcessOperation.class);
 
-    public ContinueProcessOperation(Agenda agenda, ActivityExecution execution) {
-        super(agenda, execution);
+    public ContinueProcessOperation(CommandContext commandContext, ActivityExecution execution) {
+        super(commandContext, execution);
     }
 
     @Override
@@ -100,7 +101,7 @@ public class ContinueProcessOperation extends AbstractOperation {
             message.setTenantId(execution.getTenantId());
         }
 
-        Context.getCommandContext().getJobEntityManager().send(message);
+        commandContext.getJobEntityManager().send(message);
     }
 
     protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents) {
@@ -109,7 +110,7 @@ public class ContinueProcessOperation extends AbstractOperation {
         // for each of the boundary events
         execution.setScope(true);
 
-        ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
 

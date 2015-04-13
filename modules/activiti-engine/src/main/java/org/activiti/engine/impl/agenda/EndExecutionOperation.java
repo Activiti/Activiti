@@ -19,21 +19,15 @@ public class EndExecutionOperation extends AbstractOperation {
 
     private static final Logger logger = LoggerFactory.getLogger(EndExecutionOperation.class);
 
-    public EndExecutionOperation(Agenda agenda, ActivityExecution execution) {
-        super(agenda, execution);
+    public EndExecutionOperation(CommandContext commandContext, ActivityExecution execution) {
+        super(commandContext, execution);
     }
 
     @Override
     public void run() {
 
-        CommandContext commandContext = Context.getCommandContext();
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-        ExecutionEntity executionEntity = (ExecutionEntity) execution; // TODO:
-                                                                       // don't
-                                                                       // like
-                                                                       // cast
-                                                                       // here
-                                                                       // ...
+        ExecutionEntity executionEntity = (ExecutionEntity) execution; // TODO: dont like the cast here
 
         // Find parent execution. If not found, it's the process instance and
         // other logic needs to happen
