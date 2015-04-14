@@ -20,7 +20,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -104,20 +104,22 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
      */
     protected ProcessDefinitionEntity extractProcessDefinitionEntityFromEvent(ActivitiEvent event) {
         ProcessDefinitionEntity result = null;
-
-        if (event.getProcessDefinitionId() != null) {
-            result = ProcessDefinitionCacheUtil.getCachedProcessDefinitionEntity(event.getProcessDefinitionId());
-            if (result != null) {
-                result = Context.getProcessEngineConfiguration().getDeploymentManager().resolveProcessDefinition(result);
-            }
-        }
-
-        if (result == null && event instanceof ActivitiEntityEvent) {
+        
+        if (event instanceof ActivitiEntityEvent) {
             Object entity = ((ActivitiEntityEvent) event).getEntity();
             if (entity instanceof ProcessDefinition) {
                 result = (ProcessDefinitionEntity) entity;
             }
         }
+
+        if (result == null && event.getProcessDefinitionId() != null) {
+            result = ProcessDefinitionUtil.getProcessDefinitionEntity(event.getProcessDefinitionId());
+            if (result != null) {
+                result = Context.getProcessEngineConfiguration().getDeploymentManager().resolveProcessDefinition(result).getProcessDefinitionEntity();
+            }
+        }
+
+        
         return result;
     }
 

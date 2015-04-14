@@ -13,8 +13,8 @@
 package org.activiti.engine.impl.persistence.deploy;
 
 import java.io.Serializable;
-import java.util.Date;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
@@ -26,12 +26,12 @@ public class ProcessDefinitionCacheEntry implements Serializable {
     private static final long serialVersionUID = 6833801933658529070L;
 
     protected ProcessDefinitionEntity processDefinitionEntity;
+    protected BpmnModel bpmnModel;
     protected Process process;
-    protected Date createTimestamp;
-    protected Date lastUsedTimestamp;
 
-    public ProcessDefinitionCacheEntry(ProcessDefinitionEntity processDefinitionEntity, Process process) {
+    public ProcessDefinitionCacheEntry(ProcessDefinitionEntity processDefinitionEntity, BpmnModel bpmnModel, Process process) {
         this.processDefinitionEntity = processDefinitionEntity;
+        this.bpmnModel = bpmnModel;
         this.process = process;
     }
 
@@ -42,29 +42,21 @@ public class ProcessDefinitionCacheEntry implements Serializable {
     public void setProcessDefinitionEntity(ProcessDefinitionEntity processDefinitionEntity) {
         this.processDefinitionEntity = processDefinitionEntity;
     }
+    
+    public BpmnModel getBpmnModel() {
+		return bpmnModel;
+	}
 
-    public Process getProcess() {
+	public void setBpmnModel(BpmnModel bpmnModel) {
+		this.bpmnModel = bpmnModel;
+	}
+
+	public Process getProcess() {
         return process;
     }
 
     public void setProcess(Process process) {
         this.process = process;
-    }
-
-    public Date getCreateTimestamp() {
-        return createTimestamp;
-    }
-
-    public void setCreateTimestamp(Date createTimestamp) {
-        this.createTimestamp = createTimestamp;
-    }
-
-    public Date getLastUsedTimestamp() {
-        return lastUsedTimestamp;
-    }
-
-    public void setLastUsedTimestamp(Date lastUsedTimestamp) {
-        this.lastUsedTimestamp = lastUsedTimestamp;
     }
 
 }

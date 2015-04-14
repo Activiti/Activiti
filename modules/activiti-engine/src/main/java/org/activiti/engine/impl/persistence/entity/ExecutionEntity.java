@@ -57,7 +57,7 @@ import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.pvm.runtime.OutgoingExecution;
 import org.activiti.engine.impl.util.BitMaskUtil;
-import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -347,7 +347,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
         if (currentFlowElement == null) {
             String processDefinitionId = getProcessDefinitionId();
             if (processDefinitionId != null) {
-                org.activiti.bpmn.model.Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinitionId);
+                org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
                 currentFlowElement = process.getFlowElement(getCurrentActivityId(), true);
             }
         }
