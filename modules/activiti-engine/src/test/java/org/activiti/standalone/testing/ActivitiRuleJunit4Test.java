@@ -52,8 +52,7 @@ public class ActivitiRuleJunit4Test {
         assertEquals(0, runtimeService.createProcessInstanceQuery().count());
     }
 
-    // this is to show how JobTestHelper could be used to wait for jobs to be
-    // all processed
+    // this is to show how JobTestHelper could be used to wait for jobs to be all processed
     @Test
     @Deployment(resources = { "org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncTask.bpmn20.xml" })
     public void testWaitForJobs() {

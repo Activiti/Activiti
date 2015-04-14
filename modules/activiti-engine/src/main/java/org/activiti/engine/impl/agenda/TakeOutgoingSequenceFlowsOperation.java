@@ -3,15 +3,17 @@ package org.activiti.engine.impl.agenda;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +45,6 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         // must first be destroyed before we can continue
         if (execution.getParentId() != null && execution.isScope()) {
             agenda.planDestroyScopeOperation(execution);
-            // return;
         }
 
         // No scope, can continue
@@ -60,23 +61,47 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
         logger.debug("Leaving flow node {} with id '{}' by following it's {} outgoing sequenceflow", flowNode.getClass(), flowNode.getId(), flowNode.getOutgoingFlows().size());
 
+        // Get default sequence flow (if set)
+        String defaultSequenceFlowId = null;
+        if (flowNode instanceof Activity) {
+        	defaultSequenceFlowId = ((Activity) flowNode).getDefaultFlow();
+        } else if (flowNode instanceof Gateway) {
+         	defaultSequenceFlowId = ((Gateway) flowNode).getDefaultFlow();
+        }
+        
         // Determine which sequence flows can be used for leaving
         List<SequenceFlow> outgoingSequenceFlow = new ArrayList<SequenceFlow>();
         for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
-            if (!evaluateConditions || (evaluateConditions && ConditionUtil.hasTrueCondition(sequenceFlow, execution))) {
+            if (!evaluateConditions 
+            		|| (evaluateConditions 
+            				&& ConditionUtil.hasTrueCondition(sequenceFlow, execution)
+            				&& (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId()))
+            			)
+            	) {
                 outgoingSequenceFlow.add(sequenceFlow);
             }
         }
+        
+        // Check if there is a default sequence flow
+    	if (outgoingSequenceFlow.size() == 0 && evaluateConditions) { // The elements that set this to false also have no support for default sequence flow
+            if (defaultSequenceFlowId != null) {
+            	 for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
+            		 if (defaultSequenceFlowId.equals(sequenceFlow.getId())) {
+            			 outgoingSequenceFlow.add(sequenceFlow);
+            			 break;
+            		 }
+            	 }
+            }
+    	}
 
-        // Check if we actually can continue. If not, end the current execution
+        // No outgoing found. Ending the execution
         if (outgoingSequenceFlow.size() == 0) {
             logger.warn("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
             agenda.planEndExecutionOperation(execution);
             return;
         }
 
-        // Leave, and reuse the incoming sequence flow, make executions for all
-        // the others (if applicable)
+        // Leave, and reuse the incoming sequence flow, make executions for all the others (if applicable)
 
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
         List<ExecutionEntity> outgoingExecutions = new ArrayList<ExecutionEntity>(flowNode.getOutgoingFlows().size());
@@ -107,8 +132,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
             }
         }
 
-        // Leave (only done when all executions have been made, since some
-        // queries depend on this)
+        // Leave (only done when all executions have been made, since some queries depend on this)
         for (ExecutionEntity outgoingExecution : outgoingExecutions) {
             agenda.planContinueProcessOperation(outgoingExecution);
         }

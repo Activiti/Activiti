@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Collections;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
@@ -90,23 +88,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
             throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
         }
 
-        commandContext.getAgenda().planDestroyScopeOperation(executionEntity); // The
-                                                                               // destroy
-                                                                               // scope
-                                                                               // operation
-                                                                               // will
-                                                                               // figure
-                                                                               // out
-                                                                               // the
-                                                                               // correct
-                                                                               // scope
-                                                                               // execution,
-                                                                               // don't
-                                                                               // pass
-                                                                               // in
-                                                                               // the
-                                                                               // parentScopeExecution
-                                                                               // here
+        commandContext.getAgenda().planDestroyScopeOperation(executionEntity); // The destroy scope operation will figure out the correct scope execution, don't pass in the parentScopeExecution here
         commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(parentScopeExecution, true);
     }
 
