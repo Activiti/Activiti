@@ -108,6 +108,8 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         // Reuse existing one
         SequenceFlow sequenceFlow = outgoingSequenceFlow.get(0);
         execution.setCurrentFlowElement(sequenceFlow);
+        execution.setActive(true);
+//        execution.setScope(false);
         outgoingExecutions.add((ExecutionEntity) execution);
 
         // Executions for all the other one

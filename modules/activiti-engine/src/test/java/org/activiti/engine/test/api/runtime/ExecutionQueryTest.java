@@ -82,7 +82,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     public void testQueryByProcessDefinitionKey() {
         // Concurrent process with 3 executions for each process instance
         assertEquals(12, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).list().size());
-        assertEquals(1, runtimeService.createExecutionQuery().processDefinitionKey(SEQUENTIAL_PROCESS_KEY).list().size());
+        assertEquals(2, runtimeService.createExecutionQuery().processDefinitionKey(SEQUENTIAL_PROCESS_KEY).list().size());
     }
 
     public void testQueryByInvalidProcessDefinitionKey() {
@@ -95,7 +95,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     public void testQueryByProcessDefinitionName() {
         // Concurrent process with 3 executions for each process instance
         assertEquals(12, runtimeService.createExecutionQuery().processDefinitionName(CONCURRENT_PROCESS_NAME).list().size());
-        assertEquals(1, runtimeService.createExecutionQuery().processDefinitionName(SEQUENTIAL_PROCESS_NAME).list().size());
+        assertEquals(2, runtimeService.createExecutionQuery().processDefinitionName(SEQUENTIAL_PROCESS_NAME).list().size());
     }
 
     public void testQueryByInvalidProcessDefinitionName() {
@@ -132,8 +132,8 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     }
 
     public void testQueryExecutionId() {
-        Execution execution = runtimeService.createExecutionQuery().processDefinitionKey(SEQUENTIAL_PROCESS_KEY).singleResult();
-        assertNotNull(runtimeService.createExecutionQuery().executionId(execution.getId()));
+        List<Execution> executions = runtimeService.createExecutionQuery().processDefinitionKey(SEQUENTIAL_PROCESS_KEY).list();
+        assertEquals(2, executions.size());
     }
 
     public void testQueryByInvalidExecutionId() {
@@ -176,7 +176,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     }
 
     public void testQueryPaging() {
-        assertEquals(13, runtimeService.createExecutionQuery().count());
+        assertEquals(14, runtimeService.createExecutionQuery().count());
         assertEquals(4, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).listPage(0, 4).size());
         assertEquals(1, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).listPage(2, 1).size());
         assertEquals(10, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).listPage(1, 10).size());
@@ -186,13 +186,13 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     public void testQuerySorting() {
 
         // 13 executions: 3 for each concurrent, 1 for the sequential
-        assertEquals(13, runtimeService.createExecutionQuery().orderByProcessInstanceId().asc().list().size());
-        assertEquals(13, runtimeService.createExecutionQuery().orderByProcessDefinitionId().asc().list().size());
-        assertEquals(13, runtimeService.createExecutionQuery().orderByProcessDefinitionKey().asc().list().size());
+        assertEquals(14, runtimeService.createExecutionQuery().orderByProcessInstanceId().asc().list().size());
+        assertEquals(14, runtimeService.createExecutionQuery().orderByProcessDefinitionId().asc().list().size());
+        assertEquals(14, runtimeService.createExecutionQuery().orderByProcessDefinitionKey().asc().list().size());
 
-        assertEquals(13, runtimeService.createExecutionQuery().orderByProcessInstanceId().desc().list().size());
-        assertEquals(13, runtimeService.createExecutionQuery().orderByProcessDefinitionId().desc().list().size());
-        assertEquals(13, runtimeService.createExecutionQuery().orderByProcessDefinitionKey().desc().list().size());
+        assertEquals(14, runtimeService.createExecutionQuery().orderByProcessInstanceId().desc().list().size());
+        assertEquals(14, runtimeService.createExecutionQuery().orderByProcessDefinitionId().desc().list().size());
+        assertEquals(14, runtimeService.createExecutionQuery().orderByProcessDefinitionKey().desc().list().size());
 
         assertEquals(12, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).orderByProcessDefinitionId().asc().list().size());
         assertEquals(12, runtimeService.createExecutionQuery().processDefinitionKey(CONCURRENT_PROCESS_KEY).orderByProcessDefinitionId().desc().list().size());
@@ -1188,7 +1188,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
         List<Execution> executions = runtimeService.createExecutionQuery().processDefinitionKey("oneTaskProcess").variableValueEquals("var", 1234L).list();
 
         assertEquals(1, executions.size());
-        assertEquals(processInstance.getId(), executions.get(0).getProcessInstanceId());
+        assertEquals(processInstance.getId(), executions.get(0).getId());
 
         runtimeService.deleteProcessInstance(processInstance.getId(), "test");
         runtimeService.deleteProcessInstance(processInstance2.getId(), "test");
