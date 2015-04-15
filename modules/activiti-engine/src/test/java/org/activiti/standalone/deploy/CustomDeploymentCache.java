@@ -61,6 +61,9 @@ public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionC
 
     // For testing purposes only
     public ProcessDefinitionEntity getCachedProcessDefinition() {
+    	if (entry == null) {
+    		return null;
+    	}
         return entry.getProcessDefinitionEntity();
     }
 

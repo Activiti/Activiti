@@ -176,8 +176,9 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         return processInstance;
     }
 
-    protected ExecutionEntity createProcessInstance(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity, String businessKey, String initiatorVariableName,
-            FlowElement initialFlowElement) {
+    protected ExecutionEntity createProcessInstance(CommandContext commandContext, 
+    		ProcessDefinitionEntity processDefinitionEntity, String businessKey, 
+    		String initiatorVariableName, FlowElement initialFlowElement) {
 
         ExecutionEntity processInstance = new ExecutionEntity();
         processInstance.setProcessDefinitionId(processDefinitionEntity.getId());

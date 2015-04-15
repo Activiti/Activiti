@@ -85,11 +85,11 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
     }
 
     @Override
-    public void trigger(ActivityExecution execution, String signalName, Object signalData) {
-        if ("compensationDone".equals(signalName)) {
-            signalCompensationDone(execution, signalData);
+    public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+        if ("compensationDone".equals(triggerName)) {
+            signalCompensationDone(execution, triggerData);
         } else {
-            super.trigger(execution, signalName, signalData);
+            super.trigger(execution, triggerName, triggerData);
         }
     }
 

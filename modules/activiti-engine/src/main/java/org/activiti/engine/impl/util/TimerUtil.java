@@ -33,8 +33,8 @@ public class TimerUtil {
      * Takes in an optional execution, if missing the
      * {@link NoExecutionVariableScope} will be used (eg Timer start event)
      */
-    public static TimerEntity createTimerEntityForTimerEventDefinition(TimerEventDefinition timerEventDefinition, boolean isInterruptingTimer, ExecutionEntity executionEntity, String jobHandlerType,
-            String jobHandlerConfig) {
+    public static TimerEntity createTimerEntityForTimerEventDefinition(TimerEventDefinition timerEventDefinition, 
+    		boolean isInterruptingTimer, ExecutionEntity executionEntity, String jobHandlerType, String jobHandlerConfig) {
 
         String businessCalendarRef = null;
         Expression expression = null;

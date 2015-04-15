@@ -12,29 +12,16 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
-import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationType;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
  */
 public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<TimerEventDefinition> {
-
-    private static final Logger logger = LoggerFactory.getLogger(TimerEventDefinitionParseHandler.class);
 
     public Class<? extends BaseElement> getHandledType() {
         return TimerEventDefinition.class;
@@ -44,21 +31,9 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
 
         if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
 
-            throw new RuntimeException("Need to implement");
-
-            // timerActivity.setProperty("type", "intermediateTimer");
-            // TimerDeclarationImpl timerDeclaration = createTimer(bpmnParse,
-            // timerEventDefinition, timerActivity,
-            // TimerCatchIntermediateEventJobHandler.TYPE);
-            // if (getPrecedingEventBasedGateway(bpmnParse,
-            // (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement()) !=
-            // null) {
-            // addTimerDeclaration(timerActivity.getParent(), timerDeclaration);
-            // } else {
-            // addTimerDeclaration(timerActivity, timerDeclaration);
-            // timerActivity.setScope(true);
-            // }
-
+        	IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
+        	intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateTimerCatchEventActivityBehavior(intermediateCatchEvent, timerEventDefinition));
+        	
         } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
 
             BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
@@ -67,44 +42,4 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
         }
     }
 
-    protected TimerDeclarationImpl createTimer(BpmnParse bpmnParse, TimerEventDefinition timerEventDefinition, ScopeImpl timerActivity, String jobHandlerType) {
-        TimerDeclarationType type = null;
-        Expression expression = null;
-        ExpressionManager expressionManager = bpmnParse.getExpressionManager();
-        if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDate())) {
-            // TimeDate
-            type = TimerDeclarationType.DATE;
-            expression = expressionManager.createExpression(timerEventDefinition.getTimeDate());
-        } else if (StringUtils.isNotEmpty(timerEventDefinition.getTimeCycle())) {
-            // TimeCycle
-            type = TimerDeclarationType.CYCLE;
-            expression = expressionManager.createExpression(timerEventDefinition.getTimeCycle());
-        } else if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDuration())) {
-            // TimeDuration
-            type = TimerDeclarationType.DURATION;
-            expression = expressionManager.createExpression(timerEventDefinition.getTimeDuration());
-        }
-
-        // neither date, cycle or duration configured!
-        if (expression == null) {
-            logger.warn("Timer needs configuration (either timeDate, timeCycle or timeDuration is needed) (" + timerActivity.getId() + ")");
-        }
-
-        // Parse the timer declaration
-        // TODO move the timer declaration into the bpmn activity or next to the TimerSession
-        TimerDeclarationImpl timerDeclaration = new TimerDeclarationImpl(expression, type, jobHandlerType);
-        timerDeclaration.setJobHandlerConfiguration(timerActivity.getId());
-        timerDeclaration.setExclusive(true);
-        return timerDeclaration;
-    }
-
-    @SuppressWarnings("unchecked")
-    protected void addTimerDeclaration(ScopeImpl scope, TimerDeclarationImpl timerDeclaration) {
-        List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(PROPERTYNAME_TIMER_DECLARATION);
-        if (timerDeclarations == null) {
-            timerDeclarations = new ArrayList<TimerDeclarationImpl>();
-            scope.setProperty(PROPERTYNAME_TIMER_DECLARATION, timerDeclarations);
-        }
-        timerDeclarations.add(timerDeclaration);
-    }
 }
