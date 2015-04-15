@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.parser.factory;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.BusinessRuleTask;
@@ -86,7 +87,6 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.bpmn.webservice.MessageImplicitDataOutputAssociation;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.lang3.StringUtils;
@@ -321,11 +321,11 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     // Multi Instance
 
-    public SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+    public SequentialMultiInstanceBehavior createSequentialMultiInstanceBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
         return new SequentialMultiInstanceBehavior(activity, innerActivityBehavior);
     }
 
-    public ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+    public ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
         return new ParallelMultiInstanceBehavior(activity, innerActivityBehavior);
     }
 
@@ -413,7 +413,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     // Boundary Events
 
-    public BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent, boolean interrupting, ActivityImpl activity) {
+    public BoundaryEventActivityBehavior createBoundaryEventActivityBehavior(BoundaryEvent boundaryEvent, boolean interrupting) {
         return new BoundaryEventActivityBehavior(interrupting);
     }
 

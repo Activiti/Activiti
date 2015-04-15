@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.SubProcess;
-import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -53,10 +53,17 @@ public class EndExecutionOperation extends AbstractOperation {
             if (executionEntity.getCurrentFlowElement() instanceof EndEvent) {
                 EndEvent endEvent = (EndEvent) executionEntity.getCurrentFlowElement();
                 subProcess = endEvent.getSubProcess();
-
+   
                 if (parentExecution.getParentId() != null) {
                     deleteExecution(commandContext, parentExecution);
                     parentExecution = executionEntityManager.get(parentExecution.getParentId());
+                    
+                    if (subProcess != null && subProcess.getLoopCharacteristics() != null && subProcess.getBehavior() instanceof MultiInstanceActivityBehavior) {
+                        MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
+                        parentExecution.setCurrentFlowElement(subProcess);
+                        multiInstanceBehavior.leave(parentExecution);
+                        return;
+                    }
                 }
             }
 
@@ -69,10 +76,7 @@ public class EndExecutionOperation extends AbstractOperation {
 
         } else {
 
-            String processInstanceId = executionEntity.getId(); // No parent
-                                                                // execution ==
-                                                                // process
-                                                                // instance id
+            String processInstanceId = executionEntity.getId(); // No parent execution == process instance id
             logger.debug("No parent execution found. Verifying if process instance {} can be stopped.", processInstanceId);
 
             // TODO: optimisation can be made by keeping the nr of active

@@ -14,15 +14,12 @@ package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.MultiInstanceLoopCharacteristics;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.el.ExpressionManager;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -45,25 +42,17 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> exten
 
         // Activity Behavior
         MultiInstanceActivityBehavior miActivityBehavior = null;
-        ActivityImpl activity = bpmnParse.getCurrentScope().findActivity(modelActivity.getId());
-        if (activity == null) {
-            throw new ActivitiException("Activity " + modelActivity.getId() + " needed for multi instance cannot bv found");
-        }
 
         if (loopCharacteristics.isSequential()) {
-            miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createSequentialMultiInstanceBehavior(activity, (AbstractBpmnActivityBehavior) activity.getActivityBehavior());
+            miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createSequentialMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
         } else {
-            miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createParallelMultiInstanceBehavior(activity, (AbstractBpmnActivityBehavior) activity.getActivityBehavior());
+            miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createParallelMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
         }
 
-        // ActivityImpl settings
-        activity.setScope(true);
-        activity.setProperty("multiInstance", loopCharacteristics.isSequential() ? "sequential" : "parallel");
-        activity.setActivityBehavior(miActivityBehavior);
+        modelActivity.setBehavior(miActivityBehavior);
 
         ExpressionManager expressionManager = bpmnParse.getExpressionManager();
-        BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-
+        
         // loopcardinality
         if (StringUtils.isNotEmpty(loopCharacteristics.getLoopCardinality())) {
             miActivityBehavior.setLoopCardinalityExpression(expressionManager.createExpression(loopCharacteristics.getLoopCardinality()));

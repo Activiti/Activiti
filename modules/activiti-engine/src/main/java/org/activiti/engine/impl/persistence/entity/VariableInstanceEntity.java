@@ -157,7 +157,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     }
 
     @Override
-    @Deprecated
     public String getByteArrayValueId() {
         return byteArrayRef.getId();
     }

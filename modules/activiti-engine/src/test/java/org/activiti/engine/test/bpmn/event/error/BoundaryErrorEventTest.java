@@ -197,8 +197,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
         assertEquals("Task in subprocess", task.getName());
 
         try {
-            // Completing the task will reach the end error event,
-            // which is never caught in the process
+            // Completing the task will reach the end error event, which is never caught in the process
             taskService.complete(task.getId());
             fail("No catching boundary event found for error with errorCode 'myError', neither in same process nor in parent process but no Exception is thrown");
         } catch (BpmnError e) {

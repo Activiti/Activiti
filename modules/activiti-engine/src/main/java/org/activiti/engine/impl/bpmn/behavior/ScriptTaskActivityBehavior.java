@@ -16,6 +16,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -66,7 +67,7 @@ public class ScriptTaskActivityBehavior extends TaskActivityBehavior {
 
         } catch (ActivitiException e) {
 
-            LOGGER.warn("Exception while executing " + execution.getActivity().getId() + " : " + e.getMessage());
+            LOGGER.warn("Exception while executing " + ((ExecutionEntity) execution).getActivityId() + " : " + e.getMessage());
 
             noErrors = false;
             Throwable rootCause = ExceptionUtils.getRootCause(e);

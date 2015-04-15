@@ -21,6 +21,8 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
+    private static final long serialVersionUID = 1L;
+    
     protected String errorCode;
 
     public ErrorEndEventActivityBehavior(String errorCode) {

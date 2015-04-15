@@ -7,6 +7,7 @@ import java.util.List;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.ImplementationType;
@@ -157,6 +158,12 @@ public class ContinueProcessOperation extends AbstractOperation {
 
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
 
+            if (CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
+                    boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
+                
+                continue;
+            }
+            
             ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
             childExecutionEntity.setParentId(execution.getId());
             childExecutionEntity.setCurrentFlowElement(boundaryEvent);

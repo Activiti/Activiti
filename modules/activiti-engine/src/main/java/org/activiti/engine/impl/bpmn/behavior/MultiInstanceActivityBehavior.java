@@ -17,6 +17,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.activiti.bpmn.model.ActivitiListener;
+import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
@@ -25,6 +28,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
+import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -32,9 +36,9 @@ import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,6 +59,8 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior implements CompositeActivityBehavior, SubProcessActivityBehavior {
 
+    private static final long serialVersionUID = 1L;
+
     protected static final Logger LOGGER = LoggerFactory.getLogger(MultiInstanceActivityBehavior.class);
 
     // Variable names for outer instance(as described in spec)
@@ -63,7 +69,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     protected final String NUMBER_OF_COMPLETED_INSTANCES = "nrOfCompletedInstances";
 
     // Instance members
-    protected ActivityImpl activity;
+    protected Activity activity;
     protected AbstractBpmnActivityBehavior innerActivityBehavior;
     protected Expression loopCardinalityExpression;
     protected Expression completionConditionExpression;
@@ -82,7 +88,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
      *            Indicates whether the multi instance behavior must be
      *            sequential or parallel
      */
-    public MultiInstanceActivityBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+    public MultiInstanceActivityBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
         this.activity = activity;
         setInnerActivityBehavior(innerActivityBehavior);
     }
@@ -105,8 +111,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
     protected abstract void createInstances(ActivityExecution execution);
 
-    // Intercepts signals, and delegates it to the wrapped {@link
-    // ActivityBehavior}.
+    // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
     public void trigger(ActivityExecution execution, String signalName, Object signalData) {
         innerActivityBehavior.trigger(execution, signalName, signalData);
     }
@@ -175,15 +180,14 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
             setLoopVariable(execution, collectionElementVariable, value);
         }
 
-        // If loopcounter == 1, then historic activity instance already created,
-        // no need to
-        // pass through executeActivity again since it will create a new
-        // historic activity
-        if (loopCounter == 0) {
+        // If loopcounter == 0, then historic activity instance already created,
+        // no need to pass through executeActivity again since it will create a new historic activity
+        //if (loopCounter == 0) {
             innerActivityBehavior.execute(execution);
-        } else {
-            execution.executeActivity(activity);
-        }
+        //} else {
+        //    execution.setCurrentFlowElement(activity);
+        //    Context.getAgenda().planContinueProcessOperation(execution);
+        //}
     }
 
     protected boolean usesCollection() {
@@ -247,7 +251,14 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
      * needed to call the end listeners yourself.
      */
     protected void callActivityEndListeners(ActivityExecution execution) {
-        List<ExecutionListener> listeners = activity.getExecutionListeners(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END);
+        List<ActivitiListener> listeners = activity.getExecutionListeners();
+        if (CollectionUtils.isNotEmpty(listeners)) {
+            for (ActivitiListener activitiListener : listeners) {
+                if ("end".equalsIgnoreCase(activitiListener.getEvent())) {
+                    
+                }
+            }
+        }
         CallActivityEndListenersOperation atomicOperation = new CallActivityEndListenersOperation(listeners);
         Context.getCommandContext().performOperation(atomicOperation, (InterpretableExecution) execution);
     }
@@ -328,17 +339,29 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
      */
     private static final class CallActivityEndListenersOperation implements AtomicOperation {
 
-        private List<ExecutionListener> listeners;
+        private List<ActivitiListener> listeners;
 
-        private CallActivityEndListenersOperation(List<ExecutionListener> listeners) {
+        private CallActivityEndListenersOperation(List<ActivitiListener> listeners) {
             this.listeners = listeners;
         }
 
         @Override
         public void execute(InterpretableExecution execution) {
-            for (ExecutionListener executionListener : listeners) {
+            ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
+            for (ActivitiListener listener : listeners) {
+                ExecutionListener executionListener = null;
+
+                if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(listener.getImplementationType())) {
+                    executionListener = listenerFactory.createClassDelegateExecutionListener(listener);
+                } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(listener.getImplementationType())) {
+                    executionListener = listenerFactory.createExpressionExecutionListener(listener);
+                } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(listener.getImplementationType())) {
+                    executionListener = listenerFactory.createDelegateExpressionExecutionListener(listener);
+                }
+                
                 try {
-                    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ExecutionListenerInvocation(executionListener, execution));
+                    Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(
+                            new ExecutionListenerInvocation(executionListener, execution));
                 } catch (Exception e) {
                     throw new ActivitiException("Couldn't execute end listener", e);
                 }

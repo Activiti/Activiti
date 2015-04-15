@@ -58,7 +58,7 @@ public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHand
             BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
             boolean interrupting = boundaryEvent.isCancelActivity();
 
-            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
+            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting));
             activity.setProperty("type", "compensationBoundaryCatch");
 
         } else {

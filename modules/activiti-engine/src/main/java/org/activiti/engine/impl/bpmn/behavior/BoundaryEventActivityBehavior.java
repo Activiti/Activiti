@@ -12,8 +12,6 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Collections;
-
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
@@ -27,11 +25,11 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 
+    private static final long serialVersionUID = 1L;
+    
     protected boolean interrupting;
 
-    public BoundaryEventActivityBehavior() {
-
-    }
+    public BoundaryEventActivityBehavior() {}
 
     public BoundaryEventActivityBehavior(boolean interrupting) {
         this.interrupting = interrupting;
@@ -90,23 +88,9 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
             throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
         }
 
-        commandContext.getAgenda().planDestroyScopeOperation(executionEntity); // The
-                                                                               // destroy
-                                                                               // scope
-                                                                               // operation
-                                                                               // will
-                                                                               // figure
-                                                                               // out
-                                                                               // the
-                                                                               // correct
-                                                                               // scope
-                                                                               // execution,
-                                                                               // don't
-                                                                               // pass
-                                                                               // in
-                                                                               // the
-                                                                               // parentScopeExecution
-                                                                               // here
+        commandContext.getAgenda().planDestroyScopeOperation(executionEntity); // The destroy scope operation will figure
+                                                                               // out the correct scope execution, don't pass
+                                                                               // in the parentScopeExecution here
         commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(parentScopeExecution, true);
     }
 

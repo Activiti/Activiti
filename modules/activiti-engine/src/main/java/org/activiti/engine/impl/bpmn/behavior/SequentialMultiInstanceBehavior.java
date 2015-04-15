@@ -12,20 +12,22 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 /**
  * @author Joram Barrez
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavior {
 
-    public SequentialMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+    private static final long serialVersionUID = 1L;
+
+    public SequentialMultiInstanceBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
         super(activity, innerActivityBehavior);
     }
 
@@ -84,17 +86,4 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
             }
         }
     }
-
-    @Override
-    public void execute(ActivityExecution execution) {
-        super.execute(execution);
-
-        if (innerActivityBehavior instanceof SubProcessActivityBehavior) {
-            // ACT-1185: end-event in subprocess may have inactivated execution
-            if (!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().isEmpty())) {
-                execution.setActive(true);
-            }
-        }
-    }
-
 }

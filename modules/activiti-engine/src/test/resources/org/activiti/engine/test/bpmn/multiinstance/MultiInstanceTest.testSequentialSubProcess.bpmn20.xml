@@ -23,12 +23,16 @@
       <sequenceFlow id="subFlow3" sourceRef="subProcessFork" targetRef="subProcessTask2" />
       
       <userTask id="subProcessTask1" name="task one" />
-      <sequenceFlow id="subFlow4" sourceRef="subProcessTask1" targetRef="subProcessEnd1" />
-      <endEvent id="subProcessEnd1" />  
+      <sequenceFlow id="subFlow4" sourceRef="subProcessTask1" targetRef="subProcessJoin" />
       
       <userTask id="subProcessTask2" name="task two" />
-      <sequenceFlow id="subFlow5" sourceRef="subProcessTask2" targetRef="subProcessEnd2" />
-      <endEvent id="subProcessEnd2" />  
+      <sequenceFlow id="subFlow5" sourceRef="subProcessTask2" targetRef="subProcessJoin" />
+      
+      <parallelGateway id="subProcessJoin" />
+      
+      <sequenceFlow id="subFlow6" sourceRef="subProcessJoin" targetRef="subProcessEnd" />
+      
+      <endEvent id="subProcessEnd" />  
       
     </subProcess>
     

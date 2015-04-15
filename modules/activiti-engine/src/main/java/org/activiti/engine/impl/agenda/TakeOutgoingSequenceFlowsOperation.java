@@ -6,7 +6,6 @@ import java.util.List;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -50,8 +49,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         if (currentFlowElement instanceof FlowNode) {
             leaveFlowNode((FlowNode) currentFlowElement);
         } else if (currentFlowElement instanceof SequenceFlow) {
-            // Nothing to do here. The operation wasn't really needed, so simply
-            // pass it through
+            // Nothing to do here. The operation wasn't really needed, so simply pass it through
             agenda.planContinueProcessOperation(execution);
         }
     }

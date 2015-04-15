@@ -47,7 +47,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
      * then the default sequence flow is taken (if defined).
      */
     @Override
-    protected void leave(ActivityExecution execution) {
+    public void leave(ActivityExecution execution) {
 
         if (log.isDebugEnabled()) {
             log.debug("Leaving exclusive gatewt '{}'", execution.getCurrentActivityId());

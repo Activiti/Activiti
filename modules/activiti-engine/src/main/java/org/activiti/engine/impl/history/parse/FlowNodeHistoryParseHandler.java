@@ -15,6 +15,7 @@ package org.activiti.engine.impl.history.parse;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BusinessRuleTask;
@@ -22,6 +23,8 @@ import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.ExclusiveGateway;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.ManualTask;
@@ -35,9 +38,6 @@ import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler;
-import org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 
 /**
@@ -45,9 +45,9 @@ import org.activiti.engine.parse.BpmnParseHandler;
  */
 public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
 
-    protected static final ActivityInstanceEndHandler ACTIVITI_INSTANCE_END_LISTENER = new ActivityInstanceEndHandler();
-
-    protected static final ActivityInstanceStartHandler ACTIVITY_INSTANCE_START_LISTENER = new ActivityInstanceStartHandler();
+    protected static final String ACTIVITY_INSTANCE_START_LISTENER = "org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler";
+    
+    protected static final String ACTIVITI_INSTANCE_END_LISTENER = "org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler"; 
 
     protected static Set<Class<? extends BaseElement>> supportedElementClasses = new HashSet<Class<? extends BaseElement>>();
 
@@ -80,20 +80,24 @@ public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
     }
 
     public void parse(BpmnParse bpmnParse, BaseElement element) {
-        // ActivityImpl activity =
-        // bpmnParse.getCurrentScope().findActivity(element.getId());
-        // if(element instanceof BoundaryEvent) {
-        // // A boundary-event never receives an activity start-event
-        // activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END,
-        // ACTIVITY_INSTANCE_START_LISTENER, 0);
-        // activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END,
-        // ACTIVITI_INSTANCE_END_LISTENER, 1);
-        // } else {
-        // activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START,
-        // ACTIVITY_INSTANCE_START_LISTENER, 0);
-        // activity.addExecutionListener(org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_END,
-        // ACTIVITI_INSTANCE_END_LISTENER);
-        // }
+        if (element instanceof BoundaryEvent) {
+            // A boundary-event never receives an activity start-event
+            BoundaryEvent boundaryEvent = (BoundaryEvent) element;
+            addExecutionListener("end", ACTIVITY_INSTANCE_START_LISTENER, boundaryEvent);
+            addExecutionListener("end", ACTIVITI_INSTANCE_END_LISTENER, boundaryEvent);
+        } else {
+            FlowElement flowElement = (FlowElement) element;
+            addExecutionListener("start", ACTIVITY_INSTANCE_START_LISTENER, flowElement);
+            addExecutionListener("end", ACTIVITI_INSTANCE_END_LISTENER, flowElement);
+        }
+    }
+    
+    protected void addExecutionListener(String event, String className, FlowElement element) {
+        ActivitiListener listener = new ActivitiListener();
+        listener.setEvent(event);
+        listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+        listener.setImplementation(className);
+        element.getExecutionListeners().add(listener);
     }
 
 }
