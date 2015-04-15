@@ -26,7 +26,6 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
 
 public class ExecutionGraphUtil {
 
@@ -73,7 +72,7 @@ public class ExecutionGraphUtil {
     public static boolean isReachable(String processDefinitionId, String sourceElementId, String targetElementId) {
 
         // Fetch source and target elements
-        Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinitionId);
+        Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         FlowNode sourceElement = (FlowNode) process.getFlowElement(sourceElementId, true);
         FlowNode targetElement = (FlowNode) process.getFlowElement(targetElementId, true);
 

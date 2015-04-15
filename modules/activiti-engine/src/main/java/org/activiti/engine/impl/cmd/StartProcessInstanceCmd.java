@@ -37,7 +37,7 @@ import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
-import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLinkType;
@@ -133,7 +133,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         }
 
         // Get model from cache
-        Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinition.getId());
+        Process process = ProcessDefinitionUtil.getProcess(processDefinition.getId());
         if (process == null) {
             throw new ActivitiException("Cannot start process instance. Process model " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") could not be found");
         }
@@ -177,8 +177,9 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         return processInstance;
     }
 
-    protected ExecutionEntity createProcessInstance(CommandContext commandContext, ProcessDefinitionEntity processDefinitionEntity, String businessKey, String initiatorVariableName,
-            FlowElement initialFlowElement) {
+    protected ExecutionEntity createProcessInstance(CommandContext commandContext, 
+    		ProcessDefinitionEntity processDefinitionEntity, String businessKey, 
+    		String initiatorVariableName, FlowElement initialFlowElement) {
 
         ExecutionEntity processInstance = new ExecutionEntity();
         processInstance.setProcessDefinitionId(processDefinitionEntity.getId());

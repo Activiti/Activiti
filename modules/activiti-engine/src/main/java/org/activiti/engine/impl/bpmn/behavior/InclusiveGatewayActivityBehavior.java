@@ -44,8 +44,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
         // The join in the inclusive gateway works as follows:
         // When an execution enters it, it is inactivated.
         // All the inactivated executions stay in the inclusive gateway
-        // until ALL executions that CAN reach the inclusive gateway have
-        // reached it.
+        // until ALL executions that CAN reach the inclusive gateway have reached it.
         //
         // This check is repeated on execution changes until the inactivated
         // executions leave the gateway.
@@ -75,8 +74,7 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
             }
         }
 
-        // If no execution can reach the gateway, the gateway activates and
-        // executes fork behavior
+        // If no execution can reach the gateway, the gateway activates and executes fork behavior
         if (!oneExecutionCanReachGateway) {
 
             logger.debug("Inclusive gateway cannot be reached by any execution and is activated");
@@ -90,9 +88,6 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
             }
 
             // Leave
-
-            // TODO: default sequence flow
-
             commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);
         }
     }

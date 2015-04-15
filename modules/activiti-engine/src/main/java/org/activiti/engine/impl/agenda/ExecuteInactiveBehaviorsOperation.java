@@ -9,7 +9,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.InactiveActivityBehavior;
-import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,7 +39,7 @@ public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
 
         for (ExecutionEntity executionEntity : involvedExecutions) {
 
-            Process process = ProcessDefinitionCacheUtil.getCachedProcess(executionEntity.getProcessDefinitionId());
+            Process process = ProcessDefinitionUtil.getProcess(executionEntity.getProcessDefinitionId());
             Collection<String> flowNodeIdsWithInactivatedBehavior = new ArrayList<String>();
             for (FlowNode flowNode : process.findFlowElementsOfType(FlowNode.class)) {
                 if (flowNode.getBehavior() instanceof InactiveActivityBehavior) {

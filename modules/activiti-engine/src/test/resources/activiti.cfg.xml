@@ -20,7 +20,7 @@
 		<list>
 			<bean class="org.activiti.engine.test.impl.logger.ProcessExecutionLoggerConfigurator" />
 		</list>
-	</property>     -->
+	</property> -->
 
     <!-- job executor configurations -->
     <property name="jobExecutorActivate" value="false" />

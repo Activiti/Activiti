@@ -61,6 +61,7 @@ import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBeha
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowNoneEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowSignalEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateTimerCatchEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ManualTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
@@ -378,6 +379,11 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     public IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent) {
         return new IntermediateCatchEventActivityBehavior();
+    }
+    
+    @Override
+    public IntermediateTimerCatchEventActivityBehavior createIntermediateTimerCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent, TimerEventDefinition timerEventDefinition) {
+    	return new IntermediateTimerCatchEventActivityBehavior(timerEventDefinition);
     }
 
     public IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(ThrowEvent throwEvent) {

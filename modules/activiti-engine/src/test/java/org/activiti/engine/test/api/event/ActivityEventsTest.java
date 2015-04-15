@@ -30,6 +30,7 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
+import org.junit.Ignore;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to activities.
@@ -87,8 +88,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
      */
     @Deployment
     public void testActivityEvents() throws Exception {
-        // We're interested in the raw events, alter the listener to keep those
-        // as well
+        // We're interested in the raw events, alter the listener to keep those as well
         listener.setIgnoreRawActivityEvents(false);
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("activityProcess");

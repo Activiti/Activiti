@@ -18,6 +18,7 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
  * @author Joram Barrez
@@ -37,6 +38,6 @@ public class GetBpmnModelCmd implements Command<BpmnModel>, Serializable {
             throw new ActivitiIllegalArgumentException("processDefinitionId is null");
         }
 
-        return commandContext.getProcessEngineConfiguration().getDeploymentManager().getBpmnModelById(processDefinitionId);
+        return ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
     }
 }

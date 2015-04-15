@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.StartEvent;
@@ -83,6 +84,7 @@ public class BpmnDeployer implements Deployer {
 
         List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
         Map<String, org.activiti.bpmn.model.Process> processModels = new HashMap<String, org.activiti.bpmn.model.Process>();
+        Map<String, BpmnModel> bpmnModels = new HashMap<String, BpmnModel>();
         Map<String, ResourceEntity> resources = deployment.getResources();
 
         final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
@@ -126,23 +128,14 @@ public class BpmnDeployer implements Deployer {
                     }
 
                     if (deployment.getTenantId() != null) {
-                        processDefinition.setTenantId(deployment.getTenantId()); // process
-                                                                                 // definition
-                                                                                 // inherits
-                                                                                 // the
-                                                                                 // tenant
-                                                                                 // id
+                        processDefinition.setTenantId(deployment.getTenantId()); // process definition inherits the tenant id
                     }
 
                     String diagramResourceName = getDiagramResourceForProcess(resourceName, processDefinition.getKey(), resources);
 
-                    // Only generate the resource when deployment is new to
-                    // prevent modification of deployment resources
-                    // after the process-definition is actually deployed. Also
-                    // to prevent resource-generation failure every
-                    // time the process definition is added to the
-                    // deployment-cache when diagram-generation has failed the
-                    // first time.
+                    // Only generate the resource when deployment is new to prevent modification of deployment resources
+                    // after the process-definition is actually deployed. Also to prevent resource-generation failure every
+                    // time the process definition is added to the deployment-cache when diagram-generation has failed the first time.
                     if (deployment.isNew()) {
                         if (processEngineConfiguration.isCreateDiagramOnDeploy() && diagramResourceName == null && processDefinition.isGraphicalNotationDefined()) {
                             try {
@@ -151,10 +144,7 @@ public class BpmnDeployer implements Deployer {
                                                 processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader()), null);
                                 diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                                 createResource(diagramResourceName, diagramBytes, deployment);
-                            } catch (Throwable t) { // if anything goes wrong,
-                                                    // we don't store the image
-                                                    // (the process will still
-                                                    // be executable).
+                            } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
                                 log.warn("Error while generating process diagram, image will not be stored in repository", t);
                             }
                         }
@@ -162,7 +152,9 @@ public class BpmnDeployer implements Deployer {
 
                     processDefinition.setDiagramResourceName(diagramResourceName);
                     processDefinitions.add(processDefinition);
+                    
                     processModels.put(processDefinition.getKey(), bpmnParse.getBpmnModel().getProcessById(processDefinition.getKey()));
+                    bpmnModels.put(processDefinition.getKey(), bpmnParse.getBpmnModel());
                 }
             }
         }
@@ -226,9 +218,9 @@ public class BpmnDeployer implements Deployer {
                 dbSqlSession.insert(processDefinition);
                 addAuthorizations(processDefinition);
 
-                if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, processDefinition));
-                }
+//                if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+//                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, processDefinition));
+//                }
 
                 scheduleTimers(timers);
 
@@ -251,7 +243,8 @@ public class BpmnDeployer implements Deployer {
             }
 
             // Add to cache
-            ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, processModels.get(processDefinition.getKey()));
+            ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, 
+            		bpmnModels.get(processDefinition.getKey()), processModels.get(processDefinition.getKey()));
             processEngineConfiguration.getDeploymentManager().getProcessDefinitionCache().add(processDefinition.getId(), cacheEntry);
 
             // Add to deployment for further usage

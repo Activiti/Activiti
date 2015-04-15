@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,7 +197,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     protected org.activiti.bpmn.model.Process getProcessDefinition(String processDefinitionId) {
         // TODO: must be extracted / cache should be accessed in another way
-        return ProcessDefinitionCacheUtil.getCachedProcess(processDefinitionId);
+        return ProcessDefinitionUtil.getProcess(processDefinitionId);
     }
 
 }

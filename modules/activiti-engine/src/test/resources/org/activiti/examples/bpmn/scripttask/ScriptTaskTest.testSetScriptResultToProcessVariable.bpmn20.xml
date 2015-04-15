@@ -29,7 +29,7 @@
     </scriptTask>
 
     <scriptTask id="theScriptTaskWithNewProcessVariableName" scriptFormat="juel" activiti:resultVariable="newProcessVariableName">
-      <script>#{execution.id}</script>
+      <script>#{execution.parent.id}</script>
     </scriptTask>
 
     <scriptTask id="theScriptTaskWithNoResultVariable" scriptFormat="juel">

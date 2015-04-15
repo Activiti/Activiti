@@ -30,7 +30,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
  * @author Joram Barrez
@@ -57,7 +57,7 @@ public abstract class AbstractOperation implements Runnable {
      */
     protected FlowElement findCurrentFlowElement(final ActivityExecution execution) {
         String processDefinitionId = execution.getProcessDefinitionId();
-        org.activiti.bpmn.model.Process process = ProcessDefinitionCacheUtil.getCachedProcess(processDefinitionId);
+        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
         String activityId = execution.getCurrentActivityId();
         FlowElement currentFlowElement = process.getFlowElement(activityId, true);
         execution.setCurrentFlowElement(currentFlowElement);

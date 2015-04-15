@@ -60,8 +60,7 @@ public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable 
         commandContext.getJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
         commandContext.getEventSubscriptionEntityManager().updateEventSubscriptionTenantId(oldTenantId, newTenantId);
 
-        // Doing process definitions in memory, cause we need to clear the
-        // process definition cache
+        // Doing process definitions in memory, cause we need to clear the process definition cache
         List<ProcessDefinition> processDefinitions = commandContext.getDbSqlSession().createProcessDefinitionQuery().deploymentId(deploymentId).list();
         for (ProcessDefinition processDefinition : processDefinitions) {
             commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().remove(processDefinition.getId());

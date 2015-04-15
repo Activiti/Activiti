@@ -31,7 +31,7 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
-import org.activiti.engine.impl.util.cache.ProcessDefinitionCacheUtil;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -76,7 +76,7 @@ public class CdiTaskListener implements TaskListener, Serializable {
     }
 
     protected BusinessProcessEvent createEvent(DelegateTask task) {
-        ProcessDefinition processDefinition = ProcessDefinitionCacheUtil.getCachedProcessDefinitionEntity(task.getExecution().getProcessDefinitionId());
+        ProcessDefinition processDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(task.getExecution().getProcessDefinitionId());
         return new CdiBusinessProcessEvent(activityId, transitionName, processDefinition, task, type, task.getExecution().getProcessInstanceId(), task.getExecutionId(), new Date());
     }
 

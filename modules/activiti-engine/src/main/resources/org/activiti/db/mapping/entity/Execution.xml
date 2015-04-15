@@ -352,7 +352,7 @@
           inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.ID_ = A${index}.EXECUTION_ID_
         </when>
         <otherwise>
-          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.PROC_INST_ID_ = A${index}.PROC_INST_ID_
+          inner join ${prefix}ACT_RU_VARIABLE A${index} on RES.ID_ = A${index}.PROC_INST_ID_
         </otherwise>
       </choose> 
     </foreach>

@@ -34,7 +34,6 @@ import java.util.Set;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.FormService;
 import org.activiti.engine.HistoryService;
@@ -183,7 +182,6 @@ import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
 import org.activiti.engine.impl.persistence.entity.PropertyEntityManager;
 import org.activiti.engine.impl.persistence.entity.ResourceEntityManager;
@@ -310,8 +308,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     protected int processDefinitionCacheLimit = -1; // By default, no limit
     protected DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache;
-    protected int bpmnModelCacheLimit = -1; // By default, no limit
-    protected DeploymentCache<BpmnModel> bpmnModelCache;
 
     protected int knowledgeBaseCacheLimit = -1;
     protected DeploymentCache<Object> knowledgeBaseCache;
@@ -981,15 +977,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
                 }
             }
 
-            // BpmnModel cache
-            if (bpmnModelCache == null) {
-                if (bpmnModelCacheLimit <= 0) {
-                    bpmnModelCache = new DefaultDeploymentCache<BpmnModel>();
-                } else {
-                    bpmnModelCache = new DefaultDeploymentCache<BpmnModel>(bpmnModelCacheLimit);
-                }
-            }
-
             // Knowledge base cache (used for Drools business task)
             if (knowledgeBaseCache == null) {
                 if (knowledgeBaseCacheLimit <= 0) {
@@ -1000,7 +987,6 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
             }
 
             deploymentManager.setProcessDefinitionCache(processDefinitionCache);
-            deploymentManager.setBpmnModelCache(bpmnModelCache);
             deploymentManager.setKnowledgeBaseCache(knowledgeBaseCache);
         }
     }
