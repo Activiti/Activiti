@@ -25,11 +25,11 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 
+    private static final long serialVersionUID = 1L;
+    
     protected boolean interrupting;
 
-    public BoundaryEventActivityBehavior() {
-
-    }
+    public BoundaryEventActivityBehavior() {}
 
     public BoundaryEventActivityBehavior(boolean interrupting) {
         this.interrupting = interrupting;

@@ -38,10 +38,9 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
 
     protected void executeParse(BpmnParse bpmnParse, ErrorEventDefinition eventDefinition) {
 
-        ErrorEventDefinition modelErrorEvent = (ErrorEventDefinition) eventDefinition;
-        if (bpmnParse.getBpmnModel().containsErrorRef(modelErrorEvent.getErrorCode())) {
-            String errorCode = bpmnParse.getBpmnModel().getErrors().get(modelErrorEvent.getErrorCode());
-            modelErrorEvent.setErrorCode(errorCode);
+        if (bpmnParse.getBpmnModel().containsErrorRef(eventDefinition.getErrorCode())) {
+            String errorCode = bpmnParse.getBpmnModel().getErrors().get(eventDefinition.getErrorCode());
+            eventDefinition.setErrorCode(errorCode);
         }
 
         ScopeImpl scope = bpmnParse.getCurrentScope();
@@ -57,17 +56,12 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
                 // initialized)
                 ScopeImpl catchingScope = ((ActivityImpl) scope).getParent();
 
-                createErrorStartEventDefinition(modelErrorEvent, activity, catchingScope);
+                createErrorStartEventDefinition(eventDefinition, activity, catchingScope);
             }
 
         } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-
             BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-            boolean interrupting = true; // non-interrupting not yet supported
-            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
-            ActivityImpl parentActivity = scope.findActivity(boundaryEvent.getAttachedToRefId());
-            createBoundaryErrorEventDefinition(modelErrorEvent, interrupting, parentActivity, activity);
-
+            boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, boundaryEvent.isCancelActivity()));
         }
     }
 

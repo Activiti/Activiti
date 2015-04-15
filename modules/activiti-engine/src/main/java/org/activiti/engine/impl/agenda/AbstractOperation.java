@@ -119,6 +119,9 @@ public abstract class AbstractOperation implements Runnable {
         Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
         for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
             variableInstanceEntityManager.delete(variableInstanceEntity);
+            if (variableInstanceEntity.getByteArrayValueId() != null) {
+                commandContext.getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayValueId());
+            }
         }
 
         // Delete current user tasks

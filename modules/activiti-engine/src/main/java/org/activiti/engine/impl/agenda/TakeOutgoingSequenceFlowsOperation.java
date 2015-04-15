@@ -51,8 +51,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         if (currentFlowElement instanceof FlowNode) {
             leaveFlowNode((FlowNode) currentFlowElement);
         } else if (currentFlowElement instanceof SequenceFlow) {
-            // Nothing to do here. The operation wasn't really needed, so simply
-            // pass it through
+            // Nothing to do here. The operation wasn't really needed, so simply pass it through
             agenda.planContinueProcessOperation(execution);
         }
     }

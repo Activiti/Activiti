@@ -27,6 +27,8 @@ import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
  */
 public abstract class FlowNodeActivityBehavior implements TriggerableActivityBehavior {
 
+    private static final long serialVersionUID = 1L;
+    
     protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
 
     /**
@@ -40,11 +42,11 @@ public abstract class FlowNodeActivityBehavior implements TriggerableActivityBeh
      * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on
      * the outgoing sequence flow and take those that evaluate to true.
      */
-    protected void leave(ActivityExecution execution) {
+    public void leave(ActivityExecution execution) {
         bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
     }
 
-    protected void leaveIgnoreConditions(ActivityExecution activityContext) {
+    public void leaveIgnoreConditions(ActivityExecution activityContext) {
         bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
     }
 

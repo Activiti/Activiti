@@ -12,21 +12,18 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
-import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEvent> {
 
@@ -38,7 +35,27 @@ public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEv
 
     @Override
     protected void executeParse(BpmnParse bpmnParse, EndEvent endEvent) {
-        endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
+        
+        EventDefinition eventDefinition = null;
+        if (endEvent.getEventDefinitions().size() > 0) {
+            eventDefinition = endEvent.getEventDefinitions().get(0);
+            
+            if (eventDefinition instanceof ErrorEventDefinition) {
+                ErrorEventDefinition errorDefinition = (ErrorEventDefinition) eventDefinition;
+                if (bpmnParse.getBpmnModel().containsErrorRef(errorDefinition.getErrorCode())) {
+                    String errorCode = bpmnParse.getBpmnModel().getErrors().get(errorDefinition.getErrorCode());
+                    if (StringUtils.isEmpty(errorCode)) {
+                        logger.warn("errorCode is required for an error event " + endEvent.getId());
+                    }
+                }
+                endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createErrorEndEventActivityBehavior(endEvent, errorDefinition));
+            } else {
+                endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
+            }
+            
+        } else {
+            endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
+        }
     }
 
     // protected void executeParse(BpmnParse bpmnParse, EndEvent endEvent) {

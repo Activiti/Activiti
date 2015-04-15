@@ -30,6 +30,8 @@ import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
  */
 public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
 
+    private static final long serialVersionUID = 1L;
+    
     protected MultiInstanceActivityBehavior multiInstanceActivityBehavior;
 
     /**
@@ -38,7 +40,7 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
      * called. This way, we can check if the activity has loop characteristics,
      * and delegate to the behavior if this is the case.
      */
-    protected void leave(ActivityExecution execution) {
+    public void leave(ActivityExecution execution) {
         if (hasCompensationHandler(execution)) {
             createCompensateEventSubscription(execution);
         }

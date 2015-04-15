@@ -85,7 +85,7 @@ public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<
 
             BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
             boolean interrupting = boundaryEvent.isCancelActivity();
-            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
+            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting));
 
             activity.setProperty("type", "boundarySignal");
 

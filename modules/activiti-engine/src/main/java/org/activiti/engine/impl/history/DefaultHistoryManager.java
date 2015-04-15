@@ -227,7 +227,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     @Override
     public void recordActivityStart(ExecutionEntity executionEntity) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-            if (executionEntity.getActivity() != null) {
+            if (executionEntity.getCurrentActivityId() != null && executionEntity.getCurrentFlowElement() != null) {
                 IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
 
                 String processDefinitionId = executionEntity.getProcessDefinitionId();
@@ -239,9 +239,11 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
                 historicActivityInstance.setProcessDefinitionId(processDefinitionId);
                 historicActivityInstance.setProcessInstanceId(processInstanceId);
                 historicActivityInstance.setExecutionId(executionId);
-                historicActivityInstance.setActivityId(executionEntity.getActivityId());
-                historicActivityInstance.setActivityName((String) executionEntity.getActivity().getProperty("name"));
-                historicActivityInstance.setActivityType((String) executionEntity.getActivity().getProperty("type"));
+                historicActivityInstance.setActivityId(executionEntity.getCurrentActivityId());
+                historicActivityInstance.setActivityName(executionEntity.getCurrentFlowElement().getName());
+                String elementType = executionEntity.getCurrentFlowElement().getClass().getSimpleName();
+                elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
+                historicActivityInstance.setActivityType(elementType);
                 historicActivityInstance.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
 
                 // Inherit tenant id (if applicable)
