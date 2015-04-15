@@ -69,10 +69,7 @@ public class EndExecutionOperation extends AbstractOperation {
 
         } else {
 
-            String processInstanceId = executionEntity.getId(); // No parent
-                                                                // execution ==
-                                                                // process
-                                                                // instance id
+            String processInstanceId = executionEntity.getId(); // No parent execution == process instance id
             logger.debug("No parent execution found. Verifying if process instance {} can be stopped.", processInstanceId);
 
             // TODO: optimisation can be made by keeping the nr of active

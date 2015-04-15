@@ -188,15 +188,15 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     // We do not want a hard dependency on Mule, hence we return
     // ActivityBehavior and instantiate
     // the delegate instance using a string instead of the Class itself.
-    public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel) {
-        return createMuleActivityBehavior(serviceTask, serviceTask.getFieldExtensions(), bpmnModel);
+    public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask) {
+        return createMuleActivityBehavior(serviceTask, serviceTask.getFieldExtensions());
     }
 
-    public ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel) {
-        return createMuleActivityBehavior(sendTask, sendTask.getFieldExtensions(), bpmnModel);
+    public ActivityBehavior createMuleActivityBehavior(SendTask sendTask) {
+        return createMuleActivityBehavior(sendTask, sendTask.getFieldExtensions());
     }
 
-    protected ActivityBehavior createMuleActivityBehavior(Task task, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
+    protected ActivityBehavior createMuleActivityBehavior(Task task, List<FieldExtension> fieldExtensions) {
         try {
 
             Class<?> theClass = Class.forName("org.activiti.mule.MuleSendActivitiBehavior");
@@ -209,17 +209,16 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
 
     // We do not want a hard dependency on Camel, hence we return
-    // ActivityBehavior and instantiate
-    // the delegate instance using a string instead of the Class itself.
-    public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel) {
-        return createCamelActivityBehavior(serviceTask, serviceTask.getFieldExtensions(), bpmnModel);
+    // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
+    public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask) {
+        return createCamelActivityBehavior(serviceTask, serviceTask.getFieldExtensions());
     }
 
-    public ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel) {
-        return createCamelActivityBehavior(sendTask, sendTask.getFieldExtensions(), bpmnModel);
+    public ActivityBehavior createCamelActivityBehavior(SendTask sendTask) {
+        return createCamelActivityBehavior(sendTask, sendTask.getFieldExtensions());
     }
 
-    protected ActivityBehavior createCamelActivityBehavior(Task task, List<FieldExtension> fieldExtensions, BpmnModel bpmnModel) {
+    protected ActivityBehavior createCamelActivityBehavior(Task task, List<FieldExtension> fieldExtensions) {
         try {
             Class<?> theClass = null;
             FieldExtension behaviorExtension = null;

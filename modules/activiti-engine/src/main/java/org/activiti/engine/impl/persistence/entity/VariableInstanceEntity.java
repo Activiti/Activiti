@@ -88,13 +88,6 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
     }
 
-    public void delete() {
-        Context.getCommandContext().getDbSqlSession().delete(this);
-
-        byteArrayRef.delete();
-        deleted = true;
-    }
-
     public Object getPersistentState() {
         Map<String, Object> persistentState = new HashMap<String, Object>();
         if (longValue != null) {
@@ -120,6 +113,10 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
     public int getRevisionNext() {
         return revision + 1;
+    }
+    
+    public void setDeleted(boolean isDeleted) {
+    	this.deleted = isDeleted;
     }
 
     public boolean isDeleted() {
@@ -160,6 +157,10 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
     @Deprecated
     public String getByteArrayValueId() {
         return byteArrayRef.getId();
+    }
+    
+    public ByteArrayRef getByteArrayRef() {
+    	return byteArrayRef;
     }
 
     @Override

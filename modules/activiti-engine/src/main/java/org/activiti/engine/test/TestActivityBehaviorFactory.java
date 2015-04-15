@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.activiti.bpmn.model.BoundaryEvent;
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.CancelEventDefinition;
@@ -208,23 +207,23 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
     }
 
     @Override
-    public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel) {
-        return wrappedActivityBehaviorFactory.createMuleActivityBehavior(serviceTask, bpmnModel);
+    public ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask) {
+        return wrappedActivityBehaviorFactory.createMuleActivityBehavior(serviceTask);
     }
 
     @Override
-    public ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel) {
-        return wrappedActivityBehaviorFactory.createMuleActivityBehavior(sendTask, bpmnModel);
+    public ActivityBehavior createMuleActivityBehavior(SendTask sendTask) {
+        return wrappedActivityBehaviorFactory.createMuleActivityBehavior(sendTask);
     }
 
     @Override
-    public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel) {
-        return wrappedActivityBehaviorFactory.createCamelActivityBehavior(serviceTask, bpmnModel);
+    public ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask) {
+        return wrappedActivityBehaviorFactory.createCamelActivityBehavior(serviceTask);
     }
 
     @Override
-    public ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel) {
-        return wrappedActivityBehaviorFactory.createCamelActivityBehavior(sendTask, bpmnModel);
+    public ActivityBehavior createCamelActivityBehavior(SendTask sendTask) {
+        return wrappedActivityBehaviorFactory.createCamelActivityBehavior(sendTask);
     }
 
     @Override
