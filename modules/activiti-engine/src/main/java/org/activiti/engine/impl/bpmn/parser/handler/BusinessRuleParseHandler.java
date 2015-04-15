@@ -29,11 +29,7 @@ public class BusinessRuleParseHandler extends AbstractActivityBpmnParseHandler<B
 
     @Override
     protected void executeParse(BpmnParse bpmnParse, BusinessRuleTask businessRuleTask) {
-
-        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, businessRuleTask, BpmnXMLConstants.ELEMENT_TASK_BUSINESSRULE);
-        activity.setAsync(businessRuleTask.isAsynchronous());
-        activity.setExclusive(!businessRuleTask.isNotExclusive());
-        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBusinessRuleTaskActivityBehavior(businessRuleTask));
+    	businessRuleTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createBusinessRuleTaskActivityBehavior(businessRuleTask));
     }
 
 }

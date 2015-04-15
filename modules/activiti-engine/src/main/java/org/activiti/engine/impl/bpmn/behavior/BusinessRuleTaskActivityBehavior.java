@@ -19,10 +19,12 @@ import java.util.Iterator;
 import java.util.Set;
 
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.rules.RulesAgendaFilter;
 import org.activiti.engine.impl.rules.RulesHelper;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.drools.KnowledgeBase;
 import org.drools.runtime.StatefulKnowledgeSession;
 
@@ -30,6 +32,7 @@ import org.drools.runtime.StatefulKnowledgeSession;
  * activity implementation of the BPMN 2.0 business rule task.
  * 
  * @author Tijs Rademakers
+ * @author Joram Barrez
  */
 public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
 
@@ -42,8 +45,9 @@ public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
     }
 
     public void execute(ActivityExecution execution) {
-        PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
-        String deploymentId = processDefinition.getDeploymentId();
+        ProcessDefinitionEntity processDefinitionEntity = 
+        		ProcessDefinitionUtil.getProcessDefinitionEntity(execution.getProcessDefinitionId());
+        String deploymentId = processDefinitionEntity.getDeploymentId();
 
         KnowledgeBase knowledgeBase = RulesHelper.findKnowledgeBaseByDeploymentId(deploymentId);
         StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
