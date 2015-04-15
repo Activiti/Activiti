@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 
 /**
@@ -75,12 +78,32 @@ public class VariableInstanceEntityManager extends AbstractEntityManager<Variabl
         params.put("names", names);
         return getDbSqlSession().selectList("selectVariableInstancesByTaskAndNames", params);
     }
+    
+    @Override
+    public void delete(VariableInstanceEntity entity) {
+    	delete(entity, true);
+    }
+    
+	@Override
+	public void delete(VariableInstanceEntity entity, boolean fireDeleteEvent) {
+		getDbSqlSession().delete(entity);
+		ByteArrayRef byteArrayRef = entity.getByteArrayRef();
+		if (byteArrayRef != null) {
+			byteArrayRef.delete();
+		}
+		entity.setDeleted(true);
+
+		if (fireDeleteEvent && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+			Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
+		}
+
+	}
 
     public void deleteVariableInstanceByTask(TaskEntity task) {
         Map<String, VariableInstanceEntity> variableInstances = task.getVariableInstances();
         if (variableInstances != null) {
             for (VariableInstanceEntity variableInstance : variableInstances.values()) {
-                variableInstance.delete();
+            	delete(variableInstance);
             }
         }
     }

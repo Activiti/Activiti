@@ -14,7 +14,6 @@ package org.activiti.engine.impl.bpmn.parser.factory;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.CancelEventDefinition;
@@ -141,15 +140,14 @@ public interface ActivityBehaviorFactory {
     public abstract MailActivityBehavior createMailActivityBehavior(SendTask sendTask);
 
     // We do not want a hard dependency on the Mule module, hence we return
-    // ActivityBehavior and instantiate
-    // the delegate instance using a string instead of the Class itself.
-    public abstract ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel);
+    // ActivityBehavior and instantiate the delegate instance using a string instead of the Class itself.
+    public abstract ActivityBehavior createMuleActivityBehavior(ServiceTask serviceTask);
 
-    public abstract ActivityBehavior createMuleActivityBehavior(SendTask sendTask, BpmnModel bpmnModel);
+    public abstract ActivityBehavior createMuleActivityBehavior(SendTask sendTask);
 
-    public abstract ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask, BpmnModel bpmnModel);
+    public abstract ActivityBehavior createCamelActivityBehavior(ServiceTask serviceTask);
 
-    public abstract ActivityBehavior createCamelActivityBehavior(SendTask sendTask, BpmnModel bpmnModel);
+    public abstract ActivityBehavior createCamelActivityBehavior(SendTask sendTask);
 
     public abstract ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask);
 

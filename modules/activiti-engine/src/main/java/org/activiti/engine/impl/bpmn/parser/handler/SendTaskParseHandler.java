@@ -40,47 +40,42 @@ public class SendTaskParseHandler extends AbstractExternalInvocationBpmnParseHan
 
     protected void executeParse(BpmnParse bpmnParse, SendTask sendTask) {
 
-        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, sendTask, BpmnXMLConstants.ELEMENT_TASK_SEND);
-
-        activity.setAsync(sendTask.isAsynchronous());
-        activity.setExclusive(!sendTask.isNotExclusive());
-
         if (StringUtils.isNotEmpty(sendTask.getType())) {
             if (sendTask.getType().equalsIgnoreCase("mail")) {
-                activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(sendTask));
+            	sendTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createMailActivityBehavior(sendTask));
             } else if (sendTask.getType().equalsIgnoreCase("mule")) {
-                activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(sendTask, bpmnParse.getBpmnModel()));
+            	sendTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createMuleActivityBehavior(sendTask));
             } else if (sendTask.getType().equalsIgnoreCase("camel")) {
-                activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(sendTask, bpmnParse.getBpmnModel()));
+            	sendTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createCamelActivityBehavior(sendTask));
             }
 
             // for web service
         } else if (ImplementationType.IMPLEMENTATION_TYPE_WEBSERVICE.equalsIgnoreCase(sendTask.getImplementationType()) && StringUtils.isNotEmpty(sendTask.getOperationRef())) {
 
-            if (!bpmnParse.getOperations().containsKey(sendTask.getOperationRef())) {
-                logger.warn(sendTask.getOperationRef() + " does not exist for sendTask " + sendTask.getId());
-            } else {
-                WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(sendTask);
-                Operation operation = bpmnParse.getOperations().get(sendTask.getOperationRef());
-                webServiceActivityBehavior.setOperation(operation);
-
-                if (sendTask.getIoSpecification() != null) {
-                    IOSpecification ioSpecification = createIOSpecification(bpmnParse, sendTask.getIoSpecification());
-                    webServiceActivityBehavior.setIoSpecification(ioSpecification);
-                }
-
-                for (DataAssociation dataAssociationElement : sendTask.getDataInputAssociations()) {
-                    AbstractDataAssociation dataAssociation = createDataInputAssociation(bpmnParse, dataAssociationElement);
-                    webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
-                }
-
-                for (DataAssociation dataAssociationElement : sendTask.getDataOutputAssociations()) {
-                    AbstractDataAssociation dataAssociation = createDataOutputAssociation(bpmnParse, dataAssociationElement);
-                    webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
-                }
-
-                activity.setActivityBehavior(webServiceActivityBehavior);
-            }
+//            if (!bpmnParse.getOperations().containsKey(sendTask.getOperationRef())) {
+//                logger.warn(sendTask.getOperationRef() + " does not exist for sendTask " + sendTask.getId());
+//            } else {
+//                WebServiceActivityBehavior webServiceActivityBehavior = bpmnParse.getActivityBehaviorFactory().createWebServiceActivityBehavior(sendTask);
+//                Operation operation = bpmnParse.getOperations().get(sendTask.getOperationRef());
+//                webServiceActivityBehavior.setOperation(operation);
+//
+//                if (sendTask.getIoSpecification() != null) {
+//                    IOSpecification ioSpecification = createIOSpecification(bpmnParse, sendTask.getIoSpecification());
+//                    webServiceActivityBehavior.setIoSpecification(ioSpecification);
+//                }
+//
+//                for (DataAssociation dataAssociationElement : sendTask.getDataInputAssociations()) {
+//                    AbstractDataAssociation dataAssociation = createDataInputAssociation(bpmnParse, dataAssociationElement);
+//                    webServiceActivityBehavior.addDataInputAssociation(dataAssociation);
+//                }
+//
+//                for (DataAssociation dataAssociationElement : sendTask.getDataOutputAssociations()) {
+//                    AbstractDataAssociation dataAssociation = createDataOutputAssociation(bpmnParse, dataAssociationElement);
+//                    webServiceActivityBehavior.addDataOutputAssociation(dataAssociation);
+//                }
+//
+//                activity.setActivityBehavior(webServiceActivityBehavior);
+//            }
         } else {
             logger.warn("One of the attributes 'type' or 'operation' is mandatory on sendTask " + sendTask.getId());
         }
