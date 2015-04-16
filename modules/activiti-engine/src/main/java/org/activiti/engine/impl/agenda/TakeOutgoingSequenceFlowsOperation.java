@@ -13,7 +13,6 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +36,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
         if (currentFlowElement == null) {
             currentFlowElement = findCurrentFlowElement(execution);
-        } else {
-            execution.setCurrentActivityId(currentFlowElement.getId());
+            execution.setCurrentFlowElement(currentFlowElement);
         }
 
         // If execution is a scope (and not the process instance), the scope

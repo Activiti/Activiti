@@ -71,6 +71,9 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
                 if (canReachGateway) {
                     oneExecutionCanReachGateway = true;
                 }
+            } else if (executionEntity.getActivityId().equals(execution.getCurrentActivityId()) && executionEntity.isActive()) {
+            	// Special case: the execution has reached the inc gw, but the operation hasn't been executed yet for that execution
+            	oneExecutionCanReachGateway = true;
             }
         }
 

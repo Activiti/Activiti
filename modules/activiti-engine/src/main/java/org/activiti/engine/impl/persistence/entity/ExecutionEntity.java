@@ -71,8 +71,7 @@ import org.slf4j.LoggerFactory;
  * @author Saeid Mirzaei
  */
 
-public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, ProcessInstance, InterpretableExecution, PersistentObject,
-        HasRevision {
+public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, ProcessInstance, InterpretableExecution, PersistentObject, HasRevision {
 
     private static final long serialVersionUID = 1L;
 
@@ -356,6 +355,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     public void setCurrentFlowElement(FlowElement currentFlowElement) {
         this.currentFlowElement = currentFlowElement;
+        if (currentFlowElement != null) {
+        	this.activityId = currentFlowElement.getId();
+        }
     }
 
     // scopes
@@ -1609,10 +1611,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     public String getCurrentActivityId() {
         return activityId;
-    }
-
-    public void setCurrentActivityId(String activityId) {
-        this.activityId = activityId;
     }
 
     public String getCurrentActivityName() {

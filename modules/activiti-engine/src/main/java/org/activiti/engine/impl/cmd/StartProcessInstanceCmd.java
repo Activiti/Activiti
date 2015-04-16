@@ -169,7 +169,6 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         // Create the first execution that will visit all the process definition elements
         ExecutionEntity execution = processInstance.createExecution();
         execution.setCurrentFlowElement(initialFlowElement);
-        execution.setCurrentActivityId(initialFlowElement.getId());
         commandContext.getAgenda().planContinueProcessOperation(execution);
 
         return processInstance;

@@ -23,8 +23,7 @@ public class TriggerExecutionOperation extends AbstractOperation {
 
         if (currentFlowElement == null) {
             currentFlowElement = findCurrentFlowElement(execution);
-        } else {
-            execution.setCurrentActivityId(currentFlowElement.getId());
+            execution.setCurrentFlowElement(currentFlowElement);
         }
 
         if (currentFlowElement instanceof FlowNode) {

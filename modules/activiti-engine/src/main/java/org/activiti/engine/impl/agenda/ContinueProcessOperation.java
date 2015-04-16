@@ -55,8 +55,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
         if (currentFlowElement == null) {
             currentFlowElement = findCurrentFlowElement(execution);
-        } else {
-            execution.setCurrentActivityId(currentFlowElement.getId());
+            execution.setCurrentFlowElement(currentFlowElement);
         }
 
         if (currentFlowElement instanceof FlowNode) {
@@ -181,7 +180,6 @@ public class ContinueProcessOperation extends AbstractOperation {
             ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
             childExecutionEntity.setParentId(execution.getId());
             childExecutionEntity.setCurrentFlowElement(boundaryEvent);
-            childExecutionEntity.setCurrentActivityId(boundaryEvent.getId());
             childExecutionEntity.setScope(false);
 
             ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());

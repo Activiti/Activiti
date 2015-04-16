@@ -33,8 +33,6 @@ public interface ActivityExecution extends DelegateExecution {
 
     void setCurrentFlowElement(FlowElement flowElement);
 
-    void setCurrentActivityId(String activityId);
-
     /* Process instance/activity/transition retrieval */
 
     /**

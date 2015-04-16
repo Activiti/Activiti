@@ -65,7 +65,9 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         return getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
             @Override
             public boolean isRetained(ExecutionEntity executionEntity) {
-                return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId);
+                return executionEntity.getProcessInstanceId() != null 
+                		&& executionEntity.getProcessInstanceId().equals(processInstanceId)
+                		&& executionEntity.getParentId() != null;
             }
         });
     }
