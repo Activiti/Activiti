@@ -433,7 +433,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     @Deployment
     public void testAsyncBehavior() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
-        waitForJobExecutorToProcessAllJobs(500000000L, 5000L);
+        waitForJobExecutorToProcessAllJobs(5000L, 250);
         assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
     }
 

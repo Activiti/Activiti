@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ExecutionQueryImpl;
@@ -223,22 +224,6 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         getDbSqlSession().update("updateExecutionTenantIdForDeployment", params);
     }
 
-    public void updateProcessInstanceLockTime(String processInstanceId) {
-        CommandContext commandContext = Context.getCommandContext();
-        Date expirationTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
-        int lockMillis = commandContext.getProcessEngineConfiguration().getAsyncExecutor().getAsyncJobLockTimeInMillis();
-        GregorianCalendar lockCal = new GregorianCalendar();
-        lockCal.setTime(expirationTime);
-        lockCal.add(Calendar.MILLISECOND, lockMillis);
-
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("id", processInstanceId);
-        params.put("lockTime", lockCal.getTime());
-        params.put("expirationTime", expirationTime);
-
-        getDbSqlSession().update("updateProcessInstanceLockTime", params);
-    }
-    
     
     
     // DELETE METHODS
@@ -293,6 +278,25 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     
     
     // OTHER METHODS
+    
+    public void updateProcessInstanceLockTime(String processInstanceId) {
+        CommandContext commandContext = Context.getCommandContext();
+        Date expirationTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
+        int lockMillis = commandContext.getProcessEngineConfiguration().getAsyncExecutor().getAsyncJobLockTimeInMillis();
+        GregorianCalendar lockCal = new GregorianCalendar();
+        lockCal.setTime(expirationTime);
+        lockCal.add(Calendar.MILLISECOND, lockMillis);
+
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("id", processInstanceId);
+        params.put("lockTime", lockCal.getTime());
+        params.put("expirationTime", expirationTime);
+
+        int result = getDbSqlSession().update("updateProcessInstanceLockTime", params);
+        if (result == 0) {
+        	throw new ActivitiOptimisticLockingException("JORAM123");
+        }
+    }
     
 
     public void clearProcessInstanceLockTime(String processInstanceId) {
