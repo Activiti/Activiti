@@ -10,6 +10,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
@@ -69,13 +70,26 @@ public class ContinueProcessOperation extends AbstractOperation {
     }
 
     private void continueThroughFlowNode(FlowNode flowNode) {
-
-        // See if flowNode is an async activity and schedule as a job if that
-        // evaluates to true
-        if (!forceSynchronousOperation && flowNode instanceof Activity) {
-            Activity activity = (Activity) flowNode;
-            if (activity.isAsynchronous()) {
-                scheduleJob(activity);
+        // See if flowNode is an async activity and schedule as a job if that evaluates to true
+        if (!forceSynchronousOperation) {
+            boolean isAsynchronous = false;
+            boolean isExclusive = false;
+            if (flowNode instanceof Activity) {
+                Activity activity = (Activity) flowNode;
+                if (activity.isAsynchronous()) {
+                    isAsynchronous = true;
+                    isExclusive = !activity.isNotExclusive();
+                }
+            } else if (flowNode instanceof Gateway) {
+                Gateway gateway = (Gateway) flowNode;
+                if (gateway.isAsynchronous()) {
+                    isAsynchronous = true;
+                    isExclusive = !gateway.isNotExclusive();
+                }
+            }
+            
+            if (isAsynchronous) {
+                scheduleJob(isExclusive);
                 return;
             }
         }
@@ -110,12 +124,12 @@ public class ContinueProcessOperation extends AbstractOperation {
         agenda.planContinueProcessOperation(execution);
     }
 
-    protected void scheduleJob(Activity activity) {
+    protected void scheduleJob(boolean exclusive) {
         MessageEntity message = new MessageEntity();
         message.setExecutionId(execution.getId());
         message.setProcessInstanceId(execution.getProcessInstanceId());
         message.setProcessDefinitionId(execution.getProcessDefinitionId());
-        message.setExclusive(!activity.isNotExclusive());
+        message.setExclusive(exclusive);
         message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
 
         // Inherit tenant id (if applicable)
