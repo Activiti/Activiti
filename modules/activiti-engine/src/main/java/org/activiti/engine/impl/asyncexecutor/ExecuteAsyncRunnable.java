@@ -18,7 +18,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti.engine.impl.cmd.LockExclusiveJobCmd;
 import org.activiti.engine.impl.cmd.UnlockExclusiveJobCmd;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -45,7 +44,6 @@ public class ExecuteAsyncRunnable implements Runnable {
 	}
 
 	public void run() {
-	  CommandContext commandContext = Context.getCommandContext();
 	  
 	  try {
   		if (job.isExclusive()) {
@@ -61,7 +59,12 @@ public class ExecuteAsyncRunnable implements Runnable {
             "Exception message: {}", optimisticLockingException.getMessage());
       }
       
-      commandContext.getJobEntityManager().retryAsyncJob(job);
+      commandExecutor.execute(new Command<Void>() {
+      	public Void execute(CommandContext commandContext) {
+      		commandContext.getJobEntityManager().retryAsyncJob(job);
+      		return null;
+      	}
+      });
       return;
     
 		} catch (Throwable t) {
