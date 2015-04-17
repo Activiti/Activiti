@@ -100,7 +100,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
 
         // copy process variables
         ExpressionManager expressionManager = Context.getProcessEngineConfiguration().getExpressionManager();
-        for (IOParameter ioParameter : callActivity.getOutParameters()) {
+        for (IOParameter ioParameter : callActivity.getInParameters()) {
             Object value = null;
             if (StringUtils.isNotEmpty(ioParameter.getSourceExpression())) {
                 Expression expression = expressionManager.createExpression(ioParameter.getSourceExpression().trim());
@@ -168,6 +168,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
         // Store in database
         Context.getCommandContext().getExecutionEntityManager().insert(subProcessInstance);
 
+        subProcessInstance.setProcessInstanceId(subProcessInstance.getId());
         processInstanceEntity.setSubProcessInstance(subProcessInstance);
 
         // Fire events manage bidirectional super-subprocess relation
