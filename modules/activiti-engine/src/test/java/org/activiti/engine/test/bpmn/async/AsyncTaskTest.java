@@ -13,6 +13,7 @@
 package org.activiti.engine.test.bpmn.async;
 
 import java.util.Date;
+import java.util.List;
 
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
@@ -115,9 +116,13 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
             // exception expected
         }
 
-        // the service failed: the execution is still sitting in the service
-        // task:
-        Execution execution = runtimeService.createExecutionQuery().singleResult();
+        // the service failed: the execution is still sitting in the service task:
+        Execution execution = null;
+        for (Execution e : runtimeService.createExecutionQuery().list()) {
+        	if (e.getParentId() != null) {
+        		execution = e;
+        	}
+        }
         assertNotNull(execution);
         assertEquals("service", runtimeService.getActiveActivityIds(execution.getId()).get(0));
 
@@ -214,7 +219,13 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
         // now there should be one job in the database:
         assertEquals(1, managementService.createJobQuery().count());
         // the script was not invoked:
-        String eid = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).singleResult().getId();
+        List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).list();
+        String eid = null;
+        for (Execution e : executions) {
+        	if (e.getParentId() != null) {
+        		eid = e.getId();
+        	}
+        }
         assertNull(runtimeService.getVariable(eid, "invoked"));
 
         waitForJobExecutorToProcessAllJobs(5000L, 100L);
