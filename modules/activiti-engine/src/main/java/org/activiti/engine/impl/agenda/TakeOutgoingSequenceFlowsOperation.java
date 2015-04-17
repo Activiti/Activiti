@@ -8,12 +8,12 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +37,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
         if (currentFlowElement == null) {
             currentFlowElement = findCurrentFlowElement(execution);
-        } else {
-            execution.setCurrentActivityId(currentFlowElement.getId());
+            execution.setCurrentFlowElement(currentFlowElement);
         }
 
         // If execution is a scope (and not the process instance), the scope
@@ -95,9 +94,13 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
         // No outgoing found. Ending the execution
         if (outgoingSequenceFlow.size() == 0) {
-            logger.warn("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
-            agenda.planEndExecutionOperation(execution);
-            return;
+        	if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
+        		 logger.info("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
+                 agenda.planEndExecutionOperation(execution);
+                 return;
+        	} else {
+        		throw new ActivitiException("No outgoing sequence flow of element '"+ flowNode.getId() + "' could be selected for continuing the process");
+        	}
         }
 
         // Leave, and reuse the incoming sequence flow, make executions for all the others (if applicable)

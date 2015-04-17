@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowElementsContainer;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Process;
@@ -73,8 +74,22 @@ public class ExecutionGraphUtil {
 
         // Fetch source and target elements
         Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
-        FlowNode sourceElement = (FlowNode) process.getFlowElement(sourceElementId, true);
-        FlowNode targetElement = (FlowNode) process.getFlowElement(targetElementId, true);
+        
+        FlowElement sourceFlowElement = process.getFlowElement(sourceElementId, true);
+        FlowNode sourceElement = null;
+        if (sourceFlowElement instanceof FlowNode) {
+        	sourceElement = (FlowNode) sourceFlowElement;
+        } else if (sourceFlowElement instanceof SequenceFlow) {
+        	sourceElement = (FlowNode) ((SequenceFlow) sourceFlowElement).getTargetFlowElement();
+        }
+        
+        FlowElement targetFlowElement = process.getFlowElement(targetElementId, true);
+        FlowNode targetElement = null;
+        if (targetFlowElement instanceof FlowNode) {
+        	targetElement = (FlowNode) targetFlowElement;
+        } else if (targetFlowElement instanceof SequenceFlow) {
+        	targetElement = (FlowNode) ((SequenceFlow) targetFlowElement).getTargetFlowElement();
+        }
 
         if (sourceElement == null) {
             throw new ActivitiException("Invalid sourceElementId '" + sourceElementId + "': no element found for this id n process definition '" + processDefinitionId + "'");
@@ -89,8 +104,7 @@ public class ExecutionGraphUtil {
 
     public static boolean isReachable(Process process, FlowNode sourceElement, FlowNode targetElement, Set<String> visitedElements) {
 
-        // No outgoing seq flow: could be the end of eg . the process or an
-        // embedded subprocess
+        // No outgoing seq flow: could be the end of eg . the process or an embedded subprocess
         if (sourceElement.getOutgoingFlows().size() == 0) {
             visitedElements.add(sourceElement.getId());
 

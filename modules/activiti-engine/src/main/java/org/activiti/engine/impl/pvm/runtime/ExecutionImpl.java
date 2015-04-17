@@ -1037,9 +1037,4 @@ public class ExecutionImpl implements Serializable, ActivityExecution, Execution
 
     }
 
-    @Override
-    public void setCurrentActivityId(String activityId) {
-        // TODO Auto-generated method stub
-
-    }
 }

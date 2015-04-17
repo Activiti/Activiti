@@ -87,7 +87,7 @@ public class EndExecutionOperation extends AbstractOperation {
             Collection<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByProcessInstanceId(processInstanceId);
             int activeExecutions = 0;
             for (ExecutionEntity execution : executions) {
-                if (execution.isActive()) {
+                if (execution.isActive() && !processInstanceId.equals(execution.getId())) {
                     activeExecutions++;
                 }
             }

@@ -62,7 +62,6 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
 
         ExecutionEntity subProcessExecution = ((ExecutionEntity) execution).createExecution();
         subProcessExecution.setCurrentFlowElement(subProcess);
-        subProcessExecution.setCurrentActivityId(subProcess.getId());
 
         // initialize the template-defined data objects as variables
         Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
@@ -72,7 +71,6 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
 
         ExecutionEntity startSubProcessExecution = subProcessExecution.createExecution();
         startSubProcessExecution.setCurrentFlowElement(startElement);
-        startSubProcessExecution.setCurrentActivityId(startElement.getId());
         Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
     }
 

@@ -27,10 +27,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
@@ -40,7 +36,6 @@ import org.activiti.engine.impl.runtime.ProcessInstanceBuilderImpl;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.task.IdentityLinkType;
 
 /**
  * @author Tom Baeyens
@@ -152,7 +147,10 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         if (initialFlowElement instanceof StartEvent) {
             initiatorVariableName = ((StartEvent) initialFlowElement).getInitiator();
         }
-        ExecutionEntity processInstance = createProcessInstance(commandContext, processDefinition, businessKey, initiatorVariableName, initialFlowElement);
+        
+        ExecutionEntity processInstance = commandContext.getExecutionEntityManager().createProcessInstanceExecution(
+        		processDefinition.getId(), businessKey, processDefinition.getTenantId(), initiatorVariableName);
+        commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
 
         processInstance.setVariables(processDataObjects(process.getDataObjects()));
 
@@ -171,44 +169,7 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
         // Create the first execution that will visit all the process definition elements
         ExecutionEntity execution = processInstance.createExecution();
         execution.setCurrentFlowElement(initialFlowElement);
-        execution.setCurrentActivityId(initialFlowElement.getId());
         commandContext.getAgenda().planContinueProcessOperation(execution);
-
-        return processInstance;
-    }
-
-    protected ExecutionEntity createProcessInstance(CommandContext commandContext, 
-    		ProcessDefinitionEntity processDefinitionEntity, String businessKey, 
-    		String initiatorVariableName, FlowElement initialFlowElement) {
-
-        ExecutionEntity processInstance = new ExecutionEntity();
-        processInstance.setProcessDefinitionId(processDefinitionEntity.getId());
-        processInstance.setBusinessKey(businessKey);
-        processInstance.setScope(true); // process instance is always a scope
-                                        // for all child executions
-
-        // Inherit tenant id (if any)
-        if (processDefinitionEntity.getTenantId() != null) {
-            processInstance.setTenantId(processDefinitionEntity.getTenantId());
-        }
-
-        String authenticatedUserId = Authentication.getAuthenticatedUserId();
-        if (initiatorVariableName != null) {
-            processInstance.setVariable(initiatorVariableName, authenticatedUserId);
-        }
-        if (authenticatedUserId != null) {
-            processInstance.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
-        }
-
-        // Store in database
-        commandContext.getExecutionEntityManager().insert(processInstance);
-
-        // Fire events
-        commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
-
-        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
-        }
 
         return processInstance;
     }

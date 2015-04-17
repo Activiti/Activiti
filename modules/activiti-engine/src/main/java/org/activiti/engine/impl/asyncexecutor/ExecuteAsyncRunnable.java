@@ -45,7 +45,6 @@ public class ExecuteAsyncRunnable implements Runnable {
     }
 
     public void run() {
-        CommandContext commandContext = Context.getCommandContext();
 
         try {
             if (job.isExclusive()) {
@@ -61,7 +60,12 @@ public class ExecuteAsyncRunnable implements Runnable {
                         optimisticLockingException.getMessage());
             }
 
-            commandContext.getJobEntityManager().retryAsyncJob(job);
+            commandExecutor.execute(new Command<Void>() {
+            	public Void execute(CommandContext commandContext) {
+            		commandContext.getJobEntityManager().retryAsyncJob(job);
+            		return null;
+            	}
+			});
             return;
 
         } catch (Throwable t) {

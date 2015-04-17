@@ -91,7 +91,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
             runtimeService.startProcessInstanceByKey("inclusiveGwNoSeqFlowSelected", CollectionUtil.singletonMap("input", 4));
             fail();
         } catch (ActivitiException e) {
-            assertTextPresent("No outgoing sequence flow of the inclusive gateway 'inclusiveGw' could be selected for continuing the process", e.getMessage());
+            // Exception exptected
         }
     }
 
@@ -191,7 +191,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
             runtimeService.startProcessInstanceByKey("inclusiveDecisionBasedOnListOrArrayOfBeans", CollectionUtil.singletonMap("orders", orders));
             fail();
         } catch (ActivitiException e) {
-            // expect an exception to be thrown here
+            // expect an exception to be thrown here as there is
         }
 
         orders.set(1, new InclusiveGatewayTestOrder(175));
@@ -433,7 +433,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
     @Deployment
     public void testAsyncBehavior() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("async");
-        waitForJobExecutorToProcessAllJobs(10000, 500);
+        waitForJobExecutorToProcessAllJobs(5000L, 250);
         assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
     }
 

@@ -23,14 +23,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.task.IdentityLinkType;
 
 /**
  * @author Tom Baeyens
@@ -43,52 +48,10 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         return ExecutionEntity.class;
     }
 
-    @SuppressWarnings("unchecked")
-    public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
-        List<String> processInstanceIds = getDbSqlSession().selectList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
-
-        for (String processInstanceId : processInstanceIds) {
-            deleteProcessInstance(processInstanceId, deleteReason, cascade);
-        }
-
-        if (cascade) {
-            Context.getCommandContext().getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceByProcessDefinitionId(processDefinitionId);
-        }
-    }
-
-    public void deleteProcessInstance(String processInstanceId, String deleteReason) {
-        deleteProcessInstance(processInstanceId, deleteReason, false);
-    }
-
-    public void deleteProcessInstance(String processInstanceId, String deleteReason, boolean cascade) {
-        ExecutionEntity execution = findExecutionById(processInstanceId);
-
-        if (execution == null) {
-            throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
-        }
-
-        deleteProcessInstanceCascade(execution, deleteReason, cascade);
-    }
-
-    private void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
-        for (ExecutionEntity subExecutionEntity : execution.getExecutions()) {
-            if (subExecutionEntity.getSubProcessInstance() != null) {
-                deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, deleteHistory);
-            }
-        }
-
-        CommandContext commandContext = Context.getCommandContext();
-        commandContext.getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
-
-        // delete the execution BEFORE we delete the history, otherwise we will
-        // produce orphan HistoricVariableInstance instances
-        execution.deleteCascade(deleteReason);
-
-        if (deleteHistory) {
-            commandContext.getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceById(execution.getId());
-        }
-    }
-
+    
+    // FIND METHODS
+    
+    
     public ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId) {
         return (ExecutionEntity) getDbSqlSession().selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
     }
@@ -103,7 +66,9 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         return getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
             @Override
             public boolean isRetained(ExecutionEntity executionEntity) {
-                return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId);
+                return executionEntity.getProcessInstanceId() != null 
+                		&& executionEntity.getProcessInstanceId().equals(processInstanceId)
+                		&& executionEntity.getParentId() != null;
             }
         });
     }
@@ -206,6 +171,51 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     public long findExecutionCountByNativeQuery(Map<String, Object> parameterMap) {
         return (Long) getDbSqlSession().selectOne("selectExecutionCountByNativeQuery", parameterMap);
     }
+    
+    
+    
+    // CREATE METHODS
+    
+    
+    public ExecutionEntity createProcessInstanceExecution(String processDefinitionId, String businessKey, String tenantId,  String initiatorVariableName) {
+
+        ExecutionEntity processInstanceExecution = new ExecutionEntity();
+        processInstanceExecution.setProcessDefinitionId(processDefinitionId);
+        processInstanceExecution.setBusinessKey(businessKey);
+        processInstanceExecution.setScope(true); // process instance is always a scope for all child executions
+
+        // Inherit tenant id (if any)
+        if (tenantId != null) {
+            processInstanceExecution.setTenantId(tenantId);
+        }
+
+        String authenticatedUserId = Authentication.getAuthenticatedUserId();
+        if (initiatorVariableName != null) {
+            processInstanceExecution.setVariable(initiatorVariableName, authenticatedUserId);
+        }
+        if (authenticatedUserId != null) {
+            processInstanceExecution.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
+        }
+
+        // Store in database
+        Context.getCommandContext().getExecutionEntityManager().insert(processInstanceExecution);
+        
+        // Need to be after insert, cause we need the id
+        processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
+
+        // Fire events
+        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstanceExecution));
+        }
+
+        return processInstanceExecution;
+    }
+    
+    
+    
+    // UPDATE METHODS
+    
+    
 
     public void updateExecutionTenantIdForDeployment(String deploymentId, String newTenantId) {
         HashMap<String, Object> params = new HashMap<String, Object>();
@@ -214,6 +224,61 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         getDbSqlSession().update("updateExecutionTenantIdForDeployment", params);
     }
 
+    
+    
+    // DELETE METHODS
+    
+    
+    
+    @SuppressWarnings("unchecked")
+    public void deleteProcessInstancesByProcessDefinition(String processDefinitionId, String deleteReason, boolean cascade) {
+        List<String> processInstanceIds = getDbSqlSession().selectList("selectProcessInstanceIdsByProcessDefinitionId", processDefinitionId);
+
+        for (String processInstanceId : processInstanceIds) {
+            deleteProcessInstance(processInstanceId, deleteReason, cascade);
+        }
+
+        if (cascade) {
+            Context.getCommandContext().getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceByProcessDefinitionId(processDefinitionId);
+        }
+    }
+
+    public void deleteProcessInstance(String processInstanceId, String deleteReason) {
+        deleteProcessInstance(processInstanceId, deleteReason, false);
+    }
+
+    public void deleteProcessInstance(String processInstanceId, String deleteReason, boolean cascade) {
+        ExecutionEntity execution = findExecutionById(processInstanceId);
+
+        if (execution == null) {
+            throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
+        }
+
+        deleteProcessInstanceCascade(execution, deleteReason, cascade);
+    }
+
+    private void deleteProcessInstanceCascade(ExecutionEntity execution, String deleteReason, boolean deleteHistory) {
+        for (ExecutionEntity subExecutionEntity : execution.getExecutions()) {
+            if (subExecutionEntity.getSubProcessInstance() != null) {
+                deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, deleteHistory);
+            }
+        }
+
+        CommandContext commandContext = Context.getCommandContext();
+        commandContext.getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
+
+        // delete the execution BEFORE we delete the history, otherwise we will
+        // produce orphan HistoricVariableInstance instances
+        execution.deleteCascade(deleteReason);
+
+        if (deleteHistory) {
+            commandContext.getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceById(execution.getId());
+        }
+    }
+    
+    
+    // OTHER METHODS
+    
     public void updateProcessInstanceLockTime(String processInstanceId) {
         CommandContext commandContext = Context.getCommandContext();
         Date expirationTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
@@ -227,8 +292,12 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         params.put("lockTime", lockCal.getTime());
         params.put("expirationTime", expirationTime);
 
-        getDbSqlSession().update("updateProcessInstanceLockTime", params);
+        int result = getDbSqlSession().update("updateProcessInstanceLockTime", params);
+        if (result == 0) {
+        	throw new ActivitiOptimisticLockingException("Could not lock process instance");
+        }
     }
+    
 
     public void clearProcessInstanceLockTime(String processInstanceId) {
         HashMap<String, Object> params = new HashMap<String, Object>();

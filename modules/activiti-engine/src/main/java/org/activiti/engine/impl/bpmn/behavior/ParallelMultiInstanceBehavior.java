@@ -51,7 +51,6 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         for (int loopCounter = 0; loopCounter < nrOfInstances; loopCounter++) {
             ActivityExecution concurrentExecution = execution.createExecution();
             concurrentExecution.setCurrentFlowElement(activity);
-            concurrentExecution.setCurrentActivityId(activity.getId());
             concurrentExecution.setActive(true);
             concurrentExecution.setConcurrent(true);
             concurrentExecution.setScope(false);

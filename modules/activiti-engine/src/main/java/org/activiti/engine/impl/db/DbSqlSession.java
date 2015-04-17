@@ -793,7 +793,7 @@ public class DbSqlSession implements Session {
 
             log.debug("updating: {}", updatedObject);
             int updatedRecords = sqlSession.update(updateStatement, updatedObject);
-            if (updatedRecords != 1) {
+            if (updatedRecords == 0) {
                 throw new ActivitiOptimisticLockingException(updatedObject + " was updated by another transaction concurrently");
             }
 
