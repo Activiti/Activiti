@@ -28,7 +28,19 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 public class ProcessDefinitionUtil {
 
     public static ProcessDefinitionEntity getProcessDefinitionEntity(String processDefinitionId) {
-    	return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+    	return getProcessDefinitionEntity(processDefinitionId, false);
+    }
+    
+    public static ProcessDefinitionEntity getProcessDefinitionEntity(String processDefinitionId, boolean checkCacheOnly) {
+    	if (checkCacheOnly) {
+    		ProcessDefinitionCacheEntry cacheEntry = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(processDefinitionId);
+    		if (cacheEntry != null) {
+    			return cacheEntry.getProcessDefinitionEntity();
+    		}
+    		return null;
+    	} else {
+    		return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+    	}
     }
     
     public static Process getProcess(String processDefinitionId) {

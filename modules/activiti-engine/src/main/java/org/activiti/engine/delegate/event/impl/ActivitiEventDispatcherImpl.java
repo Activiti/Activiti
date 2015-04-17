@@ -111,9 +111,9 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
                 result = (ProcessDefinitionEntity) entity;
             }
         }
-
+        
         if (result == null && event.getProcessDefinitionId() != null) {
-            result = ProcessDefinitionUtil.getProcessDefinitionEntity(event.getProcessDefinitionId());
+            result = ProcessDefinitionUtil.getProcessDefinitionEntity(event.getProcessDefinitionId(), true);
             if (result != null) {
                 result = Context.getProcessEngineConfiguration().getDeploymentManager().resolveProcessDefinition(result).getProcessDefinitionEntity();
             }
