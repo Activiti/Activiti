@@ -294,7 +294,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
 
         int result = getDbSqlSession().update("updateProcessInstanceLockTime", params);
         if (result == 0) {
-        	throw new ActivitiOptimisticLockingException("JORAM123");
+        	throw new ActivitiOptimisticLockingException("Could not lock process instance");
         }
     }
     

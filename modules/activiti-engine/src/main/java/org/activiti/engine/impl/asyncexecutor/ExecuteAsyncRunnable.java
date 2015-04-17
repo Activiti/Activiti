@@ -45,7 +45,6 @@ public class ExecuteAsyncRunnable implements Runnable {
     }
 
     public void run() {
-        CommandContext commandContext = Context.getCommandContext();
 
         try {
             if (job.isExclusive()) {
