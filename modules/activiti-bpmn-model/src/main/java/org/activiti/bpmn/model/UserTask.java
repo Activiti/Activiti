@@ -30,6 +30,7 @@ public class UserTask extends Task {
   protected String formKey;
   protected String dueDate;
   protected String category;
+  protected String extensionId;
   protected List<String> candidateUsers = new ArrayList<String>();
   protected List<String> candidateGroups = new ArrayList<String>();
   protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
@@ -37,7 +38,9 @@ public class UserTask extends Task {
   protected String skipExpression;
 
   protected Map<String, Set<String>> customUserIdentityLinks = new HashMap<String, Set<String>>(); 
-  protected Map<String, Set<String>> customGroupIdentityLinks = new HashMap<String, Set<String>>(); 
+  protected Map<String, Set<String>> customGroupIdentityLinks = new HashMap<String, Set<String>>();
+  
+  protected List<CustomProperty> customProperties = new ArrayList<CustomProperty>();
 
   public String getAssignee() {
     return assignee;
@@ -75,6 +78,15 @@ public class UserTask extends Task {
 	public void setCategory(String category) {
 		this.category = category;
 	}
+	public String getExtensionId() {
+    return extensionId;
+  }
+  public void setExtensionId(String extensionId) {
+    this.extensionId = extensionId;
+  }
+  public boolean isExtended() {
+    return extensionId != null && !extensionId.isEmpty();
+  }
 	public List<String> getCandidateUsers() {
     return candidateUsers;
   }
@@ -139,6 +151,13 @@ public class UserTask extends Task {
     this.customGroupIdentityLinks = customGroupIdentityLinks;
   }
   
+  public List<CustomProperty> getCustomProperties() {
+    return customProperties;
+  }
+  public void setCustomProperties(List<CustomProperty> customProperties) {
+    this.customProperties = customProperties;
+  }
+  
   public String getSkipExpression() {
     return skipExpression;
   }
@@ -160,6 +179,7 @@ public class UserTask extends Task {
     setDueDate(otherElement.getDueDate());
     setPriority(otherElement.getPriority());
     setCategory(otherElement.getCategory());
+    setExtensionId(otherElement.getExtensionId());
     
     setCandidateGroups(new ArrayList<String>(otherElement.getCandidateGroups()));
     setCandidateUsers(new ArrayList<String>(otherElement.getCandidateUsers()));
