@@ -17,8 +17,6 @@ import java.util.List;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmProcessDefinition;
-import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.PvmTransition;
 
 /**
@@ -53,15 +51,6 @@ public interface ActivityExecution extends DelegateExecution {
      * activity will be initialized.
      */
     ActivityExecution createExecution();
-
-    /**
-     * creates a new sub process instance. The current execution will be the
-     * super execution of the created execution.
-     * 
-     * @param processDefinition
-     *            The {@link PvmProcessDefinition} of the subprocess.
-     */
-    PvmProcessInstance createSubProcessInstance(PvmProcessDefinition processDefinition);
 
     /**
      * returns the parent of this execution, or null if there no parent.

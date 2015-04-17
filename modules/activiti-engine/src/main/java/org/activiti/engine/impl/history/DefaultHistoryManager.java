@@ -38,7 +38,6 @@ import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntit
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.task.Event;
 import org.slf4j.Logger;
@@ -154,7 +153,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
             historicActivityInstance.setExecutionId(executionId);
             historicActivityInstance.setActivityId(startElement.getId());
             historicActivityInstance.setActivityName(startElement.getName());
-            historicActivityInstance.setActivityType(startElement.getClass().getName());
+            historicActivityInstance.setActivityType(parseActivityType(startElement));
             Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
             historicActivityInstance.setStartTime(now);
 
@@ -176,17 +175,14 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
      * org.activiti.engine.impl.persistence.entity.ExecutionEntity)
      */
     @Override
-    public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, ExecutionEntity subProcessInstance) {
+    public void recordSubProcessInstanceStart(ExecutionEntity parentExecution, ExecutionEntity subProcessInstance, FlowElement initialElement) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
 
             HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity((ExecutionEntity) subProcessInstance);
 
-            ActivityImpl initialActivity = subProcessInstance.getActivity();
-            // Fix for ACT-1728: startActivityId not initialized with
-            // subprocess-instance
+            // Fix for ACT-1728: startActivityId not initialized with subprocess instance
             if (historicProcessInstance.getStartActivityId() == null) {
-                historicProcessInstance.setStartActivityId(subProcessInstance.getProcessDefinition().getInitial().getId());
-                initialActivity = subProcessInstance.getProcessDefinition().getInitial();
+                historicProcessInstance.setStartActivityId(initialElement.getId());
             }
             getDbSqlSession().insert(historicProcessInstance);
 
@@ -205,9 +201,9 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
             historicActivityInstance.setProcessDefinitionId(subProcessInstance.getProcessDefinitionId());
             historicActivityInstance.setProcessInstanceId(subProcessInstance.getProcessInstanceId());
             historicActivityInstance.setExecutionId(subProcessInstance.getId());
-            historicActivityInstance.setActivityId(initialActivity.getId());
-            historicActivityInstance.setActivityName((String) initialActivity.getProperty("name"));
-            historicActivityInstance.setActivityType((String) initialActivity.getProperty("type"));
+            historicActivityInstance.setActivityId(initialElement.getId());
+            historicActivityInstance.setActivityName(initialElement.getName());      
+            historicActivityInstance.setActivityType(parseActivityType(initialElement));
             Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
             historicActivityInstance.setStartTime(now);
 
@@ -241,9 +237,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
                 historicActivityInstance.setExecutionId(executionId);
                 historicActivityInstance.setActivityId(executionEntity.getCurrentActivityId());
                 historicActivityInstance.setActivityName(executionEntity.getCurrentFlowElement().getName());
-                String elementType = executionEntity.getCurrentFlowElement().getClass().getSimpleName();
-                elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
-                historicActivityInstance.setActivityType(elementType);
+                historicActivityInstance.setActivityType(parseActivityType(executionEntity.getCurrentFlowElement()));
                 historicActivityInstance.setStartTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime());
 
                 // Inherit tenant id (if applicable)
@@ -911,5 +905,11 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     public void recordVariableRemoved(VariableInstanceEntity variable) {
         // TODO Auto-generated method stub
 
+    }
+    
+    protected String parseActivityType(FlowElement element) {
+        String elementType = element.getClass().getSimpleName();
+        elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
+        return elementType;
     }
 }

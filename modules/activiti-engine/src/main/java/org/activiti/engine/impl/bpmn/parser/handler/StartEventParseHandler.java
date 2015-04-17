@@ -28,8 +28,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
 
     private static Logger logger = LoggerFactory.getLogger(StartEventParseHandler.class);
 
-    // public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME =
-    // "initiatorVariableName";
+    // public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
     // public static final String PROPERTYNAME_INITIAL = "initial";
 
     @Override
@@ -49,7 +48,11 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
             element.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
         }
         
-        bpmnParse.getCurrentProcess().setInitialFlowElement(element);
+        if (element.getSubProcess() == null && (CollectionUtils.isEmpty(element.getEventDefinitions()) ||
+                bpmnParse.getCurrentProcess().getInitialFlowElement() == null)) {
+            
+            bpmnParse.getCurrentProcess().setInitialFlowElement(element);
+        }
     }
 
     // @Override
