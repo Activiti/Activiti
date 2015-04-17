@@ -735,10 +735,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
 
     protected void collectActiveActivityIds(List<String> activeActivityIds) {
-        ensureActivityInitialized();
-        if (isActive && activity != null) {
-            activeActivityIds.add(activity.getId());
-        }
+    	if (isActive && activityId != null) {
+    		activeActivityIds.add(activityId);
+    	}
         ensureExecutionsInitialized();
         for (ExecutionEntity execution : executions) {
             execution.collectActiveActivityIds(activeActivityIds);
