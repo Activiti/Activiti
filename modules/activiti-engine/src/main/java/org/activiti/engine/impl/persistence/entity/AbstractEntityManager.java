@@ -60,6 +60,19 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
     /*
      * Advanced operations
      */
+    
+    public Entity getEntity(Class<? extends Entity> clazz, String entityId, CachedEntityMatcher<Entity> retainEntityCondition) {
+
+    	// Cache
+        for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
+            if (retainEntityCondition.isRetained(cachedEntity)) {
+                return cachedEntity;
+            }
+        }
+    	
+        // Database
+        return getDbSqlSession().selectById(clazz, entityId);
+    }
 
     /**
      * Main way to query a list of objects: 1. Fetches all data from the
@@ -80,6 +93,7 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
         // Cache
         for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
             if (retainEntityCondition.isRetained(cachedEntity)) {
+            	System.out.println("OINKFOUND " + cachedEntity);
                 entityMap.put(cachedEntity.getId(), cachedEntity);
             }
         }

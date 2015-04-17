@@ -53,11 +53,7 @@ public class ExecuteAsyncRunnable implements Runnable {
 
         } catch (ActivitiOptimisticLockingException optimisticLockingException) {
             if (log.isDebugEnabled()) {
-                log.debug("Optimistic locking exception during exclusive job acquisition. If you have multiple job executors running against the same database, "
-                        + "this exception means that this thread tried to acquire an exclusive job, which already was changed by another async executor thread."
-                        + "This is expected behavior in a clustered environment. "
-                        + "You can ignore this message if you indeed have multiple job executor acquisition threads running against the same database. " + "Exception message: {}",
-                        optimisticLockingException.getMessage());
+                log.debug("Optimistic locking exception during exclusive job acquisition. Retrying job.", optimisticLockingException.getMessage());
             }
 
             commandExecutor.execute(new Command<Void>() {
