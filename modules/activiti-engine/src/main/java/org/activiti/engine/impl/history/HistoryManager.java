@@ -49,7 +49,8 @@ public interface HistoryManager extends Session {
      * calledProcessinstanceId on the current active activity's historic
      * counterpart. Only effective when activity history is enabled.
      */
-    public abstract void recordSubProcessInstanceStart(ExecutionEntity parentExecution, ExecutionEntity subProcessInstance);
+    public abstract void recordSubProcessInstanceStart(ExecutionEntity parentExecution, 
+            ExecutionEntity subProcessInstance, FlowElement initialFlowElement);
 
     /**
      * Record the start of an activitiy, if activity history is enabled.
