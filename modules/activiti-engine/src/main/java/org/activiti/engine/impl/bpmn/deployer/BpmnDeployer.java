@@ -88,6 +88,7 @@ public class BpmnDeployer implements Deployer {
         BpmnParse bpmnParse = bpmnParser
           .createParse()
           .sourceInputStream(inputStream)
+          .setSourceSystemId(resourceName)
           .deployment(deployment)
           .name(resourceName);
         

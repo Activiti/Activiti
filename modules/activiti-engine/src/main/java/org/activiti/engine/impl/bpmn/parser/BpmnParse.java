@@ -99,6 +99,7 @@ public class BpmnParse implements BpmnXMLConstants {
   protected boolean validateProcess = true;
   
   protected StreamSource streamSource;
+  protected String sourceSystemId;
 
   protected BpmnModel bpmnModel;
 
@@ -717,6 +718,15 @@ public class BpmnParse implements BpmnXMLConstants {
 
   public void removeCurrentScope() {
     currentScopeStack.pop();
+  }
+  
+  public BpmnParse setSourceSystemId(String systemId) {
+    sourceSystemId = systemId;
+    return this;
+  }
+  
+  public String getSourceSystemId() {
+    return this.sourceSystemId;
   }
   
 }
