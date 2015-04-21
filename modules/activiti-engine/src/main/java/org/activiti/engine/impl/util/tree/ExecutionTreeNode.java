@@ -67,7 +67,7 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
 	@Override
 	public String toString() {
 		StringBuilder strb = new StringBuilder();
-		strb.append(getExecutionEntity().getId() + " : " + getExecutionEntity().getActivityId() + "\r\n");
+		strb.append(getExecutionEntity().getId() + " : " + getExecutionEntity().getActivityId() + ", parent id " + getExecutionEntity().getParentId() + "\r\n");
 		if (children != null) {
 			for (ExecutionTreeNode childNode : children) {
 				childNode.internalToString(strb, "", true);
@@ -78,7 +78,7 @@ public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
 
 	protected void internalToString(StringBuilder strb, String prefix, boolean isTail) {
 		strb.append(prefix + (isTail ? "└── " : "├── ") + getExecutionEntity().getId() 
-				+ " : " + getExecutionEntity().getActivityId() + "\r\n"); 
+				+ " : " + getExecutionEntity().getActivityId() + ", parent id " + getExecutionEntity().getParentId() + "\r\n"); 
 		if (children != null) {
 			for (int i = 0; i < children.size() - 1; i++) {
 				children.get(i).internalToString(strb, prefix + (isTail ? "    " : "│   "), false);

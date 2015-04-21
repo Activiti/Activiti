@@ -18,14 +18,11 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
-import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler<MessageEventDefinition> {
 
@@ -43,33 +40,10 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
             messageDefinition.setExtensionElements(message.getExtensionElements());
         }
 
-        EventSubscriptionDeclaration eventSubscription = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");
-
-        ScopeImpl scope = bpmnParse.getCurrentScope();
-        ActivityImpl activity = bpmnParse.getCurrentActivity();
-        if (bpmnParse.getCurrentFlowElement() instanceof StartEvent && bpmnParse.getCurrentSubProcess() != null) {
-
-            // the scope of the event subscription is the parent of the event
-            // subprocess (subscription must be created when parent is
-            // initialized)
-            ScopeImpl catchingScope = ((ActivityImpl) scope).getParent();
-
-            EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");
-            eventSubscriptionDeclaration.setActivityId(activity.getId());
-            eventSubscriptionDeclaration.setStartEvent(false);
-            addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, messageDefinition, catchingScope);
-
-        } else if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
-
-            activity.setProperty("type", "intermediateMessageCatch");
-
-            if (getPrecedingEventBasedGateway(bpmnParse, (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement()) != null) {
-                eventSubscription.setActivityId(activity.getId());
-                addEventSubscriptionDeclaration(bpmnParse, eventSubscription, messageDefinition, activity.getParent());
-            } else {
-                activity.setScope(true);
-                addEventSubscriptionDeclaration(bpmnParse, eventSubscription, messageDefinition, activity);
-            }
+        if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
+            IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
+            intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchMessageEventActivityBehavior(
+                    intermediateCatchEvent, messageDefinition));
 
         } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
             BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();

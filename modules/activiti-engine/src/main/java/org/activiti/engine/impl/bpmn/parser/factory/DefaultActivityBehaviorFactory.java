@@ -60,6 +60,7 @@ import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityB
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchSignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
@@ -360,6 +361,12 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
     public IntermediateCatchEventActivityBehavior createIntermediateCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent) {
         return new IntermediateCatchEventActivityBehavior();
+    }
+    
+    public IntermediateCatchMessageEventActivityBehavior createIntermediateCatchMessageEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent, 
+            MessageEventDefinition messageEventDefinition) {
+        
+        return new IntermediateCatchMessageEventActivityBehavior(messageEventDefinition);
     }
     
     public IntermediateCatchTimerEventActivityBehavior createIntermediateCatchTimerEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent, TimerEventDefinition timerEventDefinition) {

@@ -91,22 +91,20 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         Task userTask = taskService.createTaskQuery().singleResult();
         assertNotNull(userTask);
 
-        // the executions for both messageEventSubscriptionNames are the same
+        // the executions for both messageEventSubscriptionNames are not the same
         Execution execution1 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_1").singleResult();
         assertNotNull(execution1);
 
         Execution execution2 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_2").singleResult();
         assertNotNull(execution2);
 
-        assertEquals(execution1.getId(), execution2.getId());
+        assertFalse(execution1.getId().equals(execution2.getId()));
 
         // /////////////////////////////////////////////////////////////////////////////////
-        // 1. first message received cancels the task and the execution and both
-        // subscriptions
+        // 1. first message received cancels the task and the execution and both subscriptions
         runtimeService.messageEventReceived("messageName_1", execution1.getId());
 
-        // this should then throw an exception because execution2 no longer
-        // exists
+        // this should then throw an exception because execution2 no longer exists
         try {
             runtimeService.messageEventReceived("messageName_2", execution2.getId());
             fail();
@@ -153,8 +151,8 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
         Execution execution1 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_1").singleResult();
         Execution execution2 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_2").singleResult();
-        // both executions are the same
-        assertEquals(execution1.getId(), execution2.getId());
+        // both executions are not the same
+        assertFalse(execution1.getId().equals(execution2.getId()));
 
         // /////////////////////////////////////////////////////////////////////////////////
         // 1. first message received cancels all tasks and the executions and
@@ -170,8 +168,8 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
             // This is good
         }
 
-        // only process instance left
-        assertEquals(1, runtimeService.createExecutionQuery().count());
+        // only process instance and running execution left
+        assertEquals(2, runtimeService.createExecutionQuery().count());
 
         Task userTask = taskService.createTaskQuery().singleResult();
         assertNotNull(userTask);
@@ -183,18 +181,17 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         // 2. complete the user task cancels the message subscriptions
 
         processInstance = runtimeService.startProcessInstanceByKey("process");
-        // assume we have 7 executions
-        // one process instance
+        // assume we have 7 executions one process instance
         // one execution for scope created for boundary message event
         // five execution because we have loop cardinality 5
-        assertEquals(7, runtimeService.createExecutionQuery().count());
+        assertEquals(9, runtimeService.createExecutionQuery().count());
 
         assertEquals(5, taskService.createTaskQuery().count());
 
         execution1 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_1").singleResult();
         execution2 = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName_2").singleResult();
-        // both executions are the same
-        assertEquals(execution1.getId(), execution2.getId());
+        // executions are not the same
+        assertFalse(execution1.getId().equals(execution2.getId()));
 
         List<Task> userTasks = taskService.createTaskQuery().list();
         assertNotNull(userTasks);
@@ -590,12 +587,12 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         // It is a repeating job, so it will come back.
         assertEquals(1L, jobQuery.count());
 
-        // After setting the clock to time '3 hours and 5 seconds', the timer
-        // should fire again.
+        // After setting the clock to time '3 hours and 5 seconds', the timer should fire again.
         processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((3 * 60 * 60 * 1000) + 5000)));
         waitForJobExecutorOnCondition(2000L, 100L, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
+                System.out.println("blaasdasdasdasdasddas " + taskService.createTaskQuery().list().size());
                 return taskService.createTaskQuery().list().size() == 3;
             }
         });

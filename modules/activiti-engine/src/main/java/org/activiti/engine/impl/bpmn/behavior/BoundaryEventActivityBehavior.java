@@ -20,11 +20,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author Joram Barrez
@@ -92,32 +89,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
         // set new parent for boundary event execution
         executionEntity.setParent(parentScopeExecution);
         
-        // delete the attached ref scope
-        
-        // Delete all child executions
-        Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(attachedRefScopeExecution.getId());
-        for (ExecutionEntity childExcecution : childExecutions) {
-            if (childExcecution.getId().equals(executionEntity.getId()) == false) {
-                OperationUtil.deleteDataRelatedToExecution(commandContext, childExcecution);
-                commandContext.getExecutionEntityManager().delete(childExcecution);
-            }
-        }
-
-        // Delete all scope tasks
-        TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
-        Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(attachedRefScopeExecution.getId());
-        for (TaskEntity taskEntity : tasksForExecution) {
-            taskEntityManager.delete(taskEntity);
-        }
-
-        // Delete all scope jobs
-        JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
-        Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(attachedRefScopeExecution.getId());
-        for (JobEntity job : jobsForExecution) {
-            jobEntityManager.delete(job);
-        }
-        
-        commandContext.getExecutionEntityManager().delete(attachedRefScopeExecution);
+        deleteChildExecutions(attachedRefScopeExecution, executionEntity, commandContext);
         
         commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
     }
@@ -129,12 +101,10 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
         //
         // Why? Because this execution does NOT have anything to do with
         // the current parent execution (the one where the boundary event is
-        // on): when it is
-        // deleted or whatever, this does not impact this new execution at all,
+        // on): when it is deleted or whatever, this does not impact this new execution at all,
         // it is completely independent in that regard.
 
-        // Note: if the parent of the parent does not exists, this becomes a
-        // concurrent execution in the process instance!
+        // Note: if the parent of the parent does not exists, this becomes a concurrent execution in the process instance!
 
         ExecutionEntity parentExecutionEntity = commandContext.getExecutionEntityManager().findExecutionById(executionEntity.getParentId());
 
@@ -147,16 +117,33 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
                 currentlyExaminedExecution = commandContext.getExecutionEntityManager().findExecutionById(currentlyExaminedExecution.getParentId());
             }
         }
-
-        if (scopeExecution != null) {
-            executionEntity.setParentId(scopeExecution.getId());
-        } else {
-            executionEntity.setParentId(null);
+        
+        if (scopeExecution == null) {
+            throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
         }
+       
+        ExecutionEntity nonInterruptingExecution = scopeExecution.createExecution();
+        nonInterruptingExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
 
-        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
+        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(nonInterruptingExecution, true);
     }
 
+    protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution, CommandContext commandContext) {
+        // Delete all child executions
+        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+        Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
+        if (CollectionUtils.isNotEmpty(childExecutions)) {
+            for (ExecutionEntity childExcecution : childExecutions) {
+                if (childExcecution.getId().equals(notToDeleteExecution.getId()) == false) {
+                    deleteChildExecutions(childExcecution, notToDeleteExecution, commandContext);
+                }
+            }
+        }
+            
+        OperationUtil.deleteDataRelatedToExecution(commandContext, parentExecution);
+        commandContext.getExecutionEntityManager().delete(parentExecution);
+    }
+    
     public boolean isInterrupting() {
         return interrupting;
     }

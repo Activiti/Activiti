@@ -23,7 +23,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Daniel Meyer
+ * @author Tijs Rademakers
  */
 public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
