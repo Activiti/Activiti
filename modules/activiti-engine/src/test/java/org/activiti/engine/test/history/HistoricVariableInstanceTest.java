@@ -31,7 +31,6 @@ import org.activiti.engine.task.TaskQuery;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Christian Lipphardt (camunda)
  * @author Joram Barrez
  */
 public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
@@ -39,8 +38,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
     @Deployment(resources = { "org/activiti/examples/bpmn/callactivity/orderProcess.bpmn20.xml", "org/activiti/examples/bpmn/callactivity/checkCreditProcess.bpmn20.xml" })
     public void testOrderProcessWithCallActivity() {
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
-            // After the process has started, the 'verify credit history' task
-            // should be active
+            // After the process has started, the 'verify credit history' task should be active
             ProcessInstance pi = runtimeService.startProcessInstanceByKey("orderProcess");
             TaskQuery taskQuery = taskService.createTaskQuery();
             Task verifyCreditTask = taskQuery.singleResult();
@@ -51,8 +49,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             assertNotNull(subProcessInstance);
             assertEquals(pi.getId(), runtimeService.createProcessInstanceQuery().subProcessInstanceId(subProcessInstance.getId()).singleResult().getId());
 
-            // Completing the task with approval, will end the subprocess and
-            // continue the original process
+            // Completing the task with approval, will end the subprocess and continue the original process
             taskService.complete(verifyCreditTask.getId(), CollectionUtil.singletonMap("creditApproved", true));
             Task prepareAndShipTask = taskQuery.singleResult();
             assertEquals("Prepare and Ship", prepareAndShipTask.getName());
@@ -212,8 +209,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             runtimeService.deleteProcessInstance(processInstance.getId(), "deleted");
             assertProcessEnded(processInstance.getId());
 
-            // check that process variable is set even if the process is
-            // canceled and not ended normally
+            // check that process variable is set even if the process is canceled and not ended normally
             assertEquals(1, historyService.createHistoricVariableInstanceQuery().processInstanceId(processInstance.getId()).variableValueEquals("testVar", "Hallo Christian").count());
         }
     }
@@ -262,14 +258,10 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             assertEquals("usertask2", historicActivityInstance2.getActivityId());
 
             /*
-             * This is OK! The variable is set on the root execution, on a
-             * execution never run through the activity, where the process
-             * instances stands when calling the set Variable. But the
-             * ActivityId of this flow node is used. So the execution id's
-             * doesn't have to be equal.
+             * This is OK! The variable is set on the root execution, on a execution never run through the activity, where the process instances stands when calling the set Variable. But the
+             * ActivityId of this flow node is used. So the execution id's doesn't have to be equal.
              * 
-             * execution id: On which execution it was set activity id: in which
-             * activity was the process instance when setting the variable
+             * execution id: On which execution it was set activity id: in which activity was the process instance when setting the variable
              */
             assertFalse(historicActivityInstance2.getExecutionId().equals(update2.getExecutionId()));
         }
@@ -304,8 +296,7 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             historyService.deleteHistoricProcessInstance(processInstance.getId());
 
             // recheck variables
-            // this is a bug: all variables was deleted after delete a history
-            // processinstance
+            // this is a bug: all variables was deleted after delete a history processinstance
             count = historyService.createHistoricVariableInstanceQuery().count();
             assertEquals(2, count);
         }
@@ -401,17 +392,14 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
             runtimeService.setVariable(processInstance.getId(), "firstVar", "789");
             assertEquals("789", getHistoricVariable("firstVar").getValue());
 
-            // type is changed from text to integer and back again. same result
-            // expected(?)
+            // type is changed from text to integer and back again. same result expected(?)
             runtimeService.setVariable(processInstance.getId(), "secondVar", "123");
             assertEquals("123", getHistoricVariable("secondVar").getValue());
             runtimeService.setVariable(processInstance.getId(), "secondVar", 456);
-            // there are now 2 historic variables, so the following does not
-            // work
+            // there are now 2 historic variables, so the following does not work
             assertEquals(456, getHistoricVariable("secondVar").getValue());
             runtimeService.setVariable(processInstance.getId(), "secondVar", "789");
-            // there are now 3 historic variables, so the following does not
-            // work
+            // there are now 3 historic variables, so the following does not work
             assertEquals("789", getHistoricVariable("secondVar").getValue());
 
             taskService.complete(task.getId());
@@ -424,4 +412,26 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
         return historyService.createHistoricVariableInstanceQuery().variableName(variableName).singleResult();
     }
 
+    @Deployment
+    public void testRestrictByExecutionId() {
+        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProc");
+            TaskQuery taskQuery = taskService.createTaskQuery();
+            Task userTask = taskQuery.singleResult();
+            assertEquals("userTask1", userTask.getName());
+
+            taskService.complete(userTask.getId(), CollectionUtil.singletonMap("myVar", "test789"));
+
+            assertProcessEnded(processInstance.getId());
+
+            List<HistoricVariableInstance> variables = historyService.createHistoricVariableInstanceQuery().executionId(processInstance.getId()).list();
+            assertEquals(1, variables.size());
+
+            HistoricVariableInstanceEntity historicVariable = (HistoricVariableInstanceEntity) variables.get(0);
+            assertEquals("test456", historicVariable.getTextValue());
+
+            assertEquals(5, historyService.createHistoricActivityInstanceQuery().count());
+            assertEquals(3, historyService.createHistoricDetailQuery().count());
+        }
+    }
 }

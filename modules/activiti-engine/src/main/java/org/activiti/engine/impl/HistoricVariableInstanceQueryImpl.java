@@ -28,13 +28,15 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
- * @author Christian Lipphardt (camunda)
+ * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVariableInstanceQuery, HistoricVariableInstance> implements HistoricVariableInstanceQuery {
 
     private static final long serialVersionUID = 1L;
     protected String id;
     protected String taskId;
+    protected String executionId;
     protected String processInstanceId;
     protected String activityInstanceId;
     protected String variableName;
@@ -64,6 +66,14 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
             throw new ActivitiIllegalArgumentException("processInstanceId is null");
         }
         this.processInstanceId = processInstanceId;
+        return this;
+    }
+
+    public HistoricVariableInstanceQueryImpl executionId(String executionId) {
+        if (executionId == null) {
+            throw new ActivitiIllegalArgumentException("Execution id is null");
+        }
+        this.executionId = executionId;
         return this;
     }
 

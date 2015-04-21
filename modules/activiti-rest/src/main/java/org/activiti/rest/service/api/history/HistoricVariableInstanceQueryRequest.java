@@ -27,6 +27,7 @@ public class HistoricVariableInstanceQueryRequest {
 
     private Boolean excludeTaskVariables;
     private String taskId;
+    private String executionId;
     private String processInstanceId;
     private String variableName;
     private String variableNameLike;
@@ -46,6 +47,14 @@ public class HistoricVariableInstanceQueryRequest {
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    public String getExecutionId() {
+        return executionId;
+    }
+
+    public void setExecutionId(String executionId) {
+        this.executionId = executionId;
     }
 
     public String getProcessInstanceId() {

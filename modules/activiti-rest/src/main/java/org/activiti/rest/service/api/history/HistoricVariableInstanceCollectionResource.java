@@ -42,6 +42,10 @@ public class HistoricVariableInstanceCollectionResource extends HistoricVariable
             query.setTaskId(allRequestParams.get("taskId"));
         }
 
+        if (allRequestParams.get("executionId") != null) {
+            query.setExecutionId(allRequestParams.get("executionId"));
+        }
+
         if (allRequestParams.get("processInstanceId") != null) {
             query.setProcessInstanceId(allRequestParams.get("processInstanceId"));
         }
@@ -53,7 +57,6 @@ public class HistoricVariableInstanceCollectionResource extends HistoricVariable
         if (allRequestParams.get("variableNameLike") != null) {
             query.setVariableNameLike(allRequestParams.get("variableNameLike"));
         }
-
         return getQueryResponse(query, allRequestParams);
     }
 }
