@@ -18,6 +18,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
@@ -40,6 +42,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Saeid Mirzaei
+ * @author Joram Barrez
  */
 
 public class JobRetryCmd implements Command<Object> {
@@ -60,11 +63,19 @@ public class JobRetryCmd implements Command<Object> {
             return null;
         }
 
-        ActivityImpl activity = getCurrentActivity(commandContext, job);
         ProcessEngineConfiguration processEngineConfig = commandContext.getProcessEngineConfiguration();
+        
+        ExecutionEntity executionEntity = fetchExecutionEntity(commandContext, job.getExecutionId());
+        FlowElement currentFlowElement = executionEntity != null ? executionEntity.getCurrentFlowElement() : null;
+        
+        String failedJobRetryTimeCycleValue = null;
+        if (currentFlowElement instanceof ServiceTask) {
+        	failedJobRetryTimeCycleValue = ((ServiceTask) currentFlowElement).getFailedJobRetryTimeCycleValue();
+        }
 
-        if (activity == null || activity.getFailedJobRetryTimeCycleValue() == null) {
-            log.info("activitiy or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
+        if (currentFlowElement == null || failedJobRetryTimeCycleValue == null) {
+        	
+            log.debug("activitiy or FailedJobRetryTimerCycleValue is null in job " + jobId + "'. only decrementing retries.");
             job.setRetries(job.getRetries() - 1);
             job.setLockOwner(null);
             job.setLockExpirationTime(null);
@@ -77,26 +88,24 @@ public class JobRetryCmd implements Command<Object> {
             }
 
         } else {
-            String failedJobRetryTimeCycle = activity.getFailedJobRetryTimeCycleValue();
             try {
-                DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycle, processEngineConfig.getClock());
+                DurationHelper durationHelper = new DurationHelper(failedJobRetryTimeCycleValue, processEngineConfig.getClock());
                 job.setLockOwner(null);
                 job.setLockExpirationTime(null);
                 job.setDuedate(durationHelper.getDateAfter());
 
-                if (job.getExceptionMessage() == null) { // is it the first
-                                                         // exception
-                    log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycle + "' the first time for job " + job.getId() + " with " + durationHelper.getTimes() + " retries");
+                if (job.getExceptionMessage() == null) { // is it the first exception
+                    log.debug("Applying JobRetryStrategy '" + failedJobRetryTimeCycleValue + "' the first time for job " + job.getId() + " with " + durationHelper.getTimes() + " retries");
                     // then change default retries to the ones configured
                     job.setRetries(durationHelper.getTimes());
 
                 } else {
-                    log.debug("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycle + "' for job " + job.getId());
+                    log.debug("Decrementing retries of JobRetryStrategy '" + failedJobRetryTimeCycleValue + "' for job " + job.getId());
                 }
                 job.setRetries(job.getRetries() - 1);
 
             } catch (Exception e) {
-                throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycle, exception);
+                throw new ActivitiException("failedJobRetryTimeCylcle has wrong format:" + failedJobRetryTimeCycleValue, exception);
             }
         }
 
@@ -173,6 +182,9 @@ public class JobRetryCmd implements Command<Object> {
     }
 
     private ExecutionEntity fetchExecutionEntity(CommandContext commandContext, String executionId) {
+    	if (executionId == null) {
+    		return null;
+    	}
         return commandContext.getExecutionEntityManager().findExecutionById(executionId);
     }
 

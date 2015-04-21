@@ -69,6 +69,11 @@ public class AbstractActvitiTest {
     }
     
     @After
+    public void resetClock() {
+    	activitiRule.getProcessEngine().getProcessEngineConfiguration().getClock().reset();
+    }
+    
+    @After
     public void logCommandInvokerDebugInfo() {
     	
     	ProcessExecutionLoggerConfigurator loggerConfigurator = null;
