@@ -88,7 +88,6 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         		// The 'skip' for a sequence flow means that we skip the condition, not the sequence flow. 
         		outgoingSequenceFlow.add(sequenceFlow);
         	}
-            
         }
         
         // Check if there is a default sequence flow
@@ -106,9 +105,9 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         // No outgoing found. Ending the execution
         if (outgoingSequenceFlow.size() == 0) {
         	if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
-        		 logger.info("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
-                 agenda.planEndExecutionOperation(execution);
-                 return;
+        	    logger.info("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
+        	    agenda.planEndExecutionOperation(execution);
+        	    return;
         	} else {
         		throw new ActivitiException("No outgoing sequence flow of element '"+ flowNode.getId() + "' could be selected for continuing the process");
         	}

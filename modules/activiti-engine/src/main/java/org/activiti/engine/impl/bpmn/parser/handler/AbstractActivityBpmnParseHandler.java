@@ -83,5 +83,4 @@ public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> exten
         }
 
     }
-
 }

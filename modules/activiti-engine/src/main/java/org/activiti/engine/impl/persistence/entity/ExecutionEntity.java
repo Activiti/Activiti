@@ -31,7 +31,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
@@ -42,9 +41,7 @@ import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmExecution;
-import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.PvmProcessElement;
-import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
@@ -366,20 +363,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
             for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
                 TimerEntity timer = timerDeclaration.prepareTimerEntity(this);
                 Context.getCommandContext().getJobEntityManager().schedule(timer);
-            }
-        }
-
-        // create event subscriptions for the current scope
-        List<EventSubscriptionDeclaration> eventSubscriptionDeclarations = (List<EventSubscriptionDeclaration>) scope.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
-        if (eventSubscriptionDeclarations != null) {
-            for (EventSubscriptionDeclaration eventSubscriptionDeclaration : eventSubscriptionDeclarations) {
-                if (!eventSubscriptionDeclaration.isStartEvent()) {
-                    EventSubscriptionEntity eventSubscriptionEntity = eventSubscriptionDeclaration.prepareEventSubscriptionEntity(this);
-                    if (getTenantId() != null) {
-                        eventSubscriptionEntity.setTenantId(getTenantId());
-                    }
-                    eventSubscriptionEntity.insert();
-                }
             }
         }
     }
@@ -1322,7 +1305,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
     public void addEventSubscription(EventSubscriptionEntity eventSubscriptionEntity) {
         getEventSubscriptionsInternal().add(eventSubscriptionEntity);
-
     }
 
     public void removeEventSubscription(EventSubscriptionEntity eventSubscriptionEntity) {

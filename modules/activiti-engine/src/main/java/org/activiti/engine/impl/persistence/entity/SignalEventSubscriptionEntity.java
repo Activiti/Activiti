@@ -18,8 +18,8 @@ import java.text.MessageFormat;
 import org.activiti.bpmn.model.Signal;
 
 /**
- * @author Daniel Meyer
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class SignalEventSubscriptionEntity extends EventSubscriptionEntity {
 
@@ -27,11 +27,6 @@ public class SignalEventSubscriptionEntity extends EventSubscriptionEntity {
 
     // Using json here, but not worth of adding json dependency lib for this
     private static final String CONFIGURATION_TEMPLATE = "'{'\"scope\":\"{0}\"'}'";
-
-    public SignalEventSubscriptionEntity(ExecutionEntity executionEntity) {
-        super(executionEntity);
-        eventType = "signal";
-    }
 
     public SignalEventSubscriptionEntity() {
         eventType = "signal";
@@ -60,16 +55,7 @@ public class SignalEventSubscriptionEntity extends EventSubscriptionEntity {
         if (this.configuration == null) {
             return null;
         } else {
-            return this.configuration.substring(10, this.configuration.length() - 2); // 10
-                                                                                      // -->
-                                                                                      // length
-                                                                                      // of
-                                                                                      // {"scope":
-                                                                                      // and
-                                                                                      // -2
-                                                                                      // for
-                                                                                      // removing
-                                                                                      // "}
+            return this.configuration.substring(10, this.configuration.length() - 2); // 10 --> length  of {"scope": and -2 for removing"}
         }
     }
 

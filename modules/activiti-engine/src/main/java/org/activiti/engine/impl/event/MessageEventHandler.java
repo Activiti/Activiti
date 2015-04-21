@@ -34,12 +34,9 @@ public class MessageEventHandler extends AbstractEventHandler {
         // As stated in the ActivitiEventType java-doc, the message-event is
         // thrown before the actual message has been sent
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            commandContext
-                    .getProcessEngineConfiguration()
-                    .getEventDispatcher()
-                    .dispatchEvent(
-                            ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, eventSubscription.getActivityId(), eventSubscription.getEventName(), payload,
-                                    eventSubscription.getExecutionId(), eventSubscription.getProcessInstanceId(), eventSubscription.getExecution().getProcessDefinitionId()));
+            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                    ActivitiEventBuilder.createMessageEvent(ActivitiEventType.ACTIVITY_MESSAGE_RECEIVED, eventSubscription.getActivityId(), eventSubscription.getEventName(), payload,
+                            eventSubscription.getExecutionId(), eventSubscription.getProcessInstanceId(), eventSubscription.getExecution().getProcessDefinitionId()));
         }
 
         super.handleEvent(eventSubscription, payload, commandContext);

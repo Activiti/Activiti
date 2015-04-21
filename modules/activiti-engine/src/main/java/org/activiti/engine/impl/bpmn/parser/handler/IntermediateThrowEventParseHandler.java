@@ -12,13 +12,11 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,19 +33,19 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
 
     protected void executeParse(BpmnParse bpmnParse, ThrowEvent intermediateEvent) {
 
-        ActivityImpl nestedActivityImpl = createActivityOnCurrentScope(bpmnParse, intermediateEvent, BpmnXMLConstants.ELEMENT_EVENT_THROW);
-
         EventDefinition eventDefinition = null;
         if (!intermediateEvent.getEventDefinitions().isEmpty()) {
             eventDefinition = intermediateEvent.getEventDefinitions().get(0);
         }
 
         if (eventDefinition instanceof SignalEventDefinition) {
-            bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
-        } else if (eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
-            bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
+            SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
+            intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowSignalEventActivityBehavior(
+                    intermediateEvent, signalEventDefinition, bpmnParse.getBpmnModel().getSignal(signalEventDefinition.getSignalRef())));
+        /*} else if (eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
+            bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);*/
         } else if (eventDefinition == null) {
-            nestedActivityImpl.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowNoneEventActivityBehavior(intermediateEvent));
+            intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowNoneEventActivityBehavior(intermediateEvent));
         } else {
             logger.warn("Unsupported intermediate throw event type for throw event " + intermediateEvent.getId());
         }

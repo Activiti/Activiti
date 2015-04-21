@@ -20,24 +20,58 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.Signal;
+import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.EventSubscriptionQueryImpl;
 import org.activiti.engine.impl.Page;
 
 /**
- * @author Daniel Meyer
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class EventSubscriptionEntityManager extends AbstractEntityManager<EventSubscriptionEntity> {
 
     /** keep track of subscriptions created in the current command */
     protected List<SignalEventSubscriptionEntity> createdSignalSubscriptions = new ArrayList<SignalEventSubscriptionEntity>();
 
-    public void insert(EventSubscriptionEntity persistentObject) {
-        super.insert(persistentObject);
-        if (persistentObject instanceof SignalEventSubscriptionEntity) {
-            createdSignalSubscriptions.add((SignalEventSubscriptionEntity) persistentObject);
+    public SignalEventSubscriptionEntity insertSignalEvent(SignalEventDefinition signalEventDefinition, Signal signal, ExecutionEntity execution) {
+        SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
+        subscriptionEntity.setExecution(execution);
+        if (signal != null) {
+            subscriptionEntity.setEventName(signal.getName());
+            if (signal.getScope() != null) {
+                subscriptionEntity.setConfiguration(signal.getScope());
+            }
+        } else {
+            subscriptionEntity.setEventName(signalEventDefinition.getSignalRef());
         }
+        
+        subscriptionEntity.setActivityId(execution.getCurrentActivityId());
+        subscriptionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
+        if (execution.getTenantId() != null) {
+            subscriptionEntity.setTenantId(execution.getTenantId());
+        }
+        insert(subscriptionEntity);
+        execution.getEventSubscriptionsInternal().add(subscriptionEntity);
+        createdSignalSubscriptions.add(subscriptionEntity);
+        return subscriptionEntity;
+    }
+    
+    public MessageEventSubscriptionEntity insertMessageEvent(MessageEventDefinition messageEventDefinition, ExecutionEntity execution) {
+        MessageEventSubscriptionEntity subscriptionEntity = new MessageEventSubscriptionEntity();
+        subscriptionEntity.setExecution(execution);
+        subscriptionEntity.setEventName(messageEventDefinition.getMessageRef());
+        
+        subscriptionEntity.setActivityId(execution.getCurrentActivityId());
+        subscriptionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
+        if (execution.getTenantId() != null) {
+            subscriptionEntity.setTenantId(execution.getTenantId());
+        }
+        insert(subscriptionEntity);
+        execution.getEventSubscriptionsInternal().add(subscriptionEntity);
+        return subscriptionEntity;
     }
 
     public void deleteEventSubscription(EventSubscriptionEntity persistentObject) {

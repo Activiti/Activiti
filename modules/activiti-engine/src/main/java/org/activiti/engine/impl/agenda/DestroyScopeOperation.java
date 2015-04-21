@@ -1,15 +1,19 @@
 package org.activiti.engine.impl.agenda;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
+import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -29,8 +33,7 @@ public class DestroyScopeOperation extends AbstractOperation {
         FlowElement currentFlowElement = execution.getCurrentFlowElement();
 
         // Find the actual scope that needs to be destroyed.
-        // This could be the incoming execution, or the first parent execution
-        // where isScope = true
+        // This could be the incoming execution, or the first parent execution where isScope = true
 
         // Find parent scope execution
         ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
