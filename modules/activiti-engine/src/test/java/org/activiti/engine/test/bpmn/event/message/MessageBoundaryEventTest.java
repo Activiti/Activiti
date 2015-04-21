@@ -25,9 +25,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Daniel Meyer (camunda)
- * @author Kristin Polenz (camunda)
- * @author Christian Lipphardt (camunda)
+ * @author Tijs Rademakers
  */
 public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
@@ -88,7 +86,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     public void testDoubleBoundaryMessageEvent() {
         runtimeService.startProcessInstanceByKey("process");
 
-        assertEquals(2, runtimeService.createExecutionQuery().count());
+        assertEquals(4, runtimeService.createExecutionQuery().count());
 
         Task userTask = taskService.createTaskQuery().singleResult();
         assertNotNull(userTask);
@@ -146,11 +144,10 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     @Deployment
     public void testDoubleBoundaryMessageEventMultiInstance() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
-        // assume we have 7 executions
-        // one process instance
+        // assume we have 9 executions one process instance
         // one execution for scope created for boundary message event
         // five execution because we have loop cardinality 5
-        assertEquals(7, runtimeService.createExecutionQuery().count());
+        assertEquals(9, runtimeService.createExecutionQuery().count());
 
         assertEquals(5, taskService.createTaskQuery().count());
 
@@ -241,7 +238,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
         runtimeService.startProcessInstanceByKey("process");
 
-        assertEquals(3, runtimeService.createExecutionQuery().count());
+        assertEquals(4, runtimeService.createExecutionQuery().count());
 
         Task userTask = taskService.createTaskQuery().singleResult();
         assertNotNull(userTask);
@@ -288,7 +285,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
         runtimeService.startProcessInstanceByKey("process");
 
-        assertEquals(3, runtimeService.createExecutionQuery().count());
+        assertEquals(5, runtimeService.createExecutionQuery().count());
 
         Task userTask = taskService.createTaskQuery().singleResult();
         assertNotNull(userTask);
@@ -397,7 +394,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     public void testBoundaryMessageEventOnSubprocess() {
         runtimeService.startProcessInstanceByKey("process");
 
-        assertEquals(2, runtimeService.createExecutionQuery().count());
+        assertEquals(5, runtimeService.createExecutionQuery().count());
 
         Task userTask = taskService.createTaskQuery().singleResult();
         assertNotNull(userTask);
@@ -461,7 +458,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
         runtimeService.startProcessInstanceByKey("process");
 
-        assertEquals(17, runtimeService.createExecutionQuery().count());
+        assertEquals(18, runtimeService.createExecutionQuery().count());
 
         // 5 user tasks
         List<Task> userTasks = taskService.createTaskQuery().list();
@@ -502,7 +499,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
 
         runtimeService.startProcessInstanceByKey("process");
 
-        assertEquals(2, runtimeService.createExecutionQuery().count());
+        assertEquals(3, runtimeService.createExecutionQuery().count());
 
         Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("messageName").singleResult();
         assertNull(execution);
