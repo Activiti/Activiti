@@ -56,20 +56,6 @@ public class EndExecutionOperation extends AbstractOperation {
             if (executionEntity.getCurrentFlowElement() instanceof EndEvent) {
                 EndEvent endEvent = (EndEvent) executionEntity.getCurrentFlowElement();
                 subProcess = endEvent.getSubProcess();
-   
-                // TODO: discuss why this is needed. Is it needed in each case?
-                if (parentExecution.getParentId() != null 
-                		&& !parentExecution.getParentId().equals(parentExecution.getProcessInstanceId())) {
-                    deleteExecution(commandContext, parentExecution);
-                    parentExecution = executionEntityManager.get(parentExecution.getParentId());
-                    
-                    if (subProcess != null && subProcess.getLoopCharacteristics() != null && subProcess.getBehavior() instanceof MultiInstanceActivityBehavior) {
-                        MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
-                        parentExecution.setCurrentFlowElement(subProcess);
-                        multiInstanceBehavior.leave(parentExecution);
-                        return;
-                    }
-                }
             }
 
             if (subProcess != null) {
