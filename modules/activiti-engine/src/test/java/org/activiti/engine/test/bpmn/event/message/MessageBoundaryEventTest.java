@@ -493,6 +493,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     @Deployment
     public void testSingleBoundaryMessageEventWithBoundaryTimerEvent() {
         final Date startTime = new Date();
+        processEngineConfiguration.getClock().setCurrentTime(startTime);
 
         runtimeService.startProcessInstanceByKey("process");
 
@@ -512,13 +513,11 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         final JobQuery jobQuery = managementService.createJobQuery().processInstanceId(userTask.getProcessInstanceId());
         assertEquals(1, jobQuery.count());
 
-        // After setting the clock to time '1 hour and 5 seconds', the timer
-        // should fire.
+        // After setting the clock to time '1 hour and 5 seconds', the timer should fire.
         processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-        waitForJobExecutorOnCondition(120000000L, 100L, new Callable<Boolean>() {
-            @Override
+        waitForJobExecutorOnCondition(5000L, 100L, new Callable<Boolean>() {
             public Boolean call() throws Exception {
-                return taskService.createTaskQuery().count() == 1;
+                return taskService.createTaskQuery().count() == 2;
             }
         });
 
