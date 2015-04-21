@@ -27,10 +27,13 @@ import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.impl.agenda.Agenda;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionContext;
+import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.history.HistoryManager;
 import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
+import org.activiti.engine.impl.jobexecutor.FailedJobListener;
+import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.entity.AttachmentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ByteArrayEntityManager;
 import org.activiti.engine.impl.persistence.entity.CommentEntityManager;
@@ -48,6 +51,7 @@ import org.activiti.engine.impl.persistence.entity.HistoricTaskInstanceEntityMan
 import org.activiti.engine.impl.persistence.entity.HistoricVariableInstanceEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
 import org.activiti.engine.impl.persistence.entity.ModelEntityManager;
@@ -82,17 +86,10 @@ public class CommandContext {
     protected ProcessEngineConfigurationImpl processEngineConfiguration;
     protected FailedJobCommandFactory failedJobCommandFactory;
     protected List<CommandContextCloseListener> closeListeners;
-    protected Map<String, Object> attributes; // General-purpose storing of
-                                              // anything during the lifetime of
-                                              // a command context
+    protected Map<String, Object> attributes; // General-purpose storing of anything during the lifetime of a command context
 
     protected Agenda agenda = new Agenda(this);
-    protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The
-                                                                                                         // executions
-                                                                                                         // involved
-                                                                                                         // with
-                                                                                                         // the
-                                                                                                         // command
+    protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
     protected Object result = null;
 
     public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
@@ -126,10 +123,8 @@ public class CommandContext {
     }
 
     public void close() {
-        // the intention of this method is that all resources are closed
-        // properly, even
-        // if exceptions occur in close or flush methods of the sessions or the
-        // transaction context.
+        // the intention of this method is that all resources are closed properly, even if exceptions occur 
+    	// in close or flush methods of the sessions or the transaction context.
 
         try {
             try {
@@ -240,6 +235,19 @@ public class CommandContext {
     public void exception(Throwable exception) {
         if (this.exception == null) {
             this.exception = exception;
+            
+            JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
+            if (jobExecutorContext != null) {
+            	JobEntity jobEntity = null;
+            	if (jobExecutorContext.getCurrentJob() != null) {
+            		jobEntity = jobExecutorContext.getCurrentJob();
+            	}
+            	FailedJobListener failedJobListener = new FailedJobListener(
+            			getProcessEngineConfiguration().getCommandExecutor(), jobEntity.getId());
+            	failedJobListener.setException(exception);
+            	this.getTransactionContext().addTransactionListener(TransactionState.ROLLED_BACK, failedJobListener);
+            }
+            
         } else {
             if (Context.isExecutionContextActive()) {
                 LogMDC.putMDCExecution(Context.getExecutionContext().getExecution());

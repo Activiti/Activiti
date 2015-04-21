@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -163,15 +164,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     }
 
     public void testQueryByExecutable() {
-        processEngineConfiguration.getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all
-                                                                                                                   // jobs
-                                                                                                                   // should
-                                                                                                                   // be
-                                                                                                                   // executable
-                                                                                                                   // at
-                                                                                                                   // t3
-                                                                                                                   // +
-                                                                                                                   // 1hour.1second
+        processEngineConfiguration.getClock().setCurrentTime(new Date(timerThreeFireTime.getTime() + ONE_SECOND)); // all obs should be executable at t3 + 1hour.1second
         JobQuery query = managementService.createJobQuery().executable();
         verifyQueryResults(query, 4);
 
@@ -242,7 +235,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
         query = managementService.createJobQuery().processInstanceId(processInstance.getId()).withException();
         verifyFailedJob(query, processInstance);
     }
-
+    
     @Deployment(resources = { "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml" })
     public void testQueryByExceptionMessage() {
         JobQuery query = managementService.createJobQuery().exceptionMessage(EXCEPTION_MESSAGE);
@@ -375,8 +368,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
         // start a process with a failing job
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
-        // The execution is waiting in the first usertask. This contains a
-        // boundary
+        // The execution is waiting in the first usertask. This contains a boundary
         // timer event which we will execute manual for testing purposes.
         Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
 
@@ -386,7 +378,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
             managementService.executeJob(timerJob.getId());
             fail("RuntimeException from within the script task expected");
         } catch (RuntimeException re) {
-            assertTextPresent(EXCEPTION_MESSAGE, re.getCause().getMessage());
+            assertTextPresent(EXCEPTION_MESSAGE, re.getMessage());
         }
         return processInstance;
     }

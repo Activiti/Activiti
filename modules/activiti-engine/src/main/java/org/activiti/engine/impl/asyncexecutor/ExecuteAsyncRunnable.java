@@ -127,8 +127,7 @@ public class ExecuteAsyncRunnable implements Runnable {
                 commandExecutor.execute(commandConfig, cmd);
 
                 // Dispatch an event, indicating job execution failed in a
-                // try-catch block, to prevent the original
-                // exception to be swallowed
+                // try-catch block, to prevent the original exception to be swallowed
                 if (commandContext.getEventDispatcher().isEnabled()) {
                     try {
                         commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(ActivitiEventType.JOB_EXECUTION_FAILURE, job, exception));
