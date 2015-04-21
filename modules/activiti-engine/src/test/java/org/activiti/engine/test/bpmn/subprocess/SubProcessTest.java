@@ -62,19 +62,17 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
         Date startTime = new Date();
 
-        // After staring the process, the task in the subprocess should be
-        // active
+        // After staring the process, the task in the subprocess should be active
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleSubProcess");
         Task subProcessTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         assertEquals("Task in subprocess", subProcessTask.getName());
 
-        // Setting the clock forward 2 hours 1 second (timer fires in 2 hours)
-        // and fire up the job executor
+        // Setting the clock forward 2 hours 1 second (timer fires in 2 hours) and fire up the job executor
         processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (2 * 60 * 60 * 1000) + 1000));
-        waitForJobExecutorToProcessAllJobs(5000L, 50L);
+        assertEquals(1, managementService.createJobQuery().executable().count());
+        waitForJobExecutorToProcessAllJobs(5000L, 500L);
 
-        // The subprocess should be left, and the escalated task should be
-        // active
+        // The subprocess should be left, and the escalated task should be active
         Task escalationTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
         assertEquals("Fix escalated problem", escalationTask.getName());
     }
@@ -282,8 +280,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
         assertEquals("Task in subprocess A", taskA.getName());
         assertEquals("Task in subprocess B", taskB.getName());
 
-        // Completing both tasks should active the tasks outside the
-        // subprocesses
+        // Completing both tasks should active the tasks outside the subprocesses
         taskService.complete(taskA.getId());
         taskService.complete(taskB.getId());
 
