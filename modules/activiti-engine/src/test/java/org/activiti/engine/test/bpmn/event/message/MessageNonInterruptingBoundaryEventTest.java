@@ -20,7 +20,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * 
- * @author Kristin Polenz
+ * @author Tijs Rademakers
  */
 public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTestCase {
 
@@ -28,7 +28,7 @@ public class MessageNonInterruptingBoundaryEventTest extends PluggableActivitiTe
     public void testSingleNonInterruptingBoundaryMessageEvent() {
         runtimeService.startProcessInstanceByKey("process");
 
-        assertEquals(2, runtimeService.createExecutionQuery().count());
+        assertEquals(3, runtimeService.createExecutionQuery().count());
 
         Task userTask = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
         assertNotNull(userTask);

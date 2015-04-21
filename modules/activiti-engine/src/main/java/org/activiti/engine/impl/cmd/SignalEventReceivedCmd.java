@@ -89,8 +89,7 @@ public class SignalEventReceivedCmd implements Command<Void> {
 
         for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : signalEvents) {
             // We only throw the event to globally scoped signals.
-            // Process instance scoped signals must be thrown within the process
-            // itself
+            // Process instance scoped signals must be thrown within the process itself
             if (signalEventSubscriptionEntity.isGlobalScoped()) {
                 signalEventSubscriptionEntity.eventReceived(payload, async);
             }

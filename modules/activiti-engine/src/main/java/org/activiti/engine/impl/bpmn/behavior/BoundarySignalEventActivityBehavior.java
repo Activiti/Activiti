@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.impl.context.Context;
@@ -49,21 +50,24 @@ public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBe
     @Override
     public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
+        BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
         
-        String eventName = null;
-        if (signal != null) {
-            eventName = signal.getName();
-        } else {
-            eventName = signalEventDefinition.getSignalRef();
-        }
-        
-        EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-        List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
-        for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-            if (eventSubscription instanceof SignalEventSubscriptionEntity && 
-                    eventSubscription.getEventName().equals(eventName)) {
-                
-                eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription); 
+        if (boundaryEvent.isCancelActivity()) {
+            String eventName = null;
+            if (signal != null) {
+                eventName = signal.getName();
+            } else {
+                eventName = signalEventDefinition.getSignalRef();
+            }
+            
+            EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+            List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+            for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+                if (eventSubscription instanceof SignalEventSubscriptionEntity && 
+                        eventSubscription.getEventName().equals(eventName)) {
+                    
+                    eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription); 
+                }
             }
         }
         

@@ -23,6 +23,7 @@ import java.util.Set;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
@@ -68,8 +69,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author Tom Baeyens
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class BpmnDeployer implements Deployer {
 
@@ -215,7 +216,7 @@ public class BpmnDeployer implements Deployer {
                 addTimerDeclarations(processDefinition, process, timers);
 
                 removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
-                addMessageEventSubscriptions(processDefinition, process);
+                addMessageEventSubscriptions(processDefinition, process, bpmnModels.get(processDefinition.getKey()));
 
                 removeObsoleteSignalEventSubScription(processDefinition, latestProcessDefinition);
                 addSignalEventSubscriptions(processDefinition, process, bpmnModels.get(processDefinition.getKey()));
@@ -310,7 +311,7 @@ public class BpmnDeployer implements Deployer {
     }
 
     @SuppressWarnings("unchecked")
-    protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process) {
+    protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, BpmnModel bpmnModel) {
         CommandContext commandContext = Context.getCommandContext();
         if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
             for (FlowElement element : process.getFlowElements()) {
@@ -320,6 +321,12 @@ public class BpmnDeployer implements Deployer {
                         EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
                         if (eventDefinition instanceof MessageEventDefinition) {
                             MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
+                            
+                            if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
+                                Message message = bpmnModel.getMessage(messageEventDefinition.getMessageRef());
+                                messageEventDefinition.setMessageRef(message.getName());
+                            }
+                            
                             // look for subscriptions for the same name in db:
                             List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByName(
                                     MessageEventHandler.EVENT_HANDLER_TYPE, messageEventDefinition.getMessageRef(), processDefinition.getTenantId());

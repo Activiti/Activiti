@@ -15,25 +15,21 @@ package org.activiti.engine.impl.cmd;
 
 import java.util.Map;
 
-import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.impl.util.ProcessInstanceUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
- * @author Joram Barrez <<<<<<< HEAD
- * @author Vasile Dirla =======
- * @author Tijs Rademakers >>>>>>> 14a1148... Fix history
+ * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance> {
 
@@ -67,20 +63,6 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
             throw new ActivitiException("Cannot start process instance by message: subscription to message with name '" + messageName + "' is not a message start event.");
         }
 
-        // Do not start process a process instance if the process definition is
-        // suspended
-        // if (processDefinition.isSuspended()) {
-        // throw new
-        // ActivitiException("Cannot start process instance. Process definition "
-        // + processDefinition.getName() + " (id = " + processDefinition.getId()
-        // + ") is suspended");
-        // }
-        //
-        // ActivityImpl startActivity =
-        // processDefinition.findActivity(messageEventSubscription.getActivityId());
-        // ExecutionEntity processInstance =
-        // processDefinition.createProcessInstance(businessKey, startActivity);
-
         DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
 
         ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
@@ -88,23 +70,7 @@ public class StartProcessInstanceByMessageCmd implements Command<ProcessInstance
             throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
         }
 
-        Process process = ProcessDefinitionUtil.getProcess(processDefinition.getId());
-        if (process == null) {
-            throw new ActivitiException("Cannot start process instance. Process model " + processDefinition.getName() + " (id = " + processDefinition.getId() + ") could not be found");
-        }
-
-        FlowElement initialFlowElement = process.getFlowElement(messageEventSubscription.getActivityId());
-        if (initialFlowElement == null) {
-            throw new ActivitiException("No message element found in process definition " + processDefinition.getId() + " for activity id " + messageEventSubscription.getActivityId());
-        }
-
-        ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey, initialFlowElement);
-
-        if (processVariables != null) {
-            processInstance.setVariables(processVariables);
-        }
-
-        processInstance.start();
+        ProcessInstance processInstance = ProcessInstanceUtil.createAndStartProcessInstanceByMessage(processDefinition, messageName, processVariables);
 
         return processInstance;
     }

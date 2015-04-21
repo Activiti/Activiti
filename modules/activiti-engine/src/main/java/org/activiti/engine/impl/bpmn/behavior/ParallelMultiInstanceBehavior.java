@@ -13,14 +13,19 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.agenda.OperationUtil;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author Joram Barrez
@@ -123,22 +128,28 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
             List<ActivityExecution> joinedExecutions = executionEntity.findInactiveConcurrentExecutions(execution.getActivity());
             if (joinedExecutions.size() >= nrOfInstances || completionConditionSatisfied(execution)) {
 
-                List<ExecutionEntity> executionsToRemove = new ArrayList<ExecutionEntity>();
-                for (ActivityExecution childExecution : executionEntity.getParent().getExecutions()) {
-                    executionsToRemove.add((ExecutionEntity) childExecution);
-                }
-                for (ExecutionEntity executionToRemove : executionsToRemove) {
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug("Execution {} still active, but multi-instance is completed. Removing this execution.", executionToRemove);
-                    }
-                    executionToRemove.inactivate();
-                    executionToRemove.deleteCascade("multi-instance completed");
-                }
-                Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
+                deleteChildExecutions(executionEntity.getParent(), false, Context.getCommandContext());
+                Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity.getParent(), true);
             }
 
         } else {
             super.leave(executionEntity);
+        }
+    }
+    
+    protected void deleteChildExecutions(ExecutionEntity parentExecution, boolean deleteExecution, CommandContext commandContext) {
+        // Delete all child executions
+        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+        Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
+        if (CollectionUtils.isNotEmpty(childExecutions)) {
+            for (ExecutionEntity childExcecution : childExecutions) {
+                deleteChildExecutions(childExcecution, true, commandContext);
+            }
+        }
+        
+        if (deleteExecution) {
+            OperationUtil.deleteDataRelatedToExecution(commandContext, parentExecution);
+            commandContext.getExecutionEntityManager().delete(parentExecution);
         }
     }
 
