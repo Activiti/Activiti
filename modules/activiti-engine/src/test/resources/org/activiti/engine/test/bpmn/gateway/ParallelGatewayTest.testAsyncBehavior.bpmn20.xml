@@ -18,7 +18,7 @@
     <sequenceFlow id="flow2" sourceRef="fork" targetRef="task1" />
     <sequenceFlow id="flow3" sourceRef="fork" targetRef="task2" />
     
-    <parallelGateway id="join" activiti:async="true" />
+    <parallelGateway id="join" activiti:async="true" activiti:exclusive="true"/>
     
     <sequenceFlow id="flow4" sourceRef="task1" targetRef="join" />
     <sequenceFlow id="flow5" sourceRef="task2" targetRef="join" />

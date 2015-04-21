@@ -108,27 +108,29 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
 
         // start first round of tasks
         List<Task> firstTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-
         assertEquals(2, firstTasks.size());
 
         for (Task t : firstTasks) {
             taskService.complete(t.getId());
         }
 
-        // start first round of tasks
+        // start second round of tasks
         List<Task> secondTasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).list();
-
         assertEquals(2, secondTasks.size());
 
         // complete one task
         Task task = secondTasks.get(0);
         taskService.complete(task.getId());
 
-        // should have merged last child execution into parent
         List<Execution> executionsAfter = runtimeService.createExecutionQuery().list();
-        assertEquals(1, executionsAfter.size());
+        assertEquals(2, executionsAfter.size());
 
-        Execution execution = executionsAfter.get(0);
+        Execution execution = null;
+        for (Execution e : executionsAfter) {
+        	if (e.getParentId() != null) {
+        		execution = e;
+        	}
+        }
 
         // and should have one active activity
         List<String> activeActivityIds = runtimeService.getActiveActivityIds(execution.getId());

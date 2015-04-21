@@ -73,8 +73,13 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         });
     }
 
-    public ExecutionEntity findExecutionById(String executionId) {
-        return (ExecutionEntity) getDbSqlSession().selectById(ExecutionEntity.class, executionId);
+    public ExecutionEntity findExecutionById(final String executionId) {
+    	return (ExecutionEntity) getEntity(ExecutionEntity.class, executionId, new CachedEntityMatcher<ExecutionEntity>() {
+    		@Override
+    		public boolean isRetained(ExecutionEntity entity) {
+    			return entity.getId().equals(executionId);
+    		}
+		});
     }
 
     public long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery) {
@@ -143,7 +148,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         params.put("activityId", activityId);
         return getList("selectInactiveExecutionsInActivity", params, new CachedEntityMatcher<ExecutionEntity>() {
             public boolean isRetained(ExecutionEntity entity) {
-                return entity.getActivityId() != null && entity.getActivityId().equals(activityId);
+                return !entity.isActive() && entity.getActivityId() != null && entity.getActivityId().equals(activityId);
             }
         });
     }

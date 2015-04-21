@@ -144,8 +144,7 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
 
         Expression skipExpression = taskDefinition.getSkipExpression();
         if (SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression) && SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)) {
-
-            // task.complete(null, false);
+        	leave(execution);
         }
     }
 

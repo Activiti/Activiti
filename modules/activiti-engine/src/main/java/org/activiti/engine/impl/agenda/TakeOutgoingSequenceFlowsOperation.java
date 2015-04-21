@@ -9,6 +9,7 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -70,11 +71,23 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         // Determine which sequence flows can be used for leaving
         List<SequenceFlow> outgoingSequenceFlow = new ArrayList<SequenceFlow>();
         for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
-            if (!evaluateConditions || (evaluateConditions && ConditionUtil.hasTrueCondition(sequenceFlow, execution)
-                    && (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId())))) {
-                
-                outgoingSequenceFlow.add(sequenceFlow);
-            }
+        	
+        	String skipExpressionString = sequenceFlow.getSkipExpression();
+        	if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpressionString)) {
+        		
+        		 if (!evaluateConditions 
+                 		|| (evaluateConditions 
+                 				&& ConditionUtil.hasTrueCondition(sequenceFlow, execution)
+                 				&& (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId()))
+                 			)
+                 	) {
+                     outgoingSequenceFlow.add(sequenceFlow);
+                 }
+        		 
+        	} else if (flowNode.getOutgoingFlows().size() == 1 || SkipExpressionUtil.shouldSkipFlowElement(commandContext, execution, skipExpressionString)) {
+        		// The 'skip' for a sequence flow means that we skip the condition, not the sequence flow. 
+        		outgoingSequenceFlow.add(sequenceFlow);
+        	}
         }
         
         // Check if there is a default sequence flow

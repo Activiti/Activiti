@@ -65,10 +65,8 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
             boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
             if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
 
-                // Note: we can't cache the result of the expression, because
-                // the
-                // execution can change: eg.
-                // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
+                // Note: we can't cache the result of the expression, because the
+                // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
                 Object delegate = expression.getValue(execution);
                 ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
 
