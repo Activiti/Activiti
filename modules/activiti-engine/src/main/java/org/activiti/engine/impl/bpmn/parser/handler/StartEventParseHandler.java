@@ -13,9 +13,7 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.StartEvent;
-import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -38,13 +36,7 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
 
     @Override
     protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
-        if (CollectionUtils.isNotEmpty(element.getEventDefinitions())) {
-            EventDefinition eventDefinition = element.getEventDefinitions().get(0);
-            if (eventDefinition instanceof TimerEventDefinition == false) {
-                element.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
-            }
-            
-        } else {
+        if (CollectionUtils.isEmpty(element.getEventDefinitions())) {
             element.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
         }
         

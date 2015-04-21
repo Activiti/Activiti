@@ -1,4 +1,4 @@
-/* Licensed under the Apache License, Version 2.0 (the "License");
+    /* Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -12,22 +12,19 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import org.activiti.bpmn.constants.BpmnXMLConstants;
 import org.activiti.bpmn.model.BaseElement;
-import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
 
@@ -38,34 +35,18 @@ public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnPars
     }
 
     protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
-
-        BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-        ActivityImpl nestedActivity = null;
         EventDefinition eventDefinition = null;
         if (!event.getEventDefinitions().isEmpty()) {
             eventDefinition = event.getEventDefinitions().get(0);
         }
 
         if (eventDefinition == null) {
-
-            nestedActivity = createActivityOnCurrentScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH);
+            event.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
 
         } else {
-
-            ScopeImpl scope = bpmnParse.getCurrentScope();
-            String eventBasedGatewayId = getPrecedingEventBasedGateway(bpmnParse, event);
-            if (eventBasedGatewayId != null) {
-                ActivityImpl gatewayActivity = scope.findActivity(eventBasedGatewayId);
-                nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, gatewayActivity);
-            } else {
-                nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, scope);
-            }
-
-            // Catch event behavior is the same for all types
-            nestedActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
-
-            if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || eventDefinition instanceof MessageEventDefinition) {
-
+            if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || 
+                    eventDefinition instanceof MessageEventDefinition) {
+                
                 bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
 
             } else {

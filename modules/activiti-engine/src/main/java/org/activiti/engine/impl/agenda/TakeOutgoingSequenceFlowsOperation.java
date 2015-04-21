@@ -70,12 +70,9 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         // Determine which sequence flows can be used for leaving
         List<SequenceFlow> outgoingSequenceFlow = new ArrayList<SequenceFlow>();
         for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
-            if (!evaluateConditions 
-            		|| (evaluateConditions 
-            				&& ConditionUtil.hasTrueCondition(sequenceFlow, execution)
-            				&& (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId()))
-            			)
-            	) {
+            if (!evaluateConditions || (evaluateConditions && ConditionUtil.hasTrueCondition(sequenceFlow, execution)
+                    && (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId())))) {
+                
                 outgoingSequenceFlow.add(sequenceFlow);
             }
         }
@@ -95,9 +92,9 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         // No outgoing found. Ending the execution
         if (outgoingSequenceFlow.size() == 0) {
         	if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
-        		 logger.info("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
-                 agenda.planEndExecutionOperation(execution);
-                 return;
+        	    logger.info("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
+        	    agenda.planEndExecutionOperation(execution);
+        	    return;
         	} else {
         		throw new ActivitiException("No outgoing sequence flow of element '"+ flowNode.getId() + "' could be selected for continuing the process");
         	}

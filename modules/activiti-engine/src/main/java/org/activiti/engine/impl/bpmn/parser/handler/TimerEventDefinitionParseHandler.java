@@ -32,14 +32,12 @@ public class TimerEventDefinitionParseHandler extends AbstractBpmnParseHandler<T
         if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
 
         	IntermediateCatchEvent intermediateCatchEvent = (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement();
-        	intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateTimerCatchEventActivityBehavior(intermediateCatchEvent, timerEventDefinition));
+        	intermediateCatchEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchTimerEventActivityBehavior(intermediateCatchEvent, timerEventDefinition));
         	
         } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
 
             BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
             boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryTimerEventActivityBehavior(boundaryEvent, timerEventDefinition, boundaryEvent.isCancelActivity()));
-
         }
     }
-
 }

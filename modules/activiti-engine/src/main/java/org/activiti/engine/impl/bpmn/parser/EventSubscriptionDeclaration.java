@@ -15,17 +15,9 @@ package org.activiti.engine.impl.bpmn.parser;
 
 import java.io.Serializable;
 
-import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-
 /**
- * @author Daniel Meyer
- * @author Falko Menge
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class EventSubscriptionDeclaration implements Serializable {
 
@@ -83,28 +75,4 @@ public class EventSubscriptionDeclaration implements Serializable {
     public void setConfiguration(String configuration) {
         this.configuration = configuration;
     }
-
-    public EventSubscriptionEntity prepareEventSubscriptionEntity(ExecutionEntity execution) {
-        EventSubscriptionEntity eventSubscriptionEntity = null;
-        if (eventType.equals("message")) {
-            eventSubscriptionEntity = new MessageEventSubscriptionEntity(execution);
-        } else if (eventType.equals("signal")) {
-            eventSubscriptionEntity = new SignalEventSubscriptionEntity(execution);
-        } else {
-            throw new ActivitiIllegalArgumentException("Found event definition of unknown type: " + eventType);
-        }
-
-        eventSubscriptionEntity.setEventName(eventName);
-        if (activityId != null) {
-            ActivityImpl activity = execution.getProcessDefinition().findActivity(activityId);
-            eventSubscriptionEntity.setActivity(activity);
-        }
-
-        if (configuration != null) {
-            eventSubscriptionEntity.setConfiguration(configuration);
-        }
-
-        return eventSubscriptionEntity;
-    }
-
 }

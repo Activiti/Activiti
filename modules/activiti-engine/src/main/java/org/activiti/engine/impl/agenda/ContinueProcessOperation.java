@@ -7,20 +7,17 @@ import java.util.List;
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
-import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.SequenceFlow;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -102,7 +99,7 @@ public class ContinueProcessOperation extends AbstractOperation {
         // Execute any boundary events
         Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowNode);
         if (CollectionUtils.isNotEmpty(boundaryEvents)) {
-            executeBoundaryEvents(boundaryEvents);
+            executeBoundaryEvents(boundaryEvents, execution);
         }
 
         // Execute actual behavior
@@ -161,19 +158,15 @@ public class ContinueProcessOperation extends AbstractOperation {
         execution.setEventName(null);
     }
 
-    protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents) {
+    protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ActivityExecution execution) {
 
         // The parent execution becomes a scope, and a child execution iscreated
         // for each of the boundary events
         execution.setScope(true);
 
-        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-
         for (BoundaryEvent boundaryEvent : boundaryEvents) {
 
-            if (CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
-                    boundaryEvent.getEventDefinitions().get(0) instanceof ErrorEventDefinition) {
-                
+            if (CollectionUtils.isEmpty(boundaryEvent.getEventDefinitions())) {
                 continue;
             }
             
@@ -181,14 +174,10 @@ public class ContinueProcessOperation extends AbstractOperation {
             childExecutionEntity.setParentId(execution.getId());
             childExecutionEntity.setCurrentFlowElement(boundaryEvent);
             childExecutionEntity.setScope(false);
-
+            
             ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
-            if (boundaryEventBehavior != null) {
-                logger.debug("Executing boundary event activityBehavior {} with execution {}", boundaryEventBehavior.getClass(), childExecutionEntity.getId());
-                boundaryEventBehavior.execute(childExecutionEntity);
-            } else {
-                throw new ActivitiException("No ActivityBehavior for boundary event " + boundaryEvent.getId());
-            }
+            logger.debug("Executing boundary event activityBehavior {} with execution {}", boundaryEventBehavior.getClass(), childExecutionEntity.getId());
+            boundaryEventBehavior.execute(childExecutionEntity);
         }
 
     }

@@ -15,28 +15,27 @@ package org.activiti.engine.impl.event;
 
 import java.util.Map;
 
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.EventSubProcess;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 /**
- * @author Daniel Meyer
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public abstract class AbstractEventHandler implements EventHandler {
 
     public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
-
         ExecutionEntity execution = eventSubscription.getExecution();
-        ActivityImpl activity = eventSubscription.getActivity();
+        FlowNode currentFlowElement = (FlowNode) execution.getCurrentFlowElement();
 
-        if (activity == null) {
+        if (currentFlowElement == null) {
             throw new ActivitiException("Error while sending signal for event subscription '" + eventSubscription.getId() + "': " + "no activity associated with event subscription");
         }
 
@@ -46,34 +45,24 @@ public abstract class AbstractEventHandler implements EventHandler {
             execution.setVariables(processVariables);
         }
 
-        ActivityBehavior activityBehavior = activity.getActivityBehavior();
-        if (activityBehavior instanceof BoundaryEventActivityBehavior || activityBehavior instanceof EventSubProcessStartEventActivityBehavior) {
-
+        if (currentFlowElement instanceof BoundaryEvent || currentFlowElement instanceof EventSubProcess) {
             try {
-
-                dispatchActivitiesCanceledIfNeeded(eventSubscription, execution, activity, commandContext);
-
-                activityBehavior.execute(execution);
+                dispatchActivitiesCanceledIfNeeded(eventSubscription, execution, currentFlowElement, commandContext);
 
             } catch (RuntimeException e) {
                 throw e;
             } catch (Exception e) {
                 throw new ActivitiException("exception while sending signal for event subscription '" + eventSubscription + "':" + e.getMessage(), e);
             }
-
-        } else { // not boundary
-            if (!activity.equals(execution.getActivity())) {
-                execution.setActivity(activity);
-            }
-            execution.signal(eventSubscription.getEventName(), payload);
         }
+        
+        Context.getAgenda().planTriggerExecutionOperation(execution);
     }
 
-    protected void dispatchActivitiesCanceledIfNeeded(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, ActivityImpl boundaryEventActivity, CommandContext commandContext) {
-        ActivityBehavior boundaryActivityBehavior = boundaryEventActivity.getActivityBehavior();
-        if (boundaryActivityBehavior instanceof BoundaryEventActivityBehavior) {
-            BoundaryEventActivityBehavior boundaryEventActivityBehavior = (BoundaryEventActivityBehavior) boundaryActivityBehavior;
-            if (boundaryEventActivityBehavior.isInterrupting()) {
+    protected void dispatchActivitiesCanceledIfNeeded(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, FlowElement currentFlowElement, CommandContext commandContext) {
+        if (currentFlowElement instanceof BoundaryEvent) {
+            BoundaryEvent boundaryEvent = (BoundaryEvent) currentFlowElement;
+            if (boundaryEvent.isCancelActivity()) {
                 dispatchExecutionCancelled(eventSubscription, execution, commandContext);
             }
         }
@@ -92,16 +81,22 @@ public abstract class AbstractEventHandler implements EventHandler {
         }
 
         // activity with message/signal boundary events
-        ActivityImpl activity = execution.getActivity();
-        if (activity != null && activity.getActivityBehavior() != null) {
-            dispatchActivityCancelled(eventSubscription, execution, activity, commandContext);
+        FlowElement activityElement = execution.getCurrentFlowElement();
+        if (activityElement != null && activityElement instanceof FlowNode) {
+            dispatchActivityCancelled(eventSubscription, execution, (FlowNode) activityElement, commandContext);
         }
     }
 
-    protected void dispatchActivityCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, ActivityImpl activity, CommandContext commandContext) {
+    protected void dispatchActivityCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, FlowNode flowNode, CommandContext commandContext) {
         commandContext.getEventDispatcher().dispatchEvent(
-                ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(), (String) activity.getProperties().get("name"), execution.getId(), execution.getProcessInstanceId(),
-                        execution.getProcessDefinitionId(), (String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName(), eventSubscription));
+                ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), execution.getId(), execution.getProcessInstanceId(),
+                        execution.getProcessDefinitionId(), parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), eventSubscription));
+    }
+    
+    protected String parseActivityType(FlowNode flowNode) {
+        String elementType = flowNode.getClass().getSimpleName();
+        elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
+        return elementType;
     }
 
 }

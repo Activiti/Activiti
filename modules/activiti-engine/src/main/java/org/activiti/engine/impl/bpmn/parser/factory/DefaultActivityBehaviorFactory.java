@@ -28,12 +28,14 @@ import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.ManualTask;
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.bpmn.model.ReceiveTask;
 import org.activiti.bpmn.model.ScriptTask;
 import org.activiti.bpmn.model.SendTask;
 import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.Signal;
+import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
@@ -45,6 +47,8 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryMessageEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BoundarySignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
@@ -56,10 +60,11 @@ import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityB
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchSignalEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowCompensationEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowNoneEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateThrowSignalEventActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.IntermediateTimerCatchEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.MailActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ManualTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.NoneEndEventActivityBehavior;
@@ -80,7 +85,6 @@ import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.parser.CompensateEventDefinition;
-import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
@@ -358,18 +362,24 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         return new IntermediateCatchEventActivityBehavior();
     }
     
-    @Override
-    public IntermediateTimerCatchEventActivityBehavior createIntermediateTimerCatchEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent, TimerEventDefinition timerEventDefinition) {
-    	return new IntermediateTimerCatchEventActivityBehavior(timerEventDefinition);
+    public IntermediateCatchTimerEventActivityBehavior createIntermediateCatchTimerEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent, TimerEventDefinition timerEventDefinition) {
+    	return new IntermediateCatchTimerEventActivityBehavior(timerEventDefinition);
+    }
+    
+    public IntermediateCatchSignalEventActivityBehavior createIntermediateCatchSignalEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent, 
+            SignalEventDefinition signalEventDefinition, Signal signal) {
+        
+        return new IntermediateCatchSignalEventActivityBehavior(signalEventDefinition, signal);
     }
 
     public IntermediateThrowNoneEventActivityBehavior createIntermediateThrowNoneEventActivityBehavior(ThrowEvent throwEvent) {
         return new IntermediateThrowNoneEventActivityBehavior();
     }
 
-    public IntermediateThrowSignalEventActivityBehavior createIntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, Signal signal,
-            EventSubscriptionDeclaration eventSubscriptionDeclaration) {
-        return new IntermediateThrowSignalEventActivityBehavior(throwEvent, signal, eventSubscriptionDeclaration);
+    public IntermediateThrowSignalEventActivityBehavior createIntermediateThrowSignalEventActivityBehavior(
+            ThrowEvent throwEvent, SignalEventDefinition signalEventDefinition, Signal signal) {
+        
+        return new IntermediateThrowSignalEventActivityBehavior(throwEvent, signalEventDefinition, signal);
     }
 
     public IntermediateThrowCompensationEventActivityBehavior createIntermediateThrowCompensationEventActivityBehavior(ThrowEvent throwEvent, CompensateEventDefinition compensateEventDefinition) {
@@ -404,9 +414,15 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         return new CancelBoundaryEventActivityBehavior();
     }
 
-    @Override
     public BoundaryTimerEventActivityBehavior createBoundaryTimerEventActivityBehavior(BoundaryEvent boundaryEvent, TimerEventDefinition timerEventDefinition, boolean interrupting) {
         return new BoundaryTimerEventActivityBehavior(timerEventDefinition, interrupting);
     }
 
+    public BoundarySignalEventActivityBehavior createBoundarySignalEventActivityBehavior(BoundaryEvent boundaryEvent, SignalEventDefinition signalEventDefinition, Signal signal, boolean interrupting) {
+        return new BoundarySignalEventActivityBehavior(signalEventDefinition, signal, interrupting);
+    }
+    
+    public BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent, MessageEventDefinition messageEventDefinition, boolean interrupting) {
+        return new BoundaryMessageEventActivityBehavior(messageEventDefinition, interrupting);
+    }
 }

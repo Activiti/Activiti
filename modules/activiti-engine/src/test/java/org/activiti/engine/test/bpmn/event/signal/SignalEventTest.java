@@ -30,7 +30,7 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.validation.validator.Problems;
 
 /**
- * @author Daniel Meyer
+ * @author Tijs Rademakers
  */
 public class SignalEventTest extends PluggableActivitiTestCase {
 

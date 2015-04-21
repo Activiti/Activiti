@@ -59,13 +59,6 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
             eventSubscriptionDeclaration.setStartEvent(false);
             addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, messageDefinition, catchingScope);
 
-        } else if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
-
-            activity.setProperty("type", "messageStartEvent");
-            eventSubscription.setStartEvent(true);
-            eventSubscription.setActivityId(activity.getId());
-            addEventSubscriptionDeclaration(bpmnParse, eventSubscription, messageDefinition, bpmnParse.getCurrentProcessDefinition());
-
         } else if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
 
             activity.setProperty("type", "intermediateMessageCatch");
@@ -79,20 +72,9 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
             }
 
         } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-
             BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-            boolean interrupting = boundaryEvent.isCancelActivity();
-            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting));
-
-            activity.setProperty("type", "boundaryMessage");
-
-            EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(messageDefinition.getMessageRef(), "message");
-            eventSubscriptionDeclaration.setActivityId(activity.getId());
-            addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, messageDefinition, activity.getParent());
-
-            if (activity.getParent() instanceof ActivityImpl) {
-                ((ActivityImpl) activity.getParent()).setScope(true);
-            }
+            boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryMessageEventActivityBehavior(
+                    boundaryEvent, messageDefinition, boundaryEvent.isCancelActivity()));
         }
 
         else {

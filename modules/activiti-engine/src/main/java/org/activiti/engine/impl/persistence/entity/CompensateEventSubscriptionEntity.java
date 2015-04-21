@@ -24,15 +24,12 @@ public class CompensateEventSubscriptionEntity extends EventSubscriptionEntity {
     private static final long serialVersionUID = 1L;
 
     private CompensateEventSubscriptionEntity() {
-    }
-
-    private CompensateEventSubscriptionEntity(ExecutionEntity executionEntity) {
-        super(executionEntity);
         eventType = CompensationEventHandler.EVENT_HANDLER_TYPE;
     }
 
     public static CompensateEventSubscriptionEntity createAndInsert(ExecutionEntity executionEntity) {
-        CompensateEventSubscriptionEntity eventSubscription = new CompensateEventSubscriptionEntity(executionEntity);
+        CompensateEventSubscriptionEntity eventSubscription = new CompensateEventSubscriptionEntity();
+        eventSubscription.setExecution(executionEntity);
         if (executionEntity.getTenantId() != null) {
             eventSubscription.setTenantId(executionEntity.getTenantId());
         }

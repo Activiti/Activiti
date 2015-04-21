@@ -41,8 +41,7 @@ public class EndExecutionOperation extends AbstractOperation {
 
         if (parentExecution != null) {
 
-            // If the execution is a scope, and it is ended, all the child
-            // executions must be deleted first.
+            // If the execution is a scope, and it is ended, all the child executions must be deleted first.
             if (executionEntity.isScope()) {
                 deleteChildExecutions(commandContext, executionEntity);
             }

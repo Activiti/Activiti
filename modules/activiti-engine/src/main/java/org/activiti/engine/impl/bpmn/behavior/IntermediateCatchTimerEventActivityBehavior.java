@@ -20,11 +20,13 @@ import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.TimerUtil;
 
-public class IntermediateTimerCatchEventActivityBehavior extends AbstractBpmnActivityBehavior {
+public class IntermediateCatchTimerEventActivityBehavior extends AbstractBpmnActivityBehavior {
+    
+    private static final long serialVersionUID = 1L;
+    
+    protected TimerEventDefinition timerEventDefinition;
 	
-	protected TimerEventDefinition timerEventDefinition;
-	
-	public IntermediateTimerCatchEventActivityBehavior(TimerEventDefinition timerEventDefinition) {
+	public IntermediateCatchTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition) {
 		this.timerEventDefinition = timerEventDefinition;
 	}
 

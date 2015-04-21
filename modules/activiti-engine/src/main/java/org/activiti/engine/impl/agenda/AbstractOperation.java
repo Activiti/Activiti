@@ -18,7 +18,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -136,6 +139,13 @@ public abstract class AbstractOperation implements Runnable {
         Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
         for (JobEntity job : jobsForExecution) {
             jobEntityManager.delete(job);
+        }
+        
+        // Delete event subscriptions 
+        EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+        List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+        for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+            eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription); 
         }
     }
     

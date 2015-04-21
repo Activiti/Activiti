@@ -27,7 +27,7 @@ import org.activiti.engine.impl.util.TimerUtil;
  */
 public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBehavior {
 
-    private static final long serialVersionUID = 910078083780300028L;
+    private static final long serialVersionUID = 1L;
 
     protected TimerEventDefinition timerEventDefinition;
 

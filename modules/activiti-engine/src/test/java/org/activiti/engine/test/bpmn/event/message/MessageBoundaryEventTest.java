@@ -19,7 +19,6 @@ import java.util.concurrent.Callable;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
-import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -36,7 +35,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     public void testSingleBoundaryMessageEvent() {
         runtimeService.startProcessInstanceByKey("process");
 
-        assertEquals(2, runtimeService.createExecutionQuery().count());
+        assertEquals(3, runtimeService.createExecutionQuery().count());
 
         Task userTask = taskService.createTaskQuery().singleResult();
         assertNotNull(userTask);

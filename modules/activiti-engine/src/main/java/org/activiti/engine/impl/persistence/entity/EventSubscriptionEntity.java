@@ -31,7 +31,8 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 
 /**
- * @author Daniel Meyer
+ * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public abstract class EventSubscriptionEntity implements PersistentObject, HasRevision, Serializable {
 
@@ -58,13 +59,6 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
 
     public EventSubscriptionEntity() {
         this.created = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-    }
-
-    public EventSubscriptionEntity(ExecutionEntity executionEntity) {
-        this();
-        setExecution(executionEntity);
-        setActivity(execution.getActivity());
-        this.processInstanceId = executionEntity.getProcessInstanceId();
     }
 
     // processing /////////////////////////////
@@ -159,6 +153,7 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
         this.execution = execution;
         if (execution != null) {
             this.executionId = execution.getId();
+            this.processInstanceId = execution.getProcessInstanceId();
         }
     }
 
