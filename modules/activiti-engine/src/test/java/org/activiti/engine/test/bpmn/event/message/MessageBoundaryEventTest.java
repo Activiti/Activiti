@@ -512,8 +512,7 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         final JobQuery jobQuery = managementService.createJobQuery().processInstanceId(userTask.getProcessInstanceId());
         assertEquals(1, jobQuery.count());
 
-        // After setting the clock to time '1 hour and 5 seconds', the timer
-        // should fire.
+        // After setting the clock to time '1 hour and 5 seconds', the timer should fire.
         processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
         waitForJobExecutorOnCondition(12000L, 100L, new Callable<Boolean>() {
             @Override
