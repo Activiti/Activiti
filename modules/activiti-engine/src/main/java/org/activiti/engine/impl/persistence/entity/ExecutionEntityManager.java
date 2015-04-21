@@ -57,12 +57,16 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     }
 
     @SuppressWarnings("unchecked")
-    public List<ExecutionEntity> findChildExecutionsByParentExecutionId(String parentExecutionId) {
-        return getDbSqlSession().selectList("selectExecutionsByParentExecutionId", parentExecutionId);
+    public List<ExecutionEntity> findChildExecutionsByParentExecutionId(final String parentExecutionId) {
+        return getList("selectExecutionsByParentExecutionId", parentExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
+        	@Override
+        	public boolean isRetained(ExecutionEntity entity) {
+        		return entity.getParentId() != null && entity.getParentId().equals(parentExecutionId);
+        	}
+		});
     }
 
-    @SuppressWarnings("unchecked")
-    public Collection<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId) {
+    public List<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId) {
         return getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
             @Override
             public boolean isRetained(ExecutionEntity executionEntity) {

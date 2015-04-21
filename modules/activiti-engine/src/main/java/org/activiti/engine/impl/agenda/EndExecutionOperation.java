@@ -52,12 +52,15 @@ public class EndExecutionOperation extends AbstractOperation {
             deleteExecution(commandContext, executionEntity);
 
             logger.debug("Parent execution found. Continuing process using execution {}", parentExecution.getId());
+            
             SubProcess subProcess = null;
             if (executionEntity.getCurrentFlowElement() instanceof EndEvent) {
                 EndEvent endEvent = (EndEvent) executionEntity.getCurrentFlowElement();
                 subProcess = endEvent.getSubProcess();
    
-                if (parentExecution.getParentId() != null) {
+                // TODO: discuss why this is needed. Is it needed in each case?
+                if (parentExecution.getParentId() != null 
+                		&& !parentExecution.getParentId().equals(parentExecution.getProcessInstanceId())) {
                     deleteExecution(commandContext, parentExecution);
                     parentExecution = executionEntityManager.get(parentExecution.getParentId());
                     

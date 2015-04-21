@@ -37,6 +37,8 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     protected String activityId;
     protected String executionId;
     protected String parentId;
+    protected boolean onlyChildExecutions;
+    protected boolean onlyProcessInstanceExecutions;
     protected String processInstanceId;
     protected List<EventSubscriptionQueryValue> eventSubscriptions;
 
@@ -158,6 +160,16 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
         }
         this.parentId = parentId;
         return this;
+    }
+    
+    public ExecutionQuery onlyChildExecutions() {
+    	this.onlyChildExecutions = true;
+    	return this;
+    }
+    
+    public ExecutionQuery onlyProcessInstanceExecutions() {
+    	this.onlyProcessInstanceExecutions = true;
+    	return this;
     }
 
     public ExecutionQueryImpl executionTenantId(String tenantId) {
@@ -358,8 +370,16 @@ public class ExecutionQueryImpl extends AbstractVariableQueryImpl<ExecutionQuery
     public String getParentId() {
         return parentId;
     }
+    
+    public boolean isOnlyChildExecutions() {
+		return onlyChildExecutions;
+	}
 
-    public String getTenantId() {
+	public boolean isOnlyProcessInstanceExecutions() {
+		return onlyProcessInstanceExecutions;
+	}
+
+	public String getTenantId() {
         return tenantId;
     }
 

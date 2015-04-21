@@ -67,6 +67,8 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     // Unused, see dynamic query
     protected String activityId;
     protected List<EventSubscriptionQueryValue> eventSubscriptions;
+    protected boolean onlyChildExecutions;
+    protected boolean onlyProcessInstanceExecutions;
 
     public ProcessInstanceQueryImpl() {
     }
@@ -656,11 +658,23 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
         return orQueryObject;
     }
 
+    
+    
     /**
-     * Method needed for ibatis because of re-use of query-xml for executions.
+     * Methods needed for ibatis because of re-use of query-xml for executions.
      * ExecutionQuery contains a parentId property.
      */
+    
     public String getParentId() {
         return null;
     }
+    
+    public boolean isOnlyChildExecutions() {
+		return onlyChildExecutions;
+	}
+
+	public boolean isOnlyProcessInstanceExecutions() {
+		return onlyProcessInstanceExecutions;
+	}
+	
 }

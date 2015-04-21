@@ -133,7 +133,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
 		// should terminate the subprocess and continue the parent
 		long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
-		assertEquals(1, executionEntities);
+		assertEquals(2, executionEntities);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());
@@ -194,7 +194,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
 		long executionEntities = runtimeService.createExecutionQuery().count();
-		assertEquals(1, executionEntities);
+		assertEquals(2, executionEntities);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());

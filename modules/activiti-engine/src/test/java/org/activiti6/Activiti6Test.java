@@ -33,11 +33,11 @@ import org.junit.Test;
 /**
  * @author Joram Barrez
  */
-public class Activiti6Tests extends AbstractActvitiTest {
+public class Activiti6Test extends AbstractActvitiTest {
 
     @Test
     public void simplestProcessPossible() {
-        repositoryService.createDeployment().addClasspathResource("org/activiti6/Activiti6Tests.simplestProcessPossible.bpmn20.xml").deploy();
+        repositoryService.createDeployment().addClasspathResource("org/activiti6/Activiti6Test.simplestProcessPossible.bpmn20.xml").deploy();
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("startToEnd");
         assertNotNull(processInstance);
@@ -64,7 +64,7 @@ public class Activiti6Tests extends AbstractActvitiTest {
     }
 
     @Test
-    @org.activiti.engine.test.Deployment(resources = "org/activiti6/Activiti6Tests.testOneTaskProcess.bpmn20.xml")
+    @org.activiti.engine.test.Deployment(resources = "org/activiti6/Activiti6Test.testOneTaskProcess.bpmn20.xml")
     public void testOneTaskProcessCleanupInMiddleOfProcess() {
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
         assertNotNull(processInstance);
@@ -145,9 +145,13 @@ public class Activiti6Tests extends AbstractActvitiTest {
         assertNotNull(processInstance);
         assertFalse(processInstance.isEnded());
 
-        assertEquals(3.0, runtimeService.getVariable(processInstance.getId(), "sum"));
+        Number sumVariable = (Number) runtimeService.getVariable(processInstance.getId(), "sum");
+        assertEquals(3, sumVariable.intValue());
 
-        Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).singleResult();
+        Execution execution = runtimeService.createExecutionQuery()
+        		.processInstanceId(processInstance.getId())
+        		.onlyChildExecutions()
+        		.singleResult();
         assertNotNull(execution);
 
         runtimeService.trigger(execution.getId());

@@ -422,6 +422,12 @@
       <if test="parentId != null">
         and RES.PARENT_ID_ = #{parentId}
       </if>
+      <if test="onlyChildExecutions">
+      	and RES.PARENT_ID_ is not null
+      </if>
+      <if test="onlyProcessInstanceExecutions">
+        and RES.PARENT_ID_ is null
+      </if>
       <if test="deploymentId != null">
         and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
       </if>

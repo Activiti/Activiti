@@ -74,6 +74,8 @@ public class DestroyScopeOperation extends AbstractOperation {
             jobEntityManager.delete(job);
         }
 
+        // Not a scope anymore
+        parentScopeExecution.setScope(false);
         parentScopeExecution.setCurrentFlowElement(currentFlowElement);
     }
 

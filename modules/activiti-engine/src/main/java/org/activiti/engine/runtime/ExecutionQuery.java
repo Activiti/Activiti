@@ -66,6 +66,16 @@ public interface ExecutionQuery extends Query<ExecutionQuery, Execution> {
      * execution with the given id.
      **/
     ExecutionQuery parentId(String parentId);
+    
+    /**
+     * Only selects executions that have a parent id set, ie non-processinstance executions.
+     */
+    ExecutionQuery onlyChildExecutions();
+    
+    /**
+     * Only selects executions that have no parent id set, ie process instance executions 
+     */
+    ExecutionQuery onlyProcessInstanceExecutions();
 
     /**
      * Only select process instances that have the given tenant id.

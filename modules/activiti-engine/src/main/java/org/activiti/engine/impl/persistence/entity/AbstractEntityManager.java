@@ -1,5 +1,6 @@
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -81,7 +82,7 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
      * changed) entity.
      */
     @SuppressWarnings("unchecked")
-    public Collection<Entity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<Entity> retainEntityCondition) {
+    public List<Entity> getList(String dbQueryName, Object parameter, CachedEntityMatcher<Entity> retainEntityCondition) {
         HashMap<String, Entity> entityMap = new HashMap<String, Entity>();
 
         // Database
@@ -93,7 +94,6 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
         // Cache
         for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
             if (retainEntityCondition.isRetained(cachedEntity)) {
-            	System.out.println("OINKFOUND " + cachedEntity);
                 entityMap.put(cachedEntity.getId(), cachedEntity);
             }
         }
@@ -107,7 +107,7 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
             }
         }
 
-        return result;
+        return new ArrayList<Entity>(result);
     }
 
 }

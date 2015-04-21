@@ -16,6 +16,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.TerminateEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -49,6 +50,8 @@ public class EndEventParseHandler extends AbstractActivityBpmnParseHandler<EndEv
                     }
                 }
                 endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createErrorEndEventActivityBehavior(endEvent, errorDefinition));
+            } else if (eventDefinition instanceof TerminateEventDefinition) {
+            	endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createTerminateEndEventActivityBehavior(endEvent));
             } else {
                 endEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneEndEventActivityBehavior(endEvent));
             }
