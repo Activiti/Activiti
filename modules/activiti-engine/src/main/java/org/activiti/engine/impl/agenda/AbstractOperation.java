@@ -17,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -72,6 +73,10 @@ public abstract class AbstractOperation implements Runnable {
 
         ExecutionEntity processInstanceEntity = executionEntityManager.findExecutionById(processInstanceId);
         deleteExecution(commandContext, processInstanceEntity);
+        
+        // TODO: what about delete reason?
+        Context.getCommandContext().getHistoryManager()
+        	.recordProcessInstanceEnd(processInstanceId, "finished", execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null);
     }
 
     protected void deleteChildExecutions(CommandContext commandContext, ExecutionEntity executionEntity) {
