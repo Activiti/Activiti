@@ -9,12 +9,14 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -45,6 +47,11 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         // must first be destroyed before we can continue
         if (execution.getParentId() != null && execution.isScope()) {
             agenda.planDestroyScopeOperation(execution);
+        }
+        
+        // Execution listener for end: the flow node is ended
+        if (CollectionUtils.isNotEmpty(currentFlowElement.getExecutionListeners())) {
+            executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
         }
 
         // No scope, can continue

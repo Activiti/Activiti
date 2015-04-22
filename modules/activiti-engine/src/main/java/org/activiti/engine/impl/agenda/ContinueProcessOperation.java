@@ -92,8 +92,9 @@ public class ContinueProcessOperation extends AbstractOperation {
 
         // Synchronous execution
         
+        // Execution listener
         if (CollectionUtils.isNotEmpty(flowNode.getExecutionListeners())) {
-            executeExecutionListeners(flowNode.getExecutionListeners(), (ExecutionEntity) execution);
+            executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
         }
 
         // Execute any boundary events
@@ -114,6 +115,12 @@ public class ContinueProcessOperation extends AbstractOperation {
     }
 
     protected void continueThroughSequenceFlow(SequenceFlow sequenceFlow) {
+    	
+    	 // Execution listener
+        if (CollectionUtils.isNotEmpty(sequenceFlow.getExecutionListeners())) {
+            executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_TAKE);
+        }
+    	
         FlowElement targetFlowElement = sequenceFlow.getTargetFlowElement();
         execution.setCurrentFlowElement(targetFlowElement);
         logger.debug("Sequence flow '{}' encountered. Continuing process by following it using execution {}", sequenceFlow.getId(), execution.getId());
@@ -136,28 +143,6 @@ public class ContinueProcessOperation extends AbstractOperation {
         commandContext.getJobEntityManager().send(message);
     }
     
-    protected void executeExecutionListeners(List<ActivitiListener> listeners, ExecutionEntity execution) {
-        ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
-        for (ActivitiListener activitiListener : listeners) {
-            ExecutionListener executionListener = null;
-
-            if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-                executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
-            } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-                executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
-            } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-                executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
-            }
-            
-            if (executionListener != null) {
-                execution.setEventName(activitiListener.getEvent());
-                executionListener.notify(execution);
-            }
-        }
-        
-        execution.setEventName(null);
-    }
-
     protected void executeBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ActivityExecution execution) {
 
         // The parent execution becomes a scope, and a child execution iscreated
