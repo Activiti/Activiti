@@ -37,6 +37,11 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     public BoundaryEventActivityBehavior(boolean interrupting) {
         this.interrupting = interrupting;
     }
+    
+    @Override
+    public void execute(ActivityExecution execution) {
+        
+    }
 
     @Override
     public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {

@@ -38,10 +38,10 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
 
     protected void executeParse(BpmnParse bpmnParse, ErrorEventDefinition eventDefinition) {
 
-        if (bpmnParse.getBpmnModel().containsErrorRef(eventDefinition.getErrorCode())) {
+        /*if (bpmnParse.getBpmnModel().containsErrorRef(eventDefinition.getErrorCode())) {
             String errorCode = bpmnParse.getBpmnModel().getErrors().get(eventDefinition.getErrorCode());
             eventDefinition.setErrorCode(errorCode);
-        }
+        }*/
 
         ScopeImpl scope = bpmnParse.getCurrentScope();
         ActivityImpl activity = bpmnParse.getCurrentActivity();
@@ -61,7 +61,7 @@ public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<E
 
         } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
             BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-            boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, boundaryEvent.isCancelActivity()));
+            boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, true));
         }
     }
 

@@ -59,31 +59,16 @@ public class ErrorPropagation {
     }
 
     public static void propagateError(String errorCode, ActivityExecution execution) {
-
-        while (execution != null) {
-            Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorCode);
-            if (eventMap.size() > 0) {
-                executeCatch(eventMap, execution, errorCode);
-                break;
-            }
-            execution = getSuperExecution(execution);
-        }
-        if (execution == null) {
+        Map<String, List<Event>> eventMap = findCatchingEventsForProcess(execution.getProcessDefinitionId(), errorCode);
+        if (eventMap.size() > 0) {
+            executeCatch(eventMap, execution, errorCode);
+        } else {
             throw new BpmnError(errorCode, "No catching boundary event found for error with errorCode '" + errorCode + "', neither in same process nor in parent process");
         }
     }
 
-    protected static ActivityExecution getSuperExecution(ActivityExecution execution) {
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        ExecutionEntity superExecution = executionEntity.getProcessInstance().getSuperExecution();
-        if (superExecution != null && !superExecution.isScope()) {
-            return superExecution.getParent();
-        }
-        return superExecution;
-    }
-
     protected static void executeCatch(Map<String, List<Event>> eventMap, ActivityExecution activityExecution, String errorCode) {
-        ExecutionEntity currentActivity = ((ExecutionEntity) activityExecution);
+        ExecutionEntity currentActivity = (ExecutionEntity) activityExecution;
         
         boolean matchingParentFound = false;
         
@@ -125,21 +110,30 @@ public class ErrorPropagation {
         //}
     }
 
-    protected static void executeEventHandler(Map<String, List<Event>> eventMap, ExecutionEntity execution, String errorCode) {
-        Event event = eventMap.get(execution.getActivityId()).get(0);
+    protected static void executeEventHandler(Map<String, List<Event>> eventMap, ExecutionEntity boundaryParentExecution, String errorCode) {
+        Event event = eventMap.get(boundaryParentExecution.getActivityId()).get(0);
         if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             Context.getProcessEngineConfiguration().getEventDispatcher()
                     .dispatchEvent(ActivitiEventBuilder.createErrorEvent(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, 
-                            event.getId(), errorCode, execution.getId(), 
-                            execution.getProcessInstanceId(), execution.getProcessDefinitionId()));
+                            event.getId(), errorCode, boundaryParentExecution.getId(), 
+                            boundaryParentExecution.getProcessInstanceId(), boundaryParentExecution.getProcessDefinitionId()));
         }
 
         if (event.getBehavior() instanceof EventSubProcessStartEventActivityBehavior) {
-            execution.setCurrentFlowElement(event.getSubProcess());
-            execution.performOperation(AtomicOperation.ACTIVITY_START); // make sure the listeners are invoked!
+            boundaryParentExecution.setCurrentFlowElement(event.getSubProcess());
+            boundaryParentExecution.performOperation(AtomicOperation.ACTIVITY_START); // make sure the listeners are invoked!
         } else {
-            execution.setCurrentFlowElement(event);
-            Context.getAgenda().planContinueProcessOperation(execution);
+            ExecutionEntity boundaryExecution = null;
+            if (boundaryParentExecution.isScope() == false) {
+                boundaryParentExecution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(boundaryParentExecution.getParentId());
+            }
+            List<ExecutionEntity> childExecutions = boundaryParentExecution.getExecutions();
+            for (ExecutionEntity childEecution : childExecutions) {
+                if (childEecution.getActivityId().equals(event.getId())) {
+                    boundaryExecution = childEecution;
+                }
+            }
+            Context.getAgenda().planTriggerExecutionOperation(boundaryExecution);
         }
     }
     

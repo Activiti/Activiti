@@ -37,6 +37,7 @@ public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityB
         this.messageEventDefinition = messageEventDefinition;
     }
 
+    @Override
     public void execute(ActivityExecution execution) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         Context.getCommandContext().getEventSubscriptionEntityManager().insertMessageEvent(
