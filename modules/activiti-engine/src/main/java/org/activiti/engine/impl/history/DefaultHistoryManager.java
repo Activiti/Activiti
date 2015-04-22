@@ -134,6 +134,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     public void recordProcessInstanceStart(ExecutionEntity processInstance, FlowElement startElement) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
+            historicProcessInstance.setStartActivityId(startElement.getId());
 
             // Insert historic process-instance
             getDbSqlSession().insert(historicProcessInstance);

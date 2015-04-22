@@ -55,20 +55,14 @@ public class JobEntityManager extends AbstractEntityManager<JobEntity> {
             // pick the job up after the max lock time.
             Date dueDate = new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
             message.setDuedate(dueDate);
-            message.setLockExpirationTime(null); // was set before, but to be
-                                                 // quickly picked up needs to
-                                                 // be set to null
+            message.setLockExpirationTime(null); // was set before, but to be quickly picked up needs to be set to null
 
         } else if (!processEngineConfiguration.isJobExecutorActivate()) {
 
             // If the async executor is disabled AND there is no old school job
-            // executor,
-            // The job needs to be picked up as soon as possible. So the due
-            // date is now set to the current time
+            // executor, The job needs to be picked up as soon as possible. So the due date is now set to the current time
             message.setDuedate(processEngineConfiguration.getClock().getCurrentTime());
-            message.setLockExpirationTime(null); // was set before, but to be
-                                                 // quickly picked up needs to
-                                                 // be set to null
+            message.setLockExpirationTime(null); // was set before, but to be quickly picked up needs to be set to null
         }
 
         message.insert();
@@ -211,6 +205,22 @@ public class JobEntityManager extends AbstractEntityManager<JobEntity> {
         params.put("lockExpirationTime", expirationTime);
         params.put("dueDate", Context.getProcessEngineConfiguration().getClock().getCurrentTime());
         return getDbSqlSession().update("updateJobLockForAllJobs", params);
+    }
+    
+    @Override
+    public void delete(JobEntity jobEntity) {
+        super.delete(jobEntity);
+        
+        ByteArrayRef exceptionByteArrayRef = jobEntity.getExceptionByteArrayRef();
+
+        // Also delete the job's exception byte array
+        exceptionByteArrayRef.delete();
+
+        // remove link to execution
+        if (jobEntity.getExecutionId() != null) {
+            ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(jobEntity.getExecutionId());
+            execution.removeJob(jobEntity);
+        }
     }
 
 }

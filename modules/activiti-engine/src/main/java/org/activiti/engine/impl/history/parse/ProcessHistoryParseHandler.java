@@ -20,6 +20,8 @@ import org.activiti.engine.impl.history.handler.ProcessInstanceEndHandler;
 
 /**
  * @author Joram Barrez
+ * 
+ * TODO: can probably be deleted.
  */
 public class ProcessHistoryParseHandler extends AbstractBpmnParseHandler<Process> {
 

@@ -1126,7 +1126,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
         parseHandlers.add(new FlowNodeHistoryParseHandler());
 //        parseHandlers.add(new ProcessHistoryParseHandler());
-        parseHandlers.add(new StartEventHistoryParseHandler());
+//        parseHandlers.add(new StartEventHistoryParseHandler());
         parseHandlers.add(new UserTaskHistoryParseHandler());
         return parseHandlers;
     }

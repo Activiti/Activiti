@@ -13,12 +13,14 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -186,6 +188,13 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     // CREATE METHODS
     
     
+    @Override
+    public void insert(ExecutionEntity entity, boolean fireCreateEvent) {
+        super.insert(entity, fireCreateEvent);
+        
+    }
+    
+    
     public ExecutionEntity createProcessInstanceExecution(String processDefinitionId, String businessKey, String tenantId,  String initiatorVariableName) {
 
         ExecutionEntity processInstanceExecution = new ExecutionEntity();
@@ -202,15 +211,16 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         if (initiatorVariableName != null) {
             processInstanceExecution.setVariable(initiatorVariableName, authenticatedUserId);
         }
-        if (authenticatedUserId != null) {
-            processInstanceExecution.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
-        }
+      
 
         // Store in database
         Context.getCommandContext().getExecutionEntityManager().insert(processInstanceExecution);
         
         // Need to be after insert, cause we need the id
         processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
+        if (authenticatedUserId != null) {
+            processInstanceExecution.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
+        }
 
         // Fire events
         if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -252,6 +262,9 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         }
     }
 
+    /**
+     * This method should be deleted in favor of the newer deleteProcessInstanceExecutionEntity method
+     */
     public void deleteProcessInstance(String processInstanceId, String deleteReason) {
         deleteProcessInstance(processInstanceId, deleteReason, false);
     }
@@ -282,6 +295,104 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
 
         if (deleteHistory) {
             commandContext.getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceById(execution.getId());
+        }
+    }
+    
+    public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity) {
+        deleteDataRelatedToExecution(executionEntity);
+        delete(executionEntity); // TODO: what about delete reason?
+    }
+
+    public void deleteProcessInstanceExecutionEntity(String processInstanceId, String currentFlowElementId, String deleteReason) {
+    	deleteProcessInstanceExecutionEntity(processInstanceId, currentFlowElementId, deleteReason, false);
+    }
+    
+
+    public void deleteProcessInstanceExecutionEntity(String processInstanceId, String currentFlowElementId, String deleteReason, boolean cascade) {
+    	
+    	ExecutionEntity processInstanceEntity = findExecutionById(processInstanceId);
+		for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
+			if (subExecutionEntity.getSubProcessInstance() != null) {
+				deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, cascade);
+			}
+		}
+
+        IdentityLinkEntityManager identityLinkEntityManager = Context.getCommandContext().getIdentityLinkEntityManager();
+        List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceId);
+        for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
+            identityLinkEntityManager.delete(identityLinkEntity);
+        }
+        
+        deleteChildExecutions(processInstanceEntity);
+        deleteExecutionAndRelatedData(processInstanceEntity);
+        
+        // TODO: what about delete reason?
+        Context.getCommandContext().getHistoryManager()
+        	.recordProcessInstanceEnd(processInstanceId, deleteReason, currentFlowElementId);
+    }
+
+    public void deleteChildExecutions(ExecutionEntity executionEntity) {
+
+        // The children of an execution for a tree. For correct deletions
+        // (taking care of foreign keys between child-parent)
+        // the leafs of this tree must be deleted first before the parents elements.
+
+        // Gather all children
+        List<ExecutionEntity> childExecutionEntities = new ArrayList<ExecutionEntity>();
+        LinkedList<ExecutionEntity> uncheckedExecutions = new LinkedList<ExecutionEntity>(executionEntity.getExecutions());
+        while (!uncheckedExecutions.isEmpty()) {
+            ExecutionEntity currentExecutionentity = uncheckedExecutions.pop();
+            childExecutionEntities.add(currentExecutionentity);
+            uncheckedExecutions.addAll(currentExecutionentity.getExecutions());
+        }
+
+        // Delete them (reverse order : leafs of the tree first)
+        for (int i = childExecutionEntities.size() - 1; i >= 0; i--) {
+            ExecutionEntity childExecutionEntity = childExecutionEntities.get(i);
+            if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
+            	deleteExecutionAndRelatedData(childExecutionEntity);
+            }
+        }
+
+    }
+    
+    public void deleteDataRelatedToExecution(ExecutionEntity executionEntity) {
+
+        // To start, deactivate the current incoming execution
+        executionEntity.setEnded(true);
+        executionEntity.setActive(false);
+        
+        CommandContext commandContext = Context.getCommandContext();
+
+        // Get variables related to execution and delete them
+        VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
+        Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
+        for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
+            variableInstanceEntityManager.delete(variableInstanceEntity);
+            if (variableInstanceEntity.getByteArrayValueId() != null) {
+                commandContext.getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayValueId());
+            }
+        }
+
+        // Delete current user tasks
+        TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
+        Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
+        for (TaskEntity taskEntity : tasksForExecution) {
+            taskEntityManager.deleteTask(taskEntity, null, false);
+        }
+
+        // Delete jobs
+        JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
+        Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
+        for (JobEntity job : jobsForExecution) {
+            jobEntityManager.delete(job);
+        }
+        
+        // Delete event subscriptions 
+        EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+        List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+        for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+            eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription); 
         }
     }
     

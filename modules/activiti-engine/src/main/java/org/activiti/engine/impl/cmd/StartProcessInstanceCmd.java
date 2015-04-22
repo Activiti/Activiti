@@ -66,12 +66,6 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     public ProcessInstance execute(CommandContext commandContext) {
         DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
 
-        //
-        // TODO: Think about cache usage here. How to avoid duplication??
-        // Probably best to switch to separate caches: one for entities, and one
-        // for process models.
-        //
-
         // Find the process definition
         ProcessDefinitionEntity processDefinition = null;
         if (processDefinitionId != null) {

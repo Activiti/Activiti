@@ -20,6 +20,8 @@ import org.activiti.engine.impl.history.handler.StartEventEndHandler;
 
 /**
  * @author Joram Barrez
+ * 
+ * TODO: can probably be deleted.
  */
 public class StartEventHistoryParseHandler extends AbstractBpmnParseHandler<StartEvent> {
 

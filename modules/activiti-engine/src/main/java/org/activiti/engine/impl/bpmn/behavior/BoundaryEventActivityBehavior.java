@@ -15,7 +15,6 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.Collection;
 
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.impl.agenda.OperationUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -145,7 +144,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
             }
         }
             
-        OperationUtil.deleteDataRelatedToExecution(commandContext, parentExecution);
+        executionEntityManager.deleteDataRelatedToExecution(parentExecution);
         commandContext.getExecutionEntityManager().delete(parentExecution);
     }
     

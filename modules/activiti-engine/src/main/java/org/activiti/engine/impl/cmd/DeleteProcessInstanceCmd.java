@@ -48,7 +48,10 @@ public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
                     .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(this.processInstanceId, this.processInstanceId, null, deleteReason));
         }
 
-        commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceId, deleteReason);
+        commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceId, null, deleteReason);
+        
+        // TODO : remove following line of deleteProcessInstanceExecutionEntity is found to be doing the same as deleteProcessInstance
+//        commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceId, deleteReason);
         return null;
     }
 

@@ -57,54 +57,8 @@ public abstract class AbstractOperation implements Runnable {
         execution.setCurrentFlowElement(currentFlowElement);
         return currentFlowElement;
     }
-
-    protected void deleteExecution(CommandContext commandContext, ExecutionEntity executionEntity) {
-        OperationUtil.deleteDataRelatedToExecution(commandContext, executionEntity);
-        commandContext.getExecutionEntityManager().delete(executionEntity); // TODO: what about delete reason?
-    }
-
-    protected void deleteProcessInstanceExecutionEntity(CommandContext commandContext, ExecutionEntityManager executionEntityManager, String processInstanceId) {
-
-        IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
-        List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceId);
-        for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
-            identityLinkEntityManager.delete(identityLinkEntity);
-        }
-
-        ExecutionEntity processInstanceEntity = executionEntityManager.findExecutionById(processInstanceId);
-        deleteExecution(commandContext, processInstanceEntity);
-        
-        // TODO: what about delete reason?
-        Context.getCommandContext().getHistoryManager()
-        	.recordProcessInstanceEnd(processInstanceId, "finished", execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null);
-    }
-
-    protected void deleteChildExecutions(CommandContext commandContext, ExecutionEntity executionEntity) {
-
-        // The children of an execution for a tree. For correct deletions
-        // (taking care of foreign keys between child-parent)
-        // the leafs of this tree must be deleted first before the parents
-        // elements.
-
-        // Gather all children
-        List<ExecutionEntity> childExecutionEntities = new ArrayList<ExecutionEntity>();
-        LinkedList<ExecutionEntity> uncheckedExecutions = new LinkedList<ExecutionEntity>(executionEntity.getExecutions());
-        while (!uncheckedExecutions.isEmpty()) {
-            ExecutionEntity currentExecutionentity = uncheckedExecutions.pop();
-            childExecutionEntities.add(currentExecutionentity);
-            uncheckedExecutions.addAll(currentExecutionentity.getExecutions());
-        }
-
-        // Delete them (reverse order : leafs of the tree first)
-        for (int i = childExecutionEntities.size() - 1; i >= 0; i--) {
-            ExecutionEntity childExecutionEntity = childExecutionEntities.get(i);
-            if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
-                OperationUtil.deleteDataRelatedToExecution(commandContext, childExecutionEntity);
-                commandContext.getExecutionEntityManager().delete(childExecutionEntity);
-            }
-        }
-
-    }
+    
+    /* TODO: Should following methods be moved to the entityManager */
     
     public CommandContext getCommandContext() {
 		return commandContext;
