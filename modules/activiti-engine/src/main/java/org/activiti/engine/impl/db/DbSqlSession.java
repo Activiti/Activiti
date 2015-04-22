@@ -240,8 +240,7 @@ public class DbSqlSession implements Session {
 
         @Override
         public void clearCache() {
-            // this implementation cannot clear the object(s) to be removed from
-            // the cache.
+            // this implementation cannot clear the object(s) to be removed from the cache.
         }
 
         @Override

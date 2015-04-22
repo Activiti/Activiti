@@ -591,7 +591,6 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
         waitForJobExecutorOnCondition(2000L, 100L, new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                System.out.println("blaasdasdasdasdasddas " + taskService.createTaskQuery().list().size());
                 return taskService.createTaskQuery().list().size() == 3;
             }
         });

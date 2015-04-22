@@ -41,6 +41,7 @@ public class BoundarySignalEventActivityBehavior extends BoundaryEventActivityBe
         this.signal = signal;
     }
 
+    @Override
     public void execute(ActivityExecution execution) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
         Context.getCommandContext().getEventSubscriptionEntityManager().insertSignalEvent(
