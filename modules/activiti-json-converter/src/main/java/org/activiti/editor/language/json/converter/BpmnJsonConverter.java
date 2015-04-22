@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -242,6 +243,8 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
 
         BpmnJsonConverterUtil.convertListenersToJson(mainProcess.getExecutionListeners(), true, propertiesNode);
         BpmnJsonConverterUtil.convertEventListenersToJson(mainProcess.getEventListeners(), propertiesNode);
+        BpmnJsonConverterUtil.convertSignalDefinitionsToJson(model, propertiesNode);
+        BpmnJsonConverterUtil.convertMessagesToJson(model, propertiesNode);
         
         if (CollectionUtils.isNotEmpty(mainProcess.getDataObjects())) {
           BpmnJsonConverterUtil.convertDataPropertiesToJson(mainProcess.getDataObjects(), propertiesNode);
@@ -467,6 +470,29 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
                 }
             }
         }
+        
+        // Signal Definitions exist on the root level
+        JsonNode signalDefinitionNode = BpmnJsonConverterUtil.getProperty(PROPERTY_SIGNAL_DEFINITIONS, modelNode);
+        signalDefinitionNode = BpmnJsonConverterUtil.validateIfNodeIsTextual(signalDefinitionNode);
+        signalDefinitionNode = BpmnJsonConverterUtil.validateIfNodeIsTextual(signalDefinitionNode); // no idea why this needs to be done twice ..
+        if (signalDefinitionNode != null) {
+          if (signalDefinitionNode instanceof ArrayNode) {
+            ArrayNode signalDefinitionArrayNode = (ArrayNode) signalDefinitionNode;
+            Iterator<JsonNode> signalDefinitionIterator = signalDefinitionArrayNode.iterator();
+            while (signalDefinitionIterator.hasNext()) {
+              JsonNode signalDefinitionJsonNode = signalDefinitionIterator.next();
+              String signalId = signalDefinitionJsonNode.get(PROPERTY_SIGNAL_DEFINITION_ID).asText();
+              String signalName = signalDefinitionJsonNode.get(PROPERTY_SIGNAL_DEFINITION_NAME).asText();
+              String signalScope = signalDefinitionJsonNode.get(PROPERTY_SIGNAL_DEFINITION_SCOPE).asText();
+              
+              Signal signal = new Signal();
+              signal.setId(signalId);
+              signal.setName(signalName);
+              signal.setScope((signalScope.toLowerCase().equals("processinstance")) ? Signal.SCOPE_PROCESS_INSTANCE : Signal.SCOPE_GLOBAL);
+              bpmnModel.addSignal(signal);
+            }
+          }
+        }
 
         if (nonEmptyPoolFound == false) {
             Process process = new Process();
@@ -483,8 +509,7 @@ public class BpmnJsonConverter implements EditorJsonConstants, StencilConstants,
               process.setExecutable(JsonConverterUtil.getPropertyValueAsBoolean(PROPERTY_PROCESS_EXECUTABLE, modelNode));
             }
 
-            BpmnJsonConverterUtil.convertJsonToMessages(modelNode,bpmnModel);
-
+            BpmnJsonConverterUtil.convertJsonToMessages(modelNode, bpmnModel);
 
             BpmnJsonConverterUtil.convertJsonToListeners(modelNode, process);
             JsonNode eventListenersNode = BpmnJsonConverterUtil.getProperty(PROPERTY_EVENT_LISTENERS, modelNode);
