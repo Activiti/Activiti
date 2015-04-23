@@ -127,8 +127,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
         assertEquals("service", runtimeService.getActiveActivityIds(execution.getId()).get(0));
 
         // there is still a single job because the timer was created in the same
-        // transaction as the
-        // service was executed (which rolled back)
+        // transaction as the service was executed (which rolled back)
         assertEquals(1, managementService.createJobQuery().count());
 
         runtimeService.deleteProcessInstance(execution.getId(), "dead");

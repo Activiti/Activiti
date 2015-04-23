@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.history;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -134,6 +135,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     public void recordProcessInstanceStart(ExecutionEntity processInstance, FlowElement startElement) {
         if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
             HistoricProcessInstanceEntity historicProcessInstance = new HistoricProcessInstanceEntity(processInstance);
+            historicProcessInstance.setStartActivityId(startElement.getId());
 
             // Insert historic process-instance
             getDbSqlSession().insert(historicProcessInstance);
@@ -156,6 +158,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
             historicActivityInstance.setActivityType(parseActivityType(startElement));
             Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
             historicActivityInstance.setStartTime(now);
+            historicActivityInstance.setEndTime(now);
 
             // Inherit tenant id (if applicable)
             if (processInstance.getTenantId() != null) {
@@ -296,13 +299,6 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.activiti.engine.impl.history.HistoryManagerInterface#findActivityInstance
-     * (org.activiti.engine.impl.persistence.entity.ExecutionEntity)
-     */
     @Override
     public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
         String executionId = execution.getId();
@@ -310,15 +306,31 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
         // search for the historic activity instance in the dbsqlsession cache
         List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
+        
+        // First do a check using the execution id
+        List<HistoricActivityInstanceEntity> potentialCandidates = new ArrayList<HistoricActivityInstanceEntity>(1);
         for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
-            if (executionId.equals(cachedHistoricActivityInstance.getExecutionId()) && activityId != null && (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
+            if (activityId != null 
+            		&& (activityId.equals(cachedHistoricActivityInstance.getActivityId()))
                     && (cachedHistoricActivityInstance.getEndTime() == null)) {
-                return cachedHistoricActivityInstance;
+            	if (executionId.equals(cachedHistoricActivityInstance.getExecutionId())) { 
+            		return cachedHistoricActivityInstance;
+            	} else {
+            		potentialCandidates.add(cachedHistoricActivityInstance);
+            	}
             }
         }
+        
+        // Best we can do to associate
+        if (potentialCandidates.size() > 0) {
+        	return potentialCandidates.get(0);
+        }
+        
 
-        List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext()).executionId(executionId).activityId(activityId).unfinished()
-                .listPage(0, 1);
+        // Check the database
+        List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
+        	.executionId(executionId).activityId(activityId).unfinished()
+            .listPage(0, 1);
 
         if (!historicActivityInstances.isEmpty()) {
             return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);

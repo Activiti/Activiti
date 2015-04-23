@@ -20,6 +20,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * @author Tom Baeyens
+ * 
+ * TODO: Can probably be deleted
  */
 public class ProcessInstanceEndHandler implements ExecutionListener {
 

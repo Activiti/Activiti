@@ -41,7 +41,6 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
         assertEquals("serviceTask", historicActivityInstance.getActivityType());
         assertNotNull(historicActivityInstance.getProcessDefinitionId());
         assertEquals(processInstance.getId(), historicActivityInstance.getProcessInstanceId());
-        assertEquals(processInstance.getId(), historicActivityInstance.getExecutionId());
         assertNotNull(historicActivityInstance.getStartTime());
         assertNotNull(historicActivityInstance.getEndTime());
         assertTrue(historicActivityInstance.getDurationInMillis() >= 0);
@@ -59,10 +58,10 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
         assertNull(historicActivityInstance.getDurationInMillis());
         assertNotNull(historicActivityInstance.getProcessDefinitionId());
         assertEquals(processInstance.getId(), historicActivityInstance.getProcessInstanceId());
-        assertEquals(processInstance.getId(), historicActivityInstance.getExecutionId());
         assertNotNull(historicActivityInstance.getStartTime());
 
-        runtimeService.signal(processInstance.getId());
+        Execution execution = runtimeService.createExecutionQuery().onlyChildExecutions().processInstanceId(processInstance.getId()).singleResult();
+        runtimeService.trigger(execution.getId());
 
         historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("receive").singleResult();
 
@@ -72,7 +71,6 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
         assertTrue(historicActivityInstance.getDurationInMillis() >= 0);
         assertNotNull(historicActivityInstance.getProcessDefinitionId());
         assertEquals(processInstance.getId(), historicActivityInstance.getProcessInstanceId());
-        assertEquals(processInstance.getId(), historicActivityInstance.getExecutionId());
         assertNotNull(historicActivityInstance.getStartTime());
     }
 
@@ -94,7 +92,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
         assertEquals(0, historyService.createHistoricActivityInstanceQuery().executionId("nonExistingExecutionId").list().size());
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
-            assertEquals(3, historyService.createHistoricActivityInstanceQuery().executionId(processInstance.getId()).list().size());
+            assertEquals(3, historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstance.getId()).list().size());
         } else {
             assertEquals(0, historyService.createHistoricActivityInstanceQuery().executionId(processInstance.getId()).list().size());
         }
@@ -251,8 +249,7 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
     }
 
     /**
-     * Test to validate fix for ACT-1399: Boundary-event and event-based
-     * auditing
+     * Test to validate fix for ACT-1399: Boundary-event and event-based auditing
      */
     @Deployment
     public void testBoundaryEvent() {

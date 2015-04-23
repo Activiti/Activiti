@@ -45,12 +45,12 @@ public class EndExecutionOperation extends AbstractOperation {
 
             // If the execution is a scope, and it is ended, all the child executions must be deleted first.
             if (executionEntity.isScope()) {
-                deleteChildExecutions(commandContext, executionEntity);
+                executionEntityManager.deleteChildExecutions(executionEntity);
             }
 
             // Delete current execution
             logger.debug("Ending execution {}", execution.getId());
-            deleteExecution(commandContext, executionEntity);
+            executionEntityManager.deleteExecutionAndRelatedData(executionEntity);
 
             logger.debug("Parent execution found. Continuing process using execution {}", parentExecution.getId());
             
@@ -103,7 +103,9 @@ public class EndExecutionOperation extends AbstractOperation {
 
             if (activeExecutions == 0) {
                 logger.debug("No active executions found. Ending process instance {} ", processInstanceId);
-                deleteProcessInstanceExecutionEntity(commandContext, executionEntityManager, processInstanceId);
+                executionEntityManager.deleteProcessInstanceExecutionEntity( processInstanceId, 
+                		execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null,
+                		"FINISHED");
             } else {
                 logger.debug("Active executions found. Process instance {} will not be ended.", processInstanceId);
             }

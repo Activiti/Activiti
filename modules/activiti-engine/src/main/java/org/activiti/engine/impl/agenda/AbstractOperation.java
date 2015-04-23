@@ -12,16 +12,16 @@
  */
 package org.activiti.engine.impl.agenda;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
-import org.activiti.engine.impl.persistence.entity.IdentityLinkEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
@@ -56,50 +56,38 @@ public abstract class AbstractOperation implements Runnable {
         execution.setCurrentFlowElement(currentFlowElement);
         return currentFlowElement;
     }
-
-    protected void deleteExecution(CommandContext commandContext, ExecutionEntity executionEntity) {
-        OperationUtil.deleteDataRelatedToExecution(commandContext, executionEntity);
-        commandContext.getExecutionEntityManager().delete(executionEntity); // TODO: what about delete reason?
+    
+    protected void executeExecutionListeners(FlowElement flowElement, String eventType) {
+    	List<ActivitiListener> listeners = flowElement.getExecutionListeners();
+        ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
+        for (ActivitiListener activitiListener : listeners) {
+        	
+        	if (eventType.equals(activitiListener.getEvent())) {
+        	
+	            ExecutionListener executionListener = null;
+	
+	            if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+	                executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
+	            } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+	                executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
+	            } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+	                executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+	            }
+	            
+	            if (executionListener != null) {
+	                ((ExecutionEntity) execution).setEventName(eventType);
+	                executionListener.notify(execution);
+	            }
+	            
+        	}
+        }
+        
+        // TODO: is this still needed? Is this property still needed?
+        ((ExecutionEntity) execution).setEventName(null);
     }
 
-    protected void deleteProcessInstanceExecutionEntity(CommandContext commandContext, ExecutionEntityManager executionEntityManager, String processInstanceId) {
-
-        IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
-        List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceId);
-        for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
-            identityLinkEntityManager.delete(identityLinkEntity);
-        }
-
-        ExecutionEntity processInstanceEntity = executionEntityManager.findExecutionById(processInstanceId);
-        deleteExecution(commandContext, processInstanceEntity);
-    }
-
-    protected void deleteChildExecutions(CommandContext commandContext, ExecutionEntity executionEntity) {
-
-        // The children of an execution for a tree. For correct deletions
-        // (taking care of foreign keys between child-parent)
-        // the leafs of this tree must be deleted first before the parents
-        // elements.
-
-        // Gather all children
-        List<ExecutionEntity> childExecutionEntities = new ArrayList<ExecutionEntity>();
-        LinkedList<ExecutionEntity> uncheckedExecutions = new LinkedList<ExecutionEntity>(executionEntity.getExecutions());
-        while (!uncheckedExecutions.isEmpty()) {
-            ExecutionEntity currentExecutionentity = uncheckedExecutions.pop();
-            childExecutionEntities.add(currentExecutionentity);
-            uncheckedExecutions.addAll(currentExecutionentity.getExecutions());
-        }
-
-        // Delete them (reverse order : leafs of the tree first)
-        for (int i = childExecutionEntities.size() - 1; i >= 0; i--) {
-            ExecutionEntity childExecutionEntity = childExecutionEntities.get(i);
-            if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
-                OperationUtil.deleteDataRelatedToExecution(commandContext, childExecutionEntity);
-                commandContext.getExecutionEntityManager().delete(childExecutionEntity);
-            }
-        }
-
-    }
+    
+    /* TODO: Should following methods be moved to the entityManager */
     
     public CommandContext getCommandContext() {
 		return commandContext;

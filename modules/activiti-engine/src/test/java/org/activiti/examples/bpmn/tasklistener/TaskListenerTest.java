@@ -34,16 +34,12 @@ public class TaskListenerTest extends PluggableActivitiTestCase {
         // Manually cleanup the process instance. If we don't do this, the
         // following actions will occur:
         // 1. The cleanup rule will delete the process
-        // 2. The process deletion will fire a DELETE event to the
-        // TaskAllEventsListener
+        // 2. The process deletion will fire a DELETE event to the TaskAllEventsListener
         // 3. The TaskAllEventsListener will set a variable on the Task
-        // 4. Setting that variable will result in an entry in the ACT_HI_DETAIL
-        // table
-        // 5. The AbstractActivitiTestCase will fail the test because the DB is
-        // not clean
+        // 4. Setting that variable will result in an entry in the ACT_HI_DETAIL table
+        // 5. The AbstractActivitiTestCase will fail the test because the DB is not clean
         // By triggering the DELETE event from within the test, we ensure that
-        // all of the records
-        // are written before the test cleanup begins
+        // all of the records are written before the test cleanup begins
         runtimeService.deleteProcessInstance(processInstance.getProcessInstanceId(), "");
     }
 

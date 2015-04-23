@@ -18,7 +18,6 @@ import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.impl.agenda.OperationUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -148,7 +147,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         }
         
         if (deleteExecution) {
-            OperationUtil.deleteDataRelatedToExecution(commandContext, parentExecution);
+        	executionEntityManager.deleteDataRelatedToExecution(parentExecution);
             commandContext.getExecutionEntityManager().delete(parentExecution);
         }
     }

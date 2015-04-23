@@ -284,10 +284,12 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
     public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
     }
+    
+    public ByteArrayRef getExceptionByteArrayRef() {
+		return exceptionByteArrayRef;
+	}
 
-    // common methods //////////////////////////////////////////////////////////
-
-    @Override
+	@Override
     public String toString() {
         return "JobEntity [id=" + id + "]";
     }
