@@ -16,6 +16,9 @@ package org.activiti.engine.test.bpmn.deployment;
 import java.io.InputStream;
 import java.util.List;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.context.Context;
@@ -149,7 +152,9 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
             });
 
             assertNotNull(processDefinitionEntity);
-            assertEquals(7, processDefinitionEntity.getActivities().size());
+            BpmnModel processModel = repositoryService.getBpmnModel(processDefinitionEntity.getId());
+            assertEquals(14, processModel.getMainProcess().getFlowElements().size());
+            assertEquals(7, processModel.getMainProcess().findFlowElementsOfType(SequenceFlow.class).size());
 
             // Check that no diagram has been created
             List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinitionEntity.getDeploymentId());
@@ -167,7 +172,10 @@ public class BpmnDeploymentTest extends PluggableActivitiTestCase {
         ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
 
         assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.bpmn20.xml", processDefinition.getResourceName());
-        assertTrue(processDefinition.hasStartFormKey());
+        BpmnModel processModel = repositoryService.getBpmnModel(processDefinition.getId());
+        List<StartEvent> startEvents = processModel.getMainProcess().findFlowElementsOfType(StartEvent.class);
+        assertEquals(1, startEvents.size());
+        assertEquals("someFormKey", startEvents.get(0).getFormKey());
 
         String diagramResourceName = processDefinition.getDiagramResourceName();
         assertEquals("org/activiti/engine/test/bpmn/deployment/BpmnDeploymentTest.testProcessDiagramResource.jpg", diagramResourceName);
