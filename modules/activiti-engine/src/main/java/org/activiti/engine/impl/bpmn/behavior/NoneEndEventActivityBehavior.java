@@ -20,8 +20,10 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class NoneEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
+    private static final long serialVersionUID = 1L;
+
     public void execute(ActivityExecution execution) {
-        Context.getAgenda().planEndExecutionOperation(execution);
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution);
     }
 
 }

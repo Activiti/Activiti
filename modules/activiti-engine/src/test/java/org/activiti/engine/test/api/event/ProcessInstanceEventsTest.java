@@ -282,7 +282,8 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     public void testProcessCompleted_ParallelGatewayTwoEnds() throws Exception {
         this.runtimeService.startProcessInstanceByKey("noEndProcess");
 
-        assertEquals("ActivitiEventType.PROCESS_COMPLETED was expected 1 time.", 1, listener.filterEvents(ActivitiEventType.PROCESS_COMPLETED).size());
+        List<ActivitiEvent> events = listener.filterEvents(ActivitiEventType.PROCESS_COMPLETED);
+        assertEquals("ActivitiEventType.PROCESS_COMPLETED was expected 2 times.", 2, events.size());
     }
 
     @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
