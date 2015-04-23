@@ -207,7 +207,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         }
 
         // Store in database
-        Context.getCommandContext().getExecutionEntityManager().insert(processInstanceExecution);
+        Context.getCommandContext().getExecutionEntityManager().insert(processInstanceExecution, false);
         
         // Need to be after insert, cause we need the id
         processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());

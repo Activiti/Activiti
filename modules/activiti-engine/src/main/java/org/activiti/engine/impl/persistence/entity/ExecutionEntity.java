@@ -778,7 +778,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
      */
     protected void ensureProcessDefinitionInitialized() {
         if ((processDefinition == null) && (processDefinitionId != null)) {
-            ProcessDefinitionEntity deployedProcessDefinition = Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+            ProcessDefinitionEntity deployedProcessDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
             setProcessDefinition(deployedProcessDefinition);
         }
     }

@@ -166,7 +166,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
         }
 
         // Store in database
-        Context.getCommandContext().getExecutionEntityManager().insert(subProcessInstance);
+        Context.getCommandContext().getExecutionEntityManager().insert(subProcessInstance, false);
 
         subProcessInstance.setProcessInstanceId(subProcessInstance.getId());
         processInstanceEntity.setSubProcessInstance(subProcessInstance);
