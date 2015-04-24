@@ -8,16 +8,16 @@
 
     <parent>
         <groupId>org.activiti</groupId>
-        <artifactId>spring-boot-starters</artifactId>
-        <version>5.17.1-SNAPSHOT</version>
+        <artifactId>activiti-spring-boot-starters</artifactId>
+        <version>5.18.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>spring-boot-starter-integration</artifactId>
+    <artifactId>activiti-spring-boot-starter-integration</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>org.activiti</groupId>
-            <artifactId>spring-boot-starter-basic</artifactId>
+            <artifactId>activiti-spring-boot-starter-basic</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

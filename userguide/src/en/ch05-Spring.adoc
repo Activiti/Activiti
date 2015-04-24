@@ -350,7 +350,7 @@ Spring Boot is all about convention over configuration. To get started, simply a
 ----
 <dependency>
 	<groupId>org.activiti</groupId>
-	<artifactId>spring-boot-starter-basic</artifactId>
+	<artifactId>activiti-spring-boot-starter-basic</artifactId>
 	<version>${activiti.version}</version>
 </dependency>
 ----
