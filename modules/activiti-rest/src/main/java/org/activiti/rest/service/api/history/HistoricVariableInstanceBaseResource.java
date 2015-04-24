@@ -59,6 +59,10 @@ public class HistoricVariableInstanceBaseResource {
       query.taskId(queryRequest.getTaskId());
     }
     
+    if(queryRequest.getExecutionId() != null) {
+      query.executionId(queryRequest.getExecutionId());
+    }
+
     if (queryRequest.getProcessInstanceId() != null) {
       query.processInstanceId(queryRequest.getProcessInstanceId());
     }
