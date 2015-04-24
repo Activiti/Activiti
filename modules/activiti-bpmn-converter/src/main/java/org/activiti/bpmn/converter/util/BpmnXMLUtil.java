@@ -99,10 +99,11 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
   public static void parseChildElements(String elementName, BaseElement parentElement, XMLStreamReader xtr, 
       Map<String, BaseChildElementParser> childParsers, BpmnModel model) throws Exception {
     
-    if (childParsers == null) {
-      childParsers = new HashMap<String, BaseChildElementParser>();
+    Map<String, BaseChildElementParser> localParserMap =
+        new HashMap<String, BaseChildElementParser>(genericChildParserMap);
+    if (childParsers != null) {
+      localParserMap.putAll(childParsers);
     }
-    childParsers.putAll(genericChildParserMap);
 
     boolean inExtensionElements = false;
     boolean readyWithChildElements = false;
@@ -111,15 +112,15 @@ public class BpmnXMLUtil implements BpmnXMLConstants {
       if (xtr.isStartElement()) {
         if (ELEMENT_EXTENSIONS.equals(xtr.getLocalName())) {
           inExtensionElements = true;
-        } else if (childParsers.containsKey(xtr.getLocalName())) {
-          BaseChildElementParser childParser = childParsers.get(xtr.getLocalName());
+        } else if (localParserMap.containsKey(xtr.getLocalName())) {
+          BaseChildElementParser childParser = localParserMap.get(xtr.getLocalName());
           //if we're into an extension element but the current element is not accepted by this parentElement then is read as a custom extension element
           if (inExtensionElements && !childParser.accepts(parentElement)) {
             ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
             parentElement.addExtensionElement(extensionElement);
             continue;
           }
-          childParsers.get(xtr.getLocalName()).parseChildElement(xtr, parentElement, model);
+          localParserMap.get(xtr.getLocalName()).parseChildElement(xtr, parentElement, model);
         } else if (inExtensionElements) {
           ExtensionElement extensionElement = BpmnXMLUtil.parseExtensionElement(xtr);
           parentElement.addExtensionElement(extensionElement);
