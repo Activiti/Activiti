@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>org.activiti</groupId>
-        <artifactId>spring-boot</artifactId>
+        <artifactId>activiti-spring-boot</artifactId>
         <version>5.18.0-SNAPSHOT</version>
     </parent>
 
