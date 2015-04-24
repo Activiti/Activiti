@@ -24,25 +24,25 @@ import org.activiti.management.jmx.annotations.ManagedResource;
 @ManagedResource(description = "Job executor MBean")
 public class JobExecutorMBean {
 
-    JobExecutor jobExecutor;
+  JobExecutor jobExecutor;
 
-    public JobExecutorMBean(ProcessEngineConfiguration processEngineConfig) {
-        jobExecutor = processEngineConfig.getJobExecutor();
+  public JobExecutorMBean(ProcessEngineConfiguration processEngineConfig) {
+    jobExecutor = processEngineConfig.getJobExecutor();
 
-    }
+  }
 
-    @ManagedAttribute(description = "check if the job executor is activated")
-    public boolean isJobExecutorActivated() {
-        return jobExecutor != null && jobExecutor.isActive();
-    }
+  @ManagedAttribute(description = "check if the job executor is activated")
+  public boolean isJobExecutorActivated() {
+    return jobExecutor != null && jobExecutor.isActive();
+  }
 
-    @ManagedOperation(description = "set job executor activate")
-    public void setJobExecutorActivate(Boolean active) {
-        if (active)
-            jobExecutor.start();
-        else
-            jobExecutor.shutdown();
+  @ManagedOperation(description = "set job executor activate")
+  public void setJobExecutorActivate(Boolean active) {
+    if (active)
+      jobExecutor.start();
+    else
+      jobExecutor.shutdown();
 
-    }
+  }
 
 }

@@ -30,37 +30,36 @@ import org.slf4j.LoggerFactory;
  */
 public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<BoundaryEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(BoundaryEventParseHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(BoundaryEventParseHandler.class);
 
-    public Class<? extends BaseElement> getHandledType() {
-        return BoundaryEvent.class;
+  public Class<? extends BaseElement> getHandledType() {
+    return BoundaryEvent.class;
+  }
+
+  protected void executeParse(BpmnParse bpmnParse, BoundaryEvent boundaryEvent) {
+
+    ActivityImpl parentActivity = findActivity(bpmnParse, boundaryEvent.getAttachedToRefId());
+    if (parentActivity == null) {
+      logger.warn("Invalid reference in boundary event. Make sure that the referenced activity is defined in the same scope as the boundary event " + boundaryEvent.getId());
+      return;
     }
 
-    protected void executeParse(BpmnParse bpmnParse, BoundaryEvent boundaryEvent) {
+    ActivityImpl nestedActivity = createActivityOnScope(bpmnParse, boundaryEvent, BpmnXMLConstants.ELEMENT_EVENT_BOUNDARY, parentActivity);
+    bpmnParse.setCurrentActivity(nestedActivity);
 
-        ActivityImpl parentActivity = findActivity(bpmnParse, boundaryEvent.getAttachedToRefId());
-        if (parentActivity == null) {
-            logger.warn("Invalid reference in boundary event. Make sure that the referenced activity is defined in the same scope as the boundary event " + boundaryEvent.getId());
-            return;
-        }
-
-        ActivityImpl nestedActivity = createActivityOnScope(bpmnParse, boundaryEvent, BpmnXMLConstants.ELEMENT_EVENT_BOUNDARY, parentActivity);
-        bpmnParse.setCurrentActivity(nestedActivity);
-
-        EventDefinition eventDefinition = null;
-        if (!boundaryEvent.getEventDefinitions().isEmpty()) {
-            eventDefinition = boundaryEvent.getEventDefinitions().get(0);
-        }
-
-        if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition || eventDefinition instanceof SignalEventDefinition
-                || eventDefinition instanceof CancelEventDefinition || eventDefinition instanceof MessageEventDefinition
-                || eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
-
-            bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
-
-        } else {
-            logger.warn("Unsupported boundary event type for boundary event " + boundaryEvent.getId());
-        }
+    EventDefinition eventDefinition = null;
+    if (!boundaryEvent.getEventDefinitions().isEmpty()) {
+      eventDefinition = boundaryEvent.getEventDefinitions().get(0);
     }
+
+    if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof org.activiti.bpmn.model.ErrorEventDefinition || eventDefinition instanceof SignalEventDefinition
+        || eventDefinition instanceof CancelEventDefinition || eventDefinition instanceof MessageEventDefinition || eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) {
+
+      bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
+
+    } else {
+      logger.warn("Unsupported boundary event type for boundary event " + boundaryEvent.getId());
+    }
+  }
 
 }

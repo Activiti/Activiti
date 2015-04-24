@@ -45,317 +45,317 @@ import org.activiti5.engine.task.IdentityLinkType;
  */
 public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements ProcessDefinition, PersistentObject, HasRevision {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String key;
-    protected int revision = 1;
-    protected int version;
-    protected String category;
-    protected String deploymentId;
-    protected String resourceName;
-    protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
-    protected Integer historyLevel;
-    protected StartFormHandler startFormHandler;
-    protected String diagramResourceName;
-    protected boolean isGraphicalNotationDefined;
-    protected Map<String, TaskDefinition> taskDefinitions;
-    protected Map<String, Object> variables;
-    protected boolean hasStartFormKey;
-    protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
-    protected boolean isIdentityLinksInitialized = false;
-    protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
-    protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
-    protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
-    protected transient ActivitiEventSupport eventSupport;
+  protected String key;
+  protected int revision = 1;
+  protected int version;
+  protected String category;
+  protected String deploymentId;
+  protected String resourceName;
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+  protected Integer historyLevel;
+  protected StartFormHandler startFormHandler;
+  protected String diagramResourceName;
+  protected boolean isGraphicalNotationDefined;
+  protected Map<String, TaskDefinition> taskDefinitions;
+  protected Map<String, Object> variables;
+  protected boolean hasStartFormKey;
+  protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
+  protected boolean isIdentityLinksInitialized = false;
+  protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
+  protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
+  protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
+  protected transient ActivitiEventSupport eventSupport;
 
-    public ProcessDefinitionEntity() {
-        super(null);
-        eventSupport = new ActivitiEventSupport();
+  public ProcessDefinitionEntity() {
+    super(null);
+    eventSupport = new ActivitiEventSupport();
+  }
+
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    eventSupport = new ActivitiEventSupport();
+
+  }
+
+  public ExecutionEntity createProcessInstance(String businessKey, ActivityImpl initial) {
+    ExecutionEntity processInstance = null;
+
+    if (initial == null) {
+      processInstance = (ExecutionEntity) super.createProcessInstance();
+    } else {
+      processInstance = (ExecutionEntity) super.createProcessInstanceForInitial(initial);
     }
 
-    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        in.defaultReadObject();
-        eventSupport = new ActivitiEventSupport();
+    processInstance.setExecutions(new ArrayList<ExecutionEntity>());
+    processInstance.setProcessDefinition(processDefinition);
+    // Do not initialize variable map (let it happen lazily)
 
+    // Set business key (if any)
+    if (businessKey != null) {
+      processInstance.setBusinessKey(businessKey);
     }
 
-    public ExecutionEntity createProcessInstance(String businessKey, ActivityImpl initial) {
-        ExecutionEntity processInstance = null;
-
-        if (initial == null) {
-            processInstance = (ExecutionEntity) super.createProcessInstance();
-        } else {
-            processInstance = (ExecutionEntity) super.createProcessInstanceForInitial(initial);
-        }
-
-        processInstance.setExecutions(new ArrayList<ExecutionEntity>());
-        processInstance.setProcessDefinition(processDefinition);
-        // Do not initialize variable map (let it happen lazily)
-
-        // Set business key (if any)
-        if (businessKey != null) {
-            processInstance.setBusinessKey(businessKey);
-        }
-
-        // Inherit tenant id (if any)
-        if (getTenantId() != null) {
-            processInstance.setTenantId(getTenantId());
-        }
-
-        // Reset the process instance in order to have the db-generated process
-        // instance id available
-        processInstance.setProcessInstance(processInstance);
-
-        // initialize the template-defined data objects as variables first
-        Map<String, Object> dataObjectVars = getVariables();
-        if (dataObjectVars != null) {
-            processInstance.setVariables(dataObjectVars);
-        }
-
-        String authenticatedUserId = Authentication.getAuthenticatedUserId();
-        String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
-        if (initiatorVariableName != null) {
-            processInstance.setVariable(initiatorVariableName, authenticatedUserId);
-        }
-        if (authenticatedUserId != null) {
-            processInstance.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
-        }
-
-        Context.getCommandContext().getHistoryManager().recordProcessInstanceStart(processInstance);
-
-        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
-        }
-
-        return processInstance;
+    // Inherit tenant id (if any)
+    if (getTenantId() != null) {
+      processInstance.setTenantId(getTenantId());
     }
 
-    public ExecutionEntity createProcessInstance(String businessKey) {
-        return createProcessInstance(businessKey, null);
+    // Reset the process instance in order to have the db-generated process
+    // instance id available
+    processInstance.setProcessInstance(processInstance);
+
+    // initialize the template-defined data objects as variables first
+    Map<String, Object> dataObjectVars = getVariables();
+    if (dataObjectVars != null) {
+      processInstance.setVariables(dataObjectVars);
     }
 
-    public ExecutionEntity createProcessInstance() {
-        return createProcessInstance(null);
+    String authenticatedUserId = Authentication.getAuthenticatedUserId();
+    String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
+    if (initiatorVariableName != null) {
+      processInstance.setVariable(initiatorVariableName, authenticatedUserId);
+    }
+    if (authenticatedUserId != null) {
+      processInstance.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
     }
 
-    @Override
-    protected InterpretableExecution newProcessInstance(ActivityImpl activityImpl) {
-        ExecutionEntity processInstance = new ExecutionEntity(activityImpl);
-        processInstance.insert();
-        return processInstance;
+    Context.getCommandContext().getHistoryManager().recordProcessInstanceStart(processInstance);
+
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
     }
 
-    public IdentityLinkEntity addIdentityLink(String userId, String groupId) {
-        IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
-        getIdentityLinks().add(identityLinkEntity);
-        identityLinkEntity.setProcessDef(this);
-        identityLinkEntity.setUserId(userId);
-        identityLinkEntity.setGroupId(groupId);
-        identityLinkEntity.setType(IdentityLinkType.CANDIDATE);
-        identityLinkEntity.insert();
-        return identityLinkEntity;
+    return processInstance;
+  }
+
+  public ExecutionEntity createProcessInstance(String businessKey) {
+    return createProcessInstance(businessKey, null);
+  }
+
+  public ExecutionEntity createProcessInstance() {
+    return createProcessInstance(null);
+  }
+
+  @Override
+  protected InterpretableExecution newProcessInstance(ActivityImpl activityImpl) {
+    ExecutionEntity processInstance = new ExecutionEntity(activityImpl);
+    processInstance.insert();
+    return processInstance;
+  }
+
+  public IdentityLinkEntity addIdentityLink(String userId, String groupId) {
+    IdentityLinkEntity identityLinkEntity = new IdentityLinkEntity();
+    getIdentityLinks().add(identityLinkEntity);
+    identityLinkEntity.setProcessDef(this);
+    identityLinkEntity.setUserId(userId);
+    identityLinkEntity.setGroupId(groupId);
+    identityLinkEntity.setType(IdentityLinkType.CANDIDATE);
+    identityLinkEntity.insert();
+    return identityLinkEntity;
+  }
+
+  public void deleteIdentityLink(String userId, String groupId) {
+    List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinkByProcessDefinitionUserAndGroup(id, userId, groupId);
+
+    for (IdentityLinkEntity identityLink : identityLinks) {
+      Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(identityLink, false);
+    }
+  }
+
+  public List<IdentityLinkEntity> getIdentityLinks() {
+    if (!isIdentityLinksInitialized) {
+      definitionIdentityLinkEntities = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByProcessDefinitionId(id);
+      isIdentityLinksInitialized = true;
     }
 
-    public void deleteIdentityLink(String userId, String groupId) {
-        List<IdentityLinkEntity> identityLinks = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinkByProcessDefinitionUserAndGroup(id, userId, groupId);
+    return definitionIdentityLinkEntities;
+  }
 
-        for (IdentityLinkEntity identityLink : identityLinks) {
-            Context.getCommandContext().getIdentityLinkEntityManager().deleteIdentityLink(identityLink, false);
-        }
-    }
+  public String toString() {
+    return "ProcessDefinitionEntity[" + id + "]";
+  }
 
-    public List<IdentityLinkEntity> getIdentityLinks() {
-        if (!isIdentityLinksInitialized) {
-            definitionIdentityLinkEntities = Context.getCommandContext().getIdentityLinkEntityManager().findIdentityLinksByProcessDefinitionId(id);
-            isIdentityLinksInitialized = true;
-        }
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-        return definitionIdentityLinkEntities;
-    }
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("suspensionState", this.suspensionState);
+    persistentState.put("category", this.category);
+    return persistentState;
+  }
 
-    public String toString() {
-        return "ProcessDefinitionEntity[" + id + "]";
-    }
+  public String getKey() {
+    return key;
+  }
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  public void setKey(String key) {
+    this.key = key;
+  }
 
-    public Object getPersistentState() {
-        Map<String, Object> persistentState = new HashMap<String, Object>();
-        persistentState.put("suspensionState", this.suspensionState);
-        persistentState.put("category", this.category);
-        return persistentState;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public String getKey() {
-        return key;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public void setKey(String key) {
-        this.key = key;
-    }
+  public String getDeploymentId() {
+    return deploymentId;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public int getVersion() {
+    return version;
+  }
 
-    public String getDeploymentId() {
-        return deploymentId;
-    }
+  public void setVersion(int version) {
+    this.version = version;
+  }
 
-    public void setDeploymentId(String deploymentId) {
-        this.deploymentId = deploymentId;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public int getVersion() {
-        return version;
-    }
+  public String getResourceName() {
+    return resourceName;
+  }
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
+  public void setResourceName(String resourceName) {
+    this.resourceName = resourceName;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public String getTenantId() {
+    return tenantId;
+  }
 
-    public String getResourceName() {
-        return resourceName;
-    }
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+  }
 
-    public void setResourceName(String resourceName) {
-        this.resourceName = resourceName;
-    }
+  public Integer getHistoryLevel() {
+    return historyLevel;
+  }
 
-    public String getTenantId() {
-        return tenantId;
-    }
+  public void setHistoryLevel(Integer historyLevel) {
+    this.historyLevel = historyLevel;
+  }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
+  public StartFormHandler getStartFormHandler() {
+    return startFormHandler;
+  }
 
-    public Integer getHistoryLevel() {
-        return historyLevel;
-    }
+  public void setStartFormHandler(StartFormHandler startFormHandler) {
+    this.startFormHandler = startFormHandler;
+  }
 
-    public void setHistoryLevel(Integer historyLevel) {
-        this.historyLevel = historyLevel;
-    }
+  public Map<String, TaskDefinition> getTaskDefinitions() {
+    return taskDefinitions;
+  }
 
-    public StartFormHandler getStartFormHandler() {
-        return startFormHandler;
-    }
+  public void setTaskDefinitions(Map<String, TaskDefinition> taskDefinitions) {
+    this.taskDefinitions = taskDefinitions;
+  }
 
-    public void setStartFormHandler(StartFormHandler startFormHandler) {
-        this.startFormHandler = startFormHandler;
-    }
+  public Map<String, Object> getVariables() {
+    return variables;
+  }
 
-    public Map<String, TaskDefinition> getTaskDefinitions() {
-        return taskDefinitions;
-    }
+  public void setVariables(Map<String, Object> variables) {
+    this.variables = variables;
+  }
 
-    public void setTaskDefinitions(Map<String, TaskDefinition> taskDefinitions) {
-        this.taskDefinitions = taskDefinitions;
-    }
+  public String getCategory() {
+    return category;
+  }
 
-    public Map<String, Object> getVariables() {
-        return variables;
-    }
+  public void setCategory(String category) {
+    this.category = category;
+  }
 
-    public void setVariables(Map<String, Object> variables) {
-        this.variables = variables;
-    }
+  public String getDiagramResourceName() {
+    return diagramResourceName;
+  }
 
-    public String getCategory() {
-        return category;
-    }
+  public void setDiagramResourceName(String diagramResourceName) {
+    this.diagramResourceName = diagramResourceName;
+  }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+  public boolean hasStartFormKey() {
+    return hasStartFormKey;
+  }
 
-    public String getDiagramResourceName() {
-        return diagramResourceName;
-    }
+  public boolean getHasStartFormKey() {
+    return hasStartFormKey;
+  }
 
-    public void setDiagramResourceName(String diagramResourceName) {
-        this.diagramResourceName = diagramResourceName;
-    }
+  public void setStartFormKey(boolean hasStartFormKey) {
+    this.hasStartFormKey = hasStartFormKey;
+  }
 
-    public boolean hasStartFormKey() {
-        return hasStartFormKey;
-    }
+  public void setHasStartFormKey(boolean hasStartFormKey) {
+    this.hasStartFormKey = hasStartFormKey;
+  }
 
-    public boolean getHasStartFormKey() {
-        return hasStartFormKey;
-    }
+  public boolean isGraphicalNotationDefined() {
+    return isGraphicalNotationDefined;
+  }
 
-    public void setStartFormKey(boolean hasStartFormKey) {
-        this.hasStartFormKey = hasStartFormKey;
-    }
+  public boolean hasGraphicalNotation() {
+    return isGraphicalNotationDefined;
+  }
 
-    public void setHasStartFormKey(boolean hasStartFormKey) {
-        this.hasStartFormKey = hasStartFormKey;
-    }
+  public void setGraphicalNotationDefined(boolean isGraphicalNotationDefined) {
+    this.isGraphicalNotationDefined = isGraphicalNotationDefined;
+  }
 
-    public boolean isGraphicalNotationDefined() {
-        return isGraphicalNotationDefined;
-    }
+  public int getRevision() {
+    return revision;
+  }
 
-    public boolean hasGraphicalNotation() {
-        return isGraphicalNotationDefined;
-    }
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
 
-    public void setGraphicalNotationDefined(boolean isGraphicalNotationDefined) {
-        this.isGraphicalNotationDefined = isGraphicalNotationDefined;
-    }
+  public int getRevisionNext() {
+    return revision + 1;
+  }
 
-    public int getRevision() {
-        return revision;
-    }
+  public int getSuspensionState() {
+    return suspensionState;
+  }
 
-    public void setRevision(int revision) {
-        this.revision = revision;
-    }
+  public void setSuspensionState(int suspensionState) {
+    this.suspensionState = suspensionState;
+  }
 
-    public int getRevisionNext() {
-        return revision + 1;
-    }
+  public boolean isSuspended() {
+    return suspensionState == SuspensionState.SUSPENDED.getStateCode();
+  }
 
-    public int getSuspensionState() {
-        return suspensionState;
-    }
+  public Set<Expression> getCandidateStarterUserIdExpressions() {
+    return candidateStarterUserIdExpressions;
+  }
 
-    public void setSuspensionState(int suspensionState) {
-        this.suspensionState = suspensionState;
-    }
+  public void addCandidateStarterUserIdExpression(Expression userId) {
+    candidateStarterUserIdExpressions.add(userId);
+  }
 
-    public boolean isSuspended() {
-        return suspensionState == SuspensionState.SUSPENDED.getStateCode();
-    }
+  public Set<Expression> getCandidateStarterGroupIdExpressions() {
+    return candidateStarterGroupIdExpressions;
+  }
 
-    public Set<Expression> getCandidateStarterUserIdExpressions() {
-        return candidateStarterUserIdExpressions;
-    }
+  public void addCandidateStarterGroupIdExpression(Expression groupId) {
+    candidateStarterGroupIdExpressions.add(groupId);
+  }
 
-    public void addCandidateStarterUserIdExpression(Expression userId) {
-        candidateStarterUserIdExpressions.add(userId);
-    }
-
-    public Set<Expression> getCandidateStarterGroupIdExpressions() {
-        return candidateStarterGroupIdExpressions;
-    }
-
-    public void addCandidateStarterGroupIdExpression(Expression groupId) {
-        candidateStarterGroupIdExpressions.add(groupId);
-    }
-
-    public ActivitiEventSupport getEventSupport() {
-        return eventSupport;
-    }
+  public ActivitiEventSupport getEventSupport() {
+    return eventSupport;
+  }
 }

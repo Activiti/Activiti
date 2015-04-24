@@ -29,40 +29,40 @@ import org.activiti.engine.task.DelegationState;
  */
 public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
 
-    public AbstractCompleteTaskCmd(String taskId) {
-        super(taskId);
+  public AbstractCompleteTaskCmd(String taskId) {
+    super(taskId);
+  }
+
+  protected void executeTaskComplete(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
+
+    if (taskEntity.getDelegationState() != null && taskEntity.getDelegationState().equals(DelegationState.PENDING)) {
+      throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
     }
 
-    protected void executeTaskComplete(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
+    // fireEvent(TaskListener.EVENTNAME_COMPLETE);
+    // if (Authentication.getAuthenticatedUserId() != null &&
+    // task.getProcessInstanceId() != null) {
+    // getProcessInstance().involveUser(Authentication.getAuthenticatedUserId(),
+    // IdentityLinkType.PARTICIPANT);
+    // }
 
-        if (taskEntity.getDelegationState() != null && taskEntity.getDelegationState().equals(DelegationState.PENDING)) {
-            throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
-        }
-
-        // fireEvent(TaskListener.EVENTNAME_COMPLETE);
-        // if (Authentication.getAuthenticatedUserId() != null &&
-        // task.getProcessInstanceId() != null) {
-        // getProcessInstance().involveUser(Authentication.getAuthenticatedUserId(),
-        // IdentityLinkType.PARTICIPANT);
-        // }
-
-        ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
-        if (eventDispatcher.isEnabled()) {
-            if (variables != null) {
-                eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.TASK_COMPLETED, this, variables, localScope));
-            } else {
-                eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_COMPLETED, taskEntity));
-            }
-        }
-
-        CommandContext commandContext = Context.getCommandContext();
-        commandContext.getTaskEntityManager().deleteTask(taskEntity, TaskEntity.DELETE_REASON_COMPLETED, false);
-
-        // Continue process (if not a standalone task)
-        if (taskEntity.getExecutionId() != null) {
-            ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findExecutionById(taskEntity.getExecutionId());
-            commandContext.getAgenda().planTriggerExecutionOperation(executionEntity);
-        }
+    ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
+    if (eventDispatcher.isEnabled()) {
+      if (variables != null) {
+        eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.TASK_COMPLETED, this, variables, localScope));
+      } else {
+        eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_COMPLETED, taskEntity));
+      }
     }
+
+    CommandContext commandContext = Context.getCommandContext();
+    commandContext.getTaskEntityManager().deleteTask(taskEntity, TaskEntity.DELETE_REASON_COMPLETED, false);
+
+    // Continue process (if not a standalone task)
+    if (taskEntity.getExecutionId() != null) {
+      ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findExecutionById(taskEntity.getExecutionId());
+      commandContext.getAgenda().planTriggerExecutionOperation(executionEntity);
+    }
+  }
 
 }

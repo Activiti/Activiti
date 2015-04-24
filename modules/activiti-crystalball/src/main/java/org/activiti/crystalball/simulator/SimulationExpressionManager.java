@@ -24,10 +24,9 @@ import java.beans.FeatureDescriptor;
 import java.util.Iterator;
 import java.util.Map;
 
-
 /**
  * {@link org.activiti.engine.impl.el.ExpressionManager} that exposes the simulation event in expressions
- *
+ * 
  * @author martin.grofcik
  */
 public class SimulationExpressionManager extends ExpressionManager {
@@ -46,17 +45,15 @@ public class SimulationExpressionManager extends ExpressionManager {
     return compositeElResolver;
   }
 
-
   private class SimulationScopeElResolver extends ELResolver {
 
-    public static final String EVENT_CALENDAR_KEY= "eventCalendar";
+    public static final String EVENT_CALENDAR_KEY = "eventCalendar";
 
     protected VariableScope variableScope;
 
     public SimulationScopeElResolver(VariableScope variableScope) {
       this.variableScope = variableScope;
     }
-
 
     @Override
     public Object getValue(ELContext context, Object base, Object property) {
@@ -76,8 +73,7 @@ public class SimulationExpressionManager extends ExpressionManager {
 
     @Override
     public void setValue(ELContext context, Object base, Object property, Object value) {
-      throw new PropertyNotWritableException(
-        "Variable '" + property + "' is not writable");
+      throw new PropertyNotWritableException("Variable '" + property + "' is not writable");
     }
 
     @Override

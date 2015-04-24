@@ -23,49 +23,49 @@ import org.activiti5.engine.form.AbstractFormType;
  */
 public class EnumFormType extends AbstractFormType {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected Map<String, String> values;
+  protected Map<String, String> values;
 
-    public EnumFormType(Map<String, String> values) {
-        this.values = values;
+  public EnumFormType(Map<String, String> values) {
+    this.values = values;
+  }
+
+  public String getName() {
+    return "enum";
+  }
+
+  @Override
+  public Object getInformation(String key) {
+    if (key.equals("values")) {
+      return values;
     }
+    return null;
+  }
 
-    public String getName() {
-        return "enum";
-    }
+  @Override
+  public Object convertFormValueToModelValue(String propertyValue) {
+    validateValue(propertyValue);
+    return propertyValue;
+  }
 
-    @Override
-    public Object getInformation(String key) {
-        if (key.equals("values")) {
-            return values;
-        }
-        return null;
+  @Override
+  public String convertModelValueToFormValue(Object modelValue) {
+    if (modelValue != null) {
+      if (!(modelValue instanceof String)) {
+        throw new ActivitiIllegalArgumentException("Model value should be a String");
+      }
+      validateValue((String) modelValue);
     }
+    return (String) modelValue;
+  }
 
-    @Override
-    public Object convertFormValueToModelValue(String propertyValue) {
-        validateValue(propertyValue);
-        return propertyValue;
+  protected void validateValue(String value) {
+    if (value != null) {
+      if (values != null && !values.containsKey(value)) {
+        throw new ActivitiIllegalArgumentException("Invalid value for enum form property: " + value);
+      }
     }
-
-    @Override
-    public String convertModelValueToFormValue(Object modelValue) {
-        if (modelValue != null) {
-            if (!(modelValue instanceof String)) {
-                throw new ActivitiIllegalArgumentException("Model value should be a String");
-            }
-            validateValue((String) modelValue);
-        }
-        return (String) modelValue;
-    }
-
-    protected void validateValue(String value) {
-        if (value != null) {
-            if (values != null && !values.containsKey(value)) {
-                throw new ActivitiIllegalArgumentException("Invalid value for enum form property: " + value);
-            }
-        }
-    }
+  }
 
 }

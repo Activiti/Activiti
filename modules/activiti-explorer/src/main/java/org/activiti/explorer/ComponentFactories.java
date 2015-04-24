@@ -27,41 +27,41 @@ import org.activiti.explorer.ui.management.ManagementMenuBarFactory;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class ComponentFactories implements Serializable {
 
-    private static final long serialVersionUID = 7863017440773004716L;
+  private static final long serialVersionUID = 7863017440773004716L;
 
-    // Component factories are configured here, and not in the Spring context,
-    // as this would require a lot of XML (Alfresco doesnt use component
-    // scanning)
-    public static final String MAIN_MENU = "mainMenu";
+  // Component factories are configured here, and not in the Spring context,
+  // as this would require a lot of XML (Alfresco doesnt use component
+  // scanning)
+  public static final String MAIN_MENU = "mainMenu";
 
-    // The actual factory instances
-    protected Map<Class, ComponentFactory> factories = new HashMap<Class, ComponentFactory>();
+  // The actual factory instances
+  protected Map<Class, ComponentFactory> factories = new HashMap<Class, ComponentFactory>();
 
-    protected String environment;
+  protected String environment;
 
-    public ComponentFactories() {
-        // Add custom component factories to this list
-        factories.put(MainMenuBarFactory.class, new MainMenuBarFactory());
-        factories.put(ManagementMenuBarFactory.class, new ManagementMenuBarFactory());
-        factories.put(UploadComponentFactory.class, new UploadComponentFactory());
+  public ComponentFactories() {
+    // Add custom component factories to this list
+    factories.put(MainMenuBarFactory.class, new MainMenuBarFactory());
+    factories.put(ManagementMenuBarFactory.class, new ManagementMenuBarFactory());
+    factories.put(UploadComponentFactory.class, new UploadComponentFactory());
+  }
+
+  public <T> ComponentFactory<T> get(Class<? extends ComponentFactory<T>> clazz) {
+    return factories.get(clazz);
+  }
+
+  public <T> void add(Class<? extends ComponentFactory<T>> clazz, ComponentFactory<T> factory) {
+    factories.put(clazz, factory);
+    factory.initialise(environment);
+  }
+
+  public void setEnvironment(String environment) {
+    this.environment = environment;
+
+    // Initialise all defined component factories
+    for (ComponentFactory componentFactory : factories.values()) {
+      componentFactory.initialise(environment);
     }
-
-    public <T> ComponentFactory<T> get(Class<? extends ComponentFactory<T>> clazz) {
-        return factories.get(clazz);
-    }
-
-    public <T> void add(Class<? extends ComponentFactory<T>> clazz, ComponentFactory<T> factory) {
-        factories.put(clazz, factory);
-        factory.initialise(environment);
-    }
-
-    public void setEnvironment(String environment) {
-        this.environment = environment;
-
-        // Initialise all defined component factories
-        for (ComponentFactory componentFactory : factories.values()) {
-            componentFactory.initialise(environment);
-        }
-    }
+  }
 
 }

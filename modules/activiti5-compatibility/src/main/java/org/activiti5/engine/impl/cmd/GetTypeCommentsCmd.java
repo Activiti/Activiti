@@ -25,14 +25,14 @@ import org.activiti5.engine.task.Comment;
  */
 public class GetTypeCommentsCmd implements Command<List<Comment>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String type;
+  private static final long serialVersionUID = 1L;
+  protected String type;
 
-    public GetTypeCommentsCmd(String type) {
-        this.type = type;
-    }
+  public GetTypeCommentsCmd(String type) {
+    this.type = type;
+  }
 
-    public List<Comment> execute(CommandContext commandContext) {
-        return commandContext.getCommentEntityManager().findCommentsByType(type);
-    }
+  public List<Comment> execute(CommandContext commandContext) {
+    return commandContext.getCommentEntityManager().findCommentsByType(type);
+  }
 }

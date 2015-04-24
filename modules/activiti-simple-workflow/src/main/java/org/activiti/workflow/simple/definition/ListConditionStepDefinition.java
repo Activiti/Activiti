@@ -30,107 +30,107 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize.Inclusion;
 @JsonTypeName("list")
 public class ListConditionStepDefinition<T> extends AbstractStepDefinitionContainer<ListConditionStepDefinition<T>> implements StepDefinition, NamedStepDefinition {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected ConditionStepListContainer<T> stepListContainer;
-    protected List<ConditionDefinition> conditions = new ArrayList<ConditionDefinition>();
-    protected String name;
-    protected Map<String, Object> parameters = new HashMap<String, Object>();
+  protected ConditionStepListContainer<T> stepListContainer;
+  protected List<ConditionDefinition> conditions = new ArrayList<ConditionDefinition>();
+  protected String name;
+  protected Map<String, Object> parameters = new HashMap<String, Object>();
 
-    protected String description;
+  protected String description;
 
-    public ListConditionStepDefinition() {
-        super();
+  public ListConditionStepDefinition() {
+    super();
+  }
+
+  public ListConditionStepDefinition(ConditionStepListContainer<T> stepListContainer) {
+    this.stepListContainer = stepListContainer;
+  }
+
+  public ListConditionStepDefinition<T> addCondition(String leftOperand, String operator, String rightOperand) {
+    ConditionDefinition condition = new ConditionDefinition();
+    condition.setLeftOperand(leftOperand);
+    condition.setOperator(operator);
+    condition.setRightOperand(rightOperand);
+    this.conditions.add(condition);
+    return this;
+  }
+
+  public T endList() {
+    if (stepListContainer == null) {
+      throw new SimpleWorkflowException("Can only call endList when inList was called on a workflow definition first");
     }
 
-    public ListConditionStepDefinition(ConditionStepListContainer<T> stepListContainer) {
-        this.stepListContainer = stepListContainer;
+    return (T) stepListContainer;
+  }
+
+  @Override
+  public String getDescription() {
+    return description;
+  }
+
+  @Override
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  @Override
+  public ListConditionStepDefinition<T> clone() {
+    ListConditionStepDefinition<T> clone = new ListConditionStepDefinition<T>();
+    clone.setValues(this);
+    return clone;
+  }
+
+  @Override
+  public void setValues(StepDefinition otherDefinition) {
+    if (!(otherDefinition instanceof ListConditionStepDefinition)) {
+      throw new SimpleWorkflowException("An instance of SerialStepsDefinition is required to set values");
     }
 
-    public ListConditionStepDefinition<T> addCondition(String leftOperand, String operator, String rightOperand) {
-        ConditionDefinition condition = new ConditionDefinition();
-        condition.setLeftOperand(leftOperand);
-        condition.setOperator(operator);
-        condition.setRightOperand(rightOperand);
-        this.conditions.add(condition);
-        return this;
+    ListConditionStepDefinition<T> definition = (ListConditionStepDefinition<T>) otherDefinition;
+    setId(definition.getId());
+    setName(definition.getName());
+
+    setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
+
+    steps = new ArrayList<StepDefinition>();
+    if (definition.getSteps() != null && !definition.getSteps().isEmpty()) {
+      for (StepDefinition stepDefinition : definition.getSteps()) {
+        steps.add(stepDefinition.clone());
+      }
     }
 
-    public T endList() {
-        if (stepListContainer == null) {
-            throw new SimpleWorkflowException("Can only call endList when inList was called on a workflow definition first");
-        }
-
-        return (T) stepListContainer;
+    conditions = new ArrayList<ConditionDefinition>();
+    if (definition.getConditions() != null && !definition.getConditions().isEmpty()) {
+      for (ConditionDefinition condition : definition.getConditions()) {
+        conditions.add(condition.clone());
+      }
     }
+  }
 
-    @Override
-    public String getDescription() {
-        return description;
-    }
+  public List<ConditionDefinition> getConditions() {
+    return conditions;
+  }
 
-    @Override
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setConditions(List<ConditionDefinition> conditions) {
+    this.conditions = conditions;
+  }
 
-    @Override
-    public ListConditionStepDefinition<T> clone() {
-        ListConditionStepDefinition<T> clone = new ListConditionStepDefinition<T>();
-        clone.setValues(this);
-        return clone;
-    }
+  public String getName() {
+    return name;
+  }
 
-    @Override
-    public void setValues(StepDefinition otherDefinition) {
-        if (!(otherDefinition instanceof ListConditionStepDefinition)) {
-            throw new SimpleWorkflowException("An instance of SerialStepsDefinition is required to set values");
-        }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-        ListConditionStepDefinition<T> definition = (ListConditionStepDefinition<T>) otherDefinition;
-        setId(definition.getId());
-        setName(definition.getName());
+  @Override
+  @JsonSerialize(include = Inclusion.NON_EMPTY)
+  public Map<String, Object> getParameters() {
+    return parameters;
+  }
 
-        setParameters(new HashMap<String, Object>(otherDefinition.getParameters()));
-
-        steps = new ArrayList<StepDefinition>();
-        if (definition.getSteps() != null && !definition.getSteps().isEmpty()) {
-            for (StepDefinition stepDefinition : definition.getSteps()) {
-                steps.add(stepDefinition.clone());
-            }
-        }
-
-        conditions = new ArrayList<ConditionDefinition>();
-        if (definition.getConditions() != null && !definition.getConditions().isEmpty()) {
-            for (ConditionDefinition condition : definition.getConditions()) {
-                conditions.add(condition.clone());
-            }
-        }
-    }
-
-    public List<ConditionDefinition> getConditions() {
-        return conditions;
-    }
-
-    public void setConditions(List<ConditionDefinition> conditions) {
-        this.conditions = conditions;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    @JsonSerialize(include = Inclusion.NON_EMPTY)
-    public Map<String, Object> getParameters() {
-        return parameters;
-    }
-
-    public void setParameters(Map<String, Object> parameters) {
-        this.parameters = parameters;
-    }
+  public void setParameters(Map<String, Object> parameters) {
+    this.parameters = parameters;
+  }
 }

@@ -18,14 +18,14 @@ package org.activiti.rest.service.api.identity;
  */
 public class UserInfoResponse extends UserInfoRequest {
 
-    protected String url;
+  protected String url;
 
-    public String getUrl() {
-        return url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
 }

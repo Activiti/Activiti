@@ -22,6 +22,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MockServiceTasks {
 
-    public MockServiceTask[] value();
+  public MockServiceTask[] value();
 
 }

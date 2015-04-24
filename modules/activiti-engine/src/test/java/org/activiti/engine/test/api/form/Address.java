@@ -20,15 +20,15 @@ import java.io.Serializable;
  */
 public class Address implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private String street;
+  private String street;
 
-    public String getStreet() {
-        return street;
-    }
+  public String getStreet() {
+    return street;
+  }
 
-    public void setStreet(String street) {
-        this.street = street;
-    }
+  public void setStreet(String street) {
+    this.street = street;
+  }
 }

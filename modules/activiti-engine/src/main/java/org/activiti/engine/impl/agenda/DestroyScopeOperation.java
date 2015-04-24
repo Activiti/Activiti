@@ -18,63 +18,63 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class DestroyScopeOperation extends AbstractOperation {
 
-    public DestroyScopeOperation(CommandContext commandContext, ActivityExecution execution) {
-        super(commandContext, execution);
-    }
+  public DestroyScopeOperation(CommandContext commandContext, ActivityExecution execution) {
+    super(commandContext, execution);
+  }
 
-    @Override
-    public void run() {
+  @Override
+  public void run() {
 
-        FlowElement currentFlowElement = execution.getCurrentFlowElement();
+    FlowElement currentFlowElement = execution.getCurrentFlowElement();
 
-        // Find the actual scope that needs to be destroyed.
-        // This could be the incoming execution, or the first parent execution where isScope = true
+    // Find the actual scope that needs to be destroyed.
+    // This could be the incoming execution, or the first parent execution where isScope = true
 
-        // Find parent scope execution
-        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        ExecutionEntity parentScopeExecution = null;
+    // Find parent scope execution
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    ExecutionEntity parentScopeExecution = null;
 
-        if (execution.isScope()) {
-            parentScopeExecution = executionEntity;
+    if (execution.isScope()) {
+      parentScopeExecution = executionEntity;
+    } else {
+      ExecutionEntity currentlyExaminedExecution = executionEntityManager.findExecutionById(execution.getParentId());
+      while (currentlyExaminedExecution != null && parentScopeExecution == null) {
+        if (currentlyExaminedExecution.isScope()) {
+          parentScopeExecution = currentlyExaminedExecution;
         } else {
-            ExecutionEntity currentlyExaminedExecution = executionEntityManager.findExecutionById(execution.getParentId());
-            while (currentlyExaminedExecution != null && parentScopeExecution == null) {
-                if (currentlyExaminedExecution.isScope()) {
-                    parentScopeExecution = currentlyExaminedExecution;
-                } else {
-                    currentlyExaminedExecution = executionEntityManager.findExecutionById(executionEntity.getParentId());
-                }
-            }
+          currentlyExaminedExecution = executionEntityManager.findExecutionById(executionEntity.getParentId());
         }
-
-        if (parentScopeExecution == null) {
-            throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
-        }
-
-        // Delete all child executions
-        Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentScopeExecution.getId());
-        for (ExecutionEntity childExcecution : childExecutions) {
-            executionEntityManager.deleteExecutionAndRelatedData(childExcecution);
-        }
-
-        // Delete all scope tasks
-        TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
-        Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(parentScopeExecution.getId());
-        for (TaskEntity taskEntity : tasksForExecution) {
-            taskEntityManager.delete(taskEntity);
-        }
-
-        // Delete all scope jobs
-        JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
-        Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(parentScopeExecution.getId());
-        for (JobEntity job : jobsForExecution) {
-            jobEntityManager.delete(job);
-        }
-
-        // Not a scope anymore
-        parentScopeExecution.setScope(false);
-        parentScopeExecution.setCurrentFlowElement(currentFlowElement);
+      }
     }
+
+    if (parentScopeExecution == null) {
+      throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
+    }
+
+    // Delete all child executions
+    Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentScopeExecution.getId());
+    for (ExecutionEntity childExcecution : childExecutions) {
+      executionEntityManager.deleteExecutionAndRelatedData(childExcecution);
+    }
+
+    // Delete all scope tasks
+    TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
+    Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(parentScopeExecution.getId());
+    for (TaskEntity taskEntity : tasksForExecution) {
+      taskEntityManager.delete(taskEntity);
+    }
+
+    // Delete all scope jobs
+    JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
+    Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(parentScopeExecution.getId());
+    for (JobEntity job : jobsForExecution) {
+      jobEntityManager.delete(job);
+    }
+
+    // Not a scope anymore
+    parentScopeExecution.setScope(false);
+    parentScopeExecution.setCurrentFlowElement(currentFlowElement);
+  }
 
 }

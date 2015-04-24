@@ -21,17 +21,17 @@ import org.activiti.explorer.util.time.TimeUnit;
  */
 public class HourTimeUnit implements TimeUnit {
 
-    private static final Long MILLIS_PER_HOUR = 3600000L;
+  private static final Long MILLIS_PER_HOUR = 3600000L;
 
-    public Long getNumberOfMillis() {
-        return MILLIS_PER_HOUR;
-    }
+  public Long getNumberOfMillis() {
+    return MILLIS_PER_HOUR;
+  }
 
-    public String getMessageKey(Long numberOfUnits) {
-        if (numberOfUnits == 1) {
-            return Messages.TIME_UNIT_HOUR;
-        } else {
-            return Messages.TIME_UNIT_HOURS;
-        }
+  public String getMessageKey(Long numberOfUnits) {
+    if (numberOfUnits == 1) {
+      return Messages.TIME_UNIT_HOUR;
+    } else {
+      return Messages.TIME_UNIT_HOURS;
     }
+  }
 }

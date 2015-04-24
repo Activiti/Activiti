@@ -24,34 +24,33 @@ import org.activiti.explorer.ui.task.data.InvolvedListQuery;
  */
 public class InvolvedPage extends TaskPage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public InvolvedPage() {
+  public InvolvedPage() {
+  }
+
+  /**
+   * Constructor called when page is accessed straight through the url, eg. /task/id=123
+   */
+  public InvolvedPage(String taskId) {
+    super(taskId);
+  }
+
+  @Override
+  protected LazyLoadingQuery createLazyLoadingQuery() {
+    return new InvolvedListQuery();
+  }
+
+  @Override
+  protected UriFragment getUriFragment(String taskId) {
+    UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
+
+    if (taskId != null) {
+      taskFragment.addUriPart(taskId);
     }
 
-    /**
-     * Constructor called when page is accessed straight through the url, eg.
-     * /task/id=123
-     */
-    public InvolvedPage(String taskId) {
-        super(taskId);
-    }
-
-    @Override
-    protected LazyLoadingQuery createLazyLoadingQuery() {
-        return new InvolvedListQuery();
-    }
-
-    @Override
-    protected UriFragment getUriFragment(String taskId) {
-        UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
-
-        if (taskId != null) {
-            taskFragment.addUriPart(taskId);
-        }
-
-        taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_INVOLVED);
-        return taskFragment;
-    }
+    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_INVOLVED);
+    return taskFragment;
+  }
 
 }

@@ -21,14 +21,13 @@ package org.activiti5.engine.impl.juel;
  * @author Christoph Beck
  */
 public interface IdentifierNode extends Node {
-    /**
-     * Get the identifier name
-     */
-    public String getName();
+  /**
+   * Get the identifier name
+   */
+  public String getName();
 
-    /**
-     * Get the unique index of this identifier in the expression (e.g. preorder
-     * index)
-     */
-    public int getIndex();
+  /**
+   * Get the unique index of this identifier in the expression (e.g. preorder index)
+   */
+  public int getIndex();
 }

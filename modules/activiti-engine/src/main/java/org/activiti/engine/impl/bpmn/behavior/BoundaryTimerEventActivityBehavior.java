@@ -27,26 +27,26 @@ import org.activiti.engine.impl.util.TimerUtil;
  */
 public class BoundaryTimerEventActivityBehavior extends BoundaryEventActivityBehavior {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected TimerEventDefinition timerEventDefinition;
+  protected TimerEventDefinition timerEventDefinition;
 
-    public BoundaryTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition, boolean interrupting) {
-        super(interrupting);
-        this.timerEventDefinition = timerEventDefinition;
+  public BoundaryTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition, boolean interrupting) {
+    super(interrupting);
+    this.timerEventDefinition = timerEventDefinition;
+  }
+
+  @Override
+  public void execute(ActivityExecution execution) {
+
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {
+      throw new ActivitiException("Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event");
     }
 
-    @Override
-    public void execute(ActivityExecution execution) {
+    TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, interrupting, executionEntity, TriggerTimerEventJobHandler.TYPE, execution.getCurrentActivityId());
 
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        if (!(execution.getCurrentFlowElement() instanceof BoundaryEvent)) {
-            throw new ActivitiException("Programmatic error: " + this.getClass() + " should not be used for anything else than a boundary event");
-        }
-
-        TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, interrupting, executionEntity, TriggerTimerEventJobHandler.TYPE, execution.getCurrentActivityId());
-
-        Context.getCommandContext().getJobEntityManager().schedule(timer);
-    }
+    Context.getCommandContext().getJobEntityManager().schedule(timer);
+  }
 
 }

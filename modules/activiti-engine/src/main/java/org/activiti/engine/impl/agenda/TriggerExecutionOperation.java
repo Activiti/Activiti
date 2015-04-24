@@ -13,32 +13,32 @@ import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
  */
 public class TriggerExecutionOperation extends AbstractOperation {
 
-    public TriggerExecutionOperation(CommandContext commandContext, ActivityExecution execution) {
-        super(commandContext, execution);
+  public TriggerExecutionOperation(CommandContext commandContext, ActivityExecution execution) {
+    super(commandContext, execution);
+  }
+
+  @Override
+  public void run() {
+    FlowElement currentFlowElement = execution.getCurrentFlowElement();
+
+    if (currentFlowElement == null) {
+      currentFlowElement = findCurrentFlowElement(execution);
+      execution.setCurrentFlowElement(currentFlowElement);
     }
 
-    @Override
-    public void run() {
-        FlowElement currentFlowElement = execution.getCurrentFlowElement();
+    if (currentFlowElement instanceof FlowNode) {
 
-        if (currentFlowElement == null) {
-            currentFlowElement = findCurrentFlowElement(execution);
-            execution.setCurrentFlowElement(currentFlowElement);
-        }
+      FlowNode flowNode = (FlowNode) currentFlowElement;
+      ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
+      if (activityBehavior instanceof TriggerableActivityBehavior) {
+        ((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);
+      } else {
+        throw new ActivitiException("Invalid behavior: " + activityBehavior + " should implement " + TriggerableActivityBehavior.class.getCanonicalName());
+      }
 
-        if (currentFlowElement instanceof FlowNode) {
-
-            FlowNode flowNode = (FlowNode) currentFlowElement;
-            ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
-            if (activityBehavior instanceof TriggerableActivityBehavior) {
-                ((TriggerableActivityBehavior) activityBehavior).trigger(execution, null, null);
-            } else {
-                throw new ActivitiException("Invalid behavior: " + activityBehavior + " should implement " + TriggerableActivityBehavior.class.getCanonicalName());
-            }
-
-        } else {
-            throw new ActivitiException("Programmatic error: no current flow element found or invalid type: " + currentFlowElement + ". Halting.");
-        }
+    } else {
+      throw new ActivitiException("Programmatic error: no current flow element found or invalid type: " + currentFlowElement + ". Halting.");
     }
+  }
 
 }

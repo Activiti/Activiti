@@ -13,29 +13,29 @@ import java.util.UUID;
 
 public class Delegate1 implements JavaDelegate, InitializingBean {
 
-    private Logger log = LoggerFactory.getLogger(getClass());
+  private Logger log = LoggerFactory.getLogger(getClass());
 
-    @Autowired
-    private ProcessInstance processInstance;
+  @Autowired
+  private ProcessInstance processInstance;
 
-    @Autowired
-    private StatefulObject statefulObject;
+  @Autowired
+  private StatefulObject statefulObject;
 
-    public void execute(DelegateExecution execution) {
+  public void execute(DelegateExecution execution) {
 
-        String pid = this.processInstance.getId();
+    String pid = this.processInstance.getId();
 
-        log.info("the processInstance#id is {}", pid);
+    log.info("the processInstance#id is {}", pid);
 
-        Assert.assertNotNull("the 'scopedCustomer' reference can't be null", statefulObject);
-        String uuid = UUID.randomUUID().toString();
-        statefulObject.setName(uuid);
-        log.info("the 'uuid' value given to the ScopedCustomer#name property is '{}' in {}", uuid, getClass().getName());
+    Assert.assertNotNull("the 'scopedCustomer' reference can't be null", statefulObject);
+    String uuid = UUID.randomUUID().toString();
+    statefulObject.setName(uuid);
+    log.info("the 'uuid' value given to the ScopedCustomer#name property is '{}' in {}", uuid, getClass().getName());
 
-        this.statefulObject.increment();
-    }
+    this.statefulObject.increment();
+  }
 
-    public void afterPropertiesSet() throws Exception {
-        Assert.assertNotNull("the processInstance must not be null", this.processInstance);
-    }
+  public void afterPropertiesSet() throws Exception {
+    Assert.assertNotNull("the processInstance must not be null", this.processInstance);
+  }
 }

@@ -18,22 +18,22 @@ package org.activiti.rest.service.api.identity;
  */
 public class MembershipResponse extends MembershipRequest {
 
-    protected String url;
-    protected String groupId;
+  protected String url;
+  protected String groupId;
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
+  }
 
-    public String getGroupId() {
-        return groupId;
-    }
+  public String getGroupId() {
+    return groupId;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 }

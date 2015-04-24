@@ -19,31 +19,30 @@ import org.activiti5.engine.delegate.event.ActivitiEntityWithVariablesEvent;
 import org.activiti5.engine.delegate.event.ActivitiEventType;
 
 /**
- * Base class for all {@link ActivitiEntityEvent} implementations, related to
- * entities with variables.
+ * Base class for all {@link ActivitiEntityEvent} implementations, related to entities with variables.
  * 
  * @author Tijs Rademakers
  */
 @SuppressWarnings("rawtypes")
 public class ActivitiEntityWithVariablesEventImpl extends ActivitiEntityEventImpl implements ActivitiEntityWithVariablesEvent {
 
-    protected Map variables;
-    protected boolean localScope;
+  protected Map variables;
+  protected boolean localScope;
 
-    public ActivitiEntityWithVariablesEventImpl(Object entity, Map variables, boolean localScope, ActivitiEventType type) {
-        super(entity, type);
+  public ActivitiEntityWithVariablesEventImpl(Object entity, Map variables, boolean localScope, ActivitiEventType type) {
+    super(entity, type);
 
-        this.variables = variables;
-        this.localScope = localScope;
-    }
+    this.variables = variables;
+    this.localScope = localScope;
+  }
 
-    @Override
-    public Map getVariables() {
-        return variables;
-    }
+  @Override
+  public Map getVariables() {
+    return variables;
+  }
 
-    @Override
-    public boolean isLocalScope() {
-        return localScope;
-    }
+  @Override
+  public boolean isLocalScope() {
+    return localScope;
+  }
 }

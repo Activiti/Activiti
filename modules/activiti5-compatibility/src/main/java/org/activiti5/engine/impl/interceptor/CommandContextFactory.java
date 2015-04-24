@@ -20,20 +20,20 @@ import org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl;
  */
 public class CommandContextFactory {
 
-    protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-    public CommandContext createCommandContext(Command<?> cmd) {
-        return new CommandContext(cmd, processEngineConfiguration);
-    }
+  public CommandContext createCommandContext(Command<?> cmd) {
+    return new CommandContext(cmd, processEngineConfiguration);
+  }
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-        return processEngineConfiguration;
-    }
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+    return processEngineConfiguration;
+  }
 
-    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
-        this.processEngineConfiguration = processEngineConfiguration;
-    }
+  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
 }

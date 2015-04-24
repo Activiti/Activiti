@@ -17,32 +17,31 @@ import com.vaadin.ui.Component;
 import com.vaadin.ui.Window;
 
 /**
- * Superclass for popup windows. Popup windows that inherit from this class can
- * be closed using the 'escape' key.
+ * Superclass for popup windows. Popup windows that inherit from this class can be closed using the 'escape' key.
  * 
  * @author Joram Barrez
  */
 public class PopupWindow extends Window {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public PopupWindow() {
+  public PopupWindow() {
 
-    }
+  }
 
-    public PopupWindow(String caption) {
-        super(caption);
-    }
+  public PopupWindow(String caption) {
+    super(caption);
+  }
 
-    @Override
-    public void attach() {
-        super.attach();
-        // setCloseShortcut(ShortcutAction.KeyCode.ESCAPE, null);
-    }
+  @Override
+  public void attach() {
+    super.attach();
+    // setCloseShortcut(ShortcutAction.KeyCode.ESCAPE, null);
+  }
 
-    @Override
-    public void setParent(Component parent) {
-        super.setParent(parent);
-    }
+  @Override
+  public void setParent(Component parent) {
+    super.setParent(parent);
+  }
 
 }

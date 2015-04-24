@@ -21,14 +21,14 @@ package org.activiti.engine.form;
  */
 public abstract class AbstractFormType implements FormType {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public abstract Object convertFormValueToModelValue(String propertyValue);
+  public abstract Object convertFormValueToModelValue(String propertyValue);
 
-    public abstract String convertModelValueToFormValue(Object modelValue);
+  public abstract String convertModelValueToFormValue(Object modelValue);
 
-    public Object getInformation(String key) {
-        return null;
-    }
+  public Object getInformation(String key) {
+    return null;
+  }
 
 }

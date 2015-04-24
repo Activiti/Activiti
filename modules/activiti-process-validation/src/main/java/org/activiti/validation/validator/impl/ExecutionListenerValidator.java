@@ -28,24 +28,24 @@ import org.activiti.validation.validator.ProcessLevelValidator;
  */
 public class ExecutionListenerValidator extends ProcessLevelValidator {
 
-    @Override
-    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+  @Override
+  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
 
-        validateListeners(process, process, process.getExecutionListeners(), errors);
+    validateListeners(process, process, process.getExecutionListeners(), errors);
 
-        for (FlowElement flowElement : process.getFlowElements()) {
-            validateListeners(process, flowElement, flowElement.getExecutionListeners(), errors);
-        }
+    for (FlowElement flowElement : process.getFlowElements()) {
+      validateListeners(process, flowElement, flowElement.getExecutionListeners(), errors);
     }
+  }
 
-    protected void validateListeners(Process process, BaseElement baseElement, List<ActivitiListener> listeners, List<ValidationError> errors) {
-        if (listeners != null) {
-            for (ActivitiListener listener : listeners) {
-                if (listener.getImplementation() == null || listener.getImplementationType() == null) {
-                    addError(errors, Problems.EXECUTION_LISTENER_IMPLEMENTATION_MISSING, process, baseElement, "Element 'class' or 'expression' is mandatory on executionListener");
-                }
-            }
+  protected void validateListeners(Process process, BaseElement baseElement, List<ActivitiListener> listeners, List<ValidationError> errors) {
+    if (listeners != null) {
+      for (ActivitiListener listener : listeners) {
+        if (listener.getImplementation() == null || listener.getImplementationType() == null) {
+          addError(errors, Problems.EXECUTION_LISTENER_IMPLEMENTATION_MISSING, process, baseElement, "Element 'class' or 'expression' is mandatory on executionListener");
         }
+      }
     }
+  }
 
 }

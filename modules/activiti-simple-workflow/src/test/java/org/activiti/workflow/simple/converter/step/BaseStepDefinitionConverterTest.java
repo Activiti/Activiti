@@ -19,90 +19,88 @@ import org.activiti.workflow.simple.definition.form.TextPropertyDefinition;
 import org.junit.Test;
 
 /**
- * Unit test for {@link BaseStepDefinitionConverter}. Since
- * {@link BaseStepDefinitionConverter} is abstract, this test uses a simple
- * inner class to test basic functionality.
+ * Unit test for {@link BaseStepDefinitionConverter}. Since {@link BaseStepDefinitionConverter} is abstract, this test uses a simple inner class to test basic functionality.
  * 
  */
 public class BaseStepDefinitionConverterTest {
 
-    @Test
-    public void testCovertFormPropertiesWithListValues() {
-        TestStepDefinitionConverter converter = new TestStepDefinitionConverter();
+  @Test
+  public void testCovertFormPropertiesWithListValues() {
+    TestStepDefinitionConverter converter = new TestStepDefinitionConverter();
 
-        // Create a form with two properties, one of which is a ListProperty
+    // Create a form with two properties, one of which is a ListProperty
 
-        FormDefinition formDefinition = new FormDefinition();
+    FormDefinition formDefinition = new FormDefinition();
 
-        ListPropertyDefinition approveEnum = new ListPropertyDefinition();
-        approveEnum.setName("Approval");
-        approveEnum.setType("enum");
-        approveEnum.addEntry(new ListPropertyEntry("true", "Approve"));
-        approveEnum.addEntry(new ListPropertyEntry("false", "Reject"));
-        formDefinition.addFormProperty(approveEnum);
+    ListPropertyDefinition approveEnum = new ListPropertyDefinition();
+    approveEnum.setName("Approval");
+    approveEnum.setType("enum");
+    approveEnum.addEntry(new ListPropertyEntry("true", "Approve"));
+    approveEnum.addEntry(new ListPropertyEntry("false", "Reject"));
+    formDefinition.addFormProperty(approveEnum);
 
-        TextPropertyDefinition reason = new TextPropertyDefinition();
-        reason.setName("Reason");
-        reason.setType("string");
-        formDefinition.addFormProperty(reason);
+    TextPropertyDefinition reason = new TextPropertyDefinition();
+    reason.setName("Reason");
+    reason.setType("string");
+    formDefinition.addFormProperty(reason);
 
-        BooleanPropertyDefinition validate = new BooleanPropertyDefinition();
-        validate.setName("Validate");
-        validate.setType("boolean");
-        formDefinition.addFormProperty(validate);
+    BooleanPropertyDefinition validate = new BooleanPropertyDefinition();
+    validate.setName("Validate");
+    validate.setType("boolean");
+    formDefinition.addFormProperty(validate);
 
-        List<FormProperty> properties = converter.convertProperties(formDefinition);
-        assertTrue(properties.size() == 3);
+    List<FormProperty> properties = converter.convertProperties(formDefinition);
+    assertTrue(properties.size() == 3);
 
-        FormProperty firstProperty = properties.get(0);
-        assertNotNull(firstProperty);
-        assertEquals("Approval", firstProperty.getName());
-        assertEquals("enum", firstProperty.getType());
+    FormProperty firstProperty = properties.get(0);
+    assertNotNull(firstProperty);
+    assertEquals("Approval", firstProperty.getName());
+    assertEquals("enum", firstProperty.getType());
 
-        // Assert the values are set
-        List<FormValue> values = firstProperty.getFormValues();
-        assertTrue(values.size() == 2);
+    // Assert the values are set
+    List<FormValue> values = firstProperty.getFormValues();
+    assertTrue(values.size() == 2);
 
-        FormValue firstValue = values.get(0);
-        assertEquals("Approve", firstValue.getName());
-        assertEquals("true", firstValue.getId());
+    FormValue firstValue = values.get(0);
+    assertEquals("Approve", firstValue.getName());
+    assertEquals("true", firstValue.getId());
 
-        FormValue secondValue = values.get(1);
-        assertEquals("Reject", secondValue.getName());
-        assertEquals("false", secondValue.getId());
+    FormValue secondValue = values.get(1);
+    assertEquals("Reject", secondValue.getName());
+    assertEquals("false", secondValue.getId());
 
-        // Now confirm the second property, a non list property, is well formed
-        // as well.
-        FormProperty secondProperty = properties.get(1);
-        assertNotNull(secondProperty);
-        assertTrue(secondProperty.getFormValues().isEmpty());
-        assertEquals("Reason", secondProperty.getName());
-        assertEquals("string", secondProperty.getType());
+    // Now confirm the second property, a non list property, is well formed
+    // as well.
+    FormProperty secondProperty = properties.get(1);
+    assertNotNull(secondProperty);
+    assertTrue(secondProperty.getFormValues().isEmpty());
+    assertEquals("Reason", secondProperty.getName());
+    assertEquals("string", secondProperty.getType());
 
-        FormProperty thirdProperty = properties.get(2);
-        assertNotNull(thirdProperty);
-        assertTrue(thirdProperty.getFormValues().isEmpty());
-        assertEquals("Validate", thirdProperty.getName());
-        assertEquals("boolean", thirdProperty.getType());
+    FormProperty thirdProperty = properties.get(2);
+    assertNotNull(thirdProperty);
+    assertTrue(thirdProperty.getFormValues().isEmpty());
+    assertEquals("Validate", thirdProperty.getName());
+    assertEquals("boolean", thirdProperty.getType());
+  }
+
+  /**
+   * Simple inner class to expose abstract functionality to the unit test.
+   * 
+   */
+  private class TestStepDefinitionConverter extends BaseStepDefinitionConverter<HumanStepDefinition, UserTask> {
+
+    @Override
+    public Class<HumanStepDefinition> getHandledClass() {
+      // Does nothing for this unit test
+      return null;
     }
 
-    /**
-     * Simple inner class to expose abstract functionality to the unit test.
-     * 
-     */
-    private class TestStepDefinitionConverter extends BaseStepDefinitionConverter<HumanStepDefinition, UserTask> {
-
-        @Override
-        public Class<HumanStepDefinition> getHandledClass() {
-            // Does nothing for this unit test
-            return null;
-        }
-
-        @Override
-        protected UserTask createProcessArtifact(HumanStepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
-            // Does nothing for this unit test
-            return null;
-        }
+    @Override
+    protected UserTask createProcessArtifact(HumanStepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
+      // Does nothing for this unit test
+      return null;
     }
+  }
 
 }

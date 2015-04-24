@@ -20,18 +20,15 @@ import javax.enterprise.util.Nonbinding;
 import javax.inject.Qualifier;
 
 /**
- * Annotation for qualifying injection points such that process variables are
- * injected. Requires a process instance to be managed
+ * Annotation for qualifying injection points such that process variables are injected. Requires a process instance to be managed
  * <ul>
  * <li>{@code @Inject @ProcessVariable Object accountNumber}</li>
  * <li>{@code @Inject @ProcessVariable("accountNumber") Object account}</li>
  * </ul>
- * In both cases, the process variable with the name 'accountNumber' is
- * injected. NOTE: injection points must be of type 'object'.
+ * In both cases, the process variable with the name 'accountNumber' is injected. NOTE: injection points must be of type 'object'.
  * <p />
  * 
- * Can also be used to declare bean-properties to hold process variables in
- * combination with the {@link StartProcess} annotation:
+ * Can also be used to declare bean-properties to hold process variables in combination with the {@link StartProcess} annotation:
  * 
  * <pre>
  * {@code @ProcessVariable }
@@ -51,11 +48,10 @@ import javax.inject.Qualifier;
 @Documented
 public @interface ProcessVariable {
 
-    /**
-     * The name of the process variable to look up. Defaults to the name of the
-     * annotated field or parameter
-     */
-    @Nonbinding
-    public String value() default "";
+  /**
+   * The name of the process variable to look up. Defaults to the name of the annotated field or parameter
+   */
+  @Nonbinding
+  public String value() default "";
 
 }

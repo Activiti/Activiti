@@ -20,131 +20,131 @@ import org.activiti5.engine.task.Task;
  */
 public class ProcessInstanceLogQueryTest extends PluggableActivitiTestCase {
 
-    protected String processInstanceId;
+  protected String processInstanceId;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
 
-        // Deploy test process
-        deployTwoTasksTestProcess();
+    // Deploy test process
+    deployTwoTasksTestProcess();
 
-        // Start process instance
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("var1", "Hello");
-        vars.put("var2", 123);
-        this.processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess", vars).getId();
+    // Start process instance
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("var1", "Hello");
+    vars.put("var2", 123);
+    this.processInstanceId = runtimeService.startProcessInstanceByKey("twoTasksProcess", vars).getId();
 
-        // Add some comments
-        taskService.addComment(null, processInstanceId, "Hello World");
-        taskService.addComment(null, processInstanceId, "Hello World2");
-        taskService.addComment(null, processInstanceId, "Hello World3");
+    // Add some comments
+    taskService.addComment(null, processInstanceId, "Hello World");
+    taskService.addComment(null, processInstanceId, "Hello World2");
+    taskService.addComment(null, processInstanceId, "Hello World3");
 
-        // Change some variables
-        runtimeService.setVariable(processInstanceId, "var1", "new Value");
+    // Change some variables
+    runtimeService.setVariable(processInstanceId, "var1", "new Value");
 
-        // Finish tasks
-        for (Task task : taskService.createTaskQuery().list()) {
-            taskService.complete(task.getId());
-        }
+    // Finish tasks
+    for (Task task : taskService.createTaskQuery().list()) {
+      taskService.complete(task.getId());
+    }
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+
+    for (Comment comment : taskService.getProcessInstanceComments(processInstanceId)) {
+      taskService.deleteComment(comment.getId());
     }
 
-    @Override
-    protected void tearDown() throws Exception {
+    super.tearDown();
+  }
 
-        for (Comment comment : taskService.getProcessInstanceComments(processInstanceId)) {
-            taskService.deleteComment(comment.getId());
-        }
+  public void testBaseProperties() {
+    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).singleResult();
+    assertNotNull(log.getId());
+    assertNotNull(log.getProcessDefinitionId());
+    assertNotNull(log.getStartActivityId());
+    assertNotNull(log.getDurationInMillis());
+    assertNotNull(log.getEndTime());
+    assertNotNull(log.getStartTime());
+  }
 
-        super.tearDown();
+  public void testIncludeTasks() {
+    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().singleResult();
+    List<HistoricData> events = log.getHistoricData();
+    assertEquals(2, events.size());
+
+    for (HistoricData event : events) {
+      assertTrue(event instanceof HistoricTaskInstance);
     }
+  }
 
-    public void testBaseProperties() {
-        ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).singleResult();
-        assertNotNull(log.getId());
-        assertNotNull(log.getProcessDefinitionId());
-        assertNotNull(log.getStartActivityId());
-        assertNotNull(log.getDurationInMillis());
-        assertNotNull(log.getEndTime());
-        assertNotNull(log.getStartTime());
+  public void testIncludeComments() {
+    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeComments().singleResult();
+    List<HistoricData> events = log.getHistoricData();
+    assertEquals(3, events.size());
+
+    for (HistoricData event : events) {
+      assertTrue(event instanceof Comment);
     }
+  }
 
-    public void testIncludeTasks() {
-        ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().singleResult();
-        List<HistoricData> events = log.getHistoricData();
-        assertEquals(2, events.size());
+  public void testIncludeTasksandComments() {
+    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeComments().singleResult();
+    List<HistoricData> events = log.getHistoricData();
+    assertEquals(5, events.size());
 
-        for (HistoricData event : events) {
-            assertTrue(event instanceof HistoricTaskInstance);
-        }
+    for (int i = 0; i < 5; i++) {
+      HistoricData event = events.get(i);
+      if (i < 2) { // tasks are created before comments
+        assertTrue(event instanceof HistoricTaskInstance);
+      } else {
+        assertTrue(event instanceof Comment);
+      }
     }
+  }
 
-    public void testIncludeComments() {
-        ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeComments().singleResult();
-        List<HistoricData> events = log.getHistoricData();
-        assertEquals(3, events.size());
+  public void testIncludeActivities() {
+    ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeActivities().singleResult();
+    List<HistoricData> events = log.getHistoricData();
+    assertEquals(5, events.size());
 
-        for (HistoricData event : events) {
-            assertTrue(event instanceof Comment);
-        }
+    for (HistoricData event : events) {
+      assertTrue(event instanceof HistoricActivityInstance);
     }
+  }
 
-    public void testIncludeTasksandComments() {
-        ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeComments().singleResult();
-        List<HistoricData> events = log.getHistoricData();
-        assertEquals(5, events.size());
+  public void testIncludeVariables() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+      ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariables().singleResult();
+      List<HistoricData> events = log.getHistoricData();
+      assertEquals(2, events.size());
 
-        for (int i = 0; i < 5; i++) {
-            HistoricData event = events.get(i);
-            if (i < 2) { // tasks are created before comments
-                assertTrue(event instanceof HistoricTaskInstance);
-            } else {
-                assertTrue(event instanceof Comment);
-            }
-        }
+      for (HistoricData event : events) {
+        assertTrue(event instanceof HistoricVariableInstance);
+      }
     }
+  }
 
-    public void testIncludeActivities() {
-        ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeActivities().singleResult();
-        List<HistoricData> events = log.getHistoricData();
-        assertEquals(5, events.size());
+  public void testIncludeVariableUpdates() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+      ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariableUpdates().singleResult();
+      List<HistoricData> events = log.getHistoricData();
+      assertEquals(3, events.size());
 
-        for (HistoricData event : events) {
-            assertTrue(event instanceof HistoricActivityInstance);
-        }
+      for (HistoricData event : events) {
+        assertTrue(event instanceof HistoricVariableUpdate);
+      }
     }
+  }
 
-    public void testIncludeVariables() {
-        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
-            ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariables().singleResult();
-            List<HistoricData> events = log.getHistoricData();
-            assertEquals(2, events.size());
-
-            for (HistoricData event : events) {
-                assertTrue(event instanceof HistoricVariableInstance);
-            }
-        }
+  public void testEverything() {
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
+      ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeActivities().includeComments().includeVariables()
+          .includeVariableUpdates().singleResult();
+      List<HistoricData> events = log.getHistoricData();
+      assertEquals(15, events.size());
     }
-
-    public void testIncludeVariableUpdates() {
-        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
-            ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeVariableUpdates().singleResult();
-            List<HistoricData> events = log.getHistoricData();
-            assertEquals(3, events.size());
-
-            for (HistoricData event : events) {
-                assertTrue(event instanceof HistoricVariableUpdate);
-            }
-        }
-    }
-
-    public void testEverything() {
-        if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.FULL)) {
-            ProcessInstanceHistoryLog log = historyService.createProcessInstanceHistoryLogQuery(processInstanceId).includeTasks().includeActivities().includeComments().includeVariables()
-                    .includeVariableUpdates().singleResult();
-            List<HistoricData> events = log.getHistoricData();
-            assertEquals(15, events.size());
-        }
-    }
+  }
 
 }

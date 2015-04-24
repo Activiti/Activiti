@@ -21,24 +21,23 @@ package org.activiti.engine.impl.juel;
  * @author Christoph Beck
  */
 public interface FunctionNode extends Node {
-    /**
-     * Get the full function name
-     */
-    public String getName();
+  /**
+   * Get the full function name
+   */
+  public String getName();
 
-    /**
-     * Get the unique index of this identifier in the expression (e.g. preorder
-     * index)
-     */
-    public int getIndex();
+  /**
+   * Get the unique index of this identifier in the expression (e.g. preorder index)
+   */
+  public int getIndex();
 
-    /**
-     * Get the number of parameters for this function
-     */
-    public int getParamCount();
+  /**
+   * Get the number of parameters for this function
+   */
+  public int getParamCount();
 
-    /**
-     * @return <code>true</code> if this node supports varargs.
-     */
-    public boolean isVarArgs();
+  /**
+   * @return <code>true</code> if this node supports varargs.
+   */
+  public boolean isVarArgs();
 }

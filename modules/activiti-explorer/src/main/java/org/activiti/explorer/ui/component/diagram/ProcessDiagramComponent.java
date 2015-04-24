@@ -13,16 +13,16 @@ import com.vaadin.ui.AbstractComponent;
 @com.vaadin.ui.ClientWidget(VProcessDiagram.class)
 public class ProcessDiagramComponent extends AbstractComponent {
 
-    private String processDefinitionKey;
+  private String processDefinitionKey;
 
-    public void setProcessDefinitionKey(String processDefinitionKey) {
-        this.processDefinitionKey = processDefinitionKey;
-        requestRepaint();
-    }
+  public void setProcessDefinitionKey(String processDefinitionKey) {
+    this.processDefinitionKey = processDefinitionKey;
+    requestRepaint();
+  }
 
-    @Override
-    public void paintContent(PaintTarget target) throws PaintException {
-        super.paintContent(target);
-        target.addAttribute(VProcessDiagram.ATTRIBUTE_PROC_KEY, processDefinitionKey);
-    }
+  @Override
+  public void paintContent(PaintTarget target) throws PaintException {
+    super.paintContent(target);
+    target.addAttribute(VProcessDiagram.ATTRIBUTE_PROC_KEY, processDefinitionKey);
+  }
 }

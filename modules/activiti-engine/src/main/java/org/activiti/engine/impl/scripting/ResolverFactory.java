@@ -20,5 +20,5 @@ import org.activiti.engine.delegate.VariableScope;
  */
 public interface ResolverFactory {
 
-    Resolver createResolver(VariableScope variableScope);
+  Resolver createResolver(VariableScope variableScope);
 }

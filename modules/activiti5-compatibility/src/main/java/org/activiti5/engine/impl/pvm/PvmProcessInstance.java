@@ -20,13 +20,13 @@ import java.util.List;
  */
 public interface PvmProcessInstance extends PvmExecution {
 
-    void start();
+  void start();
 
-    PvmExecution findExecution(String activityId);
+  PvmExecution findExecution(String activityId);
 
-    List<String> findActiveActivityIds();
+  List<String> findActiveActivityIds();
 
-    boolean isEnded();
+  boolean isEnded();
 
-    void deleteCascade(String deleteReason);
+  void deleteCascade(String deleteReason);
 }

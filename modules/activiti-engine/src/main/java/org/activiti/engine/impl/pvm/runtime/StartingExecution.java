@@ -20,14 +20,14 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  */
 public class StartingExecution {
 
-    protected final ActivityImpl selectedInitial;
+  protected final ActivityImpl selectedInitial;
 
-    public StartingExecution(ActivityImpl selectedInitial) {
-        this.selectedInitial = selectedInitial;
-    }
+  public StartingExecution(ActivityImpl selectedInitial) {
+    this.selectedInitial = selectedInitial;
+  }
 
-    public ActivityImpl getInitial() {
-        return selectedInitial;
-    }
+  public ActivityImpl getInitial() {
+    return selectedInitial;
+  }
 
 }

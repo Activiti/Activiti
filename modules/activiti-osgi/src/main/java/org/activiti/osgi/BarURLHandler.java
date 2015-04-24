@@ -29,68 +29,68 @@ import org.slf4j.LoggerFactory;
  */
 public class BarURLHandler extends AbstractURLStreamHandlerService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BarURLHandler.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(BarURLHandler.class);
 
-    private static String SYNTAX = "bar: bar-xml-uri";
+  private static String SYNTAX = "bar: bar-xml-uri";
 
-    private URL barXmlURL;
+  private URL barXmlURL;
 
-    /**
-     * Open the connection for the given URL.
-     * 
-     * @param url
-     *            the url from which to open a connection.
-     * @return a connection on the specified URL.
-     * @throws IOException
-     *             if an error occurs or if the URL is malformed.
-     */
+  /**
+   * Open the connection for the given URL.
+   * 
+   * @param url
+   *          the url from which to open a connection.
+   * @return a connection on the specified URL.
+   * @throws IOException
+   *           if an error occurs or if the URL is malformed.
+   */
+  @Override
+  public URLConnection openConnection(URL url) throws IOException {
+    if (url.getPath() == null || url.getPath().trim().length() == 0) {
+      throw new MalformedURLException("Path can not be null or empty. Syntax: " + SYNTAX);
+    }
+    barXmlURL = new URL(url.getPath());
+
+    LOGGER.debug("bar xml URL is: [{}]", barXmlURL);
+    return new Connection(url);
+  }
+
+  public URL getBarXmlURL() {
+    return barXmlURL;
+  }
+
+  public class Connection extends URLConnection {
+
+    public Connection(URL url) {
+      super(url);
+    }
+
     @Override
-    public URLConnection openConnection(URL url) throws IOException {
-        if (url.getPath() == null || url.getPath().trim().length() == 0) {
-            throw new MalformedURLException("Path can not be null or empty. Syntax: " + SYNTAX);
-        }
-        barXmlURL = new URL(url.getPath());
-
-        LOGGER.debug("bar xml URL is: [{}]", barXmlURL);
-        return new Connection(url);
+    public void connect() throws IOException {
     }
 
-    public URL getBarXmlURL() {
-        return barXmlURL;
+    @Override
+    public InputStream getInputStream() throws IOException {
+      final PipedInputStream pin = new PipedInputStream();
+      final PipedOutputStream pout = new PipedOutputStream(pin);
+      new Thread() {
+        public void run() {
+          try {
+            BarTransformer.transform(barXmlURL, pout);
+          } catch (Exception e) {
+            LOGGER.warn("Bundle cannot be generated");
+          } finally {
+            try {
+              pout.close();
+            } catch (IOException ignore) {
+              // if we get here something is very wrong
+              LOGGER.error("Bundle cannot be generated", ignore);
+            }
+          }
+        }
+      }.start();
+      return pin;
     }
-
-    public class Connection extends URLConnection {
-
-        public Connection(URL url) {
-            super(url);
-        }
-
-        @Override
-        public void connect() throws IOException {
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            final PipedInputStream pin = new PipedInputStream();
-            final PipedOutputStream pout = new PipedOutputStream(pin);
-            new Thread() {
-                public void run() {
-                    try {
-                        BarTransformer.transform(barXmlURL, pout);
-                    } catch (Exception e) {
-                        LOGGER.warn("Bundle cannot be generated");
-                    } finally {
-                        try {
-                            pout.close();
-                        } catch (IOException ignore) {
-                            // if we get here something is very wrong
-                            LOGGER.error("Bundle cannot be generated", ignore);
-                        }
-                    }
-                }
-            }.start();
-            return pin;
-        }
-    }
+  }
 
 }

@@ -25,43 +25,43 @@ import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
  */
 public class DateRestVariableConverter implements RestVariableConverter {
 
-    protected ISO8601DateFormat isoFormatter = new ISO8601DateFormat();
+  protected ISO8601DateFormat isoFormatter = new ISO8601DateFormat();
 
-    @Override
-    public String getRestTypeName() {
-        return "date";
-    }
+  @Override
+  public String getRestTypeName() {
+    return "date";
+  }
 
-    @Override
-    public Class<?> getVariableType() {
-        return Date.class;
-    }
+  @Override
+  public Class<?> getVariableType() {
+    return Date.class;
+  }
 
-    @Override
-    public Object getVariableValue(RestVariable result) {
-        if (result.getValue() != null) {
-            if (!(result.getValue() instanceof String)) {
-                throw new ActivitiIllegalArgumentException("Converter can only convert string to date");
-            }
-            try {
-                return isoFormatter.parse((String) result.getValue());
-            } catch (ParseException e) {
-                throw new ActivitiIllegalArgumentException("The given variable value is not a date: '" + result.getValue() + "'", e);
-            }
-        }
-        return null;
+  @Override
+  public Object getVariableValue(RestVariable result) {
+    if (result.getValue() != null) {
+      if (!(result.getValue() instanceof String)) {
+        throw new ActivitiIllegalArgumentException("Converter can only convert string to date");
+      }
+      try {
+        return isoFormatter.parse((String) result.getValue());
+      } catch (ParseException e) {
+        throw new ActivitiIllegalArgumentException("The given variable value is not a date: '" + result.getValue() + "'", e);
+      }
     }
+    return null;
+  }
 
-    @Override
-    public void convertVariableValue(Object variableValue, RestVariable result) {
-        if (variableValue != null) {
-            if (!(variableValue instanceof Date)) {
-                throw new ActivitiIllegalArgumentException("Converter can only convert booleans");
-            }
-            result.setValue(isoFormatter.format(variableValue));
-        } else {
-            result.setValue(null);
-        }
+  @Override
+  public void convertVariableValue(Object variableValue, RestVariable result) {
+    if (variableValue != null) {
+      if (!(variableValue instanceof Date)) {
+        throw new ActivitiIllegalArgumentException("Converter can only convert booleans");
+      }
+      result.setValue(isoFormatter.format(variableValue));
+    } else {
+      result.setValue(null);
     }
+  }
 
 }

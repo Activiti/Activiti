@@ -24,55 +24,54 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class PvmTestCase extends TestCase {
 
-    protected static final String EMPTY_LINE = "\n";
+  protected static final String EMPTY_LINE = "\n";
 
-    protected static Logger log = LoggerFactory.getLogger(PvmTestCase.class);
+  protected static Logger log = LoggerFactory.getLogger(PvmTestCase.class);
 
-    protected boolean isEmptyLinesEnabled = true;
+  protected boolean isEmptyLinesEnabled = true;
 
-    /**
-     * Asserts if the provided text is part of some text.
-     */
-    public void assertTextPresent(String expected, String actual) {
-        if ((actual == null) || (!actual.contains(expected))) {
-            throw new AssertionFailedError("expected presence of [" + expected + "], but was [" + actual + "]");
-        }
+  /**
+   * Asserts if the provided text is part of some text.
+   */
+  public void assertTextPresent(String expected, String actual) {
+    if ((actual == null) || (!actual.contains(expected))) {
+      throw new AssertionFailedError("expected presence of [" + expected + "], but was [" + actual + "]");
+    }
+  }
+
+  /**
+   * Asserts if the provided text is part of some text, ignoring any uppercase characters
+   */
+  public void assertTextPresentIgnoreCase(String expected, String actual) {
+    assertTextPresent(expected.toLowerCase(), actual.toLowerCase());
+  }
+
+  @Override
+  protected void runTest() throws Throwable {
+    if (log.isDebugEnabled()) {
+      if (isEmptyLinesEnabled) {
+        log.debug(EMPTY_LINE);
+      }
+      log.debug("#### START {}.{} ###########################################################", this.getClass().getSimpleName(), getName());
     }
 
-    /**
-     * Asserts if the provided text is part of some text, ignoring any uppercase
-     * characters
-     */
-    public void assertTextPresentIgnoreCase(String expected, String actual) {
-        assertTextPresent(expected.toLowerCase(), actual.toLowerCase());
+    try {
+
+      super.runTest();
+
+    } catch (AssertionFailedError e) {
+      log.error(EMPTY_LINE);
+      log.error("ASSERTION FAILED: {}", e, e);
+      throw e;
+
+    } catch (Throwable e) {
+      log.error(EMPTY_LINE);
+      log.error("EXCEPTION: {}", e, e);
+      throw e;
+
+    } finally {
+      log.debug("#### END {}.{} #############################################################", this.getClass().getSimpleName(), getName());
     }
-
-    @Override
-    protected void runTest() throws Throwable {
-        if (log.isDebugEnabled()) {
-            if (isEmptyLinesEnabled) {
-                log.debug(EMPTY_LINE);
-            }
-            log.debug("#### START {}.{} ###########################################################", this.getClass().getSimpleName(), getName());
-        }
-
-        try {
-
-            super.runTest();
-
-        } catch (AssertionFailedError e) {
-            log.error(EMPTY_LINE);
-            log.error("ASSERTION FAILED: {}", e, e);
-            throw e;
-
-        } catch (Throwable e) {
-            log.error(EMPTY_LINE);
-            log.error("EXCEPTION: {}", e, e);
-            throw e;
-
-        } finally {
-            log.debug("#### END {}.{} #############################################################", this.getClass().getSimpleName(), getName());
-        }
-    }
+  }
 
 }

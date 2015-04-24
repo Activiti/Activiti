@@ -24,24 +24,24 @@ import org.activiti5.engine.ProcessEngine;
  */
 public class Activiti5CompatibilityHandlerImpl implements Activiti5CompatibilityHandler {
 
-    protected ProcessEngine processEngine;
+  protected ProcessEngine processEngine;
 
-    @Override
-    public ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName) {
+  @Override
+  public ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName) {
 
-        return getProcessEngine().getRuntimeService().startProcessInstanceByKey(processDefinitionKey);
+    return getProcessEngine().getRuntimeService().startProcessInstanceByKey(processDefinitionKey);
 
-    }
+  }
 
-    protected ProcessEngine getProcessEngine() {
+  protected ProcessEngine getProcessEngine() {
+    if (processEngine == null) {
+      synchronized (this) {
         if (processEngine == null) {
-            synchronized (this) {
-                if (processEngine == null) {
-                    processEngine = ProcessEngineFactory.buildProcessEngine(Context.getProcessEngineConfiguration());
-                }
-            }
+          processEngine = ProcessEngineFactory.buildProcessEngine(Context.getProcessEngineConfiguration());
         }
-        return processEngine;
+      }
     }
+    return processEngine;
+  }
 
 }

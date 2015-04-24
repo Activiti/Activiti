@@ -26,54 +26,54 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  * @author Joram Barrez
  */
 public class ExecutionTreeUtil {
-	
-	public static ExecutionTree buildExecutionTree(Collection<ExecutionEntity> executions) {
-		ExecutionTree executionTree = new ExecutionTree();
-		
-		// Map the executions to their parents. Catch and store the root element (process instance execution) while were at it
-		Map<String, List<ExecutionEntity>> parentMapping = new HashMap<String, List<ExecutionEntity>>();
-		for (ExecutionEntity executionEntity : executions) {
-			String parentId = executionEntity.getParentId();
-			if (parentId != null) {
-				if (!parentMapping.containsKey(parentId)) {
-					parentMapping.put(parentId, new ArrayList<ExecutionEntity>());
-				}
-				parentMapping.get(parentId).add(executionEntity);
-			} else {
-				executionTree.setRoot(new ExecutionTreeNode(executionEntity));
-			}
-		}
-		
-		if (executionTree.getRoot() == null) {
-			throw new ActivitiException("Programmatic error: the list of passed executions in the argument of the method should contain the process instance execution");
-		}
-		
-		// Now build the tree, top-down
-		LinkedList<ExecutionTreeNode> executionsToHandle = new LinkedList<ExecutionTreeNode>();
-		executionsToHandle.add(executionTree.getRoot());
-		
-		while (!executionsToHandle.isEmpty()) {
-			ExecutionTreeNode parentNode = executionsToHandle.pop();
-			String parentId = parentNode.getExecutionEntity().getId();
-			if (parentMapping.containsKey(parentId)) {
-				List<ExecutionEntity> childExecutions = parentMapping.get(parentId);
-				List<ExecutionTreeNode> childNodes = new ArrayList<ExecutionTreeNode>(childExecutions.size());
-				
-				for (ExecutionEntity childExecutionEntity : childExecutions) {
-					
-					ExecutionTreeNode childNode = new ExecutionTreeNode(childExecutionEntity);
-					childNode.setParent(parentNode);
-					childNodes.add(childNode);
-					
-					executionsToHandle.add(childNode);
-				}
-				
-				parentNode.setChildren(childNodes);
-				
-			}
-		}
-		
-		return executionTree;
-	}
+
+  public static ExecutionTree buildExecutionTree(Collection<ExecutionEntity> executions) {
+    ExecutionTree executionTree = new ExecutionTree();
+
+    // Map the executions to their parents. Catch and store the root element (process instance execution) while were at it
+    Map<String, List<ExecutionEntity>> parentMapping = new HashMap<String, List<ExecutionEntity>>();
+    for (ExecutionEntity executionEntity : executions) {
+      String parentId = executionEntity.getParentId();
+      if (parentId != null) {
+        if (!parentMapping.containsKey(parentId)) {
+          parentMapping.put(parentId, new ArrayList<ExecutionEntity>());
+        }
+        parentMapping.get(parentId).add(executionEntity);
+      } else {
+        executionTree.setRoot(new ExecutionTreeNode(executionEntity));
+      }
+    }
+
+    if (executionTree.getRoot() == null) {
+      throw new ActivitiException("Programmatic error: the list of passed executions in the argument of the method should contain the process instance execution");
+    }
+
+    // Now build the tree, top-down
+    LinkedList<ExecutionTreeNode> executionsToHandle = new LinkedList<ExecutionTreeNode>();
+    executionsToHandle.add(executionTree.getRoot());
+
+    while (!executionsToHandle.isEmpty()) {
+      ExecutionTreeNode parentNode = executionsToHandle.pop();
+      String parentId = parentNode.getExecutionEntity().getId();
+      if (parentMapping.containsKey(parentId)) {
+        List<ExecutionEntity> childExecutions = parentMapping.get(parentId);
+        List<ExecutionTreeNode> childNodes = new ArrayList<ExecutionTreeNode>(childExecutions.size());
+
+        for (ExecutionEntity childExecutionEntity : childExecutions) {
+
+          ExecutionTreeNode childNode = new ExecutionTreeNode(childExecutionEntity);
+          childNode.setParent(parentNode);
+          childNodes.add(childNode);
+
+          executionsToHandle.add(childNode);
+        }
+
+        parentNode.setChildren(childNodes);
+
+      }
+    }
+
+    return executionTree;
+  }
 
 }

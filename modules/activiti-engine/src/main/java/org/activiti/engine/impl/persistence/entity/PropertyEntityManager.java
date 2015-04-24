@@ -19,8 +19,8 @@ package org.activiti.engine.impl.persistence.entity;
  */
 public class PropertyEntityManager extends AbstractEntityManager<PropertyEntity> {
 
-    public PropertyEntity findPropertyById(String propertyId) {
-        return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
-    }
+  public PropertyEntity findPropertyById(String propertyId) {
+    return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
+  }
 
 }

@@ -33,31 +33,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TaskEventResource extends TaskBaseResource {
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/events/{eventId}", method = RequestMethod.GET, produces = "application/json")
-    public EventResponse getEvent(@PathVariable("taskId") String taskId, @PathVariable("eventId") String eventId, HttpServletRequest request) {
+  @RequestMapping(value = "/runtime/tasks/{taskId}/events/{eventId}", method = RequestMethod.GET, produces = "application/json")
+  public EventResponse getEvent(@PathVariable("taskId") String taskId, @PathVariable("eventId") String eventId, HttpServletRequest request) {
 
-        HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
-        Event event = taskService.getEvent(eventId);
-        if (event == null || !task.getId().equals(event.getTaskId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an event with id '" + eventId + "'.", Event.class);
-        }
-
-        return restResponseFactory.createEventResponse(event);
+    Event event = taskService.getEvent(eventId);
+    if (event == null || !task.getId().equals(event.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an event with id '" + eventId + "'.", Event.class);
     }
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/events/{eventId}", method = RequestMethod.DELETE)
-    public void deleteEvent(@PathVariable("taskId") String taskId, @PathVariable("eventId") String eventId, HttpServletResponse response) {
+    return restResponseFactory.createEventResponse(event);
+  }
 
-        // Check if task exists
-        Task task = getTaskFromRequest(taskId);
+  @RequestMapping(value = "/runtime/tasks/{taskId}/events/{eventId}", method = RequestMethod.DELETE)
+  public void deleteEvent(@PathVariable("taskId") String taskId, @PathVariable("eventId") String eventId, HttpServletResponse response) {
 
-        Event event = taskService.getEvent(eventId);
-        if (event == null || event.getTaskId() == null || !event.getTaskId().equals(task.getId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an event with id '" + event + "'.", Event.class);
-        }
+    // Check if task exists
+    Task task = getTaskFromRequest(taskId);
 
-        taskService.deleteComment(eventId);
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+    Event event = taskService.getEvent(eventId);
+    if (event == null || event.getTaskId() == null || !event.getTaskId().equals(task.getId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an event with id '" + event + "'.", Event.class);
     }
+
+    taskService.deleteComment(eventId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 }

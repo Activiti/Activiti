@@ -14,8 +14,7 @@
 package org.activiti.engine.delegate;
 
 /**
- * Class that provides helper operations for use in the {@link JavaDelegate}
- * class.
+ * Class that provides helper operations for use in the {@link JavaDelegate} class.
  * 
  * @author Joram Barrez
  */

@@ -34,69 +34,69 @@ import com.vaadin.ui.Table;
  */
 public abstract class ProcessInstancePage extends AbstractTablePage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected LazyLoadingContainer processInstanceListContainer;
-    protected LazyLoadingQuery lazyLoadingQuery;
+  protected LazyLoadingContainer processInstanceListContainer;
+  protected LazyLoadingQuery lazyLoadingQuery;
 
-    @Override
-    protected ToolBar createMenuBar() {
-        return new ProcessMenuBar();
-    }
+  @Override
+  protected ToolBar createMenuBar() {
+    return new ProcessMenuBar();
+  }
 
-    @Override
-    protected Table createList() {
-        final Table processInstanceTable = new Table();
-        processInstanceTable.addStyleName(ExplorerLayout.STYLE_PROCESS_INSTANCE_LIST);
+  @Override
+  protected Table createList() {
+    final Table processInstanceTable = new Table();
+    processInstanceTable.addStyleName(ExplorerLayout.STYLE_PROCESS_INSTANCE_LIST);
 
-        // Listener to change right panel when clicked on a process instance
-        processInstanceTable.addListener(new Property.ValueChangeListener() {
-            private static final long serialVersionUID = 8811553575319455854L;
+    // Listener to change right panel when clicked on a process instance
+    processInstanceTable.addListener(new Property.ValueChangeListener() {
+      private static final long serialVersionUID = 8811553575319455854L;
 
-            public void valueChange(ValueChangeEvent event) {
-                Item item = processInstanceTable.getItem(event.getProperty().getValue()); // the
-                                                                                          // value
-                                                                                          // of
-                                                                                          // the
-                                                                                          // property
-                                                                                          // is
-                                                                                          // the
-                                                                                          // itemId
-                                                                                          // of
-                                                                                          // the
-                                                                                          // table
-                                                                                          // entry
-                if (item != null) {
-                    String processInstanceId = (String) item.getItemProperty("id").getValue();
-                    setDetailComponent(new ProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
+      public void valueChange(ValueChangeEvent event) {
+        Item item = processInstanceTable.getItem(event.getProperty().getValue()); // the
+                                                                                  // value
+                                                                                  // of
+                                                                                  // the
+                                                                                  // property
+                                                                                  // is
+                                                                                  // the
+                                                                                  // itemId
+                                                                                  // of
+                                                                                  // the
+                                                                                  // table
+                                                                                  // entry
+        if (item != null) {
+          String processInstanceId = (String) item.getItemProperty("id").getValue();
+          setDetailComponent(new ProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
 
-                    UriFragment taskFragment = getUriFragment(processInstanceId);
-                    ExplorerApp.get().setCurrentUriFragment(taskFragment);
-                } else {
-                    // Nothing is selected
-                    setDetailComponent(null);
-                    UriFragment taskFragment = getUriFragment(null);
-                    ExplorerApp.get().setCurrentUriFragment(taskFragment);
-                }
-            }
-        });
+          UriFragment taskFragment = getUriFragment(processInstanceId);
+          ExplorerApp.get().setCurrentUriFragment(taskFragment);
+        } else {
+          // Nothing is selected
+          setDetailComponent(null);
+          UriFragment taskFragment = getUriFragment(null);
+          ExplorerApp.get().setCurrentUriFragment(taskFragment);
+        }
+      }
+    });
 
-        this.lazyLoadingQuery = createLazyLoadingQuery();
-        this.processInstanceListContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
-        processInstanceTable.setContainerDataSource(processInstanceListContainer);
+    this.lazyLoadingQuery = createLazyLoadingQuery();
+    this.processInstanceListContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
+    processInstanceTable.setContainerDataSource(processInstanceListContainer);
 
-        // Create column header
-        processInstanceTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
-        processInstanceTable.setColumnWidth("icon", 22);
+    // Create column header
+    processInstanceTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
+    processInstanceTable.setColumnWidth("icon", 22);
 
-        processInstanceTable.addContainerProperty("name", String.class, null);
-        processInstanceTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+    processInstanceTable.addContainerProperty("name", String.class, null);
+    processInstanceTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
 
-        return processInstanceTable;
-    }
+    return processInstanceTable;
+  }
 
-    protected abstract LazyLoadingQuery createLazyLoadingQuery();
+  protected abstract LazyLoadingQuery createLazyLoadingQuery();
 
-    protected abstract UriFragment getUriFragment(String processInstanceId);
+  protected abstract UriFragment getUriFragment(String processInstanceId);
 
 }

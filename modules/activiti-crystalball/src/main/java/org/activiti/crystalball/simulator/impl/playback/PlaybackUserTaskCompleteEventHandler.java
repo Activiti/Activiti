@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.impl.playback;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.SimulationEventHandler;
 import org.activiti.crystalball.simulator.SimulationRunContext;
@@ -25,28 +24,28 @@ import java.util.Map;
 
 /**
  * complete user task handler for playback purposes
- *
+ * 
  * @author martin.grofcik
  */
 public class PlaybackUserTaskCompleteEventHandler implements SimulationEventHandler {
 
-	private static Logger log = LoggerFactory.getLogger(PlaybackUserTaskCompleteEventHandler.class);
+  private static Logger log = LoggerFactory.getLogger(PlaybackUserTaskCompleteEventHandler.class);
 
-	@Override
-	public void handle(SimulationEvent event) {
-		String taskId = (String) event.getProperty("taskId");
-		Task task = SimulationRunContext.getTaskService().createTaskQuery().taskId( taskId ).singleResult();		
-		String assignee = task.getAssignee();
-		
-		@SuppressWarnings("unchecked")
-		Map<String, Object> variables = (Map<String, Object>) event.getProperty("variables");		
+  @Override
+  public void handle(SimulationEvent event) {
+    String taskId = (String) event.getProperty("taskId");
+    Task task = SimulationRunContext.getTaskService().createTaskQuery().taskId(taskId).singleResult();
+    String assignee = task.getAssignee();
 
-		SimulationRunContext.getTaskService().complete( taskId, variables );
-		log.debug( "completed {}, {}, {}, {}", task, task.getName(), assignee, variables);
-	}
+    @SuppressWarnings("unchecked")
+    Map<String, Object> variables = (Map<String, Object>) event.getProperty("variables");
 
-	@Override
-	public void init() {
-		
-	}
+    SimulationRunContext.getTaskService().complete(taskId, variables);
+    log.debug("completed {}, {}, {}, {}", task, task.getName(), assignee, variables);
+  }
+
+  @Override
+  public void init() {
+
+  }
 }

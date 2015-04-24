@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator;
  * limitations under the License.
  */
 
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -34,67 +33,66 @@ public class SimpleEventCalendar implements EventCalendar {
   private static final int NULL = -1;
 
   protected List<SimulationEvent> eventList = new ArrayList<SimulationEvent>();
-	protected int minIndex = NULL;
-	protected Comparator<SimulationEvent> eventComparator;
+  protected int minIndex = NULL;
+  protected Comparator<SimulationEvent> eventComparator;
   protected final ClockReader clockReader;
 
-
-	public SimpleEventCalendar(ClockReader clockReader, Comparator<SimulationEvent> eventComparator) {
+  public SimpleEventCalendar(ClockReader clockReader, Comparator<SimulationEvent> eventComparator) {
     this.clockReader = clockReader;
     this.eventComparator = eventComparator;
-	}
-	
-	@Override
-    public boolean isEmpty() {
-		return minIndex == NULL;
-	}
+  }
+
+  @Override
+  public boolean isEmpty() {
+    return minIndex == NULL;
+  }
 
   @Override
   public SimulationEvent peekFirstEvent() {
     if (minIndex == NULL)
       return null;
 
-    return eventList.get( minIndex);
+    return eventList.get(minIndex);
   }
 
   @Override
   public SimulationEvent removeFirstEvent() {
-		if (minIndex == NULL)
-			return null;
-		
-		SimulationEvent minEvent = eventList.remove( minIndex );
+    if (minIndex == NULL)
+      return null;
 
-		if (minEvent.hasSimulationTime() && minEvent.getSimulationTime() < this.clockReader.getCurrentTime().getTime()) {
-			throw new ActivitiException("Unable to execute event from the past");
-		}
-		
-		if (eventList.isEmpty()) { 
-			minIndex = NULL;
-		} else {
-			minIndex = 0;
-			SimulationEvent event = eventList.get(0);
-			for ( int i = 1; i < eventList.size(); i++ ) {
-				if (eventComparator.compare( eventList.get( i ), event ) < 0) {
-					minIndex = i;
-					event = eventList.get( i );
-				}
-			}
-		}
-		return minEvent;
-	}
-  
+    SimulationEvent minEvent = eventList.remove(minIndex);
+
+    if (minEvent.hasSimulationTime() && minEvent.getSimulationTime() < this.clockReader.getCurrentTime().getTime()) {
+      throw new ActivitiException("Unable to execute event from the past");
+    }
+
+    if (eventList.isEmpty()) {
+      minIndex = NULL;
+    } else {
+      minIndex = 0;
+      SimulationEvent event = eventList.get(0);
+      for (int i = 1; i < eventList.size(); i++) {
+        if (eventComparator.compare(eventList.get(i), event) < 0) {
+          minIndex = i;
+          event = eventList.get(i);
+        }
+      }
+    }
+    return minEvent;
+  }
+
   @Override
   public List<SimulationEvent> getEvents() {
     return eventList;
   }
-	
-	@Override
+
+  @Override
   public void addEvent(SimulationEvent event) {
-    log.debug("Scheduling new event [{}]",event);
+    log.debug("Scheduling new event [{}]", event);
     if (event != null && isMinimal(event))
-			minIndex = eventList.size();
-		eventList.add(event);			
-	}
+      minIndex = eventList.size();
+    eventList.add(event);
+  }
 
   @Override
   public void clear() {
@@ -103,11 +101,13 @@ public class SimpleEventCalendar implements EventCalendar {
   }
 
   /**
-	 * is event the first event in the calendar?
-	 * @param event - used in comparison
-	 * @return is minimal event decision
-	 */
-	private boolean isMinimal(SimulationEvent event) {
+   * is event the first event in the calendar?
+   * 
+   * @param event
+   *          - used in comparison
+   * @return is minimal event decision
+   */
+  private boolean isMinimal(SimulationEvent event) {
     return minIndex == NULL || eventComparator.compare(event, eventList.get(minIndex)) < 0;
   }
 

@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class PropertiesCollectionResource {
 
-    @Autowired
-    protected ManagementService managementService;
+  @Autowired
+  protected ManagementService managementService;
 
-    @RequestMapping(value = "/management/properties", method = RequestMethod.GET, produces = "application/json")
-    public Map<String, String> getProperties() {
-        return managementService.getProperties();
-    }
+  @RequestMapping(value = "/management/properties", method = RequestMethod.GET, produces = "application/json")
+  public Map<String, String> getProperties() {
+    return managementService.getProperties();
+  }
 }

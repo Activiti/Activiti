@@ -23,20 +23,20 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class DeleteModelCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    String modelId;
+  private static final long serialVersionUID = 1L;
+  String modelId;
 
-    public DeleteModelCmd(String modelId) {
-        this.modelId = modelId;
+  public DeleteModelCmd(String modelId) {
+    this.modelId = modelId;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (modelId == null) {
+      throw new ActivitiIllegalArgumentException("modelId is null");
     }
+    commandContext.getModelEntityManager().deleteModel(modelId);
 
-    public Void execute(CommandContext commandContext) {
-        if (modelId == null) {
-            throw new ActivitiIllegalArgumentException("modelId is null");
-        }
-        commandContext.getModelEntityManager().deleteModel(modelId);
-
-        return null;
-    }
+    return null;
+  }
 
 }

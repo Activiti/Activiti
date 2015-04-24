@@ -25,21 +25,20 @@ import org.activiti.explorer.ui.process.ProcessDefinitionListQuery.ProcessDefini
  */
 public interface ProcessDefinitionFilter {
 
-    /**
-     * Return a query that filters definitions, paging info is applied later on
-     * and should not be altered.
-     */
-    ProcessDefinitionQuery getQuery(RepositoryService repositoryService);
+  /**
+   * Return a query that filters definitions, paging info is applied later on and should not be altered.
+   */
+  ProcessDefinitionQuery getQuery(RepositoryService repositoryService);
 
-    /**
-     * Return a query that filters definitions, used for counting total number.
-     */
-    ProcessDefinitionQuery getCountQuery(RepositoryService repositoryService);
+  /**
+   * Return a query that filters definitions, used for counting total number.
+   */
+  ProcessDefinitionQuery getCountQuery(RepositoryService repositoryService);
 
-    /**
-     * @param a
-     *            {@link ProcessDefinition} resulting from the query
-     * @return item representing the definition
-     */
-    ProcessDefinitionListItem createItem(ProcessDefinition processDefinition);
+  /**
+   * @param a
+   *          {@link ProcessDefinition} resulting from the query
+   * @return item representing the definition
+   */
+  ProcessDefinitionListItem createItem(ProcessDefinition processDefinition);
 }

@@ -31,126 +31,124 @@ import org.activiti.engine.test.Deployment;
  */
 public class BoundaryTimerEventTest extends PluggableActivitiTestCase {
 
-    private static boolean listenerExecutedStartEvent = false;
-    private static boolean listenerExecutedEndEvent = false;
+  private static boolean listenerExecutedStartEvent = false;
+  private static boolean listenerExecutedEndEvent = false;
 
-    public static class MyExecutionListener implements ExecutionListener {
-        private static final long serialVersionUID = 1L;
+  public static class MyExecutionListener implements ExecutionListener {
+    private static final long serialVersionUID = 1L;
 
-        public void notify(DelegateExecution execution) {
-            if ("end".equals(execution.getEventName())) {
-                listenerExecutedEndEvent = true;
-            } else if ("start".equals(execution.getEventName())) {
-                listenerExecutedStartEvent = true;
-            }
-        }
+    public void notify(DelegateExecution execution) {
+      if ("end".equals(execution.getEventName())) {
+        listenerExecutedEndEvent = true;
+      } else if ("start".equals(execution.getEventName())) {
+        listenerExecutedStartEvent = true;
+      }
     }
+  }
 
-    /*
-     * Test for when multiple boundary timer events are defined on the same user
-     * task
-     * 
-     * Configuration: - timer 1 -> 2 hours -> secondTask - timer 2 -> 1 hour ->
-     * thirdTask - timer 3 -> 3 hours -> fourthTask
-     * 
-     * See process image next to the process xml resource
-     */
-    @Deployment
-    public void testMultipleTimersOnUserTask() {
+  /*
+   * Test for when multiple boundary timer events are defined on the same user task
+   * 
+   * Configuration: - timer 1 -> 2 hours -> secondTask - timer 2 -> 1 hour -> thirdTask - timer 3 -> 3 hours -> fourthTask
+   * 
+   * See process image next to the process xml resource
+   */
+  @Deployment
+  public void testMultipleTimersOnUserTask() {
 
-        // Set the clock fixed
-        Date startTime = new Date();
+    // Set the clock fixed
+    Date startTime = new Date();
 
-        // After process start, there should be 3 timers created
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("multipleTimersOnUserTask");
-        JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
-        List<Job> jobs = jobQuery.list();
-        assertEquals(3, jobs.size());
+    // After process start, there should be 3 timers created
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("multipleTimersOnUserTask");
+    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    List<Job> jobs = jobQuery.list();
+    assertEquals(3, jobs.size());
 
-        // After setting the clock to time '1 hour and 5 seconds', the second
-        // timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-        waitForJobExecutorToProcessAllJobs(5000L, 25L);
-        assertEquals(0L, jobQuery.count());
+    // After setting the clock to time '1 hour and 5 seconds', the second
+    // timer should fire
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    assertEquals(0L, jobQuery.count());
 
-        // which means that the third task is reached
-        Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("Third Task", task.getName());
-    }
+    // which means that the third task is reached
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Third Task", task.getName());
+  }
 
-    @Deployment
-    public void testTimerOnNestingOfSubprocesses() {
+  @Deployment
+  public void testTimerOnNestingOfSubprocesses() {
 
-        Date testStartTime = processEngineConfiguration.getClock().getCurrentTime();
+    Date testStartTime = processEngineConfiguration.getClock().getCurrentTime();
 
-        runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
-        List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
-        assertEquals(2, tasks.size());
-        assertEquals("Inner subprocess task 1", tasks.get(0).getName());
-        assertEquals("Inner subprocess task 2", tasks.get(1).getName());
+    runtimeService.startProcessInstanceByKey("timerOnNestedSubprocesses");
+    List<Task> tasks = taskService.createTaskQuery().orderByTaskName().asc().list();
+    assertEquals(2, tasks.size());
+    assertEquals("Inner subprocess task 1", tasks.get(0).getName());
+    assertEquals("Inner subprocess task 2", tasks.get(1).getName());
 
-        // Timer will fire in 2 hours
-        processEngineConfiguration.getClock().setCurrentTime(new Date(testStartTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
-        Job timer = managementService.createJobQuery().timers().singleResult();
-        managementService.executeJob(timer.getId());
+    // Timer will fire in 2 hours
+    processEngineConfiguration.getClock().setCurrentTime(new Date(testStartTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
+    Job timer = managementService.createJobQuery().timers().singleResult();
+    managementService.executeJob(timer.getId());
 
-        Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("task outside subprocess", task.getName());
-    }
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("task outside subprocess", task.getName());
+  }
 
-    @Deployment
-    public void testExpressionOnTimer() {
-        // Set the clock fixed
-        Date startTime = new Date();
+  @Deployment
+  public void testExpressionOnTimer() {
+    // Set the clock fixed
+    Date startTime = new Date();
 
-        HashMap<String, Object> variables = new HashMap<String, Object>();
-        variables.put("duration", "PT1H");
+    HashMap<String, Object> variables = new HashMap<String, Object>();
+    variables.put("duration", "PT1H");
 
-        // After process start, there should be a timer created
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("testExpressionOnTimer", variables);
+    // After process start, there should be a timer created
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("testExpressionOnTimer", variables);
 
-        JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
-        List<Job> jobs = jobQuery.list();
-        assertEquals(1, jobs.size());
+    JobQuery jobQuery = managementService.createJobQuery().processInstanceId(pi.getId());
+    List<Job> jobs = jobQuery.list();
+    assertEquals(1, jobs.size());
 
-        // After setting the clock to time '1 hour and 5 seconds', the second
-        // timer should fire
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-        waitForJobExecutorToProcessAllJobs(5000L, 25L);
-        assertEquals(0L, jobQuery.count());
+    // After setting the clock to time '1 hour and 5 seconds', the second
+    // timer should fire
+    processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    assertEquals(0L, jobQuery.count());
 
-        // start execution listener is not executed
-        assertFalse(listenerExecutedStartEvent);
-        assertTrue(listenerExecutedEndEvent);
+    // start execution listener is not executed
+    assertFalse(listenerExecutedStartEvent);
+    assertTrue(listenerExecutedEndEvent);
 
-        // which means the process has ended
-        assertProcessEnded(pi.getId());
-    }
+    // which means the process has ended
+    assertProcessEnded(pi.getId());
+  }
 
-    @Deployment
-    public void testTimerInSingleTransactionProcess() {
-        // make sure that if a PI completes in single transaction, JobEntities
-        // associated with the execution are deleted.
-        // broken before 5.10, see ACT-1133
-        runtimeService.startProcessInstanceByKey("timerOnSubprocesses");
-        assertEquals(0, managementService.createJobQuery().count());
-    }
+  @Deployment
+  public void testTimerInSingleTransactionProcess() {
+    // make sure that if a PI completes in single transaction, JobEntities
+    // associated with the execution are deleted.
+    // broken before 5.10, see ACT-1133
+    runtimeService.startProcessInstanceByKey("timerOnSubprocesses");
+    assertEquals(0, managementService.createJobQuery().count());
+  }
 
-    @Deployment
-    public void testRepeatingTimerWithCancelActivity() {
-        runtimeService.startProcessInstanceByKey("repeatingTimerAndCallActivity");
-        assertEquals(1, managementService.createJobQuery().count());
-        assertEquals(1, taskService.createTaskQuery().count());
+  @Deployment
+  public void testRepeatingTimerWithCancelActivity() {
+    runtimeService.startProcessInstanceByKey("repeatingTimerAndCallActivity");
+    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, taskService.createTaskQuery().count());
 
-        // Firing job should cancel the user task, destroy the scope,
-        // re-enter the task and recreate the task. A new timer should also be
-        // created.
-        // This didn't happen before 5.11 (new jobs kept being created). See
-        // ACT-1427
-        Job job = managementService.createJobQuery().singleResult();
-        managementService.executeJob(job.getId());
-        assertEquals(1, managementService.createJobQuery().count());
-        assertEquals(1, taskService.createTaskQuery().count());
-    }
+    // Firing job should cancel the user task, destroy the scope,
+    // re-enter the task and recreate the task. A new timer should also be
+    // created.
+    // This didn't happen before 5.11 (new jobs kept being created). See
+    // ACT-1427
+    Job job = managementService.createJobQuery().singleResult();
+    managementService.executeJob(job.getId());
+    assertEquals(1, managementService.createJobQuery().count());
+    assertEquals(1, taskService.createTaskQuery().count());
+  }
 
 }

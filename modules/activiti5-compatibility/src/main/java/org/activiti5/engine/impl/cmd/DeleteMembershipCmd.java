@@ -23,26 +23,26 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class DeleteMembershipCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    String userId;
-    String groupId;
+  private static final long serialVersionUID = 1L;
+  String userId;
+  String groupId;
 
-    public DeleteMembershipCmd(String userId, String groupId) {
-        this.userId = userId;
-        this.groupId = groupId;
+  public DeleteMembershipCmd(String userId, String groupId) {
+    this.userId = userId;
+    this.groupId = groupId;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (userId == null) {
+      throw new ActivitiIllegalArgumentException("userId is null");
+    }
+    if (groupId == null) {
+      throw new ActivitiIllegalArgumentException("groupId is null");
     }
 
-    public Void execute(CommandContext commandContext) {
-        if (userId == null) {
-            throw new ActivitiIllegalArgumentException("userId is null");
-        }
-        if (groupId == null) {
-            throw new ActivitiIllegalArgumentException("groupId is null");
-        }
+    commandContext.getMembershipIdentityManager().deleteMembership(userId, groupId);
 
-        commandContext.getMembershipIdentityManager().deleteMembership(userId, groupId);
-
-        return null;
-    }
+    return null;
+  }
 
 }

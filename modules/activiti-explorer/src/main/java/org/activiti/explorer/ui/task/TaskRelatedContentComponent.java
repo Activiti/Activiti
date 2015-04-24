@@ -50,202 +50,201 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
- * Component for showing related content of a task. Also allows adding, removing
- * and opening related content.
+ * Component for showing related content of a task. Also allows adding, removing and opening related content.
  * 
  * @author Frederik Heremans
  * @author Joram Barrez
  */
 public class TaskRelatedContentComponent extends VerticalLayout implements RelatedContentComponent {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected transient TaskService taskService;
-    protected I18nManager i18nManager;
-    protected AttachmentRendererManager attachmentRendererManager;
+  protected transient TaskService taskService;
+  protected I18nManager i18nManager;
+  protected AttachmentRendererManager attachmentRendererManager;
 
-    protected Task task;
-    protected VerticalLayout contentLayout;
-    protected Table table;
-    protected TaskDetailPanel taskDetailPanel;
-    protected Label noContentLabel;
+  protected Task task;
+  protected VerticalLayout contentLayout;
+  protected Table table;
+  protected TaskDetailPanel taskDetailPanel;
+  protected Label noContentLabel;
 
-    public TaskRelatedContentComponent(Task task, TaskDetailPanel taskDetailPanel) {
-        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-        this.attachmentRendererManager = ExplorerApp.get().getAttachmentRendererManager();
+  public TaskRelatedContentComponent(Task task, TaskDetailPanel taskDetailPanel) {
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.attachmentRendererManager = ExplorerApp.get().getAttachmentRendererManager();
 
-        this.task = task;
-        this.taskDetailPanel = taskDetailPanel;
+    this.task = task;
+    this.taskDetailPanel = taskDetailPanel;
 
-        addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
 
-        initActions();
-        initAttachmentTable();
-    }
+    initActions();
+    initAttachmentTable();
+  }
 
-    public void showAttachmentDetail(Attachment attachment) {
-        // Show popup window with detail of attachment rendered in in
-        AttachmentDetailPopupWindow popup = new AttachmentDetailPopupWindow(attachment);
-        ExplorerApp.get().getViewManager().showPopupWindow(popup);
-    }
+  public void showAttachmentDetail(Attachment attachment) {
+    // Show popup window with detail of attachment rendered in in
+    AttachmentDetailPopupWindow popup = new AttachmentDetailPopupWindow(attachment);
+    ExplorerApp.get().getViewManager().showPopupWindow(popup);
+  }
 
-    protected void initActions() {
-        HorizontalLayout actionsContainer = new HorizontalLayout();
-        actionsContainer.setSizeFull();
+  protected void initActions() {
+    HorizontalLayout actionsContainer = new HorizontalLayout();
+    actionsContainer.setSizeFull();
 
-        // Title
-        Label processTitle = new Label(i18nManager.getMessage(Messages.TASK_RELATED_CONTENT));
-        processTitle.addStyleName(ExplorerLayout.STYLE_H3);
-        processTitle.setSizeFull();
-        actionsContainer.addComponent(processTitle);
-        actionsContainer.setComponentAlignment(processTitle, Alignment.MIDDLE_LEFT);
-        actionsContainer.setExpandRatio(processTitle, 1.0f);
+    // Title
+    Label processTitle = new Label(i18nManager.getMessage(Messages.TASK_RELATED_CONTENT));
+    processTitle.addStyleName(ExplorerLayout.STYLE_H3);
+    processTitle.setSizeFull();
+    actionsContainer.addComponent(processTitle);
+    actionsContainer.setComponentAlignment(processTitle, Alignment.MIDDLE_LEFT);
+    actionsContainer.setExpandRatio(processTitle, 1.0f);
 
-        // Add content button
-        Button addRelatedContentButton = new Button();
-        addRelatedContentButton.addStyleName(ExplorerLayout.STYLE_ADD);
-        addRelatedContentButton.addListener(new com.vaadin.ui.Button.ClickListener() {
-            private static final long serialVersionUID = 1L;
+    // Add content button
+    Button addRelatedContentButton = new Button();
+    addRelatedContentButton.addStyleName(ExplorerLayout.STYLE_ADD);
+    addRelatedContentButton.addListener(new com.vaadin.ui.Button.ClickListener() {
+      private static final long serialVersionUID = 1L;
 
-            public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
-                CreateAttachmentPopupWindow popup = new CreateAttachmentPopupWindow();
+      public void buttonClick(com.vaadin.ui.Button.ClickEvent event) {
+        CreateAttachmentPopupWindow popup = new CreateAttachmentPopupWindow();
 
-                if (task.getProcessInstanceId() != null) {
-                    popup.setProcessInstanceId(task.getProcessInstanceId());
-                } else {
-                    popup.setTaskId(task.getId());
-                }
+        if (task.getProcessInstanceId() != null) {
+          popup.setProcessInstanceId(task.getProcessInstanceId());
+        } else {
+          popup.setTaskId(task.getId());
+        }
 
-                // Add listener to update attachments when added
-                popup.addListener(new SubmitEventListener() {
+        // Add listener to update attachments when added
+        popup.addListener(new SubmitEventListener() {
 
-                    private static final long serialVersionUID = 1L;
+          private static final long serialVersionUID = 1L;
 
-                    @Override
-                    protected void submitted(SubmitEvent event) {
-                        taskDetailPanel.notifyRelatedContentChanged();
-                    }
+          @Override
+          protected void submitted(SubmitEvent event) {
+            taskDetailPanel.notifyRelatedContentChanged();
+          }
 
-                    @Override
-                    protected void cancelled(SubmitEvent event) {
-                        // No attachment was added so updating UI isn't needed.
-                    }
-                });
-
-                ExplorerApp.get().getViewManager().showPopupWindow(popup);
-            }
+          @Override
+          protected void cancelled(SubmitEvent event) {
+            // No attachment was added so updating UI isn't needed.
+          }
         });
 
-        actionsContainer.addComponent(addRelatedContentButton);
-        actionsContainer.setComponentAlignment(processTitle, Alignment.MIDDLE_RIGHT);
+        ExplorerApp.get().getViewManager().showPopupWindow(popup);
+      }
+    });
 
-        addComponent(actionsContainer);
+    actionsContainer.addComponent(addRelatedContentButton);
+    actionsContainer.setComponentAlignment(processTitle, Alignment.MIDDLE_RIGHT);
+
+    addComponent(actionsContainer);
+  }
+
+  protected void initAttachmentTable() {
+    contentLayout = new VerticalLayout();
+    addComponent(contentLayout);
+
+    table = new Table();
+    table.setWidth(100, UNITS_PERCENTAGE);
+    table.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_LIST);
+
+    // Invisible by default, only shown when attachments are present
+    table.setVisible(false);
+    table.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+
+    addContainerProperties();
+
+    // Get the related content for this task
+    refreshTaskAttachments();
+    contentLayout.addComponent(table);
+  }
+
+  protected void addContainerProperties() {
+    table.addContainerProperty("type", Embedded.class, null);
+    table.setColumnWidth("type", 16);
+
+    table.addContainerProperty("name", Component.class, null);
+
+    table.addContainerProperty("delete", Embedded.class, null);
+    table.setColumnWidth("delete", 16);
+  }
+
+  public void refreshTaskAttachments() {
+    table.removeAllItems();
+    if (noContentLabel != null) {
+      contentLayout.removeComponent(noContentLabel);
     }
 
-    protected void initAttachmentTable() {
-        contentLayout = new VerticalLayout();
-        addComponent(contentLayout);
-
-        table = new Table();
-        table.setWidth(100, UNITS_PERCENTAGE);
-        table.addStyleName(ExplorerLayout.STYLE_RELATED_CONTENT_LIST);
-
-        // Invisible by default, only shown when attachments are present
-        table.setVisible(false);
-        table.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-
-        addContainerProperties();
-
-        // Get the related content for this task
-        refreshTaskAttachments();
-        contentLayout.addComponent(table);
+    List<Attachment> attachments = null;
+    if (task.getProcessInstanceId() != null) {
+      attachments = (taskService.getProcessInstanceAttachments(task.getProcessInstanceId()));
+    } else {
+      attachments = taskService.getTaskAttachments(task.getId());
     }
 
-    protected void addContainerProperties() {
-        table.addContainerProperty("type", Embedded.class, null);
-        table.setColumnWidth("type", 16);
+    if (!attachments.isEmpty()) {
+      addAttachmentsToTable(attachments);
+    } else {
+      table.setVisible(false);
+      noContentLabel = new Label(i18nManager.getMessage(Messages.TASK_NO_RELATED_CONTENT));
+      noContentLabel.addStyleName(Reindeer.LABEL_SMALL);
+      contentLayout.addComponent(noContentLabel);
+    }
+  }
 
-        table.addContainerProperty("name", Component.class, null);
+  protected void addAttachmentsToTable(List<Attachment> attachments) {
+    for (Attachment attachment : attachments) {
+      AttachmentRenderer renderer = attachmentRendererManager.getRenderer(attachment);
+      Item attachmentItem = table.addItem(attachment.getId());
+      attachmentItem.getItemProperty("name").setValue(renderer.getOverviewComponent(attachment, this));
+      attachmentItem.getItemProperty("type").setValue(new Embedded(null, renderer.getImage(attachment)));
 
-        table.addContainerProperty("delete", Embedded.class, null);
-        table.setColumnWidth("delete", 16);
+      Embedded deleteButton = new Embedded(null, Images.DELETE);
+      deleteButton.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+      deleteButton.addListener((ClickListener) new DeleteClickedListener(attachment));
+      attachmentItem.getItemProperty("delete").setValue(deleteButton);
     }
 
-    public void refreshTaskAttachments() {
-        table.removeAllItems();
-        if (noContentLabel != null) {
-            contentLayout.removeComponent(noContentLabel);
-        }
+    if (!table.getItemIds().isEmpty()) {
+      table.setVisible(true);
+    }
+    table.setPageLength(table.size());
+  }
 
-        List<Attachment> attachments = null;
-        if (task.getProcessInstanceId() != null) {
-            attachments = (taskService.getProcessInstanceAttachments(task.getProcessInstanceId()));
-        } else {
-            attachments = taskService.getTaskAttachments(task.getId());
-        }
+  protected void addEmptySpace(ComponentContainer container) {
+    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+    emptySpace.setSizeUndefined();
+    container.addComponent(emptySpace);
+  }
 
-        if (!attachments.isEmpty()) {
-            addAttachmentsToTable(attachments);
-        } else {
-            table.setVisible(false);
-            noContentLabel = new Label(i18nManager.getMessage(Messages.TASK_NO_RELATED_CONTENT));
-            noContentLabel.addStyleName(Reindeer.LABEL_SMALL);
-            contentLayout.addComponent(noContentLabel);
-        }
+  private class DeleteClickedListener extends ConfirmationEventListener implements ClickListener {
+
+    private static final long serialVersionUID = 1L;
+    private Attachment attachment;
+
+    public DeleteClickedListener(Attachment attachment) {
+      this.attachment = attachment;
     }
 
-    protected void addAttachmentsToTable(List<Attachment> attachments) {
-        for (Attachment attachment : attachments) {
-            AttachmentRenderer renderer = attachmentRendererManager.getRenderer(attachment);
-            Item attachmentItem = table.addItem(attachment.getId());
-            attachmentItem.getItemProperty("name").setValue(renderer.getOverviewComponent(attachment, this));
-            attachmentItem.getItemProperty("type").setValue(new Embedded(null, renderer.getImage(attachment)));
+    public void click(ClickEvent event) {
+      ConfirmationDialogPopupWindow confirm = new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.RELATED_CONTENT_CONFIRM_DELETE, attachment.getName()));
 
-            Embedded deleteButton = new Embedded(null, Images.DELETE);
-            deleteButton.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-            deleteButton.addListener((ClickListener) new DeleteClickedListener(attachment));
-            attachmentItem.getItemProperty("delete").setValue(deleteButton);
-        }
-
-        if (!table.getItemIds().isEmpty()) {
-            table.setVisible(true);
-        }
-        table.setPageLength(table.size());
+      confirm.addListener((ConfirmationEventListener) this);
+      confirm.showConfirmation();
     }
 
-    protected void addEmptySpace(ComponentContainer container) {
-        Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-        emptySpace.setSizeUndefined();
-        container.addComponent(emptySpace);
+    @Override
+    protected void confirmed(ConfirmationEvent event) {
+      taskService.deleteAttachment(attachment.getId());
+      taskDetailPanel.notifyRelatedContentChanged();
     }
 
-    private class DeleteClickedListener extends ConfirmationEventListener implements ClickListener {
-
-        private static final long serialVersionUID = 1L;
-        private Attachment attachment;
-
-        public DeleteClickedListener(Attachment attachment) {
-            this.attachment = attachment;
-        }
-
-        public void click(ClickEvent event) {
-            ConfirmationDialogPopupWindow confirm = new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.RELATED_CONTENT_CONFIRM_DELETE, attachment.getName()));
-
-            confirm.addListener((ConfirmationEventListener) this);
-            confirm.showConfirmation();
-        }
-
-        @Override
-        protected void confirmed(ConfirmationEvent event) {
-            taskService.deleteAttachment(attachment.getId());
-            taskDetailPanel.notifyRelatedContentChanged();
-        }
-
-        @Override
-        protected void rejected(ConfirmationEvent event) {
-            // Nothing to do here
-        }
+    @Override
+    protected void rejected(ConfirmationEvent event) {
+      // Nothing to do here
     }
+  }
 
 }

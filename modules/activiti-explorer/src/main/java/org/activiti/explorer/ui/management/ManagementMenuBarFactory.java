@@ -22,12 +22,12 @@ import org.activiti.explorer.ui.custom.ToolBar;
  */
 public class ManagementMenuBarFactory extends NoParamComponentFactory<ToolBar> {
 
-    protected Class<? extends ToolBar> getAlfrescoComponentClass() {
-        return AlfrescoManagementMenuBar.class;
-    }
+  protected Class<? extends ToolBar> getAlfrescoComponentClass() {
+    return AlfrescoManagementMenuBar.class;
+  }
 
-    protected Class<? extends ToolBar> getDefaultComponentClass() {
-        return ManagementMenuBar.class;
-    }
+  protected Class<? extends ToolBar> getDefaultComponentClass() {
+    return ManagementMenuBar.class;
+  }
 
 }

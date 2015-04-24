@@ -20,45 +20,45 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class AsyncPingTest extends SpringActivitiTestCase {
 
-    @Autowired
-    protected CamelContext camelContext;
+  @Autowired
+  protected CamelContext camelContext;
 
-    @Autowired
-    protected RuntimeService runtimeService;
+  @Autowired
+  protected RuntimeService runtimeService;
 
-    public void setUp() throws Exception {
-        camelContext.addRoutes(new RouteBuilder() {
+  public void setUp() throws Exception {
+    camelContext.addRoutes(new RouteBuilder() {
 
-            @Override
-            public void configure() throws Exception {
-                from("activiti:asyncPingProcess:serviceAsyncPing").to("seda:continueAsync");
-                from("seda:continueAsync").to("activiti:asyncPingProcess:receiveAsyncPing");
-            }
-        });
+      @Override
+      public void configure() throws Exception {
+        from("activiti:asyncPingProcess:serviceAsyncPing").to("seda:continueAsync");
+        from("seda:continueAsync").to("activiti:asyncPingProcess:receiveAsyncPing");
+      }
+    });
+  }
+
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r : routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
     }
+  }
 
-    public void tearDown() throws Exception {
-        List<Route> routes = camelContext.getRoutes();
-        for (Route r : routes) {
-            camelContext.stopRoute(r.getId());
-            camelContext.removeRoute(r.getId());
-        }
-    }
+  @Deployment(resources = { "process/asyncPing.bpmn20.xml" })
+  public void testRunProcess() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncPingProcess");
 
-    @Deployment(resources = { "process/asyncPing.bpmn20.xml" })
-    public void testRunProcess() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("asyncPingProcess");
+    List<Execution> executionList = runtimeService.createExecutionQuery().list();
+    Assert.assertEquals(1, executionList.size());
 
-        List<Execution> executionList = runtimeService.createExecutionQuery().list();
-        Assert.assertEquals(1, executionList.size());
+    managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId());
+    Thread.sleep(1500);
 
-        managementService.executeJob(managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult().getId());
-        Thread.sleep(1500);
+    executionList = runtimeService.createExecutionQuery().list();
+    Assert.assertEquals(0, executionList.size());
 
-        executionList = runtimeService.createExecutionQuery().list();
-        Assert.assertEquals(0, executionList.size());
-
-        Assert.assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
-    }
+    Assert.assertEquals(0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+  }
 
 }

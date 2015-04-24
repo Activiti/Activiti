@@ -26,490 +26,490 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class BpmnModel {
 
-    protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
-    protected List<Process> processes = new ArrayList<Process>();
-    protected Map<String, GraphicInfo> locationMap = new LinkedHashMap<String, GraphicInfo>();
-    protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<String, GraphicInfo>();
-    protected Map<String, List<GraphicInfo>> flowLocationMap = new LinkedHashMap<String, List<GraphicInfo>>();
-    protected List<Signal> signals = new ArrayList<Signal>();
-    protected Map<String, MessageFlow> messageFlowMap = new LinkedHashMap<String, MessageFlow>();
-    protected Map<String, Message> messageMap = new LinkedHashMap<String, Message>();
-    protected Map<String, String> errorMap = new LinkedHashMap<String, String>();
-    protected Map<String, ItemDefinition> itemDefinitionMap = new LinkedHashMap<String, ItemDefinition>();
-    protected Map<String, DataStore> dataStoreMap = new LinkedHashMap<String, DataStore>();
-    protected List<Pool> pools = new ArrayList<Pool>();
-    protected List<Import> imports = new ArrayList<Import>();
-    protected List<Interface> interfaces = new ArrayList<Interface>();
-    protected List<Artifact> globalArtifacts = new ArrayList<Artifact>();
-    protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
-    protected String targetNamespace;
-    protected List<String> userTaskFormTypes;
-    protected List<String> startEventFormTypes;
-    protected int nextFlowIdCounter = 1;
+  protected Map<String, List<ExtensionAttribute>> definitionsAttributes = new LinkedHashMap<String, List<ExtensionAttribute>>();
+  protected List<Process> processes = new ArrayList<Process>();
+  protected Map<String, GraphicInfo> locationMap = new LinkedHashMap<String, GraphicInfo>();
+  protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<String, GraphicInfo>();
+  protected Map<String, List<GraphicInfo>> flowLocationMap = new LinkedHashMap<String, List<GraphicInfo>>();
+  protected List<Signal> signals = new ArrayList<Signal>();
+  protected Map<String, MessageFlow> messageFlowMap = new LinkedHashMap<String, MessageFlow>();
+  protected Map<String, Message> messageMap = new LinkedHashMap<String, Message>();
+  protected Map<String, String> errorMap = new LinkedHashMap<String, String>();
+  protected Map<String, ItemDefinition> itemDefinitionMap = new LinkedHashMap<String, ItemDefinition>();
+  protected Map<String, DataStore> dataStoreMap = new LinkedHashMap<String, DataStore>();
+  protected List<Pool> pools = new ArrayList<Pool>();
+  protected List<Import> imports = new ArrayList<Import>();
+  protected List<Interface> interfaces = new ArrayList<Interface>();
+  protected List<Artifact> globalArtifacts = new ArrayList<Artifact>();
+  protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
+  protected String targetNamespace;
+  protected List<String> userTaskFormTypes;
+  protected List<String> startEventFormTypes;
+  protected int nextFlowIdCounter = 1;
 
-    public Map<String, List<ExtensionAttribute>> getDefinitionsAttributes() {
-        return definitionsAttributes;
+  public Map<String, List<ExtensionAttribute>> getDefinitionsAttributes() {
+    return definitionsAttributes;
+  }
+
+  public String getDefinitionsAttributeValue(String namespace, String name) {
+    List<ExtensionAttribute> attributes = getDefinitionsAttributes().get(name);
+    if (attributes != null && !attributes.isEmpty()) {
+      for (ExtensionAttribute attribute : attributes) {
+        if (namespace.equals(attribute.getNamespace()))
+          return attribute.getValue();
+      }
     }
+    return null;
+  }
 
-    public String getDefinitionsAttributeValue(String namespace, String name) {
-        List<ExtensionAttribute> attributes = getDefinitionsAttributes().get(name);
-        if (attributes != null && !attributes.isEmpty()) {
-            for (ExtensionAttribute attribute : attributes) {
-                if (namespace.equals(attribute.getNamespace()))
-                    return attribute.getValue();
+  public void addDefinitionsAttribute(ExtensionAttribute attribute) {
+    if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
+      List<ExtensionAttribute> attributeList = null;
+      if (this.definitionsAttributes.containsKey(attribute.getName()) == false) {
+        attributeList = new ArrayList<ExtensionAttribute>();
+        this.definitionsAttributes.put(attribute.getName(), attributeList);
+      }
+      this.definitionsAttributes.get(attribute.getName()).add(attribute);
+    }
+  }
+
+  public void setDefinitionsAttributes(Map<String, List<ExtensionAttribute>> attributes) {
+    this.definitionsAttributes = attributes;
+  }
+
+  public Process getMainProcess() {
+    if (!getPools().isEmpty()) {
+      return getProcess(getPools().get(0).getId());
+    } else {
+      return getProcess(null);
+    }
+  }
+
+  public Process getProcess(String poolRef) {
+    for (Process process : processes) {
+      boolean foundPool = false;
+      for (Pool pool : pools) {
+        if (StringUtils.isNotEmpty(pool.getProcessRef()) && pool.getProcessRef().equalsIgnoreCase(process.getId())) {
+
+          if (poolRef != null) {
+            if (pool.getId().equalsIgnoreCase(poolRef)) {
+              foundPool = true;
             }
+          } else {
+            foundPool = true;
+          }
         }
-        return null;
+      }
+
+      if (poolRef == null && foundPool == false) {
+        return process;
+      } else if (poolRef != null && foundPool == true) {
+        return process;
+      }
     }
 
-    public void addDefinitionsAttribute(ExtensionAttribute attribute) {
-        if (attribute != null && StringUtils.isNotEmpty(attribute.getName())) {
-            List<ExtensionAttribute> attributeList = null;
-            if (this.definitionsAttributes.containsKey(attribute.getName()) == false) {
-                attributeList = new ArrayList<ExtensionAttribute>();
-                this.definitionsAttributes.put(attribute.getName(), attributeList);
-            }
-            this.definitionsAttributes.get(attribute.getName()).add(attribute);
+    return null;
+  }
+
+  public Process getProcessById(String id) {
+    for (Process process : processes) {
+      if (process.getId().equals(id)) {
+        return process;
+      }
+    }
+    return null;
+  }
+
+  public List<Process> getProcesses() {
+    return processes;
+  }
+
+  public void addProcess(Process process) {
+    processes.add(process);
+  }
+
+  public Pool getPool(String id) {
+    Pool foundPool = null;
+    if (StringUtils.isNotEmpty(id)) {
+      for (Pool pool : pools) {
+        if (id.equals(pool.getId())) {
+          foundPool = pool;
+          break;
         }
+      }
     }
+    return foundPool;
+  }
 
-    public void setDefinitionsAttributes(Map<String, List<ExtensionAttribute>> attributes) {
-        this.definitionsAttributes = attributes;
-    }
-
-    public Process getMainProcess() {
-        if (!getPools().isEmpty()) {
-            return getProcess(getPools().get(0).getId());
-        } else {
-            return getProcess(null);
+  public Lane getLane(String id) {
+    Lane foundLane = null;
+    if (StringUtils.isNotEmpty(id)) {
+      for (Process process : processes) {
+        for (Lane lane : process.getLanes()) {
+          if (id.equals(lane.getId())) {
+            foundLane = lane;
+            break;
+          }
         }
-    }
-
-    public Process getProcess(String poolRef) {
-        for (Process process : processes) {
-            boolean foundPool = false;
-            for (Pool pool : pools) {
-                if (StringUtils.isNotEmpty(pool.getProcessRef()) && pool.getProcessRef().equalsIgnoreCase(process.getId())) {
-
-                    if (poolRef != null) {
-                        if (pool.getId().equalsIgnoreCase(poolRef)) {
-                            foundPool = true;
-                        }
-                    } else {
-                        foundPool = true;
-                    }
-                }
-            }
-
-            if (poolRef == null && foundPool == false) {
-                return process;
-            } else if (poolRef != null && foundPool == true) {
-                return process;
-            }
+        if (foundLane != null) {
+          break;
         }
+      }
+    }
+    return foundLane;
+  }
 
-        return null;
+  public FlowElement getFlowElement(String id) {
+    FlowElement foundFlowElement = null;
+    for (Process process : processes) {
+      foundFlowElement = process.getFlowElement(id);
+      if (foundFlowElement != null) {
+        break;
+      }
     }
 
-    public Process getProcessById(String id) {
-        for (Process process : processes) {
-            if (process.getId().equals(id)) {
-                return process;
-            }
+    if (foundFlowElement == null) {
+      for (Process process : processes) {
+        for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+          foundFlowElement = getFlowElementInSubProcess(id, (SubProcess) flowElement);
+          if (foundFlowElement != null) {
+            break;
+          }
         }
-        return null;
-    }
-
-    public List<Process> getProcesses() {
-        return processes;
-    }
-
-    public void addProcess(Process process) {
-        processes.add(process);
-    }
-
-    public Pool getPool(String id) {
-        Pool foundPool = null;
-        if (StringUtils.isNotEmpty(id)) {
-            for (Pool pool : pools) {
-                if (id.equals(pool.getId())) {
-                    foundPool = pool;
-                    break;
-                }
-            }
+        if (foundFlowElement != null) {
+          break;
         }
-        return foundPool;
+      }
     }
 
-    public Lane getLane(String id) {
-        Lane foundLane = null;
-        if (StringUtils.isNotEmpty(id)) {
-            for (Process process : processes) {
-                for (Lane lane : process.getLanes()) {
-                    if (id.equals(lane.getId())) {
-                        foundLane = lane;
-                        break;
-                    }
-                }
-                if (foundLane != null) {
-                    break;
-                }
-            }
+    return foundFlowElement;
+  }
+
+  protected FlowElement getFlowElementInSubProcess(String id, SubProcess subProcess) {
+    FlowElement foundFlowElement = subProcess.getFlowElement(id);
+    if (foundFlowElement == null) {
+      for (FlowElement flowElement : subProcess.getFlowElements()) {
+        if (flowElement instanceof SubProcess) {
+          foundFlowElement = getFlowElementInSubProcess(id, (SubProcess) flowElement);
+          if (foundFlowElement != null) {
+            break;
+          }
         }
-        return foundLane;
+      }
+    }
+    return foundFlowElement;
+  }
+
+  public Artifact getArtifact(String id) {
+    Artifact foundArtifact = null;
+    for (Process process : processes) {
+      foundArtifact = process.getArtifact(id);
+      if (foundArtifact != null) {
+        break;
+      }
     }
 
-    public FlowElement getFlowElement(String id) {
-        FlowElement foundFlowElement = null;
-        for (Process process : processes) {
-            foundFlowElement = process.getFlowElement(id);
-            if (foundFlowElement != null) {
-                break;
-            }
+    if (foundArtifact == null) {
+      for (Process process : processes) {
+        for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
+          foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
+          if (foundArtifact != null) {
+            break;
+          }
         }
-
-        if (foundFlowElement == null) {
-            for (Process process : processes) {
-                for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
-                    foundFlowElement = getFlowElementInSubProcess(id, (SubProcess) flowElement);
-                    if (foundFlowElement != null) {
-                        break;
-                    }
-                }
-                if (foundFlowElement != null) {
-                    break;
-                }
-            }
+        if (foundArtifact != null) {
+          break;
         }
-
-        return foundFlowElement;
+      }
     }
 
-    protected FlowElement getFlowElementInSubProcess(String id, SubProcess subProcess) {
-        FlowElement foundFlowElement = subProcess.getFlowElement(id);
-        if (foundFlowElement == null) {
-            for (FlowElement flowElement : subProcess.getFlowElements()) {
-                if (flowElement instanceof SubProcess) {
-                    foundFlowElement = getFlowElementInSubProcess(id, (SubProcess) flowElement);
-                    if (foundFlowElement != null) {
-                        break;
-                    }
-                }
-            }
+    return foundArtifact;
+  }
+
+  protected Artifact getArtifactInSubProcess(String id, SubProcess subProcess) {
+    Artifact foundArtifact = subProcess.getArtifact(id);
+    if (foundArtifact == null) {
+      for (FlowElement flowElement : subProcess.getFlowElements()) {
+        if (flowElement instanceof SubProcess) {
+          foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
+          if (foundArtifact != null) {
+            break;
+          }
         }
-        return foundFlowElement;
+      }
     }
+    return foundArtifact;
+  }
 
-    public Artifact getArtifact(String id) {
-        Artifact foundArtifact = null;
-        for (Process process : processes) {
-            foundArtifact = process.getArtifact(id);
-            if (foundArtifact != null) {
-                break;
-            }
+  public void addGraphicInfo(String key, GraphicInfo graphicInfo) {
+    locationMap.put(key, graphicInfo);
+  }
+
+  public GraphicInfo getGraphicInfo(String key) {
+    return locationMap.get(key);
+  }
+
+  public void removeGraphicInfo(String key) {
+    locationMap.remove(key);
+  }
+
+  public List<GraphicInfo> getFlowLocationGraphicInfo(String key) {
+    return flowLocationMap.get(key);
+  }
+
+  public void removeFlowGraphicInfoList(String key) {
+    flowLocationMap.remove(key);
+  }
+
+  public Map<String, GraphicInfo> getLocationMap() {
+    return locationMap;
+  }
+
+  public Map<String, List<GraphicInfo>> getFlowLocationMap() {
+    return flowLocationMap;
+  }
+
+  public GraphicInfo getLabelGraphicInfo(String key) {
+    return labelLocationMap.get(key);
+  }
+
+  public void addLabelGraphicInfo(String key, GraphicInfo graphicInfo) {
+    labelLocationMap.put(key, graphicInfo);
+  }
+
+  public void removeLabelGraphicInfo(String key) {
+    labelLocationMap.remove(key);
+  }
+
+  public Map<String, GraphicInfo> getLabelLocationMap() {
+    return labelLocationMap;
+  }
+
+  public void addFlowGraphicInfoList(String key, List<GraphicInfo> graphicInfoList) {
+    flowLocationMap.put(key, graphicInfoList);
+  }
+
+  public Collection<Signal> getSignals() {
+    return signals;
+  }
+
+  public void setSignals(Collection<Signal> signalList) {
+    if (signalList != null) {
+      signals.clear();
+      signals.addAll(signalList);
+    }
+  }
+
+  public void addSignal(Signal signal) {
+    if (signal != null) {
+      signals.add(signal);
+    }
+  }
+
+  public boolean containsSignalId(String signalId) {
+    return getSignal(signalId) != null;
+  }
+
+  public Signal getSignal(String id) {
+    for (Signal signal : signals) {
+      if (id.equals(signal.getId())) {
+        return signal;
+      }
+    }
+    return null;
+  }
+
+  public Map<String, MessageFlow> getMessageFlows() {
+    return messageFlowMap;
+  }
+
+  public void setMessageFlows(Map<String, MessageFlow> messageFlows) {
+    this.messageFlowMap = messageFlows;
+  }
+
+  public void addMessageFlow(MessageFlow messageFlow) {
+    if (messageFlow != null && StringUtils.isNotEmpty(messageFlow.getId())) {
+      messageFlowMap.put(messageFlow.getId(), messageFlow);
+    }
+  }
+
+  public MessageFlow getMessageFlow(String id) {
+    return messageFlowMap.get(id);
+  }
+
+  public boolean containsMessageFlowId(String messageFlowId) {
+    return messageFlowMap.containsKey(messageFlowId);
+  }
+
+  public Collection<Message> getMessages() {
+    return messageMap.values();
+  }
+
+  public void setMessages(Collection<Message> messageList) {
+    if (messageList != null) {
+      messageMap.clear();
+      for (Message message : messageList) {
+        addMessage(message);
+      }
+    }
+  }
+
+  public void addMessage(Message message) {
+    if (message != null && StringUtils.isNotEmpty(message.getId())) {
+      messageMap.put(message.getId(), message);
+    }
+  }
+
+  public Message getMessage(String id) {
+    Message result = messageMap.get(id);
+    if (result == null) {
+      int indexOfNS = id.indexOf(":");
+      if (indexOfNS > 0) {
+        String idNamespace = id.substring(0, indexOfNS);
+        if (idNamespace.equalsIgnoreCase(this.getTargetNamespace())) {
+          id = id.substring(indexOfNS + 1);
         }
-
-        if (foundArtifact == null) {
-            for (Process process : processes) {
-                for (FlowElement flowElement : process.findFlowElementsOfType(SubProcess.class)) {
-                    foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
-                    if (foundArtifact != null) {
-                        break;
-                    }
-                }
-                if (foundArtifact != null) {
-                    break;
-                }
-            }
-        }
-
-        return foundArtifact;
+        result = messageMap.get(id);
+      }
     }
+    return result;
+  }
 
-    protected Artifact getArtifactInSubProcess(String id, SubProcess subProcess) {
-        Artifact foundArtifact = subProcess.getArtifact(id);
-        if (foundArtifact == null) {
-            for (FlowElement flowElement : subProcess.getFlowElements()) {
-                if (flowElement instanceof SubProcess) {
-                    foundArtifact = getArtifactInSubProcess(id, (SubProcess) flowElement);
-                    if (foundArtifact != null) {
-                        break;
-                    }
-                }
-            }
-        }
-        return foundArtifact;
-    }
+  public boolean containsMessageId(String messageId) {
+    return messageMap.containsKey(messageId);
+  }
 
-    public void addGraphicInfo(String key, GraphicInfo graphicInfo) {
-        locationMap.put(key, graphicInfo);
-    }
+  public Map<String, String> getErrors() {
+    return errorMap;
+  }
 
-    public GraphicInfo getGraphicInfo(String key) {
-        return locationMap.get(key);
-    }
+  public void setErrors(Map<String, String> errorMap) {
+    this.errorMap = errorMap;
+  }
 
-    public void removeGraphicInfo(String key) {
-        locationMap.remove(key);
+  public void addError(String errorRef, String errorCode) {
+    if (StringUtils.isNotEmpty(errorRef)) {
+      errorMap.put(errorRef, errorCode);
     }
+  }
 
-    public List<GraphicInfo> getFlowLocationGraphicInfo(String key) {
-        return flowLocationMap.get(key);
-    }
+  public boolean containsErrorRef(String errorRef) {
+    return errorMap.containsKey(errorRef);
+  }
 
-    public void removeFlowGraphicInfoList(String key) {
-        flowLocationMap.remove(key);
-    }
+  public Map<String, ItemDefinition> getItemDefinitions() {
+    return itemDefinitionMap;
+  }
 
-    public Map<String, GraphicInfo> getLocationMap() {
-        return locationMap;
-    }
+  public void setItemDefinitions(Map<String, ItemDefinition> itemDefinitionMap) {
+    this.itemDefinitionMap = itemDefinitionMap;
+  }
 
-    public Map<String, List<GraphicInfo>> getFlowLocationMap() {
-        return flowLocationMap;
+  public void addItemDefinition(String id, ItemDefinition item) {
+    if (StringUtils.isNotEmpty(id)) {
+      itemDefinitionMap.put(id, item);
     }
+  }
 
-    public GraphicInfo getLabelGraphicInfo(String key) {
-        return labelLocationMap.get(key);
-    }
+  public boolean containsItemDefinitionId(String id) {
+    return itemDefinitionMap.containsKey(id);
+  }
 
-    public void addLabelGraphicInfo(String key, GraphicInfo graphicInfo) {
-        labelLocationMap.put(key, graphicInfo);
-    }
+  public Map<String, DataStore> getDataStores() {
+    return dataStoreMap;
+  }
 
-    public void removeLabelGraphicInfo(String key) {
-        labelLocationMap.remove(key);
-    }
+  public void setDataStores(Map<String, DataStore> dataStoreMap) {
+    this.dataStoreMap = dataStoreMap;
+  }
 
-    public Map<String, GraphicInfo> getLabelLocationMap() {
-        return labelLocationMap;
+  public DataStore getDataStore(String id) {
+    DataStore dataStore = null;
+    if (dataStoreMap.containsKey(id)) {
+      dataStore = dataStoreMap.get(id);
     }
+    return dataStore;
+  }
 
-    public void addFlowGraphicInfoList(String key, List<GraphicInfo> graphicInfoList) {
-        flowLocationMap.put(key, graphicInfoList);
+  public void addDataStore(String id, DataStore dataStore) {
+    if (StringUtils.isNotEmpty(id)) {
+      dataStoreMap.put(id, dataStore);
     }
+  }
 
-    public Collection<Signal> getSignals() {
-        return signals;
-    }
+  public boolean containsDataStore(String id) {
+    return dataStoreMap.containsKey(id);
+  }
 
-    public void setSignals(Collection<Signal> signalList) {
-        if (signalList != null) {
-            signals.clear();
-            signals.addAll(signalList);
-        }
-    }
+  public List<Pool> getPools() {
+    return pools;
+  }
 
-    public void addSignal(Signal signal) {
-        if (signal != null) {
-            signals.add(signal);
-        }
-    }
+  public void setPools(List<Pool> pools) {
+    this.pools = pools;
+  }
 
-    public boolean containsSignalId(String signalId) {
-        return getSignal(signalId) != null;
-    }
+  public List<Import> getImports() {
+    return imports;
+  }
 
-    public Signal getSignal(String id) {
-        for (Signal signal : signals) {
-            if (id.equals(signal.getId())) {
-                return signal;
-            }
-        }
-        return null;
-    }
+  public void setImports(List<Import> imports) {
+    this.imports = imports;
+  }
 
-    public Map<String, MessageFlow> getMessageFlows() {
-        return messageFlowMap;
-    }
+  public List<Interface> getInterfaces() {
+    return interfaces;
+  }
 
-    public void setMessageFlows(Map<String, MessageFlow> messageFlows) {
-        this.messageFlowMap = messageFlows;
-    }
+  public void setInterfaces(List<Interface> interfaces) {
+    this.interfaces = interfaces;
+  }
 
-    public void addMessageFlow(MessageFlow messageFlow) {
-        if (messageFlow != null && StringUtils.isNotEmpty(messageFlow.getId())) {
-            messageFlowMap.put(messageFlow.getId(), messageFlow);
-        }
-    }
+  public List<Artifact> getGlobalArtifacts() {
+    return globalArtifacts;
+  }
 
-    public MessageFlow getMessageFlow(String id) {
-        return messageFlowMap.get(id);
-    }
+  public void setGlobalArtifacts(List<Artifact> globalArtifacts) {
+    this.globalArtifacts = globalArtifacts;
+  }
 
-    public boolean containsMessageFlowId(String messageFlowId) {
-        return messageFlowMap.containsKey(messageFlowId);
-    }
+  public void addNamespace(String prefix, String uri) {
+    namespaceMap.put(prefix, uri);
+  }
 
-    public Collection<Message> getMessages() {
-        return messageMap.values();
-    }
+  public boolean containsNamespacePrefix(String prefix) {
+    return namespaceMap.containsKey(prefix);
+  }
 
-    public void setMessages(Collection<Message> messageList) {
-        if (messageList != null) {
-            messageMap.clear();
-            for (Message message : messageList) {
-                addMessage(message);
-            }
-        }
-    }
+  public String getNamespace(String prefix) {
+    return namespaceMap.get(prefix);
+  }
 
-    public void addMessage(Message message) {
-        if (message != null && StringUtils.isNotEmpty(message.getId())) {
-            messageMap.put(message.getId(), message);
-        }
-    }
+  public Map<String, String> getNamespaces() {
+    return namespaceMap;
+  }
 
-    public Message getMessage(String id) {
-        Message result = messageMap.get(id);
-        if (result == null) {
-            int indexOfNS = id.indexOf(":");
-            if (indexOfNS > 0) {
-                String idNamespace = id.substring(0, indexOfNS);
-                if (idNamespace.equalsIgnoreCase(this.getTargetNamespace())) {
-                    id = id.substring(indexOfNS + 1);
-                }
-                result = messageMap.get(id);
-            }
-        }
-        return result;
-    }
+  public String getTargetNamespace() {
+    return targetNamespace;
+  }
 
-    public boolean containsMessageId(String messageId) {
-        return messageMap.containsKey(messageId);
-    }
+  public void setTargetNamespace(String targetNamespace) {
+    this.targetNamespace = targetNamespace;
+  }
 
-    public Map<String, String> getErrors() {
-        return errorMap;
-    }
+  public List<String> getUserTaskFormTypes() {
+    return userTaskFormTypes;
+  }
 
-    public void setErrors(Map<String, String> errorMap) {
-        this.errorMap = errorMap;
-    }
+  public void setUserTaskFormTypes(List<String> userTaskFormTypes) {
+    this.userTaskFormTypes = userTaskFormTypes;
+  }
 
-    public void addError(String errorRef, String errorCode) {
-        if (StringUtils.isNotEmpty(errorRef)) {
-            errorMap.put(errorRef, errorCode);
-        }
-    }
+  public List<String> getStartEventFormTypes() {
+    return startEventFormTypes;
+  }
 
-    public boolean containsErrorRef(String errorRef) {
-        return errorMap.containsKey(errorRef);
-    }
-
-    public Map<String, ItemDefinition> getItemDefinitions() {
-        return itemDefinitionMap;
-    }
-
-    public void setItemDefinitions(Map<String, ItemDefinition> itemDefinitionMap) {
-        this.itemDefinitionMap = itemDefinitionMap;
-    }
-
-    public void addItemDefinition(String id, ItemDefinition item) {
-        if (StringUtils.isNotEmpty(id)) {
-            itemDefinitionMap.put(id, item);
-        }
-    }
-
-    public boolean containsItemDefinitionId(String id) {
-        return itemDefinitionMap.containsKey(id);
-    }
-
-    public Map<String, DataStore> getDataStores() {
-        return dataStoreMap;
-    }
-
-    public void setDataStores(Map<String, DataStore> dataStoreMap) {
-        this.dataStoreMap = dataStoreMap;
-    }
-
-    public DataStore getDataStore(String id) {
-        DataStore dataStore = null;
-        if (dataStoreMap.containsKey(id)) {
-            dataStore = dataStoreMap.get(id);
-        }
-        return dataStore;
-    }
-
-    public void addDataStore(String id, DataStore dataStore) {
-        if (StringUtils.isNotEmpty(id)) {
-            dataStoreMap.put(id, dataStore);
-        }
-    }
-
-    public boolean containsDataStore(String id) {
-        return dataStoreMap.containsKey(id);
-    }
-
-    public List<Pool> getPools() {
-        return pools;
-    }
-
-    public void setPools(List<Pool> pools) {
-        this.pools = pools;
-    }
-
-    public List<Import> getImports() {
-        return imports;
-    }
-
-    public void setImports(List<Import> imports) {
-        this.imports = imports;
-    }
-
-    public List<Interface> getInterfaces() {
-        return interfaces;
-    }
-
-    public void setInterfaces(List<Interface> interfaces) {
-        this.interfaces = interfaces;
-    }
-
-    public List<Artifact> getGlobalArtifacts() {
-        return globalArtifacts;
-    }
-
-    public void setGlobalArtifacts(List<Artifact> globalArtifacts) {
-        this.globalArtifacts = globalArtifacts;
-    }
-
-    public void addNamespace(String prefix, String uri) {
-        namespaceMap.put(prefix, uri);
-    }
-
-    public boolean containsNamespacePrefix(String prefix) {
-        return namespaceMap.containsKey(prefix);
-    }
-
-    public String getNamespace(String prefix) {
-        return namespaceMap.get(prefix);
-    }
-
-    public Map<String, String> getNamespaces() {
-        return namespaceMap;
-    }
-
-    public String getTargetNamespace() {
-        return targetNamespace;
-    }
-
-    public void setTargetNamespace(String targetNamespace) {
-        this.targetNamespace = targetNamespace;
-    }
-
-    public List<String> getUserTaskFormTypes() {
-        return userTaskFormTypes;
-    }
-
-    public void setUserTaskFormTypes(List<String> userTaskFormTypes) {
-        this.userTaskFormTypes = userTaskFormTypes;
-    }
-
-    public List<String> getStartEventFormTypes() {
-        return startEventFormTypes;
-    }
-
-    public void setStartEventFormTypes(List<String> startEventFormTypes) {
-        this.startEventFormTypes = startEventFormTypes;
-    }
+  public void setStartEventFormTypes(List<String> startEventFormTypes) {
+    this.startEventFormTypes = startEventFormTypes;
+  }
 }

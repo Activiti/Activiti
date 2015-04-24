@@ -23,20 +23,20 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class DeleteGroupCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    String groupId;
+  private static final long serialVersionUID = 1L;
+  String groupId;
 
-    public DeleteGroupCmd(String groupId) {
-        this.groupId = groupId;
+  public DeleteGroupCmd(String groupId) {
+    this.groupId = groupId;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (groupId == null) {
+      throw new ActivitiIllegalArgumentException("groupId is null");
     }
+    commandContext.getGroupIdentityManager().deleteGroup(groupId);
 
-    public Void execute(CommandContext commandContext) {
-        if (groupId == null) {
-            throw new ActivitiIllegalArgumentException("groupId is null");
-        }
-        commandContext.getGroupIdentityManager().deleteGroup(groupId);
-
-        return null;
-    }
+    return null;
+  }
 
 }

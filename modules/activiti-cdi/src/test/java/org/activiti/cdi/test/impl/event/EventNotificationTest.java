@@ -22,89 +22,89 @@ import org.junit.Test;
 
 public class EventNotificationTest extends CdiActivitiTestCase {
 
-    @Test
-    @Deployment(resources = { "org/activiti/cdi/test/impl/event/EventNotificationTest.process1.bpmn20.xml" })
-    public void testReceiveAll() {
-        TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
-        listenerBean.reset();
+  @Test
+  @Deployment(resources = { "org/activiti/cdi/test/impl/event/EventNotificationTest.process1.bpmn20.xml" })
+  public void testReceiveAll() {
+    TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
+    listenerBean.reset();
 
-        // assert that the bean has received 0 events
-        assertEquals(0, listenerBean.getEventsReceived().size());
-        runtimeService.startProcessInstanceByKey("process1");
+    // assert that the bean has received 0 events
+    assertEquals(0, listenerBean.getEventsReceived().size());
+    runtimeService.startProcessInstanceByKey("process1");
 
-        // assert that now the bean has received 11 events
-        assertEquals(11, listenerBean.getEventsReceived().size());
-    }
+    // assert that now the bean has received 11 events
+    assertEquals(11, listenerBean.getEventsReceived().size());
+  }
 
-    @Test
-    @Deployment(resources = { "org/activiti/cdi/test/impl/event/EventNotificationTest.process1.bpmn20.xml", "org/activiti/cdi/test/impl/event/EventNotificationTest.process2.bpmn20.xml" })
-    public void testSelectEventsPerProcessDefinition() {
-        TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
-        listenerBean.reset();
+  @Test
+  @Deployment(resources = { "org/activiti/cdi/test/impl/event/EventNotificationTest.process1.bpmn20.xml", "org/activiti/cdi/test/impl/event/EventNotificationTest.process2.bpmn20.xml" })
+  public void testSelectEventsPerProcessDefinition() {
+    TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
+    listenerBean.reset();
 
-        assertEquals(0, listenerBean.getEventsReceivedByKey().size());
-        // start the 2 processes
-        runtimeService.startProcessInstanceByKey("process1");
-        runtimeService.startProcessInstanceByKey("process2");
+    assertEquals(0, listenerBean.getEventsReceivedByKey().size());
+    // start the 2 processes
+    runtimeService.startProcessInstanceByKey("process1");
+    runtimeService.startProcessInstanceByKey("process2");
 
-        // assert that now the bean has received 11 events
-        assertEquals(11, listenerBean.getEventsReceivedByKey().size());
-    }
+    // assert that now the bean has received 11 events
+    assertEquals(11, listenerBean.getEventsReceivedByKey().size());
+  }
 
-    @Test
-    @Deployment(resources = { "org/activiti/cdi/test/impl/event/EventNotificationTest.process1.bpmn20.xml" })
-    public void testSelectEventsPerActivity() {
-        TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
-        listenerBean.reset();
+  @Test
+  @Deployment(resources = { "org/activiti/cdi/test/impl/event/EventNotificationTest.process1.bpmn20.xml" })
+  public void testSelectEventsPerActivity() {
+    TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
+    listenerBean.reset();
 
-        assertEquals(0, listenerBean.getEndActivityService1());
-        assertEquals(0, listenerBean.getStartActivityService1());
-        assertEquals(0, listenerBean.getTakeTransitiont1());
+    assertEquals(0, listenerBean.getEndActivityService1());
+    assertEquals(0, listenerBean.getStartActivityService1());
+    assertEquals(0, listenerBean.getTakeTransitiont1());
 
-        // start the process
-        runtimeService.startProcessInstanceByKey("process1");
+    // start the process
+    runtimeService.startProcessInstanceByKey("process1");
 
-        // assert
-        assertEquals(1, listenerBean.getEndActivityService1());
-        assertEquals(1, listenerBean.getStartActivityService1());
-        assertEquals(1, listenerBean.getTakeTransitiont1());
-    }
+    // assert
+    assertEquals(1, listenerBean.getEndActivityService1());
+    assertEquals(1, listenerBean.getStartActivityService1());
+    assertEquals(1, listenerBean.getTakeTransitiont1());
+  }
 
-    @Test
-    @Deployment(resources = { "org/activiti/cdi/test/impl/event/TaskEventNotificationTest.process3.bpmn20.xml" })
-    public void testCreateEventsPerActivity() {
-        TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
-        listenerBean.reset();
+  @Test
+  @Deployment(resources = { "org/activiti/cdi/test/impl/event/TaskEventNotificationTest.process3.bpmn20.xml" })
+  public void testCreateEventsPerActivity() {
+    TestEventListener listenerBean = getBeanInstance(TestEventListener.class);
+    listenerBean.reset();
 
-        assertEquals(0, listenerBean.getCreateTask1());
-        assertEquals(0, listenerBean.getAssignTask1());
-        assertEquals(0, listenerBean.getCompleteTask1());
-        assertEquals(0, listenerBean.getDeleteTask3());
+    assertEquals(0, listenerBean.getCreateTask1());
+    assertEquals(0, listenerBean.getAssignTask1());
+    assertEquals(0, listenerBean.getCompleteTask1());
+    assertEquals(0, listenerBean.getDeleteTask3());
 
-        // start the process
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("process3");
+    // start the process
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("process3");
 
-        Task task = taskService.createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
 
-        taskService.claim(task.getId(), "auser");
-        taskService.complete(task.getId());
+    taskService.claim(task.getId(), "auser");
+    taskService.complete(task.getId());
 
-        task = taskService.createTaskQuery().singleResult();
-        taskService.complete(task.getId());
+    task = taskService.createTaskQuery().singleResult();
+    taskService.complete(task.getId());
 
-        do {
-            task = taskService.createTaskQuery().singleResult();
-        } while (task == null);
+    do {
+      task = taskService.createTaskQuery().singleResult();
+    } while (task == null);
 
-        runtimeService.deleteProcessInstance(pi.getId(), "DELETED");
+    runtimeService.deleteProcessInstance(pi.getId(), "DELETED");
 
-        // assert
-        assertEquals(1, listenerBean.getCreateTask1());
-        assertEquals(1, listenerBean.getCreateTask2());
-        assertEquals(1, listenerBean.getAssignTask1());
-        assertEquals(1, listenerBean.getCompleteTask1());
-        assertEquals(1, listenerBean.getCompleteTask2());
-        assertEquals(1, listenerBean.getDeleteTask3());
-    }
+    // assert
+    assertEquals(1, listenerBean.getCreateTask1());
+    assertEquals(1, listenerBean.getCreateTask2());
+    assertEquals(1, listenerBean.getAssignTask1());
+    assertEquals(1, listenerBean.getCompleteTask1());
+    assertEquals(1, listenerBean.getCompleteTask2());
+    assertEquals(1, listenerBean.getDeleteTask3());
+  }
 
 }

@@ -27,9 +27,9 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  */
 public interface FormHandler extends Serializable {
 
-    ThreadLocal<FormHandler> current = new ThreadLocal<FormHandler>();
+  ThreadLocal<FormHandler> current = new ThreadLocal<FormHandler>();
 
-    void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition);
+  void parseConfiguration(List<FormProperty> formProperties, String formKey, DeploymentEntity deployment, ProcessDefinitionEntity processDefinition);
 
-    void submitFormProperties(Map<String, String> properties, ExecutionEntity execution);
+  void submitFormProperties(Map<String, String> properties, ExecutionEntity execution);
 }

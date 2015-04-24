@@ -32,45 +32,45 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class SimpleWorkflowResource {
 
-    @Autowired
-    protected RepositoryService repositoryService;
+  @Autowired
+  protected RepositoryService repositoryService;
 
-    @RequestMapping(value = "/simple-workflow", method = RequestMethod.POST, produces = "application/json")
-    public SimpleWorkflowSuccessResponse createWorkflow(@RequestBody String json) {
-        // Convert json to simple workflow definition
-        SimpleWorkflowJsonConverter jsonConverter = new SimpleWorkflowJsonConverter();
-        WorkflowDefinition workflowDefinition = jsonConverter.readWorkflowDefinition(json.getBytes());
+  @RequestMapping(value = "/simple-workflow", method = RequestMethod.POST, produces = "application/json")
+  public SimpleWorkflowSuccessResponse createWorkflow(@RequestBody String json) {
+    // Convert json to simple workflow definition
+    SimpleWorkflowJsonConverter jsonConverter = new SimpleWorkflowJsonConverter();
+    WorkflowDefinition workflowDefinition = jsonConverter.readWorkflowDefinition(json.getBytes());
 
-        WorkflowDefinitionConversionFactory conversionFactory = new WorkflowDefinitionConversionFactory();
-        WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(workflowDefinition);
-        conversion.convert();
+    WorkflowDefinitionConversionFactory conversionFactory = new WorkflowDefinitionConversionFactory();
+    WorkflowDefinitionConversion conversion = conversionFactory.createWorkflowDefinitionConversion(workflowDefinition);
+    conversion.convert();
 
-        // Deploy process
+    // Deploy process
 
-        BpmnModel bpmnModel = conversion.getBpmnModel();
-        Deployment deployment = repositoryService.createDeployment().addBpmnModel(bpmnModel.getProcesses().get(0).getName() + ".bpmn20.xml", bpmnModel).deploy();
+    BpmnModel bpmnModel = conversion.getBpmnModel();
+    Deployment deployment = repositoryService.createDeployment().addBpmnModel(bpmnModel.getProcesses().get(0).getName() + ".bpmn20.xml", bpmnModel).deploy();
 
-        // Fetch process definition id
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
-        return new SimpleWorkflowSuccessResponse(processDefinition.getId());
+    // Fetch process definition id
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+    return new SimpleWorkflowSuccessResponse(processDefinition.getId());
+  }
+
+  static class SimpleWorkflowSuccessResponse {
+
+    protected String processDefinitionId;
+
+    public SimpleWorkflowSuccessResponse(String processDefinitionid) {
+      this.processDefinitionId = processDefinitionid;
     }
 
-    static class SimpleWorkflowSuccessResponse {
-
-        protected String processDefinitionId;
-
-        public SimpleWorkflowSuccessResponse(String processDefinitionid) {
-            this.processDefinitionId = processDefinitionid;
-        }
-
-        public String getProcessDefinitionId() {
-            return processDefinitionId;
-        }
-
-        public void setProcessDefinitionId(String processDefinitionId) {
-            this.processDefinitionId = processDefinitionId;
-        }
-
+    public String getProcessDefinitionId() {
+      return processDefinitionId;
     }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+      this.processDefinitionId = processDefinitionId;
+    }
+
+  }
 
 }

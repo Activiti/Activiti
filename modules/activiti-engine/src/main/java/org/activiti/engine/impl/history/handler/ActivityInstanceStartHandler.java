@@ -25,7 +25,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class ActivityInstanceStartHandler implements ExecutionListener {
 
-    public void notify(DelegateExecution execution) {
-        Context.getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
-    }
+  public void notify(DelegateExecution execution) {
+    Context.getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
+  }
 }

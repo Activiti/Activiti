@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.impl;
  * limitations under the License.
  */
 
-
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,27 +30,26 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Start new process event handler for playback purposes
- *
+ * 
  * @author martin.grofcik
  */
 public class DeployResourcesEventHandler implements SimulationEventHandler {
 
-	private static Logger log = LoggerFactory.getLogger(DeployResourcesEventHandler.class);
+  private static Logger log = LoggerFactory.getLogger(DeployResourcesEventHandler.class);
 
-	/** process to start key */
-	protected String resourcesKey;
+  /** process to start key */
+  protected String resourcesKey;
 
   public DeployResourcesEventHandler(String resourcesKey) {
     this.resourcesKey = resourcesKey;
   }
 
+  @Override
+  public void init() {
+  }
 
   @Override
-	public void init() {
-	}
-
-	@Override
-	public void handle(SimulationEvent event) {
+  public void handle(SimulationEvent event) {
 
     @SuppressWarnings("unchecked")
     Map<String, ResourceEntity> resources = (Map<String, ResourceEntity>) event.getProperty(resourcesKey);
@@ -78,6 +76,6 @@ public class DeployResourcesEventHandler implements SimulationEventHandler {
         }
       }
     }
-	}
+  }
 
 }

@@ -27,17 +27,17 @@ import org.activiti.engine.impl.persistence.entity.PropertyEntity;
  */
 public class GetPropertiesCmd implements Command<Map<String, String>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unchecked")
-    public Map<String, String> execute(CommandContext commandContext) {
-        List<PropertyEntity> propertyEntities = commandContext.getDbSqlSession().selectList("selectProperties");
+  @SuppressWarnings("unchecked")
+  public Map<String, String> execute(CommandContext commandContext) {
+    List<PropertyEntity> propertyEntities = commandContext.getDbSqlSession().selectList("selectProperties");
 
-        Map<String, String> properties = new HashMap<String, String>();
-        for (PropertyEntity propertyEntity : propertyEntities) {
-            properties.put(propertyEntity.getName(), propertyEntity.getValue());
-        }
-        return properties;
+    Map<String, String> properties = new HashMap<String, String>();
+    for (PropertyEntity propertyEntity : propertyEntities) {
+      properties.put(propertyEntity.getName(), propertyEntity.getValue());
     }
+    return properties;
+  }
 
 }

@@ -19,30 +19,30 @@ import org.activiti.engine.impl.interceptor.CommandInvoker;
  * @author jbarrez
  */
 public class LoggingCommandInvoker extends CommandInvoker {
-	
-	protected ProcessExecutionLogger processExecutionLogger;
-	
-	public LoggingCommandInvoker(ProcessExecutionLogger processExecutionLogger) {
-		this.processExecutionLogger = processExecutionLogger;
+
+  protected ProcessExecutionLogger processExecutionLogger;
+
+  public LoggingCommandInvoker(ProcessExecutionLogger processExecutionLogger) {
+    this.processExecutionLogger = processExecutionLogger;
+  }
+
+  @Override
+  public void executeOperation(Runnable runnable) {
+
+    DebugInfoOperationExecuted debugInfo = null;
+    if (runnable instanceof AbstractOperation) {
+
+      debugInfo = new DebugInfoOperationExecuted((AbstractOperation) runnable);
+      debugInfo.setPreExecutionTime(System.currentTimeMillis());
+
+      processExecutionLogger.addDebugInfo(debugInfo, true);
     }
-	
-	@Override
-	public void executeOperation(Runnable runnable) {
-		
-		DebugInfoOperationExecuted debugInfo = null;
-		if (runnable instanceof AbstractOperation) {
-			
-			debugInfo = new DebugInfoOperationExecuted((AbstractOperation) runnable);
-			debugInfo.setPreExecutionTime(System.currentTimeMillis());
-			
-			processExecutionLogger.addDebugInfo(debugInfo, true);
-		}
-		
-	    super.executeOperation(runnable);
-	    
-	    if (debugInfo != null) {
-	    	debugInfo.setPostExecutionTime(System.currentTimeMillis());
-	    }
-	}
+
+    super.executeOperation(runnable);
+
+    if (debugInfo != null) {
+      debugInfo.setPostExecutionTime(System.currentTimeMillis());
+    }
+  }
 
 }

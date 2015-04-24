@@ -27,42 +27,42 @@ import java.io.IOException;
  */
 public abstract class AbstractAutoDeploymentStrategy implements AutoDeploymentStrategy {
 
-    /**
-     * Gets the deployment mode this strategy handles.
-     * 
-     * @return the name of the deployment mode
-     */
-    protected abstract String getDeploymentMode();
+  /**
+   * Gets the deployment mode this strategy handles.
+   * 
+   * @return the name of the deployment mode
+   */
+  protected abstract String getDeploymentMode();
 
-    @Override
-    public boolean handlesMode(final String mode) {
-        return StringUtils.equalsIgnoreCase(mode, getDeploymentMode());
+  @Override
+  public boolean handlesMode(final String mode) {
+    return StringUtils.equalsIgnoreCase(mode, getDeploymentMode());
+  }
+
+  /**
+   * Determines the name to be used for the provided resource.
+   * 
+   * @param resource
+   *          the resource to get the name for
+   * @return the name of the resource
+   */
+  protected String determineResourceName(final Resource resource) {
+    String resourceName = null;
+
+    if (resource instanceof ContextResource) {
+      resourceName = ((ContextResource) resource).getPathWithinContext();
+
+    } else if (resource instanceof ByteArrayResource) {
+      resourceName = resource.getDescription();
+
+    } else {
+      try {
+        resourceName = resource.getFile().getAbsolutePath();
+      } catch (IOException e) {
+        resourceName = resource.getFilename();
+      }
     }
-
-    /**
-     * Determines the name to be used for the provided resource.
-     * 
-     * @param resource
-     *            the resource to get the name for
-     * @return the name of the resource
-     */
-    protected String determineResourceName(final Resource resource) {
-        String resourceName = null;
-
-        if (resource instanceof ContextResource) {
-            resourceName = ((ContextResource) resource).getPathWithinContext();
-
-        } else if (resource instanceof ByteArrayResource) {
-            resourceName = resource.getDescription();
-
-        } else {
-            try {
-                resourceName = resource.getFile().getAbsolutePath();
-            } catch (IOException e) {
-                resourceName = resource.getFilename();
-            }
-        }
-        return resourceName;
-    }
+    return resourceName;
+  }
 
 }

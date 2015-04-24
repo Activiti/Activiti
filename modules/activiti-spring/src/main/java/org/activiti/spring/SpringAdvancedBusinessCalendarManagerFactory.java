@@ -5,9 +5,7 @@ import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 
 /**
- * Creates an advanced cycle business calendar manager (ACBCM). The ACBCM can
- * handle daylight savings changes when the scheduled time zone is different
- * than the server time zone.
+ * Creates an advanced cycle business calendar manager (ACBCM). The ACBCM can handle daylight savings changes when the scheduled time zone is different than the server time zone.
  * <p>
  * Create a factory bean
  * 
@@ -15,8 +13,7 @@ import org.activiti.engine.runtime.Clock;
  * &lt;bean id="businessCalendarManagerFactory" class="org.activiti.spring.SpringAdvancedBusinessCalendarManagerFactory" /&gt;
  * </pre>
  * 
- * Add the manager to your org.activiti.spring.SpringProcessEngineConfiguration
- * bean
+ * Add the manager to your org.activiti.spring.SpringProcessEngineConfiguration bean
  * 
  * <pre>
  *  &lt;bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration"&gt;
@@ -33,36 +30,36 @@ import org.activiti.engine.runtime.Clock;
  */
 public class SpringAdvancedBusinessCalendarManagerFactory {
 
-    private Integer defaultScheduleVersion;
+  private Integer defaultScheduleVersion;
 
-    private Clock clock;
+  private Clock clock;
 
-    public Integer getDefaultScheduleVersion() {
-        return defaultScheduleVersion;
+  public Integer getDefaultScheduleVersion() {
+    return defaultScheduleVersion;
+  }
+
+  public void setDefaultScheduleVersion(Integer defaultScheduleVersion) {
+    this.defaultScheduleVersion = defaultScheduleVersion;
+  }
+
+  public Clock getClock() {
+    if (clock == null) {
+      clock = new DefaultClockImpl();
     }
+    return clock;
+  }
 
-    public void setDefaultScheduleVersion(Integer defaultScheduleVersion) {
-        this.defaultScheduleVersion = defaultScheduleVersion;
-    }
+  public void setClock(Clock clock) {
+    this.clock = clock;
+  }
 
-    public Clock getClock() {
-        if (clock == null) {
-            clock = new DefaultClockImpl();
-        }
-        return clock;
-    }
+  public BusinessCalendarManager getBusinessCalendarManager() {
+    MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
+    mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(getClock()));
+    mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(getClock()));
+    mapBusinessCalendarManager.addBusinessCalendar(AdvancedCycleBusinessCalendar.NAME, new AdvancedCycleBusinessCalendar(getClock(), defaultScheduleVersion));
 
-    public void setClock(Clock clock) {
-        this.clock = clock;
-    }
-
-    public BusinessCalendarManager getBusinessCalendarManager() {
-        MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
-        mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(getClock()));
-        mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(getClock()));
-        mapBusinessCalendarManager.addBusinessCalendar(AdvancedCycleBusinessCalendar.NAME, new AdvancedCycleBusinessCalendar(getClock(), defaultScheduleVersion));
-
-        return mapBusinessCalendarManager;
-    }
+    return mapBusinessCalendarManager;
+  }
 
 }

@@ -19,12 +19,12 @@ import java.util.List;
  */
 public interface StepDefinitionContainer<T> {
 
-    List<StepDefinition> getSteps();
+  List<StepDefinition> getSteps();
 
-    void addStep(StepDefinition stepDefinition);
+  void addStep(StepDefinition stepDefinition);
 
-    T addHumanStep(String name, String assignee);
+  T addHumanStep(String name, String assignee);
 
-    T addHumanStepForWorkflowInitiator(String name);
+  T addHumanStepForWorkflowInitiator(String name);
 
 }

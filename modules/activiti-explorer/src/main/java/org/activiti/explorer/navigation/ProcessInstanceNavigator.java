@@ -20,19 +20,19 @@ import org.activiti.explorer.ExplorerApp;
  */
 public class ProcessInstanceNavigator {
 
-    public static final String PROCESS_INSTANCE_URL_PART = "processinstance";
+  public static final String PROCESS_INSTANCE_URL_PART = "processinstance";
 
-    public String getTrigger() {
-        return PROCESS_INSTANCE_URL_PART;
-    }
+  public String getTrigger() {
+    return PROCESS_INSTANCE_URL_PART;
+  }
 
-    public void handleManagementNavigation(UriFragment uriFragment) {
-        String processInstanceId = uriFragment.getUriPart(1);
-        if (processInstanceId != null) {
-            ExplorerApp.get().getViewManager().showProcessInstancePage(processInstanceId);
-        } else {
-            ExplorerApp.get().getViewManager().showProcessInstancePage();
-        }
+  public void handleManagementNavigation(UriFragment uriFragment) {
+    String processInstanceId = uriFragment.getUriPart(1);
+    if (processInstanceId != null) {
+      ExplorerApp.get().getViewManager().showProcessInstancePage(processInstanceId);
+    } else {
+      ExplorerApp.get().getViewManager().showProcessInstancePage();
     }
+  }
 
 }

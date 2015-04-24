@@ -18,75 +18,74 @@ import java.util.List;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
- * @author Joram Barrez 
+ * @author Joram Barrez
  */
 public class ExecutionTreeNode implements Iterable<ExecutionTreeNode> {
-	
-	protected ExecutionEntity executionEntity;
-	protected ExecutionTreeNode parent;
-	protected List<ExecutionTreeNode> children;
-	
-	public ExecutionTreeNode(ExecutionEntity executionEntity) {
-		this.executionEntity = executionEntity;
-	}
 
-	public ExecutionEntity getExecutionEntity() {
-		return executionEntity;
-	}
+  protected ExecutionEntity executionEntity;
+  protected ExecutionTreeNode parent;
+  protected List<ExecutionTreeNode> children;
 
-	public void setExecutionEntity(ExecutionEntity executionEntity) {
-		this.executionEntity = executionEntity;
-	}
+  public ExecutionTreeNode(ExecutionEntity executionEntity) {
+    this.executionEntity = executionEntity;
+  }
 
-	public ExecutionTreeNode getParent() {
-		return parent;
-	}
+  public ExecutionEntity getExecutionEntity() {
+    return executionEntity;
+  }
 
-	public void setParent(ExecutionTreeNode parent) {
-		this.parent = parent;
-	}
+  public void setExecutionEntity(ExecutionEntity executionEntity) {
+    this.executionEntity = executionEntity;
+  }
 
-	public List<ExecutionTreeNode> getChildren() {
-		return children;
-	}
+  public ExecutionTreeNode getParent() {
+    return parent;
+  }
 
-	public void setChildren(List<ExecutionTreeNode> children) {
-		this.children = children;
-	}
-	
-	@Override
-    public Iterator<ExecutionTreeNode> iterator() {
-		return new ExecutionTreeBfsIterator(this);
+  public void setParent(ExecutionTreeNode parent) {
+    this.parent = parent;
+  }
+
+  public List<ExecutionTreeNode> getChildren() {
+    return children;
+  }
+
+  public void setChildren(List<ExecutionTreeNode> children) {
+    this.children = children;
+  }
+
+  @Override
+  public Iterator<ExecutionTreeNode> iterator() {
+    return new ExecutionTreeBfsIterator(this);
+  }
+
+  public ExecutionTreeBfsIterator leafsFirstIterator() {
+    return new ExecutionTreeBfsIterator(this, true);
+  }
+
+  /* See http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram */
+  @Override
+  public String toString() {
+    StringBuilder strb = new StringBuilder();
+    strb.append(getExecutionEntity().getId() + " : " + getExecutionEntity().getActivityId() + ", parent id " + getExecutionEntity().getParentId() + "\r\n");
+    if (children != null) {
+      for (ExecutionTreeNode childNode : children) {
+        childNode.internalToString(strb, "", true);
+      }
     }
-	
-	public ExecutionTreeBfsIterator leafsFirstIterator() {
-		return new ExecutionTreeBfsIterator(this, true);
-	}
-	
-	/* See http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram */
-	@Override
-	public String toString() {
-		StringBuilder strb = new StringBuilder();
-		strb.append(getExecutionEntity().getId() + " : " + getExecutionEntity().getActivityId() + ", parent id " + getExecutionEntity().getParentId() + "\r\n");
-		if (children != null) {
-			for (ExecutionTreeNode childNode : children) {
-				childNode.internalToString(strb, "", true);
-			}
-		}
-		return strb.toString();
-	}
+    return strb.toString();
+  }
 
-	protected void internalToString(StringBuilder strb, String prefix, boolean isTail) {
-		strb.append(prefix + (isTail ? "└── " : "├── ") + getExecutionEntity().getId() 
-				+ " : " + getExecutionEntity().getActivityId() + ", parent id " + getExecutionEntity().getParentId() + "\r\n"); 
-		if (children != null) {
-			for (int i = 0; i < children.size() - 1; i++) {
-				children.get(i).internalToString(strb, prefix + (isTail ? "    " : "│   "), false);
-			}
-			if (children.size() > 0) {
-				children.get(children.size() - 1).internalToString(strb, prefix + (isTail ? "    " : "│   "), true);
-			}
-		}
-	}
+  protected void internalToString(StringBuilder strb, String prefix, boolean isTail) {
+    strb.append(prefix + (isTail ? "└── " : "├── ") + getExecutionEntity().getId() + " : " + getExecutionEntity().getActivityId() + ", parent id " + getExecutionEntity().getParentId() + "\r\n");
+    if (children != null) {
+      for (int i = 0; i < children.size() - 1; i++) {
+        children.get(i).internalToString(strb, prefix + (isTail ? "    " : "│   "), false);
+      }
+      if (children.size() > 0) {
+        children.get(children.size() - 1).internalToString(strb, prefix + (isTail ? "    " : "│   "), true);
+      }
+    }
+  }
 
 }

@@ -27,23 +27,23 @@ import org.activiti.engine.task.IdentityLink;
  */
 public class GetIdentityLinksForProcessDefinitionCmd implements Command<List<IdentityLink>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String processDefinitionId;
+  private static final long serialVersionUID = 1L;
+  protected String processDefinitionId;
 
-    public GetIdentityLinksForProcessDefinitionCmd(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+  public GetIdentityLinksForProcessDefinitionCmd(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public List<IdentityLink> execute(CommandContext commandContext) {
+    ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findProcessDefinitionById(processDefinitionId);
+
+    if (processDefinition == null) {
+      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public List<IdentityLink> execute(CommandContext commandContext) {
-        ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findProcessDefinitionById(processDefinitionId);
-
-        if (processDefinition == null) {
-            throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processDefinitionId, ProcessDefinition.class);
-        }
-
-        List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
-        return identityLinks;
-    }
+    List<IdentityLink> identityLinks = (List) processDefinition.getIdentityLinks();
+    return identityLinks;
+  }
 
 }

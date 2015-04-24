@@ -23,30 +23,29 @@ import org.activiti.engine.test.Deployment;
 import org.junit.Test;
 
 /**
- * Testcase for assuring that the {@link CompleteTaskInterceptor} works as
- * expected
+ * Testcase for assuring that the {@link CompleteTaskInterceptor} works as expected
  * 
  * @author Daniel Meyer
  */
 public class CompleteTaskTest extends CdiActivitiTestCase {
 
-    @Test
-    @Deployment(resources = "org/activiti/cdi/test/api/annotation/CompleteTaskTest.bpmn20.xml")
-    public void testCompleteTask() {
+  @Test
+  @Deployment(resources = "org/activiti/cdi/test/api/annotation/CompleteTaskTest.bpmn20.xml")
+  public void testCompleteTask() {
 
-        BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
+    BusinessProcess businessProcess = getBeanInstance(BusinessProcess.class);
 
-        businessProcess.startProcessByKey("keyOfTheProcess");
+    businessProcess.startProcessByKey("keyOfTheProcess");
 
-        Task task = taskService.createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
 
-        // associate current unit of work with the task:
-        businessProcess.startTask(task.getId());
+    // associate current unit of work with the task:
+    businessProcess.startTask(task.getId());
 
-        getBeanInstance(DeclarativeProcessController.class).completeTask();
+    getBeanInstance(DeclarativeProcessController.class).completeTask();
 
-        // assert that now the task is completed
-        assertNull(taskService.createTaskQuery().singleResult());
-    }
+    // assert that now the task is completed
+    assertNull(taskService.createTaskQuery().singleResult());
+  }
 
 }

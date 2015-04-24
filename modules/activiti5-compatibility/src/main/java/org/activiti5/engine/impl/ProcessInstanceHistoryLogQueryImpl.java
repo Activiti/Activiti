@@ -17,122 +17,122 @@ import org.activiti5.engine.impl.persistence.entity.HistoricProcessInstanceEntit
  */
 public class ProcessInstanceHistoryLogQueryImpl implements ProcessInstanceHistoryLogQuery, Command<ProcessInstanceHistoryLog> {
 
-    protected CommandExecutor commandExecutor;
+  protected CommandExecutor commandExecutor;
 
-    protected String processInstanceId;
-    protected boolean includeTasks;
-    protected boolean includeActivities;
-    protected boolean includeVariables;
-    protected boolean includeComments;
-    protected boolean includeVariableUpdates;
-    protected boolean includeFormProperties;
+  protected String processInstanceId;
+  protected boolean includeTasks;
+  protected boolean includeActivities;
+  protected boolean includeVariables;
+  protected boolean includeComments;
+  protected boolean includeVariableUpdates;
+  protected boolean includeFormProperties;
 
-    public ProcessInstanceHistoryLogQueryImpl(CommandExecutor commandExecutor, String processInstanceId) {
-        this.commandExecutor = commandExecutor;
-        this.processInstanceId = processInstanceId;
+  public ProcessInstanceHistoryLogQueryImpl(CommandExecutor commandExecutor, String processInstanceId) {
+    this.commandExecutor = commandExecutor;
+    this.processInstanceId = processInstanceId;
+  }
+
+  @Override
+  public ProcessInstanceHistoryLogQuery includeTasks() {
+    this.includeTasks = true;
+    return this;
+  }
+
+  @Override
+  public ProcessInstanceHistoryLogQuery includeComments() {
+    this.includeComments = true;
+    return this;
+  }
+
+  @Override
+  public ProcessInstanceHistoryLogQuery includeActivities() {
+    this.includeActivities = true;
+    return this;
+  }
+
+  @Override
+  public ProcessInstanceHistoryLogQuery includeVariables() {
+    this.includeVariables = true;
+    return this;
+  }
+
+  @Override
+  public ProcessInstanceHistoryLogQuery includeVariableUpdates() {
+    this.includeVariableUpdates = true;
+    return this;
+  }
+
+  @Override
+  public ProcessInstanceHistoryLogQuery includeFormProperties() {
+    this.includeFormProperties = true;
+    return this;
+  }
+
+  @Override
+  public ProcessInstanceHistoryLog singleResult() {
+    return commandExecutor.execute(this);
+  }
+
+  @Override
+  public ProcessInstanceHistoryLog execute(CommandContext commandContext) {
+
+    // Fetch historic process instance
+    HistoricProcessInstanceEntity historicProcessInstance = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
+
+    if (historicProcessInstance == null) {
+      return null;
     }
 
-    @Override
-    public ProcessInstanceHistoryLogQuery includeTasks() {
-        this.includeTasks = true;
-        return this;
+    // Create a log using this historic process instance
+    ProcessInstanceHistoryLogImpl processInstanceHistoryLog = new ProcessInstanceHistoryLogImpl(historicProcessInstance);
+
+    // Add events, based on query settings
+
+    // Tasks
+    if (includeTasks) {
+      List<? extends HistoricData> tasks = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByQueryCriteria(
+          new HistoricTaskInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId));
+      processInstanceHistoryLog.addHistoricData(tasks);
     }
 
-    @Override
-    public ProcessInstanceHistoryLogQuery includeComments() {
-        this.includeComments = true;
-        return this;
+    // Activities
+    if (includeActivities) {
+      List<HistoricActivityInstance> activities = commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstancesByQueryCriteria(
+          new HistoricActivityInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId), null);
+      processInstanceHistoryLog.addHistoricData(activities);
     }
 
-    @Override
-    public ProcessInstanceHistoryLogQuery includeActivities() {
-        this.includeActivities = true;
-        return this;
+    // Variables
+    if (includeVariables) {
+      List<HistoricVariableInstance> variables = commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByQueryCriteria(
+          new HistoricVariableInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId), null);
+      processInstanceHistoryLog.addHistoricData(variables);
     }
 
-    @Override
-    public ProcessInstanceHistoryLogQuery includeVariables() {
-        this.includeVariables = true;
-        return this;
+    // Comment
+    if (includeComments) {
+      List<? extends HistoricData> comments = commandContext.getCommentEntityManager().findCommentsByProcessInstanceId(processInstanceId);
+      processInstanceHistoryLog.addHistoricData(comments);
     }
 
-    @Override
-    public ProcessInstanceHistoryLogQuery includeVariableUpdates() {
-        this.includeVariableUpdates = true;
-        return this;
+    // Details: variables
+    if (includeVariableUpdates) {
+      List<? extends HistoricData> variableUpdates = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(new HistoricDetailQueryImpl(commandExecutor).variableUpdates(),
+          null);
+      processInstanceHistoryLog.addHistoricData(variableUpdates);
     }
 
-    @Override
-    public ProcessInstanceHistoryLogQuery includeFormProperties() {
-        this.includeFormProperties = true;
-        return this;
+    // Details: form properties
+    if (includeFormProperties) {
+      List<? extends HistoricData> formProperties = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(new HistoricDetailQueryImpl(commandExecutor).formProperties(),
+          null);
+      processInstanceHistoryLog.addHistoricData(formProperties);
     }
 
-    @Override
-    public ProcessInstanceHistoryLog singleResult() {
-        return commandExecutor.execute(this);
-    }
+    // All events collected. Sort them by date.
+    processInstanceHistoryLog.orderHistoricData();
 
-    @Override
-    public ProcessInstanceHistoryLog execute(CommandContext commandContext) {
-
-        // Fetch historic process instance
-        HistoricProcessInstanceEntity historicProcessInstance = commandContext.getHistoricProcessInstanceEntityManager().findHistoricProcessInstance(processInstanceId);
-
-        if (historicProcessInstance == null) {
-            return null;
-        }
-
-        // Create a log using this historic process instance
-        ProcessInstanceHistoryLogImpl processInstanceHistoryLog = new ProcessInstanceHistoryLogImpl(historicProcessInstance);
-
-        // Add events, based on query settings
-
-        // Tasks
-        if (includeTasks) {
-            List<? extends HistoricData> tasks = commandContext.getHistoricTaskInstanceEntityManager().findHistoricTaskInstancesByQueryCriteria(
-                    new HistoricTaskInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId));
-            processInstanceHistoryLog.addHistoricData(tasks);
-        }
-
-        // Activities
-        if (includeActivities) {
-            List<HistoricActivityInstance> activities = commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstancesByQueryCriteria(
-                    new HistoricActivityInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId), null);
-            processInstanceHistoryLog.addHistoricData(activities);
-        }
-
-        // Variables
-        if (includeVariables) {
-            List<HistoricVariableInstance> variables = commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByQueryCriteria(
-                    new HistoricVariableInstanceQueryImpl(commandExecutor).processInstanceId(processInstanceId), null);
-            processInstanceHistoryLog.addHistoricData(variables);
-        }
-
-        // Comment
-        if (includeComments) {
-            List<? extends HistoricData> comments = commandContext.getCommentEntityManager().findCommentsByProcessInstanceId(processInstanceId);
-            processInstanceHistoryLog.addHistoricData(comments);
-        }
-
-        // Details: variables
-        if (includeVariableUpdates) {
-            List<? extends HistoricData> variableUpdates = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(
-                    new HistoricDetailQueryImpl(commandExecutor).variableUpdates(), null);
-            processInstanceHistoryLog.addHistoricData(variableUpdates);
-        }
-
-        // Details: form properties
-        if (includeFormProperties) {
-            List<? extends HistoricData> formProperties = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(
-                    new HistoricDetailQueryImpl(commandExecutor).formProperties(), null);
-            processInstanceHistoryLog.addHistoricData(formProperties);
-        }
-
-        // All events collected. Sort them by date.
-        processInstanceHistoryLog.orderHistoricData();
-
-        return processInstanceHistoryLog;
-    }
+    return processInstanceHistoryLog;
+  }
 
 }

@@ -25,16 +25,16 @@ import org.activiti5.engine.impl.interceptor.CommandExecutor;
  */
 public class DbSchemaUpdate {
 
-    public static void main(String[] args) {
-        ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
-        CommandExecutor commandExecutor = processEngine.getProcessEngineConfiguration().getCommandExecutor();
-        CommandConfig config = new CommandConfig().transactionNotSupported();
-        commandExecutor.execute(config, new Command<Object>() {
-            public Object execute(CommandContext commandContext) {
-                commandContext.getSession(DbSqlSession.class).dbSchemaUpdate();
-                return null;
-            }
-        });
-    }
+  public static void main(String[] args) {
+    ProcessEngineImpl processEngine = (ProcessEngineImpl) ProcessEngines.getDefaultProcessEngine();
+    CommandExecutor commandExecutor = processEngine.getProcessEngineConfiguration().getCommandExecutor();
+    CommandConfig config = new CommandConfig().transactionNotSupported();
+    commandExecutor.execute(config, new Command<Object>() {
+      public Object execute(CommandContext commandContext) {
+        commandContext.getSession(DbSqlSession.class).dbSchemaUpdate();
+        return null;
+      }
+    });
+  }
 
 }

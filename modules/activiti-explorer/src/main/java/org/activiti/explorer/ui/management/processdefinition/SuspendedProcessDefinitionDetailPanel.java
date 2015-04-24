@@ -32,42 +32,42 @@ import com.vaadin.ui.Button.ClickListener;
  */
 public class SuspendedProcessDefinitionDetailPanel extends AbstractProcessDefinitionDetailPanel {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public SuspendedProcessDefinitionDetailPanel(String processDefinitionId, SuspendedProcessDefinitionPage suspendedProcessDefinitionPage) {
-        super(processDefinitionId, suspendedProcessDefinitionPage);
+  public SuspendedProcessDefinitionDetailPanel(String processDefinitionId, SuspendedProcessDefinitionPage suspendedProcessDefinitionPage) {
+    super(processDefinitionId, suspendedProcessDefinitionPage);
+  }
+
+  protected void initActions(final AbstractPage parentPage) {
+    SuspendedProcessDefinitionPage processDefinitionPage = (SuspendedProcessDefinitionPage) parentPage;
+
+    Button activateButton = new Button(i18nManager.getMessage(Messages.PROCESS_ACTIVATE));
+    activateButton.addListener(new ClickListener() {
+
+      private static final long serialVersionUID = 1L;
+
+      public void buttonClick(ClickEvent event) {
+        ChangeProcessSuspensionStatePopupWindow popupWindow = new ChangeProcessSuspensionStatePopupWindow(processDefinition.getId(), parentPage, false);
+        ExplorerApp.get().getViewManager().showPopupWindow(popupWindow);
+      }
+
+    });
+
+    // Check if already activation job pending
+    boolean activateJobPending = false;
+    List<Job> jobs = ProcessEngines.getDefaultProcessEngine().getManagementService().createJobQuery().processDefinitionId(processDefinition.getId()).list();
+    for (Job job : jobs) {
+      // TODO: this is a hack. Needs to be cleaner in engine!
+      if (((JobEntity) job).getJobHandlerType().equals(TimerActivateProcessDefinitionHandler.TYPE)) {
+        activateJobPending = true;
+        break;
+      }
     }
+    activateButton.setEnabled(!activateJobPending);
 
-    protected void initActions(final AbstractPage parentPage) {
-        SuspendedProcessDefinitionPage processDefinitionPage = (SuspendedProcessDefinitionPage) parentPage;
-
-        Button activateButton = new Button(i18nManager.getMessage(Messages.PROCESS_ACTIVATE));
-        activateButton.addListener(new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-                ChangeProcessSuspensionStatePopupWindow popupWindow = new ChangeProcessSuspensionStatePopupWindow(processDefinition.getId(), parentPage, false);
-                ExplorerApp.get().getViewManager().showPopupWindow(popupWindow);
-            }
-
-        });
-
-        // Check if already activation job pending
-        boolean activateJobPending = false;
-        List<Job> jobs = ProcessEngines.getDefaultProcessEngine().getManagementService().createJobQuery().processDefinitionId(processDefinition.getId()).list();
-        for (Job job : jobs) {
-            // TODO: this is a hack. Needs to be cleaner in engine!
-            if (((JobEntity) job).getJobHandlerType().equals(TimerActivateProcessDefinitionHandler.TYPE)) {
-                activateJobPending = true;
-                break;
-            }
-        }
-        activateButton.setEnabled(!activateJobPending);
-
-        // Clear toolbar and add 'start' button
-        processDefinitionPage.getToolBar().removeAllButtons();
-        processDefinitionPage.getToolBar().addButton(activateButton);
-    }
+    // Clear toolbar and add 'start' button
+    processDefinitionPage.getToolBar().removeAllButtons();
+    processDefinitionPage.getToolBar().addButton(activateButton);
+  }
 
 }

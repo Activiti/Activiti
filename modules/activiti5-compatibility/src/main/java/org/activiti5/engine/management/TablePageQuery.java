@@ -19,25 +19,23 @@ package org.activiti5.engine.management;
  */
 public interface TablePageQuery {
 
-    /**
-     * The name of the table of which a page must be fetched.
-     */
-    TablePageQuery tableName(String tableName);
+  /**
+   * The name of the table of which a page must be fetched.
+   */
+  TablePageQuery tableName(String tableName);
 
-    /**
-     * Orders the resulting table page rows by the given column in ascending
-     * order.
-     */
-    TablePageQuery orderAsc(String column);
+  /**
+   * Orders the resulting table page rows by the given column in ascending order.
+   */
+  TablePageQuery orderAsc(String column);
 
-    /**
-     * Orders the resulting table page rows by the given column in descending
-     * order.
-     */
-    TablePageQuery orderDesc(String column);
+  /**
+   * Orders the resulting table page rows by the given column in descending order.
+   */
+  TablePageQuery orderDesc(String column);
 
-    /**
-     * Executes the query and returns the {@link TablePage}.
-     */
-    TablePage listPage(int firstResult, int maxResults);
+  /**
+   * Executes the query and returns the {@link TablePage}.
+   */
+  TablePage listPage(int firstResult, int maxResults);
 }

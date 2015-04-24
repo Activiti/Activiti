@@ -25,15 +25,15 @@ import org.activiti5.engine.task.Attachment;
  */
 public class GetAttachmentCmd implements Command<Attachment>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String attachmentId;
+  private static final long serialVersionUID = 1L;
+  protected String attachmentId;
 
-    public GetAttachmentCmd(String attachmentId) {
-        this.attachmentId = attachmentId;
-    }
+  public GetAttachmentCmd(String attachmentId) {
+    this.attachmentId = attachmentId;
+  }
 
-    public Attachment execute(CommandContext commandContext) {
-        return commandContext.getDbSqlSession().selectById(AttachmentEntity.class, attachmentId);
-    }
+  public Attachment execute(CommandContext commandContext) {
+    return commandContext.getDbSqlSession().selectById(AttachmentEntity.class, attachmentId);
+  }
 
 }

@@ -23,108 +23,108 @@ import org.slf4j.Logger;
  */
 public class DebugInfoOperationExecuted extends AbstractDebugInfo {
 
-	protected long preExecutionTime;
-	protected long postExecutionTime;
-	protected AbstractOperation operation;
-	protected String executionId;
-	protected String flowElementId;
-	protected Class<?> flowElementClass;
-	
-	protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS");
+  protected long preExecutionTime;
+  protected long postExecutionTime;
+  protected AbstractOperation operation;
+  protected String executionId;
+  protected String flowElementId;
+  protected Class<?> flowElementClass;
 
-	public DebugInfoOperationExecuted(AbstractOperation operation) {
-		this.operation = operation;
+  protected SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss:SSS");
 
-		// Need to capture data here, as it will change when other steps are executed
-		if (operation.getExecution() != null) {
-			this.executionId = operation.getExecution().getId();
+  public DebugInfoOperationExecuted(AbstractOperation operation) {
+    this.operation = operation;
 
-			if (operation.getExecution().getCurrentFlowElement() != null) {
-				this.flowElementId = operation.getExecution().getCurrentFlowElement().getId();
-				this.flowElementClass = operation.getExecution().getCurrentFlowElement().getClass();
-			}
-		}
-	}
-	
-	@Override
-	public void printOut(Logger logger) {
-		printOperationInfo(logger);
-		
-		if (getExecutionTrees().size() > 0) {
-			for (DebugInfoExecutionTree executionTree : getExecutionTrees()) {
-				executionTree.getProcessInstance().print(logger);
-			}
-		}
-	}
+    // Need to capture data here, as it will change when other steps are executed
+    if (operation.getExecution() != null) {
+      this.executionId = operation.getExecution().getId();
 
-	protected void printOperationInfo(Logger logger) {
-	    StringBuilder strb = new StringBuilder();
-
-		// Timing info
-		strb.append("[" + dateFormat.format(new Date(getPreExecutionTime())) + " - " + dateFormat.format(new Date(getPostExecutionTime())) + " ("
-		        + (getPostExecutionTime() - getPreExecutionTime()) + "ms)]");
-
-		// Operation info
-		strb.append(" " + getOperation().getClass().getSimpleName() + " ");
-
-		// Execution info
-		if (getExecutionId() != null) {
-			strb.append("with execution " + getExecutionId());
-
-			if (getFlowElementId() != null) {
-				strb.append(" at flow element " + getFlowElementId() + " (" + getFlowElementClass().getSimpleName() + ")");
-			}
-		}
-
-		logger.info(strb.toString());
+      if (operation.getExecution().getCurrentFlowElement() != null) {
+        this.flowElementId = operation.getExecution().getCurrentFlowElement().getId();
+        this.flowElementClass = operation.getExecution().getCurrentFlowElement().getClass();
+      }
     }
-	
-	public long getPreExecutionTime() {
-		return preExecutionTime;
-	}
+  }
 
-	public void setPreExecutionTime(long preExecutionTime) {
-		this.preExecutionTime = preExecutionTime;
-	}
+  @Override
+  public void printOut(Logger logger) {
+    printOperationInfo(logger);
 
-	public long getPostExecutionTime() {
-		return postExecutionTime;
-	}
+    if (getExecutionTrees().size() > 0) {
+      for (DebugInfoExecutionTree executionTree : getExecutionTrees()) {
+        executionTree.getProcessInstance().print(logger);
+      }
+    }
+  }
 
-	public void setPostExecutionTime(long postExecutionTime) {
-		this.postExecutionTime = postExecutionTime;
-	}
+  protected void printOperationInfo(Logger logger) {
+    StringBuilder strb = new StringBuilder();
 
-	public AbstractOperation getOperation() {
-		return operation;
-	}
+    // Timing info
+    strb.append("[" + dateFormat.format(new Date(getPreExecutionTime())) + " - " + dateFormat.format(new Date(getPostExecutionTime())) + " (" + (getPostExecutionTime() - getPreExecutionTime())
+        + "ms)]");
 
-	public void setOperation(AbstractOperation operation) {
-		this.operation = operation;
-	}
+    // Operation info
+    strb.append(" " + getOperation().getClass().getSimpleName() + " ");
 
-	public String getExecutionId() {
-		return executionId;
-	}
+    // Execution info
+    if (getExecutionId() != null) {
+      strb.append("with execution " + getExecutionId());
 
-	public void setExecutionId(String executionId) {
-		this.executionId = executionId;
-	}
+      if (getFlowElementId() != null) {
+        strb.append(" at flow element " + getFlowElementId() + " (" + getFlowElementClass().getSimpleName() + ")");
+      }
+    }
 
-	public String getFlowElementId() {
-		return flowElementId;
-	}
+    logger.info(strb.toString());
+  }
 
-	public void setFlowElementId(String flowElementId) {
-		this.flowElementId = flowElementId;
-	}
+  public long getPreExecutionTime() {
+    return preExecutionTime;
+  }
 
-	public Class<?> getFlowElementClass() {
-		return flowElementClass;
-	}
+  public void setPreExecutionTime(long preExecutionTime) {
+    this.preExecutionTime = preExecutionTime;
+  }
 
-	public void setFlowElementClass(Class<?> flowElementClass) {
-		this.flowElementClass = flowElementClass;
-	}
+  public long getPostExecutionTime() {
+    return postExecutionTime;
+  }
+
+  public void setPostExecutionTime(long postExecutionTime) {
+    this.postExecutionTime = postExecutionTime;
+  }
+
+  public AbstractOperation getOperation() {
+    return operation;
+  }
+
+  public void setOperation(AbstractOperation operation) {
+    this.operation = operation;
+  }
+
+  public String getExecutionId() {
+    return executionId;
+  }
+
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
+
+  public String getFlowElementId() {
+    return flowElementId;
+  }
+
+  public void setFlowElementId(String flowElementId) {
+    this.flowElementId = flowElementId;
+  }
+
+  public Class<?> getFlowElementClass() {
+    return flowElementClass;
+  }
+
+  public void setFlowElementClass(Class<?> flowElementClass) {
+    this.flowElementClass = flowElementClass;
+  }
 
 }

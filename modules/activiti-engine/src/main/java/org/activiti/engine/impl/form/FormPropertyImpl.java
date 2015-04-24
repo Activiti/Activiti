@@ -21,53 +21,53 @@ import org.activiti.engine.form.FormType;
  */
 public class FormPropertyImpl implements FormProperty {
 
-    protected String id;
-    protected String name;
-    protected FormType type;
-    protected boolean isRequired;
-    protected boolean isReadable;
-    protected boolean isWritable;
+  protected String id;
+  protected String name;
+  protected FormType type;
+  protected boolean isRequired;
+  protected boolean isReadable;
+  protected boolean isWritable;
 
-    protected String value;
+  protected String value;
 
-    public FormPropertyImpl(FormPropertyHandler formPropertyHandler) {
-        this.id = formPropertyHandler.getId();
-        this.name = formPropertyHandler.getName();
-        this.type = formPropertyHandler.getType();
-        this.isRequired = formPropertyHandler.isRequired();
-        this.isReadable = formPropertyHandler.isReadable();
-        this.isWritable = formPropertyHandler.isWritable();
-    }
+  public FormPropertyImpl(FormPropertyHandler formPropertyHandler) {
+    this.id = formPropertyHandler.getId();
+    this.name = formPropertyHandler.getName();
+    this.type = formPropertyHandler.getType();
+    this.isRequired = formPropertyHandler.isRequired();
+    this.isReadable = formPropertyHandler.isReadable();
+    this.isWritable = formPropertyHandler.isWritable();
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public FormType getType() {
-        return type;
-    }
+  public FormType getType() {
+    return type;
+  }
 
-    public String getValue() {
-        return value;
-    }
+  public String getValue() {
+    return value;
+  }
 
-    public boolean isRequired() {
-        return isRequired;
-    }
+  public boolean isRequired() {
+    return isRequired;
+  }
 
-    public boolean isReadable() {
-        return isReadable;
-    }
+  public boolean isReadable() {
+    return isReadable;
+  }
 
-    public void setValue(String value) {
-        this.value = value;
-    }
+  public void setValue(String value) {
+    this.value = value;
+  }
 
-    public boolean isWritable() {
-        return isWritable;
-    }
+  public boolean isWritable() {
+    return isWritable;
+  }
 }

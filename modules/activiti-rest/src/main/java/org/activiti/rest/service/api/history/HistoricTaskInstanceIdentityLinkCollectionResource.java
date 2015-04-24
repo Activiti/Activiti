@@ -33,20 +33,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HistoricTaskInstanceIdentityLinkCollectionResource {
 
-    @Autowired
-    protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-    @Autowired
-    protected HistoryService historyService;
+  @Autowired
+  protected HistoryService historyService;
 
-    @RequestMapping(value = "/history/historic-task-instances/{taskId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
-    public List<HistoricIdentityLinkResponse> getTaskIdentityLinks(@PathVariable String taskId, HttpServletRequest request) {
-        List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForTask(taskId);
+  @RequestMapping(value = "/history/historic-task-instances/{taskId}/identitylinks", method = RequestMethod.GET, produces = "application/json")
+  public List<HistoricIdentityLinkResponse> getTaskIdentityLinks(@PathVariable String taskId, HttpServletRequest request) {
+    List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForTask(taskId);
 
-        if (identityLinks != null) {
-            return restResponseFactory.createHistoricIdentityLinkResponseList(identityLinks);
-        }
-
-        return new ArrayList<HistoricIdentityLinkResponse>();
+    if (identityLinks != null) {
+      return restResponseFactory.createHistoricIdentityLinkResponseList(identityLinks);
     }
+
+    return new ArrayList<HistoricIdentityLinkResponse>();
+  }
 }

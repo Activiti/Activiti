@@ -21,5 +21,5 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  */
 public interface StartFormHandler extends FormHandler {
 
-    StartFormData createStartFormData(ProcessDefinitionEntity processDefinition);
+  StartFormData createStartFormData(ProcessDefinitionEntity processDefinition);
 }

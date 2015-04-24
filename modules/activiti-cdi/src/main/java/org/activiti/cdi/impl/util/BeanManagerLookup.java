@@ -20,43 +20,43 @@ import org.activiti.engine.ActivitiException;
 
 public class BeanManagerLookup {
 
-    /** holds a local beanManager if no jndi is available */
-    public static BeanManager localInstance;
+  /** holds a local beanManager if no jndi is available */
+  public static BeanManager localInstance;
 
-    /** provide a custom jndi lookup name */
-    public static String jndiName;
+  /** provide a custom jndi lookup name */
+  public static String jndiName;
 
-    public static BeanManager getBeanManager() {
-        if (localInstance != null) {
-            return localInstance;
-        }
-        return lookupBeanManagerInJndi();
+  public static BeanManager getBeanManager() {
+    if (localInstance != null) {
+      return localInstance;
+    }
+    return lookupBeanManagerInJndi();
+  }
+
+  private static BeanManager lookupBeanManagerInJndi() {
+
+    if (jndiName != null) {
+      try {
+        return (BeanManager) InitialContext.doLookup(jndiName);
+      } catch (NamingException e) {
+        throw new ActivitiException("Could not lookup beanmanager in jndi using name: '" + jndiName + "'.", e);
+      }
     }
 
-    private static BeanManager lookupBeanManagerInJndi() {
-
-        if (jndiName != null) {
-            try {
-                return (BeanManager) InitialContext.doLookup(jndiName);
-            } catch (NamingException e) {
-                throw new ActivitiException("Could not lookup beanmanager in jndi using name: '" + jndiName + "'.", e);
-            }
-        }
-
-        try {
-            // in an application server
-            return (BeanManager) InitialContext.doLookup("java:comp/BeanManager");
-        } catch (NamingException e) {
-            // silently ignore
-        }
-
-        try {
-            // in a servlet container
-            return (BeanManager) InitialContext.doLookup("java:comp/env/BeanManager");
-        } catch (NamingException e) {
-            // silently ignore
-        }
-
-        throw new ActivitiException("Could not lookup beanmanager in jndi. If no jndi is avalable, set the beanmanger to the 'localInstance' property of this class.");
+    try {
+      // in an application server
+      return (BeanManager) InitialContext.doLookup("java:comp/BeanManager");
+    } catch (NamingException e) {
+      // silently ignore
     }
+
+    try {
+      // in a servlet container
+      return (BeanManager) InitialContext.doLookup("java:comp/env/BeanManager");
+    } catch (NamingException e) {
+      // silently ignore
+    }
+
+    throw new ActivitiException("Could not lookup beanmanager in jndi. If no jndi is avalable, set the beanmanger to the 'localInstance' property of this class.");
+  }
 }

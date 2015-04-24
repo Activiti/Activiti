@@ -31,169 +31,169 @@ import org.apache.http.entity.StringEntity;
  */
 public class ModelResourceSourceTest extends BaseSpringRestTestCase {
 
-    public void testGetModelEditorSource() throws Exception {
+  public void testGetModelEditorSource() throws Exception {
 
-        Model model = null;
-        try {
+    Model model = null;
+    try {
 
-            model = repositoryService.newModel();
-            model.setName("Model name");
-            repositoryService.saveModel(model);
+      model = repositoryService.newModel();
+      model.setName("Model name");
+      repositoryService.saveModel(model);
 
-            repositoryService.addModelEditorSource(model.getId(), "This is the editor source".getBytes());
+      repositoryService.addModelEditorSource(model.getId(), "This is the editor source".getBytes());
 
-            HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
-            CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
 
-            // Check "OK" status
-            assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
-            assertEquals("This is the editor source", IOUtils.toString(response.getEntity().getContent()));
-            closeResponse(response);
+      // Check "OK" status
+      assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
+      assertEquals("This is the editor source", IOUtils.toString(response.getEntity().getContent()));
+      closeResponse(response);
 
-        } finally {
-            try {
-                repositoryService.deleteModel(model.getId());
-            } catch (Throwable ignore) {
-                // Ignore, model might not be created
-            }
-        }
+    } finally {
+      try {
+        repositoryService.deleteModel(model.getId());
+      } catch (Throwable ignore) {
+        // Ignore, model might not be created
+      }
     }
+  }
 
-    public void testGetModelEditorSourceNoSource() throws Exception {
-        Model model = null;
-        try {
+  public void testGetModelEditorSourceNoSource() throws Exception {
+    Model model = null;
+    try {
 
-            model = repositoryService.newModel();
-            model.setName("Model name");
-            repositoryService.saveModel(model);
+      model = repositoryService.newModel();
+      model.setName("Model name");
+      repositoryService.saveModel(model);
 
-            HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
-            closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
 
-        } finally {
-            try {
-                repositoryService.deleteModel(model.getId());
-            } catch (Throwable ignore) {
-                // Ignore, model might not be created
-            }
-        }
+    } finally {
+      try {
+        repositoryService.deleteModel(model.getId());
+      } catch (Throwable ignore) {
+        // Ignore, model might not be created
+      }
     }
+  }
 
-    public void testGetModelEditorSourceExtra() throws Exception {
+  public void testGetModelEditorSourceExtra() throws Exception {
 
-        Model model = null;
-        try {
+    Model model = null;
+    try {
 
-            model = repositoryService.newModel();
-            model.setName("Model name");
-            repositoryService.saveModel(model);
+      model = repositoryService.newModel();
+      model.setName("Model name");
+      repositoryService.saveModel(model);
 
-            repositoryService.addModelEditorSourceExtra(model.getId(), "This is the extra editor source".getBytes());
+      repositoryService.addModelEditorSourceExtra(model.getId(), "This is the extra editor source".getBytes());
 
-            HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
-            CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
 
-            // Check "OK" status
-            assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
-            assertEquals("This is the extra editor source", IOUtils.toString(response.getEntity().getContent()));
-            closeResponse(response);
+      // Check "OK" status
+      assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
+      assertEquals("This is the extra editor source", IOUtils.toString(response.getEntity().getContent()));
+      closeResponse(response);
 
-        } finally {
-            try {
-                repositoryService.deleteModel(model.getId());
-            } catch (Throwable ignore) {
-                // Ignore, model might not be created
-            }
-        }
+    } finally {
+      try {
+        repositoryService.deleteModel(model.getId());
+      } catch (Throwable ignore) {
+        // Ignore, model might not be created
+      }
     }
+  }
 
-    public void testGetModelEditorSourceExtraNoSource() throws Exception {
-        Model model = null;
-        try {
+  public void testGetModelEditorSourceExtraNoSource() throws Exception {
+    Model model = null;
+    try {
 
-            model = repositoryService.newModel();
-            model.setName("Model name");
-            repositoryService.saveModel(model);
+      model = repositoryService.newModel();
+      model.setName("Model name");
+      repositoryService.saveModel(model);
 
-            HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
-            closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
 
-        } finally {
-            try {
-                repositoryService.deleteModel(model.getId());
-            } catch (Throwable ignore) {
-                // Ignore, model might not be created
-            }
-        }
+    } finally {
+      try {
+        repositoryService.deleteModel(model.getId());
+      } catch (Throwable ignore) {
+        // Ignore, model might not be created
+      }
     }
+  }
 
-    public void testGetModelSourceUnexistingModel() throws Exception {
-        HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
-        closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+  public void testGetModelSourceUnexistingModel() throws Exception {
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
+    closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+  }
+
+  public void testGetModelSourceExtraUnexistingModel() throws Exception {
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
+    closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+  }
+
+  public void testSetModelEditorSource() throws Exception {
+
+    Model model = null;
+    try {
+
+      model = repositoryService.newModel();
+      model.setName("Model name");
+      repositoryService.saveModel(model);
+
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
+      httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("sourcefile", "application/octet-stream", new ByteArrayInputStream("This is the new editor source".getBytes()), null));
+      closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
+
+      assertEquals("This is the new editor source", new String(repositoryService.getModelEditorSource(model.getId())));
+
+    } finally {
+      try {
+        repositoryService.deleteModel(model.getId());
+      } catch (Throwable ignore) {
+        // Ignore, model might not be created
+      }
     }
+  }
 
-    public void testGetModelSourceExtraUnexistingModel() throws Exception {
-        HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
-        closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+  public void testSetModelEditorSourceExtra() throws Exception {
+
+    Model model = null;
+    try {
+
+      model = repositoryService.newModel();
+      model.setName("Model name");
+      repositoryService.saveModel(model);
+
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
+      httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("sourcefile", "application/octet-stream", new ByteArrayInputStream("This is the new extra editor source".getBytes()), null));
+      closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
+
+      assertEquals("This is the new extra editor source", new String(repositoryService.getModelEditorSourceExtra(model.getId())));
+
+    } finally {
+      try {
+        repositoryService.deleteModel(model.getId());
+      } catch (Throwable ignore) {
+        // Ignore, model might not be created
+      }
     }
+  }
 
-    public void testSetModelEditorSource() throws Exception {
+  public void testSetModelSourceUnexistingModel() throws Exception {
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
+    httpPut.setEntity(new StringEntity(""));
+    closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NOT_FOUND));
+  }
 
-        Model model = null;
-        try {
-
-            model = repositoryService.newModel();
-            model.setName("Model name");
-            repositoryService.saveModel(model);
-
-            HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId()));
-            httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("sourcefile", "application/octet-stream", new ByteArrayInputStream("This is the new editor source".getBytes()), null));
-            closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
-
-            assertEquals("This is the new editor source", new String(repositoryService.getModelEditorSource(model.getId())));
-
-        } finally {
-            try {
-                repositoryService.deleteModel(model.getId());
-            } catch (Throwable ignore) {
-                // Ignore, model might not be created
-            }
-        }
-    }
-
-    public void testSetModelEditorSourceExtra() throws Exception {
-
-        Model model = null;
-        try {
-
-            model = repositoryService.newModel();
-            model.setName("Model name");
-            repositoryService.saveModel(model);
-
-            HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId()));
-            httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("sourcefile", "application/octet-stream", new ByteArrayInputStream("This is the new extra editor source".getBytes()), null));
-            closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
-
-            assertEquals("This is the new extra editor source", new String(repositoryService.getModelEditorSourceExtra(model.getId())));
-
-        } finally {
-            try {
-                repositoryService.deleteModel(model.getId());
-            } catch (Throwable ignore) {
-                // Ignore, model might not be created
-            }
-        }
-    }
-
-    public void testSetModelSourceUnexistingModel() throws Exception {
-        HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, "unexisting"));
-        httpPut.setEntity(new StringEntity(""));
-        closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NOT_FOUND));
-    }
-
-    public void testSetModelSourceExtraUnexistingModel() throws Exception {
-        HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
-        httpPut.setEntity(new StringEntity(""));
-        closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NOT_FOUND));
-    }
+  public void testSetModelSourceExtraUnexistingModel() throws Exception {
+    HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, "unexisting"));
+    httpPut.setEntity(new StringEntity(""));
+    closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NOT_FOUND));
+  }
 }

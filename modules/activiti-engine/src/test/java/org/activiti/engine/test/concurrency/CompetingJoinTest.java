@@ -27,59 +27,59 @@ import org.slf4j.LoggerFactory;
  */
 public class CompetingJoinTest extends PluggableActivitiTestCase {
 
-    private static Logger log = LoggerFactory.getLogger(CompetingJoinTest.class);
+  private static Logger log = LoggerFactory.getLogger(CompetingJoinTest.class);
 
-    Thread testThread = Thread.currentThread();
-    static ControllableThread activeThread;
-    static String jobId;
+  Thread testThread = Thread.currentThread();
+  static ControllableThread activeThread;
+  static String jobId;
 
-    public class SignalThread extends ControllableThread {
-        String executionId;
-        ActivitiOptimisticLockingException exception;
+  public class SignalThread extends ControllableThread {
+    String executionId;
+    ActivitiOptimisticLockingException exception;
 
-        public SignalThread(String executionId) {
-            this.executionId = executionId;
-        }
-
-        public synchronized void startAndWaitUntilControlIsReturned() {
-            activeThread = this;
-            super.startAndWaitUntilControlIsReturned();
-        }
-
-        public void run() {
-            try {
-                processEngineConfiguration.getCommandExecutor().execute(new ControlledCommand(activeThread, new TriggerCmd(executionId, null)));
-
-            } catch (ActivitiOptimisticLockingException e) {
-                this.exception = e;
-            }
-            log.debug("{} ends", getName());
-        }
+    public SignalThread(String executionId) {
+      this.executionId = executionId;
     }
 
-    @Deployment
-    public void testCompetingJoins() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingJoinsProcess");
-        Execution execution1 = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("wait1").singleResult();
-
-        Execution execution2 = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("wait2").singleResult();
-
-        log.debug("test thread starts thread one");
-        SignalThread threadOne = new SignalThread(execution1.getId());
-        threadOne.startAndWaitUntilControlIsReturned();
-
-        log.debug("test thread continues to start thread two");
-        SignalThread threadTwo = new SignalThread(execution2.getId());
-        threadTwo.startAndWaitUntilControlIsReturned();
-
-        log.debug("test thread notifies thread 1");
-        threadOne.proceedAndWaitTillDone();
-        assertNull(threadOne.exception);
-
-        log.debug("test thread notifies thread 2");
-        threadTwo.proceedAndWaitTillDone();
-        assertNotNull(threadTwo.exception);
-        assertTextPresent("was updated by another transaction concurrently", threadTwo.exception.getMessage());
+    public synchronized void startAndWaitUntilControlIsReturned() {
+      activeThread = this;
+      super.startAndWaitUntilControlIsReturned();
     }
+
+    public void run() {
+      try {
+        processEngineConfiguration.getCommandExecutor().execute(new ControlledCommand(activeThread, new TriggerCmd(executionId, null)));
+
+      } catch (ActivitiOptimisticLockingException e) {
+        this.exception = e;
+      }
+      log.debug("{} ends", getName());
+    }
+  }
+
+  @Deployment
+  public void testCompetingJoins() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingJoinsProcess");
+    Execution execution1 = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("wait1").singleResult();
+
+    Execution execution2 = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("wait2").singleResult();
+
+    log.debug("test thread starts thread one");
+    SignalThread threadOne = new SignalThread(execution1.getId());
+    threadOne.startAndWaitUntilControlIsReturned();
+
+    log.debug("test thread continues to start thread two");
+    SignalThread threadTwo = new SignalThread(execution2.getId());
+    threadTwo.startAndWaitUntilControlIsReturned();
+
+    log.debug("test thread notifies thread 1");
+    threadOne.proceedAndWaitTillDone();
+    assertNull(threadOne.exception);
+
+    log.debug("test thread notifies thread 2");
+    threadTwo.proceedAndWaitTillDone();
+    assertNotNull(threadTwo.exception);
+    assertTextPresent("was updated by another transaction concurrently", threadTwo.exception.getMessage());
+  }
 
 }

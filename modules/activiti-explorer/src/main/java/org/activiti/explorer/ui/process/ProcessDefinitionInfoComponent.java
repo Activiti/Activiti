@@ -58,176 +58,176 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class ProcessDefinitionInfoComponent extends VerticalLayout {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionInfoComponent.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionInfoComponent.class);
 
-    // Services
-    protected transient RepositoryService repositoryService;
-    protected transient ManagementService managementService;
-    protected I18nManager i18nManager;
+  // Services
+  protected transient RepositoryService repositoryService;
+  protected transient ManagementService managementService;
+  protected I18nManager i18nManager;
 
-    // Members
-    protected ProcessDefinition processDefinition;
-    protected Deployment deployment;
+  // Members
+  protected ProcessDefinition processDefinition;
+  protected Deployment deployment;
 
-    // UI
-    protected HorizontalLayout timeDetails;
-    protected VerticalLayout processImageContainer;
+  // UI
+  protected HorizontalLayout timeDetails;
+  protected VerticalLayout processImageContainer;
 
-    public ProcessDefinitionInfoComponent(ProcessDefinition processDefinition, Deployment deployment) {
-        super();
-        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-        this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
-        this.i18nManager = ExplorerApp.get().getI18nManager();
+  public ProcessDefinitionInfoComponent(ProcessDefinition processDefinition, Deployment deployment) {
+    super();
+    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
 
-        this.processDefinition = processDefinition;
-        this.deployment = deployment;
+    this.processDefinition = processDefinition;
+    this.deployment = deployment;
 
-        addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
 
-        initSuspensionStateInformation();
-        initImage();
+    initSuspensionStateInformation();
+    initImage();
+  }
+
+  protected void initSuspensionStateInformation() {
+    List<Job> jobs = managementService.createJobQuery().processDefinitionId(processDefinition.getId()).orderByJobDuedate().asc().list();
+    List<JobEntity> suspensionStateJobs = new ArrayList<JobEntity>();
+
+    // TODO: this is a hack (ie the cast to JobEntity)... we must clean this
+    // in the engine!
+    for (Job job : jobs) {
+      JobEntity jobEntity = (JobEntity) job;
+      if (jobEntity.getJobHandlerType().equals(TimerSuspendProcessDefinitionHandler.TYPE) || jobEntity.getJobHandlerType().equals(TimerActivateProcessDefinitionHandler.TYPE)) {
+        suspensionStateJobs.add(jobEntity);
+      }
     }
 
-    protected void initSuspensionStateInformation() {
-        List<Job> jobs = managementService.createJobQuery().processDefinitionId(processDefinition.getId()).orderByJobDuedate().asc().list();
-        List<JobEntity> suspensionStateJobs = new ArrayList<JobEntity>();
+    if (!suspensionStateJobs.isEmpty()) {
 
-        // TODO: this is a hack (ie the cast to JobEntity)... we must clean this
-        // in the engine!
-        for (Job job : jobs) {
-            JobEntity jobEntity = (JobEntity) job;
-            if (jobEntity.getJobHandlerType().equals(TimerSuspendProcessDefinitionHandler.TYPE) || jobEntity.getJobHandlerType().equals(TimerActivateProcessDefinitionHandler.TYPE)) {
-                suspensionStateJobs.add(jobEntity);
-            }
+      // Header
+      Label suspensionStateTitle = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_SUSPENSION_STATE));
+      suspensionStateTitle.addStyleName(ExplorerLayout.STYLE_H3);
+      addComponent(suspensionStateTitle);
+      addEmptySpace(this);
+
+      // Actual suspend/activation jobs
+      for (JobEntity jobEntity : suspensionStateJobs) {
+        if (jobEntity.getJobHandlerType().equals(TimerSuspendProcessDefinitionHandler.TYPE)) {
+          Label suspendLabel = new Label(i18nManager.getMessage(Messages.PROCESS_SCHEDULED_SUSPEND, Constants.DEFAULT_TIME_FORMATTER.format(jobEntity.getDuedate())), Label.CONTENT_XHTML);
+          addComponent(suspendLabel);
+        } else if (jobEntity.getJobHandlerType().equals(TimerActivateProcessDefinitionHandler.TYPE)) {
+          Label suspendLabel = new Label(i18nManager.getMessage(Messages.PROCESS_SCHEDULED_ACTIVATE, Constants.DEFAULT_TIME_FORMATTER.format(jobEntity.getDuedate())), Label.CONTENT_XHTML);
+          addComponent(suspendLabel);
         }
-
-        if (!suspensionStateJobs.isEmpty()) {
-
-            // Header
-            Label suspensionStateTitle = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_SUSPENSION_STATE));
-            suspensionStateTitle.addStyleName(ExplorerLayout.STYLE_H3);
-            addComponent(suspensionStateTitle);
-            addEmptySpace(this);
-
-            // Actual suspend/activation jobs
-            for (JobEntity jobEntity : suspensionStateJobs) {
-                if (jobEntity.getJobHandlerType().equals(TimerSuspendProcessDefinitionHandler.TYPE)) {
-                    Label suspendLabel = new Label(i18nManager.getMessage(Messages.PROCESS_SCHEDULED_SUSPEND, Constants.DEFAULT_TIME_FORMATTER.format(jobEntity.getDuedate())), Label.CONTENT_XHTML);
-                    addComponent(suspendLabel);
-                } else if (jobEntity.getJobHandlerType().equals(TimerActivateProcessDefinitionHandler.TYPE)) {
-                    Label suspendLabel = new Label(i18nManager.getMessage(Messages.PROCESS_SCHEDULED_ACTIVATE, Constants.DEFAULT_TIME_FORMATTER.format(jobEntity.getDuedate())), Label.CONTENT_XHTML);
-                    addComponent(suspendLabel);
-                }
-            }
-        }
-
-        addEmptySpace(this);
+      }
     }
 
-    protected void initImage() {
-        processImageContainer = new VerticalLayout();
+    addEmptySpace(this);
+  }
 
-        Label processTitle = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
-        processTitle.addStyleName(ExplorerLayout.STYLE_H3);
-        processImageContainer.addComponent(processTitle);
+  protected void initImage() {
+    processImageContainer = new VerticalLayout();
 
-        boolean didDrawImage = false;
+    Label processTitle = new Label(i18nManager.getMessage(Messages.PROCESS_HEADER_DIAGRAM));
+    processTitle.addStyleName(ExplorerLayout.STYLE_H3);
+    processImageContainer.addComponent(processTitle);
 
-        if (ExplorerApp.get().isUseJavascriptDiagram()) {
-            try {
+    boolean didDrawImage = false;
 
-                final InputStream definitionStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
-                XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
-                XMLStreamReader xtr = xif.createXMLStreamReader(definitionStream);
-                BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
+    if (ExplorerApp.get().isUseJavascriptDiagram()) {
+      try {
 
-                if (!bpmnModel.getFlowLocationMap().isEmpty()) {
+        final InputStream definitionStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getResourceName());
+        XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
+        XMLStreamReader xtr = xif.createXMLStreamReader(definitionStream);
+        BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
 
-                    int maxX = 0;
-                    int maxY = 0;
-                    for (String key : bpmnModel.getLocationMap().keySet()) {
-                        GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(key);
-                        double elementX = graphicInfo.getX() + graphicInfo.getWidth();
-                        if (maxX < elementX) {
-                            maxX = (int) elementX;
-                        }
-                        double elementY = graphicInfo.getY() + graphicInfo.getHeight();
-                        if (maxY < elementY) {
-                            maxY = (int) elementY;
-                        }
-                    }
+        if (!bpmnModel.getFlowLocationMap().isEmpty()) {
 
-                    Panel imagePanel = new Panel(); // using panel for
-                                                    // scrollbars
-                    imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
-                    imagePanel.setWidth(100, UNITS_PERCENTAGE);
-                    imagePanel.setHeight(100, UNITS_PERCENTAGE);
-
-                    URL explorerURL = ExplorerApp.get().getURL();
-                    URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(), explorerURL.getPath().replace("/ui", "")
-                            + "diagram-viewer/index.html?processDefinitionId=" + processDefinition.getId());
-                    Embedded browserPanel = new Embedded("", new ExternalResource(url));
-                    browserPanel.setType(Embedded.TYPE_BROWSER);
-                    browserPanel.setWidth(maxX + 350 + "px");
-                    browserPanel.setHeight(maxY + 220 + "px");
-
-                    HorizontalLayout panelLayout = new HorizontalLayout();
-                    panelLayout.setSizeUndefined();
-                    imagePanel.setContent(panelLayout);
-                    imagePanel.addComponent(browserPanel);
-
-                    processImageContainer.addComponent(imagePanel);
-
-                    didDrawImage = true;
-                }
-
-            } catch (Exception e) {
-                LOGGER.error("Error loading process diagram component", e);
+          int maxX = 0;
+          int maxY = 0;
+          for (String key : bpmnModel.getLocationMap().keySet()) {
+            GraphicInfo graphicInfo = bpmnModel.getGraphicInfo(key);
+            double elementX = graphicInfo.getX() + graphicInfo.getWidth();
+            if (maxX < elementX) {
+              maxX = (int) elementX;
             }
+            double elementY = graphicInfo.getY() + graphicInfo.getHeight();
+            if (maxY < elementY) {
+              maxY = (int) elementY;
+            }
+          }
+
+          Panel imagePanel = new Panel(); // using panel for
+                                          // scrollbars
+          imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
+          imagePanel.setWidth(100, UNITS_PERCENTAGE);
+          imagePanel.setHeight(100, UNITS_PERCENTAGE);
+
+          URL explorerURL = ExplorerApp.get().getURL();
+          URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(), explorerURL.getPath().replace("/ui", "") + "diagram-viewer/index.html?processDefinitionId="
+              + processDefinition.getId());
+          Embedded browserPanel = new Embedded("", new ExternalResource(url));
+          browserPanel.setType(Embedded.TYPE_BROWSER);
+          browserPanel.setWidth(maxX + 350 + "px");
+          browserPanel.setHeight(maxY + 220 + "px");
+
+          HorizontalLayout panelLayout = new HorizontalLayout();
+          panelLayout.setSizeUndefined();
+          imagePanel.setContent(panelLayout);
+          imagePanel.addComponent(browserPanel);
+
+          processImageContainer.addComponent(imagePanel);
+
+          didDrawImage = true;
         }
 
-        if (didDrawImage == false) {
-
-            StreamResource diagram = null;
-
-            // Try generating process-image stream
-            if (processDefinition.getDiagramResourceName() != null) {
-                diagram = new ProcessDefinitionImageStreamResourceBuilder().buildStreamResource(processDefinition, repositoryService);
-            }
-
-            if (diagram != null) {
-
-                Embedded embedded = new Embedded(null, diagram);
-                embedded.setType(Embedded.TYPE_IMAGE);
-                embedded.setSizeUndefined();
-
-                Panel imagePanel = new Panel(); // using panel for scrollbars
-                imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
-                imagePanel.setWidth(100, UNITS_PERCENTAGE);
-                imagePanel.setHeight(100, UNITS_PERCENTAGE);
-                HorizontalLayout panelLayout = new HorizontalLayout();
-                panelLayout.setSizeUndefined();
-                imagePanel.setContent(panelLayout);
-                imagePanel.addComponent(embedded);
-                processImageContainer.addComponent(imagePanel);
-
-                didDrawImage = true;
-            }
-        }
-
-        if (didDrawImage == false) {
-            Label noImageAvailable = new Label(i18nManager.getMessage(Messages.PROCESS_NO_DIAGRAM));
-            processImageContainer.addComponent(noImageAvailable);
-        }
-        addComponent(processImageContainer);
+      } catch (Exception e) {
+        LOGGER.error("Error loading process diagram component", e);
+      }
     }
 
-    protected void addEmptySpace(ComponentContainer container) {
-        Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-        emptySpace.setSizeUndefined();
-        container.addComponent(emptySpace);
+    if (didDrawImage == false) {
+
+      StreamResource diagram = null;
+
+      // Try generating process-image stream
+      if (processDefinition.getDiagramResourceName() != null) {
+        diagram = new ProcessDefinitionImageStreamResourceBuilder().buildStreamResource(processDefinition, repositoryService);
+      }
+
+      if (diagram != null) {
+
+        Embedded embedded = new Embedded(null, diagram);
+        embedded.setType(Embedded.TYPE_IMAGE);
+        embedded.setSizeUndefined();
+
+        Panel imagePanel = new Panel(); // using panel for scrollbars
+        imagePanel.addStyleName(Reindeer.PANEL_LIGHT);
+        imagePanel.setWidth(100, UNITS_PERCENTAGE);
+        imagePanel.setHeight(100, UNITS_PERCENTAGE);
+        HorizontalLayout panelLayout = new HorizontalLayout();
+        panelLayout.setSizeUndefined();
+        imagePanel.setContent(panelLayout);
+        imagePanel.addComponent(embedded);
+        processImageContainer.addComponent(imagePanel);
+
+        didDrawImage = true;
+      }
     }
+
+    if (didDrawImage == false) {
+      Label noImageAvailable = new Label(i18nManager.getMessage(Messages.PROCESS_NO_DIAGRAM));
+      processImageContainer.addComponent(noImageAvailable);
+    }
+    addComponent(processImageContainer);
+  }
+
+  protected void addEmptySpace(ComponentContainer container) {
+    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+    emptySpace.setSizeUndefined();
+    container.addComponent(emptySpace);
+  }
 
 }

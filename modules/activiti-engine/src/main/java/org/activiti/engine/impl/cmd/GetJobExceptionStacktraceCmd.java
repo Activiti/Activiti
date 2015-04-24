@@ -27,25 +27,25 @@ import org.activiti.engine.runtime.Job;
  */
 public class GetJobExceptionStacktraceCmd implements Command<String>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    private String jobId;
+  private static final long serialVersionUID = 1L;
+  private String jobId;
 
-    public GetJobExceptionStacktraceCmd(String jobId) {
-        this.jobId = jobId;
+  public GetJobExceptionStacktraceCmd(String jobId) {
+    this.jobId = jobId;
+  }
+
+  public String execute(CommandContext commandContext) {
+    if (jobId == null) {
+      throw new ActivitiIllegalArgumentException("jobId is null");
     }
 
-    public String execute(CommandContext commandContext) {
-        if (jobId == null) {
-            throw new ActivitiIllegalArgumentException("jobId is null");
-        }
+    JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
 
-        JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
-
-        if (job == null) {
-            throw new ActivitiObjectNotFoundException("No job found with id " + jobId, Job.class);
-        }
-
-        return job.getExceptionStacktrace();
+    if (job == null) {
+      throw new ActivitiObjectNotFoundException("No job found with id " + jobId, Job.class);
     }
+
+    return job.getExceptionStacktrace();
+  }
 
 }

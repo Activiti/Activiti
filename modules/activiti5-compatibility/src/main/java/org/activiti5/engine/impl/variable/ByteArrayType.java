@@ -17,28 +17,28 @@ package org.activiti5.engine.impl.variable;
  */
 public class ByteArrayType implements VariableType {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public String getTypeName() {
-        return "bytes";
-    }
+  public String getTypeName() {
+    return "bytes";
+  }
 
-    public boolean isCachable() {
-        return true;
-    }
+  public boolean isCachable() {
+    return true;
+  }
 
-    public Object getValue(ValueFields valueFields) {
-        return valueFields.getBytes();
-    }
+  public Object getValue(ValueFields valueFields) {
+    return valueFields.getBytes();
+  }
 
-    public void setValue(Object value, ValueFields valueFields) {
-        valueFields.setBytes((byte[]) value);
-    }
+  public void setValue(Object value, ValueFields valueFields) {
+    valueFields.setBytes((byte[]) value);
+  }
 
-    public boolean isAbleToStore(Object value) {
-        if (value == null) {
-            return true;
-        }
-        return byte[].class.isAssignableFrom(value.getClass());
+  public boolean isAbleToStore(Object value) {
+    if (value == null) {
+      return true;
     }
+    return byte[].class.isAssignableFrom(value.getClass());
+  }
 }

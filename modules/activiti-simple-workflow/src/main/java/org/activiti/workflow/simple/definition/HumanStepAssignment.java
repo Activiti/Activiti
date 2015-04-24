@@ -10,146 +10,142 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * Reusable assignment details for a task to be performed by a user, used in for
- * example {@link HumanStepDefinition}.
+ * Reusable assignment details for a task to be performed by a user, used in for example {@link HumanStepDefinition}.
  * 
  * @author Frederik Heremans
  */
 public class HumanStepAssignment {
 
+  /**
+   * Possible types of human step assignment.
+   * 
+   * @author Frederik Heremans
+   */
+  public enum HumanStepAssignmentType {
     /**
-     * Possible types of human step assignment.
-     * 
-     * @author Frederik Heremans
+     * The initiator is the assignee of the human step.
      */
-    public enum HumanStepAssignmentType {
-        /**
-         * The initiator is the assignee of the human step.
-         */
-        INITIATOR,
-
-        /**
-         * The human step is explicitally assigned to a specific user.
-         */
-        USER,
-
-        /**
-         * One of the specified users is a candidate for the human step.
-         */
-        USERS,
-
-        /**
-         * All users that are member of at least one of the specified groups,
-         * are candidate for the human step.
-         */
-        GROUPS,
-
-        /**
-         * Both users and group-members can be candidates for the human step.
-         */
-        MIXED;
-
-        @Override
-        @JsonValue
-        public String toString() {
-            return name().toLowerCase();
-        }
-
-        @JsonCreator
-        public static HumanStepAssignmentType forSimpleName(String name) {
-            for (HumanStepAssignmentType type : values()) {
-                if (type.toString().equals(name)) {
-                    return type;
-                }
-            }
-
-            throw new SimpleWorkflowException("Invalid assignment type for human step: " + name);
-        }
-    }
-
-    protected String assignee;
-    protected List<String> candidateUsers;
-    protected List<String> candidateGroups;
-    protected HumanStepAssignmentType type = HumanStepAssignmentType.INITIATOR;
-
-    public HumanStepAssignmentType getType() {
-        return type;
-    }
+    INITIATOR,
 
     /**
-     * @param type
-     *            the type of assignment represented. Dependeing on the type,
-     *            existing assignee/candidate will be removed if they are not
-     *            allowed for the given type.
+     * The human step is explicitally assigned to a specific user.
      */
-    public void setType(HumanStepAssignmentType type) {
-        this.type = type;
+    USER,
 
-        switch (type) {
-        case GROUPS:
-            this.candidateUsers = null;
-            this.assignee = null;
-            break;
+    /**
+     * One of the specified users is a candidate for the human step.
+     */
+    USERS,
 
-        case INITIATOR:
-            this.candidateGroups = null;
-            this.candidateUsers = null;
-            this.assignee = null;
-            break;
-        case MIXED:
-            this.assignee = null;
-            break;
-        case USER:
-            this.candidateGroups = null;
-            this.candidateUsers = null;
-            break;
-        case USERS:
-            this.candidateGroups = null;
-            this.assignee = null;
+    /**
+     * All users that are member of at least one of the specified groups, are candidate for the human step.
+     */
+    GROUPS,
+
+    /**
+     * Both users and group-members can be candidates for the human step.
+     */
+    MIXED;
+
+    @Override
+    @JsonValue
+    public String toString() {
+      return name().toLowerCase();
+    }
+
+    @JsonCreator
+    public static HumanStepAssignmentType forSimpleName(String name) {
+      for (HumanStepAssignmentType type : values()) {
+        if (type.toString().equals(name)) {
+          return type;
         }
-    }
+      }
 
-    @JsonInclude(Include.NON_NULL)
-    public String getAssignee() {
-        return assignee;
+      throw new SimpleWorkflowException("Invalid assignment type for human step: " + name);
     }
+  }
 
-    public void setAssignee(String assignee) {
-        this.assignee = assignee;
-        if (assignee != null) {
-            setType(HumanStepAssignmentType.USER);
-        }
-    }
+  protected String assignee;
+  protected List<String> candidateUsers;
+  protected List<String> candidateGroups;
+  protected HumanStepAssignmentType type = HumanStepAssignmentType.INITIATOR;
 
-    @JsonInclude(Include.NON_NULL)
-    public List<String> getCandidateGroups() {
-        return candidateGroups;
-    }
+  public HumanStepAssignmentType getType() {
+    return type;
+  }
 
-    public void setCandidateGroups(List<String> candidateGroups) {
-        this.candidateGroups = candidateGroups;
-        if (candidateGroups != null && !candidateGroups.isEmpty()) {
-            if (this.candidateUsers != null && !this.candidateUsers.isEmpty()) {
-                setType(HumanStepAssignmentType.MIXED);
-            } else {
-                setType(HumanStepAssignmentType.GROUPS);
-            }
-        }
-    }
+  /**
+   * @param type
+   *          the type of assignment represented. Dependeing on the type, existing assignee/candidate will be removed if they are not allowed for the given type.
+   */
+  public void setType(HumanStepAssignmentType type) {
+    this.type = type;
 
-    @JsonInclude(Include.NON_NULL)
-    public List<String> getCandidateUsers() {
-        return candidateUsers;
-    }
+    switch (type) {
+    case GROUPS:
+      this.candidateUsers = null;
+      this.assignee = null;
+      break;
 
-    public void setCandidateUsers(List<String> candidateUsers) {
-        this.candidateUsers = candidateUsers;
-        if (candidateUsers != null && !candidateUsers.isEmpty()) {
-            if (this.candidateGroups != null && !this.candidateGroups.isEmpty()) {
-                setType(HumanStepAssignmentType.MIXED);
-            } else {
-                setType(HumanStepAssignmentType.USERS);
-            }
-        }
+    case INITIATOR:
+      this.candidateGroups = null;
+      this.candidateUsers = null;
+      this.assignee = null;
+      break;
+    case MIXED:
+      this.assignee = null;
+      break;
+    case USER:
+      this.candidateGroups = null;
+      this.candidateUsers = null;
+      break;
+    case USERS:
+      this.candidateGroups = null;
+      this.assignee = null;
     }
+  }
+
+  @JsonInclude(Include.NON_NULL)
+  public String getAssignee() {
+    return assignee;
+  }
+
+  public void setAssignee(String assignee) {
+    this.assignee = assignee;
+    if (assignee != null) {
+      setType(HumanStepAssignmentType.USER);
+    }
+  }
+
+  @JsonInclude(Include.NON_NULL)
+  public List<String> getCandidateGroups() {
+    return candidateGroups;
+  }
+
+  public void setCandidateGroups(List<String> candidateGroups) {
+    this.candidateGroups = candidateGroups;
+    if (candidateGroups != null && !candidateGroups.isEmpty()) {
+      if (this.candidateUsers != null && !this.candidateUsers.isEmpty()) {
+        setType(HumanStepAssignmentType.MIXED);
+      } else {
+        setType(HumanStepAssignmentType.GROUPS);
+      }
+    }
+  }
+
+  @JsonInclude(Include.NON_NULL)
+  public List<String> getCandidateUsers() {
+    return candidateUsers;
+  }
+
+  public void setCandidateUsers(List<String> candidateUsers) {
+    this.candidateUsers = candidateUsers;
+    if (candidateUsers != null && !candidateUsers.isEmpty()) {
+      if (this.candidateGroups != null && !this.candidateGroups.isEmpty()) {
+        setType(HumanStepAssignmentType.MIXED);
+      } else {
+        setType(HumanStepAssignmentType.USERS);
+      }
+    }
+  }
 }

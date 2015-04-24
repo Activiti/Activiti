@@ -25,32 +25,32 @@ import org.activiti5.engine.task.Task;
  */
 public class SubProcessTest extends PluggableActivitiTestCase {
 
-    public void testSimpleSubProcess() {
+  public void testSimpleSubProcess() {
 
-        Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.bpmn20.xml").deploy();
+    Deployment deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/examples/bpmn/subprocess/SubProcessTest.fixSystemFailureProcess.bpmn20.xml").deploy();
 
-        // After staring the process, both tasks in the subprocess should be
-        // active
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("fixSystemFailure");
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
+    // After staring the process, both tasks in the subprocess should be
+    // active
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("fixSystemFailure");
+    List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
 
-        // Tasks are ordered by name (see query)
-        assertEquals(2, tasks.size());
-        Task investigateHardwareTask = tasks.get(0);
-        Task investigateSoftwareTask = tasks.get(1);
-        assertEquals("Investigate hardware", investigateHardwareTask.getName());
-        assertEquals("Investigate software", investigateSoftwareTask.getName());
+    // Tasks are ordered by name (see query)
+    assertEquals(2, tasks.size());
+    Task investigateHardwareTask = tasks.get(0);
+    Task investigateSoftwareTask = tasks.get(1);
+    assertEquals("Investigate hardware", investigateHardwareTask.getName());
+    assertEquals("Investigate software", investigateSoftwareTask.getName());
 
-        // Completing both the tasks finishes the subprocess and enables the
-        // task after the subprocess
-        taskService.complete(investigateHardwareTask.getId());
-        taskService.complete(investigateSoftwareTask.getId());
+    // Completing both the tasks finishes the subprocess and enables the
+    // task after the subprocess
+    taskService.complete(investigateHardwareTask.getId());
+    taskService.complete(investigateSoftwareTask.getId());
 
-        Task writeReportTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
-        assertEquals("Write report", writeReportTask.getName());
+    Task writeReportTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
+    assertEquals("Write report", writeReportTask.getName());
 
-        // Clean up
-        repositoryService.deleteDeployment(deployment.getId(), true);
-    }
+    // Clean up
+    repositoryService.deleteDeployment(deployment.getId(), true);
+  }
 
 }

@@ -37,67 +37,67 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProcessDefinitionIdentityLinkResource extends BaseProcessDefinitionResource {
 
-    @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.GET, produces = "application/json")
-    public RestIdentityLink getIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, @PathVariable("identityId") String identityId,
-            HttpServletRequest request) {
+  @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.GET, produces = "application/json")
+  public RestIdentityLink getIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, @PathVariable("identityId") String identityId,
+      HttpServletRequest request) {
 
-        ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
 
-        validateIdentityLinkArguments(family, identityId);
+    validateIdentityLinkArguments(family, identityId);
 
-        // Check if identitylink to get exists
-        IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
+    // Check if identitylink to get exists
+    IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
 
-        return restResponseFactory.createRestIdentityLink(link);
+    return restResponseFactory.createRestIdentityLink(link);
+  }
+
+  @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.DELETE)
+  public void deleteIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, @PathVariable("identityId") String identityId,
+      HttpServletResponse response) {
+
+    ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
+
+    validateIdentityLinkArguments(family, identityId);
+
+    // Check if identitylink to delete exists
+    IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
+    if (link.getUserId() != null) {
+      repositoryService.deleteCandidateStarterUser(processDefinition.getId(), link.getUserId());
+    } else {
+      repositoryService.deleteCandidateStarterGroup(processDefinition.getId(), link.getGroupId());
     }
 
-    @RequestMapping(value = "/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.DELETE)
-    public void deleteIdentityLink(@PathVariable("processDefinitionId") String processDefinitionId, @PathVariable("family") String family, @PathVariable("identityId") String identityId,
-            HttpServletResponse response) {
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 
-        ProcessDefinition processDefinition = getProcessDefinitionFromRequest(processDefinitionId);
-
-        validateIdentityLinkArguments(family, identityId);
-
-        // Check if identitylink to delete exists
-        IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
-        if (link.getUserId() != null) {
-            repositoryService.deleteCandidateStarterUser(processDefinition.getId(), link.getUserId());
-        } else {
-            repositoryService.deleteCandidateStarterGroup(processDefinition.getId(), link.getGroupId());
-        }
-
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+  protected void validateIdentityLinkArguments(String family, String identityId) {
+    if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family) && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
+      throw new ActivitiIllegalArgumentException("Identity link family should be 'users' or 'groups'.");
     }
-
-    protected void validateIdentityLinkArguments(String family, String identityId) {
-        if (family == null || (!RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS.equals(family) && !RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS.equals(family))) {
-            throw new ActivitiIllegalArgumentException("Identity link family should be 'users' or 'groups'.");
-        }
-        if (identityId == null) {
-            throw new ActivitiIllegalArgumentException("IdentityId is required.");
-        }
+    if (identityId == null) {
+      throw new ActivitiIllegalArgumentException("IdentityId is required.");
     }
+  }
 
-    protected IdentityLink getIdentityLink(String family, String identityId, String processDefinitionId) {
-        boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
+  protected IdentityLink getIdentityLink(String family, String identityId, String processDefinitionId) {
+    boolean isUser = family.equals(RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS);
 
-        // Perhaps it would be better to offer getting a single identitylink
-        // from
-        // the API
-        List<IdentityLink> allLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
-        for (IdentityLink link : allLinks) {
-            boolean rightIdentity = false;
-            if (isUser) {
-                rightIdentity = identityId.equals(link.getUserId());
-            } else {
-                rightIdentity = identityId.equals(link.getGroupId());
-            }
+    // Perhaps it would be better to offer getting a single identitylink
+    // from
+    // the API
+    List<IdentityLink> allLinks = repositoryService.getIdentityLinksForProcessDefinition(processDefinitionId);
+    for (IdentityLink link : allLinks) {
+      boolean rightIdentity = false;
+      if (isUser) {
+        rightIdentity = identityId.equals(link.getUserId());
+      } else {
+        rightIdentity = identityId.equals(link.getGroupId());
+      }
 
-            if (rightIdentity && link.getType().equals(IdentityLinkType.CANDIDATE)) {
-                return link;
-            }
-        }
-        throw new ActivitiObjectNotFoundException("Could not find the requested identity link.", IdentityLink.class);
+      if (rightIdentity && link.getType().equals(IdentityLinkType.CANDIDATE)) {
+        return link;
+      }
     }
+    throw new ActivitiObjectNotFoundException("Could not find the requested identity link.", IdentityLink.class);
+  }
 }

@@ -24,13 +24,13 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class Automatic implements ActivityBehavior {
 
-    public void execute(ActivityExecution execution) throws Exception {
-        List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-        if (outgoingTransitions.isEmpty()) {
-            execution.end();
-        } else {
-            execution.take(outgoingTransitions.get(0));
-        }
+  public void execute(ActivityExecution execution) throws Exception {
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    if (outgoingTransitions.isEmpty()) {
+      execution.end();
+    } else {
+      execution.take(outgoingTransitions.get(0));
     }
+  }
 
 }

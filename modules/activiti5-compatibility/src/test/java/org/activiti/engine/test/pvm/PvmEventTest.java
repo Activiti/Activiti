@@ -32,156 +32,151 @@ import org.activiti5.engine.impl.test.PvmTestCase;
  */
 public class PvmEventTest extends PvmTestCase {
 
-    /**
-     * +-------+ +-----+ | start |-->| end | +-------+ +-----+
-     */
-    public void testStartEndEvents() {
-        EventCollector eventCollector = new EventCollector();
+  /**
+   * +-------+ +-----+ | start |-->| end | +-------+ +-----+
+   */
+  public void testStartEndEvents() {
+    EventCollector eventCollector = new EventCollector();
 
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events").executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .startTransition("end").executionListener(eventCollector).endTransition().endActivity().createActivity("end").behavior(new End())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .endActivity().buildProcessDefinition();
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events").executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .startTransition("end").executionListener(eventCollector).endTransition().endActivity().createActivity("end").behavior(new End())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        List<String> expectedEvents = new ArrayList<String>();
-        expectedEvents.add("start on ProcessDefinition(events)");
-        expectedEvents.add("start on Activity(start)");
-        expectedEvents.add("end on Activity(start)");
-        expectedEvents.add("take on (start)-->(end)");
-        expectedEvents.add("start on Activity(end)");
-        expectedEvents.add("end on Activity(end)");
-        expectedEvents.add("end on ProcessDefinition(events)");
+    List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(events)");
+    expectedEvents.add("start on Activity(start)");
+    expectedEvents.add("end on Activity(start)");
+    expectedEvents.add("take on (start)-->(end)");
+    expectedEvents.add("start on Activity(end)");
+    expectedEvents.add("end on Activity(end)");
+    expectedEvents.add("end on ProcessDefinition(events)");
 
-        assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
-    }
+    assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
+  }
 
-    /**
-     * +--------------+ |outerscope | | +----------+ | | |innerscope| | +-----+
-     * | | +----+ | | +---+ |start|---->|wait|------>|end| +-----+ | | +----+ |
-     * | +---+ | +----------+ | +--------------+
-     */
-    public void testNestedActivitiesEventsOnTransitionEvents() {
-        EventCollector eventCollector = new EventCollector();
+  /**
+   * +--------------+ |outerscope | | +----------+ | | |innerscope| | +-----+ | | +----+ | | +---+ |start|---->|wait|------>|end| +-----+ | | +----+ | | +---+ | +----------+ | +--------------+
+   */
+  public void testNestedActivitiesEventsOnTransitionEvents() {
+    EventCollector eventCollector = new EventCollector();
 
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events").executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .startTransition("wait").executionListener(eventCollector).endTransition().endActivity().createActivity("outerscope")
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .createActivity("innerscope").scope().executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("wait").behavior(new WaitState())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .transition("end").endActivity().endActivity().endActivity().createActivity("end").behavior(new WaitState()).endActivity().buildProcessDefinition();
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events").executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .startTransition("wait").executionListener(eventCollector).endTransition().endActivity().createActivity("outerscope")
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .createActivity("innerscope").scope().executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("wait").behavior(new WaitState())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .transition("end").endActivity().endActivity().endActivity().createActivity("end").behavior(new WaitState()).endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        List<String> expectedEvents = new ArrayList<String>();
-        expectedEvents.add("start on ProcessDefinition(events)");
-        expectedEvents.add("start on Activity(start)");
-        expectedEvents.add("end on Activity(start)");
-        expectedEvents.add("take on (start)-->(wait)");
-        expectedEvents.add("start on Activity(outerscope)");
-        expectedEvents.add("start on Activity(innerscope)");
-        expectedEvents.add("start on Activity(wait)");
+    List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(events)");
+    expectedEvents.add("start on Activity(start)");
+    expectedEvents.add("end on Activity(start)");
+    expectedEvents.add("take on (start)-->(wait)");
+    expectedEvents.add("start on Activity(outerscope)");
+    expectedEvents.add("start on Activity(innerscope)");
+    expectedEvents.add("start on Activity(wait)");
 
-        assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
+    assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
 
-        PvmExecution execution = processInstance.findExecution("wait");
-        execution.signal(null, null);
+    PvmExecution execution = processInstance.findExecution("wait");
+    execution.signal(null, null);
 
-        expectedEvents.add("end on Activity(wait)");
-        expectedEvents.add("end on Activity(innerscope)");
-        expectedEvents.add("end on Activity(outerscope)");
+    expectedEvents.add("end on Activity(wait)");
+    expectedEvents.add("end on Activity(innerscope)");
+    expectedEvents.add("end on Activity(outerscope)");
 
-        assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
-    }
+    assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
+  }
 
-    /**
-     * +------------------------------+ +-----+ | +-----------+ +----------+ |
-     * +---+ |start|-->| |startInside|-->|endInsdide| |-->|end| +-----+ |
-     * +-----------+ +----------+ | +---+ +------------------------------+
-     */
-    public void testEmbeddedSubProcessEvents() {
-        EventCollector eventCollector = new EventCollector();
+  /**
+   * +------------------------------+ +-----+ | +-----------+ +----------+ | +---+ |start|-->| |startInside|-->|endInsdide| |-->|end| +-----+ | +-----------+ +----------+ | +---+
+   * +------------------------------+
+   */
+  public void testEmbeddedSubProcessEvents() {
+    EventCollector eventCollector = new EventCollector();
 
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events").executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .transition("embeddedsubprocess").endActivity().createActivity("embeddedsubprocess").scope().behavior(new EmbeddedSubProcess())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .createActivity("startInside").behavior(new Automatic()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).transition("endInside").endActivity().createActivity("endInside").behavior(new End())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .endActivity().transition("end").endActivity().createActivity("end").behavior(new End()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).endActivity().buildProcessDefinition();
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events").executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .transition("embeddedsubprocess").endActivity().createActivity("embeddedsubprocess").scope().behavior(new EmbeddedSubProcess())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .createActivity("startInside").behavior(new Automatic()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).transition("endInside").endActivity().createActivity("endInside").behavior(new End())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .endActivity().transition("end").endActivity().createActivity("end").behavior(new End()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        List<String> expectedEvents = new ArrayList<String>();
-        expectedEvents.add("start on ProcessDefinition(events)");
-        expectedEvents.add("start on Activity(start)");
-        expectedEvents.add("end on Activity(start)");
-        expectedEvents.add("start on Activity(embeddedsubprocess)");
-        expectedEvents.add("start on Activity(startInside)");
-        expectedEvents.add("end on Activity(startInside)");
-        expectedEvents.add("start on Activity(endInside)");
-        expectedEvents.add("end on Activity(endInside)");
-        expectedEvents.add("end on Activity(embeddedsubprocess)");
-        expectedEvents.add("start on Activity(end)");
-        expectedEvents.add("end on Activity(end)");
-        expectedEvents.add("end on ProcessDefinition(events)");
+    List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(events)");
+    expectedEvents.add("start on Activity(start)");
+    expectedEvents.add("end on Activity(start)");
+    expectedEvents.add("start on Activity(embeddedsubprocess)");
+    expectedEvents.add("start on Activity(startInside)");
+    expectedEvents.add("end on Activity(startInside)");
+    expectedEvents.add("start on Activity(endInside)");
+    expectedEvents.add("end on Activity(endInside)");
+    expectedEvents.add("end on Activity(embeddedsubprocess)");
+    expectedEvents.add("start on Activity(end)");
+    expectedEvents.add("end on Activity(end)");
+    expectedEvents.add("end on ProcessDefinition(events)");
 
-        assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
-    }
+    assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
+  }
 
-    /**
-     * +--+ +--->|c1|---+ | +--+ | | v +-----+ +----+ +----+ +---+
-     * |start|-->|fork| |join|-->|end| +-----+ +----+ +----+ +---+ | ^ | +--+ |
-     * +--->|c2|---+ +--+
-     */
-    public void testSimpleAutmaticConcurrencyEvents() {
-        EventCollector eventCollector = new EventCollector();
+  /**
+   * +--+ +--->|c1|---+ | +--+ | | v +-----+ +----+ +----+ +---+ |start|-->|fork| |join|-->|end| +-----+ +----+ +----+ +---+ | ^ | +--+ | +--->|c2|---+ +--+
+   */
+  public void testSimpleAutmaticConcurrencyEvents() {
+    EventCollector eventCollector = new EventCollector();
 
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events").executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .transition("fork").endActivity().createActivity("fork").behavior(new ParallelGateway()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).transition("c1").transition("c2").endActivity().createActivity("c1").behavior(new Automatic())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .transition("join").endActivity().createActivity("c2").behavior(new Automatic()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).transition("join").endActivity().createActivity("join").behavior(new ParallelGateway())
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
-                .transition("end").endActivity().createActivity("end").behavior(new End()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).endActivity().buildProcessDefinition();
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder("events").executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .transition("fork").endActivity().createActivity("fork").behavior(new ParallelGateway()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).transition("c1").transition("c2").endActivity().createActivity("c1").behavior(new Automatic())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .transition("join").endActivity().createActivity("c2").behavior(new Automatic()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).transition("join").endActivity().createActivity("join").behavior(new ParallelGateway())
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector)
+        .transition("end").endActivity().createActivity("end").behavior(new End()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        List<String> expectedEvents = new ArrayList<String>();
-        expectedEvents.add("start on ProcessDefinition(events)");
-        expectedEvents.add("start on Activity(start)");
-        expectedEvents.add("end on Activity(start)");
-        expectedEvents.add("start on Activity(fork)");
-        expectedEvents.add("end on Activity(fork)");
-        expectedEvents.add("start on Activity(c1)");
-        expectedEvents.add("end on Activity(c1)");
-        expectedEvents.add("start on Activity(join)");
-        expectedEvents.add("end on Activity(fork)");
-        expectedEvents.add("start on Activity(c2)");
-        expectedEvents.add("end on Activity(c2)");
-        expectedEvents.add("start on Activity(join)");
-        expectedEvents.add("end on Activity(join)");
-        expectedEvents.add("start on Activity(end)");
-        expectedEvents.add("end on Activity(end)");
-        expectedEvents.add("end on ProcessDefinition(events)");
+    List<String> expectedEvents = new ArrayList<String>();
+    expectedEvents.add("start on ProcessDefinition(events)");
+    expectedEvents.add("start on Activity(start)");
+    expectedEvents.add("end on Activity(start)");
+    expectedEvents.add("start on Activity(fork)");
+    expectedEvents.add("end on Activity(fork)");
+    expectedEvents.add("start on Activity(c1)");
+    expectedEvents.add("end on Activity(c1)");
+    expectedEvents.add("start on Activity(join)");
+    expectedEvents.add("end on Activity(fork)");
+    expectedEvents.add("start on Activity(c2)");
+    expectedEvents.add("end on Activity(c2)");
+    expectedEvents.add("start on Activity(join)");
+    expectedEvents.add("end on Activity(join)");
+    expectedEvents.add("start on Activity(end)");
+    expectedEvents.add("end on Activity(end)");
+    expectedEvents.add("end on ProcessDefinition(events)");
 
-        assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
-    }
+    assertEquals("expected " + expectedEvents + ", but was \n" + eventCollector + "\n", expectedEvents, eventCollector.events);
+  }
 }

@@ -14,11 +14,11 @@ package org.activiti.workflow.simple.definition;
 
 public interface NamedStepDefinition {
 
-    String getName();
+  String getName();
 
-    void setName(String name);
+  void setName(String name);
 
-    String getDescription();
+  String getDescription();
 
-    void setDescription(String description);
+  void setDescription(String description);
 }

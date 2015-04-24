@@ -19,37 +19,37 @@ import org.activiti5.engine.impl.javax.el.ELContext;
 import org.activiti5.engine.impl.javax.el.ELException;
 
 public class AstBracket extends AstProperty {
-    protected final AstNode property;
+  protected final AstNode property;
 
-    public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict) {
-        super(base, lvalue, strict);
-        this.property = property;
-    }
+  public AstBracket(AstNode base, AstNode property, boolean lvalue, boolean strict) {
+    super(base, lvalue, strict);
+    this.property = property;
+  }
 
-    @Override
-    protected Object getProperty(Bindings bindings, ELContext context) throws ELException {
-        return property.eval(bindings, context);
-    }
+  @Override
+  protected Object getProperty(Bindings bindings, ELContext context) throws ELException {
+    return property.eval(bindings, context);
+  }
 
-    @Override
-    public String toString() {
-        return "[...]";
-    }
+  @Override
+  public String toString() {
+    return "[...]";
+  }
 
-    @Override
-    public void appendStructure(StringBuilder b, Bindings bindings) {
-        getChild(0).appendStructure(b, bindings);
-        b.append("[");
-        getChild(1).appendStructure(b, bindings);
-        b.append("]");
-    }
+  @Override
+  public void appendStructure(StringBuilder b, Bindings bindings) {
+    getChild(0).appendStructure(b, bindings);
+    b.append("[");
+    getChild(1).appendStructure(b, bindings);
+    b.append("]");
+  }
 
-    public int getCardinality() {
-        return 2;
-    }
+  public int getCardinality() {
+    return 2;
+  }
 
-    @Override
-    public AstNode getChild(int i) {
-        return i == 1 ? property : super.getChild(i);
-    }
+  @Override
+  public AstNode getChild(int i) {
+    return i == 1 ? property : super.getChild(i);
+  }
 }

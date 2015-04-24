@@ -22,15 +22,15 @@ import java.io.Serializable;
  */
 public class TestSerializableVariable implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private String someField;
+  private String someField;
 
-    public String getSomeField() {
-        return someField;
-    }
+  public String getSomeField() {
+    return someField;
+  }
 
-    public void setSomeField(String someField) {
-        this.someField = someField;
-    }
+  public void setSomeField(String someField) {
+    this.someField = someField;
+  }
 }

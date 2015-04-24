@@ -37,75 +37,75 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String processDefinitionKey;
-    protected String processDefinitionId;
-    protected Map<String, Object> variables;
-    protected String businessKey;
-    protected String tenantId;
-    protected String processInstanceName;
+  private static final long serialVersionUID = 1L;
+  protected String processDefinitionKey;
+  protected String processDefinitionId;
+  protected Map<String, Object> variables;
+  protected String businessKey;
+  protected String tenantId;
+  protected String processInstanceName;
 
-    public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables) {
-        this.processDefinitionKey = processDefinitionKey;
-        this.processDefinitionId = processDefinitionId;
-        this.businessKey = businessKey;
-        this.variables = variables;
+  public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables) {
+    this.processDefinitionKey = processDefinitionKey;
+    this.processDefinitionId = processDefinitionId;
+    this.businessKey = businessKey;
+    this.variables = variables;
+  }
+
+  public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables, String tenantId) {
+    this(processDefinitionKey, processDefinitionId, businessKey, variables);
+    this.tenantId = tenantId;
+  }
+
+  public StartProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
+    this(processInstanceBuilder.getProcessDefinitionKey(), processInstanceBuilder.getProcessDefinitionId(), processInstanceBuilder.getBusinessKey(), processInstanceBuilder.getVariables(),
+        processInstanceBuilder.getTenantId());
+    this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
+  }
+
+  public ProcessInstance execute(CommandContext commandContext) {
+    DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
+
+    // Find the process definition
+    ProcessDefinitionEntity processDefinition = null;
+    if (processDefinitionId != null) {
+
+      processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
+      if (processDefinition == null) {
+        throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
+      }
+
+    } else if (processDefinitionKey != null && (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId))) {
+
+      processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
+      if (processDefinition == null) {
+        throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "'", ProcessDefinition.class);
+      }
+
+    } else if (processDefinitionKey != null && tenantId != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
+
+      processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
+      if (processDefinition == null) {
+        throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "' for tenant identifier " + tenantId, ProcessDefinition.class);
+      }
+
+    } else {
+      throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
     }
 
-    public StartProcessInstanceCmd(String processDefinitionKey, String processDefinitionId, String businessKey, Map<String, Object> variables, String tenantId) {
-        this(processDefinitionKey, processDefinitionId, businessKey, variables);
-        this.tenantId = tenantId;
+    ProcessInstance processInstance = ProcessInstanceUtil.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
+
+    return processInstance;
+  }
+
+  protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
+    Map<String, Object> variablesMap = new HashMap<String, Object>();
+    // convert data objects to process variables
+    if (dataObjects != null) {
+      for (ValuedDataObject dataObject : dataObjects) {
+        variablesMap.put(dataObject.getName(), dataObject.getValue());
+      }
     }
-
-    public StartProcessInstanceCmd(ProcessInstanceBuilderImpl processInstanceBuilder) {
-        this(processInstanceBuilder.getProcessDefinitionKey(), processInstanceBuilder.getProcessDefinitionId(), processInstanceBuilder.getBusinessKey(), processInstanceBuilder.getVariables(),
-                processInstanceBuilder.getTenantId());
-        this.processInstanceName = processInstanceBuilder.getProcessInstanceName();
-    }
-
-    public ProcessInstance execute(CommandContext commandContext) {
-        DeploymentManager deploymentCache = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-
-        // Find the process definition
-        ProcessDefinitionEntity processDefinition = null;
-        if (processDefinitionId != null) {
-
-            processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
-            if (processDefinition == null) {
-                throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
-            }
-
-        } else if (processDefinitionKey != null && (tenantId == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId))) {
-
-            processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKey(processDefinitionKey);
-            if (processDefinition == null) {
-                throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "'", ProcessDefinition.class);
-            }
-
-        } else if (processDefinitionKey != null && tenantId != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(tenantId)) {
-
-            processDefinition = deploymentCache.findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitionKey, tenantId);
-            if (processDefinition == null) {
-                throw new ActivitiObjectNotFoundException("No process definition found for key '" + processDefinitionKey + "' for tenant identifier " + tenantId, ProcessDefinition.class);
-            }
-
-        } else {
-            throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
-        }
-
-        ProcessInstance processInstance = ProcessInstanceUtil.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
-
-        return processInstance;
-    }
-
-    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
-        Map<String, Object> variablesMap = new HashMap<String, Object>();
-        // convert data objects to process variables
-        if (dataObjects != null) {
-            for (ValuedDataObject dataObject : dataObjects) {
-                variablesMap.put(dataObject.getName(), dataObject.getValue());
-            }
-        }
-        return variablesMap;
-    }
+    return variablesMap;
+  }
 }

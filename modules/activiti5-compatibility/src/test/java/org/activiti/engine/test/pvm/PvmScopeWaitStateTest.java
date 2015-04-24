@@ -29,45 +29,42 @@ import org.activiti5.engine.impl.test.PvmTestCase;
  */
 public class PvmScopeWaitStateTest extends PvmTestCase {
 
-    /**
-     * +-----+ +----------+ +---+ |start|-->|scopedWait|-->|end| +-----+
-     * +----------+ +---+
-     */
-    public void testWaitStateScope() {
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("scopedWait").endActivity()
-                .createActivity("scopedWait").scope().behavior(new WaitState()).transition("end").endActivity().createActivity("end").behavior(new End()).endActivity().buildProcessDefinition();
+  /**
+   * +-----+ +----------+ +---+ |start|-->|scopedWait|-->|end| +-----+ +----------+ +---+
+   */
+  public void testWaitStateScope() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("scopedWait").endActivity()
+        .createActivity("scopedWait").scope().behavior(new WaitState()).transition("end").endActivity().createActivity("end").behavior(new End()).endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        PvmExecution execution = processInstance.findExecution("scopedWait");
-        assertNotNull(execution);
+    PvmExecution execution = processInstance.findExecution("scopedWait");
+    assertNotNull(execution);
 
-        execution.signal(null, null);
+    execution.signal(null, null);
 
-        assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
-        assertTrue(processInstance.isEnded());
-    }
+    assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
+    assertTrue(processInstance.isEnded());
+  }
 
-    /**
-     * +--------------+ | outerScope | +-----+ | +----------+ | +---+
-     * |start|--->|scopedWait|--->|end| +-----+ | +----------+ | +---+
-     * +--------------+
-     */
-    public void testNestedScope() {
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("scopedWait").endActivity()
-                .createActivity("outerScope").scope().createActivity("scopedWait").scope().behavior(new WaitState()).transition("end").endActivity().endActivity().createActivity("end")
-                .behavior(new End()).endActivity().buildProcessDefinition();
+  /**
+   * +--------------+ | outerScope | +-----+ | +----------+ | +---+ |start|--->|scopedWait|--->|end| +-----+ | +----------+ | +---+ +--------------+
+   */
+  public void testNestedScope() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("scopedWait").endActivity()
+        .createActivity("outerScope").scope().createActivity("scopedWait").scope().behavior(new WaitState()).transition("end").endActivity().endActivity().createActivity("end").behavior(new End())
+        .endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        PvmExecution activityInstance = processInstance.findExecution("scopedWait");
-        assertNotNull(activityInstance);
+    PvmExecution activityInstance = processInstance.findExecution("scopedWait");
+    assertNotNull(activityInstance);
 
-        activityInstance.signal(null, null);
+    activityInstance.signal(null, null);
 
-        assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
-        assertTrue(processInstance.isEnded());
-    }
+    assertEquals(new ArrayList<String>(), processInstance.findActiveActivityIds());
+    assertTrue(processInstance.isEnded());
+  }
 }

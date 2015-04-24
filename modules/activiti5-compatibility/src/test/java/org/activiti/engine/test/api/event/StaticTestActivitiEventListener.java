@@ -25,24 +25,24 @@ import org.activiti5.engine.delegate.event.ActivitiEventListener;
  */
 public class StaticTestActivitiEventListener implements ActivitiEventListener {
 
-    private static List<ActivitiEvent> eventsReceived = new ArrayList<ActivitiEvent>();
+  private static List<ActivitiEvent> eventsReceived = new ArrayList<ActivitiEvent>();
 
-    public static List<ActivitiEvent> getEventsReceived() {
-        return eventsReceived;
-    }
+  public static List<ActivitiEvent> getEventsReceived() {
+    return eventsReceived;
+  }
 
-    public static void clearEventsReceived() {
-        eventsReceived.clear();
-    }
+  public static void clearEventsReceived() {
+    eventsReceived.clear();
+  }
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        eventsReceived.add(event);
-    }
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    eventsReceived.add(event);
+  }
 
-    @Override
-    public boolean isFailOnException() {
-        return false;
-    }
+  @Override
+  public boolean isFailOnException() {
+    return false;
+  }
 
 }

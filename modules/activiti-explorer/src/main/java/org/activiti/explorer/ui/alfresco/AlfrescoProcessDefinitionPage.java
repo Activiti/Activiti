@@ -25,27 +25,27 @@ import org.activiti.explorer.ui.process.ProcessDefinitionPage;
  */
 public class AlfrescoProcessDefinitionPage extends ProcessDefinitionPage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public AlfrescoProcessDefinitionPage() {
-        super();
-    }
+  public AlfrescoProcessDefinitionPage() {
+    super();
+  }
 
-    public AlfrescoProcessDefinitionPage(String processDefinitionId) {
-        super(processDefinitionId);
-    }
+  public AlfrescoProcessDefinitionPage(String processDefinitionId) {
+    super(processDefinitionId);
+  }
 
-    @Override
-    protected ToolBar createMenuBar() {
-        return new AlfrescoManagementMenuBar(); // Process Definition page lives
-                                                // in mgmt section for Alfresco
-                                                // UI
-    }
+  @Override
+  protected ToolBar createMenuBar() {
+    return new AlfrescoManagementMenuBar(); // Process Definition page lives
+                                            // in mgmt section for Alfresco
+                                            // UI
+  }
 
-    protected void showProcessDefinitionDetail(String processDefinitionId) {
-        detailPanel = new AlfrescoProcessDefinitionDetailPanel(processDefinitionId, this);
-        setDetailComponent(detailPanel);
-        changeUrl(processDefinitionId);
-    }
+  protected void showProcessDefinitionDetail(String processDefinitionId) {
+    detailPanel = new AlfrescoProcessDefinitionDetailPanel(processDefinitionId, this);
+    setDetailComponent(detailPanel);
+    changeUrl(processDefinitionId);
+  }
 
 }

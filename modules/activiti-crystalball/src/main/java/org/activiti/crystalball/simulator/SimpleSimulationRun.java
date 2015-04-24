@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.impl.AcquireJobNotificationEventHandler;
 import org.activiti.crystalball.simulator.impl.NoopEventHandler;
 import org.activiti.engine.ActivitiException;
@@ -30,101 +29,99 @@ import java.util.Map;
  */
 public class SimpleSimulationRun extends AbstractSimulationRun {
 
-	protected EventCalendar eventCalendar;
+  protected EventCalendar eventCalendar;
 
-  /** simulation start date*/
+  /** simulation start date */
   protected Date simulationStartDate = new Date(0);
   protected Date dueDate = null;
 
   protected SimpleSimulationRun(Builder builder) {
     super(builder.eventHandlers);
     this.eventCalendar = builder.getEventCalendar();
-		this.processEngine = builder.getProcessEngine();
+    this.processEngine = builder.getProcessEngine();
     // init internal event handler map.
-		eventHandlerMap.put(SimulationEvent.TYPE_END_SIMULATION, new NoopEventHandler());
-    if ( builder.getJobExecutor() != null)
+    eventHandlerMap.put(SimulationEvent.TYPE_END_SIMULATION, new NoopEventHandler());
+    if (builder.getJobExecutor() != null)
       eventHandlerMap.put(SimulationEvent.TYPE_ACQUIRE_JOB_NOTIFICATION_EVENT, new AcquireJobNotificationEventHandler(builder.getJobExecutor()));
   }
 
   @Override
   public void close() {
     // remove simulation from simulation context
-      SimulationRunContext.getEventCalendar().clear();
-      SimulationRunContext.removeEventCalendar();
-      SimulationRunContext.getProcessEngine().close();
-      SimulationRunContext.removeProcessEngine();
+    SimulationRunContext.getEventCalendar().clear();
+    SimulationRunContext.removeEventCalendar();
+    SimulationRunContext.getProcessEngine().close();
+    SimulationRunContext.removeProcessEngine();
   }
 
   @Override
   protected void initSimulationRunContext(VariableScope execution) {// init new process engine
     try {
-    // add context in which simulation run is executed
-    SimulationRunContext.setEventCalendar(eventCalendar);
-    SimulationRunContext.setProcessEngine(processEngine);
-    SimulationRunContext.setExecution(execution);
+      // add context in which simulation run is executed
+      SimulationRunContext.setEventCalendar(eventCalendar);
+      SimulationRunContext.setProcessEngine(processEngine);
+      SimulationRunContext.setExecution(execution);
 
-    // run simulation
-    // init context and task calendar and simulation time is set to current
-    SimulationRunContext.getClock().setCurrentTime(simulationStartDate);
+      // run simulation
+      // init context and task calendar and simulation time is set to current
+      SimulationRunContext.getClock().setCurrentTime(simulationStartDate);
 
-    if (dueDate != null)
-      SimulationRunContext.getEventCalendar().addEvent(new SimulationEvent.Builder( SimulationEvent.TYPE_END_SIMULATION).
-        simulationTime(dueDate.getTime()).
-        build());
+      if (dueDate != null)
+        SimulationRunContext.getEventCalendar().addEvent(new SimulationEvent.Builder(SimulationEvent.TYPE_END_SIMULATION).simulationTime(dueDate.getTime()).build());
     } catch (Exception e) {
       throw new ActivitiException("Unable to initialize simulation run", e);
     }
   }
 
   @Override
-  protected boolean simulationEnd( SimulationEvent event) {
-    if ( event != null && event.getType().equals(SimulationEvent.TYPE_BREAK_SIMULATION))
+  protected boolean simulationEnd(SimulationEvent event) {
+    if (event != null && event.getType().equals(SimulationEvent.TYPE_BREAK_SIMULATION))
       return true;
-		if ( dueDate != null)
-			return event == null || (SimulationRunContext.getClock().getCurrentTime().after( dueDate ));
-		return  event == null;
-	}
+    if (dueDate != null)
+      return event == null || (SimulationRunContext.getClock().getCurrentTime().after(dueDate));
+    return event == null;
+  }
 
   public static class Builder {
-        private Map<String, SimulationEventHandler> eventHandlers = Collections.emptyMap();
-        private ProcessEngineImpl processEngine;
-        private EventCalendar eventCalendar;
-        private JobExecutor jobExecutor;
+    private Map<String, SimulationEventHandler> eventHandlers = Collections.emptyMap();
+    private ProcessEngineImpl processEngine;
+    private EventCalendar eventCalendar;
+    private JobExecutor jobExecutor;
 
-        public JobExecutor getJobExecutor() {
-            return jobExecutor;
-        }
-
-        public Builder jobExecutor(JobExecutor jobExecutor) {
-            this.jobExecutor = jobExecutor;
-            return this;
-        }
-
-        public ProcessEngineImpl getProcessEngine() {
-            return processEngine;
-        }
-
-        public Builder processEngine(ProcessEngineImpl processEngine) {
-            this.processEngine = processEngine;
-            return this;
-        }
-
-        public EventCalendar getEventCalendar() {
-            return eventCalendar;
-        }
-
-        public Builder eventCalendar(EventCalendar eventCalendar) {
-            this.eventCalendar = eventCalendar;
-            return this;
-        }
-
-        public Builder eventHandlers(Map<String, SimulationEventHandler> eventHandlersMap) {
-            this.eventHandlers = eventHandlersMap;
-            return this;
-        }
-
-        public SimpleSimulationRun build() {
-            return new SimpleSimulationRun(this);
-        }
+    public JobExecutor getJobExecutor() {
+      return jobExecutor;
     }
+
+    public Builder jobExecutor(JobExecutor jobExecutor) {
+      this.jobExecutor = jobExecutor;
+      return this;
+    }
+
+    public ProcessEngineImpl getProcessEngine() {
+      return processEngine;
+    }
+
+    public Builder processEngine(ProcessEngineImpl processEngine) {
+      this.processEngine = processEngine;
+      return this;
+    }
+
+    public EventCalendar getEventCalendar() {
+      return eventCalendar;
+    }
+
+    public Builder eventCalendar(EventCalendar eventCalendar) {
+      this.eventCalendar = eventCalendar;
+      return this;
+    }
+
+    public Builder eventHandlers(Map<String, SimulationEventHandler> eventHandlersMap) {
+      this.eventHandlers = eventHandlersMap;
+      return this;
+    }
+
+    public SimpleSimulationRun build() {
+      return new SimpleSimulationRun(this);
+    }
+  }
 }

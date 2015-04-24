@@ -24,24 +24,24 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("boolean")
 public class BooleanPropertyDefinition extends FormPropertyDefinition {
 
-    @Override
-    public FormPropertyDefinition clone() {
-        BooleanPropertyDefinition clone = new BooleanPropertyDefinition();
-        clone.setValues(this);
-        return clone;
+  @Override
+  public FormPropertyDefinition clone() {
+    BooleanPropertyDefinition clone = new BooleanPropertyDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+
+  @Override
+  public void setValues(FormPropertyDefinition otherDefinition) {
+    if (!(otherDefinition instanceof BooleanPropertyDefinition)) {
+      throw new SimpleWorkflowException("An instance of BooleanPropertyDefinition is required to set values");
     }
 
-    @Override
-    public void setValues(FormPropertyDefinition otherDefinition) {
-        if (!(otherDefinition instanceof BooleanPropertyDefinition)) {
-            throw new SimpleWorkflowException("An instance of BooleanPropertyDefinition is required to set values");
-        }
+    BooleanPropertyDefinition datePropertyDefinition = (BooleanPropertyDefinition) otherDefinition;
+    setName(datePropertyDefinition.getName());
+    setMandatory(datePropertyDefinition.isMandatory());
+    setWritable(datePropertyDefinition.isWritable());
 
-        BooleanPropertyDefinition datePropertyDefinition = (BooleanPropertyDefinition) otherDefinition;
-        setName(datePropertyDefinition.getName());
-        setMandatory(datePropertyDefinition.isMandatory());
-        setWritable(datePropertyDefinition.isWritable());
-
-        setParameters(otherDefinition.cloneParameters());
-    }
+    setParameters(otherDefinition.cloneParameters());
+  }
 }

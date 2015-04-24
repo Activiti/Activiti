@@ -17,6 +17,6 @@ package org.activiti.osgi;
  */
 public class Constants {
 
-    public static final String BUNDLE_ACTIVITI_HEADER = "Activiti-Bundle";
+  public static final String BUNDLE_ACTIVITI_HEADER = "Activiti-Bundle";
 
 }

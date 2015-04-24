@@ -24,91 +24,83 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 
 /**
- * Allows to access executions and tasks of a managed process instance via
- * dependency injection. A process instance can be managed, using the
- * {@link BusinessProcess}-bean.
+ * Allows to access executions and tasks of a managed process instance via dependency injection. A process instance can be managed, using the {@link BusinessProcess}-bean.
  * 
- * The producer methods provided by this class have been extracted from the
- * {@link BusinessProcess}-bean in order to allow for specializing it.
+ * The producer methods provided by this class have been extracted from the {@link BusinessProcess}-bean in order to allow for specializing it.
  * 
  * @author Falko Menge
  */
 public class CurrentProcessInstance {
 
-    @Inject
-    private BusinessProcess businessProcess;
+  @Inject
+  private BusinessProcess businessProcess;
 
-    /**
-     * Returns the {@link ProcessInstance} currently associated or 'null'
-     * 
-     * @throws ActivitiCdiException
-     *             if no {@link Execution} is associated. Use
-     *             {@link BusinessProcess#isAssociated()} to check whether an
-     *             association exists.
-     */
-    /* Makes the current ProcessInstance available for injection */
-    @Produces
-    @Named
-    public ProcessInstance getProcessInstance() {
-        return businessProcess.getProcessInstance();
-    }
+  /**
+   * Returns the {@link ProcessInstance} currently associated or 'null'
+   * 
+   * @throws ActivitiCdiException
+   *           if no {@link Execution} is associated. Use {@link BusinessProcess#isAssociated()} to check whether an association exists.
+   */
+  /* Makes the current ProcessInstance available for injection */
+  @Produces
+  @Named
+  public ProcessInstance getProcessInstance() {
+    return businessProcess.getProcessInstance();
+  }
 
-    /**
-     * Returns the id of the currently associated process instance or 'null'
-     */
-    /* Makes the processId available for injection */
-    @Produces
-    @Named
-    @ProcessInstanceId
-    public String getProcessInstanceId() {
-        return businessProcess.getProcessInstanceId();
-    }
+  /**
+   * Returns the id of the currently associated process instance or 'null'
+   */
+  /* Makes the processId available for injection */
+  @Produces
+  @Named
+  @ProcessInstanceId
+  public String getProcessInstanceId() {
+    return businessProcess.getProcessInstanceId();
+  }
 
-    /**
-     * Returns the currently associated execution or 'null'
-     */
-    /* Makes the current Execution available for injection */
-    @Produces
-    @Named
-    public Execution getExecution() {
-        return businessProcess.getExecution();
-    }
+  /**
+   * Returns the currently associated execution or 'null'
+   */
+  /* Makes the current Execution available for injection */
+  @Produces
+  @Named
+  public Execution getExecution() {
+    return businessProcess.getExecution();
+  }
 
-    /**
-     * @see BusinessProcess#getExecution()
-     */
-    /* Makes the id of the current Execution available for injection */
-    @Produces
-    @Named
-    public String getExecutionId() {
-        return businessProcess.getExecutionId();
-    }
+  /**
+   * @see BusinessProcess#getExecution()
+   */
+  /* Makes the id of the current Execution available for injection */
+  @Produces
+  @Named
+  public String getExecutionId() {
+    return businessProcess.getExecutionId();
+  }
 
-    /**
-     * Returns the currently associated {@link Task} or 'null'
-     * 
-     * @throws ActivitiCdiException
-     *             if no {@link Task} is associated. Use
-     *             {@link BusinessProcess#isTaskAssociated()} to check whether
-     *             an association exists.
-     */
-    /* Makes the current Task available for injection */
-    @Produces
-    @Named
-    public Task getTask() {
-        return businessProcess.getTask();
-    }
+  /**
+   * Returns the currently associated {@link Task} or 'null'
+   * 
+   * @throws ActivitiCdiException
+   *           if no {@link Task} is associated. Use {@link BusinessProcess#isTaskAssociated()} to check whether an association exists.
+   */
+  /* Makes the current Task available for injection */
+  @Produces
+  @Named
+  public Task getTask() {
+    return businessProcess.getTask();
+  }
 
-    /**
-     * Returns the id of the task associated with the current conversation or
-     * 'null'.
-     */
-    /* Makes the taskId available for injection */
-    @Produces
-    @Named
-    @TaskId
-    public String getTaskId() {
-        return businessProcess.getTaskId();
-    }
+  /**
+   * Returns the id of the task associated with the current conversation or 'null'.
+   */
+  /* Makes the taskId available for injection */
+  @Produces
+  @Named
+  @TaskId
+  public String getTaskId() {
+    return businessProcess.getTaskId();
+  }
 
 }

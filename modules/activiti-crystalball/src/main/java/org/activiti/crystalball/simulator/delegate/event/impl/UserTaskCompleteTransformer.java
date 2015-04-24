@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.delegate.event.impl;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -47,11 +46,7 @@ public class UserTaskCompleteTransformer extends Activiti2SimulationEventFunctio
       properties.put(TASK_DEFINITION_KEY, task.getTaskDefinitionKey());
       properties.put(PROCESS_INSTANCE_ID, task.getProcessInstanceId());
       properties.put(TASK_VARIABLES, task.getProcessVariables());
-      return
-          new SimulationEvent.Builder(this.simulationEventType).
-            simulationTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()).
-            properties(properties).
-            build();
+      return new SimulationEvent.Builder(this.simulationEventType).simulationTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()).properties(properties).build();
     }
     return null;
   }

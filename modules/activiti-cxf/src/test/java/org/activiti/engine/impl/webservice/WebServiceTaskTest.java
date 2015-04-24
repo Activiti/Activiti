@@ -27,40 +27,40 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
  */
 public class WebServiceTaskTest extends PluggableActivitiTestCase {
 
-    private Counter counter;
-    private Server server;
+  private Counter counter;
+  private Server server;
 
-    @Override
-    protected void initializeProcessEngine() {
-        super.initializeProcessEngine();
+  @Override
+  protected void initializeProcessEngine() {
+    super.initializeProcessEngine();
 
-        counter = new CounterImpl();
-        JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
-        svrFactory.setServiceClass(Counter.class);
-        svrFactory.setAddress("http://localhost:63081/counter");
-        svrFactory.setServiceBean(counter);
-        svrFactory.getInInterceptors().add(new LoggingInInterceptor());
-        svrFactory.getOutInterceptors().add(new LoggingOutInterceptor());
-        server = svrFactory.create();
-        server.start();
-    }
+    counter = new CounterImpl();
+    JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
+    svrFactory.setServiceClass(Counter.class);
+    svrFactory.setAddress("http://localhost:63081/counter");
+    svrFactory.setServiceBean(counter);
+    svrFactory.getInInterceptors().add(new LoggingInInterceptor());
+    svrFactory.getOutInterceptors().add(new LoggingOutInterceptor());
+    server = svrFactory.create();
+    server.start();
+  }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        server.stop();
-    }
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    server.stop();
+  }
 
-    @Deployment
-    public void testWebServiceInvocation() throws Exception {
+  @Deployment
+  public void testWebServiceInvocation() throws Exception {
 
-        assertEquals(-1, counter.getCount());
+    assertEquals(-1, counter.getCount());
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("webServiceInvocation");
-        waitForJobExecutorToProcessAllJobs(10000L, 250L);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("webServiceInvocation");
+    waitForJobExecutorToProcessAllJobs(10000L, 250L);
 
-        assertEquals(0, counter.getCount());
-        assertTrue(processInstance.isEnded());
-    }
+    assertEquals(0, counter.getCount());
+    assertTrue(processInstance.isEnded());
+  }
 
 }

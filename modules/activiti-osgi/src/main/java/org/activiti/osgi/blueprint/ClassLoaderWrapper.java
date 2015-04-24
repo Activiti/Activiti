@@ -27,82 +27,82 @@ import java.util.List;
 
 public class ClassLoaderWrapper extends ClassLoader {
 
-    private ClassLoader[] parents;
+  private ClassLoader[] parents;
 
-    public ClassLoaderWrapper(ClassLoader... parents) {
-        this.parents = parents;
+  public ClassLoaderWrapper(ClassLoader... parents) {
+    this.parents = parents;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  protected synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
+    //
+    // Check if class is in the loaded classes cache
+    //
+    Class cachedClass = findLoadedClass(name);
+    if (cachedClass != null) {
+      if (resolve) {
+        resolveClass(cachedClass);
+      }
+      return cachedClass;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    protected synchronized Class loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        //
-        // Check if class is in the loaded classes cache
-        //
-        Class cachedClass = findLoadedClass(name);
-        if (cachedClass != null) {
-            if (resolve) {
-                resolveClass(cachedClass);
-            }
-            return cachedClass;
+    //
+    // Check parent class loaders
+    //
+    for (int i = 0; i < parents.length; i++) {
+      ClassLoader parent = parents[i];
+      try {
+        Class clazz = parent.loadClass(name);
+        if (resolve) {
+          resolveClass(clazz);
         }
-
-        //
-        // Check parent class loaders
-        //
-        for (int i = 0; i < parents.length; i++) {
-            ClassLoader parent = parents[i];
-            try {
-                Class clazz = parent.loadClass(name);
-                if (resolve) {
-                    resolveClass(clazz);
-                }
-                return clazz;
-            } catch (ClassNotFoundException ignored) {
-                // this parent didn't have the class; try the next one
-            }
-        }
-
-        throw new ClassNotFoundException(name);
+        return clazz;
+      } catch (ClassNotFoundException ignored) {
+        // this parent didn't have the class; try the next one
+      }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    public URL getResource(String name) {
-        //
-        // Check parent class loaders
-        //
-        for (int i = 0; i < parents.length; i++) {
-            ClassLoader parent = parents[i];
-            URL url = parent.getResource(name);
-            if (url != null) {
-                return url;
-            }
-        }
+    throw new ClassNotFoundException(name);
+  }
 
-        return null;
+  /**
+   * {@inheritDoc}
+   */
+  public URL getResource(String name) {
+    //
+    // Check parent class loaders
+    //
+    for (int i = 0; i < parents.length; i++) {
+      ClassLoader parent = parents[i];
+      URL url = parent.getResource(name);
+      if (url != null) {
+        return url;
+      }
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Enumeration findResources(String name) throws IOException {
-        List resources = new ArrayList();
+    return null;
+  }
 
-        //
-        // Add parent resources
-        //
-        for (int i = 0; i < parents.length; i++) {
-            ClassLoader parent = parents[i];
-            List parentResources = Collections.list(parent.getResources(name));
-            resources.addAll(parentResources);
-        }
+  /**
+   * {@inheritDoc}
+   */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public Enumeration findResources(String name) throws IOException {
+    List resources = new ArrayList();
 
-        return Collections.enumeration(resources);
+    //
+    // Add parent resources
+    //
+    for (int i = 0; i < parents.length; i++) {
+      ClassLoader parent = parents[i];
+      List parentResources = Collections.list(parent.getResources(name));
+      resources.addAll(parentResources);
     }
+
+    return Collections.enumeration(resources);
+  }
 
 }

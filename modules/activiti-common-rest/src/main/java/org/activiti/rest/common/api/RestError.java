@@ -20,22 +20,22 @@ package org.activiti.rest.common.api;
  */
 public class RestError {
 
-    private String errorMessage;
-    private Integer statusCode;
+  private String errorMessage;
+  private Integer statusCode;
 
-    public String getErrorMessage() {
-        return errorMessage;
-    }
+  public String getErrorMessage() {
+    return errorMessage;
+  }
 
-    public void setErrorMessage(String errorMessage) {
-        this.errorMessage = errorMessage;
-    }
+  public void setErrorMessage(String errorMessage) {
+    this.errorMessage = errorMessage;
+  }
 
-    public Integer getStatusCode() {
-        return statusCode;
-    }
+  public Integer getStatusCode() {
+    return statusCode;
+  }
 
-    public void setStatusCode(Integer statusCode) {
-        this.statusCode = statusCode;
-    }
+  public void setStatusCode(Integer statusCode) {
+    this.statusCode = statusCode;
+  }
 }

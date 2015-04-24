@@ -19,5 +19,5 @@ import java.io.Serializable;
  */
 public interface ActivityBehavior extends Serializable {
 
-    void execute(ActivityExecution execution) throws Exception;
+  void execute(ActivityExecution execution) throws Exception;
 }

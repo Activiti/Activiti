@@ -23,24 +23,24 @@ import org.apache.camel.builder.RouteBuilder;
  */
 public class OutboundErrorRoute extends RouteBuilder {
 
-    @Override
-    public void configure() throws Exception {
-        // no problems
-        from("activiti:ErrorHandling:NormalExecution").routeId("outbound").log(LoggingLevel.INFO, "Normal execution").to("seda:inbound");
+  @Override
+  public void configure() throws Exception {
+    // no problems
+    from("activiti:ErrorHandling:NormalExecution").routeId("outbound").log(LoggingLevel.INFO, "Normal execution").to("seda:inbound");
 
-        // always fails with default error handling: propagates exception back
-        // to the caller
-        from("activiti:ErrorHandling:ProvokeError").routeId("error").log(LoggingLevel.INFO, "Provoked error").beanRef("brokenService") // <--
-                                                                                                                                       // throws
-                                                                                                                                       // Exception
-                .to("seda:inbound");
+    // always fails with default error handling: propagates exception back
+    // to the caller
+    from("activiti:ErrorHandling:ProvokeError").routeId("error").log(LoggingLevel.INFO, "Provoked error").beanRef("brokenService") // <--
+                                                                                                                                   // throws
+                                                                                                                                   // Exception
+        .to("seda:inbound");
 
-        // always fails with specific error handler: exception is not propagated
-        // back
-        from("activiti:ErrorHandling:HandleError").routeId("errorWithDlq").errorHandler(deadLetterChannel("seda:dlq")).log(LoggingLevel.INFO, "Provoked error").beanRef("brokenService") // <--
-                                                                                                                                                                                         // throws
-                                                                                                                                                                                         // Exception
-                .to("seda:inbound");
-    }
+    // always fails with specific error handler: exception is not propagated
+    // back
+    from("activiti:ErrorHandling:HandleError").routeId("errorWithDlq").errorHandler(deadLetterChannel("seda:dlq")).log(LoggingLevel.INFO, "Provoked error").beanRef("brokenService") // <--
+                                                                                                                                                                                     // throws
+                                                                                                                                                                                     // Exception
+        .to("seda:inbound");
+  }
 
 }

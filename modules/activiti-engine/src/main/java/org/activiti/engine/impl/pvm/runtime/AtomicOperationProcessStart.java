@@ -27,33 +27,33 @@ import org.activiti.engine.impl.pvm.process.ScopeImpl;
  */
 public class AtomicOperationProcessStart extends AbstractEventAtomicOperation {
 
-    @Override
-    protected ScopeImpl getScope(InterpretableExecution execution) {
-        return execution.getProcessDefinition();
+  @Override
+  protected ScopeImpl getScope(InterpretableExecution execution) {
+    return execution.getProcessDefinition();
+  }
+
+  @Override
+  protected String getEventName() {
+    return org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START;
+  }
+
+  @Override
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Map<String, Object> variablesMap = null;
+      try {
+        variablesMap = execution.getVariables();
+      } catch (Throwable t) {
+        // In some rare cases getting the execution variables can fail
+        // (JPA entity load failure for example)
+        // We ignore the exception here, because it's only meant to
+        // include variables in the initialized event.
+      }
+      Context.getProcessEngineConfiguration().getEventDispatcher()
+          .dispatchEvent(ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.ENTITY_INITIALIZED, execution, variablesMap, false));
     }
 
-    @Override
-    protected String getEventName() {
-        return org.activiti.engine.impl.pvm.PvmEvent.EVENTNAME_START;
-    }
-
-    @Override
-    protected void eventNotificationsCompleted(InterpretableExecution execution) {
-        if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Map<String, Object> variablesMap = null;
-            try {
-                variablesMap = execution.getVariables();
-            } catch (Throwable t) {
-                // In some rare cases getting the execution variables can fail
-                // (JPA entity load failure for example)
-                // We ignore the exception here, because it's only meant to
-                // include variables in the initialized event.
-            }
-            Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createEntityWithVariablesEvent(ActivitiEventType.ENTITY_INITIALIZED, execution, variablesMap, false));
-        }
-
-        ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-        execution.performOperation(PROCESS_START_INITIAL);
-    }
+    ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
+    execution.performOperation(PROCESS_START_INITIAL);
+  }
 }

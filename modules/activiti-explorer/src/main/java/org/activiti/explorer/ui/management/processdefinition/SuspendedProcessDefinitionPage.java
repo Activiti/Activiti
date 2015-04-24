@@ -29,77 +29,77 @@ import com.vaadin.ui.Table;
  */
 public class SuspendedProcessDefinitionPage extends ManagementPage {
 
-    private static final long serialVersionUID = 1L;
-    protected String processDefinitionId;
-    protected Table processDefinitionTable;
-    protected LazyLoadingQuery processDefinitionListQuery;
-    protected LazyLoadingContainer processDefinitionListContainer;
+  private static final long serialVersionUID = 1L;
+  protected String processDefinitionId;
+  protected Table processDefinitionTable;
+  protected LazyLoadingQuery processDefinitionListQuery;
+  protected LazyLoadingContainer processDefinitionListContainer;
 
-    public SuspendedProcessDefinitionPage() {
-        ExplorerApp.get().setCurrentUriFragment(new UriFragment(SuspendedProcessDefinitionNavigator.SUSPENDED_PROC_DEF_URI_PART));
+  public SuspendedProcessDefinitionPage() {
+    ExplorerApp.get().setCurrentUriFragment(new UriFragment(SuspendedProcessDefinitionNavigator.SUSPENDED_PROC_DEF_URI_PART));
+  }
+
+  public SuspendedProcessDefinitionPage(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+
+  @Override
+  protected void initUi() {
+    super.initUi();
+
+    if (processDefinitionId == null) {
+      selectElement(0);
+    } else {
+      selectElement(processDefinitionListContainer.getIndexForObjectId(processDefinitionId));
     }
+  }
 
-    public SuspendedProcessDefinitionPage(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
+  protected Table createList() {
+    processDefinitionTable = new Table();
 
-    @Override
-    protected void initUi() {
-        super.initUi();
+    processDefinitionListQuery = new SuspendedProcessDefinitionListQuery();
+    processDefinitionListContainer = new LazyLoadingContainer(processDefinitionListQuery);
+    processDefinitionTable.setContainerDataSource(processDefinitionListContainer);
 
-        if (processDefinitionId == null) {
-            selectElement(0);
+    // Column headers
+    processDefinitionTable.addContainerProperty("name", String.class, null);
+    processDefinitionTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+
+    // Listener to change right panel when clicked on a user
+    processDefinitionTable.addListener(new Property.ValueChangeListener() {
+
+      private static final long serialVersionUID = 1L;
+
+      public void valueChange(ValueChangeEvent event) {
+        Item item = processDefinitionTable.getItem(event.getProperty().getValue()); // the
+                                                                                    // value
+                                                                                    // of
+                                                                                    // the
+                                                                                    // property
+                                                                                    // is
+                                                                                    // the
+                                                                                    // itemId
+                                                                                    // of
+                                                                                    // the
+                                                                                    // table
+                                                                                    // entry
+        if (item != null) {
+          String processDefinitionId = (String) item.getItemProperty("id").getValue();
+          setDetailComponent(new SuspendedProcessDefinitionDetailPanel(processDefinitionId, SuspendedProcessDefinitionPage.this));
+
+          // Update URL
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(SuspendedProcessDefinitionNavigator.SUSPENDED_PROC_DEF_URI_PART, processDefinitionId));
+
         } else {
-            selectElement(processDefinitionListContainer.getIndexForObjectId(processDefinitionId));
+          // Nothing selected
+          setDetailComponent(null);
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(SuspendedProcessDefinitionNavigator.SUSPENDED_PROC_DEF_URI_PART));
         }
-    }
+      }
 
-    protected Table createList() {
-        processDefinitionTable = new Table();
+    });
 
-        processDefinitionListQuery = new SuspendedProcessDefinitionListQuery();
-        processDefinitionListContainer = new LazyLoadingContainer(processDefinitionListQuery);
-        processDefinitionTable.setContainerDataSource(processDefinitionListContainer);
-
-        // Column headers
-        processDefinitionTable.addContainerProperty("name", String.class, null);
-        processDefinitionTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-
-        // Listener to change right panel when clicked on a user
-        processDefinitionTable.addListener(new Property.ValueChangeListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void valueChange(ValueChangeEvent event) {
-                Item item = processDefinitionTable.getItem(event.getProperty().getValue()); // the
-                                                                                            // value
-                                                                                            // of
-                                                                                            // the
-                                                                                            // property
-                                                                                            // is
-                                                                                            // the
-                                                                                            // itemId
-                                                                                            // of
-                                                                                            // the
-                                                                                            // table
-                                                                                            // entry
-                if (item != null) {
-                    String processDefinitionId = (String) item.getItemProperty("id").getValue();
-                    setDetailComponent(new SuspendedProcessDefinitionDetailPanel(processDefinitionId, SuspendedProcessDefinitionPage.this));
-
-                    // Update URL
-                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(SuspendedProcessDefinitionNavigator.SUSPENDED_PROC_DEF_URI_PART, processDefinitionId));
-
-                } else {
-                    // Nothing selected
-                    setDetailComponent(null);
-                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(SuspendedProcessDefinitionNavigator.SUSPENDED_PROC_DEF_URI_PART));
-                }
-            }
-
-        });
-
-        return processDefinitionTable;
-    }
+    return processDefinitionTable;
+  }
 
 }

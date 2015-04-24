@@ -30,62 +30,62 @@ import com.vaadin.data.Item;
  */
 public class TableDataQuery extends AbstractLazyLoadingQuery {
 
-    protected String tableName;
-    protected transient ManagementService managementService;
-    protected Object[] sortPropertyIds;
-    protected boolean[] sortPropertyIdsAscending;
+  protected String tableName;
+  protected transient ManagementService managementService;
+  protected Object[] sortPropertyIds;
+  protected boolean[] sortPropertyIdsAscending;
 
-    public TableDataQuery(String tableName, ManagementService managementService) {
-        this.tableName = tableName;
-        this.managementService = managementService;
-    }
+  public TableDataQuery(String tableName, ManagementService managementService) {
+    this.tableName = tableName;
+    this.managementService = managementService;
+  }
 
-    public List<Item> loadItems(int start, int count) {
-        TablePageQuery query = managementService.createTablePageQuery().tableName(tableName);
+  public List<Item> loadItems(int start, int count) {
+    TablePageQuery query = managementService.createTablePageQuery().tableName(tableName);
 
-        if (sortPropertyIds != null && sortPropertyIds.length > 0) {
-            for (int i = 0; i < sortPropertyIds.length; i++) {
-                String column = (String) sortPropertyIds[i]; // all container
-                                                             // properties for
-                                                             // table data are
-                                                             // Strings
-                if (sortPropertyIdsAscending[i] == true) {
-                    query.orderAsc(column);
-                } else {
-                    query.orderDesc(column);
-                }
-            }
+    if (sortPropertyIds != null && sortPropertyIds.length > 0) {
+      for (int i = 0; i < sortPropertyIds.length; i++) {
+        String column = (String) sortPropertyIds[i]; // all container
+                                                     // properties for
+                                                     // table data are
+                                                     // Strings
+        if (sortPropertyIdsAscending[i] == true) {
+          query.orderAsc(column);
+        } else {
+          query.orderDesc(column);
         }
+      }
+    }
 
-        List<Map<String, Object>> rows = query.listPage(start, count).getRows();
-        List<Item> items = new ArrayList<Item>();
-        for (Map<String, Object> row : rows) {
+    List<Map<String, Object>> rows = query.listPage(start, count).getRows();
+    List<Item> items = new ArrayList<Item>();
+    for (Map<String, Object> row : rows) {
 
-            HashMap<String, Object> newRow = new HashMap<String, Object>();
-            for (Entry<String, Object> rowEntry : row.entrySet()) {
-                String key = rowEntry.getKey();
-                if (key != null) {
-                    key = key.toUpperCase();
-                }
-                newRow.put(key, rowEntry.getValue());
-            }
-
-            items.add(new MapItem(newRow));
+      HashMap<String, Object> newRow = new HashMap<String, Object>();
+      for (Entry<String, Object> rowEntry : row.entrySet()) {
+        String key = rowEntry.getKey();
+        if (key != null) {
+          key = key.toUpperCase();
         }
-        return items;
-    }
+        newRow.put(key, rowEntry.getValue());
+      }
 
-    public int size() {
-        return managementService.getTableCount().get(tableName).intValue();
+      items.add(new MapItem(newRow));
     }
+    return items;
+  }
 
-    public void setSorting(Object[] propertyId, boolean[] ascending) {
-        this.sortPropertyIds = propertyId;
-        this.sortPropertyIdsAscending = ascending;
-    }
+  public int size() {
+    return managementService.getTableCount().get(tableName).intValue();
+  }
 
-    public Item loadSingleResult(String id) {
-        throw new UnsupportedOperationException();
-    }
+  public void setSorting(Object[] propertyId, boolean[] ascending) {
+    this.sortPropertyIds = propertyId;
+    this.sortPropertyIdsAscending = ascending;
+  }
+
+  public Item loadSingleResult(String id) {
+    throw new UnsupportedOperationException();
+  }
 
 }

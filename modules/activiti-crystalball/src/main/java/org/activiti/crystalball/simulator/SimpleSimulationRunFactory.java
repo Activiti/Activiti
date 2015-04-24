@@ -37,9 +37,7 @@ public class SimpleSimulationRunFactory implements FactoryBean<SimulationRun> {
 
   @Override
   public SimulationRun getObject() throws Exception {
-    return new SimpleSimulationRun.Builder()
-        .eventHandlers(customEventHandlerMap).processEngine(processEngine.getObject())
-        .eventCalendar(eventCalendar.getObject()).jobExecutor(jobExecutor).build();
+    return new SimpleSimulationRun.Builder().eventHandlers(customEventHandlerMap).processEngine(processEngine.getObject()).eventCalendar(eventCalendar.getObject()).jobExecutor(jobExecutor).build();
   }
 
   @Override

@@ -47,126 +47,126 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class ImportComponent extends VerticalLayout implements StartedListener, FinishedListener, FailedListener, ProgressListener {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    // Services
-    protected I18nManager i18nManager;
-    protected NotificationManager notificationManager;
+  // Services
+  protected I18nManager i18nManager;
+  protected NotificationManager notificationManager;
 
-    // Ui components
-    protected ProgressIndicator progressIndicator;
-    protected Upload upload;
-    protected Receiver receiver;
+  // Ui components
+  protected ProgressIndicator progressIndicator;
+  protected Upload upload;
+  protected Receiver receiver;
 
-    // Additional listeners can be attached to the upload components
-    protected List<FinishedListener> finishedListeners = new ArrayList<FinishedListener>();
-    protected List<StartedListener> startedListeners = new ArrayList<StartedListener>();
-    protected boolean showGenericFailureMessage = true;
-    protected List<FailedListener> failedListeners = new ArrayList<FailedListener>();
-    protected List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
+  // Additional listeners can be attached to the upload components
+  protected List<FinishedListener> finishedListeners = new ArrayList<FinishedListener>();
+  protected List<StartedListener> startedListeners = new ArrayList<StartedListener>();
+  protected boolean showGenericFailureMessage = true;
+  protected List<FailedListener> failedListeners = new ArrayList<FailedListener>();
+  protected List<ProgressListener> progressListeners = new ArrayList<ProgressListener>();
 
-    public ImportComponent(String description, Receiver receiver) {
-        this.receiver = receiver;
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-        this.notificationManager = ExplorerApp.get().getNotificationManager();
+  public ImportComponent(String description, Receiver receiver) {
+    this.receiver = receiver;
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
 
-        init(description);
+    init(description);
+  }
+
+  // UI initialisation
+  // ----------------------------------------------------------------------------
+
+  protected void init(String description) {
+    setSpacing(true);
+    setSizeFull();
+
+    addDescription(description);
+    addUpload();
+  }
+
+  protected void addDescription(String description) {
+    if (description != null) {
+      Label descriptionLabel = new Label(description);
+      descriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
+      descriptionLabel.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION);
+      addComponent(descriptionLabel);
     }
+  }
 
-    // UI initialisation
-    // ----------------------------------------------------------------------------
+  protected void addUpload() {
+    this.upload = new Upload(null, receiver);
+    upload.setButtonCaption(i18nManager.getMessage(Messages.UPLOAD_SELECT));
+    upload.setImmediate(true);
+    addComponent(upload);
+    setComponentAlignment(upload, Alignment.MIDDLE_CENTER);
 
-    protected void init(String description) {
-        setSpacing(true);
-        setSizeFull();
+    // register ourselves as listener for upload events
+    upload.addListener((StartedListener) this);
+    upload.addListener((FailedListener) this);
+    upload.addListener((FinishedListener) this);
+    upload.addListener((ProgressListener) this);
+  }
 
-        addDescription(description);
-        addUpload();
+  // File upload event handling
+  // -------------------------------------------------------------------
+
+  public void uploadStarted(StartedEvent event) {
+    removeAllComponents(); // Visible components are replaced by a progress
+                           // bar
+
+    this.progressIndicator = new ProgressIndicator();
+    progressIndicator.setPollingInterval(500);
+    addComponent(progressIndicator);
+    setComponentAlignment(progressIndicator, Alignment.MIDDLE_CENTER);
+
+    for (StartedListener startedListener : startedListeners) {
+      startedListener.uploadStarted(event);
     }
+  }
 
-    protected void addDescription(String description) {
-        if (description != null) {
-            Label descriptionLabel = new Label(description);
-            descriptionLabel.addStyleName(Reindeer.LABEL_SMALL);
-            descriptionLabel.addStyleName(ExplorerLayout.STYLE_DEPLOYMENT_UPLOAD_DESCRIPTION);
-            addComponent(descriptionLabel);
-        }
+  public void updateProgress(long readBytes, long contentLength) {
+    progressIndicator.setValue(new Float(readBytes / (float) contentLength));
+
+    for (ProgressListener progressListener : progressListeners) {
+      progressListener.updateProgress(readBytes, contentLength);
     }
+  }
 
-    protected void addUpload() {
-        this.upload = new Upload(null, receiver);
-        upload.setButtonCaption(i18nManager.getMessage(Messages.UPLOAD_SELECT));
-        upload.setImmediate(true);
-        addComponent(upload);
-        setComponentAlignment(upload, Alignment.MIDDLE_CENTER);
-
-        // register ourselves as listener for upload events
-        upload.addListener((StartedListener) this);
-        upload.addListener((FailedListener) this);
-        upload.addListener((FinishedListener) this);
-        upload.addListener((ProgressListener) this);
+  public void uploadFinished(FinishedEvent event) {
+    // Hide progress indicator
+    progressIndicator.setVisible(false);
+    for (FinishedListener finishedListener : finishedListeners) {
+      finishedListener.uploadFinished(event);
     }
+  }
 
-    // File upload event handling
-    // -------------------------------------------------------------------
-
-    public void uploadStarted(StartedEvent event) {
-        removeAllComponents(); // Visible components are replaced by a progress
-                               // bar
-
-        this.progressIndicator = new ProgressIndicator();
-        progressIndicator.setPollingInterval(500);
-        addComponent(progressIndicator);
-        setComponentAlignment(progressIndicator, Alignment.MIDDLE_CENTER);
-
-        for (StartedListener startedListener : startedListeners) {
-            startedListener.uploadStarted(event);
-        }
+  public void uploadFailed(FailedEvent event) {
+    for (FailedListener failedListener : failedListeners) {
+      failedListener.uploadFailed(event);
     }
+  }
 
-    public void updateProgress(long readBytes, long contentLength) {
-        progressIndicator.setValue(new Float(readBytes / (float) contentLength));
+  public AcceptCriterion getAcceptCriterion() {
+    return AcceptAll.get();
+  }
 
-        for (ProgressListener progressListener : progressListeners) {
-            progressListener.updateProgress(readBytes, contentLength);
-        }
-    }
+  // Upload Listeners
+  // ----------------------------------------------------------------------------
 
-    public void uploadFinished(FinishedEvent event) {
-        // Hide progress indicator
-        progressIndicator.setVisible(false);
-        for (FinishedListener finishedListener : finishedListeners) {
-            finishedListener.uploadFinished(event);
-        }
-    }
+  public void addFinishedListener(FinishedListener finishedListener) {
+    finishedListeners.add(finishedListener);
+  }
 
-    public void uploadFailed(FailedEvent event) {
-        for (FailedListener failedListener : failedListeners) {
-            failedListener.uploadFailed(event);
-        }
-    }
+  public void addStartedListener(StartedListener startedListener) {
+    startedListeners.add(startedListener);
+  }
 
-    public AcceptCriterion getAcceptCriterion() {
-        return AcceptAll.get();
-    }
+  public void addFailedListener(FailedListener failedListener) {
+    failedListeners.add(failedListener);
+  }
 
-    // Upload Listeners
-    // ----------------------------------------------------------------------------
-
-    public void addFinishedListener(FinishedListener finishedListener) {
-        finishedListeners.add(finishedListener);
-    }
-
-    public void addStartedListener(StartedListener startedListener) {
-        startedListeners.add(startedListener);
-    }
-
-    public void addFailedListener(FailedListener failedListener) {
-        failedListeners.add(failedListener);
-    }
-
-    public void addProgressListener(ProgressListener progressListener) {
-        progressListeners.add(progressListener);
-    }
+  public void addProgressListener(ProgressListener progressListener) {
+    progressListeners.add(progressListener);
+  }
 
 }

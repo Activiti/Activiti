@@ -28,34 +28,34 @@ import com.vaadin.data.Item;
  */
 public class ActiveProcessDefinitionListQuery extends AbstractLazyLoadingQuery {
 
-    protected transient RepositoryService repositoryService;
+  protected transient RepositoryService repositoryService;
 
-    public ActiveProcessDefinitionListQuery() {
-        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  public ActiveProcessDefinitionListQuery() {
+    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  }
+
+  public int size() {
+    return (int) repositoryService.createProcessDefinitionQuery().active().count();
+  }
+
+  public List<Item> loadItems(int start, int count) {
+    List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().active().orderByProcessDefinitionName().asc().orderByProcessDefinitionVersion().asc()
+        .listPage(start, count);
+
+    List<Item> processDefinitionItems = new ArrayList<Item>();
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      processDefinitionItems.add(new ProcessDefinitionListItem(processDefinition));
     }
 
-    public int size() {
-        return (int) repositoryService.createProcessDefinitionQuery().active().count();
-    }
+    return processDefinitionItems;
+  }
 
-    public List<Item> loadItems(int start, int count) {
-        List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().active().orderByProcessDefinitionName().asc().orderByProcessDefinitionVersion().asc()
-                .listPage(start, count);
+  public Item loadSingleResult(String id) {
+    return new ProcessDefinitionListItem(repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult());
+  }
 
-        List<Item> processDefinitionItems = new ArrayList<Item>();
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            processDefinitionItems.add(new ProcessDefinitionListItem(processDefinition));
-        }
-
-        return processDefinitionItems;
-    }
-
-    public Item loadSingleResult(String id) {
-        return new ProcessDefinitionListItem(repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult());
-    }
-
-    public void setSorting(Object[] propertyIds, boolean[] ascending) {
-        throw new UnsupportedOperationException();
-    }
+  public void setSorting(Object[] propertyIds, boolean[] ascending) {
+    throw new UnsupportedOperationException();
+  }
 
 }

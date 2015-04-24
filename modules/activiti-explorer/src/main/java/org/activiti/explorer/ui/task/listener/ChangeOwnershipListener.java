@@ -34,50 +34,50 @@ import com.vaadin.ui.Button.ClickListener;
  */
 public class ChangeOwnershipListener implements ClickListener {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected Task task;
-    protected TaskDetailPanel taskDetailPanel;
-    protected I18nManager i18nManager;
+  protected Task task;
+  protected TaskDetailPanel taskDetailPanel;
+  protected I18nManager i18nManager;
 
-    public ChangeOwnershipListener(Task task, TaskDetailPanel taskDetailPanel) { // changeAssigne
-                                                                                 // ==
-                                                                                 // false
-                                                                                 // ->
-                                                                                 // changing
-                                                                                 // owner
-        this.task = task;
-        this.taskDetailPanel = taskDetailPanel;
-        this.i18nManager = ExplorerApp.get().getI18nManager();
+  public ChangeOwnershipListener(Task task, TaskDetailPanel taskDetailPanel) { // changeAssigne
+                                                                               // ==
+                                                                               // false
+                                                                               // ->
+                                                                               // changing
+                                                                               // owner
+    this.task = task;
+    this.taskDetailPanel = taskDetailPanel;
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+  }
+
+  public void buttonClick(ClickEvent event) {
+
+    List<String> ignoredIds = null;
+    if (task.getOwner() != null) {
+      ignoredIds = Arrays.asList(task.getOwner());
     }
 
-    public void buttonClick(ClickEvent event) {
+    final SelectUsersPopupWindow involvePeoplePopupWindow = new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER), false, ignoredIds);
 
-        List<String> ignoredIds = null;
-        if (task.getOwner() != null) {
-            ignoredIds = Arrays.asList(task.getOwner());
-        }
+    involvePeoplePopupWindow.addListener(new SubmitEventListener() {
+      private static final long serialVersionUID = 1L;
 
-        final SelectUsersPopupWindow involvePeoplePopupWindow = new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_OWNER_TRANSFER), false, ignoredIds);
+      protected void submitted(SubmitEvent event) {
+        // Update owner
+        String selectedUser = involvePeoplePopupWindow.getSelectedUserId();
+        task.setOwner(selectedUser);
+        ProcessEngines.getDefaultProcessEngine().getTaskService().setOwner(task.getId(), selectedUser);
 
-        involvePeoplePopupWindow.addListener(new SubmitEventListener() {
-            private static final long serialVersionUID = 1L;
+        // Update UI
+        taskDetailPanel.notifyOwnerChanged();
+      }
 
-            protected void submitted(SubmitEvent event) {
-                // Update owner
-                String selectedUser = involvePeoplePopupWindow.getSelectedUserId();
-                task.setOwner(selectedUser);
-                ProcessEngines.getDefaultProcessEngine().getTaskService().setOwner(task.getId(), selectedUser);
+      protected void cancelled(SubmitEvent event) {
+      }
+    });
 
-                // Update UI
-                taskDetailPanel.notifyOwnerChanged();
-            }
-
-            protected void cancelled(SubmitEvent event) {
-            }
-        });
-
-        ExplorerApp.get().getViewManager().showPopupWindow(involvePeoplePopupWindow);
-    }
+    ExplorerApp.get().getViewManager().showPopupWindow(involvePeoplePopupWindow);
+  }
 
 }

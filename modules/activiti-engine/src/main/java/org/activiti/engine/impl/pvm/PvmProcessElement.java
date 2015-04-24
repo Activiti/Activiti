@@ -20,10 +20,10 @@ import java.io.Serializable;
  */
 public interface PvmProcessElement extends Serializable {
 
-    String getId();
+  String getId();
 
-    PvmProcessDefinition getProcessDefinition();
+  PvmProcessDefinition getProcessDefinition();
 
-    Object getProperty(String name);
+  Object getProperty(String name);
 
 }

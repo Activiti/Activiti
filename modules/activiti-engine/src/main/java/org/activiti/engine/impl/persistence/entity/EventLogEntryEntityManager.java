@@ -24,34 +24,34 @@ import org.activiti.engine.event.EventLogEntry;
  */
 public class EventLogEntryEntityManager extends AbstractEntityManager<EventLogEntryEntity> {
 
-    public void insert(EventLogEntryEntity eventLogEntryEntity) {
-        getDbSqlSession().insert(eventLogEntryEntity);
-    }
+  public void insert(EventLogEntryEntity eventLogEntryEntity) {
+    getDbSqlSession().insert(eventLogEntryEntity);
+  }
 
-    @SuppressWarnings("unchecked")
-    public List<EventLogEntry> findAllEventLogEntries() {
-        return getDbSqlSession().selectList("selectAllEventLogEntries");
-    }
+  @SuppressWarnings("unchecked")
+  public List<EventLogEntry> findAllEventLogEntries() {
+    return getDbSqlSession().selectList("selectAllEventLogEntries");
+  }
 
-    @SuppressWarnings("unchecked")
-    public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
-        Map<String, Object> params = new HashMap<String, Object>(2);
-        params.put("startLogNr", startLogNr);
-        if (pageSize > 0) {
-            params.put("endLogNr", startLogNr + pageSize + 1);
-        }
-        return getDbSqlSession().selectList("selectEventLogEntries", params);
+  @SuppressWarnings("unchecked")
+  public List<EventLogEntry> findEventLogEntries(long startLogNr, long pageSize) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("startLogNr", startLogNr);
+    if (pageSize > 0) {
+      params.put("endLogNr", startLogNr + pageSize + 1);
     }
+    return getDbSqlSession().selectList("selectEventLogEntries", params);
+  }
 
-    @SuppressWarnings("unchecked")
-    public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
-        Map<String, Object> params = new HashMap<String, Object>(2);
-        params.put("processInstanceId", processInstanceId);
-        return getDbSqlSession().selectList("selectEventLogEntriesByProcessInstanceId", params);
-    }
+  @SuppressWarnings("unchecked")
+  public List<EventLogEntry> findEventLogEntriesByProcessInstanceId(String processInstanceId) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("processInstanceId", processInstanceId);
+    return getDbSqlSession().selectList("selectEventLogEntriesByProcessInstanceId", params);
+  }
 
-    public void deleteEventLogEntry(long logNr) {
-        getDbSqlSession().getSqlSession().delete("deleteEventLogEntry", logNr);
-    }
+  public void deleteEventLogEntry(long logNr) {
+    getDbSqlSession().getSqlSession().delete("deleteEventLogEntry", logNr);
+  }
 
 }

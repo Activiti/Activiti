@@ -46,109 +46,109 @@ import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager
  */
 public abstract class AbstractManager implements Session {
 
-    protected DbSqlSession getDbSqlSession() {
-        return getSession(DbSqlSession.class);
-    }
+  protected DbSqlSession getDbSqlSession() {
+    return getSession(DbSqlSession.class);
+  }
 
-    protected <T> T getSession(Class<T> sessionClass) {
-        return Context.getCommandContext().getSession(sessionClass);
-    }
+  protected <T> T getSession(Class<T> sessionClass) {
+    return Context.getCommandContext().getSession(sessionClass);
+  }
 
-    protected DeploymentEntityManager getDeploymentManager() {
-        return getSession(DeploymentEntityManager.class);
-    }
+  protected DeploymentEntityManager getDeploymentManager() {
+    return getSession(DeploymentEntityManager.class);
+  }
 
-    protected ResourceEntityManager getResourceManager() {
-        return getSession(ResourceEntityManager.class);
-    }
+  protected ResourceEntityManager getResourceManager() {
+    return getSession(ResourceEntityManager.class);
+  }
 
-    protected ByteArrayEntityManager getByteArrayManager() {
-        return getSession(ByteArrayEntityManager.class);
-    }
+  protected ByteArrayEntityManager getByteArrayManager() {
+    return getSession(ByteArrayEntityManager.class);
+  }
 
-    protected ProcessDefinitionEntityManager getProcessDefinitionManager() {
-        return getSession(ProcessDefinitionEntityManager.class);
-    }
+  protected ProcessDefinitionEntityManager getProcessDefinitionManager() {
+    return getSession(ProcessDefinitionEntityManager.class);
+  }
 
-    protected ModelEntityManager getModelManager() {
-        return getSession(ModelEntityManager.class);
-    }
+  protected ModelEntityManager getModelManager() {
+    return getSession(ModelEntityManager.class);
+  }
 
-    protected ExecutionEntityManager getProcessInstanceManager() {
-        return getSession(ExecutionEntityManager.class);
-    }
+  protected ExecutionEntityManager getProcessInstanceManager() {
+    return getSession(ExecutionEntityManager.class);
+  }
 
-    protected TaskEntityManager getTaskManager() {
-        return getSession(TaskEntityManager.class);
-    }
+  protected TaskEntityManager getTaskManager() {
+    return getSession(TaskEntityManager.class);
+  }
 
-    protected IdentityLinkEntityManager getIdentityLinkManager() {
-        return getSession(IdentityLinkEntityManager.class);
-    }
+  protected IdentityLinkEntityManager getIdentityLinkManager() {
+    return getSession(IdentityLinkEntityManager.class);
+  }
 
-    protected EventSubscriptionEntityManager getEventSubscriptionManager() {
-        return (getSession(EventSubscriptionEntityManager.class));
-    }
+  protected EventSubscriptionEntityManager getEventSubscriptionManager() {
+    return (getSession(EventSubscriptionEntityManager.class));
+  }
 
-    protected VariableInstanceEntityManager getVariableInstanceManager() {
-        return getSession(VariableInstanceEntityManager.class);
-    }
+  protected VariableInstanceEntityManager getVariableInstanceManager() {
+    return getSession(VariableInstanceEntityManager.class);
+  }
 
-    protected HistoricProcessInstanceEntityManager getHistoricProcessInstanceManager() {
-        return getSession(HistoricProcessInstanceEntityManager.class);
-    }
+  protected HistoricProcessInstanceEntityManager getHistoricProcessInstanceManager() {
+    return getSession(HistoricProcessInstanceEntityManager.class);
+  }
 
-    protected HistoricDetailEntityManager getHistoricDetailManager() {
-        return getSession(HistoricDetailEntityManager.class);
-    }
+  protected HistoricDetailEntityManager getHistoricDetailManager() {
+    return getSession(HistoricDetailEntityManager.class);
+  }
 
-    protected HistoricActivityInstanceEntityManager getHistoricActivityInstanceManager() {
-        return getSession(HistoricActivityInstanceEntityManager.class);
-    }
+  protected HistoricActivityInstanceEntityManager getHistoricActivityInstanceManager() {
+    return getSession(HistoricActivityInstanceEntityManager.class);
+  }
 
-    protected HistoricVariableInstanceEntityManager getHistoricVariableInstanceManager() {
-        return getSession(HistoricVariableInstanceEntityManager.class);
-    }
+  protected HistoricVariableInstanceEntityManager getHistoricVariableInstanceManager() {
+    return getSession(HistoricVariableInstanceEntityManager.class);
+  }
 
-    protected HistoricTaskInstanceEntityManager getHistoricTaskInstanceManager() {
-        return getSession(HistoricTaskInstanceEntityManager.class);
-    }
+  protected HistoricTaskInstanceEntityManager getHistoricTaskInstanceManager() {
+    return getSession(HistoricTaskInstanceEntityManager.class);
+  }
 
-    protected HistoricIdentityLinkEntityManager getHistoricIdentityLinkEntityManager() {
-        return getSession(HistoricIdentityLinkEntityManager.class);
-    }
+  protected HistoricIdentityLinkEntityManager getHistoricIdentityLinkEntityManager() {
+    return getSession(HistoricIdentityLinkEntityManager.class);
+  }
 
-    protected UserIdentityManager getUserIdentityManager() {
-        return getSession(UserIdentityManager.class);
-    }
+  protected UserIdentityManager getUserIdentityManager() {
+    return getSession(UserIdentityManager.class);
+  }
 
-    protected GroupIdentityManager getGroupIdentityManager() {
-        return getSession(GroupIdentityManager.class);
-    }
+  protected GroupIdentityManager getGroupIdentityManager() {
+    return getSession(GroupIdentityManager.class);
+  }
 
-    protected IdentityInfoEntityManager getIdentityInfoManager() {
-        return getSession(IdentityInfoEntityManager.class);
-    }
+  protected IdentityInfoEntityManager getIdentityInfoManager() {
+    return getSession(IdentityInfoEntityManager.class);
+  }
 
-    protected MembershipIdentityManager getMembershipIdentityManager() {
-        return getSession(MembershipIdentityManager.class);
-    }
+  protected MembershipIdentityManager getMembershipIdentityManager() {
+    return getSession(MembershipIdentityManager.class);
+  }
 
-    protected AttachmentEntityManager getAttachmentManager() {
-        return getSession(AttachmentEntityManager.class);
-    }
+  protected AttachmentEntityManager getAttachmentManager() {
+    return getSession(AttachmentEntityManager.class);
+  }
 
-    protected HistoryManager getHistoryManager() {
-        return getSession(HistoryManager.class);
-    }
+  protected HistoryManager getHistoryManager() {
+    return getSession(HistoryManager.class);
+  }
 
-    protected ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-        return Context.getProcessEngineConfiguration();
-    }
+  protected ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+    return Context.getProcessEngineConfiguration();
+  }
 
-    public void close() {
-    }
+  public void close() {
+  }
 
-    public void flush() {
-    }
+  public void flush() {
+  }
 }

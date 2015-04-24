@@ -19,24 +19,24 @@ package org.activiti.engine.impl.bpmn.webservice;
  */
 public interface OperationImplementation {
 
-    /**
-     * @return the id of this implementation
-     */
-    String getId();
+  /**
+   * @return the id of this implementation
+   */
+  String getId();
 
-    /**
-     * @return the name of this implementation
-     */
-    String getName();
+  /**
+   * @return the name of this implementation
+   */
+  String getName();
 
-    /**
-     * Sends the message on behalf of operation
-     * 
-     * @param message
-     *            the message to be sent
-     * @param operation
-     *            the operation that is interested on sending the message
-     * @return the resulting message
-     */
-    MessageInstance sendFor(MessageInstance message, Operation operation);
+  /**
+   * Sends the message on behalf of operation
+   * 
+   * @param message
+   *          the message to be sent
+   * @param operation
+   *          the operation that is interested on sending the message
+   * @return the resulting message
+   */
+  MessageInstance sendFor(MessageInstance message, Operation operation);
 }

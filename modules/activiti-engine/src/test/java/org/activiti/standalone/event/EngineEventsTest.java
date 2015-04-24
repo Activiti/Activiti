@@ -17,32 +17,31 @@ import org.activiti.engine.impl.test.ResourceActivitiTestCase;
 import org.activiti.engine.test.api.event.TestActivitiEventListener;
 
 /**
- * Test to verify event-listeners, which are configured in the cfg.xml, are
- * notified.
+ * Test to verify event-listeners, which are configured in the cfg.xml, are notified.
  * 
  * @author Frederik Heremans
  */
 public class EngineEventsTest extends ResourceActivitiTestCase {
 
-    public EngineEventsTest() {
-        super("org/activiti/standalone/event/activiti-eventlistener.cfg.xml");
-    }
+  public EngineEventsTest() {
+    super("org/activiti/standalone/event/activiti-eventlistener.cfg.xml");
+  }
 
-    public void testEngineEventsTest() {
-        // Fetch the listener to check received events
-        TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
-        assertNotNull(listener);
+  public void testEngineEventsTest() {
+    // Fetch the listener to check received events
+    TestActivitiEventListener listener = (TestActivitiEventListener) processEngineConfiguration.getBeans().get("eventListener");
+    assertNotNull(listener);
 
-        // Check create-event
-        assertEquals(1, listener.getEventsReceived().size());
-        assertEquals(ActivitiEventType.ENGINE_CREATED, listener.getEventsReceived().get(0).getType());
-        listener.clearEventsReceived();
+    // Check create-event
+    assertEquals(1, listener.getEventsReceived().size());
+    assertEquals(ActivitiEventType.ENGINE_CREATED, listener.getEventsReceived().get(0).getType());
+    listener.clearEventsReceived();
 
-        // Check close-event
-        processEngine.close();
-        assertEquals(1, listener.getEventsReceived().size());
-        assertEquals(ActivitiEventType.ENGINE_CLOSED, listener.getEventsReceived().get(0).getType());
+    // Check close-event
+    processEngine.close();
+    assertEquals(1, listener.getEventsReceived().size());
+    assertEquals(ActivitiEventType.ENGINE_CLOSED, listener.getEventsReceived().get(0).getType());
 
-    }
+  }
 
 }

@@ -21,11 +21,11 @@ import org.activiti.explorer.ui.custom.ToolBar;
  */
 public abstract class ManagementPage extends AbstractTablePage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    protected ToolBar createMenuBar() {
-        return ExplorerApp.get().getComponentFactory(ManagementMenuBarFactory.class).create();
-    }
+  @Override
+  protected ToolBar createMenuBar() {
+    return ExplorerApp.get().getComponentFactory(ManagementMenuBarFactory.class).create();
+  }
 
 }

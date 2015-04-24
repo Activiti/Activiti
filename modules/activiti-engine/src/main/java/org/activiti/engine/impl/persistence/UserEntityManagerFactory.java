@@ -22,12 +22,12 @@ import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
  */
 public class UserEntityManagerFactory implements SessionFactory {
 
-    public Class<?> getSessionType() {
-        return UserIdentityManager.class;
-    }
+  public Class<?> getSessionType() {
+    return UserIdentityManager.class;
+  }
 
-    public Session openSession() {
-        return new UserEntityManager();
-    }
+  public Session openSession() {
+    return new UserEntityManager();
+  }
 
 }

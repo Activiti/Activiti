@@ -26,113 +26,113 @@ import org.activiti.explorer.ui.management.deployment.NewDeploymentListener;
  */
 public class ManagementMenuBar extends ToolBar {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String ENTRY_DATABASE = "database";
-    public static final String ENTRY_DEPLOYMENTS = "deployments";
-    public static final String ENTRY_ACTIVE_PROCESS_DEFINITIONS = "activeProcessDefinitions";
-    public static final String ENTRY_SUSPENDED_PROCESS_DEFINITIONS = "suspendedProcessDefinitions";
-    public static final String ENTRY_JOBS = "jobs";
-    public static final String ENTRY_USERS = "users";
-    public static final String ENTRY_GROUPS = "groups";
-    public static final String ENTRY_ADMIN = "administration";
-    public static final String ENTRY_CRYSTALBALL = "crystalball";
+  public static final String ENTRY_DATABASE = "database";
+  public static final String ENTRY_DEPLOYMENTS = "deployments";
+  public static final String ENTRY_ACTIVE_PROCESS_DEFINITIONS = "activeProcessDefinitions";
+  public static final String ENTRY_SUSPENDED_PROCESS_DEFINITIONS = "suspendedProcessDefinitions";
+  public static final String ENTRY_JOBS = "jobs";
+  public static final String ENTRY_USERS = "users";
+  public static final String ENTRY_GROUPS = "groups";
+  public static final String ENTRY_ADMIN = "administration";
+  public static final String ENTRY_CRYSTALBALL = "crystalball";
 
-    protected I18nManager i18nManager;
-    protected ViewManager viewManager;
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
 
-    public ManagementMenuBar() {
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-        this.viewManager = ExplorerApp.get().getViewManager();
-        setWidth("100%");
+  public ManagementMenuBar() {
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
+    setWidth("100%");
 
-        initToolbarEntries();
-    }
+    initToolbarEntries();
+  }
 
-    protected void initToolbarEntries() {
-        addDatabaseToolbarEntry();
-        addDeploymentsToolbarEntry();
-        addActiveProcessDefinitionsEntry();
-        addSuspendedProcessDefinitionsEntry();
-        addJobsToolbarEntry();
-        addUsersToolbarEntry();
-        addGroupToolbarEntry();
-        addAdministrationToolbarEntry();
-        addCrystalBallToolbarEntry();
-    }
+  protected void initToolbarEntries() {
+    addDatabaseToolbarEntry();
+    addDeploymentsToolbarEntry();
+    addActiveProcessDefinitionsEntry();
+    addSuspendedProcessDefinitionsEntry();
+    addJobsToolbarEntry();
+    addUsersToolbarEntry();
+    addGroupToolbarEntry();
+    addAdministrationToolbarEntry();
+    addCrystalBallToolbarEntry();
+  }
 
-    protected void addDatabaseToolbarEntry() {
-        addToolbarEntry(ENTRY_DATABASE, i18nManager.getMessage(Messages.MGMT_MENU_DATABASE), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showDatabasePage();
-            }
-        });
-    }
+  protected void addDatabaseToolbarEntry() {
+    addToolbarEntry(ENTRY_DATABASE, i18nManager.getMessage(Messages.MGMT_MENU_DATABASE), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showDatabasePage();
+      }
+    });
+  }
 
-    protected void addDeploymentsToolbarEntry() {
-        ToolbarPopupEntry deploymentEntry = addPopupEntry(ENTRY_DEPLOYMENTS, i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS));
-        deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_SHOW_ALL), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showDeploymentPage();
-            }
-        });
-        deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_UPLOAD), new NewDeploymentListener());
-    }
+  protected void addDeploymentsToolbarEntry() {
+    ToolbarPopupEntry deploymentEntry = addPopupEntry(ENTRY_DEPLOYMENTS, i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS));
+    deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_SHOW_ALL), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showDeploymentPage();
+      }
+    });
+    deploymentEntry.addMenuItem(i18nManager.getMessage(Messages.MGMT_MENU_DEPLOYMENTS_UPLOAD), new NewDeploymentListener());
+  }
 
-    protected void addActiveProcessDefinitionsEntry() {
-        addToolbarEntry(ENTRY_ACTIVE_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.MGMT_MENU_ACTIVE_PROCESS_DEFINITIONS), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showActiveProcessDefinitionsPage();
-            }
-        });
-    }
+  protected void addActiveProcessDefinitionsEntry() {
+    addToolbarEntry(ENTRY_ACTIVE_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.MGMT_MENU_ACTIVE_PROCESS_DEFINITIONS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showActiveProcessDefinitionsPage();
+      }
+    });
+  }
 
-    protected void addSuspendedProcessDefinitionsEntry() {
-        addToolbarEntry(ENTRY_SUSPENDED_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.MGMT_MENU_SUSPENDED_PROCESS_DEFINITIONS), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showSuspendedProcessDefinitionsPage();
-            }
-        });
-    }
+  protected void addSuspendedProcessDefinitionsEntry() {
+    addToolbarEntry(ENTRY_SUSPENDED_PROCESS_DEFINITIONS, i18nManager.getMessage(Messages.MGMT_MENU_SUSPENDED_PROCESS_DEFINITIONS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showSuspendedProcessDefinitionsPage();
+      }
+    });
+  }
 
-    protected void addJobsToolbarEntry() {
-        addToolbarEntry(ENTRY_JOBS, i18nManager.getMessage(Messages.MGMT_MENU_JOBS), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showJobPage();
-            }
-        });
-    }
+  protected void addJobsToolbarEntry() {
+    addToolbarEntry(ENTRY_JOBS, i18nManager.getMessage(Messages.MGMT_MENU_JOBS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showJobPage();
+      }
+    });
+  }
 
-    protected void addUsersToolbarEntry() {
-        addToolbarEntry(ENTRY_USERS, i18nManager.getMessage(Messages.MGMT_MENU_USERS), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showUserPage();
-            }
-        });
-    }
+  protected void addUsersToolbarEntry() {
+    addToolbarEntry(ENTRY_USERS, i18nManager.getMessage(Messages.MGMT_MENU_USERS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showUserPage();
+      }
+    });
+  }
 
-    protected void addGroupToolbarEntry() {
-        addToolbarEntry(ENTRY_GROUPS, i18nManager.getMessage(Messages.MGMT_MENU_GROUPS), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showGroupPage();
-            }
-        });
-    }
+  protected void addGroupToolbarEntry() {
+    addToolbarEntry(ENTRY_GROUPS, i18nManager.getMessage(Messages.MGMT_MENU_GROUPS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showGroupPage();
+      }
+    });
+  }
 
-    protected void addAdministrationToolbarEntry() {
-        addToolbarEntry(ENTRY_ADMIN, i18nManager.getMessage(Messages.MGMT_MENU_ADMINISTRATION), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showAdministrationPage();
-            }
-        });
-    }
+  protected void addAdministrationToolbarEntry() {
+    addToolbarEntry(ENTRY_ADMIN, i18nManager.getMessage(Messages.MGMT_MENU_ADMINISTRATION), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showAdministrationPage();
+      }
+    });
+  }
 
-    protected void addCrystalBallToolbarEntry() {
-        addToolbarEntry(ENTRY_CRYSTALBALL, i18nManager.getMessage(Messages.MGMT_MENU_CRYSTALBALL), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showCrystalBallPage();
-            }
-        });
-    }
+  protected void addCrystalBallToolbarEntry() {
+    addToolbarEntry(ENTRY_CRYSTALBALL, i18nManager.getMessage(Messages.MGMT_MENU_CRYSTALBALL), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showCrystalBallPage();
+      }
+    });
+  }
 
 }

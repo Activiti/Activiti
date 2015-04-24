@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.delegate.event.impl;
  * limitations under the License.
  */
 
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,14 +50,15 @@ public class EventLogProcessInstanceCreateTransformer extends EventLog2Simulatio
       ObjectMapper objectMapper = new ObjectMapper();
       Map<String, Object> data;
       try {
-        data = objectMapper.readValue(event.getData(), new TypeReference<HashMap<String, Object>>() {});
+        data = objectMapper.readValue(event.getData(), new TypeReference<HashMap<String, Object>>() {
+        });
       } catch (IOException e) {
         throw new CrystalballException("unable to parse JSON string.", e);
       }
       String processDefinitionId = (String) data.get(Fields.PROCESS_DEFINITION_ID);
       Map<String, Object> variableMap = (Map<String, Object>) data.get(Fields.VARIABLES);
       String businessKeyValue = (String) data.get(Fields.BUSINESS_KEY);
-      String processInstanceId= (String) data.get(Fields.PROCESS_INSTANCE_ID);
+      String processInstanceId = (String) data.get(Fields.PROCESS_INSTANCE_ID);
 
       Map<String, Object> simEventProperties = new HashMap<String, Object>();
       simEventProperties.put(processDefinitionIdKey, processDefinitionId);
@@ -66,10 +66,7 @@ public class EventLogProcessInstanceCreateTransformer extends EventLog2Simulatio
       simEventProperties.put(variablesKey, variableMap);
       simEventProperties.put(PROCESS_INSTANCE_ID, processInstanceId);
 
-      return new SimulationEvent.Builder(simulationEventType)
-          .priority((int) event.getLogNumber())
-          .properties(simEventProperties)
-          .build();
+      return new SimulationEvent.Builder(simulationEventType).priority((int) event.getLogNumber()).properties(simEventProperties).build();
     }
     return null;
   }

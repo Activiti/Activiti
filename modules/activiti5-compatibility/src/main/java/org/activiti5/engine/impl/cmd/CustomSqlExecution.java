@@ -5,8 +5,8 @@ package org.activiti5.engine.impl.cmd;
  */
 public interface CustomSqlExecution<Mapper, ResultType> {
 
-    Class<Mapper> getMapperClass();
+  Class<Mapper> getMapperClass();
 
-    ResultType execute(Mapper mapper);
+  ResultType execute(Mapper mapper);
 
 }

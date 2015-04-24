@@ -22,34 +22,34 @@ import org.activiti.rest.service.api.RestActionRequest;
  */
 public class ProcessDefinitionActionRequest extends RestActionRequest {
 
-    public static final String ACTION_SUSPEND = "suspend";
-    public static final String ACTION_ACTIVATE = "activate";
+  public static final String ACTION_SUSPEND = "suspend";
+  public static final String ACTION_ACTIVATE = "activate";
 
-    private boolean includeProcessInstances = false;
-    private Date date;
-    private String category;
+  private boolean includeProcessInstances = false;
+  private Date date;
+  private String category;
 
-    public void setIncludeProcessInstances(boolean includeProcessInstances) {
-        this.includeProcessInstances = includeProcessInstances;
-    }
+  public void setIncludeProcessInstances(boolean includeProcessInstances) {
+    this.includeProcessInstances = includeProcessInstances;
+  }
 
-    public boolean isIncludeProcessInstances() {
-        return includeProcessInstances;
-    }
+  public boolean isIncludeProcessInstances() {
+    return includeProcessInstances;
+  }
 
-    public void setDate(Date date) {
-        this.date = date;
-    }
+  public void setDate(Date date) {
+    this.date = date;
+  }
 
-    public Date getDate() {
-        return date;
-    }
+  public Date getDate() {
+    return date;
+  }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+  public void setCategory(String category) {
+    this.category = category;
+  }
 
-    public String getCategory() {
-        return category;
-    }
+  public String getCategory() {
+    return category;
+  }
 }

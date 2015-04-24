@@ -23,19 +23,19 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class DeleteUserCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    String userId;
+  private static final long serialVersionUID = 1L;
+  String userId;
 
-    public DeleteUserCmd(String userId) {
-        this.userId = userId;
+  public DeleteUserCmd(String userId) {
+    this.userId = userId;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (userId == null) {
+      throw new ActivitiIllegalArgumentException("userId is null");
     }
+    commandContext.getUserIdentityManager().deleteUser(userId);
 
-    public Void execute(CommandContext commandContext) {
-        if (userId == null) {
-            throw new ActivitiIllegalArgumentException("userId is null");
-        }
-        commandContext.getUserIdentityManager().deleteUser(userId);
-
-        return null;
-    }
+    return null;
+  }
 }

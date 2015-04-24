@@ -5,8 +5,8 @@ import org.activiti5.engine.delegate.ExecutionListener;
 
 public class CallActivityStartHandler implements ExecutionListener {
 
-    public void notify(DelegateExecution execution) throws Exception {
+  public void notify(DelegateExecution execution) throws Exception {
 
-    }
+  }
 
 }

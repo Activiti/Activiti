@@ -25,28 +25,28 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class DataStoreParser implements BpmnXMLConstants {
 
-    public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-        String id = xtr.getAttributeValue(null, ATTRIBUTE_ID);
-        if (StringUtils.isNotEmpty(id)) {
+  public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
+    String id = xtr.getAttributeValue(null, ATTRIBUTE_ID);
+    if (StringUtils.isNotEmpty(id)) {
 
-            DataStore dataStore = new DataStore();
-            dataStore.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
+      DataStore dataStore = new DataStore();
+      dataStore.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
 
-            String name = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
-            if (StringUtils.isNotEmpty(name)) {
-                dataStore.setName(name);
-            }
+      String name = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
+      if (StringUtils.isNotEmpty(name)) {
+        dataStore.setName(name);
+      }
 
-            String itemSubjectRef = xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF);
-            if (StringUtils.isNotEmpty(itemSubjectRef)) {
-                dataStore.setItemSubjectRef(itemSubjectRef);
-            }
+      String itemSubjectRef = xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF);
+      if (StringUtils.isNotEmpty(itemSubjectRef)) {
+        dataStore.setItemSubjectRef(itemSubjectRef);
+      }
 
-            BpmnXMLUtil.addXMLLocation(dataStore, xtr);
+      BpmnXMLUtil.addXMLLocation(dataStore, xtr);
 
-            model.addDataStore(dataStore.getId(), dataStore);
+      model.addDataStore(dataStore.getId(), dataStore);
 
-            BpmnXMLUtil.parseChildElements(ELEMENT_DATA_STORE, dataStore, xtr, model);
-        }
+      BpmnXMLUtil.parseChildElements(ELEMENT_DATA_STORE, dataStore, xtr, model);
     }
+  }
 }

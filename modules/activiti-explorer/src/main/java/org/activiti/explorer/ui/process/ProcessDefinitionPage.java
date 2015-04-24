@@ -38,106 +38,105 @@ import com.vaadin.ui.Table;
  */
 public class ProcessDefinitionPage extends AbstractTablePage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    // Services
-    protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  // Services
+  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
 
-    // UI
-    protected String processDefinitionId;
-    protected LazyLoadingContainer processDefinitionContainer;
-    protected Table processDefinitionTable;
-    protected ProcessDefinitionDetailPanel detailPanel;
+  // UI
+  protected String processDefinitionId;
+  protected LazyLoadingContainer processDefinitionContainer;
+  protected Table processDefinitionTable;
+  protected ProcessDefinitionDetailPanel detailPanel;
 
-    private ProcessDefinitionFilter definitionFilter;
+  private ProcessDefinitionFilter definitionFilter;
 
-    public ProcessDefinitionPage() {
-        ExplorerApp.get().setCurrentUriFragment(new UriFragment(ProcessNavigator.process_URI_PART));
+  public ProcessDefinitionPage() {
+    ExplorerApp.get().setCurrentUriFragment(new UriFragment(ProcessNavigator.process_URI_PART));
 
-        // Create the filter, responsible for querying and populating process
-        // definition items
-        ComponentFactory<ProcessDefinitionFilter> factory = ExplorerApp.get().getComponentFactory(ProcessDefinitionFilterFactory.class);
-        definitionFilter = factory.create();
+    // Create the filter, responsible for querying and populating process
+    // definition items
+    ComponentFactory<ProcessDefinitionFilter> factory = ExplorerApp.get().getComponentFactory(ProcessDefinitionFilterFactory.class);
+    definitionFilter = factory.create();
+  }
+
+  /**
+   * Used when the page is reached through an URL. The page will be built and the given process definition will be selected.
+   */
+  public ProcessDefinitionPage(String processDefinitionId) {
+    this();
+    this.processDefinitionId = processDefinitionId;
+  }
+
+  @Override
+  protected void initUi() {
+    super.initUi();
+    if (processDefinitionId == null) {
+      selectElement(0);
+    } else {
+      selectElement(processDefinitionContainer.getIndexForObjectId(processDefinitionId));
     }
+  }
 
-    /**
-     * Used when the page is reached through an URL. The page will be built and
-     * the given process definition will be selected.
-     */
-    public ProcessDefinitionPage(String processDefinitionId) {
-        this();
-        this.processDefinitionId = processDefinitionId;
+  @Override
+  protected ToolBar createMenuBar() {
+    return new ProcessMenuBar();
+  }
+
+  @Override
+  protected Table createList() {
+    final Table processDefinitionTable = new Table();
+    processDefinitionTable.addStyleName(ExplorerLayout.STYLE_PROCESS_DEFINITION_LIST);
+
+    // Set non-editable, selectable and full-size
+    processDefinitionTable.setEditable(false);
+    processDefinitionTable.setImmediate(true);
+    processDefinitionTable.setSelectable(true);
+    processDefinitionTable.setNullSelectionAllowed(false);
+    processDefinitionTable.setSortDisabled(true);
+    processDefinitionTable.setSizeFull();
+
+    LazyLoadingQuery lazyLoadingQuery = new ProcessDefinitionListQuery(repositoryService, definitionFilter);
+    this.processDefinitionContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
+    processDefinitionTable.setContainerDataSource(processDefinitionContainer);
+
+    // Listener to change right panel when clicked on a task
+    processDefinitionTable.addListener(new Property.ValueChangeListener() {
+      private static final long serialVersionUID = 1L;
+
+      public void valueChange(ValueChangeEvent event) {
+        Item item = processDefinitionTable.getItem(event.getProperty().getValue());
+        String processDefinitionId = (String) item.getItemProperty("id").getValue();
+        showProcessDefinitionDetail(processDefinitionId);
+      }
+    });
+
+    // Create columns
+    processDefinitionTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
+    processDefinitionTable.setColumnWidth("icon", 22);
+
+    processDefinitionTable.addContainerProperty("name", String.class, null);
+    processDefinitionTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+
+    return processDefinitionTable;
+  }
+
+  protected void showProcessDefinitionDetail(String processDefinitionId) {
+    detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, this);
+    setDetailComponent(detailPanel);
+    changeUrl(processDefinitionId);
+  }
+
+  protected void changeUrl(String processDefinitionId) {
+    UriFragment processDefinitionFragment = new UriFragment(ProcessNavigator.process_URI_PART, processDefinitionId);
+    ExplorerApp.get().setCurrentUriFragment(processDefinitionFragment);
+  }
+
+  public void showStartForm(ProcessDefinition processDefinition, StartFormData startFormData) {
+    if (detailPanel != null) {
+      showProcessDefinitionDetail(processDefinition.getId());
     }
-
-    @Override
-    protected void initUi() {
-        super.initUi();
-        if (processDefinitionId == null) {
-            selectElement(0);
-        } else {
-            selectElement(processDefinitionContainer.getIndexForObjectId(processDefinitionId));
-        }
-    }
-
-    @Override
-    protected ToolBar createMenuBar() {
-        return new ProcessMenuBar();
-    }
-
-    @Override
-    protected Table createList() {
-        final Table processDefinitionTable = new Table();
-        processDefinitionTable.addStyleName(ExplorerLayout.STYLE_PROCESS_DEFINITION_LIST);
-
-        // Set non-editable, selectable and full-size
-        processDefinitionTable.setEditable(false);
-        processDefinitionTable.setImmediate(true);
-        processDefinitionTable.setSelectable(true);
-        processDefinitionTable.setNullSelectionAllowed(false);
-        processDefinitionTable.setSortDisabled(true);
-        processDefinitionTable.setSizeFull();
-
-        LazyLoadingQuery lazyLoadingQuery = new ProcessDefinitionListQuery(repositoryService, definitionFilter);
-        this.processDefinitionContainer = new LazyLoadingContainer(lazyLoadingQuery, 30);
-        processDefinitionTable.setContainerDataSource(processDefinitionContainer);
-
-        // Listener to change right panel when clicked on a task
-        processDefinitionTable.addListener(new Property.ValueChangeListener() {
-            private static final long serialVersionUID = 1L;
-
-            public void valueChange(ValueChangeEvent event) {
-                Item item = processDefinitionTable.getItem(event.getProperty().getValue());
-                String processDefinitionId = (String) item.getItemProperty("id").getValue();
-                showProcessDefinitionDetail(processDefinitionId);
-            }
-        });
-
-        // Create columns
-        processDefinitionTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
-        processDefinitionTable.setColumnWidth("icon", 22);
-
-        processDefinitionTable.addContainerProperty("name", String.class, null);
-        processDefinitionTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-
-        return processDefinitionTable;
-    }
-
-    protected void showProcessDefinitionDetail(String processDefinitionId) {
-        detailPanel = new ProcessDefinitionDetailPanel(processDefinitionId, this);
-        setDetailComponent(detailPanel);
-        changeUrl(processDefinitionId);
-    }
-
-    protected void changeUrl(String processDefinitionId) {
-        UriFragment processDefinitionFragment = new UriFragment(ProcessNavigator.process_URI_PART, processDefinitionId);
-        ExplorerApp.get().setCurrentUriFragment(processDefinitionFragment);
-    }
-
-    public void showStartForm(ProcessDefinition processDefinition, StartFormData startFormData) {
-        if (detailPanel != null) {
-            showProcessDefinitionDetail(processDefinition.getId());
-        }
-        detailPanel.showProcessStartForm(startFormData);
-    }
+    detailPanel.showProcessStartForm(startFormData);
+  }
 
 }

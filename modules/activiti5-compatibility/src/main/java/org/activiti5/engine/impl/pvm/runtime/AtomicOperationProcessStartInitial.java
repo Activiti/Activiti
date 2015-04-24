@@ -24,38 +24,38 @@ import org.activiti5.engine.impl.pvm.process.ScopeImpl;
  */
 public class AtomicOperationProcessStartInitial extends AbstractEventAtomicOperation {
 
-    @Override
-    protected ScopeImpl getScope(InterpretableExecution execution) {
-        return (ScopeImpl) execution.getActivity();
+  @Override
+  protected ScopeImpl getScope(InterpretableExecution execution) {
+    return (ScopeImpl) execution.getActivity();
+  }
+
+  @Override
+  protected String getEventName() {
+    return org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START;
+  }
+
+  @Override
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
+    ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
+    StartingExecution startingExecution = execution.getStartingExecution();
+    if (activity == startingExecution.getInitial()) {
+      execution.disposeStartingExecution();
+      execution.performOperation(ACTIVITY_EXECUTE);
+
+    } else {
+      List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack(startingExecution.getInitial());
+      int index = initialActivityStack.indexOf(activity);
+      activity = initialActivityStack.get(index + 1);
+
+      InterpretableExecution executionToUse = null;
+      if (activity.isScope()) {
+        executionToUse = (InterpretableExecution) execution.getExecutions().get(0);
+      } else {
+        executionToUse = execution;
+      }
+      executionToUse.setActivity(activity);
+      executionToUse.performOperation(PROCESS_START_INITIAL);
     }
-
-    @Override
-    protected String getEventName() {
-        return org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START;
-    }
-
-    @Override
-    protected void eventNotificationsCompleted(InterpretableExecution execution) {
-        ActivityImpl activity = (ActivityImpl) execution.getActivity();
-        ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-        StartingExecution startingExecution = execution.getStartingExecution();
-        if (activity == startingExecution.getInitial()) {
-            execution.disposeStartingExecution();
-            execution.performOperation(ACTIVITY_EXECUTE);
-
-        } else {
-            List<ActivityImpl> initialActivityStack = processDefinition.getInitialActivityStack(startingExecution.getInitial());
-            int index = initialActivityStack.indexOf(activity);
-            activity = initialActivityStack.get(index + 1);
-
-            InterpretableExecution executionToUse = null;
-            if (activity.isScope()) {
-                executionToUse = (InterpretableExecution) execution.getExecutions().get(0);
-            } else {
-                executionToUse = execution;
-            }
-            executionToUse.setActivity(activity);
-            executionToUse.performOperation(PROCESS_START_INITIAL);
-        }
-    }
+  }
 }

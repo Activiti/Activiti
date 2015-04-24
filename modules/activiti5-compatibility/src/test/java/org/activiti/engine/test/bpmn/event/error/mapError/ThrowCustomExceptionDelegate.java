@@ -21,21 +21,21 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ThrowCustomExceptionDelegate implements JavaDelegate {
 
-    @Override
-    public void execute(DelegateExecution execution) throws Exception {
-        Object exceptionClassVar = execution.getVariable("exceptionClass");
-        if (exceptionClassVar == null)
-            return;
+  @Override
+  public void execute(DelegateExecution execution) throws Exception {
+    Object exceptionClassVar = execution.getVariable("exceptionClass");
+    if (exceptionClassVar == null)
+      return;
 
-        String exceptionClassName = exceptionClassVar.toString();
+    String exceptionClassName = exceptionClassVar.toString();
 
-        if (StringUtils.isNotEmpty(exceptionClassName)) {
-            Class<?> clazz = Class.forName(exceptionClassName);
-            Exception exception = (Exception) clazz.newInstance();
-            throw exception;
-
-        }
+    if (StringUtils.isNotEmpty(exceptionClassName)) {
+      Class<?> clazz = Class.forName(exceptionClassName);
+      Exception exception = (Exception) clazz.newInstance();
+      throw exception;
 
     }
+
+  }
 
 }

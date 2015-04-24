@@ -33,31 +33,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TaskCommentResource extends TaskBaseResource {
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/comments/{commentId}", method = RequestMethod.GET, produces = "application/json")
-    public CommentResponse getComment(@PathVariable("taskId") String taskId, @PathVariable("commentId") String commentId, HttpServletRequest request) {
+  @RequestMapping(value = "/runtime/tasks/{taskId}/comments/{commentId}", method = RequestMethod.GET, produces = "application/json")
+  public CommentResponse getComment(@PathVariable("taskId") String taskId, @PathVariable("commentId") String commentId, HttpServletRequest request) {
 
-        HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
-        Comment comment = taskService.getComment(commentId);
-        if (comment == null || !task.getId().equals(comment.getTaskId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
-        }
-
-        return restResponseFactory.createRestComment(comment);
+    Comment comment = taskService.getComment(commentId);
+    if (comment == null || !task.getId().equals(comment.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
     }
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/comments/{commentId}", method = RequestMethod.DELETE)
-    public void deleteComment(@PathVariable("taskId") String taskId, @PathVariable("commentId") String commentId, HttpServletResponse response) {
+    return restResponseFactory.createRestComment(comment);
+  }
 
-        // Check if task exists
-        Task task = getTaskFromRequest(taskId);
+  @RequestMapping(value = "/runtime/tasks/{taskId}/comments/{commentId}", method = RequestMethod.DELETE)
+  public void deleteComment(@PathVariable("taskId") String taskId, @PathVariable("commentId") String commentId, HttpServletResponse response) {
 
-        Comment comment = taskService.getComment(commentId);
-        if (comment == null || comment.getTaskId() == null || !comment.getTaskId().equals(task.getId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
-        }
+    // Check if task exists
+    Task task = getTaskFromRequest(taskId);
 
-        taskService.deleteComment(commentId);
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+    Comment comment = taskService.getComment(commentId);
+    if (comment == null || comment.getTaskId() == null || !comment.getTaskId().equals(task.getId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
     }
+
+    taskService.deleteComment(commentId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 }

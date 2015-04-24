@@ -22,21 +22,21 @@ import org.activiti5.engine.impl.interceptor.SessionFactory;
  */
 public class GenericManagerFactory implements SessionFactory {
 
-    protected Class<? extends Session> managerImplementation;
+  protected Class<? extends Session> managerImplementation;
 
-    public GenericManagerFactory(Class<? extends Session> managerImplementation) {
-        this.managerImplementation = managerImplementation;
-    }
+  public GenericManagerFactory(Class<? extends Session> managerImplementation) {
+    this.managerImplementation = managerImplementation;
+  }
 
-    public Class<?> getSessionType() {
-        return managerImplementation;
-    }
+  public Class<?> getSessionType() {
+    return managerImplementation;
+  }
 
-    public Session openSession() {
-        try {
-            return managerImplementation.newInstance();
-        } catch (Exception e) {
-            throw new ActivitiException("couldn't instantiate " + managerImplementation.getName() + ": " + e.getMessage(), e);
-        }
+  public Session openSession() {
+    try {
+      return managerImplementation.newInstance();
+    } catch (Exception e) {
+      throw new ActivitiException("couldn't instantiate " + managerImplementation.getName() + ": " + e.getMessage(), e);
     }
+  }
 }

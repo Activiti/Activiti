@@ -34,87 +34,87 @@ import com.vaadin.ui.Table;
  */
 public class UserPage extends ManagementPage {
 
-    private static final long serialVersionUID = 1L;
-    protected String userId;
-    protected Table userTable;
-    protected LazyLoadingQuery userListQuery;
-    protected LazyLoadingContainer userListContainer;
+  private static final long serialVersionUID = 1L;
+  protected String userId;
+  protected Table userTable;
+  protected LazyLoadingQuery userListQuery;
+  protected LazyLoadingContainer userListContainer;
 
-    public UserPage() {
-        ExplorerApp.get().setCurrentUriFragment(new UriFragment(UserNavigator.USER_URI_PART));
+  public UserPage() {
+    ExplorerApp.get().setCurrentUriFragment(new UriFragment(UserNavigator.USER_URI_PART));
+  }
+
+  public UserPage(String userId) {
+    this.userId = userId;
+  }
+
+  @Override
+  protected void initUi() {
+    super.initUi();
+
+    if (userId == null) {
+      selectElement(0);
+    } else {
+      selectElement(userListContainer.getIndexForObjectId(userId));
     }
+  }
 
-    public UserPage(String userId) {
-        this.userId = userId;
-    }
+  protected Table createList() {
+    userTable = new Table();
 
-    @Override
-    protected void initUi() {
-        super.initUi();
+    userListQuery = new UserListQuery();
+    userListContainer = new LazyLoadingContainer(userListQuery, 30);
+    userTable.setContainerDataSource(userListContainer);
 
-        if (userId == null) {
-            selectElement(0);
+    // Column headers
+    userTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.USER_22));
+    userTable.setColumnWidth("icon", 22);
+    userTable.addContainerProperty("name", String.class, null);
+    userTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+
+    // Listener to change right panel when clicked on a user
+    userTable.addListener(new Property.ValueChangeListener() {
+      private static final long serialVersionUID = 1L;
+
+      public void valueChange(ValueChangeEvent event) {
+        Item item = userTable.getItem(event.getProperty().getValue()); // the
+                                                                       // value
+                                                                       // of
+                                                                       // the
+                                                                       // property
+                                                                       // is
+                                                                       // the
+                                                                       // itemId
+                                                                       // of
+                                                                       // the
+                                                                       // table
+                                                                       // entry
+        if (item != null) {
+          String userId = (String) item.getItemProperty("id").getValue();
+          setDetailComponent(new UserDetailPanel(UserPage.this, userId));
+
+          // Update URL
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(UserNavigator.USER_URI_PART, userId));
         } else {
-            selectElement(userListContainer.getIndexForObjectId(userId));
+          // Nothing is selected
+          setDetailComponent(null);
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(UserNavigator.USER_URI_PART));
         }
-    }
+      }
+    });
 
-    protected Table createList() {
-        userTable = new Table();
+    return userTable;
+  }
 
-        userListQuery = new UserListQuery();
-        userListContainer = new LazyLoadingContainer(userListQuery, 30);
-        userTable.setContainerDataSource(userListContainer);
+  /**
+   * Call when some user data has been changed
+   */
+  public void notifyUserChanged(String userId) {
+    // Clear cache
+    userTable.removeAllItems();
+    userListContainer.removeAllItems();
 
-        // Column headers
-        userTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.USER_22));
-        userTable.setColumnWidth("icon", 22);
-        userTable.addContainerProperty("name", String.class, null);
-        userTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-
-        // Listener to change right panel when clicked on a user
-        userTable.addListener(new Property.ValueChangeListener() {
-            private static final long serialVersionUID = 1L;
-
-            public void valueChange(ValueChangeEvent event) {
-                Item item = userTable.getItem(event.getProperty().getValue()); // the
-                                                                               // value
-                                                                               // of
-                                                                               // the
-                                                                               // property
-                                                                               // is
-                                                                               // the
-                                                                               // itemId
-                                                                               // of
-                                                                               // the
-                                                                               // table
-                                                                               // entry
-                if (item != null) {
-                    String userId = (String) item.getItemProperty("id").getValue();
-                    setDetailComponent(new UserDetailPanel(UserPage.this, userId));
-
-                    // Update URL
-                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(UserNavigator.USER_URI_PART, userId));
-                } else {
-                    // Nothing is selected
-                    setDetailComponent(null);
-                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(UserNavigator.USER_URI_PART));
-                }
-            }
-        });
-
-        return userTable;
-    }
-
-    /**
-     * Call when some user data has been changed
-     */
-    public void notifyUserChanged(String userId) {
-        // Clear cache
-        userTable.removeAllItems();
-        userListContainer.removeAllItems();
-
-        userTable.select(userListContainer.getIndexForObjectId(userId));
-    }
+    userTable.select(userListContainer.getIndexForObjectId(userId));
+  }
 
 }

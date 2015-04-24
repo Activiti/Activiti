@@ -23,14 +23,14 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public class EventBasedGatewayParseHandler extends AbstractActivityBpmnParseHandler<EventGateway> {
 
-    public Class<? extends BaseElement> getHandledType() {
-        return EventGateway.class;
-    }
+  public Class<? extends BaseElement> getHandledType() {
+    return EventGateway.class;
+  }
 
-    protected void executeParse(BpmnParse bpmnParse, EventGateway gateway) {
-        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EVENT);
-        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createEventBasedGatewayActivityBehavior(gateway));
-        activity.setScope(true);
-    }
+  protected void executeParse(BpmnParse bpmnParse, EventGateway gateway) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EVENT);
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createEventBasedGatewayActivityBehavior(gateway));
+    activity.setScope(true);
+  }
 
 }

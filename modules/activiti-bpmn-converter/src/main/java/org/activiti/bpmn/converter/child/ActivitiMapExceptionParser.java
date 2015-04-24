@@ -27,33 +27,33 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ActivitiMapExceptionParser extends BaseChildElementParser {
 
-    @Override
-    public String getElementName() {
-        return MAP_EXCEPTION;
-    }
+  @Override
+  public String getElementName() {
+    return MAP_EXCEPTION;
+  }
 
-    @Override
-    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-        if (!(parentElement instanceof Activity))
-            return;
+  @Override
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+    if (!(parentElement instanceof Activity))
+      return;
 
-        String errorCode = xtr.getAttributeValue(null, MAP_EXCEPTION_ERRORCODE);
-        String andChildren = xtr.getAttributeValue(null, MAP_EXCEPTION_ANDCHILDREN);
-        String exceptionClass = xtr.getElementText();
-        boolean hasChildrenBool = false;
+    String errorCode = xtr.getAttributeValue(null, MAP_EXCEPTION_ERRORCODE);
+    String andChildren = xtr.getAttributeValue(null, MAP_EXCEPTION_ANDCHILDREN);
+    String exceptionClass = xtr.getElementText();
+    boolean hasChildrenBool = false;
 
-        if (StringUtils.isEmpty(andChildren) || andChildren.toLowerCase().equals("false"))
-            hasChildrenBool = false;
-        else if (andChildren.toLowerCase().equals("true"))
-            hasChildrenBool = true;
-        else
-            throw new XMLException("'" + andChildren + "' is not valid boolean in mapException with errorCode=" + errorCode + " and class=" + exceptionClass);
+    if (StringUtils.isEmpty(andChildren) || andChildren.toLowerCase().equals("false"))
+      hasChildrenBool = false;
+    else if (andChildren.toLowerCase().equals("true"))
+      hasChildrenBool = true;
+    else
+      throw new XMLException("'" + andChildren + "' is not valid boolean in mapException with errorCode=" + errorCode + " and class=" + exceptionClass);
 
-        if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(errorCode.trim()))
-            throw new XMLException("No errorCode defined mapException with errorCode=" + errorCode + " and class=" + exceptionClass);
+    if (StringUtils.isEmpty(errorCode) || StringUtils.isEmpty(errorCode.trim()))
+      throw new XMLException("No errorCode defined mapException with errorCode=" + errorCode + " and class=" + exceptionClass);
 
-        ((Activity) parentElement).getMapExceptions().add(new MapExceptionEntry(errorCode, exceptionClass, hasChildrenBool));
+    ((Activity) parentElement).getMapExceptions().add(new MapExceptionEntry(errorCode, exceptionClass, hasChildrenBool));
 
-    }
+  }
 
 }

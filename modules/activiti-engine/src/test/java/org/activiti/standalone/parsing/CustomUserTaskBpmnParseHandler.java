@@ -22,14 +22,14 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  */
 public class CustomUserTaskBpmnParseHandler extends UserTaskParseHandler {
 
-    protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
+  protected void executeParse(BpmnParse bpmnParse, UserTask userTask) {
 
-        // Do the regular stuff
-        super.executeParse(bpmnParse, userTask);
+    // Do the regular stuff
+    super.executeParse(bpmnParse, userTask);
 
-        // Make user tasks always async
-        ActivityImpl activity = findActivity(bpmnParse, userTask.getId());
-        activity.setAsync(true);
-    }
+    // Make user tasks always async
+    ActivityImpl activity = findActivity(bpmnParse, userTask.getId());
+    activity.setAsync(true);
+  }
 
 }

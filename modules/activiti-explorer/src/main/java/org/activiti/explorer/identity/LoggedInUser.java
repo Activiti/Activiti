@@ -25,22 +25,22 @@ import org.activiti.engine.identity.Group;
  */
 public interface LoggedInUser extends Serializable {
 
-    String getId();
+  String getId();
 
-    String getFirstName();
+  String getFirstName();
 
-    String getLastName();
+  String getLastName();
 
-    String getFullName();
+  String getFullName();
 
-    String getPassword();
+  String getPassword();
 
-    boolean isAdmin();
+  boolean isAdmin();
 
-    boolean isUser();
+  boolean isUser();
 
-    List<Group> getSecurityRoles();
+  List<Group> getSecurityRoles();
 
-    List<Group> getGroups();
+  List<Group> getGroups();
 
 }

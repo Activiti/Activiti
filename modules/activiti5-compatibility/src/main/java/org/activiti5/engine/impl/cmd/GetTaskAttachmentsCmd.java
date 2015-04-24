@@ -25,14 +25,14 @@ import org.activiti5.engine.task.Attachment;
  */
 public class GetTaskAttachmentsCmd implements Command<List<Attachment>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String taskId;
+  private static final long serialVersionUID = 1L;
+  protected String taskId;
 
-    public GetTaskAttachmentsCmd(String taskId) {
-        this.taskId = taskId;
-    }
+  public GetTaskAttachmentsCmd(String taskId) {
+    this.taskId = taskId;
+  }
 
-    public List<Attachment> execute(CommandContext commandContext) {
-        return commandContext.getAttachmentEntityManager().findAttachmentsByTaskId(taskId);
-    }
+  public List<Attachment> execute(CommandContext commandContext) {
+    return commandContext.getAttachmentEntityManager().findAttachmentsByTaskId(taskId);
+  }
 }

@@ -20,19 +20,19 @@ import org.activiti.explorer.ExplorerApp;
  */
 public class JobNavigator extends ManagementNavigator {
 
-    public static final String JOB_URL_PART = "job";
+  public static final String JOB_URL_PART = "job";
 
-    public String getTrigger() {
-        return JOB_URL_PART;
-    }
+  public String getTrigger() {
+    return JOB_URL_PART;
+  }
 
-    public void handleManagementNavigation(UriFragment uriFragment) {
-        String jobId = uriFragment.getUriPart(1);
-        if (jobId != null) {
-            ExplorerApp.get().getViewManager().showJobPage(jobId);
-        } else {
-            ExplorerApp.get().getViewManager().showJobPage();
-        }
+  public void handleManagementNavigation(UriFragment uriFragment) {
+    String jobId = uriFragment.getUriPart(1);
+    if (jobId != null) {
+      ExplorerApp.get().getViewManager().showJobPage(jobId);
+    } else {
+      ExplorerApp.get().getViewManager().showJobPage();
     }
+  }
 
 }

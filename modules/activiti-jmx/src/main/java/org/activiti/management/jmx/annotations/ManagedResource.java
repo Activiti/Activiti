@@ -24,8 +24,7 @@ import java.lang.annotation.Target;
  */
 
 /**
- * A class level annotation to mark the class as being managed in the JMX
- * server.
+ * A class level annotation to mark the class as being managed in the JMX server.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -33,6 +32,6 @@ import java.lang.annotation.Target;
 @Documented
 public @interface ManagedResource {
 
-    String description() default "";
+  String description() default "";
 
 }

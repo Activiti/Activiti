@@ -26,37 +26,37 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class TextAnnotationJsonConverter extends BaseBpmnJsonConverter {
 
-    public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+  public static void fillTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap, Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
 
-        fillJsonTypes(convertersToBpmnMap);
-        fillBpmnTypes(convertersToJsonMap);
-    }
+    fillJsonTypes(convertersToBpmnMap);
+    fillBpmnTypes(convertersToJsonMap);
+  }
 
-    public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
-        convertersToBpmnMap.put(STENCIL_TEXT_ANNOTATION, TextAnnotationJsonConverter.class);
-    }
+  public static void fillJsonTypes(Map<String, Class<? extends BaseBpmnJsonConverter>> convertersToBpmnMap) {
+    convertersToBpmnMap.put(STENCIL_TEXT_ANNOTATION, TextAnnotationJsonConverter.class);
+  }
 
-    public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
-        convertersToJsonMap.put(TextAnnotation.class, TextAnnotationJsonConverter.class);
-    }
+  public static void fillBpmnTypes(Map<Class<? extends BaseElement>, Class<? extends BaseBpmnJsonConverter>> convertersToJsonMap) {
+    convertersToJsonMap.put(TextAnnotation.class, TextAnnotationJsonConverter.class);
+  }
 
-    protected String getStencilId(BaseElement baseElement) {
-        return STENCIL_TEXT_ANNOTATION;
-    }
+  protected String getStencilId(BaseElement baseElement) {
+    return STENCIL_TEXT_ANNOTATION;
+  }
 
-    protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
-        TextAnnotation annotation = (TextAnnotation) baseElement;
-        if (StringUtils.isNotEmpty(annotation.getText())) {
-            setPropertyValue("text", annotation.getText(), propertiesNode);
-        }
+  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
+    TextAnnotation annotation = (TextAnnotation) baseElement;
+    if (StringUtils.isNotEmpty(annotation.getText())) {
+      setPropertyValue("text", annotation.getText(), propertiesNode);
     }
+  }
 
-    protected BaseElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
-        TextAnnotation annotation = new TextAnnotation();
-        String text = getPropertyValueAsString("text", elementNode);
-        if (StringUtils.isNotEmpty(text)) {
-            annotation.setText(text);
-        }
-        return annotation;
+  protected BaseElement convertJsonToElement(JsonNode elementNode, JsonNode modelNode, Map<String, JsonNode> shapeMap) {
+    TextAnnotation annotation = new TextAnnotation();
+    String text = getPropertyValueAsString("text", elementNode);
+    if (StringUtils.isNotEmpty(text)) {
+      annotation.setText(text);
     }
+    return annotation;
+  }
 }

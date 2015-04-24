@@ -20,15 +20,15 @@ import java.util.List;
  */
 public interface PvmActivity extends PvmScope {
 
-    boolean isAsync();
+  boolean isAsync();
 
-    boolean isExclusive();
+  boolean isExclusive();
 
-    PvmScope getParent();
+  PvmScope getParent();
 
-    List<PvmTransition> getIncomingTransitions();
+  List<PvmTransition> getIncomingTransitions();
 
-    List<PvmTransition> getOutgoingTransitions();
+  List<PvmTransition> getOutgoingTransitions();
 
-    PvmTransition findOutgoingTransition(String transitionId);
+  PvmTransition findOutgoingTransition(String transitionId);
 }

@@ -20,8 +20,8 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public abstract class AbstractSimulationActivityBehavior implements ActivityBehavior {
 
-	public AbstractSimulationActivityBehavior() {
-	}
-	
-	abstract public void execute(ActivityExecution execution);
+  public AbstractSimulationActivityBehavior() {
+  }
+
+  abstract public void execute(ActivityExecution execution);
 }

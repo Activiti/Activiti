@@ -22,7 +22,7 @@ import java.util.List;
  */
 public interface HasExecutionListeners {
 
-    List<ActivitiListener> getExecutionListeners();
+  List<ActivitiListener> getExecutionListeners();
 
-    void setExecutionListeners(List<ActivitiListener> executionListeners);
+  void setExecutionListeners(List<ActivitiListener> executionListeners);
 }

@@ -11,11 +11,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 public class JacksonConfiguration {
 
-    @Bean()
-    public ObjectMapper objectMapper() {
-        // To avoid instantiating and configuring the mapper everywhere
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper;
-    }
+  @Bean()
+  public ObjectMapper objectMapper() {
+    // To avoid instantiating and configuring the mapper everywhere
+    ObjectMapper mapper = new ObjectMapper();
+    return mapper;
+  }
 
 }

@@ -22,21 +22,16 @@ import java.io.Serializable;
  */
 public interface Navigator extends Serializable {
 
-    /**
-     * Gets the string that triggers this handler to be used when navigation
-     * should be performed. This is the first part of the uri-fragment.
-     */
-    String getTrigger();
+  /**
+   * Gets the string that triggers this handler to be used when navigation should be performed. This is the first part of the uri-fragment.
+   */
+  String getTrigger();
 
-    /**
-     * Handle the incoming navigation request. The url-fragment passed contains
-     * all uri parts that triggered the navigation request (including the one
-     * returned by {@link Navigator#getTrigger()}), as well as the parameters
-     * contain the values of the parameters passed in the query string (if any).
-     * 
-     * The handleNavigation is responsible for setting the current URI-fragment
-     * to the correct value (the passed uriFragment or another on in case URL is
-     * invalid).
-     */
-    void handleNavigation(UriFragment uriFragment);
+  /**
+   * Handle the incoming navigation request. The url-fragment passed contains all uri parts that triggered the navigation request (including the one returned by {@link Navigator#getTrigger()}), as
+   * well as the parameters contain the values of the parameters passed in the query string (if any).
+   * 
+   * The handleNavigation is responsible for setting the current URI-fragment to the correct value (the passed uriFragment or another on in case URL is invalid).
+   */
+  void handleNavigation(UriFragment uriFragment);
 }

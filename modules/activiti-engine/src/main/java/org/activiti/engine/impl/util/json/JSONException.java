@@ -7,28 +7,28 @@ package org.activiti.engine.impl.util.json;
  * @version 2008-09-18
  */
 public class JSONException extends RuntimeException {
-    /**
+  /**
 	 * 
 	 */
-    private static final long serialVersionUID = 0;
-    private Throwable cause;
+  private static final long serialVersionUID = 0;
+  private Throwable cause;
 
-    /**
-     * Constructs a JSONException with an explanatory message.
-     * 
-     * @param message
-     *            Detail about the reason for the exception.
-     */
-    public JSONException(String message) {
-        super(message);
-    }
+  /**
+   * Constructs a JSONException with an explanatory message.
+   * 
+   * @param message
+   *          Detail about the reason for the exception.
+   */
+  public JSONException(String message) {
+    super(message);
+  }
 
-    public JSONException(Throwable t) {
-        super(t.getMessage());
-        this.cause = t;
-    }
+  public JSONException(Throwable t) {
+    super(t.getMessage());
+    this.cause = t;
+  }
 
-    public Throwable getCause() {
-        return this.cause;
-    }
+  public Throwable getCause() {
+    return this.cause;
+  }
 }

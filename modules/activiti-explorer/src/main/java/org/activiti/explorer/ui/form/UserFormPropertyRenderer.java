@@ -24,22 +24,22 @@ import com.vaadin.ui.Field;
  */
 public class UserFormPropertyRenderer extends AbstractFormPropertyRenderer {
 
-    public UserFormPropertyRenderer() {
-        super(UserFormType.class);
+  public UserFormPropertyRenderer() {
+    super(UserFormType.class);
+  }
+
+  @Override
+  public Field getPropertyField(FormProperty formProperty) {
+    SelectUserField selectUserField = new SelectUserField(getPropertyLabel(formProperty));
+    selectUserField.setRequired(formProperty.isRequired());
+    selectUserField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
+    selectUserField.setEnabled(formProperty.isWritable());
+
+    if (formProperty.getValue() != null) {
+      selectUserField.setValue(formProperty.getValue());
     }
 
-    @Override
-    public Field getPropertyField(FormProperty formProperty) {
-        SelectUserField selectUserField = new SelectUserField(getPropertyLabel(formProperty));
-        selectUserField.setRequired(formProperty.isRequired());
-        selectUserField.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
-        selectUserField.setEnabled(formProperty.isWritable());
-
-        if (formProperty.getValue() != null) {
-            selectUserField.setValue(formProperty.getValue());
-        }
-
-        return selectUserField;
-    }
+    return selectUserField;
+  }
 
 }

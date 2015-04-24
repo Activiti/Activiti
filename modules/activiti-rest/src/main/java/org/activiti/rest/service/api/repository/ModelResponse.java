@@ -24,78 +24,78 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 public class ModelResponse extends ModelRequest {
 
-    protected String id;
-    protected String url;
-    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
-    protected Date createTime;
-    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
-    protected Date lastUpdateTime;
-    protected String deploymentUrl;
-    protected String tenantId;
-    protected String sourceUrl;
-    protected String sourceExtraUrl;
+  protected String id;
+  protected String url;
+  @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
+  protected Date createTime;
+  @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
+  protected Date lastUpdateTime;
+  protected String deploymentUrl;
+  protected String tenantId;
+  protected String sourceUrl;
+  protected String sourceExtraUrl;
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public Date getCreateTime() {
-        return createTime;
-    }
+  public Date getCreateTime() {
+    return createTime;
+  }
 
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
+  public void setCreateTime(Date createTime) {
+    this.createTime = createTime;
+  }
 
-    public Date getLastUpdateTime() {
-        return lastUpdateTime;
-    }
+  public Date getLastUpdateTime() {
+    return lastUpdateTime;
+  }
 
-    public void setLastUpdateTime(Date lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
-    }
+  public void setLastUpdateTime(Date lastUpdateTime) {
+    this.lastUpdateTime = lastUpdateTime;
+  }
 
-    public String getDeploymentUrl() {
-        return deploymentUrl;
-    }
+  public String getDeploymentUrl() {
+    return deploymentUrl;
+  }
 
-    public void setDeploymentUrl(String deploymentUrl) {
-        this.deploymentUrl = deploymentUrl;
-    }
+  public void setDeploymentUrl(String deploymentUrl) {
+    this.deploymentUrl = deploymentUrl;
+  }
 
-    public String getTenantId() {
-        return tenantId;
-    }
+  public String getTenantId() {
+    return tenantId;
+  }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+  }
 
-    public String getSourceUrl() {
-        return sourceUrl;
-    }
+  public String getSourceUrl() {
+    return sourceUrl;
+  }
 
-    public void setSourceUrl(String sourceUrl) {
-        this.sourceUrl = sourceUrl;
-    }
+  public void setSourceUrl(String sourceUrl) {
+    this.sourceUrl = sourceUrl;
+  }
 
-    public String getSourceExtraUrl() {
-        return sourceExtraUrl;
-    }
+  public String getSourceExtraUrl() {
+    return sourceExtraUrl;
+  }
 
-    public void setSourceExtraUrl(String sourceExtraUrl) {
-        this.sourceExtraUrl = sourceExtraUrl;
-    }
+  public void setSourceExtraUrl(String sourceExtraUrl) {
+    this.sourceExtraUrl = sourceExtraUrl;
+  }
 }

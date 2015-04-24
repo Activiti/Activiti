@@ -27,7 +27,7 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 public interface TaskFormHandler extends FormHandler {
 
-    TaskFormData createTaskForm(TaskEntity task);
+  TaskFormData createTaskForm(TaskEntity task);
 
-    Expression getFormKey();
+  Expression getFormKey();
 }

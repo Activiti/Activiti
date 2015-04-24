@@ -23,15 +23,15 @@ import org.activiti.rest.service.api.RestResponseFactory;
  */
 public class HistoricVariableInstancePaginateList extends AbstractPaginateList {
 
-    protected RestResponseFactory restResponseFactory;
+  protected RestResponseFactory restResponseFactory;
 
-    public HistoricVariableInstancePaginateList(RestResponseFactory restResponseFactory) {
-        this.restResponseFactory = restResponseFactory;
-    }
+  public HistoricVariableInstancePaginateList(RestResponseFactory restResponseFactory) {
+    this.restResponseFactory = restResponseFactory;
+  }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Override
-    protected List processList(List list) {
-        return restResponseFactory.createHistoricVariableInstanceResponseList(list);
-    }
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
+  protected List processList(List list) {
+    return restResponseFactory.createHistoricVariableInstanceResponseList(list);
+  }
 }

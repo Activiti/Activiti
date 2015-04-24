@@ -27,15 +27,15 @@ import org.activiti.engine.impl.persistence.entity.TimerEntity;
  */
 public class GetUnlockedTimersByDuedateCmd implements Command<List<TimerEntity>> {
 
-    protected Date duedate;
-    protected Page page;
+  protected Date duedate;
+  protected Page page;
 
-    public GetUnlockedTimersByDuedateCmd(Date duedate, Page page) {
-        this.duedate = duedate;
-        this.page = page;
-    }
+  public GetUnlockedTimersByDuedateCmd(Date duedate, Page page) {
+    this.duedate = duedate;
+    this.page = page;
+  }
 
-    public List<TimerEntity> execute(CommandContext commandContext) {
-        return Context.getCommandContext().getJobEntityManager().findUnlockedTimersByDuedate(duedate, page);
-    }
+  public List<TimerEntity> execute(CommandContext commandContext) {
+    return Context.getCommandContext().getJobEntityManager().findUnlockedTimersByDuedate(duedate, page);
+  }
 }

@@ -28,24 +28,24 @@ import org.activiti.engine.runtime.Execution;
  */
 public class FindActiveActivityIdsCmd implements Command<List<String>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String executionId;
+  private static final long serialVersionUID = 1L;
+  protected String executionId;
 
-    public FindActiveActivityIdsCmd(String executionId) {
-        this.executionId = executionId;
+  public FindActiveActivityIdsCmd(String executionId) {
+    this.executionId = executionId;
+  }
+
+  public List<String> execute(CommandContext commandContext) {
+    if (executionId == null) {
+      throw new ActivitiIllegalArgumentException("executionId is null");
     }
 
-    public List<String> execute(CommandContext commandContext) {
-        if (executionId == null) {
-            throw new ActivitiIllegalArgumentException("executionId is null");
-        }
+    ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
 
-        ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
-
-        if (execution == null) {
-            throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
-        }
-
-        return execution.findActiveActivityIds();
+    if (execution == null) {
+      throw new ActivitiObjectNotFoundException("execution " + executionId + " doesn't exist", Execution.class);
     }
+
+    return execution.findActiveActivityIds();
+  }
 }

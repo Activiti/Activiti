@@ -25,18 +25,18 @@ import org.activiti.engine.task.Comment;
  */
 public class GetCommentCmd implements Command<Comment>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String commentId;
+  private static final long serialVersionUID = 1L;
+  protected String commentId;
 
-    public GetCommentCmd(String commentId) {
-        this.commentId = commentId;
+  public GetCommentCmd(String commentId) {
+    this.commentId = commentId;
 
-        if (commentId == null) {
-            throw new ActivitiIllegalArgumentException("commentId is null");
-        }
+    if (commentId == null) {
+      throw new ActivitiIllegalArgumentException("commentId is null");
     }
+  }
 
-    public Comment execute(CommandContext commandContext) {
-        return commandContext.getCommentEntityManager().findComment(commentId);
-    }
+  public Comment execute(CommandContext commandContext) {
+    return commandContext.getCommentEntityManager().findComment(commentId);
+  }
 }

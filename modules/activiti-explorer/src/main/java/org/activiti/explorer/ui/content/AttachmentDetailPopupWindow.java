@@ -27,25 +27,25 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class AttachmentDetailPopupWindow extends PopupWindow {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public AttachmentDetailPopupWindow(Attachment attachment) {
-        super(attachment.getName());
+  public AttachmentDetailPopupWindow(Attachment attachment) {
+    super(attachment.getName());
 
-        addStyleName(Reindeer.PANEL_LIGHT);
-        center();
-        setModal(true);
-        setResizable(false);
+    addStyleName(Reindeer.PANEL_LIGHT);
+    center();
+    setModal(true);
+    setResizable(false);
 
-        AttachmentRenderer renderer = ExplorerApp.get().getAttachmentRendererManager().getRenderer(attachment.getType());
-        Component detail = renderer.getDetailComponent(attachment);
+    AttachmentRenderer renderer = ExplorerApp.get().getAttachmentRendererManager().getRenderer(attachment.getType());
+    Component detail = renderer.getDetailComponent(attachment);
 
-        if (detail instanceof ComponentContainer) {
-            setContent((ComponentContainer) detail);
-        } else {
-            addComponent(detail);
-        }
-        getContent().setSizeUndefined();
+    if (detail instanceof ComponentContainer) {
+      setContent((ComponentContainer) detail);
+    } else {
+      addComponent(detail);
     }
+    getContent().setSizeUndefined();
+  }
 
 }

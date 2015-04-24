@@ -27,60 +27,60 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class AbstractActivityBpmnParseHandler<T extends FlowNode> extends AbstractFlowNodeBpmnParseHandler<T> {
 
-    @Override
-    public void parse(BpmnParse bpmnParse, BaseElement element) {
-        super.parse(bpmnParse, element);
+  @Override
+  public void parse(BpmnParse bpmnParse, BaseElement element) {
+    super.parse(bpmnParse, element);
 
-        if (element instanceof Activity && ((Activity) element).getLoopCharacteristics() != null) {
-            createMultiInstanceLoopCharacteristics(bpmnParse, (Activity) element);
-        }
+    if (element instanceof Activity && ((Activity) element).getLoopCharacteristics() != null) {
+      createMultiInstanceLoopCharacteristics(bpmnParse, (Activity) element);
+    }
+  }
+
+  protected void createMultiInstanceLoopCharacteristics(BpmnParse bpmnParse, Activity modelActivity) {
+
+    MultiInstanceLoopCharacteristics loopCharacteristics = modelActivity.getLoopCharacteristics();
+
+    // Activity Behavior
+    MultiInstanceActivityBehavior miActivityBehavior = null;
+
+    if (loopCharacteristics.isSequential()) {
+      miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createSequentialMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
+    } else {
+      miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createParallelMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
     }
 
-    protected void createMultiInstanceLoopCharacteristics(BpmnParse bpmnParse, Activity modelActivity) {
+    modelActivity.setBehavior(miActivityBehavior);
 
-        MultiInstanceLoopCharacteristics loopCharacteristics = modelActivity.getLoopCharacteristics();
+    ExpressionManager expressionManager = bpmnParse.getExpressionManager();
 
-        // Activity Behavior
-        MultiInstanceActivityBehavior miActivityBehavior = null;
-
-        if (loopCharacteristics.isSequential()) {
-            miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createSequentialMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
-        } else {
-            miActivityBehavior = bpmnParse.getActivityBehaviorFactory().createParallelMultiInstanceBehavior(modelActivity, (AbstractBpmnActivityBehavior) modelActivity.getBehavior());
-        }
-
-        modelActivity.setBehavior(miActivityBehavior);
-
-        ExpressionManager expressionManager = bpmnParse.getExpressionManager();
-        
-        // loopcardinality
-        if (StringUtils.isNotEmpty(loopCharacteristics.getLoopCardinality())) {
-            miActivityBehavior.setLoopCardinalityExpression(expressionManager.createExpression(loopCharacteristics.getLoopCardinality()));
-        }
-
-        // completion condition
-        if (StringUtils.isNotEmpty(loopCharacteristics.getCompletionCondition())) {
-            miActivityBehavior.setCompletionConditionExpression(expressionManager.createExpression(loopCharacteristics.getCompletionCondition()));
-        }
-
-        // activiti:collection
-        if (StringUtils.isNotEmpty(loopCharacteristics.getInputDataItem())) {
-            if (loopCharacteristics.getInputDataItem().contains("{")) {
-                miActivityBehavior.setCollectionExpression(expressionManager.createExpression(loopCharacteristics.getInputDataItem()));
-            } else {
-                miActivityBehavior.setCollectionVariable(loopCharacteristics.getInputDataItem());
-            }
-        }
-
-        // activiti:elementVariable
-        if (StringUtils.isNotEmpty(loopCharacteristics.getElementVariable())) {
-            miActivityBehavior.setCollectionElementVariable(loopCharacteristics.getElementVariable());
-        }
-
-        // activiti:elementIndexVariable
-        if (StringUtils.isNotEmpty(loopCharacteristics.getElementIndexVariable())) {
-            miActivityBehavior.setCollectionElementIndexVariable(loopCharacteristics.getElementIndexVariable());
-        }
-
+    // loopcardinality
+    if (StringUtils.isNotEmpty(loopCharacteristics.getLoopCardinality())) {
+      miActivityBehavior.setLoopCardinalityExpression(expressionManager.createExpression(loopCharacteristics.getLoopCardinality()));
     }
+
+    // completion condition
+    if (StringUtils.isNotEmpty(loopCharacteristics.getCompletionCondition())) {
+      miActivityBehavior.setCompletionConditionExpression(expressionManager.createExpression(loopCharacteristics.getCompletionCondition()));
+    }
+
+    // activiti:collection
+    if (StringUtils.isNotEmpty(loopCharacteristics.getInputDataItem())) {
+      if (loopCharacteristics.getInputDataItem().contains("{")) {
+        miActivityBehavior.setCollectionExpression(expressionManager.createExpression(loopCharacteristics.getInputDataItem()));
+      } else {
+        miActivityBehavior.setCollectionVariable(loopCharacteristics.getInputDataItem());
+      }
+    }
+
+    // activiti:elementVariable
+    if (StringUtils.isNotEmpty(loopCharacteristics.getElementVariable())) {
+      miActivityBehavior.setCollectionElementVariable(loopCharacteristics.getElementVariable());
+    }
+
+    // activiti:elementIndexVariable
+    if (StringUtils.isNotEmpty(loopCharacteristics.getElementIndexVariable())) {
+      miActivityBehavior.setCollectionElementIndexVariable(loopCharacteristics.getElementIndexVariable());
+    }
+
+  }
 }

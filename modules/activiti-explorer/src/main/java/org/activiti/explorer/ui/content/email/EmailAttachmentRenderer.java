@@ -27,22 +27,22 @@ import com.vaadin.ui.Component;
  */
 public class EmailAttachmentRenderer extends GenericAttachmentRenderer {
 
-    public static final String EMAIL_TYPE = "email";
+  public static final String EMAIL_TYPE = "email";
 
-    public boolean canRenderAttachment(String type) {
-        return EMAIL_TYPE.equals(type);
-    }
+  public boolean canRenderAttachment(String type) {
+    return EMAIL_TYPE.equals(type);
+  }
 
-    public String getName(I18nManager i18nManager) {
-        return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_EMAIL);
-    }
+  public String getName(I18nManager i18nManager) {
+    return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_EMAIL);
+  }
 
-    public Resource getImage(Attachment attachment) {
-        return Images.IMAP;
-    }
+  public Resource getImage(Attachment attachment) {
+    return Images.IMAP;
+  }
 
-    public Component getDetailComponent(Attachment attachment) {
-        return new EmailDetailPanel(attachment);
-    }
+  public Component getDetailComponent(Attachment attachment) {
+    return new EmailDetailPanel(attachment);
+  }
 
 }

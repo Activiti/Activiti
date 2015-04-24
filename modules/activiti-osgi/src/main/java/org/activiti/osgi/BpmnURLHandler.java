@@ -31,58 +31,58 @@ import java.net.URLConnection;
  */
 public class BpmnURLHandler extends AbstractURLStreamHandlerService {
 
-    private static Logger logger = LoggerFactory.getLogger(BpmnURLHandler.class);
+  private static Logger logger = LoggerFactory.getLogger(BpmnURLHandler.class);
 
-    private static String SYNTAX = "bpmn: bpmn-xml-uri";
+  private static String SYNTAX = "bpmn: bpmn-xml-uri";
 
-    private URL bpmnXmlURL;
+  private URL bpmnXmlURL;
 
-    /**
-     * Open the connection for the given URL.
-     * 
-     * @param url
-     *            the url from which to open a connection.
-     * @return a connection on the specified URL.
-     * @throws IOException
-     *             if an error occurs or if the URL is malformed.
-     */
+  /**
+   * Open the connection for the given URL.
+   * 
+   * @param url
+   *          the url from which to open a connection.
+   * @return a connection on the specified URL.
+   * @throws IOException
+   *           if an error occurs or if the URL is malformed.
+   */
+  @Override
+  public URLConnection openConnection(URL url) throws IOException {
+    if (url.getPath() == null || url.getPath().trim().length() == 0) {
+      throw new MalformedURLException("Path can not be null or empty. Syntax: " + SYNTAX);
+    }
+    bpmnXmlURL = new URL(url.getPath());
+
+    logger.debug("BPMN xml URL is: [{}]", bpmnXmlURL);
+    return new Connection(url);
+  }
+
+  public URL getBpmnXmlURL() {
+    return bpmnXmlURL;
+  }
+
+  public class Connection extends URLConnection {
+
+    public Connection(URL url) {
+      super(url);
+    }
+
     @Override
-    public URLConnection openConnection(URL url) throws IOException {
-        if (url.getPath() == null || url.getPath().trim().length() == 0) {
-            throw new MalformedURLException("Path can not be null or empty. Syntax: " + SYNTAX);
-        }
-        bpmnXmlURL = new URL(url.getPath());
-
-        logger.debug("BPMN xml URL is: [{}]", bpmnXmlURL);
-        return new Connection(url);
+    public void connect() throws IOException {
     }
 
-    public URL getBpmnXmlURL() {
-        return bpmnXmlURL;
+    @Override
+    public InputStream getInputStream() throws IOException {
+      try {
+        ByteArrayOutputStream os = new ByteArrayOutputStream();
+        BpmnTransformer.transform(bpmnXmlURL, os);
+        os.close();
+        return new ByteArrayInputStream(os.toByteArray());
+      } catch (Exception e) {
+        logger.error("Error opening spring xml url", e);
+        throw (IOException) new IOException("Error opening spring xml url").initCause(e);
+      }
     }
-
-    public class Connection extends URLConnection {
-
-        public Connection(URL url) {
-            super(url);
-        }
-
-        @Override
-        public void connect() throws IOException {
-        }
-
-        @Override
-        public InputStream getInputStream() throws IOException {
-            try {
-                ByteArrayOutputStream os = new ByteArrayOutputStream();
-                BpmnTransformer.transform(bpmnXmlURL, os);
-                os.close();
-                return new ByteArrayInputStream(os.toByteArray());
-            } catch (Exception e) {
-                logger.error("Error opening spring xml url", e);
-                throw (IOException) new IOException("Error opening spring xml url").initCause(e);
-            }
-        }
-    }
+  }
 
 }

@@ -22,66 +22,66 @@ import org.activiti5.engine.task.IdentityLinkType;
  */
 public class AddIdentityLinkCmd extends NeedsActiveTaskCmd<Void> {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String userId;
+  protected String userId;
 
-    protected String groupId;
+  protected String groupId;
 
-    protected String type;
+  protected String type;
 
-    public AddIdentityLinkCmd(String taskId, String userId, String groupId, String type) {
-        super(taskId);
-        validateParams(userId, groupId, type, taskId);
-        this.taskId = taskId;
-        this.userId = userId;
-        this.groupId = groupId;
-        this.type = type;
+  public AddIdentityLinkCmd(String taskId, String userId, String groupId, String type) {
+    super(taskId);
+    validateParams(userId, groupId, type, taskId);
+    this.taskId = taskId;
+    this.userId = userId;
+    this.groupId = groupId;
+    this.type = type;
+  }
+
+  protected void validateParams(String userId, String groupId, String type, String taskId) {
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("taskId is null");
     }
 
-    protected void validateParams(String userId, String groupId, String type, String taskId) {
-        if (taskId == null) {
-            throw new ActivitiIllegalArgumentException("taskId is null");
-        }
-
-        if (type == null) {
-            throw new ActivitiIllegalArgumentException("type is required when adding a new task identity link");
-        }
-
-        // Special treatment for assignee, group cannot be used an userId may be
-        // null
-        if (IdentityLinkType.ASSIGNEE.equals(type)) {
-            if (groupId != null) {
-                throw new ActivitiIllegalArgumentException("Incompatible usage: cannot use ASSIGNEE" + " together with a groupId");
-            }
-        } else {
-            if (userId == null && groupId == null) {
-                throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
-            }
-        }
+    if (type == null) {
+      throw new ActivitiIllegalArgumentException("type is required when adding a new task identity link");
     }
 
-    protected Void execute(CommandContext commandContext, TaskEntity task) {
-
-        boolean assignedToNoOne = false;
-        if (IdentityLinkType.ASSIGNEE.equals(type)) {
-            task.setAssignee(userId, true, true);
-            assignedToNoOne = userId == null;
-        } else if (IdentityLinkType.OWNER.equals(type)) {
-            task.setOwner(userId, true);
-        } else {
-            task.addIdentityLink(userId, groupId, type);
-        }
-
-        if (assignedToNoOne) {
-            // ACT-1317: Special handling when assignee is set to NULL, a
-            // CommentEntity notifying of assignee-delete should be created
-            commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, false, true);
-        } else {
-            commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, true);
-        }
-
-        return null;
+    // Special treatment for assignee, group cannot be used an userId may be
+    // null
+    if (IdentityLinkType.ASSIGNEE.equals(type)) {
+      if (groupId != null) {
+        throw new ActivitiIllegalArgumentException("Incompatible usage: cannot use ASSIGNEE" + " together with a groupId");
+      }
+    } else {
+      if (userId == null && groupId == null) {
+        throw new ActivitiIllegalArgumentException("userId and groupId cannot both be null");
+      }
     }
+  }
+
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
+
+    boolean assignedToNoOne = false;
+    if (IdentityLinkType.ASSIGNEE.equals(type)) {
+      task.setAssignee(userId, true, true);
+      assignedToNoOne = userId == null;
+    } else if (IdentityLinkType.OWNER.equals(type)) {
+      task.setOwner(userId, true);
+    } else {
+      task.addIdentityLink(userId, groupId, type);
+    }
+
+    if (assignedToNoOne) {
+      // ACT-1317: Special handling when assignee is set to NULL, a
+      // CommentEntity notifying of assignee-delete should be created
+      commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, false, true);
+    } else {
+      commandContext.getHistoryManager().createIdentityLinkComment(taskId, userId, groupId, type, true);
+    }
+
+    return null;
+  }
 
 }

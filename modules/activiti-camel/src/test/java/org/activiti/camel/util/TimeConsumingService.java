@@ -8,13 +8,13 @@ package org.activiti.camel.util;
  */
 public class TimeConsumingService {
 
-    /**
-     * Spend some time.
-     * 
-     * @throws InterruptedException
-     */
-    public void doWork() throws InterruptedException {
-        Thread.sleep(100);
-    }
+  /**
+   * Spend some time.
+   * 
+   * @throws InterruptedException
+   */
+  public void doWork() throws InterruptedException {
+    Thread.sleep(100);
+  }
 
 }

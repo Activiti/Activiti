@@ -24,39 +24,39 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class DeleteTaskCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String taskId;
-    protected Collection<String> taskIds;
-    protected boolean cascade;
-    protected String deleteReason;
+  private static final long serialVersionUID = 1L;
+  protected String taskId;
+  protected Collection<String> taskIds;
+  protected boolean cascade;
+  protected String deleteReason;
 
-    public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade) {
-        this.taskId = taskId;
-        this.cascade = cascade;
-        this.deleteReason = deleteReason;
+  public DeleteTaskCmd(String taskId, String deleteReason, boolean cascade) {
+    this.taskId = taskId;
+    this.cascade = cascade;
+    this.deleteReason = deleteReason;
+  }
+
+  public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade) {
+    this.taskIds = taskIds;
+    this.cascade = cascade;
+    this.deleteReason = deleteReason;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (taskId != null) {
+      deleteTask(commandContext, taskId);
+    } else if (taskIds != null) {
+      for (String taskId : taskIds) {
+        deleteTask(commandContext, taskId);
+      }
+    } else {
+      throw new ActivitiIllegalArgumentException("taskId and taskIds are null");
     }
 
-    public DeleteTaskCmd(Collection<String> taskIds, String deleteReason, boolean cascade) {
-        this.taskIds = taskIds;
-        this.cascade = cascade;
-        this.deleteReason = deleteReason;
-    }
+    return null;
+  }
 
-    public Void execute(CommandContext commandContext) {
-        if (taskId != null) {
-            deleteTask(commandContext, taskId);
-        } else if (taskIds != null) {
-            for (String taskId : taskIds) {
-                deleteTask(commandContext, taskId);
-            }
-        } else {
-            throw new ActivitiIllegalArgumentException("taskId and taskIds are null");
-        }
-
-        return null;
-    }
-
-    protected void deleteTask(CommandContext commandContext, String taskId) {
-        commandContext.getTaskEntityManager().deleteTask(taskId, deleteReason, cascade);
-    }
+  protected void deleteTask(CommandContext commandContext, String taskId) {
+    commandContext.getTaskEntityManager().deleteTask(taskId, deleteReason, cascade);
+  }
 }

@@ -24,10 +24,10 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class CreateUserQueryCmd implements Command<UserQuery>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public UserQuery execute(CommandContext commandContext) {
-        return commandContext.getUserIdentityManager().createNewUserQuery();
-    }
+  public UserQuery execute(CommandContext commandContext) {
+    return commandContext.getUserIdentityManager().createNewUserQuery();
+  }
 
 }

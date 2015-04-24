@@ -21,17 +21,17 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class ControlledCommand implements Command<Object> {
 
-    protected ControllableThread controllableThread;
-    protected Command<?> command;
+  protected ControllableThread controllableThread;
+  protected Command<?> command;
 
-    public ControlledCommand(ControllableThread controllableThread, Command<?> command) {
-        this.controllableThread = controllableThread;
-        this.command = command;
-    }
+  public ControlledCommand(ControllableThread controllableThread, Command<?> command) {
+    this.controllableThread = controllableThread;
+    this.command = command;
+  }
 
-    public Object execute(CommandContext commandContext) {
-        Object result = command.execute(commandContext);
-        controllableThread.returnControlToTestThreadAndWait();
-        return result;
-    }
+  public Object execute(CommandContext commandContext) {
+    Object result = command.execute(commandContext);
+    controllableThread.returnControlToTestThreadAndWait();
+    return result;
+  }
 }

@@ -74,476 +74,467 @@ import org.slf4j.LoggerFactory;
  */
 public class BpmnDeployer implements Deployer {
 
-    private static final Logger log = LoggerFactory.getLogger(BpmnDeployer.class);
+  private static final Logger log = LoggerFactory.getLogger(BpmnDeployer.class);
 
-    public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
-    public static final String[] DIAGRAM_SUFFIXES = new String[] { "png", "jpg", "gif", "svg" };
+  public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
+  public static final String[] DIAGRAM_SUFFIXES = new String[] { "png", "jpg", "gif", "svg" };
 
-    protected ExpressionManager expressionManager;
-    protected BpmnParser bpmnParser;
-    protected IdGenerator idGenerator;
+  protected ExpressionManager expressionManager;
+  protected BpmnParser bpmnParser;
+  protected IdGenerator idGenerator;
 
-    public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
-        log.debug("Processing deployment {}", deployment.getName());
+  public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
+    log.debug("Processing deployment {}", deployment.getName());
 
-        List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
-        Map<String, org.activiti.bpmn.model.Process> processModels = new HashMap<String, org.activiti.bpmn.model.Process>();
-        Map<String, BpmnModel> bpmnModels = new HashMap<String, BpmnModel>();
-        Map<String, ResourceEntity> resources = deployment.getResources();
+    List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
+    Map<String, org.activiti.bpmn.model.Process> processModels = new HashMap<String, org.activiti.bpmn.model.Process>();
+    Map<String, BpmnModel> bpmnModels = new HashMap<String, BpmnModel>();
+    Map<String, ResourceEntity> resources = deployment.getResources();
 
-        final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
-        for (String resourceName : resources.keySet()) {
+    final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+    for (String resourceName : resources.keySet()) {
 
-            log.info("Processing resource {}", resourceName);
-            if (isBpmnResource(resourceName)) {
-                ResourceEntity resource = resources.get(resourceName);
-                byte[] bytes = resource.getBytes();
-                ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
+      log.info("Processing resource {}", resourceName);
+      if (isBpmnResource(resourceName)) {
+        ResourceEntity resource = resources.get(resourceName);
+        byte[] bytes = resource.getBytes();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(bytes);
 
-                BpmnParse bpmnParse = bpmnParser.createParse().sourceInputStream(inputStream).deployment(deployment).name(resourceName);
+        BpmnParse bpmnParse = bpmnParser.createParse().sourceInputStream(inputStream).deployment(deployment).name(resourceName);
 
-                if (deploymentSettings != null) {
+        if (deploymentSettings != null) {
 
-                    // Schema validation if needed
-                    if (deploymentSettings.containsKey(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)) {
-                        bpmnParse.setValidateSchema((Boolean) deploymentSettings.get(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED));
-                    }
+          // Schema validation if needed
+          if (deploymentSettings.containsKey(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED)) {
+            bpmnParse.setValidateSchema((Boolean) deploymentSettings.get(DeploymentSettings.IS_BPMN20_XSD_VALIDATION_ENABLED));
+          }
 
-                    // Process validation if needed
-                    if (deploymentSettings.containsKey(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)) {
-                        bpmnParse.setValidateProcess((Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
-                    }
+          // Process validation if needed
+          if (deploymentSettings.containsKey(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED)) {
+            bpmnParse.setValidateProcess((Boolean) deploymentSettings.get(DeploymentSettings.IS_PROCESS_VALIDATION_ENABLED));
+          }
 
-                } else {
-                    // On redeploy, we assume it is validated at the first
-                    // deploy
-                    bpmnParse.setValidateSchema(false);
-                    bpmnParse.setValidateProcess(false);
-                }
-
-                bpmnParse.execute();
-
-                for (ProcessDefinitionEntity processDefinition : bpmnParse.getProcessDefinitions()) {
-                    processDefinition.setResourceName(resourceName);
-
-                    // Backwards compatibility
-                    if (deployment.getEngineVersion() != null) {
-                        processDefinition.setEngineVersion(deployment.getEngineVersion());
-                    }
-
-                    if (deployment.getTenantId() != null) {
-                        processDefinition.setTenantId(deployment.getTenantId()); // process definition inherits the tenant id
-                    }
-
-                    String diagramResourceName = getDiagramResourceForProcess(resourceName, processDefinition.getKey(), resources);
-
-                    // Only generate the resource when deployment is new to prevent modification of deployment resources
-                    // after the process-definition is actually deployed. Also to prevent resource-generation failure every
-                    // time the process definition is added to the deployment-cache when diagram-generation has failed the first time.
-                    if (deployment.isNew()) {
-                        if (processEngineConfiguration.isCreateDiagramOnDeploy() && diagramResourceName == null && processDefinition.isGraphicalNotationDefined()) {
-                            try {
-                                byte[] diagramBytes = IoUtil.readInputStream(
-                                        processEngineConfiguration.getProcessDiagramGenerator().generateDiagram(bpmnParse.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
-                                                processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader()), null);
-                                diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
-                                createResource(diagramResourceName, diagramBytes, deployment);
-                            } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
-                                log.warn("Error while generating process diagram, image will not be stored in repository", t);
-                            }
-                        }
-                    }
-
-                    processDefinition.setDiagramResourceName(diagramResourceName);
-                    processDefinitions.add(processDefinition);
-                    
-                    processModels.put(processDefinition.getKey(), bpmnParse.getBpmnModel().getProcessById(processDefinition.getKey()));
-                    bpmnModels.put(processDefinition.getKey(), bpmnParse.getBpmnModel());
-                }
-            }
+        } else {
+          // On redeploy, we assume it is validated at the first
+          // deploy
+          bpmnParse.setValidateSchema(false);
+          bpmnParse.setValidateProcess(false);
         }
 
-        // check if there are process definitions with the same process key to
-        // prevent database unique index violation
-        List<String> keyList = new ArrayList<String>();
-        for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-            if (keyList.contains(processDefinition.getKey())) {
-                throw new ActivitiException("The deployment contains process definitions with the same key (process id atrribute), this is not allowed");
+        bpmnParse.execute();
+
+        for (ProcessDefinitionEntity processDefinition : bpmnParse.getProcessDefinitions()) {
+          processDefinition.setResourceName(resourceName);
+
+          // Backwards compatibility
+          if (deployment.getEngineVersion() != null) {
+            processDefinition.setEngineVersion(deployment.getEngineVersion());
+          }
+
+          if (deployment.getTenantId() != null) {
+            processDefinition.setTenantId(deployment.getTenantId()); // process definition inherits the tenant id
+          }
+
+          String diagramResourceName = getDiagramResourceForProcess(resourceName, processDefinition.getKey(), resources);
+
+          // Only generate the resource when deployment is new to prevent modification of deployment resources
+          // after the process-definition is actually deployed. Also to prevent resource-generation failure every
+          // time the process definition is added to the deployment-cache when diagram-generation has failed the first time.
+          if (deployment.isNew()) {
+            if (processEngineConfiguration.isCreateDiagramOnDeploy() && diagramResourceName == null && processDefinition.isGraphicalNotationDefined()) {
+              try {
+                byte[] diagramBytes = IoUtil.readInputStream(
+                    processEngineConfiguration.getProcessDiagramGenerator().generateDiagram(bpmnParse.getBpmnModel(), "png", processEngineConfiguration.getActivityFontName(),
+                        processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader()), null);
+                diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
+                createResource(diagramResourceName, diagramBytes, deployment);
+              } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
+                log.warn("Error while generating process diagram, image will not be stored in repository", t);
+              }
             }
-            keyList.add(processDefinition.getKey());
+          }
+
+          processDefinition.setDiagramResourceName(diagramResourceName);
+          processDefinitions.add(processDefinition);
+
+          processModels.put(processDefinition.getKey(), bpmnParse.getBpmnModel().getProcessById(processDefinition.getKey()));
+          bpmnModels.put(processDefinition.getKey(), bpmnParse.getBpmnModel());
         }
-
-        CommandContext commandContext = Context.getCommandContext();
-        ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
-        DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
-        for (ProcessDefinitionEntity processDefinition : processDefinitions) {
-            List<TimerEntity> timers = new ArrayList<TimerEntity>();
-            if (deployment.isNew()) {
-                int processDefinitionVersion;
-
-                ProcessDefinitionEntity latestProcessDefinition = null;
-                if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
-                    latestProcessDefinition = processDefinitionManager.findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
-                } else {
-                    latestProcessDefinition = processDefinitionManager.findLatestProcessDefinitionByKey(processDefinition.getKey());
-                }
-
-                if (latestProcessDefinition != null) {
-                    processDefinitionVersion = latestProcessDefinition.getVersion() + 1;
-                } else {
-                    processDefinitionVersion = 1;
-                }
-
-                processDefinition.setVersion(processDefinitionVersion);
-                processDefinition.setDeploymentId(deployment.getId());
-
-                String nextId = idGenerator.getNextId();
-                String processDefinitionId = processDefinition.getKey() + ":" + processDefinition.getVersion() + ":" + nextId; // ACT-505
-
-                // ACT-115: maximum id length is 64 charcaters
-                if (processDefinitionId.length() > 64) {
-                    processDefinitionId = nextId;
-                }
-                processDefinition.setId(processDefinitionId);
-
-                if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition));
-                }
-
-                org.activiti.bpmn.model.Process process = processModels.get(processDefinition.getKey());
-                
-                removeObsoleteTimers(processDefinition);
-                addTimerDeclarations(processDefinition, process, timers);
-
-                removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
-                addMessageEventSubscriptions(processDefinition, process, bpmnModels.get(processDefinition.getKey()));
-
-                removeObsoleteSignalEventSubScription(processDefinition, latestProcessDefinition);
-                addSignalEventSubscriptions(processDefinition, process, bpmnModels.get(processDefinition.getKey()));
-
-                dbSqlSession.insert(processDefinition);
-                addAuthorizations(processDefinition);
-
-//                if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-//                    commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, processDefinition));
-//                }
-
-                scheduleTimers(timers);
-
-            } else {
-                String deploymentId = deployment.getId();
-                processDefinition.setDeploymentId(deploymentId);
-
-                ProcessDefinitionEntity persistedProcessDefinition = null;
-                if (processDefinition.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
-                    persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
-                } else {
-                    persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKeyAndTenantId(deploymentId, processDefinition.getKey(), processDefinition.getTenantId());
-                }
-
-                if (persistedProcessDefinition != null) {
-                    processDefinition.setId(persistedProcessDefinition.getId());
-                    processDefinition.setVersion(persistedProcessDefinition.getVersion());
-                    processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
-                }
-            }
-
-            // Add to cache
-            ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, 
-            		bpmnModels.get(processDefinition.getKey()), processModels.get(processDefinition.getKey()));
-            processEngineConfiguration.getDeploymentManager().getProcessDefinitionCache().add(processDefinition.getId(), cacheEntry);
-
-            // Add to deployment for further usage
-            deployment.addDeployedArtifact(processDefinition);
-        }
+      }
     }
 
-    private void scheduleTimers(List<TimerEntity> timers) {
-        for (TimerEntity timer : timers) {
-            Context.getCommandContext().getJobEntityManager().schedule(timer);
-        }
+    // check if there are process definitions with the same process key to
+    // prevent database unique index violation
+    List<String> keyList = new ArrayList<String>();
+    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      if (keyList.contains(processDefinition.getKey())) {
+        throw new ActivitiException("The deployment contains process definitions with the same key (process id atrribute), this is not allowed");
+      }
+      keyList.add(processDefinition.getKey());
     }
 
-    protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, List<TimerEntity> timers) {
-        if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
-            for (FlowElement element : process.getFlowElements()) {
-                if (element instanceof StartEvent) {
-                    StartEvent startEvent = (StartEvent) element;
-                    if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
-                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
-                        if (eventDefinition instanceof TimerEventDefinition) {
-                            TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, 
-                                    TimerStartEventJobHandler.TYPE, TimerEventHandler.createConfiguration(processDefinition.getKey(), null));
-                            timer.setProcessDefinitionId(processDefinition.getId());
-                            
-                            if (processDefinition.getTenantId() != null) {
-                                timer.setTenantId(processDefinition.getTenantId());
-                            }
-                            timers.add(timer);
-                        }
-                    }
-                }
-            }
+    CommandContext commandContext = Context.getCommandContext();
+    ProcessDefinitionEntityManager processDefinitionManager = commandContext.getProcessDefinitionEntityManager();
+    DbSqlSession dbSqlSession = commandContext.getSession(DbSqlSession.class);
+    for (ProcessDefinitionEntity processDefinition : processDefinitions) {
+      List<TimerEntity> timers = new ArrayList<TimerEntity>();
+      if (deployment.isNew()) {
+        int processDefinitionVersion;
+
+        ProcessDefinitionEntity latestProcessDefinition = null;
+        if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+          latestProcessDefinition = processDefinitionManager.findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
+        } else {
+          latestProcessDefinition = processDefinitionManager.findLatestProcessDefinitionByKey(processDefinition.getKey());
         }
-    }
 
-    protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
-        List<Job> jobsToDelete = Context.getCommandContext().getJobEntityManager().findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
-
-        for (Job job : jobsToDelete) {
-            new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
-        }
-    }
-
-    protected void removeObsoleteMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
-        // remove all subscriptions for the previous version
         if (latestProcessDefinition != null) {
-            CommandContext commandContext = Context.getCommandContext();
-
-            List<EventSubscriptionEntity> subscriptionsToDelete = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE,
-                    latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
-
-            for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
-                eventSubscriptionEntity.delete();
-            }
-
+          processDefinitionVersion = latestProcessDefinition.getVersion() + 1;
+        } else {
+          processDefinitionVersion = 1;
         }
+
+        processDefinition.setVersion(processDefinitionVersion);
+        processDefinition.setDeploymentId(deployment.getId());
+
+        String nextId = idGenerator.getNextId();
+        String processDefinitionId = processDefinition.getKey() + ":" + processDefinition.getVersion() + ":" + nextId; // ACT-505
+
+        // ACT-115: maximum id length is 64 charcaters
+        if (processDefinitionId.length() > 64) {
+          processDefinitionId = nextId;
+        }
+        processDefinition.setId(processDefinitionId);
+
+        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition));
+        }
+
+        org.activiti.bpmn.model.Process process = processModels.get(processDefinition.getKey());
+
+        removeObsoleteTimers(processDefinition);
+        addTimerDeclarations(processDefinition, process, timers);
+
+        removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
+        addMessageEventSubscriptions(processDefinition, process, bpmnModels.get(processDefinition.getKey()));
+
+        removeObsoleteSignalEventSubScription(processDefinition, latestProcessDefinition);
+        addSignalEventSubscriptions(processDefinition, process, bpmnModels.get(processDefinition.getKey()));
+
+        dbSqlSession.insert(processDefinition);
+        addAuthorizations(processDefinition);
+
+        // if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        // commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, processDefinition));
+        // }
+
+        scheduleTimers(timers);
+
+      } else {
+        String deploymentId = deployment.getId();
+        processDefinition.setDeploymentId(deploymentId);
+
+        ProcessDefinitionEntity persistedProcessDefinition = null;
+        if (processDefinition.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+          persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKey(deploymentId, processDefinition.getKey());
+        } else {
+          persistedProcessDefinition = processDefinitionManager.findProcessDefinitionByDeploymentAndKeyAndTenantId(deploymentId, processDefinition.getKey(), processDefinition.getTenantId());
+        }
+
+        if (persistedProcessDefinition != null) {
+          processDefinition.setId(persistedProcessDefinition.getId());
+          processDefinition.setVersion(persistedProcessDefinition.getVersion());
+          processDefinition.setSuspensionState(persistedProcessDefinition.getSuspensionState());
+        }
+      }
+
+      // Add to cache
+      ProcessDefinitionCacheEntry cacheEntry = new ProcessDefinitionCacheEntry(processDefinition, bpmnModels.get(processDefinition.getKey()), processModels.get(processDefinition.getKey()));
+      processEngineConfiguration.getDeploymentManager().getProcessDefinitionCache().add(processDefinition.getId(), cacheEntry);
+
+      // Add to deployment for further usage
+      deployment.addDeployedArtifact(processDefinition);
     }
+  }
 
-    @SuppressWarnings("unchecked")
-    protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, BpmnModel bpmnModel) {
-        CommandContext commandContext = Context.getCommandContext();
-        if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
-            for (FlowElement element : process.getFlowElements()) {
-                if (element instanceof StartEvent) {
-                    StartEvent startEvent = (StartEvent) element;
-                    if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
-                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
-                        if (eventDefinition instanceof MessageEventDefinition) {
-                            MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
-                            
-                            if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
-                                Message message = bpmnModel.getMessage(messageEventDefinition.getMessageRef());
-                                messageEventDefinition.setMessageRef(message.getName());
-                            }
-                            
-                            // look for subscriptions for the same name in db:
-                            List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByName(
-                                    MessageEventHandler.EVENT_HANDLER_TYPE, messageEventDefinition.getMessageRef(), processDefinition.getTenantId());
-                            // also look for subscriptions created in the session:
-                            List<MessageEventSubscriptionEntity> cachedSubscriptions = commandContext.getDbSqlSession().findInCache(MessageEventSubscriptionEntity.class);
-                            for (MessageEventSubscriptionEntity cachedSubscription : cachedSubscriptions) {
-                                if (messageEventDefinition.getMessageRef().equals(cachedSubscription.getEventName()) && !subscriptionsForSameMessageName.contains(cachedSubscription)) {
-                                    subscriptionsForSameMessageName.add(cachedSubscription);
-                                }
-                            }
-                            // remove subscriptions deleted in the same command
-                            subscriptionsForSameMessageName = commandContext.getDbSqlSession().pruneDeletedEntities(subscriptionsForSameMessageName);
+  private void scheduleTimers(List<TimerEntity> timers) {
+    for (TimerEntity timer : timers) {
+      Context.getCommandContext().getJobEntityManager().schedule(timer);
+    }
+  }
 
-                            for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsForSameMessageName) {
-                                // throw exception only if there's already a
-                                // subscription as start event
-                                if (eventSubscriptionEntity.getProcessInstanceId() == null || eventSubscriptionEntity.getProcessInstanceId().isEmpty()) {
-                                    // the event subscription has no instance-id, so
-                                    // it's a message start event
-                                    throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
-                                            + "': there already is a message event subscription for the message with name '" + messageEventDefinition.getMessageRef() + "'.");
-                                }
-                            }
+  protected void addTimerDeclarations(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, List<TimerEntity> timers) {
+    if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
+      for (FlowElement element : process.getFlowElements()) {
+        if (element instanceof StartEvent) {
+          StartEvent startEvent = (StartEvent) element;
+          if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+            EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+            if (eventDefinition instanceof TimerEventDefinition) {
+              TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
+                  TimerEventHandler.createConfiguration(processDefinition.getKey(), null));
+              timer.setProcessDefinitionId(processDefinition.getId());
 
-                            MessageEventSubscriptionEntity newSubscription = new MessageEventSubscriptionEntity();
-                            newSubscription.setEventName(messageEventDefinition.getMessageRef());
-                            newSubscription.setActivityId(startEvent.getId());
-                            newSubscription.setConfiguration(processDefinition.getId());
+              if (processDefinition.getTenantId() != null) {
+                timer.setTenantId(processDefinition.getTenantId());
+              }
+              timers.add(timer);
+            }
+          }
+        }
+      }
+    }
+  }
 
-                            if (processDefinition.getTenantId() != null) {
-                                newSubscription.setTenantId(processDefinition.getTenantId());
-                            }
+  protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
+    List<Job> jobsToDelete = Context.getCommandContext().getJobEntityManager().findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
 
-                            newSubscription.insert();
-                        }
-                    }
+    for (Job job : jobsToDelete) {
+      new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
+    }
+  }
+
+  protected void removeObsoleteMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
+    // remove all subscriptions for the previous version
+    if (latestProcessDefinition != null) {
+      CommandContext commandContext = Context.getCommandContext();
+
+      List<EventSubscriptionEntity> subscriptionsToDelete = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE,
+          latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
+
+      for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
+        eventSubscriptionEntity.delete();
+      }
+
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, BpmnModel bpmnModel) {
+    CommandContext commandContext = Context.getCommandContext();
+    if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
+      for (FlowElement element : process.getFlowElements()) {
+        if (element instanceof StartEvent) {
+          StartEvent startEvent = (StartEvent) element;
+          if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+            EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+            if (eventDefinition instanceof MessageEventDefinition) {
+              MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
+
+              if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
+                Message message = bpmnModel.getMessage(messageEventDefinition.getMessageRef());
+                messageEventDefinition.setMessageRef(message.getName());
+              }
+
+              // look for subscriptions for the same name in db:
+              List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE,
+                  messageEventDefinition.getMessageRef(), processDefinition.getTenantId());
+              // also look for subscriptions created in the session:
+              List<MessageEventSubscriptionEntity> cachedSubscriptions = commandContext.getDbSqlSession().findInCache(MessageEventSubscriptionEntity.class);
+              for (MessageEventSubscriptionEntity cachedSubscription : cachedSubscriptions) {
+                if (messageEventDefinition.getMessageRef().equals(cachedSubscription.getEventName()) && !subscriptionsForSameMessageName.contains(cachedSubscription)) {
+                  subscriptionsForSameMessageName.add(cachedSubscription);
                 }
-            }
-        }
-        
-        List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
-        if (eventDefinitions != null) {
-            for (EventSubscriptionDeclaration eventDefinition : eventDefinitions) {
-                if (eventDefinition.getEventType().equals("message") && eventDefinition.isStartEvent()) {
-                    
+              }
+              // remove subscriptions deleted in the same command
+              subscriptionsForSameMessageName = commandContext.getDbSqlSession().pruneDeletedEntities(subscriptionsForSameMessageName);
+
+              for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsForSameMessageName) {
+                // throw exception only if there's already a
+                // subscription as start event
+                if (eventSubscriptionEntity.getProcessInstanceId() == null || eventSubscriptionEntity.getProcessInstanceId().isEmpty()) {
+                  // the event subscription has no instance-id, so
+                  // it's a message start event
+                  throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
+                      + "': there already is a message event subscription for the message with name '" + messageEventDefinition.getMessageRef() + "'.");
                 }
+              }
+
+              MessageEventSubscriptionEntity newSubscription = new MessageEventSubscriptionEntity();
+              newSubscription.setEventName(messageEventDefinition.getMessageRef());
+              newSubscription.setActivityId(startEvent.getId());
+              newSubscription.setConfiguration(processDefinition.getId());
+
+              if (processDefinition.getTenantId() != null) {
+                newSubscription.setTenantId(processDefinition.getTenantId());
+              }
+
+              newSubscription.insert();
             }
+          }
         }
+      }
     }
 
-    protected void removeObsoleteSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
-        // remove all subscriptions for the previous version
-        if (latestProcessDefinition != null) {
-            CommandContext commandContext = Context.getCommandContext();
+    List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
+    if (eventDefinitions != null) {
+      for (EventSubscriptionDeclaration eventDefinition : eventDefinitions) {
+        if (eventDefinition.getEventType().equals("message") && eventDefinition.isStartEvent()) {
 
-            List<EventSubscriptionEntity> subscriptionsToDelete = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByConfiguration(
-                    SignalEventHandler.EVENT_HANDLER_TYPE, latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
+        }
+      }
+    }
+  }
 
-            for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
-                eventSubscriptionEntity.delete();
+  protected void removeObsoleteSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {
+    // remove all subscriptions for the previous version
+    if (latestProcessDefinition != null) {
+      CommandContext commandContext = Context.getCommandContext();
+
+      List<EventSubscriptionEntity> subscriptionsToDelete = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByConfiguration(SignalEventHandler.EVENT_HANDLER_TYPE,
+          latestProcessDefinition.getId(), latestProcessDefinition.getTenantId());
+
+      for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsToDelete) {
+        eventSubscriptionEntity.delete();
+      }
+
+    }
+  }
+
+  protected void addSignalEventSubscriptions(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, BpmnModel bpmnModel) {
+    if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
+      for (FlowElement element : process.getFlowElements()) {
+        if (element instanceof StartEvent) {
+          StartEvent startEvent = (StartEvent) element;
+          if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+            EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+            if (eventDefinition instanceof SignalEventDefinition) {
+              SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
+              SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
+              Signal signal = bpmnModel.getSignal(signalEventDefinition.getSignalRef());
+              if (signal != null) {
+                subscriptionEntity.setEventName(signal.getName());
+              } else {
+                subscriptionEntity.setEventName(signalEventDefinition.getSignalRef());
+              }
+              subscriptionEntity.setActivityId(startEvent.getId());
+              subscriptionEntity.setProcessDefinitionId(processDefinition.getId());
+              if (processDefinition.getTenantId() != null) {
+                subscriptionEntity.setTenantId(processDefinition.getTenantId());
+              }
+              subscriptionEntity.insert();
             }
-
+          }
         }
+      }
     }
-    
-    protected void addSignalEventSubscriptions(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, BpmnModel bpmnModel) {
-        if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
-            for (FlowElement element : process.getFlowElements()) {
-                if (element instanceof StartEvent) {
-                    StartEvent startEvent = (StartEvent) element;
-                    if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
-                        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
-                        if (eventDefinition instanceof SignalEventDefinition) {
-                            SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
-                            SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
-                            Signal signal = bpmnModel.getSignal(signalEventDefinition.getSignalRef());
-                            if (signal != null) {
-                                subscriptionEntity.setEventName(signal.getName());
-                            } else {
-                                subscriptionEntity.setEventName(signalEventDefinition.getSignalRef());
-                            }
-                            subscriptionEntity.setActivityId(startEvent.getId());
-                            subscriptionEntity.setProcessDefinitionId(processDefinition.getId());
-                            if (processDefinition.getTenantId() != null) {
-                                subscriptionEntity.setTenantId(processDefinition.getTenantId());
-                            }
-                            subscriptionEntity.insert();
-                        }
-                    }
-                }
-            }
+  }
+
+  enum ExprType {
+    USER, GROUP
+  }
+
+  private void addAuthorizationsFromIterator(Set<Expression> exprSet, ProcessDefinitionEntity processDefinition, ExprType exprType) {
+    if (exprSet != null) {
+      Iterator<Expression> iterator = exprSet.iterator();
+      while (iterator.hasNext()) {
+        Expression expr = (Expression) iterator.next();
+        IdentityLinkEntity identityLink = new IdentityLinkEntity();
+        identityLink.setProcessDef(processDefinition);
+        if (exprType.equals(ExprType.USER)) {
+          identityLink.setUserId(expr.toString());
+        } else if (exprType.equals(ExprType.GROUP)) {
+          identityLink.setGroupId(expr.toString());
         }
+        identityLink.setType(IdentityLinkType.CANDIDATE);
+        identityLink.insert();
+      }
     }
+  }
 
-    enum ExprType {
-        USER, GROUP
+  protected void addAuthorizations(ProcessDefinitionEntity processDefinition) {
+    addAuthorizationsFromIterator(processDefinition.getCandidateStarterUserIdExpressions(), processDefinition, ExprType.USER);
+    addAuthorizationsFromIterator(processDefinition.getCandidateStarterGroupIdExpressions(), processDefinition, ExprType.GROUP);
+  }
+
+  /**
+   * Returns the default name of the image resource for a certain process.
+   * 
+   * It will first look for an image resource which matches the process specifically, before resorting to an image resource which matches the BPMN 2.0 xml file resource.
+   * 
+   * Example: if the deployment contains a BPMN 2.0 xml resource called 'abc.bpmn20.xml' containing only one process with key 'myProcess', then this method will look for an image resources called
+   * 'abc.myProcess.png' (or .jpg, or .gif, etc.) or 'abc.png' if the previous one wasn't found.
+   * 
+   * Example 2: if the deployment contains a BPMN 2.0 xml resource called 'abc.bpmn20.xml' containing three processes (with keys a, b and c), then this method will first look for an image resource
+   * called 'abc.a.png' before looking for 'abc.png' (likewise for b and c). Note that if abc.a.png, abc.b.png and abc.c.png don't exist, all processes will have the same image: abc.png.
+   * 
+   * @return null if no matching image resource is found.
+   */
+  protected String getDiagramResourceForProcess(String bpmnFileResource, String processKey, Map<String, ResourceEntity> resources) {
+    for (String diagramSuffix : DIAGRAM_SUFFIXES) {
+      String diagramForBpmnFileResource = getBpmnFileImageResourceName(bpmnFileResource, diagramSuffix);
+      String processDiagramResource = getProcessImageResourceName(bpmnFileResource, processKey, diagramSuffix);
+      if (resources.containsKey(processDiagramResource)) {
+        return processDiagramResource;
+      } else if (resources.containsKey(diagramForBpmnFileResource)) {
+        return diagramForBpmnFileResource;
+      }
     }
+    return null;
+  }
 
-    private void addAuthorizationsFromIterator(Set<Expression> exprSet, ProcessDefinitionEntity processDefinition, ExprType exprType) {
-        if (exprSet != null) {
-            Iterator<Expression> iterator = exprSet.iterator();
-            while (iterator.hasNext()) {
-                Expression expr = (Expression) iterator.next();
-                IdentityLinkEntity identityLink = new IdentityLinkEntity();
-                identityLink.setProcessDef(processDefinition);
-                if (exprType.equals(ExprType.USER)) {
-                    identityLink.setUserId(expr.toString());
-                } else if (exprType.equals(ExprType.GROUP)) {
-                    identityLink.setGroupId(expr.toString());
-                }
-                identityLink.setType(IdentityLinkType.CANDIDATE);
-                identityLink.insert();
-            }
-        }
+  protected String getBpmnFileImageResourceName(String bpmnFileResource, String diagramSuffix) {
+    String bpmnFileResourceBase = stripBpmnFileSuffix(bpmnFileResource);
+    return bpmnFileResourceBase + diagramSuffix;
+  }
+
+  protected String getProcessImageResourceName(String bpmnFileResource, String processKey, String diagramSuffix) {
+    String bpmnFileResourceBase = stripBpmnFileSuffix(bpmnFileResource);
+    return bpmnFileResourceBase + processKey + "." + diagramSuffix;
+  }
+
+  protected String stripBpmnFileSuffix(String bpmnFileResource) {
+    for (String suffix : BPMN_RESOURCE_SUFFIXES) {
+      if (bpmnFileResource.endsWith(suffix)) {
+        return bpmnFileResource.substring(0, bpmnFileResource.length() - suffix.length());
+      }
     }
+    return bpmnFileResource;
+  }
 
-    protected void addAuthorizations(ProcessDefinitionEntity processDefinition) {
-        addAuthorizationsFromIterator(processDefinition.getCandidateStarterUserIdExpressions(), processDefinition, ExprType.USER);
-        addAuthorizationsFromIterator(processDefinition.getCandidateStarterGroupIdExpressions(), processDefinition, ExprType.GROUP);
+  protected void createResource(String name, byte[] bytes, DeploymentEntity deploymentEntity) {
+    ResourceEntity resource = new ResourceEntity();
+    resource.setName(name);
+    resource.setBytes(bytes);
+    resource.setDeploymentId(deploymentEntity.getId());
+
+    // Mark the resource as 'generated'
+    resource.setGenerated(true);
+
+    Context.getCommandContext().getDbSqlSession().insert(resource);
+  }
+
+  protected boolean isBpmnResource(String resourceName) {
+    for (String suffix : BPMN_RESOURCE_SUFFIXES) {
+      if (resourceName.endsWith(suffix)) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    /**
-     * Returns the default name of the image resource for a certain process.
-     * 
-     * It will first look for an image resource which matches the process
-     * specifically, before resorting to an image resource which matches the
-     * BPMN 2.0 xml file resource.
-     * 
-     * Example: if the deployment contains a BPMN 2.0 xml resource called
-     * 'abc.bpmn20.xml' containing only one process with key 'myProcess', then
-     * this method will look for an image resources called 'abc.myProcess.png'
-     * (or .jpg, or .gif, etc.) or 'abc.png' if the previous one wasn't found.
-     * 
-     * Example 2: if the deployment contains a BPMN 2.0 xml resource called
-     * 'abc.bpmn20.xml' containing three processes (with keys a, b and c), then
-     * this method will first look for an image resource called 'abc.a.png'
-     * before looking for 'abc.png' (likewise for b and c). Note that if
-     * abc.a.png, abc.b.png and abc.c.png don't exist, all processes will have
-     * the same image: abc.png.
-     * 
-     * @return null if no matching image resource is found.
-     */
-    protected String getDiagramResourceForProcess(String bpmnFileResource, String processKey, Map<String, ResourceEntity> resources) {
-        for (String diagramSuffix : DIAGRAM_SUFFIXES) {
-            String diagramForBpmnFileResource = getBpmnFileImageResourceName(bpmnFileResource, diagramSuffix);
-            String processDiagramResource = getProcessImageResourceName(bpmnFileResource, processKey, diagramSuffix);
-            if (resources.containsKey(processDiagramResource)) {
-                return processDiagramResource;
-            } else if (resources.containsKey(diagramForBpmnFileResource)) {
-                return diagramForBpmnFileResource;
-            }
-        }
-        return null;
-    }
+  public ExpressionManager getExpressionManager() {
+    return expressionManager;
+  }
 
-    protected String getBpmnFileImageResourceName(String bpmnFileResource, String diagramSuffix) {
-        String bpmnFileResourceBase = stripBpmnFileSuffix(bpmnFileResource);
-        return bpmnFileResourceBase + diagramSuffix;
-    }
+  public void setExpressionManager(ExpressionManager expressionManager) {
+    this.expressionManager = expressionManager;
+  }
 
-    protected String getProcessImageResourceName(String bpmnFileResource, String processKey, String diagramSuffix) {
-        String bpmnFileResourceBase = stripBpmnFileSuffix(bpmnFileResource);
-        return bpmnFileResourceBase + processKey + "." + diagramSuffix;
-    }
+  public BpmnParser getBpmnParser() {
+    return bpmnParser;
+  }
 
-    protected String stripBpmnFileSuffix(String bpmnFileResource) {
-        for (String suffix : BPMN_RESOURCE_SUFFIXES) {
-            if (bpmnFileResource.endsWith(suffix)) {
-                return bpmnFileResource.substring(0, bpmnFileResource.length() - suffix.length());
-            }
-        }
-        return bpmnFileResource;
-    }
+  public void setBpmnParser(BpmnParser bpmnParser) {
+    this.bpmnParser = bpmnParser;
+  }
 
-    protected void createResource(String name, byte[] bytes, DeploymentEntity deploymentEntity) {
-        ResourceEntity resource = new ResourceEntity();
-        resource.setName(name);
-        resource.setBytes(bytes);
-        resource.setDeploymentId(deploymentEntity.getId());
+  public IdGenerator getIdGenerator() {
+    return idGenerator;
+  }
 
-        // Mark the resource as 'generated'
-        resource.setGenerated(true);
-
-        Context.getCommandContext().getDbSqlSession().insert(resource);
-    }
-
-    protected boolean isBpmnResource(String resourceName) {
-        for (String suffix : BPMN_RESOURCE_SUFFIXES) {
-            if (resourceName.endsWith(suffix)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public ExpressionManager getExpressionManager() {
-        return expressionManager;
-    }
-
-    public void setExpressionManager(ExpressionManager expressionManager) {
-        this.expressionManager = expressionManager;
-    }
-
-    public BpmnParser getBpmnParser() {
-        return bpmnParser;
-    }
-
-    public void setBpmnParser(BpmnParser bpmnParser) {
-        this.bpmnParser = bpmnParser;
-    }
-
-    public IdGenerator getIdGenerator() {
-        return idGenerator;
-    }
-
-    public void setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-    }
+  public void setIdGenerator(IdGenerator idGenerator) {
+    this.idGenerator = idGenerator;
+  }
 
 }

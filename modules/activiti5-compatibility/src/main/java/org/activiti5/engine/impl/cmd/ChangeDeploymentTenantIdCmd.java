@@ -28,50 +28,50 @@ import org.activiti5.engine.repository.ProcessDefinition;
  */
 public class ChangeDeploymentTenantIdCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String deploymentId;
-    protected String newTenantId;
+  protected String deploymentId;
+  protected String newTenantId;
 
-    public ChangeDeploymentTenantIdCmd(String deploymentId, String newTenantId) {
-        this.deploymentId = deploymentId;
-        this.newTenantId = newTenantId;
+  public ChangeDeploymentTenantIdCmd(String deploymentId, String newTenantId) {
+    this.deploymentId = deploymentId;
+    this.newTenantId = newTenantId;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (deploymentId == null) {
+      throw new ActivitiIllegalArgumentException("deploymentId is null");
     }
 
-    public Void execute(CommandContext commandContext) {
-        if (deploymentId == null) {
-            throw new ActivitiIllegalArgumentException("deploymentId is null");
-        }
+    // Update all entities
 
-        // Update all entities
-
-        DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findDeploymentById(deploymentId);
-        if (deployment == null) {
-            throw new ActivitiObjectNotFoundException("Could not find deployment with id " + deploymentId, Deployment.class);
-        }
-        String oldTenantId = deployment.getTenantId();
-        deployment.setTenantId(newTenantId);
-
-        // Doing process instances, executions and tasks with direct SQL updates
-        // (otherwise would not be performant)
-        commandContext.getProcessDefinitionEntityManager().updateProcessDefinitionTenantIdForDeployment(deploymentId, newTenantId);
-        commandContext.getExecutionEntityManager().updateExecutionTenantIdForDeployment(deploymentId, newTenantId);
-        commandContext.getTaskEntityManager().updateTaskTenantIdForDeployment(deploymentId, newTenantId);
-        commandContext.getJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
-        commandContext.getEventSubscriptionEntityManager().updateEventSubscriptionTenantId(oldTenantId, newTenantId);
-
-        // Doing process definitions in memory, cause we need to clear the
-        // process definition cache
-        List<ProcessDefinition> processDefinitions = commandContext.getDbSqlSession().createProcessDefinitionQuery().deploymentId(deploymentId).list();
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().remove(processDefinition.getId());
-        }
-
-        // Clear process definition cache
-        commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().clear();
-
-        return null;
-
+    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findDeploymentById(deploymentId);
+    if (deployment == null) {
+      throw new ActivitiObjectNotFoundException("Could not find deployment with id " + deploymentId, Deployment.class);
     }
+    String oldTenantId = deployment.getTenantId();
+    deployment.setTenantId(newTenantId);
+
+    // Doing process instances, executions and tasks with direct SQL updates
+    // (otherwise would not be performant)
+    commandContext.getProcessDefinitionEntityManager().updateProcessDefinitionTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext.getExecutionEntityManager().updateExecutionTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext.getTaskEntityManager().updateTaskTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext.getJobEntityManager().updateJobTenantIdForDeployment(deploymentId, newTenantId);
+    commandContext.getEventSubscriptionEntityManager().updateEventSubscriptionTenantId(oldTenantId, newTenantId);
+
+    // Doing process definitions in memory, cause we need to clear the
+    // process definition cache
+    List<ProcessDefinition> processDefinitions = commandContext.getDbSqlSession().createProcessDefinitionQuery().deploymentId(deploymentId).list();
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().remove(processDefinition.getId());
+    }
+
+    // Clear process definition cache
+    commandContext.getProcessEngineConfiguration().getProcessDefinitionCache().clear();
+
+    return null;
+
+  }
 
 }

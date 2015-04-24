@@ -28,82 +28,82 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public class SignalEventDefinitionParseHandler extends AbstractBpmnParseHandler<SignalEventDefinition> {
 
-    public Class<? extends BaseElement> getHandledType() {
-        return SignalEventDefinition.class;
+  public Class<? extends BaseElement> getHandledType() {
+    return SignalEventDefinition.class;
+  }
+
+  protected void executeParse(BpmnParse bpmnParse, SignalEventDefinition signalDefinition) {
+
+    Signal signal = null;
+    if (bpmnParse.getBpmnModel().containsSignalId(signalDefinition.getSignalRef())) {
+      signal = bpmnParse.getBpmnModel().getSignal(signalDefinition.getSignalRef());
+      String signalName = signal.getName();
+      signalDefinition.setSignalRef(signalName);
     }
 
-    protected void executeParse(BpmnParse bpmnParse, SignalEventDefinition signalDefinition) {
+    if (signal == null) {
+      return;
+    }
 
-        Signal signal = null;
-        if (bpmnParse.getBpmnModel().containsSignalId(signalDefinition.getSignalRef())) {
-            signal = bpmnParse.getBpmnModel().getSignal(signalDefinition.getSignalRef());
-            String signalName = signal.getName();
-            signalDefinition.setSignalRef(signalName);
-        }
+    ActivityImpl activity = bpmnParse.getCurrentActivity();
+    if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
 
-        if (signal == null) {
-            return;
-        }
+      EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
+      eventSubscriptionDeclaration.setActivityId(activity.getId());
+      eventSubscriptionDeclaration.setStartEvent(true);
+      addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, bpmnParse.getCurrentScope());
 
-        ActivityImpl activity = bpmnParse.getCurrentActivity();
-        if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
+    } else if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
 
-            EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
-            eventSubscriptionDeclaration.setActivityId(activity.getId());
-            eventSubscriptionDeclaration.setStartEvent(true);
-            addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, bpmnParse.getCurrentScope());
+      activity.setProperty("type", "intermediateSignalCatch");
 
-        } else if (bpmnParse.getCurrentFlowElement() instanceof IntermediateCatchEvent) {
+      EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
 
-            activity.setProperty("type", "intermediateSignalCatch");
+      if (signal.getScope() != null) {
+        eventSubscriptionDeclaration.setConfiguration(signal.getScope());
+      }
 
-            EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
+      if (getPrecedingEventBasedGateway(bpmnParse, (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement()) != null) {
+        eventSubscriptionDeclaration.setActivityId(activity.getId());
+        addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, activity.getParent());
+      } else {
+        activity.setScope(true);
+        addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, activity);
+      }
 
-            if (signal.getScope() != null) {
-                eventSubscriptionDeclaration.setConfiguration(signal.getScope());
-            }
+    } else if (bpmnParse.getCurrentFlowElement() instanceof ThrowEvent) {
 
-            if (getPrecedingEventBasedGateway(bpmnParse, (IntermediateCatchEvent) bpmnParse.getCurrentFlowElement()) != null) {
-                eventSubscriptionDeclaration.setActivityId(activity.getId());
-                addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, activity.getParent());
-            } else {
-                activity.setScope(true);
-                addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, activity);
-            }
+      ThrowEvent throwEvent = (ThrowEvent) bpmnParse.getCurrentFlowElement();
 
-        } else if (bpmnParse.getCurrentFlowElement() instanceof ThrowEvent) {
+      activity.setProperty("type", "intermediateSignalThrow");
+      EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
+      eventSubscriptionDeclaration.setAsync(signalDefinition.isAsync());
 
-            ThrowEvent throwEvent = (ThrowEvent) bpmnParse.getCurrentFlowElement();
+      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowSignalEventActivityBehavior(throwEvent, signal, eventSubscriptionDeclaration));
 
-            activity.setProperty("type", "intermediateSignalThrow");
-            EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
-            eventSubscriptionDeclaration.setAsync(signalDefinition.isAsync());
+    } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
 
-            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowSignalEventActivityBehavior(throwEvent, signal, eventSubscriptionDeclaration));
+      BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
+      boolean interrupting = boundaryEvent.isCancelActivity();
+      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
 
-        } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
+      activity.setProperty("type", "boundarySignal");
 
-            BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-            boolean interrupting = boundaryEvent.isCancelActivity();
-            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
+      EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
+      eventSubscriptionDeclaration.setActivityId(activity.getId());
 
-            activity.setProperty("type", "boundarySignal");
+      if (signal.getScope() != null) {
+        eventSubscriptionDeclaration.setConfiguration(signal.getScope());
+      }
 
-            EventSubscriptionDeclaration eventSubscriptionDeclaration = new EventSubscriptionDeclaration(signalDefinition.getSignalRef(), "signal");
-            eventSubscriptionDeclaration.setActivityId(activity.getId());
+      addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, activity.getParent());
 
-            if (signal.getScope() != null) {
-                eventSubscriptionDeclaration.setConfiguration(signal.getScope());
-            }
-
-            addEventSubscriptionDeclaration(bpmnParse, eventSubscriptionDeclaration, signalDefinition, activity.getParent());
-
-            if (activity.getParent() instanceof ActivityImpl) {
-                ((ActivityImpl) activity.getParent()).setScope(true);
-            }
-
-        }
+      if (activity.getParent() instanceof ActivityImpl) {
+        ((ActivityImpl) activity.getParent()).setScope(true);
+      }
 
     }
+
+  }
 
 }

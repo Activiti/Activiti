@@ -19,22 +19,22 @@ import org.activiti.explorer.ui.mainlayout.MainMenuBar;
  */
 public class AlfrescoMainMenuBar extends MainMenuBar {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    protected void initButtons() {
-        // In Alfresco admin console, only mgmt should be accessible
-        // so there is no point in offering any buttons
-    }
+  @Override
+  protected void initButtons() {
+    // In Alfresco admin console, only mgmt should be accessible
+    // so there is no point in offering any buttons
+  }
 
-    @Override
-    public synchronized void setMainNavigation(String navigation) {
-        // Not needed since there are no buttons in the menu
-    }
+  @Override
+  public synchronized void setMainNavigation(String navigation) {
+    // Not needed since there are no buttons in the menu
+  }
 
-    @Override
-    protected boolean useProfile() {
-        // Only show logout button, profile is not used in alfresco
-        return false;
-    }
+  @Override
+  protected boolean useProfile() {
+    // Only show logout button, profile is not used in alfresco
+    return false;
+  }
 }

@@ -20,19 +20,19 @@ import org.activiti5.engine.impl.pvm.process.ScopeImpl;
  */
 public class AtomicOperationActivityStart extends AbstractEventAtomicOperation {
 
-    @Override
-    protected void eventNotificationsCompleted(InterpretableExecution execution) {
-        execution.performOperation(AtomicOperation.ACTIVITY_EXECUTE);
-    }
+  @Override
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
+    execution.performOperation(AtomicOperation.ACTIVITY_EXECUTE);
+  }
 
-    @Override
-    protected String getEventName() {
-        return org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START;
-    }
+  @Override
+  protected String getEventName() {
+    return org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START;
+  }
 
-    @Override
-    protected ScopeImpl getScope(InterpretableExecution execution) {
-        return (ScopeImpl) execution.getActivity();
-    }
+  @Override
+  protected ScopeImpl getScope(InterpretableExecution execution) {
+    return (ScopeImpl) execution.getActivity();
+  }
 
 }

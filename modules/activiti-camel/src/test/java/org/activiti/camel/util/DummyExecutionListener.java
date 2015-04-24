@@ -11,10 +11,10 @@ import org.activiti.engine.delegate.ExecutionListener;
  */
 public class DummyExecutionListener implements ExecutionListener {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    public void notify(DelegateExecution execution) {
-        // dummy
-    }
+  @Override
+  public void notify(DelegateExecution execution) {
+    // dummy
+  }
 }

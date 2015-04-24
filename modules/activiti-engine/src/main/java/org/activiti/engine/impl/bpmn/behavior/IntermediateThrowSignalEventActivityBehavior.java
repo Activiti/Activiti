@@ -28,44 +28,42 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
-    private static final long serialVersionUID = -2961893934810190972L;
+  private static final long serialVersionUID = -2961893934810190972L;
 
-    protected final SignalEventDefinition signalEventDefinition;
-    protected String signalEventName;
-    protected boolean processInstanceScope;
+  protected final SignalEventDefinition signalEventDefinition;
+  protected String signalEventName;
+  protected boolean processInstanceScope;
 
-    public IntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, SignalEventDefinition signalEventDefinition, Signal signal) {
-        if (signal != null) {
-            signalEventName = signal.getName();
-            if (Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope())) {
-                this.processInstanceScope = true;
-            }
-        } else {
-            signalEventName = signalEventDefinition.getSignalRef();
-        }
-        this.signalEventDefinition = signalEventDefinition;
+  public IntermediateThrowSignalEventActivityBehavior(ThrowEvent throwEvent, SignalEventDefinition signalEventDefinition, Signal signal) {
+    if (signal != null) {
+      signalEventName = signal.getName();
+      if (Signal.SCOPE_PROCESS_INSTANCE.equals(signal.getScope())) {
+        this.processInstanceScope = true;
+      }
+    } else {
+      signalEventName = signalEventDefinition.getSignalRef();
+    }
+    this.signalEventDefinition = signalEventDefinition;
+  }
+
+  public void execute(ActivityExecution execution) {
+
+    CommandContext commandContext = Context.getCommandContext();
+
+    List<SignalEventSubscriptionEntity> subscriptionEntities = null;
+    if (processInstanceScope) {
+      subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByProcessInstanceAndEventName(execution.getProcessInstanceId(), signalEventName);
+    } else {
+      subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByEventName(signalEventName, execution.getTenantId());
     }
 
-    public void execute(ActivityExecution execution) {
-
-        CommandContext commandContext = Context.getCommandContext();
-
-        List<SignalEventSubscriptionEntity> subscriptionEntities = null;
-        if (processInstanceScope) {
-            subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByProcessInstanceAndEventName(
-                    execution.getProcessInstanceId(), signalEventName);
-        } else {
-            subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findSignalEventSubscriptionsByEventName(
-                    signalEventName, execution.getTenantId());
-        }
-
-        for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
-            signalEventSubscriptionEntity.eventReceived(null, signalEventDefinition.isAsync());
-        }
-
-        if (execution.getCurrentActivityId() != null) { // don't continue if process has already finished
-            leave(execution);
-        }
+    for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
+      signalEventSubscriptionEntity.eventReceived(null, signalEventDefinition.isAsync());
     }
+
+    if (execution.getCurrentActivityId() != null) { // don't continue if process has already finished
+      leave(execution);
+    }
+  }
 
 }

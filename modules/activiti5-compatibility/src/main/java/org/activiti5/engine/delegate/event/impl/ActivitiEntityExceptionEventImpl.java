@@ -19,32 +19,31 @@ import org.activiti5.engine.delegate.event.ActivitiEventType;
 import org.activiti5.engine.delegate.event.ActivitiExceptionEvent;
 
 /**
- * Base class for all {@link ActivitiEvent} implementations, represents an
- * exception occured, related to an entity.
+ * Base class for all {@link ActivitiEvent} implementations, represents an exception occured, related to an entity.
  * 
  * @author Frederik Heremans
  */
 public class ActivitiEntityExceptionEventImpl extends ActivitiEventImpl implements ActivitiEntityEvent, ActivitiExceptionEvent {
 
-    protected Object entity;
-    protected Throwable cause;
+  protected Object entity;
+  protected Throwable cause;
 
-    public ActivitiEntityExceptionEventImpl(Object entity, ActivitiEventType type, Throwable cause) {
-        super(type);
-        if (entity == null) {
-            throw new ActivitiIllegalArgumentException("Entity cannot be null.");
-        }
-        this.entity = entity;
-        this.cause = cause;
+  public ActivitiEntityExceptionEventImpl(Object entity, ActivitiEventType type, Throwable cause) {
+    super(type);
+    if (entity == null) {
+      throw new ActivitiIllegalArgumentException("Entity cannot be null.");
     }
+    this.entity = entity;
+    this.cause = cause;
+  }
 
-    @Override
-    public Object getEntity() {
-        return entity;
-    }
+  @Override
+  public Object getEntity() {
+    return entity;
+  }
 
-    @Override
-    public Throwable getCause() {
-        return cause;
-    }
+  @Override
+  public Throwable getCause() {
+    return cause;
+  }
 }

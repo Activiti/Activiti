@@ -13,43 +13,43 @@ import org.junit.Test;
 
 public class CatchEventConverterTest extends AbstractConverterTest {
 
-    @Test
-    public void connvertJsonToModel() throws Exception {
-        BpmnModel bpmnModel = readJsonFile();
-        validateModel(bpmnModel);
-    }
+  @Test
+  public void connvertJsonToModel() throws Exception {
+    BpmnModel bpmnModel = readJsonFile();
+    validateModel(bpmnModel);
+  }
 
-    @Test
-    public void doubleConversionValidation() throws Exception {
-        BpmnModel bpmnModel = readJsonFile();
-        bpmnModel = convertToJsonAndBack(bpmnModel);
-        validateModel(bpmnModel);
-    }
+  @Test
+  public void doubleConversionValidation() throws Exception {
+    BpmnModel bpmnModel = readJsonFile();
+    bpmnModel = convertToJsonAndBack(bpmnModel);
+    validateModel(bpmnModel);
+  }
 
-    protected String getResource() {
-        return "test.catcheventmodel.json";
-    }
+  protected String getResource() {
+    return "test.catcheventmodel.json";
+  }
 
-    private void validateModel(BpmnModel model) {
+  private void validateModel(BpmnModel model) {
 
-        FlowElement timerElement = model.getMainProcess().getFlowElement("timer_evt");
-        EventDefinition timerEvent = extractEventDefinition(timerElement);
-        assertTrue(timerEvent instanceof TimerEventDefinition);
-        TimerEventDefinition ted = (TimerEventDefinition) timerEvent;
-        assertEquals("PT5M", ted.getTimeDuration());
+    FlowElement timerElement = model.getMainProcess().getFlowElement("timer_evt");
+    EventDefinition timerEvent = extractEventDefinition(timerElement);
+    assertTrue(timerEvent instanceof TimerEventDefinition);
+    TimerEventDefinition ted = (TimerEventDefinition) timerEvent;
+    assertEquals("PT5M", ted.getTimeDuration());
 
-        FlowElement signalElement = model.getMainProcess().getFlowElement("signal_evt");
-        EventDefinition signalEvent = extractEventDefinition(signalElement);
-        assertTrue(signalEvent instanceof SignalEventDefinition);
-        SignalEventDefinition sed = (SignalEventDefinition) signalEvent;
-        assertEquals("signal_ref", sed.getSignalRef());
+    FlowElement signalElement = model.getMainProcess().getFlowElement("signal_evt");
+    EventDefinition signalEvent = extractEventDefinition(signalElement);
+    assertTrue(signalEvent instanceof SignalEventDefinition);
+    SignalEventDefinition sed = (SignalEventDefinition) signalEvent;
+    assertEquals("signal_ref", sed.getSignalRef());
 
-        FlowElement messageElement = model.getMainProcess().getFlowElement("message_evt");
-        EventDefinition messageEvent = extractEventDefinition(messageElement);
-        assertTrue(messageEvent instanceof MessageEventDefinition);
-        MessageEventDefinition med = (MessageEventDefinition) messageEvent;
-        assertEquals("message_ref", med.getMessageRef());
+    FlowElement messageElement = model.getMainProcess().getFlowElement("message_evt");
+    EventDefinition messageEvent = extractEventDefinition(messageElement);
+    assertTrue(messageEvent instanceof MessageEventDefinition);
+    MessageEventDefinition med = (MessageEventDefinition) messageEvent;
+    assertEquals("message_ref", med.getMessageRef());
 
-    }
+  }
 
 }

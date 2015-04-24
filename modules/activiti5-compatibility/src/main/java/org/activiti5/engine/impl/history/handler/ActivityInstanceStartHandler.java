@@ -21,12 +21,11 @@ import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * @author Tom Baeyens
  * 
- *         BE AWARE: For Start Events this is done in the
- *         ProcessDefinitionEntity!
+ *         BE AWARE: For Start Events this is done in the ProcessDefinitionEntity!
  */
 public class ActivityInstanceStartHandler implements ExecutionListener {
 
-    public void notify(DelegateExecution execution) {
-        Context.getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
-    }
+  public void notify(DelegateExecution execution) {
+    Context.getCommandContext().getHistoryManager().recordActivityStart((ExecutionEntity) execution);
+  }
 }

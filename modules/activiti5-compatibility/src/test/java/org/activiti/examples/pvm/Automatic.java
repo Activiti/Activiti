@@ -21,8 +21,8 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class Automatic implements ActivityBehavior {
 
-    public void execute(ActivityExecution activityContext) throws Exception {
-        PvmTransition defaultOutgoingTransition = activityContext.getActivity().getOutgoingTransitions().get(0);
-        activityContext.take(defaultOutgoingTransition);
-    }
+  public void execute(ActivityExecution activityContext) throws Exception {
+    PvmTransition defaultOutgoingTransition = activityContext.getActivity().getOutgoingTransitions().get(0);
+    activityContext.take(defaultOutgoingTransition);
+  }
 }

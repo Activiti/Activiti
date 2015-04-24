@@ -36,46 +36,46 @@ import com.vaadin.ui.Button.ClickListener;
  */
 public class RemoveInvolvedPersonListener implements ClickListener {
 
-    private static final long serialVersionUID = 1L;
-    protected IdentityLink identityLink;
-    protected Task task;
-    protected TaskDetailPanel taskDetailPanel;
+  private static final long serialVersionUID = 1L;
+  protected IdentityLink identityLink;
+  protected Task task;
+  protected TaskDetailPanel taskDetailPanel;
 
-    protected I18nManager i18nManager;
-    protected ViewManager viewManager;
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
 
-    protected transient IdentityService identityService;
-    protected transient TaskService taskService;
+  protected transient IdentityService identityService;
+  protected transient TaskService taskService;
 
-    public RemoveInvolvedPersonListener(IdentityLink identityLink, Task task, TaskDetailPanel taskDetailPanel) {
-        this.identityLink = identityLink;
-        this.task = task;
-        this.taskDetailPanel = taskDetailPanel;
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-        this.viewManager = ExplorerApp.get().getViewManager();
-        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-        this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-    }
+  public RemoveInvolvedPersonListener(IdentityLink identityLink, Task task, TaskDetailPanel taskDetailPanel) {
+    this.identityLink = identityLink;
+    this.task = task;
+    this.taskDetailPanel = taskDetailPanel;
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+  }
 
-    public void buttonClick(ClickEvent event) {
-        User user = identityService.createUserQuery().userId(identityLink.getUserId()).singleResult();
-        String name = user.getFirstName() + " " + user.getLastName();
+  public void buttonClick(ClickEvent event) {
+    User user = identityService.createUserQuery().userId(identityLink.getUserId()).singleResult();
+    String name = user.getFirstName() + " " + user.getLastName();
 
-        ConfirmationDialogPopupWindow confirmationPopup = new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.TASK_INVOLVED_REMOVE_CONFIRMATION_TITLE, name), i18nManager.getMessage(
-                Messages.TASK_INVOLVED_REMOVE_CONFIRMATION_DESCRIPTION, name, task.getName()));
+    ConfirmationDialogPopupWindow confirmationPopup = new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.TASK_INVOLVED_REMOVE_CONFIRMATION_TITLE, name), i18nManager.getMessage(
+        Messages.TASK_INVOLVED_REMOVE_CONFIRMATION_DESCRIPTION, name, task.getName()));
 
-        confirmationPopup.addListener(new ConfirmationEventListener() {
-            private static final long serialVersionUID = 1L;
+    confirmationPopup.addListener(new ConfirmationEventListener() {
+      private static final long serialVersionUID = 1L;
 
-            protected void rejected(ConfirmationEvent event) {
-            }
+      protected void rejected(ConfirmationEvent event) {
+      }
 
-            protected void confirmed(ConfirmationEvent event) {
-                taskService.deleteUserIdentityLink(identityLink.getTaskId(), identityLink.getUserId(), identityLink.getType());
-                taskDetailPanel.notifyPeopleInvolvedChanged();
-            }
-        });
-        viewManager.showPopupWindow(confirmationPopup);
-    }
+      protected void confirmed(ConfirmationEvent event) {
+        taskService.deleteUserIdentityLink(identityLink.getTaskId(), identityLink.getUserId(), identityLink.getType());
+        taskDetailPanel.notifyPeopleInvolvedChanged();
+      }
+    });
+    viewManager.showPopupWindow(confirmationPopup);
+  }
 
 }

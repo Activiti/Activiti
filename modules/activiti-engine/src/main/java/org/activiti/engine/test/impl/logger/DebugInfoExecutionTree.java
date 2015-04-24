@@ -17,108 +17,118 @@ import java.util.List;
 
 import org.slf4j.Logger;
 
-
 /**
  * @author jbarrez
  */
 public class DebugInfoExecutionTree {
-	
-	protected DebugInfoExecutionTreeNode processInstance;
-	
-	public DebugInfoExecutionTreeNode getProcessInstance() {
-		return processInstance;
-	}
 
-	public void setProcessInstance(DebugInfoExecutionTreeNode processInstance) {
-		this.processInstance = processInstance;
-	}
+  protected DebugInfoExecutionTreeNode processInstance;
 
-	public static class DebugInfoExecutionTreeNode {
-		
-		protected String id;
-		protected String processDefinitionId;
-		protected String activityId;
-		protected String activityName;
-		protected DebugInfoExecutionTreeNode parentNode;
-		protected List<DebugInfoExecutionTreeNode> childNodes = new ArrayList<DebugInfoExecutionTreeNode>();
+  public DebugInfoExecutionTreeNode getProcessInstance() {
+    return processInstance;
+  }
 
-		/* See http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram */
-		public void print(Logger logger) {
-			logger.info("");
-			logger.info(id);
-			for (DebugInfoExecutionTreeNode childNode : childNodes) {
-				childNode.print(logger, "", true);
-			}
-			logger.info("");
-		}
+  public void setProcessInstance(DebugInfoExecutionTreeNode processInstance) {
+    this.processInstance = processInstance;
+  }
 
-		protected void print(Logger logger, String prefix, boolean isTail) {
-			logger.info(prefix + (isTail ? "└── " : "├── ") + getCurrentFlowElementInfo()); 
-			for (int i = 0; i < childNodes.size() - 1; i++) {
-				childNodes.get(i).print(logger, prefix + (isTail ? "    " : "│   "), false);
-			}
-			if (childNodes.size() > 0) {
-				childNodes.get(childNodes.size() - 1).print(logger, prefix + (isTail ? "    " : "│   "), true);
-			}
-		}
-		
-		protected String getCurrentFlowElementInfo() {
-			StringBuilder strb = new StringBuilder();
-			strb.append(id);
-			
-			if (activityId != null || activityName != null) {
-				strb.append(" in flow element ");
-				
-				if (activityId != null) {
-					strb.append("'" + activityId + "'");
-				}
-				
-				if (activityName != null) {
-					strb.append(" with name " + activityName);
-				}
-					 
-			}
-			
-			return strb.toString();
-		}
+  public static class DebugInfoExecutionTreeNode {
 
-		public String getId() {
-			return id;
-		}
-		public void setId(String id) {
-			this.id = id;
-		}
-		public String getProcessDefinitionId() {
-			return processDefinitionId;
-		}
-		public void setProcessDefinitionId(String processDefinitionId) {
-			this.processDefinitionId = processDefinitionId;
-		}
-		public String getActivityId() {
-			return activityId;
-		}
-		public void setActivityId(String activityId) {
-			this.activityId = activityId;
-		}
-		public String getActivityName() {
-			return activityName;
-		}
-		public void setActivityName(String activityName) {
-			this.activityName = activityName;
-		}
-		public DebugInfoExecutionTreeNode getParentNode() {
-			return parentNode;
-		}
-		public void setParentNode(DebugInfoExecutionTreeNode parentNode) {
-			this.parentNode = parentNode;
-		}
-		public List<DebugInfoExecutionTreeNode> getChildNodes() {
-			return childNodes;
-		}
-		public void setChildNodes(List<DebugInfoExecutionTreeNode> childNodes) {
-			this.childNodes = childNodes;
-		}
-		
-	}
+    protected String id;
+    protected String processDefinitionId;
+    protected String activityId;
+    protected String activityName;
+    protected DebugInfoExecutionTreeNode parentNode;
+    protected List<DebugInfoExecutionTreeNode> childNodes = new ArrayList<DebugInfoExecutionTreeNode>();
+
+    /* See http://stackoverflow.com/questions/4965335/how-to-print-binary-tree-diagram */
+    public void print(Logger logger) {
+      logger.info("");
+      logger.info(id);
+      for (DebugInfoExecutionTreeNode childNode : childNodes) {
+        childNode.print(logger, "", true);
+      }
+      logger.info("");
+    }
+
+    protected void print(Logger logger, String prefix, boolean isTail) {
+      logger.info(prefix + (isTail ? "└── " : "├── ") + getCurrentFlowElementInfo());
+      for (int i = 0; i < childNodes.size() - 1; i++) {
+        childNodes.get(i).print(logger, prefix + (isTail ? "    " : "│   "), false);
+      }
+      if (childNodes.size() > 0) {
+        childNodes.get(childNodes.size() - 1).print(logger, prefix + (isTail ? "    " : "│   "), true);
+      }
+    }
+
+    protected String getCurrentFlowElementInfo() {
+      StringBuilder strb = new StringBuilder();
+      strb.append(id);
+
+      if (activityId != null || activityName != null) {
+        strb.append(" in flow element ");
+
+        if (activityId != null) {
+          strb.append("'" + activityId + "'");
+        }
+
+        if (activityName != null) {
+          strb.append(" with name " + activityName);
+        }
+
+      }
+
+      return strb.toString();
+    }
+
+    public String getId() {
+      return id;
+    }
+
+    public void setId(String id) {
+      this.id = id;
+    }
+
+    public String getProcessDefinitionId() {
+      return processDefinitionId;
+    }
+
+    public void setProcessDefinitionId(String processDefinitionId) {
+      this.processDefinitionId = processDefinitionId;
+    }
+
+    public String getActivityId() {
+      return activityId;
+    }
+
+    public void setActivityId(String activityId) {
+      this.activityId = activityId;
+    }
+
+    public String getActivityName() {
+      return activityName;
+    }
+
+    public void setActivityName(String activityName) {
+      this.activityName = activityName;
+    }
+
+    public DebugInfoExecutionTreeNode getParentNode() {
+      return parentNode;
+    }
+
+    public void setParentNode(DebugInfoExecutionTreeNode parentNode) {
+      this.parentNode = parentNode;
+    }
+
+    public List<DebugInfoExecutionTreeNode> getChildNodes() {
+      return childNodes;
+    }
+
+    public void setChildNodes(List<DebugInfoExecutionTreeNode> childNodes) {
+      this.childNodes = childNodes;
+    }
+
+  }
 
 }

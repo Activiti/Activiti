@@ -31,165 +31,165 @@ import org.activiti5.engine.impl.variable.JPAEntityVariableType;
  */
 public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, HistoricDetail> implements HistoricDetailQuery {
 
-    private static final long serialVersionUID = 1L;
-    protected String id;
-    protected String taskId;
-    protected String processInstanceId;
-    protected String executionId;
-    protected String activityId;
-    protected String activityInstanceId;
-    protected String type;
-    protected boolean excludeTaskRelated = false;
+  private static final long serialVersionUID = 1L;
+  protected String id;
+  protected String taskId;
+  protected String processInstanceId;
+  protected String executionId;
+  protected String activityId;
+  protected String activityInstanceId;
+  protected String type;
+  protected boolean excludeTaskRelated = false;
 
-    public HistoricDetailQueryImpl() {
-    }
+  public HistoricDetailQueryImpl() {
+  }
 
-    public HistoricDetailQueryImpl(CommandContext commandContext) {
-        super(commandContext);
-    }
+  public HistoricDetailQueryImpl(CommandContext commandContext) {
+    super(commandContext);
+  }
 
-    public HistoricDetailQueryImpl(CommandExecutor commandExecutor) {
-        super(commandExecutor);
-    }
+  public HistoricDetailQueryImpl(CommandExecutor commandExecutor) {
+    super(commandExecutor);
+  }
 
-    public HistoricDetailQueryImpl id(String id) {
-        this.id = id;
-        return this;
-    }
+  public HistoricDetailQueryImpl id(String id) {
+    this.id = id;
+    return this;
+  }
 
-    public HistoricDetailQueryImpl processInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-        return this;
-    }
+  public HistoricDetailQueryImpl processInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+    return this;
+  }
 
-    public HistoricDetailQueryImpl executionId(String executionId) {
-        this.executionId = executionId;
-        return this;
-    }
+  public HistoricDetailQueryImpl executionId(String executionId) {
+    this.executionId = executionId;
+    return this;
+  }
 
-    public HistoricDetailQueryImpl activityId(String activityId) {
-        this.activityId = activityId;
-        return this;
-    }
+  public HistoricDetailQueryImpl activityId(String activityId) {
+    this.activityId = activityId;
+    return this;
+  }
 
-    public HistoricDetailQueryImpl activityInstanceId(String activityInstanceId) {
-        this.activityInstanceId = activityInstanceId;
-        return this;
-    }
+  public HistoricDetailQueryImpl activityInstanceId(String activityInstanceId) {
+    this.activityInstanceId = activityInstanceId;
+    return this;
+  }
 
-    public HistoricDetailQueryImpl taskId(String taskId) {
-        this.taskId = taskId;
-        return this;
-    }
+  public HistoricDetailQueryImpl taskId(String taskId) {
+    this.taskId = taskId;
+    return this;
+  }
 
-    public HistoricDetailQueryImpl formProperties() {
-        this.type = "FormProperty";
-        return this;
-    }
+  public HistoricDetailQueryImpl formProperties() {
+    this.type = "FormProperty";
+    return this;
+  }
 
-    public HistoricDetailQueryImpl variableUpdates() {
-        this.type = "VariableUpdate";
-        return this;
-    }
+  public HistoricDetailQueryImpl variableUpdates() {
+    this.type = "VariableUpdate";
+    return this;
+  }
 
-    public HistoricDetailQueryImpl excludeTaskDetails() {
-        this.excludeTaskRelated = true;
-        return this;
-    }
+  public HistoricDetailQueryImpl excludeTaskDetails() {
+    this.excludeTaskRelated = true;
+    return this;
+  }
 
-    public long executeCount(CommandContext commandContext) {
-        checkQueryOk();
-        return commandContext.getHistoricDetailEntityManager().findHistoricDetailCountByQueryCriteria(this);
-    }
+  public long executeCount(CommandContext commandContext) {
+    checkQueryOk();
+    return commandContext.getHistoricDetailEntityManager().findHistoricDetailCountByQueryCriteria(this);
+  }
 
-    public List<HistoricDetail> executeList(CommandContext commandContext, Page page) {
-        checkQueryOk();
-        List<HistoricDetail> historicDetails = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(this, page);
+  public List<HistoricDetail> executeList(CommandContext commandContext, Page page) {
+    checkQueryOk();
+    List<HistoricDetail> historicDetails = commandContext.getHistoricDetailEntityManager().findHistoricDetailsByQueryCriteria(this, page);
 
-        HistoricDetailVariableInstanceUpdateEntity varUpdate = null;
-        if (historicDetails != null) {
-            for (HistoricDetail historicDetail : historicDetails) {
-                if (historicDetail instanceof HistoricDetailVariableInstanceUpdateEntity) {
-                    varUpdate = (HistoricDetailVariableInstanceUpdateEntity) historicDetail;
+    HistoricDetailVariableInstanceUpdateEntity varUpdate = null;
+    if (historicDetails != null) {
+      for (HistoricDetail historicDetail : historicDetails) {
+        if (historicDetail instanceof HistoricDetailVariableInstanceUpdateEntity) {
+          varUpdate = (HistoricDetailVariableInstanceUpdateEntity) historicDetail;
 
-                    // Touch byte-array to ensure initialized inside context
-                    // TODO there should be a generic way to initialize variable
-                    // values
-                    varUpdate.getBytes();
+          // Touch byte-array to ensure initialized inside context
+          // TODO there should be a generic way to initialize variable
+          // values
+          varUpdate.getBytes();
 
-                    // ACT-863: EntityManagerFactorySession instance needed for
-                    // fetching value, touch while inside context to store
-                    // cached value
-                    if (varUpdate.getVariableType() instanceof JPAEntityVariableType) {
-                        // Use HistoricJPAEntityVariableType to force caching of
-                        // value to return from query
-                        varUpdate.setVariableType(HistoricJPAEntityVariableType.getSharedInstance());
-                        varUpdate.getValue();
-                    } else if (varUpdate.getVariableType() instanceof JPAEntityListVariableType) {
-                        // Use HistoricJPAEntityListVariableType to force
-                        // caching of list to return from query
-                        varUpdate.setVariableType(HistoricJPAEntityListVariableType.getSharedInstance());
-                        varUpdate.getValue();
-                    }
-                }
-            }
+          // ACT-863: EntityManagerFactorySession instance needed for
+          // fetching value, touch while inside context to store
+          // cached value
+          if (varUpdate.getVariableType() instanceof JPAEntityVariableType) {
+            // Use HistoricJPAEntityVariableType to force caching of
+            // value to return from query
+            varUpdate.setVariableType(HistoricJPAEntityVariableType.getSharedInstance());
+            varUpdate.getValue();
+          } else if (varUpdate.getVariableType() instanceof JPAEntityListVariableType) {
+            // Use HistoricJPAEntityListVariableType to force
+            // caching of list to return from query
+            varUpdate.setVariableType(HistoricJPAEntityListVariableType.getSharedInstance());
+            varUpdate.getValue();
+          }
         }
-        return historicDetails;
+      }
     }
+    return historicDetails;
+  }
 
-    // order by
-    // /////////////////////////////////////////////////////////////////
+  // order by
+  // /////////////////////////////////////////////////////////////////
 
-    public HistoricDetailQueryImpl orderByProcessInstanceId() {
-        orderBy(HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
-        return this;
-    }
+  public HistoricDetailQueryImpl orderByProcessInstanceId() {
+    orderBy(HistoricDetailQueryProperty.PROCESS_INSTANCE_ID);
+    return this;
+  }
 
-    public HistoricDetailQueryImpl orderByTime() {
-        orderBy(HistoricDetailQueryProperty.TIME);
-        return this;
-    }
+  public HistoricDetailQueryImpl orderByTime() {
+    orderBy(HistoricDetailQueryProperty.TIME);
+    return this;
+  }
 
-    public HistoricDetailQueryImpl orderByVariableName() {
-        orderBy(HistoricDetailQueryProperty.VARIABLE_NAME);
-        return this;
-    }
+  public HistoricDetailQueryImpl orderByVariableName() {
+    orderBy(HistoricDetailQueryProperty.VARIABLE_NAME);
+    return this;
+  }
 
-    public HistoricDetailQueryImpl orderByFormPropertyId() {
-        orderBy(HistoricDetailQueryProperty.VARIABLE_NAME);
-        return this;
-    }
+  public HistoricDetailQueryImpl orderByFormPropertyId() {
+    orderBy(HistoricDetailQueryProperty.VARIABLE_NAME);
+    return this;
+  }
 
-    public HistoricDetailQueryImpl orderByVariableRevision() {
-        orderBy(HistoricDetailQueryProperty.VARIABLE_REVISION);
-        return this;
-    }
+  public HistoricDetailQueryImpl orderByVariableRevision() {
+    orderBy(HistoricDetailQueryProperty.VARIABLE_REVISION);
+    return this;
+  }
 
-    public HistoricDetailQueryImpl orderByVariableType() {
-        orderBy(HistoricDetailQueryProperty.VARIABLE_TYPE);
-        return this;
-    }
+  public HistoricDetailQueryImpl orderByVariableType() {
+    orderBy(HistoricDetailQueryProperty.VARIABLE_TYPE);
+    return this;
+  }
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public String getTaskId() {
-        return taskId;
-    }
+  public String getTaskId() {
+    return taskId;
+  }
 
-    public String getActivityId() {
-        return activityId;
-    }
+  public String getActivityId() {
+    return activityId;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public boolean getExcludeTaskRelated() {
-        return excludeTaskRelated;
-    }
+  public boolean getExcludeTaskRelated() {
+    return excludeTaskRelated;
+  }
 }

@@ -41,34 +41,34 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProcessInstanceDiagramResource extends BaseProcessInstanceResource {
 
-    @Autowired
-    protected RepositoryService repositoryService;
+  @Autowired
+  protected RepositoryService repositoryService;
 
-    @Autowired
-    protected ProcessEngineConfiguration processEngineConfiguration;
+  @Autowired
+  protected ProcessEngineConfiguration processEngineConfiguration;
 
-    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/diagram", method = RequestMethod.GET)
-    public ResponseEntity<byte[]> getProcessInstanceDiagram(@PathVariable String processInstanceId, HttpServletResponse response) {
-        ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
+  @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/diagram", method = RequestMethod.GET)
+  public ResponseEntity<byte[]> getProcessInstanceDiagram(@PathVariable String processInstanceId, HttpServletResponse response) {
+    ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
 
-        ProcessDefinition pde = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+    ProcessDefinition pde = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
 
-        if (pde != null && pde.hasGraphicalNotation()) {
-            BpmnModel bpmnModel = repositoryService.getBpmnModel(pde.getId());
-            ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
-            InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()), Collections.<String> emptyList(),
-                    processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader(), 1.0);
+    if (pde != null && pde.hasGraphicalNotation()) {
+      BpmnModel bpmnModel = repositoryService.getBpmnModel(pde.getId());
+      ProcessDiagramGenerator diagramGenerator = processEngineConfiguration.getProcessDiagramGenerator();
+      InputStream resource = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()), Collections.<String> emptyList(),
+          processEngineConfiguration.getActivityFontName(), processEngineConfiguration.getLabelFontName(), processEngineConfiguration.getClassLoader(), 1.0);
 
-            HttpHeaders responseHeaders = new HttpHeaders();
-            responseHeaders.set("Content-Type", "image/png");
-            try {
-                return new ResponseEntity<byte[]>(IOUtils.toByteArray(resource), responseHeaders, HttpStatus.OK);
-            } catch (Exception e) {
-                throw new ActivitiIllegalArgumentException("Error exporting diagram", e);
-            }
+      HttpHeaders responseHeaders = new HttpHeaders();
+      responseHeaders.set("Content-Type", "image/png");
+      try {
+        return new ResponseEntity<byte[]>(IOUtils.toByteArray(resource), responseHeaders, HttpStatus.OK);
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Error exporting diagram", e);
+      }
 
-        } else {
-            throw new ActivitiIllegalArgumentException("Process instance with id '" + processInstance.getId() + "' has no graphical notation defined.");
-        }
+    } else {
+      throw new ActivitiIllegalArgumentException("Process instance with id '" + processInstance.getId() + "' has no graphical notation defined.");
     }
+  }
 }

@@ -22,30 +22,30 @@ import org.activiti5.engine.test.Deployment;
 
 public class BulkDeleteNoHistoryTest extends ResourceActivitiTestCase {
 
-    public BulkDeleteNoHistoryTest() {
-        // History needs to be disabled to prevent any historic entities come in
-        // between the variable deletes
-        // to make sure a single batch is used for all entities
-        super("org/activiti/standalone/history/nohistory.activiti.cfg.xml");
+  public BulkDeleteNoHistoryTest() {
+    // History needs to be disabled to prevent any historic entities come in
+    // between the variable deletes
+    // to make sure a single batch is used for all entities
+    super("org/activiti/standalone/history/nohistory.activiti.cfg.xml");
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
+  public void testLargeAmountOfVariableBulkDelete() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+
+    // Do a bulk-update with a number higher than any DB's magic numbers
+    for (int i = 0; i < 4001; i++) {
+      variables.put("var" + i, i);
     }
 
-    @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
-    public void testLargeAmountOfVariableBulkDelete() throws Exception {
-        Map<String, Object> variables = new HashMap<String, Object>();
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(task);
 
-        // Do a bulk-update with a number higher than any DB's magic numbers
-        for (int i = 0; i < 4001; i++) {
-            variables.put("var" + i, i);
-        }
+    // Completing the task will cause a bulk delete of 4001 entities
+    taskService.complete(task.getId());
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", variables);
-        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(task);
-
-        // Completing the task will cause a bulk delete of 4001 entities
-        taskService.complete(task.getId());
-
-        // Check if process is gone
-        assertEquals(0L, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
-    }
+    // Check if process is gone
+    assertEquals(0L, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+  }
 }

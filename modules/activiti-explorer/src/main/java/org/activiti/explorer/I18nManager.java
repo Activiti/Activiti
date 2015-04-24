@@ -23,32 +23,32 @@ import org.springframework.context.MessageSource;
  */
 public class I18nManager implements Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected MessageSource messageSource;
-    protected Locale locale;
+  private static final long serialVersionUID = 1L;
+  protected MessageSource messageSource;
+  protected Locale locale;
 
-    public String getMessage(String key) {
-        checkLocale();
-        return messageSource.getMessage(key, null, locale);
-    }
+  public String getMessage(String key) {
+    checkLocale();
+    return messageSource.getMessage(key, null, locale);
+  }
 
-    public String getMessage(String key, Object... arguments) {
-        checkLocale();
-        return messageSource.getMessage(key, arguments, locale);
-    }
+  public String getMessage(String key, Object... arguments) {
+    checkLocale();
+    return messageSource.getMessage(key, arguments, locale);
+  }
 
-    public void setLocale(Locale locale) {
-        this.locale = locale;
-    }
+  public void setLocale(Locale locale) {
+    this.locale = locale;
+  }
 
-    protected void checkLocale() {
-        if (locale == null) {
-            locale = ExplorerApp.get().getLocale();
-        }
+  protected void checkLocale() {
+    if (locale == null) {
+      locale = ExplorerApp.get().getLocale();
     }
+  }
 
-    public void setMessageSource(MessageSource messageSource) {
-        this.messageSource = messageSource;
-    }
+  public void setMessageSource(MessageSource messageSource) {
+    this.messageSource = messageSource;
+  }
 
 }

@@ -17,9 +17,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
 
 /**
- * Superclass for all 'connectable' BPMN 2.0 process elements: tasks, gateways
- * and events. This means that any subclass can be the source or target of a
- * sequenceflow.
+ * Superclass for all 'connectable' BPMN 2.0 process elements: tasks, gateways and events. This means that any subclass can be the source or target of a sequenceflow.
  * 
  * Corresponds with the notion of the 'flownode' in BPMN 2.0.
  * 
@@ -27,33 +25,32 @@ import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
  */
 public abstract class FlowNodeActivityBehavior implements TriggerableActivityBehavior {
 
-    private static final long serialVersionUID = 1L;
-    
-    protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
+  private static final long serialVersionUID = 1L;
 
-    /**
-     * Default behaviour: just leave the activity with no extra functionality.
-     */
-    public void execute(ActivityExecution execution) {
-        leave(execution);
-    }
+  protected BpmnActivityBehavior bpmnActivityBehavior = new BpmnActivityBehavior();
 
-    /**
-     * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on
-     * the outgoing sequence flow and take those that evaluate to true.
-     */
-    public void leave(ActivityExecution execution) {
-        bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
-    }
+  /**
+   * Default behaviour: just leave the activity with no extra functionality.
+   */
+  public void execute(ActivityExecution execution) {
+    leave(execution);
+  }
 
-    public void leaveIgnoreConditions(ActivityExecution activityContext) {
-        bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
-    }
+  /**
+   * Default way of leaving a BPMN 2.0 activity: evaluate the conditions on the outgoing sequence flow and take those that evaluate to true.
+   */
+  public void leave(ActivityExecution execution) {
+    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
+  }
 
-    public void trigger(ActivityExecution execution, String signalName, Object signalData) {
-        // concrete activity behaviours that do accept signals should override
-        // this method;
-        throw new ActivitiException("this activity isn't waiting for a trigger");
-    }
+  public void leaveIgnoreConditions(ActivityExecution activityContext) {
+    bpmnActivityBehavior.performIgnoreConditionsOutgoingBehavior(activityContext);
+  }
+
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+    // concrete activity behaviours that do accept signals should override
+    // this method;
+    throw new ActivitiException("this activity isn't waiting for a trigger");
+  }
 
 }

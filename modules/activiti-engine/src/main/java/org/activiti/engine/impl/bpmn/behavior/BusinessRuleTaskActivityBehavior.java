@@ -36,70 +36,69 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
 
-    protected Set<Expression> variablesInputExpressions = new HashSet<Expression>();
-    protected Set<Expression> rulesExpressions = new HashSet<Expression>();
-    protected boolean exclude = false;
-    protected String resultVariable;
+  protected Set<Expression> variablesInputExpressions = new HashSet<Expression>();
+  protected Set<Expression> rulesExpressions = new HashSet<Expression>();
+  protected boolean exclude = false;
+  protected String resultVariable;
 
-    public BusinessRuleTaskActivityBehavior() {
+  public BusinessRuleTaskActivityBehavior() {
+  }
+
+  public void execute(ActivityExecution execution) {
+    ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(execution.getProcessDefinitionId());
+    String deploymentId = processDefinitionEntity.getDeploymentId();
+
+    KnowledgeBase knowledgeBase = RulesHelper.findKnowledgeBaseByDeploymentId(deploymentId);
+    StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
+
+    if (variablesInputExpressions != null) {
+      Iterator<Expression> itVariable = variablesInputExpressions.iterator();
+      while (itVariable.hasNext()) {
+        Expression variable = itVariable.next();
+        ksession.insert(variable.getValue(execution));
+      }
     }
 
-    public void execute(ActivityExecution execution) {
-        ProcessDefinitionEntity processDefinitionEntity = 
-        		ProcessDefinitionUtil.getProcessDefinitionEntity(execution.getProcessDefinitionId());
-        String deploymentId = processDefinitionEntity.getDeploymentId();
+    if (!rulesExpressions.isEmpty()) {
+      RulesAgendaFilter filter = new RulesAgendaFilter();
+      Iterator<Expression> itRuleNames = rulesExpressions.iterator();
+      while (itRuleNames.hasNext()) {
+        Expression ruleName = itRuleNames.next();
+        filter.addSuffic(ruleName.getValue(execution).toString());
+      }
+      filter.setAccept(!exclude);
+      ksession.fireAllRules(filter);
 
-        KnowledgeBase knowledgeBase = RulesHelper.findKnowledgeBaseByDeploymentId(deploymentId);
-        StatefulKnowledgeSession ksession = knowledgeBase.newStatefulKnowledgeSession();
-
-        if (variablesInputExpressions != null) {
-            Iterator<Expression> itVariable = variablesInputExpressions.iterator();
-            while (itVariable.hasNext()) {
-                Expression variable = itVariable.next();
-                ksession.insert(variable.getValue(execution));
-            }
-        }
-
-        if (!rulesExpressions.isEmpty()) {
-            RulesAgendaFilter filter = new RulesAgendaFilter();
-            Iterator<Expression> itRuleNames = rulesExpressions.iterator();
-            while (itRuleNames.hasNext()) {
-                Expression ruleName = itRuleNames.next();
-                filter.addSuffic(ruleName.getValue(execution).toString());
-            }
-            filter.setAccept(!exclude);
-            ksession.fireAllRules(filter);
-
-        } else {
-            ksession.fireAllRules();
-        }
-
-        Collection<Object> ruleOutputObjects = ksession.getObjects();
-        if (ruleOutputObjects != null && !ruleOutputObjects.isEmpty()) {
-            Collection<Object> outputVariables = new ArrayList<Object>();
-            for (Object object : ruleOutputObjects) {
-                outputVariables.add(object);
-            }
-            execution.setVariable(resultVariable, outputVariables);
-        }
-        ksession.dispose();
-        leave(execution);
+    } else {
+      ksession.fireAllRules();
     }
 
-    public void addRuleVariableInputIdExpression(Expression inputId) {
-        this.variablesInputExpressions.add(inputId);
+    Collection<Object> ruleOutputObjects = ksession.getObjects();
+    if (ruleOutputObjects != null && !ruleOutputObjects.isEmpty()) {
+      Collection<Object> outputVariables = new ArrayList<Object>();
+      for (Object object : ruleOutputObjects) {
+        outputVariables.add(object);
+      }
+      execution.setVariable(resultVariable, outputVariables);
     }
+    ksession.dispose();
+    leave(execution);
+  }
 
-    public void addRuleIdExpression(Expression inputId) {
-        this.rulesExpressions.add(inputId);
-    }
+  public void addRuleVariableInputIdExpression(Expression inputId) {
+    this.variablesInputExpressions.add(inputId);
+  }
 
-    public void setExclude(boolean exclude) {
-        this.exclude = exclude;
-    }
+  public void addRuleIdExpression(Expression inputId) {
+    this.rulesExpressions.add(inputId);
+  }
 
-    public void setResultVariable(String resultVariableName) {
-        this.resultVariable = resultVariableName;
-    }
+  public void setExclude(boolean exclude) {
+    this.exclude = exclude;
+  }
+
+  public void setResultVariable(String resultVariableName) {
+    this.resultVariable = resultVariableName;
+  }
 
 }

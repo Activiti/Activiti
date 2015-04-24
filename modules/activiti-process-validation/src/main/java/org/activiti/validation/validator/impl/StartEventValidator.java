@@ -31,37 +31,37 @@ import org.activiti.validation.validator.ProcessLevelValidator;
  */
 public class StartEventValidator extends ProcessLevelValidator {
 
-    @Override
-    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-        List<StartEvent> startEvents = process.findFlowElementsOfType(StartEvent.class, false);
+  @Override
+  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+    List<StartEvent> startEvents = process.findFlowElementsOfType(StartEvent.class, false);
 
-        List<StartEvent> nonMessageStartEvents = new ArrayList<StartEvent>();
+    List<StartEvent> nonMessageStartEvents = new ArrayList<StartEvent>();
 
-        // Multiple message start events supported, but only one of the other
-        // types
-        for (StartEvent startEvent : startEvents) {
-            if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
+    // Multiple message start events supported, but only one of the other
+    // types
+    for (StartEvent startEvent : startEvents) {
+      if (startEvent.getEventDefinitions() != null && !startEvent.getEventDefinitions().isEmpty()) {
 
-                EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+        EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
 
-                if (!(eventDefinition instanceof MessageEventDefinition)) {
-                    nonMessageStartEvents.add(startEvent);
-                    if (!(eventDefinition instanceof TimerEventDefinition) && !(eventDefinition instanceof SignalEventDefinition)) {
-                        addError(errors, Problems.START_EVENT_INVALID_EVENT_DEFINITION, process, startEvent, "Unsupported event definition on start event");
-                    }
-                }
-
-            } else {
-                nonMessageStartEvents.add(startEvent);
-            }
+        if (!(eventDefinition instanceof MessageEventDefinition)) {
+          nonMessageStartEvents.add(startEvent);
+          if (!(eventDefinition instanceof TimerEventDefinition) && !(eventDefinition instanceof SignalEventDefinition)) {
+            addError(errors, Problems.START_EVENT_INVALID_EVENT_DEFINITION, process, startEvent, "Unsupported event definition on start event");
+          }
         }
 
-        if (nonMessageStartEvents.size() > 1) {
-            for (StartEvent startEvent : nonMessageStartEvents) {
-                addError(errors, Problems.START_EVENT_MULTIPLE_FOUND, process, startEvent, "Multiple none start events or timer start events not supported on process definition");
-            }
-        }
-
+      } else {
+        nonMessageStartEvents.add(startEvent);
+      }
     }
+
+    if (nonMessageStartEvents.size() > 1) {
+      for (StartEvent startEvent : nonMessageStartEvents) {
+        addError(errors, Problems.START_EVENT_MULTIPLE_FOUND, process, startEvent, "Multiple none start events or timer start events not supported on process definition");
+      }
+    }
+
+  }
 
 }

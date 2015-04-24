@@ -17,40 +17,40 @@ package org.activiti.bpmn.model;
  */
 public abstract class Gateway extends FlowNode {
 
-    protected boolean asynchronous;
-    protected boolean notExclusive;
-    protected String defaultFlow;
+  protected boolean asynchronous;
+  protected boolean notExclusive;
+  protected String defaultFlow;
 
-    public boolean isAsynchronous() {
-        return asynchronous;
-    }
+  public boolean isAsynchronous() {
+    return asynchronous;
+  }
 
-    public void setAsynchronous(boolean asynchronous) {
-        this.asynchronous = asynchronous;
-    }
+  public void setAsynchronous(boolean asynchronous) {
+    this.asynchronous = asynchronous;
+  }
 
-    public boolean isNotExclusive() {
-        return notExclusive;
-    }
+  public boolean isNotExclusive() {
+    return notExclusive;
+  }
 
-    public void setNotExclusive(boolean notExclusive) {
-        this.notExclusive = notExclusive;
-    }
+  public void setNotExclusive(boolean notExclusive) {
+    this.notExclusive = notExclusive;
+  }
 
-    public String getDefaultFlow() {
-        return defaultFlow;
-    }
+  public String getDefaultFlow() {
+    return defaultFlow;
+  }
 
-    public void setDefaultFlow(String defaultFlow) {
-        this.defaultFlow = defaultFlow;
-    }
+  public void setDefaultFlow(String defaultFlow) {
+    this.defaultFlow = defaultFlow;
+  }
 
-    public abstract Gateway clone();
+  public abstract Gateway clone();
 
-    public void setValues(Gateway otherElement) {
-        super.setValues(otherElement);
-        setAsynchronous(otherElement.isAsynchronous());
-        setNotExclusive(otherElement.isNotExclusive());
-        setDefaultFlow(otherElement.getDefaultFlow());
-    }
+  public void setValues(Gateway otherElement) {
+    super.setValues(otherElement);
+    setAsynchronous(otherElement.isAsynchronous());
+    setNotExclusive(otherElement.isNotExclusive());
+    setDefaultFlow(otherElement.getDefaultFlow());
+  }
 }

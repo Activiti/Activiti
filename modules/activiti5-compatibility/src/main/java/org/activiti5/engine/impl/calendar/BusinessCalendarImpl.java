@@ -11,27 +11,27 @@ import java.util.Date;
  */
 public abstract class BusinessCalendarImpl implements BusinessCalendar {
 
-    protected ClockReader clockReader;
+  protected ClockReader clockReader;
 
-    public BusinessCalendarImpl(ClockReader clockReader) {
-        this.clockReader = clockReader;
-    }
+  public BusinessCalendarImpl(ClockReader clockReader) {
+    this.clockReader = clockReader;
+  }
 
-    @Override
-    public Date resolveDuedate(String duedateDescription) {
-        return resolveDuedate(duedateDescription, -1);
-    }
+  @Override
+  public Date resolveDuedate(String duedateDescription) {
+    return resolveDuedate(duedateDescription, -1);
+  }
 
-    public abstract Date resolveDuedate(String duedateDescription, int maxIterations);
+  public abstract Date resolveDuedate(String duedateDescription, int maxIterations);
 
-    @Override
-    public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
-        return endDate == null || endDate.after(newTimer) || endDate.equals(newTimer);
-    }
+  @Override
+  public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
+    return endDate == null || endDate.after(newTimer) || endDate.equals(newTimer);
+  }
 
-    @Override
-    public Date resolveEndDate(String endDateString) {
-        return ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())).parseDateTime(endDateString).toCalendar(null).getTime();
-    }
+  @Override
+  public Date resolveEndDate(String endDateString) {
+    return ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())).parseDateTime(endDateString).toCalendar(null).getTime();
+  }
 
 }

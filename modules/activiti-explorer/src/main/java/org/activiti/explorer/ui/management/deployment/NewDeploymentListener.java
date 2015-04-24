@@ -24,23 +24,23 @@ import org.activiti.explorer.ui.custom.UploadPopupWindow;
  */
 public class NewDeploymentListener implements ToolbarCommand {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected I18nManager i18nManager;
-    protected ViewManager viewManager;
+  protected I18nManager i18nManager;
+  protected ViewManager viewManager;
 
-    public NewDeploymentListener() {
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-        this.viewManager = ExplorerApp.get().getViewManager();
-    }
+  public NewDeploymentListener() {
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.viewManager = ExplorerApp.get().getViewManager();
+  }
 
-    public void toolBarItemSelected() {
-        DeploymentUploadReceiver receiver = new DeploymentUploadReceiver();
-        UploadPopupWindow uploadPopupWindow = new UploadPopupWindow(i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD), i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_DESCRIPTION), receiver);
+  public void toolBarItemSelected() {
+    DeploymentUploadReceiver receiver = new DeploymentUploadReceiver();
+    UploadPopupWindow uploadPopupWindow = new UploadPopupWindow(i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD), i18nManager.getMessage(Messages.DEPLOYMENT_UPLOAD_DESCRIPTION), receiver);
 
-        // The receiver also acts as a listener for the end of the upload
-        // so it can switch to the new deployment page
-        uploadPopupWindow.addFinishedListener(receiver);
-        viewManager.showPopupWindow(uploadPopupWindow);
-    }
+    // The receiver also acts as a listener for the end of the upload
+    // so it can switch to the new deployment page
+    uploadPopupWindow.addFinishedListener(receiver);
+    viewManager.showPopupWindow(uploadPopupWindow);
+  }
 }

@@ -31,37 +31,37 @@ import org.activiti.engine.repository.ProcessDefinition;
  */
 public class SignalEventHandler extends AbstractEventHandler {
 
-    public static final String EVENT_HANDLER_TYPE = "signal";
+  public static final String EVENT_HANDLER_TYPE = "signal";
 
-    public String getEventHandlerType() {
-        return EVENT_HANDLER_TYPE;
+  public String getEventHandlerType() {
+    return EVENT_HANDLER_TYPE;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
+    if (eventSubscription.getExecutionId() != null) {
+      super.handleEvent(eventSubscription, payload, commandContext);
+
+    } else if (eventSubscription.getProcessDefinitionId() != null) {
+      // Start event
+      String processDefinitionId = eventSubscription.getProcessDefinitionId();
+      DeploymentManager deploymentCache = Context.getProcessEngineConfiguration().getDeploymentManager();
+
+      ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
+      if (processDefinition == null) {
+        throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
+      }
+
+      Map<String, Object> variables = null;
+      if (payload != null && payload instanceof Map) {
+        variables = (Map<String, Object>) payload;
+      }
+
+      ProcessInstanceUtil.createAndStartProcessInstance(processDefinition, null, null, variables);
+    } else {
+      throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
     }
-
-    @SuppressWarnings("unchecked")
-    @Override
-    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
-        if (eventSubscription.getExecutionId() != null) {
-            super.handleEvent(eventSubscription, payload, commandContext);
-            
-        } else if (eventSubscription.getProcessDefinitionId() != null) {
-            // Start event
-            String processDefinitionId = eventSubscription.getProcessDefinitionId();
-            DeploymentManager deploymentCache = Context.getProcessEngineConfiguration().getDeploymentManager();
-
-            ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
-            if (processDefinition == null) {
-                throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
-            }
-
-            Map<String, Object> variables = null;
-            if (payload != null && payload instanceof Map) {
-                variables = (Map<String, Object>) payload;
-            }
-
-            ProcessInstanceUtil.createAndStartProcessInstance(processDefinition, null, null, variables);
-        } else {
-            throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
-        }
-    }
+  }
 
 }

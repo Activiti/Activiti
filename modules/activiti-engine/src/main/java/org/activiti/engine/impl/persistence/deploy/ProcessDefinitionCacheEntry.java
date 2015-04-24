@@ -23,40 +23,40 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  */
 public class ProcessDefinitionCacheEntry implements Serializable {
 
-    private static final long serialVersionUID = 6833801933658529070L;
+  private static final long serialVersionUID = 6833801933658529070L;
 
-    protected ProcessDefinitionEntity processDefinitionEntity;
-    protected BpmnModel bpmnModel;
-    protected Process process;
+  protected ProcessDefinitionEntity processDefinitionEntity;
+  protected BpmnModel bpmnModel;
+  protected Process process;
 
-    public ProcessDefinitionCacheEntry(ProcessDefinitionEntity processDefinitionEntity, BpmnModel bpmnModel, Process process) {
-        this.processDefinitionEntity = processDefinitionEntity;
-        this.bpmnModel = bpmnModel;
-        this.process = process;
-    }
+  public ProcessDefinitionCacheEntry(ProcessDefinitionEntity processDefinitionEntity, BpmnModel bpmnModel, Process process) {
+    this.processDefinitionEntity = processDefinitionEntity;
+    this.bpmnModel = bpmnModel;
+    this.process = process;
+  }
 
-    public ProcessDefinitionEntity getProcessDefinitionEntity() {
-        return processDefinitionEntity;
-    }
+  public ProcessDefinitionEntity getProcessDefinitionEntity() {
+    return processDefinitionEntity;
+  }
 
-    public void setProcessDefinitionEntity(ProcessDefinitionEntity processDefinitionEntity) {
-        this.processDefinitionEntity = processDefinitionEntity;
-    }
-    
-    public BpmnModel getBpmnModel() {
-		return bpmnModel;
-	}
+  public void setProcessDefinitionEntity(ProcessDefinitionEntity processDefinitionEntity) {
+    this.processDefinitionEntity = processDefinitionEntity;
+  }
 
-	public void setBpmnModel(BpmnModel bpmnModel) {
-		this.bpmnModel = bpmnModel;
-	}
+  public BpmnModel getBpmnModel() {
+    return bpmnModel;
+  }
 
-	public Process getProcess() {
-        return process;
-    }
+  public void setBpmnModel(BpmnModel bpmnModel) {
+    this.bpmnModel = bpmnModel;
+  }
 
-    public void setProcess(Process process) {
-        this.process = process;
-    }
+  public Process getProcess() {
+    return process;
+  }
+
+  public void setProcess(Process process) {
+    this.process = process;
+  }
 
 }

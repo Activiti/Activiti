@@ -10,25 +10,25 @@ import org.junit.Test;
 
 public class SignalConverterTest extends AbstractConverterTest {
 
-    @Test
-    public void connvertXMLToModel() throws Exception {
-        BpmnModel bpmnModel = readXMLFile();
-        validateModel(bpmnModel);
-    }
+  @Test
+  public void connvertXMLToModel() throws Exception {
+    BpmnModel bpmnModel = readXMLFile();
+    validateModel(bpmnModel);
+  }
 
-    @Test
-    public void convertModelToXML() throws Exception {
-        BpmnModel bpmnModel = readXMLFile();
-        BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
-        validateModel(parsedModel);
-    }
+  @Test
+  public void convertModelToXML() throws Exception {
+    BpmnModel bpmnModel = readXMLFile();
+    BpmnModel parsedModel = exportAndReadXMLFile(bpmnModel);
+    validateModel(parsedModel);
+  }
 
-    private void validateModel(BpmnModel model) {
-        Collection<Signal> signals = model.getSignals();
-        assertEquals(2, signals.size());
-    }
+  private void validateModel(BpmnModel model) {
+    Collection<Signal> signals = model.getSignals();
+    assertEquals(2, signals.size());
+  }
 
-    protected String getResource() {
-        return "signaltest.bpmn";
-    }
+  protected String getResource() {
+    return "signaltest.bpmn";
+  }
 }

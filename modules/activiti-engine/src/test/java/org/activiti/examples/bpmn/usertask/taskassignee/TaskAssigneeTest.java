@@ -26,23 +26,23 @@ import org.activiti.engine.test.Deployment;
  */
 public class TaskAssigneeTest extends PluggableActivitiTestCase {
 
-    @Deployment
-    public void testTaskAssignee() {
+  @Deployment
+  public void testTaskAssignee() {
 
-        // Start process instance
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeExampleProcess");
+    // Start process instance
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("taskAssigneeExampleProcess");
 
-        // Get task list
-        List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
-        assertEquals(1, tasks.size());
-        Task myTask = tasks.get(0);
-        assertEquals("Schedule meeting", myTask.getName());
-        assertEquals("Schedule an engineering meeting for next week with the new hire.", myTask.getDescription());
+    // Get task list
+    List<Task> tasks = taskService.createTaskQuery().taskAssignee("kermit").list();
+    assertEquals(1, tasks.size());
+    Task myTask = tasks.get(0);
+    assertEquals("Schedule meeting", myTask.getName());
+    assertEquals("Schedule an engineering meeting for next week with the new hire.", myTask.getDescription());
 
-        // Complete task. Process is now finished
-        taskService.complete(myTask.getId());
-        // assert if the process instance completed
-        assertProcessEnded(processInstance.getId());
-    }
+    // Complete task. Process is now finished
+    taskService.complete(myTask.getId());
+    // assert if the process instance completed
+    assertProcessEnded(processInstance.getId());
+  }
 
 }

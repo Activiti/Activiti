@@ -22,25 +22,25 @@ import java.io.Serializable;
  */
 public class Picture implements Serializable {
 
-    private static final long serialVersionUID = 2384375526314443322L;
+  private static final long serialVersionUID = 2384375526314443322L;
 
-    protected byte[] bytes;
-    protected String mimeType;
+  protected byte[] bytes;
+  protected String mimeType;
 
-    public Picture(byte[] bytes, String mimeType) {
-        this.bytes = bytes;
-        this.mimeType = mimeType;
-    }
+  public Picture(byte[] bytes, String mimeType) {
+    this.bytes = bytes;
+    this.mimeType = mimeType;
+  }
 
-    public byte[] getBytes() {
-        return bytes;
-    }
+  public byte[] getBytes() {
+    return bytes;
+  }
 
-    public InputStream getInputStream() {
-        return new ByteArrayInputStream(bytes);
-    }
+  public InputStream getInputStream() {
+    return new ByteArrayInputStream(bytes);
+  }
 
-    public String getMimeType() {
-        return mimeType;
-    }
+  public String getMimeType() {
+    return mimeType;
+  }
 }

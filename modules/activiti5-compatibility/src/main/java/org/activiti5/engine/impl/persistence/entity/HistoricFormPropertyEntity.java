@@ -21,45 +21,45 @@ import org.activiti5.engine.impl.context.Context;
  */
 public class HistoricFormPropertyEntity extends HistoricDetailEntity implements HistoricFormProperty {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String propertyId;
-    protected String propertyValue;
+  protected String propertyId;
+  protected String propertyValue;
 
-    public HistoricFormPropertyEntity() {
+  public HistoricFormPropertyEntity() {
+  }
+
+  public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue) {
+    this(execution, propertyId, propertyValue, null);
+  }
+
+  public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue, String taskId) {
+    this.processInstanceId = execution.getProcessInstanceId();
+    this.executionId = execution.getId();
+    this.taskId = taskId;
+    this.propertyId = propertyId;
+    this.propertyValue = propertyValue;
+    this.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+
+    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution);
+    if (historicActivityInstance != null) {
+      this.activityInstanceId = historicActivityInstance.getId();
     }
+  }
 
-    public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue) {
-        this(execution, propertyId, propertyValue, null);
-    }
+  public String getPropertyId() {
+    return propertyId;
+  }
 
-    public HistoricFormPropertyEntity(ExecutionEntity execution, String propertyId, String propertyValue, String taskId) {
-        this.processInstanceId = execution.getProcessInstanceId();
-        this.executionId = execution.getId();
-        this.taskId = taskId;
-        this.propertyId = propertyId;
-        this.propertyValue = propertyValue;
-        this.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+  public void setPropertyId(String propertyId) {
+    this.propertyId = propertyId;
+  }
 
-        HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution);
-        if (historicActivityInstance != null) {
-            this.activityInstanceId = historicActivityInstance.getId();
-        }
-    }
+  public String getPropertyValue() {
+    return propertyValue;
+  }
 
-    public String getPropertyId() {
-        return propertyId;
-    }
-
-    public void setPropertyId(String propertyId) {
-        this.propertyId = propertyId;
-    }
-
-    public String getPropertyValue() {
-        return propertyValue;
-    }
-
-    public void setPropertyValue(String propertyValue) {
-        this.propertyValue = propertyValue;
-    }
+  public void setPropertyValue(String propertyValue) {
+    this.propertyValue = propertyValue;
+  }
 }

@@ -21,19 +21,19 @@ import org.activiti.explorer.ui.ComponentFactory;
  */
 public class UploadComponentFactory implements ComponentFactory<UploadComponent> {
 
-    private static final long serialVersionUID = 1L;
-    protected boolean enableDrop = true;
+  private static final long serialVersionUID = 1L;
+  protected boolean enableDrop = true;
 
-    @Override
-    public void initialise(String environment) {
-        if (environment.equals(Environments.ALFRESCO)) {
-            enableDrop = false;
-        }
+  @Override
+  public void initialise(String environment) {
+    if (environment.equals(Environments.ALFRESCO)) {
+      enableDrop = false;
     }
+  }
 
-    @Override
-    public UploadComponent create() {
-        return new UploadComponent(enableDrop);
-    }
+  @Override
+  public UploadComponent create() {
+    return new UploadComponent(enableDrop);
+  }
 
 }

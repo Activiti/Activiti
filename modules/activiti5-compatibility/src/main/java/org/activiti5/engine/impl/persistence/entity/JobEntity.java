@@ -32,8 +32,7 @@ import org.activiti5.engine.runtime.Job;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Stub of the common parts of a Job. You will normally work with a subclass of
- * JobEntity, such as {@link TimerEntity} or {@link MessageEntity}.
+ * Stub of the common parts of a Job. You will normally work with a subclass of JobEntity, such as {@link TimerEntity} or {@link MessageEntity}.
  * 
  * @author Tom Baeyens
  * @author Nick Burch
@@ -42,254 +41,254 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class JobEntity implements Job, PersistentObject, HasRevision, BulkDeleteable, Serializable {
 
-    public static final boolean DEFAULT_EXCLUSIVE = true;
-    public static final int DEFAULT_RETRIES = 3;
-    private static final int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
+  public static final boolean DEFAULT_EXCLUSIVE = true;
+  public static final int DEFAULT_RETRIES = 3;
+  private static final int MAX_EXCEPTION_MESSAGE_LENGTH = 255;
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String id;
-    protected int revision;
+  protected String id;
+  protected int revision;
 
-    protected Date duedate;
+  protected Date duedate;
 
-    protected String lockOwner = null;
-    protected Date lockExpirationTime = null;
+  protected String lockOwner = null;
+  protected Date lockExpirationTime = null;
 
-    protected String executionId = null;
-    protected String processInstanceId = null;
-    protected String processDefinitionId = null;
+  protected String executionId = null;
+  protected String processInstanceId = null;
+  protected String processDefinitionId = null;
 
-    protected boolean isExclusive = DEFAULT_EXCLUSIVE;
+  protected boolean isExclusive = DEFAULT_EXCLUSIVE;
 
-    protected int retries = DEFAULT_RETRIES;
+  protected int retries = DEFAULT_RETRIES;
 
-    protected String jobHandlerType = null;
-    protected String jobHandlerConfiguration = null;
+  protected String jobHandlerType = null;
+  protected String jobHandlerConfiguration = null;
 
-    protected final ByteArrayRef exceptionByteArrayRef = new ByteArrayRef();
+  protected final ByteArrayRef exceptionByteArrayRef = new ByteArrayRef();
 
-    protected String exceptionMessage;
+  protected String exceptionMessage;
 
-    protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+  protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
 
-    public void execute(CommandContext commandContext) {
-        ExecutionEntity execution = null;
-        if (executionId != null) {
-            execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
-        }
-
-        Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
-        JobHandler jobHandler = jobHandlers.get(jobHandlerType);
-        jobHandler.execute(this, jobHandlerConfiguration, execution, commandContext);
+  public void execute(CommandContext commandContext) {
+    ExecutionEntity execution = null;
+    if (executionId != null) {
+      execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
     }
 
-    public void insert() {
-        Context.getCommandContext().getDbSqlSession().insert(this);
+    Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
+    JobHandler jobHandler = jobHandlers.get(jobHandlerType);
+    jobHandler.execute(this, jobHandlerConfiguration, execution, commandContext);
+  }
 
-        // add link to execution
-        if (executionId != null) {
-            ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-            execution.addJob(this);
+  public void insert() {
+    Context.getCommandContext().getDbSqlSession().insert(this);
 
-            // Inherit tenant if (if applicable)
-            if (execution.getTenantId() != null) {
-                setTenantId(execution.getTenantId());
-            }
-        }
+    // add link to execution
+    if (executionId != null) {
+      ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
+      execution.addJob(this);
 
-        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
-            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
-        }
+      // Inherit tenant if (if applicable)
+      if (execution.getTenantId() != null) {
+        setTenantId(execution.getTenantId());
+      }
     }
 
-    public void delete() {
-        Context.getCommandContext().getDbSqlSession().delete(this);
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, this));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, this));
+    }
+  }
 
-        // Also delete the job's exception byte array
-        exceptionByteArrayRef.delete();
+  public void delete() {
+    Context.getCommandContext().getDbSqlSession().delete(this);
 
-        // remove link to execution
-        if (executionId != null) {
-            ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-            execution.removeJob(this);
-        }
+    // Also delete the job's exception byte array
+    exceptionByteArrayRef.delete();
 
-        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
-        }
+    // remove link to execution
+    if (executionId != null) {
+      ExecutionEntity execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
+      execution.removeJob(this);
     }
 
-    public void setExecution(ExecutionEntity execution) {
-        executionId = execution.getId();
-        processInstanceId = execution.getProcessInstanceId();
-        processDefinitionId = execution.getProcessDefinitionId();
-        execution.addJob(this);
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));
     }
+  }
 
-    public String getExceptionStacktrace() {
-        byte[] bytes = exceptionByteArrayRef.getBytes();
-        if (bytes == null) {
-            return null;
-        }
-        try {
-            return new String(bytes, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new ActivitiException("UTF-8 is not a supported encoding");
-        }
+  public void setExecution(ExecutionEntity execution) {
+    executionId = execution.getId();
+    processInstanceId = execution.getProcessInstanceId();
+    processDefinitionId = execution.getProcessDefinitionId();
+    execution.addJob(this);
+  }
+
+  public String getExceptionStacktrace() {
+    byte[] bytes = exceptionByteArrayRef.getBytes();
+    if (bytes == null) {
+      return null;
     }
-
-    public void setExceptionStacktrace(String exception) {
-        exceptionByteArrayRef.setValue("stacktrace", getUtf8Bytes(exception));
+    try {
+      return new String(bytes, "UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiException("UTF-8 is not a supported encoding");
     }
+  }
 
-    private byte[] getUtf8Bytes(String str) {
-        if (str == null) {
-            return null;
-        }
-        try {
-            return str.getBytes("UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            throw new ActivitiException("UTF-8 is not a supported encoding");
-        }
+  public void setExceptionStacktrace(String exception) {
+    exceptionByteArrayRef.setValue("stacktrace", getUtf8Bytes(exception));
+  }
+
+  private byte[] getUtf8Bytes(String str) {
+    if (str == null) {
+      return null;
     }
-
-    public Object getPersistentState() {
-        Map<String, Object> persistentState = new HashMap<String, Object>();
-        persistentState.put("lockOwner", lockOwner);
-        persistentState.put("lockExpirationTime", lockExpirationTime);
-        persistentState.put("retries", retries);
-        persistentState.put("duedate", duedate);
-        persistentState.put("exceptionMessage", exceptionMessage);
-        persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
-        return persistentState;
+    try {
+      return str.getBytes("UTF-8");
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiException("UTF-8 is not a supported encoding");
     }
+  }
 
-    public int getRevisionNext() {
-        return revision + 1;
-    }
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("lockOwner", lockOwner);
+    persistentState.put("lockExpirationTime", lockExpirationTime);
+    persistentState.put("retries", retries);
+    persistentState.put("duedate", duedate);
+    persistentState.put("exceptionMessage", exceptionMessage);
+    persistentState.put("exceptionByteArrayId", exceptionByteArrayRef.getId());
+    return persistentState;
+  }
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  public int getRevisionNext() {
+    return revision + 1;
+  }
 
-    public String getId() {
-        return id;
-    }
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public int getRevision() {
-        return revision;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setRevision(int revision) {
-        this.revision = revision;
-    }
+  public int getRevision() {
+    return revision;
+  }
 
-    public Date getDuedate() {
-        return duedate;
-    }
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
 
-    public void setDuedate(Date duedate) {
-        this.duedate = duedate;
-    }
+  public Date getDuedate() {
+    return duedate;
+  }
 
-    public String getExecutionId() {
-        return executionId;
-    }
+  public void setDuedate(Date duedate) {
+    this.duedate = duedate;
+  }
 
-    public void setExecutionId(String executionId) {
-        this.executionId = executionId;
-    }
+  public String getExecutionId() {
+    return executionId;
+  }
 
-    public int getRetries() {
-        return retries;
-    }
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
 
-    public void setRetries(int retries) {
-        this.retries = retries;
-    }
+  public int getRetries() {
+    return retries;
+  }
 
-    public String getLockOwner() {
-        return lockOwner;
-    }
+  public void setRetries(int retries) {
+    this.retries = retries;
+  }
 
-    public void setLockOwner(String claimedBy) {
-        this.lockOwner = claimedBy;
-    }
+  public String getLockOwner() {
+    return lockOwner;
+  }
 
-    public Date getLockExpirationTime() {
-        return lockExpirationTime;
-    }
+  public void setLockOwner(String claimedBy) {
+    this.lockOwner = claimedBy;
+  }
 
-    public void setLockExpirationTime(Date claimedUntil) {
-        this.lockExpirationTime = claimedUntil;
-    }
+  public Date getLockExpirationTime() {
+    return lockExpirationTime;
+  }
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  public void setLockExpirationTime(Date claimedUntil) {
+    this.lockExpirationTime = claimedUntil;
+  }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public boolean isExclusive() {
-        return isExclusive;
-    }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 
-    public void setExclusive(boolean isExclusive) {
-        this.isExclusive = isExclusive;
-    }
+  public boolean isExclusive() {
+    return isExclusive;
+  }
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
-    }
+  public void setExclusive(boolean isExclusive) {
+    this.isExclusive = isExclusive;
+  }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
 
-    public String getJobHandlerType() {
-        return jobHandlerType;
-    }
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
 
-    public void setJobHandlerType(String jobHandlerType) {
-        this.jobHandlerType = jobHandlerType;
-    }
+  public String getJobHandlerType() {
+    return jobHandlerType;
+  }
 
-    public String getJobHandlerConfiguration() {
-        return jobHandlerConfiguration;
-    }
+  public void setJobHandlerType(String jobHandlerType) {
+    this.jobHandlerType = jobHandlerType;
+  }
 
-    public void setJobHandlerConfiguration(String jobHandlerConfiguration) {
-        this.jobHandlerConfiguration = jobHandlerConfiguration;
-    }
+  public String getJobHandlerConfiguration() {
+    return jobHandlerConfiguration;
+  }
 
-    public String getExceptionMessage() {
-        return exceptionMessage;
-    }
+  public void setJobHandlerConfiguration(String jobHandlerConfiguration) {
+    this.jobHandlerConfiguration = jobHandlerConfiguration;
+  }
 
-    public void setExceptionMessage(String exceptionMessage) {
-        this.exceptionMessage = StringUtils.abbreviate(exceptionMessage, MAX_EXCEPTION_MESSAGE_LENGTH);
-    }
+  public String getExceptionMessage() {
+    return exceptionMessage;
+  }
 
-    public String getTenantId() {
-        return tenantId;
-    }
+  public void setExceptionMessage(String exceptionMessage) {
+    this.exceptionMessage = StringUtils.abbreviate(exceptionMessage, MAX_EXCEPTION_MESSAGE_LENGTH);
+  }
 
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
+  public String getTenantId() {
+    return tenantId;
+  }
 
-    // common methods //////////////////////////////////////////////////////////
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+  }
 
-    @Override
-    public String toString() {
-        return "JobEntity [id=" + id + "]";
-    }
+  // common methods //////////////////////////////////////////////////////////
+
+  @Override
+  public String toString() {
+    return "JobEntity [id=" + id + "]";
+  }
 
 }

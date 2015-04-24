@@ -17,6 +17,6 @@ package org.activiti5.engine.impl.calendar;
  */
 public interface BusinessCalendarManager {
 
-    BusinessCalendar getBusinessCalendar(String businessCalendarRef);
+  BusinessCalendar getBusinessCalendar(String businessCalendarRef);
 
 }

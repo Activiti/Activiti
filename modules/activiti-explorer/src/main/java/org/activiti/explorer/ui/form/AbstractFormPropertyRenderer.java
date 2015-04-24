@@ -24,57 +24,57 @@ import com.vaadin.ui.Field;
  */
 public abstract class AbstractFormPropertyRenderer implements FormPropertyRenderer {
 
-    private Class<? extends FormType> formType;
+  private Class<? extends FormType> formType;
 
-    public AbstractFormPropertyRenderer(Class<? extends FormType> formType) {
-        this.formType = formType;
+  public AbstractFormPropertyRenderer(Class<? extends FormType> formType) {
+    this.formType = formType;
+  }
+
+  public Class<? extends FormType> getFormType() {
+    return formType;
+  }
+
+  public String getPropertyLabel(FormProperty formProperty) {
+    if (formProperty.getName() != null) {
+      return formProperty.getName();
+    } else {
+      return formProperty.getId();
     }
+  }
 
-    public Class<? extends FormType> getFormType() {
-        return formType;
+  public String getFieldValue(FormProperty formProperty, Field field) {
+    // Just returns toString() on the value in the field
+    Object value = field.getValue();
+    if (value != null) {
+      return value.toString();
     }
+    return null;
+  }
 
-    public String getPropertyLabel(FormProperty formProperty) {
-        if (formProperty.getName() != null) {
-            return formProperty.getName();
-        } else {
-            return formProperty.getId();
-        }
-    }
+  public abstract Field getPropertyField(FormProperty formProperty);
 
-    public String getFieldValue(FormProperty formProperty, Field field) {
-        // Just returns toString() on the value in the field
-        Object value = field.getValue();
-        if (value != null) {
-            return value.toString();
-        }
-        return null;
-    }
+  protected String getMessage(String key, Object... params) {
+    return ExplorerApp.get().getI18nManager().getMessage(key, params);
+  }
 
-    public abstract Field getPropertyField(FormProperty formProperty);
+  /**
+   * Get the Vaadin form that contains the renderer
+   */
+  @Override
+  public com.vaadin.ui.Form getForm() {
+    return theForm;
+  }
 
-    protected String getMessage(String key, Object... params) {
-        return ExplorerApp.get().getI18nManager().getMessage(key, params);
-    }
+  /**
+   * Set the Vaadin form that contains de renderer
+   */
+  @Override
+  public void setForm(com.vaadin.ui.Form p_form) {
+    theForm = p_form;
+  }
 
-    /**
-     * Get the Vaadin form that contains the renderer
-     */
-    @Override
-    public com.vaadin.ui.Form getForm() {
-        return theForm;
-    }
-
-    /**
-     * Set the Vaadin form that contains de renderer
-     */
-    @Override
-    public void setForm(com.vaadin.ui.Form p_form) {
-        theForm = p_form;
-    }
-
-    /**
-     * The form that contains this renderer
-     */
-    transient private com.vaadin.ui.Form theForm = null;
+  /**
+   * The form that contains this renderer
+   */
+  transient private com.vaadin.ui.Form theForm = null;
 }

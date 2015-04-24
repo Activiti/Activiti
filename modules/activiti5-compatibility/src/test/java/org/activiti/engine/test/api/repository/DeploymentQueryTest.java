@@ -27,167 +27,166 @@ import java.util.List;
  */
 public class DeploymentQueryTest extends PluggableActivitiTestCase {
 
-    private String deploymentOneId;
+  private String deploymentOneId;
 
-    private String deploymentTwoId;
+  private String deploymentTwoId;
 
-    @Override
-    protected void setUp() throws Exception {
-        deploymentOneId = repositoryService.createDeployment().name("org/activiti/engine/test/repository/one.bpmn20.xml").category("testCategory")
-                .addClasspathResource("org/activiti/engine/test/repository/one.bpmn20.xml").deploy().getId();
+  @Override
+  protected void setUp() throws Exception {
+    deploymentOneId = repositoryService.createDeployment().name("org/activiti/engine/test/repository/one.bpmn20.xml").category("testCategory")
+        .addClasspathResource("org/activiti/engine/test/repository/one.bpmn20.xml").deploy().getId();
 
-        deploymentTwoId = repositoryService.createDeployment().name("org/activiti/engine/test/repository/two.bpmn20.xml").addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
-                .deploy().getId();
+    deploymentTwoId = repositoryService.createDeployment().name("org/activiti/engine/test/repository/two.bpmn20.xml").addClasspathResource("org/activiti/engine/test/repository/two.bpmn20.xml")
+        .deploy().getId();
 
-        super.setUp();
+    super.setUp();
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+    repositoryService.deleteDeployment(deploymentOneId, true);
+    repositoryService.deleteDeployment(deploymentTwoId, true);
+  }
+
+  public void testQueryNoCriteria() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery();
+    assertEquals(2, query.list().size());
+    assertEquals(2, query.count());
+
+    try {
+      query.singleResult();
+      fail();
+    } catch (ActivitiException e) {
     }
+  }
 
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-        repositoryService.deleteDeployment(deploymentOneId, true);
-        repositoryService.deleteDeployment(deploymentTwoId, true);
+  public void testQueryByDeploymentId() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentId(deploymentOneId);
+    assertNotNull(query.singleResult());
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+  }
+
+  public void testQueryByInvalidDeploymentId() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentId("invalid");
+    assertNull(query.singleResult());
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+
+    try {
+      repositoryService.createDeploymentQuery().deploymentId(null);
+      fail();
+    } catch (ActivitiIllegalArgumentException e) {
     }
+  }
 
-    public void testQueryNoCriteria() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery();
-        assertEquals(2, query.list().size());
-        assertEquals(2, query.count());
+  public void testQueryByName() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentName("org/activiti/engine/test/repository/two.bpmn20.xml");
+    assertNotNull(query.singleResult());
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+  }
 
-        try {
-            query.singleResult();
-            fail();
-        } catch (ActivitiException e) {
-        }
+  public void testQueryByInvalidName() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentName("invalid");
+    assertNull(query.singleResult());
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+
+    try {
+      repositoryService.createDeploymentQuery().deploymentName(null);
+      fail();
+    } catch (ActivitiIllegalArgumentException e) {
     }
+  }
 
-    public void testQueryByDeploymentId() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentId(deploymentOneId);
-        assertNotNull(query.singleResult());
-        assertEquals(1, query.list().size());
-        assertEquals(1, query.count());
+  public void testQueryByNameLike() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("%activiti%");
+    assertEquals(2, query.list().size());
+    assertEquals(2, query.count());
+
+    try {
+      query.singleResult();
+      fail();
+    } catch (ActivitiException e) {
     }
+  }
 
-    public void testQueryByInvalidDeploymentId() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentId("invalid");
-        assertNull(query.singleResult());
-        assertEquals(0, query.list().size());
-        assertEquals(0, query.count());
+  public void testQueryByInvalidNameLike() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("invalid");
+    assertNull(query.singleResult());
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
 
-        try {
-            repositoryService.createDeploymentQuery().deploymentId(null);
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
-        }
+    try {
+      repositoryService.createDeploymentQuery().deploymentNameLike(null);
+      fail();
+    } catch (ActivitiIllegalArgumentException e) {
     }
+  }
 
-    public void testQueryByName() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentName("org/activiti/engine/test/repository/two.bpmn20.xml");
-        assertNotNull(query.singleResult());
-        assertEquals(1, query.list().size());
-        assertEquals(1, query.count());
-    }
+  public void testQueryByNameAndCategory() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentCategory("testCategory").deploymentNameLike("%activiti%");
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+    assertNotNull(query.singleResult());
+  }
 
-    public void testQueryByInvalidName() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentName("invalid");
-        assertNull(query.singleResult());
-        assertEquals(0, query.list().size());
-        assertEquals(0, query.count());
+  public void testQueryByProcessDefinitionKey() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKey("one");
+    assertEquals(1, query.list().size());
+    assertEquals(1, query.count());
+    assertNotNull(query.singleResult());
+  }
 
-        try {
-            repositoryService.createDeploymentQuery().deploymentName(null);
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
-        }
-    }
+  public void testQueryByProcessDefinitionKeyLike() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("%o%");
+    assertEquals(2, query.list().size());
+    assertEquals(2, query.count());
+  }
 
-    public void testQueryByNameLike() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("%activiti%");
-        assertEquals(2, query.list().size());
-        assertEquals(2, query.count());
+  public void testQueryByInvalidProcessDefinitionKeyLike() {
+    DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("invalid");
+    assertEquals(0, query.list().size());
+    assertEquals(0, query.count());
+  }
 
-        try {
-            query.singleResult();
-            fail();
-        } catch (ActivitiException e) {
-        }
-    }
+  public void testVerifyDeploymentProperties() {
+    List<Deployment> deployments = repositoryService.createDeploymentQuery().orderByDeploymentName().asc().list();
 
-    public void testQueryByInvalidNameLike() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentNameLike("invalid");
-        assertNull(query.singleResult());
-        assertEquals(0, query.list().size());
-        assertEquals(0, query.count());
+    Deployment deploymentOne = deployments.get(0);
+    assertEquals("org/activiti/engine/test/repository/one.bpmn20.xml", deploymentOne.getName());
+    assertEquals(deploymentOneId, deploymentOne.getId());
 
-        try {
-            repositoryService.createDeploymentQuery().deploymentNameLike(null);
-            fail();
-        } catch (ActivitiIllegalArgumentException e) {
-        }
-    }
+    Deployment deploymentTwo = deployments.get(1);
+    assertEquals("org/activiti/engine/test/repository/two.bpmn20.xml", deploymentTwo.getName());
+    assertEquals(deploymentTwoId, deploymentTwo.getId());
 
-    public void testQueryByNameAndCategory() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().deploymentCategory("testCategory").deploymentNameLike("%activiti%");
-        assertEquals(1, query.list().size());
-        assertEquals(1, query.count());
-        assertNotNull(query.singleResult());
-    }
+    deployments = repositoryService.createDeploymentQuery().deploymentNameLike("%one%").orderByDeploymentName().asc().list();
 
-    public void testQueryByProcessDefinitionKey() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKey("one");
-        assertEquals(1, query.list().size());
-        assertEquals(1, query.count());
-        assertNotNull(query.singleResult());
-    }
+    assertEquals("org/activiti/engine/test/repository/one.bpmn20.xml", deployments.get(0).getName());
+    assertEquals(1, deployments.size());
 
-    public void testQueryByProcessDefinitionKeyLike() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("%o%");
-        assertEquals(2, query.list().size());
-        assertEquals(2, query.count());
-    }
+    assertEquals(2, repositoryService.createDeploymentQuery().orderByDeploymentId().asc().list().size());
 
-    public void testQueryByInvalidProcessDefinitionKeyLike() {
-        DeploymentQuery query = repositoryService.createDeploymentQuery().processDefinitionKeyLike("invalid");
-        assertEquals(0, query.list().size());
-        assertEquals(0, query.count());
-    }
+    assertEquals(2, repositoryService.createDeploymentQuery().orderByDeploymenTime().asc().list().size());
 
-    public void testVerifyDeploymentProperties() {
-        List<Deployment> deployments = repositoryService.createDeploymentQuery().orderByDeploymentName().asc().list();
+  }
 
-        Deployment deploymentOne = deployments.get(0);
-        assertEquals("org/activiti/engine/test/repository/one.bpmn20.xml", deploymentOne.getName());
-        assertEquals(deploymentOneId, deploymentOne.getId());
+  public void testNativeQuery() {
+    assertEquals("ACT_RE_DEPLOYMENT", managementService.getTableName(Deployment.class));
+    assertEquals("ACT_RE_DEPLOYMENT", managementService.getTableName(DeploymentEntity.class));
+    String tableName = managementService.getTableName(Deployment.class);
+    String baseQuerySql = "SELECT * FROM " + tableName;
 
-        Deployment deploymentTwo = deployments.get(1);
-        assertEquals("org/activiti/engine/test/repository/two.bpmn20.xml", deploymentTwo.getName());
-        assertEquals(deploymentTwoId, deploymentTwo.getId());
+    assertEquals(2, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).list().size());
 
-        deployments = repositoryService.createDeploymentQuery().deploymentNameLike("%one%").orderByDeploymentName().asc().list();
+    assertEquals(1, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql + " where NAME_ = #{name}").parameter("name", "org/activiti/engine/test/repository/one.bpmn20.xml").list().size());
 
-        assertEquals("org/activiti/engine/test/repository/one.bpmn20.xml", deployments.get(0).getName());
-        assertEquals(1, deployments.size());
-
-        assertEquals(2, repositoryService.createDeploymentQuery().orderByDeploymentId().asc().list().size());
-
-        assertEquals(2, repositoryService.createDeploymentQuery().orderByDeploymenTime().asc().list().size());
-
-    }
-
-    public void testNativeQuery() {
-        assertEquals("ACT_RE_DEPLOYMENT", managementService.getTableName(Deployment.class));
-        assertEquals("ACT_RE_DEPLOYMENT", managementService.getTableName(DeploymentEntity.class));
-        String tableName = managementService.getTableName(Deployment.class);
-        String baseQuerySql = "SELECT * FROM " + tableName;
-
-        assertEquals(2, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).list().size());
-
-        assertEquals(1, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql + " where NAME_ = #{name}").parameter("name", "org/activiti/engine/test/repository/one.bpmn20.xml").list()
-                .size());
-
-        // paging
-        assertEquals(2, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(0, 2).size());
-        assertEquals(1, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(1, 3).size());
-    }
+    // paging
+    assertEquals(2, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(0, 2).size());
+    assertEquals(1, repositoryService.createNativeDeploymentQuery().sql(baseQuerySql).listPage(1, 3).size());
+  }
 
 }

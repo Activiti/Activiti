@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HistoricProcessInstanceQueryResource extends HistoricProcessInstanceBaseResource {
 
-    @RequestMapping(value = "/query/historic-process-instances", method = RequestMethod.POST, produces = "application/json")
-    public DataResponse queryProcessInstances(@RequestBody HistoricProcessInstanceQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+  @RequestMapping(value = "/query/historic-process-instances", method = RequestMethod.POST, produces = "application/json")
+  public DataResponse queryProcessInstances(@RequestBody HistoricProcessInstanceQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
 
-        return getQueryResponse(queryRequest, allRequestParams);
-    }
+    return getQueryResponse(queryRequest, allRequestParams);
+  }
 }

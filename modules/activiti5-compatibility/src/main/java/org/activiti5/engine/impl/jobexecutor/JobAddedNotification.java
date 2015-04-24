@@ -22,16 +22,16 @@ import org.slf4j.LoggerFactory;
  */
 public class JobAddedNotification implements TransactionListener {
 
-    private static Logger log = LoggerFactory.getLogger(JobAddedNotification.class);
+  private static Logger log = LoggerFactory.getLogger(JobAddedNotification.class);
 
-    protected JobExecutor jobExecutor;
+  protected JobExecutor jobExecutor;
 
-    public JobAddedNotification(JobExecutor jobExecutor) {
-        this.jobExecutor = jobExecutor;
-    }
+  public JobAddedNotification(JobExecutor jobExecutor) {
+    this.jobExecutor = jobExecutor;
+  }
 
-    public void execute(CommandContext commandContext) {
-        log.debug("notifying job executor of new job");
-        jobExecutor.jobWasAdded();
-    }
+  public void execute(CommandContext commandContext) {
+    log.debug("notifying job executor of new job");
+    jobExecutor.jobWasAdded();
+  }
 }

@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.impl;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.SimulationEventHandler;
 import org.activiti.crystalball.simulator.SimulationRunContext;
@@ -38,7 +37,6 @@ public class DeployClasspathResourcesEventHandler implements SimulationEventHand
   public DeployClasspathResourcesEventHandler(String resourcesKey) {
     this.resourcesKey = resourcesKey;
   }
-
 
   @Override
   public void init() {

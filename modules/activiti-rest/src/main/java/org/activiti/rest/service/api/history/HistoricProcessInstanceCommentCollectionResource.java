@@ -36,41 +36,41 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HistoricProcessInstanceCommentCollectionResource {
 
-    @Autowired
-    protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-    @Autowired
-    protected HistoryService historyService;
+  @Autowired
+  protected HistoryService historyService;
 
-    @Autowired
-    protected TaskService taskService;
+  @Autowired
+  protected TaskService taskService;
 
-    @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments", method = RequestMethod.GET, produces = "application/json")
-    public List<CommentResponse> getComments(@PathVariable String processInstanceId, HttpServletRequest request) {
-        HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
-        return restResponseFactory.createRestCommentList(taskService.getProcessInstanceComments(instance.getId()));
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments", method = RequestMethod.GET, produces = "application/json")
+  public List<CommentResponse> getComments(@PathVariable String processInstanceId, HttpServletRequest request) {
+    HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
+    return restResponseFactory.createRestCommentList(taskService.getProcessInstanceComments(instance.getId()));
+  }
+
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments", method = RequestMethod.POST, produces = "application/json")
+  public CommentResponse createComment(@PathVariable String processInstanceId, @RequestBody CommentResponse comment, HttpServletRequest request, HttpServletResponse response) {
+
+    HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
+
+    if (comment.getMessage() == null) {
+      throw new ActivitiIllegalArgumentException("Comment text is required.");
     }
 
-    @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments", method = RequestMethod.POST, produces = "application/json")
-    public CommentResponse createComment(@PathVariable String processInstanceId, @RequestBody CommentResponse comment, HttpServletRequest request, HttpServletResponse response) {
+    Comment createdComment = taskService.addComment(null, instance.getId(), comment.getMessage());
+    response.setStatus(HttpStatus.CREATED.value());
 
-        HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
+    return restResponseFactory.createRestComment(createdComment);
+  }
 
-        if (comment.getMessage() == null) {
-            throw new ActivitiIllegalArgumentException("Comment text is required.");
-        }
-
-        Comment createdComment = taskService.addComment(null, instance.getId(), comment.getMessage());
-        response.setStatus(HttpStatus.CREATED.value());
-
-        return restResponseFactory.createRestComment(createdComment);
+  protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
+    HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    if (processInstance == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
     }
-
-    protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
-        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        if (processInstance == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
-        }
-        return processInstance;
-    }
+    return processInstance;
+  }
 }

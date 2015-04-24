@@ -34,152 +34,141 @@ import org.activiti.workflow.simple.definition.form.NumberPropertyDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Base class that can be used for {@link StepDefinitionConverter}, contains
- * utility-methods.
+ * Base class that can be used for {@link StepDefinitionConverter}, contains utility-methods.
  * 
- * All {@link StepDefinitionConverter} should extend this class and implement
- * any BPMN 2.0 xml generation logic in the
- * {@link #createProcessArtifact(StepDefinition, WorkflowDefinitionConversion)}
+ * All {@link StepDefinitionConverter} should extend this class and implement any BPMN 2.0 xml generation logic in the {@link #createProcessArtifact(StepDefinition, WorkflowDefinitionConversion)}
  * method.
  * 
- * The generation of additional artifacts should be done by overriding the
- * {@link #createAdditionalArtifacts(Object)} method adn adding the produced
- * artifacts to the generic map on the {@link WorkflowDefinitionConversion}.
+ * The generation of additional artifacts should be done by overriding the {@link #createAdditionalArtifacts(Object)} method adn adding the produced artifacts to the generic map on the
+ * {@link WorkflowDefinitionConversion}.
  * 
  * @author Frederik Heremans
  * @author Joram Barrez
  */
 public abstract class BaseStepDefinitionConverter<U extends StepDefinition, T> implements StepDefinitionConverter<U, T> {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @SuppressWarnings("unchecked")
-    public T convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
-        U typedStepDefinition = (U) stepDefinition;
-        T processArtifact = createProcessArtifact(typedStepDefinition, conversion);
-        createAdditionalArtifacts(conversion, typedStepDefinition, processArtifact);
-        return processArtifact;
+  @SuppressWarnings("unchecked")
+  public T convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion) {
+    U typedStepDefinition = (U) stepDefinition;
+    T processArtifact = createProcessArtifact(typedStepDefinition, conversion);
+    createAdditionalArtifacts(conversion, typedStepDefinition, processArtifact);
+    return processArtifact;
+  }
+
+  /**
+   * Subclasses must implement this method and create the BPMN 2.0 process artifact(s) for the provided step.
+   */
+  protected abstract T createProcessArtifact(U stepDefinition, WorkflowDefinitionConversion conversion);
+
+  /**
+   * Subclasses should override this method if they want to create additional artifacts for this specific step. The default generated process artifact is passed as parameter.
+   */
+  protected void createAdditionalArtifacts(WorkflowDefinitionConversion conversion, U stepDefinition, T defaultGeneratedArtifact) {
+  }
+
+  /**
+   * Adds a flow element to the {@link Process}. A sequence flow will NOT automatically be added
+   */
+  protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement) {
+    addFlowElement(conversion, flowElement, false);
+  }
+
+  protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement, boolean addSequenceFlowToLastActivity) {
+    if (conversion.isSequenceflowGenerationEnabled() && addSequenceFlowToLastActivity) {
+      addSequenceFlow(conversion, conversion.getLastActivityId(), flowElement.getId());
+    }
+    conversion.getProcess().addFlowElement(flowElement);
+
+    if (conversion.isUpdateLastActivityEnabled()) {
+      conversion.setLastActivityId(flowElement.getId());
+    }
+  }
+
+  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, FlowNode sourceActivity, FlowNode targetActivity) {
+    return addSequenceFlow(conversion, sourceActivity.getId(), targetActivity.getId());
+  }
+
+  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId) {
+    return addSequenceFlow(conversion, sourceActivityId, targetActivityId, null);
+  }
+
+  /**
+   * Add a sequence-flow to the current process from source to target. Sequence-flow name is set to a user-friendly name, containing an incrementing number.
+   * 
+   * @param conversion
+   * @param sourceActivityId
+   * @param targetActivityId
+   * @param condition
+   */
+  protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId, String condition) {
+
+    SequenceFlow sequenceFlow = new SequenceFlow();
+    sequenceFlow.setId(conversion.getUniqueNumberedId(getSequenceFlowPrefix()));
+    sequenceFlow.setSourceRef(sourceActivityId);
+    sequenceFlow.setTargetRef(targetActivityId);
+
+    if (StringUtils.isNotEmpty(condition)) {
+      sequenceFlow.setConditionExpression(condition);
     }
 
-    /**
-     * Subclasses must implement this method and create the BPMN 2.0 process
-     * artifact(s) for the provided step.
-     */
-    protected abstract T createProcessArtifact(U stepDefinition, WorkflowDefinitionConversion conversion);
+    conversion.getProcess().addFlowElement(sequenceFlow);
+    return sequenceFlow;
+  }
 
-    /**
-     * Subclasses should override this method if they want to create additional
-     * artifacts for this specific step. The default generated process artifact
-     * is passed as parameter.
-     */
-    protected void createAdditionalArtifacts(WorkflowDefinitionConversion conversion, U stepDefinition, T defaultGeneratedArtifact) {
-    }
+  // Subclasses can overwrite this if they want a different sequence flow
+  // prefix
+  protected String getSequenceFlowPrefix() {
+    return ConversionConstants.DEFAULT_SEQUENCEFLOW_PREFIX;
+  }
 
-    /**
-     * Adds a flow element to the {@link Process}. A sequence flow will NOT
-     * automatically be added
-     */
-    protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement) {
-        addFlowElement(conversion, flowElement, false);
-    }
+  /**
+   * Converts form properties. Multiple step types can contain forms, hence why it it a shared method here.
+   */
+  protected List<FormProperty> convertProperties(FormDefinition formDefinition) {
 
-    protected void addFlowElement(WorkflowDefinitionConversion conversion, FlowElement flowElement, boolean addSequenceFlowToLastActivity) {
-        if (conversion.isSequenceflowGenerationEnabled() && addSequenceFlowToLastActivity) {
-            addSequenceFlow(conversion, conversion.getLastActivityId(), flowElement.getId());
+    List<FormProperty> formProperties = new ArrayList<FormProperty>();
+
+    for (FormPropertyDefinition propertyDefinition : formDefinition.getFormPropertyDefinitions()) {
+      FormProperty formProperty = new FormProperty();
+      formProperties.add(formProperty);
+
+      formProperty.setId(propertyDefinition.getName());
+      formProperty.setName(propertyDefinition.getName());
+      formProperty.setRequired(propertyDefinition.isMandatory());
+
+      String type = null;
+      if (propertyDefinition instanceof NumberPropertyDefinition) {
+        type = "long";
+      } else if (propertyDefinition instanceof DatePropertyDefinition) {
+        type = "date";
+      } else if (propertyDefinition instanceof BooleanPropertyDefinition) {
+        type = "boolean";
+      } else if (propertyDefinition instanceof ListPropertyDefinition) {
+
+        type = "enum";
+        ListPropertyDefinition listDefinition = (ListPropertyDefinition) propertyDefinition;
+
+        if (!listDefinition.getEntries().isEmpty()) {
+          List<FormValue> formValues = new ArrayList<FormValue>(listDefinition.getEntries().size());
+          for (ListPropertyEntry entry : listDefinition.getEntries()) {
+            FormValue formValue = new FormValue();
+            // We're using same value for id and name for the moment
+            formValue.setId(entry.getValue());
+            formValue.setName(entry.getName());
+            formValues.add(formValue);
+          }
+          formProperty.setFormValues(formValues);
         }
-        conversion.getProcess().addFlowElement(flowElement);
-
-        if (conversion.isUpdateLastActivityEnabled()) {
-            conversion.setLastActivityId(flowElement.getId());
-        }
+      } else {
+        // Fallback to simple text
+        type = "string";
+      }
+      formProperty.setType(type);
     }
 
-    protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, FlowNode sourceActivity, FlowNode targetActivity) {
-        return addSequenceFlow(conversion, sourceActivity.getId(), targetActivity.getId());
-    }
-
-    protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId) {
-        return addSequenceFlow(conversion, sourceActivityId, targetActivityId, null);
-    }
-
-    /**
-     * Add a sequence-flow to the current process from source to target.
-     * Sequence-flow name is set to a user-friendly name, containing an
-     * incrementing number.
-     * 
-     * @param conversion
-     * @param sourceActivityId
-     * @param targetActivityId
-     * @param condition
-     */
-    protected SequenceFlow addSequenceFlow(WorkflowDefinitionConversion conversion, String sourceActivityId, String targetActivityId, String condition) {
-
-        SequenceFlow sequenceFlow = new SequenceFlow();
-        sequenceFlow.setId(conversion.getUniqueNumberedId(getSequenceFlowPrefix()));
-        sequenceFlow.setSourceRef(sourceActivityId);
-        sequenceFlow.setTargetRef(targetActivityId);
-
-        if (StringUtils.isNotEmpty(condition)) {
-            sequenceFlow.setConditionExpression(condition);
-        }
-
-        conversion.getProcess().addFlowElement(sequenceFlow);
-        return sequenceFlow;
-    }
-
-    // Subclasses can overwrite this if they want a different sequence flow
-    // prefix
-    protected String getSequenceFlowPrefix() {
-        return ConversionConstants.DEFAULT_SEQUENCEFLOW_PREFIX;
-    }
-
-    /**
-     * Converts form properties. Multiple step types can contain forms, hence
-     * why it it a shared method here.
-     */
-    protected List<FormProperty> convertProperties(FormDefinition formDefinition) {
-
-        List<FormProperty> formProperties = new ArrayList<FormProperty>();
-
-        for (FormPropertyDefinition propertyDefinition : formDefinition.getFormPropertyDefinitions()) {
-            FormProperty formProperty = new FormProperty();
-            formProperties.add(formProperty);
-
-            formProperty.setId(propertyDefinition.getName());
-            formProperty.setName(propertyDefinition.getName());
-            formProperty.setRequired(propertyDefinition.isMandatory());
-
-            String type = null;
-            if (propertyDefinition instanceof NumberPropertyDefinition) {
-                type = "long";
-            } else if (propertyDefinition instanceof DatePropertyDefinition) {
-                type = "date";
-            } else if (propertyDefinition instanceof BooleanPropertyDefinition) {
-                type = "boolean";
-            } else if (propertyDefinition instanceof ListPropertyDefinition) {
-
-                type = "enum";
-                ListPropertyDefinition listDefinition = (ListPropertyDefinition) propertyDefinition;
-
-                if (!listDefinition.getEntries().isEmpty()) {
-                    List<FormValue> formValues = new ArrayList<FormValue>(listDefinition.getEntries().size());
-                    for (ListPropertyEntry entry : listDefinition.getEntries()) {
-                        FormValue formValue = new FormValue();
-                        // We're using same value for id and name for the moment
-                        formValue.setId(entry.getValue());
-                        formValue.setName(entry.getName());
-                        formValues.add(formValue);
-                    }
-                    formProperty.setFormValues(formValues);
-                }
-            } else {
-                // Fallback to simple text
-                type = "string";
-            }
-            formProperty.setType(type);
-        }
-
-        return formProperties;
-    }
+    return formProperties;
+  }
 
 }

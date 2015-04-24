@@ -20,10 +20,10 @@ package org.activiti5.engine.impl;
  */
 public class TaskQueryVariableValue extends QueryVariableValue {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public TaskQueryVariableValue(String name, Object value, QueryOperator operator, boolean isTaskVariable) {
-        super(name, value, operator, isTaskVariable);
-    }
+  public TaskQueryVariableValue(String name, Object value, QueryOperator operator, boolean isTaskVariable) {
+    super(name, value, operator, isTaskVariable);
+  }
 
 }

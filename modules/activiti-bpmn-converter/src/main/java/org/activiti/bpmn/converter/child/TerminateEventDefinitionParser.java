@@ -26,19 +26,19 @@ import org.activiti.bpmn.model.TerminateEventDefinition;
  */
 public class TerminateEventDefinitionParser extends BaseChildElementParser {
 
-    public String getElementName() {
-        return ELEMENT_EVENT_TERMINATEDEFINITION;
-    }
+  public String getElementName() {
+    return ELEMENT_EVENT_TERMINATEDEFINITION;
+  }
 
-    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-        if (parentElement instanceof EndEvent == false)
-            return;
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+    if (parentElement instanceof EndEvent == false)
+      return;
 
-        TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
-        BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+    TerminateEventDefinition eventDefinition = new TerminateEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
 
-        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TERMINATEDEFINITION, eventDefinition, xtr, model);
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_TERMINATEDEFINITION, eventDefinition, xtr, model);
 
-        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
-    }
+    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+  }
 }

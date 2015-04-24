@@ -25,19 +25,19 @@ import org.activiti5.engine.task.Task;
  */
 public class NewTaskCmd implements Command<Task>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String taskId;
+  protected String taskId;
 
-    public NewTaskCmd(String taskId) {
-        this.taskId = taskId;
-    }
+  public NewTaskCmd(String taskId) {
+    this.taskId = taskId;
+  }
 
-    public Task execute(CommandContext commandContext) {
-        Date currentTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
-        TaskEntity task = TaskEntity.create(currentTime);
-        task.setId(taskId);
-        return task;
-    }
+  public Task execute(CommandContext commandContext) {
+    Date currentTime = commandContext.getProcessEngineConfiguration().getClock().getCurrentTime();
+    TaskEntity task = TaskEntity.create(currentTime);
+    task.setId(taskId);
+    return task;
+  }
 
 }

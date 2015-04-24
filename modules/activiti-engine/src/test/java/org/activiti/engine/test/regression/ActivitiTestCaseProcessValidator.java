@@ -16,45 +16,45 @@ import org.activiti.validation.validator.ValidatorSet;
  */
 public class ActivitiTestCaseProcessValidator implements ProcessValidator {
 
-    @Override
-    public List<ValidationError> validate(BpmnModel bpmnModel) {
-        List<ValidationError> errorList = new ArrayList<ValidationError>();
-        CustomParseValidator customParseValidator = new CustomParseValidator();
+  @Override
+  public List<ValidationError> validate(BpmnModel bpmnModel) {
+    List<ValidationError> errorList = new ArrayList<ValidationError>();
+    CustomParseValidator customParseValidator = new CustomParseValidator();
 
-        for (Process process : bpmnModel.getProcesses()) {
-            customParseValidator.executeParse(bpmnModel, process);
-        }
-
-        for (String errorRef : bpmnModel.getErrors().keySet()) {
-            ValidationError error = new ValidationError();
-            error.setValidatorSetName("Manual BPMN parse validator");
-            error.setProblem(errorRef);
-            error.setActivityId(bpmnModel.getErrors().get(errorRef));
-            errorList.add(error);
-        }
-        return errorList;
+    for (Process process : bpmnModel.getProcesses()) {
+      customParseValidator.executeParse(bpmnModel, process);
     }
 
-    @Override
-    public List<ValidatorSet> getValidatorSets() {
-        return null;
+    for (String errorRef : bpmnModel.getErrors().keySet()) {
+      ValidationError error = new ValidationError();
+      error.setValidatorSetName("Manual BPMN parse validator");
+      error.setProblem(errorRef);
+      error.setActivityId(bpmnModel.getErrors().get(errorRef));
+      errorList.add(error);
+    }
+    return errorList;
+  }
+
+  @Override
+  public List<ValidatorSet> getValidatorSets() {
+    return null;
+  }
+
+  class CustomParseValidator {
+    protected void executeParse(BpmnModel bpmnModel, Process element) {
+      for (FlowElement flowElement : element.getFlowElements()) {
+        if (!ServiceTask.class.isAssignableFrom(flowElement.getClass())) {
+          continue;
+        }
+        ServiceTask serviceTask = (ServiceTask) flowElement;
+        validateAsyncAttribute(serviceTask, bpmnModel, flowElement);
+      }
     }
 
-    class CustomParseValidator {
-        protected void executeParse(BpmnModel bpmnModel, Process element) {
-            for (FlowElement flowElement : element.getFlowElements()) {
-                if (!ServiceTask.class.isAssignableFrom(flowElement.getClass())) {
-                    continue;
-                }
-                ServiceTask serviceTask = (ServiceTask) flowElement;
-                validateAsyncAttribute(serviceTask, bpmnModel, flowElement);
-            }
-        }
-
-        void validateAsyncAttribute(ServiceTask serviceTask, BpmnModel bpmnModel, FlowElement flowElement) {
-            if (!serviceTask.isAsynchronous()) {
-                bpmnModel.addError("Please set value of 'activiti:async'" + "attribute as true for task:" + serviceTask.getName(), flowElement.getId());
-            }
-        }
+    void validateAsyncAttribute(ServiceTask serviceTask, BpmnModel bpmnModel, FlowElement flowElement) {
+      if (!serviceTask.isAsynchronous()) {
+        bpmnModel.addError("Please set value of 'activiti:async'" + "attribute as true for task:" + serviceTask.getName(), flowElement.getId());
+      }
     }
+  }
 }

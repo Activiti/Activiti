@@ -20,16 +20,16 @@ import org.activiti5.engine.delegate.JavaDelegate;
  */
 public class MultiInstanceDelegate implements JavaDelegate {
 
-    public void execute(DelegateExecution execution) throws Exception {
-        Integer result = (Integer) execution.getVariable("result");
+  public void execute(DelegateExecution execution) throws Exception {
+    Integer result = (Integer) execution.getVariable("result");
 
-        Integer item = (Integer) execution.getVariable("item");
-        if (item != null) {
-            result = result * item;
-        } else {
-            result = result * 2;
-        }
-        execution.setVariable("result", result);
+    Integer item = (Integer) execution.getVariable("item");
+    if (item != null) {
+      result = result * item;
+    } else {
+      result = result * 2;
     }
+    execution.setVariable("result", result);
+  }
 
 }

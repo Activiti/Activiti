@@ -24,52 +24,51 @@ import org.activiti5.engine.impl.javax.el.ValueReference;
  * @author Christoph Beck
  */
 public abstract class AstRightValue extends AstNode {
-    /**
-     * Answer <code>false</code>
-     */
-    public final boolean isLiteralText() {
-        return false;
-    }
+  /**
+   * Answer <code>false</code>
+   */
+  public final boolean isLiteralText() {
+    return false;
+  }
 
-    /**
-     * according to the spec, the result is undefined for rvalues, so answer
-     * <code>null</code>
-     */
-    public final Class<?> getType(Bindings bindings, ELContext context) {
-        return null;
-    }
+  /**
+   * according to the spec, the result is undefined for rvalues, so answer <code>null</code>
+   */
+  public final Class<?> getType(Bindings bindings, ELContext context) {
+    return null;
+  }
 
-    /**
-     * non-lvalues are always readonly, so answer <code>true</code>
-     */
-    public final boolean isReadOnly(Bindings bindings, ELContext context) {
-        return true;
-    }
+  /**
+   * non-lvalues are always readonly, so answer <code>true</code>
+   */
+  public final boolean isReadOnly(Bindings bindings, ELContext context) {
+    return true;
+  }
 
-    /**
-     * non-lvalues are always readonly, so throw an exception
-     */
-    public final void setValue(Bindings bindings, ELContext context, Object value) {
-        throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
-    }
+  /**
+   * non-lvalues are always readonly, so throw an exception
+   */
+  public final void setValue(Bindings bindings, ELContext context, Object value) {
+    throw new ELException(LocalMessages.get("error.value.set.rvalue", getStructuralId(bindings)));
+  }
 
-    public final MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
-        return null;
-    }
+  public final MethodInfo getMethodInfo(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes) {
+    return null;
+  }
 
-    public final Object invoke(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes, Object[] paramValues) {
-        throw new ELException(LocalMessages.get("error.method.invalid", getStructuralId(bindings)));
-    }
+  public final Object invoke(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes, Object[] paramValues) {
+    throw new ELException(LocalMessages.get("error.method.invalid", getStructuralId(bindings)));
+  }
 
-    public final boolean isLeftValue() {
-        return false;
-    }
+  public final boolean isLeftValue() {
+    return false;
+  }
 
-    public boolean isMethodInvocation() {
-        return false;
-    }
+  public boolean isMethodInvocation() {
+    return false;
+  }
 
-    public final ValueReference getValueReference(Bindings bindings, ELContext context) {
-        return null;
-    }
+  public final ValueReference getValueReference(Bindings bindings, ELContext context) {
+    return null;
+  }
 }

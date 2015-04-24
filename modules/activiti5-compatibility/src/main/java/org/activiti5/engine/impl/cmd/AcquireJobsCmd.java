@@ -31,59 +31,59 @@ import org.activiti5.engine.impl.persistence.entity.MessageEntity;
  */
 public class AcquireJobsCmd implements Command<AcquiredJobs> {
 
-    private final JobExecutor jobExecutor;
+  private final JobExecutor jobExecutor;
 
-    public AcquireJobsCmd(JobExecutor jobExecutor) {
-        this.jobExecutor = jobExecutor;
-    }
+  public AcquireJobsCmd(JobExecutor jobExecutor) {
+    this.jobExecutor = jobExecutor;
+  }
 
-    public AcquiredJobs execute(CommandContext commandContext) {
+  public AcquiredJobs execute(CommandContext commandContext) {
 
-        String lockOwner = jobExecutor.getLockOwner();
-        int lockTimeInMillis = jobExecutor.getLockTimeInMillis();
-        int maxNonExclusiveJobsPerAcquisition = jobExecutor.getMaxJobsPerAcquisition();
+    String lockOwner = jobExecutor.getLockOwner();
+    int lockTimeInMillis = jobExecutor.getLockTimeInMillis();
+    int maxNonExclusiveJobsPerAcquisition = jobExecutor.getMaxJobsPerAcquisition();
 
-        AcquiredJobs acquiredJobs = new AcquiredJobs();
-        List<JobEntity> jobs = commandContext.getJobEntityManager().findNextJobsToExecute(new Page(0, maxNonExclusiveJobsPerAcquisition));
+    AcquiredJobs acquiredJobs = new AcquiredJobs();
+    List<JobEntity> jobs = commandContext.getJobEntityManager().findNextJobsToExecute(new Page(0, maxNonExclusiveJobsPerAcquisition));
 
-        for (JobEntity job : jobs) {
-            List<String> jobIds = new ArrayList<String>();
-            if (job != null && !acquiredJobs.contains(job.getId())) {
-                if (job instanceof MessageEntity && job.isExclusive() && job.getProcessInstanceId() != null) {
-                    // wait to get exclusive jobs within 100ms
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                    }
+    for (JobEntity job : jobs) {
+      List<String> jobIds = new ArrayList<String>();
+      if (job != null && !acquiredJobs.contains(job.getId())) {
+        if (job instanceof MessageEntity && job.isExclusive() && job.getProcessInstanceId() != null) {
+          // wait to get exclusive jobs within 100ms
+          try {
+            Thread.sleep(100);
+          } catch (InterruptedException e) {
+          }
 
-                    // acquire all exclusive jobs in the same process instance
-                    // (includes the current job)
-                    List<JobEntity> exclusiveJobs = commandContext.getJobEntityManager().findExclusiveJobsToExecute(job.getProcessInstanceId());
-                    for (JobEntity exclusiveJob : exclusiveJobs) {
-                        if (exclusiveJob != null) {
-                            lockJob(commandContext, exclusiveJob, lockOwner, lockTimeInMillis);
-                            jobIds.add(exclusiveJob.getId());
-                        }
-                    }
-
-                } else {
-                    lockJob(commandContext, job, lockOwner, lockTimeInMillis);
-                    jobIds.add(job.getId());
-                }
-
+          // acquire all exclusive jobs in the same process instance
+          // (includes the current job)
+          List<JobEntity> exclusiveJobs = commandContext.getJobEntityManager().findExclusiveJobsToExecute(job.getProcessInstanceId());
+          for (JobEntity exclusiveJob : exclusiveJobs) {
+            if (exclusiveJob != null) {
+              lockJob(commandContext, exclusiveJob, lockOwner, lockTimeInMillis);
+              jobIds.add(exclusiveJob.getId());
             }
+          }
 
-            acquiredJobs.addJobIdBatch(jobIds);
+        } else {
+          lockJob(commandContext, job, lockOwner, lockTimeInMillis);
+          jobIds.add(job.getId());
         }
 
-        return acquiredJobs;
+      }
+
+      acquiredJobs.addJobIdBatch(jobIds);
     }
 
-    protected void lockJob(CommandContext commandContext, JobEntity job, String lockOwner, int lockTimeInMillis) {
-        job.setLockOwner(lockOwner);
-        GregorianCalendar gregorianCalendar = new GregorianCalendar();
-        gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
-        gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
-        job.setLockExpirationTime(gregorianCalendar.getTime());
-    }
+    return acquiredJobs;
+  }
+
+  protected void lockJob(CommandContext commandContext, JobEntity job, String lockOwner, int lockTimeInMillis) {
+    job.setLockOwner(lockOwner);
+    GregorianCalendar gregorianCalendar = new GregorianCalendar();
+    gregorianCalendar.setTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
+    gregorianCalendar.add(Calendar.MILLISECOND, lockTimeInMillis);
+    job.setLockExpirationTime(gregorianCalendar.getTime());
+  }
 }

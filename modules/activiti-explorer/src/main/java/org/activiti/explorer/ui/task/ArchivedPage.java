@@ -29,42 +29,41 @@ import com.vaadin.ui.Component;
  */
 public class ArchivedPage extends TaskPage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public ArchivedPage() {
+  public ArchivedPage() {
+  }
+
+  /**
+   * Constructor called when page is accessed straight through the url, eg. /task/123
+   */
+  public ArchivedPage(String taskId) {
+    super(taskId);
+  }
+
+  @Override
+  protected LazyLoadingQuery createLazyLoadingQuery() {
+    return new ArchivedListQuery();
+  }
+
+  @Override
+  protected Component createDetailComponent(String id) {
+    HistoryService historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
+    HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(id).singleResult();
+    taskEventPanel.setTaskId(historicTaskInstance.getId());
+    return new HistoricTaskDetailPanel(historicTaskInstance, this);
+  }
+
+  @Override
+  protected UriFragment getUriFragment(String taskId) {
+    UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
+
+    if (taskId != null) {
+      taskFragment.addUriPart(taskId);
     }
 
-    /**
-     * Constructor called when page is accessed straight through the url, eg.
-     * /task/123
-     */
-    public ArchivedPage(String taskId) {
-        super(taskId);
-    }
-
-    @Override
-    protected LazyLoadingQuery createLazyLoadingQuery() {
-        return new ArchivedListQuery();
-    }
-
-    @Override
-    protected Component createDetailComponent(String id) {
-        HistoryService historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
-        HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().taskId(id).singleResult();
-        taskEventPanel.setTaskId(historicTaskInstance.getId());
-        return new HistoricTaskDetailPanel(historicTaskInstance, this);
-    }
-
-    @Override
-    protected UriFragment getUriFragment(String taskId) {
-        UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
-
-        if (taskId != null) {
-            taskFragment.addUriPart(taskId);
-        }
-
-        taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_ARCHIVED);
-        return taskFragment;
-    }
+    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_ARCHIVED);
+    return taskFragment;
+  }
 
 }

@@ -34,30 +34,30 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TaskAttachmentResource extends TaskBaseResource {
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.GET, produces = "application/json")
-    public AttachmentResponse getAttachment(@PathVariable("taskId") String taskId, @PathVariable("attachmentId") String attachmentId, HttpServletRequest request) {
+  @RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.GET, produces = "application/json")
+  public AttachmentResponse getAttachment(@PathVariable("taskId") String taskId, @PathVariable("attachmentId") String attachmentId, HttpServletRequest request) {
 
-        HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
+    HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
 
-        Attachment attachment = taskService.getAttachment(attachmentId);
-        if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
-        }
-
-        return restResponseFactory.createAttachmentResponse(attachment);
+    Attachment attachment = taskService.getAttachment(attachmentId);
+    if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
     }
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.DELETE)
-    public void deleteAttachment(@PathVariable("taskId") String taskId, @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
+    return restResponseFactory.createAttachmentResponse(attachment);
+  }
 
-        Task task = getTaskFromRequest(taskId);
+  @RequestMapping(value = "/runtime/tasks/{taskId}/attachments/{attachmentId}", method = RequestMethod.DELETE)
+  public void deleteAttachment(@PathVariable("taskId") String taskId, @PathVariable("attachmentId") String attachmentId, HttpServletResponse response) {
 
-        Attachment attachment = taskService.getAttachment(attachmentId);
-        if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
-        }
+    Task task = getTaskFromRequest(taskId);
 
-        taskService.deleteAttachment(attachmentId);
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+    Attachment attachment = taskService.getAttachment(attachmentId);
+    if (attachment == null || !task.getId().equals(attachment.getTaskId())) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have an attachment with id '" + attachmentId + "'.", Comment.class);
     }
+
+    taskService.deleteAttachment(attachmentId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 }

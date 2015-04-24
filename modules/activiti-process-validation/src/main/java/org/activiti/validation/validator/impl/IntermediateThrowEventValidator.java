@@ -29,19 +29,19 @@ import org.activiti.validation.validator.ProcessLevelValidator;
  */
 public class IntermediateThrowEventValidator extends ProcessLevelValidator {
 
-    @Override
-    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-        List<ThrowEvent> throwEvents = process.findFlowElementsOfType(ThrowEvent.class);
-        for (ThrowEvent throwEvent : throwEvents) {
-            EventDefinition eventDefinition = null;
-            if (!throwEvent.getEventDefinitions().isEmpty()) {
-                eventDefinition = throwEvent.getEventDefinitions().get(0);
-            }
+  @Override
+  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+    List<ThrowEvent> throwEvents = process.findFlowElementsOfType(ThrowEvent.class);
+    for (ThrowEvent throwEvent : throwEvents) {
+      EventDefinition eventDefinition = null;
+      if (!throwEvent.getEventDefinitions().isEmpty()) {
+        eventDefinition = throwEvent.getEventDefinitions().get(0);
+      }
 
-            if (eventDefinition != null && !(eventDefinition instanceof SignalEventDefinition) && !(eventDefinition instanceof CompensateEventDefinition)) {
-                addError(errors, Problems.THROW_EVENT_INVALID_EVENTDEFINITION, process, throwEvent, "Unsupported intermediate throw event type");
-            }
-        }
+      if (eventDefinition != null && !(eventDefinition instanceof SignalEventDefinition) && !(eventDefinition instanceof CompensateEventDefinition)) {
+        addError(errors, Problems.THROW_EVENT_INVALID_EVENTDEFINITION, process, throwEvent, "Unsupported intermediate throw event type");
+      }
     }
+  }
 
 }

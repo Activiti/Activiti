@@ -17,46 +17,46 @@ import org.activiti.explorer.Constants;
 
 public class ExplorerFilter implements Filter {
 
-    private List<String> ignoreList = new ArrayList<String>();
+  private List<String> ignoreList = new ArrayList<String>();
 
-    @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-        ignoreList.add("/ui");
-        ignoreList.add("/VAADIN");
-        ignoreList.add("/modeler.html");
-        ignoreList.add("/editor-app");
-        ignoreList.add("/service");
-        ignoreList.add("/diagram-viewer");
+  @Override
+  public void init(FilterConfig filterConfig) throws ServletException {
+    ignoreList.add("/ui");
+    ignoreList.add("/VAADIN");
+    ignoreList.add("/modeler.html");
+    ignoreList.add("/editor-app");
+    ignoreList.add("/service");
+    ignoreList.add("/diagram-viewer");
+  }
+
+  @Override
+  public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    HttpServletRequest req = (HttpServletRequest) request;
+    String path = req.getRequestURI().substring(req.getContextPath().length());
+    int indexSlash = path.indexOf("/", 1);
+    String firstPart = null;
+    if (indexSlash > 0) {
+      firstPart = path.substring(0, indexSlash);
+    } else {
+      firstPart = path;
     }
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        HttpServletRequest req = (HttpServletRequest) request;
-        String path = req.getRequestURI().substring(req.getContextPath().length());
-        int indexSlash = path.indexOf("/", 1);
-        String firstPart = null;
-        if (indexSlash > 0) {
-            firstPart = path.substring(0, indexSlash);
-        } else {
-            firstPart = path;
-        }
+    if (ignoreList.contains(firstPart)) {
 
-        if (ignoreList.contains(firstPart)) {
+      // Only authenticated users can access /service
+      if ("/service".equals(firstPart) && req.getRemoteUser() == null && (req.getSession(false) == null || req.getSession().getAttribute(Constants.AUTHENTICATED_USER_ID) == null)) {
+        ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
+        return;
+      }
 
-            // Only authenticated users can access /service
-            if ("/service".equals(firstPart) && req.getRemoteUser() == null && (req.getSession(false) == null || req.getSession().getAttribute(Constants.AUTHENTICATED_USER_ID) == null)) {
-                ((HttpServletResponse) response).sendError(HttpServletResponse.SC_FORBIDDEN);
-                return;
-            }
-
-            chain.doFilter(request, response); // Goes to default servlet.
-        } else {
-            request.getRequestDispatcher("/ui" + path).forward(request, response);
-        }
+      chain.doFilter(request, response); // Goes to default servlet.
+    } else {
+      request.getRequestDispatcher("/ui" + path).forward(request, response);
     }
+  }
 
-    @Override
-    public void destroy() {
-    }
+  @Override
+  public void destroy() {
+  }
 
 }

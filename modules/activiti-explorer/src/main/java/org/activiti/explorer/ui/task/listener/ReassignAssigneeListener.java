@@ -35,49 +35,49 @@ import com.vaadin.ui.Button.ClickListener;
  */
 public class ReassignAssigneeListener implements ClickListener {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected Task task;
-    protected TaskDetailPanel taskDetailPanel;
-    protected I18nManager i18nManager;
+  protected Task task;
+  protected TaskDetailPanel taskDetailPanel;
+  protected I18nManager i18nManager;
 
-    public ReassignAssigneeListener(Task task, TaskDetailPanel taskDetailPanel) {
-        this.task = task;
-        this.taskDetailPanel = taskDetailPanel;
-        this.i18nManager = ExplorerApp.get().getI18nManager();
+  public ReassignAssigneeListener(Task task, TaskDetailPanel taskDetailPanel) {
+    this.task = task;
+    this.taskDetailPanel = taskDetailPanel;
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+  }
+
+  public void buttonClick(ClickEvent event) {
+    List<String> ignoredIds = null;
+    if (task.getAssignee() != null) {
+      ignoredIds = Arrays.asList(task.getAssignee());
     }
 
-    public void buttonClick(ClickEvent event) {
-        List<String> ignoredIds = null;
-        if (task.getAssignee() != null) {
-            ignoredIds = Arrays.asList(task.getAssignee());
+    final SelectUsersPopupWindow involvePeoplePopupWindow = new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_ASSIGNEE_REASSIGN), false, ignoredIds);
+
+    involvePeoplePopupWindow.addListener(new SubmitEventListener() {
+      protected void submitted(SubmitEvent event) {
+        // Update assignee
+        String selectedUser = involvePeoplePopupWindow.getSelectedUserId();
+        String originAssignee = task.getAssignee();
+        task.setAssignee(selectedUser);
+        if (selectedUser != null) {
+          ProcessEngines.getDefaultProcessEngine().getTaskService().setAssignee(task.getId(), selectedUser);
+        } else if (originAssignee != null) {
+          ProcessEngines.getDefaultProcessEngine().getTaskService().deleteUserIdentityLink(task.getId(), originAssignee, IdentityLinkType.ASSIGNEE);
+        } else {
+          return;
         }
 
-        final SelectUsersPopupWindow involvePeoplePopupWindow = new SelectUsersPopupWindow(i18nManager.getMessage(Messages.TASK_ASSIGNEE_REASSIGN), false, ignoredIds);
+        // Update UI
+        taskDetailPanel.notifyAssigneeChanged();
+      }
 
-        involvePeoplePopupWindow.addListener(new SubmitEventListener() {
-            protected void submitted(SubmitEvent event) {
-                // Update assignee
-                String selectedUser = involvePeoplePopupWindow.getSelectedUserId();
-                String originAssignee = task.getAssignee();
-                task.setAssignee(selectedUser);
-                if (selectedUser != null) {
-                    ProcessEngines.getDefaultProcessEngine().getTaskService().setAssignee(task.getId(), selectedUser);
-                } else if (originAssignee != null) {
-                    ProcessEngines.getDefaultProcessEngine().getTaskService().deleteUserIdentityLink(task.getId(), originAssignee, IdentityLinkType.ASSIGNEE);
-                } else {
-                    return;
-                }
+      protected void cancelled(SubmitEvent event) {
+      }
+    });
 
-                // Update UI
-                taskDetailPanel.notifyAssigneeChanged();
-            }
-
-            protected void cancelled(SubmitEvent event) {
-            }
-        });
-
-        ExplorerApp.get().getViewManager().showPopupWindow(involvePeoplePopupWindow);
-    }
+    ExplorerApp.get().getViewManager().showPopupWindow(involvePeoplePopupWindow);
+  }
 
 }

@@ -26,9 +26,7 @@ import org.activiti.engine.impl.javax.el.MapELResolver;
 /**
  * {@link ExpressionManager} for resolving Cdi-managed beans.
  * 
- * This {@link ExpressionManager} implementation performs lazy lookup of the
- * Cdi-BeanManager and can thus be configured using the spring-based
- * configuration of the process engine:
+ * This {@link ExpressionManager} implementation performs lazy lookup of the Cdi-BeanManager and can thus be configured using the spring-based configuration of the process engine:
  * 
  * <pre>
  * &lt;property name="expressionManager"&gt;
@@ -40,18 +38,18 @@ import org.activiti.engine.impl.javax.el.MapELResolver;
  */
 public class CdiExpressionManager extends ExpressionManager {
 
-    @Override
-    protected ELResolver createElResolver(VariableScope variableScope) {
-        CompositeELResolver compositeElResolver = new CompositeELResolver();
-        compositeElResolver.add(new VariableScopeElResolver(variableScope));
+  @Override
+  protected ELResolver createElResolver(VariableScope variableScope) {
+    CompositeELResolver compositeElResolver = new CompositeELResolver();
+    compositeElResolver.add(new VariableScopeElResolver(variableScope));
 
-        compositeElResolver.add(new CdiResolver());
+    compositeElResolver.add(new CdiResolver());
 
-        compositeElResolver.add(new ArrayELResolver());
-        compositeElResolver.add(new ListELResolver());
-        compositeElResolver.add(new MapELResolver());
-        compositeElResolver.add(new BeanELResolver());
-        return compositeElResolver;
-    }
+    compositeElResolver.add(new ArrayELResolver());
+    compositeElResolver.add(new ListELResolver());
+    compositeElResolver.add(new MapELResolver());
+    compositeElResolver.add(new BeanELResolver());
+    return compositeElResolver;
+  }
 
 }

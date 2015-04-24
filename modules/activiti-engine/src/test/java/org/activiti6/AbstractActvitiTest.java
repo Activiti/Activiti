@@ -27,99 +27,98 @@ import org.junit.Rule;
  * 
  * Boots up a process engine and caches it.
  * 
- * When using H2 and the default schema name, it will also boot the H2 webapp
- * (reachable with browser on http://localhost:8082/)
+ * When using H2 and the default schema name, it will also boot the H2 webapp (reachable with browser on http://localhost:8082/)
  * 
  * @author Joram Barrez
  */
 public class AbstractActvitiTest {
 
-    public static String H2_TEST_JDBC_URL = "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000";
+  public static String H2_TEST_JDBC_URL = "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000";
 
-    @Rule
-    public ActivitiRule activitiRule = new ActivitiRule();
+  @Rule
+  public ActivitiRule activitiRule = new ActivitiRule();
 
-    protected static ProcessEngine cachedProcessEngine;
-    protected RepositoryService repositoryService;
-    protected RuntimeService runtimeService;
-    protected TaskService taskService;
-    protected FormService formService;
-    protected HistoryService historyService;
-    protected ManagementService managementService;
+  protected static ProcessEngine cachedProcessEngine;
+  protected RepositoryService repositoryService;
+  protected RuntimeService runtimeService;
+  protected TaskService taskService;
+  protected FormService formService;
+  protected HistoryService historyService;
+  protected ManagementService managementService;
 
-    @Before
-    public void initProcessEngine() {
-        if (cachedProcessEngine == null) {
-            cachedProcessEngine = activitiRule.getProcessEngine();
+  @Before
+  public void initProcessEngine() {
+    if (cachedProcessEngine == null) {
+      cachedProcessEngine = activitiRule.getProcessEngine();
 
-            // Boot up H2 webapp
-            if (cachedProcessEngine instanceof ProcessEngineImpl) {
-                if (((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getJdbcUrl().equals(H2_TEST_JDBC_URL)) {
-                    initializeH2WebApp(cachedProcessEngine);
-                }
-            }
+      // Boot up H2 webapp
+      if (cachedProcessEngine instanceof ProcessEngineImpl) {
+        if (((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getJdbcUrl().equals(H2_TEST_JDBC_URL)) {
+          initializeH2WebApp(cachedProcessEngine);
+        }
+      }
+    }
+
+    this.repositoryService = cachedProcessEngine.getRepositoryService();
+    this.runtimeService = cachedProcessEngine.getRuntimeService();
+    this.taskService = cachedProcessEngine.getTaskService();
+    this.formService = cachedProcessEngine.getFormService();
+    this.historyService = cachedProcessEngine.getHistoryService();
+    this.managementService = cachedProcessEngine.getManagementService();
+  }
+
+  @After
+  public void resetClock() {
+    activitiRule.getProcessEngine().getProcessEngineConfiguration().getClock().reset();
+  }
+
+  @After
+  public void logCommandInvokerDebugInfo() {
+
+    ProcessExecutionLoggerConfigurator loggerConfigurator = null;
+    List<ProcessEngineConfigurator> configurators = ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getConfigurators();
+    if (configurators != null && configurators.size() > 0) {
+      for (ProcessEngineConfigurator configurator : configurators) {
+        if (configurator instanceof ProcessExecutionLoggerConfigurator) {
+          loggerConfigurator = (ProcessExecutionLoggerConfigurator) configurator;
+          break;
+        }
+      }
+
+      if (loggerConfigurator != null) {
+        loggerConfigurator.getProcessExecutionLogger().logDebugInfo(true);
+      }
+    }
+  }
+
+  protected void initializeH2WebApp(ProcessEngine processEngine) {
+    try {
+      final Server server = Server.createWebServer("-web");
+
+      // Shutdown hook
+      final ProcessEngineConfiguration processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+      final ProcessEngineLifecycleListener originalLifecycleListener = processEngineConfiguration.getProcessEngineLifecycleListener();
+      processEngineConfiguration.setProcessEngineLifecycleListener(new ProcessEngineLifecycleListener() {
+
+        @Override
+        public void onProcessEngineClosed(ProcessEngine processEngine) {
+          server.stop();
+          originalLifecycleListener.onProcessEngineClosed(processEngine);
         }
 
-        this.repositoryService = cachedProcessEngine.getRepositoryService();
-        this.runtimeService = cachedProcessEngine.getRuntimeService();
-        this.taskService = cachedProcessEngine.getTaskService();
-        this.formService = cachedProcessEngine.getFormService();
-        this.historyService = cachedProcessEngine.getHistoryService();
-        this.managementService = cachedProcessEngine.getManagementService();
-    }
-    
-    @After
-    public void resetClock() {
-    	activitiRule.getProcessEngine().getProcessEngineConfiguration().getClock().reset();
-    }
-    
-    @After
-    public void logCommandInvokerDebugInfo() {
-    	
-    	ProcessExecutionLoggerConfigurator loggerConfigurator = null;
-    	List<ProcessEngineConfigurator> configurators = ((ProcessEngineImpl) cachedProcessEngine).getProcessEngineConfiguration().getConfigurators();
-    	if (configurators != null && configurators.size() > 0) {
-	    	for (ProcessEngineConfigurator configurator : configurators) {
-	    		if (configurator instanceof ProcessExecutionLoggerConfigurator) {
-	    			loggerConfigurator = (ProcessExecutionLoggerConfigurator) configurator;
-	    			break;
-	    		}
-	    	}
-	    	
-	    	if (loggerConfigurator != null) {
-	    		loggerConfigurator.getProcessExecutionLogger().logDebugInfo(true);
-	    	}
-    	}
-    }
-
-    protected void initializeH2WebApp(ProcessEngine processEngine) {
-        try {
-            final Server server = Server.createWebServer("-web");
-
-            // Shutdown hook
-            final ProcessEngineConfiguration processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
-            final ProcessEngineLifecycleListener originalLifecycleListener = processEngineConfiguration.getProcessEngineLifecycleListener();
-            processEngineConfiguration.setProcessEngineLifecycleListener(new ProcessEngineLifecycleListener() {
-
-                @Override
-                public void onProcessEngineClosed(ProcessEngine processEngine) {
-                    server.stop();
-                    originalLifecycleListener.onProcessEngineClosed(processEngine);
-                }
-
-                @Override
-                public void onProcessEngineBuilt(ProcessEngine processEngine) {
-                    originalLifecycleListener.onProcessEngineBuilt(processEngine);
-                }
-
-            });
-
-            // Actually start the web server
-            server.start();
-
-        } catch (SQLException e) {
-            throw new ActivitiException("Could not start H2 web app", e);
+        @Override
+        public void onProcessEngineBuilt(ProcessEngine processEngine) {
+          originalLifecycleListener.onProcessEngineBuilt(processEngine);
         }
+
+      });
+
+      // Actually start the web server
+      server.start();
+
+    } catch (SQLException e) {
+      throw new ActivitiException("Could not start H2 web app", e);
     }
+  }
 
 }

@@ -22,14 +22,14 @@ import org.activiti5.engine.test.Deployment;
  */
 public class ScriptBeanAccessTest extends ResourceActivitiTestCase {
 
-    public ScriptBeanAccessTest() {
-        super("org/activiti/standalone/scripting/activiti.cfg.xml");
-    }
+  public ScriptBeanAccessTest() {
+    super("org/activiti/standalone/scripting/activiti.cfg.xml");
+  }
 
-    @Deployment
-    public void testConfigurationBeanAccess() {
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("ScriptBeanAccess");
-        assertEquals("myValue", runtimeService.getVariable(pi.getId(), "myVariable"));
-    }
+  @Deployment
+  public void testConfigurationBeanAccess() {
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("ScriptBeanAccess");
+    assertEquals("myValue", runtimeService.getVariable(pi.getId(), "myVariable"));
+  }
 
 }

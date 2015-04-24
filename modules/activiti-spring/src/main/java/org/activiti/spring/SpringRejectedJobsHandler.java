@@ -18,13 +18,12 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 
 /**
  * <p>
- * Strategy for handling jobs that were acquired but cannot be executed at this
- * point (queue-size exceeded).
+ * Strategy for handling jobs that were acquired but cannot be executed at this point (queue-size exceeded).
  * </p>
  * 
  * @author Tijs Rademakers
  */
 public interface SpringRejectedJobsHandler {
 
-    public void jobRejected(AsyncExecutor asyncExecutor, JobEntity job);
+  public void jobRejected(AsyncExecutor asyncExecutor, JobEntity job);
 }

@@ -30,28 +30,28 @@ import org.activiti.engine.test.Deployment;
  */
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
-    @Deployment
-    public void testWebServiceInvocationWithDataFlowUEL() throws Exception {
-        ProcessDefinitionEntity processDefinition = processEngineConfiguration.getCommandExecutor().execute(new Command<ProcessDefinitionEntity>() {
-            public ProcessDefinitionEntity execute(CommandContext commandContext) {
-                return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("webServiceInvocationWithDataFlowUEL");
-            }
-        });
+  @Deployment
+  public void testWebServiceInvocationWithDataFlowUEL() throws Exception {
+    ProcessDefinitionEntity processDefinition = processEngineConfiguration.getCommandExecutor().execute(new Command<ProcessDefinitionEntity>() {
+      public ProcessDefinitionEntity execute(CommandContext commandContext) {
+        return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("webServiceInvocationWithDataFlowUEL");
+      }
+    });
 
-        ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
+    ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
-        ItemInstance itemInstance = itemDefinition.createInstance();
-        FieldBaseStructureInstance structureInstance = (FieldBaseStructureInstance) itemInstance.getStructureInstance();
-        structureInstance.setFieldValue("prefix", "The counter has the value ");
-        structureInstance.setFieldValue("suffix", ". Good news");
+    ItemInstance itemInstance = itemDefinition.createInstance();
+    FieldBaseStructureInstance structureInstance = (FieldBaseStructureInstance) itemInstance.getStructureInstance();
+    structureInstance.setFieldValue("prefix", "The counter has the value ");
+    structureInstance.setFieldValue("suffix", ". Good news");
 
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("dataInputOfProcess", itemInstance);
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("dataInputOfProcess", itemInstance);
 
-        ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey("webServiceInvocationWithDataFlowUEL", variables);
-        waitForJobExecutorToProcessAllJobs(10000L, 250L);
+    ProcessInstance instance = processEngine.getRuntimeService().startProcessInstanceByKey("webServiceInvocationWithDataFlowUEL", variables);
+    waitForJobExecutorToProcessAllJobs(10000L, 250L);
 
-        String response = (String) processEngine.getRuntimeService().getVariable(instance.getId(), "dataOutputOfProcess");
-        assertEquals("The counter has the value -1. Good news", response);
-    }
+    String response = (String) processEngine.getRuntimeService().getVariable(instance.getId(), "dataOutputOfProcess");
+    assertEquals("The counter has the value -1. Good news", response);
+  }
 }

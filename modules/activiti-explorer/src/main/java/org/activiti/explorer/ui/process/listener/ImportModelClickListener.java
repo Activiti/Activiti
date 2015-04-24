@@ -13,14 +13,14 @@ import com.vaadin.ui.Button.ClickListener;
  */
 public class ImportModelClickListener implements ClickListener {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public void buttonClick(ClickEvent event) {
-        ImportUploadReceiver receiver = new ImportUploadReceiver();
-        ImportPopupWindow importPopupWindow = new ImportPopupWindow(ExplorerApp.get().getI18nManager().getMessage(Messages.MODEL_IMPORT), ExplorerApp.get().getI18nManager()
-                .getMessage(Messages.MODEL_IMPORT_DESCRIPTION), receiver);
+  public void buttonClick(ClickEvent event) {
+    ImportUploadReceiver receiver = new ImportUploadReceiver();
+    ImportPopupWindow importPopupWindow = new ImportPopupWindow(ExplorerApp.get().getI18nManager().getMessage(Messages.MODEL_IMPORT), ExplorerApp.get().getI18nManager()
+        .getMessage(Messages.MODEL_IMPORT_DESCRIPTION), receiver);
 
-        importPopupWindow.addFinishedListener(receiver);
-        ExplorerApp.get().getViewManager().showPopupWindow(importPopupWindow);
-    }
+    importPopupWindow.addFinishedListener(receiver);
+    ExplorerApp.get().getViewManager().showPopupWindow(importPopupWindow);
+  }
 }

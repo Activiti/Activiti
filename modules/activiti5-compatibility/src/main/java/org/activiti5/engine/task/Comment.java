@@ -26,29 +26,28 @@ import org.activiti5.engine.history.HistoricData;
  */
 public interface Comment extends HistoricData {
 
-    /** unique identifier for this comment */
-    String getId();
+  /** unique identifier for this comment */
+  String getId();
 
-    /** reference to the user that made the comment */
-    String getUserId();
+  /** reference to the user that made the comment */
+  String getUserId();
 
-    /** time and date when the user made the comment */
-    Date getTime();
+  /** time and date when the user made the comment */
+  Date getTime();
 
-    /** reference to the task on which this comment was made */
-    String getTaskId();
+  /** reference to the task on which this comment was made */
+  String getTaskId();
 
-    /** reference to the process instance on which this comment was made */
-    String getProcessInstanceId();
+  /** reference to the process instance on which this comment was made */
+  String getProcessInstanceId();
 
-    /** reference to the type given to the comment */
-    String getType();
+  /** reference to the type given to the comment */
+  String getType();
 
-    /**
-     * the full comment message the user had related to the task and/or process
-     * instance
-     * 
-     * @see TaskService#getTaskComments(String)
-     */
-    String getFullMessage();
+  /**
+   * the full comment message the user had related to the task and/or process instance
+   * 
+   * @see TaskService#getTaskComments(String)
+   */
+  String getFullMessage();
 }

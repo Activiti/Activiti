@@ -22,24 +22,24 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 
 public class NativeHistoricActivityInstanceQueryImpl extends AbstractNativeQuery<NativeHistoricActivityInstanceQuery, HistoricActivityInstance> implements NativeHistoricActivityInstanceQuery {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public NativeHistoricActivityInstanceQueryImpl(CommandContext commandContext) {
-        super(commandContext);
-    }
+  public NativeHistoricActivityInstanceQueryImpl(CommandContext commandContext) {
+    super(commandContext);
+  }
 
-    public NativeHistoricActivityInstanceQueryImpl(CommandExecutor commandExecutor) {
-        super(commandExecutor);
-    }
+  public NativeHistoricActivityInstanceQueryImpl(CommandExecutor commandExecutor) {
+    super(commandExecutor);
+  }
 
-    // results ////////////////////////////////////////////////////////////////
+  // results ////////////////////////////////////////////////////////////////
 
-    public List<HistoricActivityInstance> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-        return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstancesByNativeQuery(parameterMap, firstResult, maxResults);
-    }
+  public List<HistoricActivityInstance> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstancesByNativeQuery(parameterMap, firstResult, maxResults);
+  }
 
-    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-        return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstanceCountByNativeQuery(parameterMap);
-    }
+  public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+    return commandContext.getHistoricActivityInstanceEntityManager().findHistoricActivityInstanceCountByNativeQuery(parameterMap);
+  }
 
 }

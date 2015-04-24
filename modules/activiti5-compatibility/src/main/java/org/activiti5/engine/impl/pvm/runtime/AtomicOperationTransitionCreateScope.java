@@ -21,30 +21,30 @@ import org.slf4j.LoggerFactory;
  */
 public class AtomicOperationTransitionCreateScope implements AtomicOperation {
 
-    private static Logger log = LoggerFactory.getLogger(AtomicOperationTransitionCreateScope.class);
+  private static Logger log = LoggerFactory.getLogger(AtomicOperationTransitionCreateScope.class);
 
-    public boolean isAsync(InterpretableExecution execution) {
-        ActivityImpl activity = (ActivityImpl) execution.getActivity();
-        return activity.isAsync();
+  public boolean isAsync(InterpretableExecution execution) {
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
+    return activity.isAsync();
+  }
+
+  public void execute(InterpretableExecution execution) {
+    InterpretableExecution propagatingExecution = null;
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
+    if (activity.isScope()) {
+      propagatingExecution = (InterpretableExecution) execution.createExecution();
+      propagatingExecution.setActivity(activity);
+      propagatingExecution.setTransition(execution.getTransition());
+      execution.setTransition(null);
+      execution.setActivity(null);
+      execution.setActive(false);
+      log.debug("create scope: parent {} continues as execution {}", execution, propagatingExecution);
+      propagatingExecution.initialize();
+
+    } else {
+      propagatingExecution = execution;
     }
 
-    public void execute(InterpretableExecution execution) {
-        InterpretableExecution propagatingExecution = null;
-        ActivityImpl activity = (ActivityImpl) execution.getActivity();
-        if (activity.isScope()) {
-            propagatingExecution = (InterpretableExecution) execution.createExecution();
-            propagatingExecution.setActivity(activity);
-            propagatingExecution.setTransition(execution.getTransition());
-            execution.setTransition(null);
-            execution.setActivity(null);
-            execution.setActive(false);
-            log.debug("create scope: parent {} continues as execution {}", execution, propagatingExecution);
-            propagatingExecution.initialize();
-
-        } else {
-            propagatingExecution = execution;
-        }
-
-        propagatingExecution.performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_START);
-    }
+    propagatingExecution.performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_START);
+  }
 }

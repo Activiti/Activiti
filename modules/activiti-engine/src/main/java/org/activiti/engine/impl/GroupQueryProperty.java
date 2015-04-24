@@ -26,27 +26,27 @@ import org.activiti.engine.query.QueryProperty;
  */
 public class GroupQueryProperty implements QueryProperty {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
+  private static final Map<String, GroupQueryProperty> properties = new HashMap<String, GroupQueryProperty>();
 
-    public static final GroupQueryProperty GROUP_ID = new GroupQueryProperty("RES.ID_");
-    public static final GroupQueryProperty NAME = new GroupQueryProperty("RES.NAME_");
-    public static final GroupQueryProperty TYPE = new GroupQueryProperty("RES.TYPE_");
+  public static final GroupQueryProperty GROUP_ID = new GroupQueryProperty("RES.ID_");
+  public static final GroupQueryProperty NAME = new GroupQueryProperty("RES.NAME_");
+  public static final GroupQueryProperty TYPE = new GroupQueryProperty("RES.TYPE_");
 
-    private String name;
+  private String name;
 
-    public GroupQueryProperty(String name) {
-        this.name = name;
-        properties.put(name, this);
-    }
+  public GroupQueryProperty(String name) {
+    this.name = name;
+    properties.put(name, this);
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public static GroupQueryProperty findByName(String propertyName) {
-        return properties.get(propertyName);
-    }
+  public static GroupQueryProperty findByName(String propertyName) {
+    return properties.get(propertyName);
+  }
 
 }

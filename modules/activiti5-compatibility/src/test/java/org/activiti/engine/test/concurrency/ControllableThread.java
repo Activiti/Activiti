@@ -21,41 +21,41 @@ import org.slf4j.LoggerFactory;
  */
 public class ControllableThread extends Thread {
 
-    private static Logger log = LoggerFactory.getLogger(ControllableThread.class);
+  private static Logger log = LoggerFactory.getLogger(ControllableThread.class);
 
-    public ControllableThread() {
-        String className = getClass().getName();
-        int dollarIndex = className.lastIndexOf('$');
-        setName(className.substring(dollarIndex + 1));
-    }
+  public ControllableThread() {
+    String className = getClass().getName();
+    int dollarIndex = className.lastIndexOf('$');
+    setName(className.substring(dollarIndex + 1));
+  }
 
-    public synchronized void startAndWaitUntilControlIsReturned() {
-        log.debug("test thread will start {} and wait till it returns control", getName());
-        start();
-        try {
-            wait();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+  public synchronized void startAndWaitUntilControlIsReturned() {
+    log.debug("test thread will start {} and wait till it returns control", getName());
+    start();
+    try {
+      wait();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
+  }
 
-    public synchronized void returnControlToTestThreadAndWait() {
-        log.debug("{} will notify test thread and till test thread proceeds this thread", getName());
-        this.notify();
-        try {
-            this.wait();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+  public synchronized void returnControlToTestThreadAndWait() {
+    log.debug("{} will notify test thread and till test thread proceeds this thread", getName());
+    this.notify();
+    try {
+      this.wait();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
+  }
 
-    public synchronized void proceedAndWaitTillDone() {
-        log.debug("test thread will notify {} and wait until it completes", getName());
-        notify();
-        try {
-            join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+  public synchronized void proceedAndWaitTillDone() {
+    log.debug("test thread will notify {} and wait until it completes", getName());
+    notify();
+    try {
+      join();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
     }
+  }
 }

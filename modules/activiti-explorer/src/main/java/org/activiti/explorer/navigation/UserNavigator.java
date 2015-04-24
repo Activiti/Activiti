@@ -20,20 +20,20 @@ import org.activiti.explorer.ExplorerApp;
  */
 public class UserNavigator extends ManagementNavigator {
 
-    public static final String USER_URI_PART = "user";
+  public static final String USER_URI_PART = "user";
 
-    public String getTrigger() {
-        return USER_URI_PART;
+  public String getTrigger() {
+    return USER_URI_PART;
+  }
+
+  public void handleManagementNavigation(UriFragment uriFragment) {
+    String userId = uriFragment.getUriPart(1);
+
+    if (userId != null) {
+      ExplorerApp.get().getViewManager().showUserPage(userId);
+    } else {
+      ExplorerApp.get().getViewManager().showUserPage();
     }
-
-    public void handleManagementNavigation(UriFragment uriFragment) {
-        String userId = uriFragment.getUriPart(1);
-
-        if (userId != null) {
-            ExplorerApp.get().getViewManager().showUserPage(userId);
-        } else {
-            ExplorerApp.get().getViewManager().showUserPage();
-        }
-    }
+  }
 
 }

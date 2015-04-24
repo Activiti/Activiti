@@ -30,79 +30,79 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ErrorEventDefinitionParseHandler extends AbstractBpmnParseHandler<ErrorEventDefinition> {
 
-    public static final String PROPERTYNAME_INITIAL = "initial";
+  public static final String PROPERTYNAME_INITIAL = "initial";
 
-    public Class<? extends BaseElement> getHandledType() {
-        return ErrorEventDefinition.class;
+  public Class<? extends BaseElement> getHandledType() {
+    return ErrorEventDefinition.class;
+  }
+
+  protected void executeParse(BpmnParse bpmnParse, ErrorEventDefinition eventDefinition) {
+
+    ErrorEventDefinition modelErrorEvent = (ErrorEventDefinition) eventDefinition;
+    if (bpmnParse.getBpmnModel().containsErrorRef(modelErrorEvent.getErrorCode())) {
+      String errorCode = bpmnParse.getBpmnModel().getErrors().get(modelErrorEvent.getErrorCode());
+      modelErrorEvent.setErrorCode(errorCode);
     }
 
-    protected void executeParse(BpmnParse bpmnParse, ErrorEventDefinition eventDefinition) {
+    ScopeImpl scope = bpmnParse.getCurrentScope();
+    ActivityImpl activity = bpmnParse.getCurrentActivity();
+    if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
 
-        ErrorEventDefinition modelErrorEvent = (ErrorEventDefinition) eventDefinition;
-        if (bpmnParse.getBpmnModel().containsErrorRef(modelErrorEvent.getErrorCode())) {
-            String errorCode = bpmnParse.getBpmnModel().getErrors().get(modelErrorEvent.getErrorCode());
-            modelErrorEvent.setErrorCode(errorCode);
-        }
+      if (scope.getProperty(PROPERTYNAME_INITIAL) == null) {
+        scope.setProperty(PROPERTYNAME_INITIAL, activity);
 
-        ScopeImpl scope = bpmnParse.getCurrentScope();
-        ActivityImpl activity = bpmnParse.getCurrentActivity();
-        if (bpmnParse.getCurrentFlowElement() instanceof StartEvent) {
+        // the scope of the event subscription is the parent of the
+        // event
+        // subprocess (subscription must be created when parent is
+        // initialized)
+        ScopeImpl catchingScope = ((ActivityImpl) scope).getParent();
 
-            if (scope.getProperty(PROPERTYNAME_INITIAL) == null) {
-                scope.setProperty(PROPERTYNAME_INITIAL, activity);
+        createErrorStartEventDefinition(modelErrorEvent, activity, catchingScope);
+      }
 
-                // the scope of the event subscription is the parent of the
-                // event
-                // subprocess (subscription must be created when parent is
-                // initialized)
-                ScopeImpl catchingScope = ((ActivityImpl) scope).getParent();
+    } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
 
-                createErrorStartEventDefinition(modelErrorEvent, activity, catchingScope);
-            }
-
-        } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-
-            BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-            boolean interrupting = true; // non-interrupting not yet supported
-            activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
-            ActivityImpl parentActivity = scope.findActivity(boundaryEvent.getAttachedToRefId());
-            createBoundaryErrorEventDefinition(modelErrorEvent, interrupting, parentActivity, activity);
-
-        }
-    }
-
-    protected void createErrorStartEventDefinition(ErrorEventDefinition errorEventDefinition, ActivityImpl startEventActivity, ScopeImpl scope) {
-        org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition definition = new org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition(startEventActivity.getId());
-        if (StringUtils.isNotEmpty(errorEventDefinition.getErrorCode())) {
-            definition.setErrorCode(errorEventDefinition.getErrorCode());
-        }
-        definition.setPrecedence(10);
-        addErrorEventDefinition(definition, scope);
-    }
-
-    public void createBoundaryErrorEventDefinition(ErrorEventDefinition errorEventDefinition, boolean interrupting, ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
-
-        nestedErrorEventActivity.setProperty("type", "boundaryError");
-        ScopeImpl catchingScope = nestedErrorEventActivity.getParent();
-        ((ActivityImpl) catchingScope).setScope(true);
-
-        org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition definition = new org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition(nestedErrorEventActivity.getId());
-        definition.setErrorCode(errorEventDefinition.getErrorCode());
-
-        addErrorEventDefinition(definition, catchingScope);
+      BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
+      boolean interrupting = true; // non-interrupting not yet supported
+      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting, activity));
+      ActivityImpl parentActivity = scope.findActivity(boundaryEvent.getAttachedToRefId());
+      createBoundaryErrorEventDefinition(modelErrorEvent, interrupting, parentActivity, activity);
 
     }
+  }
 
-    @SuppressWarnings("unchecked")
-    protected void addErrorEventDefinition(org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition errorEventDefinition, ScopeImpl catchingScope) {
-        List<org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition> errorEventDefinitions = (List<org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition>) catchingScope
-                .getProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS);
-        if (errorEventDefinitions == null) {
-            errorEventDefinitions = new ArrayList<org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition>();
-            catchingScope.setProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS, errorEventDefinitions);
-        }
-        errorEventDefinitions.add(errorEventDefinition);
-        Collections.sort(errorEventDefinitions, org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition.comparator);
+  protected void createErrorStartEventDefinition(ErrorEventDefinition errorEventDefinition, ActivityImpl startEventActivity, ScopeImpl scope) {
+    org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition definition = new org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition(startEventActivity.getId());
+    if (StringUtils.isNotEmpty(errorEventDefinition.getErrorCode())) {
+      definition.setErrorCode(errorEventDefinition.getErrorCode());
     }
+    definition.setPrecedence(10);
+    addErrorEventDefinition(definition, scope);
+  }
+
+  public void createBoundaryErrorEventDefinition(ErrorEventDefinition errorEventDefinition, boolean interrupting, ActivityImpl activity, ActivityImpl nestedErrorEventActivity) {
+
+    nestedErrorEventActivity.setProperty("type", "boundaryError");
+    ScopeImpl catchingScope = nestedErrorEventActivity.getParent();
+    ((ActivityImpl) catchingScope).setScope(true);
+
+    org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition definition = new org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition(nestedErrorEventActivity.getId());
+    definition.setErrorCode(errorEventDefinition.getErrorCode());
+
+    addErrorEventDefinition(definition, catchingScope);
+
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void addErrorEventDefinition(org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition errorEventDefinition, ScopeImpl catchingScope) {
+    List<org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition> errorEventDefinitions = (List<org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition>) catchingScope
+        .getProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS);
+    if (errorEventDefinitions == null) {
+      errorEventDefinitions = new ArrayList<org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition>();
+      catchingScope.setProperty(PROPERTYNAME_ERROR_EVENT_DEFINITIONS, errorEventDefinitions);
+    }
+    errorEventDefinitions.add(errorEventDefinition);
+    Collections.sort(errorEventDefinitions, org.activiti5.engine.impl.bpmn.parser.ErrorEventDefinition.comparator);
+  }
 
 }

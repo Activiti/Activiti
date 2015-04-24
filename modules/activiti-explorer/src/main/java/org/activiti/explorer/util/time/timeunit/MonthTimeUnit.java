@@ -21,17 +21,17 @@ import org.activiti.explorer.util.time.TimeUnit;
  */
 public class MonthTimeUnit implements TimeUnit {
 
-    private static final Long MILLIS_PER_MONTH = 2592000000L;
+  private static final Long MILLIS_PER_MONTH = 2592000000L;
 
-    public Long getNumberOfMillis() {
-        return MILLIS_PER_MONTH;
-    }
+  public Long getNumberOfMillis() {
+    return MILLIS_PER_MONTH;
+  }
 
-    public String getMessageKey(Long numberOfUnits) {
-        if (numberOfUnits == 1) {
-            return Messages.TIME_UNIT_MONTH;
-        } else {
-            return Messages.TIME_UNIT_MONTHS;
-        }
+  public String getMessageKey(Long numberOfUnits) {
+    if (numberOfUnits == 1) {
+      return Messages.TIME_UNIT_MONTH;
+    } else {
+      return Messages.TIME_UNIT_MONTHS;
     }
+  }
 }

@@ -5,7 +5,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 public class IdGeneratorDataSourceDoNothing implements ActivityBehavior {
 
-    public void execute(ActivityExecution execution) {
-    }
+  public void execute(ActivityExecution execution) {
+  }
 
 }

@@ -17,8 +17,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 /**
- * Annotation for a test method to create and delete a deployment around a test
- * method.
+ * Annotation for a test method to create and delete a deployment around a test method.
  * 
  * <p>
  * Usage:
@@ -53,7 +52,7 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Deployment {
 
-    /** Specify resources that make up the process definition. */
-    public String[] resources() default {};
+  /** Specify resources that make up the process definition. */
+  public String[] resources() default {};
 
 }

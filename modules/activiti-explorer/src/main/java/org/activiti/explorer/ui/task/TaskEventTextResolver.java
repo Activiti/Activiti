@@ -27,59 +27,58 @@ import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import com.vaadin.ui.Label;
 
 /**
- * Helper class that resolves a task {@link Event} to a Label that contains all
- * the information in the event.
+ * Helper class that resolves a task {@link Event} to a Label that contains all the information in the event.
  * 
  * @author Joram Barrez
  * @author Tom Baeyens
  */
 public class TaskEventTextResolver implements Serializable {
 
-    private static final long serialVersionUID = -1241011503689621172L;
-    protected I18nManager i18nManager;
+  private static final long serialVersionUID = -1241011503689621172L;
+  protected I18nManager i18nManager;
 
-    public TaskEventTextResolver() {
-        this.i18nManager = ExplorerApp.get().getI18nManager();
+  public TaskEventTextResolver() {
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+  }
+
+  public Label resolveText(Event event) {
+    IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    User user = identityService.createUserQuery().userId(event.getUserId()).singleResult();
+    String eventAuthor = "<span class='" + ExplorerLayout.STYLE_TASK_EVENT_AUTHOR + "'>" + user.getFirstName() + " " + user.getLastName() + "</span> ";
+
+    String text = null;
+    if (Event.ACTION_ADD_USER_LINK.equals(event.getAction())) {
+      User involvedUser = identityService.createUserQuery().userId(event.getMessageParts().get(0)).singleResult();
+      text = i18nManager.getMessage(Messages.EVENT_ADD_USER_LINK, eventAuthor, involvedUser.getFirstName() + " " + involvedUser.getLastName(), event.getMessageParts().get(1)); // second
+                                                                                                                                                                                // msg
+                                                                                                                                                                                // part
+                                                                                                                                                                                // =
+                                                                                                                                                                                // role
+    } else if (Event.ACTION_DELETE_USER_LINK.equals(event.getAction())) {
+      User involvedUser = identityService.createUserQuery().userId(event.getMessageParts().get(0)).singleResult();
+      text = i18nManager.getMessage(Messages.EVENT_DELETE_USER_LINK, eventAuthor, involvedUser.getFirstName() + " " + involvedUser.getLastName(), event.getMessageParts().get(1));
+    } else if (Event.ACTION_ADD_GROUP_LINK.equals(event.getAction())) {
+      text = i18nManager.getMessage(Messages.EVENT_ADD_GROUP_LINK, eventAuthor, event.getMessageParts().get(0), event.getMessageParts().get(1)); // second
+                                                                                                                                                 // msg
+                                                                                                                                                 // part
+                                                                                                                                                 // =
+                                                                                                                                                 // role
+    } else if (Event.ACTION_DELETE_GROUP_LINK.equals(event.getAction())) {
+      text = i18nManager.getMessage(Messages.EVENT_DELETE_GROUP_LINK, eventAuthor, event.getMessageParts().get(0), event.getMessageParts().get(1)); // second
+                                                                                                                                                    // msg
+                                                                                                                                                    // part
+                                                                                                                                                    // =
+                                                                                                                                                    // role
+    } else if (Event.ACTION_ADD_ATTACHMENT.equals(event.getAction())) {
+      text = i18nManager.getMessage(Messages.EVENT_ADD_ATTACHMENT, eventAuthor, event.getMessage());
+    } else if (Event.ACTION_DELETE_ATTACHMENT.equals(event.getAction())) {
+      text = i18nManager.getMessage(Messages.EVENT_DELETE_ATTACHMENT, eventAuthor, event.getMessage());
+    } else if (Event.ACTION_ADD_COMMENT.equals(event.getAction())) {
+      text = i18nManager.getMessage(Messages.EVENT_COMMENT, eventAuthor, event.getMessage());
+    } else { // default: just show the message
+      text += i18nManager.getMessage(Messages.EVENT_DEFAULT, eventAuthor, event.getMessage());
     }
-
-    public Label resolveText(Event event) {
-        IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-        User user = identityService.createUserQuery().userId(event.getUserId()).singleResult();
-        String eventAuthor = "<span class='" + ExplorerLayout.STYLE_TASK_EVENT_AUTHOR + "'>" + user.getFirstName() + " " + user.getLastName() + "</span> ";
-
-        String text = null;
-        if (Event.ACTION_ADD_USER_LINK.equals(event.getAction())) {
-            User involvedUser = identityService.createUserQuery().userId(event.getMessageParts().get(0)).singleResult();
-            text = i18nManager.getMessage(Messages.EVENT_ADD_USER_LINK, eventAuthor, involvedUser.getFirstName() + " " + involvedUser.getLastName(), event.getMessageParts().get(1)); // second
-                                                                                                                                                                                      // msg
-                                                                                                                                                                                      // part
-                                                                                                                                                                                      // =
-                                                                                                                                                                                      // role
-        } else if (Event.ACTION_DELETE_USER_LINK.equals(event.getAction())) {
-            User involvedUser = identityService.createUserQuery().userId(event.getMessageParts().get(0)).singleResult();
-            text = i18nManager.getMessage(Messages.EVENT_DELETE_USER_LINK, eventAuthor, involvedUser.getFirstName() + " " + involvedUser.getLastName(), event.getMessageParts().get(1));
-        } else if (Event.ACTION_ADD_GROUP_LINK.equals(event.getAction())) {
-            text = i18nManager.getMessage(Messages.EVENT_ADD_GROUP_LINK, eventAuthor, event.getMessageParts().get(0), event.getMessageParts().get(1)); // second
-                                                                                                                                                       // msg
-                                                                                                                                                       // part
-                                                                                                                                                       // =
-                                                                                                                                                       // role
-        } else if (Event.ACTION_DELETE_GROUP_LINK.equals(event.getAction())) {
-            text = i18nManager.getMessage(Messages.EVENT_DELETE_GROUP_LINK, eventAuthor, event.getMessageParts().get(0), event.getMessageParts().get(1)); // second
-                                                                                                                                                          // msg
-                                                                                                                                                          // part
-                                                                                                                                                          // =
-                                                                                                                                                          // role
-        } else if (Event.ACTION_ADD_ATTACHMENT.equals(event.getAction())) {
-            text = i18nManager.getMessage(Messages.EVENT_ADD_ATTACHMENT, eventAuthor, event.getMessage());
-        } else if (Event.ACTION_DELETE_ATTACHMENT.equals(event.getAction())) {
-            text = i18nManager.getMessage(Messages.EVENT_DELETE_ATTACHMENT, eventAuthor, event.getMessage());
-        } else if (Event.ACTION_ADD_COMMENT.equals(event.getAction())) {
-            text = i18nManager.getMessage(Messages.EVENT_COMMENT, eventAuthor, event.getMessage());
-        } else { // default: just show the message
-            text += i18nManager.getMessage(Messages.EVENT_DEFAULT, eventAuthor, event.getMessage());
-        }
-        return new Label(text, Label.CONTENT_XHTML);
-    }
+    return new Label(text, Label.CONTENT_XHTML);
+  }
 
 }

@@ -32,46 +32,46 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class FlowElementValidator extends ProcessLevelValidator {
 
-    @Override
-    protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
-        for (FlowElement flowElement : process.getFlowElements()) {
+  @Override
+  protected void executeValidation(BpmnModel bpmnModel, Process process, List<ValidationError> errors) {
+    for (FlowElement flowElement : process.getFlowElements()) {
 
-            if (flowElement instanceof Activity) {
-                Activity activity = (Activity) flowElement;
-                handleMultiInstanceLoopCharacteristics(process, activity, errors);
-                handleDataAssociations(process, activity, errors);
-            }
-
-        }
+      if (flowElement instanceof Activity) {
+        Activity activity = (Activity) flowElement;
+        handleMultiInstanceLoopCharacteristics(process, activity, errors);
+        handleDataAssociations(process, activity, errors);
+      }
 
     }
 
-    protected void handleMultiInstanceLoopCharacteristics(Process process, Activity activity, List<ValidationError> errors) {
-        MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = activity.getLoopCharacteristics();
-        if (multiInstanceLoopCharacteristics != null) {
+  }
 
-            if (StringUtils.isEmpty(multiInstanceLoopCharacteristics.getLoopCardinality()) && StringUtils.isEmpty(multiInstanceLoopCharacteristics.getInputDataItem())) {
-                addError(errors, Problems.MULTI_INSTANCE_MISSING_COLLECTION, process, activity, "Either loopCardinality or loopDataInputRef/activiti:collection must been set");
-            }
+  protected void handleMultiInstanceLoopCharacteristics(Process process, Activity activity, List<ValidationError> errors) {
+    MultiInstanceLoopCharacteristics multiInstanceLoopCharacteristics = activity.getLoopCharacteristics();
+    if (multiInstanceLoopCharacteristics != null) {
 
-        }
+      if (StringUtils.isEmpty(multiInstanceLoopCharacteristics.getLoopCardinality()) && StringUtils.isEmpty(multiInstanceLoopCharacteristics.getInputDataItem())) {
+        addError(errors, Problems.MULTI_INSTANCE_MISSING_COLLECTION, process, activity, "Either loopCardinality or loopDataInputRef/activiti:collection must been set");
+      }
+
     }
+  }
 
-    protected void handleDataAssociations(Process process, Activity activity, List<ValidationError> errors) {
-        if (activity.getDataInputAssociations() != null) {
-            for (DataAssociation dataAssociation : activity.getDataInputAssociations()) {
-                if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
-                    addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity, "Targetref is required on a data association");
-                }
-            }
+  protected void handleDataAssociations(Process process, Activity activity, List<ValidationError> errors) {
+    if (activity.getDataInputAssociations() != null) {
+      for (DataAssociation dataAssociation : activity.getDataInputAssociations()) {
+        if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
+          addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity, "Targetref is required on a data association");
         }
-        if (activity.getDataOutputAssociations() != null) {
-            for (DataAssociation dataAssociation : activity.getDataOutputAssociations()) {
-                if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
-                    addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity, "Targetref is required on a data association");
-                }
-            }
-        }
+      }
     }
+    if (activity.getDataOutputAssociations() != null) {
+      for (DataAssociation dataAssociation : activity.getDataOutputAssociations()) {
+        if (StringUtils.isEmpty(dataAssociation.getTargetRef())) {
+          addError(errors, Problems.DATA_ASSOCIATION_MISSING_TARGETREF, process, activity, "Targetref is required on a data association");
+        }
+      }
+    }
+  }
 
 }

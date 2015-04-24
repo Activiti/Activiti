@@ -37,65 +37,65 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class GroupsForUserQuery extends AbstractLazyLoadingQuery {
 
-    protected transient IdentityService identityService;
-    protected String userId;
-    protected UserDetailPanel userDetailPanel;
+  protected transient IdentityService identityService;
+  protected String userId;
+  protected UserDetailPanel userDetailPanel;
 
-    public GroupsForUserQuery(IdentityService identityService, UserDetailPanel userDetailPanel, String userId) {
-        this.identityService = identityService;
-        this.userDetailPanel = userDetailPanel;
-        this.userId = userId;
+  public GroupsForUserQuery(IdentityService identityService, UserDetailPanel userDetailPanel, String userId) {
+    this.identityService = identityService;
+    this.userDetailPanel = userDetailPanel;
+    this.userId = userId;
+  }
+
+  public int size() {
+    return (int) identityService.createGroupQuery().groupMember(userId).count();
+  }
+
+  public List<Item> loadItems(int start, int count) {
+    List<Group> groups = identityService.createGroupQuery().groupMember(userId).orderByGroupType().asc().orderByGroupId().asc().orderByGroupName().asc().list();
+
+    List<Item> groupItems = new ArrayList<Item>();
+    for (Group group : groups) {
+      groupItems.add(new GroupItem(group));
     }
+    return groupItems;
+  }
 
-    public int size() {
-        return (int) identityService.createGroupQuery().groupMember(userId).count();
-    }
+  public Item loadSingleResult(String id) {
+    throw new UnsupportedOperationException();
+  }
 
-    public List<Item> loadItems(int start, int count) {
-        List<Group> groups = identityService.createGroupQuery().groupMember(userId).orderByGroupType().asc().orderByGroupId().asc().orderByGroupName().asc().list();
+  public void setSorting(Object[] propertyIds, boolean[] ascending) {
+    throw new UnsupportedOperationException();
+  }
 
-        List<Item> groupItems = new ArrayList<Item>();
-        for (Group group : groups) {
-            groupItems.add(new GroupItem(group));
+  class GroupItem extends PropertysetItem {
+
+    private static final long serialVersionUID = 1L;
+
+    public GroupItem(final Group group) {
+      Button idButton = new Button(group.getId());
+      idButton.addStyleName(Reindeer.BUTTON_LINK);
+      idButton.addListener(new ClickListener() {
+        public void buttonClick(ClickEvent event) {
+          ExplorerApp.get().getViewManager().showGroupPage(group.getId());
         }
-        return groupItems;
+      });
+      addItemProperty("id", new ObjectProperty<Button>(idButton, Button.class));
+
+      if (group.getName() != null) {
+        addItemProperty("name", new ObjectProperty<String>(group.getName(), String.class));
+      }
+      if (group.getType() != null) {
+        addItemProperty("type", new ObjectProperty<String>(group.getType(), String.class));
+      }
+
+      Embedded deleteIcon = new Embedded(null, Images.DELETE);
+      deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+      deleteIcon.addListener(new DeleteMembershipListener(identityService, userId, group.getId(), userDetailPanel));
+      addItemProperty("actions", new ObjectProperty<Embedded>(deleteIcon, Embedded.class));
     }
 
-    public Item loadSingleResult(String id) {
-        throw new UnsupportedOperationException();
-    }
-
-    public void setSorting(Object[] propertyIds, boolean[] ascending) {
-        throw new UnsupportedOperationException();
-    }
-
-    class GroupItem extends PropertysetItem {
-
-        private static final long serialVersionUID = 1L;
-
-        public GroupItem(final Group group) {
-            Button idButton = new Button(group.getId());
-            idButton.addStyleName(Reindeer.BUTTON_LINK);
-            idButton.addListener(new ClickListener() {
-                public void buttonClick(ClickEvent event) {
-                    ExplorerApp.get().getViewManager().showGroupPage(group.getId());
-                }
-            });
-            addItemProperty("id", new ObjectProperty<Button>(idButton, Button.class));
-
-            if (group.getName() != null) {
-                addItemProperty("name", new ObjectProperty<String>(group.getName(), String.class));
-            }
-            if (group.getType() != null) {
-                addItemProperty("type", new ObjectProperty<String>(group.getType(), String.class));
-            }
-
-            Embedded deleteIcon = new Embedded(null, Images.DELETE);
-            deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-            deleteIcon.addListener(new DeleteMembershipListener(identityService, userId, group.getId(), userDetailPanel));
-            addItemProperty("actions", new ObjectProperty<Embedded>(deleteIcon, Embedded.class));
-        }
-
-    }
+  }
 
 }

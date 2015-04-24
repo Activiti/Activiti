@@ -20,22 +20,22 @@ import org.activiti.explorer.ExplorerApp;
  */
 public class SavedReportNavigator implements Navigator {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String SAVED_REPORT_URI_PART = "savedReport";
+  public static final String SAVED_REPORT_URI_PART = "savedReport";
 
-    public String getTrigger() {
-        return SAVED_REPORT_URI_PART;
+  public String getTrigger() {
+    return SAVED_REPORT_URI_PART;
+  }
+
+  public void handleNavigation(UriFragment uriFragment) {
+    String modelId = uriFragment.getUriPart(1);
+
+    if (modelId != null) {
+      ExplorerApp.get().getViewManager().showSavedReportPage(modelId);
+    } else {
+      ExplorerApp.get().getViewManager().showSavedReportPage();
     }
-
-    public void handleNavigation(UriFragment uriFragment) {
-        String modelId = uriFragment.getUriPart(1);
-
-        if (modelId != null) {
-            ExplorerApp.get().getViewManager().showSavedReportPage(modelId);
-        } else {
-            ExplorerApp.get().getViewManager().showSavedReportPage();
-        }
-    }
+  }
 
 }

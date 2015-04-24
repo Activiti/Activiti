@@ -26,25 +26,25 @@ import org.slf4j.LoggerFactory;
  */
 public class ScriptTaskParseHandler extends AbstractActivityBpmnParseHandler<ScriptTask> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScriptTaskParseHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(ScriptTaskParseHandler.class);
 
-    public Class<? extends BaseElement> getHandledType() {
-        return ScriptTask.class;
+  public Class<? extends BaseElement> getHandledType() {
+    return ScriptTask.class;
+  }
+
+  protected void executeParse(BpmnParse bpmnParse, ScriptTask scriptTask) {
+
+    if (StringUtils.isEmpty(scriptTask.getScript())) {
+      logger.warn("No script provided for scriptTask " + scriptTask.getId());
     }
 
-    protected void executeParse(BpmnParse bpmnParse, ScriptTask scriptTask) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, scriptTask, BpmnXMLConstants.ELEMENT_TASK_SCRIPT);
 
-        if (StringUtils.isEmpty(scriptTask.getScript())) {
-            logger.warn("No script provided for scriptTask " + scriptTask.getId());
-        }
+    activity.setAsync(scriptTask.isAsynchronous());
+    activity.setExclusive(!scriptTask.isNotExclusive());
 
-        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, scriptTask, BpmnXMLConstants.ELEMENT_TASK_SCRIPT);
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
 
-        activity.setAsync(scriptTask.isAsynchronous());
-        activity.setExclusive(!scriptTask.isNotExclusive());
-
-        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
-
-    }
+  }
 
 }

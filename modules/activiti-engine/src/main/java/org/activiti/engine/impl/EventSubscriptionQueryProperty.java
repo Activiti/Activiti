@@ -20,22 +20,22 @@ import org.activiti.engine.query.QueryProperty;
  */
 public class EventSubscriptionQueryProperty implements QueryProperty {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    // properties used in event subscription queries:
+  // properties used in event subscription queries:
 
-    public final static EventSubscriptionQueryProperty CREATED = new EventSubscriptionQueryProperty("RES.CREATED_");
+  public final static EventSubscriptionQueryProperty CREATED = new EventSubscriptionQueryProperty("RES.CREATED_");
 
-    // ///////////////////////////////////////////////
+  // ///////////////////////////////////////////////
 
-    private final String propertyName;
+  private final String propertyName;
 
-    public EventSubscriptionQueryProperty(String propertyName) {
-        this.propertyName = propertyName;
-    }
+  public EventSubscriptionQueryProperty(String propertyName) {
+    this.propertyName = propertyName;
+  }
 
-    public String getName() {
-        return propertyName;
-    }
+  public String getName() {
+    return propertyName;
+  }
 
 }

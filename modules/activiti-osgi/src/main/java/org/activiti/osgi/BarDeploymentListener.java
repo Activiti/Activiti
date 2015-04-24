@@ -31,41 +31,41 @@ import org.slf4j.LoggerFactory;
  */
 public class BarDeploymentListener implements ArtifactUrlTransformer {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BarDeploymentListener.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(BarDeploymentListener.class);
 
-    public URL transform(URL artifact) throws Exception {
-        try {
-            return new URL("bar", null, artifact.toString());
-        } catch (Exception e) {
-            LOGGER.error("Unable to build bar bundle", e);
-            return null;
-        }
+  public URL transform(URL artifact) throws Exception {
+    try {
+      return new URL("bar", null, artifact.toString());
+    } catch (Exception e) {
+      LOGGER.error("Unable to build bar bundle", e);
+      return null;
     }
+  }
 
-    public boolean canHandle(File artifact) {
-        JarFile jar = null;
+  public boolean canHandle(File artifact) {
+    JarFile jar = null;
+    try {
+      if (!artifact.getName().endsWith(".bar")) {
+        return false;
+      }
+      jar = new JarFile(artifact);
+      // Only handle non OSGi bundles
+      Manifest m = jar.getManifest();
+      if (m != null && m.getMainAttributes().getValue(new Attributes.Name(BUNDLE_SYMBOLICNAME)) != null && m.getMainAttributes().getValue(new Attributes.Name(BUNDLE_VERSION)) != null) {
+        return false;
+      }
+      return true;
+    } catch (Exception e) {
+      return false;
+    } finally {
+      if (jar != null) {
         try {
-            if (!artifact.getName().endsWith(".bar")) {
-                return false;
-            }
-            jar = new JarFile(artifact);
-            // Only handle non OSGi bundles
-            Manifest m = jar.getManifest();
-            if (m != null && m.getMainAttributes().getValue(new Attributes.Name(BUNDLE_SYMBOLICNAME)) != null && m.getMainAttributes().getValue(new Attributes.Name(BUNDLE_VERSION)) != null) {
-                return false;
-            }
-            return true;
-        } catch (Exception e) {
-            return false;
-        } finally {
-            if (jar != null) {
-                try {
-                    jar.close();
-                } catch (IOException e) {
-                    LOGGER.error("Unable to close jar", e);
-                }
-            }
+          jar.close();
+        } catch (IOException e) {
+          LOGGER.error("Unable to close jar", e);
         }
+      }
     }
+  }
 
 }

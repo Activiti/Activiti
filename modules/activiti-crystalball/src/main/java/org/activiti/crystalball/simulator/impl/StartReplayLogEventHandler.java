@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.impl;
  * limitations under the License.
  */
 
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,9 +23,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This class schedules replay start simulation event and takes care about process start and
- * next event schedule
- *
+ * This class schedules replay start simulation event and takes care about process start and next event schedule
+ * 
  * @author martin.grofcik
  */
 public class StartReplayLogEventHandler implements SimulationEventHandler {

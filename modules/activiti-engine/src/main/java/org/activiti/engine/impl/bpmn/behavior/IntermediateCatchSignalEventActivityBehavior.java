@@ -24,43 +24,41 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 public class IntermediateCatchSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
-    
-    private static final long serialVersionUID = 1L;
-    
-    protected SignalEventDefinition signalEventDefinition;
-    protected Signal signal;
-	
-	public IntermediateCatchSignalEventActivityBehavior(SignalEventDefinition signalEventDefinition, Signal signal) {
-		this.signalEventDefinition = signalEventDefinition;
-		this.signal = signal;
-	}
 
-    public void execute(ActivityExecution execution) {
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        Context.getCommandContext().getEventSubscriptionEntityManager().insertSignalEvent(
-                signalEventDefinition, signal, executionEntity);
+  private static final long serialVersionUID = 1L;
+
+  protected SignalEventDefinition signalEventDefinition;
+  protected Signal signal;
+
+  public IntermediateCatchSignalEventActivityBehavior(SignalEventDefinition signalEventDefinition, Signal signal) {
+    this.signalEventDefinition = signalEventDefinition;
+    this.signal = signal;
+  }
+
+  public void execute(ActivityExecution execution) {
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    Context.getCommandContext().getEventSubscriptionEntityManager().insertSignalEvent(signalEventDefinition, signal, executionEntity);
+  }
+
+  @Override
+  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+
+    String eventName = null;
+    if (signal != null) {
+      eventName = signal.getName();
+    } else {
+      eventName = signalEventDefinition.getSignalRef();
     }
 
-    @Override
-    public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        
-        String eventName = null;
-        if (signal != null) {
-            eventName = signal.getName();
-        } else {
-            eventName = signalEventDefinition.getSignalRef();
-        }
-        
-        EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-        List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
-        for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-            if (eventSubscription instanceof SignalEventSubscriptionEntity && 
-                    eventSubscription.getEventName().equals(eventName)) {
-                
-                eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription); 
-            }
-        }
-        leave(executionEntity);
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+    for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+      if (eventSubscription instanceof SignalEventSubscriptionEntity && eventSubscription.getEventName().equals(eventName)) {
+
+        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
+      }
     }
+    leave(executionEntity);
+  }
 }

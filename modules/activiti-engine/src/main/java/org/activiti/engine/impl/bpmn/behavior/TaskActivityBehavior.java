@@ -13,8 +13,7 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 /**
- * Parent class for all BPMN 2.0 task types such as ServiceTask, ScriptTask,
- * UserTask, etc.
+ * Parent class for all BPMN 2.0 task types such as ServiceTask, ScriptTask, UserTask, etc.
  * 
  * When used on its own, it behaves just as a pass-through activity.
  * 

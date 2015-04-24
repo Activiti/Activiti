@@ -18,8 +18,8 @@ package org.activiti5.engine.impl.persistence.entity;
  */
 public interface MembershipIdentityManager {
 
-    void createMembership(String userId, String groupId);
+  void createMembership(String userId, String groupId);
 
-    void deleteMembership(String userId, String groupId);
+  void deleteMembership(String userId, String groupId);
 
 }

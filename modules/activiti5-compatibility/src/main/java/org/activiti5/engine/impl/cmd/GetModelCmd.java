@@ -24,14 +24,14 @@ import org.activiti5.engine.impl.persistence.entity.ModelEntity;
  */
 public class GetModelCmd implements Command<ModelEntity>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String modelId;
+  private static final long serialVersionUID = 1L;
+  protected String modelId;
 
-    public GetModelCmd(String modelId) {
-        this.modelId = modelId;
-    }
+  public GetModelCmd(String modelId) {
+    this.modelId = modelId;
+  }
 
-    public ModelEntity execute(CommandContext commandContext) {
-        return commandContext.getModelEntityManager().findModelById(modelId);
-    }
+  public ModelEntity execute(CommandContext commandContext) {
+    return commandContext.getModelEntityManager().findModelById(modelId);
+  }
 }

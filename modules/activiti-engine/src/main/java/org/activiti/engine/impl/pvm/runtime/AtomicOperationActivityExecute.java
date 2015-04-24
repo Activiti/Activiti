@@ -27,38 +27,38 @@ import org.slf4j.LoggerFactory;
  */
 public class AtomicOperationActivityExecute implements AtomicOperation {
 
-    private static Logger log = LoggerFactory.getLogger(AtomicOperationActivityExecute.class);
+  private static Logger log = LoggerFactory.getLogger(AtomicOperationActivityExecute.class);
 
-    public boolean isAsync(InterpretableExecution execution) {
-        return false;
+  public boolean isAsync(InterpretableExecution execution) {
+    return false;
+  }
+
+  public void execute(InterpretableExecution execution) {
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
+
+    ActivityBehavior activityBehavior = activity.getActivityBehavior();
+    if (activityBehavior == null) {
+      throw new PvmException("no behavior specified in " + activity);
     }
 
-    public void execute(InterpretableExecution execution) {
-        ActivityImpl activity = (ActivityImpl) execution.getActivity();
+    log.debug("{} executes {}: {}", execution, activity, activityBehavior.getClass().getName());
 
-        ActivityBehavior activityBehavior = activity.getActivityBehavior();
-        if (activityBehavior == null) {
-            throw new PvmException("no behavior specified in " + activity);
-        }
+    try {
+      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context
+            .getProcessEngineConfiguration()
+            .getEventDispatcher()
+            .dispatchEvent(
+                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution.getActivity().getId(), (String) execution.getActivity().getProperty("name"), execution.getId(),
+                    execution.getProcessInstanceId(), execution.getProcessDefinitionId(), (String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName()));
+      }
 
-        log.debug("{} executes {}: {}", execution, activity, activityBehavior.getClass().getName());
-
-        try {
-            if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                Context.getProcessEngineConfiguration()
-                        .getEventDispatcher()
-                        .dispatchEvent(
-                                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution.getActivity().getId(), (String) execution.getActivity().getProperty("name"),
-                                        execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), (String) activity.getProperties().get("type"), activity
-                                                .getActivityBehavior().getClass().getCanonicalName()));
-            }
-
-            activityBehavior.execute(execution);
-        } catch (RuntimeException e) {
-            throw e;
-        } catch (Exception e) {
-            LogMDC.putMDCExecution(execution);
-            throw new PvmException("couldn't execute activity <" + activity.getProperty("type") + " id=\"" + activity.getId() + "\" ...>: " + e.getMessage(), e);
-        }
+      activityBehavior.execute(execution);
+    } catch (RuntimeException e) {
+      throw e;
+    } catch (Exception e) {
+      LogMDC.putMDCExecution(execution);
+      throw new PvmException("couldn't execute activity <" + activity.getProperty("type") + " id=\"" + activity.getId() + "\" ...>: " + e.getMessage(), e);
     }
+  }
 }

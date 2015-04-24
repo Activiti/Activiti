@@ -26,55 +26,55 @@ import com.vaadin.ui.MenuBar.MenuItem;
  */
 public class ToolbarPopupEntry extends ToolbarEntry {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected MenuBar menuBar;
-    protected MenuItem rootItem;
+  protected MenuBar menuBar;
+  protected MenuItem rootItem;
 
-    public ToolbarPopupEntry(String key, String title) {
-        super(key, title);
-    }
+  public ToolbarPopupEntry(String key, String title) {
+    super(key, title);
+  }
 
-    /**
-     * Add menu-item.
-     */
-    public MenuItem addMenuItem(String title) {
-        return rootItem.addItem(title, null);
-    }
+  /**
+   * Add menu-item.
+   */
+  public MenuItem addMenuItem(String title) {
+    return rootItem.addItem(title, null);
+  }
 
-    /**
-     * Add a menu-item, which executes the given command when clicked.
-     */
-    public MenuItem addMenuItem(String title, final ToolbarCommand command) {
-        return rootItem.addItem(title, new Command() {
-            private static final long serialVersionUID = 1L;
+  /**
+   * Add a menu-item, which executes the given command when clicked.
+   */
+  public MenuItem addMenuItem(String title, final ToolbarCommand command) {
+    return rootItem.addItem(title, new Command() {
+      private static final long serialVersionUID = 1L;
 
-            public void menuSelected(MenuItem selectedItem) {
-                if (command != null) {
-                    command.toolBarItemSelected();
-                }
-            }
-        });
-    }
-
-    @Override
-    public void setActive(boolean active) {
-        if (this.active != active) {
-            this.active = active;
-            if (active) {
-                menuBar.addStyleName(ExplorerLayout.STYLE_ACTIVE);
-                countButton.addStyleName(ExplorerLayout.STYLE_ACTIVE);
-            } else {
-                menuBar.removeStyleName(ExplorerLayout.STYLE_ACTIVE);
-                countButton.removeStyleName(ExplorerLayout.STYLE_ACTIVE);
-            }
+      public void menuSelected(MenuItem selectedItem) {
+        if (command != null) {
+          command.toolBarItemSelected();
         }
-    }
+      }
+    });
+  }
 
-    protected void initLabelComponent() {
-        menuBar = new MenuBar();
-        menuBar.addStyleName(ExplorerLayout.STYLE_TOOLBAR_POPUP);
-        rootItem = menuBar.addItem(title, null);
-        layout.addComponent(menuBar);
+  @Override
+  public void setActive(boolean active) {
+    if (this.active != active) {
+      this.active = active;
+      if (active) {
+        menuBar.addStyleName(ExplorerLayout.STYLE_ACTIVE);
+        countButton.addStyleName(ExplorerLayout.STYLE_ACTIVE);
+      } else {
+        menuBar.removeStyleName(ExplorerLayout.STYLE_ACTIVE);
+        countButton.removeStyleName(ExplorerLayout.STYLE_ACTIVE);
+      }
     }
+  }
+
+  protected void initLabelComponent() {
+    menuBar = new MenuBar();
+    menuBar.addStyleName(ExplorerLayout.STYLE_TOOLBAR_POPUP);
+    rootItem = menuBar.addItem(title, null);
+    layout.addComponent(menuBar);
+  }
 }

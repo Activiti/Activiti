@@ -13,29 +13,29 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class MultipleInstanceRoute extends SpringActivitiTestCase {
 
-    @Autowired
-    protected CamelContext camelContext;
+  @Autowired
+  protected CamelContext camelContext;
 
-    public void setUp() throws Exception {
-        camelContext.addRoutes(new RouteBuilder() {
+  public void setUp() throws Exception {
+    camelContext.addRoutes(new RouteBuilder() {
 
-            @Override
-            public void configure() throws Exception {
-                from("activiti:multiInstanceCamelProcess:servicetask1").to("log:logMessage");
-            }
-        });
+      @Override
+      public void configure() throws Exception {
+        from("activiti:multiInstanceCamelProcess:servicetask1").to("log:logMessage");
+      }
+    });
+  }
+
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r : routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
     }
+  }
 
-    public void tearDown() throws Exception {
-        List<Route> routes = camelContext.getRoutes();
-        for (Route r : routes) {
-            camelContext.stopRoute(r.getId());
-            camelContext.removeRoute(r.getId());
-        }
-    }
-
-    @Deployment(resources = { "process/multiInstanceCamel.bpmn20.xml" })
-    public void testCamelBody() throws Exception {
-        runtimeService.startProcessInstanceByKey("multiInstanceCamelProcess");
-    }
+  @Deployment(resources = { "process/multiInstanceCamel.bpmn20.xml" })
+  public void testCamelBody() throws Exception {
+    runtimeService.startProcessInstanceByKey("multiInstanceCamelProcess");
+  }
 }

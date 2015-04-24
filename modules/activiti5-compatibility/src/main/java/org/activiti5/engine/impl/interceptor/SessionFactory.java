@@ -18,8 +18,8 @@ package org.activiti5.engine.impl.interceptor;
  */
 public interface SessionFactory {
 
-    Class<?> getSessionType();
+  Class<?> getSessionType();
 
-    Session openSession();
+  Session openSession();
 
 }

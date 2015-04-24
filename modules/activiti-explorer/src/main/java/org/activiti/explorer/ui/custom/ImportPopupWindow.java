@@ -28,63 +28,63 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class ImportPopupWindow extends PopupWindow {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    // Services
-    protected I18nManager i18nManager;
-    protected ImportComponent importComponent;
+  // Services
+  protected I18nManager i18nManager;
+  protected ImportComponent importComponent;
 
-    public ImportPopupWindow(String caption, String description, Receiver receiver) {
-        this.i18nManager = ExplorerApp.get().getI18nManager();
+  public ImportPopupWindow(String caption, String description, Receiver receiver) {
+    this.i18nManager = ExplorerApp.get().getI18nManager();
 
-        init(caption, description, receiver);
+    init(caption, description, receiver);
 
-        importComponent.addFinishedListener(new FinishedListener() {
+    importComponent.addFinishedListener(new FinishedListener() {
 
-            private static final long serialVersionUID = 1L;
+      private static final long serialVersionUID = 1L;
 
-            public void uploadFinished(FinishedEvent event) {
-                close();
-            }
-        });
-    }
+      public void uploadFinished(FinishedEvent event) {
+        close();
+      }
+    });
+  }
 
-    // UI initialisation
-    // ----------------------------------------------------------------------------
-    protected void init(String caption, String description, Receiver receiver) {
-        importComponent = new ImportComponent(description, receiver);
-        importComponent.setSizeFull();
-        initWindow(caption);
-    }
+  // UI initialisation
+  // ----------------------------------------------------------------------------
+  protected void init(String caption, String description, Receiver receiver) {
+    importComponent = new ImportComponent(description, receiver);
+    importComponent.setSizeFull();
+    initWindow(caption);
+  }
 
-    protected void initWindow(String caption) {
-        // Fixed width/height since otherwise the layout can be screwed by the
-        // drag and drop
-        setWidth("300px");
-        setHeight("200px");
-        addStyleName(Reindeer.WINDOW_LIGHT);
-        setModal(true);
-        center();
-        setCaption(caption);
+  protected void initWindow(String caption) {
+    // Fixed width/height since otherwise the layout can be screwed by the
+    // drag and drop
+    setWidth("300px");
+    setHeight("200px");
+    addStyleName(Reindeer.WINDOW_LIGHT);
+    setModal(true);
+    center();
+    setCaption(caption);
 
-        setContent(importComponent);
-    }
+    setContent(importComponent);
+  }
 
-    // Upload Listeners
-    // ----------------------------------------------------------------------------
-    public void addFinishedListener(FinishedListener finishedListener) {
-        importComponent.addFinishedListener(finishedListener);
-    }
+  // Upload Listeners
+  // ----------------------------------------------------------------------------
+  public void addFinishedListener(FinishedListener finishedListener) {
+    importComponent.addFinishedListener(finishedListener);
+  }
 
-    public void addStartedListener(StartedListener startedListener) {
-        importComponent.addStartedListener(startedListener);
-    }
+  public void addStartedListener(StartedListener startedListener) {
+    importComponent.addStartedListener(startedListener);
+  }
 
-    public void addFailedListener(FailedListener failedListener) {
-        importComponent.addFailedListener(failedListener);
-    }
+  public void addFailedListener(FailedListener failedListener) {
+    importComponent.addFailedListener(failedListener);
+  }
 
-    public void addProgressListener(ProgressListener progressListener) {
-        importComponent.addProgressListener(progressListener);
-    }
+  public void addProgressListener(ProgressListener progressListener) {
+    importComponent.addProgressListener(progressListener);
+  }
 }

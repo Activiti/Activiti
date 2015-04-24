@@ -14,7 +14,9 @@ import java.util.List;
 public class EventLogTransformer {
   protected List<Function<EventLogEntry, SimulationEvent>> transformers;
 
-  public EventLogTransformer(List<Function<EventLogEntry, SimulationEvent>> transformers) {this.transformers = transformers;}
+  public EventLogTransformer(List<Function<EventLogEntry, SimulationEvent>> transformers) {
+    this.transformers = transformers;
+  }
 
   public List<SimulationEvent> transform(List<EventLogEntry> eventLog) {
     List<SimulationEvent> simulationEvents = new ArrayList<SimulationEvent>();
@@ -23,6 +25,7 @@ public class EventLogTransformer {
     }
     return simulationEvents;
   }
+
   protected Collection<SimulationEvent> transformEntry(EventLogEntry event) {
     List<SimulationEvent> simEvents = new ArrayList<SimulationEvent>();
     for (Function<EventLogEntry, SimulationEvent> t : transformers) {

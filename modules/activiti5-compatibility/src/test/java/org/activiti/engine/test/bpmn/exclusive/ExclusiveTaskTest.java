@@ -23,47 +23,47 @@ import org.activiti5.engine.test.Deployment;
  */
 public class ExclusiveTaskTest extends PluggableActivitiTestCase {
 
-    @Deployment
-    public void testNonExclusiveService() {
-        // start process
-        runtimeService.startProcessInstanceByKey("exclusive");
-        // now there should be 1 non-exclusive job in the database:
-        Job job = managementService.createJobQuery().singleResult();
-        assertNotNull(job);
-        assertFalse(((JobEntity) job).isExclusive());
+  @Deployment
+  public void testNonExclusiveService() {
+    // start process
+    runtimeService.startProcessInstanceByKey("exclusive");
+    // now there should be 1 non-exclusive job in the database:
+    Job job = managementService.createJobQuery().singleResult();
+    assertNotNull(job);
+    assertFalse(((JobEntity) job).isExclusive());
 
-        waitForJobExecutorToProcessAllJobs(6000L, 100L);
+    waitForJobExecutorToProcessAllJobs(6000L, 100L);
 
-        // all the jobs are done
-        assertEquals(0, managementService.createJobQuery().count());
-    }
+    // all the jobs are done
+    assertEquals(0, managementService.createJobQuery().count());
+  }
 
-    @Deployment
-    public void testExclusiveService() {
-        // start process
-        runtimeService.startProcessInstanceByKey("exclusive");
-        // now there should be 1 exclusive job in the database:
-        Job job = managementService.createJobQuery().singleResult();
-        assertNotNull(job);
-        assertTrue(((JobEntity) job).isExclusive());
+  @Deployment
+  public void testExclusiveService() {
+    // start process
+    runtimeService.startProcessInstanceByKey("exclusive");
+    // now there should be 1 exclusive job in the database:
+    Job job = managementService.createJobQuery().singleResult();
+    assertNotNull(job);
+    assertTrue(((JobEntity) job).isExclusive());
 
-        waitForJobExecutorToProcessAllJobs(6000L, 100L);
+    waitForJobExecutorToProcessAllJobs(6000L, 100L);
 
-        // all the jobs are done
-        assertEquals(0, managementService.createJobQuery().count());
-    }
+    // all the jobs are done
+    assertEquals(0, managementService.createJobQuery().count());
+  }
 
-    @Deployment
-    public void testExclusiveServiceConcurrent() {
-        // start process
-        runtimeService.startProcessInstanceByKey("exclusive");
-        // now there should be 3 exclusive jobs in the database:
-        assertEquals(3, managementService.createJobQuery().count());
+  @Deployment
+  public void testExclusiveServiceConcurrent() {
+    // start process
+    runtimeService.startProcessInstanceByKey("exclusive");
+    // now there should be 3 exclusive jobs in the database:
+    assertEquals(3, managementService.createJobQuery().count());
 
-        waitForJobExecutorToProcessAllJobs(10000L, 400L);
+    waitForJobExecutorToProcessAllJobs(10000L, 400L);
 
-        // all the jobs are done
-        assertEquals(0, managementService.createJobQuery().count());
-    }
+    // all the jobs are done
+    assertEquals(0, managementService.createJobQuery().count());
+  }
 
 }

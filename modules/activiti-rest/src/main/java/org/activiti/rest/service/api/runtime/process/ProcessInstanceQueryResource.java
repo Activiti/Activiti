@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProcessInstanceQueryResource extends BaseProcessInstanceResource {
 
-    @RequestMapping(value = "/query/process-instances", method = RequestMethod.POST, produces = "application/json")
-    public DataResponse queryProcessInstances(@RequestBody ProcessInstanceQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+  @RequestMapping(value = "/query/process-instances", method = RequestMethod.POST, produces = "application/json")
+  public DataResponse queryProcessInstances(@RequestBody ProcessInstanceQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
 
-        return getQueryResponse(queryRequest, allRequestParams);
-    }
+    return getQueryResponse(queryRequest, allRequestParams);
+  }
 }

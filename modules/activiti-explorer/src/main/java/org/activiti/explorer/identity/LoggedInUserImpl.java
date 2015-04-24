@@ -19,96 +19,95 @@ import org.activiti.engine.identity.Group;
 import org.activiti.engine.identity.User;
 
 /**
- * Wrapper around a {@link User}, containing the data of a logged in user and
- * adding data such as security roles, etc.
+ * Wrapper around a {@link User}, containing the data of a logged in user and adding data such as security roles, etc.
  * 
  * @author Joram Barrez
  */
 public class LoggedInUserImpl implements LoggedInUser {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected User user;
-    protected String password;
-    protected String alternativeId;
+  protected User user;
+  protected String password;
+  protected String alternativeId;
 
-    protected boolean isUser;
-    protected boolean isAdmin;
-    protected List<Group> securityRoles = new ArrayList<Group>();
-    protected List<Group> groups = new ArrayList<Group>();
+  protected boolean isUser;
+  protected boolean isAdmin;
+  protected List<Group> securityRoles = new ArrayList<Group>();
+  protected List<Group> groups = new ArrayList<Group>();
 
-    public LoggedInUserImpl(User user, String password) {
-        this.user = user;
-        this.password = password;
+  public LoggedInUserImpl(User user, String password) {
+    this.user = user;
+    this.password = password;
+  }
+
+  public String getId() {
+    if (user != null) {
+      return user.getId();
     }
+    return alternativeId;
+  }
 
-    public String getId() {
-        if (user != null) {
-            return user.getId();
-        }
-        return alternativeId;
+  public String getFirstName() {
+    if (user != null) {
+      return user.getFirstName();
     }
+    return null;
+  }
 
-    public String getFirstName() {
-        if (user != null) {
-            return user.getFirstName();
-        }
-        return null;
+  public String getLastName() {
+    if (user != null) {
+      return user.getLastName();
     }
+    return null;
+  }
 
-    public String getLastName() {
-        if (user != null) {
-            return user.getLastName();
-        }
-        return null;
+  public String getFullName() {
+    if (user != null) {
+      return getFirstName() + " " + getLastName();
     }
+    return null;
+  }
 
-    public String getFullName() {
-        if (user != null) {
-            return getFirstName() + " " + getLastName();
-        }
-        return null;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public String getPassword() {
-        return password;
-    }
+  public void setPassword(String password) {
+    user.setPassword(password);
+    this.password = password;
+  }
 
-    public void setPassword(String password) {
-        user.setPassword(password);
-        this.password = password;
-    }
+  public boolean isUser() {
+    return isUser;
+  }
 
-    public boolean isUser() {
-        return isUser;
-    }
+  public void setUser(boolean isUser) {
+    this.isUser = isUser;
+  }
 
-    public void setUser(boolean isUser) {
-        this.isUser = isUser;
-    }
+  public boolean isAdmin() {
+    return isAdmin;
+  }
 
-    public boolean isAdmin() {
-        return isAdmin;
-    }
+  public void setAdmin(boolean isAdmin) {
+    this.isAdmin = isAdmin;
+  }
 
-    public void setAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
-    }
+  public void addSecurityRoleGroup(Group securityRoleGroup) {
+    securityRoles.add(securityRoleGroup);
+  }
 
-    public void addSecurityRoleGroup(Group securityRoleGroup) {
-        securityRoles.add(securityRoleGroup);
-    }
+  public List<Group> getSecurityRoles() {
+    return securityRoles;
+  }
 
-    public List<Group> getSecurityRoles() {
-        return securityRoles;
-    }
+  public List<Group> getGroups() {
+    return groups;
+  }
 
-    public List<Group> getGroups() {
-        return groups;
-    }
-
-    public void addGroup(Group group) {
-        groups.add(group);
-    }
+  public void addGroup(Group group) {
+    groups.add(group);
+  }
 
 }

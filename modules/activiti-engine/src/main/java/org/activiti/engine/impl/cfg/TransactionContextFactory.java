@@ -19,6 +19,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public interface TransactionContextFactory {
 
-    TransactionContext openTransactionContext(CommandContext commandContext);
+  TransactionContext openTransactionContext(CommandContext commandContext);
 
 }

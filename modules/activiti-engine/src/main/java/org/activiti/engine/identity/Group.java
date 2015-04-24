@@ -23,15 +23,15 @@ import org.activiti.engine.IdentityService;
  */
 public interface Group extends Serializable {
 
-    String getId();
+  String getId();
 
-    void setId(String id);
+  void setId(String id);
 
-    String getName();
+  String getName();
 
-    void setName(String name);
+  void setName(String name);
 
-    String getType();
+  String getType();
 
-    void setType(String string);
+  void setType(String string);
 }

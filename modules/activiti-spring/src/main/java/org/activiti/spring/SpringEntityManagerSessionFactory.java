@@ -25,34 +25,33 @@ import javax.persistence.EntityManagerFactory;
 /**
  * Session Factory for {@link EntityManagerSession}.
  * <p>
- * Must be used when the {@link EntityManagerFactory} is managed by Spring. This
- * implementation will retrieve the {@link EntityManager} bound to the thread by
- * Spring in case a transaction already started.
+ * Must be used when the {@link EntityManagerFactory} is managed by Spring. This implementation will retrieve the {@link EntityManager} bound to the thread by Spring in case a transaction already
+ * started.
  * 
  * @author Joram Barrez
  */
 public class SpringEntityManagerSessionFactory implements SessionFactory {
 
-    protected EntityManagerFactory entityManagerFactory;
-    protected boolean handleTransactions;
-    protected boolean closeEntityManager;
+  protected EntityManagerFactory entityManagerFactory;
+  protected boolean handleTransactions;
+  protected boolean closeEntityManager;
 
-    public SpringEntityManagerSessionFactory(Object entityManagerFactory, boolean handleTransactions, boolean closeEntityManager) {
-        this.entityManagerFactory = (EntityManagerFactory) entityManagerFactory;
-        this.handleTransactions = handleTransactions;
-        this.closeEntityManager = closeEntityManager;
-    }
+  public SpringEntityManagerSessionFactory(Object entityManagerFactory, boolean handleTransactions, boolean closeEntityManager) {
+    this.entityManagerFactory = (EntityManagerFactory) entityManagerFactory;
+    this.handleTransactions = handleTransactions;
+    this.closeEntityManager = closeEntityManager;
+  }
 
-    public Class<?> getSessionType() {
-        return EntityManagerFactory.class;
-    }
+  public Class<?> getSessionType() {
+    return EntityManagerFactory.class;
+  }
 
-    public Session openSession() {
-        EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
-        if (entityManager == null) {
-            return new EntityManagerSessionImpl(entityManagerFactory, handleTransactions, closeEntityManager);
-        }
-        return new EntityManagerSessionImpl(entityManagerFactory, entityManager, false, false);
+  public Session openSession() {
+    EntityManager entityManager = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
+    if (entityManager == null) {
+      return new EntityManagerSessionImpl(entityManagerFactory, handleTransactions, closeEntityManager);
     }
+    return new EntityManagerSessionImpl(entityManagerFactory, entityManager, false, false);
+  }
 
 }

@@ -21,13 +21,13 @@ import org.activiti5.engine.impl.persistence.entity.TaskEntity;
  */
 public class TaskElContext extends SimpleContext {
 
-    TaskVariableMapper taskVariableMapper;
+  TaskVariableMapper taskVariableMapper;
 
-    public TaskElContext(TaskEntity task) {
-        this.taskVariableMapper = new TaskVariableMapper(task);
-    }
+  public TaskElContext(TaskEntity task) {
+    this.taskVariableMapper = new TaskVariableMapper(task);
+  }
 
-    public VariableMapper getVariableMapper() {
-        return taskVariableMapper;
-    }
+  public VariableMapper getVariableMapper() {
+    return taskVariableMapper;
+  }
 }

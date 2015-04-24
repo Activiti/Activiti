@@ -24,14 +24,14 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
  */
 public class GetDeploymentProcessDefinitionCmd implements Command<ProcessDefinitionEntity>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String processDefinitionId;
+  private static final long serialVersionUID = 1L;
+  protected String processDefinitionId;
 
-    public GetDeploymentProcessDefinitionCmd(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
+  public GetDeploymentProcessDefinitionCmd(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
 
-    public ProcessDefinitionEntity execute(CommandContext commandContext) {
-        return commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
-    }
+  public ProcessDefinitionEntity execute(CommandContext commandContext) {
+    return commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+  }
 }

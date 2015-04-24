@@ -17,16 +17,16 @@ package org.activiti.workflow.simple.converter.step;
  */
 public interface DefaultFormPropertyTypes {
 
-    String TEXT = "text";
+  String TEXT = "text";
 
-    String NUMBER = "number";
+  String NUMBER = "number";
 
-    String DATE = "date";
+  String DATE = "date";
 
-    String LIST = "list";
+  String LIST = "list";
 
-    String PEOPLE = "people";
+  String PEOPLE = "people";
 
-    String REFERENCE = "reference";
+  String REFERENCE = "reference";
 
 }

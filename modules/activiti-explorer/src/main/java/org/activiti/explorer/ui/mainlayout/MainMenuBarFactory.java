@@ -20,14 +20,14 @@ import org.activiti.explorer.ui.alfresco.AlfrescoMainMenuBar;
  */
 public class MainMenuBarFactory extends NoParamComponentFactory<MainMenuBar> {
 
-    @Override
-    protected Class<AlfrescoMainMenuBar> getAlfrescoComponentClass() {
-        return AlfrescoMainMenuBar.class;
-    }
+  @Override
+  protected Class<AlfrescoMainMenuBar> getAlfrescoComponentClass() {
+    return AlfrescoMainMenuBar.class;
+  }
 
-    @Override
-    protected Class<MainMenuBar> getDefaultComponentClass() {
-        return MainMenuBar.class;
-    }
+  @Override
+  protected Class<MainMenuBar> getDefaultComponentClass() {
+    return MainMenuBar.class;
+  }
 
 }

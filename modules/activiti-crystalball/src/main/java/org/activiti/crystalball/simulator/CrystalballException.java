@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator;
  * limitations under the License.
  */
 
-
 import org.activiti.engine.ActivitiException;
 
 /**
@@ -23,12 +22,10 @@ public class CrystalballException extends ActivitiException {
 
   private static final long serialVersionUID = 1L;
 
-
   public CrystalballException(String msg) {
-		super(msg);
-	}
+    super(msg);
+  }
 
-  
   public CrystalballException(String msg, Throwable cause) {
     super(msg, cause);
   }

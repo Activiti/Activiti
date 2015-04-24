@@ -19,5 +19,5 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public interface TransactionListener {
 
-    void execute(CommandContext commandContext);
+  void execute(CommandContext commandContext);
 }

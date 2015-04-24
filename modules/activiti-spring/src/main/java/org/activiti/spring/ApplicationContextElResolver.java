@@ -27,48 +27,48 @@ import java.util.Iterator;
  */
 public class ApplicationContextElResolver extends ELResolver {
 
-    protected ApplicationContext applicationContext;
+  protected ApplicationContext applicationContext;
 
-    public ApplicationContextElResolver(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
+  public ApplicationContextElResolver(ApplicationContext applicationContext) {
+    this.applicationContext = applicationContext;
+  }
+
+  public Object getValue(ELContext context, Object base, Object property) {
+    if (base == null) {
+      // according to javadoc, can only be a String
+      String key = (String) property;
+
+      if (applicationContext.containsBean(key)) {
+        context.setPropertyResolved(true);
+        return applicationContext.getBean(key);
+      }
     }
 
-    public Object getValue(ELContext context, Object base, Object property) {
-        if (base == null) {
-            // according to javadoc, can only be a String
-            String key = (String) property;
+    return null;
+  }
 
-            if (applicationContext.containsBean(key)) {
-                context.setPropertyResolved(true);
-                return applicationContext.getBean(key);
-            }
-        }
+  public boolean isReadOnly(ELContext context, Object base, Object property) {
+    return true;
+  }
 
-        return null;
+  public void setValue(ELContext context, Object base, Object property, Object value) {
+    if (base == null) {
+      String key = (String) property;
+      if (applicationContext.containsBean(key)) {
+        throw new ActivitiException("Cannot set value of '" + property + "', it resolves to a bean defined in the Spring application-context.");
+      }
     }
+  }
 
-    public boolean isReadOnly(ELContext context, Object base, Object property) {
-        return true;
-    }
+  public Class<?> getCommonPropertyType(ELContext context, Object arg) {
+    return Object.class;
+  }
 
-    public void setValue(ELContext context, Object base, Object property, Object value) {
-        if (base == null) {
-            String key = (String) property;
-            if (applicationContext.containsBean(key)) {
-                throw new ActivitiException("Cannot set value of '" + property + "', it resolves to a bean defined in the Spring application-context.");
-            }
-        }
-    }
+  public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
+    return null;
+  }
 
-    public Class<?> getCommonPropertyType(ELContext context, Object arg) {
-        return Object.class;
-    }
-
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
-        return null;
-    }
-
-    public Class<?> getType(ELContext context, Object arg1, Object arg2) {
-        return Object.class;
-    }
+  public Class<?> getType(ELContext context, Object arg1, Object arg2) {
+    return Object.class;
+  }
 }

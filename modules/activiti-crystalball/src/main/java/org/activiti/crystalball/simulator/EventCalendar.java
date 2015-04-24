@@ -15,10 +15,9 @@ import java.util.List;
  * limitations under the License.
  */
 
-
 /**
  * This class provides access to simulation events
- *
+ * 
  * @author martin.grofcik
  */
 public interface EventCalendar {
@@ -29,7 +28,7 @@ public interface EventCalendar {
   SimulationEvent removeFirstEvent();
 
   void addEvent(SimulationEvent event);
-  
+
   List<SimulationEvent> getEvents();
 
   void clear();

@@ -241,1913 +241,1901 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfiguration {
 
-    private static Logger log = LoggerFactory.getLogger(ProcessEngineConfigurationImpl.class);
+  private static Logger log = LoggerFactory.getLogger(ProcessEngineConfigurationImpl.class);
 
-    public static final String DB_SCHEMA_UPDATE_CREATE = "create";
-    public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
+  public static final String DB_SCHEMA_UPDATE_CREATE = "create";
+  public static final String DB_SCHEMA_UPDATE_DROP_CREATE = "drop-create";
 
-    public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
+  public static final String DEFAULT_WS_SYNC_FACTORY = "org.activiti.engine.impl.webservice.CxfWebServiceClientFactory";
 
-    public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti/db/mapping/mappings.xml";
+  public static final String DEFAULT_MYBATIS_MAPPING_FILE = "org/activiti/db/mapping/mappings.xml";
 
-    // SERVICES
-    // /////////////////////////////////////////////////////////////////
+  // SERVICES
+  // /////////////////////////////////////////////////////////////////
 
-    protected RepositoryService repositoryService = new RepositoryServiceImpl();
-    protected RuntimeService runtimeService = new RuntimeServiceImpl();
-    protected HistoryService historyService = new HistoryServiceImpl(this);
-    protected IdentityService identityService = new IdentityServiceImpl();
-    protected TaskService taskService = new TaskServiceImpl(this);
-    protected FormService formService = new FormServiceImpl();
-    protected ManagementService managementService = new ManagementServiceImpl();
+  protected RepositoryService repositoryService = new RepositoryServiceImpl();
+  protected RuntimeService runtimeService = new RuntimeServiceImpl();
+  protected HistoryService historyService = new HistoryServiceImpl(this);
+  protected IdentityService identityService = new IdentityServiceImpl();
+  protected TaskService taskService = new TaskServiceImpl(this);
+  protected FormService formService = new FormServiceImpl();
+  protected ManagementService managementService = new ManagementServiceImpl();
 
-    // COMMAND EXECUTORS
-    // ////////////////////////////////////////////////////////
+  // COMMAND EXECUTORS
+  // ////////////////////////////////////////////////////////
 
-    protected CommandConfig defaultCommandConfig;
-    protected CommandConfig schemaCommandConfig;
+  protected CommandConfig defaultCommandConfig;
+  protected CommandConfig schemaCommandConfig;
 
-    protected CommandInterceptor commandInvoker;
+  protected CommandInterceptor commandInvoker;
 
-    /**
-     * the configurable list which will be
-     * {@link #initInterceptorChain(java.util.List) processed} to build the
-     * {@link #commandExecutor}
-     */
-    protected List<CommandInterceptor> customPreCommandInterceptors;
-    protected List<CommandInterceptor> customPostCommandInterceptors;
+  /**
+   * the configurable list which will be {@link #initInterceptorChain(java.util.List) processed} to build the {@link #commandExecutor}
+   */
+  protected List<CommandInterceptor> customPreCommandInterceptors;
+  protected List<CommandInterceptor> customPostCommandInterceptors;
 
-    protected List<CommandInterceptor> commandInterceptors;
+  protected List<CommandInterceptor> commandInterceptors;
 
-    /** this will be initialized during the configurationComplete() */
-    protected CommandExecutor commandExecutor;
+  /** this will be initialized during the configurationComplete() */
+  protected CommandExecutor commandExecutor;
 
-    // SESSION FACTORIES
-    // ////////////////////////////////////////////////////////
+  // SESSION FACTORIES
+  // ////////////////////////////////////////////////////////
 
-    protected List<SessionFactory> customSessionFactories;
-    protected DbSqlSessionFactory dbSqlSessionFactory;
-    protected Map<Class<?>, SessionFactory> sessionFactories;
+  protected List<SessionFactory> customSessionFactories;
+  protected DbSqlSessionFactory dbSqlSessionFactory;
+  protected Map<Class<?>, SessionFactory> sessionFactories;
 
-    // Configurators
-    // ////////////////////////////////////////////////////////////
+  // Configurators
+  // ////////////////////////////////////////////////////////////
 
-    protected boolean enableConfiguratorServiceLoader = true; // Enabled by default. In certain environments this should be set to false (eg osgi)
-    protected List<ProcessEngineConfigurator> configurators; // The injected configurators
-    protected List<ProcessEngineConfigurator> allConfigurators; // Including auto-discovered configurators
+  protected boolean enableConfiguratorServiceLoader = true; // Enabled by default. In certain environments this should be set to false (eg osgi)
+  protected List<ProcessEngineConfigurator> configurators; // The injected configurators
+  protected List<ProcessEngineConfigurator> allConfigurators; // Including auto-discovered configurators
 
-    // DEPLOYERS
-    // ////////////////////////////////////////////////////////////////
+  // DEPLOYERS
+  // ////////////////////////////////////////////////////////////////
 
-    protected BpmnDeployer bpmnDeployer;
-    protected BpmnParser bpmnParser;
-    protected List<Deployer> customPreDeployers;
-    protected List<Deployer> customPostDeployers;
-    protected List<Deployer> deployers;
-    protected DeploymentManager deploymentManager;
+  protected BpmnDeployer bpmnDeployer;
+  protected BpmnParser bpmnParser;
+  protected List<Deployer> customPreDeployers;
+  protected List<Deployer> customPostDeployers;
+  protected List<Deployer> deployers;
+  protected DeploymentManager deploymentManager;
 
-    protected int processDefinitionCacheLimit = -1; // By default, no limit
-    protected DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache;
+  protected int processDefinitionCacheLimit = -1; // By default, no limit
+  protected DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache;
 
-    protected int knowledgeBaseCacheLimit = -1;
-    protected DeploymentCache<Object> knowledgeBaseCache;
+  protected int knowledgeBaseCacheLimit = -1;
+  protected DeploymentCache<Object> knowledgeBaseCache;
 
-    // JOB EXECUTOR
-    // /////////////////////////////////////////////////////////////
+  // JOB EXECUTOR
+  // /////////////////////////////////////////////////////////////
 
-    protected List<JobHandler> customJobHandlers;
-    protected Map<String, JobHandler> jobHandlers;
+  protected List<JobHandler> customJobHandlers;
+  protected Map<String, JobHandler> jobHandlers;
 
-    // MYBATIS SQL SESSION FACTORY
-    // //////////////////////////////////////////////
+  // MYBATIS SQL SESSION FACTORY
+  // //////////////////////////////////////////////
 
-    protected SqlSessionFactory sqlSessionFactory;
-    protected TransactionFactory transactionFactory;
+  protected SqlSessionFactory sqlSessionFactory;
+  protected TransactionFactory transactionFactory;
 
-    protected Set<Class<?>> customMybatisMappers;
-    protected Set<String> customMybatisXMLMappers;
+  protected Set<Class<?>> customMybatisMappers;
+  protected Set<String> customMybatisXMLMappers;
 
-    // ID GENERATOR
-    // /////////////////////////////////////////////////////////////
+  // ID GENERATOR
+  // /////////////////////////////////////////////////////////////
 
-    protected IdGenerator idGenerator;
-    protected DataSource idGeneratorDataSource;
-    protected String idGeneratorDataSourceJndiName;
+  protected IdGenerator idGenerator;
+  protected DataSource idGeneratorDataSource;
+  protected String idGeneratorDataSourceJndiName;
 
-    // BPMN PARSER
-    // //////////////////////////////////////////////////////////////
+  // BPMN PARSER
+  // //////////////////////////////////////////////////////////////
 
-    protected List<BpmnParseHandler> preBpmnParseHandlers;
-    protected List<BpmnParseHandler> postBpmnParseHandlers;
-    protected List<BpmnParseHandler> customDefaultBpmnParseHandlers;
-    protected ActivityBehaviorFactory activityBehaviorFactory;
-    protected ListenerFactory listenerFactory;
-    protected BpmnParseFactory bpmnParseFactory;
+  protected List<BpmnParseHandler> preBpmnParseHandlers;
+  protected List<BpmnParseHandler> postBpmnParseHandlers;
+  protected List<BpmnParseHandler> customDefaultBpmnParseHandlers;
+  protected ActivityBehaviorFactory activityBehaviorFactory;
+  protected ListenerFactory listenerFactory;
+  protected BpmnParseFactory bpmnParseFactory;
 
-    // PROCESS VALIDATION
+  // PROCESS VALIDATION
 
-    protected ProcessValidator processValidator;
+  protected ProcessValidator processValidator;
 
-    // OTHER
-    // ////////////////////////////////////////////////////////////////////
+  // OTHER
+  // ////////////////////////////////////////////////////////////////////
 
-    protected List<FormEngine> customFormEngines;
-    protected Map<String, FormEngine> formEngines;
+  protected List<FormEngine> customFormEngines;
+  protected Map<String, FormEngine> formEngines;
 
-    protected List<AbstractFormType> customFormTypes;
-    protected FormTypes formTypes;
+  protected List<AbstractFormType> customFormTypes;
+  protected FormTypes formTypes;
 
-    protected List<VariableType> customPreVariableTypes;
-    protected List<VariableType> customPostVariableTypes;
-    protected VariableTypes variableTypes;
+  protected List<VariableType> customPreVariableTypes;
+  protected List<VariableType> customPostVariableTypes;
+  protected VariableTypes variableTypes;
 
-    protected ExpressionManager expressionManager;
-    protected List<String> customScriptingEngineClasses;
-    protected ScriptingEngines scriptingEngines;
-    protected List<ResolverFactory> resolverFactories;
+  protected ExpressionManager expressionManager;
+  protected List<String> customScriptingEngineClasses;
+  protected ScriptingEngines scriptingEngines;
+  protected List<ResolverFactory> resolverFactories;
 
-    protected BusinessCalendarManager businessCalendarManager;
+  protected BusinessCalendarManager businessCalendarManager;
 
-    protected String wsSyncFactoryClassName = DEFAULT_WS_SYNC_FACTORY;
+  protected String wsSyncFactoryClassName = DEFAULT_WS_SYNC_FACTORY;
 
-    protected CommandContextFactory commandContextFactory;
-    protected TransactionContextFactory transactionContextFactory;
+  protected CommandContextFactory commandContextFactory;
+  protected TransactionContextFactory transactionContextFactory;
 
-    protected Map<Object, Object> beans;
+  protected Map<Object, Object> beans;
 
-    protected DelegateInterceptor delegateInterceptor;
+  protected DelegateInterceptor delegateInterceptor;
 
-    protected RejectedJobsHandler customRejectedJobsHandler;
+  protected RejectedJobsHandler customRejectedJobsHandler;
 
-    protected Map<String, EventHandler> eventHandlers;
-    protected List<EventHandler> customEventHandlers;
+  protected Map<String, EventHandler> eventHandlers;
+  protected List<EventHandler> customEventHandlers;
 
-    protected FailedJobCommandFactory failedJobCommandFactory;
+  protected FailedJobCommandFactory failedJobCommandFactory;
 
-    /**
-     * Set this to true if you want to have extra checks on the BPMN xml that is
-     * parsed. See
-     * http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml
-     * -can-bring-down-your-server/
-     * 
-     * Unfortunately, this feature is not available on some platforms (JDK 6,
-     * JBoss), hence the reason why it is disabled by default. If your platform
-     * allows the use of StaxSource during XML parsing, do enable it.
-     */
-    protected boolean enableSafeBpmnXml = false;
+  /**
+   * Set this to true if you want to have extra checks on the BPMN xml that is parsed. See http://www.jorambarrez.be/blog/2013/02/19/uploading-a-funny-xml -can-bring-down-your-server/
+   * 
+   * Unfortunately, this feature is not available on some platforms (JDK 6, JBoss), hence the reason why it is disabled by default. If your platform allows the use of StaxSource during XML parsing, do
+   * enable it.
+   */
+  protected boolean enableSafeBpmnXml = false;
 
-    /**
-     * The following settings will determine the amount of entities loaded at
-     * once when the engine needs to load multiple entities (eg. when suspending
-     * a process definition with all its process instances).
-     * 
-     * The default setting is quite low, as not to surprise anyone with sudden
-     * memory spikes. Change it to something higher if the environment Activiti
-     * runs in allows it.
-     */
-    protected int batchSizeProcessInstances = 25;
-    protected int batchSizeTasks = 25;
+  /**
+   * The following settings will determine the amount of entities loaded at once when the engine needs to load multiple entities (eg. when suspending a process definition with all its process
+   * instances).
+   * 
+   * The default setting is quite low, as not to surprise anyone with sudden memory spikes. Change it to something higher if the environment Activiti runs in allows it.
+   */
+  protected int batchSizeProcessInstances = 25;
+  protected int batchSizeTasks = 25;
 
-    /**
-     * Experimental setting. Default is false.
-     * 
-     * If set to true, in the {@link DbSqlSession} during the handling of delete
-     * operations, those operations of the same type are merged together. (eg if
-     * you have two 'DELETE from X where id=Y' and 'DELETE from X where id=W',
-     * it will be merged into one delete statement 'DELETE from X where id=Y or
-     * id=W'.
-     */
-    protected boolean isOptimizeDeleteOperationsEnabled;
+  /**
+   * Experimental setting. Default is false.
+   * 
+   * If set to true, in the {@link DbSqlSession} during the handling of delete operations, those operations of the same type are merged together. (eg if you have two 'DELETE from X where id=Y' and
+   * 'DELETE from X where id=W', it will be merged into one delete statement 'DELETE from X where id=Y or id=W'.
+   */
+  protected boolean isOptimizeDeleteOperationsEnabled;
 
-    protected boolean enableEventDispatcher = true;
-    protected ActivitiEventDispatcher eventDispatcher;
-    protected List<ActivitiEventListener> eventListeners;
-    protected Map<String, List<ActivitiEventListener>> typedEventListeners;
+  protected boolean enableEventDispatcher = true;
+  protected ActivitiEventDispatcher eventDispatcher;
+  protected List<ActivitiEventListener> eventListeners;
+  protected Map<String, List<ActivitiEventListener>> typedEventListeners;
 
-    // Event logging to database
-    protected boolean enableDatabaseEventLogging = false;
+  // Event logging to database
+  protected boolean enableDatabaseEventLogging = false;
 
-    // Backwards compatibility
-    protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
-    protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
+  // Backwards compatibility
+  protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
+  protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
 
-    // buildProcessEngine
-    // ///////////////////////////////////////////////////////
+  // buildProcessEngine
+  // ///////////////////////////////////////////////////////
 
-    public ProcessEngine buildProcessEngine() {
-        init();
-        return new ProcessEngineImpl(this);
+  public ProcessEngine buildProcessEngine() {
+    init();
+    return new ProcessEngineImpl(this);
+  }
+
+  // init
+  // /////////////////////////////////////////////////////////////////////
+
+  protected void init() {
+    initConfigurators();
+    configuratorsBeforeInit();
+    initProcessDiagramGenerator();
+    initHistoryLevel();
+    initExpressionManager();
+    initVariableTypes();
+    initBeans();
+    initFormEngines();
+    initFormTypes();
+    initScriptingEngines();
+    initClock();
+    initBusinessCalendarManager();
+    initCommandContextFactory();
+    initTransactionContextFactory();
+    initCommandExecutors();
+    initServices();
+    initIdGenerator();
+    initDeployers();
+    initJobHandlers();
+    initJobExecutor();
+    initAsyncExecutor();
+    initDataSource();
+    initTransactionFactory();
+    initSqlSessionFactory();
+    initSessionFactories();
+    initJpa();
+    initDelegateInterceptor();
+    initEventHandlers();
+    initFailedJobCommandFactory();
+    initEventDispatcher();
+    initProcessValidator();
+    initDatabaseEventLogging();
+    initActiviti5CompatibilityHandler();
+    configuratorsAfterInit();
+  }
+
+  // failedJobCommandFactory
+  // ////////////////////////////////////////////////////////
+
+  protected void initFailedJobCommandFactory() {
+    if (failedJobCommandFactory == null) {
+      failedJobCommandFactory = new DefaultFailedJobCommandFactory();
+    }
+  }
+
+  // command executors
+  // ////////////////////////////////////////////////////////
+
+  protected void initCommandExecutors() {
+    initDefaultCommandConfig();
+    initSchemaCommandConfig();
+    initCommandInvoker();
+    initCommandInterceptors();
+    initCommandExecutor();
+  }
+
+  protected void initDefaultCommandConfig() {
+    if (defaultCommandConfig == null) {
+      defaultCommandConfig = new CommandConfig();
+    }
+  }
+
+  private void initSchemaCommandConfig() {
+    if (schemaCommandConfig == null) {
+      schemaCommandConfig = new CommandConfig().transactionNotSupported();
+    }
+  }
+
+  protected void initCommandInvoker() {
+    if (commandInvoker == null) {
+      commandInvoker = new CommandInvoker();
+    }
+  }
+
+  protected void initCommandInterceptors() {
+    if (commandInterceptors == null) {
+      commandInterceptors = new ArrayList<CommandInterceptor>();
+      if (customPreCommandInterceptors != null) {
+        commandInterceptors.addAll(customPreCommandInterceptors);
+      }
+      commandInterceptors.addAll(getDefaultCommandInterceptors());
+      if (customPostCommandInterceptors != null) {
+        commandInterceptors.addAll(customPostCommandInterceptors);
+      }
+      commandInterceptors.add(commandInvoker);
+    }
+  }
+
+  protected Collection<? extends CommandInterceptor> getDefaultCommandInterceptors() {
+    List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
+    interceptors.add(new LogInterceptor());
+
+    CommandInterceptor transactionInterceptor = createTransactionInterceptor();
+    if (transactionInterceptor != null) {
+      interceptors.add(transactionInterceptor);
     }
 
-    // init
-    // /////////////////////////////////////////////////////////////////////
+    interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
+    return interceptors;
+  }
 
-    protected void init() {
-        initConfigurators();
-        configuratorsBeforeInit();
-        initProcessDiagramGenerator();
-        initHistoryLevel();
-        initExpressionManager();
-        initVariableTypes();
-        initBeans();
-        initFormEngines();
-        initFormTypes();
-        initScriptingEngines();
-        initClock();
-        initBusinessCalendarManager();
-        initCommandContextFactory();
-        initTransactionContextFactory();
-        initCommandExecutors();
-        initServices();
-        initIdGenerator();
-        initDeployers();
-        initJobHandlers();
-        initJobExecutor();
-        initAsyncExecutor();
-        initDataSource();
-        initTransactionFactory();
-        initSqlSessionFactory();
-        initSessionFactories();
-        initJpa();
-        initDelegateInterceptor();
-        initEventHandlers();
-        initFailedJobCommandFactory();
-        initEventDispatcher();
-        initProcessValidator();
-        initDatabaseEventLogging();
-        initActiviti5CompatibilityHandler();
-        configuratorsAfterInit();
+  protected void initCommandExecutor() {
+    if (commandExecutor == null) {
+      CommandInterceptor first = initInterceptorChain(commandInterceptors);
+      commandExecutor = new CommandExecutorImpl(getDefaultCommandConfig(), first);
     }
+  }
 
-    // failedJobCommandFactory
-    // ////////////////////////////////////////////////////////
-
-    protected void initFailedJobCommandFactory() {
-        if (failedJobCommandFactory == null) {
-            failedJobCommandFactory = new DefaultFailedJobCommandFactory();
-        }
+  protected CommandInterceptor initInterceptorChain(List<CommandInterceptor> chain) {
+    if (chain == null || chain.isEmpty()) {
+      throw new ActivitiException("invalid command interceptor chain configuration: " + chain);
     }
-
-    // command executors
-    // ////////////////////////////////////////////////////////
-
-    protected void initCommandExecutors() {
-        initDefaultCommandConfig();
-        initSchemaCommandConfig();
-        initCommandInvoker();
-        initCommandInterceptors();
-        initCommandExecutor();
+    for (int i = 0; i < chain.size() - 1; i++) {
+      chain.get(i).setNext(chain.get(i + 1));
     }
+    return chain.get(0);
+  }
 
-    protected void initDefaultCommandConfig() {
-        if (defaultCommandConfig == null) {
-            defaultCommandConfig = new CommandConfig();
-        }
+  protected abstract CommandInterceptor createTransactionInterceptor();
+
+  // services
+  // /////////////////////////////////////////////////////////////////
+
+  protected void initServices() {
+    initService(repositoryService);
+    initService(runtimeService);
+    initService(historyService);
+    initService(identityService);
+    initService(taskService);
+    initService(formService);
+    initService(managementService);
+  }
+
+  protected void initService(Object service) {
+    if (service instanceof ServiceImpl) {
+      ((ServiceImpl) service).setCommandExecutor(commandExecutor);
     }
+  }
 
-    private void initSchemaCommandConfig() {
-        if (schemaCommandConfig == null) {
-            schemaCommandConfig = new CommandConfig().transactionNotSupported();
-        }
-    }
+  // DataSource
+  // ///////////////////////////////////////////////////////////////
 
-    protected void initCommandInvoker() {
-        if (commandInvoker == null) {
-            commandInvoker = new CommandInvoker();
-        }
-    }
-
-    protected void initCommandInterceptors() {
-        if (commandInterceptors == null) {
-            commandInterceptors = new ArrayList<CommandInterceptor>();
-            if (customPreCommandInterceptors != null) {
-                commandInterceptors.addAll(customPreCommandInterceptors);
-            }
-            commandInterceptors.addAll(getDefaultCommandInterceptors());
-            if (customPostCommandInterceptors != null) {
-                commandInterceptors.addAll(customPostCommandInterceptors);
-            }
-            commandInterceptors.add(commandInvoker);
-        }
-    }
-
-    protected Collection<? extends CommandInterceptor> getDefaultCommandInterceptors() {
-        List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
-        interceptors.add(new LogInterceptor());
-
-        CommandInterceptor transactionInterceptor = createTransactionInterceptor();
-        if (transactionInterceptor != null) {
-            interceptors.add(transactionInterceptor);
-        }
-
-        interceptors.add(new CommandContextInterceptor(commandContextFactory, this));
-        return interceptors;
-    }
-
-    protected void initCommandExecutor() {
-        if (commandExecutor == null) {
-            CommandInterceptor first = initInterceptorChain(commandInterceptors);
-            commandExecutor = new CommandExecutorImpl(getDefaultCommandConfig(), first);
-        }
-    }
-
-    protected CommandInterceptor initInterceptorChain(List<CommandInterceptor> chain) {
-        if (chain == null || chain.isEmpty()) {
-            throw new ActivitiException("invalid command interceptor chain configuration: " + chain);
-        }
-        for (int i = 0; i < chain.size() - 1; i++) {
-            chain.get(i).setNext(chain.get(i + 1));
-        }
-        return chain.get(0);
-    }
-
-    protected abstract CommandInterceptor createTransactionInterceptor();
-
-    // services
-    // /////////////////////////////////////////////////////////////////
-
-    protected void initServices() {
-        initService(repositoryService);
-        initService(runtimeService);
-        initService(historyService);
-        initService(identityService);
-        initService(taskService);
-        initService(formService);
-        initService(managementService);
-    }
-
-    protected void initService(Object service) {
-        if (service instanceof ServiceImpl) {
-            ((ServiceImpl) service).setCommandExecutor(commandExecutor);
-        }
-    }
-
-    // DataSource
-    // ///////////////////////////////////////////////////////////////
-
-    protected void initDataSource() {
-        if (dataSource == null) {
-            if (dataSourceJndiName != null) {
-                try {
-                    dataSource = (DataSource) new InitialContext().lookup(dataSourceJndiName);
-                } catch (Exception e) {
-                    throw new ActivitiException("couldn't lookup datasource from " + dataSourceJndiName + ": " + e.getMessage(), e);
-                }
-
-            } else if (jdbcUrl != null) {
-                if ((jdbcDriver == null) || (jdbcUrl == null) || (jdbcUsername == null)) {
-                    throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
-                }
-
-                log.debug("initializing datasource to db: {}", jdbcUrl);
-
-                PooledDataSource pooledDataSource = new PooledDataSource(ReflectUtil.getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
-
-                if (jdbcMaxActiveConnections > 0) {
-                    pooledDataSource.setPoolMaximumActiveConnections(jdbcMaxActiveConnections);
-                }
-                if (jdbcMaxIdleConnections > 0) {
-                    pooledDataSource.setPoolMaximumIdleConnections(jdbcMaxIdleConnections);
-                }
-                if (jdbcMaxCheckoutTime > 0) {
-                    pooledDataSource.setPoolMaximumCheckoutTime(jdbcMaxCheckoutTime);
-                }
-                if (jdbcMaxWaitTime > 0) {
-                    pooledDataSource.setPoolTimeToWait(jdbcMaxWaitTime);
-                }
-                if (jdbcPingEnabled == true) {
-                    pooledDataSource.setPoolPingEnabled(true);
-                    if (jdbcPingQuery != null) {
-                        pooledDataSource.setPoolPingQuery(jdbcPingQuery);
-                    }
-                    pooledDataSource.setPoolPingConnectionsNotUsedFor(jdbcPingConnectionNotUsedFor);
-                }
-                if (jdbcDefaultTransactionIsolationLevel > 0) {
-                    pooledDataSource.setDefaultTransactionIsolationLevel(jdbcDefaultTransactionIsolationLevel);
-                }
-                dataSource = pooledDataSource;
-            }
-
-            if (dataSource instanceof PooledDataSource) {
-                // ACT-233: connection pool of Ibatis is not properely
-                // initialized if this is not called!
-                ((PooledDataSource) dataSource).forceCloseAll();
-            }
-        }
-
-        if (databaseType == null) {
-            initDatabaseType();
-        }
-    }
-
-    protected static Properties databaseTypeMappings = getDefaultDatabaseTypeMappings();
-
-    public static final String DATABASE_TYPE_H2 = "h2";
-    public static final String DATABASE_TYPE_HSQL = "hsql";
-    public static final String DATABASE_TYPE_MYSQL = "mysql";
-    public static final String DATABASE_TYPE_ORACLE = "oracle";
-    public static final String DATABASE_TYPE_POSTGRES = "postgres";
-    public static final String DATABASE_TYPE_MSSQL = "mssql";
-    public static final String DATABASE_TYPE_DB2 = "db2";
-
-    protected static Properties getDefaultDatabaseTypeMappings() {
-        Properties databaseTypeMappings = new Properties();
-        databaseTypeMappings.setProperty("H2", DATABASE_TYPE_H2);
-        databaseTypeMappings.setProperty("HSQL Database Engine", DATABASE_TYPE_HSQL);
-        databaseTypeMappings.setProperty("MySQL", DATABASE_TYPE_MYSQL);
-        databaseTypeMappings.setProperty("Oracle", DATABASE_TYPE_ORACLE);
-        databaseTypeMappings.setProperty("PostgreSQL", DATABASE_TYPE_POSTGRES);
-        databaseTypeMappings.setProperty("Microsoft SQL Server", DATABASE_TYPE_MSSQL);
-        databaseTypeMappings.setProperty(DATABASE_TYPE_DB2, DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty(DATABASE_TYPE_DB2, DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/NT", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/NT64", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2 UDP", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/LINUX", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/LINUX390", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/LINUXX8664", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/LINUXZ64", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/400 SQL", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/6000", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2 UDB iSeries", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/AIX64", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/HPUX", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/HP64", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/SUN", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/SUN64", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/PTX", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2/2", DATABASE_TYPE_DB2);
-        databaseTypeMappings.setProperty("DB2 UDB AS400", DATABASE_TYPE_DB2);
-        return databaseTypeMappings;
-    }
-
-    public void initDatabaseType() {
-        Connection connection = null;
+  protected void initDataSource() {
+    if (dataSource == null) {
+      if (dataSourceJndiName != null) {
         try {
-            connection = dataSource.getConnection();
-            DatabaseMetaData databaseMetaData = connection.getMetaData();
-            String databaseProductName = databaseMetaData.getDatabaseProductName();
-            log.debug("database product name: '{}'", databaseProductName);
-            databaseType = databaseTypeMappings.getProperty(databaseProductName);
-            if (databaseType == null) {
-                throw new ActivitiException("couldn't deduct database type from database product name '" + databaseProductName + "'");
-            }
-            log.debug("using database type: {}", databaseType);
-
-        } catch (SQLException e) {
-            log.error("Exception while initializing Database connection", e);
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException e) {
-                log.error("Exception while closing the Database connection", e);
-            }
-        }
-    }
-
-    // myBatis SqlSessionFactory
-    // ////////////////////////////////////////////////
-
-    protected void initTransactionFactory() {
-        if (transactionFactory == null) {
-            if (transactionsExternallyManaged) {
-                transactionFactory = new ManagedTransactionFactory();
-            } else {
-                transactionFactory = new JdbcTransactionFactory();
-            }
-        }
-    }
-
-    protected void initSqlSessionFactory() {
-        if (sqlSessionFactory == null) {
-            InputStream inputStream = null;
-            try {
-                inputStream = getMyBatisXmlConfigurationSteam();
-
-                // update the jdbc parameters to the configured ones...
-                Environment environment = new Environment("default", transactionFactory, dataSource);
-                Reader reader = new InputStreamReader(inputStream);
-                Properties properties = new Properties();
-                properties.put("prefix", databaseTablePrefix);
-                if (databaseType != null) {
-                    properties.put("limitBefore", DbSqlSessionFactory.databaseSpecificLimitBeforeStatements.get(databaseType));
-                    properties.put("limitAfter", DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
-                    properties.put("limitBetween", DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
-                    properties.put("limitOuterJoinBetween", DbSqlSessionFactory.databaseOuterJoinLimitBetweenStatements.get(databaseType));
-                    properties.put("orderBy", DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
-                    properties.put("limitBeforeNativeQuery", ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
-                }
-
-                Configuration configuration = initMybatisConfiguration(environment, reader, properties);
-                sqlSessionFactory = new DefaultSqlSessionFactory(configuration);
-
-            } catch (Exception e) {
-                throw new ActivitiException("Error while building ibatis SqlSessionFactory: " + e.getMessage(), e);
-            } finally {
-                IoUtil.closeSilently(inputStream);
-            }
-        }
-    }
-
-    protected Configuration initMybatisConfiguration(Environment environment, Reader reader, Properties properties) {
-        XMLConfigBuilder parser = new XMLConfigBuilder(reader, "", properties);
-        Configuration configuration = parser.getConfiguration();
-        configuration.setEnvironment(environment);
-
-        initMybatisTypeHandlers(configuration);
-        initCustomMybatisMappers(configuration);
-
-        configuration = parseMybatisConfiguration(configuration, parser);
-        return configuration;
-    }
-
-    protected void initMybatisTypeHandlers(Configuration configuration) {
-        configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
-    }
-
-    protected void initCustomMybatisMappers(Configuration configuration) {
-        if (getCustomMybatisMappers() != null) {
-            for (Class<?> clazz : getCustomMybatisMappers()) {
-                configuration.addMapper(clazz);
-            }
-        }
-    }
-
-    protected Configuration parseMybatisConfiguration(Configuration configuration, XMLConfigBuilder parser) {
-        return parseCustomMybatisXMLMappers(parser.parse());
-    }
-
-    protected Configuration parseCustomMybatisXMLMappers(Configuration configuration) {
-        if (getCustomMybatisXMLMappers() != null)
-            // see XMLConfigBuilder.mapperElement()
-            for (String resource : getCustomMybatisXMLMappers()) {
-                XMLMapperBuilder mapperParser = new XMLMapperBuilder(getResourceAsStream(resource), configuration, resource, configuration.getSqlFragments());
-                mapperParser.parse();
-            }
-        return configuration;
-    }
-
-    protected InputStream getResourceAsStream(String resource) {
-        return ReflectUtil.getResourceAsStream(resource);
-    }
-
-    protected InputStream getMyBatisXmlConfigurationSteam() {
-        return getResourceAsStream(DEFAULT_MYBATIS_MAPPING_FILE);
-    }
-
-    public Set<Class<?>> getCustomMybatisMappers() {
-        return customMybatisMappers;
-    }
-
-    public void setCustomMybatisMappers(Set<Class<?>> customMybatisMappers) {
-        this.customMybatisMappers = customMybatisMappers;
-    }
-
-    public Set<String> getCustomMybatisXMLMappers() {
-        return customMybatisXMLMappers;
-    }
-
-    public void setCustomMybatisXMLMappers(Set<String> customMybatisXMLMappers) {
-        this.customMybatisXMLMappers = customMybatisXMLMappers;
-    }
-
-    // session factories
-    // ////////////////////////////////////////////////////////
-
-    protected void initSessionFactories() {
-        if (sessionFactories == null) {
-            sessionFactories = new HashMap<Class<?>, SessionFactory>();
-
-            if (dbSqlSessionFactory == null) {
-                dbSqlSessionFactory = new DbSqlSessionFactory();
-            }
-            dbSqlSessionFactory.setDatabaseType(databaseType);
-            dbSqlSessionFactory.setIdGenerator(idGenerator);
-            dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
-            dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
-            dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
-            dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
-            dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
-            dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
-            dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
-            dbSqlSessionFactory.setOptimizeDeleteOperationsEnabled(isOptimizeDeleteOperationsEnabled);
-            addSessionFactory(dbSqlSessionFactory);
-
-            addSessionFactory(new GenericManagerFactory(AttachmentEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(CommentEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(DeploymentEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(ModelEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(ExecutionEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(HistoricDetailEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(HistoricVariableInstanceEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(HistoricIdentityLinkEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(IdentityInfoEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(IdentityLinkEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(JobEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(ProcessDefinitionEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(PropertyEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(ResourceEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(ByteArrayEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(TableDataManager.class));
-            addSessionFactory(new GenericManagerFactory(TaskEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class));
-            addSessionFactory(new GenericManagerFactory(EventLogEntryEntityManager.class));
-
-            addSessionFactory(new DefaultHistoryManagerSessionFactory());
-
-            addSessionFactory(new UserEntityManagerFactory());
-            addSessionFactory(new GroupEntityManagerFactory());
-            addSessionFactory(new MembershipEntityManagerFactory());
+          dataSource = (DataSource) new InitialContext().lookup(dataSourceJndiName);
+        } catch (Exception e) {
+          throw new ActivitiException("couldn't lookup datasource from " + dataSourceJndiName + ": " + e.getMessage(), e);
         }
 
-        if (customSessionFactories != null) {
-            for (SessionFactory sessionFactory : customSessionFactories) {
-                addSessionFactory(sessionFactory);
-            }
-        }
-    }
-
-    protected void addSessionFactory(SessionFactory sessionFactory) {
-        sessionFactories.put(sessionFactory.getSessionType(), sessionFactory);
-    }
-
-    protected void initConfigurators() {
-
-        allConfigurators = new ArrayList<ProcessEngineConfigurator>();
-
-        // Configurators that are explicitely added to the config
-        if (configurators != null) {
-            for (ProcessEngineConfigurator configurator : configurators) {
-                allConfigurators.add(configurator);
-            }
+      } else if (jdbcUrl != null) {
+        if ((jdbcDriver == null) || (jdbcUrl == null) || (jdbcUsername == null)) {
+          throw new ActivitiException("DataSource or JDBC properties have to be specified in a process engine configuration");
         }
 
-        // Auto discovery through ServiceLoader
-        if (enableConfiguratorServiceLoader) {
-            ClassLoader classLoader = getClassLoader();
-            if (classLoader == null) {
-                classLoader = ReflectUtil.getClassLoader();
-            }
+        log.debug("initializing datasource to db: {}", jdbcUrl);
 
-            ServiceLoader<ProcessEngineConfigurator> configuratorServiceLoader = ServiceLoader.load(ProcessEngineConfigurator.class, classLoader);
-            int nrOfServiceLoadedConfigurators = 0;
-            for (ProcessEngineConfigurator configurator : configuratorServiceLoader) {
-                allConfigurators.add(configurator);
-                nrOfServiceLoadedConfigurators++;
-            }
+        PooledDataSource pooledDataSource = new PooledDataSource(ReflectUtil.getClassLoader(), jdbcDriver, jdbcUrl, jdbcUsername, jdbcPassword);
 
-            if (nrOfServiceLoadedConfigurators > 0) {
-                log.info("Found {} auto-discoverable Process Engine Configurator{}", nrOfServiceLoadedConfigurators++, nrOfServiceLoadedConfigurators > 1 ? "s" : "");
-            }
-
-            if (!allConfigurators.isEmpty()) {
-
-                // Order them according to the priorities (usefule for dependent
-                // configurator)
-                Collections.sort(allConfigurators, new Comparator<ProcessEngineConfigurator>() {
-                    @Override
-                    public int compare(ProcessEngineConfigurator configurator1, ProcessEngineConfigurator configurator2) {
-                        int priority1 = configurator1.getPriority();
-                        int priority2 = configurator2.getPriority();
-
-                        if (priority1 < priority2) {
-                            return -1;
-                        } else if (priority1 > priority2) {
-                            return 1;
-                        }
-                        return 0;
-                    }
-                });
-
-                // Execute the configurators
-                log.info("Found {} Process Engine Configurators in total:", allConfigurators.size());
-                for (ProcessEngineConfigurator configurator : allConfigurators) {
-                    log.info("{} (priority:{})", configurator.getClass(), configurator.getPriority());
-                }
-
-            }
-
+        if (jdbcMaxActiveConnections > 0) {
+          pooledDataSource.setPoolMaximumActiveConnections(jdbcMaxActiveConnections);
         }
+        if (jdbcMaxIdleConnections > 0) {
+          pooledDataSource.setPoolMaximumIdleConnections(jdbcMaxIdleConnections);
+        }
+        if (jdbcMaxCheckoutTime > 0) {
+          pooledDataSource.setPoolMaximumCheckoutTime(jdbcMaxCheckoutTime);
+        }
+        if (jdbcMaxWaitTime > 0) {
+          pooledDataSource.setPoolTimeToWait(jdbcMaxWaitTime);
+        }
+        if (jdbcPingEnabled == true) {
+          pooledDataSource.setPoolPingEnabled(true);
+          if (jdbcPingQuery != null) {
+            pooledDataSource.setPoolPingQuery(jdbcPingQuery);
+          }
+          pooledDataSource.setPoolPingConnectionsNotUsedFor(jdbcPingConnectionNotUsedFor);
+        }
+        if (jdbcDefaultTransactionIsolationLevel > 0) {
+          pooledDataSource.setDefaultTransactionIsolationLevel(jdbcDefaultTransactionIsolationLevel);
+        }
+        dataSource = pooledDataSource;
+      }
+
+      if (dataSource instanceof PooledDataSource) {
+        // ACT-233: connection pool of Ibatis is not properely
+        // initialized if this is not called!
+        ((PooledDataSource) dataSource).forceCloseAll();
+      }
     }
 
-    protected void configuratorsBeforeInit() {
+    if (databaseType == null) {
+      initDatabaseType();
+    }
+  }
+
+  protected static Properties databaseTypeMappings = getDefaultDatabaseTypeMappings();
+
+  public static final String DATABASE_TYPE_H2 = "h2";
+  public static final String DATABASE_TYPE_HSQL = "hsql";
+  public static final String DATABASE_TYPE_MYSQL = "mysql";
+  public static final String DATABASE_TYPE_ORACLE = "oracle";
+  public static final String DATABASE_TYPE_POSTGRES = "postgres";
+  public static final String DATABASE_TYPE_MSSQL = "mssql";
+  public static final String DATABASE_TYPE_DB2 = "db2";
+
+  protected static Properties getDefaultDatabaseTypeMappings() {
+    Properties databaseTypeMappings = new Properties();
+    databaseTypeMappings.setProperty("H2", DATABASE_TYPE_H2);
+    databaseTypeMappings.setProperty("HSQL Database Engine", DATABASE_TYPE_HSQL);
+    databaseTypeMappings.setProperty("MySQL", DATABASE_TYPE_MYSQL);
+    databaseTypeMappings.setProperty("Oracle", DATABASE_TYPE_ORACLE);
+    databaseTypeMappings.setProperty("PostgreSQL", DATABASE_TYPE_POSTGRES);
+    databaseTypeMappings.setProperty("Microsoft SQL Server", DATABASE_TYPE_MSSQL);
+    databaseTypeMappings.setProperty(DATABASE_TYPE_DB2, DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty(DATABASE_TYPE_DB2, DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/NT", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/NT64", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2 UDP", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUX", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUX390", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUXX8664", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/LINUXZ64", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/400 SQL", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/6000", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2 UDB iSeries", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/AIX64", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/HPUX", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/HP64", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/SUN", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/SUN64", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/PTX", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2/2", DATABASE_TYPE_DB2);
+    databaseTypeMappings.setProperty("DB2 UDB AS400", DATABASE_TYPE_DB2);
+    return databaseTypeMappings;
+  }
+
+  public void initDatabaseType() {
+    Connection connection = null;
+    try {
+      connection = dataSource.getConnection();
+      DatabaseMetaData databaseMetaData = connection.getMetaData();
+      String databaseProductName = databaseMetaData.getDatabaseProductName();
+      log.debug("database product name: '{}'", databaseProductName);
+      databaseType = databaseTypeMappings.getProperty(databaseProductName);
+      if (databaseType == null) {
+        throw new ActivitiException("couldn't deduct database type from database product name '" + databaseProductName + "'");
+      }
+      log.debug("using database type: {}", databaseType);
+
+    } catch (SQLException e) {
+      log.error("Exception while initializing Database connection", e);
+    } finally {
+      try {
+        if (connection != null) {
+          connection.close();
+        }
+      } catch (SQLException e) {
+        log.error("Exception while closing the Database connection", e);
+      }
+    }
+  }
+
+  // myBatis SqlSessionFactory
+  // ////////////////////////////////////////////////
+
+  protected void initTransactionFactory() {
+    if (transactionFactory == null) {
+      if (transactionsExternallyManaged) {
+        transactionFactory = new ManagedTransactionFactory();
+      } else {
+        transactionFactory = new JdbcTransactionFactory();
+      }
+    }
+  }
+
+  protected void initSqlSessionFactory() {
+    if (sqlSessionFactory == null) {
+      InputStream inputStream = null;
+      try {
+        inputStream = getMyBatisXmlConfigurationSteam();
+
+        // update the jdbc parameters to the configured ones...
+        Environment environment = new Environment("default", transactionFactory, dataSource);
+        Reader reader = new InputStreamReader(inputStream);
+        Properties properties = new Properties();
+        properties.put("prefix", databaseTablePrefix);
+        if (databaseType != null) {
+          properties.put("limitBefore", DbSqlSessionFactory.databaseSpecificLimitBeforeStatements.get(databaseType));
+          properties.put("limitAfter", DbSqlSessionFactory.databaseSpecificLimitAfterStatements.get(databaseType));
+          properties.put("limitBetween", DbSqlSessionFactory.databaseSpecificLimitBetweenStatements.get(databaseType));
+          properties.put("limitOuterJoinBetween", DbSqlSessionFactory.databaseOuterJoinLimitBetweenStatements.get(databaseType));
+          properties.put("orderBy", DbSqlSessionFactory.databaseSpecificOrderByStatements.get(databaseType));
+          properties.put("limitBeforeNativeQuery", ObjectUtils.toString(DbSqlSessionFactory.databaseSpecificLimitBeforeNativeQueryStatements.get(databaseType)));
+        }
+
+        Configuration configuration = initMybatisConfiguration(environment, reader, properties);
+        sqlSessionFactory = new DefaultSqlSessionFactory(configuration);
+
+      } catch (Exception e) {
+        throw new ActivitiException("Error while building ibatis SqlSessionFactory: " + e.getMessage(), e);
+      } finally {
+        IoUtil.closeSilently(inputStream);
+      }
+    }
+  }
+
+  protected Configuration initMybatisConfiguration(Environment environment, Reader reader, Properties properties) {
+    XMLConfigBuilder parser = new XMLConfigBuilder(reader, "", properties);
+    Configuration configuration = parser.getConfiguration();
+    configuration.setEnvironment(environment);
+
+    initMybatisTypeHandlers(configuration);
+    initCustomMybatisMappers(configuration);
+
+    configuration = parseMybatisConfiguration(configuration, parser);
+    return configuration;
+  }
+
+  protected void initMybatisTypeHandlers(Configuration configuration) {
+    configuration.getTypeHandlerRegistry().register(VariableType.class, JdbcType.VARCHAR, new IbatisVariableTypeHandler());
+  }
+
+  protected void initCustomMybatisMappers(Configuration configuration) {
+    if (getCustomMybatisMappers() != null) {
+      for (Class<?> clazz : getCustomMybatisMappers()) {
+        configuration.addMapper(clazz);
+      }
+    }
+  }
+
+  protected Configuration parseMybatisConfiguration(Configuration configuration, XMLConfigBuilder parser) {
+    return parseCustomMybatisXMLMappers(parser.parse());
+  }
+
+  protected Configuration parseCustomMybatisXMLMappers(Configuration configuration) {
+    if (getCustomMybatisXMLMappers() != null)
+      // see XMLConfigBuilder.mapperElement()
+      for (String resource : getCustomMybatisXMLMappers()) {
+        XMLMapperBuilder mapperParser = new XMLMapperBuilder(getResourceAsStream(resource), configuration, resource, configuration.getSqlFragments());
+        mapperParser.parse();
+      }
+    return configuration;
+  }
+
+  protected InputStream getResourceAsStream(String resource) {
+    return ReflectUtil.getResourceAsStream(resource);
+  }
+
+  protected InputStream getMyBatisXmlConfigurationSteam() {
+    return getResourceAsStream(DEFAULT_MYBATIS_MAPPING_FILE);
+  }
+
+  public Set<Class<?>> getCustomMybatisMappers() {
+    return customMybatisMappers;
+  }
+
+  public void setCustomMybatisMappers(Set<Class<?>> customMybatisMappers) {
+    this.customMybatisMappers = customMybatisMappers;
+  }
+
+  public Set<String> getCustomMybatisXMLMappers() {
+    return customMybatisXMLMappers;
+  }
+
+  public void setCustomMybatisXMLMappers(Set<String> customMybatisXMLMappers) {
+    this.customMybatisXMLMappers = customMybatisXMLMappers;
+  }
+
+  // session factories
+  // ////////////////////////////////////////////////////////
+
+  protected void initSessionFactories() {
+    if (sessionFactories == null) {
+      sessionFactories = new HashMap<Class<?>, SessionFactory>();
+
+      if (dbSqlSessionFactory == null) {
+        dbSqlSessionFactory = new DbSqlSessionFactory();
+      }
+      dbSqlSessionFactory.setDatabaseType(databaseType);
+      dbSqlSessionFactory.setIdGenerator(idGenerator);
+      dbSqlSessionFactory.setSqlSessionFactory(sqlSessionFactory);
+      dbSqlSessionFactory.setDbIdentityUsed(isDbIdentityUsed);
+      dbSqlSessionFactory.setDbHistoryUsed(isDbHistoryUsed);
+      dbSqlSessionFactory.setDatabaseTablePrefix(databaseTablePrefix);
+      dbSqlSessionFactory.setTablePrefixIsSchema(tablePrefixIsSchema);
+      dbSqlSessionFactory.setDatabaseCatalog(databaseCatalog);
+      dbSqlSessionFactory.setDatabaseSchema(databaseSchema);
+      dbSqlSessionFactory.setOptimizeDeleteOperationsEnabled(isOptimizeDeleteOperationsEnabled);
+      addSessionFactory(dbSqlSessionFactory);
+
+      addSessionFactory(new GenericManagerFactory(AttachmentEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(CommentEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(DeploymentEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ModelEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ExecutionEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricActivityInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricDetailEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricProcessInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricVariableInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricTaskInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(HistoricIdentityLinkEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(IdentityInfoEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(IdentityLinkEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(JobEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ProcessDefinitionEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(PropertyEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ResourceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(ByteArrayEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(TableDataManager.class));
+      addSessionFactory(new GenericManagerFactory(TaskEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(VariableInstanceEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(EventSubscriptionEntityManager.class));
+      addSessionFactory(new GenericManagerFactory(EventLogEntryEntityManager.class));
+
+      addSessionFactory(new DefaultHistoryManagerSessionFactory());
+
+      addSessionFactory(new UserEntityManagerFactory());
+      addSessionFactory(new GroupEntityManagerFactory());
+      addSessionFactory(new MembershipEntityManagerFactory());
+    }
+
+    if (customSessionFactories != null) {
+      for (SessionFactory sessionFactory : customSessionFactories) {
+        addSessionFactory(sessionFactory);
+      }
+    }
+  }
+
+  protected void addSessionFactory(SessionFactory sessionFactory) {
+    sessionFactories.put(sessionFactory.getSessionType(), sessionFactory);
+  }
+
+  protected void initConfigurators() {
+
+    allConfigurators = new ArrayList<ProcessEngineConfigurator>();
+
+    // Configurators that are explicitely added to the config
+    if (configurators != null) {
+      for (ProcessEngineConfigurator configurator : configurators) {
+        allConfigurators.add(configurator);
+      }
+    }
+
+    // Auto discovery through ServiceLoader
+    if (enableConfiguratorServiceLoader) {
+      ClassLoader classLoader = getClassLoader();
+      if (classLoader == null) {
+        classLoader = ReflectUtil.getClassLoader();
+      }
+
+      ServiceLoader<ProcessEngineConfigurator> configuratorServiceLoader = ServiceLoader.load(ProcessEngineConfigurator.class, classLoader);
+      int nrOfServiceLoadedConfigurators = 0;
+      for (ProcessEngineConfigurator configurator : configuratorServiceLoader) {
+        allConfigurators.add(configurator);
+        nrOfServiceLoadedConfigurators++;
+      }
+
+      if (nrOfServiceLoadedConfigurators > 0) {
+        log.info("Found {} auto-discoverable Process Engine Configurator{}", nrOfServiceLoadedConfigurators++, nrOfServiceLoadedConfigurators > 1 ? "s" : "");
+      }
+
+      if (!allConfigurators.isEmpty()) {
+
+        // Order them according to the priorities (usefule for dependent
+        // configurator)
+        Collections.sort(allConfigurators, new Comparator<ProcessEngineConfigurator>() {
+          @Override
+          public int compare(ProcessEngineConfigurator configurator1, ProcessEngineConfigurator configurator2) {
+            int priority1 = configurator1.getPriority();
+            int priority2 = configurator2.getPriority();
+
+            if (priority1 < priority2) {
+              return -1;
+            } else if (priority1 > priority2) {
+              return 1;
+            }
+            return 0;
+          }
+        });
+
+        // Execute the configurators
+        log.info("Found {} Process Engine Configurators in total:", allConfigurators.size());
         for (ProcessEngineConfigurator configurator : allConfigurators) {
-            log.info("Executing beforeInit() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
-            configurator.beforeInit(this);
-        }
-    }
-
-    protected void configuratorsAfterInit() {
-        for (ProcessEngineConfigurator configurator : allConfigurators) {
-            log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
-            configurator.configure(this);
-        }
-    }
-
-    // deployers
-    // ////////////////////////////////////////////////////////////////
-
-    protected void initDeployers() {
-        if (this.deployers == null) {
-            this.deployers = new ArrayList<Deployer>();
-            if (customPreDeployers != null) {
-                this.deployers.addAll(customPreDeployers);
-            }
-            this.deployers.addAll(getDefaultDeployers());
-            if (customPostDeployers != null) {
-                this.deployers.addAll(customPostDeployers);
-            }
-        }
-        if (deploymentManager == null) {
-            deploymentManager = new DeploymentManager();
-            deploymentManager.setDeployers(deployers);
-
-            // Process Definition cache
-            if (processDefinitionCache == null) {
-                if (processDefinitionCacheLimit <= 0) {
-                    processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>();
-                } else {
-                    processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>(processDefinitionCacheLimit);
-                }
-            }
-
-            // Knowledge base cache (used for Drools business task)
-            if (knowledgeBaseCache == null) {
-                if (knowledgeBaseCacheLimit <= 0) {
-                    knowledgeBaseCache = new DefaultDeploymentCache<Object>();
-                } else {
-                    knowledgeBaseCache = new DefaultDeploymentCache<Object>(knowledgeBaseCacheLimit);
-                }
-            }
-
-            deploymentManager.setProcessDefinitionCache(processDefinitionCache);
-            deploymentManager.setKnowledgeBaseCache(knowledgeBaseCache);
-        }
-    }
-
-    protected Collection<? extends Deployer> getDefaultDeployers() {
-        List<Deployer> defaultDeployers = new ArrayList<Deployer>();
-
-        if (bpmnDeployer == null) {
-            bpmnDeployer = new BpmnDeployer();
+          log.info("{} (priority:{})", configurator.getClass(), configurator.getPriority());
         }
 
-        bpmnDeployer.setExpressionManager(expressionManager);
-        bpmnDeployer.setIdGenerator(idGenerator);
+      }
 
-        if (bpmnParseFactory == null) {
-            bpmnParseFactory = new DefaultBpmnParseFactory();
+    }
+  }
+
+  protected void configuratorsBeforeInit() {
+    for (ProcessEngineConfigurator configurator : allConfigurators) {
+      log.info("Executing beforeInit() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
+      configurator.beforeInit(this);
+    }
+  }
+
+  protected void configuratorsAfterInit() {
+    for (ProcessEngineConfigurator configurator : allConfigurators) {
+      log.info("Executing configure() of {} (priority:{})", configurator.getClass(), configurator.getPriority());
+      configurator.configure(this);
+    }
+  }
+
+  // deployers
+  // ////////////////////////////////////////////////////////////////
+
+  protected void initDeployers() {
+    if (this.deployers == null) {
+      this.deployers = new ArrayList<Deployer>();
+      if (customPreDeployers != null) {
+        this.deployers.addAll(customPreDeployers);
+      }
+      this.deployers.addAll(getDefaultDeployers());
+      if (customPostDeployers != null) {
+        this.deployers.addAll(customPostDeployers);
+      }
+    }
+    if (deploymentManager == null) {
+      deploymentManager = new DeploymentManager();
+      deploymentManager.setDeployers(deployers);
+
+      // Process Definition cache
+      if (processDefinitionCache == null) {
+        if (processDefinitionCacheLimit <= 0) {
+          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>();
+        } else {
+          processDefinitionCache = new DefaultDeploymentCache<ProcessDefinitionCacheEntry>(processDefinitionCacheLimit);
         }
+      }
 
-        if (activityBehaviorFactory == null) {
-            DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
-            defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
-            activityBehaviorFactory = defaultActivityBehaviorFactory;
-        } else if ((activityBehaviorFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) activityBehaviorFactory).getExpressionManager() == null) {
-            ((AbstractBehaviorFactory) activityBehaviorFactory).setExpressionManager(expressionManager);
+      // Knowledge base cache (used for Drools business task)
+      if (knowledgeBaseCache == null) {
+        if (knowledgeBaseCacheLimit <= 0) {
+          knowledgeBaseCache = new DefaultDeploymentCache<Object>();
+        } else {
+          knowledgeBaseCache = new DefaultDeploymentCache<Object>(knowledgeBaseCacheLimit);
         }
+      }
 
-        if (listenerFactory == null) {
-            DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
-            defaultListenerFactory.setExpressionManager(expressionManager);
-            listenerFactory = defaultListenerFactory;
-        } else if ((listenerFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) listenerFactory).getExpressionManager() == null) {
-            ((AbstractBehaviorFactory) listenerFactory).setExpressionManager(expressionManager);
+      deploymentManager.setProcessDefinitionCache(processDefinitionCache);
+      deploymentManager.setKnowledgeBaseCache(knowledgeBaseCache);
+    }
+  }
+
+  protected Collection<? extends Deployer> getDefaultDeployers() {
+    List<Deployer> defaultDeployers = new ArrayList<Deployer>();
+
+    if (bpmnDeployer == null) {
+      bpmnDeployer = new BpmnDeployer();
+    }
+
+    bpmnDeployer.setExpressionManager(expressionManager);
+    bpmnDeployer.setIdGenerator(idGenerator);
+
+    if (bpmnParseFactory == null) {
+      bpmnParseFactory = new DefaultBpmnParseFactory();
+    }
+
+    if (activityBehaviorFactory == null) {
+      DefaultActivityBehaviorFactory defaultActivityBehaviorFactory = new DefaultActivityBehaviorFactory();
+      defaultActivityBehaviorFactory.setExpressionManager(expressionManager);
+      activityBehaviorFactory = defaultActivityBehaviorFactory;
+    } else if ((activityBehaviorFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) activityBehaviorFactory).getExpressionManager() == null) {
+      ((AbstractBehaviorFactory) activityBehaviorFactory).setExpressionManager(expressionManager);
+    }
+
+    if (listenerFactory == null) {
+      DefaultListenerFactory defaultListenerFactory = new DefaultListenerFactory();
+      defaultListenerFactory.setExpressionManager(expressionManager);
+      listenerFactory = defaultListenerFactory;
+    } else if ((listenerFactory instanceof AbstractBehaviorFactory) && ((AbstractBehaviorFactory) listenerFactory).getExpressionManager() == null) {
+      ((AbstractBehaviorFactory) listenerFactory).setExpressionManager(expressionManager);
+    }
+
+    if (bpmnParser == null) {
+      bpmnParser = new BpmnParser();
+    }
+
+    bpmnParser.setExpressionManager(expressionManager);
+    bpmnParser.setBpmnParseFactory(bpmnParseFactory);
+    bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
+    bpmnParser.setListenerFactory(listenerFactory);
+
+    List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
+    if (getPreBpmnParseHandlers() != null) {
+      parseHandlers.addAll(getPreBpmnParseHandlers());
+    }
+    parseHandlers.addAll(getDefaultBpmnParseHandlers());
+    if (getPostBpmnParseHandlers() != null) {
+      parseHandlers.addAll(getPostBpmnParseHandlers());
+    }
+
+    BpmnParseHandlers bpmnParseHandlers = new BpmnParseHandlers();
+    bpmnParseHandlers.addHandlers(parseHandlers);
+    bpmnParser.setBpmnParserHandlers(bpmnParseHandlers);
+
+    bpmnDeployer.setBpmnParser(bpmnParser);
+
+    defaultDeployers.add(bpmnDeployer);
+    return defaultDeployers;
+  }
+
+  protected List<BpmnParseHandler> getDefaultBpmnParseHandlers() {
+
+    // Alpabetic list of default parse handler classes
+    List<BpmnParseHandler> bpmnParserHandlers = new ArrayList<BpmnParseHandler>();
+    bpmnParserHandlers.add(new BoundaryEventParseHandler());
+    bpmnParserHandlers.add(new BusinessRuleParseHandler());
+    bpmnParserHandlers.add(new CallActivityParseHandler());
+    bpmnParserHandlers.add(new CancelEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new CompensateEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new EndEventParseHandler());
+    bpmnParserHandlers.add(new ErrorEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new EventBasedGatewayParseHandler());
+    bpmnParserHandlers.add(new ExclusiveGatewayParseHandler());
+    bpmnParserHandlers.add(new InclusiveGatewayParseHandler());
+    bpmnParserHandlers.add(new IntermediateCatchEventParseHandler());
+    bpmnParserHandlers.add(new IntermediateThrowEventParseHandler());
+    bpmnParserHandlers.add(new ManualTaskParseHandler());
+    bpmnParserHandlers.add(new MessageEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new ParallelGatewayParseHandler());
+    bpmnParserHandlers.add(new ProcessParseHandler());
+    bpmnParserHandlers.add(new ReceiveTaskParseHandler());
+    bpmnParserHandlers.add(new ScriptTaskParseHandler());
+    bpmnParserHandlers.add(new SendTaskParseHandler());
+    bpmnParserHandlers.add(new SequenceFlowParseHandler());
+    bpmnParserHandlers.add(new ServiceTaskParseHandler());
+    bpmnParserHandlers.add(new SignalEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new StartEventParseHandler());
+    bpmnParserHandlers.add(new SubProcessParseHandler());
+    bpmnParserHandlers.add(new EventSubProcessParseHandler());
+    bpmnParserHandlers.add(new TaskParseHandler());
+    bpmnParserHandlers.add(new TimerEventDefinitionParseHandler());
+    bpmnParserHandlers.add(new TransactionParseHandler());
+    bpmnParserHandlers.add(new UserTaskParseHandler());
+
+    // Replace any default handler if the user wants to replace them
+    if (customDefaultBpmnParseHandlers != null) {
+
+      Map<Class<?>, BpmnParseHandler> customParseHandlerMap = new HashMap<Class<?>, BpmnParseHandler>();
+      for (BpmnParseHandler bpmnParseHandler : customDefaultBpmnParseHandlers) {
+        for (Class<?> handledType : bpmnParseHandler.getHandledTypes()) {
+          customParseHandlerMap.put(handledType, bpmnParseHandler);
         }
+      }
 
-        if (bpmnParser == null) {
-            bpmnParser = new BpmnParser();
+      for (int i = 0; i < bpmnParserHandlers.size(); i++) {
+        // All the default handlers support only one type
+        BpmnParseHandler defaultBpmnParseHandler = bpmnParserHandlers.get(i);
+        if (defaultBpmnParseHandler.getHandledTypes().size() != 1) {
+          StringBuilder supportedTypes = new StringBuilder();
+          for (Class<?> type : defaultBpmnParseHandler.getHandledTypes()) {
+            supportedTypes.append(" ").append(type.getCanonicalName()).append(" ");
+          }
+          throw new ActivitiException("The default BPMN parse handlers should only support one type, but " + defaultBpmnParseHandler.getClass() + " supports " + supportedTypes.toString()
+              + ". This is likely a programmatic error");
+        } else {
+          Class<?> handledType = defaultBpmnParseHandler.getHandledTypes().iterator().next();
+          if (customParseHandlerMap.containsKey(handledType)) {
+            BpmnParseHandler newBpmnParseHandler = customParseHandlerMap.get(handledType);
+            log.info("Replacing default BpmnParseHandler " + defaultBpmnParseHandler.getClass().getName() + " with " + newBpmnParseHandler.getClass().getName());
+            bpmnParserHandlers.set(i, newBpmnParseHandler);
+          }
         }
+      }
+    }
 
-        bpmnParser.setExpressionManager(expressionManager);
-        bpmnParser.setBpmnParseFactory(bpmnParseFactory);
-        bpmnParser.setActivityBehaviorFactory(activityBehaviorFactory);
-        bpmnParser.setListenerFactory(listenerFactory);
+    // History
+    for (BpmnParseHandler handler : getDefaultHistoryParseHandlers()) {
+      bpmnParserHandlers.add(handler);
+    }
 
-        List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
-        if (getPreBpmnParseHandlers() != null) {
-            parseHandlers.addAll(getPreBpmnParseHandlers());
+    return bpmnParserHandlers;
+  }
+
+  protected List<BpmnParseHandler> getDefaultHistoryParseHandlers() {
+    List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
+    parseHandlers.add(new FlowNodeHistoryParseHandler());
+    // parseHandlers.add(new ProcessHistoryParseHandler());
+    // parseHandlers.add(new StartEventHistoryParseHandler());
+    parseHandlers.add(new UserTaskHistoryParseHandler());
+    return parseHandlers;
+  }
+
+  private void initClock() {
+    if (clock == null) {
+      clock = new DefaultClockImpl();
+    }
+  }
+
+  protected void initProcessDiagramGenerator() {
+    if (processDiagramGenerator == null) {
+      processDiagramGenerator = new DefaultProcessDiagramGenerator();
+    }
+  }
+
+  protected void initJobHandlers() {
+    jobHandlers = new HashMap<String, JobHandler>();
+    TimerExecuteNestedActivityJobHandler timerExecuteNestedActivityJobHandler = new TimerExecuteNestedActivityJobHandler();
+    jobHandlers.put(timerExecuteNestedActivityJobHandler.getType(), timerExecuteNestedActivityJobHandler);
+
+    TriggerTimerEventJobHandler triggerTimerEventJobHandler = new TriggerTimerEventJobHandler();
+    jobHandlers.put(triggerTimerEventJobHandler.getType(), triggerTimerEventJobHandler);
+
+    TimerCatchIntermediateEventJobHandler timerCatchIntermediateEvent = new TimerCatchIntermediateEventJobHandler();
+    jobHandlers.put(timerCatchIntermediateEvent.getType(), timerCatchIntermediateEvent);
+
+    TimerStartEventJobHandler timerStartEvent = new TimerStartEventJobHandler();
+    jobHandlers.put(timerStartEvent.getType(), timerStartEvent);
+
+    AsyncContinuationJobHandler asyncContinuationJobHandler = new AsyncContinuationJobHandler();
+    jobHandlers.put(asyncContinuationJobHandler.getType(), asyncContinuationJobHandler);
+
+    ProcessEventJobHandler processEventJobHandler = new ProcessEventJobHandler();
+    jobHandlers.put(processEventJobHandler.getType(), processEventJobHandler);
+
+    TimerSuspendProcessDefinitionHandler suspendProcessDefinitionHandler = new TimerSuspendProcessDefinitionHandler();
+    jobHandlers.put(suspendProcessDefinitionHandler.getType(), suspendProcessDefinitionHandler);
+
+    TimerActivateProcessDefinitionHandler activateProcessDefinitionHandler = new TimerActivateProcessDefinitionHandler();
+    jobHandlers.put(activateProcessDefinitionHandler.getType(), activateProcessDefinitionHandler);
+
+    // if we have custom job handlers, register them
+    if (getCustomJobHandlers() != null) {
+      for (JobHandler customJobHandler : getCustomJobHandlers()) {
+        jobHandlers.put(customJobHandler.getType(), customJobHandler);
+      }
+    }
+  }
+
+  // job executor
+  // /////////////////////////////////////////////////////////////
+
+  protected void initJobExecutor() {
+    if (isAsyncExecutorEnabled() == false) {
+      if (jobExecutor == null) {
+        jobExecutor = new DefaultJobExecutor();
+      }
+
+      jobExecutor.setClockReader(this.clock);
+
+      jobExecutor.setCommandExecutor(commandExecutor);
+      jobExecutor.setAutoActivate(jobExecutorActivate);
+
+      if (jobExecutor.getRejectedJobsHandler() == null) {
+        if (customRejectedJobsHandler != null) {
+          jobExecutor.setRejectedJobsHandler(customRejectedJobsHandler);
+        } else {
+          jobExecutor.setRejectedJobsHandler(new CallerRunsRejectedJobsHandler());
         }
-        parseHandlers.addAll(getDefaultBpmnParseHandlers());
-        if (getPostBpmnParseHandlers() != null) {
-            parseHandlers.addAll(getPostBpmnParseHandlers());
+      }
+    }
+  }
+
+  // async executor
+  // /////////////////////////////////////////////////////////////
+
+  protected void initAsyncExecutor() {
+    if (isAsyncExecutorEnabled()) {
+      if (asyncExecutor == null) {
+        asyncExecutor = new DefaultAsyncJobExecutor();
+      }
+
+      asyncExecutor.setCommandExecutor(commandExecutor);
+      asyncExecutor.setAutoActivate(asyncExecutorActivate);
+    }
+  }
+
+  // history
+  // //////////////////////////////////////////////////////////////////
+
+  public void initHistoryLevel() {
+    if (historyLevel == null) {
+      historyLevel = HistoryLevel.getHistoryLevelForKey(getHistory());
+    }
+  }
+
+  // id generator
+  // /////////////////////////////////////////////////////////////
+
+  protected void initIdGenerator() {
+    if (idGenerator == null) {
+      CommandExecutor idGeneratorCommandExecutor = null;
+      if (idGeneratorDataSource != null) {
+        ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneProcessEngineConfiguration();
+        processEngineConfiguration.setDataSource(idGeneratorDataSource);
+        processEngineConfiguration.setDatabaseSchemaUpdate(DB_SCHEMA_UPDATE_FALSE);
+        processEngineConfiguration.init();
+        idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutor();
+      } else if (idGeneratorDataSourceJndiName != null) {
+        ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneProcessEngineConfiguration();
+        processEngineConfiguration.setDataSourceJndiName(idGeneratorDataSourceJndiName);
+        processEngineConfiguration.setDatabaseSchemaUpdate(DB_SCHEMA_UPDATE_FALSE);
+        processEngineConfiguration.init();
+        idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutor();
+      } else {
+        idGeneratorCommandExecutor = getCommandExecutor();
+      }
+
+      DbIdGenerator dbIdGenerator = new DbIdGenerator();
+      dbIdGenerator.setIdBlockSize(idBlockSize);
+      dbIdGenerator.setCommandExecutor(idGeneratorCommandExecutor);
+      dbIdGenerator.setCommandConfig(getDefaultCommandConfig().transactionRequiresNew());
+      idGenerator = dbIdGenerator;
+    }
+  }
+
+  // OTHER
+  // ////////////////////////////////////////////////////////////////////
+
+  protected void initCommandContextFactory() {
+    if (commandContextFactory == null) {
+      commandContextFactory = new CommandContextFactory();
+      commandContextFactory.setProcessEngineConfiguration(this);
+    }
+  }
+
+  protected void initTransactionContextFactory() {
+    if (transactionContextFactory == null) {
+      transactionContextFactory = new StandaloneMybatisTransactionContextFactory();
+    }
+  }
+
+  protected void initVariableTypes() {
+    if (variableTypes == null) {
+      variableTypes = new DefaultVariableTypes();
+      if (customPreVariableTypes != null) {
+        for (VariableType customVariableType : customPreVariableTypes) {
+          variableTypes.addType(customVariableType);
         }
-
-        BpmnParseHandlers bpmnParseHandlers = new BpmnParseHandlers();
-        bpmnParseHandlers.addHandlers(parseHandlers);
-        bpmnParser.setBpmnParserHandlers(bpmnParseHandlers);
-
-        bpmnDeployer.setBpmnParser(bpmnParser);
-
-        defaultDeployers.add(bpmnDeployer);
-        return defaultDeployers;
-    }
-
-    protected List<BpmnParseHandler> getDefaultBpmnParseHandlers() {
-
-        // Alpabetic list of default parse handler classes
-        List<BpmnParseHandler> bpmnParserHandlers = new ArrayList<BpmnParseHandler>();
-        bpmnParserHandlers.add(new BoundaryEventParseHandler());
-        bpmnParserHandlers.add(new BusinessRuleParseHandler());
-        bpmnParserHandlers.add(new CallActivityParseHandler());
-        bpmnParserHandlers.add(new CancelEventDefinitionParseHandler());
-        bpmnParserHandlers.add(new CompensateEventDefinitionParseHandler());
-        bpmnParserHandlers.add(new EndEventParseHandler());
-        bpmnParserHandlers.add(new ErrorEventDefinitionParseHandler());
-        bpmnParserHandlers.add(new EventBasedGatewayParseHandler());
-        bpmnParserHandlers.add(new ExclusiveGatewayParseHandler());
-        bpmnParserHandlers.add(new InclusiveGatewayParseHandler());
-        bpmnParserHandlers.add(new IntermediateCatchEventParseHandler());
-        bpmnParserHandlers.add(new IntermediateThrowEventParseHandler());
-        bpmnParserHandlers.add(new ManualTaskParseHandler());
-        bpmnParserHandlers.add(new MessageEventDefinitionParseHandler());
-        bpmnParserHandlers.add(new ParallelGatewayParseHandler());
-        bpmnParserHandlers.add(new ProcessParseHandler());
-        bpmnParserHandlers.add(new ReceiveTaskParseHandler());
-        bpmnParserHandlers.add(new ScriptTaskParseHandler());
-        bpmnParserHandlers.add(new SendTaskParseHandler());
-        bpmnParserHandlers.add(new SequenceFlowParseHandler());
-        bpmnParserHandlers.add(new ServiceTaskParseHandler());
-        bpmnParserHandlers.add(new SignalEventDefinitionParseHandler());
-        bpmnParserHandlers.add(new StartEventParseHandler());
-        bpmnParserHandlers.add(new SubProcessParseHandler());
-        bpmnParserHandlers.add(new EventSubProcessParseHandler());
-        bpmnParserHandlers.add(new TaskParseHandler());
-        bpmnParserHandlers.add(new TimerEventDefinitionParseHandler());
-        bpmnParserHandlers.add(new TransactionParseHandler());
-        bpmnParserHandlers.add(new UserTaskParseHandler());
-
-        // Replace any default handler if the user wants to replace them
-        if (customDefaultBpmnParseHandlers != null) {
-
-            Map<Class<?>, BpmnParseHandler> customParseHandlerMap = new HashMap<Class<?>, BpmnParseHandler>();
-            for (BpmnParseHandler bpmnParseHandler : customDefaultBpmnParseHandlers) {
-                for (Class<?> handledType : bpmnParseHandler.getHandledTypes()) {
-                    customParseHandlerMap.put(handledType, bpmnParseHandler);
-                }
-            }
-
-            for (int i = 0; i < bpmnParserHandlers.size(); i++) {
-                // All the default handlers support only one type
-                BpmnParseHandler defaultBpmnParseHandler = bpmnParserHandlers.get(i);
-                if (defaultBpmnParseHandler.getHandledTypes().size() != 1) {
-                    StringBuilder supportedTypes = new StringBuilder();
-                    for (Class<?> type : defaultBpmnParseHandler.getHandledTypes()) {
-                        supportedTypes.append(" ").append(type.getCanonicalName()).append(" ");
-                    }
-                    throw new ActivitiException("The default BPMN parse handlers should only support one type, but " + defaultBpmnParseHandler.getClass() + " supports " + supportedTypes.toString()
-                            + ". This is likely a programmatic error");
-                } else {
-                    Class<?> handledType = defaultBpmnParseHandler.getHandledTypes().iterator().next();
-                    if (customParseHandlerMap.containsKey(handledType)) {
-                        BpmnParseHandler newBpmnParseHandler = customParseHandlerMap.get(handledType);
-                        log.info("Replacing default BpmnParseHandler " + defaultBpmnParseHandler.getClass().getName() + " with " + newBpmnParseHandler.getClass().getName());
-                        bpmnParserHandlers.set(i, newBpmnParseHandler);
-                    }
-                }
-            }
+      }
+      variableTypes.addType(new NullType());
+      variableTypes.addType(new StringType(4000));
+      variableTypes.addType(new LongStringType(4001));
+      variableTypes.addType(new BooleanType());
+      variableTypes.addType(new ShortType());
+      variableTypes.addType(new IntegerType());
+      variableTypes.addType(new LongType());
+      variableTypes.addType(new DateType());
+      variableTypes.addType(new DoubleType());
+      variableTypes.addType(new UUIDType());
+      variableTypes.addType(new ByteArrayType());
+      variableTypes.addType(new SerializableType());
+      variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
+      variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
+      if (customPostVariableTypes != null) {
+        for (VariableType customVariableType : customPostVariableTypes) {
+          variableTypes.addType(customVariableType);
         }
+      }
+    }
+  }
 
-        // History
-        for (BpmnParseHandler handler : getDefaultHistoryParseHandlers()) {
-            bpmnParserHandlers.add(handler);
+  protected void initFormEngines() {
+    if (formEngines == null) {
+      formEngines = new HashMap<String, FormEngine>();
+      FormEngine defaultFormEngine = new JuelFormEngine();
+      formEngines.put(null, defaultFormEngine); // default form engine is
+                                                // looked up with null
+      formEngines.put(defaultFormEngine.getName(), defaultFormEngine);
+    }
+    if (customFormEngines != null) {
+      for (FormEngine formEngine : customFormEngines) {
+        formEngines.put(formEngine.getName(), formEngine);
+      }
+    }
+  }
+
+  protected void initFormTypes() {
+    if (formTypes == null) {
+      formTypes = new FormTypes();
+      formTypes.addFormType(new StringFormType());
+      formTypes.addFormType(new LongFormType());
+      formTypes.addFormType(new DateFormType("dd/MM/yyyy"));
+      formTypes.addFormType(new BooleanFormType());
+      formTypes.addFormType(new DoubleFormType());
+    }
+    if (customFormTypes != null) {
+      for (AbstractFormType customFormType : customFormTypes) {
+        formTypes.addFormType(customFormType);
+      }
+    }
+  }
+
+  protected void initScriptingEngines() {
+    if (resolverFactories == null) {
+      resolverFactories = new ArrayList<ResolverFactory>();
+      resolverFactories.add(new VariableScopeResolverFactory());
+      resolverFactories.add(new BeansResolverFactory());
+    }
+    if (scriptingEngines == null) {
+      scriptingEngines = new ScriptingEngines(new ScriptBindingsFactory(resolverFactories));
+    }
+  }
+
+  protected void initExpressionManager() {
+    if (expressionManager == null) {
+      expressionManager = new ExpressionManager(beans);
+    }
+  }
+
+  protected void initBusinessCalendarManager() {
+    if (businessCalendarManager == null) {
+      MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
+      mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(this.clock));
+      mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(this.clock));
+      mapBusinessCalendarManager.addBusinessCalendar(CycleBusinessCalendar.NAME, new CycleBusinessCalendar(this.clock));
+
+      businessCalendarManager = mapBusinessCalendarManager;
+    }
+  }
+
+  protected void initDelegateInterceptor() {
+    if (delegateInterceptor == null) {
+      delegateInterceptor = new DefaultDelegateInterceptor();
+    }
+  }
+
+  protected void initEventHandlers() {
+    if (eventHandlers == null) {
+      eventHandlers = new HashMap<String, EventHandler>();
+
+      SignalEventHandler signalEventHander = new SignalEventHandler();
+      eventHandlers.put(signalEventHander.getEventHandlerType(), signalEventHander);
+
+      CompensationEventHandler compensationEventHandler = new CompensationEventHandler();
+      eventHandlers.put(compensationEventHandler.getEventHandlerType(), compensationEventHandler);
+
+      MessageEventHandler messageEventHandler = new MessageEventHandler();
+      eventHandlers.put(messageEventHandler.getEventHandlerType(), messageEventHandler);
+
+    }
+    if (customEventHandlers != null) {
+      for (EventHandler eventHandler : customEventHandlers) {
+        eventHandlers.put(eventHandler.getEventHandlerType(), eventHandler);
+      }
+    }
+  }
+
+  // JPA
+  // //////////////////////////////////////////////////////////////////////
+
+  protected void initJpa() {
+    if (jpaPersistenceUnitName != null) {
+      jpaEntityManagerFactory = JpaHelper.createEntityManagerFactory(jpaPersistenceUnitName);
+    }
+    if (jpaEntityManagerFactory != null) {
+      sessionFactories.put(EntityManagerSession.class, new EntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager));
+      VariableType jpaType = variableTypes.getVariableType(JPAEntityVariableType.TYPE_NAME);
+      // Add JPA-type
+      if (jpaType == null) {
+        // We try adding the variable right before SerializableType, if
+        // available
+        int serializableIndex = variableTypes.getTypeIndex(SerializableType.TYPE_NAME);
+        if (serializableIndex > -1) {
+          variableTypes.addType(new JPAEntityVariableType(), serializableIndex);
+        } else {
+          variableTypes.addType(new JPAEntityVariableType());
         }
+      }
 
-        return bpmnParserHandlers;
+      jpaType = variableTypes.getVariableType(JPAEntityListVariableType.TYPE_NAME);
+
+      // Add JPA-list type after regular JPA type if not already present
+      if (jpaType == null) {
+        variableTypes.addType(new JPAEntityListVariableType(), variableTypes.getTypeIndex(JPAEntityVariableType.TYPE_NAME));
+      }
+    }
+  }
+
+  protected void initBeans() {
+    if (beans == null) {
+      beans = new HashMap<Object, Object>();
+    }
+  }
+
+  protected void initEventDispatcher() {
+    if (this.eventDispatcher == null) {
+      this.eventDispatcher = new ActivitiEventDispatcherImpl();
     }
 
-    protected List<BpmnParseHandler> getDefaultHistoryParseHandlers() {
-        List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>();
-        parseHandlers.add(new FlowNodeHistoryParseHandler());
-//        parseHandlers.add(new ProcessHistoryParseHandler());
-//        parseHandlers.add(new StartEventHistoryParseHandler());
-        parseHandlers.add(new UserTaskHistoryParseHandler());
-        return parseHandlers;
+    this.eventDispatcher.setEnabled(enableEventDispatcher);
+
+    if (eventListeners != null) {
+      for (ActivitiEventListener listenerToAdd : eventListeners) {
+        this.eventDispatcher.addEventListener(listenerToAdd);
+      }
     }
 
-    private void initClock() {
-        if (clock == null) {
-            clock = new DefaultClockImpl();
+    if (typedEventListeners != null) {
+      for (Entry<String, List<ActivitiEventListener>> listenersToAdd : typedEventListeners.entrySet()) {
+        // Extract types from the given string
+        ActivitiEventType[] types = ActivitiEventType.getTypesFromString(listenersToAdd.getKey());
+
+        for (ActivitiEventListener listenerToAdd : listenersToAdd.getValue()) {
+          this.eventDispatcher.addEventListener(listenerToAdd, types);
         }
+      }
     }
 
-    protected void initProcessDiagramGenerator() {
-        if (processDiagramGenerator == null) {
-            processDiagramGenerator = new DefaultProcessDiagramGenerator();
-        }
-    }
-
-    protected void initJobHandlers() {
-        jobHandlers = new HashMap<String, JobHandler>();
-        TimerExecuteNestedActivityJobHandler timerExecuteNestedActivityJobHandler = new TimerExecuteNestedActivityJobHandler();
-        jobHandlers.put(timerExecuteNestedActivityJobHandler.getType(), timerExecuteNestedActivityJobHandler);
-
-        TriggerTimerEventJobHandler triggerTimerEventJobHandler = new TriggerTimerEventJobHandler();
-        jobHandlers.put(triggerTimerEventJobHandler.getType(), triggerTimerEventJobHandler);
-
-        TimerCatchIntermediateEventJobHandler timerCatchIntermediateEvent = new TimerCatchIntermediateEventJobHandler();
-        jobHandlers.put(timerCatchIntermediateEvent.getType(), timerCatchIntermediateEvent);
-
-        TimerStartEventJobHandler timerStartEvent = new TimerStartEventJobHandler();
-        jobHandlers.put(timerStartEvent.getType(), timerStartEvent);
-
-        AsyncContinuationJobHandler asyncContinuationJobHandler = new AsyncContinuationJobHandler();
-        jobHandlers.put(asyncContinuationJobHandler.getType(), asyncContinuationJobHandler);
-
-        ProcessEventJobHandler processEventJobHandler = new ProcessEventJobHandler();
-        jobHandlers.put(processEventJobHandler.getType(), processEventJobHandler);
-
-        TimerSuspendProcessDefinitionHandler suspendProcessDefinitionHandler = new TimerSuspendProcessDefinitionHandler();
-        jobHandlers.put(suspendProcessDefinitionHandler.getType(), suspendProcessDefinitionHandler);
-
-        TimerActivateProcessDefinitionHandler activateProcessDefinitionHandler = new TimerActivateProcessDefinitionHandler();
-        jobHandlers.put(activateProcessDefinitionHandler.getType(), activateProcessDefinitionHandler);
-
-        // if we have custom job handlers, register them
-        if (getCustomJobHandlers() != null) {
-            for (JobHandler customJobHandler : getCustomJobHandlers()) {
-                jobHandlers.put(customJobHandler.getType(), customJobHandler);
-            }
-        }
-    }
-
-    // job executor
-    // /////////////////////////////////////////////////////////////
-
-    protected void initJobExecutor() {
-        if (isAsyncExecutorEnabled() == false) {
-            if (jobExecutor == null) {
-                jobExecutor = new DefaultJobExecutor();
-            }
-
-            jobExecutor.setClockReader(this.clock);
-
-            jobExecutor.setCommandExecutor(commandExecutor);
-            jobExecutor.setAutoActivate(jobExecutorActivate);
-
-            if (jobExecutor.getRejectedJobsHandler() == null) {
-                if (customRejectedJobsHandler != null) {
-                    jobExecutor.setRejectedJobsHandler(customRejectedJobsHandler);
-                } else {
-                    jobExecutor.setRejectedJobsHandler(new CallerRunsRejectedJobsHandler());
-                }
-            }
-        }
-    }
-
-    // async executor
-    // /////////////////////////////////////////////////////////////
-
-    protected void initAsyncExecutor() {
-        if (isAsyncExecutorEnabled()) {
-            if (asyncExecutor == null) {
-                asyncExecutor = new DefaultAsyncJobExecutor();
-            }
-
-            asyncExecutor.setCommandExecutor(commandExecutor);
-            asyncExecutor.setAutoActivate(asyncExecutorActivate);
-        }
-    }
-
-    // history
-    // //////////////////////////////////////////////////////////////////
-
-    public void initHistoryLevel() {
-        if (historyLevel == null) {
-            historyLevel = HistoryLevel.getHistoryLevelForKey(getHistory());
-        }
-    }
-
-    // id generator
-    // /////////////////////////////////////////////////////////////
-
-    protected void initIdGenerator() {
-        if (idGenerator == null) {
-            CommandExecutor idGeneratorCommandExecutor = null;
-            if (idGeneratorDataSource != null) {
-                ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneProcessEngineConfiguration();
-                processEngineConfiguration.setDataSource(idGeneratorDataSource);
-                processEngineConfiguration.setDatabaseSchemaUpdate(DB_SCHEMA_UPDATE_FALSE);
-                processEngineConfiguration.init();
-                idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutor();
-            } else if (idGeneratorDataSourceJndiName != null) {
-                ProcessEngineConfigurationImpl processEngineConfiguration = new StandaloneProcessEngineConfiguration();
-                processEngineConfiguration.setDataSourceJndiName(idGeneratorDataSourceJndiName);
-                processEngineConfiguration.setDatabaseSchemaUpdate(DB_SCHEMA_UPDATE_FALSE);
-                processEngineConfiguration.init();
-                idGeneratorCommandExecutor = processEngineConfiguration.getCommandExecutor();
-            } else {
-                idGeneratorCommandExecutor = getCommandExecutor();
-            }
-
-            DbIdGenerator dbIdGenerator = new DbIdGenerator();
-            dbIdGenerator.setIdBlockSize(idBlockSize);
-            dbIdGenerator.setCommandExecutor(idGeneratorCommandExecutor);
-            dbIdGenerator.setCommandConfig(getDefaultCommandConfig().transactionRequiresNew());
-            idGenerator = dbIdGenerator;
-        }
-    }
-
-    // OTHER
-    // ////////////////////////////////////////////////////////////////////
-
-    protected void initCommandContextFactory() {
-        if (commandContextFactory == null) {
-            commandContextFactory = new CommandContextFactory();
-            commandContextFactory.setProcessEngineConfiguration(this);
-        }
-    }
-
-    protected void initTransactionContextFactory() {
-        if (transactionContextFactory == null) {
-            transactionContextFactory = new StandaloneMybatisTransactionContextFactory();
-        }
-    }
-
-    protected void initVariableTypes() {
-        if (variableTypes == null) {
-            variableTypes = new DefaultVariableTypes();
-            if (customPreVariableTypes != null) {
-                for (VariableType customVariableType : customPreVariableTypes) {
-                    variableTypes.addType(customVariableType);
-                }
-            }
-            variableTypes.addType(new NullType());
-            variableTypes.addType(new StringType(4000));
-            variableTypes.addType(new LongStringType(4001));
-            variableTypes.addType(new BooleanType());
-            variableTypes.addType(new ShortType());
-            variableTypes.addType(new IntegerType());
-            variableTypes.addType(new LongType());
-            variableTypes.addType(new DateType());
-            variableTypes.addType(new DoubleType());
-            variableTypes.addType(new UUIDType());
-            variableTypes.addType(new ByteArrayType());
-            variableTypes.addType(new SerializableType());
-            variableTypes.addType(new CustomObjectType("item", ItemInstance.class));
-            variableTypes.addType(new CustomObjectType("message", MessageInstance.class));
-            if (customPostVariableTypes != null) {
-                for (VariableType customVariableType : customPostVariableTypes) {
-                    variableTypes.addType(customVariableType);
-                }
-            }
-        }
-    }
-
-    protected void initFormEngines() {
-        if (formEngines == null) {
-            formEngines = new HashMap<String, FormEngine>();
-            FormEngine defaultFormEngine = new JuelFormEngine();
-            formEngines.put(null, defaultFormEngine); // default form engine is
-                                                      // looked up with null
-            formEngines.put(defaultFormEngine.getName(), defaultFormEngine);
-        }
-        if (customFormEngines != null) {
-            for (FormEngine formEngine : customFormEngines) {
-                formEngines.put(formEngine.getName(), formEngine);
-            }
-        }
-    }
-
-    protected void initFormTypes() {
-        if (formTypes == null) {
-            formTypes = new FormTypes();
-            formTypes.addFormType(new StringFormType());
-            formTypes.addFormType(new LongFormType());
-            formTypes.addFormType(new DateFormType("dd/MM/yyyy"));
-            formTypes.addFormType(new BooleanFormType());
-            formTypes.addFormType(new DoubleFormType());
-        }
-        if (customFormTypes != null) {
-            for (AbstractFormType customFormType : customFormTypes) {
-                formTypes.addFormType(customFormType);
-            }
-        }
-    }
-
-    protected void initScriptingEngines() {
-        if (resolverFactories == null) {
-            resolverFactories = new ArrayList<ResolverFactory>();
-            resolverFactories.add(new VariableScopeResolverFactory());
-            resolverFactories.add(new BeansResolverFactory());
-        }
-        if (scriptingEngines == null) {
-            scriptingEngines = new ScriptingEngines(new ScriptBindingsFactory(resolverFactories));
-        }
-    }
-
-    protected void initExpressionManager() {
-        if (expressionManager == null) {
-            expressionManager = new ExpressionManager(beans);
-        }
-    }
-
-    protected void initBusinessCalendarManager() {
-        if (businessCalendarManager == null) {
-            MapBusinessCalendarManager mapBusinessCalendarManager = new MapBusinessCalendarManager();
-            mapBusinessCalendarManager.addBusinessCalendar(DurationBusinessCalendar.NAME, new DurationBusinessCalendar(this.clock));
-            mapBusinessCalendarManager.addBusinessCalendar(DueDateBusinessCalendar.NAME, new DueDateBusinessCalendar(this.clock));
-            mapBusinessCalendarManager.addBusinessCalendar(CycleBusinessCalendar.NAME, new CycleBusinessCalendar(this.clock));
-
-            businessCalendarManager = mapBusinessCalendarManager;
-        }
-    }
-
-    protected void initDelegateInterceptor() {
-        if (delegateInterceptor == null) {
-            delegateInterceptor = new DefaultDelegateInterceptor();
-        }
-    }
-
-    protected void initEventHandlers() {
-        if (eventHandlers == null) {
-            eventHandlers = new HashMap<String, EventHandler>();
-
-            SignalEventHandler signalEventHander = new SignalEventHandler();
-            eventHandlers.put(signalEventHander.getEventHandlerType(), signalEventHander);
-
-            CompensationEventHandler compensationEventHandler = new CompensationEventHandler();
-            eventHandlers.put(compensationEventHandler.getEventHandlerType(), compensationEventHandler);
-
-            MessageEventHandler messageEventHandler = new MessageEventHandler();
-            eventHandlers.put(messageEventHandler.getEventHandlerType(), messageEventHandler);
-
-        }
-        if (customEventHandlers != null) {
-            for (EventHandler eventHandler : customEventHandlers) {
-                eventHandlers.put(eventHandler.getEventHandlerType(), eventHandler);
-            }
-        }
-    }
-
-    // JPA
-    // //////////////////////////////////////////////////////////////////////
-
-    protected void initJpa() {
-        if (jpaPersistenceUnitName != null) {
-            jpaEntityManagerFactory = JpaHelper.createEntityManagerFactory(jpaPersistenceUnitName);
-        }
-        if (jpaEntityManagerFactory != null) {
-            sessionFactories.put(EntityManagerSession.class, new EntityManagerSessionFactory(jpaEntityManagerFactory, jpaHandleTransaction, jpaCloseEntityManager));
-            VariableType jpaType = variableTypes.getVariableType(JPAEntityVariableType.TYPE_NAME);
-            // Add JPA-type
-            if (jpaType == null) {
-                // We try adding the variable right before SerializableType, if
-                // available
-                int serializableIndex = variableTypes.getTypeIndex(SerializableType.TYPE_NAME);
-                if (serializableIndex > -1) {
-                    variableTypes.addType(new JPAEntityVariableType(), serializableIndex);
-                } else {
-                    variableTypes.addType(new JPAEntityVariableType());
-                }
-            }
-
-            jpaType = variableTypes.getVariableType(JPAEntityListVariableType.TYPE_NAME);
-
-            // Add JPA-list type after regular JPA type if not already present
-            if (jpaType == null) {
-                variableTypes.addType(new JPAEntityListVariableType(), variableTypes.getTypeIndex(JPAEntityVariableType.TYPE_NAME));
-            }
-        }
-    }
-
-    protected void initBeans() {
-        if (beans == null) {
-            beans = new HashMap<Object, Object>();
-        }
-    }
-
-    protected void initEventDispatcher() {
-        if (this.eventDispatcher == null) {
-            this.eventDispatcher = new ActivitiEventDispatcherImpl();
-        }
-
-        this.eventDispatcher.setEnabled(enableEventDispatcher);
-
-        if (eventListeners != null) {
-            for (ActivitiEventListener listenerToAdd : eventListeners) {
-                this.eventDispatcher.addEventListener(listenerToAdd);
-            }
-        }
-
-        if (typedEventListeners != null) {
-            for (Entry<String, List<ActivitiEventListener>> listenersToAdd : typedEventListeners.entrySet()) {
-                // Extract types from the given string
-                ActivitiEventType[] types = ActivitiEventType.getTypesFromString(listenersToAdd.getKey());
-
-                for (ActivitiEventListener listenerToAdd : listenersToAdd.getValue()) {
-                    this.eventDispatcher.addEventListener(listenerToAdd, types);
-                }
-            }
-        }
-
-    }
-
-    protected void initProcessValidator() {
-        if (this.processValidator == null) {
-            this.processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
-        }
-    }
-
-    protected void initDatabaseEventLogging() {
-        if (enableDatabaseEventLogging) {
-            // Database event logging uses the default logging mechanism and
-            // adds
-            // a specific event listener to the list of event listeners
-            getEventDispatcher().addEventListener(new EventLogger(clock));
-        }
-    }
-
-    protected void initActiviti5CompatibilityHandler() {
-
-        // If handler is injected, no need to do anything
-        if (activiti5CompatibilityHandler == null) {
-
-            // Create default factory if nothing set
-            if (activiti5CompatibilityHandlerFactory == null) {
-                activiti5CompatibilityHandlerFactory = new DefaultActiviti5CompatibilityHandlerFactory();
-            }
-
-            // Create handler instance
-            activiti5CompatibilityHandler = activiti5CompatibilityHandlerFactory.createActiviti5CompatibilityHandler();
-
-            if (activiti5CompatibilityHandler != null) {
-                log.info("Found compatibility handler instance : " + activiti5CompatibilityHandler.getClass());
-            }
-        }
-
-    }
-
-    // getters and setters
-    // //////////////////////////////////////////////////////
-
-    public CommandConfig getDefaultCommandConfig() {
-        return defaultCommandConfig;
-    }
-
-    public void setDefaultCommandConfig(CommandConfig defaultCommandConfig) {
-        this.defaultCommandConfig = defaultCommandConfig;
-    }
-
-    public CommandConfig getSchemaCommandConfig() {
-        return schemaCommandConfig;
-    }
-
-    public void setSchemaCommandConfig(CommandConfig schemaCommandConfig) {
-        this.schemaCommandConfig = schemaCommandConfig;
-    }
-
-    public CommandInterceptor getCommandInvoker() {
-        return commandInvoker;
-    }
-
-    public void setCommandInvoker(CommandInterceptor commandInvoker) {
-        this.commandInvoker = commandInvoker;
-    }
-
-    public List<CommandInterceptor> getCustomPreCommandInterceptors() {
-        return customPreCommandInterceptors;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomPreCommandInterceptors(List<CommandInterceptor> customPreCommandInterceptors) {
-        this.customPreCommandInterceptors = customPreCommandInterceptors;
-        return this;
-    }
-
-    public List<CommandInterceptor> getCustomPostCommandInterceptors() {
-        return customPostCommandInterceptors;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomPostCommandInterceptors(List<CommandInterceptor> customPostCommandInterceptors) {
-        this.customPostCommandInterceptors = customPostCommandInterceptors;
-        return this;
-    }
-
-    public List<CommandInterceptor> getCommandInterceptors() {
-        return commandInterceptors;
-    }
-
-    public ProcessEngineConfigurationImpl setCommandInterceptors(List<CommandInterceptor> commandInterceptors) {
-        this.commandInterceptors = commandInterceptors;
-        return this;
-    }
-
-    public CommandExecutor getCommandExecutor() {
-        return commandExecutor;
-    }
-
-    public ProcessEngineConfigurationImpl setCommandExecutor(CommandExecutor commandExecutor) {
-        this.commandExecutor = commandExecutor;
-        return this;
-    }
-
-    public RepositoryService getRepositoryService() {
-        return repositoryService;
-    }
-
-    public ProcessEngineConfigurationImpl setRepositoryService(RepositoryService repositoryService) {
-        this.repositoryService = repositoryService;
-        return this;
-    }
-
-    public RuntimeService getRuntimeService() {
-        return runtimeService;
-    }
-
-    public ProcessEngineConfigurationImpl setRuntimeService(RuntimeService runtimeService) {
-        this.runtimeService = runtimeService;
-        return this;
-    }
-
-    public HistoryService getHistoryService() {
-        return historyService;
-    }
-
-    public ProcessEngineConfigurationImpl setHistoryService(HistoryService historyService) {
-        this.historyService = historyService;
-        return this;
-    }
-
-    public IdentityService getIdentityService() {
-        return identityService;
-    }
-
-    public ProcessEngineConfigurationImpl setIdentityService(IdentityService identityService) {
-        this.identityService = identityService;
-        return this;
-    }
-
-    public TaskService getTaskService() {
-        return taskService;
-    }
-
-    public ProcessEngineConfigurationImpl setTaskService(TaskService taskService) {
-        this.taskService = taskService;
-        return this;
-    }
-
-    public FormService getFormService() {
-        return formService;
-    }
-
-    public ProcessEngineConfigurationImpl setFormService(FormService formService) {
-        this.formService = formService;
-        return this;
-    }
-
-    public ManagementService getManagementService() {
-        return managementService;
-    }
-
-    public ProcessEngineConfigurationImpl setManagementService(ManagementService managementService) {
-        this.managementService = managementService;
-        return this;
-    }
-
-    public ProcessEngineConfiguration getProcessEngineConfiguration() {
-        return this;
-    }
-
-    public Map<Class<?>, SessionFactory> getSessionFactories() {
-        return sessionFactories;
-    }
-
-    public ProcessEngineConfigurationImpl setSessionFactories(Map<Class<?>, SessionFactory> sessionFactories) {
-        this.sessionFactories = sessionFactories;
-        return this;
-    }
-
-    public List<ProcessEngineConfigurator> getConfigurators() {
-        return configurators;
-    }
-
-    public ProcessEngineConfigurationImpl addConfigurator(ProcessEngineConfigurator configurator) {
-        if (this.configurators == null) {
-            this.configurators = new ArrayList<ProcessEngineConfigurator>();
-        }
-        this.configurators.add(configurator);
-        return this;
-    }
-
-    public ProcessEngineConfigurationImpl setConfigurators(List<ProcessEngineConfigurator> configurators) {
-        this.configurators = configurators;
-        return this;
-    }
-
-    public void setEnableConfiguratorServiceLoader(boolean enableConfiguratorServiceLoader) {
-        this.enableConfiguratorServiceLoader = enableConfiguratorServiceLoader;
-    }
-
-    public List<ProcessEngineConfigurator> getAllConfigurators() {
-        return allConfigurators;
-    }
-
-    public BpmnDeployer getBpmnDeployer() {
-        return bpmnDeployer;
-    }
-
-    public ProcessEngineConfigurationImpl setBpmnDeployer(BpmnDeployer bpmnDeployer) {
-        this.bpmnDeployer = bpmnDeployer;
-        return this;
-    }
-
-    public BpmnParser getBpmnParser() {
-        return bpmnParser;
-    }
-
-    public ProcessEngineConfigurationImpl setBpmnParser(BpmnParser bpmnParser) {
-        this.bpmnParser = bpmnParser;
-        return this;
-    }
-
-    public List<Deployer> getDeployers() {
-        return deployers;
-    }
-
-    public ProcessEngineConfigurationImpl setDeployers(List<Deployer> deployers) {
-        this.deployers = deployers;
-        return this;
-    }
-
-    public IdGenerator getIdGenerator() {
-        return idGenerator;
-    }
-
-    public ProcessEngineConfigurationImpl setIdGenerator(IdGenerator idGenerator) {
-        this.idGenerator = idGenerator;
-        return this;
-    }
-
-    public String getWsSyncFactoryClassName() {
-        return wsSyncFactoryClassName;
-    }
-
-    public ProcessEngineConfigurationImpl setWsSyncFactoryClassName(String wsSyncFactoryClassName) {
-        this.wsSyncFactoryClassName = wsSyncFactoryClassName;
-        return this;
-    }
-
-    public Map<String, FormEngine> getFormEngines() {
-        return formEngines;
-    }
-
-    public ProcessEngineConfigurationImpl setFormEngines(Map<String, FormEngine> formEngines) {
-        this.formEngines = formEngines;
-        return this;
-    }
-
-    public FormTypes getFormTypes() {
-        return formTypes;
-    }
-
-    public ProcessEngineConfigurationImpl setFormTypes(FormTypes formTypes) {
-        this.formTypes = formTypes;
-        return this;
-    }
-
-    public ScriptingEngines getScriptingEngines() {
-        return scriptingEngines;
-    }
-
-    public ProcessEngineConfigurationImpl setScriptingEngines(ScriptingEngines scriptingEngines) {
-        this.scriptingEngines = scriptingEngines;
-        return this;
-    }
+  }
 
-    public VariableTypes getVariableTypes() {
-        return variableTypes;
+  protected void initProcessValidator() {
+    if (this.processValidator == null) {
+      this.processValidator = new ProcessValidatorFactory().createDefaultProcessValidator();
     }
+  }
 
-    public ProcessEngineConfigurationImpl setVariableTypes(VariableTypes variableTypes) {
-        this.variableTypes = variableTypes;
-        return this;
+  protected void initDatabaseEventLogging() {
+    if (enableDatabaseEventLogging) {
+      // Database event logging uses the default logging mechanism and
+      // adds
+      // a specific event listener to the list of event listeners
+      getEventDispatcher().addEventListener(new EventLogger(clock));
     }
+  }
 
-    public ExpressionManager getExpressionManager() {
-        return expressionManager;
-    }
-
-    public ProcessEngineConfigurationImpl setExpressionManager(ExpressionManager expressionManager) {
-        this.expressionManager = expressionManager;
-        return this;
-    }
-
-    public BusinessCalendarManager getBusinessCalendarManager() {
-        return businessCalendarManager;
-    }
-
-    public ProcessEngineConfigurationImpl setBusinessCalendarManager(BusinessCalendarManager businessCalendarManager) {
-        this.businessCalendarManager = businessCalendarManager;
-        return this;
-    }
-
-    public CommandContextFactory getCommandContextFactory() {
-        return commandContextFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setCommandContextFactory(CommandContextFactory commandContextFactory) {
-        this.commandContextFactory = commandContextFactory;
-        return this;
-    }
-
-    public TransactionContextFactory getTransactionContextFactory() {
-        return transactionContextFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setTransactionContextFactory(TransactionContextFactory transactionContextFactory) {
-        this.transactionContextFactory = transactionContextFactory;
-        return this;
-    }
-
-    public List<Deployer> getCustomPreDeployers() {
-        return customPreDeployers;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomPreDeployers(List<Deployer> customPreDeployers) {
-        this.customPreDeployers = customPreDeployers;
-        return this;
-    }
-
-    public List<Deployer> getCustomPostDeployers() {
-        return customPostDeployers;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomPostDeployers(List<Deployer> customPostDeployers) {
-        this.customPostDeployers = customPostDeployers;
-        return this;
-    }
-
-    public Map<String, JobHandler> getJobHandlers() {
-        return jobHandlers;
-    }
-
-    public ProcessEngineConfigurationImpl setJobHandlers(Map<String, JobHandler> jobHandlers) {
-        this.jobHandlers = jobHandlers;
-        return this;
-    }
-
-    public SqlSessionFactory getSqlSessionFactory() {
-        return sqlSessionFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
-        this.sqlSessionFactory = sqlSessionFactory;
-        return this;
-    }
-
-    public DbSqlSessionFactory getDbSqlSessionFactory() {
-        return dbSqlSessionFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setDbSqlSessionFactory(DbSqlSessionFactory dbSqlSessionFactory) {
-        this.dbSqlSessionFactory = dbSqlSessionFactory;
-        return this;
-    }
-
-    public TransactionFactory getTransactionFactory() {
-        return transactionFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setTransactionFactory(TransactionFactory transactionFactory) {
-        this.transactionFactory = transactionFactory;
-        return this;
-    }
-
-    public List<SessionFactory> getCustomSessionFactories() {
-        return customSessionFactories;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomSessionFactories(List<SessionFactory> customSessionFactories) {
-        this.customSessionFactories = customSessionFactories;
-        return this;
-    }
-
-    public List<JobHandler> getCustomJobHandlers() {
-        return customJobHandlers;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomJobHandlers(List<JobHandler> customJobHandlers) {
-        this.customJobHandlers = customJobHandlers;
-        return this;
-    }
-
-    public List<FormEngine> getCustomFormEngines() {
-        return customFormEngines;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomFormEngines(List<FormEngine> customFormEngines) {
-        this.customFormEngines = customFormEngines;
-        return this;
-    }
-
-    public List<AbstractFormType> getCustomFormTypes() {
-        return customFormTypes;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomFormTypes(List<AbstractFormType> customFormTypes) {
-        this.customFormTypes = customFormTypes;
-        return this;
-    }
-
-    public List<String> getCustomScriptingEngineClasses() {
-        return customScriptingEngineClasses;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomScriptingEngineClasses(List<String> customScriptingEngineClasses) {
-        this.customScriptingEngineClasses = customScriptingEngineClasses;
-        return this;
-    }
-
-    public List<VariableType> getCustomPreVariableTypes() {
-        return customPreVariableTypes;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomPreVariableTypes(List<VariableType> customPreVariableTypes) {
-        this.customPreVariableTypes = customPreVariableTypes;
-        return this;
-    }
-
-    public List<VariableType> getCustomPostVariableTypes() {
-        return customPostVariableTypes;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomPostVariableTypes(List<VariableType> customPostVariableTypes) {
-        this.customPostVariableTypes = customPostVariableTypes;
-        return this;
-    }
-
-    public List<BpmnParseHandler> getPreBpmnParseHandlers() {
-        return preBpmnParseHandlers;
-    }
-
-    public ProcessEngineConfigurationImpl setPreBpmnParseHandlers(List<BpmnParseHandler> preBpmnParseHandlers) {
-        this.preBpmnParseHandlers = preBpmnParseHandlers;
-        return this;
-    }
-
-    public List<BpmnParseHandler> getCustomDefaultBpmnParseHandlers() {
-        return customDefaultBpmnParseHandlers;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomDefaultBpmnParseHandlers(List<BpmnParseHandler> customDefaultBpmnParseHandlers) {
-        this.customDefaultBpmnParseHandlers = customDefaultBpmnParseHandlers;
-        return this;
-    }
-
-    public List<BpmnParseHandler> getPostBpmnParseHandlers() {
-        return postBpmnParseHandlers;
-    }
-
-    public ProcessEngineConfigurationImpl setPostBpmnParseHandlers(List<BpmnParseHandler> postBpmnParseHandlers) {
-        this.postBpmnParseHandlers = postBpmnParseHandlers;
-        return this;
-    }
-
-    public ActivityBehaviorFactory getActivityBehaviorFactory() {
-        return activityBehaviorFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setActivityBehaviorFactory(ActivityBehaviorFactory activityBehaviorFactory) {
-        this.activityBehaviorFactory = activityBehaviorFactory;
-        return this;
-    }
-
-    public ListenerFactory getListenerFactory() {
-        return listenerFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setListenerFactory(ListenerFactory listenerFactory) {
-        this.listenerFactory = listenerFactory;
-        return this;
-    }
-
-    public BpmnParseFactory getBpmnParseFactory() {
-        return bpmnParseFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setBpmnParseFactory(BpmnParseFactory bpmnParseFactory) {
-        this.bpmnParseFactory = bpmnParseFactory;
-        return this;
-    }
-
-    public Map<Object, Object> getBeans() {
-        return beans;
-    }
-
-    public ProcessEngineConfigurationImpl setBeans(Map<Object, Object> beans) {
-        this.beans = beans;
-        return this;
-    }
-
-    public List<ResolverFactory> getResolverFactories() {
-        return resolverFactories;
-    }
-
-    public ProcessEngineConfigurationImpl setResolverFactories(List<ResolverFactory> resolverFactories) {
-        this.resolverFactories = resolverFactories;
-        return this;
-    }
-
-    public DeploymentManager getDeploymentManager() {
-        return deploymentManager;
-    }
-
-    public ProcessEngineConfigurationImpl setDeploymentManager(DeploymentManager deploymentManager) {
-        this.deploymentManager = deploymentManager;
-        return this;
-    }
-
-    public ProcessEngineConfigurationImpl setDelegateInterceptor(DelegateInterceptor delegateInterceptor) {
-        this.delegateInterceptor = delegateInterceptor;
-        return this;
-    }
-
-    public DelegateInterceptor getDelegateInterceptor() {
-        return delegateInterceptor;
-    }
-
-    public RejectedJobsHandler getCustomRejectedJobsHandler() {
-        return customRejectedJobsHandler;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomRejectedJobsHandler(RejectedJobsHandler customRejectedJobsHandler) {
-        this.customRejectedJobsHandler = customRejectedJobsHandler;
-        return this;
-    }
-
-    public EventHandler getEventHandler(String eventType) {
-        return eventHandlers.get(eventType);
-    }
-
-    public ProcessEngineConfigurationImpl setEventHandlers(Map<String, EventHandler> eventHandlers) {
-        this.eventHandlers = eventHandlers;
-        return this;
-    }
-
-    public Map<String, EventHandler> getEventHandlers() {
-        return eventHandlers;
-    }
-
-    public List<EventHandler> getCustomEventHandlers() {
-        return customEventHandlers;
-    }
-
-    public ProcessEngineConfigurationImpl setCustomEventHandlers(List<EventHandler> customEventHandlers) {
-        this.customEventHandlers = customEventHandlers;
-        return this;
-    }
-
-    public FailedJobCommandFactory getFailedJobCommandFactory() {
-        return failedJobCommandFactory;
-    }
-
-    public ProcessEngineConfigurationImpl setFailedJobCommandFactory(FailedJobCommandFactory failedJobCommandFactory) {
-        this.failedJobCommandFactory = failedJobCommandFactory;
-        return this;
-    }
-
-    public DataSource getIdGeneratorDataSource() {
-        return idGeneratorDataSource;
-    }
-
-    public ProcessEngineConfigurationImpl setIdGeneratorDataSource(DataSource idGeneratorDataSource) {
-        this.idGeneratorDataSource = idGeneratorDataSource;
-        return this;
-    }
-
-    public String getIdGeneratorDataSourceJndiName() {
-        return idGeneratorDataSourceJndiName;
-    }
-
-    public ProcessEngineConfigurationImpl setIdGeneratorDataSourceJndiName(String idGeneratorDataSourceJndiName) {
-        this.idGeneratorDataSourceJndiName = idGeneratorDataSourceJndiName;
-        return this;
-    }
-
-    public int getBatchSizeProcessInstances() {
-        return batchSizeProcessInstances;
-    }
-
-    public ProcessEngineConfigurationImpl setBatchSizeProcessInstances(int batchSizeProcessInstances) {
-        this.batchSizeProcessInstances = batchSizeProcessInstances;
-        return this;
-    }
-
-    public int getBatchSizeTasks() {
-        return batchSizeTasks;
-    }
-
-    public ProcessEngineConfigurationImpl setBatchSizeTasks(int batchSizeTasks) {
-        this.batchSizeTasks = batchSizeTasks;
-        return this;
-    }
-
-    public int getProcessDefinitionCacheLimit() {
-        return processDefinitionCacheLimit;
-    }
-
-    public ProcessEngineConfigurationImpl setProcessDefinitionCacheLimit(int processDefinitionCacheLimit) {
-        this.processDefinitionCacheLimit = processDefinitionCacheLimit;
-        return this;
-    }
-
-    public DeploymentCache<ProcessDefinitionCacheEntry> getProcessDefinitionCache() {
-        return processDefinitionCache;
-    }
+  protected void initActiviti5CompatibilityHandler() {
 
-    public ProcessEngineConfigurationImpl setProcessDefinitionCache(DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache) {
-        this.processDefinitionCache = processDefinitionCache;
-        return this;
-    }
-
-    public int getKnowledgeBaseCacheLimit() {
-        return knowledgeBaseCacheLimit;
-    }
+    // If handler is injected, no need to do anything
+    if (activiti5CompatibilityHandler == null) {
 
-    public ProcessEngineConfigurationImpl setKnowledgeBaseCacheLimit(int knowledgeBaseCacheLimit) {
-        this.knowledgeBaseCacheLimit = knowledgeBaseCacheLimit;
-        return this;
-    }
+      // Create default factory if nothing set
+      if (activiti5CompatibilityHandlerFactory == null) {
+        activiti5CompatibilityHandlerFactory = new DefaultActiviti5CompatibilityHandlerFactory();
+      }
 
-    public DeploymentCache<Object> getKnowledgeBaseCache() {
-        return knowledgeBaseCache;
-    }
+      // Create handler instance
+      activiti5CompatibilityHandler = activiti5CompatibilityHandlerFactory.createActiviti5CompatibilityHandler();
 
-    public ProcessEngineConfigurationImpl setKnowledgeBaseCache(DeploymentCache<Object> knowledgeBaseCache) {
-        this.knowledgeBaseCache = knowledgeBaseCache;
-        return this;
+      if (activiti5CompatibilityHandler != null) {
+        log.info("Found compatibility handler instance : " + activiti5CompatibilityHandler.getClass());
+      }
     }
 
-    public boolean isEnableSafeBpmnXml() {
-        return enableSafeBpmnXml;
-    }
+  }
 
-    public ProcessEngineConfigurationImpl setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
-        this.enableSafeBpmnXml = enableSafeBpmnXml;
-        return this;
-    }
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    public ActivitiEventDispatcher getEventDispatcher() {
-        return eventDispatcher;
-    }
+  public CommandConfig getDefaultCommandConfig() {
+    return defaultCommandConfig;
+  }
 
-    public void setEventDispatcher(ActivitiEventDispatcher eventDispatcher) {
-        this.eventDispatcher = eventDispatcher;
-    }
+  public void setDefaultCommandConfig(CommandConfig defaultCommandConfig) {
+    this.defaultCommandConfig = defaultCommandConfig;
+  }
 
-    public void setEnableEventDispatcher(boolean enableEventDispatcher) {
-        this.enableEventDispatcher = enableEventDispatcher;
-    }
+  public CommandConfig getSchemaCommandConfig() {
+    return schemaCommandConfig;
+  }
 
-    public void setTypedEventListeners(Map<String, List<ActivitiEventListener>> typedListeners) {
-        this.typedEventListeners = typedListeners;
-    }
+  public void setSchemaCommandConfig(CommandConfig schemaCommandConfig) {
+    this.schemaCommandConfig = schemaCommandConfig;
+  }
 
-    public void setEventListeners(List<ActivitiEventListener> eventListeners) {
-        this.eventListeners = eventListeners;
-    }
+  public CommandInterceptor getCommandInvoker() {
+    return commandInvoker;
+  }
 
-    public ProcessValidator getProcessValidator() {
-        return processValidator;
-    }
+  public void setCommandInvoker(CommandInterceptor commandInvoker) {
+    this.commandInvoker = commandInvoker;
+  }
 
-    public void setProcessValidator(ProcessValidator processValidator) {
-        this.processValidator = processValidator;
-    }
+  public List<CommandInterceptor> getCustomPreCommandInterceptors() {
+    return customPreCommandInterceptors;
+  }
 
-    public boolean isEnableEventDispatcher() {
-        return enableEventDispatcher;
-    }
+  public ProcessEngineConfigurationImpl setCustomPreCommandInterceptors(List<CommandInterceptor> customPreCommandInterceptors) {
+    this.customPreCommandInterceptors = customPreCommandInterceptors;
+    return this;
+  }
 
-    public boolean isEnableDatabaseEventLogging() {
-        return enableDatabaseEventLogging;
-    }
+  public List<CommandInterceptor> getCustomPostCommandInterceptors() {
+    return customPostCommandInterceptors;
+  }
 
-    public ProcessEngineConfigurationImpl setEnableDatabaseEventLogging(boolean enableDatabaseEventLogging) {
-        this.enableDatabaseEventLogging = enableDatabaseEventLogging;
-        return this;
-    }
+  public ProcessEngineConfigurationImpl setCustomPostCommandInterceptors(List<CommandInterceptor> customPostCommandInterceptors) {
+    this.customPostCommandInterceptors = customPostCommandInterceptors;
+    return this;
+  }
 
-    public Activiti5CompatibilityHandlerFactory getActiviti5CompatibilityHandlerFactory() {
-        return activiti5CompatibilityHandlerFactory;
-    }
+  public List<CommandInterceptor> getCommandInterceptors() {
+    return commandInterceptors;
+  }
 
-    public void setActiviti5CompatibilityHandlerFactory(Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory) {
-        this.activiti5CompatibilityHandlerFactory = activiti5CompatibilityHandlerFactory;
-    }
+  public ProcessEngineConfigurationImpl setCommandInterceptors(List<CommandInterceptor> commandInterceptors) {
+    this.commandInterceptors = commandInterceptors;
+    return this;
+  }
 
-    public Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
-        return activiti5CompatibilityHandler;
-    }
+  public CommandExecutor getCommandExecutor() {
+    return commandExecutor;
+  }
 
-    public void setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
-        this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
-    }
+  public ProcessEngineConfigurationImpl setCommandExecutor(CommandExecutor commandExecutor) {
+    this.commandExecutor = commandExecutor;
+    return this;
+  }
+
+  public RepositoryService getRepositoryService() {
+    return repositoryService;
+  }
+
+  public ProcessEngineConfigurationImpl setRepositoryService(RepositoryService repositoryService) {
+    this.repositoryService = repositoryService;
+    return this;
+  }
+
+  public RuntimeService getRuntimeService() {
+    return runtimeService;
+  }
+
+  public ProcessEngineConfigurationImpl setRuntimeService(RuntimeService runtimeService) {
+    this.runtimeService = runtimeService;
+    return this;
+  }
+
+  public HistoryService getHistoryService() {
+    return historyService;
+  }
+
+  public ProcessEngineConfigurationImpl setHistoryService(HistoryService historyService) {
+    this.historyService = historyService;
+    return this;
+  }
+
+  public IdentityService getIdentityService() {
+    return identityService;
+  }
+
+  public ProcessEngineConfigurationImpl setIdentityService(IdentityService identityService) {
+    this.identityService = identityService;
+    return this;
+  }
+
+  public TaskService getTaskService() {
+    return taskService;
+  }
+
+  public ProcessEngineConfigurationImpl setTaskService(TaskService taskService) {
+    this.taskService = taskService;
+    return this;
+  }
+
+  public FormService getFormService() {
+    return formService;
+  }
+
+  public ProcessEngineConfigurationImpl setFormService(FormService formService) {
+    this.formService = formService;
+    return this;
+  }
+
+  public ManagementService getManagementService() {
+    return managementService;
+  }
+
+  public ProcessEngineConfigurationImpl setManagementService(ManagementService managementService) {
+    this.managementService = managementService;
+    return this;
+  }
+
+  public ProcessEngineConfiguration getProcessEngineConfiguration() {
+    return this;
+  }
+
+  public Map<Class<?>, SessionFactory> getSessionFactories() {
+    return sessionFactories;
+  }
+
+  public ProcessEngineConfigurationImpl setSessionFactories(Map<Class<?>, SessionFactory> sessionFactories) {
+    this.sessionFactories = sessionFactories;
+    return this;
+  }
+
+  public List<ProcessEngineConfigurator> getConfigurators() {
+    return configurators;
+  }
+
+  public ProcessEngineConfigurationImpl addConfigurator(ProcessEngineConfigurator configurator) {
+    if (this.configurators == null) {
+      this.configurators = new ArrayList<ProcessEngineConfigurator>();
+    }
+    this.configurators.add(configurator);
+    return this;
+  }
+
+  public ProcessEngineConfigurationImpl setConfigurators(List<ProcessEngineConfigurator> configurators) {
+    this.configurators = configurators;
+    return this;
+  }
+
+  public void setEnableConfiguratorServiceLoader(boolean enableConfiguratorServiceLoader) {
+    this.enableConfiguratorServiceLoader = enableConfiguratorServiceLoader;
+  }
+
+  public List<ProcessEngineConfigurator> getAllConfigurators() {
+    return allConfigurators;
+  }
+
+  public BpmnDeployer getBpmnDeployer() {
+    return bpmnDeployer;
+  }
+
+  public ProcessEngineConfigurationImpl setBpmnDeployer(BpmnDeployer bpmnDeployer) {
+    this.bpmnDeployer = bpmnDeployer;
+    return this;
+  }
+
+  public BpmnParser getBpmnParser() {
+    return bpmnParser;
+  }
+
+  public ProcessEngineConfigurationImpl setBpmnParser(BpmnParser bpmnParser) {
+    this.bpmnParser = bpmnParser;
+    return this;
+  }
+
+  public List<Deployer> getDeployers() {
+    return deployers;
+  }
+
+  public ProcessEngineConfigurationImpl setDeployers(List<Deployer> deployers) {
+    this.deployers = deployers;
+    return this;
+  }
+
+  public IdGenerator getIdGenerator() {
+    return idGenerator;
+  }
+
+  public ProcessEngineConfigurationImpl setIdGenerator(IdGenerator idGenerator) {
+    this.idGenerator = idGenerator;
+    return this;
+  }
+
+  public String getWsSyncFactoryClassName() {
+    return wsSyncFactoryClassName;
+  }
+
+  public ProcessEngineConfigurationImpl setWsSyncFactoryClassName(String wsSyncFactoryClassName) {
+    this.wsSyncFactoryClassName = wsSyncFactoryClassName;
+    return this;
+  }
+
+  public Map<String, FormEngine> getFormEngines() {
+    return formEngines;
+  }
+
+  public ProcessEngineConfigurationImpl setFormEngines(Map<String, FormEngine> formEngines) {
+    this.formEngines = formEngines;
+    return this;
+  }
+
+  public FormTypes getFormTypes() {
+    return formTypes;
+  }
+
+  public ProcessEngineConfigurationImpl setFormTypes(FormTypes formTypes) {
+    this.formTypes = formTypes;
+    return this;
+  }
+
+  public ScriptingEngines getScriptingEngines() {
+    return scriptingEngines;
+  }
+
+  public ProcessEngineConfigurationImpl setScriptingEngines(ScriptingEngines scriptingEngines) {
+    this.scriptingEngines = scriptingEngines;
+    return this;
+  }
+
+  public VariableTypes getVariableTypes() {
+    return variableTypes;
+  }
+
+  public ProcessEngineConfigurationImpl setVariableTypes(VariableTypes variableTypes) {
+    this.variableTypes = variableTypes;
+    return this;
+  }
+
+  public ExpressionManager getExpressionManager() {
+    return expressionManager;
+  }
+
+  public ProcessEngineConfigurationImpl setExpressionManager(ExpressionManager expressionManager) {
+    this.expressionManager = expressionManager;
+    return this;
+  }
+
+  public BusinessCalendarManager getBusinessCalendarManager() {
+    return businessCalendarManager;
+  }
+
+  public ProcessEngineConfigurationImpl setBusinessCalendarManager(BusinessCalendarManager businessCalendarManager) {
+    this.businessCalendarManager = businessCalendarManager;
+    return this;
+  }
+
+  public CommandContextFactory getCommandContextFactory() {
+    return commandContextFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setCommandContextFactory(CommandContextFactory commandContextFactory) {
+    this.commandContextFactory = commandContextFactory;
+    return this;
+  }
+
+  public TransactionContextFactory getTransactionContextFactory() {
+    return transactionContextFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setTransactionContextFactory(TransactionContextFactory transactionContextFactory) {
+    this.transactionContextFactory = transactionContextFactory;
+    return this;
+  }
+
+  public List<Deployer> getCustomPreDeployers() {
+    return customPreDeployers;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomPreDeployers(List<Deployer> customPreDeployers) {
+    this.customPreDeployers = customPreDeployers;
+    return this;
+  }
+
+  public List<Deployer> getCustomPostDeployers() {
+    return customPostDeployers;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomPostDeployers(List<Deployer> customPostDeployers) {
+    this.customPostDeployers = customPostDeployers;
+    return this;
+  }
+
+  public Map<String, JobHandler> getJobHandlers() {
+    return jobHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setJobHandlers(Map<String, JobHandler> jobHandlers) {
+    this.jobHandlers = jobHandlers;
+    return this;
+  }
+
+  public SqlSessionFactory getSqlSessionFactory() {
+    return sqlSessionFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setSqlSessionFactory(SqlSessionFactory sqlSessionFactory) {
+    this.sqlSessionFactory = sqlSessionFactory;
+    return this;
+  }
+
+  public DbSqlSessionFactory getDbSqlSessionFactory() {
+    return dbSqlSessionFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setDbSqlSessionFactory(DbSqlSessionFactory dbSqlSessionFactory) {
+    this.dbSqlSessionFactory = dbSqlSessionFactory;
+    return this;
+  }
+
+  public TransactionFactory getTransactionFactory() {
+    return transactionFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setTransactionFactory(TransactionFactory transactionFactory) {
+    this.transactionFactory = transactionFactory;
+    return this;
+  }
+
+  public List<SessionFactory> getCustomSessionFactories() {
+    return customSessionFactories;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomSessionFactories(List<SessionFactory> customSessionFactories) {
+    this.customSessionFactories = customSessionFactories;
+    return this;
+  }
+
+  public List<JobHandler> getCustomJobHandlers() {
+    return customJobHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomJobHandlers(List<JobHandler> customJobHandlers) {
+    this.customJobHandlers = customJobHandlers;
+    return this;
+  }
+
+  public List<FormEngine> getCustomFormEngines() {
+    return customFormEngines;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomFormEngines(List<FormEngine> customFormEngines) {
+    this.customFormEngines = customFormEngines;
+    return this;
+  }
+
+  public List<AbstractFormType> getCustomFormTypes() {
+    return customFormTypes;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomFormTypes(List<AbstractFormType> customFormTypes) {
+    this.customFormTypes = customFormTypes;
+    return this;
+  }
+
+  public List<String> getCustomScriptingEngineClasses() {
+    return customScriptingEngineClasses;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomScriptingEngineClasses(List<String> customScriptingEngineClasses) {
+    this.customScriptingEngineClasses = customScriptingEngineClasses;
+    return this;
+  }
+
+  public List<VariableType> getCustomPreVariableTypes() {
+    return customPreVariableTypes;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomPreVariableTypes(List<VariableType> customPreVariableTypes) {
+    this.customPreVariableTypes = customPreVariableTypes;
+    return this;
+  }
+
+  public List<VariableType> getCustomPostVariableTypes() {
+    return customPostVariableTypes;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomPostVariableTypes(List<VariableType> customPostVariableTypes) {
+    this.customPostVariableTypes = customPostVariableTypes;
+    return this;
+  }
+
+  public List<BpmnParseHandler> getPreBpmnParseHandlers() {
+    return preBpmnParseHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setPreBpmnParseHandlers(List<BpmnParseHandler> preBpmnParseHandlers) {
+    this.preBpmnParseHandlers = preBpmnParseHandlers;
+    return this;
+  }
+
+  public List<BpmnParseHandler> getCustomDefaultBpmnParseHandlers() {
+    return customDefaultBpmnParseHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomDefaultBpmnParseHandlers(List<BpmnParseHandler> customDefaultBpmnParseHandlers) {
+    this.customDefaultBpmnParseHandlers = customDefaultBpmnParseHandlers;
+    return this;
+  }
+
+  public List<BpmnParseHandler> getPostBpmnParseHandlers() {
+    return postBpmnParseHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setPostBpmnParseHandlers(List<BpmnParseHandler> postBpmnParseHandlers) {
+    this.postBpmnParseHandlers = postBpmnParseHandlers;
+    return this;
+  }
+
+  public ActivityBehaviorFactory getActivityBehaviorFactory() {
+    return activityBehaviorFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setActivityBehaviorFactory(ActivityBehaviorFactory activityBehaviorFactory) {
+    this.activityBehaviorFactory = activityBehaviorFactory;
+    return this;
+  }
+
+  public ListenerFactory getListenerFactory() {
+    return listenerFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setListenerFactory(ListenerFactory listenerFactory) {
+    this.listenerFactory = listenerFactory;
+    return this;
+  }
+
+  public BpmnParseFactory getBpmnParseFactory() {
+    return bpmnParseFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setBpmnParseFactory(BpmnParseFactory bpmnParseFactory) {
+    this.bpmnParseFactory = bpmnParseFactory;
+    return this;
+  }
+
+  public Map<Object, Object> getBeans() {
+    return beans;
+  }
+
+  public ProcessEngineConfigurationImpl setBeans(Map<Object, Object> beans) {
+    this.beans = beans;
+    return this;
+  }
+
+  public List<ResolverFactory> getResolverFactories() {
+    return resolverFactories;
+  }
+
+  public ProcessEngineConfigurationImpl setResolverFactories(List<ResolverFactory> resolverFactories) {
+    this.resolverFactories = resolverFactories;
+    return this;
+  }
+
+  public DeploymentManager getDeploymentManager() {
+    return deploymentManager;
+  }
+
+  public ProcessEngineConfigurationImpl setDeploymentManager(DeploymentManager deploymentManager) {
+    this.deploymentManager = deploymentManager;
+    return this;
+  }
+
+  public ProcessEngineConfigurationImpl setDelegateInterceptor(DelegateInterceptor delegateInterceptor) {
+    this.delegateInterceptor = delegateInterceptor;
+    return this;
+  }
+
+  public DelegateInterceptor getDelegateInterceptor() {
+    return delegateInterceptor;
+  }
+
+  public RejectedJobsHandler getCustomRejectedJobsHandler() {
+    return customRejectedJobsHandler;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomRejectedJobsHandler(RejectedJobsHandler customRejectedJobsHandler) {
+    this.customRejectedJobsHandler = customRejectedJobsHandler;
+    return this;
+  }
+
+  public EventHandler getEventHandler(String eventType) {
+    return eventHandlers.get(eventType);
+  }
+
+  public ProcessEngineConfigurationImpl setEventHandlers(Map<String, EventHandler> eventHandlers) {
+    this.eventHandlers = eventHandlers;
+    return this;
+  }
+
+  public Map<String, EventHandler> getEventHandlers() {
+    return eventHandlers;
+  }
+
+  public List<EventHandler> getCustomEventHandlers() {
+    return customEventHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setCustomEventHandlers(List<EventHandler> customEventHandlers) {
+    this.customEventHandlers = customEventHandlers;
+    return this;
+  }
+
+  public FailedJobCommandFactory getFailedJobCommandFactory() {
+    return failedJobCommandFactory;
+  }
+
+  public ProcessEngineConfigurationImpl setFailedJobCommandFactory(FailedJobCommandFactory failedJobCommandFactory) {
+    this.failedJobCommandFactory = failedJobCommandFactory;
+    return this;
+  }
+
+  public DataSource getIdGeneratorDataSource() {
+    return idGeneratorDataSource;
+  }
+
+  public ProcessEngineConfigurationImpl setIdGeneratorDataSource(DataSource idGeneratorDataSource) {
+    this.idGeneratorDataSource = idGeneratorDataSource;
+    return this;
+  }
+
+  public String getIdGeneratorDataSourceJndiName() {
+    return idGeneratorDataSourceJndiName;
+  }
+
+  public ProcessEngineConfigurationImpl setIdGeneratorDataSourceJndiName(String idGeneratorDataSourceJndiName) {
+    this.idGeneratorDataSourceJndiName = idGeneratorDataSourceJndiName;
+    return this;
+  }
+
+  public int getBatchSizeProcessInstances() {
+    return batchSizeProcessInstances;
+  }
+
+  public ProcessEngineConfigurationImpl setBatchSizeProcessInstances(int batchSizeProcessInstances) {
+    this.batchSizeProcessInstances = batchSizeProcessInstances;
+    return this;
+  }
+
+  public int getBatchSizeTasks() {
+    return batchSizeTasks;
+  }
+
+  public ProcessEngineConfigurationImpl setBatchSizeTasks(int batchSizeTasks) {
+    this.batchSizeTasks = batchSizeTasks;
+    return this;
+  }
+
+  public int getProcessDefinitionCacheLimit() {
+    return processDefinitionCacheLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setProcessDefinitionCacheLimit(int processDefinitionCacheLimit) {
+    this.processDefinitionCacheLimit = processDefinitionCacheLimit;
+    return this;
+  }
+
+  public DeploymentCache<ProcessDefinitionCacheEntry> getProcessDefinitionCache() {
+    return processDefinitionCache;
+  }
+
+  public ProcessEngineConfigurationImpl setProcessDefinitionCache(DeploymentCache<ProcessDefinitionCacheEntry> processDefinitionCache) {
+    this.processDefinitionCache = processDefinitionCache;
+    return this;
+  }
+
+  public int getKnowledgeBaseCacheLimit() {
+    return knowledgeBaseCacheLimit;
+  }
+
+  public ProcessEngineConfigurationImpl setKnowledgeBaseCacheLimit(int knowledgeBaseCacheLimit) {
+    this.knowledgeBaseCacheLimit = knowledgeBaseCacheLimit;
+    return this;
+  }
+
+  public DeploymentCache<Object> getKnowledgeBaseCache() {
+    return knowledgeBaseCache;
+  }
+
+  public ProcessEngineConfigurationImpl setKnowledgeBaseCache(DeploymentCache<Object> knowledgeBaseCache) {
+    this.knowledgeBaseCache = knowledgeBaseCache;
+    return this;
+  }
+
+  public boolean isEnableSafeBpmnXml() {
+    return enableSafeBpmnXml;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableSafeBpmnXml(boolean enableSafeBpmnXml) {
+    this.enableSafeBpmnXml = enableSafeBpmnXml;
+    return this;
+  }
+
+  public ActivitiEventDispatcher getEventDispatcher() {
+    return eventDispatcher;
+  }
+
+  public void setEventDispatcher(ActivitiEventDispatcher eventDispatcher) {
+    this.eventDispatcher = eventDispatcher;
+  }
+
+  public void setEnableEventDispatcher(boolean enableEventDispatcher) {
+    this.enableEventDispatcher = enableEventDispatcher;
+  }
+
+  public void setTypedEventListeners(Map<String, List<ActivitiEventListener>> typedListeners) {
+    this.typedEventListeners = typedListeners;
+  }
+
+  public void setEventListeners(List<ActivitiEventListener> eventListeners) {
+    this.eventListeners = eventListeners;
+  }
+
+  public ProcessValidator getProcessValidator() {
+    return processValidator;
+  }
+
+  public void setProcessValidator(ProcessValidator processValidator) {
+    this.processValidator = processValidator;
+  }
+
+  public boolean isEnableEventDispatcher() {
+    return enableEventDispatcher;
+  }
+
+  public boolean isEnableDatabaseEventLogging() {
+    return enableDatabaseEventLogging;
+  }
+
+  public ProcessEngineConfigurationImpl setEnableDatabaseEventLogging(boolean enableDatabaseEventLogging) {
+    this.enableDatabaseEventLogging = enableDatabaseEventLogging;
+    return this;
+  }
+
+  public Activiti5CompatibilityHandlerFactory getActiviti5CompatibilityHandlerFactory() {
+    return activiti5CompatibilityHandlerFactory;
+  }
+
+  public void setActiviti5CompatibilityHandlerFactory(Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory) {
+    this.activiti5CompatibilityHandlerFactory = activiti5CompatibilityHandlerFactory;
+  }
+
+  public Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
+    return activiti5CompatibilityHandler;
+  }
+
+  public void setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
+    this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
+  }
 
 }

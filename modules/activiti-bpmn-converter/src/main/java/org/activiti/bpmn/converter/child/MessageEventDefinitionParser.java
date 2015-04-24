@@ -26,47 +26,47 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class MessageEventDefinitionParser extends BaseChildElementParser {
 
-    public String getElementName() {
-        return ELEMENT_EVENT_MESSAGEDEFINITION;
-    }
+  public String getElementName() {
+    return ELEMENT_EVENT_MESSAGEDEFINITION;
+  }
 
-    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-        if (parentElement instanceof Event == false)
-            return;
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+    if (parentElement instanceof Event == false)
+      return;
 
-        MessageEventDefinition eventDefinition = new MessageEventDefinition();
-        BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
-        eventDefinition.setMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF));
+    MessageEventDefinition eventDefinition = new MessageEventDefinition();
+    BpmnXMLUtil.addXMLLocation(eventDefinition, xtr);
+    eventDefinition.setMessageRef(xtr.getAttributeValue(null, ATTRIBUTE_MESSAGE_REF));
 
-        if (!StringUtils.isEmpty(eventDefinition.getMessageRef())) {
+    if (!StringUtils.isEmpty(eventDefinition.getMessageRef())) {
 
-            int indexOfP = eventDefinition.getMessageRef().indexOf(':');
-            if (indexOfP != -1) {
-                String prefix = eventDefinition.getMessageRef().substring(0, indexOfP);
-                String resolvedNamespace = model.getNamespace(prefix);
-                String messageRef = eventDefinition.getMessageRef().substring(indexOfP + 1);
+      int indexOfP = eventDefinition.getMessageRef().indexOf(':');
+      if (indexOfP != -1) {
+        String prefix = eventDefinition.getMessageRef().substring(0, indexOfP);
+        String resolvedNamespace = model.getNamespace(prefix);
+        String messageRef = eventDefinition.getMessageRef().substring(indexOfP + 1);
 
-                if (resolvedNamespace == null) {
-                    // if it's an invalid prefix will consider this is not a
-                    // namespace prefix so will be used as part of the
-                    // stringReference
-                    messageRef = prefix + ":" + messageRef;
-                } else if (!resolvedNamespace.equalsIgnoreCase(model.getTargetNamespace())) {
-                    // if it's a valid namespace prefix but it's not the
-                    // targetNamespace then we'll use it as a valid namespace
-                    // (even out editor does not support defining namespaces it
-                    // is still a valid xml file)
-                    messageRef = resolvedNamespace + ":" + messageRef;
-                }
-                eventDefinition.setMessageRef(messageRef);
-            } else {
-                eventDefinition.setMessageRef(eventDefinition.getMessageRef());
-            }
-
+        if (resolvedNamespace == null) {
+          // if it's an invalid prefix will consider this is not a
+          // namespace prefix so will be used as part of the
+          // stringReference
+          messageRef = prefix + ":" + messageRef;
+        } else if (!resolvedNamespace.equalsIgnoreCase(model.getTargetNamespace())) {
+          // if it's a valid namespace prefix but it's not the
+          // targetNamespace then we'll use it as a valid namespace
+          // (even out editor does not support defining namespaces it
+          // is still a valid xml file)
+          messageRef = resolvedNamespace + ":" + messageRef;
         }
+        eventDefinition.setMessageRef(messageRef);
+      } else {
+        eventDefinition.setMessageRef(eventDefinition.getMessageRef());
+      }
 
-        BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_MESSAGEDEFINITION, eventDefinition, xtr, model);
-
-        ((Event) parentElement).getEventDefinitions().add(eventDefinition);
     }
+
+    BpmnXMLUtil.parseChildElements(ELEMENT_EVENT_MESSAGEDEFINITION, eventDefinition, xtr, model);
+
+    ((Event) parentElement).getEventDefinitions().add(eventDefinition);
+  }
 }

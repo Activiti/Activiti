@@ -38,172 +38,171 @@ import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
  * @author Joram Barrez
  */
 public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior {
-	
-	protected boolean destroyProcessInstance;
-	
-	@Override
-	public void execute(ActivityExecution execution) {
-		
-		CommandContext commandContext = Context.getCommandContext();
-		ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-		
-		// Fetch the whole execution tree 
-		
-		String processInstanceId = execution.getProcessInstanceId();
-		ExecutionEntity processInstanceExecutionEntity = executionEntityManager.findExecutionById(processInstanceId);
-		
-		List<ExecutionEntity> allExecutionEntities = executionEntityManager.findChildExecutionsByProcessInstanceId(processInstanceId);
-		allExecutionEntities.add(processInstanceExecutionEntity); // Collections needs to contain all for the util method to work
 
-		ExecutionTree executionTree = ExecutionTreeUtil.buildExecutionTree(allExecutionEntities);
-		
-		if (destroyProcessInstance) {
+  protected boolean destroyProcessInstance;
 
-			deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
-			
-		} else {
-			
-			// Find the highest scope for the element, and schedule the destruction of the scope
-			
-			ExecutionTreeNode scopeTreeNode = executionTree.getTreeNode(execution.getId());
-			while (!scopeTreeNode.getExecutionEntity().isScope()) {
-				scopeTreeNode = scopeTreeNode.getParent();
-				
-				if (scopeTreeNode == null) {
-					break;
-				}
-			}
-			
-			if (scopeTreeNode.getExecutionEntity().getParentId() == null) {
-				deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
-			} else {
-				commandContext.getAgenda().planDestroyScopeOperation(scopeTreeNode.getExecutionEntity());
-				commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeTreeNode.getExecutionEntity());
-			}
-		}
-		
-		
-	}
+  @Override
+  public void execute(ActivityExecution execution) {
 
-	protected void deleteExecutionEntities(CommandContext commandContext, 
-			ExecutionEntityManager executionEntityManager, ExecutionTreeBfsIterator treeIterator) {
-		
-		// Delete the execution in leafs-first order to avoid foreign key constraints firing
-		
-	    while (treeIterator.hasNext()) {
-	    	ExecutionTreeNode treeNode = treeIterator.next();
-	    	ExecutionEntity executionEntity = treeNode.getExecutionEntity();
-	    	deleteDataRelatedToExecution(commandContext, executionEntity);
-	    	executionEntityManager.delete(executionEntity);
-	    }
-    }
-	
-	// TODO: Copied from AbstractOperation: remove duplication!
-	
-	protected void deleteDataRelatedToExecution(CommandContext commandContext, ExecutionEntity executionEntity) {
+    CommandContext commandContext = Context.getCommandContext();
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 
-		// To start, deactivate the current incoming execution
-		executionEntity.setEnded(true);
-		executionEntity.setActive(false);
+    // Fetch the whole execution tree
 
-		// Get variables related to execution and delete them
-		VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
-		Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
-		for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
-			variableInstanceEntityManager.delete(variableInstanceEntity);
-			if (variableInstanceEntity.getByteArrayValueId() != null) {
-				commandContext.getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayValueId());
-			}
-		}
+    String processInstanceId = execution.getProcessInstanceId();
+    ExecutionEntity processInstanceExecutionEntity = executionEntityManager.findExecutionById(processInstanceId);
 
-		// Delete current user tasks
-		TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
-		Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
-		for (TaskEntity taskEntity : tasksForExecution) {
-			taskEntityManager.delete(taskEntity);
-		}
+    List<ExecutionEntity> allExecutionEntities = executionEntityManager.findChildExecutionsByProcessInstanceId(processInstanceId);
+    allExecutionEntities.add(processInstanceExecutionEntity); // Collections needs to contain all for the util method to work
 
-		// Delete jobs
-		JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
-		Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
-		for (JobEntity job : jobsForExecution) {
-			jobEntityManager.delete(job);
-		}
-	}
+    ExecutionTree executionTree = ExecutionTreeUtil.buildExecutionTree(allExecutionEntities);
 
-//    public void execute(ActivityExecution execution) {
-//
-//        PvmActivity terminateEndEventActivity = execution.getActivity();
-//        ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
-//
-//        boolean loop = true;
-//        // get top superexecution to terminate
-//        while (scopeExecution.getSuperExecutionId() != null && loop) {
-//            ActivityExecution superExecution = (ActivityExecution) Context.getProcessEngineConfiguration().getRuntimeService().createExecutionQuery().executionId(scopeExecution.getSuperExecutionId())
-//                    .singleResult();
-//            if (superExecution != null) {
-//                // superExecution can be null in the case when no wait state was
-//                // reached between super start event and TerminateEndEvent
-//                while (superExecution.getParent() != null) {
-//                    superExecution = superExecution.getParent();
-//                }
-//                scopeExecution = superExecution;
-//            } else {
-//                loop = false;
-//            }
-//        }
-//
-////        terminateExecution(execution, terminateEndEventActivity, scopeExecution);
-//    }
+    if (destroyProcessInstance) {
 
-    private void terminateExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
-        // send cancelled event
-        sendCancelledEvent(execution, terminateEndEventActivity, scopeExecution);
+      deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
 
-        // destroy the scope
-        scopeExecution.destroyScope("terminate end event fired");
+    } else {
 
-        // set the scope execution to the terminate end event and make it end here.
-        // (the history should reflect that the execution ended here and we want an 'end time' for the historic activity instance.)
-        ((InterpretableExecution) scopeExecution).setActivity(terminateEndEventActivity);
-        
-        // end the scope execution
-        scopeExecution.end();
-    }
+      // Find the highest scope for the element, and schedule the destruction of the scope
 
-    private void sendCancelledEvent(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
-        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), terminateEndEventActivity));
+      ExecutionTreeNode scopeTreeNode = executionTree.getTreeNode(execution.getId());
+      while (!scopeTreeNode.getExecutionEntity().isScope()) {
+        scopeTreeNode = scopeTreeNode.getParent();
+
+        if (scopeTreeNode == null) {
+          break;
         }
-        dispatchExecutionCancelled(scopeExecution, terminateEndEventActivity);
+      }
+
+      if (scopeTreeNode.getExecutionEntity().getParentId() == null) {
+        deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+      } else {
+        commandContext.getAgenda().planDestroyScopeOperation(scopeTreeNode.getExecutionEntity());
+        commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeTreeNode.getExecutionEntity());
+      }
     }
 
-    private void dispatchExecutionCancelled(ActivityExecution execution, ActivityImpl causeActivity) {
-        // subprocesses
-        for (ActivityExecution subExecution : execution.getExecutions()) {
-            dispatchExecutionCancelled(subExecution, causeActivity);
-        }
+  }
 
-        // call activities
-        ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
-        if (subProcessInstance != null) {
-            dispatchExecutionCancelled(subProcessInstance, causeActivity);
-        }
+  protected void deleteExecutionEntities(CommandContext commandContext, ExecutionEntityManager executionEntityManager, ExecutionTreeBfsIterator treeIterator) {
 
-        // activity with message/signal boundary events
-        ActivityImpl activity = (ActivityImpl) execution.getActivity();
-        if (activity != null && activity.getActivityBehavior() != null && activity != causeActivity) {
-            dispatchActivityCancelled(execution, activity, causeActivity);
-        }
+    // Delete the execution in leafs-first order to avoid foreign key constraints firing
+
+    while (treeIterator.hasNext()) {
+      ExecutionTreeNode treeNode = treeIterator.next();
+      ExecutionEntity executionEntity = treeNode.getExecutionEntity();
+      deleteDataRelatedToExecution(commandContext, executionEntity);
+      executionEntityManager.delete(executionEntity);
+    }
+  }
+
+  // TODO: Copied from AbstractOperation: remove duplication!
+
+  protected void deleteDataRelatedToExecution(CommandContext commandContext, ExecutionEntity executionEntity) {
+
+    // To start, deactivate the current incoming execution
+    executionEntity.setEnded(true);
+    executionEntity.setActive(false);
+
+    // Get variables related to execution and delete them
+    VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
+    Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
+    for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
+      variableInstanceEntityManager.delete(variableInstanceEntity);
+      if (variableInstanceEntity.getByteArrayValueId() != null) {
+        commandContext.getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayValueId());
+      }
     }
 
-    private void dispatchActivityCancelled(ActivityExecution execution, ActivityImpl activity, ActivityImpl causeActivity) {
-        Context.getProcessEngineConfiguration()
-                .getEventDispatcher()
-                .dispatchEvent(
-                        ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(), (String) activity.getProperties().get("name"), execution.getId(), execution.getProcessInstanceId(),
-                                execution.getProcessDefinitionId(), (String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName(), causeActivity));
+    // Delete current user tasks
+    TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
+    Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
+    for (TaskEntity taskEntity : tasksForExecution) {
+      taskEntityManager.delete(taskEntity);
     }
+
+    // Delete jobs
+    JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
+    Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
+    for (JobEntity job : jobsForExecution) {
+      jobEntityManager.delete(job);
+    }
+  }
+
+  // public void execute(ActivityExecution execution) {
+  //
+  // PvmActivity terminateEndEventActivity = execution.getActivity();
+  // ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
+  //
+  // boolean loop = true;
+  // // get top superexecution to terminate
+  // while (scopeExecution.getSuperExecutionId() != null && loop) {
+  // ActivityExecution superExecution = (ActivityExecution) Context.getProcessEngineConfiguration().getRuntimeService().createExecutionQuery().executionId(scopeExecution.getSuperExecutionId())
+  // .singleResult();
+  // if (superExecution != null) {
+  // // superExecution can be null in the case when no wait state was
+  // // reached between super start event and TerminateEndEvent
+  // while (superExecution.getParent() != null) {
+  // superExecution = superExecution.getParent();
+  // }
+  // scopeExecution = superExecution;
+  // } else {
+  // loop = false;
+  // }
+  // }
+  //
+  // // terminateExecution(execution, terminateEndEventActivity, scopeExecution);
+  // }
+
+  private void terminateExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
+    // send cancelled event
+    sendCancelledEvent(execution, terminateEndEventActivity, scopeExecution);
+
+    // destroy the scope
+    scopeExecution.destroyScope("terminate end event fired");
+
+    // set the scope execution to the terminate end event and make it end here.
+    // (the history should reflect that the execution ended here and we want an 'end time' for the historic activity instance.)
+    ((InterpretableExecution) scopeExecution).setActivity(terminateEndEventActivity);
+
+    // end the scope execution
+    scopeExecution.end();
+  }
+
+  private void sendCancelledEvent(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
+    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher()
+          .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), terminateEndEventActivity));
+    }
+    dispatchExecutionCancelled(scopeExecution, terminateEndEventActivity);
+  }
+
+  private void dispatchExecutionCancelled(ActivityExecution execution, ActivityImpl causeActivity) {
+    // subprocesses
+    for (ActivityExecution subExecution : execution.getExecutions()) {
+      dispatchExecutionCancelled(subExecution, causeActivity);
+    }
+
+    // call activities
+    ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
+    if (subProcessInstance != null) {
+      dispatchExecutionCancelled(subProcessInstance, causeActivity);
+    }
+
+    // activity with message/signal boundary events
+    ActivityImpl activity = (ActivityImpl) execution.getActivity();
+    if (activity != null && activity.getActivityBehavior() != null && activity != causeActivity) {
+      dispatchActivityCancelled(execution, activity, causeActivity);
+    }
+  }
+
+  private void dispatchActivityCancelled(ActivityExecution execution, ActivityImpl activity, ActivityImpl causeActivity) {
+    Context
+        .getProcessEngineConfiguration()
+        .getEventDispatcher()
+        .dispatchEvent(
+            ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(), (String) activity.getProperties().get("name"), execution.getId(), execution.getProcessInstanceId(),
+                execution.getProcessDefinitionId(), (String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName(), causeActivity));
+  }
 
 }

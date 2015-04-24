@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator;
  * limitations under the License.
  */
 
-
 import org.activiti.engine.runtime.ClockReader;
 import org.springframework.beans.factory.FactoryBean;
 
@@ -30,13 +29,12 @@ public class SimpleEventCalendarFactory implements FactoryBean<EventCalendar> {
   protected Comparator<SimulationEvent> eventComparator;
   protected final ClockReader clockReader;
 
-	public SimpleEventCalendarFactory(ClockReader clockReader, Comparator<SimulationEvent> eventComparator, Collection<SimulationEvent> simulationEvents) {
+  public SimpleEventCalendarFactory(ClockReader clockReader, Comparator<SimulationEvent> eventComparator, Collection<SimulationEvent> simulationEvents) {
     this.clockReader = clockReader;
     this.eventComparator = eventComparator;
     this.simulationEvents = simulationEvents;
-	}
+  }
 
-  
   public SimpleEventCalendarFactory(ClockReader clockReader, Comparator<SimulationEvent> eventComparator) {
     this.eventComparator = eventComparator;
     this.clockReader = clockReader;
@@ -44,20 +42,20 @@ public class SimpleEventCalendarFactory implements FactoryBean<EventCalendar> {
   }
 
   @Override
-	public SimpleEventCalendar getObject() {
+  public SimpleEventCalendar getObject() {
     SimpleEventCalendar simpleEventCalendar = new SimpleEventCalendar(clockReader, eventComparator);
     simpleEventCalendar.addEvents(simulationEvents);
     return simpleEventCalendar;
   }
 
-	@Override
-	public Class<?> getObjectType() {
-		return SimpleEventCalendar.class;
-	}
+  @Override
+  public Class<?> getObjectType() {
+    return SimpleEventCalendar.class;
+  }
 
-	@Override
-	public boolean isSingleton() {
-		return false;
-	}
+  @Override
+  public boolean isSingleton() {
+    return false;
+  }
 
 }

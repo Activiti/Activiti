@@ -23,14 +23,14 @@ import org.activiti5.engine.impl.history.handler.StartEventEndHandler;
  */
 public class StartEventHistoryParseHandler extends AbstractBpmnParseHandler<StartEvent> {
 
-    protected static final StartEventEndHandler START_EVENT_END_HANDLER = new StartEventEndHandler();
+  protected static final StartEventEndHandler START_EVENT_END_HANDLER = new StartEventEndHandler();
 
-    protected Class<? extends BaseElement> getHandledType() {
-        return StartEvent.class;
-    }
+  protected Class<? extends BaseElement> getHandledType() {
+    return StartEvent.class;
+  }
 
-    protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
-        bpmnParse.getCurrentActivity().addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, START_EVENT_END_HANDLER);
-    }
+  protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
+    bpmnParse.getCurrentActivity().addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, START_EVENT_END_HANDLER);
+  }
 
 }

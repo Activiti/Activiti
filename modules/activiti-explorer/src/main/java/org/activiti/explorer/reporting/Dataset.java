@@ -20,58 +20,58 @@ import java.util.Map;
  */
 public class Dataset {
 
-    protected String type;
+  protected String type;
 
-    protected String description;
+  protected String description;
 
-    protected String xaxis;
+  protected String xaxis;
 
-    protected String yaxis;
+  protected String yaxis;
 
-    protected Map<String, Number> data = new HashMap<String, Number>();
+  protected Map<String, Number> data = new HashMap<String, Number>();
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public String getDescription() {
-        return description;
-    }
+  public String getDescription() {
+    return description;
+  }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+  public void setDescription(String description) {
+    this.description = description;
+  }
 
-    public Map<String, Number> getData() {
-        return data;
-    }
+  public Map<String, Number> getData() {
+    return data;
+  }
 
-    public String getXaxis() {
-        return xaxis;
-    }
+  public String getXaxis() {
+    return xaxis;
+  }
 
-    public void setXaxis(String xaxis) {
-        this.xaxis = xaxis;
-    }
+  public void setXaxis(String xaxis) {
+    this.xaxis = xaxis;
+  }
 
-    public String getYaxis() {
-        return yaxis;
-    }
+  public String getYaxis() {
+    return yaxis;
+  }
 
-    public void setYaxis(String yaxis) {
-        this.yaxis = yaxis;
-    }
+  public void setYaxis(String yaxis) {
+    this.yaxis = yaxis;
+  }
 
-    public void setData(Map<String, Number> data) {
-        this.data = data;
-    }
+  public void setData(Map<String, Number> data) {
+    this.data = data;
+  }
 
-    public void add(String key, Number value) {
-        data.put(key, value);
-    }
+  public void add(String key, Number value) {
+    data.put(key, value);
+  }
 
 }

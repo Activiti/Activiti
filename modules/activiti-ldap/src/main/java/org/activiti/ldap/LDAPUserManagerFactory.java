@@ -18,36 +18,34 @@ import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 
 /**
- * {@link SessionFactory} responsible for creating the {@link LDAPUserManager}.
- * Is plugged into the {@link ProcessEngineConfiguration} automatically through
- * the {@link LDAPConfigurator}.
+ * {@link SessionFactory} responsible for creating the {@link LDAPUserManager}. Is plugged into the {@link ProcessEngineConfiguration} automatically through the {@link LDAPConfigurator}.
  * 
  * @author Joram Barrez
  */
 public class LDAPUserManagerFactory implements SessionFactory {
 
-    protected LDAPConfigurator ldapConfigurator;
+  protected LDAPConfigurator ldapConfigurator;
 
-    public LDAPUserManagerFactory(LDAPConfigurator ldapConfigurator) {
-        this.ldapConfigurator = ldapConfigurator;
-    }
+  public LDAPUserManagerFactory(LDAPConfigurator ldapConfigurator) {
+    this.ldapConfigurator = ldapConfigurator;
+  }
 
-    @Override
-    public Class<?> getSessionType() {
-        return UserIdentityManager.class;
-    }
+  @Override
+  public Class<?> getSessionType() {
+    return UserIdentityManager.class;
+  }
 
-    @Override
-    public Session openSession() {
-        return new LDAPUserManager(ldapConfigurator);
-    }
+  @Override
+  public Session openSession() {
+    return new LDAPUserManager(ldapConfigurator);
+  }
 
-    public LDAPConfigurator getLdapConfigurator() {
-        return ldapConfigurator;
-    }
+  public LDAPConfigurator getLdapConfigurator() {
+    return ldapConfigurator;
+  }
 
-    public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
-        this.ldapConfigurator = ldapConfigurator;
-    }
+  public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
+    this.ldapConfigurator = ldapConfigurator;
+  }
 
 }

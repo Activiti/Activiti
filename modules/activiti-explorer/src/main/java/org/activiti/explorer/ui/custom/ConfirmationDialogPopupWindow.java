@@ -28,87 +28,86 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
- * Generic Yes/No confirmation dialog. Add {@link ConfirmationEventListener} to
- * perform actions when confirmation or rejection is given.
+ * Generic Yes/No confirmation dialog. Add {@link ConfirmationEventListener} to perform actions when confirmation or rejection is given.
  * 
  * @author Frederik Heremans
  */
 public class ConfirmationDialogPopupWindow extends PopupWindow {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected GridLayout layout;
-    protected Label descriptionLabel;
-    protected Button yesButton;
-    protected Button noButton;
+  protected GridLayout layout;
+  protected Label descriptionLabel;
+  protected Button yesButton;
+  protected Button noButton;
 
-    public ConfirmationDialogPopupWindow(String title, String description) {
-        setWidth(400, UNITS_PIXELS);
-        setModal(true);
-        setResizable(false);
+  public ConfirmationDialogPopupWindow(String title, String description) {
+    setWidth(400, UNITS_PIXELS);
+    setModal(true);
+    setResizable(false);
 
-        addStyleName(Reindeer.PANEL_LIGHT);
+    addStyleName(Reindeer.PANEL_LIGHT);
 
-        layout = new GridLayout(2, 2);
-        layout.setMargin(true);
-        layout.setSpacing(true);
-        layout.setSizeFull();
+    layout = new GridLayout(2, 2);
+    layout.setMargin(true);
+    layout.setSpacing(true);
+    layout.setSizeFull();
 
-        setContent(layout);
+    setContent(layout);
 
-        I18nManager i18nManager = ExplorerApp.get().getI18nManager();
-        if (title != null) {
-            setCaption(title);
-        } else {
-            setCaption(i18nManager.getMessage(Messages.CONFIRMATION_DIALOG_DEFAULT_TITLE));
-        }
-
-        initLabel(description);
-        initButtons(i18nManager);
+    I18nManager i18nManager = ExplorerApp.get().getI18nManager();
+    if (title != null) {
+      setCaption(title);
+    } else {
+      setCaption(i18nManager.getMessage(Messages.CONFIRMATION_DIALOG_DEFAULT_TITLE));
     }
 
-    public ConfirmationDialogPopupWindow(String description) {
-        this(null, description);
-    }
+    initLabel(description);
+    initButtons(i18nManager);
+  }
 
-    /**
-     * Show the confirmation popup.
-     */
-    public void showConfirmation() {
-        yesButton.focus();
-        ExplorerApp.get().getViewManager().showPopupWindow(this);
-    }
+  public ConfirmationDialogPopupWindow(String description) {
+    this(null, description);
+  }
 
-    protected void initButtons(I18nManager i18nManager) {
-        yesButton = new Button(i18nManager.getMessage(Messages.CONFIRMATION_DIALOG_YES));
-        layout.addComponent(yesButton, 0, 1);
-        layout.setComponentAlignment(yesButton, Alignment.BOTTOM_RIGHT);
-        yesButton.addListener(new ClickListener() {
-            private static final long serialVersionUID = 1L;
+  /**
+   * Show the confirmation popup.
+   */
+  public void showConfirmation() {
+    yesButton.focus();
+    ExplorerApp.get().getViewManager().showPopupWindow(this);
+  }
 
-            public void buttonClick(ClickEvent event) {
-                close();
-                fireEvent(new ConfirmationEvent(ConfirmationDialogPopupWindow.this, true));
-            }
-        });
+  protected void initButtons(I18nManager i18nManager) {
+    yesButton = new Button(i18nManager.getMessage(Messages.CONFIRMATION_DIALOG_YES));
+    layout.addComponent(yesButton, 0, 1);
+    layout.setComponentAlignment(yesButton, Alignment.BOTTOM_RIGHT);
+    yesButton.addListener(new ClickListener() {
+      private static final long serialVersionUID = 1L;
 
-        noButton = new Button(i18nManager.getMessage(Messages.CONFIRMATION_DIALOG_NO));
-        layout.addComponent(noButton, 1, 1);
-        layout.setComponentAlignment(noButton, Alignment.BOTTOM_LEFT);
-        noButton.addListener(new ClickListener() {
-            private static final long serialVersionUID = 1L;
+      public void buttonClick(ClickEvent event) {
+        close();
+        fireEvent(new ConfirmationEvent(ConfirmationDialogPopupWindow.this, true));
+      }
+    });
 
-            public void buttonClick(ClickEvent event) {
-                close();
-                fireEvent(new ConfirmationEvent(ConfirmationDialogPopupWindow.this, false));
-            }
-        });
-    }
+    noButton = new Button(i18nManager.getMessage(Messages.CONFIRMATION_DIALOG_NO));
+    layout.addComponent(noButton, 1, 1);
+    layout.setComponentAlignment(noButton, Alignment.BOTTOM_LEFT);
+    noButton.addListener(new ClickListener() {
+      private static final long serialVersionUID = 1L;
 
-    protected void initLabel(String description) {
-        descriptionLabel = new Label(description, Label.CONTENT_XHTML);
-        descriptionLabel.setSizeFull();
-        layout.addComponent(descriptionLabel, 0, 0, 1, 0);
-        layout.setRowExpandRatio(0, 1.0f);
-    }
+      public void buttonClick(ClickEvent event) {
+        close();
+        fireEvent(new ConfirmationEvent(ConfirmationDialogPopupWindow.this, false));
+      }
+    });
+  }
+
+  protected void initLabel(String description) {
+    descriptionLabel = new Label(description, Label.CONTENT_XHTML);
+    descriptionLabel.setSizeFull();
+    layout.addComponent(descriptionLabel, 0, 0, 1, 0);
+    layout.setRowExpandRatio(0, 1.0f);
+  }
 }

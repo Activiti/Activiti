@@ -26,86 +26,86 @@ import org.activiti5.engine.test.Deployment;
  */
 public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
 
-    // exception matches the only mapping, directly
-    @Deployment
-    public void testClassDelegateSingleDirectMap() {
-        FlagDelegate.reset();
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
+  // exception matches the only mapping, directly
+  @Deployment
+  public void testClassDelegateSingleDirectMap() {
+    FlagDelegate.reset();
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
-        runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-        assertTrue(FlagDelegate.isVisited());
+    runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
+    assertTrue(FlagDelegate.isVisited());
+  }
+
+  // exception does not match the single mapping
+  @Deployment(resources = "org/activiti/engine/test/bpmn/event/error/mapError/BoundaryErrorMapTest.testClassDelegateSingleDirectMap.bpmn20.xml")
+  public void testClassDelegateSingleDirectMapNotMachingException() {
+    FlagDelegate.reset();
+
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("exceptionClass", JAXBException.class.getName());
+    assertEquals(0, ServiceTaskTestMock.CALL_COUNT.get());
+
+    try {
+      runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
+      fail("exception expected, as there is no matching exceptio map");
+    } catch (Exception e) {
+      assertFalse(FlagDelegate.isVisited());
     }
+  }
 
-    // exception does not match the single mapping
-    @Deployment(resources = "org/activiti/engine/test/bpmn/event/error/mapError/BoundaryErrorMapTest.testClassDelegateSingleDirectMap.bpmn20.xml")
-    public void testClassDelegateSingleDirectMapNotMachingException() {
-        FlagDelegate.reset();
+  // exception matches by inheritence
+  @Deployment
+  public void testClassDelegateSingleInheritedMap() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("exceptionClass", BoundaryEventChildException.class.getName());
+    FlagDelegate.reset();
 
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("exceptionClass", JAXBException.class.getName());
-        assertEquals(0, ServiceTaskTestMock.CALL_COUNT.get());
+    runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
+    assertTrue(FlagDelegate.isVisited());
+  }
 
-        try {
-            runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-            fail("exception expected, as there is no matching exceptio map");
-        } catch (Exception e) {
-            assertFalse(FlagDelegate.isVisited());
-        }
-    }
+  // check the default map
+  @Deployment
+  public void tesClassDelegatetDefaultMap() {
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("exceptionClass", Exception.class.getName());
+    FlagDelegate.reset();
 
-    // exception matches by inheritence
-    @Deployment
-    public void testClassDelegateSingleInheritedMap() {
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("exceptionClass", BoundaryEventChildException.class.getName());
-        FlagDelegate.reset();
+    runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
+    assertTrue(FlagDelegate.isVisited());
 
-        runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-        assertTrue(FlagDelegate.isVisited());
-    }
+  }
 
-    // check the default map
-    @Deployment
-    public void tesClassDelegatetDefaultMap() {
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("exceptionClass", Exception.class.getName());
-        FlagDelegate.reset();
+  @Deployment
+  public void testSeqMultInstanceSingleDirectMap() {
+    FlagDelegate.reset();
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
-        runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-        assertTrue(FlagDelegate.isVisited());
+    runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
+    assertTrue(FlagDelegate.isVisited());
+  }
 
-    }
+  @Deployment
+  public void testSubProcessSingleDirectMap() {
+    FlagDelegate.reset();
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
-    @Deployment
-    public void testSeqMultInstanceSingleDirectMap() {
-        FlagDelegate.reset();
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
+    runtimeService.startProcessInstanceByKey("subprocssWithSingleExceptionMap", vars);
+    assertTrue(FlagDelegate.isVisited());
+  }
 
-        runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-        assertTrue(FlagDelegate.isVisited());
-    }
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/mapError/BoundaryErrorMapTest.testCallProcessSingleDirectMap.bpmn20.xml",
+      "org/activiti/engine/test/bpmn/event/error/mapError/BoundaryErrorMapTest.testCallProcessCalee.bpmn20.xml" })
+  public void testCallProcessSingleDirectMap() {
+    FlagDelegate.reset();
+    Map<String, Object> vars = new HashMap<String, Object>();
+    vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
 
-    @Deployment
-    public void testSubProcessSingleDirectMap() {
-        FlagDelegate.reset();
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
-
-        runtimeService.startProcessInstanceByKey("subprocssWithSingleExceptionMap", vars);
-        assertTrue(FlagDelegate.isVisited());
-    }
-
-    @Deployment(resources = { "org/activiti/engine/test/bpmn/event/error/mapError/BoundaryErrorMapTest.testCallProcessSingleDirectMap.bpmn20.xml",
-            "org/activiti/engine/test/bpmn/event/error/mapError/BoundaryErrorMapTest.testCallProcessCalee.bpmn20.xml" })
-    public void testCallProcessSingleDirectMap() {
-        FlagDelegate.reset();
-        Map<String, Object> vars = new HashMap<String, Object>();
-        vars.put("exceptionClass", BoundaryErrorParentException.class.getName());
-
-        runtimeService.startProcessInstanceByKey("callProcssWithSingleExceptionMap", vars);
-        assertTrue(FlagDelegate.isVisited());
-    }
+    runtimeService.startProcessInstanceByKey("callProcssWithSingleExceptionMap", vars);
+    assertTrue(FlagDelegate.isVisited());
+  }
 
 }

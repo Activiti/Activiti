@@ -36,96 +36,95 @@ import com.vaadin.terminal.StreamResource;
 import com.vaadin.terminal.StreamResource.StreamSource;
 
 /**
- * Builder that is capable of creating a {@link StreamResource} for a given
- * process-definition, containing the diagram image, if available.
+ * Builder that is capable of creating a {@link StreamResource} for a given process-definition, containing the diagram image, if available.
  * 
  * @author Frederik Heremans
  */
 public class ProcessDefinitionImageStreamResourceBuilder {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionImageStreamResourceBuilder.class);
+  protected static final Logger LOGGER = LoggerFactory.getLogger(ProcessDefinitionImageStreamResourceBuilder.class);
 
-    public StreamResource buildStreamResource(ProcessDefinition processDefinition, RepositoryService repositoryService) {
+  public StreamResource buildStreamResource(ProcessDefinition processDefinition, RepositoryService repositoryService) {
 
-        StreamResource imageResource = null;
+    StreamResource imageResource = null;
 
-        if (processDefinition.getDiagramResourceName() != null) {
-            final InputStream definitionImageStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName());
+    if (processDefinition.getDiagramResourceName() != null) {
+      final InputStream definitionImageStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), processDefinition.getDiagramResourceName());
 
-            StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
+      StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
 
-            // Creating image name based on process-definition ID is fine, since
-            // the diagram image cannot
-            // be altered once deployed.
-            String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
-            String fileName = processDefinition.getId() + "." + imageExtension;
+      // Creating image name based on process-definition ID is fine, since
+      // the diagram image cannot
+      // be altered once deployed.
+      String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
+      String fileName = processDefinition.getId() + "." + imageExtension;
 
-            imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get());
-        }
-
-        return imageResource;
+      imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get());
     }
 
-    public StreamResource buildStreamResource(ProcessInstance processInstance, RepositoryService repositoryService, RuntimeService runtimeService, ProcessDiagramGenerator diagramGenerator,
-            ProcessEngineConfiguration processEngineConfig) {
+    return imageResource;
+  }
 
-        StreamResource imageResource = null;
+  public StreamResource buildStreamResource(ProcessInstance processInstance, RepositoryService repositoryService, RuntimeService runtimeService, ProcessDiagramGenerator diagramGenerator,
+      ProcessEngineConfiguration processEngineConfig) {
 
-        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processInstance.getProcessDefinitionId());
+    StreamResource imageResource = null;
 
-        if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
-            try {
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processInstance.getProcessDefinitionId());
 
-                BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
-                InputStream definitionImageStream = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()), Collections.<String> emptyList(),
-                        processEngineConfig.getActivityFontName(), processEngineConfig.getLabelFontName(), processEngineConfig.getClassLoader(), 1.0);
+    if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
+      try {
 
-                if (definitionImageStream != null) {
-                    StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
+        BpmnModel bpmnModel = repositoryService.getBpmnModel(processInstance.getProcessDefinitionId());
+        InputStream definitionImageStream = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstance.getId()), Collections.<String> emptyList(),
+            processEngineConfig.getActivityFontName(), processEngineConfig.getLabelFontName(), processEngineConfig.getClassLoader(), 1.0);
 
-                    // Create image name
-                    String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
-                    String fileName = processInstance.getId() + UUID.randomUUID() + "." + imageExtension;
+        if (definitionImageStream != null) {
+          StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
 
-                    imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get());
-                }
-            } catch (Throwable t) {
-                // Image can't be generated, ignore this
-                LOGGER.warn("Process image cannot be generated due to exception: {} - {}", t.getClass().getName(), t.getMessage());
-            }
+          // Create image name
+          String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
+          String fileName = processInstance.getId() + UUID.randomUUID() + "." + imageExtension;
+
+          imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get());
         }
-        return imageResource;
+      } catch (Throwable t) {
+        // Image can't be generated, ignore this
+        LOGGER.warn("Process image cannot be generated due to exception: {} - {}", t.getClass().getName(), t.getMessage());
+      }
     }
+    return imageResource;
+  }
 
-    public StreamResource buildStreamResource(String processInstanceId, String processDefinitionId, RepositoryService repositoryService, RuntimeService runtimeService,
-            ProcessDiagramGenerator diagramGenerator, ProcessEngineConfiguration processEngineConfig) {
+  public StreamResource buildStreamResource(String processInstanceId, String processDefinitionId, RepositoryService repositoryService, RuntimeService runtimeService,
+      ProcessDiagramGenerator diagramGenerator, ProcessEngineConfiguration processEngineConfig) {
 
-        StreamResource imageResource = null;
+    StreamResource imageResource = null;
 
-        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processDefinitionId);
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) ((RepositoryServiceImpl) repositoryService).getDeployedProcessDefinition(processDefinitionId);
 
-        if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
+    if (processDefinition != null && processDefinition.isGraphicalNotationDefined()) {
 
-            BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
-            InputStream definitionImageStream = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstanceId), Collections.<String> emptyList(),
-                    processEngineConfig.getActivityFontName(), processEngineConfig.getLabelFontName(), processEngineConfig.getClassLoader(), 1.0);
+      BpmnModel bpmnModel = repositoryService.getBpmnModel(processDefinitionId);
+      InputStream definitionImageStream = diagramGenerator.generateDiagram(bpmnModel, "png", runtimeService.getActiveActivityIds(processInstanceId), Collections.<String> emptyList(),
+          processEngineConfig.getActivityFontName(), processEngineConfig.getLabelFontName(), processEngineConfig.getClassLoader(), 1.0);
 
-            StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
+      StreamSource streamSource = new InputStreamStreamSource(definitionImageStream);
 
-            // Create image name
-            String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
-            String fileName = processInstanceId + UUID.randomUUID() + "." + imageExtension;
+      // Create image name
+      String imageExtension = extractImageExtension(processDefinition.getDiagramResourceName());
+      String fileName = processInstanceId + UUID.randomUUID() + "." + imageExtension;
 
-            imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get());
-        }
-        return imageResource;
+      imageResource = new StreamResource(streamSource, fileName, ExplorerApp.get());
     }
+    return imageResource;
+  }
 
-    protected String extractImageExtension(String diagramResourceName) {
-        String[] parts = diagramResourceName.split(".");
-        if (parts.length > 1) {
-            return parts[parts.length - 1];
-        }
-        return Constants.DEFAULT_DIAGRAM_IMAGE_EXTENSION;
+  protected String extractImageExtension(String diagramResourceName) {
+    String[] parts = diagramResourceName.split(".");
+    if (parts.length > 1) {
+      return parts[parts.length - 1];
     }
+    return Constants.DEFAULT_DIAGRAM_IMAGE_EXTENSION;
+  }
 }

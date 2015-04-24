@@ -19,8 +19,8 @@ import java.util.List;
  */
 public interface ConditionStepListContainer<T> {
 
-    List<ListConditionStepDefinition<T>> getStepList();
+  List<ListConditionStepDefinition<T>> getStepList();
 
-    void addStepList(ListConditionStepDefinition<T> stepDefinition);
+  void addStepList(ListConditionStepDefinition<T> stepDefinition);
 
 }

@@ -17,12 +17,12 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
  */
 public class CleanTestExecutionListener extends AbstractTestExecutionListener {
 
-    @Override
-    public void afterTestClass(TestContext testContext) throws Exception {
-        RepositoryService repositoryService = testContext.getApplicationContext().getBean(RepositoryService.class);
-        for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
-            repositoryService.deleteDeployment(deployment.getId(), true);
-        }
+  @Override
+  public void afterTestClass(TestContext testContext) throws Exception {
+    RepositoryService repositoryService = testContext.getApplicationContext().getBean(RepositoryService.class);
+    for (Deployment deployment : repositoryService.createDeploymentQuery().list()) {
+      repositoryService.deleteDeployment(deployment.getId(), true);
     }
+  }
 
 }

@@ -24,56 +24,56 @@ import org.activiti.engine.impl.pvm.PvmProcessInstance;
  */
 public class PvmTest extends TestCase {
 
-    public void testPvmWaitState() {
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("a").initial().behavior(new WaitState()).transition("b").endActivity().createActivity("b")
-                .behavior(new WaitState()).transition("c").endActivity().createActivity("c").behavior(new WaitState()).endActivity().buildProcessDefinition();
+  public void testPvmWaitState() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("a").initial().behavior(new WaitState()).transition("b").endActivity().createActivity("b")
+        .behavior(new WaitState()).transition("c").endActivity().createActivity("c").behavior(new WaitState()).endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        PvmExecution activityInstance = processInstance.findExecution("a");
-        assertNotNull(activityInstance);
+    PvmExecution activityInstance = processInstance.findExecution("a");
+    assertNotNull(activityInstance);
 
-        activityInstance.signal(null, null);
+    activityInstance.signal(null, null);
 
-        activityInstance = processInstance.findExecution("b");
-        assertNotNull(activityInstance);
+    activityInstance = processInstance.findExecution("b");
+    assertNotNull(activityInstance);
 
-        activityInstance.signal(null, null);
+    activityInstance.signal(null, null);
 
-        activityInstance = processInstance.findExecution("c");
-        assertNotNull(activityInstance);
-    }
+    activityInstance = processInstance.findExecution("c");
+    assertNotNull(activityInstance);
+  }
 
-    public void testPvmAutomatic() {
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("a").initial().behavior(new Automatic()).transition("b").endActivity().createActivity("b")
-                .behavior(new Automatic()).transition("c").endActivity().createActivity("c").behavior(new WaitState()).endActivity().buildProcessDefinition();
+  public void testPvmAutomatic() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("a").initial().behavior(new Automatic()).transition("b").endActivity().createActivity("b")
+        .behavior(new Automatic()).transition("c").endActivity().createActivity("c").behavior(new WaitState()).endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        assertNotNull(processInstance.findExecution("c"));
-    }
+    assertNotNull(processInstance.findExecution("c"));
+  }
 
-    public void testPvmDecision() {
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("checkCredit").endActivity()
-                .createActivity("checkCredit").behavior(new Decision()).transition("askDaughterOut", "wow").transition("takeToGolf", "nice").transition("ignore", "default").endActivity()
-                .createActivity("takeToGolf").behavior(new WaitState()).endActivity().createActivity("askDaughterOut").behavior(new WaitState()).endActivity().createActivity("ignore")
-                .behavior(new WaitState()).endActivity().buildProcessDefinition();
+  public void testPvmDecision() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("checkCredit").endActivity()
+        .createActivity("checkCredit").behavior(new Decision()).transition("askDaughterOut", "wow").transition("takeToGolf", "nice").transition("ignore", "default").endActivity()
+        .createActivity("takeToGolf").behavior(new WaitState()).endActivity().createActivity("askDaughterOut").behavior(new WaitState()).endActivity().createActivity("ignore")
+        .behavior(new WaitState()).endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.setVariable("creditRating", "Aaa-");
-        processInstance.start();
-        assertNotNull(processInstance.findExecution("takeToGolf"));
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.setVariable("creditRating", "Aaa-");
+    processInstance.start();
+    assertNotNull(processInstance.findExecution("takeToGolf"));
 
-        processInstance = processDefinition.createProcessInstance();
-        processInstance.setVariable("creditRating", "AAA+");
-        processInstance.start();
-        assertNotNull(processInstance.findExecution("askDaughterOut"));
+    processInstance = processDefinition.createProcessInstance();
+    processInstance.setVariable("creditRating", "AAA+");
+    processInstance.start();
+    assertNotNull(processInstance.findExecution("askDaughterOut"));
 
-        processInstance = processDefinition.createProcessInstance();
-        processInstance.setVariable("creditRating", "bb-");
-        processInstance.start();
-        assertNotNull(processInstance.findExecution("ignore"));
-    }
+    processInstance = processDefinition.createProcessInstance();
+    processInstance.setVariable("creditRating", "bb-");
+    processInstance.start();
+    assertNotNull(processInstance.findExecution("ignore"));
+  }
 }

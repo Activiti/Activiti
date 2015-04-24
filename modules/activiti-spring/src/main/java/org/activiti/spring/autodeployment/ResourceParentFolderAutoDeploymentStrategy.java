@@ -27,90 +27,87 @@ import java.util.Set;
 import java.util.zip.ZipInputStream;
 
 /**
- * Implementation of {@link AutoDeploymentStrategy} that performs a separate
- * deployment for each set of {@link Resource}s that share the same parent
- * folder. The namehint is used to prefix the names of deployments. If the
- * parent folder for a {@link Resource} cannot be determined, the resource's
- * name is used.
+ * Implementation of {@link AutoDeploymentStrategy} that performs a separate deployment for each set of {@link Resource}s that share the same parent folder. The namehint is used to prefix the names of
+ * deployments. If the parent folder for a {@link Resource} cannot be determined, the resource's name is used.
  * 
  * @author Tiese Barrell
  */
 public class ResourceParentFolderAutoDeploymentStrategy extends AbstractAutoDeploymentStrategy {
 
-    /**
-     * The deployment mode this strategy handles.
-     */
-    public static final String DEPLOYMENT_MODE = "resource-parent-folder";
+  /**
+   * The deployment mode this strategy handles.
+   */
+  public static final String DEPLOYMENT_MODE = "resource-parent-folder";
 
-    private static final String DEPLOYMENT_NAME_PATTERN = "%s.%s";
+  private static final String DEPLOYMENT_NAME_PATTERN = "%s.%s";
 
-    @Override
-    protected String getDeploymentMode() {
-        return DEPLOYMENT_MODE;
-    }
+  @Override
+  protected String getDeploymentMode() {
+    return DEPLOYMENT_MODE;
+  }
 
-    @Override
-    public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
+  @Override
+  public void deployResources(final String deploymentNameHint, final Resource[] resources, final RepositoryService repositoryService) {
 
-        // Create a deployment for each distinct parent folder using the name
-        // hint
-        // as a prefix
-        final Map<String, Set<Resource>> resourcesMap = createMap(resources);
+    // Create a deployment for each distinct parent folder using the name
+    // hint
+    // as a prefix
+    final Map<String, Set<Resource>> resourcesMap = createMap(resources);
 
-        for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {
+    for (final Entry<String, Set<Resource>> group : resourcesMap.entrySet()) {
 
-            final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());
+      final String deploymentName = determineDeploymentName(deploymentNameHint, group.getKey());
 
-            final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);
+      final DeploymentBuilder deploymentBuilder = repositoryService.createDeployment().enableDuplicateFiltering().name(deploymentName);
 
-            for (final Resource resource : group.getValue()) {
-                final String resourceName = determineResourceName(resource);
+      for (final Resource resource : group.getValue()) {
+        final String resourceName = determineResourceName(resource);
 
-                try {
-                    if (resourceName.endsWith(".bar") || resourceName.endsWith(".zip") || resourceName.endsWith(".jar")) {
-                        deploymentBuilder.addZipInputStream(new ZipInputStream(resource.getInputStream()));
-                    } else {
-                        deploymentBuilder.addInputStream(resourceName, resource.getInputStream());
-                    }
-                } catch (IOException e) {
-                    throw new ActivitiException("couldn't auto deploy resource '" + resource + "': " + e.getMessage(), e);
-                }
-            }
-            deploymentBuilder.deploy();
-        }
-
-    }
-
-    private Map<String, Set<Resource>> createMap(final Resource[] resources) {
-        final Map<String, Set<Resource>> resourcesMap = new HashMap<String, Set<Resource>>();
-
-        for (final Resource resource : resources) {
-            final String parentFolderName = determineGroupName(resource);
-            if (resourcesMap.get(parentFolderName) == null) {
-                resourcesMap.put(parentFolderName, new HashSet<Resource>());
-            }
-            resourcesMap.get(parentFolderName).add(resource);
-        }
-        return resourcesMap;
-    }
-
-    private String determineGroupName(final Resource resource) {
-        String result = determineResourceName(resource);
         try {
-            if (resourceParentIsDirectory(resource)) {
-                result = resource.getFile().getParentFile().getName();
-            }
+          if (resourceName.endsWith(".bar") || resourceName.endsWith(".zip") || resourceName.endsWith(".jar")) {
+            deploymentBuilder.addZipInputStream(new ZipInputStream(resource.getInputStream()));
+          } else {
+            deploymentBuilder.addInputStream(resourceName, resource.getInputStream());
+          }
         } catch (IOException e) {
-            // no-op, fallback to resource name
+          throw new ActivitiException("couldn't auto deploy resource '" + resource + "': " + e.getMessage(), e);
         }
-        return result;
+      }
+      deploymentBuilder.deploy();
     }
 
-    private boolean resourceParentIsDirectory(final Resource resource) throws IOException {
-        return resource.getFile() != null && resource.getFile().getParentFile() != null && resource.getFile().getParentFile().isDirectory();
-    }
+  }
 
-    private String determineDeploymentName(final String deploymentNameHint, final String groupName) {
-        return String.format(DEPLOYMENT_NAME_PATTERN, deploymentNameHint, groupName);
+  private Map<String, Set<Resource>> createMap(final Resource[] resources) {
+    final Map<String, Set<Resource>> resourcesMap = new HashMap<String, Set<Resource>>();
+
+    for (final Resource resource : resources) {
+      final String parentFolderName = determineGroupName(resource);
+      if (resourcesMap.get(parentFolderName) == null) {
+        resourcesMap.put(parentFolderName, new HashSet<Resource>());
+      }
+      resourcesMap.get(parentFolderName).add(resource);
     }
+    return resourcesMap;
+  }
+
+  private String determineGroupName(final Resource resource) {
+    String result = determineResourceName(resource);
+    try {
+      if (resourceParentIsDirectory(resource)) {
+        result = resource.getFile().getParentFile().getName();
+      }
+    } catch (IOException e) {
+      // no-op, fallback to resource name
+    }
+    return result;
+  }
+
+  private boolean resourceParentIsDirectory(final Resource resource) throws IOException {
+    return resource.getFile() != null && resource.getFile().getParentFile() != null && resource.getFile().getParentFile().isDirectory();
+  }
+
+  private String determineDeploymentName(final String deploymentNameHint, final String groupName) {
+    return String.format(DEPLOYMENT_NAME_PATTERN, deploymentNameHint, groupName);
+  }
 }

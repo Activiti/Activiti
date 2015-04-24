@@ -17,33 +17,30 @@ import org.activiti.workflow.simple.definition.StepDefinition;
 
 /**
  * <p>
- * A class that is responsible for converting a single {@link StepDefinition} to
- * all required artifacts needed.
+ * A class that is responsible for converting a single {@link StepDefinition} to all required artifacts needed.
  * </p>
  * 
  * <p>
- * Please note that {@link StepDefinitionConverter} instances are reused and
- * should be state-less.
+ * Please note that {@link StepDefinitionConverter} instances are reused and should be state-less.
  * </p>
  * 
  * @author Frederik Heremans
  */
 public interface StepDefinitionConverter<U extends StepDefinition, T> {
 
-    /**
-     * @return class that this converter is capable of handling.
-     */
-    Class<? extends StepDefinition> getHandledClass();
+  /**
+   * @return class that this converter is capable of handling.
+   */
+  Class<? extends StepDefinition> getHandledClass();
 
-    /**
-     * Convert given {@link StepDefinition} to correct artifacts and adds them
-     * to process, models and forms.
-     * 
-     * @param stepDefinition
-     *            the {@link StepDefinition}
-     * @param conversion
-     *            The conversion which is calling this step converter.
-     */
-    T convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion);
+  /**
+   * Convert given {@link StepDefinition} to correct artifacts and adds them to process, models and forms.
+   * 
+   * @param stepDefinition
+   *          the {@link StepDefinition}
+   * @param conversion
+   *          The conversion which is calling this step converter.
+   */
+  T convertStepDefinition(StepDefinition stepDefinition, WorkflowDefinitionConversion conversion);
 
 }

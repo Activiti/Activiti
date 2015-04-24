@@ -23,18 +23,18 @@ import org.slf4j.LoggerFactory;
  */
 public class BrokenService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(BrokenService.class);
+  private static final Logger LOG = LoggerFactory.getLogger(BrokenService.class);
 
-    /**
-     * Always throws an exception.
-     * 
-     * the current Camel message
-     * 
-     * @throws BrokenServiceException
-     */
-    public void alwaysFails() throws BrokenServiceException {
-        LOG.info("{} called", this.getClass().getSimpleName());
-        throw new BrokenServiceException("Provoked failure");
-    }
+  /**
+   * Always throws an exception.
+   * 
+   * the current Camel message
+   * 
+   * @throws BrokenServiceException
+   */
+  public void alwaysFails() throws BrokenServiceException {
+    LOG.info("{} called", this.getClass().getSimpleName());
+    throw new BrokenServiceException("Provoked failure");
+  }
 
 }

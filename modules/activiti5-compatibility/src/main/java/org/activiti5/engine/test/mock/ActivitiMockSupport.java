@@ -27,55 +27,55 @@ import org.activiti5.engine.test.TestActivityBehaviorFactory;
  */
 public class ActivitiMockSupport {
 
-    protected TestActivityBehaviorFactory testActivityBehaviorFactory;
+  protected TestActivityBehaviorFactory testActivityBehaviorFactory;
 
-    public ActivitiMockSupport(TestActivityBehaviorFactory testActivityBehaviorFactory) {
-        this.testActivityBehaviorFactory = testActivityBehaviorFactory;
-    }
+  public ActivitiMockSupport(TestActivityBehaviorFactory testActivityBehaviorFactory) {
+    this.testActivityBehaviorFactory = testActivityBehaviorFactory;
+  }
 
-    public ActivitiMockSupport(ProcessEngine processEngine) {
-        ProcessEngineConfigurationImpl processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
-        ActivityBehaviorFactory existingActivityBehaviorFactory = processEngineConfiguration.getActivityBehaviorFactory();
-        this.testActivityBehaviorFactory = new TestActivityBehaviorFactory(existingActivityBehaviorFactory);
+  public ActivitiMockSupport(ProcessEngine processEngine) {
+    ProcessEngineConfigurationImpl processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+    ActivityBehaviorFactory existingActivityBehaviorFactory = processEngineConfiguration.getActivityBehaviorFactory();
+    this.testActivityBehaviorFactory = new TestActivityBehaviorFactory(existingActivityBehaviorFactory);
 
-        processEngineConfiguration.setActivityBehaviorFactory(testActivityBehaviorFactory);
-        processEngineConfiguration.getBpmnParser().setActivityBehaviorFactory(testActivityBehaviorFactory);
-    }
+    processEngineConfiguration.setActivityBehaviorFactory(testActivityBehaviorFactory);
+    processEngineConfiguration.getBpmnParser().setActivityBehaviorFactory(testActivityBehaviorFactory);
+  }
 
-    public static boolean isMockSupportPossible(ProcessEngine processEngine) {
-        return processEngine instanceof ProcessEngineImpl;
-    }
+  public static boolean isMockSupportPossible(ProcessEngine processEngine) {
+    return processEngine instanceof ProcessEngineImpl;
+  }
 
-    public void mockServiceTaskWithClassDelegate(String originalClassFqn, Class<?> mockedClass) {
-        testActivityBehaviorFactory.addClassDelegateMock(originalClassFqn, mockedClass);
-    }
+  public void mockServiceTaskWithClassDelegate(String originalClassFqn, Class<?> mockedClass) {
+    testActivityBehaviorFactory.addClassDelegateMock(originalClassFqn, mockedClass);
+  }
 
-    public void mockServiceTaskWithClassDelegate(String originalClassFqn, String mockedClassFqn) {
-        testActivityBehaviorFactory.addClassDelegateMock(originalClassFqn, mockedClassFqn);
-    }
+  public void mockServiceTaskWithClassDelegate(String originalClassFqn, String mockedClassFqn) {
+    testActivityBehaviorFactory.addClassDelegateMock(originalClassFqn, mockedClassFqn);
+  }
 
-    public void setAllServiceTasksNoOp() {
-        testActivityBehaviorFactory.setAllServiceTasksNoOp();
-    }
+  public void setAllServiceTasksNoOp() {
+    testActivityBehaviorFactory.setAllServiceTasksNoOp();
+  }
 
-    public void addNoOpServiceTaskById(String id) {
-        testActivityBehaviorFactory.addNoOpServiceTaskById(id);
-    }
+  public void addNoOpServiceTaskById(String id) {
+    testActivityBehaviorFactory.addNoOpServiceTaskById(id);
+  }
 
-    public void addNoOpServiceTaskByClassName(String className) {
-        testActivityBehaviorFactory.addNoOpServiceTaskByClassName(className);
-    }
+  public void addNoOpServiceTaskByClassName(String className) {
+    testActivityBehaviorFactory.addNoOpServiceTaskByClassName(className);
+  }
 
-    public int getNrOfNoOpServiceTaskExecutions() {
-        return NoOpServiceTask.CALL_COUNT.get();
-    }
+  public int getNrOfNoOpServiceTaskExecutions() {
+    return NoOpServiceTask.CALL_COUNT.get();
+  }
 
-    public List<String> getExecutedNoOpServiceTaskDelegateClassNames() {
-        return Collections.unmodifiableList(NoOpServiceTask.NAMES);
-    }
+  public List<String> getExecutedNoOpServiceTaskDelegateClassNames() {
+    return Collections.unmodifiableList(NoOpServiceTask.NAMES);
+  }
 
-    public void reset() {
-        testActivityBehaviorFactory.reset();
-    }
+  public void reset() {
+    testActivityBehaviorFactory.reset();
+  }
 
 }

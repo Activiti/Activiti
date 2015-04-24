@@ -23,14 +23,14 @@ import org.activiti.bpmn.model.SequenceFlow;
  */
 public class ConditionExpressionParser extends BaseChildElementParser {
 
-    public String getElementName() {
-        return ELEMENT_FLOW_CONDITION;
-    }
+  public String getElementName() {
+    return ELEMENT_FLOW_CONDITION;
+  }
 
-    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
-        if (parentElement instanceof SequenceFlow == false)
-            return;
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+    if (parentElement instanceof SequenceFlow == false)
+      return;
 
-        ((SequenceFlow) parentElement).setConditionExpression(xtr.getElementText().trim());
-    }
+    ((SequenceFlow) parentElement).setConditionExpression(xtr.getElementText().trim());
+  }
 }

@@ -21,15 +21,15 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * @author Tom Baeyens
  * 
- * TODO: Can probably be deleted
+ *         TODO: Can probably be deleted
  */
 public class StartEventEndHandler implements ExecutionListener {
 
-    public void notify(DelegateExecution execution) {
-        String executionId = execution.getId();
-        String activityId = ((ExecutionEntity) execution).getActivityId();
+  public void notify(DelegateExecution execution) {
+    String executionId = execution.getId();
+    String activityId = ((ExecutionEntity) execution).getActivityId();
 
-        Context.getCommandContext().getHistoryManager().recordStartEventEnded(executionId, activityId);
-    }
+    Context.getCommandContext().getHistoryManager().recordStartEventEnded(executionId, activityId);
+  }
 
 }

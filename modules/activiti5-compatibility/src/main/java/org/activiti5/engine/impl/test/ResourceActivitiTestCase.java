@@ -22,22 +22,22 @@ import org.activiti5.engine.ProcessEngines;
  */
 public abstract class ResourceActivitiTestCase extends AbstractActivitiTestCase {
 
-    protected String activitiConfigurationResource;
+  protected String activitiConfigurationResource;
 
-    public ResourceActivitiTestCase(String activitiConfigurationResource) {
-        this.activitiConfigurationResource = activitiConfigurationResource;
-    }
+  public ResourceActivitiTestCase(String activitiConfigurationResource) {
+    this.activitiConfigurationResource = activitiConfigurationResource;
+  }
 
-    @Override
-    protected void closeDownProcessEngine() {
-        super.closeDownProcessEngine();
-        ProcessEngines.unregister(processEngine);
-        processEngine = null;
-    }
+  @Override
+  protected void closeDownProcessEngine() {
+    super.closeDownProcessEngine();
+    ProcessEngines.unregister(processEngine);
+    processEngine = null;
+  }
 
-    @Override
-    protected void initializeProcessEngine() {
-        processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(activitiConfigurationResource).buildProcessEngine();
-    }
+  @Override
+  protected void initializeProcessEngine() {
+    processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource(activitiConfigurationResource).buildProcessEngine();
+  }
 
 }

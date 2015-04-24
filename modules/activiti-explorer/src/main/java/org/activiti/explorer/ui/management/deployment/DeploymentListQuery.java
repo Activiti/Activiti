@@ -31,68 +31,68 @@ import com.vaadin.data.util.PropertysetItem;
  */
 public class DeploymentListQuery extends AbstractLazyLoadingQuery {
 
-    protected transient RepositoryService repositoryService;
-    protected DeploymentFilter deploymentFilter;
+  protected transient RepositoryService repositoryService;
+  protected DeploymentFilter deploymentFilter;
 
-    public DeploymentListQuery(DeploymentFilter deploymentFilter) {
-        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-        this.deploymentFilter = deploymentFilter;
+  public DeploymentListQuery(DeploymentFilter deploymentFilter) {
+    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    this.deploymentFilter = deploymentFilter;
+  }
+
+  public int size() {
+    return (int) deploymentFilter.getCountQuery(repositoryService).count();
+  }
+
+  public List<Item> loadItems(int start, int count) {
+    List<Deployment> deployments = deploymentFilter.getQuery(repositoryService).listPage(start, count);
+
+    List<Item> items = new ArrayList<Item>();
+    for (Deployment deployment : deployments) {
+      items.add(deploymentFilter.createItem(deployment));
+    }
+    return items;
+  }
+
+  public Item loadSingleResult(String id) {
+    Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(id).singleResult();
+    if (deployment != null) {
+      return deploymentFilter.createItem(deployment);
+    }
+    return null;
+  }
+
+  public void setSorting(Object[] propertyIds, boolean[] ascending) {
+    throw new UnsupportedOperationException();
+  }
+
+  public static class DeploymentListitem extends PropertysetItem implements Comparable<DeploymentListitem> {
+
+    private static final long serialVersionUID = 1L;
+
+    public DeploymentListitem(Deployment deployment) {
+      addItemProperty("id", new ObjectProperty<String>(deployment.getId(), String.class));
+      if (deployment.getName() != null) {
+        addItemProperty("name", new ObjectProperty<String>(deployment.getName(), String.class));
+      } else {
+        addItemProperty("name", new ObjectProperty<String>(ExplorerApp.get().getI18nManager().getMessage(Messages.DEPLOYMENT_NO_NAME), String.class));
+      }
     }
 
-    public int size() {
-        return (int) deploymentFilter.getCountQuery(repositoryService).count();
+    public int compareTo(DeploymentListitem other) {
+      // Deployments are ordered first on name, then on id
+      String name = (String) getItemProperty("name").getValue();
+      String otherName = (String) other.getItemProperty("name").getValue();
+
+      int comparison = name.compareTo(otherName);
+      if (comparison != 0) {
+        return comparison;
+      } else {
+        String id = (String) getItemProperty("id").getValue();
+        String otherId = (String) other.getItemProperty("id").getValue();
+        return id.compareTo(otherId);
+      }
     }
 
-    public List<Item> loadItems(int start, int count) {
-        List<Deployment> deployments = deploymentFilter.getQuery(repositoryService).listPage(start, count);
-
-        List<Item> items = new ArrayList<Item>();
-        for (Deployment deployment : deployments) {
-            items.add(deploymentFilter.createItem(deployment));
-        }
-        return items;
-    }
-
-    public Item loadSingleResult(String id) {
-        Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(id).singleResult();
-        if (deployment != null) {
-            return deploymentFilter.createItem(deployment);
-        }
-        return null;
-    }
-
-    public void setSorting(Object[] propertyIds, boolean[] ascending) {
-        throw new UnsupportedOperationException();
-    }
-
-    public static class DeploymentListitem extends PropertysetItem implements Comparable<DeploymentListitem> {
-
-        private static final long serialVersionUID = 1L;
-
-        public DeploymentListitem(Deployment deployment) {
-            addItemProperty("id", new ObjectProperty<String>(deployment.getId(), String.class));
-            if (deployment.getName() != null) {
-                addItemProperty("name", new ObjectProperty<String>(deployment.getName(), String.class));
-            } else {
-                addItemProperty("name", new ObjectProperty<String>(ExplorerApp.get().getI18nManager().getMessage(Messages.DEPLOYMENT_NO_NAME), String.class));
-            }
-        }
-
-        public int compareTo(DeploymentListitem other) {
-            // Deployments are ordered first on name, then on id
-            String name = (String) getItemProperty("name").getValue();
-            String otherName = (String) other.getItemProperty("name").getValue();
-
-            int comparison = name.compareTo(otherName);
-            if (comparison != 0) {
-                return comparison;
-            } else {
-                String id = (String) getItemProperty("id").getValue();
-                String otherId = (String) other.getItemProperty("id").getValue();
-                return id.compareTo(otherId);
-            }
-        }
-
-    }
+  }
 
 }

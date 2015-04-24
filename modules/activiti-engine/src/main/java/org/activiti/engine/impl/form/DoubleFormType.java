@@ -20,27 +20,27 @@ import org.activiti.engine.form.AbstractFormType;
  */
 public class DoubleFormType extends AbstractFormType {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public String getName() {
-        return "double";
-    }
+  public String getName() {
+    return "double";
+  }
 
-    public String getMimeType() {
-        return "plain/text";
-    }
+  public String getMimeType() {
+    return "plain/text";
+  }
 
-    public Object convertFormValueToModelValue(String propertyValue) {
-        if (propertyValue == null || "".equals(propertyValue)) {
-            return null;
-        }
-        return new Double(propertyValue);
+  public Object convertFormValueToModelValue(String propertyValue) {
+    if (propertyValue == null || "".equals(propertyValue)) {
+      return null;
     }
+    return new Double(propertyValue);
+  }
 
-    public String convertModelValueToFormValue(Object modelValue) {
-        if (modelValue == null) {
-            return null;
-        }
-        return modelValue.toString();
+  public String convertModelValueToFormValue(Object modelValue) {
+    if (modelValue == null) {
+      return null;
     }
+    return modelValue.toString();
+  }
 }

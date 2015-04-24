@@ -34,41 +34,41 @@ import org.springframework.test.context.ContextConfiguration;
 
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class TestReturnValueFromActiviti extends SpringActivitiTestCase {
-    @Autowired
-    CamelContext camelContext;
+  @Autowired
+  CamelContext camelContext;
 
-    @Autowired
-    RuntimeService runtimeService;
+  @Autowired
+  RuntimeService runtimeService;
 
-    @EndpointInject(uri = "mock:result")
-    protected MockEndpoint resultEndpoint;
+  @EndpointInject(uri = "mock:result")
+  protected MockEndpoint resultEndpoint;
 
-    @Produce(uri = "direct:startReturnResultTest")
-    protected ProducerTemplate template;
+  @Produce(uri = "direct:startReturnResultTest")
+  protected ProducerTemplate template;
 
-    public void setUp() throws Exception {
+  public void setUp() throws Exception {
 
-        camelContext.addRoutes(new RouteBuilder() {
+    camelContext.addRoutes(new RouteBuilder() {
 
-            @Override
-            public void configure() throws Exception {
-                from("direct:startReturnResultTest").to("activiti:testResultProcess?var.return.exampleCamelReturnValue").to("mock:result");
-            }
-        });
+      @Override
+      public void configure() throws Exception {
+        from("direct:startReturnResultTest").to("activiti:testResultProcess?var.return.exampleCamelReturnValue").to("mock:result");
+      }
+    });
+  }
+
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r : routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
     }
+  }
 
-    public void tearDown() throws Exception {
-        List<Route> routes = camelContext.getRoutes();
-        for (Route r : routes) {
-            camelContext.stopRoute(r.getId());
-            camelContext.removeRoute(r.getId());
-        }
-    }
-
-    @Deployment
-    public void testReturnResultFromNewProcess() throws Exception {
-        resultEndpoint.expectedPropertyReceived("exampleCamelReturnValue", "hello world.");
-        template.sendBody("hello");
-        resultEndpoint.assertIsSatisfied();
-    }
+  @Deployment
+  public void testReturnResultFromNewProcess() throws Exception {
+    resultEndpoint.expectedPropertyReceived("exampleCamelReturnValue", "hello world.");
+    template.sendBody("hello");
+    resultEndpoint.assertIsSatisfied();
+  }
 }
