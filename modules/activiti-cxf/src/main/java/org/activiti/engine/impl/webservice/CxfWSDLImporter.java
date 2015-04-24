@@ -25,6 +25,7 @@ import javax.wsdl.extensions.schema.Schema;
 import javax.xml.namespace.QName;
 
 import org.activiti.bpmn.model.Import;
+import org.activiti.engine.impl.bpmn.data.PrimitiveStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
@@ -42,6 +43,7 @@ import org.apache.cxf.wsdl11.WSDLServiceBuilder;
 import com.ibm.wsdl.extensions.schema.SchemaImpl;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
+import com.sun.codemodel.JType;
 import com.sun.tools.xjc.ConsoleErrorReporter;
 import com.sun.tools.xjc.api.ErrorListener;
 import com.sun.tools.xjc.api.Mapping;
@@ -153,17 +155,28 @@ public class CxfWSDLImporter implements XMLImporter {
   
   private void importStructure(Mapping mapping) {
     QName qname = mapping.getElement();
-    JDefinedClass theClass = (JDefinedClass) mapping.getType().getTypeClass();
-    SimpleStructureDefinition structure = new SimpleStructureDefinition(this.namespace + qname.getLocalPart());
-    this.structures.put(structure.getId(), structure);
-    
-    Map<String, JFieldVar> fields = theClass.fields();
-    int index = 0;
-    for (Entry<String, JFieldVar> entry : fields.entrySet()) {
-      Class<?> fieldClass = ReflectUtil.loadClass(entry.getValue().type().boxify().fullName());
-      structure.setFieldName(index, entry.getKey(), fieldClass);
-      index++;
-    }
+    final JType type = mapping.getType().getTypeClass();
+    if (type.isPrimitive()) {
+        final Class<?> primitiveClass = ReflectUtil.loadClass(type.boxify().fullName());
+        final StructureDefinition structure = new PrimitiveStructureDefinition(this.namespace + qname.getLocalPart(), primitiveClass);
+        this.structures.put(structure.getId(), structure);
+    } else if (type instanceof JDefinedClass) {
+        JDefinedClass theClass = (JDefinedClass) type;
+        SimpleStructureDefinition structure = new SimpleStructureDefinition(this.namespace + qname.getLocalPart());
+        this.structures.put(structure.getId(), structure);
+        
+        Map<String, JFieldVar> fields = theClass.fields();
+        int index = 0;
+        for (Entry<String, JFieldVar> entry : fields.entrySet()) {
+          Class<?> fieldClass = ReflectUtil.loadClass(entry.getValue().type().boxify().fullName());
+          structure.setFieldName(index, entry.getKey(), fieldClass);
+          index++;
+        }
+    } else {
+        final Class<?> referencedClass = ReflectUtil.loadClass(type.fullName());
+        final StructureDefinition structure = new PrimitiveStructureDefinition(this.namespace + qname.getLocalPart(), referencedClass);
+        this.structures.put(structure.getId(), structure);
+    } 
   }
   
   private S2JJAXBModel compileModel(Types types, SchemaCompiler compiler, org.w3c.dom.Element rootTypes) {
