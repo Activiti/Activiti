@@ -8,6 +8,7 @@ import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -58,6 +59,15 @@ public class EndExecutionOperation extends AbstractOperation {
             if (executionEntity.getCurrentFlowElement() instanceof EndEvent) {
                 EndEvent endEvent = (EndEvent) executionEntity.getCurrentFlowElement();
                 subProcess = endEvent.getSubProcess();
+                
+                if (parentExecution.isScope() && !parentExecution.getId().equals(parentExecution.getProcessInstanceId()) &&
+                        subProcess != null && subProcess.getLoopCharacteristics() != null && subProcess.getBehavior() instanceof MultiInstanceActivityBehavior) {
+                    
+                    MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
+                    parentExecution.setCurrentFlowElement(subProcess);
+                    multiInstanceBehavior.leave(parentExecution);
+                    return;
+                }
             }
 
             if (subProcess != null) {

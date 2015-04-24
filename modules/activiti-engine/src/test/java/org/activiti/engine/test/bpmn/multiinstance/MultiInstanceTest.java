@@ -37,6 +37,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class MultiInstanceTest extends PluggableActivitiTestCase {
 
@@ -337,7 +338,19 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     @Deployment
     public void testSequentialScriptTasksCompletionCondition() {
         runtimeService.startProcessInstanceByKey("miSequentialScriptTaskCompletionCondition").getId();
-        Execution waitStateExecution = runtimeService.createExecutionQuery().singleResult();
+        List<Execution> executions = runtimeService.createExecutionQuery().list();
+        assertEquals(2, executions.size());
+        Execution processInstanceExecution = null;
+        Execution waitStateExecution = null;
+        for (Execution execution : executions) {
+            if (execution.getId().equals(execution.getProcessInstanceId())) {
+                processInstanceExecution = execution;
+            } else {
+                waitStateExecution = execution;
+            }
+        }
+        assertNotNull(processInstanceExecution);
+        assertNotNull(waitStateExecution);
         int sum = (Integer) runtimeService.getVariable(waitStateExecution.getId(), "sum");
         assertEquals(5, sum);
     }
@@ -348,7 +361,19 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         vars.put("sum", 0);
         vars.put("nrOfLoops", 10);
         runtimeService.startProcessInstanceByKey("miParallelScriptTask", vars);
-        Execution waitStateExecution = runtimeService.createExecutionQuery().singleResult();
+        List<Execution> executions = runtimeService.createExecutionQuery().list();
+        assertEquals(2, executions.size());
+        Execution processInstanceExecution = null;
+        Execution waitStateExecution = null;
+        for (Execution execution : executions) {
+            if (execution.getId().equals(execution.getProcessInstanceId())) {
+                processInstanceExecution = execution;
+            } else {
+                waitStateExecution = execution;
+            }
+        }
+        assertNotNull(processInstanceExecution);
+        assertNotNull(waitStateExecution);
         int sum = (Integer) runtimeService.getVariable(waitStateExecution.getId(), "sum");
         assertEquals(45, sum);
     }
@@ -362,10 +387,10 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
         if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
             List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityType("scriptTask").list();
-            assertEquals(4, historicActivityInstances.size());
+            assertEquals(5, historicActivityInstances.size());
             for (HistoricActivityInstance hai : historicActivityInstances) {
                 assertNotNull(hai.getStartTime());
-                assertNotNull(hai.getStartTime());
+                assertNotNull(hai.getEndTime());
             }
         }
     }
@@ -921,7 +946,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
         assertEquals(160, result.intValue());
 
-        runtimeService.signal(procInst.getId());
+        Execution waitExecution = runtimeService.createExecutionQuery().processInstanceId(procInst.getId())
+                .activityId("wait").singleResult();
+        runtimeService.trigger(waitExecution.getId());
         assertProcessEnded(procInst.getId());
     }
 
@@ -936,7 +963,9 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         Integer result = (Integer) runtimeService.getVariable(procInst.getId(), "result");
         assertEquals(720, result.intValue());
 
-        runtimeService.signal(procInst.getId());
+        Execution waitExecution = runtimeService.createExecutionQuery().processInstanceId(procInst.getId())
+                .activityId("wait").singleResult();
+        runtimeService.trigger(waitExecution.getId());
         assertProcessEnded(procInst.getId());
     }
 
@@ -949,12 +978,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         ProcessInstance pi = runtimeService.startProcessInstanceByKey("multiInstanceSubProcess");
         List<Task> tasks = taskService.createTaskQuery().processInstanceId(pi.getId()).orderByTaskName().asc().list();
 
-        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer
-                                                                                                      // is
-                                                                                                      // set
-                                                                                                      // to
-                                                                                                      // one
-                                                                                                      // minute
+        processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 61000L)); // timer is set to one minute
         List<Job> timers = managementService.createJobQuery().list();
         assertEquals(5, timers.size());
 
