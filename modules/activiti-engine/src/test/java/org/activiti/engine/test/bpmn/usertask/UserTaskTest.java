@@ -38,7 +38,6 @@ public class UserTaskTest extends PluggableActivitiTestCase {
     assertTrue(task.getPriority() > 0);
     assertEquals("kermit", task.getAssignee());
     assertEquals(processInstance.getId(), task.getProcessInstanceId());
-    assertEquals(processInstance.getId(), task.getExecutionId());
     assertNotNull(task.getProcessDefinitionId());
     assertNotNull(task.getTaskDefinitionKey());
     assertNotNull(task.getCreateTime());

@@ -90,7 +90,7 @@ public class CommandContext {
 
   protected Agenda agenda = new Agenda(this);
   protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
-  protected Object result = null;
+  protected LinkedList<Object> resultStack = new LinkedList<Object>();; // needs to be a stack, as JavaDelegates can do api calls again
 
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
     nextOperations.add(executionOperation);
@@ -454,10 +454,10 @@ public class CommandContext {
   }
 
   public Object getResult() {
-    return result;
+    return resultStack.pollLast();
   }
 
   public void setResult(Object result) {
-    this.result = result;
+    resultStack.add(result);
   }
 }
