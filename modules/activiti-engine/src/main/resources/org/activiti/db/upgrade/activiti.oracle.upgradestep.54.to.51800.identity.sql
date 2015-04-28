@@ -1,0 +1,32 @@
+alter table ACT_ID_GROUP
+modify (
+    ID_ VARCHAR2(64),
+    NAME_ VARCHAR2(255),
+    TYPE_ VARCHAR2(255)
+);
+
+alter table ACT_ID_MEMBERSHIP
+modify (
+    USER_ID_ VARCHAR2(64),
+    GROUP_ID_ VARCHAR2(64)
+);
+
+alter table ACT_ID_USER
+modify (
+    ID_ VARCHAR2(64),
+    FIRST_ VARCHAR2(255),
+    LAST_ VARCHAR2(255),
+    EMAIL_ VARCHAR2(255),
+    PWD_ VARCHAR2(255),
+    PICTURE_ID_ VARCHAR2(64)
+);
+
+alter table ACT_ID_INFO
+modify (
+    ID_ VARCHAR2(64),
+    USER_ID_ VARCHAR2(64),
+    TYPE_ VARCHAR2(64),
+    KEY_ VARCHAR2(255),
+    VALUE_ VARCHAR2(255),
+    PARENT_ID_ VARCHAR2(255)
+);
