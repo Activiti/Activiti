@@ -20,9 +20,9 @@ import org.activiti.engine.task.Attachment;
  */
 public interface RelatedContentComponent {
 
-    /**
-     * Show the detail of the given attachment.
-     */
-    void showAttachmentDetail(Attachment attachment);
+  /**
+   * Show the detail of the given attachment.
+   */
+  void showAttachmentDetail(Attachment attachment);
 
 }

@@ -27,57 +27,57 @@ import org.activiti5.engine.test.Deployment;
  */
 public class TaskFormsTest extends PluggableActivitiTestCase {
 
-    public void setUp() throws Exception {
-        identityService.saveUser(identityService.newUser("fozzie"));
-        identityService.saveGroup(identityService.newGroup("management"));
-        identityService.createMembership("fozzie", "management");
-    }
+  public void setUp() throws Exception {
+    identityService.saveUser(identityService.newUser("fozzie"));
+    identityService.saveGroup(identityService.newGroup("management"));
+    identityService.createMembership("fozzie", "management");
+  }
 
-    public void tearDown() throws Exception {
-        identityService.deleteGroup("management");
-        identityService.deleteUser("fozzie");
-    }
+  public void tearDown() throws Exception {
+    identityService.deleteGroup("management");
+    identityService.deleteUser("fozzie");
+  }
 
-    @Deployment(resources = { "org/activiti/examples/taskforms/VacationRequest_deprecated_forms.bpmn20.xml", "org/activiti/examples/taskforms/approve.form",
-            "org/activiti/examples/taskforms/request.form", "org/activiti/examples/taskforms/adjustRequest.form" })
-    public void testTaskFormsWithVacationRequestProcess() {
+  @Deployment(resources = { "org/activiti/examples/taskforms/VacationRequest_deprecated_forms.bpmn20.xml", "org/activiti/examples/taskforms/approve.form",
+      "org/activiti/examples/taskforms/request.form", "org/activiti/examples/taskforms/adjustRequest.form" })
+  public void testTaskFormsWithVacationRequestProcess() {
 
-        // Get start form
-        String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
-        Object startForm = formService.getRenderedStartForm(procDefId);
-        assertNotNull(startForm);
+    // Get start form
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    Object startForm = formService.getRenderedStartForm(procDefId);
+    assertNotNull(startForm);
 
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
-        String processDefinitionId = processDefinition.getId();
-        assertEquals("org/activiti/examples/taskforms/request.form", formService.getStartFormData(processDefinitionId).getFormKey());
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    String processDefinitionId = processDefinition.getId();
+    assertEquals("org/activiti/examples/taskforms/request.form", formService.getStartFormData(processDefinitionId).getFormKey());
 
-        // Define variables that would be filled in through the form
-        Map<String, String> formProperties = new HashMap<String, String>();
-        formProperties.put("employeeName", "kermit");
-        formProperties.put("numberOfDays", "4");
-        formProperties.put("vacationMotivation", "I'm tired");
-        formService.submitStartFormData(procDefId, formProperties);
+    // Define variables that would be filled in through the form
+    Map<String, String> formProperties = new HashMap<String, String>();
+    formProperties.put("employeeName", "kermit");
+    formProperties.put("numberOfDays", "4");
+    formProperties.put("vacationMotivation", "I'm tired");
+    formService.submitStartFormData(procDefId, formProperties);
 
-        // Management should now have a task assigned to them
-        Task task = taskService.createTaskQuery().taskCandidateGroup("management").singleResult();
-        assertEquals("Vacation request by kermit", task.getDescription());
-        Object taskForm = formService.getRenderedTaskForm(task.getId());
-        assertNotNull(taskForm);
+    // Management should now have a task assigned to them
+    Task task = taskService.createTaskQuery().taskCandidateGroup("management").singleResult();
+    assertEquals("Vacation request by kermit", task.getDescription());
+    Object taskForm = formService.getRenderedTaskForm(task.getId());
+    assertNotNull(taskForm);
 
-        // Rejecting the task should put the process back to first task
-        taskService.complete(task.getId(), CollectionUtil.singletonMap("vacationApproved", "false"));
-        task = taskService.createTaskQuery().singleResult();
-        assertEquals("Adjust vacation request", task.getName());
-    }
+    // Rejecting the task should put the process back to first task
+    taskService.complete(task.getId(), CollectionUtil.singletonMap("vacationApproved", "false"));
+    task = taskService.createTaskQuery().singleResult();
+    assertEquals("Adjust vacation request", task.getName());
+  }
 
-    @Deployment
-    public void testTaskFormUnavailable() {
-        String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
-        assertNull(formService.getRenderedStartForm(procDefId));
+  @Deployment
+  public void testTaskFormUnavailable() {
+    String procDefId = repositoryService.createProcessDefinitionQuery().singleResult().getId();
+    assertNull(formService.getRenderedStartForm(procDefId));
 
-        runtimeService.startProcessInstanceByKey("noStartOrTaskForm");
-        Task task = taskService.createTaskQuery().singleResult();
-        assertNull(formService.getRenderedTaskForm(task.getId()));
-    }
+    runtimeService.startProcessInstanceByKey("noStartOrTaskForm");
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNull(formService.getRenderedTaskForm(task.getId()));
+  }
 
 }

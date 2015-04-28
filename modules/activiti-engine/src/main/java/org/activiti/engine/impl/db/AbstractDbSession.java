@@ -21,10 +21,10 @@ import org.activiti.engine.impl.interceptor.Session;
  */
 public abstract class AbstractDbSession implements Session {
 
-    protected DbSqlSession dbSqlSession;
+  protected DbSqlSession dbSqlSession;
 
-    public AbstractDbSession() {
-        this.dbSqlSession = Context.getCommandContext().getSession(DbSqlSession.class);
-    }
+  public AbstractDbSession() {
+    this.dbSqlSession = Context.getCommandContext().getSession(DbSqlSession.class);
+  }
 
 }

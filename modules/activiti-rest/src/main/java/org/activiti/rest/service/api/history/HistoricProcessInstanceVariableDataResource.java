@@ -41,56 +41,56 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HistoricProcessInstanceVariableDataResource {
 
-    @Autowired
-    protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-    @Autowired
-    protected HistoryService historyService;
+  @Autowired
+  protected HistoryService historyService;
 
-    @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/variables/{variableName}/data", method = RequestMethod.GET)
-    public @ResponseBody
-    byte[] getVariableData(@PathVariable("processInstanceId") String processInstanceId, @PathVariable("variableName") String variableName, HttpServletRequest request, HttpServletResponse response) {
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/variables/{variableName}/data", method = RequestMethod.GET)
+  public @ResponseBody
+  byte[] getVariableData(@PathVariable("processInstanceId") String processInstanceId, @PathVariable("variableName") String variableName, HttpServletRequest request, HttpServletResponse response) {
 
-        try {
-            byte[] result = null;
-            RestVariable variable = getVariableFromRequest(true, processInstanceId, variableName, request);
-            if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
-                result = (byte[]) variable.getValue();
-                response.setContentType("application/octet-stream");
+    try {
+      byte[] result = null;
+      RestVariable variable = getVariableFromRequest(true, processInstanceId, variableName, request);
+      if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
+        result = (byte[]) variable.getValue();
+        response.setContentType("application/octet-stream");
 
-            } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
-                outputStream.writeObject(variable.getValue());
-                outputStream.close();
-                result = buffer.toByteArray();
-                response.setContentType("application/x-java-serialized-object");
+      } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
+        outputStream.writeObject(variable.getValue());
+        outputStream.close();
+        result = buffer.toByteArray();
+        response.setContentType("application/x-java-serialized-object");
 
-            } else {
-                throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
-            }
-            return result;
+      } else {
+        throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
+      }
+      return result;
 
-        } catch (IOException ioe) {
-            // Re-throw IOException
-            throw new ActivitiException("Unexpected exception getting variable data", ioe);
-        }
+    } catch (IOException ioe) {
+      // Re-throw IOException
+      throw new ActivitiException("Unexpected exception getting variable data", ioe);
+    }
+  }
+
+  public RestVariable getVariableFromRequest(boolean includeBinary, String processInstanceId, String variableName, HttpServletRequest request) {
+
+    HistoricProcessInstance processObject = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).includeProcessVariables().singleResult();
+
+    if (processObject == null) {
+      throw new ActivitiObjectNotFoundException("Historic process instance '" + processInstanceId + "' couldn't be found.", HistoricProcessInstanceEntity.class);
     }
 
-    public RestVariable getVariableFromRequest(boolean includeBinary, String processInstanceId, String variableName, HttpServletRequest request) {
+    Object value = processObject.getProcessVariables().get(variableName);
 
-        HistoricProcessInstance processObject = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).includeProcessVariables().singleResult();
-
-        if (processObject == null) {
-            throw new ActivitiObjectNotFoundException("Historic process instance '" + processInstanceId + "' couldn't be found.", HistoricProcessInstanceEntity.class);
-        }
-
-        Object value = processObject.getProcessVariables().get(variableName);
-
-        if (value == null) {
-            throw new ActivitiObjectNotFoundException("Historic process instance '" + processInstanceId + "' variable value for " + variableName + " couldn't be found.", VariableInstanceEntity.class);
-        } else {
-            return restResponseFactory.createRestVariable(variableName, value, null, processInstanceId, RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary);
-        }
+    if (value == null) {
+      throw new ActivitiObjectNotFoundException("Historic process instance '" + processInstanceId + "' variable value for " + variableName + " couldn't be found.", VariableInstanceEntity.class);
+    } else {
+      return restResponseFactory.createRestVariable(variableName, value, null, processInstanceId, RestResponseFactory.VARIABLE_HISTORY_PROCESS, includeBinary);
     }
+  }
 }

@@ -17,28 +17,28 @@ package org.activiti.engine.impl.variable;
  */
 public class DoubleType implements VariableType {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public String getTypeName() {
-        return "double";
-    }
+  public String getTypeName() {
+    return "double";
+  }
 
-    public boolean isCachable() {
-        return true;
-    }
+  public boolean isCachable() {
+    return true;
+  }
 
-    public Object getValue(ValueFields valueFields) {
-        return valueFields.getDoubleValue();
-    }
+  public Object getValue(ValueFields valueFields) {
+    return valueFields.getDoubleValue();
+  }
 
-    public void setValue(Object value, ValueFields valueFields) {
-        valueFields.setDoubleValue((Double) value);
-    }
+  public void setValue(Object value, ValueFields valueFields) {
+    valueFields.setDoubleValue((Double) value);
+  }
 
-    public boolean isAbleToStore(Object value) {
-        if (value == null) {
-            return true;
-        }
-        return Double.class.isAssignableFrom(value.getClass());
+  public boolean isAbleToStore(Object value) {
+    if (value == null) {
+      return true;
     }
+    return Double.class.isAssignableFrom(value.getClass());
+  }
 }

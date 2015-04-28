@@ -25,44 +25,43 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Allows to access the process variables of a managed process instance. A
- * process instance can be managed, using the {@link BusinessProcess}-bean.
+ * Allows to access the process variables of a managed process instance. A process instance can be managed, using the {@link BusinessProcess}-bean.
  * 
  * @author Daniel Meyer
  */
 public class ProcessVariables {
 
-    private Logger logger = LoggerFactory.getLogger(ProcessVariables.class);
+  private Logger logger = LoggerFactory.getLogger(ProcessVariables.class);
 
-    @Inject
-    private BusinessProcess businessProcess;
-    @Inject
-    private ProcessVariableMap processVariableMap;
+  @Inject
+  private BusinessProcess businessProcess;
+  @Inject
+  private ProcessVariableMap processVariableMap;
 
-    protected String getVariableName(InjectionPoint ip) {
-        String variableName = ip.getAnnotated().getAnnotation(ProcessVariable.class).value();
-        if (variableName.length() == 0) {
-            variableName = ip.getMember().getName();
-        }
-        return variableName;
+  protected String getVariableName(InjectionPoint ip) {
+    String variableName = ip.getAnnotated().getAnnotation(ProcessVariable.class).value();
+    if (variableName.length() == 0) {
+      variableName = ip.getMember().getName();
+    }
+    return variableName;
+  }
+
+  @Produces
+  @ProcessVariable
+  protected Object getProcessVariable(InjectionPoint ip) {
+    String processVariableName = getVariableName(ip);
+
+    if (logger.isDebugEnabled()) {
+      logger.debug("Getting process variable '{}' from ProcessInstance[{}].", processVariableName, businessProcess.getProcessInstanceId());
     }
 
-    @Produces
-    @ProcessVariable
-    protected Object getProcessVariable(InjectionPoint ip) {
-        String processVariableName = getVariableName(ip);
+    return businessProcess.getVariable(processVariableName);
+  }
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("Getting process variable '{}' from ProcessInstance[{}].", processVariableName, businessProcess.getProcessInstanceId());
-        }
-
-        return businessProcess.getVariable(processVariableName);
-    }
-
-    @Produces
-    @Named
-    protected Map<String, Object> processVariables() {
-        return processVariableMap;
-    }
+  @Produces
+  @Named
+  protected Map<String, Object> processVariables() {
+    return processVariableMap;
+  }
 
 }

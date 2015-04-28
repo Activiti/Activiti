@@ -21,17 +21,17 @@ import org.activiti5.engine.impl.persistence.entity.TaskEntity;
  */
 public class DefaultTaskFormHandler extends DefaultFormHandler implements TaskFormHandler {
 
-    public TaskFormData createTaskForm(TaskEntity task) {
-        TaskFormDataImpl taskFormData = new TaskFormDataImpl();
-        if (formKey != null) {
-            Object formValue = formKey.getValue(task.getExecution());
-            if (formValue != null) {
-                taskFormData.setFormKey(formValue.toString());
-            }
-        }
-        taskFormData.setDeploymentId(deploymentId);
-        taskFormData.setTask(task);
-        initializeFormProperties(taskFormData, task.getExecution());
-        return taskFormData;
+  public TaskFormData createTaskForm(TaskEntity task) {
+    TaskFormDataImpl taskFormData = new TaskFormDataImpl();
+    if (formKey != null) {
+      Object formValue = formKey.getValue(task.getExecution());
+      if (formValue != null) {
+        taskFormData.setFormKey(formValue.toString());
+      }
     }
+    taskFormData.setDeploymentId(deploymentId);
+    taskFormData.setTask(task);
+    initializeFormProperties(taskFormData, task.getExecution());
+    return taskFormData;
+  }
 }

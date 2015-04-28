@@ -24,26 +24,26 @@ import java.util.Map;
  */
 public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected final Map<String, Object> processVariables;
+  protected final Map<String, Object> processVariables;
 
-    public TriggerCmd(String executionId, Map<String, Object> processVariables) {
-        super(executionId);
-        this.processVariables = processVariables;
+  public TriggerCmd(String executionId, Map<String, Object> processVariables) {
+    super(executionId);
+    this.processVariables = processVariables;
+  }
+
+  protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
+    if (processVariables != null) {
+      execution.setVariables(processVariables);
     }
+    commandContext.getAgenda().planTriggerExecutionOperation(execution);
+    return null;
+  }
 
-    protected Object execute(CommandContext commandContext, ExecutionEntity execution) {
-        if (processVariables != null) {
-            execution.setVariables(processVariables);
-        }
-        commandContext.getAgenda().planTriggerExecutionOperation(execution);
-        return null;
-    }
-
-    @Override
-    protected String getSuspendedExceptionMessage() {
-        return "Cannot trigger an execution that is suspended";
-    }
+  @Override
+  protected String getSuspendedExceptionMessage() {
+    return "Cannot trigger an execution that is suspended";
+  }
 
 }

@@ -29,30 +29,30 @@ import org.activiti5.engine.task.Task;
  */
 public class GetTaskFormCmd implements Command<TaskFormData>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String taskId;
+  private static final long serialVersionUID = 1L;
+  protected String taskId;
 
-    public GetTaskFormCmd(String taskId) {
-        this.taskId = taskId;
+  public GetTaskFormCmd(String taskId) {
+    this.taskId = taskId;
+  }
+
+  public TaskFormData execute(CommandContext commandContext) {
+    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("No task found for taskId '" + taskId + "'", Task.class);
     }
 
-    public TaskFormData execute(CommandContext commandContext) {
-        TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
-        if (task == null) {
-            throw new ActivitiObjectNotFoundException("No task found for taskId '" + taskId + "'", Task.class);
-        }
+    if (task.getTaskDefinition() != null) {
+      TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
+      if (taskFormHandler == null) {
+        throw new ActivitiException("No taskFormHandler specified for task '" + taskId + "'");
+      }
 
-        if (task.getTaskDefinition() != null) {
-            TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-            if (taskFormHandler == null) {
-                throw new ActivitiException("No taskFormHandler specified for task '" + taskId + "'");
-            }
-
-            return taskFormHandler.createTaskForm(task);
-        } else {
-            // Standalone task, no TaskFormData available
-            return null;
-        }
+      return taskFormHandler.createTaskForm(task);
+    } else {
+      // Standalone task, no TaskFormData available
+      return null;
     }
+  }
 
 }

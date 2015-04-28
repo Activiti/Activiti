@@ -13,18 +13,19 @@ package org.activiti.crystalball.simulator.delegate.event.impl;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.delegate.event.Function;
 import org.activiti.engine.event.EventLogEntry;
 
 /**
- * This class provides abstract base for ActivitiEvent  -> SimulationEvent transformation
- *
+ * This class provides abstract base for ActivitiEvent -> SimulationEvent transformation
+ * 
  * @author martin.grofcik
  */
 public abstract class EventLog2SimulationEventFunction implements Function<EventLogEntry, SimulationEvent> {
   protected final String simulationEventType;
 
-  public EventLog2SimulationEventFunction(String simulationEventType) {this.simulationEventType = simulationEventType;}
+  public EventLog2SimulationEventFunction(String simulationEventType) {
+    this.simulationEventType = simulationEventType;
+  }
 }

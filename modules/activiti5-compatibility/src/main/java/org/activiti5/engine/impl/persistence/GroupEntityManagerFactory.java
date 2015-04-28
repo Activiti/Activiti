@@ -22,12 +22,12 @@ import org.activiti5.engine.impl.persistence.entity.GroupIdentityManager;
  */
 public class GroupEntityManagerFactory implements SessionFactory {
 
-    public Class<?> getSessionType() {
-        return GroupIdentityManager.class;
-    }
+  public Class<?> getSessionType() {
+    return GroupIdentityManager.class;
+  }
 
-    public Session openSession() {
-        return new GroupEntityManager();
-    }
+  public Session openSession() {
+    return new GroupEntityManager();
+  }
 
 }

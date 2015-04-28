@@ -21,18 +21,18 @@ import org.activiti5.engine.repository.ProcessDefinition;
  */
 public class StartFormDataImpl extends FormDataImpl implements StartFormData {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected ProcessDefinition processDefinition;
+  protected ProcessDefinition processDefinition;
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    public ProcessDefinition getProcessDefinition() {
-        return processDefinition;
-    }
+  public ProcessDefinition getProcessDefinition() {
+    return processDefinition;
+  }
 
-    public void setProcessDefinition(ProcessDefinition processDefinition) {
-        this.processDefinition = processDefinition;
-    }
+  public void setProcessDefinition(ProcessDefinition processDefinition) {
+    this.processDefinition = processDefinition;
+  }
 }

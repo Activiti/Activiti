@@ -14,18 +14,17 @@
 package org.activiti.engine.history;
 
 /**
- * Update of a process variable. This is only available if history level is
- * configured to FULL.
+ * Update of a process variable. This is only available if history level is configured to FULL.
  * 
  * @author Tom Baeyens
  */
 public interface HistoricVariableUpdate extends HistoricDetail {
 
-    String getVariableName();
+  String getVariableName();
 
-    String getVariableTypeName();
+  String getVariableTypeName();
 
-    Object getValue();
+  Object getValue();
 
-    int getRevision();
+  int getRevision();
 }

@@ -14,26 +14,25 @@
 package org.activiti.engine.impl.pvm.process;
 
 /**
- * Marks implementing class as having DI-information bounded by a rectangle at a
- * certain location.
+ * Marks implementing class as having DI-information bounded by a rectangle at a certain location.
  * 
  * @author Frederik Heremans
  */
 public interface HasDIBounds {
 
-    int getWidth();
+  int getWidth();
 
-    int getHeight();
+  int getHeight();
 
-    int getX();
+  int getX();
 
-    int getY();
+  int getY();
 
-    void setWidth(int width);
+  void setWidth(int width);
 
-    void setHeight(int height);
+  void setHeight(int height);
 
-    void setX(int x);
+  void setX(int x);
 
-    void setY(int y);
+  void setY(int y);
 }

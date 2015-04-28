@@ -27,32 +27,32 @@ import org.activiti5.engine.impl.pvm.runtime.ExecutionImpl;
  */
 public class VariableScopeResolver implements Resolver {
 
-    protected VariableScope variableScope;
-    protected String variableScopeKey = "execution";
+  protected VariableScope variableScope;
+  protected String variableScopeKey = "execution";
 
-    public VariableScopeResolver(VariableScope variableScope) {
-        if (variableScope == null) {
-            throw new ActivitiIllegalArgumentException("variableScope cannot be null");
-        }
-        if (variableScope instanceof ExecutionEntity) {
-            variableScopeKey = "execution";
-        } else if (variableScope instanceof TaskEntity) {
-            variableScopeKey = "task";
-        } else {
-            throw new ActivitiException("unsupported variable scope type: " + variableScope.getClass().getName());
-        }
-        this.variableScope = variableScope;
+  public VariableScopeResolver(VariableScope variableScope) {
+    if (variableScope == null) {
+      throw new ActivitiIllegalArgumentException("variableScope cannot be null");
+    }
+    if (variableScope instanceof ExecutionEntity) {
+      variableScopeKey = "execution";
+    } else if (variableScope instanceof TaskEntity) {
+      variableScopeKey = "task";
+    } else {
+      throw new ActivitiException("unsupported variable scope type: " + variableScope.getClass().getName());
+    }
+    this.variableScope = variableScope;
+  }
+
+  public boolean containsKey(Object key) {
+    return variableScopeKey.equals(key) || variableScope.hasVariable((String) key);
+  }
+
+  public Object get(Object key) {
+    if (variableScopeKey.equals(key)) {
+      return variableScope;
     }
 
-    public boolean containsKey(Object key) {
-        return variableScopeKey.equals(key) || variableScope.hasVariable((String) key);
-    }
-
-    public Object get(Object key) {
-        if (variableScopeKey.equals(key)) {
-            return variableScope;
-        }
-
-        return variableScope.getVariable((String) key);
-    }
+    return variableScope.getVariable((String) key);
+  }
 }

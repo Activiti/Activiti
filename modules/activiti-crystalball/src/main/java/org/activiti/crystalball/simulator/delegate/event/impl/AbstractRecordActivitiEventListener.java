@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.delegate.event.impl;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.delegate.event.Function;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -25,15 +24,16 @@ import java.util.List;
 
 /**
  * This class provides abstract base to records Activiti events
- *
+ * 
  * @author martin.grofcik
  */
 public abstract class AbstractRecordActivitiEventListener implements ActivitiEventListener {
   protected List<Function<ActivitiEvent, SimulationEvent>> transformers;
 
-  public AbstractRecordActivitiEventListener(List<Function<ActivitiEvent, SimulationEvent>> transformers) {this.transformers = transformers;}
+  public AbstractRecordActivitiEventListener(List<Function<ActivitiEvent, SimulationEvent>> transformers) {
+    this.transformers = transformers;
+  }
 
-  
   public abstract Collection<SimulationEvent> getSimulationEvents();
 
   @Override
@@ -55,7 +55,7 @@ public abstract class AbstractRecordActivitiEventListener implements ActivitiEve
   }
 
   @Override
-	public boolean isFailOnException() {
-		return true;
-	}
+  public boolean isFailOnException() {
+    return true;
+  }
 }

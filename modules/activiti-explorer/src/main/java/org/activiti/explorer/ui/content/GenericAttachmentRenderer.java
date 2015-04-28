@@ -43,83 +43,83 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class GenericAttachmentRenderer implements AttachmentRenderer {
 
-    public boolean canRenderAttachment(String type) {
-        // Render everything
-        return true;
+  public boolean canRenderAttachment(String type) {
+    // Render everything
+    return true;
+  }
+
+  public String getName(I18nManager i18nManager) {
+    return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_FILE);
+  }
+
+  public Resource getImage(Attachment attachment) {
+    return Images.RELATED_CONTENT_FILE;
+  }
+
+  public Component getOverviewComponent(final Attachment attachment, final RelatedContentComponent parent) {
+    Button attachmentLink = new Button(attachment.getName());
+    attachmentLink.addStyleName(Reindeer.BUTTON_LINK);
+
+    attachmentLink.addListener(new ClickListener() {
+      private static final long serialVersionUID = 1L;
+
+      public void buttonClick(ClickEvent event) {
+        parent.showAttachmentDetail(attachment);
+      }
+    });
+    return attachmentLink;
+  }
+
+  public Component getDetailComponent(Attachment attachment) {
+    VerticalLayout verticalLayout = new VerticalLayout();
+    verticalLayout.setSizeUndefined();
+    verticalLayout.setSpacing(true);
+    verticalLayout.setMargin(true);
+
+    Label description = new Label(attachment.getDescription());
+    description.setSizeUndefined();
+    verticalLayout.addComponent(description);
+
+    HorizontalLayout linkLayout = new HorizontalLayout();
+    linkLayout.setSpacing(true);
+    verticalLayout.addComponent(linkLayout);
+
+    // Image
+    linkLayout.addComponent(new Embedded(null, getImage(attachment)));
+
+    // Link
+    Link link = null;
+    if (attachment.getUrl() != null) {
+      link = new Link(attachment.getUrl(), new ExternalResource(attachment.getUrl()));
+    } else {
+      TaskService taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+      Resource res = new StreamResource(new InputStreamStreamSource(taskService.getAttachmentContent(attachment.getId())), attachment.getName() + extractExtention(attachment.getType()),
+          ExplorerApp.get());
+
+      link = new Link(attachment.getName(), res);
     }
 
-    public String getName(I18nManager i18nManager) {
-        return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_FILE);
+    // Set generic image and external window
+    link.setTargetName(ExplorerLayout.LINK_TARGET_BLANK);
+    linkLayout.addComponent(link);
+
+    return verticalLayout;
+  }
+
+  protected String extractExtention(String type) {
+    // Check if the extention is appended at the end
+    int lastIndex = type.lastIndexOf(FileAttachmentEditorComponent.MIME_TYPE_EXTENTION_SPLIT_CHAR);
+    if (lastIndex > 0 && lastIndex < type.length() - 1) {
+      return "." + type.substring(lastIndex + 1);
     }
 
-    public Resource getImage(Attachment attachment) {
-        return Images.RELATED_CONTENT_FILE;
+    // No extention added to end of mime-type, used second part of mime-type
+    // (eg. image/png -> .png)
+    lastIndex = type.lastIndexOf('/');
+    if (lastIndex > 0 && lastIndex < type.length() - 1) {
+      return "." + type.substring(lastIndex + 1);
     }
-
-    public Component getOverviewComponent(final Attachment attachment, final RelatedContentComponent parent) {
-        Button attachmentLink = new Button(attachment.getName());
-        attachmentLink.addStyleName(Reindeer.BUTTON_LINK);
-
-        attachmentLink.addListener(new ClickListener() {
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-                parent.showAttachmentDetail(attachment);
-            }
-        });
-        return attachmentLink;
-    }
-
-    public Component getDetailComponent(Attachment attachment) {
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.setSizeUndefined();
-        verticalLayout.setSpacing(true);
-        verticalLayout.setMargin(true);
-
-        Label description = new Label(attachment.getDescription());
-        description.setSizeUndefined();
-        verticalLayout.addComponent(description);
-
-        HorizontalLayout linkLayout = new HorizontalLayout();
-        linkLayout.setSpacing(true);
-        verticalLayout.addComponent(linkLayout);
-
-        // Image
-        linkLayout.addComponent(new Embedded(null, getImage(attachment)));
-
-        // Link
-        Link link = null;
-        if (attachment.getUrl() != null) {
-            link = new Link(attachment.getUrl(), new ExternalResource(attachment.getUrl()));
-        } else {
-            TaskService taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-            Resource res = new StreamResource(new InputStreamStreamSource(taskService.getAttachmentContent(attachment.getId())), attachment.getName() + extractExtention(attachment.getType()),
-                    ExplorerApp.get());
-
-            link = new Link(attachment.getName(), res);
-        }
-
-        // Set generic image and external window
-        link.setTargetName(ExplorerLayout.LINK_TARGET_BLANK);
-        linkLayout.addComponent(link);
-
-        return verticalLayout;
-    }
-
-    protected String extractExtention(String type) {
-        // Check if the extention is appended at the end
-        int lastIndex = type.lastIndexOf(FileAttachmentEditorComponent.MIME_TYPE_EXTENTION_SPLIT_CHAR);
-        if (lastIndex > 0 && lastIndex < type.length() - 1) {
-            return "." + type.substring(lastIndex + 1);
-        }
-
-        // No extention added to end of mime-type, used second part of mime-type
-        // (eg. image/png -> .png)
-        lastIndex = type.lastIndexOf('/');
-        if (lastIndex > 0 && lastIndex < type.length() - 1) {
-            return "." + type.substring(lastIndex + 1);
-        }
-        return "." + type;
-    }
+    return "." + type;
+  }
 
 }

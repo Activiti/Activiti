@@ -15,9 +15,8 @@ package org.activiti5.engine.impl.interceptor;
 import org.activiti5.engine.impl.delegate.DelegateInvocation;
 
 /**
- * Interceptor responsible for handling calls to 'user code'. User code
- * represents external Java code (e.g. services and listeners) invoked by
- * activiti. The following is a list of classes that represent user code:
+ * Interceptor responsible for handling calls to 'user code'. User code represents external Java code (e.g. services and listeners) invoked by activiti. The following is a list of classes that
+ * represent user code:
  * <ul>
  * <li>{@link org.activiti5.engine.delegate.JavaDelegate}</li>
  * <li>{@link org.activiti5.engine.delegate.ExecutionListener}</li>
@@ -25,14 +24,12 @@ import org.activiti5.engine.impl.delegate.DelegateInvocation;
  * <li>{@link org.activiti5.engine.delegate.TaskListener}</li>
  * </ul>
  * 
- * The interceptor is passed in an instance of {@link DelegateInvocation}.
- * Implementations are responsible for calling
- * {@link DelegateInvocation#proceed()}.
+ * The interceptor is passed in an instance of {@link DelegateInvocation}. Implementations are responsible for calling {@link DelegateInvocation#proceed()}.
  * 
  * @author Daniel Meyer
  */
 public interface DelegateInterceptor {
 
-    public void handleInvocation(DelegateInvocation invocation) throws Exception;
+  public void handleInvocation(DelegateInvocation invocation) throws Exception;
 
 }

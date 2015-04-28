@@ -32,50 +32,50 @@ import org.activiti.engine.impl.javax.el.ValueExpression;
  */
 public class JuelExpression implements Expression {
 
-    protected String expressionText;
-    protected ValueExpression valueExpression;
+  protected String expressionText;
+  protected ValueExpression valueExpression;
 
-    public JuelExpression(ValueExpression valueExpression, String expressionText) {
-        this.valueExpression = valueExpression;
-        this.expressionText = expressionText;
-    }
+  public JuelExpression(ValueExpression valueExpression, String expressionText) {
+    this.valueExpression = valueExpression;
+    this.expressionText = expressionText;
+  }
 
-    public Object getValue(VariableScope variableScope) {
-        ELContext elContext = Context.getProcessEngineConfiguration().getExpressionManager().getElContext(variableScope);
-        try {
-            ExpressionGetInvocation invocation = new ExpressionGetInvocation(valueExpression, elContext);
-            Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(invocation);
-            return invocation.getInvocationResult();
-        } catch (PropertyNotFoundException pnfe) {
-            throw new ActivitiException("Unknown property used in expression: " + expressionText, pnfe);
-        } catch (MethodNotFoundException mnfe) {
-            throw new ActivitiException("Unknown method used in expression: " + expressionText, mnfe);
-        } catch (ELException ele) {
-            throw new ActivitiException("Error while evaluating expression: " + expressionText, ele);
-        } catch (Exception e) {
-            throw new ActivitiException("Error while evaluating expression: " + expressionText, e);
-        }
+  public Object getValue(VariableScope variableScope) {
+    ELContext elContext = Context.getProcessEngineConfiguration().getExpressionManager().getElContext(variableScope);
+    try {
+      ExpressionGetInvocation invocation = new ExpressionGetInvocation(valueExpression, elContext);
+      Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(invocation);
+      return invocation.getInvocationResult();
+    } catch (PropertyNotFoundException pnfe) {
+      throw new ActivitiException("Unknown property used in expression: " + expressionText, pnfe);
+    } catch (MethodNotFoundException mnfe) {
+      throw new ActivitiException("Unknown method used in expression: " + expressionText, mnfe);
+    } catch (ELException ele) {
+      throw new ActivitiException("Error while evaluating expression: " + expressionText, ele);
+    } catch (Exception e) {
+      throw new ActivitiException("Error while evaluating expression: " + expressionText, e);
     }
+  }
 
-    public void setValue(Object value, VariableScope variableScope) {
-        ELContext elContext = Context.getProcessEngineConfiguration().getExpressionManager().getElContext(variableScope);
-        try {
-            ExpressionSetInvocation invocation = new ExpressionSetInvocation(valueExpression, elContext, value);
-            Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(invocation);
-        } catch (Exception e) {
-            throw new ActivitiException("Error while evaluating expression: " + expressionText, e);
-        }
+  public void setValue(Object value, VariableScope variableScope) {
+    ELContext elContext = Context.getProcessEngineConfiguration().getExpressionManager().getElContext(variableScope);
+    try {
+      ExpressionSetInvocation invocation = new ExpressionSetInvocation(valueExpression, elContext, value);
+      Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(invocation);
+    } catch (Exception e) {
+      throw new ActivitiException("Error while evaluating expression: " + expressionText, e);
     }
+  }
 
-    @Override
-    public String toString() {
-        if (valueExpression != null) {
-            return valueExpression.getExpressionString();
-        }
-        return super.toString();
+  @Override
+  public String toString() {
+    if (valueExpression != null) {
+      return valueExpression.getExpressionString();
     }
+    return super.toString();
+  }
 
-    public String getExpressionText() {
-        return expressionText;
-    }
+  public String getExpressionText() {
+    return expressionText;
+  }
 }

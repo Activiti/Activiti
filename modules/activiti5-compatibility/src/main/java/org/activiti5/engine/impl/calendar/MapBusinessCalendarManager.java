@@ -20,14 +20,14 @@ import java.util.Map;
  */
 public class MapBusinessCalendarManager implements BusinessCalendarManager {
 
-    private Map<String, BusinessCalendar> businessCalendars = new HashMap<String, BusinessCalendar>();
+  private Map<String, BusinessCalendar> businessCalendars = new HashMap<String, BusinessCalendar>();
 
-    public BusinessCalendar getBusinessCalendar(String businessCalendarRef) {
-        return businessCalendars.get(businessCalendarRef);
-    }
+  public BusinessCalendar getBusinessCalendar(String businessCalendarRef) {
+    return businessCalendars.get(businessCalendarRef);
+  }
 
-    public BusinessCalendarManager addBusinessCalendar(String businessCalendarRef, BusinessCalendar businessCalendar) {
-        businessCalendars.put(businessCalendarRef, businessCalendar);
-        return this;
-    }
+  public BusinessCalendarManager addBusinessCalendar(String businessCalendarRef, BusinessCalendar businessCalendar) {
+    businessCalendars.put(businessCalendarRef, businessCalendar);
+    return this;
+  }
 }

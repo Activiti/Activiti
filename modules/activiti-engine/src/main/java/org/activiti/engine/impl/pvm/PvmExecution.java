@@ -20,15 +20,15 @@ import java.util.Map;
  */
 public interface PvmExecution {
 
-    void signal(String signalName, Object signalData);
+  void signal(String signalName, Object signalData);
 
-    PvmActivity getActivity();
+  PvmActivity getActivity();
 
-    boolean hasVariable(String variableName);
+  boolean hasVariable(String variableName);
 
-    void setVariable(String variableName, Object value);
+  void setVariable(String variableName, Object value);
 
-    Object getVariable(String variableName);
+  Object getVariable(String variableName);
 
-    Map<String, Object> getVariables();
+  Map<String, Object> getVariables();
 }

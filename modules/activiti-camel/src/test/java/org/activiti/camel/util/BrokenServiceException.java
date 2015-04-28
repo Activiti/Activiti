@@ -20,10 +20,10 @@ package org.activiti.camel.util;
  */
 public class BrokenServiceException extends Exception {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public BrokenServiceException(String message) {
-        super(message);
-    }
+  public BrokenServiceException(String message) {
+    super(message);
+  }
 
 }

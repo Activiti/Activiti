@@ -23,15 +23,15 @@ import org.activiti.rest.service.api.RestResponseFactory;
  */
 public class ModelsPaginateList extends AbstractPaginateList {
 
-    protected RestResponseFactory restResponseFactory;
+  protected RestResponseFactory restResponseFactory;
 
-    public ModelsPaginateList(RestResponseFactory restResponseFactory) {
-        this.restResponseFactory = restResponseFactory;
-    }
+  public ModelsPaginateList(RestResponseFactory restResponseFactory) {
+    this.restResponseFactory = restResponseFactory;
+  }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Override
-    protected List processList(List list) {
-        return restResponseFactory.createModelResponseList(list);
-    }
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
+  protected List processList(List list) {
+    return restResponseFactory.createModelResponseList(list);
+  }
 }

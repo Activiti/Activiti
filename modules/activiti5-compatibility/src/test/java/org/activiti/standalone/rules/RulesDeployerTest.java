@@ -26,29 +26,29 @@ import org.activiti5.engine.test.Deployment;
  */
 public class RulesDeployerTest extends ResourceActivitiTestCase {
 
-    public RulesDeployerTest() {
-        super("org/activiti/standalone/rules/rules.activiti.cfg.xml");
-    }
+  public RulesDeployerTest() {
+    super("org/activiti/standalone/rules/rules.activiti.cfg.xml");
+  }
 
-    @SuppressWarnings("unchecked")
-    @Deployment(resources = { "org/activiti/standalone/rules/rulesDeploymentTestProcess.bpmn20.xml", "org/activiti/standalone/rules/simpleRule1.drl" })
-    public void testRulesDeployment() {
-        Map<String, Object> variableMap = new HashMap<String, Object>();
-        Order order = new Order();
-        order.setItemCount(2);
-        variableMap.put("order", order);
+  @SuppressWarnings("unchecked")
+  @Deployment(resources = { "org/activiti/standalone/rules/rulesDeploymentTestProcess.bpmn20.xml", "org/activiti/standalone/rules/simpleRule1.drl" })
+  public void testRulesDeployment() {
+    Map<String, Object> variableMap = new HashMap<String, Object>();
+    Order order = new Order();
+    order.setItemCount(2);
+    variableMap.put("order", order);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("rulesDeployment", variableMap);
-        assertNotNull(processInstance);
-        assertTrue(processInstance.getProcessDefinitionId().startsWith("rulesDeployment:1"));
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("rulesDeployment", variableMap);
+    assertNotNull(processInstance);
+    assertTrue(processInstance.getProcessDefinitionId().startsWith("rulesDeployment:1"));
 
-        runtimeService.getVariable(processInstance.getId(), "order");
-        assertTrue(order.isValid());
+    runtimeService.getVariable(processInstance.getId(), "order");
+    assertTrue(order.isValid());
 
-        Collection<Object> ruleOutputList = (Collection<Object>) runtimeService.getVariable(processInstance.getId(), "rulesOutput");
-        assertNotNull(ruleOutputList);
-        assertEquals(1, ruleOutputList.size());
-        order = (Order) ruleOutputList.iterator().next();
-        assertTrue(order.isValid());
-    }
+    Collection<Object> ruleOutputList = (Collection<Object>) runtimeService.getVariable(processInstance.getId(), "rulesOutput");
+    assertNotNull(ruleOutputList);
+    assertEquals(1, ruleOutputList.size());
+    order = (Order) ruleOutputList.iterator().next();
+    assertTrue(order.isValid());
+  }
 }

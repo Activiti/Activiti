@@ -18,31 +18,31 @@ package org.activiti.rest.service.api.management;
  */
 public class TableResponse {
 
-    protected String name;
-    protected String url;
-    protected Long count;
+  protected String name;
+  protected String url;
+  protected Long count;
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public Long getCount() {
-        return count;
-    }
+  public Long getCount() {
+    return count;
+  }
 
-    public void setCount(Long count) {
-        this.count = count;
-    }
+  public void setCount(Long count) {
+    this.count = count;
+  }
 }

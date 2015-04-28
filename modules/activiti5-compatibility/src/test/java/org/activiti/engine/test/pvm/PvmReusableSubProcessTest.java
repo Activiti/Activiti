@@ -26,17 +26,17 @@ import org.activiti5.engine.impl.test.PvmTestCase;
  */
 public class PvmReusableSubProcessTest extends PvmTestCase {
 
-    public void testReusableSubProcess() {
-        PvmProcessDefinition subProcessDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("subEnd").endActivity()
-                .createActivity("subEnd").behavior(new End()).endActivity().buildProcessDefinition();
+  public void testReusableSubProcess() {
+    PvmProcessDefinition subProcessDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("subEnd").endActivity().createActivity("subEnd")
+        .behavior(new End()).endActivity().buildProcessDefinition();
 
-        PvmProcessDefinition superProcessDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("subprocess").endActivity()
-                .createActivity("subprocess").behavior(new ReusableSubProcess(subProcessDefinition)).transition("superEnd").endActivity().createActivity("superEnd").behavior(new End()).endActivity()
-                .buildProcessDefinition();
+    PvmProcessDefinition superProcessDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("subprocess").endActivity()
+        .createActivity("subprocess").behavior(new ReusableSubProcess(subProcessDefinition)).transition("superEnd").endActivity().createActivity("superEnd").behavior(new End()).endActivity()
+        .buildProcessDefinition();
 
-        PvmProcessInstance processInstance = superProcessDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = superProcessDefinition.createProcessInstance();
+    processInstance.start();
 
-        assertTrue(processInstance.isEnded());
-    }
+    assertTrue(processInstance.isEnded());
+  }
 }

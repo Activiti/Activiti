@@ -21,13 +21,13 @@ package org.activiti.engine.impl.juel;
  * @author Christoph Beck
  */
 public interface Node {
-    /**
-     * Get the node's number of children.
-     */
-    public int getCardinality();
+  /**
+   * Get the node's number of children.
+   */
+  public int getCardinality();
 
-    /**
-     * Get i'th child
-     */
-    public Node getChild(int i);
+  /**
+   * Get i'th child
+   */
+  public Node getChild(int i);
 }

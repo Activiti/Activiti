@@ -24,18 +24,18 @@ import org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity;
  */
 public class GetUserInfoCmd implements Command<String>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String userId;
-    protected String key;
+  private static final long serialVersionUID = 1L;
+  protected String userId;
+  protected String key;
 
-    public GetUserInfoCmd(String userId, String key) {
-        this.userId = userId;
-        this.key = key;
-    }
+  public GetUserInfoCmd(String userId, String key) {
+    this.userId = userId;
+    this.key = key;
+  }
 
-    public String execute(CommandContext commandContext) {
-        IdentityInfoEntity identityInfo = commandContext.getIdentityInfoEntityManager().findUserInfoByUserIdAndKey(userId, key);
+  public String execute(CommandContext commandContext) {
+    IdentityInfoEntity identityInfo = commandContext.getIdentityInfoEntityManager().findUserInfoByUserIdAndKey(userId, key);
 
-        return (identityInfo != null ? identityInfo.getValue() : null);
-    }
+    return (identityInfo != null ? identityInfo.getValue() : null);
+  }
 }

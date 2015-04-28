@@ -27,22 +27,22 @@ import com.vaadin.terminal.Resource;
  */
 public class FileAttachmentEditor implements AttachmentEditor {
 
-    public static final String FILE_ATTACHMENT_TYPE = "file";
+  public static final String FILE_ATTACHMENT_TYPE = "file";
 
-    public String getName() {
-        return FILE_ATTACHMENT_TYPE;
-    }
+  public String getName() {
+    return FILE_ATTACHMENT_TYPE;
+  }
 
-    public String getTitle(I18nManager i18nManager) {
-        return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_FILE);
-    }
+  public String getTitle(I18nManager i18nManager) {
+    return i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_FILE);
+  }
 
-    public Resource getImage() {
-        return Images.RELATED_CONTENT_FILE;
-    }
+  public Resource getImage() {
+    return Images.RELATED_CONTENT_FILE;
+  }
 
-    public AttachmentEditorComponent getEditor(Attachment attachment, String taskId, String processInstanceId) {
-        return new FileAttachmentEditorComponent(attachment, taskId, processInstanceId);
-    }
+  public AttachmentEditorComponent getEditor(Attachment attachment, String taskId, String processInstanceId) {
+    return new FileAttachmentEditorComponent(attachment, taskId, processInstanceId);
+  }
 
 }

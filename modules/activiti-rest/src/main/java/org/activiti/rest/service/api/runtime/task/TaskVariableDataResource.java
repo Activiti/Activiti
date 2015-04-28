@@ -37,35 +37,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TaskVariableDataResource extends TaskVariableBaseResource {
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}/data", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody
-    byte[] getVariableData(@PathVariable("taskId") String taskId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
-            HttpServletRequest request, HttpServletResponse response) {
+  @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}/data", method = RequestMethod.GET, produces = "application/json")
+  public @ResponseBody
+  byte[] getVariableData(@PathVariable("taskId") String taskId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+      HttpServletRequest request, HttpServletResponse response) {
 
-        try {
-            byte[] result = null;
+    try {
+      byte[] result = null;
 
-            RestVariable variable = getVariableFromRequest(taskId, variableName, scope, true);
-            if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
-                result = (byte[]) variable.getValue();
-                response.setContentType("application/octet-stream");
+      RestVariable variable = getVariableFromRequest(taskId, variableName, scope, true);
+      if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
+        result = (byte[]) variable.getValue();
+        response.setContentType("application/octet-stream");
 
-            } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
-                outputStream.writeObject(variable.getValue());
-                outputStream.close();
-                result = buffer.toByteArray();
-                response.setContentType("application/x-java-serialized-object");
+      } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
+        outputStream.writeObject(variable.getValue());
+        outputStream.close();
+        result = buffer.toByteArray();
+        response.setContentType("application/x-java-serialized-object");
 
-            } else {
-                throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
-            }
-            return result;
+      } else {
+        throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
+      }
+      return result;
 
-        } catch (IOException ioe) {
-            // Re-throw IOException
-            throw new ActivitiException("Unexpected error getting variable data", ioe);
-        }
+    } catch (IOException ioe) {
+      // Re-throw IOException
+      throw new ActivitiException("Unexpected error getting variable data", ioe);
     }
+  }
 }

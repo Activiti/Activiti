@@ -20,22 +20,22 @@ import org.activiti5.engine.form.AbstractFormType;
  */
 public class StringFormType extends AbstractFormType {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public String getName() {
-        return "string";
-    }
+  public String getName() {
+    return "string";
+  }
 
-    public String getMimeType() {
-        return "text/plain";
-    }
+  public String getMimeType() {
+    return "text/plain";
+  }
 
-    public Object convertFormValueToModelValue(String propertyValue) {
-        return propertyValue;
-    }
+  public Object convertFormValueToModelValue(String propertyValue) {
+    return propertyValue;
+  }
 
-    public String convertModelValueToFormValue(Object modelValue) {
-        return (String) modelValue;
-    }
+  public String convertModelValueToFormValue(Object modelValue) {
+    return (String) modelValue;
+  }
 
 }

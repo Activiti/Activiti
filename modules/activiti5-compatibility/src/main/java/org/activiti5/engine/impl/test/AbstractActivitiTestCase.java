@@ -52,252 +52,246 @@ import org.junit.Assert;
  */
 public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
-    private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList("ACT_GE_PROPERTY");
+  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList("ACT_GE_PROPERTY");
 
-    protected ProcessEngine processEngine;
+  protected ProcessEngine processEngine;
 
-    protected String deploymentIdFromDeploymentAnnotation;
-    protected List<String> deploymentIdsForAutoCleanup = new ArrayList<String>();
-    protected Throwable exception;
+  protected String deploymentIdFromDeploymentAnnotation;
+  protected List<String> deploymentIdsForAutoCleanup = new ArrayList<String>();
+  protected Throwable exception;
 
-    protected ProcessEngineConfigurationImpl processEngineConfiguration;
-    protected RepositoryService repositoryService;
-    protected RuntimeService runtimeService;
-    protected TaskService taskService;
-    protected FormService formService;
-    protected HistoryService historyService;
-    protected IdentityService identityService;
-    protected ManagementService managementService;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected RepositoryService repositoryService;
+  protected RuntimeService runtimeService;
+  protected TaskService taskService;
+  protected FormService formService;
+  protected HistoryService historyService;
+  protected IdentityService identityService;
+  protected ManagementService managementService;
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
 
-        // Always reset authenticated user to avoid any mistakes
-        identityService.setAuthenticatedUserId(null);
+    // Always reset authenticated user to avoid any mistakes
+    identityService.setAuthenticatedUserId(null);
+  }
+
+  protected abstract void initializeProcessEngine();
+
+  // Default: do nothing
+  protected void closeDownProcessEngine() {
+  }
+
+  @Override
+  public void runBare() throws Throwable {
+    initializeProcessEngine();
+    if (repositoryService == null) {
+      initializeServices();
     }
 
-    protected abstract void initializeProcessEngine();
+    try {
 
-    // Default: do nothing
-    protected void closeDownProcessEngine() {
+      deploymentIdFromDeploymentAnnotation = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
+
+      super.runBare();
+
+    } catch (AssertionFailedError e) {
+      log.error(EMPTY_LINE);
+      log.error("ASSERTION FAILED: {}", e, e);
+      exception = e;
+      throw e;
+
+    } catch (Throwable e) {
+      log.error(EMPTY_LINE);
+      log.error("EXCEPTION: {}", e, e);
+      exception = e;
+      throw e;
+
+    } finally {
+      if (deploymentIdFromDeploymentAnnotation != null) {
+        TestHelper.annotationDeploymentTearDown(processEngine, deploymentIdFromDeploymentAnnotation, getClass(), getName());
+        deploymentIdFromDeploymentAnnotation = null;
+      }
+
+      for (String autoDeletedDeploymentId : deploymentIdsForAutoCleanup) {
+        repositoryService.deleteDeployment(autoDeletedDeploymentId, true);
+      }
+      deploymentIdsForAutoCleanup.clear();
+
+      assertAndEnsureCleanDb();
+      processEngineConfiguration.getClock().reset();
+
+      // Can't do this in the teardown, as the teardown will be called as
+      // part of the super.runBare
+      closeDownProcessEngine();
     }
+  }
 
-    @Override
-    public void runBare() throws Throwable {
-        initializeProcessEngine();
-        if (repositoryService == null) {
-            initializeServices();
+  /**
+   * Each test is assumed to clean up all DB content it entered. After a test method executed, this method scans all tables to see if the DB is completely clean. It throws AssertionFailed in case the
+   * DB is not clean. If the DB is not clean, it is cleaned by performing a create a drop.
+   */
+  protected void assertAndEnsureCleanDb() throws Throwable {
+    log.debug("verifying that db is clean after test");
+    Map<String, Long> tableCounts = managementService.getTableCount();
+    StringBuilder outputMessage = new StringBuilder();
+    for (String tableName : tableCounts.keySet()) {
+      String tableNameWithoutPrefix = tableName.replace(processEngineConfiguration.getDatabaseTablePrefix(), "");
+      if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableNameWithoutPrefix)) {
+        Long count = tableCounts.get(tableName);
+        if (count != 0L) {
+          outputMessage.append("  ").append(tableName).append(": ").append(count).append(" record(s) ");
         }
+      }
+    }
+    if (outputMessage.length() > 0) {
+      outputMessage.insert(0, "DB NOT CLEAN: \n");
+      log.error(EMPTY_LINE);
+      log.error(outputMessage.toString());
 
-        try {
+      log.info("dropping and recreating db");
 
-            deploymentIdFromDeploymentAnnotation = TestHelper.annotationDeploymentSetUp(processEngine, getClass(), getName());
-
-            super.runBare();
-
-        } catch (AssertionFailedError e) {
-            log.error(EMPTY_LINE);
-            log.error("ASSERTION FAILED: {}", e, e);
-            exception = e;
-            throw e;
-
-        } catch (Throwable e) {
-            log.error(EMPTY_LINE);
-            log.error("EXCEPTION: {}", e, e);
-            exception = e;
-            throw e;
-
-        } finally {
-            if (deploymentIdFromDeploymentAnnotation != null) {
-                TestHelper.annotationDeploymentTearDown(processEngine, deploymentIdFromDeploymentAnnotation, getClass(), getName());
-                deploymentIdFromDeploymentAnnotation = null;
-            }
-
-            for (String autoDeletedDeploymentId : deploymentIdsForAutoCleanup) {
-                repositoryService.deleteDeployment(autoDeletedDeploymentId, true);
-            }
-            deploymentIdsForAutoCleanup.clear();
-
-            assertAndEnsureCleanDb();
-            processEngineConfiguration.getClock().reset();
-
-            // Can't do this in the teardown, as the teardown will be called as
-            // part of the super.runBare
-            closeDownProcessEngine();
+      CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+      CommandConfig config = new CommandConfig().transactionNotSupported();
+      commandExecutor.execute(config, new Command<Object>() {
+        public Object execute(CommandContext commandContext) {
+          DbSqlSession session = commandContext.getSession(DbSqlSession.class);
+          session.dbSchemaDrop();
+          session.dbSchemaCreate();
+          return null;
         }
+      });
+
+      if (exception != null) {
+        throw exception;
+      } else {
+        Assert.fail(outputMessage.toString());
+      }
+    } else {
+      log.info("database was clean");
     }
+  }
 
-    /**
-     * Each test is assumed to clean up all DB content it entered. After a test
-     * method executed, this method scans all tables to see if the DB is
-     * completely clean. It throws AssertionFailed in case the DB is not clean.
-     * If the DB is not clean, it is cleaned by performing a create a drop.
-     */
-    protected void assertAndEnsureCleanDb() throws Throwable {
-        log.debug("verifying that db is clean after test");
-        Map<String, Long> tableCounts = managementService.getTableCount();
-        StringBuilder outputMessage = new StringBuilder();
-        for (String tableName : tableCounts.keySet()) {
-            String tableNameWithoutPrefix = tableName.replace(processEngineConfiguration.getDatabaseTablePrefix(), "");
-            if (!TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK.contains(tableNameWithoutPrefix)) {
-                Long count = tableCounts.get(tableName);
-                if (count != 0L) {
-                    outputMessage.append("  ").append(tableName).append(": ").append(count).append(" record(s) ");
-                }
-            }
-        }
-        if (outputMessage.length() > 0) {
-            outputMessage.insert(0, "DB NOT CLEAN: \n");
-            log.error(EMPTY_LINE);
-            log.error(outputMessage.toString());
+  protected void initializeServices() {
+    processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
+    repositoryService = processEngine.getRepositoryService();
+    runtimeService = processEngine.getRuntimeService();
+    taskService = processEngine.getTaskService();
+    formService = processEngine.getFormService();
+    historyService = processEngine.getHistoryService();
+    identityService = processEngine.getIdentityService();
+    managementService = processEngine.getManagementService();
+  }
 
-            log.info("dropping and recreating db");
+  public void assertProcessEnded(final String processInstanceId) {
+    ProcessInstance processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
 
-            CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
-            CommandConfig config = new CommandConfig().transactionNotSupported();
-            commandExecutor.execute(config, new Command<Object>() {
-                public Object execute(CommandContext commandContext) {
-                    DbSqlSession session = commandContext.getSession(DbSqlSession.class);
-                    session.dbSchemaDrop();
-                    session.dbSchemaCreate();
-                    return null;
-                }
-            });
-
-            if (exception != null) {
-                throw exception;
-            } else {
-                Assert.fail(outputMessage.toString());
-            }
-        } else {
-            log.info("database was clean");
-        }
+    if (processInstance != null) {
+      throw new AssertionFailedError("Expected finished process instance '" + processInstanceId + "' but it was still in the db");
     }
+  }
 
-    protected void initializeServices() {
-        processEngineConfiguration = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration();
-        repositoryService = processEngine.getRepositoryService();
-        runtimeService = processEngine.getRuntimeService();
-        taskService = processEngine.getTaskService();
-        formService = processEngine.getFormService();
-        historyService = processEngine.getHistoryService();
-        identityService = processEngine.getIdentityService();
-        managementService = processEngine.getManagementService();
-    }
+  public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
+    JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis);
+  }
 
-    public void assertProcessEnded(final String processInstanceId) {
-        ProcessInstance processInstance = processEngine.getRuntimeService().createProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+  public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
+    JobTestHelper.waitForJobExecutorOnCondition(processEngineConfiguration, maxMillisToWait, intervalMillis, condition);
+  }
 
-        if (processInstance != null) {
-            throw new AssertionFailedError("Expected finished process instance '" + processInstanceId + "' but it was still in the db");
-        }
-    }
+  public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
+    JobTestHelper.executeJobExecutorForTime(processEngineConfiguration, maxMillisToWait, intervalMillis);
+  }
 
-    public void waitForJobExecutorToProcessAllJobs(long maxMillisToWait, long intervalMillis) {
-        JobTestHelper.waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis);
-    }
+  /**
+   * Since the 'one task process' is used everywhere the actual process content doesn't matter, instead of copying around the BPMN 2.0 xml one could use this method which gives a {@link BpmnModel}
+   * version of the same process back.
+   */
+  public BpmnModel createOneTaskTestProcess() {
+    BpmnModel model = new BpmnModel();
+    org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
+    model.addProcess(process);
+    process.setId("oneTaskProcess");
+    process.setName("The one task process");
 
-    public void waitForJobExecutorOnCondition(long maxMillisToWait, long intervalMillis, Callable<Boolean> condition) {
-        JobTestHelper.waitForJobExecutorOnCondition(processEngineConfiguration, maxMillisToWait, intervalMillis, condition);
-    }
+    StartEvent startEvent = new StartEvent();
+    startEvent.setId("start");
+    process.addFlowElement(startEvent);
 
-    public void executeJobExecutorForTime(long maxMillisToWait, long intervalMillis) {
-        JobTestHelper.executeJobExecutorForTime(processEngineConfiguration, maxMillisToWait, intervalMillis);
-    }
+    UserTask userTask = new UserTask();
+    userTask.setName("The Task");
+    userTask.setId("theTask");
+    userTask.setAssignee("kermit");
+    process.addFlowElement(userTask);
 
-    /**
-     * Since the 'one task process' is used everywhere the actual process
-     * content doesn't matter, instead of copying around the BPMN 2.0 xml one
-     * could use this method which gives a {@link BpmnModel} version of the same
-     * process back.
-     */
-    public BpmnModel createOneTaskTestProcess() {
-        BpmnModel model = new BpmnModel();
-        org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
-        model.addProcess(process);
-        process.setId("oneTaskProcess");
-        process.setName("The one task process");
+    EndEvent endEvent = new EndEvent();
+    endEvent.setId("theEnd");
+    process.addFlowElement(endEvent);
 
-        StartEvent startEvent = new StartEvent();
-        startEvent.setId("start");
-        process.addFlowElement(startEvent);
+    process.addFlowElement(new SequenceFlow("start", "theTask"));
+    process.addFlowElement(new SequenceFlow("theTask", "theEnd"));
 
-        UserTask userTask = new UserTask();
-        userTask.setName("The Task");
-        userTask.setId("theTask");
-        userTask.setAssignee("kermit");
-        process.addFlowElement(userTask);
+    return model;
+  }
 
-        EndEvent endEvent = new EndEvent();
-        endEvent.setId("theEnd");
-        process.addFlowElement(endEvent);
+  public BpmnModel createTwoTasksTestProcess() {
+    BpmnModel model = new BpmnModel();
+    org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
+    model.addProcess(process);
+    process.setId("twoTasksProcess");
+    process.setName("The two tasks process");
 
-        process.addFlowElement(new SequenceFlow("start", "theTask"));
-        process.addFlowElement(new SequenceFlow("theTask", "theEnd"));
+    StartEvent startEvent = new StartEvent();
+    startEvent.setId("start");
+    process.addFlowElement(startEvent);
 
-        return model;
-    }
+    UserTask userTask = new UserTask();
+    userTask.setName("The First Task");
+    userTask.setId("task1");
+    userTask.setAssignee("kermit");
+    process.addFlowElement(userTask);
 
-    public BpmnModel createTwoTasksTestProcess() {
-        BpmnModel model = new BpmnModel();
-        org.activiti.bpmn.model.Process process = new org.activiti.bpmn.model.Process();
-        model.addProcess(process);
-        process.setId("twoTasksProcess");
-        process.setName("The two tasks process");
+    UserTask userTask2 = new UserTask();
+    userTask2.setName("The Second Task");
+    userTask2.setId("task2");
+    userTask2.setAssignee("kermit");
+    process.addFlowElement(userTask2);
 
-        StartEvent startEvent = new StartEvent();
-        startEvent.setId("start");
-        process.addFlowElement(startEvent);
+    EndEvent endEvent = new EndEvent();
+    endEvent.setId("theEnd");
+    process.addFlowElement(endEvent);
 
-        UserTask userTask = new UserTask();
-        userTask.setName("The First Task");
-        userTask.setId("task1");
-        userTask.setAssignee("kermit");
-        process.addFlowElement(userTask);
+    process.addFlowElement(new SequenceFlow("start", "task1"));
+    process.addFlowElement(new SequenceFlow("start", "task2"));
+    process.addFlowElement(new SequenceFlow("task1", "theEnd"));
+    process.addFlowElement(new SequenceFlow("task2", "theEnd"));
 
-        UserTask userTask2 = new UserTask();
-        userTask2.setName("The Second Task");
-        userTask2.setId("task2");
-        userTask2.setAssignee("kermit");
-        process.addFlowElement(userTask2);
+    return model;
+  }
 
-        EndEvent endEvent = new EndEvent();
-        endEvent.setId("theEnd");
-        process.addFlowElement(endEvent);
+  /**
+   * Creates and deploys the one task process. See {@link #createOneTaskTestProcess()}.
+   * 
+   * @return The process definition id (NOT the process definition key) of deployed one task process.
+   */
+  public String deployOneTaskTestProcess() {
+    BpmnModel bpmnModel = createOneTaskTestProcess();
+    Deployment deployment = repositoryService.createDeployment().addBpmnModel("oneTasktest.bpmn20.xml", bpmnModel).deploy();
 
-        process.addFlowElement(new SequenceFlow("start", "task1"));
-        process.addFlowElement(new SequenceFlow("start", "task2"));
-        process.addFlowElement(new SequenceFlow("task1", "theEnd"));
-        process.addFlowElement(new SequenceFlow("task2", "theEnd"));
+    deploymentIdsForAutoCleanup.add(deployment.getId()); // For auto-cleanup
 
-        return model;
-    }
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+    return processDefinition.getId();
+  }
 
-    /**
-     * Creates and deploys the one task process. See
-     * {@link #createOneTaskTestProcess()}.
-     * 
-     * @return The process definition id (NOT the process definition key) of
-     *         deployed one task process.
-     */
-    public String deployOneTaskTestProcess() {
-        BpmnModel bpmnModel = createOneTaskTestProcess();
-        Deployment deployment = repositoryService.createDeployment().addBpmnModel("oneTasktest.bpmn20.xml", bpmnModel).deploy();
+  public String deployTwoTasksTestProcess() {
+    BpmnModel bpmnModel = createTwoTasksTestProcess();
+    Deployment deployment = repositoryService.createDeployment().addBpmnModel("twoTasksTestProcess.bpmn20.xml", bpmnModel).deploy();
 
-        deploymentIdsForAutoCleanup.add(deployment.getId()); // For auto-cleanup
+    deploymentIdsForAutoCleanup.add(deployment.getId()); // For auto-cleanup
 
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
-        return processDefinition.getId();
-    }
-
-    public String deployTwoTasksTestProcess() {
-        BpmnModel bpmnModel = createTwoTasksTestProcess();
-        Deployment deployment = repositoryService.createDeployment().addBpmnModel("twoTasksTestProcess.bpmn20.xml", bpmnModel).deploy();
-
-        deploymentIdsForAutoCleanup.add(deployment.getId()); // For auto-cleanup
-
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
-        return processDefinition.getId();
-    }
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+    return processDefinition.getId();
+  }
 }

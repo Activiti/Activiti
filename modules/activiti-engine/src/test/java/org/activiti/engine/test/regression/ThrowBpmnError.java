@@ -6,8 +6,8 @@ import org.activiti.engine.delegate.BpmnError;
 
 public class ThrowBpmnError implements JavaDelegate {
 
-    public void execute(DelegateExecution execution) {
-        throw new BpmnError("manual", "Manually throwing a BpmnError from this instance of \"Demo Partial Deletion\".");
-    }
+  public void execute(DelegateExecution execution) {
+    throw new BpmnError("manual", "Manually throwing a BpmnError from this instance of \"Demo Partial Deletion\".");
+  }
 
 }

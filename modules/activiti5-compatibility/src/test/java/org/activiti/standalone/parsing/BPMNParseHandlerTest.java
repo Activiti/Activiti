@@ -21,14 +21,14 @@ import org.activiti5.engine.test.Deployment;
  */
 public class BPMNParseHandlerTest extends ResourceActivitiTestCase {
 
-    public BPMNParseHandlerTest() {
-        super("org/activiti/standalone/parsing/bpmn.parse.listener.activiti.cfg.xml");
-    }
+  public BPMNParseHandlerTest() {
+    super("org/activiti/standalone/parsing/bpmn.parse.listener.activiti.cfg.xml");
+  }
 
-    @Deployment
-    public void testAlterProcessDefinitionKeyWhenDeploying() throws Exception {
-        // Check if process-definition has different key
-        assertEquals(0, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").count());
-        assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess-modified").count());
-    }
+  @Deployment
+  public void testAlterProcessDefinitionKeyWhenDeploying() throws Exception {
+    // Check if process-definition has different key
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess-modified").count());
+  }
 }

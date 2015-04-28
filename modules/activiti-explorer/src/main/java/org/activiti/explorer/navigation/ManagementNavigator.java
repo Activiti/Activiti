@@ -19,15 +19,15 @@ import org.activiti.explorer.ExplorerApp;
  */
 public abstract class ManagementNavigator implements Navigator {
 
-    public void handleNavigation(UriFragment uriFragment) {
-        if (!ExplorerApp.get().getLoggedInUser().isAdmin()) {
-            // If not an admin, just show inbox and act like nothing happened
-            ExplorerApp.get().getViewManager().showInboxPage();
-        } else {
-            handleManagementNavigation(uriFragment);
-        }
+  public void handleNavigation(UriFragment uriFragment) {
+    if (!ExplorerApp.get().getLoggedInUser().isAdmin()) {
+      // If not an admin, just show inbox and act like nothing happened
+      ExplorerApp.get().getViewManager().showInboxPage();
+    } else {
+      handleManagementNavigation(uriFragment);
     }
+  }
 
-    public abstract void handleManagementNavigation(UriFragment uriFragment);
+  public abstract void handleManagementNavigation(UriFragment uriFragment);
 
 }

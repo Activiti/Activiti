@@ -21,12 +21,12 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * @author Tom Baeyens
  * 
- * TODO: Can probably be deleted
+ *         TODO: Can probably be deleted
  */
 public class ProcessInstanceEndHandler implements ExecutionListener {
 
-    public void notify(DelegateExecution execution) {
-        Context.getCommandContext().getHistoryManager()
-                .recordProcessInstanceEnd(execution.getProcessInstanceId(), ((ExecutionEntity) execution).getDeleteReason(), ((ExecutionEntity) execution).getActivityId());
-    }
+  public void notify(DelegateExecution execution) {
+    Context.getCommandContext().getHistoryManager()
+        .recordProcessInstanceEnd(execution.getProcessInstanceId(), ((ExecutionEntity) execution).getDeleteReason(), ((ExecutionEntity) execution).getActivityId());
+  }
 }

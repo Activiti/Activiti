@@ -20,66 +20,64 @@ import org.activiti.engine.runtime.ClockReader;
 import org.activiti.ldap.LDAPGroupCache.LDAPGroupCacheListener;
 
 /**
- * {@link SessionFactory} responsible for creating the {@link LDAPGroupManager}.
- * Is plugged into the {@link ProcessEngineConfiguration} automatically through
- * the {@link LDAPConfigurator}.
+ * {@link SessionFactory} responsible for creating the {@link LDAPGroupManager}. Is plugged into the {@link ProcessEngineConfiguration} automatically through the {@link LDAPConfigurator}.
  * 
  * @author Joram Barrez
  */
 public class LDAPGroupManagerFactory implements SessionFactory {
 
-    protected LDAPConfigurator ldapConfigurator;
+  protected LDAPConfigurator ldapConfigurator;
 
-    protected LDAPGroupCache ldapGroupCache;
-    protected LDAPGroupCacheListener ldapCacheListener;
+  protected LDAPGroupCache ldapGroupCache;
+  protected LDAPGroupCacheListener ldapCacheListener;
 
-    public LDAPGroupManagerFactory(LDAPConfigurator ldapConfigurator, ClockReader clockReader) {
-        this.ldapConfigurator = ldapConfigurator;
+  public LDAPGroupManagerFactory(LDAPConfigurator ldapConfigurator, ClockReader clockReader) {
+    this.ldapConfigurator = ldapConfigurator;
 
-        if (ldapConfigurator.getGroupCacheSize() > 0) {
-            ldapGroupCache = new LDAPGroupCache(ldapConfigurator.getGroupCacheSize(), ldapConfigurator.getGroupCacheExpirationTime(), clockReader);
-            if (ldapCacheListener != null) {
-                ldapGroupCache.setLdapCacheListener(ldapCacheListener);
-            }
-        }
+    if (ldapConfigurator.getGroupCacheSize() > 0) {
+      ldapGroupCache = new LDAPGroupCache(ldapConfigurator.getGroupCacheSize(), ldapConfigurator.getGroupCacheExpirationTime(), clockReader);
+      if (ldapCacheListener != null) {
+        ldapGroupCache.setLdapCacheListener(ldapCacheListener);
+      }
     }
+  }
 
-    @Override
-    public Class<?> getSessionType() {
-        return GroupIdentityManager.class;
-    }
+  @Override
+  public Class<?> getSessionType() {
+    return GroupIdentityManager.class;
+  }
 
-    @Override
-    public Session openSession() {
-        if (ldapGroupCache == null) {
-            return new LDAPGroupManager(ldapConfigurator);
-        } else {
-            return new LDAPGroupManager(ldapConfigurator, ldapGroupCache);
-        }
+  @Override
+  public Session openSession() {
+    if (ldapGroupCache == null) {
+      return new LDAPGroupManager(ldapConfigurator);
+    } else {
+      return new LDAPGroupManager(ldapConfigurator, ldapGroupCache);
     }
+  }
 
-    public LDAPConfigurator getLdapConfigurator() {
-        return ldapConfigurator;
-    }
+  public LDAPConfigurator getLdapConfigurator() {
+    return ldapConfigurator;
+  }
 
-    public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
-        this.ldapConfigurator = ldapConfigurator;
-    }
+  public void setLdapConfigurator(LDAPConfigurator ldapConfigurator) {
+    this.ldapConfigurator = ldapConfigurator;
+  }
 
-    public LDAPGroupCache getLdapGroupCache() {
-        return ldapGroupCache;
-    }
+  public LDAPGroupCache getLdapGroupCache() {
+    return ldapGroupCache;
+  }
 
-    public void setLdapGroupCache(LDAPGroupCache ldapGroupCache) {
-        this.ldapGroupCache = ldapGroupCache;
-    }
+  public void setLdapGroupCache(LDAPGroupCache ldapGroupCache) {
+    this.ldapGroupCache = ldapGroupCache;
+  }
 
-    public LDAPGroupCacheListener getLdapCacheListener() {
-        return ldapCacheListener;
-    }
+  public LDAPGroupCacheListener getLdapCacheListener() {
+    return ldapCacheListener;
+  }
 
-    public void setLdapCacheListener(LDAPGroupCacheListener ldapCacheListener) {
-        this.ldapCacheListener = ldapCacheListener;
-    }
+  public void setLdapCacheListener(LDAPGroupCacheListener ldapCacheListener) {
+    this.ldapCacheListener = ldapCacheListener;
+  }
 
 }

@@ -32,46 +32,46 @@ import org.activiti5.engine.repository.ProcessDefinition;
  */
 public class SignalEventHandler extends AbstractEventHandler {
 
-    public static final String EVENT_HANDLER_TYPE = "signal";
+  public static final String EVENT_HANDLER_TYPE = "signal";
 
-    public String getEventHandlerType() {
-        return EVENT_HANDLER_TYPE;
-    }
+  public String getEventHandlerType() {
+    return EVENT_HANDLER_TYPE;
+  }
 
-    @Override
-    public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
-        if (eventSubscription.getExecutionId() != null) {
-            super.handleEvent(eventSubscription, payload, commandContext);
-        } else if (eventSubscription.getProcessDefinitionId() != null) {
-            // Start event
-            String processDefinitionId = eventSubscription.getProcessDefinitionId();
-            DeploymentManager deploymentCache = Context.getProcessEngineConfiguration().getDeploymentManager();
+  @Override
+  public void handleEvent(EventSubscriptionEntity eventSubscription, Object payload, CommandContext commandContext) {
+    if (eventSubscription.getExecutionId() != null) {
+      super.handleEvent(eventSubscription, payload, commandContext);
+    } else if (eventSubscription.getProcessDefinitionId() != null) {
+      // Start event
+      String processDefinitionId = eventSubscription.getProcessDefinitionId();
+      DeploymentManager deploymentCache = Context.getProcessEngineConfiguration().getDeploymentManager();
 
-            ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
-            if (processDefinition == null) {
-                throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
-            }
+      ProcessDefinitionEntity processDefinition = deploymentCache.findDeployedProcessDefinitionById(processDefinitionId);
+      if (processDefinition == null) {
+        throw new ActivitiObjectNotFoundException("No process definition found for id '" + processDefinitionId + "'", ProcessDefinition.class);
+      }
 
-            ActivityImpl startActivity = processDefinition.findActivity(eventSubscription.getActivityId());
-            if (startActivity == null) {
-                throw new ActivitiException("Could no handle signal: no start activity found with id " + eventSubscription.getActivityId());
-            }
-            ExecutionEntity processInstance = processDefinition.createProcessInstance(null, startActivity);
-            if (processInstance == null) {
-                throw new ActivitiException("Could not handle signal: no process instance started");
-            }
+      ActivityImpl startActivity = processDefinition.findActivity(eventSubscription.getActivityId());
+      if (startActivity == null) {
+        throw new ActivitiException("Could no handle signal: no start activity found with id " + eventSubscription.getActivityId());
+      }
+      ExecutionEntity processInstance = processDefinition.createProcessInstance(null, startActivity);
+      if (processInstance == null) {
+        throw new ActivitiException("Could not handle signal: no process instance started");
+      }
 
-            if (payload != null) {
-                if (payload instanceof Map) {
-                    Map<String, Object> variables = (Map<String, Object>) payload;
-                    processInstance.setVariables(variables);
-                }
-            }
-
-            processInstance.start();
-        } else {
-            throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
+      if (payload != null) {
+        if (payload instanceof Map) {
+          Map<String, Object> variables = (Map<String, Object>) payload;
+          processInstance.setVariables(variables);
         }
+      }
+
+      processInstance.start();
+    } else {
+      throw new ActivitiException("Invalid signal handling: no execution nor process definition set");
     }
+  }
 
 }

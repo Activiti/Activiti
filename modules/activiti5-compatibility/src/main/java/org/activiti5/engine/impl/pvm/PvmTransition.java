@@ -20,9 +20,9 @@ import org.activiti5.engine.delegate.Expression;
  */
 public interface PvmTransition extends PvmProcessElement {
 
-    PvmActivity getSource();
+  PvmActivity getSource();
 
-    PvmActivity getDestination();
+  PvmActivity getDestination();
 
-    Expression getSkipExpression();
+  Expression getSkipExpression();
 }

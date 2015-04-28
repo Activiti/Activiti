@@ -21,27 +21,27 @@ import java.io.UnsupportedEncodingException;
  */
 public class StringStreamSource implements StreamSource {
 
-    String string;
-    String byteArrayEncoding = "utf-8";
+  String string;
+  String byteArrayEncoding = "utf-8";
 
-    public StringStreamSource(String string) {
-        this.string = string;
-    }
+  public StringStreamSource(String string) {
+    this.string = string;
+  }
 
-    public StringStreamSource(String string, String byteArrayEncoding) {
-        this.string = string;
-        this.byteArrayEncoding = byteArrayEncoding;
-    }
+  public StringStreamSource(String string, String byteArrayEncoding) {
+    this.string = string;
+    this.byteArrayEncoding = byteArrayEncoding;
+  }
 
-    public InputStream getInputStream() {
-        try {
-            return new ByteArrayInputStream(byteArrayEncoding == null ? string.getBytes() : string.getBytes(byteArrayEncoding));
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
+  public InputStream getInputStream() {
+    try {
+      return new ByteArrayInputStream(byteArrayEncoding == null ? string.getBytes() : string.getBytes(byteArrayEncoding));
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    public String toString() {
-        return "String";
-    }
+  public String toString() {
+    return "String";
+  }
 }

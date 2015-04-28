@@ -19,8 +19,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 
 /**
- * Marker interface for all 'patterns' that are known by the simple workflow
- * API.
+ * Marker interface for all 'patterns' that are known by the simple workflow API.
  * 
  * @author Joram Barrez
  * @author Frederik Heremans
@@ -28,29 +27,28 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "type")
 public interface StepDefinition {
 
-    String getId();
+  String getId();
 
-    void setId(String id);
+  void setId(String id);
 
-    /**
-     * Create a clone of this {@link StepDefinition} instance.
-     */
-    StepDefinition clone();
+  /**
+   * Create a clone of this {@link StepDefinition} instance.
+   */
+  StepDefinition clone();
 
-    /**
-     * Sets the properties of this {@link StepDefinition} instance based in the
-     * properties present in the given definition.
-     */
-    void setValues(StepDefinition otherDefinition);
+  /**
+   * Sets the properties of this {@link StepDefinition} instance based in the properties present in the given definition.
+   */
+  void setValues(StepDefinition otherDefinition);
 
-    /**
-     * @return custom parameter map.
-     */
-    Map<String, Object> getParameters();
+  /**
+   * @return custom parameter map.
+   */
+  Map<String, Object> getParameters();
 
-    /**
-     * Set the custom parameters.
-     */
-    void setParameters(Map<String, Object> parameters);
+  /**
+   * Set the custom parameters.
+   */
+  void setParameters(Map<String, Object> parameters);
 
 }

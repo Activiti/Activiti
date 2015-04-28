@@ -24,18 +24,18 @@ import com.vaadin.terminal.Resource;
  */
 public class PdfAttachmentRenderer extends GenericAttachmentRenderer {
 
-    private static final String PDF_ATTACHMENT_TYPE = "application/pdf";
+  private static final String PDF_ATTACHMENT_TYPE = "application/pdf";
 
-    @Override
-    public boolean canRenderAttachment(String type) {
-        if (type != null) {
-            return type.startsWith(PDF_ATTACHMENT_TYPE);
-        }
-        return false;
+  @Override
+  public boolean canRenderAttachment(String type) {
+    if (type != null) {
+      return type.startsWith(PDF_ATTACHMENT_TYPE);
     }
+    return false;
+  }
 
-    @Override
-    public Resource getImage(Attachment attachment) {
-        return Images.RELATED_CONTENT_PDF;
-    }
+  @Override
+  public Resource getImage(Attachment attachment) {
+    return Images.RELATED_CONTENT_PDF;
+  }
 }

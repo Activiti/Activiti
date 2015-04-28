@@ -23,33 +23,31 @@ import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntit
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 public class IntermediateCatchMessageEventActivityBehavior extends AbstractBpmnActivityBehavior {
-    
-    private static final long serialVersionUID = 1L;
-    
-    protected MessageEventDefinition messageEventDefinition;
-    
-	public IntermediateCatchMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition) {
-		this.messageEventDefinition = messageEventDefinition;
-	}
 
-    public void execute(ActivityExecution execution) {
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        Context.getCommandContext().getEventSubscriptionEntityManager().insertMessageEvent(
-                messageEventDefinition, executionEntity);
-    }
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-        List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
-        for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-            if (eventSubscription instanceof MessageEventSubscriptionEntity && 
-                    eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
-                
-                eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription); 
-            }
-        }
-        leave(executionEntity);
+  protected MessageEventDefinition messageEventDefinition;
+
+  public IntermediateCatchMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition) {
+    this.messageEventDefinition = messageEventDefinition;
+  }
+
+  public void execute(ActivityExecution execution) {
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    Context.getCommandContext().getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, executionEntity);
+  }
+
+  @Override
+  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+    for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+      if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
+
+        eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
+      }
     }
+    leave(executionEntity);
+  }
 }

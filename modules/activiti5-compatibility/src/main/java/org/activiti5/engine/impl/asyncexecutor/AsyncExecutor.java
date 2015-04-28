@@ -5,45 +5,45 @@ import org.activiti5.engine.impl.persistence.entity.JobEntity;
 
 public interface AsyncExecutor {
 
-    public void executeAsyncJob(JobEntity job);
+  public void executeAsyncJob(JobEntity job);
 
-    public void setCommandExecutor(CommandExecutor commandExecutor);
+  public void setCommandExecutor(CommandExecutor commandExecutor);
 
-    public CommandExecutor getCommandExecutor();
+  public CommandExecutor getCommandExecutor();
 
-    public boolean isAutoActivate();
+  public boolean isAutoActivate();
 
-    public void setAutoActivate(boolean isAutoActivate);
+  public void setAutoActivate(boolean isAutoActivate);
 
-    public boolean isActive();
+  public boolean isActive();
 
-    public void start();
+  public void start();
 
-    public void shutdown();
+  public void shutdown();
 
-    public String getLockOwner();
+  public String getLockOwner();
 
-    public int getTimerLockTimeInMillis();
+  public int getTimerLockTimeInMillis();
 
-    public void setTimerLockTimeInMillis(int lockTimeInMillis);
+  public void setTimerLockTimeInMillis(int lockTimeInMillis);
 
-    public int getAsyncJobLockTimeInMillis();
+  public int getAsyncJobLockTimeInMillis();
 
-    public void setAsyncJobLockTimeInMillis(int lockTimeInMillis);
+  public void setAsyncJobLockTimeInMillis(int lockTimeInMillis);
 
-    public int getDefaultTimerJobAcquireWaitTimeInMillis();
+  public int getDefaultTimerJobAcquireWaitTimeInMillis();
 
-    public void setDefaultTimerJobAcquireWaitTimeInMillis(int waitTimeInMillis);
+  public void setDefaultTimerJobAcquireWaitTimeInMillis(int waitTimeInMillis);
 
-    public int getDefaultAsyncJobAcquireWaitTimeInMillis();
+  public int getDefaultAsyncJobAcquireWaitTimeInMillis();
 
-    public void setDefaultAsyncJobAcquireWaitTimeInMillis(int waitTimeInMillis);
+  public void setDefaultAsyncJobAcquireWaitTimeInMillis(int waitTimeInMillis);
 
-    public int getMaxAsyncJobsDuePerAcquisition();
+  public int getMaxAsyncJobsDuePerAcquisition();
 
-    public void setMaxAsyncJobsDuePerAcquisition(int maxJobs);
+  public void setMaxAsyncJobsDuePerAcquisition(int maxJobs);
 
-    public int getMaxTimerJobsPerAcquisition();
+  public int getMaxTimerJobsPerAcquisition();
 
-    public void setMaxTimerJobsPerAcquisition(int maxJobs);
+  public void setMaxTimerJobsPerAcquisition(int maxJobs);
 }

@@ -48,85 +48,85 @@ import java.util.List;
  */
 public class IdentityServiceImpl extends ServiceImpl implements IdentityService {
 
-    public Group newGroup(String groupId) {
-        return commandExecutor.execute(new CreateGroupCmd(groupId));
-    }
+  public Group newGroup(String groupId) {
+    return commandExecutor.execute(new CreateGroupCmd(groupId));
+  }
 
-    public User newUser(String userId) {
-        return commandExecutor.execute(new CreateUserCmd(userId));
-    }
+  public User newUser(String userId) {
+    return commandExecutor.execute(new CreateUserCmd(userId));
+  }
 
-    public void saveGroup(Group group) {
-        commandExecutor.execute(new SaveGroupCmd((GroupEntity) group));
-    }
+  public void saveGroup(Group group) {
+    commandExecutor.execute(new SaveGroupCmd((GroupEntity) group));
+  }
 
-    public void saveUser(User user) {
-        commandExecutor.execute(new SaveUserCmd(user));
-    }
+  public void saveUser(User user) {
+    commandExecutor.execute(new SaveUserCmd(user));
+  }
 
-    public UserQuery createUserQuery() {
-        return commandExecutor.execute(new CreateUserQueryCmd());
-    }
+  public UserQuery createUserQuery() {
+    return commandExecutor.execute(new CreateUserQueryCmd());
+  }
 
-    @Override
-    public NativeUserQuery createNativeUserQuery() {
-        return new NativeUserQueryImpl(commandExecutor);
-    }
+  @Override
+  public NativeUserQuery createNativeUserQuery() {
+    return new NativeUserQueryImpl(commandExecutor);
+  }
 
-    public GroupQuery createGroupQuery() {
-        return commandExecutor.execute(new CreateGroupQueryCmd());
-    }
+  public GroupQuery createGroupQuery() {
+    return commandExecutor.execute(new CreateGroupQueryCmd());
+  }
 
-    @Override
-    public NativeGroupQuery createNativeGroupQuery() {
-        return new NativeGroupQueryImpl(commandExecutor);
-    }
+  @Override
+  public NativeGroupQuery createNativeGroupQuery() {
+    return new NativeGroupQueryImpl(commandExecutor);
+  }
 
-    public void createMembership(String userId, String groupId) {
-        commandExecutor.execute(new CreateMembershipCmd(userId, groupId));
-    }
+  public void createMembership(String userId, String groupId) {
+    commandExecutor.execute(new CreateMembershipCmd(userId, groupId));
+  }
 
-    public void deleteGroup(String groupId) {
-        commandExecutor.execute(new DeleteGroupCmd(groupId));
-    }
+  public void deleteGroup(String groupId) {
+    commandExecutor.execute(new DeleteGroupCmd(groupId));
+  }
 
-    public void deleteMembership(String userId, String groupId) {
-        commandExecutor.execute(new DeleteMembershipCmd(userId, groupId));
-    }
+  public void deleteMembership(String userId, String groupId) {
+    commandExecutor.execute(new DeleteMembershipCmd(userId, groupId));
+  }
 
-    public boolean checkPassword(String userId, String password) {
-        return commandExecutor.execute(new CheckPassword(userId, password));
-    }
+  public boolean checkPassword(String userId, String password) {
+    return commandExecutor.execute(new CheckPassword(userId, password));
+  }
 
-    public void deleteUser(String userId) {
-        commandExecutor.execute(new DeleteUserCmd(userId));
-    }
+  public void deleteUser(String userId) {
+    commandExecutor.execute(new DeleteUserCmd(userId));
+  }
 
-    public void setUserPicture(String userId, Picture picture) {
-        commandExecutor.execute(new SetUserPictureCmd(userId, picture));
-    }
+  public void setUserPicture(String userId, Picture picture) {
+    commandExecutor.execute(new SetUserPictureCmd(userId, picture));
+  }
 
-    public Picture getUserPicture(String userId) {
-        return commandExecutor.execute(new GetUserPictureCmd(userId));
-    }
+  public Picture getUserPicture(String userId) {
+    return commandExecutor.execute(new GetUserPictureCmd(userId));
+  }
 
-    public void setAuthenticatedUserId(String authenticatedUserId) {
-        Authentication.setAuthenticatedUserId(authenticatedUserId);
-    }
+  public void setAuthenticatedUserId(String authenticatedUserId) {
+    Authentication.setAuthenticatedUserId(authenticatedUserId);
+  }
 
-    public String getUserInfo(String userId, String key) {
-        return commandExecutor.execute(new GetUserInfoCmd(userId, key));
-    }
+  public String getUserInfo(String userId, String key) {
+    return commandExecutor.execute(new GetUserInfoCmd(userId, key));
+  }
 
-    public List<String> getUserInfoKeys(String userId) {
-        return commandExecutor.execute(new GetUserInfoKeysCmd(userId, IdentityInfoEntity.TYPE_USERINFO));
-    }
+  public List<String> getUserInfoKeys(String userId) {
+    return commandExecutor.execute(new GetUserInfoKeysCmd(userId, IdentityInfoEntity.TYPE_USERINFO));
+  }
 
-    public void setUserInfo(String userId, String key, String value) {
-        commandExecutor.execute(new SetUserInfoCmd(userId, key, value));
-    }
+  public void setUserInfo(String userId, String key, String value) {
+    commandExecutor.execute(new SetUserInfoCmd(userId, key, value));
+  }
 
-    public void deleteUserInfo(String userId, String key) {
-        commandExecutor.execute(new DeleteUserInfoCmd(userId, key));
-    }
+  public void deleteUserInfo(String userId, String key) {
+    commandExecutor.execute(new DeleteUserInfoCmd(userId, key));
+  }
 }

@@ -23,17 +23,17 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class DeleteUserInfoCmd implements Command<Object>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String userId;
-    protected String key;
+  private static final long serialVersionUID = 1L;
+  protected String userId;
+  protected String key;
 
-    public DeleteUserInfoCmd(String userId, String key) {
-        this.userId = userId;
-        this.key = key;
-    }
+  public DeleteUserInfoCmd(String userId, String key) {
+    this.userId = userId;
+    this.key = key;
+  }
 
-    public String execute(CommandContext commandContext) {
-        commandContext.getIdentityInfoEntityManager().deleteUserInfoByUserIdAndKey(userId, key);
-        return null;
-    }
+  public String execute(CommandContext commandContext) {
+    commandContext.getIdentityInfoEntityManager().deleteUserInfoByUserIdAndKey(userId, key);
+    return null;
+  }
 }

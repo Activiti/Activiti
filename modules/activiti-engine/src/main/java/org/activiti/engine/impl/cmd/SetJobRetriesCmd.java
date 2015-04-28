@@ -29,33 +29,33 @@ import org.activiti.engine.runtime.Job;
  */
 public class SetJobRetriesCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final String jobId;
-    private final int retries;
+  private final String jobId;
+  private final int retries;
 
-    public SetJobRetriesCmd(String jobId, int retries) {
-        if (jobId == null || jobId.length() < 1) {
-            throw new ActivitiIllegalArgumentException("The job id is mandatory, but '" + jobId + "' has been provided.");
-        }
-        if (retries < 0) {
-            throw new ActivitiIllegalArgumentException("The number of job retries must be a non-negative Integer, but '" + retries + "' has been provided.");
-        }
-        this.jobId = jobId;
-        this.retries = retries;
+  public SetJobRetriesCmd(String jobId, int retries) {
+    if (jobId == null || jobId.length() < 1) {
+      throw new ActivitiIllegalArgumentException("The job id is mandatory, but '" + jobId + "' has been provided.");
     }
-
-    public Void execute(CommandContext commandContext) {
-        JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
-        if (job != null) {
-            job.setRetries(retries);
-
-            if (commandContext.getEventDispatcher().isEnabled()) {
-                commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, job));
-            }
-        } else {
-            throw new ActivitiObjectNotFoundException("No job found with id '" + jobId + "'.", Job.class);
-        }
-        return null;
+    if (retries < 0) {
+      throw new ActivitiIllegalArgumentException("The number of job retries must be a non-negative Integer, but '" + retries + "' has been provided.");
     }
+    this.jobId = jobId;
+    this.retries = retries;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    JobEntity job = commandContext.getJobEntityManager().findJobById(jobId);
+    if (job != null) {
+      job.setRetries(retries);
+
+      if (commandContext.getEventDispatcher().isEnabled()) {
+        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, job));
+      }
+    } else {
+      throw new ActivitiObjectNotFoundException("No job found with id '" + jobId + "'.", Job.class);
+    }
+    return null;
+  }
 }

@@ -20,8 +20,7 @@ import javax.persistence.Id;
 
 /**
  * 
- * WARNING: This class cannot be used in JPA-context, since it has an illegal
- * type of ID.
+ * WARNING: This class cannot be used in JPA-context, since it has an illegal type of ID.
  * 
  * For testing purposes only.
  * 
@@ -30,15 +29,15 @@ import javax.persistence.Id;
 @Entity
 public class IllegalIdClassJPAEntity {
 
-    @Id
-    private Calendar id;
+  @Id
+  private Calendar id;
 
-    public Calendar getId() {
-        return id;
-    }
+  public Calendar getId() {
+    return id;
+  }
 
-    public void setId(Calendar id) {
-        this.id = id;
-    }
+  public void setId(Calendar id) {
+    this.id = id;
+  }
 
 }

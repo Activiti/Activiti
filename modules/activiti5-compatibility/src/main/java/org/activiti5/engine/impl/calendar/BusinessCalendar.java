@@ -19,11 +19,11 @@ import java.util.Date;
  */
 public interface BusinessCalendar {
 
-    Date resolveDuedate(String duedateDescription);
+  Date resolveDuedate(String duedateDescription);
 
-    Date resolveDuedate(String duedateDescription, int maxIterations);
+  Date resolveDuedate(String duedateDescription, int maxIterations);
 
-    Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer);
+  Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer);
 
-    Date resolveEndDate(String endDateString);
+  Date resolveEndDate(String endDateString);
 }

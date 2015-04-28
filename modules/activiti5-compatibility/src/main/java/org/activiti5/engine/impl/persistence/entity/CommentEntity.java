@@ -28,145 +28,145 @@ import org.activiti5.engine.task.Event;
  */
 public class CommentEntity implements Comment, Event, PersistentObject, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String TYPE_EVENT = "event";
-    public static final String TYPE_COMMENT = "comment";
+  public static final String TYPE_EVENT = "event";
+  public static final String TYPE_COMMENT = "comment";
 
-    protected String id;
+  protected String id;
 
-    // If comments would be removeable, revision needs to be added!
+  // If comments would be removeable, revision needs to be added!
 
-    protected String type;
-    protected String userId;
-    protected Date time;
-    protected String taskId;
-    protected String processInstanceId;
-    protected String action;
-    protected String message;
-    protected String fullMessage;
+  protected String type;
+  protected String userId;
+  protected Date time;
+  protected String taskId;
+  protected String processInstanceId;
+  protected String action;
+  protected String message;
+  protected String fullMessage;
 
-    public Object getPersistentState() {
-        return CommentEntity.class;
+  public Object getPersistentState() {
+    return CommentEntity.class;
+  }
+
+  public byte[] getFullMessageBytes() {
+    return (fullMessage != null ? fullMessage.getBytes() : null);
+  }
+
+  public void setFullMessageBytes(byte[] fullMessageBytes) {
+    fullMessage = (fullMessageBytes != null ? new String(fullMessageBytes) : null);
+  }
+
+  public static String MESSAGE_PARTS_MARKER = "_|_";
+  public static Pattern MESSAGE_PARTS_MARKER_REGEX = Pattern.compile("_\\|_");
+
+  public void setMessage(String[] messageParts) {
+    StringBuilder stringBuilder = new StringBuilder();
+    for (String part : messageParts) {
+      if (part != null) {
+        stringBuilder.append(part.replace(MESSAGE_PARTS_MARKER, " | "));
+        stringBuilder.append(MESSAGE_PARTS_MARKER);
+      } else {
+        stringBuilder.append("null");
+        stringBuilder.append(MESSAGE_PARTS_MARKER);
+      }
     }
-
-    public byte[] getFullMessageBytes() {
-        return (fullMessage != null ? fullMessage.getBytes() : null);
+    for (int i = 0; i < MESSAGE_PARTS_MARKER.length(); i++) {
+      stringBuilder.deleteCharAt(stringBuilder.length() - 1);
     }
+    message = stringBuilder.toString();
+  }
 
-    public void setFullMessageBytes(byte[] fullMessageBytes) {
-        fullMessage = (fullMessageBytes != null ? new String(fullMessageBytes) : null);
+  public List<String> getMessageParts() {
+    if (message == null) {
+      return null;
     }
+    List<String> messageParts = new ArrayList<String>();
 
-    public static String MESSAGE_PARTS_MARKER = "_|_";
-    public static Pattern MESSAGE_PARTS_MARKER_REGEX = Pattern.compile("_\\|_");
-
-    public void setMessage(String[] messageParts) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String part : messageParts) {
-            if (part != null) {
-                stringBuilder.append(part.replace(MESSAGE_PARTS_MARKER, " | "));
-                stringBuilder.append(MESSAGE_PARTS_MARKER);
-            } else {
-                stringBuilder.append("null");
-                stringBuilder.append(MESSAGE_PARTS_MARKER);
-            }
-        }
-        for (int i = 0; i < MESSAGE_PARTS_MARKER.length(); i++) {
-            stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        }
-        message = stringBuilder.toString();
+    String[] parts = MESSAGE_PARTS_MARKER_REGEX.split(message);
+    for (String part : parts) {
+      if ("null".equals(part)) {
+        messageParts.add(null);
+      } else {
+        messageParts.add(part);
+      }
     }
+    return messageParts;
+  }
 
-    public List<String> getMessageParts() {
-        if (message == null) {
-            return null;
-        }
-        List<String> messageParts = new ArrayList<String>();
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-        String[] parts = MESSAGE_PARTS_MARKER_REGEX.split(message);
-        for (String part : parts) {
-            if ("null".equals(part)) {
-                messageParts.add(null);
-            } else {
-                messageParts.add(part);
-            }
-        }
-        return messageParts;
-    }
+  public String getId() {
+    return id;
+  }
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getUserId() {
+    return userId;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 
-    public String getUserId() {
-        return userId;
-    }
+  public String getTaskId() {
+    return taskId;
+  }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
 
-    public String getTaskId() {
-        return taskId;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public Date getTime() {
+    return time;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public void setTime(Date time) {
+    this.time = time;
+  }
 
-    public Date getTime() {
-        return time;
-    }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public void setTime(Date time) {
-        this.time = time;
-    }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public String getFullMessage() {
+    return fullMessage;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public void setFullMessage(String fullMessage) {
+    this.fullMessage = fullMessage;
+  }
 
-    public String getFullMessage() {
-        return fullMessage;
-    }
+  public String getAction() {
+    return action;
+  }
 
-    public void setFullMessage(String fullMessage) {
-        this.fullMessage = fullMessage;
-    }
-
-    public String getAction() {
-        return action;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
-    }
+  public void setAction(String action) {
+    this.action = action;
+  }
 }

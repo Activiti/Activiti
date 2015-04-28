@@ -23,85 +23,85 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public abstract class AbstractDatabaseEventLoggerEventHandler implements EventLoggerEventHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractDatabaseEventLoggerEventHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(AbstractDatabaseEventLoggerEventHandler.class);
 
-    protected ActivitiEvent event;
-    protected Date timeStamp;
-    protected ObjectMapper objectMapper;
+  protected ActivitiEvent event;
+  protected Date timeStamp;
+  protected ObjectMapper objectMapper;
 
-    public AbstractDatabaseEventLoggerEventHandler() {
+  public AbstractDatabaseEventLoggerEventHandler() {
+  }
+
+  protected EventLogEntryEntity createEventLogEntry(Map<String, Object> data) {
+    return createEventLogEntry(null, null, null, null, data);
+  }
+
+  protected EventLogEntryEntity createEventLogEntry(String processDefinitionId, String processInstanceId, String executionId, String taskId, Map<String, Object> data) {
+    return createEventLogEntry(event.getType().name(), processDefinitionId, processInstanceId, executionId, taskId, data);
+  }
+
+  protected EventLogEntryEntity createEventLogEntry(String type, String processDefinitionId, String processInstanceId, String executionId, String taskId, Map<String, Object> data) {
+
+    EventLogEntryEntity eventLogEntry = new EventLogEntryEntity();
+    eventLogEntry.setProcessDefinitionId(processDefinitionId);
+    eventLogEntry.setProcessInstanceId(processInstanceId);
+    eventLogEntry.setExecutionId(executionId);
+    eventLogEntry.setTaskId(taskId);
+    eventLogEntry.setType(type);
+    eventLogEntry.setTimeStamp(timeStamp);
+    putInMapIfNotNull(data, Fields.TIMESTAMP, timeStamp);
+
+    // Current user
+    String userId = Authentication.getAuthenticatedUserId();
+    if (userId != null) {
+      eventLogEntry.setUserId(userId);
+      putInMapIfNotNull(data, "userId", userId);
     }
 
-    protected EventLogEntryEntity createEventLogEntry(Map<String, Object> data) {
-        return createEventLogEntry(null, null, null, null, data);
+    // Current tenant
+    if (!data.containsKey(Fields.TENANT_ID) && processDefinitionId != null) {
+      ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
+      if (processDefinitionEntity != null && !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(processDefinitionEntity.getTenantId())) {
+        putInMapIfNotNull(data, Fields.TENANT_ID, processDefinitionEntity.getTenantId());
+      }
     }
 
-    protected EventLogEntryEntity createEventLogEntry(String processDefinitionId, String processInstanceId, String executionId, String taskId, Map<String, Object> data) {
-        return createEventLogEntry(event.getType().name(), processDefinitionId, processInstanceId, executionId, taskId, data);
+    try {
+      eventLogEntry.setData(objectMapper.writeValueAsBytes(data));
+    } catch (Exception e) {
+      logger.warn("Could not serialize event data. Data will not be written to the database", e);
     }
 
-    protected EventLogEntryEntity createEventLogEntry(String type, String processDefinitionId, String processInstanceId, String executionId, String taskId, Map<String, Object> data) {
+    return eventLogEntry;
 
-        EventLogEntryEntity eventLogEntry = new EventLogEntryEntity();
-        eventLogEntry.setProcessDefinitionId(processDefinitionId);
-        eventLogEntry.setProcessInstanceId(processInstanceId);
-        eventLogEntry.setExecutionId(executionId);
-        eventLogEntry.setTaskId(taskId);
-        eventLogEntry.setType(type);
-        eventLogEntry.setTimeStamp(timeStamp);
-        putInMapIfNotNull(data, Fields.TIMESTAMP, timeStamp);
+  }
 
-        // Current user
-        String userId = Authentication.getAuthenticatedUserId();
-        if (userId != null) {
-            eventLogEntry.setUserId(userId);
-            putInMapIfNotNull(data, "userId", userId);
-        }
+  @Override
+  public void setEvent(ActivitiEvent event) {
+    this.event = event;
+  }
 
-        // Current tenant
-        if (!data.containsKey(Fields.TENANT_ID) && processDefinitionId != null) {
-        	 ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
-             if (processDefinitionEntity != null && !ProcessEngineConfigurationImpl.NO_TENANT_ID.equals(processDefinitionEntity.getTenantId())) {
-                 putInMapIfNotNull(data, Fields.TENANT_ID, processDefinitionEntity.getTenantId());
-             }
-        }
+  @Override
+  public void setTimeStamp(Date timeStamp) {
+    this.timeStamp = timeStamp;
+  }
 
-        try {
-            eventLogEntry.setData(objectMapper.writeValueAsBytes(data));
-        } catch (Exception e) {
-            logger.warn("Could not serialize event data. Data will not be written to the database", e);
-        }
+  @Override
+  public void setObjectMapper(ObjectMapper objectMapper) {
+    this.objectMapper = objectMapper;
+  }
 
-        return eventLogEntry;
+  // Helper methods //////////////////////////////////////////////////////
 
+  @SuppressWarnings("unchecked")
+  public <T> T getEntityFromEvent() {
+    return (T) ((ActivitiEntityEvent) event).getEntity();
+  }
+
+  public void putInMapIfNotNull(Map<String, Object> map, String key, Object value) {
+    if (value != null) {
+      map.put(key, value);
     }
-
-    @Override
-    public void setEvent(ActivitiEvent event) {
-        this.event = event;
-    }
-
-    @Override
-    public void setTimeStamp(Date timeStamp) {
-        this.timeStamp = timeStamp;
-    }
-
-    @Override
-    public void setObjectMapper(ObjectMapper objectMapper) {
-        this.objectMapper = objectMapper;
-    }
-
-    // Helper methods //////////////////////////////////////////////////////
-
-    @SuppressWarnings("unchecked")
-    public <T> T getEntityFromEvent() {
-        return (T) ((ActivitiEntityEvent) event).getEntity();
-    }
-
-    public void putInMapIfNotNull(Map<String, Object> map, String key, Object value) {
-        if (value != null) {
-            map.put(key, value);
-        }
-    }
+  }
 
 }

@@ -21,8 +21,8 @@ import org.activiti.engine.impl.interceptor.DelegateInterceptor;
  */
 public class DefaultDelegateInterceptor implements DelegateInterceptor {
 
-    public void handleInvocation(DelegateInvocation invocation) {
-        invocation.proceed();
-    }
+  public void handleInvocation(DelegateInvocation invocation) {
+    invocation.proceed();
+  }
 
 }

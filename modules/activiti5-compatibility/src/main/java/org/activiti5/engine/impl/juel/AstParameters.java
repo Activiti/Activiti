@@ -20,43 +20,43 @@ import java.util.List;
 import org.activiti5.engine.impl.javax.el.ELContext;
 
 public class AstParameters extends AstRightValue {
-    private final List<AstNode> nodes;
+  private final List<AstNode> nodes;
 
-    public AstParameters(List<AstNode> nodes) {
-        this.nodes = nodes;
-    }
+  public AstParameters(List<AstNode> nodes) {
+    this.nodes = nodes;
+  }
 
-    @Override
-    public Object[] eval(Bindings bindings, ELContext context) {
-        Object[] result = new Object[nodes.size()];
-        for (int i = 0; i < nodes.size(); i++) {
-            result[i] = nodes.get(i).eval(bindings, context);
-        }
-        return result;
+  @Override
+  public Object[] eval(Bindings bindings, ELContext context) {
+    Object[] result = new Object[nodes.size()];
+    for (int i = 0; i < nodes.size(); i++) {
+      result[i] = nodes.get(i).eval(bindings, context);
     }
+    return result;
+  }
 
-    @Override
-    public String toString() {
-        return "(...)";
-    }
+  @Override
+  public String toString() {
+    return "(...)";
+  }
 
-    @Override
-    public void appendStructure(StringBuilder builder, Bindings bindings) {
-        builder.append("(");
-        for (int i = 0; i < nodes.size(); i++) {
-            if (i > 0) {
-                builder.append(", ");
-            }
-            nodes.get(i).appendStructure(builder, bindings);
-        }
-        builder.append(")");
+  @Override
+  public void appendStructure(StringBuilder builder, Bindings bindings) {
+    builder.append("(");
+    for (int i = 0; i < nodes.size(); i++) {
+      if (i > 0) {
+        builder.append(", ");
+      }
+      nodes.get(i).appendStructure(builder, bindings);
     }
+    builder.append(")");
+  }
 
-    public int getCardinality() {
-        return nodes.size();
-    }
+  public int getCardinality() {
+    return nodes.size();
+  }
 
-    public AstNode getChild(int i) {
-        return nodes.get(i);
-    }
+  public AstNode getChild(int i) {
+    return nodes.get(i);
+  }
 }

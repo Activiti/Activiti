@@ -19,21 +19,21 @@ import java.io.InputStream;
  */
 public abstract class ReflectUtil {
 
-    public static InputStream getResourceAsStream(String name) {
-        return getResourceAsStream(name, null);
+  public static InputStream getResourceAsStream(String name) {
+    return getResourceAsStream(name, null);
+  }
+
+  public static InputStream getResourceAsStream(String name, ClassLoader customClassLoader) {
+    InputStream resourceStream = null;
+    if (customClassLoader != null) {
+      resourceStream = customClassLoader.getResourceAsStream(name);
     }
 
-    public static InputStream getResourceAsStream(String name, ClassLoader customClassLoader) {
-        InputStream resourceStream = null;
-        if (customClassLoader != null) {
-            resourceStream = customClassLoader.getResourceAsStream(name);
-        }
-
-        if (resourceStream == null) {
-            // Try the current Thread context classloader
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            resourceStream = classLoader.getResourceAsStream(name);
-        }
-        return resourceStream;
+    if (resourceStream == null) {
+      // Try the current Thread context classloader
+      ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+      resourceStream = classLoader.getResourceAsStream(name);
     }
+    return resourceStream;
+  }
 }

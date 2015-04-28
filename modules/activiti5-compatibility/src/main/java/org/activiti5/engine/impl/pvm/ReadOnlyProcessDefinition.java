@@ -19,13 +19,13 @@ package org.activiti5.engine.impl.pvm;
  */
 public interface ReadOnlyProcessDefinition extends PvmScope {
 
-    String getName();
+  String getName();
 
-    String getKey();
+  String getKey();
 
-    String getDescription();
+  String getDescription();
 
-    PvmActivity getInitial();
+  PvmActivity getInitial();
 
-    String getDiagramResourceName();
+  String getDiagramResourceName();
 }

@@ -16,14 +16,14 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 public class IntermediateCatchEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public void execute(ActivityExecution execution) {
-        // Do nothing: waitstate behavior
-    }
+  public void execute(ActivityExecution execution) {
+    // Do nothing: waitstate behavior
+  }
 
-    @Override
-    public void trigger(ActivityExecution execution, String signalName, Object signalData) {
-        leave(execution);
-    }
+  @Override
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+    leave(execution);
+  }
 }

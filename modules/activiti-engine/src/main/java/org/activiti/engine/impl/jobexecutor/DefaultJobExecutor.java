@@ -24,13 +24,11 @@ import org.slf4j.LoggerFactory;
 
 /**
  * <p>
- * This is a simple implementation of the {@link JobExecutor} using self-managed
- * threads for performing background work.
+ * This is a simple implementation of the {@link JobExecutor} using self-managed threads for performing background work.
  * </p>
  * 
  * <p>
- * This implementation uses a {@link ThreadPoolExecutor} backed by a queue to
- * which work is submitted.
+ * This implementation uses a {@link ThreadPoolExecutor} backed by a queue to which work is submitted.
  * </p>
  * 
  * <p>
@@ -43,102 +41,102 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultJobExecutor extends JobExecutor {
 
-    private static Logger log = LoggerFactory.getLogger(DefaultJobExecutor.class);
+  private static Logger log = LoggerFactory.getLogger(DefaultJobExecutor.class);
 
-    protected int queueSize = 3;
-    protected int corePoolSize = 3;
-    protected int maxPoolSize = 10;
-    protected long keepAliveTime = 0L;
+  protected int queueSize = 3;
+  protected int corePoolSize = 3;
+  protected int maxPoolSize = 10;
+  protected long keepAliveTime = 0L;
 
-    protected BlockingQueue<Runnable> threadPoolQueue;
-    protected ThreadPoolExecutor threadPoolExecutor;
+  protected BlockingQueue<Runnable> threadPoolQueue;
+  protected ThreadPoolExecutor threadPoolExecutor;
 
-    protected void startExecutingJobs() {
-        if (threadPoolQueue == null) {
-            threadPoolQueue = new ArrayBlockingQueue<Runnable>(queueSize);
-        }
-        if (threadPoolExecutor == null) {
-            threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);
-            threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
-        }
-        startJobAcquisitionThread();
+  protected void startExecutingJobs() {
+    if (threadPoolQueue == null) {
+      threadPoolQueue = new ArrayBlockingQueue<Runnable>(queueSize);
+    }
+    if (threadPoolExecutor == null) {
+      threadPoolExecutor = new ThreadPoolExecutor(corePoolSize, maxPoolSize, keepAliveTime, TimeUnit.MILLISECONDS, threadPoolQueue);
+      threadPoolExecutor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
+    }
+    startJobAcquisitionThread();
+  }
+
+  protected void stopExecutingJobs() {
+    stopJobAcquisitionThread();
+
+    // Ask the thread pool to finish and exit
+    threadPoolExecutor.shutdown();
+
+    // Waits for 1 minute to finish all currently executing jobs
+    try {
+      if (!threadPoolExecutor.awaitTermination(60L, TimeUnit.SECONDS)) {
+        log.warn("Timeout during shutdown of job executor. " + "The current running jobs could not end within 60 seconds after shutdown operation.");
+      }
+    } catch (InterruptedException e) {
+      log.warn("Interrupted while shutting down the job executor. ", e);
     }
 
-    protected void stopExecutingJobs() {
-        stopJobAcquisitionThread();
+    threadPoolExecutor = null;
+  }
 
-        // Ask the thread pool to finish and exit
-        threadPoolExecutor.shutdown();
-
-        // Waits for 1 minute to finish all currently executing jobs
-        try {
-            if (!threadPoolExecutor.awaitTermination(60L, TimeUnit.SECONDS)) {
-                log.warn("Timeout during shutdown of job executor. " + "The current running jobs could not end within 60 seconds after shutdown operation.");
-            }
-        } catch (InterruptedException e) {
-            log.warn("Interrupted while shutting down the job executor. ", e);
-        }
-
-        threadPoolExecutor = null;
+  public void executeJobs(List<String> jobIds) {
+    try {
+      threadPoolExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
+    } catch (RejectedExecutionException e) {
+      rejectedJobsHandler.jobsRejected(this, jobIds);
     }
+  }
 
-    public void executeJobs(List<String> jobIds) {
-        try {
-            threadPoolExecutor.execute(new ExecuteJobsRunnable(this, jobIds));
-        } catch (RejectedExecutionException e) {
-            rejectedJobsHandler.jobsRejected(this, jobIds);
-        }
-    }
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  public int getQueueSize() {
+    return queueSize;
+  }
 
-    public int getQueueSize() {
-        return queueSize;
-    }
+  public void setQueueSize(int queueSize) {
+    this.queueSize = queueSize;
+  }
 
-    public void setQueueSize(int queueSize) {
-        this.queueSize = queueSize;
-    }
+  public int getCorePoolSize() {
+    return corePoolSize;
+  }
 
-    public int getCorePoolSize() {
-        return corePoolSize;
-    }
+  public void setCorePoolSize(int corePoolSize) {
+    this.corePoolSize = corePoolSize;
+  }
 
-    public void setCorePoolSize(int corePoolSize) {
-        this.corePoolSize = corePoolSize;
-    }
+  public int getMaxPoolSize() {
+    return maxPoolSize;
+  }
 
-    public int getMaxPoolSize() {
-        return maxPoolSize;
-    }
+  public void setMaxPoolSize(int maxPoolSize) {
+    this.maxPoolSize = maxPoolSize;
+  }
 
-    public void setMaxPoolSize(int maxPoolSize) {
-        this.maxPoolSize = maxPoolSize;
-    }
+  public long getKeepAliveTime() {
+    return keepAliveTime;
+  }
 
-    public long getKeepAliveTime() {
-        return keepAliveTime;
-    }
+  public void setKeepAliveTime(long keepAliveTime) {
+    this.keepAliveTime = keepAliveTime;
+  }
 
-    public void setKeepAliveTime(long keepAliveTime) {
-        this.keepAliveTime = keepAliveTime;
-    }
+  public BlockingQueue<Runnable> getThreadPoolQueue() {
+    return threadPoolQueue;
+  }
 
-    public BlockingQueue<Runnable> getThreadPoolQueue() {
-        return threadPoolQueue;
-    }
+  public void setThreadPoolQueue(BlockingQueue<Runnable> threadPoolQueue) {
+    this.threadPoolQueue = threadPoolQueue;
+  }
 
-    public void setThreadPoolQueue(BlockingQueue<Runnable> threadPoolQueue) {
-        this.threadPoolQueue = threadPoolQueue;
-    }
+  public ThreadPoolExecutor getThreadPoolExecutor() {
+    return threadPoolExecutor;
+  }
 
-    public ThreadPoolExecutor getThreadPoolExecutor() {
-        return threadPoolExecutor;
-    }
-
-    public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
-        this.threadPoolExecutor = threadPoolExecutor;
-    }
+  public void setThreadPoolExecutor(ThreadPoolExecutor threadPoolExecutor) {
+    this.threadPoolExecutor = threadPoolExecutor;
+  }
 
 }

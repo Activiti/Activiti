@@ -25,53 +25,53 @@ import org.slf4j.LoggerFactory;
  */
 public class CompetingJobAcquisitionTest extends PluggableActivitiTestCase {
 
-    private static Logger log = LoggerFactory.getLogger(CompetingJobAcquisitionTest.class);
+  private static Logger log = LoggerFactory.getLogger(CompetingJobAcquisitionTest.class);
 
-    Thread testThread = Thread.currentThread();
-    static ControllableThread activeThread;
-    static String jobId;
+  Thread testThread = Thread.currentThread();
+  static ControllableThread activeThread;
+  static String jobId;
 
-    public class JobAcquisitionThread extends ControllableThread {
-        ActivitiOptimisticLockingException exception;
+  public class JobAcquisitionThread extends ControllableThread {
+    ActivitiOptimisticLockingException exception;
 
-        @Override
-        public synchronized void startAndWaitUntilControlIsReturned() {
-            activeThread = this;
-            super.startAndWaitUntilControlIsReturned();
-        }
-
-        public void run() {
-            try {
-                processEngineConfiguration.getCommandExecutor().execute(new ControlledCommand(activeThread, new AcquireTimerJobsCmd("testLockOwner", 60000, 5)));
-
-            } catch (ActivitiOptimisticLockingException e) {
-                this.exception = e;
-            }
-            log.debug("{} ends", getName());
-        }
+    @Override
+    public synchronized void startAndWaitUntilControlIsReturned() {
+      activeThread = this;
+      super.startAndWaitUntilControlIsReturned();
     }
 
-    @Deployment
-    public void testCompetingJobAcquisitions() throws Exception {
-        runtimeService.startProcessInstanceByKey("CompetingJobAcquisitionProcess");
+    public void run() {
+      try {
+        processEngineConfiguration.getCommandExecutor().execute(new ControlledCommand(activeThread, new AcquireTimerJobsCmd("testLockOwner", 60000, 5)));
 
-        log.debug("test thread starts thread one");
-        JobAcquisitionThread threadOne = new JobAcquisitionThread();
-        threadOne.startAndWaitUntilControlIsReturned();
-
-        log.debug("test thread continues to start thread two");
-        JobAcquisitionThread threadTwo = new JobAcquisitionThread();
-        threadTwo.startAndWaitUntilControlIsReturned();
-
-        log.debug("test thread notifies thread 1");
-        threadOne.proceedAndWaitTillDone();
-        assertNull(threadOne.exception);
-
-        log.debug("test thread notifies thread 2");
-        threadTwo.proceedAndWaitTillDone();
-
-        assertNotNull(threadTwo.exception);
-        assertTextPresent("was updated by another transaction concurrently", threadTwo.exception.getMessage());
+      } catch (ActivitiOptimisticLockingException e) {
+        this.exception = e;
+      }
+      log.debug("{} ends", getName());
     }
+  }
+
+  @Deployment
+  public void testCompetingJobAcquisitions() throws Exception {
+    runtimeService.startProcessInstanceByKey("CompetingJobAcquisitionProcess");
+
+    log.debug("test thread starts thread one");
+    JobAcquisitionThread threadOne = new JobAcquisitionThread();
+    threadOne.startAndWaitUntilControlIsReturned();
+
+    log.debug("test thread continues to start thread two");
+    JobAcquisitionThread threadTwo = new JobAcquisitionThread();
+    threadTwo.startAndWaitUntilControlIsReturned();
+
+    log.debug("test thread notifies thread 1");
+    threadOne.proceedAndWaitTillDone();
+    assertNull(threadOne.exception);
+
+    log.debug("test thread notifies thread 2");
+    threadTwo.proceedAndWaitTillDone();
+
+    assertNotNull(threadTwo.exception);
+    assertTextPresent("was updated by another transaction concurrently", threadTwo.exception.getMessage());
+  }
 
 }

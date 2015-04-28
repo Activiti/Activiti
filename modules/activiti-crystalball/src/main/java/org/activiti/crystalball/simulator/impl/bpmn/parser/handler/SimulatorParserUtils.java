@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.impl.bpmn.parser.handler;
  * limitations under the License.
  */
 
-
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.crystalball.simulator.delegate.AbstractSimulationActivityBehavior;
@@ -30,7 +29,7 @@ import java.util.Map;
 
 /**
  * This class provides basic utilities for other simulation parsers
- *
+ * 
  * @author martin.grofcik
  */
 final class SimulatorParserUtils {
@@ -56,7 +55,7 @@ final class SimulatorParserUtils {
         @SuppressWarnings("unchecked")
         Class<AbstractSimulationActivityBehavior> behaviorClass = (Class<AbstractSimulationActivityBehavior>) Class.forName(behaviorClassName);
         Constructor<AbstractSimulationActivityBehavior> constructor = behaviorClass.getDeclaredConstructor(ScopeImpl.class, ActivityImpl.class);
-        activity.setActivityBehavior(constructor.newInstance( scope, activity));
+        activity.setActivityBehavior(constructor.newInstance(scope, activity));
       } catch (Throwable t) {
         LOG.error("unable to set simulation behavior class[" + behaviorClassName + "]", t);
         throw new ActivitiException("unable to set simulation behavior class[" + behaviorClassName + "]");
@@ -67,7 +66,7 @@ final class SimulatorParserUtils {
   private static String getBehaviorClassName(BaseElement baseElement) {
     final Map<String, List<ExtensionElement>> extensionElements = baseElement.getExtensionElements();
     if (extensionElements != null && !extensionElements.isEmpty()) {
-      List<ExtensionElement> behaviorExtensionElements = extensionElements.get( SIMULATION_BEHAVIOR);
+      List<ExtensionElement> behaviorExtensionElements = extensionElements.get(SIMULATION_BEHAVIOR);
 
       if (behaviorExtensionElements != null && !behaviorExtensionElements.isEmpty()) {
         for (ExtensionElement extension : behaviorExtensionElements) {

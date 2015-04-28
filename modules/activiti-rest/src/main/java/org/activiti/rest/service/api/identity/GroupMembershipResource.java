@@ -30,19 +30,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class GroupMembershipResource extends BaseGroupResource {
 
-    @RequestMapping(value = "/identity/groups/{groupId}/members/{userId}", method = RequestMethod.DELETE)
-    public void deleteMembership(@PathVariable("groupId") String groupId, @PathVariable("userId") String userId, HttpServletRequest request, HttpServletResponse response) {
+  @RequestMapping(value = "/identity/groups/{groupId}/members/{userId}", method = RequestMethod.DELETE)
+  public void deleteMembership(@PathVariable("groupId") String groupId, @PathVariable("userId") String userId, HttpServletRequest request, HttpServletResponse response) {
 
-        Group group = getGroupFromRequest(groupId);
+    Group group = getGroupFromRequest(groupId);
 
-        // Check if user is not a member of group since API doesn't return typed
-        // exception
-        if (identityService.createUserQuery().memberOfGroup(group.getId()).userId(userId).count() != 1) {
+    // Check if user is not a member of group since API doesn't return typed
+    // exception
+    if (identityService.createUserQuery().memberOfGroup(group.getId()).userId(userId).count() != 1) {
 
-            throw new ActivitiObjectNotFoundException("User '" + userId + "' is not part of group '" + group.getId() + "'.", null);
-        }
-
-        identityService.deleteMembership(userId, group.getId());
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+      throw new ActivitiObjectNotFoundException("User '" + userId + "' is not part of group '" + group.getId() + "'.", null);
     }
+
+    identityService.deleteMembership(userId, group.getId());
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 }

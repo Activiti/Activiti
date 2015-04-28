@@ -34,73 +34,72 @@ import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
- * Component that renders link that shows the user's profile in a popup.
- * Optionally, shows the profile picture (if available).
+ * Component that renders link that shows the user's profile in a popup. Optionally, shows the profile picture (if available).
  * 
  * @author Frederik Heremans
  * @author Joram Barrez
  */
 public class UserProfileLink extends HorizontalLayout {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected transient IdentityService identityService;
-    protected ViewManager viewManager;
+  protected transient IdentityService identityService;
+  protected ViewManager viewManager;
 
-    public UserProfileLink(IdentityService identityService, boolean renderPicture, final String userId) {
-        this.identityService = identityService;
-        this.viewManager = ExplorerApp.get().getViewManager();
+  public UserProfileLink(IdentityService identityService, boolean renderPicture, final String userId) {
+    this.identityService = identityService;
+    this.viewManager = ExplorerApp.get().getViewManager();
 
-        setSizeUndefined();
-        setSpacing(true);
-        addStyleName(ExplorerLayout.STYLE_PROFILE_LINK);
+    setSizeUndefined();
+    setSpacing(true);
+    addStyleName(ExplorerLayout.STYLE_PROFILE_LINK);
 
-        initPicture(identityService, renderPicture, userId);
-        initUserLink(userId);
+    initPicture(identityService, renderPicture, userId);
+    initUserLink(userId);
+  }
+
+  protected void initPicture(IdentityService identityService, boolean renderPicture, final String userName) {
+    if (renderPicture) {
+      Picture picture = identityService.getUserPicture(userName);
+      if (picture != null) {
+        Resource imageResource = new StreamResource(new InputStreamStreamSource(picture.getInputStream()), userName + picture.getMimeType(), ExplorerApp.get());
+
+        Embedded image = new Embedded(null, imageResource);
+        image.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+        image.setType(Embedded.TYPE_IMAGE);
+        image.setHeight(30, Embedded.UNITS_PIXELS);
+        image.setWidth(30, Embedded.UNITS_PIXELS);
+        image.addListener(new MouseEvents.ClickListener() {
+          private static final long serialVersionUID = 7341560240277898495L;
+
+          public void click(MouseEvents.ClickEvent event) {
+            viewManager.showProfilePopup(userName);
+          }
+        });
+
+        addComponent(image);
+        setComponentAlignment(image, Alignment.MIDDLE_LEFT);
+      } else {
+        // TODO: what when no image is available?
+      }
     }
+  }
 
-    protected void initPicture(IdentityService identityService, boolean renderPicture, final String userName) {
-        if (renderPicture) {
-            Picture picture = identityService.getUserPicture(userName);
-            if (picture != null) {
-                Resource imageResource = new StreamResource(new InputStreamStreamSource(picture.getInputStream()), userName + picture.getMimeType(), ExplorerApp.get());
+  protected void initUserLink(final String userId) {
+    User user = ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().userId(userId).singleResult();
+    Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
+    ClickListener buttonClickListener = new ClickListener() {
 
-                Embedded image = new Embedded(null, imageResource);
-                image.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-                image.setType(Embedded.TYPE_IMAGE);
-                image.setHeight(30, Embedded.UNITS_PIXELS);
-                image.setWidth(30, Embedded.UNITS_PIXELS);
-                image.addListener(new MouseEvents.ClickListener() {
-                    private static final long serialVersionUID = 7341560240277898495L;
+      private static final long serialVersionUID = 1L;
 
-                    public void click(MouseEvents.ClickEvent event) {
-                        viewManager.showProfilePopup(userName);
-                    }
-                });
-
-                addComponent(image);
-                setComponentAlignment(image, Alignment.MIDDLE_LEFT);
-            } else {
-                // TODO: what when no image is available?
-            }
-        }
-    }
-
-    protected void initUserLink(final String userId) {
-        User user = ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().userId(userId).singleResult();
-        Button userButton = new Button(user.getFirstName() + " " + user.getLastName());
-        ClickListener buttonClickListener = new ClickListener() {
-
-            private static final long serialVersionUID = 1L;
-
-            public void buttonClick(ClickEvent event) {
-                viewManager.showProfilePopup(userId);
-            }
-        };
-        userButton.addStyleName(Reindeer.BUTTON_LINK);
-        userButton.addListener(buttonClickListener);
-        addComponent(userButton);
-        setComponentAlignment(userButton, Alignment.MIDDLE_LEFT);
-    }
+      public void buttonClick(ClickEvent event) {
+        viewManager.showProfilePopup(userId);
+      }
+    };
+    userButton.addStyleName(Reindeer.BUTTON_LINK);
+    userButton.addListener(buttonClickListener);
+    addComponent(userButton);
+    setComponentAlignment(userButton, Alignment.MIDDLE_LEFT);
+  }
 
 }

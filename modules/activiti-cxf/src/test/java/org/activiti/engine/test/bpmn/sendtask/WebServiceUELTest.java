@@ -31,28 +31,28 @@ import org.activiti.engine.test.bpmn.servicetask.AbstractWebServiceTaskTest;
  */
 public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
-    @Deployment
-    public void testAsyncInvocationWithDataFlowUEL() throws Exception {
-        assertEquals(-1, counter.getCount());
+  @Deployment
+  public void testAsyncInvocationWithDataFlowUEL() throws Exception {
+    assertEquals(-1, counter.getCount());
 
-        ProcessDefinitionEntity processDefinition = processEngineConfiguration.getCommandExecutor().execute(new Command<ProcessDefinitionEntity>() {
-            public ProcessDefinitionEntity execute(CommandContext commandContext) {
-                return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("asyncWebServiceInvocationWithDataFlowUEL");
-            }
-        });
+    ProcessDefinitionEntity processDefinition = processEngineConfiguration.getCommandExecutor().execute(new Command<ProcessDefinitionEntity>() {
+      public ProcessDefinitionEntity execute(CommandContext commandContext) {
+        return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("asyncWebServiceInvocationWithDataFlowUEL");
+      }
+    });
 
-        ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
+    ItemDefinition itemDefinition = processDefinition.getIoSpecification().getDataInputs().get(0).getDefinition();
 
-        ItemInstance itemInstance = itemDefinition.createInstance();
-        FieldBaseStructureInstance structureInstance = (FieldBaseStructureInstance) itemInstance.getStructureInstance();
-        structureInstance.setFieldValue("newCounterValue", 23);
+    ItemInstance itemInstance = itemDefinition.createInstance();
+    FieldBaseStructureInstance structureInstance = (FieldBaseStructureInstance) itemInstance.getStructureInstance();
+    structureInstance.setFieldValue("newCounterValue", 23);
 
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("dataInputOfProcess", itemInstance);
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("dataInputOfProcess", itemInstance);
 
-        processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithDataFlowUEL", variables);
-        waitForJobExecutorToProcessAllJobs(10000L, 250L);
+    processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithDataFlowUEL", variables);
+    waitForJobExecutorToProcessAllJobs(10000L, 250L);
 
-        assertEquals(23, counter.getCount());
-    }
+    assertEquals(23, counter.getCount());
+  }
 }

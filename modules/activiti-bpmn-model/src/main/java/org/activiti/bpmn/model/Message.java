@@ -17,43 +17,43 @@ package org.activiti.bpmn.model;
  */
 public class Message extends BaseElement {
 
-    protected String name;
-    protected String itemRef;
+  protected String name;
+  protected String itemRef;
 
-    public Message() {
-    }
+  public Message() {
+  }
 
-    public Message(String id, String name, String itemRef) {
-        this.id = id;
-        this.name = name;
-        this.itemRef = itemRef;
-    }
+  public Message(String id, String name, String itemRef) {
+    this.id = id;
+    this.name = name;
+    this.itemRef = itemRef;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getItemRef() {
-        return itemRef;
-    }
+  public String getItemRef() {
+    return itemRef;
+  }
 
-    public void setItemRef(String itemRef) {
-        this.itemRef = itemRef;
-    }
+  public void setItemRef(String itemRef) {
+    this.itemRef = itemRef;
+  }
 
-    public Message clone() {
-        Message clone = new Message();
-        clone.setValues(this);
-        return clone;
-    }
+  public Message clone() {
+    Message clone = new Message();
+    clone.setValues(this);
+    return clone;
+  }
 
-    public void setValues(Message otherElement) {
-        super.setValues(otherElement);
-        setName(otherElement.getName());
-        setItemRef(otherElement.getItemRef());
-    }
+  public void setValues(Message otherElement) {
+    super.setValues(otherElement);
+    setName(otherElement.getName());
+    setItemRef(otherElement.getItemRef());
+  }
 }

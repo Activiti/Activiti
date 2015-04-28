@@ -17,19 +17,19 @@ package org.activiti.engine.impl.form;
  */
 public class FormReference {
 
-    protected String form;
-    protected String language;
+  protected String form;
+  protected String language;
 
-    public FormReference(String form, String language) {
-        this.form = form;
-        this.language = language;
-    }
+  public FormReference(String form, String language) {
+    this.form = form;
+    this.language = language;
+  }
 
-    public String getForm() {
-        return form;
-    }
+  public String getForm() {
+    return form;
+  }
 
-    public String getLanguage() {
-        return language;
-    }
+  public String getLanguage() {
+    return language;
+  }
 }

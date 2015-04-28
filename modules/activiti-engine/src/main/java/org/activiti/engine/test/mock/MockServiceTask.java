@@ -22,10 +22,10 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MockServiceTask {
 
-    public String id() default "";
+  public String id() default "";
 
-    public String originalClassName() default "";
+  public String originalClassName() default "";
 
-    public String mockedClassName() default "";
+  public String mockedClassName() default "";
 
 }

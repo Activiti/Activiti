@@ -34,132 +34,132 @@ import org.springframework.http.MediaType;
  */
 public class UserPictureResourceTest extends BaseSpringRestTestCase {
 
-    /**
-     * Test getting the picture for a user.
-     */
-    public void testGetUserPicture() throws Exception {
-        User savedUser = null;
-        try {
-            User newUser = identityService.newUser("testuser");
-            newUser.setFirstName("Fred");
-            newUser.setLastName("McDonald");
-            newUser.setEmail("no-reply@activiti.org");
-            identityService.saveUser(newUser);
-            savedUser = newUser;
+  /**
+   * Test getting the picture for a user.
+   */
+  public void testGetUserPicture() throws Exception {
+    User savedUser = null;
+    try {
+      User newUser = identityService.newUser("testuser");
+      newUser.setFirstName("Fred");
+      newUser.setLastName("McDonald");
+      newUser.setEmail("no-reply@activiti.org");
+      identityService.saveUser(newUser);
+      savedUser = newUser;
 
-            // Create picture for user
-            Picture thePicture = new Picture("this is the picture raw byte stream".getBytes(), "image/png");
-            identityService.setUserPicture(newUser.getId(), thePicture);
+      // Create picture for user
+      Picture thePicture = new Picture("this is the picture raw byte stream".getBytes(), "image/png");
+      identityService.setUserPicture(newUser.getId(), thePicture);
 
-            CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_OK);
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_OK);
 
-            assertEquals("this is the picture raw byte stream", IOUtils.toString(response.getEntity().getContent()));
+      assertEquals("this is the picture raw byte stream", IOUtils.toString(response.getEntity().getContent()));
 
-            // Check if media-type is correct
-            assertEquals("image/png", response.getEntity().getContentType().getValue());
-            closeResponse(response);
+      // Check if media-type is correct
+      assertEquals("image/png", response.getEntity().getContentType().getValue());
+      closeResponse(response);
 
-        } finally {
+    } finally {
 
-            // Delete user after test passes or fails
-            if (savedUser != null) {
-                identityService.deleteUser(savedUser.getId());
-            }
-        }
+      // Delete user after test passes or fails
+      if (savedUser != null) {
+        identityService.deleteUser(savedUser.getId());
+      }
     }
+  }
 
-    /**
-     * Test getting the picture for an unexisting user.
-     */
-    public void testGetPictureForUnexistingUser() throws Exception {
-        closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, "unexisting")), HttpStatus.SC_NOT_FOUND));
+  /**
+   * Test getting the picture for an unexisting user.
+   */
+  public void testGetPictureForUnexistingUser() throws Exception {
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, "unexisting")), HttpStatus.SC_NOT_FOUND));
+  }
+
+  /**
+   * Test getting the picture for a user who doesn't have a îcture set
+   */
+  public void testGetPictureForUserWithoutPicture() throws Exception {
+    User savedUser = null;
+    try {
+      User newUser = identityService.newUser("testuser");
+      newUser.setFirstName("Fred");
+      newUser.setLastName("McDonald");
+      newUser.setEmail("no-reply@activiti.org");
+      identityService.saveUser(newUser);
+      savedUser = newUser;
+
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_NOT_FOUND);
+
+      // response content type application/json;charset=UTF-8
+      assertEquals("application/json", response.getEntity().getContentType().getValue().split(";")[0]);
+      closeResponse(response);
+
+    } finally {
+
+      // Delete user after test passes or fails
+      if (savedUser != null) {
+        identityService.deleteUser(savedUser.getId());
+      }
     }
+  }
 
-    /**
-     * Test getting the picture for a user who doesn't have a îcture set
-     */
-    public void testGetPictureForUserWithoutPicture() throws Exception {
-        User savedUser = null;
-        try {
-            User newUser = identityService.newUser("testuser");
-            newUser.setFirstName("Fred");
-            newUser.setLastName("McDonald");
-            newUser.setEmail("no-reply@activiti.org");
-            identityService.saveUser(newUser);
-            savedUser = newUser;
+  public void testUpdatePicture() throws Exception {
+    User savedUser = null;
+    try {
+      User newUser = identityService.newUser("testuser");
+      newUser.setFirstName("Fred");
+      newUser.setLastName("McDonald");
+      newUser.setEmail("no-reply@activiti.org");
+      identityService.saveUser(newUser);
+      savedUser = newUser;
 
-            CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId())), HttpStatus.SC_NOT_FOUND);
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId()));
+      httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("myPicture.png", "image/png", new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), null));
+      closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
 
-            // response content type application/json;charset=UTF-8
-            assertEquals("application/json", response.getEntity().getContentType().getValue().split(";")[0]);
-            closeResponse(response);
+      Picture picture = identityService.getUserPicture(newUser.getId());
+      assertNotNull(picture);
+      assertEquals("image/png", picture.getMimeType());
+      assertEquals("this is the picture raw byte stream", new String(picture.getBytes()));
 
-        } finally {
+    } finally {
 
-            // Delete user after test passes or fails
-            if (savedUser != null) {
-                identityService.deleteUser(savedUser.getId());
-            }
-        }
+      // Delete user after test passes or fails
+      if (savedUser != null) {
+        identityService.deleteUser(savedUser.getId());
+      }
     }
+  }
 
-    public void testUpdatePicture() throws Exception {
-        User savedUser = null;
-        try {
-            User newUser = identityService.newUser("testuser");
-            newUser.setFirstName("Fred");
-            newUser.setLastName("McDonald");
-            newUser.setEmail("no-reply@activiti.org");
-            identityService.saveUser(newUser);
-            savedUser = newUser;
+  public void testUpdatePictureWithCustomMimeType() throws Exception {
+    User savedUser = null;
+    try {
+      User newUser = identityService.newUser("testuser");
+      newUser.setFirstName("Fred");
+      newUser.setLastName("McDonald");
+      newUser.setEmail("no-reply@activiti.org");
+      identityService.saveUser(newUser);
+      savedUser = newUser;
 
-            HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId()));
-            httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("myPicture.png", "image/png", new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), null));
-            closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
+      Map<String, String> additionalFields = new HashMap<String, String>();
+      additionalFields.put("mimeType", MediaType.IMAGE_PNG.toString());
 
-            Picture picture = identityService.getUserPicture(newUser.getId());
-            assertNotNull(picture);
-            assertEquals("image/png", picture.getMimeType());
-            assertEquals("this is the picture raw byte stream", new String(picture.getBytes()));
+      HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId()));
+      httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("myPicture.png", "image/png", new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), additionalFields));
+      closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
 
-        } finally {
+      Picture picture = identityService.getUserPicture(newUser.getId());
+      assertNotNull(picture);
+      assertEquals("image/png", picture.getMimeType());
+      assertEquals("this is the picture raw byte stream", new String(picture.getBytes()));
 
-            // Delete user after test passes or fails
-            if (savedUser != null) {
-                identityService.deleteUser(savedUser.getId());
-            }
-        }
+    } finally {
+
+      // Delete user after test passes or fails
+      if (savedUser != null) {
+        identityService.deleteUser(savedUser.getId());
+      }
     }
-
-    public void testUpdatePictureWithCustomMimeType() throws Exception {
-        User savedUser = null;
-        try {
-            User newUser = identityService.newUser("testuser");
-            newUser.setFirstName("Fred");
-            newUser.setLastName("McDonald");
-            newUser.setEmail("no-reply@activiti.org");
-            identityService.saveUser(newUser);
-            savedUser = newUser;
-
-            Map<String, String> additionalFields = new HashMap<String, String>();
-            additionalFields.put("mimeType", MediaType.IMAGE_PNG.toString());
-
-            HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_USER_PICTURE, newUser.getId()));
-            httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("myPicture.png", "image/png", new ByteArrayInputStream("this is the picture raw byte stream".getBytes()), additionalFields));
-            closeResponse(executeBinaryRequest(httpPut, HttpStatus.SC_NO_CONTENT));
-
-            Picture picture = identityService.getUserPicture(newUser.getId());
-            assertNotNull(picture);
-            assertEquals("image/png", picture.getMimeType());
-            assertEquals("this is the picture raw byte stream", new String(picture.getBytes()));
-
-        } finally {
-
-            // Delete user after test passes or fails
-            if (savedUser != null) {
-                identityService.deleteUser(savedUser.getId());
-            }
-        }
-    }
+  }
 
 }

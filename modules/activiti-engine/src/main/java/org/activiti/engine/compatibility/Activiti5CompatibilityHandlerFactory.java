@@ -17,6 +17,6 @@ package org.activiti.engine.compatibility;
  */
 public interface Activiti5CompatibilityHandlerFactory {
 
-    Activiti5CompatibilityHandler createActiviti5CompatibilityHandler();
+  Activiti5CompatibilityHandler createActiviti5CompatibilityHandler();
 
 }

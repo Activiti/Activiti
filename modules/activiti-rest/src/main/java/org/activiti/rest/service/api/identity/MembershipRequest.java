@@ -18,13 +18,13 @@ package org.activiti.rest.service.api.identity;
  */
 public class MembershipRequest {
 
-    protected String userId;
+  protected String userId;
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 
-    public String getUserId() {
-        return userId;
-    }
+  public String getUserId() {
+    return userId;
+  }
 }

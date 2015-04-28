@@ -19,12 +19,12 @@ package org.activiti5.engine.impl.persistence.deploy;
  */
 public interface DeploymentCache<T> {
 
-    T get(String id);
+  T get(String id);
 
-    void add(String id, T object);
+  void add(String id, T object);
 
-    void remove(String id);
+  void remove(String id);
 
-    void clear();
+  void clear();
 
 }

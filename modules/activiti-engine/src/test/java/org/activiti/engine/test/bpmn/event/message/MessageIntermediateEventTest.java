@@ -27,80 +27,80 @@ import org.activiti.engine.test.Deployment;
  */
 public class MessageIntermediateEventTest extends PluggableActivitiTestCase {
 
-    @Deployment
-    public void testSingleIntermediateMessageEvent() {
+  @Deployment
+  public void testSingleIntermediateMessageEvent() {
 
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("process");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("process");
 
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
-        assertNotNull(activeActivityIds);
-        assertEquals(1, activeActivityIds.size());
-        assertTrue(activeActivityIds.contains("messageCatch"));
+    List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
+    assertNotNull(activeActivityIds);
+    assertEquals(1, activeActivityIds.size());
+    assertTrue(activeActivityIds.contains("messageCatch"));
 
-        String messageName = "newInvoiceMessage";
-        Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName(messageName).singleResult();
+    String messageName = "newInvoiceMessage";
+    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName(messageName).singleResult();
 
-        assertNotNull(execution);
+    assertNotNull(execution);
 
-        runtimeService.messageEventReceived(messageName, execution.getId());
+    runtimeService.messageEventReceived(messageName, execution.getId());
 
-        Task task = taskService.createTaskQuery().singleResult();
-        assertNotNull(task);
-        taskService.complete(task.getId());
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
+    taskService.complete(task.getId());
 
-    }
+  }
 
-    @Deployment
-    public void testConcurrentIntermediateMessageEvent() {
+  @Deployment
+  public void testConcurrentIntermediateMessageEvent() {
 
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("process");
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("process");
 
-        List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
-        assertNotNull(activeActivityIds);
-        assertEquals(2, activeActivityIds.size());
-        assertTrue(activeActivityIds.contains("messageCatch1"));
-        assertTrue(activeActivityIds.contains("messageCatch2"));
+    List<String> activeActivityIds = runtimeService.getActiveActivityIds(pi.getId());
+    assertNotNull(activeActivityIds);
+    assertEquals(2, activeActivityIds.size());
+    assertTrue(activeActivityIds.contains("messageCatch1"));
+    assertTrue(activeActivityIds.contains("messageCatch2"));
 
-        String messageName = "newInvoiceMessage";
-        List<Execution> executions = runtimeService.createExecutionQuery().messageEventSubscriptionName(messageName).list();
+    String messageName = "newInvoiceMessage";
+    List<Execution> executions = runtimeService.createExecutionQuery().messageEventSubscriptionName(messageName).list();
 
-        assertNotNull(executions);
-        assertEquals(2, executions.size());
+    assertNotNull(executions);
+    assertEquals(2, executions.size());
 
-        runtimeService.messageEventReceived(messageName, executions.get(0).getId());
+    runtimeService.messageEventReceived(messageName, executions.get(0).getId());
 
-        Task task = taskService.createTaskQuery().singleResult();
-        assertNull(task);
+    Task task = taskService.createTaskQuery().singleResult();
+    assertNull(task);
 
-        runtimeService.messageEventReceived(messageName, executions.get(1).getId());
+    runtimeService.messageEventReceived(messageName, executions.get(1).getId());
 
-        task = taskService.createTaskQuery().singleResult();
-        assertNotNull(task);
+    task = taskService.createTaskQuery().singleResult();
+    assertNotNull(task);
 
-        taskService.complete(task.getId());
-    }
+    taskService.complete(task.getId());
+  }
 
-    @Deployment
-    public void testAsyncTriggeredMessageEvent() {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
+  @Deployment
+  public void testAsyncTriggeredMessageEvent() {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
 
-        assertNotNull(processInstance);
-        Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).messageEventSubscriptionName("newMessage").singleResult();
-        assertNotNull(execution);
-        assertEquals(1, createEventSubscriptionQuery().count());
-        assertEquals(2, runtimeService.createExecutionQuery().count());
+    assertNotNull(processInstance);
+    Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).messageEventSubscriptionName("newMessage").singleResult();
+    assertNotNull(execution);
+    assertEquals(1, createEventSubscriptionQuery().count());
+    assertEquals(2, runtimeService.createExecutionQuery().count());
 
-        runtimeService.messageEventReceivedAsync("newMessage", execution.getId());
+    runtimeService.messageEventReceivedAsync("newMessage", execution.getId());
 
-        assertEquals(1, managementService.createJobQuery().messages().count());
+    assertEquals(1, managementService.createJobQuery().messages().count());
 
-        waitForJobExecutorToProcessAllJobs(8000L, 200L);
-        assertEquals(0, createEventSubscriptionQuery().count());
-        assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-        assertEquals(0, managementService.createJobQuery().count());
-    }
+    waitForJobExecutorToProcessAllJobs(8000L, 200L);
+    assertEquals(0, createEventSubscriptionQuery().count());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+    assertEquals(0, managementService.createJobQuery().count());
+  }
 
-    private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
-        return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
-    }
+  private EventSubscriptionQueryImpl createEventSubscriptionQuery() {
+    return new EventSubscriptionQueryImpl(processEngineConfiguration.getCommandExecutor());
+  }
 }

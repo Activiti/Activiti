@@ -28,39 +28,37 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class BoundaryMessageEventActivityBehavior extends BoundaryEventActivityBehavior {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected MessageEventDefinition messageEventDefinition;
-    
-    public BoundaryMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition, boolean interrupting) {
-        super(interrupting);
-        this.messageEventDefinition = messageEventDefinition;
-    }
+  protected MessageEventDefinition messageEventDefinition;
 
-    @Override
-    public void execute(ActivityExecution execution) {
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        Context.getCommandContext().getEventSubscriptionEntityManager().insertMessageEvent(
-                messageEventDefinition, executionEntity);
-    }
-    
-    @Override
-    public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
-        ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
-        
-        if (boundaryEvent.isCancelActivity()) {
-            EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-            List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
-            for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
-                if (eventSubscription instanceof MessageEventSubscriptionEntity && 
-                        eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
-                    
-                    eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription); 
-                }
-            }
+  public BoundaryMessageEventActivityBehavior(MessageEventDefinition messageEventDefinition, boolean interrupting) {
+    super(interrupting);
+    this.messageEventDefinition = messageEventDefinition;
+  }
+
+  @Override
+  public void execute(ActivityExecution execution) {
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    Context.getCommandContext().getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, executionEntity);
+  }
+
+  @Override
+  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
+
+    if (boundaryEvent.isCancelActivity()) {
+      EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+      List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+      for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
+        if (eventSubscription instanceof MessageEventSubscriptionEntity && eventSubscription.getEventName().equals(messageEventDefinition.getMessageRef())) {
+
+          eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
         }
-        
-        super.trigger(executionEntity, triggerName, triggerData);
+      }
     }
+
+    super.trigger(executionEntity, triggerName, triggerData);
+  }
 }

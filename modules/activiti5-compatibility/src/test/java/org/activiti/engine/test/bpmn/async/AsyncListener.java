@@ -17,9 +17,9 @@ import org.activiti5.engine.delegate.ExecutionListener;
 
 public class AsyncListener implements ExecutionListener {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public void notify(DelegateExecution execution) throws Exception {
-        execution.setVariable("listener", "listener invoked");
-    }
+  public void notify(DelegateExecution execution) throws Exception {
+    execution.setVariable("listener", "listener invoked");
+  }
 }

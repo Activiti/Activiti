@@ -17,17 +17,15 @@ package org.activiti.engine.impl.jobexecutor;
  */
 public interface AcquireJobsRunnable extends Runnable {
 
-    /**
-     * Called by the job executor when a new job was added by the process engine
-     * to which this job executor belongs. This is a hint, that for example the
-     * acquiring needs to start again when it would be sleeping.
-     */
-    void jobWasAdded();
+  /**
+   * Called by the job executor when a new job was added by the process engine to which this job executor belongs. This is a hint, that for example the acquiring needs to start again when it would be
+   * sleeping.
+   */
+  void jobWasAdded();
 
-    /**
-     * Called when the job executor is shutting down and the job acquiring needs
-     * to be shut down too.
-     */
-    void stop();
+  /**
+   * Called when the job executor is shutting down and the job acquiring needs to be shut down too.
+   */
+  void stop();
 
 }

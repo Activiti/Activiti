@@ -24,41 +24,41 @@ import org.activiti5.engine.impl.util.json.JSONArray;
  */
 public class JsonListConverter<T> {
 
-    JsonObjectConverter<T> jsonObjectConverter;
+  JsonObjectConverter<T> jsonObjectConverter;
 
-    public JsonListConverter(JsonObjectConverter<T> jsonObjectConverter) {
-        this.jsonObjectConverter = jsonObjectConverter;
-    }
+  public JsonListConverter(JsonObjectConverter<T> jsonObjectConverter) {
+    this.jsonObjectConverter = jsonObjectConverter;
+  }
 
-    public void toJson(List<T> list, Writer writer) {
-        toJsonArray(list).write(writer);
-    }
+  public void toJson(List<T> list, Writer writer) {
+    toJsonArray(list).write(writer);
+  }
 
-    public String toJson(List<T> list) {
-        return toJsonArray(list).toString();
-    }
+  public String toJson(List<T> list) {
+    return toJsonArray(list).toString();
+  }
 
-    public String toJson(List<T> list, int indentFactor) {
-        return toJsonArray(list).toString(indentFactor);
-    }
+  public String toJson(List<T> list, int indentFactor) {
+    return toJsonArray(list).toString(indentFactor);
+  }
 
-    private JSONArray toJsonArray(List<T> objects) {
-        JSONArray jsonArray = new JSONArray();
-        for (T object : objects) {
-            jsonArray.put(jsonObjectConverter.toJsonObject(object));
-        }
-        return jsonArray;
+  private JSONArray toJsonArray(List<T> objects) {
+    JSONArray jsonArray = new JSONArray();
+    for (T object : objects) {
+      jsonArray.put(jsonObjectConverter.toJsonObject(object));
     }
+    return jsonArray;
+  }
 
-    public List<T> toObject(Reader reader) {
-        throw new ActivitiException("not yet implemented");
-    }
+  public List<T> toObject(Reader reader) {
+    throw new ActivitiException("not yet implemented");
+  }
 
-    public JsonObjectConverter<T> getJsonObjectConverter() {
-        return jsonObjectConverter;
-    }
+  public JsonObjectConverter<T> getJsonObjectConverter() {
+    return jsonObjectConverter;
+  }
 
-    public void setJsonObjectConverter(JsonObjectConverter<T> jsonObjectConverter) {
-        this.jsonObjectConverter = jsonObjectConverter;
-    }
+  public void setJsonObjectConverter(JsonObjectConverter<T> jsonObjectConverter) {
+    this.jsonObjectConverter = jsonObjectConverter;
+  }
 }

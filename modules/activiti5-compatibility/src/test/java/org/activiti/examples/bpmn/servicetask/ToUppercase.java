@@ -20,12 +20,12 @@ import org.activiti5.engine.delegate.JavaDelegate;
  */
 public class ToUppercase implements JavaDelegate {
 
-    private static final String VARIABLE_NAME = "input";
+  private static final String VARIABLE_NAME = "input";
 
-    public void execute(DelegateExecution execution) {
-        String var = (String) execution.getVariable(VARIABLE_NAME);
-        var = var.toUpperCase();
-        execution.setVariable(VARIABLE_NAME, var);
-    }
+  public void execute(DelegateExecution execution) {
+    String var = (String) execution.getVariable(VARIABLE_NAME);
+    var = var.toUpperCase();
+    execution.setVariable(VARIABLE_NAME, var);
+  }
 
 }

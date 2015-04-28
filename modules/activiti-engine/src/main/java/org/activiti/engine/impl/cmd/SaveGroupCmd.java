@@ -24,24 +24,24 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class SaveGroupCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected Group group;
+  private static final long serialVersionUID = 1L;
+  protected Group group;
 
-    public SaveGroupCmd(Group group) {
-        this.group = group;
+  public SaveGroupCmd(Group group) {
+    this.group = group;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (group == null) {
+      throw new ActivitiIllegalArgumentException("group is null");
     }
 
-    public Void execute(CommandContext commandContext) {
-        if (group == null) {
-            throw new ActivitiIllegalArgumentException("group is null");
-        }
-
-        if (commandContext.getGroupIdentityManager().isNewGroup(group)) {
-            commandContext.getGroupIdentityManager().insertGroup(group);
-        } else {
-            commandContext.getGroupIdentityManager().updateGroup(group);
-        }
-        return null;
+    if (commandContext.getGroupIdentityManager().isNewGroup(group)) {
+      commandContext.getGroupIdentityManager().insertGroup(group);
+    } else {
+      commandContext.getGroupIdentityManager().updateGroup(group);
     }
+    return null;
+  }
 
 }

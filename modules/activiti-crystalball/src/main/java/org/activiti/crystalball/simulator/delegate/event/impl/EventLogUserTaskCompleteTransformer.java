@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.delegate.event.impl;
  * limitations under the License.
  */
 
-
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +48,8 @@ public class EventLogUserTaskCompleteTransformer extends EventLog2SimulationEven
       ObjectMapper objectMapper = new ObjectMapper();
       Map<String, Object> data;
       try {
-        data = objectMapper.readValue(event.getData(), new TypeReference<HashMap<String, Object>>() {});
+        data = objectMapper.readValue(event.getData(), new TypeReference<HashMap<String, Object>>() {
+        });
       } catch (IOException e) {
         throw new CrystalballException("unable to parse JSON string.", e);
       }
@@ -63,7 +63,7 @@ public class EventLogUserTaskCompleteTransformer extends EventLog2SimulationEven
         localScope = true;
       }
       String taskDefinitionKeyValue = (String) data.get(Fields.TASK_DEFINITION_KEY);
-      
+
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put("taskId", taskIdValue);
       properties.put(TASK_DEFINITION_KEY, taskDefinitionKeyValue);
@@ -72,11 +72,8 @@ public class EventLogUserTaskCompleteTransformer extends EventLog2SimulationEven
         properties.put(TASK_VARIABLES, variableMap);
         properties.put(VARIABLES_LOCAL_SCOPE, localScope);
       }
-      
-      return new SimulationEvent.Builder(this.simulationEventType)
-          .priority((int) event.getLogNumber())
-          .properties(properties)
-          .build();
+
+      return new SimulationEvent.Builder(this.simulationEventType).priority((int) event.getLogNumber()).properties(properties).build();
     }
     return null;
   }

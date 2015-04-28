@@ -24,26 +24,26 @@ import org.activiti5.engine.test.Deployment;
  */
 public class ExpressionBeanAccessTest extends ResourceActivitiTestCase {
 
-    public ExpressionBeanAccessTest() {
-        super("org/activiti/standalone/el/activiti.cfg.xml");
-    }
+  public ExpressionBeanAccessTest() {
+    super("org/activiti/standalone/el/activiti.cfg.xml");
+  }
 
-    @Deployment
-    public void testConfigurationBeanAccess() {
-        // Exposed bean returns 'I'm exposed' when to-string is called in first
-        // service-task
-        ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionBeanAccess");
-        assertEquals("I'm exposed", runtimeService.getVariable(pi.getId(), "exposedBeanResult"));
+  @Deployment
+  public void testConfigurationBeanAccess() {
+    // Exposed bean returns 'I'm exposed' when to-string is called in first
+    // service-task
+    ProcessInstance pi = runtimeService.startProcessInstanceByKey("expressionBeanAccess");
+    assertEquals("I'm exposed", runtimeService.getVariable(pi.getId(), "exposedBeanResult"));
 
-        // After signaling, an expression tries to use a bean that is present in
-        // the configuration but
-        // is not added to the beans-list
-        try {
-            runtimeService.signal(pi.getId());
-            fail("Exception expected");
-        } catch (ActivitiException ae) {
-            assertNotNull(ae.getCause());
-            assertTrue(ae.getCause() instanceof PropertyNotFoundException);
-        }
+    // After signaling, an expression tries to use a bean that is present in
+    // the configuration but
+    // is not added to the beans-list
+    try {
+      runtimeService.signal(pi.getId());
+      fail("Exception expected");
+    } catch (ActivitiException ae) {
+      assertNotNull(ae.getCause());
+      assertTrue(ae.getCause() instanceof PropertyNotFoundException);
     }
+  }
 }

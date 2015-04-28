@@ -25,29 +25,29 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ItemDefinitionParser implements BpmnXMLConstants {
 
-    public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-        if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-            String itemDefinitionId = model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID);
-            String structureRef = xtr.getAttributeValue(null, ATTRIBUTE_STRUCTURE_REF);
-            if (StringUtils.isNotEmpty(structureRef)) {
-                ItemDefinition item = new ItemDefinition();
-                item.setId(itemDefinitionId);
-                BpmnXMLUtil.addXMLLocation(item, xtr);
+  public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
+    if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
+      String itemDefinitionId = model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID);
+      String structureRef = xtr.getAttributeValue(null, ATTRIBUTE_STRUCTURE_REF);
+      if (StringUtils.isNotEmpty(structureRef)) {
+        ItemDefinition item = new ItemDefinition();
+        item.setId(itemDefinitionId);
+        BpmnXMLUtil.addXMLLocation(item, xtr);
 
-                int indexOfP = structureRef.indexOf(':');
-                if (indexOfP != -1) {
-                    String prefix = structureRef.substring(0, indexOfP);
-                    String resolvedNamespace = model.getNamespace(prefix);
-                    structureRef = resolvedNamespace + ":" + structureRef.substring(indexOfP + 1);
-                } else {
-                    structureRef = model.getTargetNamespace() + ":" + structureRef;
-                }
-
-                item.setStructureRef(structureRef);
-                item.setItemKind(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_KIND));
-                BpmnXMLUtil.parseChildElements(ELEMENT_ITEM_DEFINITION, item, xtr, model);
-                model.addItemDefinition(itemDefinitionId, item);
-            }
+        int indexOfP = structureRef.indexOf(':');
+        if (indexOfP != -1) {
+          String prefix = structureRef.substring(0, indexOfP);
+          String resolvedNamespace = model.getNamespace(prefix);
+          structureRef = resolvedNamespace + ":" + structureRef.substring(indexOfP + 1);
+        } else {
+          structureRef = model.getTargetNamespace() + ":" + structureRef;
         }
+
+        item.setStructureRef(structureRef);
+        item.setItemKind(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_KIND));
+        BpmnXMLUtil.parseChildElements(ELEMENT_ITEM_DEFINITION, item, xtr, model);
+        model.addItemDefinition(itemDefinitionId, item);
+      }
     }
+  }
 }

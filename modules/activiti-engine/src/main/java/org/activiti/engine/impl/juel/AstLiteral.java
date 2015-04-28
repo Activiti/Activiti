@@ -16,11 +16,11 @@
 package org.activiti.engine.impl.juel;
 
 public abstract class AstLiteral extends AstRightValue {
-    public final int getCardinality() {
-        return 0;
-    }
+  public final int getCardinality() {
+    return 0;
+  }
 
-    public final AstNode getChild(int i) {
-        return null;
-    }
+  public final AstNode getChild(int i) {
+    return null;
+  }
 }

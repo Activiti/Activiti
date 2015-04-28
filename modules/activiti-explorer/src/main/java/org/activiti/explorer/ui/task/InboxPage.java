@@ -24,34 +24,33 @@ import org.activiti.explorer.ui.task.data.InboxListQuery;
  */
 public class InboxPage extends TaskPage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public InboxPage() {
+  public InboxPage() {
+  }
+
+  /**
+   * Constructor called when page is accessed straight through the url, eg. /task/id=123
+   */
+  public InboxPage(String taskId) {
+    super(taskId);
+  }
+
+  @Override
+  protected LazyLoadingQuery createLazyLoadingQuery() {
+    return new InboxListQuery();
+  }
+
+  @Override
+  protected UriFragment getUriFragment(String taskId) {
+    UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
+
+    if (taskId != null) {
+      taskFragment.addUriPart(taskId);
     }
 
-    /**
-     * Constructor called when page is accessed straight through the url, eg.
-     * /task/id=123
-     */
-    public InboxPage(String taskId) {
-        super(taskId);
-    }
-
-    @Override
-    protected LazyLoadingQuery createLazyLoadingQuery() {
-        return new InboxListQuery();
-    }
-
-    @Override
-    protected UriFragment getUriFragment(String taskId) {
-        UriFragment taskFragment = new UriFragment(TaskNavigator.TASK_URI_PART);
-
-        if (taskId != null) {
-            taskFragment.addUriPart(taskId);
-        }
-
-        taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_INBOX);
-        return taskFragment;
-    }
+    taskFragment.addParameter(TaskNavigator.PARAMETER_CATEGORY, TaskNavigator.CATEGORY_INBOX);
+    return taskFragment;
+  }
 
 }

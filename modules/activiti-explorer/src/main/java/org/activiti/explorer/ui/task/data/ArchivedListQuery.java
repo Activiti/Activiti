@@ -32,37 +32,37 @@ import com.vaadin.data.Item;
  */
 public class ArchivedListQuery extends AbstractLazyLoadingQuery {
 
-    protected String userId;
-    protected transient HistoryService historyService;
+  protected String userId;
+  protected transient HistoryService historyService;
 
-    public ArchivedListQuery() {
-        this.userId = ExplorerApp.get().getLoggedInUser().getId();
-        this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
-    }
+  public ArchivedListQuery() {
+    this.userId = ExplorerApp.get().getLoggedInUser().getId();
+    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
+  }
 
-    public int size() {
-        return (int) createQuery().count();
-    }
+  public int size() {
+    return (int) createQuery().count();
+  }
 
-    public List<Item> loadItems(int start, int count) {
-        List<HistoricTaskInstance> historicTaskInstances = createQuery().listPage(start, count);
-        List<Item> items = new ArrayList<Item>();
-        for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
-            items.add(new TaskListItem(historicTaskInstance));
-        }
-        return items;
+  public List<Item> loadItems(int start, int count) {
+    List<HistoricTaskInstance> historicTaskInstances = createQuery().listPage(start, count);
+    List<Item> items = new ArrayList<Item>();
+    for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
+      items.add(new TaskListItem(historicTaskInstance));
     }
+    return items;
+  }
 
-    public Item loadSingleResult(String id) {
-        return new TaskListItem(createQuery().taskId(id).singleResult());
-    }
+  public Item loadSingleResult(String id) {
+    return new TaskListItem(createQuery().taskId(id).singleResult());
+  }
 
-    public void setSorting(Object[] propertyIds, boolean[] ascending) {
-        throw new UnsupportedOperationException();
-    }
+  public void setSorting(Object[] propertyIds, boolean[] ascending) {
+    throw new UnsupportedOperationException();
+  }
 
-    protected HistoricTaskInstanceQuery createQuery() {
-        return historyService.createHistoricTaskInstanceQuery().taskOwner(userId).finished();
-    }
+  protected HistoricTaskInstanceQuery createQuery() {
+    return historyService.createHistoricTaskInstanceQuery().taskOwner(userId).finished();
+  }
 
 }

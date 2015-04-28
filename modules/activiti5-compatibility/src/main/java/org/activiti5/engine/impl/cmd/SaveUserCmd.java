@@ -24,23 +24,23 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class SaveUserCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected User user;
+  private static final long serialVersionUID = 1L;
+  protected User user;
 
-    public SaveUserCmd(User user) {
-        this.user = user;
+  public SaveUserCmd(User user) {
+    this.user = user;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (user == null) {
+      throw new ActivitiIllegalArgumentException("user is null");
+    }
+    if (commandContext.getUserIdentityManager().isNewUser(user)) {
+      commandContext.getUserIdentityManager().insertUser(user);
+    } else {
+      commandContext.getUserIdentityManager().updateUser(user);
     }
 
-    public Void execute(CommandContext commandContext) {
-        if (user == null) {
-            throw new ActivitiIllegalArgumentException("user is null");
-        }
-        if (commandContext.getUserIdentityManager().isNewUser(user)) {
-            commandContext.getUserIdentityManager().insertUser(user);
-        } else {
-            commandContext.getUserIdentityManager().updateUser(user);
-        }
-
-        return null;
-    }
+    return null;
+  }
 }

@@ -5,11 +5,11 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 public class ActivityBehaviourBean implements ActivityBehavior {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    public void execute(ActivityExecution execution) {
-        execution.setVariable("visitedActivityBehaviour", true);
-        execution.end();
-    }
+  @Override
+  public void execute(ActivityExecution execution) {
+    execution.setVariable("visitedActivityBehaviour", true);
+    execution.end();
+  }
 }

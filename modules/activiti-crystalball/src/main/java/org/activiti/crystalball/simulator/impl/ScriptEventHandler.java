@@ -10,10 +10,9 @@ import org.activiti.engine.impl.scripting.ScriptingEngines;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * This class drives simulation event handling by script.
- *
+ * 
  * @author martin.grofcik
  */
 public class ScriptEventHandler implements SimulationEventHandler {
@@ -22,7 +21,6 @@ public class ScriptEventHandler implements SimulationEventHandler {
 
   protected String scriptPropertyName;
   protected String language;
-
 
   public ScriptEventHandler(String scriptPropertyName, String language) {
     this.scriptPropertyName = scriptPropertyName;
@@ -36,18 +34,15 @@ public class ScriptEventHandler implements SimulationEventHandler {
 
   @Override
   public void handle(SimulationEvent event) {
-    ScriptingEngines scriptingEngines = Context
-      .getProcessEngineConfiguration()
-      .getScriptingEngines();
+    ScriptingEngines scriptingEngines = Context.getProcessEngineConfiguration().getScriptingEngines();
 
     VariableScope execution = SimulationRunContext.getExecution();
     try {
       scriptingEngines.evaluate((String) event.getProperty(this.scriptPropertyName), language, execution, false);
 
     } catch (ActivitiException e) {
-      log.warn("Exception while executing simulation event " + event + " scriptPropertyName :" +
-        this.scriptPropertyName + "\n script: "+ event.getProperty(this.scriptPropertyName) +
-        "\n exception is:" + e.getMessage());
+      log.warn("Exception while executing simulation event " + event + " scriptPropertyName :" + this.scriptPropertyName + "\n script: " + event.getProperty(this.scriptPropertyName)
+          + "\n exception is:" + e.getMessage());
       throw e;
     }
   }

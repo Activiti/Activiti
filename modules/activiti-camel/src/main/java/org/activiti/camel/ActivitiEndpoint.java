@@ -27,173 +27,170 @@ import org.apache.camel.impl.DefaultEndpoint;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * This class has been modified to be consistent with the changes to
- * CamelBehavior and its implementations. The set of changes significantly
- * increases the flexibility of our Camel integration, as you can either choose
- * one of three "out-of-the-box" modes, or you can choose to create your own.
- * Please reference the comments for the "CamelBehavior" class for more
- * information on the out-of-the-box implementation class options.
+ * This class has been modified to be consistent with the changes to CamelBehavior and its implementations. The set of changes significantly increases the flexibility of our Camel integration, as you
+ * can either choose one of three "out-of-the-box" modes, or you can choose to create your own. Please reference the comments for the "CamelBehavior" class for more information on the out-of-the-box
+ * implementation class options.
  * 
  * @author Ryan Johnston (@rjfsu), Tijs Rademakers, Arnold Schrijver
  */
 public class ActivitiEndpoint extends DefaultEndpoint {
 
-    protected IdentityService identityService;
+  protected IdentityService identityService;
 
-    protected RuntimeService runtimeService;
+  protected RuntimeService runtimeService;
 
-    protected ActivitiConsumer activitiConsumer;
+  protected ActivitiConsumer activitiConsumer;
 
-    protected boolean copyVariablesToProperties;
+  protected boolean copyVariablesToProperties;
 
-    protected boolean copyVariablesToBodyAsMap;
+  protected boolean copyVariablesToBodyAsMap;
 
-    protected boolean copyCamelBodyToBody;
+  protected boolean copyCamelBodyToBody;
 
-    protected boolean copyVariablesFromProperties;
+  protected boolean copyVariablesFromProperties;
 
-    protected boolean copyVariablesFromHeader;
+  protected boolean copyVariablesFromHeader;
 
-    protected boolean copyCamelBodyToBodyAsString;
+  protected boolean copyCamelBodyToBodyAsString;
 
-    protected String processInitiatorHeaderName;
+  protected String processInitiatorHeaderName;
 
-    protected Map<String, Object> returnVarMap = new HashMap<String, Object>();
+  protected Map<String, Object> returnVarMap = new HashMap<String, Object>();
 
-    protected long timeout = 5000;
+  protected long timeout = 5000;
 
-    protected int timeResolution = 100;
+  protected int timeResolution = 100;
 
-    public ActivitiEndpoint(String uri, CamelContext camelContext) {
-        super();
-        setCamelContext(camelContext);
-        setEndpointUri(uri);
+  public ActivitiEndpoint(String uri, CamelContext camelContext) {
+    super();
+    setCamelContext(camelContext);
+    setEndpointUri(uri);
+  }
+
+  public void process(Exchange ex) {
+    if (activitiConsumer == null) {
+      throw new RuntimeException("Activiti consumer not defined for " + getEndpointUri());
     }
-
-    public void process(Exchange ex) {
-        if (activitiConsumer == null) {
-            throw new RuntimeException("Activiti consumer not defined for " + getEndpointUri());
-        }
-        try {
-            activitiConsumer.getProcessor().process(ex);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+    try {
+      activitiConsumer.getProcessor().process(ex);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
+  }
 
-    public Producer createProducer() throws Exception {
-        ActivitiProducer producer = new ActivitiProducer(this, getTimeout(), getTimeResolution());
-        producer.setRuntimeService(runtimeService);
-        producer.setIdentityService(identityService);
-        return producer;
-    }
+  public Producer createProducer() throws Exception {
+    ActivitiProducer producer = new ActivitiProducer(this, getTimeout(), getTimeResolution());
+    producer.setRuntimeService(runtimeService);
+    producer.setIdentityService(identityService);
+    return producer;
+  }
 
-    public Consumer createConsumer(Processor processor) throws Exception {
-        return new ActivitiConsumer(this, processor);
-    }
+  public Consumer createConsumer(Processor processor) throws Exception {
+    return new ActivitiConsumer(this, processor);
+  }
 
-    protected void addConsumer(ActivitiConsumer consumer) {
-        if (activitiConsumer != null) {
-            throw new RuntimeException("Activiti consumer already defined for " + getEndpointUri() + "!");
-        }
-        activitiConsumer = consumer;
+  protected void addConsumer(ActivitiConsumer consumer) {
+    if (activitiConsumer != null) {
+      throw new RuntimeException("Activiti consumer already defined for " + getEndpointUri() + "!");
     }
+    activitiConsumer = consumer;
+  }
 
-    protected void removeConsumer() {
-        activitiConsumer = null;
-    }
+  protected void removeConsumer() {
+    activitiConsumer = null;
+  }
 
-    public boolean isSingleton() {
-        return true;
-    }
+  public boolean isSingleton() {
+    return true;
+  }
 
-    public void setIdentityService(IdentityService identityService) {
-        this.identityService = identityService;
-    }
+  public void setIdentityService(IdentityService identityService) {
+    this.identityService = identityService;
+  }
 
-    public void setRuntimeService(RuntimeService runtimeService) {
-        this.runtimeService = runtimeService;
-    }
+  public void setRuntimeService(RuntimeService runtimeService) {
+    this.runtimeService = runtimeService;
+  }
 
-    public boolean isCopyVariablesToProperties() {
-        return copyVariablesToProperties;
-    }
+  public boolean isCopyVariablesToProperties() {
+    return copyVariablesToProperties;
+  }
 
-    public void setCopyVariablesToProperties(boolean copyVariablesToProperties) {
-        this.copyVariablesToProperties = copyVariablesToProperties;
-    }
+  public void setCopyVariablesToProperties(boolean copyVariablesToProperties) {
+    this.copyVariablesToProperties = copyVariablesToProperties;
+  }
 
-    public boolean isCopyCamelBodyToBody() {
-        return copyCamelBodyToBody;
-    }
+  public boolean isCopyCamelBodyToBody() {
+    return copyCamelBodyToBody;
+  }
 
-    public void setCopyCamelBodyToBody(boolean copyCamelBodyToBody) {
-        this.copyCamelBodyToBody = copyCamelBodyToBody;
-    }
+  public void setCopyCamelBodyToBody(boolean copyCamelBodyToBody) {
+    this.copyCamelBodyToBody = copyCamelBodyToBody;
+  }
 
-    public boolean isCopyVariablesToBodyAsMap() {
-        return copyVariablesToBodyAsMap;
-    }
+  public boolean isCopyVariablesToBodyAsMap() {
+    return copyVariablesToBodyAsMap;
+  }
 
-    public void setCopyVariablesToBodyAsMap(boolean copyVariablesToBodyAsMap) {
-        this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
-    }
+  public void setCopyVariablesToBodyAsMap(boolean copyVariablesToBodyAsMap) {
+    this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
+  }
 
-    public boolean isCopyVariablesFromProperties() {
-        return copyVariablesFromProperties;
-    }
+  public boolean isCopyVariablesFromProperties() {
+    return copyVariablesFromProperties;
+  }
 
-    public void setCopyVariablesFromProperties(boolean copyVariablesFromProperties) {
-        this.copyVariablesFromProperties = copyVariablesFromProperties;
-    }
+  public void setCopyVariablesFromProperties(boolean copyVariablesFromProperties) {
+    this.copyVariablesFromProperties = copyVariablesFromProperties;
+  }
 
-    public boolean isCopyVariablesFromHeader() {
-        return this.copyVariablesFromHeader;
-    }
+  public boolean isCopyVariablesFromHeader() {
+    return this.copyVariablesFromHeader;
+  }
 
-    public void setCopyVariablesFromHeader(boolean copyVariablesFromHeader) {
-        this.copyVariablesFromHeader = copyVariablesFromHeader;
-    }
+  public void setCopyVariablesFromHeader(boolean copyVariablesFromHeader) {
+    this.copyVariablesFromHeader = copyVariablesFromHeader;
+  }
 
-    public boolean isCopyCamelBodyToBodyAsString() {
-        return copyCamelBodyToBodyAsString;
-    }
+  public boolean isCopyCamelBodyToBodyAsString() {
+    return copyCamelBodyToBodyAsString;
+  }
 
-    public void setCopyCamelBodyToBodyAsString(boolean copyCamelBodyToBodyAsString) {
-        this.copyCamelBodyToBodyAsString = copyCamelBodyToBodyAsString;
-    }
+  public void setCopyCamelBodyToBodyAsString(boolean copyCamelBodyToBodyAsString) {
+    this.copyCamelBodyToBodyAsString = copyCamelBodyToBodyAsString;
+  }
 
-    public boolean isSetProcessInitiator() {
-        return StringUtils.isNotEmpty(getProcessInitiatorHeaderName());
-    }
+  public boolean isSetProcessInitiator() {
+    return StringUtils.isNotEmpty(getProcessInitiatorHeaderName());
+  }
 
-    public Map<String, Object> getReturnVarMap() {
-        return returnVarMap;
-    }
+  public Map<String, Object> getReturnVarMap() {
+    return returnVarMap;
+  }
 
-    public void setReturnVarMap(Map<String, Object> returnVarMap) {
-        this.returnVarMap = returnVarMap;
-    }
+  public void setReturnVarMap(Map<String, Object> returnVarMap) {
+    this.returnVarMap = returnVarMap;
+  }
 
-    public String getProcessInitiatorHeaderName() {
-        return processInitiatorHeaderName;
-    }
+  public String getProcessInitiatorHeaderName() {
+    return processInitiatorHeaderName;
+  }
 
-    public void setProcessInitiatorHeaderName(String processInitiatorHeaderName) {
-        this.processInitiatorHeaderName = processInitiatorHeaderName;
-    }
+  public void setProcessInitiatorHeaderName(String processInitiatorHeaderName) {
+    this.processInitiatorHeaderName = processInitiatorHeaderName;
+  }
 
-    @Override
-    public boolean isLenientProperties() {
-        return true;
-    }
+  @Override
+  public boolean isLenientProperties() {
+    return true;
+  }
 
-    public long getTimeout() {
-        return timeout;
-    }
+  public long getTimeout() {
+    return timeout;
+  }
 
-    public int getTimeResolution() {
-        return timeResolution;
-    }
+  public int getTimeResolution() {
+    return timeResolution;
+  }
 
 }

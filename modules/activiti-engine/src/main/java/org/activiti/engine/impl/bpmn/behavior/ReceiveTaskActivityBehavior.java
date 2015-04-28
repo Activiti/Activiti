@@ -19,21 +19,20 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 /**
  * A receive task is a wait state that waits for the receival of some message.
  * 
- * Currently, the only message that is supported is the external trigger, given
- * by calling the {@link RuntimeService#signal(String)} operation.
+ * Currently, the only message that is supported is the external trigger, given by calling the {@link RuntimeService#signal(String)} operation.
  * 
  * @author Joram Barrez
  */
 public class ReceiveTaskActivityBehavior extends TaskActivityBehavior {
 
-    private static final long serialVersionUID = 5931982223430789965L;
+  private static final long serialVersionUID = 5931982223430789965L;
 
-    public void execute(ActivityExecution execution) {
-        // Do nothing: waitstate behavior
-    }
+  public void execute(ActivityExecution execution) {
+    // Do nothing: waitstate behavior
+  }
 
-    public void trigger(ActivityExecution execution, String signalName, Object data) {
-        leave(execution);
-    }
+  public void trigger(ActivityExecution execution, String signalName, Object data) {
+    leave(execution);
+  }
 
 }

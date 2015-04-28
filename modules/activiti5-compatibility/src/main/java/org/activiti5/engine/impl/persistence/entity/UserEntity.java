@@ -27,105 +27,105 @@ import org.activiti5.engine.impl.db.PersistentObject;
  */
 public class UserEntity implements User, Serializable, PersistentObject, HasRevision {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String id;
-    protected int revision;
-    protected String firstName;
-    protected String lastName;
-    protected String email;
-    protected String password;
+  protected String id;
+  protected int revision;
+  protected String firstName;
+  protected String lastName;
+  protected String email;
+  protected String password;
 
-    protected final ByteArrayRef pictureByteArrayRef = new ByteArrayRef();
+  protected final ByteArrayRef pictureByteArrayRef = new ByteArrayRef();
 
-    public UserEntity() {
+  public UserEntity() {
+  }
+
+  public UserEntity(String id) {
+    this.id = id;
+  }
+
+  public void delete() {
+    Context.getCommandContext().getDbSqlSession().delete(this);
+
+    pictureByteArrayRef.delete();
+  }
+
+  public Object getPersistentState() {
+    Map<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("firstName", firstName);
+    persistentState.put("lastName", lastName);
+    persistentState.put("email", email);
+    persistentState.put("password", password);
+    persistentState.put("pictureByteArrayId", pictureByteArrayRef.getId());
+    return persistentState;
+  }
+
+  public int getRevisionNext() {
+    return revision + 1;
+  }
+
+  public Picture getPicture() {
+    if (pictureByteArrayRef.getId() != null) {
+      return new Picture(pictureByteArrayRef.getBytes(), pictureByteArrayRef.getName());
     }
+    return null;
+  }
 
-    public UserEntity(String id) {
-        this.id = id;
-    }
+  public void setPicture(Picture picture) {
+    pictureByteArrayRef.setValue(picture.getMimeType(), picture.getBytes());
+  }
 
-    public void delete() {
-        Context.getCommandContext().getDbSqlSession().delete(this);
+  public String getId() {
+    return id;
+  }
 
-        pictureByteArrayRef.delete();
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public Object getPersistentState() {
-        Map<String, Object> persistentState = new HashMap<String, Object>();
-        persistentState.put("firstName", firstName);
-        persistentState.put("lastName", lastName);
-        persistentState.put("email", email);
-        persistentState.put("password", password);
-        persistentState.put("pictureByteArrayId", pictureByteArrayRef.getId());
-        return persistentState;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public int getRevisionNext() {
-        return revision + 1;
-    }
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-    public Picture getPicture() {
-        if (pictureByteArrayRef.getId() != null) {
-            return new Picture(pictureByteArrayRef.getBytes(), pictureByteArrayRef.getName());
-        }
-        return null;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public void setPicture(Picture picture) {
-        pictureByteArrayRef.setValue(picture.getMimeType(), picture.getBytes());
-    }
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public String getFirstName() {
-        return firstName;
-    }
+  public String getPassword() {
+    return password;
+  }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public int getRevision() {
+    return revision;
+  }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public int getRevision() {
-        return revision;
-    }
-
-    public void setRevision(int revision) {
-        this.revision = revision;
-    }
-
-    public boolean isPictureSet() {
-        return pictureByteArrayRef.getId() != null;
-    }
+  public boolean isPictureSet() {
+    return pictureByteArrayRef.getId() != null;
+  }
 
 }

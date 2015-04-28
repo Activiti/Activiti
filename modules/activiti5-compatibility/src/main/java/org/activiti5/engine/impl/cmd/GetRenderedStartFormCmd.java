@@ -30,33 +30,33 @@ import org.activiti5.engine.repository.ProcessDefinition;
  */
 public class GetRenderedStartFormCmd implements Command<Object>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String processDefinitionId;
-    protected String formEngineName;
+  private static final long serialVersionUID = 1L;
+  protected String processDefinitionId;
+  protected String formEngineName;
 
-    public GetRenderedStartFormCmd(String processDefinitionId, String formEngineName) {
-        this.processDefinitionId = processDefinitionId;
-        this.formEngineName = formEngineName;
+  public GetRenderedStartFormCmd(String processDefinitionId, String formEngineName) {
+    this.processDefinitionId = processDefinitionId;
+    this.formEngineName = formEngineName;
+  }
+
+  public Object execute(CommandContext commandContext) {
+    ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
+    if (processDefinition == null) {
+      throw new ActivitiObjectNotFoundException("Process Definition '" + processDefinitionId + "' not found", ProcessDefinition.class);
+    }
+    StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
+    if (startFormHandler == null) {
+      return null;
     }
 
-    public Object execute(CommandContext commandContext) {
-        ProcessDefinitionEntity processDefinition = commandContext.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
-        if (processDefinition == null) {
-            throw new ActivitiObjectNotFoundException("Process Definition '" + processDefinitionId + "' not found", ProcessDefinition.class);
-        }
-        StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
-        if (startFormHandler == null) {
-            return null;
-        }
+    FormEngine formEngine = commandContext.getProcessEngineConfiguration().getFormEngines().get(formEngineName);
 
-        FormEngine formEngine = commandContext.getProcessEngineConfiguration().getFormEngines().get(formEngineName);
-
-        if (formEngine == null) {
-            throw new ActivitiException("No formEngine '" + formEngineName + "' defined process engine configuration");
-        }
-
-        StartFormData startForm = startFormHandler.createStartFormData(processDefinition);
-
-        return formEngine.renderStartForm(startForm);
+    if (formEngine == null) {
+      throw new ActivitiException("No formEngine '" + formEngineName + "' defined process engine configuration");
     }
+
+    StartFormData startForm = startFormHandler.createStartFormData(processDefinition);
+
+    return formEngine.renderStartForm(startForm);
+  }
 }

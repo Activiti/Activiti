@@ -24,20 +24,20 @@ import org.slf4j.LoggerFactory;
  */
 public class ScriptTaskParseHandler extends AbstractActivityBpmnParseHandler<ScriptTask> {
 
-    private static final Logger logger = LoggerFactory.getLogger(ScriptTaskParseHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(ScriptTaskParseHandler.class);
 
-    public Class<? extends BaseElement> getHandledType() {
-        return ScriptTask.class;
+  public Class<? extends BaseElement> getHandledType() {
+    return ScriptTask.class;
+  }
+
+  protected void executeParse(BpmnParse bpmnParse, ScriptTask scriptTask) {
+
+    if (StringUtils.isEmpty(scriptTask.getScript())) {
+      logger.warn("No script provided for scriptTask " + scriptTask.getId());
     }
 
-    protected void executeParse(BpmnParse bpmnParse, ScriptTask scriptTask) {
+    scriptTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
 
-        if (StringUtils.isEmpty(scriptTask.getScript())) {
-            logger.warn("No script provided for scriptTask " + scriptTask.getId());
-        }
-
-        scriptTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createScriptTaskActivityBehavior(scriptTask));
-
-    }
+  }
 
 }

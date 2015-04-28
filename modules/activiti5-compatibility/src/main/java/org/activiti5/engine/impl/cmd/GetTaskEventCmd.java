@@ -25,18 +25,18 @@ import org.activiti5.engine.task.Event;
  */
 public class GetTaskEventCmd implements Command<Event>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String eventId;
+  private static final long serialVersionUID = 1L;
+  protected String eventId;
 
-    public GetTaskEventCmd(String eventId) {
-        this.eventId = eventId;
+  public GetTaskEventCmd(String eventId) {
+    this.eventId = eventId;
 
-        if (eventId == null) {
-            throw new ActivitiIllegalArgumentException("eventId is null");
-        }
+    if (eventId == null) {
+      throw new ActivitiIllegalArgumentException("eventId is null");
     }
+  }
 
-    public Event execute(CommandContext commandContext) {
-        return commandContext.getCommentEntityManager().findEvent(eventId);
-    }
+  public Event execute(CommandContext commandContext) {
+    return commandContext.getCommentEntityManager().findEvent(eventId);
+  }
 }

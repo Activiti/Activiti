@@ -24,10 +24,10 @@ import org.activiti5.engine.delegate.DelegateExecution;
  */
 public class ExecutionTestVariable implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public void testMethod(DelegateExecution delegateExecution) {
-        delegateExecution.setVariable("testVar", "myValue");
-    }
+  public void testMethod(DelegateExecution delegateExecution) {
+    delegateExecution.setVariable("testVar", "myValue");
+  }
 
 }

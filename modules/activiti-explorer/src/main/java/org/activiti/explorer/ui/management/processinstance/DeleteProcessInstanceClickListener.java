@@ -32,34 +32,34 @@ import com.vaadin.ui.Button.ClickListener;
  */
 public class DeleteProcessInstanceClickListener implements ClickListener {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String processInstanceId;
-    protected AbstractTablePage processInstancePage;
+  protected String processInstanceId;
+  protected AbstractTablePage processInstancePage;
 
-    public DeleteProcessInstanceClickListener(String processInstanceId, AbstractTablePage processInstancePage) {
-        this.processInstanceId = processInstanceId;
-        this.processInstancePage = processInstancePage;
-    }
+  public DeleteProcessInstanceClickListener(String processInstanceId, AbstractTablePage processInstancePage) {
+    this.processInstanceId = processInstanceId;
+    this.processInstancePage = processInstancePage;
+  }
 
-    public void buttonClick(ClickEvent event) {
-        I18nManager i18nManager = ExplorerApp.get().getI18nManager();
-        ViewManager viewManager = ExplorerApp.get().getViewManager();
+  public void buttonClick(ClickEvent event) {
+    I18nManager i18nManager = ExplorerApp.get().getI18nManager();
+    ViewManager viewManager = ExplorerApp.get().getViewManager();
 
-        final ConfirmationDialogPopupWindow confirmPopup = new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.PROCESS_INSTANCE_DELETE_POPUP_TITLE, processInstanceId),
-                i18nManager.getMessage(Messages.PROCESS_INSTANCE_DELETE_POPUP_DESCRIPTION, processInstanceId));
+    final ConfirmationDialogPopupWindow confirmPopup = new ConfirmationDialogPopupWindow(i18nManager.getMessage(Messages.PROCESS_INSTANCE_DELETE_POPUP_TITLE, processInstanceId),
+        i18nManager.getMessage(Messages.PROCESS_INSTANCE_DELETE_POPUP_DESCRIPTION, processInstanceId));
 
-        confirmPopup.addListener(new ConfirmationEventListener() {
-            private static final long serialVersionUID = 1L;
+    confirmPopup.addListener(new ConfirmationEventListener() {
+      private static final long serialVersionUID = 1L;
 
-            protected void confirmed(ConfirmationEvent event) {
-                RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
-                runtimeService.deleteProcessInstance(processInstanceId, null);
-                processInstancePage.refreshSelectNext();
-            }
-        });
+      protected void confirmed(ConfirmationEvent event) {
+        RuntimeService runtimeService = ProcessEngines.getDefaultProcessEngine().getRuntimeService();
+        runtimeService.deleteProcessInstance(processInstanceId, null);
+        processInstancePage.refreshSelectNext();
+      }
+    });
 
-        viewManager.showPopupWindow(confirmPopup);
-    }
+    viewManager.showPopupWindow(confirmPopup);
+  }
 
 }

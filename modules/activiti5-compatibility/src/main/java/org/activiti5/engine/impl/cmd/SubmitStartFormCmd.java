@@ -27,32 +27,32 @@ import org.activiti5.engine.runtime.ProcessInstance;
  */
 public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessInstance> {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected final String businessKey;
-    protected Map<String, String> properties;
+  protected final String businessKey;
+  protected Map<String, String> properties;
 
-    public SubmitStartFormCmd(String processDefinitionId, String businessKey, Map<String, String> properties) {
-        super(processDefinitionId);
-        this.businessKey = businessKey;
-        this.properties = properties;
+  public SubmitStartFormCmd(String processDefinitionId, String businessKey, Map<String, String> properties) {
+    super(processDefinitionId);
+    this.businessKey = businessKey;
+    this.properties = properties;
+  }
+
+  protected ProcessInstance execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
+    ExecutionEntity processInstance = null;
+    if (businessKey != null) {
+      processInstance = processDefinition.createProcessInstance(businessKey);
+    } else {
+      processInstance = processDefinition.createProcessInstance();
     }
 
-    protected ProcessInstance execute(CommandContext commandContext, ProcessDefinitionEntity processDefinition) {
-        ExecutionEntity processInstance = null;
-        if (businessKey != null) {
-            processInstance = processDefinition.createProcessInstance(businessKey);
-        } else {
-            processInstance = processDefinition.createProcessInstance();
-        }
+    commandContext.getHistoryManager().reportFormPropertiesSubmitted(processInstance, properties, null);
 
-        commandContext.getHistoryManager().reportFormPropertiesSubmitted(processInstance, properties, null);
+    StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
+    startFormHandler.submitFormProperties(properties, processInstance);
 
-        StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
-        startFormHandler.submitFormProperties(properties, processInstance);
+    processInstance.start();
 
-        processInstance.start();
-
-        return processInstance;
-    }
+    return processInstance;
+  }
 }

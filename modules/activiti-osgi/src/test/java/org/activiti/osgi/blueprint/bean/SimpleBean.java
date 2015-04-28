@@ -17,8 +17,8 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 public class SimpleBean implements JavaDelegate {
 
-    @Override
-    public void execute(DelegateExecution execution) {
-        execution.setVariable("visited", true);
-    }
+  @Override
+  public void execute(DelegateExecution execution) {
+    execution.setVariable("visited", true);
+  }
 }

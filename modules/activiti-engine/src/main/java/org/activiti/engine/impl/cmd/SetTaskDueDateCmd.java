@@ -22,18 +22,18 @@ import java.util.Date;
  */
 public class SetTaskDueDateCmd extends NeedsActiveTaskCmd<Void> {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected Date dueDate;
+  protected Date dueDate;
 
-    public SetTaskDueDateCmd(String taskId, Date dueDate) {
-        super(taskId);
-        this.dueDate = dueDate;
-    }
+  public SetTaskDueDateCmd(String taskId, Date dueDate) {
+    super(taskId);
+    this.dueDate = dueDate;
+  }
 
-    protected Void execute(CommandContext commandContext, TaskEntity task) {
-        task.setDueDate(dueDate, true);
-        return null;
-    }
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
+    task.setDueDate(dueDate, true);
+    return null;
+  }
 
 }

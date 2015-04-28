@@ -23,46 +23,46 @@ import org.activiti5.engine.impl.javax.el.ELException;
  * @author Christoph Beck
  */
 public class TreeBuilderException extends ELException {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private final String expression;
-    private final int position;
-    private final String encountered;
-    private final String expected;
+  private final String expression;
+  private final int position;
+  private final String encountered;
+  private final String expected;
 
-    public TreeBuilderException(String expression, int position, String encountered, String expected, String message) {
-        super(LocalMessages.get("error.build", expression, message));
-        this.expression = expression;
-        this.position = position;
-        this.encountered = encountered;
-        this.expected = expected;
-    }
+  public TreeBuilderException(String expression, int position, String encountered, String expected, String message) {
+    super(LocalMessages.get("error.build", expression, message));
+    this.expression = expression;
+    this.position = position;
+    this.encountered = encountered;
+    this.expected = expected;
+  }
 
-    /**
-     * @return the expression string
-     */
-    public String getExpression() {
-        return expression;
-    }
+  /**
+   * @return the expression string
+   */
+  public String getExpression() {
+    return expression;
+  }
 
-    /**
-     * @return the error position
-     */
-    public int getPosition() {
-        return position;
-    }
+  /**
+   * @return the error position
+   */
+  public int getPosition() {
+    return position;
+  }
 
-    /**
-     * @return the substring (or description) that has been encountered
-     */
-    public String getEncountered() {
-        return encountered;
-    }
+  /**
+   * @return the substring (or description) that has been encountered
+   */
+  public String getEncountered() {
+    return encountered;
+  }
 
-    /**
-     * @return the substring (or description) that was expected
-     */
-    public String getExpected() {
-        return expected;
-    }
+  /**
+   * @return the substring (or description) that was expected
+   */
+  public String getExpected() {
+    return expected;
+  }
 }

@@ -20,9 +20,9 @@ import org.activiti.engine.impl.pvm.PvmProcessElement;
  */
 public interface ExecutionListenerExecution extends DelegateExecution {
 
-    String getEventName();
+  String getEventName();
 
-    PvmProcessElement getEventSource();
+  PvmProcessElement getEventSource();
 
-    String getDeleteReason();
+  String getDeleteReason();
 }

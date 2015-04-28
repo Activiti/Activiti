@@ -19,6 +19,6 @@ import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
  */
 public interface UnresolvedReference {
 
-    void resolve(ProcessDefinitionImpl processDefinition);
+  void resolve(ProcessDefinitionImpl processDefinition);
 
 }

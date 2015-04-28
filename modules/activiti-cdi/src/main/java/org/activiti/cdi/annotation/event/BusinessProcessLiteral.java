@@ -16,14 +16,14 @@ import javax.enterprise.util.AnnotationLiteral;
 
 public class BusinessProcessLiteral extends AnnotationLiteral<BusinessProcess> implements BusinessProcess {
 
-    protected final String key;
+  protected final String key;
 
-    public BusinessProcessLiteral(String key) {
-        this.key = key;
-    }
+  public BusinessProcessLiteral(String key) {
+    this.key = key;
+  }
 
-    @Override
-    public String value() {
-        return key;
-    }
+  @Override
+  public String value() {
+    return key;
+  }
 }

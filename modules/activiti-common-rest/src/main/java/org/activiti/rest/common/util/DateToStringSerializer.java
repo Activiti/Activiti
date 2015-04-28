@@ -14,15 +14,15 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 
 public class DateToStringSerializer extends JsonSerializer<Date> {
 
-    protected DateTimeFormatter isoFormatter = ISODateTimeFormat.dateTime();
+  protected DateTimeFormatter isoFormatter = ISODateTimeFormat.dateTime();
 
-    @Override
-    public void serialize(Date tmpDate, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
+  @Override
+  public void serialize(Date tmpDate, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException, JsonProcessingException {
 
-        if (tmpDate != null) {
-            jsonGenerator.writeString(new DateTime(tmpDate).toString(isoFormatter));
-        } else {
-            jsonGenerator.writeNull();
-        }
+    if (tmpDate != null) {
+      jsonGenerator.writeString(new DateTime(tmpDate).toString(isoFormatter));
+    } else {
+      jsonGenerator.writeNull();
     }
+  }
 }

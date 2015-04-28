@@ -15,63 +15,62 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 /**
- * Test for all REST-operations related to the Job collection and a single job
- * resource.
+ * Test for all REST-operations related to the Job collection and a single job resource.
  * 
  * @author Frederik Heremans
  */
 public class JobExceptionStacktraceResourceTest extends BaseSpringRestTestCase {
 
-    /**
-     * Test getting the stacktrace for a failed job
-     */
-    @Deployment(resources = { "org/activiti/rest/service/api/management/JobExceptionStacktraceResourceTest.testTimerProcess.bpmn20.xml" })
-    public void testGetJobStacktrace() throws Exception {
-        // Start process, forcing error on job-execution
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess", Collections.singletonMap("error", (Object) Boolean.TRUE));
+  /**
+   * Test getting the stacktrace for a failed job
+   */
+  @Deployment(resources = { "org/activiti/rest/service/api/management/JobExceptionStacktraceResourceTest.testTimerProcess.bpmn20.xml" })
+  public void testGetJobStacktrace() throws Exception {
+    // Start process, forcing error on job-execution
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess", Collections.singletonMap("error", (Object) Boolean.TRUE));
 
-        Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(timerJob);
+    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(timerJob);
 
-        // Force execution of job
-        try {
-            managementService.executeJob(timerJob.getId());
-            fail();
-        } catch (ActivitiException expected) {
-            // Ignore, we expect the exception
-        }
-
-        Calendar now = Calendar.getInstance();
-        now.set(Calendar.MILLISECOND, 0);
-        processEngineConfiguration.getClock().setCurrentTime(now.getTime());
-
-        CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_OK);
-
-        String stack = IOUtils.toString(response.getEntity().getContent());
-        assertNotNull(stack);
-        assertEquals(managementService.getJobExceptionStacktrace(timerJob.getId()), stack);
-
-        // Also check content-type
-        assertEquals("text/plain", response.getEntity().getContentType().getValue());
-        closeResponse(response);
+    // Force execution of job
+    try {
+      managementService.executeJob(timerJob.getId());
+      fail();
+    } catch (ActivitiException expected) {
+      // Ignore, we expect the exception
     }
 
-    /**
-     * Test getting the stacktrace for an unexisting job.
-     */
-    public void testGetStrackForUnexistingJob() throws Exception {
-        closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, "unexistingjob")), HttpStatus.SC_NOT_FOUND));
-    }
+    Calendar now = Calendar.getInstance();
+    now.set(Calendar.MILLISECOND, 0);
+    processEngineConfiguration.getClock().setCurrentTime(now.getTime());
 
-    /**
-     * Test getting the stacktrace for an unexisting job.
-     */
-    @Deployment(resources = { "org/activiti/rest/service/api/management/JobExceptionStacktraceResourceTest.testTimerProcess.bpmn20.xml" })
-    public void testGetStrackForJobWithoutException() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess", Collections.singletonMap("error", (Object) Boolean.FALSE));
-        Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(timerJob);
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_OK);
 
-        closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_NOT_FOUND));
-    }
+    String stack = IOUtils.toString(response.getEntity().getContent());
+    assertNotNull(stack);
+    assertEquals(managementService.getJobExceptionStacktrace(timerJob.getId()), stack);
+
+    // Also check content-type
+    assertEquals("text/plain", response.getEntity().getContentType().getValue());
+    closeResponse(response);
+  }
+
+  /**
+   * Test getting the stacktrace for an unexisting job.
+   */
+  public void testGetStrackForUnexistingJob() throws Exception {
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, "unexistingjob")), HttpStatus.SC_NOT_FOUND));
+  }
+
+  /**
+   * Test getting the stacktrace for an unexisting job.
+   */
+  @Deployment(resources = { "org/activiti/rest/service/api/management/JobExceptionStacktraceResourceTest.testTimerProcess.bpmn20.xml" })
+  public void testGetStrackForJobWithoutException() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("timerProcess", Collections.singletonMap("error", (Object) Boolean.FALSE));
+    Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(timerJob);
+
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_EXCEPTION_STRACKTRACE, timerJob.getId())), HttpStatus.SC_NOT_FOUND));
+  }
 }

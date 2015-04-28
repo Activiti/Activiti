@@ -21,50 +21,50 @@ import java.util.List;
  */
 public abstract class FlowNode extends FlowElement {
 
-    protected Object behavior;
+  protected Object behavior;
 
-    protected SubProcess subProcess;
+  protected SubProcess subProcess;
 
-    protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
-    protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
+  protected List<SequenceFlow> incomingFlows = new ArrayList<SequenceFlow>();
+  protected List<SequenceFlow> outgoingFlows = new ArrayList<SequenceFlow>();
 
-    public FlowNode() {
+  public FlowNode() {
 
-    }
+  }
 
-    public Object getBehavior() {
-        return behavior;
-    }
+  public Object getBehavior() {
+    return behavior;
+  }
 
-    public void setBehavior(Object behavior) {
-        this.behavior = behavior;
-    }
+  public void setBehavior(Object behavior) {
+    this.behavior = behavior;
+  }
 
-    public SubProcess getSubProcess() {
-        return subProcess;
-    }
+  public SubProcess getSubProcess() {
+    return subProcess;
+  }
 
-    public void setSubProcess(SubProcess subProcess) {
-        this.subProcess = subProcess;
-    }
+  public void setSubProcess(SubProcess subProcess) {
+    this.subProcess = subProcess;
+  }
 
-    public List<SequenceFlow> getIncomingFlows() {
-        return incomingFlows;
-    }
+  public List<SequenceFlow> getIncomingFlows() {
+    return incomingFlows;
+  }
 
-    public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
-        this.incomingFlows = incomingFlows;
-    }
+  public void setIncomingFlows(List<SequenceFlow> incomingFlows) {
+    this.incomingFlows = incomingFlows;
+  }
 
-    public List<SequenceFlow> getOutgoingFlows() {
-        return outgoingFlows;
-    }
+  public List<SequenceFlow> getOutgoingFlows() {
+    return outgoingFlows;
+  }
 
-    public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
-        this.outgoingFlows = outgoingFlows;
-    }
+  public void setOutgoingFlows(List<SequenceFlow> outgoingFlows) {
+    this.outgoingFlows = outgoingFlows;
+  }
 
-    public void setValues(FlowNode otherNode) {
-        super.setValues(otherNode);
-    }
+  public void setValues(FlowNode otherNode) {
+    super.setValues(otherNode);
+  }
 }

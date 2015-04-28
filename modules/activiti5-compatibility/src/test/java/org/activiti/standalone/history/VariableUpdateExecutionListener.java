@@ -22,11 +22,11 @@ import org.activiti5.engine.delegate.Expression;
  */
 public class VariableUpdateExecutionListener implements ExecutionListener {
 
-    private Expression varName;
+  private Expression varName;
 
-    public void notify(DelegateExecution execution) throws Exception {
-        String variableName = (String) varName.getValue(execution);
-        execution.setVariable(variableName, "Event: " + execution.getEventName());
-    }
+  public void notify(DelegateExecution execution) throws Exception {
+    String variableName = (String) varName.getValue(execution);
+    execution.setVariable(variableName, "Event: " + execution.getEventName());
+  }
 
 }

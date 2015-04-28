@@ -17,40 +17,40 @@ package org.activiti.engine.impl.variable;
  */
 public class BooleanType implements VariableType {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public String getTypeName() {
-        return "boolean";
-    }
+  public String getTypeName() {
+    return "boolean";
+  }
 
-    public boolean isCachable() {
-        return true;
-    }
+  public boolean isCachable() {
+    return true;
+  }
 
-    public Object getValue(ValueFields valueFields) {
-        if (valueFields.getLongValue() != null) {
-            return valueFields.getLongValue() == 1;
-        }
-        return null;
+  public Object getValue(ValueFields valueFields) {
+    if (valueFields.getLongValue() != null) {
+      return valueFields.getLongValue() == 1;
     }
+    return null;
+  }
 
-    public void setValue(Object value, ValueFields valueFields) {
-        if (value == null) {
-            valueFields.setLongValue(null);
-        } else {
-            Boolean booleanValue = (Boolean) value;
-            if (booleanValue) {
-                valueFields.setLongValue(1L);
-            } else {
-                valueFields.setLongValue(0L);
-            }
-        }
+  public void setValue(Object value, ValueFields valueFields) {
+    if (value == null) {
+      valueFields.setLongValue(null);
+    } else {
+      Boolean booleanValue = (Boolean) value;
+      if (booleanValue) {
+        valueFields.setLongValue(1L);
+      } else {
+        valueFields.setLongValue(0L);
+      }
     }
+  }
 
-    public boolean isAbleToStore(Object value) {
-        if (value == null) {
-            return true;
-        }
-        return Boolean.class.isAssignableFrom(value.getClass()) || boolean.class.isAssignableFrom(value.getClass());
+  public boolean isAbleToStore(Object value) {
+    if (value == null) {
+      return true;
     }
+    return Boolean.class.isAssignableFrom(value.getClass()) || boolean.class.isAssignableFrom(value.getClass());
+  }
 }

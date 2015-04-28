@@ -13,25 +13,24 @@ package org.activiti.crystalball.simulator.impl;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.SimulationEventHandler;
 
 /**
- * No operation event handler 
- *
+ * No operation event handler
+ * 
  * @author martin.grofcik
  */
 public class NoopEventHandler implements SimulationEventHandler {
 
-	@Override
-	public void init() {
+  @Override
+  public void init() {
 
-	}
+  }
 
-	@Override
-	public void handle(SimulationEvent event) {
+  @Override
+  public void handle(SimulationEvent event) {
 
-	}
+  }
 
 }

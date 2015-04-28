@@ -18,55 +18,53 @@ import org.slf4j.LoggerFactory;
  */
 public class ExecuteInactiveBehaviorsOperation extends AbstractOperation {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExecuteInactiveBehaviorsOperation.class);
+  private static final Logger logger = LoggerFactory.getLogger(ExecuteInactiveBehaviorsOperation.class);
 
-    protected Collection<ExecutionEntity> involvedExecutions;
+  protected Collection<ExecutionEntity> involvedExecutions;
 
-    public ExecuteInactiveBehaviorsOperation(CommandContext commandContext) {
-        super(commandContext, null);
-        this.involvedExecutions = agenda.getCommandContext().getInvolvedExecutions();
-    }
+  public ExecuteInactiveBehaviorsOperation(CommandContext commandContext) {
+    super(commandContext, null);
+    this.involvedExecutions = agenda.getCommandContext().getInvolvedExecutions();
+  }
 
-    @Override
-    public void run() {
+  @Override
+  public void run() {
 
-        /**
-         * Algortithm: for each execution that is involved in this command
-         * context, 1) Verify if its process definitions has any
-         * InactiveActivityBehavior instances. 2) If so, verify if there are any
-         * executions inactive in those 3) Execute the inactivated behavior
-         */
+    /**
+     * Algortithm: for each execution that is involved in this command context, 1) Verify if its process definitions has any InactiveActivityBehavior instances. 2) If so, verify if there are any
+     * executions inactive in those 3) Execute the inactivated behavior
+     */
 
-        for (ExecutionEntity executionEntity : involvedExecutions) {
+    for (ExecutionEntity executionEntity : involvedExecutions) {
 
-            Process process = ProcessDefinitionUtil.getProcess(executionEntity.getProcessDefinitionId());
-            Collection<String> flowNodeIdsWithInactivatedBehavior = new ArrayList<String>();
-            for (FlowNode flowNode : process.findFlowElementsOfType(FlowNode.class)) {
-                if (flowNode.getBehavior() instanceof InactiveActivityBehavior) {
-                    flowNodeIdsWithInactivatedBehavior.add(flowNode.getId());
-                }
-            }
-
-            // Only check if the process actually has inactivated functionality
-            // TODO: this information could be cached
-
-            if (flowNodeIdsWithInactivatedBehavior.size() > 0) {
-                Collection<ExecutionEntity> inactiveExecutions = commandContext.getExecutionEntityManager().getInactiveExecutionsForProcessInstance(executionEntity.getProcessInstanceId());
-                for (ExecutionEntity inactiveExecution : inactiveExecutions) {
-                    if (!inactiveExecution.isActive() && flowNodeIdsWithInactivatedBehavior.contains(inactiveExecution.getActivityId())
-                            && !commandContext.getDbSqlSession().isPersistentObjectDeleted(inactiveExecution)) {
-
-                        FlowNode flowNode = (FlowNode) process.getFlowElement(inactiveExecution.getActivityId(), true);
-                        InactiveActivityBehavior inactiveActivityBehavior = ((InactiveActivityBehavior) flowNode.getBehavior());
-                        logger.debug("Found InactiveActivityBehavior instance of class {} that can be executed on activity '{}'", inactiveActivityBehavior.getClass(), flowNode.getId());
-                        inactiveActivityBehavior.executeInactive(inactiveExecution);
-                        ;
-
-                    }
-                }
-            }
-
+      Process process = ProcessDefinitionUtil.getProcess(executionEntity.getProcessDefinitionId());
+      Collection<String> flowNodeIdsWithInactivatedBehavior = new ArrayList<String>();
+      for (FlowNode flowNode : process.findFlowElementsOfType(FlowNode.class)) {
+        if (flowNode.getBehavior() instanceof InactiveActivityBehavior) {
+          flowNodeIdsWithInactivatedBehavior.add(flowNode.getId());
         }
+      }
+
+      // Only check if the process actually has inactivated functionality
+      // TODO: this information could be cached
+
+      if (flowNodeIdsWithInactivatedBehavior.size() > 0) {
+        Collection<ExecutionEntity> inactiveExecutions = commandContext.getExecutionEntityManager().getInactiveExecutionsForProcessInstance(executionEntity.getProcessInstanceId());
+        for (ExecutionEntity inactiveExecution : inactiveExecutions) {
+          if (!inactiveExecution.isActive() && flowNodeIdsWithInactivatedBehavior.contains(inactiveExecution.getActivityId())
+              && !commandContext.getDbSqlSession().isPersistentObjectDeleted(inactiveExecution)) {
+
+            FlowNode flowNode = (FlowNode) process.getFlowElement(inactiveExecution.getActivityId(), true);
+            InactiveActivityBehavior inactiveActivityBehavior = ((InactiveActivityBehavior) flowNode.getBehavior());
+            logger.debug("Found InactiveActivityBehavior instance of class {} that can be executed on activity '{}'", inactiveActivityBehavior.getClass(), flowNode.getId());
+            inactiveActivityBehavior.executeInactive(inactiveExecution);
+            ;
+
+          }
+        }
+      }
+
     }
+  }
 
 }

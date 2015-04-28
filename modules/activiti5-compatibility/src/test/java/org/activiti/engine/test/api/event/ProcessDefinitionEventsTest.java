@@ -29,126 +29,126 @@ import org.activiti5.engine.test.Deployment;
  */
 public class ProcessDefinitionEventsTest extends PluggableActivitiTestCase {
 
-    private TestMultipleActivitiEventListener listener;
+  private TestMultipleActivitiEventListener listener;
 
-    /**
-     * Test create, update and delete events of process definitions.
-     */
-    @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
-    public void testProcessDefinitionEvents() throws Exception {
-        ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").singleResult();
+  /**
+   * Test create, update and delete events of process definitions.
+   */
+  @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
+  public void testProcessDefinitionEvents() throws Exception {
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").singleResult();
 
-        assertNotNull(processDefinition);
+    assertNotNull(processDefinition);
 
-        // Check create-event
-        assertEquals(2, listener.getEventsReceived().size());
-        assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+    // Check create-event
+    assertEquals(2, listener.getEventsReceived().size());
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
-        ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-        assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
 
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-        assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-        assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
-        listener.clearEventsReceived();
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    listener.clearEventsReceived();
 
-        // Check update event when category is updated
-        repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "test");
-        assertEquals(1, listener.getEventsReceived().size());
-        assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+    // Check update event when category is updated
+    repositoryService.setProcessDefinitionCategory(processDefinition.getId(), "test");
+    assertEquals(1, listener.getEventsReceived().size());
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
-        assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
-        assertEquals("test", ((ProcessDefinition) event.getEntity()).getCategory());
-        listener.clearEventsReceived();
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
+    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    assertEquals("test", ((ProcessDefinition) event.getEntity()).getCategory());
+    listener.clearEventsReceived();
 
-        // Check update event when suspended/activated
-        repositoryService.suspendProcessDefinitionById(processDefinition.getId());
-        repositoryService.activateProcessDefinitionById(processDefinition.getId());
+    // Check update event when suspended/activated
+    repositoryService.suspendProcessDefinitionById(processDefinition.getId());
+    repositoryService.activateProcessDefinitionById(processDefinition.getId());
 
-        assertEquals(2, listener.getEventsReceived().size());
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-        assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
-        assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-        assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
-        assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
-        listener.clearEventsReceived();
+    assertEquals(2, listener.getEventsReceived().size());
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    assertEquals(ActivitiEventType.ENTITY_SUSPENDED, event.getType());
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ENTITY_ACTIVATED, event.getType());
+    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    listener.clearEventsReceived();
 
-        // Check delete event when category is updated
-        repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
-        deploymentIdFromDeploymentAnnotation = null;
+    // Check delete event when category is updated
+    repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
+    deploymentIdFromDeploymentAnnotation = null;
 
-        assertEquals(1, listener.getEventsReceived().size());
-        assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+    assertEquals(1, listener.getEventsReceived().size());
+    assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
-        event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-        assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-        assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
-        listener.clearEventsReceived();
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+    assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
+    assertEquals(processDefinition.getId(), ((ProcessDefinition) event.getEntity()).getId());
+    listener.clearEventsReceived();
+  }
+
+  /**
+   * test sequence of events for process definition with timer start event
+   */
+  @Deployment(resources = { "org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testDurationStartTimerEvent.bpmn20.xml" })
+  public void testTimerStartEventDeployment() {
+    ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) repositoryService.createProcessDefinitionQuery().processDefinitionKey("startTimerEventExample").singleResult();
+    ActivitiEntityEvent processDefinitionCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition);
+
+    TimerEntity timer = (TimerEntity) managementService.createJobQuery().singleResult();
+    ActivitiEntityEvent timerCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, timer);
+    assertSequence(processDefinitionCreated, timerCreated);
+    listener.clearEventsReceived();
+  }
+
+  private void assertSequence(ActivitiEntityEvent before, ActivitiEntityEvent after) {
+    int beforeIndex = 0;
+    int afterIndex = 0;
+    for (int index = 0; index < listener.getEventsReceived().size(); index++) {
+      ActivitiEvent activitiEvent = listener.getEventsReceived().get(index);
+
+      if (isEqual(before, activitiEvent))
+        beforeIndex = index;
+      if (isEqual(after, activitiEvent))
+        afterIndex = index;
     }
+    assertTrue(beforeIndex < afterIndex);
+  }
 
-    /**
-     * test sequence of events for process definition with timer start event
-     */
-    @Deployment(resources = { "org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testDurationStartTimerEvent.bpmn20.xml" })
-    public void testTimerStartEventDeployment() {
-        ProcessDefinitionEntity processDefinition = (ProcessDefinitionEntity) repositoryService.createProcessDefinitionQuery().processDefinitionKey("startTimerEventExample").singleResult();
-        ActivitiEntityEvent processDefinitionCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processDefinition);
-
-        TimerEntity timer = (TimerEntity) managementService.createJobQuery().singleResult();
-        ActivitiEntityEvent timerCreated = ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, timer);
-        assertSequence(processDefinitionCreated, timerCreated);
-        listener.clearEventsReceived();
+  /**
+   * equals is not implemented.
+   */
+  private boolean isEqual(ActivitiEntityEvent event1, ActivitiEvent activitiEvent) {
+    if (activitiEvent instanceof ActivitiEntityEvent && event1.getType().equals(activitiEvent.getType())) {
+      ActivitiEntityEvent activitiEntityEvent = (ActivitiEntityEvent) activitiEvent;
+      if (activitiEntityEvent.getEntity().getClass().equals(event1.getEntity().getClass())) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    private void assertSequence(ActivitiEntityEvent before, ActivitiEntityEvent after) {
-        int beforeIndex = 0;
-        int afterIndex = 0;
-        for (int index = 0; index < listener.getEventsReceived().size(); index++) {
-            ActivitiEvent activitiEvent = listener.getEventsReceived().get(index);
+  @Override
+  protected void initializeServices() {
+    super.initializeServices();
 
-            if (isEqual(before, activitiEvent))
-                beforeIndex = index;
-            if (isEqual(after, activitiEvent))
-                afterIndex = index;
-        }
-        assertTrue(beforeIndex < afterIndex);
+    listener = new TestMultipleActivitiEventListener();
+    listener.setEventClasses(ActivitiEntityEvent.class);
+    listener.setEntityClasses(ProcessDefinition.class, TimerEntity.class);
+
+    processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+
+    if (listener != null) {
+      listener.clearEventsReceived();
+      processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
     }
-
-    /**
-     * equals is not implemented.
-     */
-    private boolean isEqual(ActivitiEntityEvent event1, ActivitiEvent activitiEvent) {
-        if (activitiEvent instanceof ActivitiEntityEvent && event1.getType().equals(activitiEvent.getType())) {
-            ActivitiEntityEvent activitiEntityEvent = (ActivitiEntityEvent) activitiEvent;
-            if (activitiEntityEvent.getEntity().getClass().equals(event1.getEntity().getClass())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    protected void initializeServices() {
-        super.initializeServices();
-
-        listener = new TestMultipleActivitiEventListener();
-        listener.setEventClasses(ActivitiEntityEvent.class);
-        listener.setEntityClasses(ProcessDefinition.class, TimerEntity.class);
-
-        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
-    }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-
-        if (listener != null) {
-            listener.clearEventsReceived();
-            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
-        }
-    }
+  }
 }

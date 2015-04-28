@@ -27,96 +27,96 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
  */
 public class FormPropertyGroup implements FormPropertyDefinitionContainer {
 
-    protected String title;
-    protected String id;
-    protected String type;
+  protected String title;
+  protected String id;
+  protected String type;
 
-    protected List<FormPropertyDefinition> formPropertyDefinitions = new ArrayList<FormPropertyDefinition>();
+  protected List<FormPropertyDefinition> formPropertyDefinitions = new ArrayList<FormPropertyDefinition>();
 
-    public FormPropertyGroup() {
+  public FormPropertyGroup() {
+  }
+
+  public FormPropertyGroup(String id, String type, String title) {
+    this.id = id;
+    this.type = type;
+    this.title = title;
+  }
+
+  @JsonDeserialize(contentAs = FormPropertyDefinition.class)
+  @JsonProperty(value = "formProperties")
+  public List<FormPropertyDefinition> getFormPropertyDefinitions() {
+    return formPropertyDefinitions;
+  }
+
+  @Override
+  public void addFormProperty(FormPropertyDefinition definition) {
+    formPropertyDefinitions.add(definition);
+  }
+
+  @Override
+  public boolean removeFormProperty(FormPropertyDefinition definition) {
+    return formPropertyDefinitions.remove(definition);
+  }
+
+  public void setFormPropertyDefinitions(List<FormPropertyDefinition> formPropertyDefinitions) {
+    this.formPropertyDefinitions = formPropertyDefinitions;
+  }
+
+  public FormPropertyGroup addFormPropertyDefinition(FormPropertyDefinition definition) {
+    if (definition == null) {
+      throw new SimpleWorkflowException("Definition to add cannot be null");
     }
 
-    public FormPropertyGroup(String id, String type, String title) {
-        this.id = id;
-        this.type = type;
-        this.title = title;
+    formPropertyDefinitions.add(definition);
+    return this;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public FormPropertyGroup clone() {
+    FormPropertyGroup clone = new FormPropertyGroup();
+    clone.setValues(this);
+    return clone;
+  }
+
+  public void setValues(FormPropertyGroup otherGroup) {
+    if (!(otherGroup instanceof FormPropertyGroup)) {
+      throw new SimpleWorkflowException("An instance of FormPropertyGroup is required to set values");
     }
 
-    @JsonDeserialize(contentAs = FormPropertyDefinition.class)
-    @JsonProperty(value = "formProperties")
-    public List<FormPropertyDefinition> getFormPropertyDefinitions() {
-        return formPropertyDefinitions;
+    FormPropertyGroup formGroup = (FormPropertyGroup) otherGroup;
+    setId(formGroup.getId());
+    setTitle(formGroup.getTitle());
+    setType(formGroup.getType());
+
+    List<FormPropertyDefinition> definitionList = new ArrayList<FormPropertyDefinition>();
+    if (formGroup.getFormPropertyDefinitions() != null && !formGroup.getFormPropertyDefinitions().isEmpty()) {
+      for (FormPropertyDefinition propertyDefinition : formGroup.getFormPropertyDefinitions()) {
+        definitionList.add(propertyDefinition.clone());
+      }
     }
-
-    @Override
-    public void addFormProperty(FormPropertyDefinition definition) {
-        formPropertyDefinitions.add(definition);
-    }
-
-    @Override
-    public boolean removeFormProperty(FormPropertyDefinition definition) {
-        return formPropertyDefinitions.remove(definition);
-    }
-
-    public void setFormPropertyDefinitions(List<FormPropertyDefinition> formPropertyDefinitions) {
-        this.formPropertyDefinitions = formPropertyDefinitions;
-    }
-
-    public FormPropertyGroup addFormPropertyDefinition(FormPropertyDefinition definition) {
-        if (definition == null) {
-            throw new SimpleWorkflowException("Definition to add cannot be null");
-        }
-
-        formPropertyDefinitions.add(definition);
-        return this;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public FormPropertyGroup clone() {
-        FormPropertyGroup clone = new FormPropertyGroup();
-        clone.setValues(this);
-        return clone;
-    }
-
-    public void setValues(FormPropertyGroup otherGroup) {
-        if (!(otherGroup instanceof FormPropertyGroup)) {
-            throw new SimpleWorkflowException("An instance of FormPropertyGroup is required to set values");
-        }
-
-        FormPropertyGroup formGroup = (FormPropertyGroup) otherGroup;
-        setId(formGroup.getId());
-        setTitle(formGroup.getTitle());
-        setType(formGroup.getType());
-
-        List<FormPropertyDefinition> definitionList = new ArrayList<FormPropertyDefinition>();
-        if (formGroup.getFormPropertyDefinitions() != null && !formGroup.getFormPropertyDefinitions().isEmpty()) {
-            for (FormPropertyDefinition propertyDefinition : formGroup.getFormPropertyDefinitions()) {
-                definitionList.add(propertyDefinition.clone());
-            }
-        }
-        setFormPropertyDefinitions(definitionList);
-    }
+    setFormPropertyDefinitions(definitionList);
+  }
 }

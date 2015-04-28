@@ -23,86 +23,84 @@ import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti5.engine.impl.persistence.entity.TaskEntity;
 
 /**
- * Implementation of an {@link ELResolver} that resolves expressions with the
- * process variables of a given {@link VariableScope} as context. <br>
- * Also exposes the currently logged in username to be used in expressions (if
- * any)
+ * Implementation of an {@link ELResolver} that resolves expressions with the process variables of a given {@link VariableScope} as context. <br>
+ * Also exposes the currently logged in username to be used in expressions (if any)
  * 
  * @author Joram Barrez
  * @author Frederik Heremans
  */
 public class VariableScopeElResolver extends ELResolver {
 
-    public static final String EXECUTION_KEY = "execution";
-    public static final String TASK_KEY = "task";
-    public static final String LOGGED_IN_USER_KEY = "authenticatedUserId";
+  public static final String EXECUTION_KEY = "execution";
+  public static final String TASK_KEY = "task";
+  public static final String LOGGED_IN_USER_KEY = "authenticatedUserId";
 
-    protected VariableScope variableScope;
+  protected VariableScope variableScope;
 
-    public VariableScopeElResolver(VariableScope variableScope) {
-        this.variableScope = variableScope;
-    }
+  public VariableScopeElResolver(VariableScope variableScope) {
+    this.variableScope = variableScope;
+  }
 
-    public Object getValue(ELContext context, Object base, Object property) {
+  public Object getValue(ELContext context, Object base, Object property) {
 
-        if (base == null) {
-            String variable = (String) property; // according to javadoc, can
-                                                 // only be a String
+    if (base == null) {
+      String variable = (String) property; // according to javadoc, can
+                                           // only be a String
 
-            if ((EXECUTION_KEY.equals(property) && variableScope instanceof ExecutionEntity) || (TASK_KEY.equals(property) && variableScope instanceof TaskEntity)) {
-                context.setPropertyResolved(true);
-                return variableScope;
-            } else if (EXECUTION_KEY.equals(property) && variableScope instanceof TaskEntity) {
-                context.setPropertyResolved(true);
-                return ((TaskEntity) variableScope).getExecution();
-            } else if (LOGGED_IN_USER_KEY.equals(property)) {
-                context.setPropertyResolved(true);
-                return Authentication.getAuthenticatedUserId();
-            } else {
-                if (variableScope.hasVariable(variable)) {
-                    context.setPropertyResolved(true); // if not set, the next
-                                                       // elResolver in the
-                                                       // CompositeElResolver
-                                                       // will be called
-                    return variableScope.getVariable(variable);
-                }
-            }
+      if ((EXECUTION_KEY.equals(property) && variableScope instanceof ExecutionEntity) || (TASK_KEY.equals(property) && variableScope instanceof TaskEntity)) {
+        context.setPropertyResolved(true);
+        return variableScope;
+      } else if (EXECUTION_KEY.equals(property) && variableScope instanceof TaskEntity) {
+        context.setPropertyResolved(true);
+        return ((TaskEntity) variableScope).getExecution();
+      } else if (LOGGED_IN_USER_KEY.equals(property)) {
+        context.setPropertyResolved(true);
+        return Authentication.getAuthenticatedUserId();
+      } else {
+        if (variableScope.hasVariable(variable)) {
+          context.setPropertyResolved(true); // if not set, the next
+                                             // elResolver in the
+                                             // CompositeElResolver
+                                             // will be called
+          return variableScope.getVariable(variable);
         }
-
-        // property resolution (eg. bean.value) will be done by the
-        // BeanElResolver (part of the CompositeElResolver)
-        // It will use the bean resolved in this resolver as base.
-
-        return null;
+      }
     }
 
-    public boolean isReadOnly(ELContext context, Object base, Object property) {
-        if (base == null) {
-            String variable = (String) property;
-            return !variableScope.hasVariable(variable);
-        }
-        return true;
-    }
+    // property resolution (eg. bean.value) will be done by the
+    // BeanElResolver (part of the CompositeElResolver)
+    // It will use the bean resolved in this resolver as base.
 
-    public void setValue(ELContext context, Object base, Object property, Object value) {
-        if (base == null) {
-            String variable = (String) property;
-            if (variableScope.hasVariable(variable)) {
-                variableScope.setVariable(variable, value);
-            }
-        }
-    }
+    return null;
+  }
 
-    public Class<?> getCommonPropertyType(ELContext arg0, Object arg1) {
-        return Object.class;
+  public boolean isReadOnly(ELContext context, Object base, Object property) {
+    if (base == null) {
+      String variable = (String) property;
+      return !variableScope.hasVariable(variable);
     }
+    return true;
+  }
 
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1) {
-        return null;
+  public void setValue(ELContext context, Object base, Object property, Object value) {
+    if (base == null) {
+      String variable = (String) property;
+      if (variableScope.hasVariable(variable)) {
+        variableScope.setVariable(variable, value);
+      }
     }
+  }
 
-    public Class<?> getType(ELContext arg0, Object arg1, Object arg2) {
-        return Object.class;
-    }
+  public Class<?> getCommonPropertyType(ELContext arg0, Object arg1) {
+    return Object.class;
+  }
+
+  public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext arg0, Object arg1) {
+    return null;
+  }
+
+  public Class<?> getType(ELContext arg0, Object arg1, Object arg2) {
+    return Object.class;
+  }
 
 }

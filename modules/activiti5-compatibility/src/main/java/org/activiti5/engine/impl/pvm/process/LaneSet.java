@@ -18,54 +18,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A BPMN 2.0 LaneSet, containg {@link Lane}s, currently only used for rendering
- * the DI info.
+ * A BPMN 2.0 LaneSet, containg {@link Lane}s, currently only used for rendering the DI info.
  * 
  * @author Frederik Heremans
  */
 public class LaneSet implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String id;
-    protected List<Lane> lanes;
-    protected String name;
+  protected String id;
+  protected List<Lane> lanes;
+  protected String name;
 
-    public void setId(String id) {
-        this.id = id;
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public List<Lane> getLanes() {
+    if (lanes == null) {
+      lanes = new ArrayList<Lane>();
     }
+    return lanes;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public void addLane(Lane laneToAdd) {
+    getLanes().add(laneToAdd);
+  }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Lane> getLanes() {
-        if (lanes == null) {
-            lanes = new ArrayList<Lane>();
+  public Lane getLaneForId(String id) {
+    if (lanes != null && !lanes.isEmpty()) {
+      for (Lane lane : lanes) {
+        if (id.equals(lane.getId())) {
+          return lane;
         }
-        return lanes;
+      }
     }
-
-    public void addLane(Lane laneToAdd) {
-        getLanes().add(laneToAdd);
-    }
-
-    public Lane getLaneForId(String id) {
-        if (lanes != null && !lanes.isEmpty()) {
-            for (Lane lane : lanes) {
-                if (id.equals(lane.getId())) {
-                    return lane;
-                }
-            }
-        }
-        return null;
-    }
+    return null;
+  }
 }

@@ -25,41 +25,41 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
  */
 public class SubmitFormRequest extends RestActionRequest {
 
-    protected String processDefinitionId;
-    protected String taskId;
-    protected String businessKey;
-    protected List<RestFormProperty> properties;
+  protected String processDefinitionId;
+  protected String taskId;
+  protected String businessKey;
+  protected List<RestFormProperty> properties;
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
-    }
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
 
-    public String getTaskId() {
-        return taskId;
-    }
+  public String getTaskId() {
+    return taskId;
+  }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
 
-    public String getBusinessKey() {
-        return businessKey;
-    }
+  public String getBusinessKey() {
+    return businessKey;
+  }
 
-    public void setBusinessKey(String businessKey) {
-        this.businessKey = businessKey;
-    }
+  public void setBusinessKey(String businessKey) {
+    this.businessKey = businessKey;
+  }
 
-    public void setProperties(List<RestFormProperty> properties) {
-        this.properties = properties;
-    }
+  public void setProperties(List<RestFormProperty> properties) {
+    this.properties = properties;
+  }
 
-    @JsonTypeInfo(use = Id.CLASS, defaultImpl = RestFormProperty.class)
-    public List<RestFormProperty> getProperties() {
-        return properties;
-    }
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = RestFormProperty.class)
+  public List<RestFormProperty> getProperties() {
+    return properties;
+  }
 }

@@ -22,18 +22,18 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class CheckPassword implements Command<Boolean>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    String userId;
-    String password;
+  String userId;
+  String password;
 
-    public CheckPassword(String userId, String password) {
-        this.userId = userId;
-        this.password = password;
-    }
+  public CheckPassword(String userId, String password) {
+    this.userId = userId;
+    this.password = password;
+  }
 
-    public Boolean execute(CommandContext commandContext) {
-        return commandContext.getUserIdentityManager().checkPassword(userId, password);
-    }
+  public Boolean execute(CommandContext commandContext) {
+    return commandContext.getUserIdentityManager().checkPassword(userId, password);
+  }
 
 }

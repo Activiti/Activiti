@@ -33,70 +33,70 @@ import com.vaadin.data.util.ObjectProperty;
  */
 public class MyProcessInstancesListQuery extends AbstractLazyLoadingQuery {
 
-    protected transient HistoryService historyService;
-    protected transient RepositoryService repositoryService;
+  protected transient HistoryService historyService;
+  protected transient RepositoryService repositoryService;
 
-    protected Map<String, ProcessDefinition> cachedProcessDefinitions;
+  protected Map<String, ProcessDefinition> cachedProcessDefinitions;
 
-    public MyProcessInstancesListQuery(HistoryService historyService, RepositoryService repositoryService) {
-        this.historyService = historyService;
-        this.repositoryService = repositoryService;
-        cachedProcessDefinitions = new HashMap<String, ProcessDefinition>();
+  public MyProcessInstancesListQuery(HistoryService historyService, RepositoryService repositoryService) {
+    this.historyService = historyService;
+    this.repositoryService = repositoryService;
+    cachedProcessDefinitions = new HashMap<String, ProcessDefinition>();
+  }
+
+  public List<Item> loadItems(int start, int count) {
+    List<HistoricProcessInstance> processInstances = historyService.createHistoricProcessInstanceQuery().startedBy(ExplorerApp.get().getLoggedInUser().getId()).unfinished().list();
+
+    List<Item> items = new ArrayList<Item>();
+    for (HistoricProcessInstance processInstance : processInstances) {
+      items.add(createItem(processInstance));
     }
+    return items;
+  }
 
-    public List<Item> loadItems(int start, int count) {
-        List<HistoricProcessInstance> processInstances = historyService.createHistoricProcessInstanceQuery().startedBy(ExplorerApp.get().getLoggedInUser().getId()).unfinished().list();
-
-        List<Item> items = new ArrayList<Item>();
-        for (HistoricProcessInstance processInstance : processInstances) {
-            items.add(createItem(processInstance));
-        }
-        return items;
+  public Item loadSingleResult(String id) {
+    HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().startedBy(ExplorerApp.get().getLoggedInUser().getId()).unfinished().processInstanceId(id)
+        .singleResult();
+    if (processInstance != null) {
+      return createItem(processInstance);
     }
+    return null;
+  }
 
-    public Item loadSingleResult(String id) {
-        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().startedBy(ExplorerApp.get().getLoggedInUser().getId()).unfinished().processInstanceId(id)
-                .singleResult();
-        if (processInstance != null) {
-            return createItem(processInstance);
-        }
-        return null;
+  protected ProcessInstanceItem createItem(HistoricProcessInstance processInstance) {
+    ProcessInstanceItem item = new ProcessInstanceItem();
+    item.addItemProperty("id", new ObjectProperty<String>(processInstance.getId(), String.class));
+
+    ProcessDefinition processDefinition = getProcessDefinition(processInstance.getProcessDefinitionId());
+
+    String itemName = getProcessDisplayName(processDefinition) + " (" + processInstance.getId() + ")" + (processInstance.getBusinessKey() != null ? processInstance.getBusinessKey() : "");
+    item.addItemProperty("name", new ObjectProperty<String>(itemName, String.class));
+    return item;
+  }
+
+  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+    if (processDefinition.getName() != null) {
+      return processDefinition.getName();
+    } else {
+      return processDefinition.getKey();
     }
+  }
 
-    protected ProcessInstanceItem createItem(HistoricProcessInstance processInstance) {
-        ProcessInstanceItem item = new ProcessInstanceItem();
-        item.addItemProperty("id", new ObjectProperty<String>(processInstance.getId(), String.class));
-
-        ProcessDefinition processDefinition = getProcessDefinition(processInstance.getProcessDefinitionId());
-
-        String itemName = getProcessDisplayName(processDefinition) + " (" + processInstance.getId() + ")" + (processInstance.getBusinessKey() != null ? processInstance.getBusinessKey() : "");
-        item.addItemProperty("name", new ObjectProperty<String>(itemName, String.class));
-        return item;
+  protected ProcessDefinition getProcessDefinition(String id) {
+    ProcessDefinition processDefinition = cachedProcessDefinitions.get(id);
+    if (processDefinition == null) {
+      processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
+      cachedProcessDefinitions.put(id, processDefinition);
     }
+    return processDefinition;
+  }
 
-    protected String getProcessDisplayName(ProcessDefinition processDefinition) {
-        if (processDefinition.getName() != null) {
-            return processDefinition.getName();
-        } else {
-            return processDefinition.getKey();
-        }
-    }
+  public int size() {
+    return (int) historyService.createHistoricProcessInstanceQuery().startedBy(ExplorerApp.get().getLoggedInUser().getId()).unfinished().count();
+  }
 
-    protected ProcessDefinition getProcessDefinition(String id) {
-        ProcessDefinition processDefinition = cachedProcessDefinitions.get(id);
-        if (processDefinition == null) {
-            processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult();
-            cachedProcessDefinitions.put(id, processDefinition);
-        }
-        return processDefinition;
-    }
-
-    public int size() {
-        return (int) historyService.createHistoricProcessInstanceQuery().startedBy(ExplorerApp.get().getLoggedInUser().getId()).unfinished().count();
-    }
-
-    public void setSorting(Object[] propertyId, boolean[] ascending) {
-        throw new UnsupportedOperationException();
-    }
+  public void setSorting(Object[] propertyId, boolean[] ascending) {
+    throw new UnsupportedOperationException();
+  }
 
 }

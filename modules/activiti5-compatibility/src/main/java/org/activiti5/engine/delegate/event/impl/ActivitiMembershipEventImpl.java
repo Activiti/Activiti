@@ -22,26 +22,26 @@ import org.activiti5.engine.delegate.event.ActivitiMembershipEvent;
  */
 public class ActivitiMembershipEventImpl extends ActivitiEventImpl implements ActivitiMembershipEvent {
 
-    protected String userId;
-    protected String groupId;
+  protected String userId;
+  protected String groupId;
 
-    public ActivitiMembershipEventImpl(ActivitiEventType type) {
-        super(type);
-    }
+  public ActivitiMembershipEventImpl(ActivitiEventType type) {
+    super(type);
+  }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 
-    public String getUserId() {
-        return userId;
-    }
+  public String getUserId() {
+    return userId;
+  }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
+  }
 
-    public String getGroupId() {
-        return groupId;
-    }
+  public String getGroupId() {
+    return groupId;
+  }
 }

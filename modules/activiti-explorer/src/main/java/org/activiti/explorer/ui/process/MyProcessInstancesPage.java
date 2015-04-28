@@ -25,46 +25,46 @@ import org.activiti.explorer.navigation.UriFragment;
  */
 public class MyProcessInstancesPage extends ProcessInstancePage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String processInstanceId;
+  protected String processInstanceId;
 
-    protected transient RepositoryService repositoryService;
-    protected transient HistoryService historyService;
+  protected transient RepositoryService repositoryService;
+  protected transient HistoryService historyService;
 
-    public MyProcessInstancesPage() {
-        historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
-        repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  public MyProcessInstancesPage() {
+    historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
+    repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  }
+
+  public MyProcessInstancesPage(String processInstanceId) {
+    this();
+    this.processInstanceId = processInstanceId;
+  }
+
+  @Override
+  protected LazyLoadingQuery createLazyLoadingQuery() {
+    return new MyProcessInstancesListQuery(historyService, repositoryService);
+  }
+
+  @Override
+  protected void initUi() {
+    super.initUi();
+
+    if (processInstanceId != null) {
+      selectElement(processInstanceListContainer.getIndexForObjectId(processInstanceId));
+    } else {
+      selectElement(0);
     }
+  }
 
-    public MyProcessInstancesPage(String processInstanceId) {
-        this();
-        this.processInstanceId = processInstanceId;
+  @Override
+  protected UriFragment getUriFragment(String processInstanceId) {
+    UriFragment fragment = new UriFragment(MyProcessesNavigator.MY_PROCESSES_URI_PART);
+    if (processInstanceId != null) {
+      fragment.addUriPart(processInstanceId);
     }
-
-    @Override
-    protected LazyLoadingQuery createLazyLoadingQuery() {
-        return new MyProcessInstancesListQuery(historyService, repositoryService);
-    }
-
-    @Override
-    protected void initUi() {
-        super.initUi();
-
-        if (processInstanceId != null) {
-            selectElement(processInstanceListContainer.getIndexForObjectId(processInstanceId));
-        } else {
-            selectElement(0);
-        }
-    }
-
-    @Override
-    protected UriFragment getUriFragment(String processInstanceId) {
-        UriFragment fragment = new UriFragment(MyProcessesNavigator.MY_PROCESSES_URI_PART);
-        if (processInstanceId != null) {
-            fragment.addUriPart(processInstanceId);
-        }
-        return fragment;
-    }
+    return fragment;
+  }
 
 }

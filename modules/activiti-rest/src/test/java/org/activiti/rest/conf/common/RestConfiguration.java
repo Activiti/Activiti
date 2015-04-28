@@ -12,15 +12,15 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RestConfiguration {
 
-    @Bean()
-    public RestResponseFactory restResponseFactory() {
-        RestResponseFactory restResponseFactory = new RestResponseFactory();
-        return restResponseFactory;
-    }
+  @Bean()
+  public RestResponseFactory restResponseFactory() {
+    RestResponseFactory restResponseFactory = new RestResponseFactory();
+    return restResponseFactory;
+  }
 
-    @Bean()
-    public ContentTypeResolver contentTypeResolver() {
-        ContentTypeResolver resolver = new DefaultContentTypeResolver();
-        return resolver;
-    }
+  @Bean()
+  public ContentTypeResolver contentTypeResolver() {
+    ContentTypeResolver resolver = new DefaultContentTypeResolver();
+    return resolver;
+  }
 }

@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.impl;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.CrystalballException;
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.SimulationEventHandler;
@@ -26,9 +25,8 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * This class schedules replay start simulation event and takes care about process start and
- * next event schedule
- *
+ * This class schedules replay start simulation event and takes care about process start and next event schedule
+ * 
  * @author martin.grofcik
  */
 public class StartReplayProcessEventHandler implements SimulationEventHandler {
@@ -46,7 +44,8 @@ public class StartReplayProcessEventHandler implements SimulationEventHandler {
   private final String businessKey;
   private final String variablesKey;
 
-  public StartReplayProcessEventHandler(String processInstanceId, String eventTypeToReplay, String eventTypeToSchedule, Collection<SimulationEvent> events, String processToStartIdKey, String businessKey, String variablesKey) {
+  public StartReplayProcessEventHandler(String processInstanceId, String eventTypeToReplay, String eventTypeToSchedule, Collection<SimulationEvent> events, String processToStartIdKey,
+      String businessKey, String variablesKey) {
     this.eventTypeToReplay = eventTypeToReplay;
     this.eventTypeToSchedule = eventTypeToSchedule;
     this.events = events;
@@ -59,9 +58,7 @@ public class StartReplayProcessEventHandler implements SimulationEventHandler {
   @Override
   public void init() {
     SimulationEvent toReplayStartEvent = findProcessInstanceStartEvent();
-    SimulationEvent startEvent = new SimulationEvent.Builder(eventTypeToSchedule).
-                properties(toReplayStartEvent.getProperties()).
-                build();
+    SimulationEvent startEvent = new SimulationEvent.Builder(eventTypeToSchedule).properties(toReplayStartEvent.getProperties()).build();
     // add start process event
     SimulationRunContext.getEventCalendar().addEvent(startEvent);
   }

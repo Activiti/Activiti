@@ -17,7 +17,7 @@ package org.activiti5.engine.impl.interceptor;
  */
 public interface Session {
 
-    void flush();
+  void flush();
 
-    void close();
+  void close();
 }

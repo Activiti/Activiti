@@ -35,83 +35,83 @@ import org.slf4j.LoggerFactory;
  */
 public class ExecuteJobsCmd implements Command<Object>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private static Logger log = LoggerFactory.getLogger(ExecuteJobsCmd.class);
+  private static Logger log = LoggerFactory.getLogger(ExecuteJobsCmd.class);
 
-    protected String jobId;
-    protected JobEntity job;
+  protected String jobId;
+  protected JobEntity job;
 
-    public ExecuteJobsCmd(String jobId) {
-        this.jobId = jobId;
+  public ExecuteJobsCmd(String jobId) {
+    this.jobId = jobId;
+  }
+
+  public ExecuteJobsCmd(JobEntity job) {
+    this.job = job;
+  }
+
+  public Object execute(CommandContext commandContext) {
+
+    if (jobId == null && job == null) {
+      throw new ActivitiIllegalArgumentException("jobId and job is null");
     }
 
-    public ExecuteJobsCmd(JobEntity job) {
-        this.job = job;
+    if (job == null) {
+      job = commandContext.getJobEntityManager().findJobById(jobId);
     }
 
-    public Object execute(CommandContext commandContext) {
+    if (job == null) {
+      throw new JobNotFoundException(jobId);
+    }
 
-        if (jobId == null && job == null) {
-            throw new ActivitiIllegalArgumentException("jobId and job is null");
-        }
+    if (log.isDebugEnabled()) {
+      log.debug("Executing job {}", job.getId());
+    }
 
-        if (job == null) {
-            job = commandContext.getJobEntityManager().findJobById(jobId);
-        }
+    JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
+    if (jobExecutorContext != null) { // if null, then we are not called by
+                                      // the job executor
+      jobExecutorContext.setCurrentJob(job);
+    }
 
-        if (job == null) {
-            throw new JobNotFoundException(jobId);
-        }
+    FailedJobListener failedJobListener = null;
+    try {
+      // When transaction is rolled back, decrement retries
+      failedJobListener = new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), jobId);
+      commandContext.getTransactionContext().addTransactionListener(TransactionState.ROLLED_BACK, failedJobListener);
 
-        if (log.isDebugEnabled()) {
-            log.debug("Executing job {}", job.getId());
-        }
+      job.execute(commandContext);
 
-        JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
-        if (jobExecutorContext != null) { // if null, then we are not called by
-                                          // the job executor
-            jobExecutorContext.setCurrentJob(job);
-        }
+      if (commandContext.getEventDispatcher().isEnabled()) {
+        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
+      }
 
-        FailedJobListener failedJobListener = null;
+    } catch (Throwable exception) {
+      failedJobListener.setException(exception);
+
+      // Dispatch an event, indicating job execution failed in a try-catch
+      // block, to prevent the original
+      // exception to be swallowed
+      if (commandContext.getEventDispatcher().isEnabled()) {
         try {
-            // When transaction is rolled back, decrement retries
-            failedJobListener = new FailedJobListener(commandContext.getProcessEngineConfiguration().getCommandExecutor(), jobId);
-            commandContext.getTransactionContext().addTransactionListener(TransactionState.ROLLED_BACK, failedJobListener);
-
-            job.execute(commandContext);
-
-            if (commandContext.getEventDispatcher().isEnabled()) {
-                commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, job));
-            }
-
-        } catch (Throwable exception) {
-            failedJobListener.setException(exception);
-
-            // Dispatch an event, indicating job execution failed in a try-catch
-            // block, to prevent the original
-            // exception to be swallowed
-            if (commandContext.getEventDispatcher().isEnabled()) {
-                try {
-                    commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(ActivitiEventType.JOB_EXECUTION_FAILURE, job, exception));
-                } catch (Throwable ignore) {
-                    log.warn("Exception occured while dispatching job failure event, ignoring.", ignore);
-                }
-            }
-
-            // Finally, Throw the exception to indicate the ExecuteJobCmd failed
-            throw new ActivitiException("Job " + jobId + " failed", exception);
-        } finally {
-            if (jobExecutorContext != null) {
-                jobExecutorContext.setCurrentJob(null);
-            }
+          commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(ActivitiEventType.JOB_EXECUTION_FAILURE, job, exception));
+        } catch (Throwable ignore) {
+          log.warn("Exception occured while dispatching job failure event, ignoring.", ignore);
         }
-        return null;
-    }
+      }
 
-    public String getJobId() {
-        return jobId;
+      // Finally, Throw the exception to indicate the ExecuteJobCmd failed
+      throw new ActivitiException("Job " + jobId + " failed", exception);
+    } finally {
+      if (jobExecutorContext != null) {
+        jobExecutorContext.setCurrentJob(null);
+      }
     }
+    return null;
+  }
+
+  public String getJobId() {
+    return jobId;
+  }
 
 }

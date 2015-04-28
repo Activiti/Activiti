@@ -19,49 +19,49 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class CamelVariableBodyMapTest extends SpringActivitiTestCase {
 
-    protected MockEndpoint service1;
+  protected MockEndpoint service1;
 
-    @Autowired
-    protected CamelContext camelContext;
+  @Autowired
+  protected CamelContext camelContext;
 
-    public void setUp() throws Exception {
-        camelContext.addRoutes(new RouteBuilder() {
+  public void setUp() throws Exception {
+    camelContext.addRoutes(new RouteBuilder() {
 
-            @Override
-            public void configure() throws Exception {
-                from("activiti:HelloCamel:serviceTask1").log(LoggingLevel.INFO, "Received message on service task").to("mock:serviceBehavior");
-            }
-        });
+      @Override
+      public void configure() throws Exception {
+        from("activiti:HelloCamel:serviceTask1").log(LoggingLevel.INFO, "Received message on service task").to("mock:serviceBehavior");
+      }
+    });
 
-        service1 = (MockEndpoint) camelContext.getEndpoint("mock:serviceBehavior");
-        service1.reset();
+    service1 = (MockEndpoint) camelContext.getEndpoint("mock:serviceBehavior");
+    service1.reset();
+  }
+
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r : routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
     }
+  }
 
-    public void tearDown() throws Exception {
-        List<Route> routes = camelContext.getRoutes();
-        for (Route r : routes) {
-            camelContext.stopRoute(r.getId());
-            camelContext.removeRoute(r.getId());
-        }
-    }
+  @Deployment(resources = { "process/HelloCamelBodyMap.bpmn20.xml" })
+  public void testCamelBody() throws Exception {
+    Map<String, Object> varMap = new HashMap<String, Object>();
+    varMap.put("camelBody", "hello world");
+    service1.expectedBodiesReceived(varMap);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HelloCamel", varMap);
+    // Ensure that the variable is equal to the expected value.
+    assertEquals("hello world", runtimeService.getVariable(processInstance.getId(), "camelBody"));
+    service1.assertIsSatisfied();
 
-    @Deployment(resources = { "process/HelloCamelBodyMap.bpmn20.xml" })
-    public void testCamelBody() throws Exception {
-        Map<String, Object> varMap = new HashMap<String, Object>();
-        varMap.put("camelBody", "hello world");
-        service1.expectedBodiesReceived(varMap);
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("HelloCamel", varMap);
-        // Ensure that the variable is equal to the expected value.
-        assertEquals("hello world", runtimeService.getVariable(processInstance.getId(), "camelBody"));
-        service1.assertIsSatisfied();
+    Task task = taskService.createTaskQuery().singleResult();
 
-        Task task = taskService.createTaskQuery().singleResult();
+    // Ensure that the name of the task is correct.
+    assertEquals("Hello Task", task.getName());
 
-        // Ensure that the name of the task is correct.
-        assertEquals("Hello Task", task.getName());
-
-        // Complete the task.
-        taskService.complete(task.getId());
-    }
+    // Complete the task.
+    taskService.complete(task.getId());
+  }
 
 }

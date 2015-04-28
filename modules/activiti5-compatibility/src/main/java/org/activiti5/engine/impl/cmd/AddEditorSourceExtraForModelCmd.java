@@ -23,19 +23,19 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class AddEditorSourceExtraForModelCmd implements Command<Object>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String modelId;
-    protected byte[] bytes;
+  protected String modelId;
+  protected byte[] bytes;
 
-    public AddEditorSourceExtraForModelCmd(String modelId, byte[] bytes) {
-        this.modelId = modelId;
-        this.bytes = bytes;
-    }
+  public AddEditorSourceExtraForModelCmd(String modelId, byte[] bytes) {
+    this.modelId = modelId;
+    this.bytes = bytes;
+  }
 
-    public Object execute(CommandContext commandContext) {
-        commandContext.getModelEntityManager().insertEditorSourceExtraForModel(modelId, bytes);
+  public Object execute(CommandContext commandContext) {
+    commandContext.getModelEntityManager().insertEditorSourceExtraForModel(modelId, bytes);
 
-        return null;
-    }
+    return null;
+  }
 }

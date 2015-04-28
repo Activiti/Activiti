@@ -21,8 +21,8 @@ import javax.persistence.Persistence;
  */
 public class JpaHelper {
 
-    public static EntityManagerFactory createEntityManagerFactory(String jpaPersistenceUnitName) {
-        return Persistence.createEntityManagerFactory(jpaPersistenceUnitName);
-    }
+  public static EntityManagerFactory createEntityManagerFactory(String jpaPersistenceUnitName) {
+    return Persistence.createEntityManagerFactory(jpaPersistenceUnitName);
+  }
 
 }

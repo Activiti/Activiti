@@ -29,42 +29,42 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class SequenceFlowParseHandler extends AbstractBpmnParseHandler<SequenceFlow> {
 
-    public static final String PROPERTYNAME_CONDITION = "condition";
-    public static final String PROPERTYNAME_CONDITION_TEXT = "conditionText";
+  public static final String PROPERTYNAME_CONDITION = "condition";
+  public static final String PROPERTYNAME_CONDITION_TEXT = "conditionText";
 
-    public Class<? extends BaseElement> getHandledType() {
-        return SequenceFlow.class;
+  public Class<? extends BaseElement> getHandledType() {
+    return SequenceFlow.class;
+  }
+
+  protected void executeParse(BpmnParse bpmnParse, SequenceFlow sequenceFlow) {
+
+    ScopeImpl scope = bpmnParse.getCurrentScope();
+
+    ActivityImpl sourceActivity = scope.findActivity(sequenceFlow.getSourceRef());
+    ActivityImpl destinationActivity = scope.findActivity(sequenceFlow.getTargetRef());
+
+    Expression skipExpression;
+    if (StringUtils.isNotEmpty(sequenceFlow.getSkipExpression())) {
+      ExpressionManager expressionManager = bpmnParse.getExpressionManager();
+      skipExpression = expressionManager.createExpression(sequenceFlow.getSkipExpression());
+    } else {
+      skipExpression = null;
     }
 
-    protected void executeParse(BpmnParse bpmnParse, SequenceFlow sequenceFlow) {
+    TransitionImpl transition = sourceActivity.createOutgoingTransition(sequenceFlow.getId(), skipExpression);
+    bpmnParse.getSequenceFlows().put(sequenceFlow.getId(), transition);
+    transition.setProperty("name", sequenceFlow.getName());
+    transition.setProperty("documentation", sequenceFlow.getDocumentation());
+    transition.setDestination(destinationActivity);
 
-        ScopeImpl scope = bpmnParse.getCurrentScope();
-
-        ActivityImpl sourceActivity = scope.findActivity(sequenceFlow.getSourceRef());
-        ActivityImpl destinationActivity = scope.findActivity(sequenceFlow.getTargetRef());
-
-        Expression skipExpression;
-        if (StringUtils.isNotEmpty(sequenceFlow.getSkipExpression())) {
-            ExpressionManager expressionManager = bpmnParse.getExpressionManager();
-            skipExpression = expressionManager.createExpression(sequenceFlow.getSkipExpression());
-        } else {
-            skipExpression = null;
-        }
-
-        TransitionImpl transition = sourceActivity.createOutgoingTransition(sequenceFlow.getId(), skipExpression);
-        bpmnParse.getSequenceFlows().put(sequenceFlow.getId(), transition);
-        transition.setProperty("name", sequenceFlow.getName());
-        transition.setProperty("documentation", sequenceFlow.getDocumentation());
-        transition.setDestination(destinationActivity);
-
-        if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
-            Condition expressionCondition = new UelExpressionCondition(bpmnParse.getExpressionManager().createExpression(sequenceFlow.getConditionExpression()));
-            transition.setProperty(PROPERTYNAME_CONDITION_TEXT, sequenceFlow.getConditionExpression());
-            transition.setProperty(PROPERTYNAME_CONDITION, expressionCondition);
-        }
-
-        createExecutionListenersOnTransition(bpmnParse, sequenceFlow.getExecutionListeners(), transition);
-
+    if (StringUtils.isNotEmpty(sequenceFlow.getConditionExpression())) {
+      Condition expressionCondition = new UelExpressionCondition(bpmnParse.getExpressionManager().createExpression(sequenceFlow.getConditionExpression()));
+      transition.setProperty(PROPERTYNAME_CONDITION_TEXT, sequenceFlow.getConditionExpression());
+      transition.setProperty(PROPERTYNAME_CONDITION, expressionCondition);
     }
+
+    createExecutionListenersOnTransition(bpmnParse, sequenceFlow.getExecutionListeners(), transition);
+
+  }
 
 }

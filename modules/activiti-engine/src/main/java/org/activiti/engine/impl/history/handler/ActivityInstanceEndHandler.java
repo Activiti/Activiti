@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class ActivityInstanceEndHandler implements ExecutionListener {
 
-    public void notify(DelegateExecution execution) {
-        Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
-    }
+  public void notify(DelegateExecution execution) {
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+  }
 }

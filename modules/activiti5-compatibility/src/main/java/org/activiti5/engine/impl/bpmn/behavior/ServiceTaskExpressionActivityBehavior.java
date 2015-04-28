@@ -20,8 +20,7 @@ import org.activiti5.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
- * ActivityBehavior that evaluates an expression when executed. Optionally, it
- * sets the result of the expression as a variable on the execution.
+ * ActivityBehavior that evaluates an expression when executed. Optionally, it sets the result of the expression as a variable on the execution.
  * 
  * @author Tom Baeyens
  * @author Christian Stettler
@@ -31,45 +30,45 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {
 
-    protected Expression expression;
-    protected Expression skipExpression;
-    protected String resultVariable;
+  protected Expression expression;
+  protected Expression skipExpression;
+  protected String resultVariable;
 
-    public ServiceTaskExpressionActivityBehavior(Expression expression, Expression skipExpression, String resultVariable) {
-        this.expression = expression;
-        this.skipExpression = skipExpression;
-        this.resultVariable = resultVariable;
-    }
+  public ServiceTaskExpressionActivityBehavior(Expression expression, Expression skipExpression, String resultVariable) {
+    this.expression = expression;
+    this.skipExpression = skipExpression;
+    this.resultVariable = resultVariable;
+  }
 
-    public void execute(ActivityExecution execution) throws Exception {
-        Object value = null;
-        try {
-            boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
-            if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
-                value = expression.getValue(execution);
-                if (resultVariable != null) {
-                    execution.setVariable(resultVariable, value);
-                }
-            }
-
-            leave(execution);
-        } catch (Exception exc) {
-
-            Throwable cause = exc;
-            BpmnError error = null;
-            while (cause != null) {
-                if (cause instanceof BpmnError) {
-                    error = (BpmnError) cause;
-                    break;
-                }
-                cause = cause.getCause();
-            }
-
-            if (error != null) {
-                ErrorPropagation.propagateError(error, execution);
-            } else {
-                throw exc;
-            }
+  public void execute(ActivityExecution execution) throws Exception {
+    Object value = null;
+    try {
+      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+      if (!isSkipExpressionEnabled || (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+        value = expression.getValue(execution);
+        if (resultVariable != null) {
+          execution.setVariable(resultVariable, value);
         }
+      }
+
+      leave(execution);
+    } catch (Exception exc) {
+
+      Throwable cause = exc;
+      BpmnError error = null;
+      while (cause != null) {
+        if (cause instanceof BpmnError) {
+          error = (BpmnError) cause;
+          break;
+        }
+        cause = cause.getCause();
+      }
+
+      if (error != null) {
+        ErrorPropagation.propagateError(error, execution);
+      } else {
+        throw exc;
+      }
     }
+  }
 }

@@ -25,19 +25,19 @@ import org.activiti.bpmn.model.DataAssociation;
  */
 public class DataOutputAssociationParser extends BaseChildElementParser {
 
-    public String getElementName() {
-        return ELEMENT_OUTPUT_ASSOCIATION;
-    }
+  public String getElementName() {
+    return ELEMENT_OUTPUT_ASSOCIATION;
+  }
 
-    public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
+  public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
 
-        if (parentElement instanceof Activity == false)
-            return;
+    if (parentElement instanceof Activity == false)
+      return;
 
-        DataAssociation dataAssociation = new DataAssociation();
-        BpmnXMLUtil.addXMLLocation(dataAssociation, xtr);
-        DataAssociationParser.parseDataAssociation(dataAssociation, getElementName(), xtr);
+    DataAssociation dataAssociation = new DataAssociation();
+    BpmnXMLUtil.addXMLLocation(dataAssociation, xtr);
+    DataAssociationParser.parseDataAssociation(dataAssociation, getElementName(), xtr);
 
-        ((Activity) parentElement).getDataOutputAssociations().add(dataAssociation);
-    }
+    ((Activity) parentElement).getDataOutputAssociations().add(dataAssociation);
+  }
 }

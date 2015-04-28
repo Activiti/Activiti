@@ -37,39 +37,39 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserInfoCollectionResource extends BaseUserResource {
 
-    @Autowired
-    protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-    @Autowired
-    protected IdentityService identityService;
+  @Autowired
+  protected IdentityService identityService;
 
-    @RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.GET, produces = "application/json")
-    public List<UserInfoResponse> getUserInfo(@PathVariable String userId, HttpServletRequest request) {
-        User user = getUserFromRequest(userId);
+  @RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.GET, produces = "application/json")
+  public List<UserInfoResponse> getUserInfo(@PathVariable String userId, HttpServletRequest request) {
+    User user = getUserFromRequest(userId);
 
-        return restResponseFactory.createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()), user.getId());
+    return restResponseFactory.createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()), user.getId());
+  }
+
+  @RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.POST, produces = "application/json")
+  public UserInfoResponse setUserInfo(@PathVariable String userId, @RequestBody UserInfoRequest userRequest, HttpServletRequest request, HttpServletResponse response) {
+
+    User user = getUserFromRequest(userId);
+
+    if (userRequest.getKey() == null) {
+      throw new ActivitiIllegalArgumentException("The key cannot be null.");
+    }
+    if (userRequest.getValue() == null) {
+      throw new ActivitiIllegalArgumentException("The value cannot be null.");
     }
 
-    @RequestMapping(value = "/identity/users/{userId}/info", method = RequestMethod.POST, produces = "application/json")
-    public UserInfoResponse setUserInfo(@PathVariable String userId, @RequestBody UserInfoRequest userRequest, HttpServletRequest request, HttpServletResponse response) {
-
-        User user = getUserFromRequest(userId);
-
-        if (userRequest.getKey() == null) {
-            throw new ActivitiIllegalArgumentException("The key cannot be null.");
-        }
-        if (userRequest.getValue() == null) {
-            throw new ActivitiIllegalArgumentException("The value cannot be null.");
-        }
-
-        String existingValue = identityService.getUserInfo(user.getId(), userRequest.getKey());
-        if (existingValue != null) {
-            throw new ActivitiConflictException("User info with key '" + userRequest.getKey() + "' already exists for this user.");
-        }
-
-        identityService.setUserInfo(user.getId(), userRequest.getKey(), userRequest.getValue());
-
-        response.setStatus(HttpStatus.CREATED.value());
-        return restResponseFactory.createUserInfoResponse(userRequest.getKey(), userRequest.getValue(), user.getId());
+    String existingValue = identityService.getUserInfo(user.getId(), userRequest.getKey());
+    if (existingValue != null) {
+      throw new ActivitiConflictException("User info with key '" + userRequest.getKey() + "' already exists for this user.");
     }
+
+    identityService.setUserInfo(user.getId(), userRequest.getKey(), userRequest.getValue());
+
+    response.setStatus(HttpStatus.CREATED.value());
+    return restResponseFactory.createUserInfoResponse(userRequest.getKey(), userRequest.getValue(), user.getId());
+  }
 }

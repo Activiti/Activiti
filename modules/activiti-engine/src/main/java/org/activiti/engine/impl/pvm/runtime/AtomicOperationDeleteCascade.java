@@ -20,26 +20,26 @@ import java.util.List;
  */
 public class AtomicOperationDeleteCascade implements AtomicOperation {
 
-    public boolean isAsync(InterpretableExecution execution) {
-        return false;
+  public boolean isAsync(InterpretableExecution execution) {
+    return false;
+  }
+
+  public void execute(InterpretableExecution execution) {
+    InterpretableExecution firstLeaf = findFirstLeaf(execution);
+
+    if (firstLeaf.getSubProcessInstance() != null) {
+      firstLeaf.getSubProcessInstance().deleteCascade(execution.getDeleteReason());
     }
 
-    public void execute(InterpretableExecution execution) {
-        InterpretableExecution firstLeaf = findFirstLeaf(execution);
+    firstLeaf.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
+  }
 
-        if (firstLeaf.getSubProcessInstance() != null) {
-            firstLeaf.getSubProcessInstance().deleteCascade(execution.getDeleteReason());
-        }
-
-        firstLeaf.performOperation(AtomicOperation.DELETE_CASCADE_FIRE_ACTIVITY_END);
+  @SuppressWarnings("unchecked")
+  protected InterpretableExecution findFirstLeaf(InterpretableExecution execution) {
+    List<InterpretableExecution> executions = (List<InterpretableExecution>) execution.getExecutions();
+    if (!executions.isEmpty()) {
+      return findFirstLeaf(executions.get(0));
     }
-
-    @SuppressWarnings("unchecked")
-    protected InterpretableExecution findFirstLeaf(InterpretableExecution execution) {
-        List<InterpretableExecution> executions = (List<InterpretableExecution>) execution.getExecutions();
-        if (!executions.isEmpty()) {
-            return findFirstLeaf(executions.get(0));
-        }
-        return execution;
-    }
+    return execution;
+  }
 }

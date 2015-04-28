@@ -27,44 +27,44 @@ import org.slf4j.LoggerFactory;
 
 public class TimerCatchIntermediateEventJobHandler extends TimerEventHandler implements JobHandler {
 
-    private static Logger log = LoggerFactory.getLogger(TimerCatchIntermediateEventJobHandler.class);
+  private static Logger log = LoggerFactory.getLogger(TimerCatchIntermediateEventJobHandler.class);
 
-    public static final String TYPE = "timer-intermediate-transition";
+  public static final String TYPE = "timer-intermediate-transition";
 
-    public String getType() {
-        return TYPE;
+  public String getType() {
+    return TYPE;
+  }
+
+  public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+
+    String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
+
+    ActivityImpl intermediateEventActivity = execution.getProcessDefinition().findActivity(nestedActivityId);
+
+    if (intermediateEventActivity == null) {
+      throw new ActivitiException("Error while firing timer: intermediate event activity " + nestedActivityId + " not found");
     }
 
-    public void execute(JobEntity job, String configuration, ExecutionEntity execution, CommandContext commandContext) {
+    try {
+      if (commandContext.getEventDispatcher().isEnabled()) {
+        commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
+      }
 
-        String nestedActivityId = TimerEventHandler.getActivityIdFromConfiguration(configuration);
-
-        ActivityImpl intermediateEventActivity = execution.getProcessDefinition().findActivity(nestedActivityId);
-
-        if (intermediateEventActivity == null) {
-            throw new ActivitiException("Error while firing timer: intermediate event activity " + nestedActivityId + " not found");
-        }
-
-        try {
-            if (commandContext.getEventDispatcher().isEnabled()) {
-                commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
-            }
-
-            if (!execution.getActivity().getId().equals(intermediateEventActivity.getId())) {
-                execution.setActivity(intermediateEventActivity);
-            }
-            execution.signal(null, null);
-        } catch (RuntimeException e) {
-            LogMDC.putMDCExecution(execution);
-            log.error("exception during timer execution", e);
-            LogMDC.clear();
-            throw e;
-        } catch (Exception e) {
-            LogMDC.putMDCExecution(execution);
-            log.error("exception during timer execution", e);
-            LogMDC.clear();
-            throw new ActivitiException("exception during timer execution: " + e.getMessage(), e);
-        }
+      if (!execution.getActivity().getId().equals(intermediateEventActivity.getId())) {
+        execution.setActivity(intermediateEventActivity);
+      }
+      execution.signal(null, null);
+    } catch (RuntimeException e) {
+      LogMDC.putMDCExecution(execution);
+      log.error("exception during timer execution", e);
+      LogMDC.clear();
+      throw e;
+    } catch (Exception e) {
+      LogMDC.putMDCExecution(execution);
+      log.error("exception during timer execution", e);
+      LogMDC.clear();
+      throw new ActivitiException("exception during timer execution: " + e.getMessage(), e);
     }
+  }
 
 }

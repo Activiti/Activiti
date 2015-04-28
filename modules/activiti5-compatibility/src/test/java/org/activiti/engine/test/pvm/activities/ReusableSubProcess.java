@@ -27,27 +27,27 @@ import org.activiti5.engine.impl.pvm.delegate.SubProcessActivityBehavior;
  */
 public class ReusableSubProcess implements SubProcessActivityBehavior {
 
-    PvmProcessDefinition processDefinition;
+  PvmProcessDefinition processDefinition;
 
-    public ReusableSubProcess(PvmProcessDefinition processDefinition) {
-        this.processDefinition = processDefinition;
-    }
+  public ReusableSubProcess(PvmProcessDefinition processDefinition) {
+    this.processDefinition = processDefinition;
+  }
 
-    public void execute(ActivityExecution execution) throws Exception {
-        PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
+  public void execute(ActivityExecution execution) throws Exception {
+    PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
 
-        // TODO set variables
+    // TODO set variables
 
-        subProcessInstance.start();
-    }
+    subProcessInstance.start();
+  }
 
-    public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
-        // TODO extract information from the subprocess and inject it into the
-        // superprocess
-    }
+  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+    // TODO extract information from the subprocess and inject it into the
+    // superprocess
+  }
 
-    public void completed(ActivityExecution execution) throws Exception {
-        List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
-        execution.takeAll(outgoingTransitions, null);
-    }
+  public void completed(ActivityExecution execution) throws Exception {
+    List<PvmTransition> outgoingTransitions = execution.getActivity().getOutgoingTransitions();
+    execution.takeAll(outgoingTransitions, null);
+  }
 }

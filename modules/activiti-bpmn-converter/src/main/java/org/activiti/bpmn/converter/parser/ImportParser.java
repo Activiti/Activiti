@@ -24,12 +24,12 @@ import org.activiti.bpmn.model.Import;
  */
 public class ImportParser implements BpmnXMLConstants {
 
-    public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
-        Import importObject = new Import();
-        BpmnXMLUtil.addXMLLocation(importObject, xtr);
-        importObject.setImportType(xtr.getAttributeValue(null, ATTRIBUTE_IMPORT_TYPE));
-        importObject.setNamespace(xtr.getAttributeValue(null, ATTRIBUTE_NAMESPACE));
-        importObject.setLocation(xtr.getAttributeValue(null, ATTRIBUTE_LOCATION));
-        model.getImports().add(importObject);
-    }
+  public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
+    Import importObject = new Import();
+    BpmnXMLUtil.addXMLLocation(importObject, xtr);
+    importObject.setImportType(xtr.getAttributeValue(null, ATTRIBUTE_IMPORT_TYPE));
+    importObject.setNamespace(xtr.getAttributeValue(null, ATTRIBUTE_NAMESPACE));
+    importObject.setLocation(xtr.getAttributeValue(null, ATTRIBUTE_LOCATION));
+    model.getImports().add(importObject);
+  }
 }

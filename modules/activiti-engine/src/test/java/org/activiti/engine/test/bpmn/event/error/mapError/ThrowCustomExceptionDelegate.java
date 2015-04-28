@@ -22,27 +22,27 @@ import org.apache.commons.lang3.StringUtils;
  */
 public class ThrowCustomExceptionDelegate implements JavaDelegate {
 
-    @Override
-    public void execute(DelegateExecution execution) {
-        Object exceptionClassVar = execution.getVariable("exceptionClass");
-        if (exceptionClassVar == null)
-            return;
+  @Override
+  public void execute(DelegateExecution execution) {
+    Object exceptionClassVar = execution.getVariable("exceptionClass");
+    if (exceptionClassVar == null)
+      return;
 
-        String exceptionClassName = exceptionClassVar.toString();
+    String exceptionClassName = exceptionClassVar.toString();
 
-        if (StringUtils.isNotEmpty(exceptionClassName)) {
-            ActivitiException exception = null;
-            try {
-                Class<?> clazz = Class.forName(exceptionClassName);
-                exception = (ActivitiException) clazz.newInstance();
+    if (StringUtils.isNotEmpty(exceptionClassName)) {
+      ActivitiException exception = null;
+      try {
+        Class<?> clazz = Class.forName(exceptionClassName);
+        exception = (ActivitiException) clazz.newInstance();
 
-            } catch (Exception e) {
-                throw new ActivitiException("Class not found", e);
-            }
-            throw exception;
-
-        }
+      } catch (Exception e) {
+        throw new ActivitiException("Class not found", e);
+      }
+      throw exception;
 
     }
+
+  }
 
 }

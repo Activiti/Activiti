@@ -42,67 +42,67 @@ import org.springframework.core.io.Resource;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultAutoDeploymentStrategyTest extends AbstractAutoDeploymentStrategyTest {
 
-    private DefaultAutoDeploymentStrategy classUnderTest;
+  private DefaultAutoDeploymentStrategy classUnderTest;
 
-    @Before
-    public void before() throws Exception {
-        super.before();
-        classUnderTest = new DefaultAutoDeploymentStrategy();
-        assertNotNull(classUnderTest);
-    }
+  @Before
+  public void before() throws Exception {
+    super.before();
+    classUnderTest = new DefaultAutoDeploymentStrategy();
+    assertNotNull(classUnderTest);
+  }
 
-    @Test
-    public void testHandlesMode() {
-        assertTrue(classUnderTest.handlesMode(DefaultAutoDeploymentStrategy.DEPLOYMENT_MODE));
-        assertFalse(classUnderTest.handlesMode("other-mode"));
-        assertFalse(classUnderTest.handlesMode(null));
-    }
+  @Test
+  public void testHandlesMode() {
+    assertTrue(classUnderTest.handlesMode(DefaultAutoDeploymentStrategy.DEPLOYMENT_MODE));
+    assertFalse(classUnderTest.handlesMode("other-mode"));
+    assertFalse(classUnderTest.handlesMode(null));
+  }
 
-    @Test
-    public void testDeployResources() {
-        final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5 };
-        classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+  @Test
+  public void testDeployResources() {
+    final Resource[] resources = new Resource[] { resourceMock1, resourceMock2, resourceMock3, resourceMock4, resourceMock5 };
+    classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
-        verify(repositoryServiceMock, times(1)).createDeployment();
-        verify(deploymentBuilderMock, times(1)).enableDuplicateFiltering();
-        verify(deploymentBuilderMock, times(1)).name(deploymentNameHint);
-        verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName1), isA(InputStream.class));
-        verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName2), isA(InputStream.class));
-        verify(deploymentBuilderMock, times(3)).addZipInputStream(isA(ZipInputStream.class));
-        verify(deploymentBuilderMock, times(1)).deploy();
-    }
+    verify(repositoryServiceMock, times(1)).createDeployment();
+    verify(deploymentBuilderMock, times(1)).enableDuplicateFiltering();
+    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint);
+    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName1), isA(InputStream.class));
+    verify(deploymentBuilderMock, times(1)).addInputStream(eq(resourceName2), isA(InputStream.class));
+    verify(deploymentBuilderMock, times(3)).addZipInputStream(isA(ZipInputStream.class));
+    verify(deploymentBuilderMock, times(1)).deploy();
+  }
 
-    @Test
-    public void testDeployResourcesNoResources() {
-        final Resource[] resources = new Resource[] {};
-        classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+  @Test
+  public void testDeployResourcesNoResources() {
+    final Resource[] resources = new Resource[] {};
+    classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
-        verify(repositoryServiceMock, times(1)).createDeployment();
-        verify(deploymentBuilderMock, times(1)).enableDuplicateFiltering();
-        verify(deploymentBuilderMock, times(1)).name(deploymentNameHint);
-        verify(deploymentBuilderMock, never()).addInputStream(isA(String.class), isA(InputStream.class));
-        verify(deploymentBuilderMock, never()).addInputStream(eq(resourceName2), isA(InputStream.class));
-        verify(deploymentBuilderMock, never()).addZipInputStream(isA(ZipInputStream.class));
-        verify(deploymentBuilderMock, times(1)).deploy();
-    }
+    verify(repositoryServiceMock, times(1)).createDeployment();
+    verify(deploymentBuilderMock, times(1)).enableDuplicateFiltering();
+    verify(deploymentBuilderMock, times(1)).name(deploymentNameHint);
+    verify(deploymentBuilderMock, never()).addInputStream(isA(String.class), isA(InputStream.class));
+    verify(deploymentBuilderMock, never()).addInputStream(eq(resourceName2), isA(InputStream.class));
+    verify(deploymentBuilderMock, never()).addZipInputStream(isA(ZipInputStream.class));
+    verify(deploymentBuilderMock, times(1)).deploy();
+  }
 
-    @Test(expected = ActivitiException.class)
-    public void testDeployResourcesIOExceptionYieldsActivitiException() throws Exception {
-        when(resourceMock3.getInputStream()).thenThrow(new IOException());
+  @Test(expected = ActivitiException.class)
+  public void testDeployResourcesIOExceptionYieldsActivitiException() throws Exception {
+    when(resourceMock3.getInputStream()).thenThrow(new IOException());
 
-        final Resource[] resources = new Resource[] { resourceMock3 };
-        classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+    final Resource[] resources = new Resource[] { resourceMock3 };
+    classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
 
-        fail("Expected exception for IOException");
-    }
+    fail("Expected exception for IOException");
+  }
 
-    @Test
-    public void testDetermineResourceNameWithExceptionFailsGracefully() throws Exception {
-        when(resourceMock3.getFile()).thenThrow(new IOException());
-        when(resourceMock3.getFilename()).thenReturn(resourceName3);
+  @Test
+  public void testDetermineResourceNameWithExceptionFailsGracefully() throws Exception {
+    when(resourceMock3.getFile()).thenThrow(new IOException());
+    when(resourceMock3.getFilename()).thenReturn(resourceName3);
 
-        final Resource[] resources = new Resource[] { resourceMock3 };
-        classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
-    }
+    final Resource[] resources = new Resource[] { resourceMock3 };
+    classUnderTest.deployResources(deploymentNameHint, resources, repositoryServiceMock);
+  }
 
 }

@@ -45,215 +45,214 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.Reindeer;
 
 /**
- * Custom component for the 'sub tasks' section for a task. Used in the
- * {@link TaskDetailPanel}.
+ * Custom component for the 'sub tasks' section for a task. Used in the {@link TaskDetailPanel}.
  * 
  * @author Joram Barrez
  */
 public class SubTaskComponent extends CustomComponent {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected I18nManager i18nManager;
-    protected transient TaskService taskService;
-    protected transient HistoryService historyService;
+  protected I18nManager i18nManager;
+  protected transient TaskService taskService;
+  protected transient HistoryService historyService;
 
-    protected Task parentTask;
-    protected TaskDetailPanel taskDetailPanel;
-    protected VerticalLayout layout;
-    protected Label title;
-    protected Panel addSubTaskPanel;
-    protected Button addSubTaskButton;
-    protected TextField newTaskTextField;
-    protected GridLayout subTaskLayout;
+  protected Task parentTask;
+  protected TaskDetailPanel taskDetailPanel;
+  protected VerticalLayout layout;
+  protected Label title;
+  protected Panel addSubTaskPanel;
+  protected Button addSubTaskButton;
+  protected TextField newTaskTextField;
+  protected GridLayout subTaskLayout;
 
-    public SubTaskComponent(Task parentTask) {
-        this.parentTask = parentTask;
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-        this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
+  public SubTaskComponent(Task parentTask) {
+    this.parentTask = parentTask;
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
 
-        initUi();
-    }
+    initUi();
+  }
 
-    protected void initUi() {
-        addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
-        addStyleName(ExplorerLayout.STYLE_INVOLVE_PEOPLE);
+  protected void initUi() {
+    addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    addStyleName(ExplorerLayout.STYLE_INVOLVE_PEOPLE);
 
-        initLayout();
-        initHeader();
-        initSubTasks();
-    }
+    initLayout();
+    initHeader();
+    initSubTasks();
+  }
 
-    protected void initLayout() {
-        this.layout = new VerticalLayout();
-        setCompositionRoot(layout);
-    }
+  protected void initLayout() {
+    this.layout = new VerticalLayout();
+    setCompositionRoot(layout);
+  }
 
-    protected void initHeader() {
-        HorizontalLayout headerLayout = new HorizontalLayout();
-        headerLayout.setWidth(100, UNITS_PERCENTAGE);
-        layout.addComponent(headerLayout);
+  protected void initHeader() {
+    HorizontalLayout headerLayout = new HorizontalLayout();
+    headerLayout.setWidth(100, UNITS_PERCENTAGE);
+    layout.addComponent(headerLayout);
 
-        initTitle(headerLayout);
-        initAddSubTaskPanel(headerLayout);
-    }
+    initTitle(headerLayout);
+    initAddSubTaskPanel(headerLayout);
+  }
 
-    protected void initTitle(HorizontalLayout headerLayout) {
-        title = new Label(i18nManager.getMessage(Messages.TASK_SUBTASKS));
-        title.addStyleName(ExplorerLayout.STYLE_H3);
-        title.setWidth(100, UNITS_PERCENTAGE);
-        headerLayout.addComponent(title);
-        headerLayout.setExpandRatio(title, 1.0f);
-    }
+  protected void initTitle(HorizontalLayout headerLayout) {
+    title = new Label(i18nManager.getMessage(Messages.TASK_SUBTASKS));
+    title.addStyleName(ExplorerLayout.STYLE_H3);
+    title.setWidth(100, UNITS_PERCENTAGE);
+    headerLayout.addComponent(title);
+    headerLayout.setExpandRatio(title, 1.0f);
+  }
 
-    protected void initAddSubTaskPanel(HorizontalLayout headerLayout) {
-        // The add button is placed in a panel, so we can catch 'enter' and
-        // 'escape' events
-        addSubTaskPanel = new Panel();
-        addSubTaskPanel.setContent(new VerticalLayout());
-        addSubTaskPanel.setSizeUndefined();
-        addSubTaskPanel.addStyleName(Reindeer.PANEL_LIGHT);
-        addSubTaskPanel.addStyleName("no-border");
-        headerLayout.addComponent(addSubTaskPanel);
+  protected void initAddSubTaskPanel(HorizontalLayout headerLayout) {
+    // The add button is placed in a panel, so we can catch 'enter' and
+    // 'escape' events
+    addSubTaskPanel = new Panel();
+    addSubTaskPanel.setContent(new VerticalLayout());
+    addSubTaskPanel.setSizeUndefined();
+    addSubTaskPanel.addStyleName(Reindeer.PANEL_LIGHT);
+    addSubTaskPanel.addStyleName("no-border");
+    headerLayout.addComponent(addSubTaskPanel);
 
-        initAddSubTaskPanelKeyboardActions();
-        initAddButton();
-    }
+    initAddSubTaskPanelKeyboardActions();
+    initAddButton();
+  }
 
-    protected void initAddSubTaskPanelKeyboardActions() {
-        addSubTaskPanel.addActionHandler(new Handler() {
-            public void handleAction(Action action, Object sender, Object target) {
-                if ("escape".equals(action.getCaption())) {
-                    resetAddButton();
-                } else if ("enter".equals(action.getCaption())) {
-                    if (newTaskTextField != null && newTaskTextField.getValue() != null && !"".equals(newTaskTextField.getValue().toString())) {
+  protected void initAddSubTaskPanelKeyboardActions() {
+    addSubTaskPanel.addActionHandler(new Handler() {
+      public void handleAction(Action action, Object sender, Object target) {
+        if ("escape".equals(action.getCaption())) {
+          resetAddButton();
+        } else if ("enter".equals(action.getCaption())) {
+          if (newTaskTextField != null && newTaskTextField.getValue() != null && !"".equals(newTaskTextField.getValue().toString())) {
 
-                        LoggedInUser loggedInUser = ExplorerApp.get().getLoggedInUser();
+            LoggedInUser loggedInUser = ExplorerApp.get().getLoggedInUser();
 
-                        // save task
-                        Task newTask = taskService.newTask();
-                        newTask.setParentTaskId(parentTask.getId());
-                        if (parentTask.getAssignee() != null) {
-                            newTask.setAssignee(parentTask.getAssignee());
-                        } else {
-                            newTask.setAssignee(loggedInUser.getId());
-                        }
-                        if (parentTask.getOwner() != null) {
-                            newTask.setOwner(parentTask.getOwner());
-                        } else {
-                            newTask.setOwner(loggedInUser.getId());
-                        }
-                        newTask.setName(newTaskTextField.getValue().toString());
-                        taskService.saveTask(newTask);
-
-                        // Reset the add button to its original state
-                        resetAddButton();
-
-                        // refresh sub tasks section
-                        refreshSubTasks();
-                    }
-                }
+            // save task
+            Task newTask = taskService.newTask();
+            newTask.setParentTaskId(parentTask.getId());
+            if (parentTask.getAssignee() != null) {
+              newTask.setAssignee(parentTask.getAssignee());
+            } else {
+              newTask.setAssignee(loggedInUser.getId());
             }
-
-            public Action[] getActions(Object target, Object sender) {
-                return new Action[] { new ShortcutAction("enter", ShortcutAction.KeyCode.ENTER, null), new ShortcutAction("escape", ShortcutAction.KeyCode.ESCAPE, null) };
+            if (parentTask.getOwner() != null) {
+              newTask.setOwner(parentTask.getOwner());
+            } else {
+              newTask.setOwner(loggedInUser.getId());
             }
-        });
-    }
+            newTask.setName(newTaskTextField.getValue().toString());
+            taskService.saveTask(newTask);
 
-    protected void initAddButton() {
-        addSubTaskButton = new Button();
-        addSubTaskButton.addStyleName(ExplorerLayout.STYLE_ADD);
-        addSubTaskPanel.addComponent(addSubTaskButton);
-        addSubTaskButton.addListener(new ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                // Remove button
-                addSubTaskPanel.removeAllComponents();
+            // Reset the add button to its original state
+            resetAddButton();
 
-                // And add textfield
-                Label createSubTaskLabel = new Label("Create new subtask:");
-                createSubTaskLabel.addStyleName(Reindeer.LABEL_SMALL);
-                addSubTaskPanel.addComponent(createSubTaskLabel);
-                newTaskTextField = new TextField();
-                newTaskTextField.focus();
-                addSubTaskPanel.addComponent(newTaskTextField);
-            }
-        });
-    }
-
-    protected void resetAddButton() {
-        addSubTaskPanel.removeAllComponents();
-        initAddButton();
-    }
-
-    protected void initSubTasks() {
-        List<HistoricTaskInstance> subTasks = historyService.createHistoricTaskInstanceQuery().taskParentTaskId(parentTask.getId()).list();
-        initSubTasksLayout();
-        populateSubTasks(subTasks);
-    }
-
-    protected void initSubTasksLayout() {
-        subTaskLayout = new GridLayout();
-        subTaskLayout.setColumns(3);
-        subTaskLayout.addStyleName(ExplorerLayout.STYLE_TASK_SUBTASKS_LIST);
-        subTaskLayout.setWidth(99, UNITS_PERCENTAGE);
-        subTaskLayout.setColumnExpandRatio(2, 1.0f);
-        subTaskLayout.setSpacing(true);
-        layout.addComponent(subTaskLayout);
-    }
-
-    protected void populateSubTasks(List<HistoricTaskInstance> subTasks) {
-        if (!subTasks.isEmpty()) {
-            for (final HistoricTaskInstance subTask : subTasks) {
-                // icon
-                Embedded icon = null;
-
-                if (subTask.getEndTime() != null) {
-                    icon = new Embedded(null, Images.TASK_FINISHED_22);
-                } else {
-                    icon = new Embedded(null, Images.TASK_22);
-                }
-                icon.setWidth(22, UNITS_PIXELS);
-                icon.setWidth(22, UNITS_PIXELS);
-                subTaskLayout.addComponent(icon);
-
-                // Link to subtask
-                Button subTaskLink = new Button(subTask.getName());
-                subTaskLink.addStyleName(Reindeer.BUTTON_LINK);
-                subTaskLink.addListener(new ClickListener() {
-                    public void buttonClick(ClickEvent event) {
-                        ExplorerApp.get().getViewManager().showTaskPage(subTask.getId());
-                    }
-                });
-                subTaskLayout.addComponent(subTaskLink);
-                subTaskLayout.setComponentAlignment(subTaskLink, Alignment.MIDDLE_LEFT);
-
-                if (subTask.getEndTime() == null) {
-                    // Delete icon only appears when task is not finished yet
-                    Embedded deleteIcon = new Embedded(null, Images.DELETE);
-                    deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-                    deleteIcon.addListener(new DeleteSubTaskClickListener(subTask, this));
-                    subTaskLayout.addComponent(deleteIcon);
-                    subTaskLayout.setComponentAlignment(deleteIcon, Alignment.MIDDLE_RIGHT);
-                } else {
-                    // Next line of grid
-                    subTaskLayout.newLine();
-                }
-            }
-        } else {
-            Label noSubTasksLabel = new Label(i18nManager.getMessage(Messages.TASK_NO_SUBTASKS));
-            noSubTasksLabel.setSizeUndefined();
-            noSubTasksLabel.addStyleName(Reindeer.LABEL_SMALL);
-            subTaskLayout.addComponent(noSubTasksLabel);
+            // refresh sub tasks section
+            refreshSubTasks();
+          }
         }
+      }
 
+      public Action[] getActions(Object target, Object sender) {
+        return new Action[] { new ShortcutAction("enter", ShortcutAction.KeyCode.ENTER, null), new ShortcutAction("escape", ShortcutAction.KeyCode.ESCAPE, null) };
+      }
+    });
+  }
+
+  protected void initAddButton() {
+    addSubTaskButton = new Button();
+    addSubTaskButton.addStyleName(ExplorerLayout.STYLE_ADD);
+    addSubTaskPanel.addComponent(addSubTaskButton);
+    addSubTaskButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        // Remove button
+        addSubTaskPanel.removeAllComponents();
+
+        // And add textfield
+        Label createSubTaskLabel = new Label("Create new subtask:");
+        createSubTaskLabel.addStyleName(Reindeer.LABEL_SMALL);
+        addSubTaskPanel.addComponent(createSubTaskLabel);
+        newTaskTextField = new TextField();
+        newTaskTextField.focus();
+        addSubTaskPanel.addComponent(newTaskTextField);
+      }
+    });
+  }
+
+  protected void resetAddButton() {
+    addSubTaskPanel.removeAllComponents();
+    initAddButton();
+  }
+
+  protected void initSubTasks() {
+    List<HistoricTaskInstance> subTasks = historyService.createHistoricTaskInstanceQuery().taskParentTaskId(parentTask.getId()).list();
+    initSubTasksLayout();
+    populateSubTasks(subTasks);
+  }
+
+  protected void initSubTasksLayout() {
+    subTaskLayout = new GridLayout();
+    subTaskLayout.setColumns(3);
+    subTaskLayout.addStyleName(ExplorerLayout.STYLE_TASK_SUBTASKS_LIST);
+    subTaskLayout.setWidth(99, UNITS_PERCENTAGE);
+    subTaskLayout.setColumnExpandRatio(2, 1.0f);
+    subTaskLayout.setSpacing(true);
+    layout.addComponent(subTaskLayout);
+  }
+
+  protected void populateSubTasks(List<HistoricTaskInstance> subTasks) {
+    if (!subTasks.isEmpty()) {
+      for (final HistoricTaskInstance subTask : subTasks) {
+        // icon
+        Embedded icon = null;
+
+        if (subTask.getEndTime() != null) {
+          icon = new Embedded(null, Images.TASK_FINISHED_22);
+        } else {
+          icon = new Embedded(null, Images.TASK_22);
+        }
+        icon.setWidth(22, UNITS_PIXELS);
+        icon.setWidth(22, UNITS_PIXELS);
+        subTaskLayout.addComponent(icon);
+
+        // Link to subtask
+        Button subTaskLink = new Button(subTask.getName());
+        subTaskLink.addStyleName(Reindeer.BUTTON_LINK);
+        subTaskLink.addListener(new ClickListener() {
+          public void buttonClick(ClickEvent event) {
+            ExplorerApp.get().getViewManager().showTaskPage(subTask.getId());
+          }
+        });
+        subTaskLayout.addComponent(subTaskLink);
+        subTaskLayout.setComponentAlignment(subTaskLink, Alignment.MIDDLE_LEFT);
+
+        if (subTask.getEndTime() == null) {
+          // Delete icon only appears when task is not finished yet
+          Embedded deleteIcon = new Embedded(null, Images.DELETE);
+          deleteIcon.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+          deleteIcon.addListener(new DeleteSubTaskClickListener(subTask, this));
+          subTaskLayout.addComponent(deleteIcon);
+          subTaskLayout.setComponentAlignment(deleteIcon, Alignment.MIDDLE_RIGHT);
+        } else {
+          // Next line of grid
+          subTaskLayout.newLine();
+        }
+      }
+    } else {
+      Label noSubTasksLabel = new Label(i18nManager.getMessage(Messages.TASK_NO_SUBTASKS));
+      noSubTasksLabel.setSizeUndefined();
+      noSubTasksLabel.addStyleName(Reindeer.LABEL_SMALL);
+      subTaskLayout.addComponent(noSubTasksLabel);
     }
 
-    public void refreshSubTasks() {
-        subTaskLayout.removeAllComponents();
-        List<HistoricTaskInstance> subTasks = historyService.createHistoricTaskInstanceQuery().taskParentTaskId(parentTask.getId()).list();
-        populateSubTasks(subTasks);
-    }
+  }
+
+  public void refreshSubTasks() {
+    subTaskLayout.removeAllComponents();
+    List<HistoricTaskInstance> subTasks = historyService.createHistoricTaskInstanceQuery().taskParentTaskId(parentTask.getId()).list();
+    populateSubTasks(subTasks);
+  }
 
 }

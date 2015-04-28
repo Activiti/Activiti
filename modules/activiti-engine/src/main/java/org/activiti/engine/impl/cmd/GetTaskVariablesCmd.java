@@ -30,45 +30,45 @@ import org.activiti.engine.task.Task;
  */
 public class GetTaskVariablesCmd implements Command<Map<String, Object>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String taskId;
-    protected Collection<String> variableNames;
-    protected boolean isLocal;
+  private static final long serialVersionUID = 1L;
+  protected String taskId;
+  protected Collection<String> variableNames;
+  protected boolean isLocal;
 
-    public GetTaskVariablesCmd(String taskId, Collection<String> variableNames, boolean isLocal) {
-        this.taskId = taskId;
-        this.variableNames = variableNames;
-        this.isLocal = isLocal;
+  public GetTaskVariablesCmd(String taskId, Collection<String> variableNames, boolean isLocal) {
+    this.taskId = taskId;
+    this.variableNames = variableNames;
+    this.isLocal = isLocal;
+  }
+
+  public Map<String, Object> execute(CommandContext commandContext) {
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("taskId is null");
     }
 
-    public Map<String, Object> execute(CommandContext commandContext) {
-        if (taskId == null) {
-            throw new ActivitiIllegalArgumentException("taskId is null");
-        }
+    TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
 
-        TaskEntity task = commandContext.getTaskEntityManager().findTaskById(taskId);
+    if (task == null) {
+      throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
+    }
 
-        if (task == null) {
-            throw new ActivitiObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
-        }
+    if (variableNames == null) {
 
-        if (variableNames == null) {
+      if (isLocal) {
+        return task.getVariablesLocal();
+      } else {
+        return task.getVariables();
+      }
 
-            if (isLocal) {
-                return task.getVariablesLocal();
-            } else {
-                return task.getVariables();
-            }
+    } else {
 
-        } else {
-
-            if (isLocal) {
-                return task.getVariablesLocal(variableNames, false);
-            } else {
-                return task.getVariables(variableNames, false);
-            }
-
-        }
+      if (isLocal) {
+        return task.getVariablesLocal(variableNames, false);
+      } else {
+        return task.getVariables(variableNames, false);
+      }
 
     }
+
+  }
 }

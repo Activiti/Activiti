@@ -45,59 +45,59 @@ import org.activiti.engine.parse.BpmnParseHandler;
  */
 public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
 
-    protected static final String ACTIVITY_INSTANCE_START_LISTENER = "org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler";
-    
-    protected static final String ACTIVITI_INSTANCE_END_LISTENER = "org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler"; 
+  protected static final String ACTIVITY_INSTANCE_START_LISTENER = "org.activiti.engine.impl.history.handler.ActivityInstanceStartHandler";
 
-    protected static Set<Class<? extends BaseElement>> supportedElementClasses = new HashSet<Class<? extends BaseElement>>();
+  protected static final String ACTIVITI_INSTANCE_END_LISTENER = "org.activiti.engine.impl.history.handler.ActivityInstanceEndHandler";
 
-    static {
-        supportedElementClasses.add(EndEvent.class);
-        supportedElementClasses.add(ThrowEvent.class);
-        supportedElementClasses.add(BoundaryEvent.class);
-        supportedElementClasses.add(IntermediateCatchEvent.class);
+  protected static Set<Class<? extends BaseElement>> supportedElementClasses = new HashSet<Class<? extends BaseElement>>();
 
-        supportedElementClasses.add(ExclusiveGateway.class);
-        supportedElementClasses.add(InclusiveGateway.class);
-        supportedElementClasses.add(ParallelGateway.class);
-        supportedElementClasses.add(EventGateway.class);
+  static {
+    supportedElementClasses.add(EndEvent.class);
+    supportedElementClasses.add(ThrowEvent.class);
+    supportedElementClasses.add(BoundaryEvent.class);
+    supportedElementClasses.add(IntermediateCatchEvent.class);
 
-        supportedElementClasses.add(Task.class);
-        supportedElementClasses.add(ManualTask.class);
-        supportedElementClasses.add(ReceiveTask.class);
-        supportedElementClasses.add(ScriptTask.class);
-        supportedElementClasses.add(ServiceTask.class);
-        supportedElementClasses.add(BusinessRuleTask.class);
-        supportedElementClasses.add(SendTask.class);
-        supportedElementClasses.add(UserTask.class);
+    supportedElementClasses.add(ExclusiveGateway.class);
+    supportedElementClasses.add(InclusiveGateway.class);
+    supportedElementClasses.add(ParallelGateway.class);
+    supportedElementClasses.add(EventGateway.class);
 
-        supportedElementClasses.add(CallActivity.class);
-        supportedElementClasses.add(SubProcess.class);
+    supportedElementClasses.add(Task.class);
+    supportedElementClasses.add(ManualTask.class);
+    supportedElementClasses.add(ReceiveTask.class);
+    supportedElementClasses.add(ScriptTask.class);
+    supportedElementClasses.add(ServiceTask.class);
+    supportedElementClasses.add(BusinessRuleTask.class);
+    supportedElementClasses.add(SendTask.class);
+    supportedElementClasses.add(UserTask.class);
+
+    supportedElementClasses.add(CallActivity.class);
+    supportedElementClasses.add(SubProcess.class);
+  }
+
+  public Set<Class<? extends BaseElement>> getHandledTypes() {
+    return supportedElementClasses;
+  }
+
+  public void parse(BpmnParse bpmnParse, BaseElement element) {
+    if (element instanceof BoundaryEvent) {
+      // A boundary-event never receives an activity start-event
+      BoundaryEvent boundaryEvent = (BoundaryEvent) element;
+      addExecutionListener("end", ACTIVITY_INSTANCE_START_LISTENER, boundaryEvent);
+      addExecutionListener("end", ACTIVITI_INSTANCE_END_LISTENER, boundaryEvent);
+    } else {
+      FlowElement flowElement = (FlowElement) element;
+      addExecutionListener("start", ACTIVITY_INSTANCE_START_LISTENER, flowElement);
+      addExecutionListener("end", ACTIVITI_INSTANCE_END_LISTENER, flowElement);
     }
+  }
 
-    public Set<Class<? extends BaseElement>> getHandledTypes() {
-        return supportedElementClasses;
-    }
-
-    public void parse(BpmnParse bpmnParse, BaseElement element) {
-        if (element instanceof BoundaryEvent) {
-            // A boundary-event never receives an activity start-event
-            BoundaryEvent boundaryEvent = (BoundaryEvent) element;
-            addExecutionListener("end", ACTIVITY_INSTANCE_START_LISTENER, boundaryEvent);
-            addExecutionListener("end", ACTIVITI_INSTANCE_END_LISTENER, boundaryEvent);
-        } else {
-            FlowElement flowElement = (FlowElement) element;
-            addExecutionListener("start", ACTIVITY_INSTANCE_START_LISTENER, flowElement);
-            addExecutionListener("end", ACTIVITI_INSTANCE_END_LISTENER, flowElement);
-        }
-    }
-    
-    protected void addExecutionListener(String event, String className, FlowElement element) {
-        ActivitiListener listener = new ActivitiListener();
-        listener.setEvent(event);
-        listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
-        listener.setImplementation(className);
-        element.getExecutionListeners().add(listener);
-    }
+  protected void addExecutionListener(String event, String className, FlowElement element) {
+    ActivitiListener listener = new ActivitiListener();
+    listener.setEvent(event);
+    listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
+    listener.setImplementation(className);
+    element.getExecutionListeners().add(listener);
+  }
 
 }

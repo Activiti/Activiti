@@ -23,27 +23,27 @@ import org.activiti5.engine.impl.pvm.runtime.InterpretableExecution;
  */
 public class ExecutionContext {
 
-    protected ExecutionEntity execution;
+  protected ExecutionEntity execution;
 
-    public ExecutionContext(InterpretableExecution execution) {
-        this.execution = (ExecutionEntity) execution;
-    }
+  public ExecutionContext(InterpretableExecution execution) {
+    this.execution = (ExecutionEntity) execution;
+  }
 
-    public ExecutionEntity getExecution() {
-        return execution;
-    }
+  public ExecutionEntity getExecution() {
+    return execution;
+  }
 
-    public ExecutionEntity getProcessInstance() {
-        return execution.getProcessInstance();
-    }
+  public ExecutionEntity getProcessInstance() {
+    return execution.getProcessInstance();
+  }
 
-    public ProcessDefinitionEntity getProcessDefinition() {
-        return (ProcessDefinitionEntity) execution.getProcessDefinition();
-    }
+  public ProcessDefinitionEntity getProcessDefinition() {
+    return (ProcessDefinitionEntity) execution.getProcessDefinition();
+  }
 
-    public DeploymentEntity getDeployment() {
-        String deploymentId = getProcessDefinition().getDeploymentId();
-        DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findDeploymentById(deploymentId);
-        return deployment;
-    }
+  public DeploymentEntity getDeployment() {
+    String deploymentId = getProcessDefinition().getDeploymentId();
+    DeploymentEntity deployment = Context.getCommandContext().getDeploymentEntityManager().findDeploymentById(deploymentId);
+    return deployment;
+  }
 }

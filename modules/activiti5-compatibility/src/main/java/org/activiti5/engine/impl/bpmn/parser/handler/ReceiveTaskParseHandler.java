@@ -23,16 +23,16 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public class ReceiveTaskParseHandler extends AbstractActivityBpmnParseHandler<ReceiveTask> {
 
-    public Class<? extends BaseElement> getHandledType() {
-        return ReceiveTask.class;
-    }
+  public Class<? extends BaseElement> getHandledType() {
+    return ReceiveTask.class;
+  }
 
-    protected void executeParse(BpmnParse bpmnParse, ReceiveTask receiveTask) {
-        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, receiveTask, BpmnXMLConstants.ELEMENT_TASK_RECEIVE);
-        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createReceiveTaskActivityBehavior(receiveTask));
+  protected void executeParse(BpmnParse bpmnParse, ReceiveTask receiveTask) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, receiveTask, BpmnXMLConstants.ELEMENT_TASK_RECEIVE);
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createReceiveTaskActivityBehavior(receiveTask));
 
-        activity.setAsync(receiveTask.isAsynchronous());
-        activity.setExclusive(!receiveTask.isNotExclusive());
-    }
+    activity.setAsync(receiveTask.isAsynchronous());
+    activity.setExclusive(!receiveTask.isNotExclusive());
+  }
 
 }

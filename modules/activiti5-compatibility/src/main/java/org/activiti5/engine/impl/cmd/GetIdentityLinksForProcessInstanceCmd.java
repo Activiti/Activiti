@@ -26,23 +26,23 @@ import org.activiti5.engine.task.IdentityLink;
  */
 public class GetIdentityLinksForProcessInstanceCmd implements Command<List<IdentityLink>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String processInstanceId;
+  protected String processInstanceId;
 
-    public GetIdentityLinksForProcessInstanceCmd(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
+  public GetIdentityLinksForProcessInstanceCmd(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
+
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public List<IdentityLink> execute(CommandContext commandContext) {
+    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
+
+    if (processInstance == null) {
+      throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processInstanceId, ExecutionEntity.class);
     }
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public List<IdentityLink> execute(CommandContext commandContext) {
-        ExecutionEntity processInstance = commandContext.getExecutionEntityManager().findExecutionById(processInstanceId);
-
-        if (processInstance == null) {
-            throw new ActivitiObjectNotFoundException("Cannot find process definition with id " + processInstanceId, ExecutionEntity.class);
-        }
-
-        return (List) processInstance.getIdentityLinks();
-    }
+    return (List) processInstance.getIdentityLinks();
+  }
 
 }

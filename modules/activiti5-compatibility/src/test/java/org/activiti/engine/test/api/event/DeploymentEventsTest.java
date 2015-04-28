@@ -25,74 +25,74 @@ import org.activiti5.engine.repository.Deployment;
  */
 public class DeploymentEventsTest extends PluggableActivitiTestCase {
 
-    private TestActivitiEntityEventListener listener;
+  private TestActivitiEntityEventListener listener;
 
-    /**
-     * Test create, update and delete events of deployment entities.
-     */
-    public void testDeploymentEvents() throws Exception {
-        Deployment deployment = null;
-        try {
-            listener.clearEventsReceived();
-            deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml").deploy();
-            assertNotNull(deployment);
+  /**
+   * Test create, update and delete events of deployment entities.
+   */
+  public void testDeploymentEvents() throws Exception {
+    Deployment deployment = null;
+    try {
+      listener.clearEventsReceived();
+      deployment = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml").deploy();
+      assertNotNull(deployment);
 
-            // Check create-event
-            assertEquals(2, listener.getEventsReceived().size());
-            assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+      // Check create-event
+      assertEquals(2, listener.getEventsReceived().size());
+      assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
-            ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-            assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-            assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
+      ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+      assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
+      assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
 
-            assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiEntityEvent);
-            event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
-            assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-            assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
+      assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiEntityEvent);
+      event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+      assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+      assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
 
-            listener.clearEventsReceived();
+      listener.clearEventsReceived();
 
-            // Check update event when category is updated
-            repositoryService.setDeploymentCategory(deployment.getId(), "test");
-            assertEquals(1, listener.getEventsReceived().size());
-            assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+      // Check update event when category is updated
+      repositoryService.setDeploymentCategory(deployment.getId(), "test");
+      assertEquals(1, listener.getEventsReceived().size());
+      assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
-            event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-            assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
-            assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
-            assertEquals("test", ((Deployment) event.getEntity()).getCategory());
-            listener.clearEventsReceived();
+      event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+      assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
+      assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
+      assertEquals("test", ((Deployment) event.getEntity()).getCategory());
+      listener.clearEventsReceived();
 
-            // Check delete event when category is updated
-            repositoryService.deleteDeployment(deployment.getId(), true);
-            assertEquals(1, listener.getEventsReceived().size());
-            assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
+      // Check delete event when category is updated
+      repositoryService.deleteDeployment(deployment.getId(), true);
+      assertEquals(1, listener.getEventsReceived().size());
+      assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
-            event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
-            assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-            assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
-            listener.clearEventsReceived();
+      event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
+      assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
+      assertEquals(deployment.getId(), ((Deployment) event.getEntity()).getId());
+      listener.clearEventsReceived();
 
-        } finally {
-            if (deployment != null && repositoryService.createDeploymentQuery().deploymentId(deployment.getId()).count() > 0) {
-                repositoryService.deleteDeployment(deployment.getId(), true);
-            }
-        }
+    } finally {
+      if (deployment != null && repositoryService.createDeploymentQuery().deploymentId(deployment.getId()).count() > 0) {
+        repositoryService.deleteDeployment(deployment.getId(), true);
+      }
     }
+  }
 
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
-        listener = new TestActivitiEntityEventListener(Deployment.class);
-        processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    listener = new TestActivitiEntityEventListener(Deployment.class);
+    processEngineConfiguration.getEventDispatcher().addEventListener(listener);
+  }
+
+  @Override
+  protected void tearDown() throws Exception {
+    super.tearDown();
+
+    if (listener != null) {
+      processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
     }
-
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
-
-        if (listener != null) {
-            processEngineConfiguration.getEventDispatcher().removeEventListener(listener);
-        }
-    }
+  }
 }

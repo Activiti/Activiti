@@ -26,18 +26,17 @@ import org.activiti5.engine.impl.test.PvmTestCase;
  */
 public class PvmParallelEndTest extends PvmTestCase {
 
-    /**
-     * +----+ +--->|end1| | +----+ | +-----+ +----+ |start|-->|fork| +-----+
-     * +----+ | | +----+ +--->|end2| +----+
-     */
-    public void testParallelEnd() {
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("fork").endActivity().createActivity("fork")
-                .behavior(new ParallelGateway()).transition("end1").transition("end2").endActivity().createActivity("end1").behavior(new End()).endActivity().createActivity("end2")
-                .behavior(new End()).endActivity().buildProcessDefinition();
+  /**
+   * +----+ +--->|end1| | +----+ | +-----+ +----+ |start|-->|fork| +-----+ +----+ | | +----+ +--->|end2| +----+
+   */
+  public void testParallelEnd() {
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().createActivity("start").initial().behavior(new Automatic()).transition("fork").endActivity().createActivity("fork")
+        .behavior(new ParallelGateway()).transition("end1").transition("end2").endActivity().createActivity("end1").behavior(new End()).endActivity().createActivity("end2").behavior(new End())
+        .endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        assertTrue(processInstance.isEnded());
-    }
+    assertTrue(processInstance.isEnded());
+  }
 }

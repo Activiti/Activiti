@@ -37,146 +37,146 @@ import java.util.zip.ZipInputStream;
  */
 public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected static final String DEFAULT_ENCODING = "UTF-8";
+  private static final long serialVersionUID = 1L;
+  protected static final String DEFAULT_ENCODING = "UTF-8";
 
-    protected transient RepositoryServiceImpl repositoryService;
-    protected DeploymentEntity deployment = new DeploymentEntity();
-    protected boolean isBpmn20XsdValidationEnabled = true;
-    protected boolean isProcessValidationEnabled = true;
-    protected boolean isDuplicateFilterEnabled = false;
-    protected Date processDefinitionsActivationDate;
+  protected transient RepositoryServiceImpl repositoryService;
+  protected DeploymentEntity deployment = new DeploymentEntity();
+  protected boolean isBpmn20XsdValidationEnabled = true;
+  protected boolean isProcessValidationEnabled = true;
+  protected boolean isDuplicateFilterEnabled = false;
+  protected Date processDefinitionsActivationDate;
 
-    public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
-        this.repositoryService = repositoryService;
+  public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
+    this.repositoryService = repositoryService;
+  }
+
+  public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
+    if (inputStream == null) {
+      throw new ActivitiIllegalArgumentException("inputStream for resource '" + resourceName + "' is null");
     }
+    byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
+    ResourceEntity resource = new ResourceEntity();
+    resource.setName(resourceName);
+    resource.setBytes(bytes);
+    deployment.addResource(resource);
+    return this;
+  }
 
-    public DeploymentBuilder addInputStream(String resourceName, InputStream inputStream) {
-        if (inputStream == null) {
-            throw new ActivitiIllegalArgumentException("inputStream for resource '" + resourceName + "' is null");
+  public DeploymentBuilder addClasspathResource(String resource) {
+    InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
+    if (inputStream == null) {
+      throw new ActivitiIllegalArgumentException("resource '" + resource + "' not found");
+    }
+    return addInputStream(resource, inputStream);
+  }
+
+  public DeploymentBuilder addString(String resourceName, String text) {
+    if (text == null) {
+      throw new ActivitiIllegalArgumentException("text is null");
+    }
+    ResourceEntity resource = new ResourceEntity();
+    resource.setName(resourceName);
+    try {
+      resource.setBytes(text.getBytes(DEFAULT_ENCODING));
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiException("Unable to get process bytes.", e);
+    }
+    deployment.addResource(resource);
+    return this;
+  }
+
+  public DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream) {
+    try {
+      ZipEntry entry = zipInputStream.getNextEntry();
+      while (entry != null) {
+        if (!entry.isDirectory()) {
+          String entryName = entry.getName();
+          byte[] bytes = IoUtil.readInputStream(zipInputStream, entryName);
+          ResourceEntity resource = new ResourceEntity();
+          resource.setName(entryName);
+          resource.setBytes(bytes);
+          deployment.addResource(resource);
         }
-        byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
-        ResourceEntity resource = new ResourceEntity();
-        resource.setName(resourceName);
-        resource.setBytes(bytes);
-        deployment.addResource(resource);
-        return this;
+        entry = zipInputStream.getNextEntry();
+      }
+    } catch (Exception e) {
+      throw new ActivitiException("problem reading zip input stream", e);
     }
+    return this;
+  }
 
-    public DeploymentBuilder addClasspathResource(String resource) {
-        InputStream inputStream = ReflectUtil.getResourceAsStream(resource);
-        if (inputStream == null) {
-            throw new ActivitiIllegalArgumentException("resource '" + resource + "' not found");
-        }
-        return addInputStream(resource, inputStream);
+  public DeploymentBuilder addBpmnModel(String resourceName, BpmnModel bpmnModel) {
+    BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
+    try {
+      String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(bpmnModel), "UTF-8");
+      addString(resourceName, bpmn20Xml);
+    } catch (UnsupportedEncodingException e) {
+      throw new ActivitiException("Errot while transforming BPMN model to xml: not UTF-8 encoded", e);
     }
+    return this;
+  }
 
-    public DeploymentBuilder addString(String resourceName, String text) {
-        if (text == null) {
-            throw new ActivitiIllegalArgumentException("text is null");
-        }
-        ResourceEntity resource = new ResourceEntity();
-        resource.setName(resourceName);
-        try {
-            resource.setBytes(text.getBytes(DEFAULT_ENCODING));
-        } catch (UnsupportedEncodingException e) {
-            throw new ActivitiException("Unable to get process bytes.", e);
-        }
-        deployment.addResource(resource);
-        return this;
-    }
+  public DeploymentBuilder name(String name) {
+    deployment.setName(name);
+    return this;
+  }
 
-    public DeploymentBuilder addZipInputStream(ZipInputStream zipInputStream) {
-        try {
-            ZipEntry entry = zipInputStream.getNextEntry();
-            while (entry != null) {
-                if (!entry.isDirectory()) {
-                    String entryName = entry.getName();
-                    byte[] bytes = IoUtil.readInputStream(zipInputStream, entryName);
-                    ResourceEntity resource = new ResourceEntity();
-                    resource.setName(entryName);
-                    resource.setBytes(bytes);
-                    deployment.addResource(resource);
-                }
-                entry = zipInputStream.getNextEntry();
-            }
-        } catch (Exception e) {
-            throw new ActivitiException("problem reading zip input stream", e);
-        }
-        return this;
-    }
+  public DeploymentBuilder category(String category) {
+    deployment.setCategory(category);
+    return this;
+  }
 
-    public DeploymentBuilder addBpmnModel(String resourceName, BpmnModel bpmnModel) {
-        BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
-        try {
-            String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(bpmnModel), "UTF-8");
-            addString(resourceName, bpmn20Xml);
-        } catch (UnsupportedEncodingException e) {
-            throw new ActivitiException("Errot while transforming BPMN model to xml: not UTF-8 encoded", e);
-        }
-        return this;
-    }
+  public DeploymentBuilder disableBpmnValidation() {
+    this.isProcessValidationEnabled = false;
+    return this;
+  }
 
-    public DeploymentBuilder name(String name) {
-        deployment.setName(name);
-        return this;
-    }
+  public DeploymentBuilder disableSchemaValidation() {
+    this.isBpmn20XsdValidationEnabled = false;
+    return this;
+  }
 
-    public DeploymentBuilder category(String category) {
-        deployment.setCategory(category);
-        return this;
-    }
+  public DeploymentBuilder tenantId(String tenantId) {
+    deployment.setTenantId(tenantId);
+    return this;
+  }
 
-    public DeploymentBuilder disableBpmnValidation() {
-        this.isProcessValidationEnabled = false;
-        return this;
-    }
+  public DeploymentBuilder enableDuplicateFiltering() {
+    this.isDuplicateFilterEnabled = true;
+    return this;
+  }
 
-    public DeploymentBuilder disableSchemaValidation() {
-        this.isBpmn20XsdValidationEnabled = false;
-        return this;
-    }
+  public DeploymentBuilder activateProcessDefinitionsOn(Date date) {
+    this.processDefinitionsActivationDate = date;
+    return this;
+  }
 
-    public DeploymentBuilder tenantId(String tenantId) {
-        deployment.setTenantId(tenantId);
-        return this;
-    }
+  public Deployment deploy() {
+    return repositoryService.deploy(this);
+  }
 
-    public DeploymentBuilder enableDuplicateFiltering() {
-        this.isDuplicateFilterEnabled = true;
-        return this;
-    }
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    public DeploymentBuilder activateProcessDefinitionsOn(Date date) {
-        this.processDefinitionsActivationDate = date;
-        return this;
-    }
+  public DeploymentEntity getDeployment() {
+    return deployment;
+  }
 
-    public Deployment deploy() {
-        return repositoryService.deploy(this);
-    }
+  public boolean isProcessValidationEnabled() {
+    return isProcessValidationEnabled;
+  }
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  public boolean isBpmn20XsdValidationEnabled() {
+    return isBpmn20XsdValidationEnabled;
+  }
 
-    public DeploymentEntity getDeployment() {
-        return deployment;
-    }
+  public boolean isDuplicateFilterEnabled() {
+    return isDuplicateFilterEnabled;
+  }
 
-    public boolean isProcessValidationEnabled() {
-        return isProcessValidationEnabled;
-    }
-
-    public boolean isBpmn20XsdValidationEnabled() {
-        return isBpmn20XsdValidationEnabled;
-    }
-
-    public boolean isDuplicateFilterEnabled() {
-        return isDuplicateFilterEnabled;
-    }
-
-    public Date getProcessDefinitionsActivationDate() {
-        return processDefinitionsActivationDate;
-    }
+  public Date getProcessDefinitionsActivationDate() {
+    return processDefinitionsActivationDate;
+  }
 
 }

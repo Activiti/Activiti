@@ -24,45 +24,45 @@ import org.activiti5.engine.test.Deployment;
  */
 public class HistoricTaskInstanceUpdateTest extends PluggableActivitiTestCase {
 
-    @Deployment
-    public void testHistoricTaskInstanceUpdate() {
-        runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
+  @Deployment
+  public void testHistoricTaskInstanceUpdate() {
+    runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest").getId();
 
-        Task task = taskService.createTaskQuery().singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
 
-        // Update and save the task's fields before it is finished
-        task.setPriority(12345);
-        task.setDescription("Updated description");
-        task.setName("Updated name");
-        task.setAssignee("gonzo");
-        taskService.saveTask(task);
+    // Update and save the task's fields before it is finished
+    task.setPriority(12345);
+    task.setDescription("Updated description");
+    task.setName("Updated name");
+    task.setAssignee("gonzo");
+    taskService.saveTask(task);
 
-        taskService.complete(task.getId());
-        assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
+    taskService.complete(task.getId());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().count());
 
-        HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
-        assertEquals("Updated name", historicTaskInstance.getName());
-        assertEquals("Updated description", historicTaskInstance.getDescription());
-        assertEquals("gonzo", historicTaskInstance.getAssignee());
-        assertEquals("task", historicTaskInstance.getTaskDefinitionKey());
+    HistoricTaskInstance historicTaskInstance = historyService.createHistoricTaskInstanceQuery().singleResult();
+    assertEquals("Updated name", historicTaskInstance.getName());
+    assertEquals("Updated description", historicTaskInstance.getDescription());
+    assertEquals("gonzo", historicTaskInstance.getAssignee());
+    assertEquals("task", historicTaskInstance.getTaskDefinitionKey());
 
-        // Validate fix of ACT-1923: updating assignee to null should be
-        // reflected in history
-        ProcessInstance secondInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
+    // Validate fix of ACT-1923: updating assignee to null should be
+    // reflected in history
+    ProcessInstance secondInstance = runtimeService.startProcessInstanceByKey("HistoricTaskInstanceTest");
 
-        task = taskService.createTaskQuery().singleResult();
+    task = taskService.createTaskQuery().singleResult();
 
-        task.setDescription(null);
-        task.setName(null);
-        task.setAssignee(null);
-        taskService.saveTask(task);
+    task.setDescription(null);
+    task.setName(null);
+    task.setAssignee(null);
+    taskService.saveTask(task);
 
-        taskService.complete(task.getId());
-        assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).count());
+    taskService.complete(task.getId());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).count());
 
-        historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).singleResult();
-        assertNull(historicTaskInstance.getName());
-        assertNull(historicTaskInstance.getDescription());
-        assertNull(historicTaskInstance.getAssignee());
-    }
+    historicTaskInstance = historyService.createHistoricTaskInstanceQuery().processInstanceId(secondInstance.getId()).singleResult();
+    assertNull(historicTaskInstance.getName());
+    assertNull(historicTaskInstance.getDescription());
+    assertNull(historicTaskInstance.getAssignee());
+  }
 }

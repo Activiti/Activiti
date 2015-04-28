@@ -33,76 +33,76 @@ import com.vaadin.ui.Table;
  */
 public class ProcessInstancePage extends ManagementPage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected LazyLoadingContainer processInstanceContainer;
-    protected String processInstanceId;
+  protected LazyLoadingContainer processInstanceContainer;
+  protected String processInstanceId;
 
-    public ProcessInstancePage() {
-        ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
+  public ProcessInstancePage() {
+    ExplorerApp.get().setCurrentUriFragment(new UriFragment(DeploymentNavigator.DEPLOYMENT_URI_PART));
+  }
+
+  public ProcessInstancePage(String processInstanceId) {
+    this();
+    this.processInstanceId = processInstanceId;
+  }
+
+  @Override
+  protected void initUi() {
+    super.initUi();
+
+    if (processInstanceId == null) {
+      selectElement(0);
+    } else {
+      selectElement(processInstanceContainer.getIndexForObjectId(processInstanceId));
     }
+  }
 
-    public ProcessInstancePage(String processInstanceId) {
-        this();
-        this.processInstanceId = processInstanceId;
-    }
+  protected Table createList() {
+    final Table table = new Table();
 
-    @Override
-    protected void initUi() {
-        super.initUi();
+    LazyLoadingQuery query = new ProcessInstanceListQuery();
+    processInstanceContainer = new LazyLoadingContainer(query);
+    table.setContainerDataSource(processInstanceContainer);
 
-        if (processInstanceId == null) {
-            selectElement(0);
+    table.addListener(new Property.ValueChangeListener() {
+      private static final long serialVersionUID = 1L;
+
+      public void valueChange(ValueChangeEvent event) {
+        Item item = table.getItem(event.getProperty().getValue()); // the
+                                                                   // value
+                                                                   // of
+                                                                   // the
+                                                                   // property
+                                                                   // is
+                                                                   // the
+                                                                   // itemId
+                                                                   // of
+                                                                   // the
+                                                                   // table
+                                                                   // entry
+        if (item != null) {
+          String processInstanceId = (String) item.getItemProperty("id").getValue();
+          setDetailComponent(new AlfrescoProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
+
+          // Update URL
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(ProcessInstanceNavigator.PROCESS_INSTANCE_URL_PART, processInstanceId));
         } else {
-            selectElement(processInstanceContainer.getIndexForObjectId(processInstanceId));
+          // Nothing is selected
+          setDetailComponent(null);
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(ProcessInstanceNavigator.PROCESS_INSTANCE_URL_PART));
         }
-    }
+      }
+    });
 
-    protected Table createList() {
-        final Table table = new Table();
+    // Create column headers
+    table.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
+    table.setColumnWidth("icon", 22);
 
-        LazyLoadingQuery query = new ProcessInstanceListQuery();
-        processInstanceContainer = new LazyLoadingContainer(query);
-        table.setContainerDataSource(processInstanceContainer);
+    table.addContainerProperty("name", String.class, null);
+    table.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
 
-        table.addListener(new Property.ValueChangeListener() {
-            private static final long serialVersionUID = 1L;
-
-            public void valueChange(ValueChangeEvent event) {
-                Item item = table.getItem(event.getProperty().getValue()); // the
-                                                                           // value
-                                                                           // of
-                                                                           // the
-                                                                           // property
-                                                                           // is
-                                                                           // the
-                                                                           // itemId
-                                                                           // of
-                                                                           // the
-                                                                           // table
-                                                                           // entry
-                if (item != null) {
-                    String processInstanceId = (String) item.getItemProperty("id").getValue();
-                    setDetailComponent(new AlfrescoProcessInstanceDetailPanel(processInstanceId, ProcessInstancePage.this));
-
-                    // Update URL
-                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(ProcessInstanceNavigator.PROCESS_INSTANCE_URL_PART, processInstanceId));
-                } else {
-                    // Nothing is selected
-                    setDetailComponent(null);
-                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(ProcessInstanceNavigator.PROCESS_INSTANCE_URL_PART));
-                }
-            }
-        });
-
-        // Create column headers
-        table.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.PROCESS_22));
-        table.setColumnWidth("icon", 22);
-
-        table.addContainerProperty("name", String.class, null);
-        table.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
-
-        return table;
-    }
+    return table;
+  }
 
 }

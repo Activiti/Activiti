@@ -27,66 +27,62 @@ import org.activiti.engine.impl.javax.el.ELResolver;
 import org.osgi.service.blueprint.container.BlueprintContainer;
 
 /**
- * Custom ELResolver to resolve beans defined in the activiti-engine host
- * bundle's blueprint context.
+ * Custom ELResolver to resolve beans defined in the activiti-engine host bundle's blueprint context.
  * 
  * @see org.activiti.spring.ApplicationContextElResolver
  * @author Prabhat_Tripathi
  * 
- *         blueprint context declaration syntax: <bean
- *         id="blueprintContextELResolver"
- *         class="org.activiti.osgi.blueprint.BlueprintContextELResolver">
- *         <property name="blueprintContainer" ref="blueprintContainer"/>
- *         </bean>
+ *         blueprint context declaration syntax: <bean id="blueprintContextELResolver" class="org.activiti.osgi.blueprint.BlueprintContextELResolver"> <property name="blueprintContainer"
+ *         ref="blueprintContainer"/> </bean>
  */
 public class BlueprintContextELResolver extends ELResolver {
 
-    private BlueprintContainer blueprintContainer;
+  private BlueprintContainer blueprintContainer;
 
-    public BlueprintContextELResolver() {
+  public BlueprintContextELResolver() {
 
-    }
+  }
 
-    public BlueprintContextELResolver(BlueprintContainer blueprintContainer) {
-        this.blueprintContainer = blueprintContainer;
-    }
+  public BlueprintContextELResolver(BlueprintContainer blueprintContainer) {
+    this.blueprintContainer = blueprintContainer;
+  }
 
-    public void setBlueprintContainer(BlueprintContainer blueprintContainer) {
-        this.blueprintContainer = blueprintContainer;
-    }
+  public void setBlueprintContainer(BlueprintContainer blueprintContainer) {
+    this.blueprintContainer = blueprintContainer;
+  }
 
-    @SuppressWarnings("unchecked")
-    public Object getValue(ELContext context, Object base, Object property) {
-        if (base == null) {
-            // according to javadoc, can only be a String
-            String key = (String) property;
-            for (String componentId : (Set<String>) blueprintContainer.getComponentIds()) {
-                if (componentId.equals(key)) {
-                    context.setPropertyResolved(true);
-                    return blueprintContainer.getComponentInstance(key);
-                }
-            }
+  @SuppressWarnings("unchecked")
+  public Object getValue(ELContext context, Object base, Object property) {
+    if (base == null) {
+      // according to javadoc, can only be a String
+      String key = (String) property;
+      for (String componentId : (Set<String>) blueprintContainer.getComponentIds()) {
+        if (componentId.equals(key)) {
+          context.setPropertyResolved(true);
+          return blueprintContainer.getComponentInstance(key);
         }
-
-        return null;
+      }
     }
 
-    public boolean isReadOnly(ELContext context, Object base, Object property) {
-        return true;
-    }
+    return null;
+  }
 
-    public void setValue(ELContext context, Object base, Object property, Object value) {
-    }
+  public boolean isReadOnly(ELContext context, Object base, Object property) {
+    return true;
+  }
 
-    public Class<?> getCommonPropertyType(ELContext context, Object arg) {
-        return Object.class;
-    }
+  public void setValue(ELContext context, Object base, Object property, Object value) {
+  }
 
-    public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
-        return null;
-    }
+  public Class<?> getCommonPropertyType(ELContext context, Object arg) {
+    return Object.class;
+  }
 
-    public Class<?> getType(ELContext context, Object arg1, Object arg2) {
-        return Object.class;
-    }
+  public Iterator<FeatureDescriptor> getFeatureDescriptors(ELContext context, Object arg) {
+    return null;
+  }
+
+  public Class<?> getType(ELContext context, Object arg1, Object arg2) {
+    return Object.class;
+  }
 }

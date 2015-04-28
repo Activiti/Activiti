@@ -23,21 +23,21 @@ import org.activiti.engine.impl.javax.el.VariableMapper;
  */
 public class ActivitiElContext extends ELContext {
 
-    protected ELResolver elResolver;
+  protected ELResolver elResolver;
 
-    public ActivitiElContext(ELResolver elResolver) {
-        this.elResolver = elResolver;
-    }
+  public ActivitiElContext(ELResolver elResolver) {
+    this.elResolver = elResolver;
+  }
 
-    public ELResolver getELResolver() {
-        return elResolver;
-    }
+  public ELResolver getELResolver() {
+    return elResolver;
+  }
 
-    public FunctionMapper getFunctionMapper() {
-        return new ActivitiFunctionMapper();
-    }
+  public FunctionMapper getFunctionMapper() {
+    return new ActivitiFunctionMapper();
+  }
 
-    public VariableMapper getVariableMapper() {
-        return null;
-    }
+  public VariableMapper getVariableMapper() {
+    return null;
+  }
 }

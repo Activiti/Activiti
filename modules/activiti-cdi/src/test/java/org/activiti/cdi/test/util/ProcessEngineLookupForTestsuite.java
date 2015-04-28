@@ -21,24 +21,24 @@ import org.activiti.engine.ProcessEngines;
  */
 public class ProcessEngineLookupForTestsuite implements ProcessEngineLookup {
 
-    public static ProcessEngine processEngine;
+  public static ProcessEngine processEngine;
 
-    @Override
-    public int getPrecedence() {
-        return 100;
-    }
+  @Override
+  public int getPrecedence() {
+    return 100;
+  }
 
-    @Override
-    public ProcessEngine getProcessEngine() {
-        if (processEngine == null) {
-            processEngine = ProcessEngines.getDefaultProcessEngine();
-        }
-        return processEngine;
+  @Override
+  public ProcessEngine getProcessEngine() {
+    if (processEngine == null) {
+      processEngine = ProcessEngines.getDefaultProcessEngine();
     }
+    return processEngine;
+  }
 
-    @Override
-    public void ungetProcessEngine() {
-        // do nothing
-    }
+  @Override
+  public void ungetProcessEngine() {
+    // do nothing
+  }
 
 }

@@ -23,13 +23,13 @@ import org.activiti.engine.impl.pvm.process.ActivityImpl;
  */
 public class BusinessRuleParseHandler extends AbstractActivityBpmnParseHandler<BusinessRuleTask> {
 
-    public Class<? extends BaseElement> getHandledType() {
-        return BusinessRuleTask.class;
-    }
+  public Class<? extends BaseElement> getHandledType() {
+    return BusinessRuleTask.class;
+  }
 
-    @Override
-    protected void executeParse(BpmnParse bpmnParse, BusinessRuleTask businessRuleTask) {
-    	businessRuleTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createBusinessRuleTaskActivityBehavior(businessRuleTask));
-    }
+  @Override
+  protected void executeParse(BpmnParse bpmnParse, BusinessRuleTask businessRuleTask) {
+    businessRuleTask.setBehavior(bpmnParse.getActivityBehaviorFactory().createBusinessRuleTaskActivityBehavior(businessRuleTask));
+  }
 
 }

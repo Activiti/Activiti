@@ -35,266 +35,266 @@ import org.activiti5.engine.impl.pvm.process.ProcessDefinitionImpl;
  */
 public abstract class EventSubscriptionEntity implements PersistentObject, HasRevision, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    // persistent state ///////////////////////////
-    protected String id;
-    protected int revision = 1;
-    protected String eventType;
-    protected String eventName;
-    protected String executionId;
-    protected String processInstanceId;
-    protected String activityId;
-    protected String configuration;
-    protected Date created;
-    protected String processDefinitionId;
-    protected String tenantId;
+  // persistent state ///////////////////////////
+  protected String id;
+  protected int revision = 1;
+  protected String eventType;
+  protected String eventName;
+  protected String executionId;
+  protected String processInstanceId;
+  protected String activityId;
+  protected String configuration;
+  protected Date created;
+  protected String processDefinitionId;
+  protected String tenantId;
 
-    // runtime state /////////////////////////////
-    protected ExecutionEntity execution;
-    protected ActivityImpl activity;
+  // runtime state /////////////////////////////
+  protected ExecutionEntity execution;
+  protected ActivityImpl activity;
 
-    // ///////////////////////////////////////////
+  // ///////////////////////////////////////////
 
-    public EventSubscriptionEntity() {
-        this.created = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+  public EventSubscriptionEntity() {
+    this.created = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+  }
+
+  public EventSubscriptionEntity(ExecutionEntity executionEntity) {
+    this();
+    setExecution(executionEntity);
+    setActivity(execution.getActivity());
+    this.processInstanceId = executionEntity.getProcessInstanceId();
+  }
+
+  // processing /////////////////////////////
+
+  public void eventReceived(Serializable payload, boolean processASync) {
+    if (processASync) {
+      scheduleEventAsync(payload);
+    } else {
+      processEventSync(payload);
     }
+  }
 
-    public EventSubscriptionEntity(ExecutionEntity executionEntity) {
-        this();
-        setExecution(executionEntity);
-        setActivity(execution.getActivity());
-        this.processInstanceId = executionEntity.getProcessInstanceId();
+  protected void processEventSync(Object payload) {
+    EventHandler eventHandler = Context.getProcessEngineConfiguration().getEventHandler(eventType);
+    if (eventHandler == null) {
+      throw new ActivitiException("Could not find eventhandler for event of type '" + eventType + "'.");
     }
+    eventHandler.handleEvent(this, payload, Context.getCommandContext());
+  }
 
-    // processing /////////////////////////////
+  protected void scheduleEventAsync(Serializable payload) {
 
-    public void eventReceived(Serializable payload, boolean processASync) {
-        if (processASync) {
-            scheduleEventAsync(payload);
-        } else {
-            processEventSync(payload);
-        }
+    final CommandContext commandContext = Context.getCommandContext();
+
+    MessageEntity message = new MessageEntity();
+    message.setJobHandlerType(ProcessEventJobHandler.TYPE);
+    message.setJobHandlerConfiguration(id);
+    message.setTenantId(getTenantId());
+
+    GregorianCalendar expireCal = new GregorianCalendar();
+    ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
+    expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
+    expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
+    message.setLockExpirationTime(expireCal.getTime());
+
+    // TODO: support payload
+    // if(payload != null) {
+    // message.setEventPayload(payload);
+    // }
+
+    commandContext.getJobEntityManager().send(message);
+  }
+
+  // persistence behavior /////////////////////
+
+  public void delete() {
+    Context.getCommandContext().getEventSubscriptionEntityManager().deleteEventSubscription(this);
+    removeFromExecution();
+  }
+
+  public void insert() {
+    Context.getCommandContext().getEventSubscriptionEntityManager().insert(this);
+    addToExecution();
+  }
+
+  // referential integrity -> ExecutionEntity
+  // ////////////////////////////////////
+
+  protected void addToExecution() {
+    // add reference in execution
+    ExecutionEntity execution = getExecution();
+    if (execution != null) {
+      execution.addEventSubscription(this);
     }
+  }
 
-    protected void processEventSync(Object payload) {
-        EventHandler eventHandler = Context.getProcessEngineConfiguration().getEventHandler(eventType);
-        if (eventHandler == null) {
-            throw new ActivitiException("Could not find eventhandler for event of type '" + eventType + "'.");
-        }
-        eventHandler.handleEvent(this, payload, Context.getCommandContext());
+  protected void removeFromExecution() {
+    // remove reference in execution
+    ExecutionEntity execution = getExecution();
+    if (execution != null) {
+      execution.removeEventSubscription(this);
     }
+  }
 
-    protected void scheduleEventAsync(Serializable payload) {
+  public Object getPersistentState() {
+    HashMap<String, Object> persistentState = new HashMap<String, Object>();
+    persistentState.put("executionId", executionId);
+    persistentState.put("configuration", configuration);
+    return persistentState;
+  }
 
-        final CommandContext commandContext = Context.getCommandContext();
+  // getters & setters ////////////////////////////
 
-        MessageEntity message = new MessageEntity();
-        message.setJobHandlerType(ProcessEventJobHandler.TYPE);
-        message.setJobHandlerConfiguration(id);
-        message.setTenantId(getTenantId());
-
-        GregorianCalendar expireCal = new GregorianCalendar();
-        ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
-        expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
-        expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
-        message.setLockExpirationTime(expireCal.getTime());
-
-        // TODO: support payload
-        // if(payload != null) {
-        // message.setEventPayload(payload);
-        // }
-
-        commandContext.getJobEntityManager().send(message);
+  public ExecutionEntity getExecution() {
+    if (execution == null && executionId != null) {
+      execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
     }
+    return execution;
+  }
 
-    // persistence behavior /////////////////////
-
-    public void delete() {
-        Context.getCommandContext().getEventSubscriptionEntityManager().deleteEventSubscription(this);
-        removeFromExecution();
+  public void setExecution(ExecutionEntity execution) {
+    this.execution = execution;
+    if (execution != null) {
+      this.executionId = execution.getId();
     }
+  }
 
-    public void insert() {
-        Context.getCommandContext().getEventSubscriptionEntityManager().insert(this);
-        addToExecution();
+  public ActivityImpl getActivity() {
+    if (activity == null && activityId != null) {
+      ExecutionEntity execution = getExecution();
+      if (execution != null) {
+        ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
+        activity = processDefinition.findActivity(activityId);
+      }
     }
+    return activity;
+  }
 
-    // referential integrity -> ExecutionEntity
-    // ////////////////////////////////////
-
-    protected void addToExecution() {
-        // add reference in execution
-        ExecutionEntity execution = getExecution();
-        if (execution != null) {
-            execution.addEventSubscription(this);
-        }
+  public void setActivity(ActivityImpl activity) {
+    this.activity = activity;
+    if (activity != null) {
+      this.activityId = activity.getId();
     }
+  }
 
-    protected void removeFromExecution() {
-        // remove reference in execution
-        ExecutionEntity execution = getExecution();
-        if (execution != null) {
-            execution.removeEventSubscription(this);
-        }
-    }
+  public String getId() {
+    return id;
+  }
 
-    public Object getPersistentState() {
-        HashMap<String, Object> persistentState = new HashMap<String, Object>();
-        persistentState.put("executionId", executionId);
-        persistentState.put("configuration", configuration);
-        return persistentState;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    // getters & setters ////////////////////////////
+  public int getRevision() {
+    return revision;
+  }
 
-    public ExecutionEntity getExecution() {
-        if (execution == null && executionId != null) {
-            execution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(executionId);
-        }
-        return execution;
-    }
+  public void setRevision(int revision) {
+    this.revision = revision;
+  }
 
-    public void setExecution(ExecutionEntity execution) {
-        this.execution = execution;
-        if (execution != null) {
-            this.executionId = execution.getId();
-        }
-    }
+  public int getRevisionNext() {
+    return revision + 1;
+  }
 
-    public ActivityImpl getActivity() {
-        if (activity == null && activityId != null) {
-            ExecutionEntity execution = getExecution();
-            if (execution != null) {
-                ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-                activity = processDefinition.findActivity(activityId);
-            }
-        }
-        return activity;
-    }
+  public String getEventType() {
+    return eventType;
+  }
 
-    public void setActivity(ActivityImpl activity) {
-        this.activity = activity;
-        if (activity != null) {
-            this.activityId = activity.getId();
-        }
-    }
+  public void setEventType(String eventType) {
+    this.eventType = eventType;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getEventName() {
+    return eventName;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setEventName(String eventName) {
+    this.eventName = eventName;
+  }
 
-    public int getRevision() {
-        return revision;
-    }
+  public String getExecutionId() {
+    return executionId;
+  }
 
-    public void setRevision(int revision) {
-        this.revision = revision;
-    }
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
 
-    public int getRevisionNext() {
-        return revision + 1;
-    }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public String getEventType() {
-        return eventType;
-    }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
+  public String getConfiguration() {
+    return configuration;
+  }
 
-    public String getEventName() {
-        return eventName;
-    }
+  public void setConfiguration(String configuration) {
+    this.configuration = configuration;
+  }
 
-    public void setEventName(String eventName) {
-        this.eventName = eventName;
-    }
+  public String getActivityId() {
+    return activityId;
+  }
 
-    public String getExecutionId() {
-        return executionId;
-    }
+  public void setActivityId(String activityId) {
+    this.activityId = activityId;
+  }
 
-    public void setExecutionId(String executionId) {
-        this.executionId = executionId;
-    }
+  public Date getCreated() {
+    return created;
+  }
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  public void setCreated(Date created) {
+    this.created = created;
+  }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
 
-    public String getConfiguration() {
-        return configuration;
-    }
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
 
-    public void setConfiguration(String configuration) {
-        this.configuration = configuration;
-    }
+  public String getTenantId() {
+    return tenantId;
+  }
 
-    public String getActivityId() {
-        return activityId;
-    }
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
+  }
 
-    public void setActivityId(String activityId) {
-        this.activityId = activityId;
-    }
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((id == null) ? 0 : id.hashCode());
+    return result;
+  }
 
-    public Date getCreated() {
-        return created;
-    }
-
-    public void setCreated(Date created) {
-        this.created = created;
-    }
-
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
-    }
-
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
-    }
-
-    public String getTenantId() {
-        return tenantId;
-    }
-
-    public void setTenantId(String tenantId) {
-        this.tenantId = tenantId;
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        EventSubscriptionEntity other = (EventSubscriptionEntity) obj;
-        if (id == null) {
-            if (other.id != null)
-                return false;
-        } else if (!id.equals(other.id))
-            return false;
-        return true;
-    }
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    EventSubscriptionEntity other = (EventSubscriptionEntity) obj;
+    if (id == null) {
+      if (other.id != null)
+        return false;
+    } else if (!id.equals(other.id))
+      return false;
+    return true;
+  }
 
 }

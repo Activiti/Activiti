@@ -19,18 +19,18 @@ import org.activiti5.engine.impl.pvm.process.ScopeImpl;
  */
 public class AtomicOperationTransitionNotifyListenerEnd extends AbstractEventAtomicOperation {
 
-    @Override
-    protected ScopeImpl getScope(InterpretableExecution execution) {
-        return (ScopeImpl) execution.getActivity();
-    }
+  @Override
+  protected ScopeImpl getScope(InterpretableExecution execution) {
+    return (ScopeImpl) execution.getActivity();
+  }
 
-    @Override
-    protected String getEventName() {
-        return org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END;
-    }
+  @Override
+  protected String getEventName() {
+    return org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END;
+  }
 
-    @Override
-    protected void eventNotificationsCompleted(InterpretableExecution execution) {
-        execution.performOperation(TRANSITION_DESTROY_SCOPE);
-    }
+  @Override
+  protected void eventNotificationsCompleted(InterpretableExecution execution) {
+    execution.performOperation(TRANSITION_DESTROY_SCOPE);
+  }
 }

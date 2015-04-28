@@ -21,17 +21,17 @@ import org.activiti.explorer.util.time.TimeUnit;
  */
 public class YearTimeUnit implements TimeUnit {
 
-    private static final Long MILLIS_PER_YEAR = 31536000000L;
+  private static final Long MILLIS_PER_YEAR = 31536000000L;
 
-    public Long getNumberOfMillis() {
-        return MILLIS_PER_YEAR;
-    }
+  public Long getNumberOfMillis() {
+    return MILLIS_PER_YEAR;
+  }
 
-    public String getMessageKey(Long numberOfUnits) {
-        if (numberOfUnits == 1) {
-            return Messages.TIME_UNIT_YEAR;
-        } else {
-            return Messages.TIME_UNIT_YEARS;
-        }
+  public String getMessageKey(Long numberOfUnits) {
+    if (numberOfUnits == 1) {
+      return Messages.TIME_UNIT_YEAR;
+    } else {
+      return Messages.TIME_UNIT_YEARS;
     }
+  }
 }

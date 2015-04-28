@@ -31,73 +31,73 @@ import org.springframework.context.ApplicationContextAware;
  */
 public class ProcessEngineFactoryBean implements FactoryBean<ProcessEngine>, DisposableBean, ApplicationContextAware {
 
-    protected ProcessEngineConfigurationImpl processEngineConfiguration;
+  protected ProcessEngineConfigurationImpl processEngineConfiguration;
 
-    protected ApplicationContext applicationContext;
-    protected ProcessEngine processEngine;
+  protected ApplicationContext applicationContext;
+  protected ProcessEngine processEngine;
 
-    public void destroy() throws Exception {
-        if (processEngine != null) {
-            processEngine.close();
-        }
+  public void destroy() throws Exception {
+    if (processEngine != null) {
+      processEngine.close();
+    }
+  }
+
+  public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+    this.applicationContext = applicationContext;
+  }
+
+  public ProcessEngine getObject() throws Exception {
+    configureExpressionManager();
+    configureExternallyManagedTransactions();
+
+    if (processEngineConfiguration.getBeans() == null) {
+      processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(applicationContext));
     }
 
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
+    this.processEngine = processEngineConfiguration.buildProcessEngine();
+    return this.processEngine;
+  }
+
+  protected void configureExpressionManager() {
+    if (processEngineConfiguration.getExpressionManager() == null && applicationContext != null) {
+      processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext, processEngineConfiguration.getBeans()));
     }
+  }
 
-    public ProcessEngine getObject() throws Exception {
-        configureExpressionManager();
-        configureExternallyManagedTransactions();
-
-        if (processEngineConfiguration.getBeans() == null) {
-            processEngineConfiguration.setBeans(new SpringBeanFactoryProxyMap(applicationContext));
-        }
-
-        this.processEngine = processEngineConfiguration.buildProcessEngine();
-        return this.processEngine;
+  protected void configureExternallyManagedTransactions() {
+    if (processEngineConfiguration instanceof SpringProcessEngineConfiguration) { // remark:
+                                                                                  // any
+                                                                                  // config
+                                                                                  // can
+                                                                                  // be
+                                                                                  // injected,
+                                                                                  // so
+                                                                                  // we
+                                                                                  // cannot
+                                                                                  // have
+                                                                                  // SpringConfiguration
+                                                                                  // as
+                                                                                  // member
+      SpringProcessEngineConfiguration engineConfiguration = (SpringProcessEngineConfiguration) processEngineConfiguration;
+      if (engineConfiguration.getTransactionManager() != null) {
+        processEngineConfiguration.setTransactionsExternallyManaged(true);
+      }
     }
+  }
 
-    protected void configureExpressionManager() {
-        if (processEngineConfiguration.getExpressionManager() == null && applicationContext != null) {
-            processEngineConfiguration.setExpressionManager(new SpringExpressionManager(applicationContext, processEngineConfiguration.getBeans()));
-        }
-    }
+  public Class<ProcessEngine> getObjectType() {
+    return ProcessEngine.class;
+  }
 
-    protected void configureExternallyManagedTransactions() {
-        if (processEngineConfiguration instanceof SpringProcessEngineConfiguration) { // remark:
-                                                                                      // any
-                                                                                      // config
-                                                                                      // can
-                                                                                      // be
-                                                                                      // injected,
-                                                                                      // so
-                                                                                      // we
-                                                                                      // cannot
-                                                                                      // have
-                                                                                      // SpringConfiguration
-                                                                                      // as
-                                                                                      // member
-            SpringProcessEngineConfiguration engineConfiguration = (SpringProcessEngineConfiguration) processEngineConfiguration;
-            if (engineConfiguration.getTransactionManager() != null) {
-                processEngineConfiguration.setTransactionsExternallyManaged(true);
-            }
-        }
-    }
+  public boolean isSingleton() {
+    return true;
+  }
 
-    public Class<ProcessEngine> getObjectType() {
-        return ProcessEngine.class;
-    }
+  public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
+    return processEngineConfiguration;
+  }
 
-    public boolean isSingleton() {
-        return true;
-    }
-
-    public ProcessEngineConfigurationImpl getProcessEngineConfiguration() {
-        return processEngineConfiguration;
-    }
-
-    public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
-        this.processEngineConfiguration = processEngineConfiguration;
-    }
+  public void setProcessEngineConfiguration(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
 }

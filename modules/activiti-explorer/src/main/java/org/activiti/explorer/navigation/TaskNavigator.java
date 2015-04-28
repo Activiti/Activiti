@@ -33,126 +33,126 @@ import org.activiti.explorer.ViewManager;
  */
 public class TaskNavigator implements Navigator {
 
-    public static final String TASK_URI_PART = "tasks";
-    public static final String CATEGORY_TASKS = "tasks";
-    public static final String CATEGORY_INBOX = "inbox";
-    public static final String CATEGORY_QUEUED = "queued";
-    public static final String CATEGORY_INVOLVED = "involved";
-    public static final String CATEGORY_ARCHIVED = "archived";
+  public static final String TASK_URI_PART = "tasks";
+  public static final String CATEGORY_TASKS = "tasks";
+  public static final String CATEGORY_INBOX = "inbox";
+  public static final String CATEGORY_QUEUED = "queued";
+  public static final String CATEGORY_INVOLVED = "involved";
+  public static final String CATEGORY_ARCHIVED = "archived";
 
-    public static final String PARAMETER_CATEGORY = "category";
-    public static final String PARAMETER_GROUP = "group";
+  public static final String PARAMETER_CATEGORY = "category";
+  public static final String PARAMETER_GROUP = "group";
 
-    protected transient TaskService taskService;
-    protected transient HistoryService historyService;
-    protected transient IdentityService identityService;
+  protected transient TaskService taskService;
+  protected transient HistoryService historyService;
+  protected transient IdentityService identityService;
 
-    public TaskNavigator() {
-        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-        this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-        this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
+  public TaskNavigator() {
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    this.historyService = ProcessEngines.getDefaultProcessEngine().getHistoryService();
+  }
+
+  public String getTrigger() {
+    return TASK_URI_PART;
+  }
+
+  public void handleNavigation(UriFragment uriFragment) {
+    String category = uriFragment.getParameter(PARAMETER_CATEGORY);
+    String taskId = uriFragment.getUriPart(1);
+
+    if (taskId == null) {
+      directToCategoryPage(category, uriFragment);
+    } else {
+      directToSpecificTaskPage(category, taskId, uriFragment);
     }
+  }
 
-    public String getTrigger() {
-        return TASK_URI_PART;
+  protected void directToCategoryPage(String category, UriFragment uriFragment) {
+    ViewManager viewManager = ExplorerApp.get().getViewManager();
+    if (CATEGORY_TASKS.equals(category)) {
+      viewManager.showTasksPage();
+    } else if (CATEGORY_INBOX.equals(category)) {
+      viewManager.showInboxPage();
+    } else if (CATEGORY_QUEUED.equals(category)) {
+      viewManager.showQueuedPage(uriFragment.getParameter(PARAMETER_GROUP));
+    } else if (CATEGORY_INVOLVED.equals(category)) {
+      viewManager.showInvolvedPage();
+    } else if (CATEGORY_ARCHIVED.equals(category)) {
+      viewManager.showArchivedPage();
+    } else {
+      throw new ActivitiException("Couldn't find a matching category");
     }
+  }
 
-    public void handleNavigation(UriFragment uriFragment) {
-        String category = uriFragment.getParameter(PARAMETER_CATEGORY);
-        String taskId = uriFragment.getUriPart(1);
+  protected void directToSpecificTaskPage(String category, String taskId, UriFragment uriFragment) {
+    Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+    ViewManager viewManager = ExplorerApp.get().getViewManager();
+    String loggedInUserId = ExplorerApp.get().getLoggedInUser().getId();
 
-        if (taskId == null) {
-            directToCategoryPage(category, uriFragment);
-        } else {
-            directToSpecificTaskPage(category, taskId, uriFragment);
+    boolean pageFound = false;
+    if (CATEGORY_TASKS.equals(category)) {
+      if (loggedInUserId.equals(task.getOwner())) {
+        viewManager.showTasksPage(task.getId());
+        pageFound = true;
+      }
+    } else if (CATEGORY_INBOX.equals(category)) {
+      if (loggedInUserId.equals(task.getAssignee())) {
+        viewManager.showInboxPage(task.getId());
+        pageFound = true;
+      }
+    } else if (CATEGORY_QUEUED.equals(category)) {
+      String groupId = uriFragment.getParameter(PARAMETER_GROUP);
+
+      boolean isTaskAssignedToGroup = taskService.createTaskQuery().taskId(task.getId()).taskCandidateGroup(groupId).count() == 1;
+
+      boolean isUserMemberOfGroup = identityService.createGroupQuery().groupMember(loggedInUserId).groupId(groupId).count() == 1;
+
+      if (isTaskAssignedToGroup && isUserMemberOfGroup) {
+        viewManager.showQueuedPage(groupId, task.getId());
+        pageFound = true;
+      }
+
+    } else if (CATEGORY_INVOLVED.equals(category)) {
+      boolean isUserInvolved = taskService.createTaskQuery().taskInvolvedUser(loggedInUserId).count() == 1;
+
+      if (isUserInvolved) {
+        viewManager.showInvolvedPage(task.getId());
+        pageFound = true;
+      }
+    } else if (CATEGORY_ARCHIVED.equals(category)) {
+      if (task == null) {
+        boolean isOwner = historyService.createHistoricTaskInstanceQuery().taskId(taskId).taskOwner(loggedInUserId).finished().count() == 1;
+
+        if (isOwner) {
+          viewManager.showArchivedPage(taskId);
+          pageFound = true;
         }
+      }
+    } else {
+      throw new ActivitiException("Couldn't find a matching category");
     }
 
-    protected void directToCategoryPage(String category, UriFragment uriFragment) {
-        ViewManager viewManager = ExplorerApp.get().getViewManager();
-        if (CATEGORY_TASKS.equals(category)) {
-            viewManager.showTasksPage();
-        } else if (CATEGORY_INBOX.equals(category)) {
-            viewManager.showInboxPage();
-        } else if (CATEGORY_QUEUED.equals(category)) {
-            viewManager.showQueuedPage(uriFragment.getParameter(PARAMETER_GROUP));
-        } else if (CATEGORY_INVOLVED.equals(category)) {
-            viewManager.showInvolvedPage();
-        } else if (CATEGORY_ARCHIVED.equals(category)) {
-            viewManager.showArchivedPage();
-        } else {
-            throw new ActivitiException("Couldn't find a matching category");
-        }
+    if (!pageFound) {
+      // If URL doesnt match anymore, we must use the task data to
+      // redirect to the right page
+      viewManager.showTaskPage(taskId);
+    }
+  }
+
+  protected void showNavigationError(String taskId) {
+    String description = ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, taskId);
+    ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.NAVIGATION_ERROR_NOT_INVOLVED_TITLE, description);
+  }
+
+  protected List<String> getGroupIds(String userId) {
+    List<String> groupIds = new ArrayList<String>();
+    List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();
+    for (Group group : groups) {
+      groupIds.add(group.getId());
     }
 
-    protected void directToSpecificTaskPage(String category, String taskId, UriFragment uriFragment) {
-        Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-        ViewManager viewManager = ExplorerApp.get().getViewManager();
-        String loggedInUserId = ExplorerApp.get().getLoggedInUser().getId();
-
-        boolean pageFound = false;
-        if (CATEGORY_TASKS.equals(category)) {
-            if (loggedInUserId.equals(task.getOwner())) {
-                viewManager.showTasksPage(task.getId());
-                pageFound = true;
-            }
-        } else if (CATEGORY_INBOX.equals(category)) {
-            if (loggedInUserId.equals(task.getAssignee())) {
-                viewManager.showInboxPage(task.getId());
-                pageFound = true;
-            }
-        } else if (CATEGORY_QUEUED.equals(category)) {
-            String groupId = uriFragment.getParameter(PARAMETER_GROUP);
-
-            boolean isTaskAssignedToGroup = taskService.createTaskQuery().taskId(task.getId()).taskCandidateGroup(groupId).count() == 1;
-
-            boolean isUserMemberOfGroup = identityService.createGroupQuery().groupMember(loggedInUserId).groupId(groupId).count() == 1;
-
-            if (isTaskAssignedToGroup && isUserMemberOfGroup) {
-                viewManager.showQueuedPage(groupId, task.getId());
-                pageFound = true;
-            }
-
-        } else if (CATEGORY_INVOLVED.equals(category)) {
-            boolean isUserInvolved = taskService.createTaskQuery().taskInvolvedUser(loggedInUserId).count() == 1;
-
-            if (isUserInvolved) {
-                viewManager.showInvolvedPage(task.getId());
-                pageFound = true;
-            }
-        } else if (CATEGORY_ARCHIVED.equals(category)) {
-            if (task == null) {
-                boolean isOwner = historyService.createHistoricTaskInstanceQuery().taskId(taskId).taskOwner(loggedInUserId).finished().count() == 1;
-
-                if (isOwner) {
-                    viewManager.showArchivedPage(taskId);
-                    pageFound = true;
-                }
-            }
-        } else {
-            throw new ActivitiException("Couldn't find a matching category");
-        }
-
-        if (!pageFound) {
-            // If URL doesnt match anymore, we must use the task data to
-            // redirect to the right page
-            viewManager.showTaskPage(taskId);
-        }
-    }
-
-    protected void showNavigationError(String taskId) {
-        String description = ExplorerApp.get().getI18nManager().getMessage(Messages.NAVIGATION_ERROR_NOT_INVOLVED, taskId);
-        ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.NAVIGATION_ERROR_NOT_INVOLVED_TITLE, description);
-    }
-
-    protected List<String> getGroupIds(String userId) {
-        List<String> groupIds = new ArrayList<String>();
-        List<Group> groups = identityService.createGroupQuery().groupMember(userId).list();
-        for (Group group : groups) {
-            groupIds.add(group.getId());
-        }
-
-        return groupIds;
-    }
+    return groupIds;
+  }
 
 }

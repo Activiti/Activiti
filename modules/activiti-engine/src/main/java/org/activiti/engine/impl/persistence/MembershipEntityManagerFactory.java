@@ -22,12 +22,12 @@ import org.activiti.engine.impl.persistence.entity.MembershipIdentityManager;
  */
 public class MembershipEntityManagerFactory implements SessionFactory {
 
-    public Class<?> getSessionType() {
-        return MembershipIdentityManager.class;
-    }
+  public Class<?> getSessionType() {
+    return MembershipIdentityManager.class;
+  }
 
-    public Session openSession() {
-        return new MembershipEntityManager();
-    }
+  public Session openSession() {
+    return new MembershipEntityManager();
+  }
 
 }

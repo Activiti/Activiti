@@ -17,6 +17,6 @@ package org.activiti5.engine.impl.interceptor;
  */
 public interface Command<T> {
 
-    T execute(CommandContext commandContext);
+  T execute(CommandContext commandContext);
 
 }

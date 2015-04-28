@@ -25,31 +25,31 @@ import org.activiti.engine.identity.User;
  */
 public class UserFormType extends AbstractFormType {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String TYPE_NAME = "user";
+  public static final String TYPE_NAME = "user";
 
-    public String getName() {
-        return TYPE_NAME;
+  public String getName() {
+    return TYPE_NAME;
+  }
+
+  @Override
+  public Object convertFormValueToModelValue(String propertyValue) {
+    // Check if user exists
+    if (propertyValue != null) {
+      // TODO: perhaps better wiring mechanism for service
+      long count = ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().userId(propertyValue).count();
+
+      if (count == 0) {
+        throw new ActivitiObjectNotFoundException("User " + propertyValue + " does not exist", User.class);
+      }
+      return propertyValue;
     }
+    return null;
+  }
 
-    @Override
-    public Object convertFormValueToModelValue(String propertyValue) {
-        // Check if user exists
-        if (propertyValue != null) {
-            // TODO: perhaps better wiring mechanism for service
-            long count = ProcessEngines.getDefaultProcessEngine().getIdentityService().createUserQuery().userId(propertyValue).count();
-
-            if (count == 0) {
-                throw new ActivitiObjectNotFoundException("User " + propertyValue + " does not exist", User.class);
-            }
-            return propertyValue;
-        }
-        return null;
-    }
-
-    @Override
-    public String convertModelValueToFormValue(Object modelValue) {
-        return (String) modelValue;
-    }
+  @Override
+  public String convertModelValueToFormValue(Object modelValue) {
+    return (String) modelValue;
+  }
 }

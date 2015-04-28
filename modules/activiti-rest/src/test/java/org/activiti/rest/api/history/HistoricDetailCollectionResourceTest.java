@@ -37,86 +37,86 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public class HistoricDetailCollectionResourceTest extends BaseSpringRestTestCase {
 
-    /**
-     * Test querying historic detail. GET history/historic-detail
-     */
-    @Deployment
-    public void testQueryDetail() throws Exception {
-        HashMap<String, Object> processVariables = new HashMap<String, Object>();
-        processVariables.put("stringVar", "Azerty");
-        processVariables.put("intVar", 67890);
-        processVariables.put("booleanVar", false);
-        processVariables.put("byteVar", "test".getBytes());
+  /**
+   * Test querying historic detail. GET history/historic-detail
+   */
+  @Deployment
+  public void testQueryDetail() throws Exception {
+    HashMap<String, Object> processVariables = new HashMap<String, Object>();
+    processVariables.put("stringVar", "Azerty");
+    processVariables.put("intVar", 67890);
+    processVariables.put("booleanVar", false);
+    processVariables.put("byteVar", "test".getBytes());
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
-        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        taskService.complete(task.getId());
-        task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        taskService.setVariableLocal(task.getId(), "taskVariable", "test");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.complete(task.getId());
+    task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.setVariableLocal(task.getId(), "taskVariable", "test");
 
-        ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
+    ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("oneTaskProcess", processVariables);
 
-        String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_DETAIL);
+    String url = RestUrls.createRelativeResourceUrl(RestUrls.URL_HISTORIC_DETAIL);
 
-        assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance.getId(), 5, "stringVar", "Azerty");
-        assertResultsPresentInDataResponse(url + "?taskId=" + task.getId(), 1, "taskVariable", "test");
-        assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance2.getId(), 4, "intVar", 67890);
-        assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance2.getId() + "&selectOnlyVariableUpdates=true", 4, "booleanVar", false);
+    assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance.getId(), 5, "stringVar", "Azerty");
+    assertResultsPresentInDataResponse(url + "?taskId=" + task.getId(), 1, "taskVariable", "test");
+    assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance2.getId(), 4, "intVar", 67890);
+    assertResultsPresentInDataResponse(url + "?processInstanceId=" + processInstance2.getId() + "&selectOnlyVariableUpdates=true", 4, "booleanVar", false);
 
-        CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url + "?processInstanceId=" + processInstance2.getId()), HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url + "?processInstanceId=" + processInstance2.getId()), HttpStatus.SC_OK);
 
-        // Check status and size
-        JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    // Check status and size
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
+
+    boolean byteVarFound = false;
+    Iterator<JsonNode> it = dataNode.iterator();
+    while (it.hasNext()) {
+      JsonNode variableNode = it.next().get("variable");
+      String name = variableNode.get("name").textValue();
+      if ("byteVar".equals(name)) {
+        byteVarFound = true;
+        String valueUrl = variableNode.get("valueUrl").textValue();
+
+        response = executeRequest(new HttpGet(valueUrl), HttpStatus.SC_OK);
+        byte[] varInput = IOUtils.toByteArray(response.getEntity().getContent());
         closeResponse(response);
-
-        boolean byteVarFound = false;
-        Iterator<JsonNode> it = dataNode.iterator();
-        while (it.hasNext()) {
-            JsonNode variableNode = it.next().get("variable");
-            String name = variableNode.get("name").textValue();
-            if ("byteVar".equals(name)) {
-                byteVarFound = true;
-                String valueUrl = variableNode.get("valueUrl").textValue();
-
-                response = executeRequest(new HttpGet(valueUrl), HttpStatus.SC_OK);
-                byte[] varInput = IOUtils.toByteArray(response.getEntity().getContent());
-                closeResponse(response);
-                assertEquals("test", new String(varInput));
-                break;
-            }
-        }
-        assertTrue(byteVarFound);
+        assertEquals("test", new String(varInput));
+        break;
+      }
     }
+    assertTrue(byteVarFound);
+  }
 
-    protected void assertResultsPresentInDataResponse(String url, int numberOfResultsExpected, String variableName, Object variableValue) throws JsonProcessingException, IOException {
+  protected void assertResultsPresentInDataResponse(String url, int numberOfResultsExpected, String variableName, Object variableValue) throws JsonProcessingException, IOException {
 
-        // Do the actual call
-        CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
+    // Do the actual call
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
 
-        JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
-        closeResponse(response);
+    JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
 
-        assertEquals(numberOfResultsExpected, dataNode.size());
+    assertEquals(numberOfResultsExpected, dataNode.size());
 
-        // Check presence of ID's
-        if (variableName != null) {
-            boolean variableFound = false;
-            Iterator<JsonNode> it = dataNode.iterator();
-            while (it.hasNext()) {
-                JsonNode variableNode = it.next().get("variable");
-                String name = variableNode.get("name").textValue();
-                if (variableName.equals(name)) {
-                    variableFound = true;
-                    if (variableValue instanceof Boolean) {
-                        assertTrue("Variable value is not equal", variableNode.get("value").asBoolean() == (Boolean) variableValue);
-                    } else if (variableValue instanceof Integer) {
-                        assertTrue("Variable value is not equal", variableNode.get("value").asInt() == (Integer) variableValue);
-                    } else {
-                        assertTrue("Variable value is not equal", variableNode.get("value").asText().equals((String) variableValue));
-                    }
-                }
-            }
-            assertTrue("Variable " + variableName + " is missing", variableFound);
+    // Check presence of ID's
+    if (variableName != null) {
+      boolean variableFound = false;
+      Iterator<JsonNode> it = dataNode.iterator();
+      while (it.hasNext()) {
+        JsonNode variableNode = it.next().get("variable");
+        String name = variableNode.get("name").textValue();
+        if (variableName.equals(name)) {
+          variableFound = true;
+          if (variableValue instanceof Boolean) {
+            assertTrue("Variable value is not equal", variableNode.get("value").asBoolean() == (Boolean) variableValue);
+          } else if (variableValue instanceof Integer) {
+            assertTrue("Variable value is not equal", variableNode.get("value").asInt() == (Integer) variableValue);
+          } else {
+            assertTrue("Variable value is not equal", variableNode.get("value").asText().equals((String) variableValue));
+          }
         }
+      }
+      assertTrue("Variable " + variableName + " is missing", variableFound);
     }
+  }
 }

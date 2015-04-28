@@ -46,100 +46,100 @@ import com.vaadin.ui.Button.ClickListener;
  */
 public class TaskMenuBar extends ToolBar {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String ENTRY_TASKS = "tasks";
-    public static final String ENTRY_INBOX = "inbox";
-    public static final String ENTRY_QUEUED = "queued";
-    public static final String ENTRY_INVOLVED = "involved";
-    public static final String ENTRY_ARCHIVED = "archived";
+  public static final String ENTRY_TASKS = "tasks";
+  public static final String ENTRY_INBOX = "inbox";
+  public static final String ENTRY_QUEUED = "queued";
+  public static final String ENTRY_INVOLVED = "involved";
+  public static final String ENTRY_ARCHIVED = "archived";
 
-    protected transient IdentityService identityService;
-    protected ViewManager viewManager;
-    protected I18nManager i18nManager;
+  protected transient IdentityService identityService;
+  protected ViewManager viewManager;
+  protected I18nManager i18nManager;
 
-    public TaskMenuBar() {
-        this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-        this.viewManager = ExplorerApp.get().getViewManager();
-        this.i18nManager = ExplorerApp.get().getI18nManager();
+  public TaskMenuBar() {
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    this.viewManager = ExplorerApp.get().getViewManager();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
 
-        initItems();
-        initActions();
-    }
+    initItems();
+    initActions();
+  }
 
-    protected void initItems() {
-        setWidth("100%");
+  protected void initItems() {
+    setWidth("100%");
 
-        // TODO: the counts should be done later by eg a Refresher component
+    // TODO: the counts should be done later by eg a Refresher component
 
-        // Inbox
-        long inboxCount = new InboxListQuery().size();
-        ToolbarEntry inboxEntry = addToolbarEntry(ENTRY_INBOX, i18nManager.getMessage(Messages.TASK_MENU_INBOX), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showInboxPage();
-            }
-        });
-        inboxEntry.setCount(inboxCount);
+    // Inbox
+    long inboxCount = new InboxListQuery().size();
+    ToolbarEntry inboxEntry = addToolbarEntry(ENTRY_INBOX, i18nManager.getMessage(Messages.TASK_MENU_INBOX), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showInboxPage();
+      }
+    });
+    inboxEntry.setCount(inboxCount);
 
-        // Tasks
-        LoggedInUser user = ExplorerApp.get().getLoggedInUser();
-        long tasksCount = new TasksListQuery().size();
-        ToolbarEntry tasksEntry = addToolbarEntry(ENTRY_TASKS, i18nManager.getMessage(Messages.TASK_MENU_TASKS), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showTasksPage();
-            }
-        });
-        tasksEntry.setCount(tasksCount);
+    // Tasks
+    LoggedInUser user = ExplorerApp.get().getLoggedInUser();
+    long tasksCount = new TasksListQuery().size();
+    ToolbarEntry tasksEntry = addToolbarEntry(ENTRY_TASKS, i18nManager.getMessage(Messages.TASK_MENU_TASKS), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showTasksPage();
+      }
+    });
+    tasksEntry.setCount(tasksCount);
 
-        // Queued
-        List<Group> groups = user.getGroups();
-        ToolbarPopupEntry queuedItem = addPopupEntry(ENTRY_QUEUED, (i18nManager.getMessage(Messages.TASK_MENU_QUEUED)));
-        long queuedCount = 0;
-        for (final Group group : groups) {
-            long groupCount = new QueuedListQuery(group.getId()).size();
+    // Queued
+    List<Group> groups = user.getGroups();
+    ToolbarPopupEntry queuedItem = addPopupEntry(ENTRY_QUEUED, (i18nManager.getMessage(Messages.TASK_MENU_QUEUED)));
+    long queuedCount = 0;
+    for (final Group group : groups) {
+      long groupCount = new QueuedListQuery(group.getId()).size();
 
-            queuedItem.addMenuItem(group.getName() + " (" + groupCount + ")", new ToolbarCommand() {
+      queuedItem.addMenuItem(group.getName() + " (" + groupCount + ")", new ToolbarCommand() {
 
-                public void toolBarItemSelected() {
-                    viewManager.showQueuedPage(group.getId());
-                }
-            });
-
-            queuedCount += groupCount;
+        public void toolBarItemSelected() {
+          viewManager.showQueuedPage(group.getId());
         }
-        queuedItem.setCount(queuedCount);
+      });
 
-        // Involved
-        long involvedCount = new InvolvedListQuery().size();
-        ToolbarEntry involvedEntry = addToolbarEntry(ENTRY_INVOLVED, i18nManager.getMessage(Messages.TASK_MENU_INVOLVED), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showInvolvedPage();
-            }
-        });
-        involvedEntry.setCount(involvedCount);
-
-        // Archived
-        long archivedCount = new ArchivedListQuery().size();
-        ToolbarEntry archivedEntry = addToolbarEntry(ENTRY_ARCHIVED, i18nManager.getMessage(Messages.TASK_MENU_ARCHIVED), new ToolbarCommand() {
-            public void toolBarItemSelected() {
-                viewManager.showArchivedPage();
-            }
-        });
-        archivedEntry.setCount(archivedCount);
+      queuedCount += groupCount;
     }
+    queuedItem.setCount(queuedCount);
 
-    protected void initActions() {
-        Button newCaseButton = new Button();
-        newCaseButton.setCaption(i18nManager.getMessage(Messages.TASK_NEW));
-        newCaseButton.setIcon(Images.TASK_16);
-        addButton(newCaseButton);
+    // Involved
+    long involvedCount = new InvolvedListQuery().size();
+    ToolbarEntry involvedEntry = addToolbarEntry(ENTRY_INVOLVED, i18nManager.getMessage(Messages.TASK_MENU_INVOLVED), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showInvolvedPage();
+      }
+    });
+    involvedEntry.setCount(involvedCount);
 
-        newCaseButton.addListener(new ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                NewCasePopupWindow newTaskPopupWindow = new NewCasePopupWindow();
-                viewManager.showPopupWindow(newTaskPopupWindow);
-            }
-        });
-    }
+    // Archived
+    long archivedCount = new ArchivedListQuery().size();
+    ToolbarEntry archivedEntry = addToolbarEntry(ENTRY_ARCHIVED, i18nManager.getMessage(Messages.TASK_MENU_ARCHIVED), new ToolbarCommand() {
+      public void toolBarItemSelected() {
+        viewManager.showArchivedPage();
+      }
+    });
+    archivedEntry.setCount(archivedCount);
+  }
+
+  protected void initActions() {
+    Button newCaseButton = new Button();
+    newCaseButton.setCaption(i18nManager.getMessage(Messages.TASK_NEW));
+    newCaseButton.setIcon(Images.TASK_16);
+    addButton(newCaseButton);
+
+    newCaseButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        NewCasePopupWindow newTaskPopupWindow = new NewCasePopupWindow();
+        viewManager.showPopupWindow(newTaskPopupWindow);
+      }
+    });
+  }
 
 }

@@ -29,63 +29,63 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:org/activiti/spring/test/transaction/SpringTransactionIntegrationTest-context.xml")
 public class SpringTransactionIntegrationTest extends SpringActivitiTestCase {
 
-    @Autowired
-    protected UserBean userBean;
+  @Autowired
+  protected UserBean userBean;
 
-    @Autowired
-    protected DeployBean deployBean;
+  @Autowired
+  protected DeployBean deployBean;
 
-    @Autowired
-    protected DataSource dataSource;
+  @Autowired
+  protected DataSource dataSource;
 
-    @Deployment
-    public void testBasicActivitiSpringIntegration() {
-        userBean.hello();
+  @Deployment
+  public void testBasicActivitiSpringIntegration() {
+    userBean.hello();
 
-        ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
-        assertEquals("Hello from Printer!", runtimeService.getVariable(processInstance.getId(), "myVar"));
+    ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().singleResult();
+    assertEquals("Hello from Printer!", runtimeService.getVariable(processInstance.getId(), "myVar"));
+  }
+
+  @Deployment
+  public void testRollbackTransactionOnActivitiException() {
+
+    // Create a table that the userBean is supposed to fill with some data
+    JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+    jdbcTemplate.execute("create table MY_TABLE (MY_TEXT varchar);");
+
+    // The hello() method will start the process. The process will wait in a
+    // user task
+    userBean.hello();
+    assertEquals(0, jdbcTemplate.queryForLong("select count(*) from MY_TABLE"));
+
+    // The completeTask() method will write a record to the 'MY_TABLE' table
+    // and complete the user task
+    try {
+      userBean.completeTask(taskService.createTaskQuery().singleResult().getId());
+      fail();
+    } catch (Exception e) {
     }
 
-    @Deployment
-    public void testRollbackTransactionOnActivitiException() {
+    // Since the service task after the user tasks throws an exception, both
+    // the record and the process must be rolled back !
+    assertEquals("My Task", taskService.createTaskQuery().singleResult().getName());
+    assertEquals(0, jdbcTemplate.queryForLong("select count(*) from MY_TABLE"));
 
-        // Create a table that the userBean is supposed to fill with some data
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        jdbcTemplate.execute("create table MY_TABLE (MY_TEXT varchar);");
+    // Cleanup
+    jdbcTemplate.execute("drop table MY_TABLE if exists;");
+  }
 
-        // The hello() method will start the process. The process will wait in a
-        // user task
-        userBean.hello();
-        assertEquals(0, jdbcTemplate.queryForLong("select count(*) from MY_TABLE"));
-
-        // The completeTask() method will write a record to the 'MY_TABLE' table
-        // and complete the user task
-        try {
-            userBean.completeTask(taskService.createTaskQuery().singleResult().getId());
-            fail();
-        } catch (Exception e) {
-        }
-
-        // Since the service task after the user tasks throws an exception, both
-        // the record and the process must be rolled back !
-        assertEquals("My Task", taskService.createTaskQuery().singleResult().getName());
-        assertEquals(0, jdbcTemplate.queryForLong("select count(*) from MY_TABLE"));
-
-        // Cleanup
-        jdbcTemplate.execute("drop table MY_TABLE if exists;");
+  public void testRollBackOnDeployment() {
+    // The second process should fail. None of the processes should be
+    // deployed, the first one should be rolled back
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().count());
+    try {
+      deployBean.deployProcesses();
+      fail();
+    } catch (XMLException e) {
+      // Parse exception should happen
     }
-
-    public void testRollBackOnDeployment() {
-        // The second process should fail. None of the processes should be
-        // deployed, the first one should be rolled back
-        assertEquals(0, repositoryService.createProcessDefinitionQuery().count());
-        try {
-            deployBean.deployProcesses();
-            fail();
-        } catch (XMLException e) {
-            // Parse exception should happen
-        }
-        assertEquals(0, repositoryService.createProcessDefinitionQuery().count());
-    }
+    assertEquals(0, repositoryService.createProcessDefinitionQuery().count());
+  }
 
 }

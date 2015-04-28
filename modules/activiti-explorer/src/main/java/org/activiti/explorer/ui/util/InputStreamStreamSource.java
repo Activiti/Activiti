@@ -24,15 +24,15 @@ import com.vaadin.terminal.StreamResource.StreamSource;
  */
 public class InputStreamStreamSource implements StreamSource {
 
-    private static final long serialVersionUID = -860417435916179985L;
+  private static final long serialVersionUID = -860417435916179985L;
 
-    protected transient InputStream inputStream;
+  protected transient InputStream inputStream;
 
-    public InputStreamStreamSource(InputStream inputStream) {
-        this.inputStream = inputStream;
-    }
+  public InputStreamStreamSource(InputStream inputStream) {
+    this.inputStream = inputStream;
+  }
 
-    public InputStream getStream() {
-        return inputStream;
-    }
+  public InputStream getStream() {
+    return inputStream;
+  }
 }

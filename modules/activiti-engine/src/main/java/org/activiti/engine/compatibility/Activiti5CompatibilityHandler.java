@@ -21,8 +21,8 @@ import org.activiti.engine.runtime.ProcessInstance;
  */
 public interface Activiti5CompatibilityHandler {
 
-    public static final String ACTIVITI_5_ENGINE_TAG = "activiti-5";
+  public static final String ACTIVITI_5_ENGINE_TAG = "activiti-5";
 
-    ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
+  ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
 
 }

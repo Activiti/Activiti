@@ -17,10 +17,10 @@ import static org.junit.Assert.assertNotNull;
 @ContextConfiguration("classpath:org/activiti/spring/test/engine/springProcessEngine-context.xml")
 public class SpringProcessEngineTest {
 
-    @Test
-    public void testGetEngineFromCache() {
-        assertNotNull(ProcessEngines.getDefaultProcessEngine());
-        assertNotNull(ProcessEngines.getProcessEngine("default"));
-    }
+  @Test
+  public void testGetEngineFromCache() {
+    assertNotNull(ProcessEngines.getDefaultProcessEngine());
+    assertNotNull(ProcessEngines.getProcessEngine("default"));
+  }
 
 }

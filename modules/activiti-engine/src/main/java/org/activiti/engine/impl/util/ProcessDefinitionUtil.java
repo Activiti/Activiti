@@ -20,41 +20,41 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 
 /**
- * A utility class that hides the complexity of {@link ProcessDefinitionEntity} and {@link Process} lookup.
- * Use this class rather than accessing the process definition cache or {@link DeploymentManager} directly.
+ * A utility class that hides the complexity of {@link ProcessDefinitionEntity} and {@link Process} lookup. Use this class rather than accessing the process definition cache or
+ * {@link DeploymentManager} directly.
  * 
  * @author Joram Barrez
  */
 public class ProcessDefinitionUtil {
 
-    public static ProcessDefinitionEntity getProcessDefinitionEntity(String processDefinitionId) {
-    	return getProcessDefinitionEntity(processDefinitionId, false);
-    }
-    
-    public static ProcessDefinitionEntity getProcessDefinitionEntity(String processDefinitionId, boolean checkCacheOnly) {
-    	if (checkCacheOnly) {
-    		ProcessDefinitionCacheEntry cacheEntry = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(processDefinitionId);
-    		if (cacheEntry != null) {
-    			return cacheEntry.getProcessDefinitionEntity();
-    		}
-    		return null;
-    	} else {
-    		return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
-    	}
-    }
-    
-    public static Process getProcess(String processDefinitionId) {
-    	return getCacheEntry(processDefinitionId).getProcess();
-    }
-    
-    public static BpmnModel getBpmnModel(String processDefinitionId) {
-    	return getCacheEntry(processDefinitionId).getBpmnModel();
-    }
+  public static ProcessDefinitionEntity getProcessDefinitionEntity(String processDefinitionId) {
+    return getProcessDefinitionEntity(processDefinitionId, false);
+  }
 
-    public static ProcessDefinitionCacheEntry getCacheEntry(String processDefinitionId) {
-    	DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
-    	ProcessDefinitionEntity processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
-    	return deploymentManager.resolveProcessDefinition(processDefinitionEntity);
+  public static ProcessDefinitionEntity getProcessDefinitionEntity(String processDefinitionId, boolean checkCacheOnly) {
+    if (checkCacheOnly) {
+      ProcessDefinitionCacheEntry cacheEntry = Context.getProcessEngineConfiguration().getProcessDefinitionCache().get(processDefinitionId);
+      if (cacheEntry != null) {
+        return cacheEntry.getProcessDefinitionEntity();
+      }
+      return null;
+    } else {
+      return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedProcessDefinitionById(processDefinitionId);
     }
+  }
+
+  public static Process getProcess(String processDefinitionId) {
+    return getCacheEntry(processDefinitionId).getProcess();
+  }
+
+  public static BpmnModel getBpmnModel(String processDefinitionId) {
+    return getCacheEntry(processDefinitionId).getBpmnModel();
+  }
+
+  public static ProcessDefinitionCacheEntry getCacheEntry(String processDefinitionId) {
+    DeploymentManager deploymentManager = Context.getProcessEngineConfiguration().getDeploymentManager();
+    ProcessDefinitionEntity processDefinitionEntity = deploymentManager.findDeployedProcessDefinitionById(processDefinitionId);
+    return deploymentManager.resolveProcessDefinition(processDefinitionEntity);
+  }
 
 }

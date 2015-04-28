@@ -35,131 +35,131 @@ import org.springframework.transaction.PlatformTransactionManager;
 @Configuration
 public class ActivitiEngineConfiguration {
 
-    private final Logger log = LoggerFactory.getLogger(ActivitiEngineConfiguration.class);
+  private final Logger log = LoggerFactory.getLogger(ActivitiEngineConfiguration.class);
 
-    @Autowired
-    protected Environment environment;
+  @Autowired
+  protected Environment environment;
 
-    @Bean
-    public DataSource dataSource() {
-        SimpleDriverDataSource ds = new SimpleDriverDataSource();
+  @Bean
+  public DataSource dataSource() {
+    SimpleDriverDataSource ds = new SimpleDriverDataSource();
 
-        try {
-            @SuppressWarnings("unchecked")
-            Class<? extends Driver> driverClass = (Class<? extends Driver>) Class.forName(environment.getProperty("jdbc.driver", "org.h2.Driver"));
-            ds.setDriverClass(driverClass);
+    try {
+      @SuppressWarnings("unchecked")
+      Class<? extends Driver> driverClass = (Class<? extends Driver>) Class.forName(environment.getProperty("jdbc.driver", "org.h2.Driver"));
+      ds.setDriverClass(driverClass);
 
-        } catch (Exception e) {
-            log.error("Error loading driver class", e);
-        }
-
-        // Connection settings
-        ds.setUrl(environment.getProperty("jdbc.url", "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"));
-        ds.setUsername(environment.getProperty("jdbc.username", "sa"));
-        ds.setPassword(environment.getProperty("jdbc.password", ""));
-
-        return ds;
+    } catch (Exception e) {
+      log.error("Error loading driver class", e);
     }
 
-    @Bean(name = "transactionManager")
-    public PlatformTransactionManager annotationDrivenTransactionManager() {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-        transactionManager.setDataSource(dataSource());
-        return transactionManager;
+    // Connection settings
+    ds.setUrl(environment.getProperty("jdbc.url", "jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"));
+    ds.setUsername(environment.getProperty("jdbc.username", "sa"));
+    ds.setPassword(environment.getProperty("jdbc.password", ""));
+
+    return ds;
+  }
+
+  @Bean(name = "transactionManager")
+  public PlatformTransactionManager annotationDrivenTransactionManager() {
+    DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+    transactionManager.setDataSource(dataSource());
+    return transactionManager;
+  }
+
+  @Bean(name = "processEngineFactoryBean")
+  public ProcessEngineFactoryBean processEngineFactoryBean() {
+    ProcessEngineFactoryBean factoryBean = new ProcessEngineFactoryBean();
+    factoryBean.setProcessEngineConfiguration(processEngineConfiguration());
+    return factoryBean;
+  }
+
+  @Bean(name = "processEngine")
+  public ProcessEngine processEngine() {
+    // Safe to call the getObject() on the @Bean annotated
+    // processEngineFactoryBean(), will be
+    // the fully initialized object instanced from the factory and will NOT
+    // be created more than once
+    try {
+      return processEngineFactoryBean().getObject();
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Bean(name = "processEngineConfiguration")
+  public ProcessEngineConfigurationImpl processEngineConfiguration() {
+    SpringProcessEngineConfiguration processEngineConfiguration = new SpringProcessEngineConfiguration();
+    processEngineConfiguration.setDataSource(dataSource());
+    processEngineConfiguration.setDatabaseSchemaUpdate(environment.getProperty("engine.schema.update", "true"));
+    processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager());
+    processEngineConfiguration.setJobExecutorActivate(Boolean.valueOf(environment.getProperty("engine.activate.jobexecutor", "false")));
+    processEngineConfiguration.setAsyncExecutorEnabled(Boolean.valueOf(environment.getProperty("engine.asyncexecutor.enabled", "true")));
+    processEngineConfiguration.setAsyncExecutorActivate(Boolean.valueOf(environment.getProperty("engine.asyncexecutor.activate", "true")));
+    processEngineConfiguration.setHistory(environment.getProperty("engine.history.level", "full"));
+
+    String mailEnabled = environment.getProperty("engine.email.enabled");
+    if ("true".equals(mailEnabled)) {
+      processEngineConfiguration.setMailServerHost(environment.getProperty("engine.email.host"));
+      int emailPort = 1025;
+      String emailPortProperty = environment.getProperty("engine.email.port");
+      if (StringUtils.isNotEmpty(emailPortProperty)) {
+        emailPort = Integer.valueOf(emailPortProperty);
+      }
+      processEngineConfiguration.setMailServerPort(emailPort);
+      String emailUsernameProperty = environment.getProperty("engine.email.username");
+      if (StringUtils.isNotEmpty(emailUsernameProperty)) {
+        processEngineConfiguration.setMailServerUsername(emailUsernameProperty);
+      }
+
+      String emailPasswordProperty = environment.getProperty("engine.email.password");
+      if (StringUtils.isNotEmpty(emailPasswordProperty)) {
+        processEngineConfiguration.setMailServerPassword(emailPasswordProperty);
+      }
     }
 
-    @Bean(name = "processEngineFactoryBean")
-    public ProcessEngineFactoryBean processEngineFactoryBean() {
-        ProcessEngineFactoryBean factoryBean = new ProcessEngineFactoryBean();
-        factoryBean.setProcessEngineConfiguration(processEngineConfiguration());
-        return factoryBean;
-    }
+    List<AbstractFormType> formTypes = new ArrayList<AbstractFormType>();
+    formTypes.add(new UserFormType());
+    formTypes.add(new ProcessDefinitionFormType());
+    formTypes.add(new MonthFormType());
+    processEngineConfiguration.setCustomFormTypes(formTypes);
 
-    @Bean(name = "processEngine")
-    public ProcessEngine processEngine() {
-        // Safe to call the getObject() on the @Bean annotated
-        // processEngineFactoryBean(), will be
-        // the fully initialized object instanced from the factory and will NOT
-        // be created more than once
-        try {
-            return processEngineFactoryBean().getObject();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    return processEngineConfiguration;
+  }
 
-    @Bean(name = "processEngineConfiguration")
-    public ProcessEngineConfigurationImpl processEngineConfiguration() {
-        SpringProcessEngineConfiguration processEngineConfiguration = new SpringProcessEngineConfiguration();
-        processEngineConfiguration.setDataSource(dataSource());
-        processEngineConfiguration.setDatabaseSchemaUpdate(environment.getProperty("engine.schema.update", "true"));
-        processEngineConfiguration.setTransactionManager(annotationDrivenTransactionManager());
-        processEngineConfiguration.setJobExecutorActivate(Boolean.valueOf(environment.getProperty("engine.activate.jobexecutor", "false")));
-        processEngineConfiguration.setAsyncExecutorEnabled(Boolean.valueOf(environment.getProperty("engine.asyncexecutor.enabled", "true")));
-        processEngineConfiguration.setAsyncExecutorActivate(Boolean.valueOf(environment.getProperty("engine.asyncexecutor.activate", "true")));
-        processEngineConfiguration.setHistory(environment.getProperty("engine.history.level", "full"));
+  @Bean
+  public RepositoryService repositoryService() {
+    return processEngine().getRepositoryService();
+  }
 
-        String mailEnabled = environment.getProperty("engine.email.enabled");
-        if ("true".equals(mailEnabled)) {
-            processEngineConfiguration.setMailServerHost(environment.getProperty("engine.email.host"));
-            int emailPort = 1025;
-            String emailPortProperty = environment.getProperty("engine.email.port");
-            if (StringUtils.isNotEmpty(emailPortProperty)) {
-                emailPort = Integer.valueOf(emailPortProperty);
-            }
-            processEngineConfiguration.setMailServerPort(emailPort);
-            String emailUsernameProperty = environment.getProperty("engine.email.username");
-            if (StringUtils.isNotEmpty(emailUsernameProperty)) {
-                processEngineConfiguration.setMailServerUsername(emailUsernameProperty);
-            }
+  @Bean
+  public RuntimeService runtimeService() {
+    return processEngine().getRuntimeService();
+  }
 
-            String emailPasswordProperty = environment.getProperty("engine.email.password");
-            if (StringUtils.isNotEmpty(emailPasswordProperty)) {
-                processEngineConfiguration.setMailServerPassword(emailPasswordProperty);
-            }
-        }
+  @Bean
+  public TaskService taskService() {
+    return processEngine().getTaskService();
+  }
 
-        List<AbstractFormType> formTypes = new ArrayList<AbstractFormType>();
-        formTypes.add(new UserFormType());
-        formTypes.add(new ProcessDefinitionFormType());
-        formTypes.add(new MonthFormType());
-        processEngineConfiguration.setCustomFormTypes(formTypes);
+  @Bean
+  public HistoryService historyService() {
+    return processEngine().getHistoryService();
+  }
 
-        return processEngineConfiguration;
-    }
+  @Bean
+  public FormService formService() {
+    return processEngine().getFormService();
+  }
 
-    @Bean
-    public RepositoryService repositoryService() {
-        return processEngine().getRepositoryService();
-    }
+  @Bean
+  public IdentityService identityService() {
+    return processEngine().getIdentityService();
+  }
 
-    @Bean
-    public RuntimeService runtimeService() {
-        return processEngine().getRuntimeService();
-    }
-
-    @Bean
-    public TaskService taskService() {
-        return processEngine().getTaskService();
-    }
-
-    @Bean
-    public HistoryService historyService() {
-        return processEngine().getHistoryService();
-    }
-
-    @Bean
-    public FormService formService() {
-        return processEngine().getFormService();
-    }
-
-    @Bean
-    public IdentityService identityService() {
-        return processEngine().getIdentityService();
-    }
-
-    @Bean
-    public ManagementService managementService() {
-        return processEngine().getManagementService();
-    }
+  @Bean
+  public ManagementService managementService() {
+    return processEngine().getManagementService();
+  }
 }

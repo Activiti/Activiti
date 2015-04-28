@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * in the case of task event create simulation event in the event calendar
- *
+ * 
  * @author martin.grofcik
  */
 public class UserTaskExecutionListener implements TaskListener {
@@ -40,29 +40,26 @@ public class UserTaskExecutionListener implements TaskListener {
     this.events = events;
   }
 
-	@Override
-	public void notify(DelegateTask delegateTask) {
+  @Override
+  public void notify(DelegateTask delegateTask) {
     SimulationEvent eventToSimulate = findUserTaskCompleteEvent(delegateTask);
     if (eventToSimulate != null) {
       Map<String, Object> properties = new HashMap<String, Object>();
       properties.put("taskId", delegateTask.getId());
       properties.put("variables", eventToSimulate.getProperty(UserTaskCompleteTransformer.TASK_VARIABLES));
       // we were able to resolve event to simulate automatically
-      SimulationEvent e = new SimulationEvent.Builder(typeToCreate).
-                          properties(properties).
-                          build();
+      SimulationEvent e = new SimulationEvent.Builder(typeToCreate).properties(properties).build();
       SimulationRunContext.getEventCalendar().addEvent(e);
     }
-	}
+  }
 
   private SimulationEvent findUserTaskCompleteEvent(DelegateTask delegateTask) {
     if (delegateTask.hasVariable(StartReplayProcessEventHandler.PROCESS_INSTANCE_ID)) {
       String toSimulateProcessInstanceId = (String) delegateTask.getVariable(StartReplayProcessEventHandler.PROCESS_INSTANCE_ID);
       String toSimulateTaskDefinitionKey = delegateTask.getTaskDefinitionKey();
       for (SimulationEvent e : events) {
-        if (typeToFind.equals(e.getType())
-          && toSimulateProcessInstanceId.equals(e.getProperty(UserTaskCompleteTransformer.PROCESS_INSTANCE_ID))
-          && toSimulateTaskDefinitionKey.equals(e.getProperty(UserTaskCompleteTransformer.TASK_DEFINITION_KEY)))
+        if (typeToFind.equals(e.getType()) && toSimulateProcessInstanceId.equals(e.getProperty(UserTaskCompleteTransformer.PROCESS_INSTANCE_ID))
+            && toSimulateTaskDefinitionKey.equals(e.getProperty(UserTaskCompleteTransformer.TASK_DEFINITION_KEY)))
           return e;
       }
     }

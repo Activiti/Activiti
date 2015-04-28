@@ -27,59 +27,59 @@ import com.vaadin.ui.CssLayout;
  */
 public class PriorityComponent extends CssLayout {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected Task task;
-    protected I18nManager i18nManager;
-    protected transient TaskService taskService;
+  protected Task task;
+  protected I18nManager i18nManager;
+  protected transient TaskService taskService;
 
-    protected PriorityLabel priorityLabel;
-    protected PriorityComboBox priorityComboBox;
+  protected PriorityLabel priorityLabel;
+  protected PriorityComboBox priorityComboBox;
 
-    public PriorityComponent(Task task, I18nManager i18nManager, TaskService taskService) {
-        this.task = task;
-        this.i18nManager = i18nManager;
-        this.taskService = taskService;
+  public PriorityComponent(Task task, I18nManager i18nManager, TaskService taskService) {
+    this.task = task;
+    this.i18nManager = i18nManager;
+    this.taskService = taskService;
 
-        setSizeUndefined();
-        initPriorityLabel();
-        initPriorityComboBox();
-        initLayoutClickListener();
-        initComboBoxListener();
-    }
+    setSizeUndefined();
+    initPriorityLabel();
+    initPriorityComboBox();
+    initLayoutClickListener();
+    initComboBoxListener();
+  }
 
-    protected void initPriorityLabel() {
-        priorityLabel = new PriorityLabel(task, i18nManager);
-        addComponent(priorityLabel);
-    }
+  protected void initPriorityLabel() {
+    priorityLabel = new PriorityLabel(task, i18nManager);
+    addComponent(priorityLabel);
+  }
 
-    protected void initPriorityComboBox() {
-        priorityComboBox = new PriorityComboBox(i18nManager, priorityLabel.getValue());
-    }
+  protected void initPriorityComboBox() {
+    priorityComboBox = new PriorityComboBox(i18nManager, priorityLabel.getValue());
+  }
 
-    protected void initLayoutClickListener() {
-        addListener(new LayoutClickListener() {
-            public void layoutClick(LayoutClickEvent event) {
-                if (event.getClickedComponent() != null && event.getClickedComponent().equals(priorityLabel)) {
-                    // Replace label with combobox
-                    replaceComponent(priorityLabel, priorityComboBox);
-                }
-            }
-        });
-    }
+  protected void initLayoutClickListener() {
+    addListener(new LayoutClickListener() {
+      public void layoutClick(LayoutClickEvent event) {
+        if (event.getClickedComponent() != null && event.getClickedComponent().equals(priorityLabel)) {
+          // Replace label with combobox
+          replaceComponent(priorityLabel, priorityComboBox);
+        }
+      }
+    });
+  }
 
-    protected void initComboBoxListener() {
-        priorityComboBox.addListener(new ValueChangeListener() {
-            public void valueChange(ValueChangeEvent event) {
-                // save new priority
-                task.setPriority(priorityComboBox.getPriority());
-                taskService.saveTask(task);
+  protected void initComboBoxListener() {
+    priorityComboBox.addListener(new ValueChangeListener() {
+      public void valueChange(ValueChangeEvent event) {
+        // save new priority
+        task.setPriority(priorityComboBox.getPriority());
+        taskService.saveTask(task);
 
-                // Replace again with label
-                priorityLabel.setValue(task.getPriority());
-                replaceComponent(priorityComboBox, priorityLabel);
-            }
-        });
-    }
+        // Replace again with label
+        priorityLabel.setValue(task.getPriority());
+        replaceComponent(priorityComboBox, priorityLabel);
+      }
+    });
+  }
 
 }

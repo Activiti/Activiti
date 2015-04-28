@@ -26,61 +26,61 @@ import org.activiti.engine.test.Deployment;
  */
 public class CallServiceInServiceTaskTest extends PluggableActivitiTestCase {
 
-    @Deployment
-    public void testStartProcessFromDelegate() {
-        runtimeService.startProcessInstanceByKey("startProcessFromDelegate");
+  @Deployment
+  public void testStartProcessFromDelegate() {
+    runtimeService.startProcessInstanceByKey("startProcessFromDelegate");
 
-        // Starting the process should lead to two processes being started,
-        // The other one started from the java delegate in the service task
-        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
-        assertEquals(2, processInstances.size());
+    // Starting the process should lead to two processes being started,
+    // The other one started from the java delegate in the service task
+    List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();
+    assertEquals(2, processInstances.size());
 
-        boolean startProcessFromDelegateFound = false;
-        boolean oneTaskProcessFound = false;
-        for (ProcessInstance processInstance : processInstances) {
-            ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
-            if (processDefinition.getKey().equals("startProcessFromDelegate")) {
-                startProcessFromDelegateFound = true;
-            } else if (processDefinition.getKey().equals("oneTaskProcess")) {
-                oneTaskProcessFound = true;
-            }
-        }
-
-        assertTrue(startProcessFromDelegateFound);
-        assertTrue(oneTaskProcessFound);
+    boolean startProcessFromDelegateFound = false;
+    boolean oneTaskProcessFound = false;
+    for (ProcessInstance processInstance : processInstances) {
+      ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processInstance.getProcessDefinitionId());
+      if (processDefinition.getKey().equals("startProcessFromDelegate")) {
+        startProcessFromDelegateFound = true;
+      } else if (processDefinition.getKey().equals("oneTaskProcess")) {
+        oneTaskProcessFound = true;
+      }
     }
 
-    @Deployment
-    public void testRollBackOnException() {
-        Exception expectedException = null;
-        try {
-            runtimeService.startProcessInstanceByKey("startProcessFromDelegate");
-            fail("expected exception");
-        } catch (Exception e) {
-            expectedException = e;
-        }
-        assertNotNull(expectedException);
+    assertTrue(startProcessFromDelegateFound);
+    assertTrue(oneTaskProcessFound);
+  }
 
-        // Starting the process should cause a rollback of both processes
-        assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  @Deployment
+  public void testRollBackOnException() {
+    Exception expectedException = null;
+    try {
+      runtimeService.startProcessInstanceByKey("startProcessFromDelegate");
+      fail("expected exception");
+    } catch (Exception e) {
+      expectedException = e;
     }
+    assertNotNull(expectedException);
 
-    @Deployment
-    public void testMultipleServiceInvocationsFromDelegate() {
-        runtimeService.startProcessInstanceByKey("multipleServiceInvocations");
+    // Starting the process should cause a rollback of both processes
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }
 
-        // The service task should have created a user which is part of the
-        // admin group
-        User user = identityService.createUserQuery().singleResult();
-        assertEquals("Kermit", user.getId());
-        Group group = identityService.createGroupQuery().groupMember(user.getId()).singleResult();
-        assertNotNull(group);
-        assertEquals("admin", group.getId());
+  @Deployment
+  public void testMultipleServiceInvocationsFromDelegate() {
+    runtimeService.startProcessInstanceByKey("multipleServiceInvocations");
 
-        // Cleanup
-        identityService.deleteUser("Kermit");
-        identityService.deleteGroup("admin");
-        identityService.deleteMembership("Kermit", "admin");
-    }
+    // The service task should have created a user which is part of the
+    // admin group
+    User user = identityService.createUserQuery().singleResult();
+    assertEquals("Kermit", user.getId());
+    Group group = identityService.createGroupQuery().groupMember(user.getId()).singleResult();
+    assertNotNull(group);
+    assertEquals("admin", group.getId());
+
+    // Cleanup
+    identityService.deleteUser("Kermit");
+    identityService.deleteGroup("admin");
+    identityService.deleteMembership("Kermit", "admin");
+  }
 
 }

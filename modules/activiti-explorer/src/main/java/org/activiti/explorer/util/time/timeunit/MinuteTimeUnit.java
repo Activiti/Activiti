@@ -21,18 +21,18 @@ import org.activiti.explorer.util.time.TimeUnit;
  */
 public class MinuteTimeUnit implements TimeUnit {
 
-    private static final Long MILLIS_PER_MINUTE = 60000L;
+  private static final Long MILLIS_PER_MINUTE = 60000L;
 
-    public Long getNumberOfMillis() {
-        return MILLIS_PER_MINUTE;
-    }
+  public Long getNumberOfMillis() {
+    return MILLIS_PER_MINUTE;
+  }
 
-    public String getMessageKey(Long numberOfUnits) {
-        if (numberOfUnits == 1) {
-            return Messages.TIME_UNIT_MINUTE;
-        } else {
-            return Messages.TIME_UNIT_MINUTES;
-        }
+  public String getMessageKey(Long numberOfUnits) {
+    if (numberOfUnits == 1) {
+      return Messages.TIME_UNIT_MINUTE;
+    } else {
+      return Messages.TIME_UNIT_MINUTES;
     }
+  }
 
 }

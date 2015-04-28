@@ -25,29 +25,29 @@ import org.activiti.bpmn.model.EventGateway;
  */
 public class EventGatewayXMLConverter extends BaseBpmnXMLConverter {
 
-    public Class<? extends BaseElement> getBpmnElementType() {
-        return EventGateway.class;
-    }
+  public Class<? extends BaseElement> getBpmnElementType() {
+    return EventGateway.class;
+  }
 
-    @Override
-    protected String getXMLElementName() {
-        return ELEMENT_GATEWAY_EVENT;
-    }
+  @Override
+  protected String getXMLElementName() {
+    return ELEMENT_GATEWAY_EVENT;
+  }
 
-    @Override
-    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-        EventGateway gateway = new EventGateway();
-        BpmnXMLUtil.addXMLLocation(gateway, xtr);
-        parseChildElements(getXMLElementName(), gateway, model, xtr);
-        return gateway;
-    }
+  @Override
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
+    EventGateway gateway = new EventGateway();
+    BpmnXMLUtil.addXMLLocation(gateway, xtr);
+    parseChildElements(getXMLElementName(), gateway, model, xtr);
+    return gateway;
+  }
 
-    @Override
-    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-    }
+  @Override
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  }
 
-    @Override
-    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  @Override
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
 
-    }
+  }
 }

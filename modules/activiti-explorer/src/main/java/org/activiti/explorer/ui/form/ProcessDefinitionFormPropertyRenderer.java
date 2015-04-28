@@ -28,34 +28,34 @@ import com.vaadin.ui.Field;
  */
 public class ProcessDefinitionFormPropertyRenderer extends AbstractFormPropertyRenderer {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public ProcessDefinitionFormPropertyRenderer() {
-        super(ProcessDefinitionFormType.class);
+  public ProcessDefinitionFormPropertyRenderer() {
+    super(ProcessDefinitionFormType.class);
+  }
+
+  public Field getPropertyField(FormProperty formProperty) {
+    ComboBox comboBox = new ComboBox(getPropertyLabel(formProperty));
+    comboBox.setRequired(formProperty.isRequired());
+    comboBox.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
+    comboBox.setEnabled(formProperty.isWritable());
+
+    List<ProcessDefinition> processDefinitions = ProcessEngines.getDefaultProcessEngine().getRepositoryService().createProcessDefinitionQuery().orderByProcessDefinitionName().asc()
+        .orderByProcessDefinitionVersion().asc().list();
+
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      comboBox.addItem(processDefinition.getId());
+      String name = processDefinition.getName() + " (v" + processDefinition.getVersion() + ")";
+      comboBox.setItemCaption(processDefinition.getId(), name);
     }
 
-    public Field getPropertyField(FormProperty formProperty) {
-        ComboBox comboBox = new ComboBox(getPropertyLabel(formProperty));
-        comboBox.setRequired(formProperty.isRequired());
-        comboBox.setRequiredError(getMessage(Messages.FORM_FIELD_REQUIRED, getPropertyLabel(formProperty)));
-        comboBox.setEnabled(formProperty.isWritable());
-
-        List<ProcessDefinition> processDefinitions = ProcessEngines.getDefaultProcessEngine().getRepositoryService().createProcessDefinitionQuery().orderByProcessDefinitionName().asc()
-                .orderByProcessDefinitionVersion().asc().list();
-
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            comboBox.addItem(processDefinition.getId());
-            String name = processDefinition.getName() + " (v" + processDefinition.getVersion() + ")";
-            comboBox.setItemCaption(processDefinition.getId(), name);
-        }
-
-        // Select first
-        if (!processDefinitions.isEmpty()) {
-            comboBox.setNullSelectionAllowed(false);
-            comboBox.select(processDefinitions.get(0).getId());
-        }
-
-        return comboBox;
+    // Select first
+    if (!processDefinitions.isEmpty()) {
+      comboBox.setNullSelectionAllowed(false);
+      comboBox.select(processDefinitions.get(0).getId());
     }
+
+    return comboBox;
+  }
 
 }

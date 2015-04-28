@@ -22,39 +22,39 @@ import org.activiti.engine.impl.db.PersistentObject;
  */
 public class MembershipEntity implements PersistentObject, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String userId;
-    protected String groupId;
+  protected String userId;
+  protected String groupId;
 
-    public Object getPersistentState() {
-        // membership is not updatable
-        return MembershipEntity.class;
-    }
+  public Object getPersistentState() {
+    // membership is not updatable
+    return MembershipEntity.class;
+  }
 
-    public String getId() {
-        // membership doesn't have an id
-        return null;
-    }
+  public String getId() {
+    // membership doesn't have an id
+    return null;
+  }
 
-    public void setId(String id) {
-        // membership doesn't have an id
-    }
+  public void setId(String id) {
+    // membership doesn't have an id
+  }
 
-    public String getUserId() {
-        return userId;
-    }
+  public String getUserId() {
+    return userId;
+  }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 
-    public String getGroupId() {
-        return groupId;
-    }
+  public String getGroupId() {
+    return groupId;
+  }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
+  }
 
 }

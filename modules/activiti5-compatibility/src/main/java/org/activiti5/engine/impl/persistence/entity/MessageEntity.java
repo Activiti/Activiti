@@ -19,21 +19,21 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class MessageEntity extends JobEntity {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private String repeat = null;
+  private String repeat = null;
 
-    @Override
-    public void execute(CommandContext commandContext) {
-        super.execute(commandContext);
-        delete();
-    }
+  @Override
+  public void execute(CommandContext commandContext) {
+    super.execute(commandContext);
+    delete();
+  }
 
-    public String getRepeat() {
-        return repeat;
-    }
+  public String getRepeat() {
+    return repeat;
+  }
 
-    public void setRepeat(String repeat) {
-        this.repeat = repeat;
-    }
+  public void setRepeat(String repeat) {
+    this.repeat = repeat;
+  }
 }

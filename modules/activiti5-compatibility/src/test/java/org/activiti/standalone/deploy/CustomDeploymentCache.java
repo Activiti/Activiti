@@ -22,41 +22,41 @@ import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
  */
 public class CustomDeploymentCache implements DeploymentCache<ProcessDefinitionEntity> {
 
-    protected String id;
+  protected String id;
 
-    protected ProcessDefinitionEntity processDefinition;
+  protected ProcessDefinitionEntity processDefinition;
 
-    @Override
-    public ProcessDefinitionEntity get(String id) {
-        if (id.equals(id)) {
-            return processDefinition;
-        }
-        return null;
+  @Override
+  public ProcessDefinitionEntity get(String id) {
+    if (id.equals(id)) {
+      return processDefinition;
     }
+    return null;
+  }
 
-    @Override
-    public void add(String id, ProcessDefinitionEntity object) {
-        this.id = id;
-        this.processDefinition = object;
-    }
+  @Override
+  public void add(String id, ProcessDefinitionEntity object) {
+    this.id = id;
+    this.processDefinition = object;
+  }
 
-    @Override
-    public void remove(String id) {
-        if (id.equals(id)) {
-            this.id = null;
-            this.processDefinition = null;
-        }
+  @Override
+  public void remove(String id) {
+    if (id.equals(id)) {
+      this.id = null;
+      this.processDefinition = null;
     }
+  }
 
-    @Override
-    public void clear() {
-        this.id = null;
-        this.processDefinition = null;
-    }
+  @Override
+  public void clear() {
+    this.id = null;
+    this.processDefinition = null;
+  }
 
-    // For testing purposes only
-    public ProcessDefinitionEntity getCachedProcessDefinition() {
-        return processDefinition;
-    }
+  // For testing purposes only
+  public ProcessDefinitionEntity getCachedProcessDefinition() {
+    return processDefinition;
+  }
 
 }

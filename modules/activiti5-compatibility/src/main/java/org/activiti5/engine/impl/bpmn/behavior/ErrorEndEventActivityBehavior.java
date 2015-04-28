@@ -21,22 +21,22 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
-    protected String errorCode;
+  protected String errorCode;
 
-    public ErrorEndEventActivityBehavior(String errorCode) {
-        this.errorCode = errorCode;
-    }
+  public ErrorEndEventActivityBehavior(String errorCode) {
+    this.errorCode = errorCode;
+  }
 
-    public void execute(ActivityExecution execution) throws Exception {
-        ErrorPropagation.propagateError(errorCode, execution);
-    }
+  public void execute(ActivityExecution execution) throws Exception {
+    ErrorPropagation.propagateError(errorCode, execution);
+  }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
+  public String getErrorCode() {
+    return errorCode;
+  }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
+  public void setErrorCode(String errorCode) {
+    this.errorCode = errorCode;
+  }
 
 }

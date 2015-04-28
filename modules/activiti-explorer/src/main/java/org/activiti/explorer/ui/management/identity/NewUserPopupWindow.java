@@ -44,135 +44,135 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class NewUserPopupWindow extends PopupWindow {
 
-    private static final long serialVersionUID = 1L;
-    protected transient IdentityService identityService;
-    protected I18nManager i18nManager;
-    protected Form form;
+  private static final long serialVersionUID = 1L;
+  protected transient IdentityService identityService;
+  protected I18nManager i18nManager;
+  protected Form form;
 
-    public NewUserPopupWindow() {
-        this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
-        this.i18nManager = ExplorerApp.get().getI18nManager();
+  public NewUserPopupWindow() {
+    this.identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
 
-        setCaption(i18nManager.getMessage(Messages.USER_CREATE));
-        setModal(true);
-        center();
-        setResizable(false);
-        setWidth(275, UNITS_PIXELS);
-        setHeight(300, UNITS_PIXELS);
-        addStyleName(Reindeer.WINDOW_LIGHT);
+    setCaption(i18nManager.getMessage(Messages.USER_CREATE));
+    setModal(true);
+    center();
+    setResizable(false);
+    setWidth(275, UNITS_PIXELS);
+    setHeight(300, UNITS_PIXELS);
+    addStyleName(Reindeer.WINDOW_LIGHT);
 
-        initEnterKeyListener();
-        initForm();
-    }
+    initEnterKeyListener();
+    initForm();
+  }
 
-    protected void initEnterKeyListener() {
-        addActionHandler(new Handler() {
-            public void handleAction(Action action, Object sender, Object target) {
-                handleFormSubmit();
-            }
+  protected void initEnterKeyListener() {
+    addActionHandler(new Handler() {
+      public void handleAction(Action action, Object sender, Object target) {
+        handleFormSubmit();
+      }
 
-            public Action[] getActions(Object target, Object sender) {
-                return new Action[] { new ShortcutAction("enter", ShortcutAction.KeyCode.ENTER, null) };
-            }
-        });
-    }
+      public Action[] getActions(Object target, Object sender) {
+        return new Action[] { new ShortcutAction("enter", ShortcutAction.KeyCode.ENTER, null) };
+      }
+    });
+  }
 
-    protected void initForm() {
-        form = new Form();
-        form.setValidationVisibleOnCommit(true);
-        form.setImmediate(true);
-        addComponent(form);
+  protected void initForm() {
+    form = new Form();
+    form.setValidationVisibleOnCommit(true);
+    form.setImmediate(true);
+    addComponent(form);
 
-        initInputFields();
-        initCreateButton();
-    }
+    initInputFields();
+    initCreateButton();
+  }
 
-    protected void initInputFields() {
-        // Input fields
-        form.addField("id", new TextField(i18nManager.getMessage(Messages.USER_ID)));
+  protected void initInputFields() {
+    // Input fields
+    form.addField("id", new TextField(i18nManager.getMessage(Messages.USER_ID)));
 
-        // Set id field to required
-        form.getField("id").setRequired(true);
-        form.getField("id").setRequiredError(i18nManager.getMessage(Messages.USER_ID_REQUIRED));
-        form.getField("id").focus();
+    // Set id field to required
+    form.getField("id").setRequired(true);
+    form.getField("id").setRequiredError(i18nManager.getMessage(Messages.USER_ID_REQUIRED));
+    form.getField("id").focus();
 
-        // Set id field to be unique
-        form.getField("id").addValidator(new Validator() {
-            public void validate(Object value) throws InvalidValueException {
-                if (!isValid(value)) {
-                    throw new InvalidValueException(i18nManager.getMessage(Messages.USER_ID_UNIQUE));
-                }
-            }
-
-            public boolean isValid(Object value) {
-                if (value != null) {
-                    return identityService.createUserQuery().userId(value.toString()).singleResult() == null;
-                }
-                return false;
-            }
-        });
-
-        // Password is required
-        form.addField("password", new PasswordField(i18nManager.getMessage(Messages.USER_PASSWORD)));
-        form.getField("password").setRequired(true);
-        form.getField("password").setRequiredError(i18nManager.getMessage(Messages.USER_PASSWORD_REQUIRED));
-
-        // Password must be at least 5 characters
-        StringLengthValidator passwordLengthValidator = new StringLengthValidator(i18nManager.getMessage(Messages.USER_PASSWORD_MIN_LENGTH, 5), 5, -1, false);
-        form.getField("password").addValidator(passwordLengthValidator);
-
-        form.addField("firstName", new TextField(i18nManager.getMessage(Messages.USER_FIRSTNAME)));
-        form.addField("lastName", new TextField(i18nManager.getMessage(Messages.USER_LASTNAME)));
-        form.addField("email", new TextField(i18nManager.getMessage(Messages.USER_EMAIL)));
-    }
-
-    protected void initCreateButton() {
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setWidth(100, UNITS_PERCENTAGE);
-        form.getFooter().setWidth(100, UNITS_PERCENTAGE);
-        form.getFooter().addComponent(buttonLayout);
-
-        Button createButton = new Button(i18nManager.getMessage(Messages.USER_CREATE));
-        buttonLayout.addComponent(createButton);
-        buttonLayout.setComponentAlignment(createButton, Alignment.BOTTOM_RIGHT);
-
-        createButton.addListener(new ClickListener() {
-            public void buttonClick(ClickEvent event) {
-                handleFormSubmit();
-            }
-        });
-    }
-
-    protected void handleFormSubmit() {
-        try {
-            // create user
-            form.commit(); // will throw exception in case validation is false
-            User user = createUser();
-
-            // close popup and navigate to fresh user
-            close();
-            ExplorerApp.get().getViewManager().showUserPage(user.getId());
-        } catch (InvalidValueException e) {
-            // Do nothing: the Form component will render the errormsgs
-            // automatically
-            setHeight(340, UNITS_PIXELS);
+    // Set id field to be unique
+    form.getField("id").addValidator(new Validator() {
+      public void validate(Object value) throws InvalidValueException {
+        if (!isValid(value)) {
+          throw new InvalidValueException(i18nManager.getMessage(Messages.USER_ID_UNIQUE));
         }
-    }
+      }
 
-    protected User createUser() {
-        User user = identityService.newUser(form.getField("id").getValue().toString());
-        user.setPassword(form.getField("password").getValue().toString());
-        if (form.getField("firstName").getValue() != null) {
-            user.setFirstName(form.getField("firstName").getValue().toString());
+      public boolean isValid(Object value) {
+        if (value != null) {
+          return identityService.createUserQuery().userId(value.toString()).singleResult() == null;
         }
-        if (form.getField("lastName").getValue() != null) {
-            user.setLastName(form.getField("lastName").getValue().toString());
-        }
-        if (form.getField("email").getValue() != null) {
-            user.setEmail(form.getField("email").getValue().toString());
-        }
-        identityService.saveUser(user);
-        return user;
+        return false;
+      }
+    });
+
+    // Password is required
+    form.addField("password", new PasswordField(i18nManager.getMessage(Messages.USER_PASSWORD)));
+    form.getField("password").setRequired(true);
+    form.getField("password").setRequiredError(i18nManager.getMessage(Messages.USER_PASSWORD_REQUIRED));
+
+    // Password must be at least 5 characters
+    StringLengthValidator passwordLengthValidator = new StringLengthValidator(i18nManager.getMessage(Messages.USER_PASSWORD_MIN_LENGTH, 5), 5, -1, false);
+    form.getField("password").addValidator(passwordLengthValidator);
+
+    form.addField("firstName", new TextField(i18nManager.getMessage(Messages.USER_FIRSTNAME)));
+    form.addField("lastName", new TextField(i18nManager.getMessage(Messages.USER_LASTNAME)));
+    form.addField("email", new TextField(i18nManager.getMessage(Messages.USER_EMAIL)));
+  }
+
+  protected void initCreateButton() {
+    HorizontalLayout buttonLayout = new HorizontalLayout();
+    buttonLayout.setWidth(100, UNITS_PERCENTAGE);
+    form.getFooter().setWidth(100, UNITS_PERCENTAGE);
+    form.getFooter().addComponent(buttonLayout);
+
+    Button createButton = new Button(i18nManager.getMessage(Messages.USER_CREATE));
+    buttonLayout.addComponent(createButton);
+    buttonLayout.setComponentAlignment(createButton, Alignment.BOTTOM_RIGHT);
+
+    createButton.addListener(new ClickListener() {
+      public void buttonClick(ClickEvent event) {
+        handleFormSubmit();
+      }
+    });
+  }
+
+  protected void handleFormSubmit() {
+    try {
+      // create user
+      form.commit(); // will throw exception in case validation is false
+      User user = createUser();
+
+      // close popup and navigate to fresh user
+      close();
+      ExplorerApp.get().getViewManager().showUserPage(user.getId());
+    } catch (InvalidValueException e) {
+      // Do nothing: the Form component will render the errormsgs
+      // automatically
+      setHeight(340, UNITS_PIXELS);
     }
+  }
+
+  protected User createUser() {
+    User user = identityService.newUser(form.getField("id").getValue().toString());
+    user.setPassword(form.getField("password").getValue().toString());
+    if (form.getField("firstName").getValue() != null) {
+      user.setFirstName(form.getField("firstName").getValue().toString());
+    }
+    if (form.getField("lastName").getValue() != null) {
+      user.setLastName(form.getField("lastName").getValue().toString());
+    }
+    if (form.getField("email").getValue() != null) {
+      user.setEmail(form.getField("email").getValue().toString());
+    }
+    identityService.saveUser(user);
+    return user;
+  }
 
 }

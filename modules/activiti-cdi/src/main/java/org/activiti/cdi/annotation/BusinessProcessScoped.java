@@ -22,18 +22,13 @@ import javax.enterprise.context.RequestScoped;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 /**
- * Declare a bean to be BusinessProcessScoped. Instances of
- * BusinessProcessScoped beans are stored as process variables in a
- * ProcessInstance.
+ * Declare a bean to be BusinessProcessScoped. Instances of BusinessProcessScoped beans are stored as process variables in a ProcessInstance.
  * <p />
  * Note: BusinessProcessScoped beans need to be {@link PassivationCapable}.
  * <p />
- * If no ProcessInstance is currently managed, instances of
- * {@link BusinessProcessScoped} beans are temporarily stored in a local scope
- * (I.e. the Conversation or the Request, depending on the context, see javadoc
- * on {@link ConversationScoped} and {@link RequestScoped} to find out when
- * either context is active). If this scope is later associated with a business
- * process instance, the bean instances are flushed to the ProcessInstance.
+ * If no ProcessInstance is currently managed, instances of {@link BusinessProcessScoped} beans are temporarily stored in a local scope (I.e. the Conversation or the Request, depending on the context,
+ * see javadoc on {@link ConversationScoped} and {@link RequestScoped} to find out when either context is active). If this scope is later associated with a business process instance, the bean
+ * instances are flushed to the ProcessInstance.
  * <p />
  * Example:
  * 

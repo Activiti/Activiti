@@ -21,20 +21,20 @@ import org.activiti5.engine.delegate.JavaDelegate;
  */
 public class ToUpperCaseSetterInjected implements JavaDelegate {
 
-    private Expression text;
-    private boolean setterInvoked = false;
+  private Expression text;
+  private boolean setterInvoked = false;
 
-    public void execute(DelegateExecution execution) {
+  public void execute(DelegateExecution execution) {
 
-        if (!setterInvoked) {
-            throw new RuntimeException("Setter was not invoked");
-        }
-        execution.setVariable("setterVar", ((String) text.getValue(execution)).toUpperCase());
+    if (!setterInvoked) {
+      throw new RuntimeException("Setter was not invoked");
     }
+    execution.setVariable("setterVar", ((String) text.getValue(execution)).toUpperCase());
+  }
 
-    public void setText(Expression text) {
-        setterInvoked = true;
-        this.text = text;
-    }
+  public void setText(Expression text) {
+    setterInvoked = true;
+    this.text = text;
+  }
 
 }

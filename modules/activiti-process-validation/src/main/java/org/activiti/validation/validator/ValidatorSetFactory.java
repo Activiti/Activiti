@@ -44,41 +44,41 @@ import org.activiti.validation.validator.impl.UserTaskValidator;
  */
 public class ValidatorSetFactory {
 
-    public ValidatorSet createActivitiExecutableProcessValidatorSet() {
-        ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
+  public ValidatorSet createActivitiExecutableProcessValidatorSet() {
+    ValidatorSet validatorSet = new ValidatorSet(ValidatorSetNames.ACTIVITI_EXECUTABLE_PROCESS);
 
-        validatorSet.addValidator(new AssociationValidator());
-        validatorSet.addValidator(new SignalValidator());
-        validatorSet.addValidator(new OperationValidator());
-        validatorSet.addValidator(new ErrorValidator());
-        validatorSet.addValidator(new DataObjectValidator());
+    validatorSet.addValidator(new AssociationValidator());
+    validatorSet.addValidator(new SignalValidator());
+    validatorSet.addValidator(new OperationValidator());
+    validatorSet.addValidator(new ErrorValidator());
+    validatorSet.addValidator(new DataObjectValidator());
 
-        validatorSet.addValidator(new BpmnModelValidator());
-        validatorSet.addValidator(new FlowElementValidator());
+    validatorSet.addValidator(new BpmnModelValidator());
+    validatorSet.addValidator(new FlowElementValidator());
 
-        validatorSet.addValidator(new StartEventValidator());
-        validatorSet.addValidator(new SequenceflowValidator());
-        validatorSet.addValidator(new UserTaskValidator());
-        validatorSet.addValidator(new ServiceTaskValidator());
-        validatorSet.addValidator(new ScriptTaskValidator());
-        validatorSet.addValidator(new SendTaskValidator());
-        validatorSet.addValidator(new ExclusiveGatewayValidator());
-        validatorSet.addValidator(new EventGatewayValidator());
-        validatorSet.addValidator(new SubprocessValidator());
-        validatorSet.addValidator(new EventSubprocessValidator());
-        validatorSet.addValidator(new BoundaryEventValidator());
-        validatorSet.addValidator(new IntermediateCatchEventValidator());
-        validatorSet.addValidator(new IntermediateThrowEventValidator());
-        validatorSet.addValidator(new MessageValidator());
-        validatorSet.addValidator(new EventValidator());
-        validatorSet.addValidator(new EndEventValidator());
+    validatorSet.addValidator(new StartEventValidator());
+    validatorSet.addValidator(new SequenceflowValidator());
+    validatorSet.addValidator(new UserTaskValidator());
+    validatorSet.addValidator(new ServiceTaskValidator());
+    validatorSet.addValidator(new ScriptTaskValidator());
+    validatorSet.addValidator(new SendTaskValidator());
+    validatorSet.addValidator(new ExclusiveGatewayValidator());
+    validatorSet.addValidator(new EventGatewayValidator());
+    validatorSet.addValidator(new SubprocessValidator());
+    validatorSet.addValidator(new EventSubprocessValidator());
+    validatorSet.addValidator(new BoundaryEventValidator());
+    validatorSet.addValidator(new IntermediateCatchEventValidator());
+    validatorSet.addValidator(new IntermediateThrowEventValidator());
+    validatorSet.addValidator(new MessageValidator());
+    validatorSet.addValidator(new EventValidator());
+    validatorSet.addValidator(new EndEventValidator());
 
-        validatorSet.addValidator(new ExecutionListenerValidator());
-        validatorSet.addValidator(new ActivitiEventListenerValidator());
+    validatorSet.addValidator(new ExecutionListenerValidator());
+    validatorSet.addValidator(new ActivitiEventListenerValidator());
 
-        validatorSet.addValidator(new DiagramInterchangeInfoValidator());
+    validatorSet.addValidator(new DiagramInterchangeInfoValidator());
 
-        return validatorSet;
-    }
+    return validatorSet;
+  }
 
 }

@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator;
  * limitations under the License.
  */
 
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +24,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * This class implements all methods for Simulation run
- *
+ * 
  * @author martin.grofcik
  */
 public abstract class AbstractSimulationRun implements SimulationRun, SimulationDebugger {
@@ -70,8 +69,8 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
   @Override
   public void step() {
     SimulationEvent event = removeSimulationEvent();
-    if (!simulationEnd( event)) {
-      log.debug("executing simulation event {}", event );
+    if (!simulationEnd(event)) {
+      log.debug("executing simulation event {}", event);
       executeEvent(event);
       log.debug("simulation event {event} execution done", event);
     } else {
@@ -91,9 +90,7 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
 
   @Override
   public void runTo(long simulationTime) {
-    SimulationEvent breakEvent = new SimulationEvent.Builder(SimulationEvent.TYPE_BREAK_SIMULATION).
-                                     simulationTime(simulationTime).
-                                     priority(SimulationEvent.PRIORITY_SYSTEM).build();
+    SimulationEvent breakEvent = new SimulationEvent.Builder(SimulationEvent.TYPE_BREAK_SIMULATION).simulationTime(simulationTime).priority(SimulationEvent.PRIORITY_SYSTEM).build();
     EventCalendar calendar = SimulationRunContext.getEventCalendar();
     calendar.addEvent(breakEvent);
     runContinue();
@@ -119,10 +116,10 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
   protected abstract void initSimulationRunContext(VariableScope execution);
 
   protected void initHandlers() {
-		for( SimulationEventHandler handler : eventHandlerMap.values()) {
-			handler.init();
-		}
-	}
+    for (SimulationEventHandler handler : eventHandlerMap.values()) {
+      handler.init();
+    }
+  }
 
   protected abstract boolean simulationEnd(SimulationEvent event);
 
@@ -130,12 +127,12 @@ public abstract class AbstractSimulationRun implements SimulationRun, Simulation
     // set simulation time to the next event for process engine too
     log.debug("Simulation time:" + this.processEngine.getProcessEngineConfiguration().getClock().getCurrentTime());
 
-    SimulationEventHandler handler = eventHandlerMap.get( event.getType() );
-    if ( handler != null) {
+    SimulationEventHandler handler = eventHandlerMap.get(event.getType());
+    if (handler != null) {
       log.debug("Handling event of type[{}]", event.getType());
-      handler.handle( event);
+      handler.handle(event);
     } else {
-        log.warn("Event type[{}] does not have any handler assigned.", event.getType());
+      log.warn("Event type[{}] does not have any handler assigned.", event.getType());
     }
   }
 

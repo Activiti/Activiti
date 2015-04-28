@@ -27,44 +27,44 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public class IntermediateThrowCompensationEventActivityBehavior extends FlowNodeActivityBehavior {
 
-    protected final CompensateEventDefinition compensateEventDefinition;
+  protected final CompensateEventDefinition compensateEventDefinition;
 
-    public IntermediateThrowCompensationEventActivityBehavior(CompensateEventDefinition compensateEventDefinition) {
-        this.compensateEventDefinition = compensateEventDefinition;
+  public IntermediateThrowCompensationEventActivityBehavior(CompensateEventDefinition compensateEventDefinition) {
+    this.compensateEventDefinition = compensateEventDefinition;
+  }
+
+  @Override
+  public void execute(ActivityExecution execution) throws Exception {
+    final String activityRef = compensateEventDefinition.getActivityRef();
+
+    ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity) execution, (ActivityImpl) execution.getActivity());
+
+    List<CompensateEventSubscriptionEntity> eventSubscriptions;
+
+    if (activityRef != null) {
+      eventSubscriptions = scopeExecution.getCompensateEventSubscriptions(activityRef);
+    } else {
+      eventSubscriptions = scopeExecution.getCompensateEventSubscriptions();
     }
 
-    @Override
-    public void execute(ActivityExecution execution) throws Exception {
-        final String activityRef = compensateEventDefinition.getActivityRef();
-
-        ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity) execution, (ActivityImpl) execution.getActivity());
-
-        List<CompensateEventSubscriptionEntity> eventSubscriptions;
-
-        if (activityRef != null) {
-            eventSubscriptions = scopeExecution.getCompensateEventSubscriptions(activityRef);
-        } else {
-            eventSubscriptions = scopeExecution.getCompensateEventSubscriptions();
-        }
-
-        if (eventSubscriptions.isEmpty()) {
-            leave(execution);
-        } else {
-            // TODO: implement async (waitForCompletion=false in bpmn)
-            ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
-        }
-
+    if (eventSubscriptions.isEmpty()) {
+      leave(execution);
+    } else {
+      // TODO: implement async (waitForCompletion=false in bpmn)
+      ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
     }
 
-    public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
+  }
 
-        // join compensating executions
-        if (execution.getExecutions().isEmpty()) {
-            leave(execution);
-        } else {
-            ((ExecutionEntity) execution).forceUpdate();
-        }
+  public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
 
+    // join compensating executions
+    if (execution.getExecutions().isEmpty()) {
+      leave(execution);
+    } else {
+      ((ExecutionEntity) execution).forceUpdate();
     }
+
+  }
 
 }

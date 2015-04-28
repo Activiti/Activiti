@@ -21,17 +21,17 @@ import org.activiti5.engine.impl.persistence.entity.TaskEntity;
  */
 public class TaskVariableMapper extends VariableMapper {
 
-    public TaskVariableMapper(TaskEntity task) {
-    }
+  public TaskVariableMapper(TaskEntity task) {
+  }
 
-    @Override
-    public ValueExpression resolveVariable(String variableName) {
-        return null;
-    }
+  @Override
+  public ValueExpression resolveVariable(String variableName) {
+    return null;
+  }
 
-    @Override
-    public ValueExpression setVariable(String variableName, ValueExpression arg1) {
-        return null;
-    }
+  @Override
+  public ValueExpression setVariable(String variableName, ValueExpression arg1) {
+    return null;
+  }
 
 }

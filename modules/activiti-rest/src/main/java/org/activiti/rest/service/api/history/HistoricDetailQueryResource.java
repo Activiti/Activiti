@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HistoricDetailQueryResource extends HistoricDetailBaseResource {
 
-    @RequestMapping(value = "/query/historic-detail", method = RequestMethod.POST, produces = "application/json")
-    public DataResponse queryHistoricDetail(@RequestBody HistoricDetailQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
+  @RequestMapping(value = "/query/historic-detail", method = RequestMethod.POST, produces = "application/json")
+  public DataResponse queryHistoricDetail(@RequestBody HistoricDetailQueryRequest queryRequest, @RequestParam Map<String, String> allRequestParams, HttpServletRequest request) {
 
-        return getQueryResponse(queryRequest, allRequestParams);
-    }
+    return getQueryResponse(queryRequest, allRequestParams);
+  }
 }

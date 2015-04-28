@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator;
  * limitations under the License.
  */
 
-
 import java.util.Map;
 
 import org.activiti.engine.ProcessEngine;
@@ -21,9 +20,8 @@ import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 
 /**
- * This class provides simulation run for replay purposes
- * replay uses real time and running engine to execute simulation events.
- *
+ * This class provides simulation run for replay purposes replay uses real time and running engine to execute simulation events.
+ * 
  * @author martin.grofcik
  */
 public class ReplaySimulationRun extends AbstractSimulationRun {
@@ -50,7 +48,9 @@ public class ReplaySimulationRun extends AbstractSimulationRun {
 
   /**
    * simulation does not end - it can live forever.
-   * @param event - is it end of the simulation run?
+   * 
+   * @param event
+   *          - is it end of the simulation run?
    * @return false
    */
   @Override

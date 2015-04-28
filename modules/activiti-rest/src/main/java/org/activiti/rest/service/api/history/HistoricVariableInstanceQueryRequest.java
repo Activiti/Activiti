@@ -25,59 +25,68 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
  */
 public class HistoricVariableInstanceQueryRequest {
 
-    private Boolean excludeTaskVariables;
-    private String taskId;
-    private String processInstanceId;
-    private String variableName;
-    private String variableNameLike;
-    private List<QueryVariable> variables;
+  private Boolean excludeTaskVariables;
+  private String taskId;
+  private String executionId;
+  private String processInstanceId;
+  private String variableName;
+  private String variableNameLike;
+  private List<QueryVariable> variables;
 
-    public Boolean getExcludeTaskVariables() {
-        return excludeTaskVariables;
-    }
+  public Boolean getExcludeTaskVariables() {
+    return excludeTaskVariables;
+  }
 
-    public void setExcludeTaskVariables(Boolean excludeTaskVariables) {
-        this.excludeTaskVariables = excludeTaskVariables;
-    }
+  public void setExcludeTaskVariables(Boolean excludeTaskVariables) {
+    this.excludeTaskVariables = excludeTaskVariables;
+  }
 
-    public String getTaskId() {
-        return taskId;
-    }
+  public String getTaskId() {
+    return taskId;
+  }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  public String getExecutionId() {
+    return executionId;
+  }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
+  public void setExecutionId(String executionId) {
+    this.executionId = executionId;
+  }
 
-    public String getVariableName() {
-        return variableName;
-    }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public void setVariableName(String variableName) {
-        this.variableName = variableName;
-    }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 
-    public String getVariableNameLike() {
-        return variableNameLike;
-    }
+  public String getVariableName() {
+    return variableName;
+  }
 
-    public void setVariableNameLike(String variableNameLike) {
-        this.variableNameLike = variableNameLike;
-    }
+  public void setVariableName(String variableName) {
+    this.variableName = variableName;
+  }
 
-    @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
-    public List<QueryVariable> getVariables() {
-        return variables;
-    }
+  public String getVariableNameLike() {
+    return variableNameLike;
+  }
 
-    public void setVariables(List<QueryVariable> variables) {
-        this.variables = variables;
-    }
+  public void setVariableNameLike(String variableNameLike) {
+    this.variableNameLike = variableNameLike;
+  }
+
+  @JsonTypeInfo(use = Id.CLASS, defaultImpl = QueryVariable.class)
+  public List<QueryVariable> getVariables() {
+    return variables;
+  }
+
+  public void setVariables(List<QueryVariable> variables) {
+    this.variables = variables;
+  }
 }

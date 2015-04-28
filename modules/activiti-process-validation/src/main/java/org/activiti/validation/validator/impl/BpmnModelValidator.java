@@ -25,41 +25,40 @@ import org.activiti.validation.validator.ValidatorImpl;
  */
 public class BpmnModelValidator extends ValidatorImpl {
 
-    @Override
-    public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
+  @Override
+  public void validate(BpmnModel bpmnModel, List<ValidationError> errors) {
 
-        // If all process definitions of this bpmnModel are not executable,
-        // raise an error
-        boolean isAtLeastOneExecutable = validateAtLeastOneExecutable(bpmnModel, errors);
+    // If all process definitions of this bpmnModel are not executable,
+    // raise an error
+    boolean isAtLeastOneExecutable = validateAtLeastOneExecutable(bpmnModel, errors);
 
-        // If at least one process definition is executable, show a warning for
-        // each of the none-executables
-        if (isAtLeastOneExecutable) {
-            for (Process process : bpmnModel.getProcesses()) {
-                if (!process.isExecutable()) {
-                    addWarning(errors, Problems.PROCESS_DEFINITION_NOT_EXECUTABLE, process, process, "Process definition is not executable. Please verify that this is intentional.");
-                }
-            }
+    // If at least one process definition is executable, show a warning for
+    // each of the none-executables
+    if (isAtLeastOneExecutable) {
+      for (Process process : bpmnModel.getProcesses()) {
+        if (!process.isExecutable()) {
+          addWarning(errors, Problems.PROCESS_DEFINITION_NOT_EXECUTABLE, process, process, "Process definition is not executable. Please verify that this is intentional.");
         }
+      }
+    }
+  }
+
+  /**
+   * Returns 'true' if at least one process definition in the {@link BpmnModel} is executable.
+   */
+  private boolean validateAtLeastOneExecutable(BpmnModel bpmnModel, List<ValidationError> errors) {
+    int nrOfExecutableDefinitions = 0;
+    for (Process process : bpmnModel.getProcesses()) {
+      if (process.isExecutable()) {
+        nrOfExecutableDefinitions++;
+      }
     }
 
-    /**
-     * Returns 'true' if at least one process definition in the
-     * {@link BpmnModel} is executable.
-     */
-    private boolean validateAtLeastOneExecutable(BpmnModel bpmnModel, List<ValidationError> errors) {
-        int nrOfExecutableDefinitions = 0;
-        for (Process process : bpmnModel.getProcesses()) {
-            if (process.isExecutable()) {
-                nrOfExecutableDefinitions++;
-            }
-        }
-
-        if (nrOfExecutableDefinitions == 0) {
-            addError(errors, Problems.ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE, "All process definition are set to be non-executable (property 'isExecutable' on process). This is not allowed.");
-        }
-
-        return nrOfExecutableDefinitions > 0;
+    if (nrOfExecutableDefinitions == 0) {
+      addError(errors, Problems.ALL_PROCESS_DEFINITIONS_NOT_EXECUTABLE, "All process definition are set to be non-executable (property 'isExecutable' on process). This is not allowed.");
     }
+
+    return nrOfExecutableDefinitions > 0;
+  }
 
 }

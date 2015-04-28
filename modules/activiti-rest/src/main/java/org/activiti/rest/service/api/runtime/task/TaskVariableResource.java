@@ -40,75 +40,75 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 public class TaskVariableResource extends TaskVariableBaseResource {
 
-    @Autowired
-    protected ObjectMapper objectMapper;
+  @Autowired
+  protected ObjectMapper objectMapper;
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.GET, produces = "application/json")
-    public RestVariable getVariable(@PathVariable("taskId") String taskId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
-            HttpServletRequest request, HttpServletResponse response) {
+  @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.GET, produces = "application/json")
+  public RestVariable getVariable(@PathVariable("taskId") String taskId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+      HttpServletRequest request, HttpServletResponse response) {
 
-        return getVariableFromRequest(taskId, variableName, scope, false);
+    return getVariableFromRequest(taskId, variableName, scope, false);
+  }
+
+  @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.PUT, produces = "application/json")
+  public RestVariable updateVariable(@PathVariable("taskId") String taskId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
+      HttpServletRequest request) {
+
+    Task task = getTaskFromRequest(taskId);
+
+    RestVariable result = null;
+    if (request instanceof MultipartHttpServletRequest) {
+      result = setBinaryVariable((MultipartHttpServletRequest) request, task, false);
+
+      if (!result.getName().equals(variableName)) {
+        throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+      }
+
+    } else {
+
+      RestVariable restVariable = null;
+
+      try {
+        restVariable = objectMapper.readValue(request.getInputStream(), RestVariable.class);
+      } catch (Exception e) {
+        throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
+      }
+
+      if (restVariable == null) {
+        throw new ActivitiException("Invalid body was supplied");
+      }
+      if (!restVariable.getName().equals(variableName)) {
+        throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
+      }
+
+      result = setSimpleVariable(restVariable, task, false);
+    }
+    return result;
+  }
+
+  @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.DELETE)
+  public void deleteVariable(@PathVariable("taskId") String taskId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scopeString,
+      HttpServletResponse response) {
+
+    Task task = getTaskFromRequest(taskId);
+
+    // Determine scope
+    RestVariableScope scope = RestVariableScope.LOCAL;
+    if (scopeString != null) {
+      scope = RestVariable.getScopeFromString(scopeString);
     }
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.PUT, produces = "application/json")
-    public RestVariable updateVariable(@PathVariable("taskId") String taskId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scope,
-            HttpServletRequest request) {
-
-        Task task = getTaskFromRequest(taskId);
-
-        RestVariable result = null;
-        if (request instanceof MultipartHttpServletRequest) {
-            result = setBinaryVariable((MultipartHttpServletRequest) request, task, false);
-
-            if (!result.getName().equals(variableName)) {
-                throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
-            }
-
-        } else {
-
-            RestVariable restVariable = null;
-
-            try {
-                restVariable = objectMapper.readValue(request.getInputStream(), RestVariable.class);
-            } catch (Exception e) {
-                throw new ActivitiIllegalArgumentException("Error converting request body to RestVariable instance", e);
-            }
-
-            if (restVariable == null) {
-                throw new ActivitiException("Invalid body was supplied");
-            }
-            if (!restVariable.getName().equals(variableName)) {
-                throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
-            }
-
-            result = setSimpleVariable(restVariable, task, false);
-        }
-        return result;
+    if (!hasVariableOnScope(task, variableName, scope)) {
+      throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a variable '" + variableName + "' in scope " + scope.name().toLowerCase(), VariableInstanceEntity.class);
     }
 
-    @RequestMapping(value = "/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.DELETE)
-    public void deleteVariable(@PathVariable("taskId") String taskId, @PathVariable("variableName") String variableName, @RequestParam(value = "scope", required = false) String scopeString,
-            HttpServletResponse response) {
-
-        Task task = getTaskFromRequest(taskId);
-
-        // Determine scope
-        RestVariableScope scope = RestVariableScope.LOCAL;
-        if (scopeString != null) {
-            scope = RestVariable.getScopeFromString(scopeString);
-        }
-
-        if (!hasVariableOnScope(task, variableName, scope)) {
-            throw new ActivitiObjectNotFoundException("Task '" + task.getId() + "' doesn't have a variable '" + variableName + "' in scope " + scope.name().toLowerCase(), VariableInstanceEntity.class);
-        }
-
-        if (scope == RestVariableScope.LOCAL) {
-            taskService.removeVariableLocal(task.getId(), variableName);
-        } else {
-            // Safe to use executionId, as the hasVariableOnScope whould have
-            // stopped a global-var update on standalone task
-            runtimeService.removeVariable(task.getExecutionId(), variableName);
-        }
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+    if (scope == RestVariableScope.LOCAL) {
+      taskService.removeVariableLocal(task.getId(), variableName);
+    } else {
+      // Safe to use executionId, as the hasVariableOnScope whould have
+      // stopped a global-var update on standalone task
+      runtimeService.removeVariable(task.getExecutionId(), variableName);
     }
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 }

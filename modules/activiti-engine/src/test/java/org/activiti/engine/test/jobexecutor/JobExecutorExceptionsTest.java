@@ -27,28 +27,28 @@ import org.junit.Test;
  * @author Joram Barrez
  */
 public class JobExecutorExceptionsTest extends AbstractActvitiTest {
-	
-	@Test
-	@Deployment(resources = { "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml" })
-	public void testQueryByExceptionWithRealJobExecutor() {
-		JobQuery query = managementService.createJobQuery().withException();
-		Assert.assertEquals(0, query.count());
 
-		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
-		
-		// Timer is set for 4 hours, so move clock 5 hours
-		activitiRule.getProcessEngine().getProcessEngineConfiguration().getClock().setCurrentTime(new Date(new Date().getTime() + 5 * 60 * 60 * 1000));
+  @Test
+  @Deployment(resources = { "org/activiti/engine/test/api/mgmt/ManagementServiceTest.testGetJobExceptionStacktrace.bpmn20.xml" })
+  public void testQueryByExceptionWithRealJobExecutor() {
+    JobQuery query = managementService.createJobQuery().withException();
+    Assert.assertEquals(0, query.count());
 
-		// The execution is waiting in the first usertask. This contains a
-		// boundary timer event which we will execute manual for testing purposes.
-		JobTestHelper.waitForJobExecutorOnCondition(activitiRule, 5000000000L, 100L, new Callable<Boolean>() {
-			public Boolean call() throws Exception {
-				return managementService.createJobQuery().withException().count() == 1;
-			}
-		});
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
-		query = managementService.createJobQuery().processInstanceId(processInstance.getId()).withException();
-		Assert.assertEquals(1, query.count());
-	}
+    // Timer is set for 4 hours, so move clock 5 hours
+    activitiRule.getProcessEngine().getProcessEngineConfiguration().getClock().setCurrentTime(new Date(new Date().getTime() + 5 * 60 * 60 * 1000));
+
+    // The execution is waiting in the first usertask. This contains a
+    // boundary timer event which we will execute manual for testing purposes.
+    JobTestHelper.waitForJobExecutorOnCondition(activitiRule, 5000000000L, 100L, new Callable<Boolean>() {
+      public Boolean call() throws Exception {
+        return managementService.createJobQuery().withException().count() == 1;
+      }
+    });
+
+    query = managementService.createJobQuery().processInstanceId(processInstance.getId()).withException();
+    Assert.assertEquals(1, query.count());
+  }
 
 }

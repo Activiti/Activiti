@@ -24,10 +24,10 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class CreateGroupQueryCmd implements Command<GroupQuery>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public GroupQuery execute(CommandContext commandContext) {
-        return commandContext.getGroupIdentityManager().createNewGroupQuery();
-    }
+  public GroupQuery execute(CommandContext commandContext) {
+    return commandContext.getGroupIdentityManager().createNewGroupQuery();
+  }
 
 }

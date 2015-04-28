@@ -22,18 +22,18 @@ import org.apache.cxf.jaxws.endpoint.dynamic.JaxWsDynamicClientFactory;
  */
 public class CxfWebServiceClient implements SyncWebServiceClient {
 
-    protected Client client;
+  protected Client client;
 
-    public CxfWebServiceClient(String wsdl) {
-        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
-        this.client = dcf.createClient(wsdl);
-        this.client.getRequestContext().put("org.apache.cxf.stax.force-start-document", Boolean.TRUE);
-    }
+  public CxfWebServiceClient(String wsdl) {
+    JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+    this.client = dcf.createClient(wsdl);
+    this.client.getRequestContext().put("org.apache.cxf.stax.force-start-document", Boolean.TRUE);
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    public Object[] send(String methodName, Object[] arguments) throws Exception {
-        return client.invoke(methodName, arguments);
-    }
+  /**
+   * {@inheritDoc}
+   */
+  public Object[] send(String methodName, Object[] arguments) throws Exception {
+    return client.invoke(methodName, arguments);
+  }
 }

@@ -31,99 +31,99 @@ import org.slf4j.LoggerFactory;
  */
 public class CompetingSignalsTest extends PluggableActivitiTestCase {
 
-    private static Logger log = LoggerFactory.getLogger(CompetingSignalsTest.class);
+  private static Logger log = LoggerFactory.getLogger(CompetingSignalsTest.class);
 
-    Thread testThread = Thread.currentThread();
-    static ControllableThread activeThread;
+  Thread testThread = Thread.currentThread();
+  static ControllableThread activeThread;
 
-    public class SignalThread extends ControllableThread {
+  public class SignalThread extends ControllableThread {
 
-        String executionId;
-        ActivitiOptimisticLockingException exception;
+    String executionId;
+    ActivitiOptimisticLockingException exception;
 
-        public SignalThread(String executionId) {
-            this.executionId = executionId;
-        }
-
-        @Override
-        public synchronized void startAndWaitUntilControlIsReturned() {
-            activeThread = this;
-            super.startAndWaitUntilControlIsReturned();
-        }
-
-        public void run() {
-            try {
-                runtimeService.signal(executionId);
-            } catch (ActivitiOptimisticLockingException e) {
-                this.exception = e;
-            }
-            log.debug("{} ends", getName());
-        }
+    public SignalThread(String executionId) {
+      this.executionId = executionId;
     }
 
-    public static class ControlledConcurrencyBehavior implements ActivityBehavior {
-        private static final long serialVersionUID = 1L;
-
-        public void execute(ActivityExecution execution) {
-            activeThread.returnControlToTestThreadAndWait();
-        }
+    @Override
+    public synchronized void startAndWaitUntilControlIsReturned() {
+      activeThread = this;
+      super.startAndWaitUntilControlIsReturned();
     }
 
-    @Deployment
-    public void testCompetingSignals() throws Exception {
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingSignalsProcess");
-        String processInstanceId = processInstance.getId();
+    public void run() {
+      try {
+        runtimeService.signal(executionId);
+      } catch (ActivitiOptimisticLockingException e) {
+        this.exception = e;
+      }
+      log.debug("{} ends", getName());
+    }
+  }
 
-        log.debug("test thread starts thread one");
-        SignalThread threadOne = new SignalThread(processInstanceId);
-        threadOne.startAndWaitUntilControlIsReturned();
+  public static class ControlledConcurrencyBehavior implements ActivityBehavior {
+    private static final long serialVersionUID = 1L;
 
-        log.debug("test thread continues to start thread two");
-        SignalThread threadTwo = new SignalThread(processInstanceId);
-        threadTwo.startAndWaitUntilControlIsReturned();
+    public void execute(ActivityExecution execution) {
+      activeThread.returnControlToTestThreadAndWait();
+    }
+  }
 
-        log.debug("test thread notifies thread 1");
-        threadOne.proceedAndWaitTillDone();
-        assertNull(threadOne.exception);
+  @Deployment
+  public void testCompetingSignals() throws Exception {
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingSignalsProcess");
+    String processInstanceId = processInstance.getId();
 
-        log.debug("test thread notifies thread 2");
-        threadTwo.proceedAndWaitTillDone();
-        assertNotNull(threadTwo.exception);
-        assertTextPresent("was updated by another transaction concurrently", threadTwo.exception.getMessage());
+    log.debug("test thread starts thread one");
+    SignalThread threadOne = new SignalThread(processInstanceId);
+    threadOne.startAndWaitUntilControlIsReturned();
+
+    log.debug("test thread continues to start thread two");
+    SignalThread threadTwo = new SignalThread(processInstanceId);
+    threadTwo.startAndWaitUntilControlIsReturned();
+
+    log.debug("test thread notifies thread 1");
+    threadOne.proceedAndWaitTillDone();
+    assertNull(threadOne.exception);
+
+    log.debug("test thread notifies thread 2");
+    threadTwo.proceedAndWaitTillDone();
+    assertNotNull(threadTwo.exception);
+    assertTextPresent("was updated by another transaction concurrently", threadTwo.exception.getMessage());
+  }
+
+  @Deployment(resources = { "org/activiti/engine/test/concurrency/CompetingSignalsTest.testCompetingSignals.bpmn20.xml" })
+  public void testCompetingSignalsWithRetry() throws Exception {
+    RuntimeServiceImpl runtimeServiceImpl = (RuntimeServiceImpl) runtimeService;
+    CommandExecutorImpl before = (CommandExecutorImpl) runtimeServiceImpl.getCommandExecutor();
+    try {
+      CommandInterceptor retryInterceptor = new RetryInterceptor();
+      retryInterceptor.setNext(before.getFirst());
+
+      runtimeServiceImpl.setCommandExecutor(new CommandExecutorImpl(before.getDefaultConfig(), retryInterceptor));
+
+      ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingSignalsProcess");
+      String processInstanceId = processInstance.getId();
+
+      log.debug("test thread starts thread one");
+      SignalThread threadOne = new SignalThread(processInstanceId);
+      threadOne.startAndWaitUntilControlIsReturned();
+
+      log.debug("test thread continues to start thread two");
+      SignalThread threadTwo = new SignalThread(processInstanceId);
+      threadTwo.startAndWaitUntilControlIsReturned();
+
+      log.debug("test thread notifies thread 1");
+      threadOne.proceedAndWaitTillDone();
+      assertNull(threadOne.exception);
+
+      log.debug("test thread notifies thread 2");
+      threadTwo.proceedAndWaitTillDone();
+      assertNull(threadTwo.exception);
+    } finally {
+      // restore the command executor
+      runtimeServiceImpl.setCommandExecutor(before);
     }
 
-    @Deployment(resources = { "org/activiti/engine/test/concurrency/CompetingSignalsTest.testCompetingSignals.bpmn20.xml" })
-    public void testCompetingSignalsWithRetry() throws Exception {
-        RuntimeServiceImpl runtimeServiceImpl = (RuntimeServiceImpl) runtimeService;
-        CommandExecutorImpl before = (CommandExecutorImpl) runtimeServiceImpl.getCommandExecutor();
-        try {
-            CommandInterceptor retryInterceptor = new RetryInterceptor();
-            retryInterceptor.setNext(before.getFirst());
-
-            runtimeServiceImpl.setCommandExecutor(new CommandExecutorImpl(before.getDefaultConfig(), retryInterceptor));
-
-            ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("CompetingSignalsProcess");
-            String processInstanceId = processInstance.getId();
-
-            log.debug("test thread starts thread one");
-            SignalThread threadOne = new SignalThread(processInstanceId);
-            threadOne.startAndWaitUntilControlIsReturned();
-
-            log.debug("test thread continues to start thread two");
-            SignalThread threadTwo = new SignalThread(processInstanceId);
-            threadTwo.startAndWaitUntilControlIsReturned();
-
-            log.debug("test thread notifies thread 1");
-            threadOne.proceedAndWaitTillDone();
-            assertNull(threadOne.exception);
-
-            log.debug("test thread notifies thread 2");
-            threadTwo.proceedAndWaitTillDone();
-            assertNull(threadTwo.exception);
-        } finally {
-            // restore the command executor
-            runtimeServiceImpl.setCommandExecutor(before);
-        }
-
-    }
+  }
 }

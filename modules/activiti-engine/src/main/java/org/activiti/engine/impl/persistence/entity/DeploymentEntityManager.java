@@ -35,130 +35,130 @@ import org.activiti.engine.runtime.Job;
  */
 public class DeploymentEntityManager extends AbstractEntityManager<DeploymentEntity> {
 
-    public void insertDeployment(DeploymentEntity deployment) {
-        getDbSqlSession().insert(deployment);
+  public void insertDeployment(DeploymentEntity deployment) {
+    getDbSqlSession().insert(deployment);
 
-        for (ResourceEntity resource : deployment.getResources().values()) {
-            resource.setDeploymentId(deployment.getId());
-            getResourceManager().insertResource(resource);
-        }
+    for (ResourceEntity resource : deployment.getResources().values()) {
+      resource.setDeploymentId(deployment.getId());
+      getResourceManager().insertResource(resource);
+    }
+  }
+
+  public void deleteDeployment(String deploymentId, boolean cascade) {
+    List<ProcessDefinition> processDefinitions = getDbSqlSession().createProcessDefinitionQuery().deploymentId(deploymentId).list();
+
+    // Remove the deployment link from any model.
+    // The model will still exists, as a model is a source for a deployment
+    // model and has a different lifecycle
+    List<Model> models = getDbSqlSession().createModelQueryImpl().deploymentId(deploymentId).list();
+    for (Model model : models) {
+      ModelEntity modelEntity = (ModelEntity) model;
+      modelEntity.setDeploymentId(null);
+      getModelManager().updateModel(modelEntity);
     }
 
-    public void deleteDeployment(String deploymentId, boolean cascade) {
-        List<ProcessDefinition> processDefinitions = getDbSqlSession().createProcessDefinitionQuery().deploymentId(deploymentId).list();
+    if (cascade) {
 
-        // Remove the deployment link from any model.
-        // The model will still exists, as a model is a source for a deployment
-        // model and has a different lifecycle
-        List<Model> models = getDbSqlSession().createModelQueryImpl().deploymentId(deploymentId).list();
-        for (Model model : models) {
-            ModelEntity modelEntity = (ModelEntity) model;
-            modelEntity.setDeploymentId(null);
-            getModelManager().updateModel(modelEntity);
+      // delete process instances
+      for (ProcessDefinition processDefinition : processDefinitions) {
+        String processDefinitionId = processDefinition.getId();
+
+        getProcessInstanceManager().deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
+
+      }
+    }
+
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      String processDefinitionId = processDefinition.getId();
+      // remove related authorization parameters in IdentityLink table
+      getIdentityLinkManager().deleteIdentityLinksByProcDef(processDefinitionId);
+
+      // event subscriptions
+      getEventSubscriptionManager().deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
+    }
+
+    // delete process definitions from db
+    getProcessDefinitionManager().deleteProcessDefinitionsByDeploymentId(deploymentId);
+
+    for (ProcessDefinition processDefinition : processDefinitions) {
+
+      // remove timer start events:
+      List<Job> timerStartJobs = Context.getCommandContext().getJobEntityManager().findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
+
+      if (timerStartJobs != null && !timerStartJobs.isEmpty()) {
+
+        long nrOfVersions = new ProcessDefinitionQueryImpl(Context.getCommandContext()).processDefinitionKey(processDefinition.getKey()).count();
+
+        long nrOfProcessDefinitionsWithSameKey = 0;
+        for (ProcessDefinition p : processDefinitions) {
+          if (!p.getId().equals(processDefinition.getId()) && p.getKey().equals(processDefinition.getKey())) {
+            nrOfProcessDefinitionsWithSameKey++;
+          }
         }
 
-        if (cascade) {
-
-            // delete process instances
-            for (ProcessDefinition processDefinition : processDefinitions) {
-                String processDefinitionId = processDefinition.getId();
-
-                getProcessInstanceManager().deleteProcessInstancesByProcessDefinition(processDefinitionId, "deleted deployment", cascade);
-
-            }
-        }
-
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            String processDefinitionId = processDefinition.getId();
-            // remove related authorization parameters in IdentityLink table
-            getIdentityLinkManager().deleteIdentityLinksByProcDef(processDefinitionId);
-
-            // event subscriptions
-            getEventSubscriptionManager().deleteEventSubscriptionsForProcessDefinition(processDefinitionId);
-        }
-
-        // delete process definitions from db
-        getProcessDefinitionManager().deleteProcessDefinitionsByDeploymentId(deploymentId);
-
-        for (ProcessDefinition processDefinition : processDefinitions) {
-
-            // remove timer start events:
-            List<Job> timerStartJobs = Context.getCommandContext().getJobEntityManager().findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
-
-            if (timerStartJobs != null && !timerStartJobs.isEmpty()) {
-
-                long nrOfVersions = new ProcessDefinitionQueryImpl(Context.getCommandContext()).processDefinitionKey(processDefinition.getKey()).count();
-
-                long nrOfProcessDefinitionsWithSameKey = 0;
-                for (ProcessDefinition p : processDefinitions) {
-                    if (!p.getId().equals(processDefinition.getId()) && p.getKey().equals(processDefinition.getKey())) {
-                        nrOfProcessDefinitionsWithSameKey++;
-                    }
-                }
-
-                if (nrOfVersions - nrOfProcessDefinitionsWithSameKey <= 1) {
-                    for (Job job : timerStartJobs) {
-                        if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                            Context.getProcessEngineConfiguration().getEventDispatcher()
-                                    .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job, null, null, processDefinition.getId()));
-                        }
-
-                        ((JobEntity) job).delete();
-                    }
-                }
+        if (nrOfVersions - nrOfProcessDefinitionsWithSameKey <= 1) {
+          for (Job job : timerStartJobs) {
+            if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+              Context.getProcessEngineConfiguration().getEventDispatcher()
+                  .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job, null, null, processDefinition.getId()));
             }
 
-            // remove message event subscriptions:
-            List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = Context.getCommandContext().getEventSubscriptionEntityManager()
-                    .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, processDefinition.getId(), processDefinition.getTenantId());
-            for (EventSubscriptionEntity eventSubscriptionEntity : findEventSubscriptionsByConfiguration) {
-                eventSubscriptionEntity.delete();
-            }
+            ((JobEntity) job).delete();
+          }
         }
+      }
 
-        getResourceManager().deleteResourcesByDeploymentId(deploymentId);
-
-        getDbSqlSession().delete("deleteDeployment", deploymentId);
+      // remove message event subscriptions:
+      List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = Context.getCommandContext().getEventSubscriptionEntityManager()
+          .findEventSubscriptionsByConfiguration(MessageEventHandler.EVENT_HANDLER_TYPE, processDefinition.getId(), processDefinition.getTenantId());
+      for (EventSubscriptionEntity eventSubscriptionEntity : findEventSubscriptionsByConfiguration) {
+        eventSubscriptionEntity.delete();
+      }
     }
 
-    public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
-        List<?> list = getDbSqlSession().selectList("selectDeploymentsByName", deploymentName, 0, 1);
-        if (list != null && !list.isEmpty()) {
-            return (DeploymentEntity) list.get(0);
-        }
-        return null;
-    }
+    getResourceManager().deleteResourcesByDeploymentId(deploymentId);
 
-    public DeploymentEntity findDeploymentById(String deploymentId) {
-        return (DeploymentEntity) getDbSqlSession().selectOne("selectDeploymentById", deploymentId);
-    }
+    getDbSqlSession().delete("deleteDeployment", deploymentId);
+  }
 
-    public long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery) {
-        return (Long) getDbSqlSession().selectOne("selectDeploymentCountByQueryCriteria", deploymentQuery);
+  public DeploymentEntity findLatestDeploymentByName(String deploymentName) {
+    List<?> list = getDbSqlSession().selectList("selectDeploymentsByName", deploymentName, 0, 1);
+    if (list != null && !list.isEmpty()) {
+      return (DeploymentEntity) list.get(0);
     }
+    return null;
+  }
 
-    @SuppressWarnings("unchecked")
-    public List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page) {
-        final String query = "selectDeploymentsByQueryCriteria";
-        return getDbSqlSession().selectList(query, deploymentQuery, page);
-    }
+  public DeploymentEntity findDeploymentById(String deploymentId) {
+    return (DeploymentEntity) getDbSqlSession().selectOne("selectDeploymentById", deploymentId);
+  }
 
-    public List<String> getDeploymentResourceNames(String deploymentId) {
-        return getDbSqlSession().getSqlSession().selectList("selectResourceNamesByDeploymentId", deploymentId);
-    }
+  public long findDeploymentCountByQueryCriteria(DeploymentQueryImpl deploymentQuery) {
+    return (Long) getDbSqlSession().selectOne("selectDeploymentCountByQueryCriteria", deploymentQuery);
+  }
 
-    @SuppressWarnings("unchecked")
-    public List<Deployment> findDeploymentsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-        return getDbSqlSession().selectListWithRawParameter("selectDeploymentByNativeQuery", parameterMap, firstResult, maxResults);
-    }
+  @SuppressWarnings("unchecked")
+  public List<Deployment> findDeploymentsByQueryCriteria(DeploymentQueryImpl deploymentQuery, Page page) {
+    final String query = "selectDeploymentsByQueryCriteria";
+    return getDbSqlSession().selectList(query, deploymentQuery, page);
+  }
 
-    public long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap) {
-        return (Long) getDbSqlSession().selectOne("selectDeploymentCountByNativeQuery", parameterMap);
-    }
+  public List<String> getDeploymentResourceNames(String deploymentId) {
+    return getDbSqlSession().getSqlSession().selectList("selectResourceNamesByDeploymentId", deploymentId);
+  }
 
-    public void close() {
-    }
+  @SuppressWarnings("unchecked")
+  public List<Deployment> findDeploymentsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectDeploymentByNativeQuery", parameterMap, firstResult, maxResults);
+  }
 
-    public void flush() {
-    }
+  public long findDeploymentCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectDeploymentCountByNativeQuery", parameterMap);
+  }
+
+  public void close() {
+  }
+
+  public void flush() {
+  }
 }

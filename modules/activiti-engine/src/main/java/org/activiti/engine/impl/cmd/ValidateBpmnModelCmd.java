@@ -14,20 +14,20 @@ import org.activiti.validation.ValidationError;
  */
 public class ValidateBpmnModelCmd implements Command<List<ValidationError>> {
 
-    protected BpmnModel bpmnModel;
+  protected BpmnModel bpmnModel;
 
-    public ValidateBpmnModelCmd(BpmnModel bpmnModel) {
-        this.bpmnModel = bpmnModel;
+  public ValidateBpmnModelCmd(BpmnModel bpmnModel) {
+    this.bpmnModel = bpmnModel;
+  }
+
+  @Override
+  public List<ValidationError> execute(CommandContext commandContext) {
+    ProcessValidator processValidator = commandContext.getProcessEngineConfiguration().getProcessValidator();
+    if (processValidator == null) {
+      throw new ActivitiException("No process validator defined");
     }
 
-    @Override
-    public List<ValidationError> execute(CommandContext commandContext) {
-        ProcessValidator processValidator = commandContext.getProcessEngineConfiguration().getProcessValidator();
-        if (processValidator == null) {
-            throw new ActivitiException("No process validator defined");
-        }
-
-        return processValidator.validate(bpmnModel);
-    }
+    return processValidator.validate(bpmnModel);
+  }
 
 }

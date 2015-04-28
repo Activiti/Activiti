@@ -31,90 +31,90 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class EntityManagerSessionImpl implements EntityManagerSession {
 
-    private EntityManagerFactory entityManagerFactory;
-    private EntityManager entityManager;
-    private boolean handleTransactions;
-    private boolean closeEntityManager;
+  private EntityManagerFactory entityManagerFactory;
+  private EntityManager entityManager;
+  private boolean handleTransactions;
+  private boolean closeEntityManager;
 
-    public EntityManagerSessionImpl(EntityManagerFactory entityManagerFactory, EntityManager entityManager, boolean handleTransactions, boolean closeEntityManager) {
-        this(entityManagerFactory, handleTransactions, closeEntityManager);
-        this.entityManager = entityManager;
+  public EntityManagerSessionImpl(EntityManagerFactory entityManagerFactory, EntityManager entityManager, boolean handleTransactions, boolean closeEntityManager) {
+    this(entityManagerFactory, handleTransactions, closeEntityManager);
+    this.entityManager = entityManager;
+  }
+
+  public EntityManagerSessionImpl(EntityManagerFactory entityManagerFactory, boolean handleTransactions, boolean closeEntityManager) {
+    this.entityManagerFactory = entityManagerFactory;
+    this.handleTransactions = handleTransactions;
+    this.closeEntityManager = closeEntityManager;
+  }
+
+  public void flush() {
+    if (entityManager != null && (!handleTransactions || isTransactionActive())) {
+      try {
+        entityManager.flush();
+      } catch (IllegalStateException ise) {
+        throw new ActivitiException("Error while flushing EntityManager, illegal state", ise);
+      } catch (TransactionRequiredException tre) {
+        throw new ActivitiException("Cannot flush EntityManager, an active transaction is required", tre);
+      } catch (PersistenceException pe) {
+        throw new ActivitiException("Error while flushing EntityManager: " + pe.getMessage(), pe);
+      }
     }
+  }
 
-    public EntityManagerSessionImpl(EntityManagerFactory entityManagerFactory, boolean handleTransactions, boolean closeEntityManager) {
-        this.entityManagerFactory = entityManagerFactory;
-        this.handleTransactions = handleTransactions;
-        this.closeEntityManager = closeEntityManager;
+  protected boolean isTransactionActive() {
+    if (handleTransactions && entityManager.getTransaction() != null) {
+      return entityManager.getTransaction().isActive();
     }
+    return false;
+  }
 
-    public void flush() {
-        if (entityManager != null && (!handleTransactions || isTransactionActive())) {
-            try {
-                entityManager.flush();
-            } catch (IllegalStateException ise) {
-                throw new ActivitiException("Error while flushing EntityManager, illegal state", ise);
-            } catch (TransactionRequiredException tre) {
-                throw new ActivitiException("Cannot flush EntityManager, an active transaction is required", tre);
-            } catch (PersistenceException pe) {
-                throw new ActivitiException("Error while flushing EntityManager: " + pe.getMessage(), pe);
+  public void close() {
+    if (closeEntityManager && entityManager != null && !entityManager.isOpen()) {
+      try {
+        entityManager.close();
+      } catch (IllegalStateException ise) {
+        throw new ActivitiException("Error while closing EntityManager, may have already been closed or it is container-managed", ise);
+      }
+    }
+  }
+
+  public EntityManager getEntityManager() {
+    if (entityManager == null) {
+      entityManager = getEntityManagerFactory().createEntityManager();
+
+      if (handleTransactions) {
+        // Add transaction listeners, if transactions should be handled
+        TransactionListener jpaTransactionCommitListener = new TransactionListener() {
+          public void execute(CommandContext commandContext) {
+            if (isTransactionActive()) {
+              entityManager.getTransaction().commit();
             }
-        }
-    }
+          }
+        };
 
-    protected boolean isTransactionActive() {
-        if (handleTransactions && entityManager.getTransaction() != null) {
-            return entityManager.getTransaction().isActive();
-        }
-        return false;
-    }
-
-    public void close() {
-        if (closeEntityManager && entityManager != null && !entityManager.isOpen()) {
-            try {
-                entityManager.close();
-            } catch (IllegalStateException ise) {
-                throw new ActivitiException("Error while closing EntityManager, may have already been closed or it is container-managed", ise);
+        TransactionListener jpaTransactionRollbackListener = new TransactionListener() {
+          public void execute(CommandContext commandContext) {
+            if (isTransactionActive()) {
+              entityManager.getTransaction().rollback();
             }
+          }
+        };
+
+        TransactionContext transactionContext = Context.getCommandContext().getTransactionContext();
+        transactionContext.addTransactionListener(TransactionState.COMMITTED, jpaTransactionCommitListener);
+        transactionContext.addTransactionListener(TransactionState.ROLLED_BACK, jpaTransactionRollbackListener);
+
+        // Also, start a transaction, if one isn't started already
+        if (!isTransactionActive()) {
+          entityManager.getTransaction().begin();
         }
+      }
     }
 
-    public EntityManager getEntityManager() {
-        if (entityManager == null) {
-            entityManager = getEntityManagerFactory().createEntityManager();
+    return entityManager;
+  }
 
-            if (handleTransactions) {
-                // Add transaction listeners, if transactions should be handled
-                TransactionListener jpaTransactionCommitListener = new TransactionListener() {
-                    public void execute(CommandContext commandContext) {
-                        if (isTransactionActive()) {
-                            entityManager.getTransaction().commit();
-                        }
-                    }
-                };
-
-                TransactionListener jpaTransactionRollbackListener = new TransactionListener() {
-                    public void execute(CommandContext commandContext) {
-                        if (isTransactionActive()) {
-                            entityManager.getTransaction().rollback();
-                        }
-                    }
-                };
-
-                TransactionContext transactionContext = Context.getCommandContext().getTransactionContext();
-                transactionContext.addTransactionListener(TransactionState.COMMITTED, jpaTransactionCommitListener);
-                transactionContext.addTransactionListener(TransactionState.ROLLED_BACK, jpaTransactionRollbackListener);
-
-                // Also, start a transaction, if one isn't started already
-                if (!isTransactionActive()) {
-                    entityManager.getTransaction().begin();
-                }
-            }
-        }
-
-        return entityManager;
-    }
-
-    private EntityManagerFactory getEntityManagerFactory() {
-        return entityManagerFactory;
-    }
+  private EntityManagerFactory getEntityManagerFactory() {
+    return entityManagerFactory;
+  }
 }

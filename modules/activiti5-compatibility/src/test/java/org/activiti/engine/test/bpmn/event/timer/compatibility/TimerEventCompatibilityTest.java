@@ -27,42 +27,42 @@ import java.util.Date;
 
 public abstract class TimerEventCompatibilityTest extends PluggableActivitiTestCase {
 
-    protected void changeConfigurationToPlainText(JobEntity job) {
+  protected void changeConfigurationToPlainText(JobEntity job) {
 
-        String activityId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
+    String activityId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
 
-        final JobEntity finalJob = job;
-        CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
-        CommandConfig config = new CommandConfig().transactionNotSupported();
-        final String finalActivityId = activityId;
-        commandExecutor.execute(config, new Command<Object>() {
+    final JobEntity finalJob = job;
+    CommandExecutor commandExecutor = ((ProcessEngineImpl) processEngine).getProcessEngineConfiguration().getCommandExecutor();
+    CommandConfig config = new CommandConfig().transactionNotSupported();
+    final String finalActivityId = activityId;
+    commandExecutor.execute(config, new Command<Object>() {
 
-            public Object execute(CommandContext commandContext) {
-                DbSqlSession session = commandContext.getSession(DbSqlSession.class);
-                session.delete(finalJob);
-                session.flush();
-                session.commit();
-                return null;
-            }
-        });
+      public Object execute(CommandContext commandContext) {
+        DbSqlSession session = commandContext.getSession(DbSqlSession.class);
+        session.delete(finalJob);
+        session.flush();
+        session.commit();
+        return null;
+      }
+    });
 
-        commandExecutor.execute(config, new Command<Object>() {
+    commandExecutor.execute(config, new Command<Object>() {
 
-            public Object execute(CommandContext commandContext) {
-                DbSqlSession session = commandContext.getSession(DbSqlSession.class);
+      public Object execute(CommandContext commandContext) {
+        DbSqlSession session = commandContext.getSession(DbSqlSession.class);
 
-                finalJob.setJobHandlerConfiguration(finalActivityId);
-                finalJob.setId(null);
-                session.insert(finalJob);
+        finalJob.setJobHandlerConfiguration(finalActivityId);
+        finalJob.setId(null);
+        session.insert(finalJob);
 
-                session.flush();
-                session.commit();
-                return null;
-            }
-        });
-    }
+        session.flush();
+        session.commit();
+        return null;
+      }
+    });
+  }
 
-    protected void moveByMinutes(int minutes) throws Exception {
-        processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000))));
-    }
+  protected void moveByMinutes(int minutes) throws Exception {
+    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000))));
+  }
 }

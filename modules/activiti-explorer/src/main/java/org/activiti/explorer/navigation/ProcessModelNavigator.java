@@ -20,20 +20,20 @@ import org.activiti.explorer.ExplorerApp;
  */
 public class ProcessModelNavigator implements Navigator {
 
-    public static final String PROCESS_MODEL_URI_PART = "processmodel";
+  public static final String PROCESS_MODEL_URI_PART = "processmodel";
 
-    public String getTrigger() {
-        return PROCESS_MODEL_URI_PART;
+  public String getTrigger() {
+    return PROCESS_MODEL_URI_PART;
+  }
+
+  public void handleNavigation(UriFragment uriFragment) {
+    String modelId = uriFragment.getUriPart(1);
+
+    if (modelId != null) {
+      ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelId);
+    } else {
+      ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage();
     }
-
-    public void handleNavigation(UriFragment uriFragment) {
-        String modelId = uriFragment.getUriPart(1);
-
-        if (modelId != null) {
-            ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelId);
-        } else {
-            ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage();
-        }
-    }
+  }
 
 }

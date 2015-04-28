@@ -23,14 +23,14 @@ import org.activiti5.engine.impl.history.handler.ProcessInstanceEndHandler;
  */
 public class ProcessHistoryParseHandler extends AbstractBpmnParseHandler<Process> {
 
-    protected static final ProcessInstanceEndHandler PROCESS_INSTANCE_END_HANDLER = new ProcessInstanceEndHandler();
+  protected static final ProcessInstanceEndHandler PROCESS_INSTANCE_END_HANDLER = new ProcessInstanceEndHandler();
 
-    protected Class<? extends BaseElement> getHandledType() {
-        return Process.class;
-    }
+  protected Class<? extends BaseElement> getHandledType() {
+    return Process.class;
+  }
 
-    protected void executeParse(BpmnParse bpmnParse, Process element) {
-        bpmnParse.getCurrentProcessDefinition().addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, PROCESS_INSTANCE_END_HANDLER);
-    }
+  protected void executeParse(BpmnParse bpmnParse, Process element) {
+    bpmnParse.getCurrentProcessDefinition().addExecutionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, PROCESS_INSTANCE_END_HANDLER);
+  }
 
 }

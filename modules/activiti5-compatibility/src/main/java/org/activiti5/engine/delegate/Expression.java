@@ -20,10 +20,10 @@ import java.io.Serializable;
  */
 public interface Expression extends Serializable {
 
-    Object getValue(VariableScope variableScope);
+  Object getValue(VariableScope variableScope);
 
-    void setValue(Object value, VariableScope variableScope);
+  void setValue(Object value, VariableScope variableScope);
 
-    String getExpressionText();
+  String getExpressionText();
 
 }

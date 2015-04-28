@@ -18,29 +18,28 @@ import java.io.Serializable;
 import org.springframework.beans.factory.InitializingBean;
 
 /**
- * Simple class that registers the {@link VariableRenderer} configured in it
- * with the {@link VariableRendererManager} when bean is created.
+ * Simple class that registers the {@link VariableRenderer} configured in it with the {@link VariableRendererManager} when bean is created.
  * 
  * @author Frederik Heremans
  */
 public class VariableRendererConfigurer implements InitializingBean, Serializable {
 
-    private VariableRenderer renderer;
-    private VariableRendererManager variableRendererManager;
+  private VariableRenderer renderer;
+  private VariableRendererManager variableRendererManager;
 
-    public void afterPropertiesSet() throws Exception {
-        if (variableRendererManager != null && renderer != null) {
-            variableRendererManager.addVariableRenderer(renderer);
-        } else {
-            throw new IllegalStateException("Both renderer and variableRenderManager should be set");
-        }
+  public void afterPropertiesSet() throws Exception {
+    if (variableRendererManager != null && renderer != null) {
+      variableRendererManager.addVariableRenderer(renderer);
+    } else {
+      throw new IllegalStateException("Both renderer and variableRenderManager should be set");
     }
+  }
 
-    public void setRenderer(VariableRenderer renderer) {
-        this.renderer = renderer;
-    }
+  public void setRenderer(VariableRenderer renderer) {
+    this.renderer = renderer;
+  }
 
-    public void setVariableRendererManager(VariableRendererManager variableRendererManager) {
-        this.variableRendererManager = variableRendererManager;
-    }
+  public void setVariableRendererManager(VariableRendererManager variableRendererManager) {
+    this.variableRendererManager = variableRendererManager;
+  }
 }

@@ -23,49 +23,47 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
 import org.activiti5.engine.impl.persistence.entity.EventSubscriptionEntity;
 
 /**
- * An {@link ActivitiEventListener} that throws a message event when an event is
- * dispatched to it. Sends the message to the execution the event was fired
- * from. If the execution is not subscribed to a message, the process-instance
- * is checked.
+ * An {@link ActivitiEventListener} that throws a message event when an event is dispatched to it. Sends the message to the execution the event was fired from. If the execution is not subscribed to a
+ * message, the process-instance is checked.
  * 
  * @author Frederik Heremans
  * 
  */
 public class MessageThrowingEventListener extends BaseDelegateEventListener {
 
-    protected String messageName;
-    protected Class<?> entityClass;
+  protected String messageName;
+  protected Class<?> entityClass;
 
-    @Override
-    public void onEvent(ActivitiEvent event) {
-        if (isValidEvent(event)) {
+  @Override
+  public void onEvent(ActivitiEvent event) {
+    if (isValidEvent(event)) {
 
-            if (event.getProcessInstanceId() == null) {
-                throw new ActivitiIllegalArgumentException("Cannot throw process-instance scoped message, since the dispatched event is not part of an ongoing process instance");
-            }
+      if (event.getProcessInstanceId() == null) {
+        throw new ActivitiIllegalArgumentException("Cannot throw process-instance scoped message, since the dispatched event is not part of an ongoing process instance");
+      }
 
-            CommandContext commandContext = Context.getCommandContext();
-            List<EventSubscriptionEntity> subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE,
-                    messageName, event.getExecutionId());
+      CommandContext commandContext = Context.getCommandContext();
+      List<EventSubscriptionEntity> subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE,
+          messageName, event.getExecutionId());
 
-            // Revert to messaging the process instance
-            if (subscriptionEntities.isEmpty() && event.getProcessInstanceId() != null && !event.getExecutionId().equals(event.getProcessInstanceId())) {
-                subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName,
-                        event.getProcessInstanceId());
-            }
+      // Revert to messaging the process instance
+      if (subscriptionEntities.isEmpty() && event.getProcessInstanceId() != null && !event.getExecutionId().equals(event.getProcessInstanceId())) {
+        subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName,
+            event.getProcessInstanceId());
+      }
 
-            for (EventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
-                signalEventSubscriptionEntity.eventReceived(null, false);
-            }
-        }
+      for (EventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
+        signalEventSubscriptionEntity.eventReceived(null, false);
+      }
     }
+  }
 
-    public void setMessageName(String messageName) {
-        this.messageName = messageName;
-    }
+  public void setMessageName(String messageName) {
+    this.messageName = messageName;
+  }
 
-    @Override
-    public boolean isFailOnException() {
-        return true;
-    }
+  @Override
+  public boolean isFailOnException() {
+    return true;
+  }
 }

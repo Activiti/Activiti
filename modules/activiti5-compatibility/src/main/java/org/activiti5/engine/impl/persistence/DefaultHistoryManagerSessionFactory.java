@@ -10,13 +10,13 @@ import org.activiti5.engine.impl.interceptor.SessionFactory;
  */
 public class DefaultHistoryManagerSessionFactory implements SessionFactory {
 
-    public java.lang.Class<?> getSessionType() {
-        return HistoryManager.class;
-    }
+  public java.lang.Class<?> getSessionType() {
+    return HistoryManager.class;
+  }
 
-    @Override
-    public Session openSession() {
-        return new DefaultHistoryManager();
-    }
+  @Override
+  public Session openSession() {
+    return new DefaultHistoryManager();
+  }
 
 }

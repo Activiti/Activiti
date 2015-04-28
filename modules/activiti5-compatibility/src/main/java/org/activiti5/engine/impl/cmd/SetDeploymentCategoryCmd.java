@@ -26,50 +26,50 @@ import org.activiti5.engine.repository.Deployment;
  */
 public class SetDeploymentCategoryCmd implements Command<Void> {
 
-    protected String deploymentId;
-    protected String category;
+  protected String deploymentId;
+  protected String category;
 
-    public SetDeploymentCategoryCmd(String deploymentId, String category) {
-        this.deploymentId = deploymentId;
-        this.category = category;
+  public SetDeploymentCategoryCmd(String deploymentId, String category) {
+    this.deploymentId = deploymentId;
+    this.category = category;
+  }
+
+  public Void execute(CommandContext commandContext) {
+
+    if (deploymentId == null) {
+      throw new ActivitiIllegalArgumentException("Deployment id is null");
     }
 
-    public Void execute(CommandContext commandContext) {
+    DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findDeploymentById(deploymentId);
 
-        if (deploymentId == null) {
-            throw new ActivitiIllegalArgumentException("Deployment id is null");
-        }
-
-        DeploymentEntity deployment = commandContext.getDeploymentEntityManager().findDeploymentById(deploymentId);
-
-        if (deployment == null) {
-            throw new ActivitiObjectNotFoundException("No deployment found for id = '" + deploymentId + "'", Deployment.class);
-        }
-
-        // Update category
-        deployment.setCategory(category);
-
-        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
-        }
-
-        return null;
+    if (deployment == null) {
+      throw new ActivitiObjectNotFoundException("No deployment found for id = '" + deploymentId + "'", Deployment.class);
     }
 
-    public String getDeploymentId() {
-        return deploymentId;
+    // Update category
+    deployment.setCategory(category);
+
+    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, deployment));
     }
 
-    public void setDeploymentId(String deploymentId) {
-        this.deploymentId = deploymentId;
-    }
+    return null;
+  }
 
-    public String getCategory() {
-        return category;
-    }
+  public String getDeploymentId() {
+    return deploymentId;
+  }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+  public void setDeploymentId(String deploymentId) {
+    this.deploymentId = deploymentId;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
 
 }

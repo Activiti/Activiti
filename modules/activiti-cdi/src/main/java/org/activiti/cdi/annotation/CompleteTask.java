@@ -23,10 +23,8 @@ import javax.interceptor.InterceptorBinding;
 import org.activiti.cdi.BusinessProcess;
 
 /**
- * Annotation signaling that a task is to be completed after the annotated
- * method returns. Requires that the current unit of work (conversation or
- * request) is associated with a task. This has the same effect as calling
- * {@link BusinessProcess#completeTask()}.
+ * Annotation signaling that a task is to be completed after the annotated method returns. Requires that the current unit of work (conversation or request) is associated with a task. This has the same
+ * effect as calling {@link BusinessProcess#completeTask()}.
  * 
  * <p />
  * Example: after this method returns, the current task is completed
@@ -50,9 +48,9 @@ import org.activiti.cdi.BusinessProcess;
 @Target({ ElementType.METHOD, ElementType.TYPE })
 public @interface CompleteTask {
 
-    /**
-     * Specifies whether the current conversation should be ended.
-     */
-    @Nonbinding
-    boolean endConversation() default false;
+  /**
+   * Specifies whether the current conversation should be ended.
+   */
+  @Nonbinding
+  boolean endConversation() default false;
 }

@@ -24,46 +24,46 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("text")
 public class TextPropertyDefinition extends FormPropertyDefinition {
 
-    protected boolean multiline = false;
+  protected boolean multiline = false;
 
-    /**
-     * Creates a single-lined text-property.
-     */
-    public TextPropertyDefinition() {
-        this(false);
+  /**
+   * Creates a single-lined text-property.
+   */
+  public TextPropertyDefinition() {
+    this(false);
+  }
+
+  public TextPropertyDefinition(boolean multiline) {
+    this.multiline = multiline;
+  }
+
+  public void setMultiline(boolean multiline) {
+    this.multiline = multiline;
+  }
+
+  public boolean isMultiline() {
+    return multiline;
+  }
+
+  @Override
+  public FormPropertyDefinition clone() {
+    TextPropertyDefinition clone = new TextPropertyDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+
+  @Override
+  public void setValues(FormPropertyDefinition otherDefinition) {
+    if (!(otherDefinition instanceof TextPropertyDefinition)) {
+      throw new SimpleWorkflowException("An instance of TextPropertyDefinition is required to set values");
     }
 
-    public TextPropertyDefinition(boolean multiline) {
-        this.multiline = multiline;
-    }
+    TextPropertyDefinition textDefinition = (TextPropertyDefinition) otherDefinition;
+    setName(textDefinition.getName());
+    setMandatory(textDefinition.isMandatory());
+    setWritable(textDefinition.isWritable());
+    setMultiline(textDefinition.isMultiline());
 
-    public void setMultiline(boolean multiline) {
-        this.multiline = multiline;
-    }
-
-    public boolean isMultiline() {
-        return multiline;
-    }
-
-    @Override
-    public FormPropertyDefinition clone() {
-        TextPropertyDefinition clone = new TextPropertyDefinition();
-        clone.setValues(this);
-        return clone;
-    }
-
-    @Override
-    public void setValues(FormPropertyDefinition otherDefinition) {
-        if (!(otherDefinition instanceof TextPropertyDefinition)) {
-            throw new SimpleWorkflowException("An instance of TextPropertyDefinition is required to set values");
-        }
-
-        TextPropertyDefinition textDefinition = (TextPropertyDefinition) otherDefinition;
-        setName(textDefinition.getName());
-        setMandatory(textDefinition.isMandatory());
-        setWritable(textDefinition.isWritable());
-        setMultiline(textDefinition.isMultiline());
-
-        setParameters(otherDefinition.cloneParameters());
-    }
+    setParameters(otherDefinition.cloneParameters());
+  }
 }

@@ -19,34 +19,34 @@ package org.activiti5.engine.impl.variable;
  */
 public class CustomObjectType implements VariableType {
 
-    protected String typeName;
-    protected Class<?> theClass;
+  protected String typeName;
+  protected Class<?> theClass;
 
-    public CustomObjectType(String typeName, Class<?> theClass) {
-        this.theClass = theClass;
-        this.typeName = typeName;
-    }
+  public CustomObjectType(String typeName, Class<?> theClass) {
+    this.theClass = theClass;
+    this.typeName = typeName;
+  }
 
-    public String getTypeName() {
-        return this.typeName;
-    }
+  public String getTypeName() {
+    return this.typeName;
+  }
 
-    public Object getValue(ValueFields valueFields) {
-        return valueFields.getCachedValue();
-    }
+  public Object getValue(ValueFields valueFields) {
+    return valueFields.getCachedValue();
+  }
 
-    public boolean isAbleToStore(Object value) {
-        if (value == null) {
-            return true;
-        }
-        return this.theClass.isAssignableFrom(value.getClass());
+  public boolean isAbleToStore(Object value) {
+    if (value == null) {
+      return true;
     }
+    return this.theClass.isAssignableFrom(value.getClass());
+  }
 
-    public boolean isCachable() {
-        return true;
-    }
+  public boolean isCachable() {
+    return true;
+  }
 
-    public void setValue(Object value, ValueFields valueFields) {
-        valueFields.setCachedValue(value);
-    }
+  public void setValue(Object value, ValueFields valueFields) {
+    valueFields.setCachedValue(value);
+  }
 }

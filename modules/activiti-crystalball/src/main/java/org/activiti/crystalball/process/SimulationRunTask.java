@@ -13,7 +13,6 @@ package org.activiti.crystalball.process;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationRun;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
@@ -21,7 +20,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 /**
  * This class implement task which runs simulation experiment
- *
+ * 
  * @author martin.grofcik
  */
 public class SimulationRunTask implements JavaDelegate {

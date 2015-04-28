@@ -22,37 +22,37 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
 
-    private static final long serialVersionUID = 1L;
-    protected Map<String, Object> variables;
-    protected boolean localScope;
+  private static final long serialVersionUID = 1L;
+  protected Map<String, Object> variables;
+  protected boolean localScope;
 
-    public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
-        super(taskId);
-        this.variables = variables;
+  public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
+    super(taskId);
+    this.variables = variables;
+  }
+
+  public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
+    super(taskId);
+    this.variables = variables;
+    this.localScope = localScope;
+  }
+
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
+    if (variables != null) {
+      if (localScope) {
+        task.setVariablesLocal(variables);
+      } else {
+        task.setExecutionVariables(variables);
+      }
     }
 
-    public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
-        super(taskId);
-        this.variables = variables;
-        this.localScope = localScope;
-    }
+    executeTaskComplete(task, variables, localScope);
+    return null;
+  }
 
-    protected Void execute(CommandContext commandContext, TaskEntity task) {
-        if (variables != null) {
-            if (localScope) {
-                task.setVariablesLocal(variables);
-            } else {
-                task.setExecutionVariables(variables);
-            }
-        }
-
-        executeTaskComplete(task, variables, localScope);
-        return null;
-    }
-
-    @Override
-    protected String getSuspendedTaskException() {
-        return "Cannot complete a suspended task";
-    }
+  @Override
+  protected String getSuspendedTaskException() {
+    return "Cannot complete a suspended task";
+  }
 
 }

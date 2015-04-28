@@ -19,8 +19,8 @@ import java.util.List;
  */
 public interface StepListContainer<T> {
 
-    List<ListStepDefinition<T>> getStepList();
+  List<ListStepDefinition<T>> getStepList();
 
-    void addStepList(ListStepDefinition<T> stepDefinition);
+  void addStepList(ListStepDefinition<T> stepDefinition);
 
 }

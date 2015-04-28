@@ -22,14 +22,14 @@ import org.activiti5.engine.test.Deployment;
  */
 public class ActivitiTestCaseTest extends ActivitiTestCase {
 
-    @Deployment
-    public void testSimpleProcess() {
-        runtimeService.startProcessInstanceByKey("simpleProcess");
+  @Deployment
+  public void testSimpleProcess() {
+    runtimeService.startProcessInstanceByKey("simpleProcess");
 
-        Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("My Task", task.getName());
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("My Task", task.getName());
 
-        taskService.complete(task.getId());
-        assertEquals(0, runtimeService.createProcessInstanceQuery().count());
-    }
+    taskService.complete(task.getId());
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+  }
 }

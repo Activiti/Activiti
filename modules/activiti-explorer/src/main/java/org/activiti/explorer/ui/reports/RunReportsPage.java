@@ -32,85 +32,85 @@ import com.vaadin.ui.Table;
  */
 public class RunReportsPage extends AbstractTablePage {
 
-    private static final long serialVersionUID = -5259331126409002997L;
+  private static final long serialVersionUID = -5259331126409002997L;
 
-    protected String reportId;
+  protected String reportId;
 
-    protected Table reportTable;
-    protected LazyLoadingQuery reportListQuery;
-    protected LazyLoadingContainer reportListContainer;
+  protected Table reportTable;
+  protected LazyLoadingQuery reportListQuery;
+  protected LazyLoadingContainer reportListContainer;
 
-    public RunReportsPage(String reportId) {
-        this.reportId = reportId;
-    }
+  public RunReportsPage(String reportId) {
+    this.reportId = reportId;
+  }
 
-    public RunReportsPage() {
-        this(null);
-    }
+  public RunReportsPage() {
+    this(null);
+  }
 
-    protected Table createList() {
-        reportTable = new Table();
-        reportListQuery = new ReportListQuery();
-        reportListContainer = new LazyLoadingContainer(reportListQuery);
-        reportTable.setContainerDataSource(reportListContainer);
+  protected Table createList() {
+    reportTable = new Table();
+    reportListQuery = new ReportListQuery();
+    reportListContainer = new LazyLoadingContainer(reportListQuery);
+    reportTable.setContainerDataSource(reportListContainer);
 
-        // Column headers
-        reportTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.REPORT_22));
-        reportTable.setColumnWidth("icon", 22);
+    // Column headers
+    reportTable.addGeneratedColumn("icon", new ThemeImageColumnGenerator(Images.REPORT_22));
+    reportTable.setColumnWidth("icon", 22);
 
-        reportTable.addContainerProperty("name", String.class, null);
-        reportTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
+    reportTable.addContainerProperty("name", String.class, null);
+    reportTable.setColumnHeaderMode(Table.COLUMN_HEADER_MODE_HIDDEN);
 
-        // Listener to change right panel when clicked on a report
-        reportTable.addListener(new Property.ValueChangeListener() {
+    // Listener to change right panel when clicked on a report
+    reportTable.addListener(new Property.ValueChangeListener() {
 
-            private static final long serialVersionUID = 1L;
+      private static final long serialVersionUID = 1L;
 
-            public void valueChange(ValueChangeEvent event) {
-                Item item = reportTable.getItem(event.getProperty().getValue()); // the
-                                                                                 // value
-                                                                                 // of
-                                                                                 // the
-                                                                                 // property
-                                                                                 // is
-                                                                                 // the
-                                                                                 // itemId
-                                                                                 // of
-                                                                                 // the
-                                                                                 // table
-                                                                                 // entry
-                if (item != null) {
-                    String processDefinitionId = (String) item.getItemProperty("id").getValue();
-                    setDetailComponent(new ReportDetailPanel(processDefinitionId, RunReportsPage.this));
+      public void valueChange(ValueChangeEvent event) {
+        Item item = reportTable.getItem(event.getProperty().getValue()); // the
+                                                                         // value
+                                                                         // of
+                                                                         // the
+                                                                         // property
+                                                                         // is
+                                                                         // the
+                                                                         // itemId
+                                                                         // of
+                                                                         // the
+                                                                         // table
+                                                                         // entry
+        if (item != null) {
+          String processDefinitionId = (String) item.getItemProperty("id").getValue();
+          setDetailComponent(new ReportDetailPanel(processDefinitionId, RunReportsPage.this));
 
-                    // Update URL
-                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(ReportNavigator.REPORT_URI_PART, processDefinitionId));
+          // Update URL
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(ReportNavigator.REPORT_URI_PART, processDefinitionId));
 
-                } else {
-                    // Nothing selected
-                    setDetailComponent(null);
-                    ExplorerApp.get().setCurrentUriFragment(new UriFragment(ReportNavigator.REPORT_URI_PART));
-                }
-            }
-
-        });
-
-        return reportTable;
-    }
-
-    protected ToolBar createMenuBar() {
-        return new ReportsMenuBar();
-    }
-
-    @Override
-    protected void initUi() {
-        super.initUi();
-
-        if (reportId != null) {
-            selectElement(reportListContainer.getIndexForObjectId(reportId));
         } else {
-            selectElement(0);
+          // Nothing selected
+          setDetailComponent(null);
+          ExplorerApp.get().setCurrentUriFragment(new UriFragment(ReportNavigator.REPORT_URI_PART));
         }
+      }
+
+    });
+
+    return reportTable;
+  }
+
+  protected ToolBar createMenuBar() {
+    return new ReportsMenuBar();
+  }
+
+  @Override
+  protected void initUi() {
+    super.initUi();
+
+    if (reportId != null) {
+      selectElement(reportListContainer.getIndexForObjectId(reportId));
+    } else {
+      selectElement(0);
     }
+  }
 
 }

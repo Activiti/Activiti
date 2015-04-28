@@ -13,88 +13,87 @@
 package org.activiti.engine.impl.bpmn.webservice;
 
 /**
- * An Operation is part of an {@link BpmnInterface} and it defines Messages that
- * are consumed and (optionally) produced when the Operation is called.
+ * An Operation is part of an {@link BpmnInterface} and it defines Messages that are consumed and (optionally) produced when the Operation is called.
  * 
  * @author Joram Barrez
  */
 public class Operation {
 
-    protected String id;
+  protected String id;
 
-    protected String name;
+  protected String name;
 
-    protected MessageDefinition inMessage;
+  protected MessageDefinition inMessage;
 
-    protected MessageDefinition outMessage;
+  protected MessageDefinition outMessage;
 
-    protected OperationImplementation implementation;
+  protected OperationImplementation implementation;
 
-    /**
-     * The interface to which this operations belongs
-     */
-    protected BpmnInterface bpmnInterface;
+  /**
+   * The interface to which this operations belongs
+   */
+  protected BpmnInterface bpmnInterface;
 
-    public Operation() {
+  public Operation() {
 
-    }
+  }
 
-    public Operation(String id, String name, BpmnInterface bpmnInterface, MessageDefinition inMessage) {
-        setId(id);
-        setName(name);
-        setInterface(bpmnInterface);
-        setInMessage(inMessage);
-    }
+  public Operation(String id, String name, BpmnInterface bpmnInterface, MessageDefinition inMessage) {
+    setId(id);
+    setName(name);
+    setInterface(bpmnInterface);
+    setInMessage(inMessage);
+  }
 
-    public MessageInstance sendMessage(MessageInstance message) {
-        return this.implementation.sendFor(message, this);
-    }
+  public MessageInstance sendMessage(MessageInstance message) {
+    return this.implementation.sendFor(message, this);
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public BpmnInterface getInterface() {
-        return bpmnInterface;
-    }
+  public BpmnInterface getInterface() {
+    return bpmnInterface;
+  }
 
-    public void setInterface(BpmnInterface bpmnInterface) {
-        this.bpmnInterface = bpmnInterface;
-    }
+  public void setInterface(BpmnInterface bpmnInterface) {
+    this.bpmnInterface = bpmnInterface;
+  }
 
-    public MessageDefinition getInMessage() {
-        return inMessage;
-    }
+  public MessageDefinition getInMessage() {
+    return inMessage;
+  }
 
-    public void setInMessage(MessageDefinition inMessage) {
-        this.inMessage = inMessage;
-    }
+  public void setInMessage(MessageDefinition inMessage) {
+    this.inMessage = inMessage;
+  }
 
-    public MessageDefinition getOutMessage() {
-        return outMessage;
-    }
+  public MessageDefinition getOutMessage() {
+    return outMessage;
+  }
 
-    public void setOutMessage(MessageDefinition outMessage) {
-        this.outMessage = outMessage;
-    }
+  public void setOutMessage(MessageDefinition outMessage) {
+    this.outMessage = outMessage;
+  }
 
-    public OperationImplementation getImplementation() {
-        return implementation;
-    }
+  public OperationImplementation getImplementation() {
+    return implementation;
+  }
 
-    public void setImplementation(OperationImplementation implementation) {
-        this.implementation = implementation;
-    }
+  public void setImplementation(OperationImplementation implementation) {
+    this.implementation = implementation;
+  }
 }

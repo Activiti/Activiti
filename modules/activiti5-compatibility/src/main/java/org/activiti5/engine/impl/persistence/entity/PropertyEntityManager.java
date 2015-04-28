@@ -20,8 +20,8 @@ import org.activiti5.engine.impl.persistence.AbstractManager;
  */
 public class PropertyEntityManager extends AbstractManager {
 
-    public PropertyEntity findPropertyById(String propertyId) {
-        return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
-    }
+  public PropertyEntity findPropertyById(String propertyId) {
+    return getDbSqlSession().selectById(PropertyEntity.class, propertyId);
+  }
 
 }

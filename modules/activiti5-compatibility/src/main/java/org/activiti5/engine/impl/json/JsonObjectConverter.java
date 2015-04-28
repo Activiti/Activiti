@@ -22,19 +22,19 @@ import org.activiti5.engine.impl.util.json.JSONObject;
  */
 public abstract class JsonObjectConverter<T> {
 
-    public void toJson(T object, Writer writer) {
-        toJsonObject(object).write(writer);
-    }
+  public void toJson(T object, Writer writer) {
+    toJsonObject(object).write(writer);
+  }
 
-    public String toJson(T object) {
-        return toJsonObject(object).toString();
-    }
+  public String toJson(T object) {
+    return toJsonObject(object).toString();
+  }
 
-    public String toJson(T object, int indentFactor) {
-        return toJsonObject(object).toString(indentFactor);
-    }
+  public String toJson(T object, int indentFactor) {
+    return toJsonObject(object).toString(indentFactor);
+  }
 
-    public abstract JSONObject toJsonObject(T object);
+  public abstract JSONObject toJsonObject(T object);
 
-    public abstract T toObject(Reader reader);
+  public abstract T toObject(Reader reader);
 }

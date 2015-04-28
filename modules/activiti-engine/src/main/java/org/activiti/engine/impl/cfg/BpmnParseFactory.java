@@ -20,6 +20,6 @@ import org.activiti.engine.impl.bpmn.parser.BpmnParser;
  */
 public interface BpmnParseFactory {
 
-    BpmnParse createBpmnParse(BpmnParser bpmnParser);
+  BpmnParse createBpmnParse(BpmnParser bpmnParser);
 
 }

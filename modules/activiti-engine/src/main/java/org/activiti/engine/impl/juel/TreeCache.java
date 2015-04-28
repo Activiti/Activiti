@@ -16,19 +16,18 @@
 package org.activiti.engine.impl.juel;
 
 /**
- * Tree cache interface. A tree cache holds expression trees by expression
- * strings. A tree cache implementation must be thread-safe.
+ * Tree cache interface. A tree cache holds expression trees by expression strings. A tree cache implementation must be thread-safe.
  * 
  * @author Christoph Beck
  */
 public interface TreeCache {
-    /**
-     * Lookup tree
-     */
-    public Tree get(String expression);
+  /**
+   * Lookup tree
+   */
+  public Tree get(String expression);
 
-    /**
-     * Cache tree
-     */
-    public void put(String expression, Tree tree);
+  /**
+   * Cache tree
+   */
+  public void put(String expression, Tree tree);
 }

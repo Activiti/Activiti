@@ -23,11 +23,11 @@ import org.activiti5.engine.impl.persistence.entity.ExecutionEntity;
  */
 public class StartEventEndHandler implements ExecutionListener {
 
-    public void notify(DelegateExecution execution) throws Exception {
-        String executionId = execution.getId();
-        String activityId = ((ExecutionEntity) execution).getActivityId();
+  public void notify(DelegateExecution execution) throws Exception {
+    String executionId = execution.getId();
+    String activityId = ((ExecutionEntity) execution).getActivityId();
 
-        Context.getCommandContext().getHistoryManager().recordStartEventEnded(executionId, activityId);
-    }
+    Context.getCommandContext().getHistoryManager().recordStartEventEnded(executionId, activityId);
+  }
 
 }

@@ -23,16 +23,16 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public class ManualTaskParseHandler extends AbstractActivityBpmnParseHandler<ManualTask> {
 
-    public Class<? extends BaseElement> getHandledType() {
-        return ManualTask.class;
-    }
+  public Class<? extends BaseElement> getHandledType() {
+    return ManualTask.class;
+  }
 
-    protected void executeParse(BpmnParse bpmnParse, ManualTask manualTask) {
-        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, manualTask, BpmnXMLConstants.ELEMENT_TASK_MANUAL);
-        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createManualTaskActivityBehavior(manualTask));
+  protected void executeParse(BpmnParse bpmnParse, ManualTask manualTask) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, manualTask, BpmnXMLConstants.ELEMENT_TASK_MANUAL);
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createManualTaskActivityBehavior(manualTask));
 
-        activity.setAsync(manualTask.isAsynchronous());
-        activity.setExclusive(!manualTask.isNotExclusive());
-    }
+    activity.setAsync(manualTask.isAsynchronous());
+    activity.setExclusive(!manualTask.isNotExclusive());
+  }
 
 }

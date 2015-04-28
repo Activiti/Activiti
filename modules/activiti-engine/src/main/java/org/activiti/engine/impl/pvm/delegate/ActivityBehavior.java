@@ -20,5 +20,5 @@ import java.io.Serializable;
  */
 public interface ActivityBehavior extends Serializable {
 
-    void execute(ActivityExecution execution);
+  void execute(ActivityExecution execution);
 }

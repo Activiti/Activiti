@@ -14,22 +14,22 @@ import org.activiti5.engine.runtime.ClockReader;
  */
 public class AdvancedSchedulerResolverWithTimeZone implements AdvancedSchedulerResolver {
 
-    @Override
-    public Date resolve(String duedateDescription, ClockReader clockReader, TimeZone timeZone) {
-        Calendar nextRun = null;
+  @Override
+  public Date resolve(String duedateDescription, ClockReader clockReader, TimeZone timeZone) {
+    Calendar nextRun = null;
 
-        try {
-            if (duedateDescription.startsWith("R")) {
-                nextRun = new DurationHelper(duedateDescription, clockReader).getCalendarAfter(clockReader.getCurrentCalendar(timeZone));
-            } else {
-                nextRun = new CronExpression(duedateDescription, clockReader, timeZone).getTimeAfter(clockReader.getCurrentCalendar(timeZone));
-            }
+    try {
+      if (duedateDescription.startsWith("R")) {
+        nextRun = new DurationHelper(duedateDescription, clockReader).getCalendarAfter(clockReader.getCurrentCalendar(timeZone));
+      } else {
+        nextRun = new CronExpression(duedateDescription, clockReader, timeZone).getTimeAfter(clockReader.getCurrentCalendar(timeZone));
+      }
 
-        } catch (Exception e) {
-            throw new ActivitiException("Failed to parse scheduler expression: " + duedateDescription, e);
-        }
-
-        return nextRun == null ? null : nextRun.getTime();
+    } catch (Exception e) {
+      throw new ActivitiException("Failed to parse scheduler expression: " + duedateDescription, e);
     }
+
+    return nextRun == null ? null : nextRun.getTime();
+  }
 
 }

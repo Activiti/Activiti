@@ -10,24 +10,24 @@ import java.util.Map;
 
 public class NativeProcessDefinitionQueryImpl extends AbstractNativeQuery<NativeProcessDefinitionQuery, ProcessDefinition> implements NativeProcessDefinitionQuery {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public NativeProcessDefinitionQueryImpl(CommandContext commandContext) {
-        super(commandContext);
-    }
+  public NativeProcessDefinitionQueryImpl(CommandContext commandContext) {
+    super(commandContext);
+  }
 
-    public NativeProcessDefinitionQueryImpl(CommandExecutor commandExecutor) {
-        super(commandExecutor);
-    }
+  public NativeProcessDefinitionQueryImpl(CommandExecutor commandExecutor) {
+    super(commandExecutor);
+  }
 
-    // results ////////////////////////////////////////////////////////////////
+  // results ////////////////////////////////////////////////////////////////
 
-    public List<ProcessDefinition> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
-        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionsByNativeQuery(parameterMap, firstResult, maxResults);
-    }
+  public List<ProcessDefinition> executeList(CommandContext commandContext, Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionsByNativeQuery(parameterMap, firstResult, maxResults);
+  }
 
-    public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
-        return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionCountByNativeQuery(parameterMap);
-    }
+  public long executeCount(CommandContext commandContext, Map<String, Object> parameterMap) {
+    return commandContext.getProcessDefinitionEntityManager().findProcessDefinitionCountByNativeQuery(parameterMap);
+  }
 
 }

@@ -28,183 +28,192 @@ import org.activiti.engine.impl.variable.JPAEntityVariableType;
 import org.activiti.engine.impl.variable.VariableTypes;
 
 /**
- * @author Christian Lipphardt (camunda)
+ * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVariableInstanceQuery, HistoricVariableInstance> implements HistoricVariableInstanceQuery {
 
-    private static final long serialVersionUID = 1L;
-    protected String id;
-    protected String taskId;
-    protected String processInstanceId;
-    protected String activityInstanceId;
-    protected String variableName;
-    protected String variableNameLike;
-    protected boolean excludeTaskRelated = false;
-    protected boolean excludeVariableInitialization = false;
-    protected QueryVariableValue queryVariableValue;
+  private static final long serialVersionUID = 1L;
+  protected String id;
+  protected String taskId;
+  protected String executionId;
+  protected String processInstanceId;
+  protected String activityInstanceId;
+  protected String variableName;
+  protected String variableNameLike;
+  protected boolean excludeTaskRelated = false;
+  protected boolean excludeVariableInitialization = false;
+  protected QueryVariableValue queryVariableValue;
 
-    public HistoricVariableInstanceQueryImpl() {
+  public HistoricVariableInstanceQueryImpl() {
+  }
+
+  public HistoricVariableInstanceQueryImpl(CommandContext commandContext) {
+    super(commandContext);
+  }
+
+  public HistoricVariableInstanceQueryImpl(CommandExecutor commandExecutor) {
+    super(commandExecutor);
+  }
+
+  public HistoricVariableInstanceQuery id(String id) {
+    this.id = id;
+    return this;
+  }
+
+  public HistoricVariableInstanceQueryImpl processInstanceId(String processInstanceId) {
+    if (processInstanceId == null) {
+      throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
+    this.processInstanceId = processInstanceId;
+    return this;
+  }
 
-    public HistoricVariableInstanceQueryImpl(CommandContext commandContext) {
-        super(commandContext);
+  public HistoricVariableInstanceQueryImpl executionId(String executionId) {
+    if (executionId == null) {
+      throw new ActivitiIllegalArgumentException("Execution id is null");
     }
+    this.executionId = executionId;
+    return this;
+  }
 
-    public HistoricVariableInstanceQueryImpl(CommandExecutor commandExecutor) {
-        super(commandExecutor);
+  public HistoricVariableInstanceQuery activityInstanceId(String activityInstanceId) {
+    this.activityInstanceId = activityInstanceId;
+    return this;
+  }
+
+  public HistoricVariableInstanceQuery taskId(String taskId) {
+    if (taskId == null) {
+      throw new ActivitiIllegalArgumentException("taskId is null");
     }
-
-    public HistoricVariableInstanceQuery id(String id) {
-        this.id = id;
-        return this;
+    if (excludeTaskRelated) {
+      throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
     }
+    this.taskId = taskId;
+    return this;
+  }
 
-    public HistoricVariableInstanceQueryImpl processInstanceId(String processInstanceId) {
-        if (processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException("processInstanceId is null");
-        }
-        this.processInstanceId = processInstanceId;
-        return this;
+  @Override
+  public HistoricVariableInstanceQuery excludeTaskVariables() {
+    if (taskId != null) {
+      throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
     }
+    excludeTaskRelated = true;
+    return this;
+  }
 
-    public HistoricVariableInstanceQuery activityInstanceId(String activityInstanceId) {
-        this.activityInstanceId = activityInstanceId;
-        return this;
+  public HistoricVariableInstanceQuery excludeVariableInitialization() {
+    excludeVariableInitialization = true;
+    return this;
+  }
+
+  public HistoricVariableInstanceQuery variableName(String variableName) {
+    if (variableName == null) {
+      throw new ActivitiIllegalArgumentException("variableName is null");
     }
+    this.variableName = variableName;
+    return this;
+  }
 
-    public HistoricVariableInstanceQuery taskId(String taskId) {
-        if (taskId == null) {
-            throw new ActivitiIllegalArgumentException("taskId is null");
-        }
-        if (excludeTaskRelated) {
-            throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
-        }
-        this.taskId = taskId;
-        return this;
+  public HistoricVariableInstanceQuery variableValueEquals(String variableName, Object variableValue) {
+    if (variableName == null) {
+      throw new ActivitiIllegalArgumentException("variableName is null");
     }
-
-    @Override
-    public HistoricVariableInstanceQuery excludeTaskVariables() {
-        if (taskId != null) {
-            throw new ActivitiIllegalArgumentException("Cannot use taskId together with excludeTaskVariables");
-        }
-        excludeTaskRelated = true;
-        return this;
+    if (variableValue == null) {
+      throw new ActivitiIllegalArgumentException("variableValue is null");
     }
+    this.variableName = variableName;
+    queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true);
+    return this;
+  }
 
-    public HistoricVariableInstanceQuery excludeVariableInitialization() {
-        excludeVariableInitialization = true;
-        return this;
+  public HistoricVariableInstanceQuery variableNameLike(String variableNameLike) {
+    if (variableNameLike == null) {
+      throw new ActivitiIllegalArgumentException("variableNameLike is null");
     }
+    this.variableNameLike = variableNameLike;
+    return this;
+  }
 
-    public HistoricVariableInstanceQuery variableName(String variableName) {
-        if (variableName == null) {
-            throw new ActivitiIllegalArgumentException("variableName is null");
-        }
-        this.variableName = variableName;
-        return this;
+  protected void ensureVariablesInitialized() {
+    if (this.queryVariableValue != null) {
+      VariableTypes variableTypes = Context.getProcessEngineConfiguration().getVariableTypes();
+      queryVariableValue.initialize(variableTypes);
     }
+  }
 
-    public HistoricVariableInstanceQuery variableValueEquals(String variableName, Object variableValue) {
-        if (variableName == null) {
-            throw new ActivitiIllegalArgumentException("variableName is null");
-        }
-        if (variableValue == null) {
-            throw new ActivitiIllegalArgumentException("variableValue is null");
-        }
-        this.variableName = variableName;
-        queryVariableValue = new QueryVariableValue(variableName, variableValue, QueryOperator.EQUALS, true);
-        return this;
-    }
+  public long executeCount(CommandContext commandContext) {
+    checkQueryOk();
+    ensureVariablesInitialized();
+    return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceCountByQueryCriteria(this);
+  }
 
-    public HistoricVariableInstanceQuery variableNameLike(String variableNameLike) {
-        if (variableNameLike == null) {
-            throw new ActivitiIllegalArgumentException("variableNameLike is null");
-        }
-        this.variableNameLike = variableNameLike;
-        return this;
-    }
+  public List<HistoricVariableInstance> executeList(CommandContext commandContext, Page page) {
+    checkQueryOk();
+    ensureVariablesInitialized();
 
-    protected void ensureVariablesInitialized() {
-        if (this.queryVariableValue != null) {
-            VariableTypes variableTypes = Context.getProcessEngineConfiguration().getVariableTypes();
-            queryVariableValue.initialize(variableTypes);
-        }
-    }
+    List<HistoricVariableInstance> historicVariableInstances = commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByQueryCriteria(this, page);
 
-    public long executeCount(CommandContext commandContext) {
-        checkQueryOk();
-        ensureVariablesInitialized();
-        return commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstanceCountByQueryCriteria(this);
-    }
+    if (excludeVariableInitialization == false) {
+      for (HistoricVariableInstance historicVariableInstance : historicVariableInstances) {
+        if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
+          HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
+          if (variableEntity != null && variableEntity.getVariableType() != null) {
+            variableEntity.getValue();
 
-    public List<HistoricVariableInstance> executeList(CommandContext commandContext, Page page) {
-        checkQueryOk();
-        ensureVariablesInitialized();
-
-        List<HistoricVariableInstance> historicVariableInstances = commandContext.getHistoricVariableInstanceEntityManager().findHistoricVariableInstancesByQueryCriteria(this, page);
-
-        if (excludeVariableInitialization == false) {
-            for (HistoricVariableInstance historicVariableInstance : historicVariableInstances) {
-                if (historicVariableInstance instanceof HistoricVariableInstanceEntity) {
-                    HistoricVariableInstanceEntity variableEntity = (HistoricVariableInstanceEntity) historicVariableInstance;
-                    if (variableEntity != null && variableEntity.getVariableType() != null) {
-                        variableEntity.getValue();
-
-                        // make sure JPA entities are cached for later retrieval
-                        if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())
-                                || JPAEntityListVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
-                            ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
-                        }
-                    }
-                }
+            // make sure JPA entities are cached for later retrieval
+            if (JPAEntityVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName()) || JPAEntityListVariableType.TYPE_NAME.equals(variableEntity.getVariableType().getTypeName())) {
+              ((CacheableVariable) variableEntity.getVariableType()).setForceCacheable(true);
             }
+          }
         }
-        return historicVariableInstances;
+      }
     }
+    return historicVariableInstances;
+  }
 
-    // order by
-    // /////////////////////////////////////////////////////////////////
+  // order by
+  // /////////////////////////////////////////////////////////////////
 
-    public HistoricVariableInstanceQuery orderByProcessInstanceId() {
-        orderBy(HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
-        return this;
-    }
+  public HistoricVariableInstanceQuery orderByProcessInstanceId() {
+    orderBy(HistoricVariableInstanceQueryProperty.PROCESS_INSTANCE_ID);
+    return this;
+  }
 
-    public HistoricVariableInstanceQuery orderByVariableName() {
-        orderBy(HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
-        return this;
-    }
+  public HistoricVariableInstanceQuery orderByVariableName() {
+    orderBy(HistoricVariableInstanceQueryProperty.VARIABLE_NAME);
+    return this;
+  }
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public String getTaskId() {
-        return taskId;
-    }
+  public String getTaskId() {
+    return taskId;
+  }
 
-    public String getActivityInstanceId() {
-        return activityInstanceId;
-    }
+  public String getActivityInstanceId() {
+    return activityInstanceId;
+  }
 
-    public boolean getExcludeTaskRelated() {
-        return excludeTaskRelated;
-    }
+  public boolean getExcludeTaskRelated() {
+    return excludeTaskRelated;
+  }
 
-    public String getVariableName() {
-        return variableName;
-    }
+  public String getVariableName() {
+    return variableName;
+  }
 
-    public String getVariableNameLike() {
-        return variableNameLike;
-    }
+  public String getVariableNameLike() {
+    return variableNameLike;
+  }
 
-    public QueryVariableValue getQueryVariableValue() {
-        return queryVariableValue;
-    }
+  public QueryVariableValue getQueryVariableValue() {
+    return queryVariableValue;
+  }
 
 }

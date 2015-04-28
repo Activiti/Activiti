@@ -27,42 +27,42 @@ import org.activiti.engine.impl.history.HistoryLevel;
  */
 public class HistoricDetailEntityManager extends AbstractEntityManager<HistoricDetailEntity> {
 
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
-        if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
-            List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession().createHistoricDetailQuery().processInstanceId(historicProcessInstanceId).list();
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public void deleteHistoricDetailsByProcessInstanceId(String historicProcessInstanceId) {
+    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
+      List<HistoricDetailEntity> historicDetails = (List) getDbSqlSession().createHistoricDetailQuery().processInstanceId(historicProcessInstanceId).list();
 
-            for (HistoricDetailEntity historicDetail : historicDetails) {
-                historicDetail.delete();
-            }
-        }
+      for (HistoricDetailEntity historicDetail : historicDetails) {
+        historicDetail.delete();
+      }
     }
+  }
 
-    public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
-        return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
-    }
+  public long findHistoricDetailCountByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery) {
+    return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByQueryCriteria", historicVariableUpdateQuery);
+  }
 
-    @SuppressWarnings("unchecked")
-    public List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page) {
-        return getDbSqlSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
-    }
+  @SuppressWarnings("unchecked")
+  public List<HistoricDetail> findHistoricDetailsByQueryCriteria(HistoricDetailQueryImpl historicVariableUpdateQuery, Page page) {
+    return getDbSqlSession().selectList("selectHistoricDetailsByQueryCriteria", historicVariableUpdateQuery, page);
+  }
 
-    public void deleteHistoricDetailsByTaskId(String taskId) {
-        if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.FULL)) {
-            HistoricDetailQueryImpl detailsQuery = (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(taskId);
-            List<HistoricDetail> details = detailsQuery.list();
-            for (HistoricDetail detail : details) {
-                ((HistoricDetailEntity) detail).delete();
-            }
-        }
+  public void deleteHistoricDetailsByTaskId(String taskId) {
+    if (getHistoryManager().isHistoryLevelAtLeast(HistoryLevel.FULL)) {
+      HistoricDetailQueryImpl detailsQuery = (HistoricDetailQueryImpl) new HistoricDetailQueryImpl().taskId(taskId);
+      List<HistoricDetail> details = detailsQuery.list();
+      for (HistoricDetail detail : details) {
+        ((HistoricDetailEntity) detail).delete();
+      }
     }
+  }
 
-    @SuppressWarnings("unchecked")
-    public List<HistoricDetail> findHistoricDetailsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
-        return getDbSqlSession().selectListWithRawParameter("selectHistoricDetailByNativeQuery", parameterMap, firstResult, maxResults);
-    }
+  @SuppressWarnings("unchecked")
+  public List<HistoricDetail> findHistoricDetailsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
+    return getDbSqlSession().selectListWithRawParameter("selectHistoricDetailByNativeQuery", parameterMap, firstResult, maxResults);
+  }
 
-    public long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap) {
-        return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByNativeQuery", parameterMap);
-    }
+  public long findHistoricDetailCountByNativeQuery(Map<String, Object> parameterMap) {
+    return (Long) getDbSqlSession().selectOne("selectHistoricDetailCountByNativeQuery", parameterMap);
+  }
 }

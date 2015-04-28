@@ -30,74 +30,74 @@ import org.slf4j.LoggerFactory;
  */
 public class StandaloneMybatisTransactionContext implements TransactionContext {
 
-    private static Logger log = LoggerFactory.getLogger(StandaloneMybatisTransactionContext.class);
+  private static Logger log = LoggerFactory.getLogger(StandaloneMybatisTransactionContext.class);
 
-    protected CommandContext commandContext;
-    protected Map<TransactionState, List<TransactionListener>> stateTransactionListeners = null;
+  protected CommandContext commandContext;
+  protected Map<TransactionState, List<TransactionListener>> stateTransactionListeners = null;
 
-    public StandaloneMybatisTransactionContext(CommandContext commandContext) {
-        this.commandContext = commandContext;
+  public StandaloneMybatisTransactionContext(CommandContext commandContext) {
+    this.commandContext = commandContext;
+  }
+
+  public void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener) {
+    if (stateTransactionListeners == null) {
+      stateTransactionListeners = new HashMap<TransactionState, List<TransactionListener>>();
     }
-
-    public void addTransactionListener(TransactionState transactionState, TransactionListener transactionListener) {
-        if (stateTransactionListeners == null) {
-            stateTransactionListeners = new HashMap<TransactionState, List<TransactionListener>>();
-        }
-        List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
-        if (transactionListeners == null) {
-            transactionListeners = new ArrayList<TransactionListener>();
-            stateTransactionListeners.put(transactionState, transactionListeners);
-        }
-        transactionListeners.add(transactionListener);
+    List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
+    if (transactionListeners == null) {
+      transactionListeners = new ArrayList<TransactionListener>();
+      stateTransactionListeners.put(transactionState, transactionListeners);
     }
+    transactionListeners.add(transactionListener);
+  }
 
-    public void commit() {
-        log.debug("firing event committing...");
-        fireTransactionEvent(TransactionState.COMMITTING);
-        log.debug("committing the ibatis sql session...");
-        getDbSqlSession().commit();
-        log.debug("firing event committed...");
-        fireTransactionEvent(TransactionState.COMMITTED);
+  public void commit() {
+    log.debug("firing event committing...");
+    fireTransactionEvent(TransactionState.COMMITTING);
+    log.debug("committing the ibatis sql session...");
+    getDbSqlSession().commit();
+    log.debug("firing event committed...");
+    fireTransactionEvent(TransactionState.COMMITTED);
+  }
+
+  protected void fireTransactionEvent(TransactionState transactionState) {
+    if (stateTransactionListeners == null) {
+      return;
     }
-
-    protected void fireTransactionEvent(TransactionState transactionState) {
-        if (stateTransactionListeners == null) {
-            return;
-        }
-        List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
-        if (transactionListeners == null) {
-            return;
-        }
-        for (TransactionListener transactionListener : transactionListeners) {
-            transactionListener.execute(commandContext);
-        }
+    List<TransactionListener> transactionListeners = stateTransactionListeners.get(transactionState);
+    if (transactionListeners == null) {
+      return;
     }
-
-    private DbSqlSession getDbSqlSession() {
-        return commandContext.getSession(DbSqlSession.class);
+    for (TransactionListener transactionListener : transactionListeners) {
+      transactionListener.execute(commandContext);
     }
+  }
 
-    public void rollback() {
-        try {
-            try {
-                log.debug("firing event rolling back...");
-                fireTransactionEvent(TransactionState.ROLLINGBACK);
+  private DbSqlSession getDbSqlSession() {
+    return commandContext.getSession(DbSqlSession.class);
+  }
 
-            } catch (Throwable exception) {
-                log.info("Exception during transaction: {}", exception.getMessage());
-                commandContext.exception(exception);
-            } finally {
-                log.debug("rolling back ibatis sql session...");
-                getDbSqlSession().rollback();
-            }
+  public void rollback() {
+    try {
+      try {
+        log.debug("firing event rolling back...");
+        fireTransactionEvent(TransactionState.ROLLINGBACK);
 
-        } catch (Throwable exception) {
-            log.info("Exception during transaction: {}", exception.getMessage());
-            commandContext.exception(exception);
+      } catch (Throwable exception) {
+        log.info("Exception during transaction: {}", exception.getMessage());
+        commandContext.exception(exception);
+      } finally {
+        log.debug("rolling back ibatis sql session...");
+        getDbSqlSession().rollback();
+      }
 
-        } finally {
-            log.debug("firing event rolled back...");
-            fireTransactionEvent(TransactionState.ROLLED_BACK);
-        }
+    } catch (Throwable exception) {
+      log.info("Exception during transaction: {}", exception.getMessage());
+      commandContext.exception(exception);
+
+    } finally {
+      log.debug("firing event rolled back...");
+      fireTransactionEvent(TransactionState.ROLLED_BACK);
     }
+  }
 }

@@ -25,35 +25,35 @@ import org.activiti5.engine.impl.persistence.entity.TaskEntity;
  */
 public class SubmitTaskFormCmd extends NeedsActiveTaskCmd<Object> {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String taskId;
-    protected Map<String, String> properties;
-    protected boolean completeTask;
+  protected String taskId;
+  protected Map<String, String> properties;
+  protected boolean completeTask;
 
-    public SubmitTaskFormCmd(String taskId, Map<String, String> properties, boolean completeTask) {
-        super(taskId);
-        this.taskId = taskId;
-        this.properties = properties;
-        this.completeTask = completeTask;
+  public SubmitTaskFormCmd(String taskId, Map<String, String> properties, boolean completeTask) {
+    super(taskId);
+    this.taskId = taskId;
+    this.properties = properties;
+    this.completeTask = completeTask;
+  }
+
+  protected Object execute(CommandContext commandContext, TaskEntity task) {
+    commandContext.getHistoryManager().reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
+
+    TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
+    taskFormHandler.submitFormProperties(properties, task.getExecution());
+
+    if (completeTask) {
+      task.complete(properties, false);
     }
 
-    protected Object execute(CommandContext commandContext, TaskEntity task) {
-        commandContext.getHistoryManager().reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
+    return null;
+  }
 
-        TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
-        taskFormHandler.submitFormProperties(properties, task.getExecution());
-
-        if (completeTask) {
-            task.complete(properties, false);
-        }
-
-        return null;
-    }
-
-    @Override
-    protected String getSuspendedTaskException() {
-        return "Cannot submit a form to a suspended task";
-    }
+  @Override
+  protected String getSuspendedTaskException() {
+    return "Cannot submit a form to a suspended task";
+  }
 
 }

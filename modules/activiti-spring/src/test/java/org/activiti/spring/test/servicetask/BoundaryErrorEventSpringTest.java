@@ -26,21 +26,21 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:org/activiti/spring/test/servicetask/serviceraskSpringTestCatchError-context.xml")
 public class BoundaryErrorEventSpringTest extends SpringActivitiTestCase {
 
-    @Deployment
-    public void testCatchErrorThrownByJavaDelegateOnServiceTask() {
-        String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByExpressionDelegateOnServiceTask").getId();
-        assertThatErrorHasBeenCaught(procId);
-    }
+  @Deployment
+  public void testCatchErrorThrownByJavaDelegateOnServiceTask() {
+    String procId = runtimeService.startProcessInstanceByKey("catchErrorThrownByExpressionDelegateOnServiceTask").getId();
+    assertThatErrorHasBeenCaught(procId);
+  }
 
-    private void assertThatErrorHasBeenCaught(String procId) {
-        // The service task will throw an error event,
-        // which is caught on the service task boundary
-        assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().count());
-        Task task = taskService.createTaskQuery().singleResult();
-        assertEquals("Escalated Task", task.getName());
+  private void assertThatErrorHasBeenCaught(String procId) {
+    // The service task will throw an error event,
+    // which is caught on the service task boundary
+    assertEquals("No tasks found in task list.", 1, taskService.createTaskQuery().count());
+    Task task = taskService.createTaskQuery().singleResult();
+    assertEquals("Escalated Task", task.getName());
 
-        // Completing the task will end the process instance
-        taskService.complete(task.getId());
-        assertProcessEnded(procId);
-    }
+    // Completing the task will end the process instance
+    taskService.complete(task.getId());
+    assertProcessEnded(procId);
+  }
 }

@@ -17,7 +17,7 @@ package org.activiti.explorer;
  */
 public interface Environments {
 
-    String ACTIVITI = "activiti";
-    String ALFRESCO = "alfresco";
+  String ACTIVITI = "activiti";
+  String ALFRESCO = "alfresco";
 
 }

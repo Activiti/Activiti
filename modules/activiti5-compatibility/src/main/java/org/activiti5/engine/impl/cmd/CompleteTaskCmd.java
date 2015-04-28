@@ -22,37 +22,37 @@ import org.activiti5.engine.impl.persistence.entity.TaskEntity;
  */
 public class CompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
 
-    private static final long serialVersionUID = 1L;
-    protected Map<String, Object> variables;
-    protected boolean localScope;
+  private static final long serialVersionUID = 1L;
+  protected Map<String, Object> variables;
+  protected boolean localScope;
 
-    public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
-        super(taskId);
-        this.variables = variables;
+  public CompleteTaskCmd(String taskId, Map<String, Object> variables) {
+    super(taskId);
+    this.variables = variables;
+  }
+
+  public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
+    super(taskId);
+    this.variables = variables;
+    this.localScope = localScope;
+  }
+
+  protected Void execute(CommandContext commandContext, TaskEntity task) {
+    if (variables != null) {
+      if (localScope) {
+        task.setVariablesLocal(variables);
+      } else {
+        task.setExecutionVariables(variables);
+      }
     }
 
-    public CompleteTaskCmd(String taskId, Map<String, Object> variables, boolean localScope) {
-        super(taskId);
-        this.variables = variables;
-        this.localScope = localScope;
-    }
+    task.complete(variables, localScope);
+    return null;
+  }
 
-    protected Void execute(CommandContext commandContext, TaskEntity task) {
-        if (variables != null) {
-            if (localScope) {
-                task.setVariablesLocal(variables);
-            } else {
-                task.setExecutionVariables(variables);
-            }
-        }
-
-        task.complete(variables, localScope);
-        return null;
-    }
-
-    @Override
-    protected String getSuspendedTaskException() {
-        return "Cannot complete a suspended task";
-    }
+  @Override
+  protected String getSuspendedTaskException() {
+    return "Cannot complete a suspended task";
+  }
 
 }

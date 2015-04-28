@@ -24,22 +24,21 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class BaseProcessDefinitionResource {
 
-    @Autowired
-    protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-    @Autowired
-    protected RepositoryService repositoryService;
+  @Autowired
+  protected RepositoryService repositoryService;
 
-    /**
-     * Returns the {@link ProcessDefinition} that is requested. Throws the right
-     * exceptions when bad request was made or definition is not found.
-     */
-    protected ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
-        ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+  /**
+   * Returns the {@link ProcessDefinition} that is requested. Throws the right exceptions when bad request was made or definition is not found.
+   */
+  protected ProcessDefinition getProcessDefinitionFromRequest(String processDefinitionId) {
+    ProcessDefinition processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
 
-        if (processDefinition == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
-        }
-        return processDefinition;
+    if (processDefinition == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a process definition with id '" + processDefinitionId + "'.", ProcessDefinition.class);
     }
+    return processDefinition;
+  }
 }

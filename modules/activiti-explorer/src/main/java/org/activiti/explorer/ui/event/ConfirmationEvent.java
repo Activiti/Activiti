@@ -22,16 +22,16 @@ import com.vaadin.ui.Component.Event;
  */
 public class ConfirmationEvent extends Event {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private boolean confirmed;
+  private boolean confirmed;
 
-    public ConfirmationEvent(Component source, boolean confirmed) {
-        super(source);
-        this.confirmed = confirmed;
-    }
+  public ConfirmationEvent(Component source, boolean confirmed) {
+    super(source);
+    this.confirmed = confirmed;
+  }
 
-    public boolean isConfirmed() {
-        return confirmed;
-    }
+  public boolean isConfirmed() {
+    return confirmed;
+  }
 }

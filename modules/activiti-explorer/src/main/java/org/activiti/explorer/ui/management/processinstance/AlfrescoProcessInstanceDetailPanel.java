@@ -23,16 +23,16 @@ import com.vaadin.ui.Label;
  */
 public class AlfrescoProcessInstanceDetailPanel extends ProcessInstanceDetailPanel {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public AlfrescoProcessInstanceDetailPanel(String processInstanceId, AbstractTablePage processInstancePage) {
-        super(processInstanceId, processInstancePage);
-    }
+  public AlfrescoProcessInstanceDetailPanel(String processInstanceId, AbstractTablePage processInstancePage) {
+    super(processInstanceId, processInstancePage);
+  }
 
-    @Override
-    protected Component getTaskAssigneeComponent(String assignee) {
-        // Just return a label
-        return new Label(assignee);
-    }
+  @Override
+  protected Component getTaskAssigneeComponent(String assignee) {
+    // Just return a label
+    return new Label(assignee);
+  }
 
 }

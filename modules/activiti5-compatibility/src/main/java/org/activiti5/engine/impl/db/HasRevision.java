@@ -13,17 +13,16 @@
 package org.activiti5.engine.impl.db;
 
 /**
- * Entities that are using revisions for optimistic locking, need to implement
- * this interface.
+ * Entities that are using revisions for optimistic locking, need to implement this interface.
  * 
  * @author Joram Barrez
  */
 public interface HasRevision {
 
-    void setRevision(int revision);
+  void setRevision(int revision);
 
-    int getRevision();
+  int getRevision();
 
-    int getRevisionNext();
+  int getRevisionNext();
 
 }

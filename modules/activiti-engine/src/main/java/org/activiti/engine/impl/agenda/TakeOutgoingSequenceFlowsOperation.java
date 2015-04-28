@@ -25,138 +25,134 @@ import org.slf4j.LoggerFactory;
  */
 public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
-    private static final Logger logger = LoggerFactory.getLogger(TakeOutgoingSequenceFlowsOperation.class);
+  private static final Logger logger = LoggerFactory.getLogger(TakeOutgoingSequenceFlowsOperation.class);
 
-    protected boolean evaluateConditions;
+  protected boolean evaluateConditions;
 
-    public TakeOutgoingSequenceFlowsOperation(CommandContext commandContext, ActivityExecution activityExecution, boolean evaluateConditions) {
-        super(commandContext, activityExecution);
-        this.evaluateConditions = evaluateConditions;
+  public TakeOutgoingSequenceFlowsOperation(CommandContext commandContext, ActivityExecution activityExecution, boolean evaluateConditions) {
+    super(commandContext, activityExecution);
+    this.evaluateConditions = evaluateConditions;
+  }
+
+  @Override
+  public void run() {
+    FlowElement currentFlowElement = execution.getCurrentFlowElement();
+
+    if (currentFlowElement == null) {
+      currentFlowElement = findCurrentFlowElement(execution);
+      execution.setCurrentFlowElement(currentFlowElement);
     }
 
-    @Override
-    public void run() {
-        FlowElement currentFlowElement = execution.getCurrentFlowElement();
-
-        if (currentFlowElement == null) {
-            currentFlowElement = findCurrentFlowElement(execution);
-            execution.setCurrentFlowElement(currentFlowElement);
-        }
-
-        // If execution is a scope (and not the process instance), the scope
-        // must first be destroyed before we can continue
-        if (execution.getParentId() != null && execution.isScope()) {
-            agenda.planDestroyScopeOperation(execution);
-        }
-        
-        // Execution listener for end: the flow node is ended
-        if (CollectionUtils.isNotEmpty(currentFlowElement.getExecutionListeners())) {
-            executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
-        }
-
-        // No scope, can continue
-        if (currentFlowElement instanceof FlowNode) {
-            leaveFlowNode((FlowNode) currentFlowElement);
-        } else if (currentFlowElement instanceof SequenceFlow) {
-            // Nothing to do here. The operation wasn't really needed, so simply pass it through
-            agenda.planContinueProcessOperation(execution);
-        }
+    // If execution is a scope (and not the process instance), the scope
+    // must first be destroyed before we can continue
+    if (execution.getParentId() != null && execution.isScope()) {
+      agenda.planDestroyScopeOperation(execution);
     }
 
-    protected void leaveFlowNode(FlowNode flowNode) {
+    // Execution listener for end: the flow node is ended
+    if (CollectionUtils.isNotEmpty(currentFlowElement.getExecutionListeners())) {
+      executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
+    }
 
-        logger.debug("Leaving flow node {} with id '{}' by following it's {} outgoing sequenceflow", flowNode.getClass(), flowNode.getId(), flowNode.getOutgoingFlows().size());
+    // No scope, can continue
+    if (currentFlowElement instanceof FlowNode) {
+      leaveFlowNode((FlowNode) currentFlowElement);
+    } else if (currentFlowElement instanceof SequenceFlow) {
+      // Nothing to do here. The operation wasn't really needed, so simply pass it through
+      agenda.planContinueProcessOperation(execution);
+    }
+  }
 
-        // Get default sequence flow (if set)
-        String defaultSequenceFlowId = null;
-        if (flowNode instanceof Activity) {
-        	defaultSequenceFlowId = ((Activity) flowNode).getDefaultFlow();
-        } else if (flowNode instanceof Gateway) {
-         	defaultSequenceFlowId = ((Gateway) flowNode).getDefaultFlow();
+  protected void leaveFlowNode(FlowNode flowNode) {
+
+    logger.debug("Leaving flow node {} with id '{}' by following it's {} outgoing sequenceflow", flowNode.getClass(), flowNode.getId(), flowNode.getOutgoingFlows().size());
+
+    // Get default sequence flow (if set)
+    String defaultSequenceFlowId = null;
+    if (flowNode instanceof Activity) {
+      defaultSequenceFlowId = ((Activity) flowNode).getDefaultFlow();
+    } else if (flowNode instanceof Gateway) {
+      defaultSequenceFlowId = ((Gateway) flowNode).getDefaultFlow();
+    }
+
+    // Determine which sequence flows can be used for leaving
+    List<SequenceFlow> outgoingSequenceFlow = new ArrayList<SequenceFlow>();
+    for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
+
+      String skipExpressionString = sequenceFlow.getSkipExpression();
+      if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpressionString)) {
+
+        if (!evaluateConditions
+            || (evaluateConditions && ConditionUtil.hasTrueCondition(sequenceFlow, execution) && (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId())))) {
+          outgoingSequenceFlow.add(sequenceFlow);
         }
-        
-        // Determine which sequence flows can be used for leaving
-        List<SequenceFlow> outgoingSequenceFlow = new ArrayList<SequenceFlow>();
+
+      } else if (flowNode.getOutgoingFlows().size() == 1 || SkipExpressionUtil.shouldSkipFlowElement(commandContext, execution, skipExpressionString)) {
+        // The 'skip' for a sequence flow means that we skip the condition, not the sequence flow.
+        outgoingSequenceFlow.add(sequenceFlow);
+      }
+    }
+
+    // Check if there is a default sequence flow
+    if (outgoingSequenceFlow.size() == 0 && evaluateConditions) { // The elements that set this to false also have no support for default sequence flow
+      if (defaultSequenceFlowId != null) {
         for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
-        	
-        	String skipExpressionString = sequenceFlow.getSkipExpression();
-        	if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpressionString)) {
-        		
-        		 if (!evaluateConditions 
-                 		|| (evaluateConditions 
-                 				&& ConditionUtil.hasTrueCondition(sequenceFlow, execution)
-                 				&& (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId()))
-                 			)
-                 	) {
-                     outgoingSequenceFlow.add(sequenceFlow);
-                 }
-        		 
-        	} else if (flowNode.getOutgoingFlows().size() == 1 || SkipExpressionUtil.shouldSkipFlowElement(commandContext, execution, skipExpressionString)) {
-        		// The 'skip' for a sequence flow means that we skip the condition, not the sequence flow. 
-        		outgoingSequenceFlow.add(sequenceFlow);
-        	}
+          if (defaultSequenceFlowId.equals(sequenceFlow.getId())) {
+            outgoingSequenceFlow.add(sequenceFlow);
+            break;
+          }
         }
-        
-        // Check if there is a default sequence flow
-    	if (outgoingSequenceFlow.size() == 0 && evaluateConditions) { // The elements that set this to false also have no support for default sequence flow
-            if (defaultSequenceFlowId != null) {
-            	 for (SequenceFlow sequenceFlow : flowNode.getOutgoingFlows()) {
-            		 if (defaultSequenceFlowId.equals(sequenceFlow.getId())) {
-            			 outgoingSequenceFlow.add(sequenceFlow);
-            			 break;
-            		 }
-            	 }
-            }
-    	}
-
-        // No outgoing found. Ending the execution
-        if (outgoingSequenceFlow.size() == 0) {
-        	if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
-        	    logger.info("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
-        	    agenda.planEndExecutionOperation(execution);
-        	    return;
-        	} else {
-        		throw new ActivitiException("No outgoing sequence flow of element '"+ flowNode.getId() + "' could be selected for continuing the process");
-        	}
-        }
-
-        // Leave, and reuse the incoming sequence flow, make executions for all the others (if applicable)
-
-        ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-        List<ExecutionEntity> outgoingExecutions = new ArrayList<ExecutionEntity>(flowNode.getOutgoingFlows().size());
-
-        // Reuse existing one
-        SequenceFlow sequenceFlow = outgoingSequenceFlow.get(0);
-        execution.setCurrentFlowElement(sequenceFlow);
-        execution.setActive(true);
-//        execution.setScope(false);
-        outgoingExecutions.add((ExecutionEntity) execution);
-
-        // Executions for all the other one
-        if (outgoingSequenceFlow.size() > 1) {
-            for (int i = 1; i < outgoingSequenceFlow.size(); i++) {
-
-                ExecutionEntity outgoingExecutionEntity = new ExecutionEntity();
-                outgoingExecutionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
-                outgoingExecutionEntity.setProcessInstanceId(execution.getProcessInstanceId());
-
-                outgoingExecutionEntity.setScope(false);
-                outgoingExecutionEntity.setActive(true);
-
-                outgoingExecutionEntity.setParentId(execution.getParentId() != null ? execution.getParentId() : execution.getId());
-
-                sequenceFlow = outgoingSequenceFlow.get(i);
-                outgoingExecutionEntity.setCurrentFlowElement(sequenceFlow);
-
-                executionEntityManager.insert(outgoingExecutionEntity);
-                outgoingExecutions.add(outgoingExecutionEntity);
-            }
-        }
-
-        // Leave (only done when all executions have been made, since some queries depend on this)
-        for (ExecutionEntity outgoingExecution : outgoingExecutions) {
-            agenda.planContinueProcessOperation(outgoingExecution);
-        }
+      }
     }
+
+    // No outgoing found. Ending the execution
+    if (outgoingSequenceFlow.size() == 0) {
+      if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
+        logger.info("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
+        agenda.planEndExecutionOperation(execution);
+        return;
+      } else {
+        throw new ActivitiException("No outgoing sequence flow of element '" + flowNode.getId() + "' could be selected for continuing the process");
+      }
+    }
+
+    // Leave, and reuse the incoming sequence flow, make executions for all the others (if applicable)
+
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    List<ExecutionEntity> outgoingExecutions = new ArrayList<ExecutionEntity>(flowNode.getOutgoingFlows().size());
+
+    // Reuse existing one
+    SequenceFlow sequenceFlow = outgoingSequenceFlow.get(0);
+    execution.setCurrentFlowElement(sequenceFlow);
+    execution.setActive(true);
+    // execution.setScope(false);
+    outgoingExecutions.add((ExecutionEntity) execution);
+
+    // Executions for all the other one
+    if (outgoingSequenceFlow.size() > 1) {
+      for (int i = 1; i < outgoingSequenceFlow.size(); i++) {
+
+        ExecutionEntity outgoingExecutionEntity = new ExecutionEntity();
+        outgoingExecutionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
+        outgoingExecutionEntity.setProcessInstanceId(execution.getProcessInstanceId());
+
+        outgoingExecutionEntity.setScope(false);
+        outgoingExecutionEntity.setActive(true);
+
+        outgoingExecutionEntity.setParentId(execution.getParentId() != null ? execution.getParentId() : execution.getId());
+
+        sequenceFlow = outgoingSequenceFlow.get(i);
+        outgoingExecutionEntity.setCurrentFlowElement(sequenceFlow);
+
+        executionEntityManager.insert(outgoingExecutionEntity);
+        outgoingExecutions.add(outgoingExecutionEntity);
+      }
+    }
+
+    // Leave (only done when all executions have been made, since some queries depend on this)
+    for (ExecutionEntity outgoingExecution : outgoingExecutions) {
+      agenda.planContinueProcessOperation(outgoingExecution);
+    }
+  }
 
 }

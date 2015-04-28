@@ -37,59 +37,59 @@ import org.activiti.engine.ActivitiException;
 @StartProcess("")
 public class StartProcessInterceptor implements Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Inject
-    BusinessProcess businessProcess;
+  @Inject
+  BusinessProcess businessProcess;
 
-    @AroundInvoke
-    public Object invoke(InvocationContext ctx) throws Exception {
-        try {
-            Object result = ctx.proceed();
+  @AroundInvoke
+  public Object invoke(InvocationContext ctx) throws Exception {
+    try {
+      Object result = ctx.proceed();
 
-            StartProcess startProcessAnnotation = ctx.getMethod().getAnnotation(StartProcess.class);
+      StartProcess startProcessAnnotation = ctx.getMethod().getAnnotation(StartProcess.class);
 
-            String name = startProcessAnnotation.name();
-            String key = startProcessAnnotation.value();
+      String name = startProcessAnnotation.name();
+      String key = startProcessAnnotation.value();
 
-            Map<String, Object> variables = extractVariables(startProcessAnnotation, ctx);
+      Map<String, Object> variables = extractVariables(startProcessAnnotation, ctx);
 
-            if (name.length() > 0) {
-                businessProcess.startProcessByName(name, variables);
-            } else {
-                businessProcess.startProcessByKey(key, variables);
-            }
+      if (name.length() > 0) {
+        businessProcess.startProcessByName(name, variables);
+      } else {
+        businessProcess.startProcessByKey(key, variables);
+      }
 
-            return result;
-        } catch (InvocationTargetException e) {
-            Throwable cause = e.getCause();
-            if (cause instanceof Exception) {
-                throw (Exception) cause;
-            } else {
-                throw e;
-            }
-        } catch (Exception e) {
-            throw new ActivitiException("Error while starting process using @StartProcess on method  '" + ctx.getMethod() + "': " + e.getMessage(), e);
-        }
+      return result;
+    } catch (InvocationTargetException e) {
+      Throwable cause = e.getCause();
+      if (cause instanceof Exception) {
+        throw (Exception) cause;
+      } else {
+        throw e;
+      }
+    } catch (Exception e) {
+      throw new ActivitiException("Error while starting process using @StartProcess on method  '" + ctx.getMethod() + "': " + e.getMessage(), e);
+    }
+  }
+
+  private Map<String, Object> extractVariables(StartProcess startProcessAnnotation, InvocationContext ctx) throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    for (Field field : ctx.getMethod().getDeclaringClass().getDeclaredFields()) {
+      if (!field.isAnnotationPresent(ProcessVariable.class)) {
+        continue;
+      }
+      field.setAccessible(true);
+      ProcessVariable processStartVariable = field.getAnnotation(ProcessVariable.class);
+      String fieldName = processStartVariable.value();
+      if (fieldName == null || fieldName.length() == 0) {
+        fieldName = field.getName();
+      }
+      Object value = field.get(ctx.getTarget());
+      variables.put(fieldName, value);
     }
 
-    private Map<String, Object> extractVariables(StartProcess startProcessAnnotation, InvocationContext ctx) throws Exception {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        for (Field field : ctx.getMethod().getDeclaringClass().getDeclaredFields()) {
-            if (!field.isAnnotationPresent(ProcessVariable.class)) {
-                continue;
-            }
-            field.setAccessible(true);
-            ProcessVariable processStartVariable = field.getAnnotation(ProcessVariable.class);
-            String fieldName = processStartVariable.value();
-            if (fieldName == null || fieldName.length() == 0) {
-                fieldName = field.getName();
-            }
-            Object value = field.get(ctx.getTarget());
-            variables.put(fieldName, value);
-        }
-
-        return variables;
-    }
+    return variables;
+  }
 
 }

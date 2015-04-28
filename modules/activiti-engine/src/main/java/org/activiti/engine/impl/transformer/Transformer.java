@@ -15,21 +15,20 @@ package org.activiti.engine.impl.transformer;
 import org.activiti.engine.ActivitiException;
 
 /**
- * A Transformer is responsible of transforming an object into a different
- * object
+ * A Transformer is responsible of transforming an object into a different object
  * 
  * @author Esteban Robles Luna
  */
 public interface Transformer {
 
-    /**
-     * Transforms anObject into a different object
-     * 
-     * @param anObject
-     *            the object to be transformed
-     * @return the transformed object
-     * @throws ActivitiException
-     *             if the transformation could not be applied
-     */
-    Object transform(Object anObject);
+  /**
+   * Transforms anObject into a different object
+   * 
+   * @param anObject
+   *          the object to be transformed
+   * @return the transformed object
+   * @throws ActivitiException
+   *           if the transformation could not be applied
+   */
+  Object transform(Object anObject);
 }

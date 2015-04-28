@@ -22,120 +22,118 @@ import com.vaadin.ui.Window;
  */
 public interface ViewManager {
 
-    static final String MAIN_NAVIGATION_TASK = "task";
-    static final String MAIN_NAVIGATION_PROCESS = "process";
-    static final String MAIN_NAVIGATION_MANAGE = "manage";
-    static final String MAIN_NAVIGATION_REPORT = "report";
+  static final String MAIN_NAVIGATION_TASK = "task";
+  static final String MAIN_NAVIGATION_PROCESS = "process";
+  static final String MAIN_NAVIGATION_MANAGE = "manage";
+  static final String MAIN_NAVIGATION_REPORT = "report";
 
-    // Generic
+  // Generic
 
-    void showLoginPage();
+  void showLoginPage();
 
-    void showDefaultPage();
+  void showDefaultPage();
 
-    void showPopupWindow(Window window);
+  void showPopupWindow(Window window);
 
-    // Tasks
+  // Tasks
 
-    /**
-     * Generic method which will figure out to which task page must be jumped,
-     * based on the task data.
-     * 
-     * Note that, if possible, it is always more performant to use the more
-     * specific showXXXPage() methods.
-     */
-    void showTaskPage(String taskId);
+  /**
+   * Generic method which will figure out to which task page must be jumped, based on the task data.
+   * 
+   * Note that, if possible, it is always more performant to use the more specific showXXXPage() methods.
+   */
+  void showTaskPage(String taskId);
 
-    void showTasksPage();
+  void showTasksPage();
 
-    void showTasksPage(String taskId);
+  void showTasksPage(String taskId);
 
-    void showInboxPage();
+  void showInboxPage();
 
-    void showInboxPage(String taskId);
+  void showInboxPage(String taskId);
 
-    void showQueuedPage(String groupId);
+  void showQueuedPage(String groupId);
 
-    void showQueuedPage(String groupId, String taskId);
+  void showQueuedPage(String groupId, String taskId);
 
-    void showInvolvedPage();
+  void showInvolvedPage();
 
-    void showInvolvedPage(String taskId);
+  void showInvolvedPage(String taskId);
 
-    void showArchivedPage();
+  void showArchivedPage();
 
-    void showArchivedPage(String taskId);
+  void showArchivedPage(String taskId);
 
-    // Process
+  // Process
 
-    void showDeployedProcessDefinitionPage();
+  void showDeployedProcessDefinitionPage();
 
-    void showDeployedProcessDefinitionPage(String processDefinitionId);
+  void showDeployedProcessDefinitionPage(String processDefinitionId);
 
-    void showEditorProcessDefinitionPage();
+  void showEditorProcessDefinitionPage();
 
-    void showEditorProcessDefinitionPage(String processDefinitionId);
+  void showEditorProcessDefinitionPage(String processDefinitionId);
 
-    void showMyProcessInstancesPage();
+  void showMyProcessInstancesPage();
 
-    void showMyProcessInstancesPage(String processInstanceId);
+  void showMyProcessInstancesPage(String processInstanceId);
 
-    void showSimpleTableProcessEditor(String processName, String processDescription);
+  void showSimpleTableProcessEditor(String processName, String processDescription);
 
-    void showSimpleTableProcessEditor(String modelId, WorkflowDefinition workflowDefinition);
+  void showSimpleTableProcessEditor(String modelId, WorkflowDefinition workflowDefinition);
 
-    // Reports
+  // Reports
 
-    void showRunReportPage();
+  void showRunReportPage();
 
-    void showRunReportPage(String reportId);
+  void showRunReportPage(String reportId);
 
-    void showSavedReportPage();
+  void showSavedReportPage();
 
-    void showSavedReportPage(String reportId);
+  void showSavedReportPage(String reportId);
 
-    // Management
+  // Management
 
-    void showDatabasePage();
+  void showDatabasePage();
 
-    void showDatabasePage(String tableName);
+  void showDatabasePage(String tableName);
 
-    void showDeploymentPage();
+  void showDeploymentPage();
 
-    void showDeploymentPage(String deploymentId);
+  void showDeploymentPage(String deploymentId);
 
-    void showActiveProcessDefinitionsPage();
+  void showActiveProcessDefinitionsPage();
 
-    void showActiveProcessDefinitionsPage(String processDefinitionId);
+  void showActiveProcessDefinitionsPage(String processDefinitionId);
 
-    void showSuspendedProcessDefinitionsPage();
+  void showSuspendedProcessDefinitionsPage();
 
-    void showSuspendedProcessDefinitionsPage(String processDefinitionId);
+  void showSuspendedProcessDefinitionsPage(String processDefinitionId);
 
-    void showJobPage();
+  void showJobPage();
 
-    void showJobPage(String jobId);
+  void showJobPage(String jobId);
 
-    void showUserPage();
+  void showUserPage();
 
-    void showUserPage(String userId);
+  void showUserPage(String userId);
 
-    void showGroupPage();
+  void showGroupPage();
 
-    void showGroupPage(String groupId);
+  void showGroupPage(String groupId);
 
-    void showProcessInstancePage();
+  void showProcessInstancePage();
 
-    void showProcessInstancePage(String processInstanceId);
+  void showProcessInstancePage(String processInstanceId);
 
-    void showAdministrationPage();
+  void showAdministrationPage();
 
-    void showAdministrationPage(String managementId);
+  void showAdministrationPage(String managementId);
 
-    void showCrystalBallPage();
+  void showCrystalBallPage();
 
-    // Profile
+  // Profile
 
-    void showProfilePopup(String userId);
+  void showProfilePopup(String userId);
 
 }

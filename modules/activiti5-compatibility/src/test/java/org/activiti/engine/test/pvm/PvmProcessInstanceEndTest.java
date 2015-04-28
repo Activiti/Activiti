@@ -25,22 +25,22 @@ import org.activiti5.engine.impl.test.PvmTestCase;
  */
 public class PvmProcessInstanceEndTest extends PvmTestCase {
 
-    public void testSimpleProcessInstanceEnd() {
-        EventCollector eventCollector = new EventCollector();
+  public void testSimpleProcessInstanceEnd() {
+    EventCollector eventCollector = new EventCollector();
 
-        PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic()).transition("wait").endActivity()
-                .createActivity("wait").behavior(new WaitState()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
-                .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).endActivity().buildProcessDefinition();
+    PvmProcessDefinition processDefinition = new ProcessDefinitionBuilder().executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).createActivity("start").initial().behavior(new Automatic()).transition("wait").endActivity()
+        .createActivity("wait").behavior(new WaitState()).executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_START, eventCollector)
+        .executionListener(org.activiti5.engine.impl.pvm.PvmEvent.EVENTNAME_END, eventCollector).endActivity().buildProcessDefinition();
 
-        PvmProcessInstance processInstance = processDefinition.createProcessInstance();
-        processInstance.start();
+    PvmProcessInstance processInstance = processDefinition.createProcessInstance();
+    processInstance.start();
 
-        System.err.println(eventCollector);
+    System.err.println(eventCollector);
 
-        processInstance.deleteCascade("test");
+    processInstance.deleteCascade("test");
 
-        System.err.println();
-        System.err.println(eventCollector);
-    }
+    System.err.println();
+    System.err.println(eventCollector);
+  }
 }

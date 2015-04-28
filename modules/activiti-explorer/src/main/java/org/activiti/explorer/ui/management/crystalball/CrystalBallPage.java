@@ -25,36 +25,36 @@ import com.vaadin.ui.AbstractSelect;
  */
 public class CrystalBallPage extends AbstractOneViewPage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected I18nManager i18nManager;
-    protected String managementId;
+  protected I18nManager i18nManager;
+  protected String managementId;
 
-    public CrystalBallPage() {
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-    }
+  public CrystalBallPage() {
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+  }
 
-    @Override
-    protected void initUi() {
-        super.initUi();
-        setDetailComponent(new EventOverviewPanel());
-    }
+  @Override
+  protected void initUi() {
+    super.initUi();
+    setDetailComponent(new EventOverviewPanel());
+  }
 
-    @Override
-    protected ToolBar createMenuBar() {
-        return ExplorerApp.get().getComponentFactory(ManagementMenuBarFactory.class).create();
-    }
+  @Override
+  protected ToolBar createMenuBar() {
+    return ExplorerApp.get().getComponentFactory(ManagementMenuBarFactory.class).create();
+  }
 
-    @Override
-    protected AbstractSelect createSelectComponent() {
-        return null;
-    }
+  @Override
+  protected AbstractSelect createSelectComponent() {
+    return null;
+  }
 
-    @Override
-    public void refreshSelectNext() {
-    }
+  @Override
+  public void refreshSelectNext() {
+  }
 
-    @Override
-    public void selectElement(int index) {
-    }
+  @Override
+  public void selectElement(int index) {
+  }
 }

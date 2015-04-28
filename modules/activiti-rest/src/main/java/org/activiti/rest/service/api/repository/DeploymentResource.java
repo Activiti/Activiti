@@ -34,31 +34,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class DeploymentResource {
 
-    @Autowired
-    protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-    @Autowired
-    protected RepositoryService repositoryService;
+  @Autowired
+  protected RepositoryService repositoryService;
 
-    @RequestMapping(value = "/repository/deployments/{deploymentId}", method = RequestMethod.GET, produces = "application/json")
-    public DeploymentResponse getDeployment(@PathVariable String deploymentId, HttpServletRequest request) {
-        Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+  @RequestMapping(value = "/repository/deployments/{deploymentId}", method = RequestMethod.GET, produces = "application/json")
+  public DeploymentResponse getDeployment(@PathVariable String deploymentId, HttpServletRequest request) {
+    Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
 
-        if (deployment == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
-        }
-
-        return restResponseFactory.createDeploymentResponse(deployment);
+    if (deployment == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
     }
 
-    @RequestMapping(value = "/repository/deployments/{deploymentId}", method = RequestMethod.DELETE, produces = "application/json")
-    public void deleteDeployment(@PathVariable String deploymentId, @RequestParam(value = "cascade", required = false, defaultValue = "false") Boolean cascade, HttpServletResponse response) {
+    return restResponseFactory.createDeploymentResponse(deployment);
+  }
 
-        if (cascade) {
-            repositoryService.deleteDeployment(deploymentId, true);
-        } else {
-            repositoryService.deleteDeployment(deploymentId);
-        }
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+  @RequestMapping(value = "/repository/deployments/{deploymentId}", method = RequestMethod.DELETE, produces = "application/json")
+  public void deleteDeployment(@PathVariable String deploymentId, @RequestParam(value = "cascade", required = false, defaultValue = "false") Boolean cascade, HttpServletResponse response) {
+
+    if (cascade) {
+      repositoryService.deleteDeployment(deploymentId, true);
+    } else {
+      repositoryService.deleteDeployment(deploymentId);
     }
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
 }

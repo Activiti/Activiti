@@ -18,67 +18,67 @@ package org.activiti.rest.service.api.history;
  */
 public class HistoricIdentityLinkResponse {
 
-    protected String type;
-    protected String userId;
-    protected String groupId;
-    protected String taskId;
-    protected String taskUrl;
-    protected String processInstanceId;
-    protected String processInstanceUrl;
+  protected String type;
+  protected String userId;
+  protected String groupId;
+  protected String taskId;
+  protected String taskUrl;
+  protected String processInstanceId;
+  protected String processInstanceUrl;
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+    return type;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public String getUserId() {
-        return userId;
-    }
+  public String getUserId() {
+    return userId;
+  }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
 
-    public String getGroupId() {
-        return groupId;
-    }
+  public String getGroupId() {
+    return groupId;
+  }
 
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
+  public void setGroupId(String groupId) {
+    this.groupId = groupId;
+  }
 
-    public String getTaskId() {
-        return taskId;
-    }
+  public String getTaskId() {
+    return taskId;
+  }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
 
-    public String getTaskUrl() {
-        return taskUrl;
-    }
+  public String getTaskUrl() {
+    return taskUrl;
+  }
 
-    public void setTaskUrl(String taskUrl) {
-        this.taskUrl = taskUrl;
-    }
+  public void setTaskUrl(String taskUrl) {
+    this.taskUrl = taskUrl;
+  }
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 
-    public String getProcessInstanceUrl() {
-        return processInstanceUrl;
-    }
+  public String getProcessInstanceUrl() {
+    return processInstanceUrl;
+  }
 
-    public void setProcessInstanceUrl(String processInstanceUrl) {
-        this.processInstanceUrl = processInstanceUrl;
-    }
+  public void setProcessInstanceUrl(String processInstanceUrl) {
+    this.processInstanceUrl = processInstanceUrl;
+  }
 }

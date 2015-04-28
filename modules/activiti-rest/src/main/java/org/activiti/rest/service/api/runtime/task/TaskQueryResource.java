@@ -30,9 +30,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TaskQueryResource extends TaskBaseResource {
 
-    @RequestMapping(value = "/query/tasks", method = RequestMethod.POST, produces = "application/json")
-    public DataResponse getQueryResult(@RequestBody TaskQueryRequest request, @RequestParam Map<String, String> requestParams, HttpServletRequest httpRequest) {
+  @RequestMapping(value = "/query/tasks", method = RequestMethod.POST, produces = "application/json")
+  public DataResponse getQueryResult(@RequestBody TaskQueryRequest request, @RequestParam Map<String, String> requestParams, HttpServletRequest httpRequest) {
 
-        return getTasksFromQueryRequest(request, requestParams);
-    }
+    return getTasksFromQueryRequest(request, requestParams);
+  }
 }

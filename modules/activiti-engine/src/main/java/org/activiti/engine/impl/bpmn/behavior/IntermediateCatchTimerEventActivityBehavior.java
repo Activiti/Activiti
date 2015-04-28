@@ -21,23 +21,23 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.TimerUtil;
 
 public class IntermediateCatchTimerEventActivityBehavior extends AbstractBpmnActivityBehavior {
-    
-    private static final long serialVersionUID = 1L;
-    
-    protected TimerEventDefinition timerEventDefinition;
-	
-	public IntermediateCatchTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition) {
-		this.timerEventDefinition = timerEventDefinition;
-	}
 
-    public void execute(ActivityExecution execution) {
-        TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition(timerEventDefinition, 
-        		false, (ExecutionEntity) execution, TriggerTimerEventJobHandler.TYPE, execution.getCurrentActivityId());
-        Context.getCommandContext().getJobEntityManager().schedule(timer);
-    }
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
-        leave(execution);
-    }
+  protected TimerEventDefinition timerEventDefinition;
+
+  public IntermediateCatchTimerEventActivityBehavior(TimerEventDefinition timerEventDefinition) {
+    this.timerEventDefinition = timerEventDefinition;
+  }
+
+  public void execute(ActivityExecution execution) {
+    TimerEntity timer = TimerUtil
+        .createTimerEntityForTimerEventDefinition(timerEventDefinition, false, (ExecutionEntity) execution, TriggerTimerEventJobHandler.TYPE, execution.getCurrentActivityId());
+    Context.getCommandContext().getJobEntityManager().schedule(timer);
+  }
+
+  @Override
+  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+    leave(execution);
+  }
 }

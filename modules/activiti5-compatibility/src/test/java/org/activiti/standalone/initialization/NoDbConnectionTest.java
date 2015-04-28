@@ -22,22 +22,22 @@ import org.activiti5.engine.impl.test.PvmTestCase;
  */
 public class NoDbConnectionTest extends PvmTestCase {
 
-    public void testNoDbConnection() {
-        try {
-            ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml").buildProcessEngine();
-            fail("expected exception");
-        } catch (RuntimeException e) {
-            assertTrue(containsSqlException(e));
-        }
+  public void testNoDbConnection() {
+    try {
+      ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("org/activiti/standalone/initialization/nodbconnection.activiti.cfg.xml").buildProcessEngine();
+      fail("expected exception");
+    } catch (RuntimeException e) {
+      assertTrue(containsSqlException(e));
     }
+  }
 
-    private boolean containsSqlException(Throwable e) {
-        if (e == null) {
-            return false;
-        }
-        if (e instanceof SQLException) {
-            return true;
-        }
-        return containsSqlException(e.getCause());
+  private boolean containsSqlException(Throwable e) {
+    if (e == null) {
+      return false;
     }
+    if (e instanceof SQLException) {
+      return true;
+    }
+    return containsSqlException(e.getCause());
+  }
 }

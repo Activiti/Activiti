@@ -21,17 +21,17 @@ import org.activiti.explorer.util.time.TimeUnit;
  */
 public class WeekTimeUnit implements TimeUnit {
 
-    private static final Long MILLIS_PER_WEEK = 604800000L;
+  private static final Long MILLIS_PER_WEEK = 604800000L;
 
-    public Long getNumberOfMillis() {
-        return MILLIS_PER_WEEK;
-    }
+  public Long getNumberOfMillis() {
+    return MILLIS_PER_WEEK;
+  }
 
-    public String getMessageKey(Long numberOfUnits) {
-        if (numberOfUnits == 1) {
-            return Messages.TIME_UNIT_WEEK;
-        } else {
-            return Messages.TIME_UNIT_WEEKS;
-        }
+  public String getMessageKey(Long numberOfUnits) {
+    if (numberOfUnits == 1) {
+      return Messages.TIME_UNIT_WEEK;
+    } else {
+      return Messages.TIME_UNIT_WEEKS;
     }
+  }
 }

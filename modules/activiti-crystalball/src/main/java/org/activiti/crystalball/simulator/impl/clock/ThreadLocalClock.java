@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.impl.clock;
  * limitations under the License.
  */
 
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.runtime.Clock;
 import org.springframework.beans.factory.FactoryBean;
@@ -23,8 +22,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 /**
- * This class provides thread local clock implementation. Each thread can run its own simulation engine and
- * can behave according to its internal thread local clock
+ * This class provides thread local clock implementation. Each thread can run its own simulation engine and can behave according to its internal thread local clock
  */
 public class ThreadLocalClock implements Clock {
   private volatile static ThreadLocal<Clock> THREAD_CLOCK = new ThreadLocal<Clock>();
@@ -33,6 +31,7 @@ public class ThreadLocalClock implements Clock {
   public ThreadLocalClock(FactoryBean<Clock> clockFactory) {
     this.clockFactory = clockFactory;
   }
+
   @Override
   public void setCurrentTime(Date currentTime) {
     get().setCurrentTime(currentTime);

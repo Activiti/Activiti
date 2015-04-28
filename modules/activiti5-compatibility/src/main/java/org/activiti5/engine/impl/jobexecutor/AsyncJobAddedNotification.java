@@ -24,18 +24,18 @@ import org.slf4j.LoggerFactory;
  */
 public class AsyncJobAddedNotification implements TransactionListener {
 
-    private static Logger log = LoggerFactory.getLogger(AsyncJobAddedNotification.class);
+  private static Logger log = LoggerFactory.getLogger(AsyncJobAddedNotification.class);
 
-    protected JobEntity job;
-    protected AsyncExecutor asyncExecutor;
+  protected JobEntity job;
+  protected AsyncExecutor asyncExecutor;
 
-    public AsyncJobAddedNotification(JobEntity job, AsyncExecutor asyncExecutor) {
-        this.job = job;
-        this.asyncExecutor = asyncExecutor;
-    }
+  public AsyncJobAddedNotification(JobEntity job, AsyncExecutor asyncExecutor) {
+    this.job = job;
+    this.asyncExecutor = asyncExecutor;
+  }
 
-    public void execute(CommandContext commandContext) {
-        log.debug("notifying job executor of new job");
-        asyncExecutor.executeAsyncJob(job);
-    }
+  public void execute(CommandContext commandContext) {
+    log.debug("notifying job executor of new job");
+    asyncExecutor.executeAsyncJob(job);
+  }
 }

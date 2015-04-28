@@ -23,25 +23,25 @@ import com.vaadin.ui.Tree;
  */
 public abstract class AbstractTreePage extends AbstractPage {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Override
-    protected AbstractSelect createSelectComponent() {
-        Tree tree = createTree();
-        tree.setSizeFull();
-        return tree;
-    }
+  @Override
+  protected AbstractSelect createSelectComponent() {
+    Tree tree = createTree();
+    tree.setSizeFull();
+    return tree;
+  }
 
-    protected abstract Tree createTree();
+  protected abstract Tree createTree();
 
-    @Override
-    public void refreshSelectNext() {
-        throw new UnsupportedOperationException();
-    }
+  @Override
+  public void refreshSelectNext() {
+    throw new UnsupportedOperationException();
+  }
 
-    @Override
-    public void selectElement(int index) {
-        throw new UnsupportedOperationException();
-    }
+  @Override
+  public void selectElement(int index) {
+    throw new UnsupportedOperationException();
+  }
 
 }

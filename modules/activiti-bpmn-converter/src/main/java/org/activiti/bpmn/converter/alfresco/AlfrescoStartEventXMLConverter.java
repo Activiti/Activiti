@@ -21,12 +21,12 @@ import org.activiti.bpmn.model.alfresco.AlfrescoStartEvent;
  */
 public class AlfrescoStartEventXMLConverter extends StartEventXMLConverter {
 
-    public Class<? extends BaseElement> getBpmnElementType() {
-        return AlfrescoStartEvent.class;
-    }
+  public Class<? extends BaseElement> getBpmnElementType() {
+    return AlfrescoStartEvent.class;
+  }
 
-    @Override
-    protected String getXMLElementName() {
-        return ELEMENT_EVENT_START;
-    }
+  @Override
+  protected String getXMLElementName() {
+    return ELEMENT_EVENT_START;
+  }
 }

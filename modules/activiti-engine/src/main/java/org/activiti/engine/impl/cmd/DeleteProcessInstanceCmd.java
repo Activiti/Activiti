@@ -24,35 +24,34 @@ import java.io.Serializable;
  */
 public class DeleteProcessInstanceCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String processInstanceId;
-    protected String deleteReason;
+  private static final long serialVersionUID = 1L;
+  protected String processInstanceId;
+  protected String deleteReason;
 
-    public DeleteProcessInstanceCmd(String processInstanceId, String deleteReason) {
-        this.processInstanceId = processInstanceId;
-        this.deleteReason = deleteReason;
+  public DeleteProcessInstanceCmd(String processInstanceId, String deleteReason) {
+    this.processInstanceId = processInstanceId;
+    this.deleteReason = deleteReason;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (processInstanceId == null) {
+      throw new ActivitiIllegalArgumentException("processInstanceId is null");
     }
 
-    public Void execute(CommandContext commandContext) {
-        if (processInstanceId == null) {
-            throw new ActivitiIllegalArgumentException("processInstanceId is null");
-        }
-
-        // fill default reason if none provided
-        if (deleteReason == null) {
-            deleteReason = "ACTIVITI_DELETED";
-        }
-
-        if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-            commandContext.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(this.processInstanceId, this.processInstanceId, null, deleteReason));
-        }
-
-        commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceId, null, deleteReason);
-        
-        // TODO : remove following line of deleteProcessInstanceExecutionEntity is found to be doing the same as deleteProcessInstance
-//        commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceId, deleteReason);
-        return null;
+    // fill default reason if none provided
+    if (deleteReason == null) {
+      deleteReason = "ACTIVITI_DELETED";
     }
+
+    if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createCancelledEvent(this.processInstanceId, this.processInstanceId, null, deleteReason));
+    }
+
+    commandContext.getExecutionEntityManager().deleteProcessInstanceExecutionEntity(processInstanceId, null, deleteReason);
+
+    // TODO : remove following line of deleteProcessInstanceExecutionEntity is found to be doing the same as deleteProcessInstance
+    // commandContext.getExecutionEntityManager().deleteProcessInstance(processInstanceId, deleteReason);
+    return null;
+  }
 
 }

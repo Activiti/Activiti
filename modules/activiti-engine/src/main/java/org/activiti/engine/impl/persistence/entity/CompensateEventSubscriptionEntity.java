@@ -21,42 +21,42 @@ import org.activiti.engine.impl.event.CompensationEventHandler;
  */
 public class CompensateEventSubscriptionEntity extends EventSubscriptionEntity {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private CompensateEventSubscriptionEntity() {
-        eventType = CompensationEventHandler.EVENT_HANDLER_TYPE;
+  private CompensateEventSubscriptionEntity() {
+    eventType = CompensationEventHandler.EVENT_HANDLER_TYPE;
+  }
+
+  public static CompensateEventSubscriptionEntity createAndInsert(ExecutionEntity executionEntity) {
+    CompensateEventSubscriptionEntity eventSubscription = new CompensateEventSubscriptionEntity();
+    eventSubscription.setExecution(executionEntity);
+    if (executionEntity.getTenantId() != null) {
+      eventSubscription.setTenantId(executionEntity.getTenantId());
     }
+    eventSubscription.insert();
+    return eventSubscription;
+  }
 
-    public static CompensateEventSubscriptionEntity createAndInsert(ExecutionEntity executionEntity) {
-        CompensateEventSubscriptionEntity eventSubscription = new CompensateEventSubscriptionEntity();
-        eventSubscription.setExecution(executionEntity);
-        if (executionEntity.getTenantId() != null) {
-            eventSubscription.setTenantId(executionEntity.getTenantId());
-        }
-        eventSubscription.insert();
-        return eventSubscription;
-    }
+  // custom processing behavior
+  // //////////////////////////////////////////////////////////////////////////////
 
-    // custom processing behavior
-    // //////////////////////////////////////////////////////////////////////////////
+  @Override
+  protected void processEventSync(Object payload) {
+    delete();
+    super.processEventSync(payload);
+  }
 
-    @Override
-    protected void processEventSync(Object payload) {
-        delete();
-        super.processEventSync(payload);
-    }
+  public CompensateEventSubscriptionEntity moveUnder(ExecutionEntity newExecution) {
 
-    public CompensateEventSubscriptionEntity moveUnder(ExecutionEntity newExecution) {
+    delete();
 
-        delete();
+    CompensateEventSubscriptionEntity newSubscription = createAndInsert(newExecution);
+    newSubscription.setActivity(getActivity());
+    newSubscription.setConfiguration(configuration);
+    // use the original date
+    newSubscription.setCreated(created);
 
-        CompensateEventSubscriptionEntity newSubscription = createAndInsert(newExecution);
-        newSubscription.setActivity(getActivity());
-        newSubscription.setConfiguration(configuration);
-        // use the original date
-        newSubscription.setCreated(created);
-
-        return newSubscription;
-    }
+    return newSubscription;
+  }
 
 }

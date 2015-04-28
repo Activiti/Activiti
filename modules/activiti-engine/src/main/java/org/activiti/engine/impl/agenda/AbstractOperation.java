@@ -30,87 +30,85 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
  */
 public abstract class AbstractOperation implements Runnable {
 
-	protected CommandContext commandContext;
-    protected Agenda agenda;
-    protected ActivityExecution execution;
+  protected CommandContext commandContext;
+  protected Agenda agenda;
+  protected ActivityExecution execution;
 
-    public AbstractOperation() {
+  public AbstractOperation() {
 
-    }
+  }
 
-    public AbstractOperation(CommandContext commandContext, ActivityExecution execution) {
-    	this.commandContext = commandContext;
-        this.execution = execution;
-        this.agenda = commandContext.getAgenda();
-    }
+  public AbstractOperation(CommandContext commandContext, ActivityExecution execution) {
+    this.commandContext = commandContext;
+    this.execution = execution;
+    this.agenda = commandContext.getAgenda();
+  }
 
-    /**
-     * Helper method to match the activityId of an execution with a FlowElement
-     * of the process definition referenced by the execution.
-     */
-    protected FlowElement findCurrentFlowElement(final ActivityExecution execution) {
-        String processDefinitionId = execution.getProcessDefinitionId();
-        org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
-        String activityId = execution.getCurrentActivityId();
-        FlowElement currentFlowElement = process.getFlowElement(activityId, true);
-        execution.setCurrentFlowElement(currentFlowElement);
-        return currentFlowElement;
-    }
-    
-    protected void executeExecutionListeners(FlowElement flowElement, String eventType) {
-    	List<ActivitiListener> listeners = flowElement.getExecutionListeners();
-        ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
-        for (ActivitiListener activitiListener : listeners) {
-        	
-        	if (eventType.equals(activitiListener.getEvent())) {
-        	
-	            ExecutionListener executionListener = null;
-	
-	            if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-	                executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
-	            } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-	                executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
-	            } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-	                executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
-	            }
-	            
-	            if (executionListener != null) {
-	                ((ExecutionEntity) execution).setEventName(eventType);
-	                executionListener.notify(execution);
-	            }
-	            
-        	}
+  /**
+   * Helper method to match the activityId of an execution with a FlowElement of the process definition referenced by the execution.
+   */
+  protected FlowElement findCurrentFlowElement(final ActivityExecution execution) {
+    String processDefinitionId = execution.getProcessDefinitionId();
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+    String activityId = execution.getCurrentActivityId();
+    FlowElement currentFlowElement = process.getFlowElement(activityId, true);
+    execution.setCurrentFlowElement(currentFlowElement);
+    return currentFlowElement;
+  }
+
+  protected void executeExecutionListeners(FlowElement flowElement, String eventType) {
+    List<ActivitiListener> listeners = flowElement.getExecutionListeners();
+    ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
+    for (ActivitiListener activitiListener : listeners) {
+
+      if (eventType.equals(activitiListener.getEvent())) {
+
+        ExecutionListener executionListener = null;
+
+        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+          executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+          executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
+        } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+          executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
         }
-        
-        // TODO: is this still needed? Is this property still needed?
-        ((ExecutionEntity) execution).setEventName(null);
+
+        if (executionListener != null) {
+          ((ExecutionEntity) execution).setEventName(eventType);
+          executionListener.notify(execution);
+        }
+
+      }
     }
 
-    
-    /* TODO: Should following methods be moved to the entityManager */
-    
-    public CommandContext getCommandContext() {
-		return commandContext;
-	}
+    // TODO: is this still needed? Is this property still needed?
+    ((ExecutionEntity) execution).setEventName(null);
+  }
 
-	public void setCommandContext(CommandContext commandContext) {
-		this.commandContext = commandContext;
-	}
+  /* TODO: Should following methods be moved to the entityManager */
 
-	public Agenda getAgenda() {
-        return agenda;
-    }
+  public CommandContext getCommandContext() {
+    return commandContext;
+  }
 
-    public void setAgenda(Agenda agenda) {
-        this.agenda = agenda;
-    }
+  public void setCommandContext(CommandContext commandContext) {
+    this.commandContext = commandContext;
+  }
 
-    public ActivityExecution getExecution() {
-        return execution;
-    }
+  public Agenda getAgenda() {
+    return agenda;
+  }
 
-    public void setExecution(ActivityExecution execution) {
-        this.execution = execution;
-    }
+  public void setAgenda(Agenda agenda) {
+    this.agenda = agenda;
+  }
+
+  public ActivityExecution getExecution() {
+    return execution;
+  }
+
+  public void setExecution(ActivityExecution execution) {
+    this.execution = execution;
+  }
 
 }

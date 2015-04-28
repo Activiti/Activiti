@@ -58,364 +58,364 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class TaskDetailPanel extends DetailPanel {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected Task task;
+  protected Task task;
 
-    // Services
-    protected transient TaskService taskService;
-    protected transient FormService formService;
-    protected transient RepositoryService repositoryService;
-    protected ViewManager viewManager;
-    protected I18nManager i18nManager;
-    protected NotificationManager notificationManager;
+  // Services
+  protected transient TaskService taskService;
+  protected transient FormService formService;
+  protected transient RepositoryService repositoryService;
+  protected ViewManager viewManager;
+  protected I18nManager i18nManager;
+  protected NotificationManager notificationManager;
 
-    // UI
-    protected TaskPage taskPage;
-    protected VerticalLayout centralLayout;
-    protected FormPropertiesForm taskForm;
-    protected TaskInvolvedPeopleComponent involvedPeople;
-    protected SubTaskComponent subTaskComponent;
-    protected TaskRelatedContentComponent relatedContent;
-    protected Button completeButton;
-    protected Button claimButton;
+  // UI
+  protected TaskPage taskPage;
+  protected VerticalLayout centralLayout;
+  protected FormPropertiesForm taskForm;
+  protected TaskInvolvedPeopleComponent involvedPeople;
+  protected SubTaskComponent subTaskComponent;
+  protected TaskRelatedContentComponent relatedContent;
+  protected Button completeButton;
+  protected Button claimButton;
 
-    public TaskDetailPanel(Task task, TaskPage taskPage) {
-        this.task = task;
-        this.taskPage = taskPage;
+  public TaskDetailPanel(Task task, TaskPage taskPage) {
+    this.task = task;
+    this.taskPage = taskPage;
 
-        this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
-        this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
-        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-        this.viewManager = ExplorerApp.get().getViewManager();
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-        this.notificationManager = ExplorerApp.get().getNotificationManager();
+    this.taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+    this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
+    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    this.viewManager = ExplorerApp.get().getViewManager();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
+  }
+
+  @Override
+  public void attach() {
+    super.attach();
+    init();
+  }
+
+  protected void init() {
+    setSizeFull();
+    addStyleName(Reindeer.LAYOUT_WHITE);
+
+    // Central panel: all task data
+    this.centralLayout = new VerticalLayout();
+    centralLayout.setMargin(true);
+    setDetailContainer(centralLayout);
+
+    initHeader();
+    initDescriptionAndClaimButton();
+    initProcessLink();
+    initParentTaskLink();
+    initPeopleDetails();
+    initSubTasks();
+    initRelatedContent();
+    initTaskForm();
+
+  }
+
+  protected void initHeader() {
+    GridLayout taskDetails = new GridLayout(2, 2);
+    taskDetails.setWidth(100, UNITS_PERCENTAGE);
+    taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    taskDetails.setSpacing(true);
+    taskDetails.setMargin(false, false, true, false);
+    taskDetails.setColumnExpandRatio(1, 1.0f);
+    centralLayout.addComponent(taskDetails);
+
+    // Add image
+    Embedded image = new Embedded(null, Images.TASK_50);
+    taskDetails.addComponent(image, 0, 0, 0, 1);
+
+    // Add task name
+    Label nameLabel = new Label(task.getName());
+    nameLabel.addStyleName(Reindeer.LABEL_H2);
+    taskDetails.addComponent(nameLabel, 1, 0);
+    taskDetails.setComponentAlignment(nameLabel, Alignment.MIDDLE_LEFT);
+
+    // Properties
+    HorizontalLayout propertiesLayout = new HorizontalLayout();
+    propertiesLayout.setSpacing(true);
+    taskDetails.addComponent(propertiesLayout);
+
+    propertiesLayout.addComponent(new DueDateComponent(task, i18nManager, taskService));
+    propertiesLayout.addComponent(new PriorityComponent(task, i18nManager, taskService));
+
+    initCreateTime(propertiesLayout);
+  }
+
+  protected void initCreateTime(HorizontalLayout propertiesLayout) {
+    PrettyTimeLabel createLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_CREATED_SHORT), task.getCreateTime(), "", true);
+    createLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_CREATE_TIME);
+    propertiesLayout.addComponent(createLabel);
+  }
+
+  protected void initDescriptionAndClaimButton() {
+    HorizontalLayout layout = new HorizontalLayout();
+    layout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+    layout.setWidth(100, UNITS_PERCENTAGE);
+    layout.setSpacing(true);
+    centralLayout.addComponent(layout);
+
+    initClaimButton(layout);
+    initDescription(layout);
+  }
+
+  protected void initClaimButton(HorizontalLayout layout) {
+    if (!isCurrentUserAssignee() && canUserClaimTask()) {
+      claimButton = new Button(i18nManager.getMessage(Messages.TASK_CLAIM));
+      claimButton.addListener(new ClaimTaskClickListener(task.getId(), taskService));
+      layout.addComponent(claimButton);
+      layout.setComponentAlignment(claimButton, Alignment.MIDDLE_LEFT);
     }
+  }
 
-    @Override
-    public void attach() {
-        super.attach();
-        init();
+  protected void initDescription(HorizontalLayout layout) {
+    final CssLayout descriptionLayout = new CssLayout();
+    descriptionLayout.setWidth(100, UNITS_PERCENTAGE);
+    layout.addComponent(descriptionLayout);
+    layout.setExpandRatio(descriptionLayout, 1.0f);
+    layout.setComponentAlignment(descriptionLayout, Alignment.MIDDLE_LEFT);
+
+    String descriptionText = null;
+    if (task.getDescription() != null && !"".equals(task.getDescription())) {
+      descriptionText = task.getDescription();
+    } else {
+      descriptionText = i18nManager.getMessage(Messages.TASK_NO_DESCRIPTION);
     }
+    final Label descriptionLabel = new Label(descriptionText);
+    descriptionLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
+    descriptionLayout.addComponent(descriptionLabel);
 
-    protected void init() {
-        setSizeFull();
-        addStyleName(Reindeer.LAYOUT_WHITE);
+    descriptionLayout.addListener(new LayoutClickListener() {
+      public void layoutClick(LayoutClickEvent event) {
+        if (event.getClickedComponent() != null && event.getClickedComponent().equals(descriptionLabel)) {
+          // layout for textarea + ok button
+          final VerticalLayout editLayout = new VerticalLayout();
+          editLayout.setSpacing(true);
 
-        // Central panel: all task data
-        this.centralLayout = new VerticalLayout();
-        centralLayout.setMargin(true);
-        setDetailContainer(centralLayout);
+          // textarea
+          final TextArea descriptionTextArea = new TextArea();
+          descriptionTextArea.setNullRepresentation("");
+          descriptionTextArea.setWidth(100, UNITS_PERCENTAGE);
+          descriptionTextArea.setValue(task.getDescription());
+          editLayout.addComponent(descriptionTextArea);
 
-        initHeader();
-        initDescriptionAndClaimButton();
-        initProcessLink();
-        initParentTaskLink();
-        initPeopleDetails();
-        initSubTasks();
-        initRelatedContent();
-        initTaskForm();
+          // ok button
+          Button okButton = new Button(i18nManager.getMessage(Messages.BUTTON_OK));
+          editLayout.addComponent(okButton);
+          editLayout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
 
-    }
+          // replace
+          descriptionLayout.replaceComponent(descriptionLabel, editLayout);
 
-    protected void initHeader() {
-        GridLayout taskDetails = new GridLayout(2, 2);
-        taskDetails.setWidth(100, UNITS_PERCENTAGE);
-        taskDetails.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
-        taskDetails.setSpacing(true);
-        taskDetails.setMargin(false, false, true, false);
-        taskDetails.setColumnExpandRatio(1, 1.0f);
-        centralLayout.addComponent(taskDetails);
+          // When OK is clicked -> update task data + ui
+          okButton.addListener(new ClickListener() {
+            public void buttonClick(ClickEvent event) {
+              // Update data
+              task.setDescription(descriptionTextArea.getValue().toString());
+              taskService.saveTask(task);
 
-        // Add image
-        Embedded image = new Embedded(null, Images.TASK_50);
-        taskDetails.addComponent(image, 0, 0, 0, 1);
-
-        // Add task name
-        Label nameLabel = new Label(task.getName());
-        nameLabel.addStyleName(Reindeer.LABEL_H2);
-        taskDetails.addComponent(nameLabel, 1, 0);
-        taskDetails.setComponentAlignment(nameLabel, Alignment.MIDDLE_LEFT);
-
-        // Properties
-        HorizontalLayout propertiesLayout = new HorizontalLayout();
-        propertiesLayout.setSpacing(true);
-        taskDetails.addComponent(propertiesLayout);
-
-        propertiesLayout.addComponent(new DueDateComponent(task, i18nManager, taskService));
-        propertiesLayout.addComponent(new PriorityComponent(task, i18nManager, taskService));
-
-        initCreateTime(propertiesLayout);
-    }
-
-    protected void initCreateTime(HorizontalLayout propertiesLayout) {
-        PrettyTimeLabel createLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.TASK_CREATED_SHORT), task.getCreateTime(), "", true);
-        createLabel.addStyleName(ExplorerLayout.STYLE_TASK_HEADER_CREATE_TIME);
-        propertiesLayout.addComponent(createLabel);
-    }
-
-    protected void initDescriptionAndClaimButton() {
-        HorizontalLayout layout = new HorizontalLayout();
-        layout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
-        layout.setWidth(100, UNITS_PERCENTAGE);
-        layout.setSpacing(true);
-        centralLayout.addComponent(layout);
-
-        initClaimButton(layout);
-        initDescription(layout);
-    }
-
-    protected void initClaimButton(HorizontalLayout layout) {
-        if (!isCurrentUserAssignee() && canUserClaimTask()) {
-            claimButton = new Button(i18nManager.getMessage(Messages.TASK_CLAIM));
-            claimButton.addListener(new ClaimTaskClickListener(task.getId(), taskService));
-            layout.addComponent(claimButton);
-            layout.setComponentAlignment(claimButton, Alignment.MIDDLE_LEFT);
-        }
-    }
-
-    protected void initDescription(HorizontalLayout layout) {
-        final CssLayout descriptionLayout = new CssLayout();
-        descriptionLayout.setWidth(100, UNITS_PERCENTAGE);
-        layout.addComponent(descriptionLayout);
-        layout.setExpandRatio(descriptionLayout, 1.0f);
-        layout.setComponentAlignment(descriptionLayout, Alignment.MIDDLE_LEFT);
-
-        String descriptionText = null;
-        if (task.getDescription() != null && !"".equals(task.getDescription())) {
-            descriptionText = task.getDescription();
-        } else {
-            descriptionText = i18nManager.getMessage(Messages.TASK_NO_DESCRIPTION);
-        }
-        final Label descriptionLabel = new Label(descriptionText);
-        descriptionLabel.addStyleName(ExplorerLayout.STYLE_CLICKABLE);
-        descriptionLayout.addComponent(descriptionLabel);
-
-        descriptionLayout.addListener(new LayoutClickListener() {
-            public void layoutClick(LayoutClickEvent event) {
-                if (event.getClickedComponent() != null && event.getClickedComponent().equals(descriptionLabel)) {
-                    // layout for textarea + ok button
-                    final VerticalLayout editLayout = new VerticalLayout();
-                    editLayout.setSpacing(true);
-
-                    // textarea
-                    final TextArea descriptionTextArea = new TextArea();
-                    descriptionTextArea.setNullRepresentation("");
-                    descriptionTextArea.setWidth(100, UNITS_PERCENTAGE);
-                    descriptionTextArea.setValue(task.getDescription());
-                    editLayout.addComponent(descriptionTextArea);
-
-                    // ok button
-                    Button okButton = new Button(i18nManager.getMessage(Messages.BUTTON_OK));
-                    editLayout.addComponent(okButton);
-                    editLayout.setComponentAlignment(okButton, Alignment.BOTTOM_RIGHT);
-
-                    // replace
-                    descriptionLayout.replaceComponent(descriptionLabel, editLayout);
-
-                    // When OK is clicked -> update task data + ui
-                    okButton.addListener(new ClickListener() {
-                        public void buttonClick(ClickEvent event) {
-                            // Update data
-                            task.setDescription(descriptionTextArea.getValue().toString());
-                            taskService.saveTask(task);
-
-                            // Update UI
-                            descriptionLabel.setValue(task.getDescription());
-                            descriptionLayout.replaceComponent(editLayout, descriptionLabel);
-                        }
-                    });
-                }
+              // Update UI
+              descriptionLabel.setValue(task.getDescription());
+              descriptionLayout.replaceComponent(editLayout, descriptionLabel);
             }
-        });
-    }
-
-    protected void initProcessLink() {
-        if (task.getProcessInstanceId() != null) {
-            ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(task.getProcessDefinitionId()).singleResult();
-
-            Button showProcessInstanceButton = new Button(i18nManager.getMessage(Messages.TASK_PART_OF_PROCESS, getProcessDisplayName(processDefinition)));
-            showProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
-            showProcessInstanceButton.addListener(new ClickListener() {
-                public void buttonClick(ClickEvent event) {
-                    viewManager.showMyProcessInstancesPage(task.getProcessInstanceId());
-                }
-            });
-
-            centralLayout.addComponent(showProcessInstanceButton);
-            addEmptySpace(centralLayout);
+          });
         }
-    }
+      }
+    });
+  }
 
-    protected String getProcessDisplayName(ProcessDefinition processDefinition) {
-        if (processDefinition.getName() != null) {
-            return processDefinition.getName();
-        } else {
-            return processDefinition.getKey();
+  protected void initProcessLink() {
+    if (task.getProcessInstanceId() != null) {
+      ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().processDefinitionId(task.getProcessDefinitionId()).singleResult();
+
+      Button showProcessInstanceButton = new Button(i18nManager.getMessage(Messages.TASK_PART_OF_PROCESS, getProcessDisplayName(processDefinition)));
+      showProcessInstanceButton.addStyleName(Reindeer.BUTTON_LINK);
+      showProcessInstanceButton.addListener(new ClickListener() {
+        public void buttonClick(ClickEvent event) {
+          viewManager.showMyProcessInstancesPage(task.getProcessInstanceId());
         }
+      });
+
+      centralLayout.addComponent(showProcessInstanceButton);
+      addEmptySpace(centralLayout);
     }
+  }
 
-    protected void initParentTaskLink() {
-        if (task.getParentTaskId() != null) {
-            final Task parentTask = taskService.createTaskQuery().taskId(task.getParentTaskId()).singleResult();
+  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+    if (processDefinition.getName() != null) {
+      return processDefinition.getName();
+    } else {
+      return processDefinition.getKey();
+    }
+  }
 
-            Button showParentTaskButton = new Button(i18nManager.getMessage(Messages.TASK_SUBTASK_OF_PARENT_TASK, parentTask.getName()));
-            showParentTaskButton.addStyleName(Reindeer.BUTTON_LINK);
-            showParentTaskButton.addListener(new ClickListener() {
-                public void buttonClick(ClickEvent event) {
-                    viewManager.showTaskPage(parentTask.getId());
-                }
-            });
+  protected void initParentTaskLink() {
+    if (task.getParentTaskId() != null) {
+      final Task parentTask = taskService.createTaskQuery().taskId(task.getParentTaskId()).singleResult();
 
-            centralLayout.addComponent(showParentTaskButton);
-            addEmptySpace(centralLayout);
+      Button showParentTaskButton = new Button(i18nManager.getMessage(Messages.TASK_SUBTASK_OF_PARENT_TASK, parentTask.getName()));
+      showParentTaskButton.addStyleName(Reindeer.BUTTON_LINK);
+      showParentTaskButton.addListener(new ClickListener() {
+        public void buttonClick(ClickEvent event) {
+          viewManager.showTaskPage(parentTask.getId());
         }
+      });
+
+      centralLayout.addComponent(showParentTaskButton);
+      addEmptySpace(centralLayout);
     }
+  }
 
-    protected void initPeopleDetails() {
-        involvedPeople = new TaskInvolvedPeopleComponent(task, this);
-        centralLayout.addComponent(involvedPeople);
-    }
+  protected void initPeopleDetails() {
+    involvedPeople = new TaskInvolvedPeopleComponent(task, this);
+    centralLayout.addComponent(involvedPeople);
+  }
 
-    protected void initSubTasks() {
-        subTaskComponent = new SubTaskComponent(task);
-        centralLayout.addComponent(subTaskComponent);
-    }
+  protected void initSubTasks() {
+    subTaskComponent = new SubTaskComponent(task);
+    centralLayout.addComponent(subTaskComponent);
+  }
 
-    protected void initRelatedContent() {
-        relatedContent = new TaskRelatedContentComponent(task, this);
-        centralLayout.addComponent(relatedContent);
-    }
+  protected void initRelatedContent() {
+    relatedContent = new TaskRelatedContentComponent(task, this);
+    centralLayout.addComponent(relatedContent);
+  }
 
-    protected void initTaskForm() {
-        // Check if task requires a form
-        TaskFormData formData = formService.getTaskFormData(task.getId());
-        if (formData != null && formData.getFormProperties() != null && !formData.getFormProperties().isEmpty()) {
-            taskForm = new FormPropertiesForm();
-            taskForm.setSubmitButtonCaption(i18nManager.getMessage(Messages.TASK_COMPLETE));
-            taskForm.setCancelButtonCaption(i18nManager.getMessage(Messages.TASK_RESET_FORM));
-            taskForm.setFormHelp(i18nManager.getMessage(Messages.TASK_FORM_HELP));
-            taskForm.setFormProperties(formData.getFormProperties());
+  protected void initTaskForm() {
+    // Check if task requires a form
+    TaskFormData formData = formService.getTaskFormData(task.getId());
+    if (formData != null && formData.getFormProperties() != null && !formData.getFormProperties().isEmpty()) {
+      taskForm = new FormPropertiesForm();
+      taskForm.setSubmitButtonCaption(i18nManager.getMessage(Messages.TASK_COMPLETE));
+      taskForm.setCancelButtonCaption(i18nManager.getMessage(Messages.TASK_RESET_FORM));
+      taskForm.setFormHelp(i18nManager.getMessage(Messages.TASK_FORM_HELP));
+      taskForm.setFormProperties(formData.getFormProperties());
 
-            taskForm.addListener(new FormPropertiesEventListener() {
+      taskForm.addListener(new FormPropertiesEventListener() {
 
-                private static final long serialVersionUID = -3893467157397686736L;
+        private static final long serialVersionUID = -3893467157397686736L;
 
-                @Override
-                protected void handleFormSubmit(FormPropertiesEvent event) {
-                    Map<String, String> properties = event.getFormProperties();
-                    formService.submitTaskFormData(task.getId(), properties);
-                    notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
-                    taskPage.refreshSelectNext();
-                }
-
-                @Override
-                protected void handleFormCancel(FormPropertiesEvent event) {
-                    // Clear the form values
-                    taskForm.clear();
-                }
-            });
-            // Only if current user is task's assignee
-            taskForm.setEnabled(isCurrentUserAssignee());
-
-            // Add component to page
-            centralLayout.addComponent(taskForm);
-        } else {
-            // Just add a button to complete the task
-            // TODO: perhaps move to a better place
-
-            CssLayout buttonLayout = new CssLayout();
-            buttonLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
-            buttonLayout.setWidth(100, UNITS_PERCENTAGE);
-            centralLayout.addComponent(buttonLayout);
-
-            completeButton = new Button(i18nManager.getMessage(Messages.TASK_COMPLETE));
-
-            completeButton.addListener(new ClickListener() {
-
-                private static final long serialVersionUID = 1L;
-
-                public void buttonClick(ClickEvent event) {
-                    // If no owner, make assignee owner (will go into archived
-                    // then)
-                    if (task.getOwner() == null) {
-                        task.setOwner(task.getAssignee());
-                        taskService.setOwner(task.getId(), task.getAssignee());
-                    }
-
-                    taskService.complete(task.getId());
-                    notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
-                    taskPage.refreshSelectNext();
-                }
-            });
-
-            completeButton.setEnabled(isCurrentUserAssignee() || isCurrentUserOwner());
-            buttonLayout.addComponent(completeButton);
+        @Override
+        protected void handleFormSubmit(FormPropertiesEvent event) {
+          Map<String, String> properties = event.getFormProperties();
+          formService.submitTaskFormData(task.getId(), properties);
+          notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
+          taskPage.refreshSelectNext();
         }
-    }
 
-    protected boolean isCurrentUserAssignee() {
-        String currentUser = ExplorerApp.get().getLoggedInUser().getId();
-        return currentUser.equals(task.getAssignee());
-    }
-
-    protected boolean isCurrentUserOwner() {
-        String currentUser = ExplorerApp.get().getLoggedInUser().getId();
-        return currentUser.equals(task.getOwner());
-    }
-
-    protected boolean canUserClaimTask() {
-        return taskService.createTaskQuery().taskCandidateUser(ExplorerApp.get().getLoggedInUser().getId()).taskId(task.getId()).count() == 1;
-    }
-
-    protected void addEmptySpace(ComponentContainer container) {
-        Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-        emptySpace.setSizeUndefined();
-        container.addComponent(emptySpace);
-    }
-
-    public void notifyPeopleInvolvedChanged() {
-        involvedPeople.refreshPeopleGrid();
-        taskPage.getTaskEventPanel().refreshTaskEvents();
-    }
-
-    public void notifyAssigneeChanged() {
-        if (ExplorerApp.get().getLoggedInUser().getId().equals(task.getAssignee())) { // switch
-                                                                                      // view
-                                                                                      // to
-                                                                                      // inbox
-                                                                                      // if
-                                                                                      // assignee
-                                                                                      // is
-                                                                                      // current
-                                                                                      // user
-            viewManager.showInboxPage(task.getId());
-        } else {
-            involvedPeople.refreshAssignee();
-            taskPage.getTaskEventPanel().refreshTaskEvents();
+        @Override
+        protected void handleFormCancel(FormPropertiesEvent event) {
+          // Clear the form values
+          taskForm.clear();
         }
-    }
+      });
+      // Only if current user is task's assignee
+      taskForm.setEnabled(isCurrentUserAssignee());
 
-    public void notifyOwnerChanged() {
-        if (ExplorerApp.get().getLoggedInUser().getId().equals(task.getOwner())) { // switch
-                                                                                   // view
-                                                                                   // to
-                                                                                   // tasks
-                                                                                   // if
-                                                                                   // owner
-                                                                                   // is
-                                                                                   // current
-                                                                                   // user
-            viewManager.showTasksPage(task.getId());
-        } else {
-            involvedPeople.refreshOwner();
-            taskPage.getTaskEventPanel().refreshTaskEvents();
+      // Add component to page
+      centralLayout.addComponent(taskForm);
+    } else {
+      // Just add a button to complete the task
+      // TODO: perhaps move to a better place
+
+      CssLayout buttonLayout = new CssLayout();
+      buttonLayout.addStyleName(ExplorerLayout.STYLE_DETAIL_BLOCK);
+      buttonLayout.setWidth(100, UNITS_PERCENTAGE);
+      centralLayout.addComponent(buttonLayout);
+
+      completeButton = new Button(i18nManager.getMessage(Messages.TASK_COMPLETE));
+
+      completeButton.addListener(new ClickListener() {
+
+        private static final long serialVersionUID = 1L;
+
+        public void buttonClick(ClickEvent event) {
+          // If no owner, make assignee owner (will go into archived
+          // then)
+          if (task.getOwner() == null) {
+            task.setOwner(task.getAssignee());
+            taskService.setOwner(task.getId(), task.getAssignee());
+          }
+
+          taskService.complete(task.getId());
+          notificationManager.showInformationNotification(Messages.TASK_COMPLETED, task.getName());
+          taskPage.refreshSelectNext();
         }
-    }
+      });
 
-    public void notifyRelatedContentChanged() {
-        relatedContent.refreshTaskAttachments();
-        taskPage.getTaskEventPanel().refreshTaskEvents();
+      completeButton.setEnabled(isCurrentUserAssignee() || isCurrentUserOwner());
+      buttonLayout.addComponent(completeButton);
     }
+  }
+
+  protected boolean isCurrentUserAssignee() {
+    String currentUser = ExplorerApp.get().getLoggedInUser().getId();
+    return currentUser.equals(task.getAssignee());
+  }
+
+  protected boolean isCurrentUserOwner() {
+    String currentUser = ExplorerApp.get().getLoggedInUser().getId();
+    return currentUser.equals(task.getOwner());
+  }
+
+  protected boolean canUserClaimTask() {
+    return taskService.createTaskQuery().taskCandidateUser(ExplorerApp.get().getLoggedInUser().getId()).taskId(task.getId()).count() == 1;
+  }
+
+  protected void addEmptySpace(ComponentContainer container) {
+    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+    emptySpace.setSizeUndefined();
+    container.addComponent(emptySpace);
+  }
+
+  public void notifyPeopleInvolvedChanged() {
+    involvedPeople.refreshPeopleGrid();
+    taskPage.getTaskEventPanel().refreshTaskEvents();
+  }
+
+  public void notifyAssigneeChanged() {
+    if (ExplorerApp.get().getLoggedInUser().getId().equals(task.getAssignee())) { // switch
+                                                                                  // view
+                                                                                  // to
+                                                                                  // inbox
+                                                                                  // if
+                                                                                  // assignee
+                                                                                  // is
+                                                                                  // current
+                                                                                  // user
+      viewManager.showInboxPage(task.getId());
+    } else {
+      involvedPeople.refreshAssignee();
+      taskPage.getTaskEventPanel().refreshTaskEvents();
+    }
+  }
+
+  public void notifyOwnerChanged() {
+    if (ExplorerApp.get().getLoggedInUser().getId().equals(task.getOwner())) { // switch
+                                                                               // view
+                                                                               // to
+                                                                               // tasks
+                                                                               // if
+                                                                               // owner
+                                                                               // is
+                                                                               // current
+                                                                               // user
+      viewManager.showTasksPage(task.getId());
+    } else {
+      involvedPeople.refreshOwner();
+      taskPage.getTaskEventPanel().refreshTaskEvents();
+    }
+  }
+
+  public void notifyRelatedContentChanged() {
+    relatedContent.refreshTaskAttachments();
+    taskPage.getTaskEventPanel().refreshTaskEvents();
+  }
 
 }

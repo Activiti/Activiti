@@ -22,48 +22,43 @@ import org.activiti5.engine.query.Query;
  */
 public interface GroupQuery extends Query<GroupQuery, Group> {
 
-    /** Only select {@link Group}s with the given id. */
-    GroupQuery groupId(String groupId);
+  /** Only select {@link Group}s with the given id. */
+  GroupQuery groupId(String groupId);
 
-    /** Only select {@link Group}s with the given name. */
-    GroupQuery groupName(String groupName);
+  /** Only select {@link Group}s with the given name. */
+  GroupQuery groupName(String groupName);
 
-    /**
-     * Only select {@link Group}s where the name matches the given parameter.
-     * The syntax to use is that of SQL, eg. %activiti%.
-     */
-    GroupQuery groupNameLike(String groupNameLike);
+  /**
+   * Only select {@link Group}s where the name matches the given parameter. The syntax to use is that of SQL, eg. %activiti%.
+   */
+  GroupQuery groupNameLike(String groupNameLike);
 
-    /** Only select {@link Group}s which have the given type. */
-    GroupQuery groupType(String groupType);
+  /** Only select {@link Group}s which have the given type. */
+  GroupQuery groupType(String groupType);
 
-    /** Only selects {@link Group}s where the given user is a member of. */
-    GroupQuery groupMember(String groupMemberUserId);
+  /** Only selects {@link Group}s where the given user is a member of. */
+  GroupQuery groupMember(String groupMemberUserId);
 
-    /**
-     * Only select {@link Group}S that are potential starter for the given
-     * process definition.
-     */
-    GroupQuery potentialStarter(String procDefId);
+  /**
+   * Only select {@link Group}S that are potential starter for the given process definition.
+   */
+  GroupQuery potentialStarter(String procDefId);
 
-    // sorting ////////////////////////////////////////////////////////
+  // sorting ////////////////////////////////////////////////////////
 
-    /**
-     * Order by group id (needs to be followed by {@link #asc()} or
-     * {@link #desc()}).
-     */
-    GroupQuery orderByGroupId();
+  /**
+   * Order by group id (needs to be followed by {@link #asc()} or {@link #desc()}).
+   */
+  GroupQuery orderByGroupId();
 
-    /**
-     * Order by group name (needs to be followed by {@link #asc()} or
-     * {@link #desc()}).
-     */
-    GroupQuery orderByGroupName();
+  /**
+   * Order by group name (needs to be followed by {@link #asc()} or {@link #desc()}).
+   */
+  GroupQuery orderByGroupName();
 
-    /**
-     * Order by group type (needs to be followed by {@link #asc()} or
-     * {@link #desc()}).
-     */
-    GroupQuery orderByGroupType();
+  /**
+   * Order by group type (needs to be followed by {@link #asc()} or {@link #desc()}).
+   */
+  GroupQuery orderByGroupType();
 
 }

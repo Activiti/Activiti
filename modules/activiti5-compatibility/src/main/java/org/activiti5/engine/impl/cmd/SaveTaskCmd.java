@@ -28,42 +28,42 @@ import org.activiti5.engine.task.Task;
  */
 public class SaveTaskCmd implements Command<Void>, Serializable {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected TaskEntity task;
+  protected TaskEntity task;
 
-    public SaveTaskCmd(Task task) {
-        this.task = (TaskEntity) task;
+  public SaveTaskCmd(Task task) {
+    this.task = (TaskEntity) task;
+  }
+
+  public Void execute(CommandContext commandContext) {
+    if (task == null) {
+      throw new ActivitiIllegalArgumentException("task is null");
     }
 
-    public Void execute(CommandContext commandContext) {
-        if (task == null) {
-            throw new ActivitiIllegalArgumentException("task is null");
+    if (task.getRevision() == 0) {
+      task.insert(null);
+
+      // Need to to be done here, we can't make it generic for standalone
+      // tasks
+      // and tasks from a process, as the order of setting properties is
+      // completely different.
+      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
+
+        if (task.getAssignee() != null) {
+          // The assignment event is normally fired when calling
+          // setAssignee. However, this
+          // doesn't work for standalone tasks as the commandcontext
+          // is not availble.
+          Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
         }
-
-        if (task.getRevision() == 0) {
-            task.insert(null);
-
-            // Need to to be done here, we can't make it generic for standalone
-            // tasks
-            // and tasks from a process, as the order of setting properties is
-            // completely different.
-            if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-                Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_CREATED, task));
-
-                if (task.getAssignee() != null) {
-                    // The assignment event is normally fired when calling
-                    // setAssignee. However, this
-                    // doesn't work for standalone tasks as the commandcontext
-                    // is not availble.
-                    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TASK_ASSIGNED, task));
-                }
-            }
-        } else {
-            task.update();
-        }
-
-        return null;
+      }
+    } else {
+      task.update();
     }
+
+    return null;
+  }
 
 }

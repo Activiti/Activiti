@@ -31,47 +31,47 @@ import org.slf4j.LoggerFactory;
  */
 public class IntermediateCatchEventParseHandler extends AbstractFlowNodeBpmnParseHandler<IntermediateCatchEvent> {
 
-    private static final Logger logger = LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
+  private static final Logger logger = LoggerFactory.getLogger(IntermediateCatchEventParseHandler.class);
 
-    public Class<? extends BaseElement> getHandledType() {
-        return IntermediateCatchEvent.class;
+  public Class<? extends BaseElement> getHandledType() {
+    return IntermediateCatchEvent.class;
+  }
+
+  protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
+
+    BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+    ActivityImpl nestedActivity = null;
+    EventDefinition eventDefinition = null;
+    if (!event.getEventDefinitions().isEmpty()) {
+      eventDefinition = event.getEventDefinitions().get(0);
     }
 
-    protected void executeParse(BpmnParse bpmnParse, IntermediateCatchEvent event) {
+    if (eventDefinition == null) {
 
-        BpmnModel bpmnModel = bpmnParse.getBpmnModel();
-        ActivityImpl nestedActivity = null;
-        EventDefinition eventDefinition = null;
-        if (!event.getEventDefinitions().isEmpty()) {
-            eventDefinition = event.getEventDefinitions().get(0);
-        }
+      nestedActivity = createActivityOnCurrentScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH);
 
-        if (eventDefinition == null) {
+    } else {
 
-            nestedActivity = createActivityOnCurrentScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH);
+      ScopeImpl scope = bpmnParse.getCurrentScope();
+      String eventBasedGatewayId = getPrecedingEventBasedGateway(bpmnParse, event);
+      if (eventBasedGatewayId != null) {
+        ActivityImpl gatewayActivity = scope.findActivity(eventBasedGatewayId);
+        nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, gatewayActivity);
+      } else {
+        nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, scope);
+      }
 
-        } else {
+      // Catch event behavior is the same for all types
+      nestedActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
 
-            ScopeImpl scope = bpmnParse.getCurrentScope();
-            String eventBasedGatewayId = getPrecedingEventBasedGateway(bpmnParse, event);
-            if (eventBasedGatewayId != null) {
-                ActivityImpl gatewayActivity = scope.findActivity(eventBasedGatewayId);
-                nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, gatewayActivity);
-            } else {
-                nestedActivity = createActivityOnScope(bpmnParse, event, BpmnXMLConstants.ELEMENT_EVENT_CATCH, scope);
-            }
+      if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || eventDefinition instanceof MessageEventDefinition) {
 
-            // Catch event behavior is the same for all types
-            nestedActivity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateCatchEventActivityBehavior(event));
+        bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
 
-            if (eventDefinition instanceof TimerEventDefinition || eventDefinition instanceof SignalEventDefinition || eventDefinition instanceof MessageEventDefinition) {
-
-                bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
-
-            } else {
-                logger.warn("Unsupported intermediate catch event type for event " + event.getId());
-            }
-        }
+      } else {
+        logger.warn("Unsupported intermediate catch event type for event " + event.getId());
+      }
     }
+  }
 
 }

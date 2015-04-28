@@ -29,41 +29,41 @@ import com.vaadin.data.Item;
  */
 public class ReportListQuery extends AbstractLazyLoadingQuery {
 
-    private static final long serialVersionUID = -7865037930384885968L;
+  private static final long serialVersionUID = -7865037930384885968L;
 
-    private static final String REPORT_PROCESS_CATEGORY = "activiti-report";
+  private static final String REPORT_PROCESS_CATEGORY = "activiti-report";
 
-    protected transient RepositoryService repositoryService;
+  protected transient RepositoryService repositoryService;
 
-    public ReportListQuery() {
-        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  public ReportListQuery() {
+    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  }
+
+  public int size() {
+    return (int) createQuery().count();
+  }
+
+  public List<Item> loadItems(int start, int count) {
+    List<ProcessDefinition> processDefinitions = createQuery().listPage(start, count);
+
+    List<Item> reportItems = new ArrayList<Item>();
+    for (ProcessDefinition processDefinition : processDefinitions) {
+      reportItems.add(new ReportListItem(processDefinition));
     }
 
-    public int size() {
-        return (int) createQuery().count();
-    }
+    return reportItems;
+  }
 
-    public List<Item> loadItems(int start, int count) {
-        List<ProcessDefinition> processDefinitions = createQuery().listPage(start, count);
+  protected ProcessDefinitionQuery createQuery() {
+    return repositoryService.createProcessDefinitionQuery().processDefinitionCategory(REPORT_PROCESS_CATEGORY).latestVersion().orderByProcessDefinitionName().asc();
+  }
 
-        List<Item> reportItems = new ArrayList<Item>();
-        for (ProcessDefinition processDefinition : processDefinitions) {
-            reportItems.add(new ReportListItem(processDefinition));
-        }
+  public Item loadSingleResult(String id) {
+    return new ReportListItem(repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult());
+  }
 
-        return reportItems;
-    }
-
-    protected ProcessDefinitionQuery createQuery() {
-        return repositoryService.createProcessDefinitionQuery().processDefinitionCategory(REPORT_PROCESS_CATEGORY).latestVersion().orderByProcessDefinitionName().asc();
-    }
-
-    public Item loadSingleResult(String id) {
-        return new ReportListItem(repositoryService.createProcessDefinitionQuery().processDefinitionId(id).singleResult());
-    }
-
-    public void setSorting(Object[] propertyIds, boolean[] ascending) {
-        throw new UnsupportedOperationException();
-    }
+  public void setSorting(Object[] propertyIds, boolean[] ascending) {
+    throw new UnsupportedOperationException();
+  }
 
 }

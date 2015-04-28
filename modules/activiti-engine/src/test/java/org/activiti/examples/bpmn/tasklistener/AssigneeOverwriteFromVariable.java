@@ -23,20 +23,20 @@ import org.activiti.engine.delegate.TaskListener;
  */
 public class AssigneeOverwriteFromVariable implements TaskListener {
 
-    @SuppressWarnings("unchecked")
-    public void notify(DelegateTask delegateTask) {
-        // get mapping table from variable
-        DelegateExecution execution = delegateTask.getExecution();
-        Map<String, String> assigneeMappingTable = (Map<String, String>) execution.getVariable("assigneeMappingTable");
+  @SuppressWarnings("unchecked")
+  public void notify(DelegateTask delegateTask) {
+    // get mapping table from variable
+    DelegateExecution execution = delegateTask.getExecution();
+    Map<String, String> assigneeMappingTable = (Map<String, String>) execution.getVariable("assigneeMappingTable");
 
-        // get assignee from process
-        String assigneeFromProcessDefinition = delegateTask.getAssignee();
+    // get assignee from process
+    String assigneeFromProcessDefinition = delegateTask.getAssignee();
 
-        // overwrite assignee if there is an entry in the mapping table
-        if (assigneeMappingTable.containsKey(assigneeFromProcessDefinition)) {
-            String assigneeFromMappingTable = assigneeMappingTable.get(assigneeFromProcessDefinition);
-            delegateTask.setAssignee(assigneeFromMappingTable);
-        }
+    // overwrite assignee if there is an entry in the mapping table
+    if (assigneeMappingTable.containsKey(assigneeFromProcessDefinition)) {
+      String assigneeFromMappingTable = assigneeMappingTable.get(assigneeFromProcessDefinition);
+      delegateTask.setAssignee(assigneeFromMappingTable);
     }
+  }
 
 }

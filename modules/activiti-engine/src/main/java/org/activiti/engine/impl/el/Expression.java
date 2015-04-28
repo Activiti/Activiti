@@ -20,10 +20,10 @@ import org.activiti.engine.delegate.VariableScope;
  */
 public interface Expression extends org.activiti.engine.delegate.Expression {
 
-    Object getValue(VariableScope variableScope);
+  Object getValue(VariableScope variableScope);
 
-    void setValue(Object value, VariableScope variableScope);
+  void setValue(Object value, VariableScope variableScope);
 
-    String getExpressionText();
+  String getExpressionText();
 
 }

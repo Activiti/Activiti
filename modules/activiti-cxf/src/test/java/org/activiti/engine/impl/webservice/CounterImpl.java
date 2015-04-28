@@ -22,44 +22,44 @@ import javax.jws.WebService;
 @WebService(endpointInterface = "org.activiti.engine.impl.webservice.Counter", serviceName = "Counter")
 public class CounterImpl implements Counter {
 
-    protected int count;
+  protected int count;
 
-    public CounterImpl() {
-        this.count = -1;
-    }
+  public CounterImpl() {
+    this.count = -1;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    public int getCount() {
-        return this.count;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  public int getCount() {
+    return this.count;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void inc() {
-        this.count++;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  public void inc() {
+    this.count++;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void reset() {
-        this.setTo(0);
-    }
+  /**
+   * {@inheritDoc}
+   */
+  public void reset() {
+    this.setTo(0);
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    public void setTo(int value) {
-        this.count = value;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  public void setTo(int value) {
+    this.count = value;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    public String prettyPrintCount(String prefix, String suffix) {
-        return prefix + this.getCount() + suffix;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  public String prettyPrintCount(String prefix, String suffix) {
+    return prefix + this.getCount() + suffix;
+  }
 }

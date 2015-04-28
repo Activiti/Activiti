@@ -24,16 +24,16 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class GetUserInfoKeysCmd implements Command<List<String>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String userId;
-    protected String userInfoType;
+  private static final long serialVersionUID = 1L;
+  protected String userId;
+  protected String userInfoType;
 
-    public GetUserInfoKeysCmd(String userId, String userInfoType) {
-        this.userId = userId;
-        this.userInfoType = userInfoType;
-    }
+  public GetUserInfoKeysCmd(String userId, String userInfoType) {
+    this.userId = userId;
+    this.userInfoType = userInfoType;
+  }
 
-    public List<String> execute(CommandContext commandContext) {
-        return commandContext.getIdentityInfoEntityManager().findUserInfoKeysByUserIdAndType(userId, userInfoType);
-    }
+  public List<String> execute(CommandContext commandContext) {
+    return commandContext.getIdentityInfoEntityManager().findUserInfoKeysByUserIdAndType(userId, userInfoType);
+  }
 }

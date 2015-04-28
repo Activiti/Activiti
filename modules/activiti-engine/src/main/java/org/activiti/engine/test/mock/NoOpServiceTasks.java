@@ -22,12 +22,12 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface NoOpServiceTasks {
 
-    public String value() default "";
+  public String value() default "";
 
-    public String[] ids() default {};
+  public String[] ids() default {};
 
-    public Class<?>[] classes() default {};
+  public Class<?>[] classes() default {};
 
-    public String[] classNames() default {};
+  public String[] classNames() default {};
 
 }

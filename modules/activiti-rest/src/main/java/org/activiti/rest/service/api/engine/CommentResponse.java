@@ -24,77 +24,77 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
  */
 public class CommentResponse {
 
-    private String id;
-    private String author;
-    private String message;
-    @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
-    protected Date time;
-    private String taskId;
-    private String taskUrl;
-    private String processInstanceId;
-    private String processInstanceUrl;
+  private String id;
+  private String author;
+  private String message;
+  @JsonSerialize(using = DateToStringSerializer.class, as = Date.class)
+  protected Date time;
+  private String taskId;
+  private String taskUrl;
+  private String processInstanceId;
+  private String processInstanceUrl;
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public String getAuthor() {
-        return author;
-    }
+  public String getAuthor() {
+    return author;
+  }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
+  public void setAuthor(String author) {
+    this.author = author;
+  }
 
-    public String getMessage() {
-        return message;
-    }
+  public String getMessage() {
+    return message;
+  }
 
-    public void setMessage(String message) {
-        this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public Date getTime() {
-        return time;
-    }
+  public Date getTime() {
+    return time;
+  }
 
-    public void setTime(Date time) {
-        this.time = time;
-    }
+  public void setTime(Date time) {
+    this.time = time;
+  }
 
-    public String getTaskId() {
-        return taskId;
-    }
+  public String getTaskId() {
+    return taskId;
+  }
 
-    public void setTaskId(String taskId) {
-        this.taskId = taskId;
-    }
+  public void setTaskId(String taskId) {
+    this.taskId = taskId;
+  }
 
-    public String getTaskUrl() {
-        return taskUrl;
-    }
+  public String getTaskUrl() {
+    return taskUrl;
+  }
 
-    public void setTaskUrl(String taskUrl) {
-        this.taskUrl = taskUrl;
-    }
+  public void setTaskUrl(String taskUrl) {
+    this.taskUrl = taskUrl;
+  }
 
-    public String getProcessInstanceId() {
-        return processInstanceId;
-    }
+  public String getProcessInstanceId() {
+    return processInstanceId;
+  }
 
-    public void setProcessInstanceId(String processInstanceId) {
-        this.processInstanceId = processInstanceId;
-    }
+  public void setProcessInstanceId(String processInstanceId) {
+    this.processInstanceId = processInstanceId;
+  }
 
-    public String getProcessInstanceUrl() {
-        return processInstanceUrl;
-    }
+  public String getProcessInstanceUrl() {
+    return processInstanceUrl;
+  }
 
-    public void setProcessInstanceUrl(String processInstanceUrl) {
-        this.processInstanceUrl = processInstanceUrl;
-    }
+  public void setProcessInstanceUrl(String processInstanceUrl) {
+    this.processInstanceUrl = processInstanceUrl;
+  }
 }

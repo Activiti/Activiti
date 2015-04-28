@@ -26,42 +26,42 @@ import org.apache.commons.lang3.time.FastDateFormat;
  */
 public class DateFormType extends AbstractFormType {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected String datePattern;
-    protected Format dateFormat;
+  protected String datePattern;
+  protected Format dateFormat;
 
-    public DateFormType(String datePattern) {
-        this.datePattern = datePattern;
-        this.dateFormat = FastDateFormat.getInstance(datePattern);
+  public DateFormType(String datePattern) {
+    this.datePattern = datePattern;
+    this.dateFormat = FastDateFormat.getInstance(datePattern);
+  }
+
+  public String getName() {
+    return "date";
+  }
+
+  public Object getInformation(String key) {
+    if ("datePattern".equals(key)) {
+      return datePattern;
     }
+    return null;
+  }
 
-    public String getName() {
-        return "date";
+  public Object convertFormValueToModelValue(String propertyValue) {
+    if (StringUtils.isEmpty(propertyValue)) {
+      return null;
     }
+    try {
+      return dateFormat.parseObject(propertyValue);
+    } catch (ParseException e) {
+      throw new ActivitiIllegalArgumentException("invalid date value " + propertyValue);
+    }
+  }
 
-    public Object getInformation(String key) {
-        if ("datePattern".equals(key)) {
-            return datePattern;
-        }
-        return null;
+  public String convertModelValueToFormValue(Object modelValue) {
+    if (modelValue == null) {
+      return null;
     }
-
-    public Object convertFormValueToModelValue(String propertyValue) {
-        if (StringUtils.isEmpty(propertyValue)) {
-            return null;
-        }
-        try {
-            return dateFormat.parseObject(propertyValue);
-        } catch (ParseException e) {
-            throw new ActivitiIllegalArgumentException("invalid date value " + propertyValue);
-        }
-    }
-
-    public String convertModelValueToFormValue(Object modelValue) {
-        if (modelValue == null) {
-            return null;
-        }
-        return dateFormat.format(modelValue);
-    }
+    return dateFormat.format(modelValue);
+  }
 }

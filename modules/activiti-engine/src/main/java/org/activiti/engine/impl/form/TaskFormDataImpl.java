@@ -21,18 +21,18 @@ import org.activiti.engine.task.Task;
  */
 public class TaskFormDataImpl extends FormDataImpl implements TaskFormData {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected Task task;
+  protected Task task;
 
-    // getters and setters
-    // //////////////////////////////////////////////////////
+  // getters and setters
+  // //////////////////////////////////////////////////////
 
-    public Task getTask() {
-        return task;
-    }
+  public Task getTask() {
+    return task;
+  }
 
-    public void setTask(Task task) {
-        this.task = task;
-    }
+  public void setTask(Task task) {
+    this.task = task;
+  }
 }

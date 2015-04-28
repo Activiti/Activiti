@@ -21,5 +21,5 @@ import org.activiti5.engine.delegate.DelegateExecution;
  */
 public interface Condition extends Serializable {
 
-    boolean evaluate(DelegateExecution execution);
+  boolean evaluate(DelegateExecution execution);
 }

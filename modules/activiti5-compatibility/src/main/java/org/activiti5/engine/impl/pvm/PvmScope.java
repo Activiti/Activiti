@@ -20,8 +20,8 @@ import java.util.List;
  */
 public interface PvmScope extends PvmProcessElement {
 
-    List<? extends PvmActivity> getActivities();
+  List<? extends PvmActivity> getActivities();
 
-    PvmActivity findActivity(String activityId);
+  PvmActivity findActivity(String activityId);
 
 }

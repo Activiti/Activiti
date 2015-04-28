@@ -27,9 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ExecutionActiveActivitiesCollectionResource extends ExecutionBaseResource {
 
-    @RequestMapping(value = "/runtime/executions/{executionId}/activities", method = RequestMethod.GET, produces = "application/json")
-    public List<String> getActiveActivities(@PathVariable String executionId) {
-        Execution execution = getExecutionFromRequest(executionId);
-        return runtimeService.getActiveActivityIds(execution.getId());
-    }
+  @RequestMapping(value = "/runtime/executions/{executionId}/activities", method = RequestMethod.GET, produces = "application/json")
+  public List<String> getActiveActivities(@PathVariable String executionId) {
+    Execution execution = getExecutionFromRequest(executionId);
+    return runtimeService.getActiveActivityIds(execution.getId());
+  }
 }

@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.delegate.event.impl;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
@@ -44,10 +43,8 @@ public class ProcessInstanceCreateTransformer extends Activiti2SimulationEventFu
 
   @Override
   public SimulationEvent apply(ActivitiEvent event) {
-    if (ActivitiEventType.ENTITY_INITIALIZED.equals(event.getType()) &&
-      (event instanceof ActivitiEntityEvent) &&
-      ((ActivitiEntityEvent) event).getEntity() instanceof ProcessInstance &&
-      ((ExecutionEntity) ((ActivitiEntityEvent) event).getEntity()).isProcessInstanceType()) {
+    if (ActivitiEventType.ENTITY_INITIALIZED.equals(event.getType()) && (event instanceof ActivitiEntityEvent) && ((ActivitiEntityEvent) event).getEntity() instanceof ProcessInstance
+        && ((ExecutionEntity) ((ActivitiEntityEvent) event).getEntity()).isProcessInstanceType()) {
 
       ProcessInstance processInstance = (ProcessInstance) ((ActivitiEntityEvent) event).getEntity();
       ExecutionEntity executionEntity = (ExecutionEntity) ((ActivitiEntityEvent) event).getEntity();
@@ -58,10 +55,7 @@ public class ProcessInstanceCreateTransformer extends Activiti2SimulationEventFu
       simEventProperties.put(variablesKey, executionEntity.getVariables());
       simEventProperties.put(PROCESS_INSTANCE_ID, executionEntity.getProcessInstanceId());
 
-      return new SimulationEvent.Builder(simulationEventType).
-                  simulationTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()).
-                  properties(simEventProperties).
-                  build();
+      return new SimulationEvent.Builder(simulationEventType).simulationTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()).properties(simEventProperties).build();
     }
     return null;
   }

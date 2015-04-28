@@ -21,25 +21,25 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
-    private static final long serialVersionUID = 1L;
-    
-    protected String errorCode;
+  private static final long serialVersionUID = 1L;
 
-    public ErrorEndEventActivityBehavior(String errorCode) {
-        this.errorCode = errorCode;
-    }
+  protected String errorCode;
 
-    @Override
-    public void execute(ActivityExecution execution) {
-        ErrorPropagation.propagateError(errorCode, execution);
-    }
+  public ErrorEndEventActivityBehavior(String errorCode) {
+    this.errorCode = errorCode;
+  }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
+  @Override
+  public void execute(ActivityExecution execution) {
+    ErrorPropagation.propagateError(errorCode, execution);
+  }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
+  public String getErrorCode() {
+    return errorCode;
+  }
+
+  public void setErrorCode(String errorCode) {
+    this.errorCode = errorCode;
+  }
 
 }

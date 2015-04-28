@@ -21,5 +21,5 @@ package org.activiti5.engine.impl.variable;
  */
 public interface CacheableVariable {
 
-    public void setForceCacheable(boolean forceCachedValue);
+  public void setForceCacheable(boolean forceCachedValue);
 }

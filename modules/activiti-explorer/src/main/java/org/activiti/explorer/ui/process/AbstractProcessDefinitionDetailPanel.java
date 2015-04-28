@@ -44,125 +44,125 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public abstract class AbstractProcessDefinitionDetailPanel extends DetailPanel {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    // Members
-    protected ProcessDefinition processDefinition;
-    protected Deployment deployment;
-    protected AbstractPage parentPage;
+  // Members
+  protected ProcessDefinition processDefinition;
+  protected Deployment deployment;
+  protected AbstractPage parentPage;
 
-    // Services
-    protected transient RepositoryService repositoryService;
-    protected transient ManagementService managementService;
-    protected transient FormService formService;
-    protected I18nManager i18nManager;
+  // Services
+  protected transient RepositoryService repositoryService;
+  protected transient ManagementService managementService;
+  protected transient FormService formService;
+  protected I18nManager i18nManager;
 
-    // UI
-    protected VerticalLayout detailPanelLayout;
-    protected HorizontalLayout detailContainer;
-    protected HorizontalLayout actionsContainer;
-    protected Label nameLabel;
+  // UI
+  protected VerticalLayout detailPanelLayout;
+  protected HorizontalLayout detailContainer;
+  protected HorizontalLayout actionsContainer;
+  protected Label nameLabel;
 
-    protected FormPropertiesForm processDefinitionStartForm;
-    protected ProcessDefinitionInfoComponent definitionInfoComponent;
+  protected FormPropertiesForm processDefinitionStartForm;
+  protected ProcessDefinitionInfoComponent definitionInfoComponent;
 
-    public AbstractProcessDefinitionDetailPanel(String processDefinitionId, AbstractPage parentPage) {
-        this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
-        this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
-        this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
-        this.i18nManager = ExplorerApp.get().getI18nManager();
+  public AbstractProcessDefinitionDetailPanel(String processDefinitionId, AbstractPage parentPage) {
+    this.repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+    this.managementService = ProcessEngines.getDefaultProcessEngine().getManagementService();
+    this.formService = ProcessEngines.getDefaultProcessEngine().getFormService();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
 
-        this.parentPage = parentPage;
-        this.processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
+    this.parentPage = parentPage;
+    this.processDefinition = repositoryService.getProcessDefinition(processDefinitionId);
 
-        if (processDefinition != null) {
-            deployment = repositoryService.createDeploymentQuery().deploymentId(processDefinition.getDeploymentId()).singleResult();
-        }
-
-        initUi();
+    if (processDefinition != null) {
+      deployment = repositoryService.createDeploymentQuery().deploymentId(processDefinition.getDeploymentId()).singleResult();
     }
 
-    protected void initUi() {
-        setSizeFull();
-        addStyleName(Reindeer.LAYOUT_WHITE);
+    initUi();
+  }
 
-        detailPanelLayout = new VerticalLayout();
-        detailPanelLayout.setWidth(100, UNITS_PERCENTAGE);
-        detailPanelLayout.setMargin(true);
-        setDetailContainer(detailPanelLayout);
+  protected void initUi() {
+    setSizeFull();
+    addStyleName(Reindeer.LAYOUT_WHITE);
 
-        // All details about the process definition
-        initHeader();
+    detailPanelLayout = new VerticalLayout();
+    detailPanelLayout.setWidth(100, UNITS_PERCENTAGE);
+    detailPanelLayout.setMargin(true);
+    setDetailContainer(detailPanelLayout);
 
-        detailContainer = new HorizontalLayout();
-        detailContainer.addStyleName(Reindeer.PANEL_LIGHT);
-        detailPanelLayout.addComponent(detailContainer);
-        detailContainer.setSizeFull();
+    // All details about the process definition
+    initHeader();
 
-        initActions(parentPage);
-        initProcessDefinitionInfo();
+    detailContainer = new HorizontalLayout();
+    detailContainer.addStyleName(Reindeer.PANEL_LIGHT);
+    detailPanelLayout.addComponent(detailContainer);
+    detailContainer.setSizeFull();
+
+    initActions(parentPage);
+    initProcessDefinitionInfo();
+  }
+
+  /**
+   * Custom toolbar buttons are added here
+   */
+  protected abstract void initActions(AbstractPage parentPage);
+
+  public void initProcessDefinitionInfo() {
+    if (definitionInfoComponent == null) {
+      definitionInfoComponent = new ProcessDefinitionInfoComponent(processDefinition, deployment);
     }
 
-    /**
-     * Custom toolbar buttons are added here
-     */
-    protected abstract void initActions(AbstractPage parentPage);
+    detailContainer.removeAllComponents();
+    detailContainer.addComponent(definitionInfoComponent);
+  }
 
-    public void initProcessDefinitionInfo() {
-        if (definitionInfoComponent == null) {
-            definitionInfoComponent = new ProcessDefinitionInfoComponent(processDefinition, deployment);
-        }
+  protected void initHeader() {
+    GridLayout details = new GridLayout(2, 2);
+    details.setWidth(100, UNITS_PERCENTAGE);
+    details.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
+    details.setSpacing(true);
+    details.setMargin(false, false, true, false);
+    details.setColumnExpandRatio(1, 1.0f);
+    detailPanelLayout.addComponent(details);
 
-        detailContainer.removeAllComponents();
-        detailContainer.addComponent(definitionInfoComponent);
+    // Image
+    Embedded image = new Embedded(null, Images.PROCESS_50);
+    details.addComponent(image, 0, 0, 0, 1);
+
+    // Name
+    Label nameLabel = new Label(getProcessDisplayName(processDefinition));
+    nameLabel.addStyleName(Reindeer.LABEL_H2);
+    details.addComponent(nameLabel, 1, 0);
+
+    // Properties
+    HorizontalLayout propertiesLayout = new HorizontalLayout();
+    propertiesLayout.setSpacing(true);
+    details.addComponent(propertiesLayout);
+
+    // Version
+    String versionString = i18nManager.getMessage(Messages.PROCESS_VERSION, processDefinition.getVersion());
+    Label versionLabel = new Label(versionString);
+    versionLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_VERSION);
+    propertiesLayout.addComponent(versionLabel);
+
+    // Add deploy time
+    PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.PROCESS_DEPLOY_TIME), deployment.getDeploymentTime(), null, true);
+    deployTimeLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_DEPLOY_TIME);
+    propertiesLayout.addComponent(deployTimeLabel);
+  }
+
+  protected String getProcessDisplayName(ProcessDefinition processDefinition) {
+    if (processDefinition.getName() != null) {
+      return processDefinition.getName();
+    } else {
+      return processDefinition.getKey();
     }
+  }
 
-    protected void initHeader() {
-        GridLayout details = new GridLayout(2, 2);
-        details.setWidth(100, UNITS_PERCENTAGE);
-        details.addStyleName(ExplorerLayout.STYLE_TITLE_BLOCK);
-        details.setSpacing(true);
-        details.setMargin(false, false, true, false);
-        details.setColumnExpandRatio(1, 1.0f);
-        detailPanelLayout.addComponent(details);
-
-        // Image
-        Embedded image = new Embedded(null, Images.PROCESS_50);
-        details.addComponent(image, 0, 0, 0, 1);
-
-        // Name
-        Label nameLabel = new Label(getProcessDisplayName(processDefinition));
-        nameLabel.addStyleName(Reindeer.LABEL_H2);
-        details.addComponent(nameLabel, 1, 0);
-
-        // Properties
-        HorizontalLayout propertiesLayout = new HorizontalLayout();
-        propertiesLayout.setSpacing(true);
-        details.addComponent(propertiesLayout);
-
-        // Version
-        String versionString = i18nManager.getMessage(Messages.PROCESS_VERSION, processDefinition.getVersion());
-        Label versionLabel = new Label(versionString);
-        versionLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_VERSION);
-        propertiesLayout.addComponent(versionLabel);
-
-        // Add deploy time
-        PrettyTimeLabel deployTimeLabel = new PrettyTimeLabel(i18nManager.getMessage(Messages.PROCESS_DEPLOY_TIME), deployment.getDeploymentTime(), null, true);
-        deployTimeLabel.addStyleName(ExplorerLayout.STYLE_PROCESS_HEADER_DEPLOY_TIME);
-        propertiesLayout.addComponent(deployTimeLabel);
-    }
-
-    protected String getProcessDisplayName(ProcessDefinition processDefinition) {
-        if (processDefinition.getName() != null) {
-            return processDefinition.getName();
-        } else {
-            return processDefinition.getKey();
-        }
-    }
-
-    protected void addEmptySpace(ComponentContainer container) {
-        Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-        emptySpace.setSizeUndefined();
-        container.addComponent(emptySpace);
-    }
+  protected void addEmptySpace(ComponentContainer container) {
+    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+    emptySpace.setSizeUndefined();
+    container.addComponent(emptySpace);
+  }
 }

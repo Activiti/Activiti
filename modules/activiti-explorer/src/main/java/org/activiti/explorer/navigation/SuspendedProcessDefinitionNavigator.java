@@ -20,20 +20,20 @@ import org.activiti.explorer.ExplorerApp;
  */
 public class SuspendedProcessDefinitionNavigator extends ManagementNavigator {
 
-    public static final String SUSPENDED_PROC_DEF_URI_PART = "suspendedProcessDefinition";
+  public static final String SUSPENDED_PROC_DEF_URI_PART = "suspendedProcessDefinition";
 
-    public String getTrigger() {
-        return SUSPENDED_PROC_DEF_URI_PART;
+  public String getTrigger() {
+    return SUSPENDED_PROC_DEF_URI_PART;
+  }
+
+  public void handleManagementNavigation(UriFragment uriFragment) {
+    String processDefinitionId = uriFragment.getUriPart(1);
+
+    if (processDefinitionId != null) {
+      ExplorerApp.get().getViewManager().showSuspendedProcessDefinitionsPage(processDefinitionId);
+    } else {
+      ExplorerApp.get().getViewManager().showSuspendedProcessDefinitionsPage();
     }
-
-    public void handleManagementNavigation(UriFragment uriFragment) {
-        String processDefinitionId = uriFragment.getUriPart(1);
-
-        if (processDefinitionId != null) {
-            ExplorerApp.get().getViewManager().showSuspendedProcessDefinitionsPage(processDefinitionId);
-        } else {
-            ExplorerApp.get().getViewManager().showSuspendedProcessDefinitionsPage();
-        }
-    }
+  }
 
 }

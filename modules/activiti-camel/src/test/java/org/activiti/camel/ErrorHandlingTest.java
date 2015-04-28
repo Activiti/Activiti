@@ -23,8 +23,7 @@ import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.springframework.test.context.ContextConfiguration;
 
 /**
- * Demonstrates an issue in Activiti 5.12. Exception on Camel routes will be
- * lost, if default error handling is used.
+ * Demonstrates an issue in Activiti 5.12. Exception on Camel routes will be lost, if default error handling is used.
  * 
  * @author stefan.schulze@accelsis.biz
  * 
@@ -32,70 +31,67 @@ import org.springframework.test.context.ContextConfiguration;
 @ContextConfiguration("classpath:error-camel-activiti-context.xml")
 public class ErrorHandlingTest extends SpringActivitiTestCase {
 
-    private static final int WAIT = 3000;
+  private static final int WAIT = 3000;
 
-    private static final String PREVIOUS_WAIT_STATE = "LogProcessStart";
-    private static final String NEXT_WAIT_STATE = "ReceiveResult";
+  private static final String PREVIOUS_WAIT_STATE = "LogProcessStart";
+  private static final String NEXT_WAIT_STATE = "ReceiveResult";
 
-    /**
-     * Process instance should be removed after completion. Works as intended,
-     * if no exception interrupts the Camel route.
-     * 
-     * @throws Exception
-     */
-    @Deployment(resources = { "process/errorHandling.bpmn20.xml" })
-    public void testCamelRouteWorksAsIntended() throws Exception {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("routing", Routing.DEFAULT);
+  /**
+   * Process instance should be removed after completion. Works as intended, if no exception interrupts the Camel route.
+   * 
+   * @throws Exception
+   */
+  @Deployment(resources = { "process/errorHandling.bpmn20.xml" })
+  public void testCamelRouteWorksAsIntended() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("routing", Routing.DEFAULT);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ErrorHandling", variables);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ErrorHandling", variables);
 
-        Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(job);
-        managementService.executeJob(job.getId());
+    Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(job);
+    managementService.executeJob(job.getId());
 
-        Thread.sleep(WAIT);
+    Thread.sleep(WAIT);
 
-        assertEquals("Process instance not completed", 0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
-    }
+    assertEquals("Process instance not completed", 0, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
+  }
 
-    /**
-     * Expected behavior, with default error handling in Camel: Roll-back to
-     * previous wait state. Fails with Activiti 5.12.
-     * 
-     * @throws Exception
-     */
-    @Deployment(resources = { "process/errorHandling.bpmn20.xml" })
-    public void testRollbackOnException() throws Exception {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("routing", Routing.PROVOKE_ERROR);
+  /**
+   * Expected behavior, with default error handling in Camel: Roll-back to previous wait state. Fails with Activiti 5.12.
+   * 
+   * @throws Exception
+   */
+  @Deployment(resources = { "process/errorHandling.bpmn20.xml" })
+  public void testRollbackOnException() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("routing", Routing.PROVOKE_ERROR);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ErrorHandling", variables);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ErrorHandling", variables);
 
-        assertEquals("No roll-back to previous wait state", 1, runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId(PREVIOUS_WAIT_STATE).count());
+    assertEquals("No roll-back to previous wait state", 1, runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId(PREVIOUS_WAIT_STATE).count());
 
-        assertEquals("Process instance advanced to next wait state", 0, runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId(NEXT_WAIT_STATE).count());
-    }
+    assertEquals("Process instance advanced to next wait state", 0, runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId(NEXT_WAIT_STATE).count());
+  }
 
-    /**
-     * Exception caught and processed by Camel dead letter queue handler.
-     * Process instance proceeds to ReceiveTask as expected.
-     * 
-     * @throws Exception
-     */
-    @Deployment(resources = { "process/errorHandling.bpmn20.xml" })
-    public void testErrorHandledByCamel() throws Exception {
-        Map<String, Object> variables = new HashMap<String, Object>();
-        variables.put("routing", Routing.HANDLE_ERROR);
+  /**
+   * Exception caught and processed by Camel dead letter queue handler. Process instance proceeds to ReceiveTask as expected.
+   * 
+   * @throws Exception
+   */
+  @Deployment(resources = { "process/errorHandling.bpmn20.xml" })
+  public void testErrorHandledByCamel() throws Exception {
+    Map<String, Object> variables = new HashMap<String, Object>();
+    variables.put("routing", Routing.HANDLE_ERROR);
 
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ErrorHandling", variables);
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("ErrorHandling", variables);
 
-        Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
-        assertNotNull(job);
-        managementService.executeJob(job.getId());
+    Job job = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
+    assertNotNull(job);
+    managementService.executeJob(job.getId());
 
-        Thread.sleep(WAIT);
+    Thread.sleep(WAIT);
 
-        assertEquals("Process instance did not reach next wait state", 1, runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId(NEXT_WAIT_STATE).count());
-    }
+    assertEquals("Process instance did not reach next wait state", 1, runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId(NEXT_WAIT_STATE).count());
+  }
 }

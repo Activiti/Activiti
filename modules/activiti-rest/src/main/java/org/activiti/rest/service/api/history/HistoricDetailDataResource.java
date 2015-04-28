@@ -41,54 +41,54 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HistoricDetailDataResource {
 
-    @Autowired
-    protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-    @Autowired
-    protected HistoryService historyService;
+  @Autowired
+  protected HistoryService historyService;
 
-    @RequestMapping(value = "/history/historic-detail/{detailId}/data", method = RequestMethod.GET)
-    public @ResponseBody
-    byte[] getVariableData(@PathVariable("detailId") String detailId, HttpServletRequest request, HttpServletResponse response) {
-        try {
-            byte[] result = null;
-            RestVariable variable = getVariableFromRequest(true, detailId, request);
-            if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
-                result = (byte[]) variable.getValue();
-                response.setContentType("application/octet-stream");
+  @RequestMapping(value = "/history/historic-detail/{detailId}/data", method = RequestMethod.GET)
+  public @ResponseBody
+  byte[] getVariableData(@PathVariable("detailId") String detailId, HttpServletRequest request, HttpServletResponse response) {
+    try {
+      byte[] result = null;
+      RestVariable variable = getVariableFromRequest(true, detailId, request);
+      if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
+        result = (byte[]) variable.getValue();
+        response.setContentType("application/octet-stream");
 
-            } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
-                ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
-                outputStream.writeObject(variable.getValue());
-                outputStream.close();
-                result = buffer.toByteArray();
-                response.setContentType("application/x-java-serialized-object");
+      } else if (RestResponseFactory.SERIALIZABLE_VARIABLE_TYPE.equals(variable.getType())) {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        ObjectOutputStream outputStream = new ObjectOutputStream(buffer);
+        outputStream.writeObject(variable.getValue());
+        outputStream.close();
+        result = buffer.toByteArray();
+        response.setContentType("application/x-java-serialized-object");
 
-            } else {
-                throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
-            }
-            return result;
+      } else {
+        throw new ActivitiObjectNotFoundException("The variable does not have a binary data stream.", null);
+      }
+      return result;
 
-        } catch (IOException ioe) {
-            // Re-throw IOException
-            throw new ActivitiException("Unexpected exception getting variable data", ioe);
-        }
+    } catch (IOException ioe) {
+      // Re-throw IOException
+      throw new ActivitiException("Unexpected exception getting variable data", ioe);
+    }
+  }
+
+  public RestVariable getVariableFromRequest(boolean includeBinary, String detailId, HttpServletRequest request) {
+    Object value = null;
+    HistoricVariableUpdate variableUpdate = null;
+    HistoricDetail detailObject = historyService.createHistoricDetailQuery().id(detailId).singleResult();
+    if (detailObject instanceof HistoricVariableUpdate) {
+      variableUpdate = (HistoricVariableUpdate) detailObject;
+      value = variableUpdate.getValue();
     }
 
-    public RestVariable getVariableFromRequest(boolean includeBinary, String detailId, HttpServletRequest request) {
-        Object value = null;
-        HistoricVariableUpdate variableUpdate = null;
-        HistoricDetail detailObject = historyService.createHistoricDetailQuery().id(detailId).singleResult();
-        if (detailObject instanceof HistoricVariableUpdate) {
-            variableUpdate = (HistoricVariableUpdate) detailObject;
-            value = variableUpdate.getValue();
-        }
-
-        if (value == null) {
-            throw new ActivitiObjectNotFoundException("Historic detail '" + detailId + "' doesn't have a variable value.", VariableInstanceEntity.class);
-        } else {
-            return restResponseFactory.createRestVariable(variableUpdate.getVariableName(), value, null, detailId, RestResponseFactory.VARIABLE_HISTORY_DETAIL, includeBinary);
-        }
+    if (value == null) {
+      throw new ActivitiObjectNotFoundException("Historic detail '" + detailId + "' doesn't have a variable value.", VariableInstanceEntity.class);
+    } else {
+      return restResponseFactory.createRestVariable(variableUpdate.getVariableName(), value, null, detailId, RestResponseFactory.VARIABLE_HISTORY_DETAIL, includeBinary);
     }
+  }
 }

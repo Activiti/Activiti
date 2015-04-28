@@ -19,26 +19,26 @@ import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
  * @author jbarrez
  */
 public class ProcessExecutionLoggerConfigurator extends AbstractProcessEngineConfigurator {
-	
-	protected ProcessExecutionLogger processExecutionLogger;
 
-	@Override
-    public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
-		processExecutionLogger = new ProcessExecutionLogger();
-		processEngineConfiguration.setCommandInvoker(new LoggingCommandInvoker(processExecutionLogger));
-    }
+  protected ProcessExecutionLogger processExecutionLogger;
 
-	@Override
-    public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
-		processEngineConfiguration.getEventDispatcher().addEventListener(new DebugInfoEntityEventListener(processExecutionLogger));
-    }
+  @Override
+  public void beforeInit(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    processExecutionLogger = new ProcessExecutionLogger();
+    processEngineConfiguration.setCommandInvoker(new LoggingCommandInvoker(processExecutionLogger));
+  }
 
-	public ProcessExecutionLogger getProcessExecutionLogger() {
-		return processExecutionLogger;
-	}
+  @Override
+  public void configure(ProcessEngineConfigurationImpl processEngineConfiguration) {
+    processEngineConfiguration.getEventDispatcher().addEventListener(new DebugInfoEntityEventListener(processExecutionLogger));
+  }
 
-	public void setProcessExecutionLogger(ProcessExecutionLogger processExecutionLogger) {
-		this.processExecutionLogger = processExecutionLogger;
-	}
-	
+  public ProcessExecutionLogger getProcessExecutionLogger() {
+    return processExecutionLogger;
+  }
+
+  public void setProcessExecutionLogger(ProcessExecutionLogger processExecutionLogger) {
+    this.processExecutionLogger = processExecutionLogger;
+  }
+
 }

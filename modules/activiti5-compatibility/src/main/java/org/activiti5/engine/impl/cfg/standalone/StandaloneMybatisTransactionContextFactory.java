@@ -21,7 +21,7 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class StandaloneMybatisTransactionContextFactory implements TransactionContextFactory {
 
-    public TransactionContext openTransactionContext(CommandContext commandContext) {
-        return new StandaloneMybatisTransactionContext(commandContext);
-    }
+  public TransactionContext openTransactionContext(CommandContext commandContext) {
+    return new StandaloneMybatisTransactionContext(commandContext);
+  }
 }

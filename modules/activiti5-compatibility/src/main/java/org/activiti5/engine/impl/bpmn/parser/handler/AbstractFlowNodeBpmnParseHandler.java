@@ -21,10 +21,10 @@ import org.activiti5.engine.impl.bpmn.parser.BpmnParse;
  */
 public abstract class AbstractFlowNodeBpmnParseHandler<T extends FlowNode> extends AbstractBpmnParseHandler<T> {
 
-    @Override
-    public void parse(BpmnParse bpmnParse, BaseElement element) {
-        super.parse(bpmnParse, element);
-        createExecutionListenersOnScope(bpmnParse, ((FlowNode) element).getExecutionListeners(), findActivity(bpmnParse, element.getId()));
-    }
+  @Override
+  public void parse(BpmnParse bpmnParse, BaseElement element) {
+    super.parse(bpmnParse, element);
+    createExecutionListenersOnScope(bpmnParse, ((FlowNode) element).getExecutionListeners(), findActivity(bpmnParse, element.getId()));
+  }
 
 }

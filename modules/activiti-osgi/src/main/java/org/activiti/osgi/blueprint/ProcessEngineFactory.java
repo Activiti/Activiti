@@ -23,51 +23,51 @@ import org.osgi.framework.Bundle;
  */
 public class ProcessEngineFactory {
 
-    protected ProcessEngineConfiguration processEngineConfiguration;
-    protected Bundle bundle;
+  protected ProcessEngineConfiguration processEngineConfiguration;
+  protected Bundle bundle;
 
-    protected ProcessEngineImpl processEngine;
+  protected ProcessEngineImpl processEngine;
 
-    public void init() throws Exception {
-        ClassLoader previous = Thread.currentThread().getContextClassLoader();
+  public void init() throws Exception {
+    ClassLoader previous = Thread.currentThread().getContextClassLoader();
 
-        try {
-            ClassLoader cl = new BundleDelegatingClassLoader(bundle);
+    try {
+      ClassLoader cl = new BundleDelegatingClassLoader(bundle);
 
-            Thread.currentThread().setContextClassLoader(new ClassLoaderWrapper(cl, ProcessEngineFactory.class.getClassLoader(), ProcessEngineConfiguration.class.getClassLoader(), previous));
+      Thread.currentThread().setContextClassLoader(new ClassLoaderWrapper(cl, ProcessEngineFactory.class.getClassLoader(), ProcessEngineConfiguration.class.getClassLoader(), previous));
 
-            processEngineConfiguration.setClassLoader(cl);
+      processEngineConfiguration.setClassLoader(cl);
 
-            processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
+      processEngine = (ProcessEngineImpl) processEngineConfiguration.buildProcessEngine();
 
-        } finally {
-            Thread.currentThread().setContextClassLoader(previous);
-        }
+    } finally {
+      Thread.currentThread().setContextClassLoader(previous);
     }
+  }
 
-    public void destroy() throws Exception {
-        if (processEngine != null) {
-            processEngine.close();
-        }
+  public void destroy() throws Exception {
+    if (processEngine != null) {
+      processEngine.close();
     }
+  }
 
-    public ProcessEngine getObject() throws Exception {
-        return processEngine;
-    }
+  public ProcessEngine getObject() throws Exception {
+    return processEngine;
+  }
 
-    public ProcessEngineConfiguration getProcessEngineConfiguration() {
-        return processEngineConfiguration;
-    }
+  public ProcessEngineConfiguration getProcessEngineConfiguration() {
+    return processEngineConfiguration;
+  }
 
-    public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
-        this.processEngineConfiguration = processEngineConfiguration;
-    }
+  public void setProcessEngineConfiguration(ProcessEngineConfiguration processEngineConfiguration) {
+    this.processEngineConfiguration = processEngineConfiguration;
+  }
 
-    public Bundle getBundle() {
-        return bundle;
-    }
+  public Bundle getBundle() {
+    return bundle;
+  }
 
-    public void setBundle(Bundle bundle) {
-        this.bundle = bundle;
-    }
+  public void setBundle(Bundle bundle) {
+    this.bundle = bundle;
+  }
 }

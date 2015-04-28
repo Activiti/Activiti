@@ -33,31 +33,31 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ExecutionVariableCollectionResource extends BaseVariableCollectionResource {
 
-    @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.GET, produces = "application/json")
-    public List<RestVariable> getVariables(@PathVariable String executionId, @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
+  @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.GET, produces = "application/json")
+  public List<RestVariable> getVariables(@PathVariable String executionId, @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
 
-        Execution execution = getExecutionFromRequest(executionId);
-        return processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION);
-    }
+    Execution execution = getExecutionFromRequest(executionId);
+    return processVariables(execution, scope, RestResponseFactory.VARIABLE_EXECUTION);
+  }
 
-    @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.PUT, produces = "application/json")
-    public Object createOrUpdateExecutionVariable(@PathVariable String executionId, HttpServletRequest request, HttpServletResponse response) {
+  @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.PUT, produces = "application/json")
+  public Object createOrUpdateExecutionVariable(@PathVariable String executionId, HttpServletRequest request, HttpServletResponse response) {
 
-        Execution execution = getExecutionFromRequest(executionId);
-        return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, request, response);
-    }
+    Execution execution = getExecutionFromRequest(executionId);
+    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_EXECUTION, request, response);
+  }
 
-    @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.POST, produces = "application/json")
-    public Object createExecutionVariable(@PathVariable String executionId, HttpServletRequest request, HttpServletResponse response) {
+  @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.POST, produces = "application/json")
+  public Object createExecutionVariable(@PathVariable String executionId, HttpServletRequest request, HttpServletResponse response) {
 
-        Execution execution = getExecutionFromRequest(executionId);
-        return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, request, response);
-    }
+    Execution execution = getExecutionFromRequest(executionId);
+    return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_EXECUTION, request, response);
+  }
 
-    @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.DELETE)
-    public void deleteLocalVariables(@PathVariable String executionId, HttpServletResponse response) {
-        Execution execution = getExecutionFromRequest(executionId);
-        deleteAllLocalVariables(execution, response);
-    }
+  @RequestMapping(value = "/runtime/executions/{executionId}/variables", method = RequestMethod.DELETE)
+  public void deleteLocalVariables(@PathVariable String executionId, HttpServletResponse response) {
+    Execution execution = getExecutionFromRequest(executionId);
+    deleteAllLocalVariables(execution, response);
+  }
 
 }

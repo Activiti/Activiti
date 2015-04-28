@@ -37,205 +37,201 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  */
 public class TaskIdentityLinkResourceTest extends BaseSpringRestTestCase {
 
-    /**
-     * Test getting all identity links. GET runtime/tasks/{taskId}/identitylinks
-     */
-    @Deployment
-    public void testGetIdentityLinks() throws Exception {
+  /**
+   * Test getting all identity links. GET runtime/tasks/{taskId}/identitylinks
+   */
+  @Deployment
+  public void testGetIdentityLinks() throws Exception {
 
-        // Test candidate user/groups links + manual added identityLink
-        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("identityLinkProcess");
-        Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
-        taskService.addUserIdentityLink(task.getId(), "john", "customType");
+    // Test candidate user/groups links + manual added identityLink
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("identityLinkProcess");
+    Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
+    taskService.addUserIdentityLink(task.getId(), "john", "customType");
 
-        assertEquals(3, taskService.getIdentityLinksForTask(task.getId()).size());
+    assertEquals(3, taskService.getIdentityLinksForTask(task.getId()).size());
 
-        // Execute the request
-        HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, task.getId()));
-        CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
-        JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
-        closeResponse(response);
-        assertNotNull(responseNode);
-        assertTrue(responseNode.isArray());
-        assertEquals(3, responseNode.size());
+    // Execute the request
+    HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, task.getId()));
+    CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
+    JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
+    assertNotNull(responseNode);
+    assertTrue(responseNode.isArray());
+    assertEquals(3, responseNode.size());
 
-        boolean groupCandidateFound = false;
-        boolean userCandidateFound = false;
-        boolean customLinkFound = false;
+    boolean groupCandidateFound = false;
+    boolean userCandidateFound = false;
+    boolean customLinkFound = false;
 
-        for (int i = 0; i < responseNode.size(); i++) {
-            ObjectNode link = (ObjectNode) responseNode.get(i);
-            assertNotNull(link);
-            if (!link.get("user").isNull()) {
-                if (link.get("user").textValue().equals("john")) {
-                    assertEquals("customType", link.get("type").textValue());
-                    assertTrue(link.get("group").isNull());
-                    assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "john", "customType")));
-                    customLinkFound = true;
-                } else {
-                    assertEquals("kermit", link.get("user").textValue());
-                    assertEquals("candidate", link.get("type").textValue());
-                    assertTrue(link.get("group").isNull());
-                    assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "candidate")));
-                    userCandidateFound = true;
-                }
-            } else if (!link.get("group").isNull()) {
-                assertEquals("sales", link.get("group").textValue());
-                assertEquals("candidate", link.get("type").textValue());
-                assertTrue(link.get("user").isNull());
-                assertTrue(link.get("url").textValue()
-                        .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS, "sales", "candidate")));
-                groupCandidateFound = true;
-            }
+    for (int i = 0; i < responseNode.size(); i++) {
+      ObjectNode link = (ObjectNode) responseNode.get(i);
+      assertNotNull(link);
+      if (!link.get("user").isNull()) {
+        if (link.get("user").textValue().equals("john")) {
+          assertEquals("customType", link.get("type").textValue());
+          assertTrue(link.get("group").isNull());
+          assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "john", "customType")));
+          customLinkFound = true;
+        } else {
+          assertEquals("kermit", link.get("user").textValue());
+          assertEquals("candidate", link.get("type").textValue());
+          assertTrue(link.get("group").isNull());
+          assertTrue(link.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "candidate")));
+          userCandidateFound = true;
         }
-        assertTrue(groupCandidateFound);
-        assertTrue(userCandidateFound);
-        assertTrue(customLinkFound);
+      } else if (!link.get("group").isNull()) {
+        assertEquals("sales", link.get("group").textValue());
+        assertEquals("candidate", link.get("type").textValue());
+        assertTrue(link.get("user").isNull());
+        assertTrue(link.get("url").textValue()
+            .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS, "sales", "candidate")));
+        groupCandidateFound = true;
+      }
     }
+    assertTrue(groupCandidateFound);
+    assertTrue(userCandidateFound);
+    assertTrue(customLinkFound);
+  }
 
-    /**
-     * Test getting all identity links. POST
-     * runtime/tasks/{taskId}/identitylinks
-     */
-    public void testCreateIdentityLink() throws Exception {
-        try {
-            Task task = taskService.newTask();
-            taskService.saveTask(task);
+  /**
+   * Test getting all identity links. POST runtime/tasks/{taskId}/identitylinks
+   */
+  public void testCreateIdentityLink() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
 
-            // Add user link
-            ObjectNode requestNode = objectMapper.createObjectNode();
-            requestNode.put("user", "kermit");
-            requestNode.put("type", "myType");
+      // Add user link
+      ObjectNode requestNode = objectMapper.createObjectNode();
+      requestNode.put("user", "kermit");
+      requestNode.put("type", "myType");
 
-            HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, task.getId()));
-            httpPost.setEntity(new StringEntity(requestNode.toString()));
-            CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
-            JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
-            closeResponse(response);
-            assertNotNull(responseNode);
-            assertEquals("kermit", responseNode.get("user").textValue());
-            assertEquals("myType", responseNode.get("type").textValue());
-            assertTrue(responseNode.get("group").isNull());
-            assertTrue(responseNode.get("url").textValue()
-                    .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")));
+      HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, task.getId()));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertNotNull(responseNode);
+      assertEquals("kermit", responseNode.get("user").textValue());
+      assertEquals("myType", responseNode.get("type").textValue());
+      assertTrue(responseNode.get("group").isNull());
+      assertTrue(responseNode.get("url").textValue()
+          .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")));
 
-            // Add group link
-            requestNode = objectMapper.createObjectNode();
-            requestNode.put("group", "sales");
-            requestNode.put("type", "myType");
+      // Add group link
+      requestNode = objectMapper.createObjectNode();
+      requestNode.put("group", "sales");
+      requestNode.put("type", "myType");
 
-            httpPost.setEntity(new StringEntity(requestNode.toString()));
-            response = executeRequest(httpPost, HttpStatus.SC_CREATED);
-            responseNode = objectMapper.readTree(response.getEntity().getContent());
-            closeResponse(response);
-            assertNotNull(responseNode);
-            assertEquals("sales", responseNode.get("group").textValue());
-            assertEquals("myType", responseNode.get("type").textValue());
-            assertTrue(responseNode.get("user").isNull());
-            assertTrue(responseNode.get("url").textValue()
-                    .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS, "sales", "myType")));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      response = executeRequest(httpPost, HttpStatus.SC_CREATED);
+      responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertNotNull(responseNode);
+      assertEquals("sales", responseNode.get("group").textValue());
+      assertEquals("myType", responseNode.get("type").textValue());
+      assertTrue(responseNode.get("user").isNull());
+      assertTrue(responseNode.get("url").textValue()
+          .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_GROUPS, "sales", "myType")));
 
-            // Test with unexisting task
-            httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, "unexistingtask"));
-            httpPost.setEntity(new StringEntity(requestNode.toString()));
-            closeResponse(executeRequest(httpPost, HttpStatus.SC_NOT_FOUND));
+      // Test with unexisting task
+      httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, "unexistingtask"));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_NOT_FOUND));
 
-            // Test with no user/group task
-            requestNode = objectMapper.createObjectNode();
-            requestNode.put("type", "myType");
-            httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, task.getId()));
-            httpPost.setEntity(new StringEntity(requestNode.toString()));
-            closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
+      // Test with no user/group task
+      requestNode = objectMapper.createObjectNode();
+      requestNode.put("type", "myType");
+      httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINKS_COLLECTION, task.getId()));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
 
-            // Test with no user/group task
-            requestNode = objectMapper.createObjectNode();
-            requestNode.put("type", "myType");
-            requestNode.put("user", "kermit");
-            requestNode.put("group", "sales");
+      // Test with no user/group task
+      requestNode = objectMapper.createObjectNode();
+      requestNode.put("type", "myType");
+      requestNode.put("user", "kermit");
+      requestNode.put("group", "sales");
 
-            httpPost.setEntity(new StringEntity(requestNode.toString()));
-            closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
 
-            // Test with no type
-            requestNode = objectMapper.createObjectNode();
-            requestNode.put("group", "sales");
+      // Test with no type
+      requestNode = objectMapper.createObjectNode();
+      requestNode.put("group", "sales");
 
-            httpPost.setEntity(new StringEntity(requestNode.toString()));
-            closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
+      httpPost.setEntity(new StringEntity(requestNode.toString()));
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
 
-        } finally {
-            // Clean adhoc-tasks even if test fails
-            List<Task> tasks = taskService.createTaskQuery().list();
-            for (Task task : tasks) {
-                taskService.deleteTask(task.getId(), true);
-            }
-        }
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for (Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
     }
+  }
 
-    /**
-     * Test getting a single identity link for a task. GET
-     * runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
-     */
-    public void testGetSingleIdentityLink() throws Exception {
-        try {
-            Task task = taskService.newTask();
-            taskService.saveTask(task);
-            taskService.addUserIdentityLink(task.getId(), "kermit", "myType");
+  /**
+   * Test getting a single identity link for a task. GET runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
+   */
+  public void testGetSingleIdentityLink() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      taskService.addUserIdentityLink(task.getId(), "kermit", "myType");
 
-            HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "myType"));
-            CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
-            JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
-            closeResponse(response);
-            assertNotNull(responseNode);
-            assertEquals("kermit", responseNode.get("user").textValue());
-            assertEquals("myType", responseNode.get("type").textValue());
-            assertTrue(responseNode.get("group").isNull());
-            assertTrue(responseNode.get("url").textValue()
-                    .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")));
+      HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "myType"));
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
+      JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
+      assertNotNull(responseNode);
+      assertEquals("kermit", responseNode.get("user").textValue());
+      assertEquals("myType", responseNode.get("type").textValue());
+      assertTrue(responseNode.get("group").isNull());
+      assertTrue(responseNode.get("url").textValue()
+          .endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")));
 
-            // Test with unexisting task
-            httpGet = new HttpGet(SERVER_URL_PREFIX
-                    + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, "unexistingtask", RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType"));
-            closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
+      // Test with unexisting task
+      httpGet = new HttpGet(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, "unexistingtask", RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType"));
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
 
-        } finally {
-            // Clean adhoc-tasks even if test fails
-            List<Task> tasks = taskService.createTaskQuery().list();
-            for (Task task : tasks) {
-                taskService.deleteTask(task.getId(), true);
-            }
-        }
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for (Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
     }
+  }
 
-    /**
-     * Test deleting a single identity link for a task. DELETE
-     * runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
-     */
-    public void testDeleteSingleIdentityLink() throws Exception {
-        try {
-            Task task = taskService.newTask();
-            taskService.saveTask(task);
-            taskService.addUserIdentityLink(task.getId(), "kermit", "myType");
+  /**
+   * Test deleting a single identity link for a task. DELETE runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}
+   */
+  public void testDeleteSingleIdentityLink() throws Exception {
+    try {
+      Task task = taskService.newTask();
+      taskService.saveTask(task);
+      taskService.addUserIdentityLink(task.getId(), "kermit", "myType");
 
-            HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "myType"));
-            closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
+      HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), "users", "kermit", "myType"));
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
 
-            // Test with unexisting identitylink
-            httpDelete = new HttpDelete(SERVER_URL_PREFIX
-                    + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "unexistingtype"));
-            closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
+      // Test with unexisting identitylink
+      httpDelete = new HttpDelete(SERVER_URL_PREFIX
+          + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, task.getId(), RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "unexistingtype"));
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
 
-            // Test with unexisting task
-            httpDelete = new HttpDelete(SERVER_URL_PREFIX
-                    + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, "unexistingtask", RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType"));
-            closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
+      // Test with unexisting task
+      httpDelete = new HttpDelete(SERVER_URL_PREFIX
+          + RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_IDENTITYLINK, "unexistingtask", RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType"));
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
 
-        } finally {
-            // Clean adhoc-tasks even if test fails
-            List<Task> tasks = taskService.createTaskQuery().list();
-            for (Task task : tasks) {
-                taskService.deleteTask(task.getId(), true);
-            }
-        }
+    } finally {
+      // Clean adhoc-tasks even if test fails
+      List<Task> tasks = taskService.createTaskQuery().list();
+      for (Task task : tasks) {
+        taskService.deleteTask(task.getId(), true);
+      }
     }
+  }
 }

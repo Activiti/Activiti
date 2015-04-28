@@ -25,28 +25,28 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  */
 public class CancelBoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 
-    @Override
-    public void execute(ActivityExecution execution) {
+  @Override
+  public void execute(ActivityExecution execution) {
 
-        List<CompensateEventSubscriptionEntity> eventSubscriptions = ((ExecutionEntity) execution).getCompensateEventSubscriptions();
+    List<CompensateEventSubscriptionEntity> eventSubscriptions = ((ExecutionEntity) execution).getCompensateEventSubscriptions();
 
-        if (eventSubscriptions.isEmpty()) {
-            leave(execution);
-        } else {
-            // cancel boundary is always sync
-            ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
-        }
-
+    if (eventSubscriptions.isEmpty()) {
+      leave(execution);
+    } else {
+      // cancel boundary is always sync
+      ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
     }
 
-    @Override
-    public void trigger(ActivityExecution execution, String signalName, Object signalData) {
-        // join compensating executions
-        if (execution.getExecutions().isEmpty()) {
-            leave(execution);
-        } else {
-            ((ExecutionEntity) execution).forceUpdate();
-        }
+  }
+
+  @Override
+  public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+    // join compensating executions
+    if (execution.getExecutions().isEmpty()) {
+      leave(execution);
+    } else {
+      ((ExecutionEntity) execution).forceUpdate();
     }
+  }
 
 }

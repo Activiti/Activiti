@@ -23,13 +23,13 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public class ExclusiveGatewayParseHandler extends AbstractActivityBpmnParseHandler<ExclusiveGateway> {
 
-    public Class<? extends BaseElement> getHandledType() {
-        return ExclusiveGateway.class;
-    }
+  public Class<? extends BaseElement> getHandledType() {
+    return ExclusiveGateway.class;
+  }
 
-    protected void executeParse(BpmnParse bpmnParse, ExclusiveGateway gateway) {
-        ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EXCLUSIVE);
-        activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createExclusiveGatewayActivityBehavior(gateway));
-    }
+  protected void executeParse(BpmnParse bpmnParse, ExclusiveGateway gateway) {
+    ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EXCLUSIVE);
+    activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createExclusiveGatewayActivityBehavior(gateway));
+  }
 
 }

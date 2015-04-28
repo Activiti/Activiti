@@ -31,101 +31,101 @@ import com.vaadin.ui.TextField;
  */
 public class UrlAttachmentEditorComponent extends Form implements AttachmentEditorComponent {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected Attachment attachment;
-    protected String taskId;
-    protected String processInstanceId;
+  protected Attachment attachment;
+  protected String taskId;
+  protected String processInstanceId;
 
-    protected I18nManager i18nManager;
-    protected transient TaskService taskService;
+  protected I18nManager i18nManager;
+  protected transient TaskService taskService;
 
-    public UrlAttachmentEditorComponent(String taskId, String processInstanceId) {
-        this(null, taskId, processInstanceId);
+  public UrlAttachmentEditorComponent(String taskId, String processInstanceId) {
+    this(null, taskId, processInstanceId);
+  }
+
+  public UrlAttachmentEditorComponent(Attachment attachment, String taskId, String processInstanceId) {
+    this.attachment = attachment;
+    this.taskId = taskId;
+    this.processInstanceId = processInstanceId;
+
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+
+    setSizeFull();
+    setDescription(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL_HELP));
+
+    initUrl();
+    initName();
+    initDescription();
+  }
+
+  protected void initUrl() {
+    TextField urlField = new TextField(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL_URL));
+    urlField.focus();
+    urlField.setRequired(true);
+    urlField.setRequiredError(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL_URL_REQUIRED));
+    urlField.setWidth(100, UNITS_PERCENTAGE);
+    // URL isn't mutable once attachment is created
+    if (attachment != null) {
+      urlField.setEnabled(false);
     }
 
-    public UrlAttachmentEditorComponent(Attachment attachment, String taskId, String processInstanceId) {
-        this.attachment = attachment;
-        this.taskId = taskId;
-        this.processInstanceId = processInstanceId;
+    addField("url", urlField);
+  }
 
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-        taskService = ProcessEngines.getDefaultProcessEngine().getTaskService();
+  protected void initDescription() {
+    TextArea descriptionField = new TextArea(i18nManager.getMessage(Messages.RELATED_CONTENT_DESCRIPTION));
+    descriptionField.setWidth(100, UNITS_PERCENTAGE);
+    descriptionField.setHeight(100, UNITS_PIXELS);
+    addField("description", descriptionField);
+  }
 
-        setSizeFull();
-        setDescription(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL_HELP));
+  protected void initName() {
+    TextField nameField = new TextField(i18nManager.getMessage(Messages.RELATED_CONTENT_NAME));
+    nameField.setWidth(100, UNITS_PERCENTAGE);
+    addField("name", nameField);
+  }
 
-        initUrl();
-        initName();
-        initDescription();
+  public Attachment getAttachment() throws InvalidValueException {
+    // Force validation of the fields
+    commit();
+    if (attachment != null) {
+      applyValuesToAttachment();
+    } else {
+      // Create new attachment based on values
+      // TODO: use explorerApp to get service
+      attachment = taskService.createAttachment(UrlAttachmentRenderer.ATTACHMENT_TYPE, taskId, processInstanceId, getAttachmentName(), getAttachmentDescription(), getAttachmentUrl());
     }
+    return attachment;
+  }
 
-    protected void initUrl() {
-        TextField urlField = new TextField(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL_URL));
-        urlField.focus();
-        urlField.setRequired(true);
-        urlField.setRequiredError(i18nManager.getMessage(Messages.RELATED_CONTENT_TYPE_URL_URL_REQUIRED));
-        urlField.setWidth(100, UNITS_PERCENTAGE);
-        // URL isn't mutable once attachment is created
-        if (attachment != null) {
-            urlField.setEnabled(false);
-        }
+  protected String getAttachmentUrl() {
+    return (String) getFieldValue("url");
+  }
 
-        addField("url", urlField);
+  protected String getAttachmentName() {
+    String name = (String) getFieldValue("name");
+    if (name == null) {
+      name = getAttachmentUrl();
     }
+    return name;
+  }
 
-    protected void initDescription() {
-        TextArea descriptionField = new TextArea(i18nManager.getMessage(Messages.RELATED_CONTENT_DESCRIPTION));
-        descriptionField.setWidth(100, UNITS_PERCENTAGE);
-        descriptionField.setHeight(100, UNITS_PIXELS);
-        addField("description", descriptionField);
-    }
+  protected String getAttachmentDescription() {
+    return getFieldValue("description");
+  }
 
-    protected void initName() {
-        TextField nameField = new TextField(i18nManager.getMessage(Messages.RELATED_CONTENT_NAME));
-        nameField.setWidth(100, UNITS_PERCENTAGE);
-        addField("name", nameField);
+  protected String getFieldValue(String key) {
+    String value = (String) getField(key).getValue();
+    if ("".equals(value)) {
+      return null;
     }
+    return value;
+  }
 
-    public Attachment getAttachment() throws InvalidValueException {
-        // Force validation of the fields
-        commit();
-        if (attachment != null) {
-            applyValuesToAttachment();
-        } else {
-            // Create new attachment based on values
-            // TODO: use explorerApp to get service
-            attachment = taskService.createAttachment(UrlAttachmentRenderer.ATTACHMENT_TYPE, taskId, processInstanceId, getAttachmentName(), getAttachmentDescription(), getAttachmentUrl());
-        }
-        return attachment;
-    }
-
-    protected String getAttachmentUrl() {
-        return (String) getFieldValue("url");
-    }
-
-    protected String getAttachmentName() {
-        String name = (String) getFieldValue("name");
-        if (name == null) {
-            name = getAttachmentUrl();
-        }
-        return name;
-    }
-
-    protected String getAttachmentDescription() {
-        return getFieldValue("description");
-    }
-
-    protected String getFieldValue(String key) {
-        String value = (String) getField(key).getValue();
-        if ("".equals(value)) {
-            return null;
-        }
-        return value;
-    }
-
-    private void applyValuesToAttachment() {
-        attachment.setName(getAttachmentName());
-        attachment.setDescription(getAttachmentDescription());
-    }
+  private void applyValuesToAttachment() {
+    attachment.setName(getAttachmentName());
+    attachment.setDescription(getAttachmentDescription());
+  }
 }

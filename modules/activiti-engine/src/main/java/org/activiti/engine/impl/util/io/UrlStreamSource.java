@@ -24,17 +24,17 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
  */
 public class UrlStreamSource implements StreamSource {
 
-    URL url;
+  URL url;
 
-    public UrlStreamSource(URL url) {
-        this.url = url;
-    }
+  public UrlStreamSource(URL url) {
+    this.url = url;
+  }
 
-    public InputStream getInputStream() {
-        try {
-            return new BufferedInputStream(url.openStream());
-        } catch (IOException e) {
-            throw new ActivitiIllegalArgumentException("couldn't open url '" + url + "'", e);
-        }
+  public InputStream getInputStream() {
+    try {
+      return new BufferedInputStream(url.openStream());
+    } catch (IOException e) {
+      throw new ActivitiIllegalArgumentException("couldn't open url '" + url + "'", e);
     }
+  }
 }

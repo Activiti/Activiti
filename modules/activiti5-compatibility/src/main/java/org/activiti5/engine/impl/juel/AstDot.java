@@ -19,31 +19,31 @@ import org.activiti5.engine.impl.javax.el.ELContext;
 import org.activiti5.engine.impl.javax.el.ELException;
 
 public class AstDot extends AstProperty {
-    protected final String property;
+  protected final String property;
 
-    public AstDot(AstNode base, String property, boolean lvalue) {
-        super(base, lvalue, true);
-        this.property = property;
-    }
+  public AstDot(AstNode base, String property, boolean lvalue) {
+    super(base, lvalue, true);
+    this.property = property;
+  }
 
-    @Override
-    protected String getProperty(Bindings bindings, ELContext context) throws ELException {
-        return property;
-    }
+  @Override
+  protected String getProperty(Bindings bindings, ELContext context) throws ELException {
+    return property;
+  }
 
-    @Override
-    public String toString() {
-        return ". " + property;
-    }
+  @Override
+  public String toString() {
+    return ". " + property;
+  }
 
-    @Override
-    public void appendStructure(StringBuilder b, Bindings bindings) {
-        getChild(0).appendStructure(b, bindings);
-        b.append(".");
-        b.append(property);
-    }
+  @Override
+  public void appendStructure(StringBuilder b, Bindings bindings) {
+    getChild(0).appendStructure(b, bindings);
+    b.append(".");
+    b.append(property);
+  }
 
-    public int getCardinality() {
-        return 1;
-    }
+  public int getCardinality() {
+    return 1;
+  }
 }

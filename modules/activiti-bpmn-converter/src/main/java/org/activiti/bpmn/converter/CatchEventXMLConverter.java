@@ -25,31 +25,31 @@ import org.activiti.bpmn.model.IntermediateCatchEvent;
  */
 public class CatchEventXMLConverter extends BaseBpmnXMLConverter {
 
-    public Class<? extends BaseElement> getBpmnElementType() {
-        return IntermediateCatchEvent.class;
-    }
+  public Class<? extends BaseElement> getBpmnElementType() {
+    return IntermediateCatchEvent.class;
+  }
 
-    @Override
-    protected String getXMLElementName() {
-        return ELEMENT_EVENT_CATCH;
-    }
+  @Override
+  protected String getXMLElementName() {
+    return ELEMENT_EVENT_CATCH;
+  }
 
-    @Override
-    protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
-        IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
-        BpmnXMLUtil.addXMLLocation(catchEvent, xtr);
-        parseChildElements(getXMLElementName(), catchEvent, model, xtr);
-        return catchEvent;
-    }
+  @Override
+  protected BaseElement convertXMLToElement(XMLStreamReader xtr, BpmnModel model) throws Exception {
+    IntermediateCatchEvent catchEvent = new IntermediateCatchEvent();
+    BpmnXMLUtil.addXMLLocation(catchEvent, xtr);
+    parseChildElements(getXMLElementName(), catchEvent, model, xtr);
+    return catchEvent;
+  }
 
-    @Override
-    protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+  @Override
+  protected void writeAdditionalAttributes(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
 
-    }
+  }
 
-    @Override
-    protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
-        IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) element;
-        writeEventDefinitions(catchEvent, catchEvent.getEventDefinitions(), model, xtw);
-    }
+  @Override
+  protected void writeAdditionalChildElements(BaseElement element, BpmnModel model, XMLStreamWriter xtw) throws Exception {
+    IntermediateCatchEvent catchEvent = (IntermediateCatchEvent) element;
+    writeEventDefinitions(catchEvent, catchEvent.getEventDefinitions(), model, xtw);
+  }
 }

@@ -18,26 +18,26 @@ package org.activiti.rest.service.api.identity;
  */
 public class GroupRequest extends GroupResponse {
 
-    protected boolean isNameChanged = false;
-    protected boolean isTypeChanged = false;
+  protected boolean isNameChanged = false;
+  protected boolean isTypeChanged = false;
 
-    @Override
-    public void setType(String type) {
-        super.setType(type);
-        isTypeChanged = true;
-    }
+  @Override
+  public void setType(String type) {
+    super.setType(type);
+    isTypeChanged = true;
+  }
 
-    @Override
-    public void setName(String name) {
-        super.setName(name);
-        isNameChanged = true;
-    }
+  @Override
+  public void setName(String name) {
+    super.setName(name);
+    isNameChanged = true;
+  }
 
-    public boolean isNameChanged() {
-        return isNameChanged;
-    }
+  public boolean isNameChanged() {
+    return isNameChanged;
+  }
 
-    public boolean isTypeChanged() {
-        return isTypeChanged;
-    }
+  public boolean isTypeChanged() {
+    return isTypeChanged;
+  }
 }

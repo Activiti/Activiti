@@ -15,30 +15,29 @@ package org.activiti5.engine.impl.bpmn.parser;
 import org.activiti5.engine.delegate.BpmnError;
 
 /**
- * Represents a BPMN Error definition, whereas {@link BpmnError} represents an
- * actual instance of an Error.
+ * Represents a BPMN Error definition, whereas {@link BpmnError} represents an actual instance of an Error.
  * 
  * @author Joram Barrez
  */
 public class Error {
 
-    protected String id;
-    protected String errorCode;
+  protected String id;
+  protected String errorCode;
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public String getErrorCode() {
-        return errorCode;
-    }
+  public String getErrorCode() {
+    return errorCode;
+  }
 
-    public void setErrorCode(String errorCode) {
-        this.errorCode = errorCode;
-    }
+  public void setErrorCode(String errorCode) {
+    this.errorCode = errorCode;
+  }
 
 }

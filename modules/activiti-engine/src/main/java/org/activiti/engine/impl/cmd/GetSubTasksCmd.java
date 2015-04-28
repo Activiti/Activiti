@@ -25,15 +25,15 @@ import org.activiti.engine.task.Task;
  */
 public class GetSubTasksCmd implements Command<List<Task>>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String parentTaskId;
+  private static final long serialVersionUID = 1L;
+  protected String parentTaskId;
 
-    public GetSubTasksCmd(String parentTaskId) {
-        this.parentTaskId = parentTaskId;
-    }
+  public GetSubTasksCmd(String parentTaskId) {
+    this.parentTaskId = parentTaskId;
+  }
 
-    public List<Task> execute(CommandContext commandContext) {
-        return commandContext.getTaskEntityManager().findTasksByParentTaskId(parentTaskId);
-    }
+  public List<Task> execute(CommandContext commandContext) {
+    return commandContext.getTaskEntityManager().findTasksByParentTaskId(parentTaskId);
+  }
 
 }

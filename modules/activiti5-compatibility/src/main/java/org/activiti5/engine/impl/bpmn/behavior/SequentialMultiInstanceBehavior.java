@@ -25,76 +25,73 @@ import org.activiti5.engine.impl.pvm.process.ActivityImpl;
  */
 public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavior {
 
-    public SequentialMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
-        super(activity, innerActivityBehavior);
+  public SequentialMultiInstanceBehavior(ActivityImpl activity, AbstractBpmnActivityBehavior innerActivityBehavior) {
+    super(activity, innerActivityBehavior);
+  }
+
+  /**
+   * Handles the sequential case of spawning the instances. Will only create one instance, since at most one instance can be active.
+   */
+  protected void createInstances(ActivityExecution execution) throws Exception {
+    int nrOfInstances = resolveNrOfInstances(execution);
+    if (nrOfInstances < 0) {
+      throw new ActivitiIllegalArgumentException("Invalid number of instances: must be a non-negative integer value" + ", but was " + nrOfInstances);
     }
 
-    /**
-     * Handles the sequential case of spawning the instances. Will only create
-     * one instance, since at most one instance can be active.
-     */
-    protected void createInstances(ActivityExecution execution) throws Exception {
-        int nrOfInstances = resolveNrOfInstances(execution);
-        if (nrOfInstances < 0) {
-            throw new ActivitiIllegalArgumentException("Invalid number of instances: must be a non-negative integer value" + ", but was " + nrOfInstances);
-        }
+    setLoopVariable(execution, NUMBER_OF_INSTANCES, nrOfInstances);
+    setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, 0);
+    setLoopVariable(execution, getCollectionElementIndexVariable(), 0);
+    setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
+    logLoopDetails(execution, "initialized", 0, 0, 1, nrOfInstances);
 
-        setLoopVariable(execution, NUMBER_OF_INSTANCES, nrOfInstances);
-        setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, 0);
-        setLoopVariable(execution, getCollectionElementIndexVariable(), 0);
-        setLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES, 1);
-        logLoopDetails(execution, "initialized", 0, 0, 1, nrOfInstances);
+    if (nrOfInstances > 0) {
+      executeOriginalBehavior(execution, 0);
+    }
+  }
 
-        if (nrOfInstances > 0) {
-            executeOriginalBehavior(execution, 0);
-        }
+  /**
+   * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method. Handles the completion of one instance, and executes the logic for
+   * the sequential behavior.
+   */
+  public void leave(ActivityExecution execution) {
+    int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable()) + 1;
+    int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
+    int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
+    int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
+
+    if (loopCounter != nrOfInstances && !completionConditionSatisfied(execution)) {
+      callActivityEndListeners(execution);
     }
 
-    /**
-     * Called when the wrapped {@link ActivityBehavior} calls the
-     * {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method.
-     * Handles the completion of one instance, and executes the logic for the
-     * sequential behavior.
-     */
-    public void leave(ActivityExecution execution) {
-        int loopCounter = getLoopVariable(execution, getCollectionElementIndexVariable()) + 1;
-        int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
-        int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
-        int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES);
+    setLoopVariable(execution, getCollectionElementIndexVariable(), loopCounter);
+    setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
+    logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
 
-        if (loopCounter != nrOfInstances && !completionConditionSatisfied(execution)) {
-            callActivityEndListeners(execution);
-        }
-
-        setLoopVariable(execution, getCollectionElementIndexVariable(), loopCounter);
-        setLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
-        logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
-
-        if (loopCounter >= nrOfInstances || completionConditionSatisfied(execution)) {
-            super.leave(execution);
-        } else {
-            try {
-                executeOriginalBehavior(execution, loopCounter);
-            } catch (BpmnError error) {
-                // re-throw business fault so that it can be caught by an Error
-                // Intermediate Event or Error Event Sub-Process in the process
-                throw error;
-            } catch (Exception e) {
-                throw new ActivitiException("Could not execute inner activity behavior of multi instance behavior", e);
-            }
-        }
+    if (loopCounter >= nrOfInstances || completionConditionSatisfied(execution)) {
+      super.leave(execution);
+    } else {
+      try {
+        executeOriginalBehavior(execution, loopCounter);
+      } catch (BpmnError error) {
+        // re-throw business fault so that it can be caught by an Error
+        // Intermediate Event or Error Event Sub-Process in the process
+        throw error;
+      } catch (Exception e) {
+        throw new ActivitiException("Could not execute inner activity behavior of multi instance behavior", e);
+      }
     }
+  }
 
-    @Override
-    public void execute(ActivityExecution execution) throws Exception {
-        super.execute(execution);
+  @Override
+  public void execute(ActivityExecution execution) throws Exception {
+    super.execute(execution);
 
-        if (innerActivityBehavior instanceof SubProcessActivityBehavior) {
-            // ACT-1185: end-event in subprocess may have inactivated execution
-            if (!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().isEmpty())) {
-                execution.setActive(true);
-            }
-        }
+    if (innerActivityBehavior instanceof SubProcessActivityBehavior) {
+      // ACT-1185: end-event in subprocess may have inactivated execution
+      if (!execution.isActive() && execution.isEnded() && (execution.getExecutions() == null || execution.getExecutions().isEmpty())) {
+        execution.setActive(true);
+      }
     }
+  }
 
 }

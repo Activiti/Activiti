@@ -28,16 +28,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class TableColumnsResource {
 
-    @Autowired
-    protected ManagementService managementService;
+  @Autowired
+  protected ManagementService managementService;
 
-    @RequestMapping(value = "/management/tables/{tableName}/columns", method = RequestMethod.GET, produces = "application/json")
-    public TableMetaData getTableMetaData(@PathVariable String tableName) {
-        TableMetaData response = managementService.getTableMetaData(tableName);
+  @RequestMapping(value = "/management/tables/{tableName}/columns", method = RequestMethod.GET, produces = "application/json")
+  public TableMetaData getTableMetaData(@PathVariable String tableName) {
+    TableMetaData response = managementService.getTableMetaData(tableName);
 
-        if (response == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
-        }
-        return response;
+    if (response == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a table with name '" + tableName + "'.", String.class);
     }
+    return response;
+  }
 }

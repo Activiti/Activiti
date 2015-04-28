@@ -29,81 +29,80 @@ import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
- * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded'
- * subprocess): a subprocess defined within another process definition.
+ * Implementation of the BPMN 2.0 subprocess (formally known as 'embedded' subprocess): a subprocess defined within another process definition.
  * 
  * @author Joram Barrez
  */
 public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior implements CompositeActivityBehavior {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public void execute(ActivityExecution execution) {
-        SubProcess subProcess = getSubProcessFromExecution(execution);
+  public void execute(ActivityExecution execution) {
+    SubProcess subProcess = getSubProcessFromExecution(execution);
 
-        FlowElement startElement = null;
-        if (CollectionUtils.isNotEmpty(subProcess.getFlowElements())) {
-            for (FlowElement subElement : subProcess.getFlowElements()) {
-                if (subElement instanceof StartEvent) {
-                    StartEvent startEvent = (StartEvent) subElement;
+    FlowElement startElement = null;
+    if (CollectionUtils.isNotEmpty(subProcess.getFlowElements())) {
+      for (FlowElement subElement : subProcess.getFlowElements()) {
+        if (subElement instanceof StartEvent) {
+          StartEvent startEvent = (StartEvent) subElement;
 
-                    // start none event
-                    if (CollectionUtils.isEmpty(startEvent.getEventDefinitions())) {
-                        startElement = startEvent;
-                        break;
-                    }
-                }
-            }
+          // start none event
+          if (CollectionUtils.isEmpty(startEvent.getEventDefinitions())) {
+            startElement = startEvent;
+            break;
+          }
         }
-
-        if (startElement == null) {
-            throw new ActivitiException("No initial activity found for subprocess " + subProcess.getId());
-        }
-
-        execution.setScope(true);
-        
-        // initialize the template-defined data objects as variables
-        Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
-        if (dataObjectVars != null) {
-        	execution.setVariablesLocal(dataObjectVars);
-        }
-
-        ExecutionEntity startSubProcessExecution = ((ExecutionEntity) execution).createExecution();
-        startSubProcessExecution.setCurrentFlowElement(startElement);
-        Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
+      }
     }
 
-    public void lastExecutionEnded(ActivityExecution execution) {
-        SubProcess subProcess = getSubProcessFromExecution(execution);
-
-        // remove the template-defined data object variables
-        Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
-        if (dataObjectVars != null) {
-            execution.removeVariablesLocal(dataObjectVars.keySet());
-        }
-
-        bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
+    if (startElement == null) {
+      throw new ActivitiException("No initial activity found for subprocess " + subProcess.getId());
     }
 
-    protected SubProcess getSubProcessFromExecution(ActivityExecution execution) {
-        FlowElement flowElement = execution.getCurrentFlowElement();
-        SubProcess subProcess = null;
-        if (flowElement instanceof SubProcess) {
-            subProcess = (SubProcess) flowElement;
-        } else {
-            throw new ActivitiException("Programmatic error: sub process behaviour can only be applied" + " to a SubProcess instance, but got an instance of " + flowElement);
-        }
-        return subProcess;
+    execution.setScope(true);
+
+    // initialize the template-defined data objects as variables
+    Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
+    if (dataObjectVars != null) {
+      execution.setVariablesLocal(dataObjectVars);
     }
 
-    protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
-        Map<String, Object> variablesMap = new HashMap<String, Object>();
-        // convert data objects to process variables
-        if (dataObjects != null) {
-            for (ValuedDataObject dataObject : dataObjects) {
-                variablesMap.put(dataObject.getName(), dataObject.getValue());
-            }
-        }
-        return variablesMap;
+    ExecutionEntity startSubProcessExecution = ((ExecutionEntity) execution).createExecution();
+    startSubProcessExecution.setCurrentFlowElement(startElement);
+    Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
+  }
+
+  public void lastExecutionEnded(ActivityExecution execution) {
+    SubProcess subProcess = getSubProcessFromExecution(execution);
+
+    // remove the template-defined data object variables
+    Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
+    if (dataObjectVars != null) {
+      execution.removeVariablesLocal(dataObjectVars.keySet());
     }
+
+    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
+  }
+
+  protected SubProcess getSubProcessFromExecution(ActivityExecution execution) {
+    FlowElement flowElement = execution.getCurrentFlowElement();
+    SubProcess subProcess = null;
+    if (flowElement instanceof SubProcess) {
+      subProcess = (SubProcess) flowElement;
+    } else {
+      throw new ActivitiException("Programmatic error: sub process behaviour can only be applied" + " to a SubProcess instance, but got an instance of " + flowElement);
+    }
+    return subProcess;
+  }
+
+  protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
+    Map<String, Object> variablesMap = new HashMap<String, Object>();
+    // convert data objects to process variables
+    if (dataObjects != null) {
+      for (ValuedDataObject dataObject : dataObjects) {
+        variablesMap.put(dataObject.getName(), dataObject.getValue());
+      }
+    }
+    return variablesMap;
+  }
 }

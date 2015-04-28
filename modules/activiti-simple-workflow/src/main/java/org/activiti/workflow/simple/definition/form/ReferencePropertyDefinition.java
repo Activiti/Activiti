@@ -24,38 +24,38 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 @JsonTypeName("reference")
 public class ReferencePropertyDefinition extends FormPropertyDefinition {
 
-    protected String type;
+  protected String type;
 
-    public void setType(String type) {
-        this.type = type;
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  /**
+   * @return the type of object that is referenced.
+   */
+  public String getType() {
+    return type;
+  }
+
+  @Override
+  public FormPropertyDefinition clone() {
+    ReferencePropertyDefinition clone = new ReferencePropertyDefinition();
+    clone.setValues(this);
+    return clone;
+  }
+
+  @Override
+  public void setValues(FormPropertyDefinition otherDefinition) {
+    if (!(otherDefinition instanceof ReferencePropertyDefinition)) {
+      throw new SimpleWorkflowException("An instance of ReferencePropertyDefinition is required to set values");
     }
 
-    /**
-     * @return the type of object that is referenced.
-     */
-    public String getType() {
-        return type;
-    }
+    ReferencePropertyDefinition referenceDefinition = (ReferencePropertyDefinition) otherDefinition;
+    setName(referenceDefinition.getName());
+    setMandatory(referenceDefinition.isMandatory());
+    setWritable(referenceDefinition.isWritable());
+    setType(referenceDefinition.getType());
 
-    @Override
-    public FormPropertyDefinition clone() {
-        ReferencePropertyDefinition clone = new ReferencePropertyDefinition();
-        clone.setValues(this);
-        return clone;
-    }
-
-    @Override
-    public void setValues(FormPropertyDefinition otherDefinition) {
-        if (!(otherDefinition instanceof ReferencePropertyDefinition)) {
-            throw new SimpleWorkflowException("An instance of ReferencePropertyDefinition is required to set values");
-        }
-
-        ReferencePropertyDefinition referenceDefinition = (ReferencePropertyDefinition) otherDefinition;
-        setName(referenceDefinition.getName());
-        setMandatory(referenceDefinition.isMandatory());
-        setWritable(referenceDefinition.isWritable());
-        setType(referenceDefinition.getType());
-
-        setParameters(otherDefinition.cloneParameters());
-    }
+    setParameters(otherDefinition.cloneParameters());
+  }
 }

@@ -22,25 +22,25 @@ import java.util.List;
  */
 public class FakeLdapService {
 
-    public String findManagerForEmployee(String employee) {
-        // Pretty useless LDAP service ...
-        return "Kermit The Frog";
+  public String findManagerForEmployee(String employee) {
+    // Pretty useless LDAP service ...
+    return "Kermit The Frog";
+  }
+
+  public List<String> findAllSales() {
+    return Arrays.asList("kermit", "gonzo", "fozzie");
+  }
+
+  public List<String> findManagers(DelegateExecution execution, String emp) {
+    if (execution == null) {
+      throw new RuntimeException("Execution parameter is null");
     }
 
-    public List<String> findAllSales() {
-        return Arrays.asList("kermit", "gonzo", "fozzie");
+    if (emp == null || "".equals(emp)) {
+      throw new RuntimeException("emp parameter is null or empty");
     }
 
-    public List<String> findManagers(DelegateExecution execution, String emp) {
-        if (execution == null) {
-            throw new RuntimeException("Execution parameter is null");
-        }
-
-        if (emp == null || "".equals(emp)) {
-            throw new RuntimeException("emp parameter is null or empty");
-        }
-
-        return Arrays.asList("management", "directors");
-    }
+    return Arrays.asList("management", "directors");
+  }
 
 }

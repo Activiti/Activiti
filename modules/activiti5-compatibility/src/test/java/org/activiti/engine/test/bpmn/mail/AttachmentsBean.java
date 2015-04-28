@@ -25,84 +25,84 @@ import javax.activation.DataSource;
 import org.apache.commons.lang3.Validate;
 
 public class AttachmentsBean implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private static final File RESOURCE_DIR = new File("src/test/resources/");
-    private static final File PACKAGE_DIR = new File(RESOURCE_DIR, "org/activiti/engine/test/bpmn/mail/");
+  private static final File RESOURCE_DIR = new File("src/test/resources/");
+  private static final File PACKAGE_DIR = new File(RESOURCE_DIR, "org/activiti/engine/test/bpmn/mail/");
 
-    public File getFile() {
-        String fileName = "EmailServiceTaskTest.testTextMailWithFileAttachment.bpmn20.xml";
-        File file = new File(PACKAGE_DIR, fileName);
-        Validate.isTrue(file.exists(), "file <" + fileName + "> does not exist in dir " + PACKAGE_DIR.getAbsolutePath());
-        return file;
+  public File getFile() {
+    String fileName = "EmailServiceTaskTest.testTextMailWithFileAttachment.bpmn20.xml";
+    File file = new File(PACKAGE_DIR, fileName);
+    Validate.isTrue(file.exists(), "file <" + fileName + "> does not exist in dir " + PACKAGE_DIR.getAbsolutePath());
+    return file;
+  }
+
+  public File[] getFiles() {
+    File[] files = new File[3];
+    String[] testNames = new String[] { "testTextMailWithFileAttachment", "testHtmlMailWithFileAttachment", "testTextMailWithFileAttachments", };
+    for (int i = 0; i < files.length; i++) {
+      String fileName = "EmailServiceTaskTest." + testNames[i] + ".bpmn20.xml";
+      File file = new File(PACKAGE_DIR, fileName);
+      Validate.isTrue(file.exists(), "file <" + fileName + "> does not exist in dir " + PACKAGE_DIR.getAbsolutePath());
+      files[i] = file;
+    }
+    return files;
+  }
+
+  public String[] getFilePathes() {
+    File[] files = getFiles();
+    String[] pathes = new String[files.length];
+    for (int i = 0; i < pathes.length; i++) {
+      pathes[i] = files[i].getAbsolutePath();
+    }
+    return pathes;
+  }
+
+  public File getNotExistingFile() {
+    String fileName = "not-existing-file";
+    File file = new File(PACKAGE_DIR, fileName);
+    Validate.isTrue(!file.exists(), "file <" + fileName + "> does exist in dir " + PACKAGE_DIR.getAbsolutePath());
+    return file;
+  }
+
+  public DataSource getDataSource(String content, String name) {
+    return new StringDataSource(content, name);
+  }
+
+  private static class StringDataSource implements DataSource {
+    private final String content;
+    private final String contentType = "text/plain; charset=UTF-8";
+    private final String name;
+
+    public StringDataSource(String content, String name) {
+      this.content = content;
+      this.name = name;
     }
 
-    public File[] getFiles() {
-        File[] files = new File[3];
-        String[] testNames = new String[] { "testTextMailWithFileAttachment", "testHtmlMailWithFileAttachment", "testTextMailWithFileAttachments", };
-        for (int i = 0; i < files.length; i++) {
-            String fileName = "EmailServiceTaskTest." + testNames[i] + ".bpmn20.xml";
-            File file = new File(PACKAGE_DIR, fileName);
-            Validate.isTrue(file.exists(), "file <" + fileName + "> does not exist in dir " + PACKAGE_DIR.getAbsolutePath());
-            files[i] = file;
-        }
-        return files;
+    @Override
+    public String getContentType() {
+      return contentType;
     }
 
-    public String[] getFilePathes() {
-        File[] files = getFiles();
-        String[] pathes = new String[files.length];
-        for (int i = 0; i < pathes.length; i++) {
-            pathes[i] = files[i].getAbsolutePath();
-        }
-        return pathes;
+    @Override
+    public InputStream getInputStream() {
+      try {
+        return new ByteArrayInputStream(content.getBytes("UTF-8"));
+      } catch (UnsupportedEncodingException e) {
+        // this should not happen, since utf-8 is supported in stock
+        // jdk, but anyway
+        return new ByteArrayInputStream(content.getBytes());
+      }
     }
 
-    public File getNotExistingFile() {
-        String fileName = "not-existing-file";
-        File file = new File(PACKAGE_DIR, fileName);
-        Validate.isTrue(!file.exists(), "file <" + fileName + "> does exist in dir " + PACKAGE_DIR.getAbsolutePath());
-        return file;
+    @Override
+    public String getName() {
+      return name;
     }
 
-    public DataSource getDataSource(String content, String name) {
-        return new StringDataSource(content, name);
+    @Override
+    public OutputStream getOutputStream() {
+      throw new RuntimeException("getOutputStream is not supported");
     }
-
-    private static class StringDataSource implements DataSource {
-        private final String content;
-        private final String contentType = "text/plain; charset=UTF-8";
-        private final String name;
-
-        public StringDataSource(String content, String name) {
-            this.content = content;
-            this.name = name;
-        }
-
-        @Override
-        public String getContentType() {
-            return contentType;
-        }
-
-        @Override
-        public InputStream getInputStream() {
-            try {
-                return new ByteArrayInputStream(content.getBytes("UTF-8"));
-            } catch (UnsupportedEncodingException e) {
-                // this should not happen, since utf-8 is supported in stock
-                // jdk, but anyway
-                return new ByteArrayInputStream(content.getBytes());
-            }
-        }
-
-        @Override
-        public String getName() {
-            return name;
-        }
-
-        @Override
-        public OutputStream getOutputStream() {
-            throw new RuntimeException("getOutputStream is not supported");
-        }
-    }
+  }
 }

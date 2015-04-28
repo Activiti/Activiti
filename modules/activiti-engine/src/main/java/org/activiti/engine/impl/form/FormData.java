@@ -23,56 +23,56 @@ import org.activiti.engine.impl.persistence.entity.TaskEntity;
  */
 public class FormData implements Map<String, Object> {
 
-    TaskEntity task;
+  TaskEntity task;
 
-    public FormData(TaskEntity task) {
-        this.task = task;
-    }
+  public FormData(TaskEntity task) {
+    this.task = task;
+  }
 
-    public void clear() {
-    }
+  public void clear() {
+  }
 
-    public boolean containsKey(Object key) {
-        return false;
-    }
+  public boolean containsKey(Object key) {
+    return false;
+  }
 
-    public boolean containsValue(Object value) {
-        return false;
-    }
+  public boolean containsValue(Object value) {
+    return false;
+  }
 
-    public Set<Map.Entry<String, Object>> entrySet() {
-        return null;
-    }
+  public Set<Map.Entry<String, Object>> entrySet() {
+    return null;
+  }
 
-    public Object get(Object key) {
-        return null;
-    }
+  public Object get(Object key) {
+    return null;
+  }
 
-    public boolean isEmpty() {
-        return false;
-    }
+  public boolean isEmpty() {
+    return false;
+  }
 
-    public Set<String> keySet() {
-        return null;
-    }
+  public Set<String> keySet() {
+    return null;
+  }
 
-    public Object put(String key, Object value) {
-        return null;
-    }
+  public Object put(String key, Object value) {
+    return null;
+  }
 
-    public void putAll(Map<? extends String, ? extends Object> m) {
-    }
+  public void putAll(Map<? extends String, ? extends Object> m) {
+  }
 
-    public Object remove(Object key) {
-        return null;
-    }
+  public Object remove(Object key) {
+    return null;
+  }
 
-    public int size() {
-        return 0;
-    }
+  public int size() {
+    return 0;
+  }
 
-    public Collection<Object> values() {
-        return null;
-    }
+  public Collection<Object> values() {
+    return null;
+  }
 
 }

@@ -18,5 +18,5 @@ package org.activiti5.engine.impl.pvm.delegate;
  */
 public interface CompositeActivityBehavior extends ActivityBehavior {
 
-    void lastExecutionEnded(ActivityExecution execution);
+  void lastExecutionEnded(ActivityExecution execution);
 }

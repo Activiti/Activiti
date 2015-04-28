@@ -18,40 +18,40 @@ package org.activiti.rest.service.api.management;
  */
 public class ProcessEngineInfoResponse {
 
-    private String name;
-    private String resourceUrl;
-    private String exception;
-    private String version;
+  private String name;
+  private String resourceUrl;
+  private String exception;
+  private String version;
 
-    public String getName() {
-        return name;
-    }
+  public String getName() {
+    return name;
+  }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    public String getResourceUrl() {
-        return resourceUrl;
-    }
+  public String getResourceUrl() {
+    return resourceUrl;
+  }
 
-    public void setResourceUrl(String resourceUrl) {
-        this.resourceUrl = resourceUrl;
-    }
+  public void setResourceUrl(String resourceUrl) {
+    this.resourceUrl = resourceUrl;
+  }
 
-    public String getException() {
-        return exception;
-    }
+  public String getException() {
+    return exception;
+  }
 
-    public void setException(String exception) {
-        this.exception = exception;
-    }
+  public void setException(String exception) {
+    this.exception = exception;
+  }
 
-    public String getVersion() {
-        return version;
-    }
+  public String getVersion() {
+    return version;
+  }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
+  public void setVersion(String version) {
+    this.version = version;
+  }
 }

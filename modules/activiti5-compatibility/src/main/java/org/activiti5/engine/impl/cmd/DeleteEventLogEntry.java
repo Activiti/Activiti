@@ -8,16 +8,16 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class DeleteEventLogEntry implements Command<Void> {
 
-    protected long logNr;
+  protected long logNr;
 
-    public DeleteEventLogEntry(long logNr) {
-        this.logNr = logNr;
-    }
+  public DeleteEventLogEntry(long logNr) {
+    this.logNr = logNr;
+  }
 
-    @Override
-    public Void execute(CommandContext commandContext) {
-        commandContext.getEventLogEntryEntityManager().deleteEventLogEntry(logNr);
-        return null;
-    }
+  @Override
+  public Void execute(CommandContext commandContext) {
+    commandContext.getEventLogEntryEntityManager().deleteEventLogEntry(logNr);
+    return null;
+  }
 
 }

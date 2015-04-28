@@ -13,18 +13,18 @@ import com.vaadin.ui.Button.ClickListener;
  */
 public class ConvertProcessDefinitionToModelClickListener implements ClickListener {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected NotificationManager notificationManager;
-    protected ProcessDefinition processDefinition;
+  protected NotificationManager notificationManager;
+  protected ProcessDefinition processDefinition;
 
-    public ConvertProcessDefinitionToModelClickListener(ProcessDefinition processDefinition) {
-        this.notificationManager = ExplorerApp.get().getNotificationManager();
+  public ConvertProcessDefinitionToModelClickListener(ProcessDefinition processDefinition) {
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
 
-        this.processDefinition = processDefinition;
-    }
+    this.processDefinition = processDefinition;
+  }
 
-    public void buttonClick(ClickEvent event) {
-        ExplorerApp.get().getViewManager().showPopupWindow(new ConvertProcessDefinitionPopupWindow(processDefinition));
-    }
+  public void buttonClick(ClickEvent event) {
+    ExplorerApp.get().getViewManager().showPopupWindow(new ConvertProcessDefinitionPopupWindow(processDefinition));
+  }
 }

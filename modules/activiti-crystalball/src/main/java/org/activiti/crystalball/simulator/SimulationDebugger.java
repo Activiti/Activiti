@@ -13,18 +13,19 @@ package org.activiti.crystalball.simulator;
  * limitations under the License.
  */
 
-
 import org.activiti.engine.delegate.VariableScope;
 
 /**
  * Allows to run simulation in debug mode
- *
+ * 
  * @author martin.grofcik
  */
 public interface SimulationDebugger {
   /**
    * initialize simulation run
-   * @param execution - variable scope to transfer variables from and to simulation run
+   * 
+   * @param execution
+   *          - variable scope to transfer variables from and to simulation run
    */
   void init(VariableScope execution);
 

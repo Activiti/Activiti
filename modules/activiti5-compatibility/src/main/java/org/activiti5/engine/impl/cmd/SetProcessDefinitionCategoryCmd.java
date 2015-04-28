@@ -27,56 +27,56 @@ import org.activiti5.engine.repository.ProcessDefinition;
  */
 public class SetProcessDefinitionCategoryCmd implements Command<Void> {
 
-    protected String processDefinitionId;
-    protected String category;
+  protected String processDefinitionId;
+  protected String category;
 
-    public SetProcessDefinitionCategoryCmd(String processDefinitionId, String category) {
-        this.processDefinitionId = processDefinitionId;
-        this.category = category;
+  public SetProcessDefinitionCategoryCmd(String processDefinitionId, String category) {
+    this.processDefinitionId = processDefinitionId;
+    this.category = category;
+  }
+
+  public Void execute(CommandContext commandContext) {
+
+    if (processDefinitionId == null) {
+      throw new ActivitiIllegalArgumentException("Process definition id is null");
     }
 
-    public Void execute(CommandContext commandContext) {
+    ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findProcessDefinitionById(processDefinitionId);
 
-        if (processDefinitionId == null) {
-            throw new ActivitiIllegalArgumentException("Process definition id is null");
-        }
-
-        ProcessDefinitionEntity processDefinition = commandContext.getProcessDefinitionEntityManager().findProcessDefinitionById(processDefinitionId);
-
-        if (processDefinition == null) {
-            throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
-        }
-
-        // Update category
-        processDefinition.setCategory(category);
-
-        // Remove process definition from cache, it will be refetched later
-        DeploymentCache<ProcessDefinitionEntity> processDefinitionCache = commandContext.getProcessEngineConfiguration().getProcessDefinitionCache();
-        if (processDefinitionCache != null) {
-            processDefinitionCache.remove(processDefinitionId);
-        }
-
-        if (commandContext.getEventDispatcher().isEnabled()) {
-            commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, processDefinition));
-        }
-
-        return null;
+    if (processDefinition == null) {
+      throw new ActivitiObjectNotFoundException("No process definition found for id = '" + processDefinitionId + "'", ProcessDefinition.class);
     }
 
-    public String getProcessDefinitionId() {
-        return processDefinitionId;
+    // Update category
+    processDefinition.setCategory(category);
+
+    // Remove process definition from cache, it will be refetched later
+    DeploymentCache<ProcessDefinitionEntity> processDefinitionCache = commandContext.getProcessEngineConfiguration().getProcessDefinitionCache();
+    if (processDefinitionCache != null) {
+      processDefinitionCache.remove(processDefinitionId);
     }
 
-    public void setProcessDefinitionId(String processDefinitionId) {
-        this.processDefinitionId = processDefinitionId;
+    if (commandContext.getEventDispatcher().isEnabled()) {
+      commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_UPDATED, processDefinition));
     }
 
-    public String getCategory() {
-        return category;
-    }
+    return null;
+  }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
+  public String getProcessDefinitionId() {
+    return processDefinitionId;
+  }
+
+  public void setProcessDefinitionId(String processDefinitionId) {
+    this.processDefinitionId = processDefinitionId;
+  }
+
+  public String getCategory() {
+    return category;
+  }
+
+  public void setCategory(String category) {
+    this.category = category;
+  }
 
 }

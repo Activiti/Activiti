@@ -19,19 +19,19 @@ package org.activiti5.engine;
  */
 public interface EngineServices {
 
-    RepositoryService getRepositoryService();
+  RepositoryService getRepositoryService();
 
-    RuntimeService getRuntimeService();
+  RuntimeService getRuntimeService();
 
-    FormService getFormService();
+  FormService getFormService();
 
-    TaskService getTaskService();
+  TaskService getTaskService();
 
-    HistoryService getHistoryService();
+  HistoryService getHistoryService();
 
-    IdentityService getIdentityService();
+  IdentityService getIdentityService();
 
-    ManagementService getManagementService();
+  ManagementService getManagementService();
 
-    ProcessEngineConfiguration getProcessEngineConfiguration();
+  ProcessEngineConfiguration getProcessEngineConfiguration();
 }

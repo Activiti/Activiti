@@ -23,21 +23,21 @@ import org.activiti5.engine.impl.interceptor.CommandContext;
  */
 public class GetModelEditorSourceCmd implements Command<byte[]>, Serializable {
 
-    private static final long serialVersionUID = 1L;
-    protected String modelId;
+  private static final long serialVersionUID = 1L;
+  protected String modelId;
 
-    public GetModelEditorSourceCmd(String modelId) {
-        this.modelId = modelId;
+  public GetModelEditorSourceCmd(String modelId) {
+    this.modelId = modelId;
+  }
+
+  public byte[] execute(CommandContext commandContext) {
+    if (modelId == null) {
+      throw new ActivitiIllegalArgumentException("modelId is null");
     }
 
-    public byte[] execute(CommandContext commandContext) {
-        if (modelId == null) {
-            throw new ActivitiIllegalArgumentException("modelId is null");
-        }
+    byte[] bytes = commandContext.getModelEntityManager().findEditorSourceByModelId(modelId);
 
-        byte[] bytes = commandContext.getModelEntityManager().findEditorSourceByModelId(modelId);
-
-        return bytes;
-    }
+    return bytes;
+  }
 
 }

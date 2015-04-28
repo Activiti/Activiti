@@ -27,28 +27,28 @@ import org.slf4j.LoggerFactory;
  */
 public class EventCollector implements ExecutionListener {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private static Logger log = LoggerFactory.getLogger(EventCollector.class);
+  private static Logger log = LoggerFactory.getLogger(EventCollector.class);
 
-    public List<String> events = new ArrayList<String>();
+  public List<String> events = new ArrayList<String>();
 
-    public void notify(DelegateExecution execution) throws Exception {
-        notify((ExecutionListenerExecution) execution);
+  public void notify(DelegateExecution execution) throws Exception {
+    notify((ExecutionListenerExecution) execution);
+  }
+
+  public void notify(ExecutionListenerExecution execution) {
+
+    log.debug("collecting event: {} on {}", execution.getEventName(), execution.getEventSource());
+    events.add(execution.getEventName() + " on " + execution.getEventSource());
+  }
+
+  public String toString() {
+    StringBuilder text = new StringBuilder();
+    for (String event : events) {
+      text.append(event);
+      text.append("\n");
     }
-
-    public void notify(ExecutionListenerExecution execution) {
-
-        log.debug("collecting event: {} on {}", execution.getEventName(), execution.getEventSource());
-        events.add(execution.getEventName() + " on " + execution.getEventSource());
-    }
-
-    public String toString() {
-        StringBuilder text = new StringBuilder();
-        for (String event : events) {
-            text.append(event);
-            text.append("\n");
-        }
-        return text.toString();
-    }
+    return text.toString();
+  }
 }

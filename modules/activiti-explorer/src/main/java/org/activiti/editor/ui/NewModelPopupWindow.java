@@ -49,138 +49,137 @@ import com.vaadin.ui.themes.Reindeer;
  */
 public class NewModelPopupWindow extends PopupWindow implements ModelDataJsonConstants {
 
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected I18nManager i18nManager;
-    protected NotificationManager notificationManager;
-    protected VerticalLayout windowLayout;
-    protected GridLayout formLayout;
-    protected TextField nameTextField;
-    protected TextArea descriptionTextArea;
-    protected SelectEditorComponent selectEditorComponent;
+  protected I18nManager i18nManager;
+  protected NotificationManager notificationManager;
+  protected VerticalLayout windowLayout;
+  protected GridLayout formLayout;
+  protected TextField nameTextField;
+  protected TextArea descriptionTextArea;
+  protected SelectEditorComponent selectEditorComponent;
 
-    protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
+  protected transient RepositoryService repositoryService = ProcessEngines.getDefaultProcessEngine().getRepositoryService();
 
-    public NewModelPopupWindow() {
-        this.windowLayout = (VerticalLayout) getContent();
-        this.i18nManager = ExplorerApp.get().getI18nManager();
-        this.notificationManager = ExplorerApp.get().getNotificationManager();
+  public NewModelPopupWindow() {
+    this.windowLayout = (VerticalLayout) getContent();
+    this.i18nManager = ExplorerApp.get().getI18nManager();
+    this.notificationManager = ExplorerApp.get().getNotificationManager();
 
-        initWindow();
-        addFields();
-        addButtons();
-    }
+    initWindow();
+    addFields();
+    addButtons();
+  }
 
-    protected void initWindow() {
-        windowLayout.setSpacing(true);
-        addStyleName(Reindeer.WINDOW_LIGHT);
-        setModal(true);
-        setWidth("460px");
-        setHeight("470px");
-        center();
-        setCaption(i18nManager.getMessage(Messages.PROCESS_NEW_POPUP_CAPTION));
-    }
+  protected void initWindow() {
+    windowLayout.setSpacing(true);
+    addStyleName(Reindeer.WINDOW_LIGHT);
+    setModal(true);
+    setWidth("460px");
+    setHeight("470px");
+    center();
+    setCaption(i18nManager.getMessage(Messages.PROCESS_NEW_POPUP_CAPTION));
+  }
 
-    protected void addFields() {
-        formLayout = new GridLayout(2, 3);
-        formLayout.setSpacing(true);
+  protected void addFields() {
+    formLayout = new GridLayout(2, 3);
+    formLayout.setSpacing(true);
 
-        formLayout.addComponent(new Label(i18nManager.getMessage(Messages.TASK_NAME)));
-        nameTextField = new TextField();
-        nameTextField.setWidth(25, Sizeable.UNITS_EM);
-        nameTextField.focus();
-        formLayout.addComponent(nameTextField);
+    formLayout.addComponent(new Label(i18nManager.getMessage(Messages.TASK_NAME)));
+    nameTextField = new TextField();
+    nameTextField.setWidth(25, Sizeable.UNITS_EM);
+    nameTextField.focus();
+    formLayout.addComponent(nameTextField);
 
-        formLayout.addComponent(new Label(i18nManager.getMessage(Messages.TASK_DESCRIPTION)));
-        descriptionTextArea = new TextArea();
-        descriptionTextArea.setRows(8);
-        descriptionTextArea.setWidth(25, Sizeable.UNITS_EM);
-        descriptionTextArea.addStyleName(ExplorerLayout.STYLE_TEXTAREA_NO_RESIZE);
-        formLayout.addComponent(descriptionTextArea);
+    formLayout.addComponent(new Label(i18nManager.getMessage(Messages.TASK_DESCRIPTION)));
+    descriptionTextArea = new TextArea();
+    descriptionTextArea.setRows(8);
+    descriptionTextArea.setWidth(25, Sizeable.UNITS_EM);
+    descriptionTextArea.addStyleName(ExplorerLayout.STYLE_TEXTAREA_NO_RESIZE);
+    formLayout.addComponent(descriptionTextArea);
 
-        Label editorLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_CHOICE));
-        formLayout.addComponent(editorLabel);
-        formLayout.setComponentAlignment(editorLabel, Alignment.MIDDLE_LEFT);
+    Label editorLabel = new Label(i18nManager.getMessage(Messages.PROCESS_EDITOR_CHOICE));
+    formLayout.addComponent(editorLabel);
+    formLayout.setComponentAlignment(editorLabel, Alignment.MIDDLE_LEFT);
 
-        selectEditorComponent = new SelectEditorComponent();
-        formLayout.addComponent(selectEditorComponent);
+    selectEditorComponent = new SelectEditorComponent();
+    formLayout.addComponent(selectEditorComponent);
 
-        addComponent(formLayout);
+    addComponent(formLayout);
 
-        // Some empty space
-        Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
-        addComponent(emptySpace);
-    }
+    // Some empty space
+    Label emptySpace = new Label("&nbsp;", Label.CONTENT_XHTML);
+    addComponent(emptySpace);
+  }
 
-    protected void addButtons() {
+  protected void addButtons() {
 
-        // Create
-        Button createButton = new Button(i18nManager.getMessage(Messages.PROCESS_NEW_POPUP_CREATE_BUTTON));
-        createButton.setWidth("200px");
-        createButton.addListener(new ClickListener() {
+    // Create
+    Button createButton = new Button(i18nManager.getMessage(Messages.PROCESS_NEW_POPUP_CREATE_BUTTON));
+    createButton.setWidth("200px");
+    createButton.addListener(new ClickListener() {
 
-            private static final long serialVersionUID = 1L;
+      private static final long serialVersionUID = 1L;
 
-            public void buttonClick(ClickEvent event) {
+      public void buttonClick(ClickEvent event) {
 
-                if (StringUtils.isEmpty((String) nameTextField.getValue())) {
-                    nameTextField.setComponentError(new UserError("The name field is required."));
-                    return;
-                }
+        if (StringUtils.isEmpty((String) nameTextField.getValue())) {
+          nameTextField.setComponentError(new UserError("The name field is required."));
+          return;
+        }
 
-                if (selectEditorComponent.isModelerPreferred()) {
-                    try {
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        ObjectNode editorNode = objectMapper.createObjectNode();
-                        editorNode.put("id", "canvas");
-                        editorNode.put("resourceId", "canvas");
-                        ObjectNode stencilSetNode = objectMapper.createObjectNode();
-                        stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
-                        editorNode.put("stencilset", stencilSetNode);
-                        Model modelData = repositoryService.newModel();
+        if (selectEditorComponent.isModelerPreferred()) {
+          try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            ObjectNode editorNode = objectMapper.createObjectNode();
+            editorNode.put("id", "canvas");
+            editorNode.put("resourceId", "canvas");
+            ObjectNode stencilSetNode = objectMapper.createObjectNode();
+            stencilSetNode.put("namespace", "http://b3mn.org/stencilset/bpmn2.0#");
+            editorNode.put("stencilset", stencilSetNode);
+            Model modelData = repositoryService.newModel();
 
-                        ObjectNode modelObjectNode = objectMapper.createObjectNode();
-                        modelObjectNode.put(MODEL_NAME, (String) nameTextField.getValue());
-                        modelObjectNode.put(MODEL_REVISION, 1);
-                        String description = null;
-                        if (StringUtils.isNotEmpty((String) descriptionTextArea.getValue())) {
-                            description = (String) descriptionTextArea.getValue();
-                        } else {
-                            description = "";
-                        }
-                        modelObjectNode.put(MODEL_DESCRIPTION, description);
-                        modelData.setMetaInfo(modelObjectNode.toString());
-                        modelData.setName((String) nameTextField.getValue());
-
-                        repositoryService.saveModel(modelData);
-                        repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
-
-                        close();
-
-                        ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
-                        URL explorerURL = ExplorerApp.get().getURL();
-                        URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(), explorerURL.getPath().replace("/ui", "") + "modeler.html?modelId="
-                                + modelData.getId());
-                        ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
-
-                    } catch (Exception e) {
-                        notificationManager.showErrorNotification("error", e);
-                    }
-                } else {
-
-                    close();
-                    ExplorerApp.get().getViewManager().showSimpleTableProcessEditor((String) nameTextField.getValue(), (String) descriptionTextArea.getValue());
-
-                }
+            ObjectNode modelObjectNode = objectMapper.createObjectNode();
+            modelObjectNode.put(MODEL_NAME, (String) nameTextField.getValue());
+            modelObjectNode.put(MODEL_REVISION, 1);
+            String description = null;
+            if (StringUtils.isNotEmpty((String) descriptionTextArea.getValue())) {
+              description = (String) descriptionTextArea.getValue();
+            } else {
+              description = "";
             }
-        });
+            modelObjectNode.put(MODEL_DESCRIPTION, description);
+            modelData.setMetaInfo(modelObjectNode.toString());
+            modelData.setName((String) nameTextField.getValue());
 
-        // Alignment
-        HorizontalLayout buttonLayout = new HorizontalLayout();
-        buttonLayout.setSpacing(true);
-        buttonLayout.addComponent(createButton);
-        addComponent(buttonLayout);
-        windowLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
-    }
+            repositoryService.saveModel(modelData);
+            repositoryService.addModelEditorSource(modelData.getId(), editorNode.toString().getBytes("utf-8"));
+
+            close();
+
+            ExplorerApp.get().getViewManager().showEditorProcessDefinitionPage(modelData.getId());
+            URL explorerURL = ExplorerApp.get().getURL();
+            URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(), explorerURL.getPath().replace("/ui", "") + "modeler.html?modelId=" + modelData.getId());
+            ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
+
+          } catch (Exception e) {
+            notificationManager.showErrorNotification("error", e);
+          }
+        } else {
+
+          close();
+          ExplorerApp.get().getViewManager().showSimpleTableProcessEditor((String) nameTextField.getValue(), (String) descriptionTextArea.getValue());
+
+        }
+      }
+    });
+
+    // Alignment
+    HorizontalLayout buttonLayout = new HorizontalLayout();
+    buttonLayout.setSpacing(true);
+    buttonLayout.addComponent(createButton);
+    addComponent(buttonLayout);
+    windowLayout.setComponentAlignment(buttonLayout, Alignment.MIDDLE_CENTER);
+  }
 
 }

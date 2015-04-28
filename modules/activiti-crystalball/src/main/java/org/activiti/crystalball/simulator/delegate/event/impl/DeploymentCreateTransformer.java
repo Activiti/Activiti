@@ -38,19 +38,14 @@ public class DeploymentCreateTransformer extends Activiti2SimulationEventFunctio
 
   @Override
   public SimulationEvent apply(ActivitiEvent event) {
-    if (ActivitiEventType.ENTITY_CREATED.equals(event.getType()) &&
-      (event instanceof ActivitiEntityEvent) &&
-      ((ActivitiEntityEvent) event).getEntity() instanceof DeploymentEntity) {
+    if (ActivitiEventType.ENTITY_CREATED.equals(event.getType()) && (event instanceof ActivitiEntityEvent) && ((ActivitiEntityEvent) event).getEntity() instanceof DeploymentEntity) {
 
       DeploymentEntity deploymentEntity = (DeploymentEntity) ((ActivitiEntityEvent) event).getEntity();
 
       Map<String, Object> simEventProperties = new HashMap<String, Object>();
       simEventProperties.put(resourcesKey, deploymentEntity.getResources());
 
-      return new SimulationEvent.Builder(simulationEventType).
-                  simulationTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()).
-                  properties(simEventProperties).
-                  build();
+      return new SimulationEvent.Builder(simulationEventType).simulationTime(Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime()).properties(simEventProperties).build();
     }
     return null;
   }

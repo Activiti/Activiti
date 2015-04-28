@@ -13,7 +13,6 @@ package org.activiti.crystalball.simulator.impl;
  * limitations under the License.
  */
 
-
 import org.activiti.crystalball.simulator.SimulationEvent;
 import org.activiti.crystalball.simulator.SimulationEventHandler;
 import org.activiti.crystalball.simulator.SimulationRunContext;
@@ -24,15 +23,15 @@ import java.util.Map;
 
 /**
  * Start new process event handler for playback purposes
- *
+ * 
  * @author martin.grofcik
  */
 public class StartProcessByKeyEventHandler implements SimulationEventHandler {
 
-	private static Logger log = LoggerFactory.getLogger(StartProcessByKeyEventHandler.class);
+  private static Logger log = LoggerFactory.getLogger(StartProcessByKeyEventHandler.class);
 
-	/** process to start key */
-	protected String processToStartKey;
+  /** process to start key */
+  protected String processToStartKey;
   protected String businessKey;
   protected String variablesKey;
 
@@ -42,21 +41,20 @@ public class StartProcessByKeyEventHandler implements SimulationEventHandler {
     this.variablesKey = variablesKey;
   }
 
+  @Override
+  public void init() {
+  }
 
   @Override
-	public void init() {
-	}
-
-	@Override
-	public void handle(SimulationEvent event) {
-		// start process now
+  public void handle(SimulationEvent event) {
+    // start process now
     String processDefinitionKey = (String) event.getProperty(processToStartKey);
     String businessKey = (String) event.getProperty(this.businessKey);
     @SuppressWarnings("unchecked")
     Map<String, Object> variables = (Map<String, Object>) event.getProperty(variablesKey);
 
     log.debug("Starting new processDefKey[{}] businessKey[{}] with variables[{}]", processDefinitionKey, businessKey, variables);
-		SimulationRunContext.getRuntimeService().startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
-	}
+    SimulationRunContext.getRuntimeService().startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
+  }
 
 }

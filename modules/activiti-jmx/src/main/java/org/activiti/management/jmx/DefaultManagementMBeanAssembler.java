@@ -28,40 +28,40 @@ import org.slf4j.LoggerFactory;
  */
 public class DefaultManagementMBeanAssembler implements ManagementMBeanAssembler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementMBeanAssembler.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultManagementMBeanAssembler.class);
 
-    protected final MBeanInfoAssembler assembler;
+  protected final MBeanInfoAssembler assembler;
 
-    public DefaultManagementMBeanAssembler() {
-        this.assembler = new MBeanInfoAssembler();
+  public DefaultManagementMBeanAssembler() {
+    this.assembler = new MBeanInfoAssembler();
+  }
+
+  public ModelMBean assemble(Object obj, ObjectName name) throws JMException {
+    ModelMBeanInfo mbi = null;
+
+    // use the default provided mbean which has been annotated with JMX
+    // annotations
+    LOG.trace("Assembling MBeanInfo for: {} from @ManagedResource object: {}", name, obj);
+    mbi = assembler.getMBeanInfo(obj, null, name.toString());
+
+    if (mbi == null) {
+      return null;
     }
 
-    public ModelMBean assemble(Object obj, ObjectName name) throws JMException {
-        ModelMBeanInfo mbi = null;
+    RequiredModelMBean mbean = new RequiredModelMBean(mbi);
 
-        // use the default provided mbean which has been annotated with JMX
-        // annotations
-        LOG.trace("Assembling MBeanInfo for: {} from @ManagedResource object: {}", name, obj);
-        mbi = assembler.getMBeanInfo(obj, null, name.toString());
-
-        if (mbi == null) {
-            return null;
-        }
-
-        RequiredModelMBean mbean = new RequiredModelMBean(mbi);
-
-        try {
-            mbean.setManagedResource(obj, "ObjectReference");
-        } catch (InvalidTargetObjectTypeException e) {
-            throw new JMException(e.getMessage());
-        }
-
-        // Allows the managed object to send notifications
-        if (obj instanceof NotificationSenderAware) {
-            ((NotificationSenderAware) obj).setNotificationSender(new NotificationSenderAdapter(mbean));
-        }
-
-        return mbean;
+    try {
+      mbean.setManagedResource(obj, "ObjectReference");
+    } catch (InvalidTargetObjectTypeException e) {
+      throw new JMException(e.getMessage());
     }
+
+    // Allows the managed object to send notifications
+    if (obj instanceof NotificationSenderAware) {
+      ((NotificationSenderAware) obj).setNotificationSender(new NotificationSenderAdapter(mbean));
+    }
+
+    return mbean;
+  }
 
 }

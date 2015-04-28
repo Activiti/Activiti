@@ -36,47 +36,47 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class HistoricProcessInstanceCommentResource {
 
-    @Autowired
-    protected RestResponseFactory restResponseFactory;
+  @Autowired
+  protected RestResponseFactory restResponseFactory;
 
-    @Autowired
-    protected HistoryService historyService;
+  @Autowired
+  protected HistoryService historyService;
 
-    @Autowired
-    protected TaskService taskService;
+  @Autowired
+  protected TaskService taskService;
 
-    @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.GET, produces = "application/json")
-    public CommentResponse getComment(@PathVariable("processInstanceId") String processInstanceId, @PathVariable("commentId") String commentId, HttpServletRequest request) {
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.GET, produces = "application/json")
+  public CommentResponse getComment(@PathVariable("processInstanceId") String processInstanceId, @PathVariable("commentId") String commentId, HttpServletRequest request) {
 
-        HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
+    HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
-        Comment comment = taskService.getComment(commentId);
-        if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
-            throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
-        }
-
-        return restResponseFactory.createRestComment(comment);
+    Comment comment = taskService.getComment(commentId);
+    if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
+      throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
     }
 
-    @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.DELETE)
-    public void deleteComment(@PathVariable("processInstanceId") String processInstanceId, @PathVariable("commentId") String commentId, HttpServletRequest request, HttpServletResponse response) {
+    return restResponseFactory.createRestComment(comment);
+  }
 
-        HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
+  @RequestMapping(value = "/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.DELETE)
+  public void deleteComment(@PathVariable("processInstanceId") String processInstanceId, @PathVariable("commentId") String commentId, HttpServletRequest request, HttpServletResponse response) {
 
-        Comment comment = taskService.getComment(commentId);
-        if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
-            throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
-        }
+    HistoricProcessInstance instance = getHistoricProcessInstanceFromRequest(processInstanceId);
 
-        taskService.deleteComment(commentId);
-        response.setStatus(HttpStatus.NO_CONTENT.value());
+    Comment comment = taskService.getComment(commentId);
+    if (comment == null || comment.getProcessInstanceId() == null || !comment.getProcessInstanceId().equals(instance.getId())) {
+      throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
     }
 
-    protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
-        HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
-        if (processInstance == null) {
-            throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
-        }
-        return processInstance;
+    taskService.deleteComment(commentId);
+    response.setStatus(HttpStatus.NO_CONTENT.value());
+  }
+
+  protected HistoricProcessInstance getHistoricProcessInstanceFromRequest(String processInstanceId) {
+    HistoricProcessInstance processInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+    if (processInstance == null) {
+      throw new ActivitiObjectNotFoundException("Could not find a process instance with id '" + processInstanceId + "'.", HistoricProcessInstance.class);
     }
+    return processInstance;
+  }
 }

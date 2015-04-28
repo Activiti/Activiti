@@ -27,57 +27,57 @@ import org.activiti.engine.impl.pvm.process.TransitionImpl;
  */
 public interface InterpretableExecution extends ActivityExecution, ExecutionListenerExecution, PvmProcessInstance {
 
-    void take(PvmTransition transition);
+  void take(PvmTransition transition);
 
-    void take(PvmTransition transition, boolean fireActivityCompletedEvent);
+  void take(PvmTransition transition, boolean fireActivityCompletedEvent);
 
-    void setEventName(String eventName);
+  void setEventName(String eventName);
 
-    void setEventSource(PvmProcessElement element);
+  void setEventSource(PvmProcessElement element);
 
-    Integer getExecutionListenerIndex();
+  Integer getExecutionListenerIndex();
 
-    void setExecutionListenerIndex(Integer executionListenerIndex);
+  void setExecutionListenerIndex(Integer executionListenerIndex);
 
-    ProcessDefinitionImpl getProcessDefinition();
+  ProcessDefinitionImpl getProcessDefinition();
 
-    void setActivity(ActivityImpl activity);
+  void setActivity(ActivityImpl activity);
 
-    void performOperation(AtomicOperation etomicOperation);
+  void performOperation(AtomicOperation etomicOperation);
 
-    boolean isScope();
+  boolean isScope();
 
-    void destroy();
+  void destroy();
 
-    void remove();
+  void remove();
 
-    InterpretableExecution getReplacedBy();
+  InterpretableExecution getReplacedBy();
 
-    void setReplacedBy(InterpretableExecution replacedBy);
+  void setReplacedBy(InterpretableExecution replacedBy);
 
-    InterpretableExecution getSubProcessInstance();
+  InterpretableExecution getSubProcessInstance();
 
-    void setSubProcessInstance(InterpretableExecution subProcessInstance);
+  void setSubProcessInstance(InterpretableExecution subProcessInstance);
 
-    InterpretableExecution getSuperExecution();
+  InterpretableExecution getSuperExecution();
 
-    void deleteCascade(String deleteReason);
+  void deleteCascade(String deleteReason);
 
-    boolean isDeleteRoot();
+  boolean isDeleteRoot();
 
-    TransitionImpl getTransition();
+  TransitionImpl getTransition();
 
-    void setTransition(TransitionImpl object);
+  void setTransition(TransitionImpl object);
 
-    void initialize();
+  void initialize();
 
-    void setParent(InterpretableExecution parent);
+  void setParent(InterpretableExecution parent);
 
-    void setProcessDefinition(ProcessDefinitionImpl processDefinitionImpl);
+  void setProcessDefinition(ProcessDefinitionImpl processDefinitionImpl);
 
-    void setProcessInstance(InterpretableExecution processInstance);
+  void setProcessInstance(InterpretableExecution processInstance);
 
-    boolean isEventScope();
+  boolean isEventScope();
 
-    void setEventScope(boolean isEventScope);
+  void setEventScope(boolean isEventScope);
 }

@@ -35,52 +35,52 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ProcessInstanceVariableCollectionResource extends BaseVariableCollectionResource {
 
-    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.GET, produces = "application/json")
-    public List<RestVariable> getVariables(@PathVariable String processInstanceId, @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
+  @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.GET, produces = "application/json")
+  public List<RestVariable> getVariables(@PathVariable String processInstanceId, @RequestParam(value = "scope", required = false) String scope, HttpServletRequest request) {
 
-        Execution execution = getProcessInstanceFromRequest(processInstanceId);
-        return processVariables(execution, scope, RestResponseFactory.VARIABLE_PROCESS);
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    return processVariables(execution, scope, RestResponseFactory.VARIABLE_PROCESS);
+  }
+
+  @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.PUT, produces = "application/json")
+  public Object createOrUpdateExecutionVariable(@PathVariable String processInstanceId, HttpServletRequest request, HttpServletResponse response) {
+
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_PROCESS, request, response);
+  }
+
+  @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.POST, produces = "application/json")
+  public Object createExecutionVariable(@PathVariable String processInstanceId, HttpServletRequest request, HttpServletResponse response) {
+
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_PROCESS, request, response);
+  }
+
+  @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.DELETE)
+  public void deleteLocalVariables(@PathVariable String processInstanceId, HttpServletResponse response) {
+    Execution execution = getProcessInstanceFromRequest(processInstanceId);
+    deleteAllLocalVariables(execution, response);
+  }
+
+  @Override
+  protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
+    // no global variables
+  }
+
+  // For process instance there's only one scope. Using the local variables
+  // method for that
+  @Override
+  protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
+    Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
+    List<RestVariable> globalVariables = restResponseFactory.createRestVariables(rawVariables, execution.getId(), variableType, RestVariableScope.LOCAL);
+
+    // Overlay global variables over local ones. In case they are present
+    // the values are not overridden,
+    // since local variables get precedence over global ones at all times.
+    for (RestVariable var : globalVariables) {
+      if (!variableMap.containsKey(var.getName())) {
+        variableMap.put(var.getName(), var);
+      }
     }
-
-    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.PUT, produces = "application/json")
-    public Object createOrUpdateExecutionVariable(@PathVariable String processInstanceId, HttpServletRequest request, HttpServletResponse response) {
-
-        Execution execution = getProcessInstanceFromRequest(processInstanceId);
-        return createExecutionVariable(execution, true, RestResponseFactory.VARIABLE_PROCESS, request, response);
-    }
-
-    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.POST, produces = "application/json")
-    public Object createExecutionVariable(@PathVariable String processInstanceId, HttpServletRequest request, HttpServletResponse response) {
-
-        Execution execution = getProcessInstanceFromRequest(processInstanceId);
-        return createExecutionVariable(execution, false, RestResponseFactory.VARIABLE_PROCESS, request, response);
-    }
-
-    @RequestMapping(value = "/runtime/process-instances/{processInstanceId}/variables", method = RequestMethod.DELETE)
-    public void deleteLocalVariables(@PathVariable String processInstanceId, HttpServletResponse response) {
-        Execution execution = getProcessInstanceFromRequest(processInstanceId);
-        deleteAllLocalVariables(execution, response);
-    }
-
-    @Override
-    protected void addGlobalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
-        // no global variables
-    }
-
-    // For process instance there's only one scope. Using the local variables
-    // method for that
-    @Override
-    protected void addLocalVariables(Execution execution, int variableType, Map<String, RestVariable> variableMap) {
-        Map<String, Object> rawVariables = runtimeService.getVariables(execution.getId());
-        List<RestVariable> globalVariables = restResponseFactory.createRestVariables(rawVariables, execution.getId(), variableType, RestVariableScope.LOCAL);
-
-        // Overlay global variables over local ones. In case they are present
-        // the values are not overridden,
-        // since local variables get precedence over global ones at all times.
-        for (RestVariable var : globalVariables) {
-            if (!variableMap.containsKey(var.getName())) {
-                variableMap.put(var.getName(), var);
-            }
-        }
-    }
+  }
 }

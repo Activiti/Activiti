@@ -17,61 +17,61 @@ package org.activiti.rest.service.api.repository;
  * @author Frederik Heremans
  */
 public class DeploymentResourceResponse {
-    private String id;
-    private String url;
-    private String contentUrl;
-    private String mediaType;
-    private String type;
+  private String id;
+  private String url;
+  private String contentUrl;
+  private String mediaType;
+  private String type;
 
-    public DeploymentResourceResponse(String resourceId, String url, String contentUrl, String mediaType, String type) {
-        setId(resourceId);
-        setUrl(url);
-        setContentUrl(contentUrl);
-        setMediaType(mediaType);
+  public DeploymentResourceResponse(String resourceId, String url, String contentUrl, String mediaType, String type) {
+    setId(resourceId);
+    setUrl(url);
+    setContentUrl(contentUrl);
+    setMediaType(mediaType);
 
-        this.type = type;
-        if (type == null) {
-            this.type = "resource";
-        }
+    this.type = type;
+    if (type == null) {
+      this.type = "resource";
     }
+  }
 
-    public String getId() {
-        return id;
-    }
+  public String getId() {
+    return id;
+  }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+  public void setUrl(String url) {
+    this.url = url;
+  }
 
-    public String getUrl() {
-        return url;
-    }
+  public String getUrl() {
+    return url;
+  }
 
-    public void setContentUrl(String contentUrl) {
-        this.contentUrl = contentUrl;
-    }
+  public void setContentUrl(String contentUrl) {
+    this.contentUrl = contentUrl;
+  }
 
-    public String getContentUrl() {
-        return contentUrl;
-    }
+  public String getContentUrl() {
+    return contentUrl;
+  }
 
-    public void setMediaType(String mimeType) {
-        this.mediaType = mimeType;
-    }
+  public void setMediaType(String mimeType) {
+    this.mediaType = mimeType;
+  }
 
-    public String getMediaType() {
-        return mediaType;
-    }
+  public String getMediaType() {
+    return mediaType;
+  }
 
-    public void setType(String type) {
-        this.type = type;
-    }
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    public String getType() {
-        return type;
-    }
+  public String getType() {
+    return type;
+  }
 }

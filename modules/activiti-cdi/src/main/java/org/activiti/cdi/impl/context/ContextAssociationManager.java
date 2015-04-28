@@ -21,60 +21,58 @@ import org.activiti.engine.task.Task;
 /**
  * Represents a means for associating an execution with a context.
  * <p />
- * This enables activiti-cdi to provide contextual business process management
- * services, without relying on a specific context like i.e. the conversation
- * context.
+ * This enables activiti-cdi to provide contextual business process management services, without relying on a specific context like i.e. the conversation context.
  * 
  * @author Daniel Meyer
  */
 public interface ContextAssociationManager {
 
-    /**
-     * Disassociates the current process instance with a context / scope
-     * 
-     * @throws ActivitiException
-     *             if no process instance is currently associated
-     */
-    public void disAssociate();
+  /**
+   * Disassociates the current process instance with a context / scope
+   * 
+   * @throws ActivitiException
+   *           if no process instance is currently associated
+   */
+  public void disAssociate();
 
-    /**
-     * @return the id of the execution currently associated or null
-     */
-    public String getExecutionId();
+  /**
+   * @return the id of the execution currently associated or null
+   */
+  public String getExecutionId();
 
-    /**
-     * get the current execution
-     */
-    public Execution getExecution();
+  /**
+   * get the current execution
+   */
+  public Execution getExecution();
 
-    /**
-     * associate with the provided execution
-     */
-    void setExecution(Execution execution);
+  /**
+   * associate with the provided execution
+   */
+  void setExecution(Execution execution);
 
-    /**
-     * set a current task
-     */
-    public void setTask(Task task);
+  /**
+   * set a current task
+   */
+  public void setTask(Task task);
 
-    /**
-     * get the current task
-     */
-    public Task getTask();
+  /**
+   * get the current task
+   */
+  public Task getTask();
 
-    /**
-     * set a process variable
-     */
-    public void setVariable(String variableName, Object value);
+  /**
+   * set a process variable
+   */
+  public void setVariable(String variableName, Object value);
 
-    /**
-     * get a process variable
-     */
-    public Object getVariable(String variableName);
+  /**
+   * get a process variable
+   */
+  public Object getVariable(String variableName);
 
-    /**
-     * @return a map of process variables cached between flushes
-     */
-    public Map<String, Object> getCachedVariables();
+  /**
+   * @return a map of process variables cached between flushes
+   */
+  public Map<String, Object> getCachedVariables();
 
 }
