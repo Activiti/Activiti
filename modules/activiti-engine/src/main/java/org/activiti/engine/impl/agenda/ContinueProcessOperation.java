@@ -16,6 +16,7 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
+import org.activiti.engine.impl.pvm.PvmEvent;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
@@ -51,9 +52,17 @@ public class ContinueProcessOperation extends AbstractOperation {
       currentFlowElement = findCurrentFlowElement(execution);
       execution.setCurrentFlowElement(currentFlowElement);
     }
-
+    
     if (currentFlowElement instanceof FlowNode) {
-      continueThroughFlowNode((FlowNode) currentFlowElement);
+    	
+      // Check if it's the initial flow element. If so, we must fire the execution listeners for the process too
+      FlowNode currentFlowNode = (FlowNode) currentFlowElement;
+      if (currentFlowNode.getIncomingFlows() != null && currentFlowNode.getIncomingFlows().size() == 0) {
+    	  executeProcessStartExecutionListeners();
+      }
+    	
+      continueThroughFlowNode(currentFlowNode);
+      
     } else if (currentFlowElement instanceof SequenceFlow) {
       continueThroughSequenceFlow((SequenceFlow) currentFlowElement);
     } else {
@@ -62,7 +71,12 @@ public class ContinueProcessOperation extends AbstractOperation {
 
   }
 
-  private void continueThroughFlowNode(FlowNode flowNode) {
+  protected void executeProcessStartExecutionListeners() {
+	org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+	executeExecutionListeners(process, ExecutionListener.EVENTNAME_START);
+  }
+
+  protected void continueThroughFlowNode(FlowNode flowNode) {
     // See if flowNode is an async activity and schedule as a job if that evaluates to true
     if (!forceSynchronousOperation) {
       boolean isAsynchronous = false;
@@ -115,7 +129,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     // Execution listener
     if (CollectionUtils.isNotEmpty(sequenceFlow.getExecutionListeners())) {
-      executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_TAKE);
+      executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_TAKE, true); // True -> any event type will be treated as 'take' for a sequence flow
     }
 
     FlowElement targetFlowElement = sequenceFlow.getTargetFlowElement();

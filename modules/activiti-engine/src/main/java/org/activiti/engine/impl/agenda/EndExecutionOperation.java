@@ -75,6 +75,7 @@ public class EndExecutionOperation extends AbstractOperation {
       } else {
         parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
       }
+      
       agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);
 
     } else {

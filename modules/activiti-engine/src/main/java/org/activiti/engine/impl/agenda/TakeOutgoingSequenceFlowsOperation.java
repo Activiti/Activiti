@@ -48,9 +48,10 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     if (execution.getParentId() != null && execution.isScope()) {
       agenda.planDestroyScopeOperation(execution);
     }
-
-    // Execution listener for end: the flow node is ended
-    if (CollectionUtils.isNotEmpty(currentFlowElement.getExecutionListeners())) {
+    
+    // Execution listener for end: the flow node is now ended
+    if (CollectionUtils.isNotEmpty(currentFlowElement.getExecutionListeners())
+        && !execution.isProcessInstanceType()) { // a process instance execution can never leave a flownode, but it can pass here whilst cleaning up
       executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
     }
 
@@ -115,7 +116,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         throw new ActivitiException("No outgoing sequence flow of element '" + flowNode.getId() + "' could be selected for continuing the process");
       }
     }
-
+    
     // Leave, and reuse the incoming sequence flow, make executions for all the others (if applicable)
 
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();

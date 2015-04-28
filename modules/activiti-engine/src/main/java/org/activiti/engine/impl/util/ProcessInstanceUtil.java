@@ -113,11 +113,12 @@ public class ProcessInstanceUtil {
     if (initialFlowElement instanceof StartEvent) {
       initiatorVariableName = ((StartEvent) initialFlowElement).getInitiator();
     }
-
-    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().createProcessInstanceExecution(processDefinition.getId(), businessKey, processDefinition.getTenantId(),
-        initiatorVariableName);
+    
+    ExecutionEntity processInstance = commandContext.getExecutionEntityManager()
+    		.createProcessInstanceExecution(processDefinition.getId(), businessKey, processDefinition.getTenantId(), initiatorVariableName);
+    
     commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
-
+    
     processInstance.setVariables(processDataObjects(process.getDataObjects()));
 
     // Set the variables passed into the start command

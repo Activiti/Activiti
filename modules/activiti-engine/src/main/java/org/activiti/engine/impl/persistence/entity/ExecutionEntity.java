@@ -1558,10 +1558,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return activityId;
   }
 
-  public String getCurrentActivityName() {
-    return activityName;
-  }
-
   @Override
   public String getName() {
     return this.name;
