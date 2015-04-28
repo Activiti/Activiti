@@ -76,6 +76,14 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 			
 			if (scopeTreeNode.getExecutionEntity().getParentId() == null) {
 				deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+				
+				// Call activity needs special handling
+				if (scopeTreeNode.getExecutionEntity().getSuperExecutionId() != null) {
+					ExecutionEntity superExecutionEntity = 
+							executionEntityManager.findExecutionById(scopeTreeNode.getExecutionEntity().getSuperExecutionId());
+					commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(superExecutionEntity);
+				}
+				
 			} else {
 				commandContext.getAgenda().planDestroyScopeOperation(scopeTreeNode.getExecutionEntity());
 				commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeTreeNode.getExecutionEntity());

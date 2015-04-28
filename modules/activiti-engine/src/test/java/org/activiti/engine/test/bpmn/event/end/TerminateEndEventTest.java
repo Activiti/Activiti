@@ -288,7 +288,7 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
 		// should terminate the called process and continue the parent
 		long executionEntities = runtimeService.createExecutionQuery().count();
-		assertEquals(1, executionEntities);
+		assertEquals(2, executionEntities);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());
