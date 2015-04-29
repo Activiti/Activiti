@@ -85,14 +85,15 @@ public abstract class AbstractOperation implements Runnable {
           if (executionListener != null) {
             ((ExecutionEntity) execution).setEventName(eventType);
             executionListener.notify(execution);
+            
+            // TODO: is this still needed? Is this property still needed?
+            ((ExecutionEntity) execution).setEventName(null);
           }
 
         }
       }
     }
 
-    // TODO: is this still needed? Is this property still needed?
-    ((ExecutionEntity) execution).setEventName(null);
   }
 
   /* TODO: Should following methods be moved to the entityManager */

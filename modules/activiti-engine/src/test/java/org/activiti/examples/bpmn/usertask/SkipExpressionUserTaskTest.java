@@ -44,7 +44,7 @@ public class SkipExpressionUserTaskTest extends PluggableActivitiTestCase {
     variables.put("skip2", true);
     variables.put("skip3", false);
 
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("skipExpressionUserTask-testSkipMultipleTasks", variables);
+    runtimeService.startProcessInstanceByKey("skipExpressionUserTask-testSkipMultipleTasks", variables);
     List<Task> tasks = taskService.createTaskQuery().list();
     assertEquals(1, tasks.size());
     assertEquals("Task3", tasks.get(0).getName());

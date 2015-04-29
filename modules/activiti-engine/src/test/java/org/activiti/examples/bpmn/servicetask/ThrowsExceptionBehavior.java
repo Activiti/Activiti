@@ -13,7 +13,10 @@
 
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.engine.impl.pvm.PvmTransition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
@@ -25,20 +28,34 @@ public class ThrowsExceptionBehavior implements ActivityBehavior {
   public void execute(ActivityExecution execution) {
     String var = (String) execution.getVariable("var");
 
-    PvmTransition transition;
+    
+    SequenceFlow sequenceFlow = null;
+    
     try {
       executeLogic(var);
-      transition = execution.getActivity().findOutgoingTransition("no-exception");
+      sequenceFlow = findSequenceFlow(execution, "no-exception");
     } catch (Exception e) {
-      transition = execution.getActivity().findOutgoingTransition("exception");
+      sequenceFlow = findSequenceFlow(execution, "exception");
     }
-    execution.take(transition);
+    
+    execution.setCurrentFlowElement(sequenceFlow);
+    Context.getCommandContext().getAgenda().planContinueProcessOperation(execution);
   }
 
   protected void executeLogic(String value) {
     if (value.equals("throw-exception")) {
       throw new RuntimeException();
     }
+  }
+  
+  protected SequenceFlow findSequenceFlow(ActivityExecution execution, String sequenceFlowId) {
+    FlowNode currentFlowNode = (FlowNode) execution.getCurrentFlowElement();
+    for (SequenceFlow sequenceFlow : currentFlowNode.getOutgoingFlows()) {
+      if (sequenceFlow.getId() != null && sequenceFlow.getId().equals(sequenceFlowId)) {
+        return sequenceFlow;
+      }
+    }
+    return null;
   }
 
 }
