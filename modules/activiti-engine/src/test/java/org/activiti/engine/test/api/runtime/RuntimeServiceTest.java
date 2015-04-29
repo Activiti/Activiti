@@ -407,7 +407,8 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     processVariables.put("variable", "value");
 
     // signal the execution while passing in the variables
-    runtimeService.signal(processInstance.getId(), processVariables);
+    Execution execution = runtimeService.createExecutionQuery().activityId("receiveMessage").singleResult();
+    runtimeService.trigger(execution.getId(), processVariables);
 
     Map<String, Object> variables = runtimeService.getVariables(processInstance.getId());
     assertEquals(variables, processVariables);
@@ -764,13 +765,11 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
       "org/activiti/engine/test/api/runtime/RuntimeServiceTest.catchPanicSignal.bpmn20.xml" })
   public void testSignalEventReceived() {
 
-    // //// test signalEventReceived(String)
-
     startSignalCatchProcesses();
-    // 12, because the signal catch is a scope
-    assertEquals(12, runtimeService.createExecutionQuery().count());
+    // 15, because the signal catch is a scope
+    assertEquals(15, runtimeService.createExecutionQuery().count());
     runtimeService.signalEventReceived("alert");
-    assertEquals(6, runtimeService.createExecutionQuery().count());
+    assertEquals(9, runtimeService.createExecutionQuery().count());
     runtimeService.signalEventReceived("panic");
     assertEquals(0, runtimeService.createExecutionQuery().count());
 

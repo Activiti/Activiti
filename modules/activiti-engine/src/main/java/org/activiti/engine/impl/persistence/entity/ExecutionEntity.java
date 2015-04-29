@@ -162,7 +162,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   protected boolean deleteRoot;
   protected String deleteReason;
-
+  
   // replaced by
   // //////////////////////////////////////////////////////////////
 

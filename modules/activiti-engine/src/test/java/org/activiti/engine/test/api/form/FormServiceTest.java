@@ -183,7 +183,7 @@ public class FormServiceTest extends PluggableActivitiTestCase {
     address.setStreet("broadway");
     runtimeService.setVariable(processInstanceId, "address", address);
 
-    runtimeService.signal(runtimeService.createExecutionQuery().processInstanceId(processInstanceId).singleResult().getId());
+    runtimeService.trigger(runtimeService.createExecutionQuery().processInstanceId(processInstanceId).onlyChildExecutions().singleResult().getId());
 
     String taskId = taskService.createTaskQuery().singleResult().getId();
     TaskFormData taskFormData = formService.getTaskFormData(taskId);

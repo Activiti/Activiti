@@ -849,8 +849,21 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
 
   @Override
   public void recordVariableRemoved(VariableInstanceEntity variable) {
-    // TODO Auto-generated method stub
+    if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricVariableInstanceEntity historicProcessVariable = getDbSqlSession()
+          .findInCache(HistoricVariableInstanceEntity.class, variable.getId());
+      if (historicProcessVariable == null) {
+        historicProcessVariable = Context.getCommandContext()
+            .getHistoricVariableInstanceEntityManager()
+            .findHistoricVariableInstanceByVariableInstanceId(variable.getId());
+      }
 
+      if (historicProcessVariable != null) {
+        Context.getCommandContext()
+        .getHistoricVariableInstanceEntityManager()
+        .delete(historicProcessVariable);
+      } 
+    }
   }
 
   protected String parseActivityType(FlowElement element) {

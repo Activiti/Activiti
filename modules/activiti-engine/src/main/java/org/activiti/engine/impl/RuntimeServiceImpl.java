@@ -204,7 +204,7 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
   }
 
   public void removeVariable(String executionId, String variableName) {
-    Collection<String> variableNames = new ArrayList<String>();
+    Collection<String> variableNames = new ArrayList<String>(1);
     variableNames.add(variableName);
     commandExecutor.execute(new RemoveExecutionVariablesCmd(executionId, variableNames, false));
   }
