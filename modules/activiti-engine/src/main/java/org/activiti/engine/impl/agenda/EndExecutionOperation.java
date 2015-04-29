@@ -1,7 +1,9 @@
 package org.activiti.engine.impl.agenda;
 
 import java.util.Collection;
+import java.util.List;
 
+import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SubProcess;
@@ -76,7 +78,12 @@ public class EndExecutionOperation extends AbstractOperation {
         parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
       }
       
-      agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);
+      // If there are no more active child executions, the process can be continues
+      // If not (eg an embedded subprocess still has active elements, we cannot continu)
+      int activeChildExecution = getNumberOfActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId());
+      if (activeChildExecution == 0) {
+        agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);
+      }
 
     } else {
 
@@ -86,7 +93,7 @@ public class EndExecutionOperation extends AbstractOperation {
       InterpretableExecution superExecution = executionEntity.getSuperExecution();
       SubProcessActivityBehavior subProcessActivityBehavior = null;
 
-      // copy variables before destroying the ended sub process instance
+      // copy variables before destroying the ended sub process instance (call activity)
       if (superExecution != null) {
         FlowNode superExecutionElement = (FlowNode) superExecution.getCurrentFlowElement();
         subProcessActivityBehavior = (SubProcessActivityBehavior) superExecutionElement.getBehavior();
@@ -103,15 +110,7 @@ public class EndExecutionOperation extends AbstractOperation {
 
       // TODO: optimisation can be made by keeping the nr of active executions directly on the process instance in db
 
-      // TODO: verify how many executions are still active in the process instance, and stop the process instance otherwise
-      Collection<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByProcessInstanceId(processInstanceId);
-      int activeExecutions = 0;
-      for (ExecutionEntity execution : executions) {
-        if (execution.isActive() && !processInstanceId.equals(execution.getId())) {
-          activeExecutions++;
-        }
-      }
-
+      int activeExecutions = getNumberOfActiveChildExecutionsForProcessInstance(executionEntityManager, processInstanceId);
       if (activeExecutions == 0) {
         logger.debug("No active executions found. Ending process instance {} ", processInstanceId);
         executionEntityManager.deleteProcessInstanceExecutionEntity(processInstanceId, execution.getCurrentFlowElement() != null ? execution.getCurrentFlowElement().getId() : null, "FINISHED");
@@ -139,6 +138,32 @@ public class EndExecutionOperation extends AbstractOperation {
         }
       }
     }
+  }
+
+  protected int getNumberOfActiveChildExecutionsForProcessInstance(ExecutionEntityManager executionEntityManager, String processInstanceId) {
+    Collection<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByProcessInstanceId(processInstanceId);
+    int activeExecutions = 0;
+    for (ExecutionEntity execution : executions) {
+      if (execution.isActive() && !processInstanceId.equals(execution.getId())) {
+        activeExecutions++;
+      }
+    }
+    return activeExecutions;
+  }
+  
+  protected int getNumberOfActiveChildExecutionsForExecution(ExecutionEntityManager executionEntityManager, String executionId) {
+    List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(executionId);
+    int activeExecutions = 0;
+    
+    // Filter out the boundary events
+    // TODO: discuss: should this be in the db?
+    for (ExecutionEntity activeExecution : executions) {
+      if (!(activeExecution.getCurrentFlowElement() instanceof BoundaryEvent)) {
+        activeExecutions++;
+      }
+    }
+    
+    return activeExecutions;
   }
 
 }

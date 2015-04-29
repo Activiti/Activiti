@@ -40,7 +40,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
 
   @Override
   public void execute(ActivityExecution execution) {
-
+    // Overridden by subclasses
   }
 
   @Override
