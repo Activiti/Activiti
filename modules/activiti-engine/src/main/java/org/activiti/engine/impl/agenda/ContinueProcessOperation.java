@@ -10,6 +10,7 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -17,9 +18,11 @@ import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.pvm.PvmEvent;
+import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.logging.LogMDC;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +121,14 @@ public class ContinueProcessOperation extends AbstractOperation {
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
     if (activityBehavior != null) {
       logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
-      activityBehavior.execute(execution);
+      try {
+        activityBehavior.execute(execution);
+      } catch (RuntimeException e) {
+        if (LogMDC.isMDCEnabled()) {
+          LogMDC.putMDCExecution(execution);
+        }
+        throw e;
+      }
     } else {
       logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
       Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(execution, true);

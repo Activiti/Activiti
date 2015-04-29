@@ -45,7 +45,7 @@ public class SubmitTaskFormCmd extends AbstractCompleteTaskCmd {
     taskFormHandler.submitFormProperties(properties, task.getExecution());
 
     if (completeTask) {
-      executeTaskComplete(task, null, false);
+      executeTaskComplete(commandContext, task, null, false);
     }
 
     return null;

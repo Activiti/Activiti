@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.List;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.logging.LogMDC;
 import org.activiti.engine.test.Deployment;
 import org.apache.log4j.Appender;
 import org.apache.log4j.Level;
@@ -34,6 +35,8 @@ public class MDCLoggingTest extends PluggableActivitiTestCase {
     removeAppenders();
 
     Logger.getRootLogger().addAppender(console);
+    
+    LogMDC.setMDCEnabled(true);
   }
 
   private void removeAppenders() {
