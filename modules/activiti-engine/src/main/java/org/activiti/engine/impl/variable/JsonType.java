@@ -14,8 +14,6 @@ package org.activiti.engine.impl.variable;
 
 
 import org.activiti.engine.impl.persistence.entity.json.JsonVariableScopeImpl;
-import sun.org.mozilla.javascript.Context;
-import sun.org.mozilla.javascript.EvaluatorException;
 
 import javax.json.*;
 import java.io.StringReader;
