@@ -20,7 +20,7 @@ import org.activiti.engine.ActivitiException;
 import org.apache.camel.Exchange;
 import org.apache.camel.TypeConversionException;
 import org.springframework.util.StringUtils;
-import org.activiti.camel.BooleanStringUtils;
+
 
 /**
  * This class contains one method - prepareVariables - that is used to copy variables from Camel into Activiti.
@@ -64,13 +64,20 @@ public class ExchangeUtils {
     return pattern;
   }
     
+  private static boolean isBoolean(String st) {
+	    if (st == null)
+	      return false;
+	    String lower = st.toLowerCase();
+	    return lower.equals("true") || lower.equals("false");
+	  }
+
   public static Map<String, Object> prepareVariables(Exchange exchange, ActivitiEndpoint activitiEndpoint) {
     Map<String, Object> camelVarMap =  new HashMap<String, Object>();
 
     String copyProperties = activitiEndpoint.getCopyVariablesFromProperties();
     // don't other if the property is null, or is a false
     if (!StringUtils.isEmpty(copyProperties) 
-            && (!BooleanStringUtils.isBoolean(copyProperties) || Boolean.parseBoolean(copyProperties))) {
+            && (!isBoolean(copyProperties) || Boolean.parseBoolean(copyProperties))) {
       
       Pattern pattern = createPattern(copyProperties, Boolean.parseBoolean(copyProperties));
           
@@ -86,7 +93,7 @@ public class ExchangeUtils {
 
     String copyHeader = activitiEndpoint.getCopyVariablesFromHeader();
     if (!StringUtils.isEmpty(copyHeader) && 
-             (!BooleanStringUtils.isBoolean(copyHeader) || Boolean.parseBoolean(copyHeader))) {
+             (!isBoolean(copyHeader) || Boolean.parseBoolean(copyHeader))) {
 
       Pattern pattern = createPattern(copyHeader, Boolean.parseBoolean(copyHeader));
       
