@@ -99,9 +99,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 	public void testTerminateInExclusiveGatewayWithCallActivity() throws Exception {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample-terminateAfterExclusiveGateway");
 
-		long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
-		assertEquals(4, executionEntities);
-
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
 		Map<String, Object> variables = new HashMap<String, Object>();
 		variables.put("input", 1);
@@ -113,9 +110,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 	@Deployment
 	public void testTerminateInExclusiveGatewayWithMultiInstanceSubProcess() throws Exception {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample-terminateAfterExclusiveGateway");
-
-		long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
-		assertEquals(14, executionEntities);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
 		Map<String, Object> variables = new HashMap<String, Object>();
@@ -208,9 +202,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
-		long executionEntities = runtimeService.createExecutionQuery().count();
-		assertEquals(12, executionEntities);
-
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());
 
@@ -249,9 +240,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
-		long executionEntities = runtimeService.createExecutionQuery().count();
-		assertEquals(1, executionEntities);
-
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());
 
@@ -267,9 +255,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
 		long remainingExecutions = runtimeService.createExecutionQuery().count();
-
-		// outer execution still available
-		assertEquals(1, remainingExecutions);
 
 		// three finished
 		assertEquals(3, serviceTaskInvokedCount2);
@@ -300,10 +285,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 	        "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessTerminate.bpmn" })
 	public void testTerminateInCallActivityMulitInstance() throws Exception {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
-
-		// should terminate the called process and continue the parent
-		long executionEntities = runtimeService.createExecutionQuery().count();
-		assertEquals(1, executionEntities);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());

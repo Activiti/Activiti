@@ -45,7 +45,7 @@ public class ExecutionTreeUtil {
           parentMapping.put(parentId, new ArrayList<ExecutionEntity>());
         }
         parentMapping.get(parentId).add(executionEntity);
-      } else {
+      } else if (executionEntity.getSuperExecutionId() == null){
         executionTree.setRoot(new ExecutionTreeNode(executionEntity));
       }
     }
