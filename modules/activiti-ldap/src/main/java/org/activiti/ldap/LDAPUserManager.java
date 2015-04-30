@@ -125,13 +125,15 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
       return result;
     } else if (query.getFullNameLike() != null){
       
+      final String fullNameLike = query.getFullNameLike().replaceAll("%", "");
+      
       LDAPTemplate ldapTemplate = new LDAPTemplate(ldapConfigurator);
       return ldapTemplate.execute(new LDAPCallBack<List<User>>() {
         
         public List<User> executeInContext(InitialDirContext initialDirContext) {
           List<User> result = new ArrayList<User>();
           try {
-            String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByFullNameLike(ldapConfigurator, query.getFullNameLike());
+            String searchExpression = ldapConfigurator.getLdapQueryBuilder().buildQueryByFullNameLike(ldapConfigurator, fullNameLike);
             String baseDn = ldapConfigurator.getUserBaseDn() != null ? ldapConfigurator.getUserBaseDn() : ldapConfigurator.getBaseDn();
             NamingEnumeration< ? > namingEnum = initialDirContext.search(baseDn, searchExpression, createSearchControls());
             
@@ -179,7 +181,11 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
     	}
     }
     if (ldapConfigurator.getUserEmailAttribute() != null) {
-      user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
+        try {
+            user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
+        }catch(NullPointerException e){
+    		user.setEmail("");
+    	}
     }
   }
   
