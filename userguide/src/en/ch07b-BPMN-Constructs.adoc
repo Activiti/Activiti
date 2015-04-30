@@ -3640,16 +3640,16 @@ The above table explains how Activiti variables are going to be transferred to C
 |===============
 
 ===== Returning back the variables
-What mentioned in the above tables, only holds for start side of the variable transfer in both directions from Camel to Activiti and vice versa. +
+What is mentioned above about passing variables, only holds for start side of the variable transfer, in both directions from Camel to Activiti and vice versa. +
 It is important to notice that because of special non blocking behavior of Activiti, variables are not automatically returned back from Activiti to Camel.
-For that to happen a special syntax is available. There can be one or more parameters in Camel route URL in format of var.return.someVariableName.
-All variabls having a name equal to one of these parameters without var.return part, will be considered as output variables and will be copied back as camel properties with the same names.
-Just as an example in a route like
+For that to happen, a special syntax is available. There can be one or more parameters in Camel route URL in format of +var.return.someVariableName+.
+All variabls having a name equal to one of these parameters without +var.return+ part, will be considered as output variables and will be copied back as camel properties with the same names. +
+For example in a route like:
 ----
 from("direct:start").to("activiti:process?var.return.exampleVar").to("mock:result");
 ----
 
-Activiti variable with the name of exampleVar will be considered as output and will be copied back as a property in camel with the same name.
+Activiti variable with the name of +exampleVar+ will be considered as output variable and will be copied back as a property in camel with the same name.
 
 
 [[bpmnCamelTaskAsyncPingPong]]
