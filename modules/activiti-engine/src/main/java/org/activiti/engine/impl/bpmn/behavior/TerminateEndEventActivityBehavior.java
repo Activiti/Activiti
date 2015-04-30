@@ -47,15 +47,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 		CommandContext commandContext = Context.getCommandContext();
 		ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
 		
-		// Fetch the whole execution tree 
-		
-		String processInstanceId = execution.getProcessInstanceId();
-		ExecutionEntity processInstanceExecutionEntity = executionEntityManager.findExecutionById(processInstanceId);
-		
-		List<ExecutionEntity> allExecutionEntities = executionEntityManager.findChildExecutionsByProcessInstanceId(processInstanceId);
-		allExecutionEntities.add(processInstanceExecutionEntity); // Collections needs to contain all for the util method to work
-
-		ExecutionTree executionTree = ExecutionTreeUtil.buildExecutionTree(allExecutionEntities);
+		ExecutionTree executionTree = executionEntityManager.findExecutionTree(execution.getRootProcessInstanceId());
 		
 		if (destroyProcessInstance) {
 
@@ -63,7 +55,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 			
 		} else {
 			
-			// Find the highest scope for the element, and schedule the destruction of the scope
+			// Find the lowest scope for the element, and schedule the destruction of the scope
 			
 			ExecutionTreeNode scopeTreeNode = executionTree.getTreeNode(execution.getId());
 			while (!scopeTreeNode.getExecutionEntity().isScope()) {
@@ -74,22 +66,29 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 				}
 			}
 			
-			if (scopeTreeNode.getExecutionEntity().getParentId() == null) {
-				deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+			ExecutionEntity scopeExecutionEntity = scopeTreeNode.getExecutionEntity(); 
+			if (scopeExecutionEntity.getParentId() == null) {
 				
-				// Call activity needs special handling
-				if (scopeTreeNode.getExecutionEntity().getSuperExecutionId() != null) {
+				// Call activity needs special handling: the call activity is destroyed, but the main process continues
+				if (scopeExecutionEntity.getSuperExecutionId() != null) {
+				  
+				  executionEntityManager.deleteChildExecutions(scopeTreeNode.getExecutionEntity());
+				  executionEntityManager.deleteExecutionAndRelatedData(scopeExecutionEntity);
 					ExecutionEntity superExecutionEntity = 
-							executionEntityManager.findExecutionById(scopeTreeNode.getExecutionEntity().getSuperExecutionId());
+							executionEntityManager.findExecutionById(scopeExecutionEntity.getSuperExecutionId());
 					commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(superExecutionEntity);
+					
+				} else {
+				  
+				  deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+				  
 				}
 				
 			} else {
-				commandContext.getAgenda().planDestroyScopeOperation(scopeTreeNode.getExecutionEntity());
-				commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeTreeNode.getExecutionEntity());
+				commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
+				commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeExecutionEntity);
 			}
 		}
-		
 		
 	}
 
@@ -101,43 +100,14 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 	    while (treeIterator.hasNext()) {
 	    	ExecutionTreeNode treeNode = treeIterator.next();
 	    	ExecutionEntity executionEntity = treeNode.getExecutionEntity();
-	    	deleteDataRelatedToExecution(commandContext, executionEntity);
-	    	executionEntityManager.delete(executionEntity);
+	    	executionEntityManager.deleteExecutionAndRelatedData(executionEntity);
 	    }
     }
 	
-	// TODO: Copied from AbstractOperation: remove duplication!
 	
-	protected void deleteDataRelatedToExecution(CommandContext commandContext, ExecutionEntity executionEntity) {
-
-		// To start, deactivate the current incoming execution
-		executionEntity.setEnded(true);
-		executionEntity.setActive(false);
-
-		// Get variables related to execution and delete them
-		VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
-		Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
-		for (VariableInstanceEntity variableInstanceEntity : executionVariables) {
-			variableInstanceEntityManager.delete(variableInstanceEntity);
-			if (variableInstanceEntity.getByteArrayValueId() != null) {
-				commandContext.getByteArrayEntityManager().deleteByteArrayById(variableInstanceEntity.getByteArrayValueId());
-			}
-		}
-
-		// Delete current user tasks
-		TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
-		Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
-		for (TaskEntity taskEntity : tasksForExecution) {
-			taskEntityManager.delete(taskEntity);
-		}
-
-		// Delete jobs
-		JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
-		Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
-		for (JobEntity job : jobsForExecution) {
-			jobEntityManager.delete(job);
-		}
-	}
+  //-------------------------------------------------------------------------------------------------------------------
+	// OLD STUFF. Need to copy a few bits in still
+	// -------------------------------------------------------------------------------------------------------------------
 
 //    public void execute(ActivityExecution execution) {
 //

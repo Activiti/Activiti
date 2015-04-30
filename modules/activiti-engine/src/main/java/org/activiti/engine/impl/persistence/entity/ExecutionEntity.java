@@ -259,6 +259,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    * @see #setSuperExecution(ExecutionEntity)
    */
   protected String superExecutionId;
+  
+  protected String rootProcessInstanceId;
 
   protected boolean forcedUpdate;
 
@@ -282,6 +284,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     // initialize the new execution
     createdExecution.setProcessDefinitionId(this.getProcessDefinitionId());
     createdExecution.setProcessInstanceId(this.getProcessInstanceId() != null ? this.getProcessInstanceId() : this.getId());
+    createdExecution.setRootProcessInstanceId(this.getRootProcessInstanceId());
     createdExecution.setScope(false);
 
     if (log.isDebugEnabled()) {
@@ -897,6 +900,14 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       subProcessInstance = Context.getCommandContext().getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(id);
     }
   }
+  
+  public String getRootProcessInstanceId() {
+    return rootProcessInstanceId;
+  }
+
+  public void setRootProcessInstanceId(String rootProcessInstanceId) {
+    this.rootProcessInstanceId = rootProcessInstanceId;
+  }
 
   // scopes
   // ///////////////////////////////////////////////////////////////////
@@ -1198,6 +1209,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     persistentState.put("name", name);
     persistentState.put("lockTime", lockTime);
     persistentState.put("superExecution", this.superExecutionId);
+    persistentState.put("rootProcessInstanceId", this.rootProcessInstanceId);
     if (forcedUpdate) {
       persistentState.put("forcedUpdate", Boolean.TRUE);
     }

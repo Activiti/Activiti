@@ -86,8 +86,8 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
 		long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
-		assertEquals(4, executionEntities);
-
+		assertEquals(3, executionEntities); // THe main process has 3 executions
+		
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preTerminateEnd").singleResult();
 		taskService.complete(task.getId());
 

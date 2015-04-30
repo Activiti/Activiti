@@ -35,6 +35,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.util.tree.ExecutionTree;
+import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLinkType;
@@ -100,6 +102,16 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   @SuppressWarnings("unchecked")
   public List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
     return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery);
+  }
+  
+  public ExecutionTree findExecutionTree(final String processInstanceId) {
+      List<ExecutionEntity> executions = getList("selectExecutionsByRootProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
+        @Override
+        public boolean isRetained(ExecutionEntity entity) {
+          return entity.getRootProcessInstanceId() != null && entity.getRootProcessInstanceId().equals(processInstanceId);
+        }
+      }); 
+      return ExecutionTreeUtil.buildExecutionTree(executions);
   }
 
   @SuppressWarnings("unchecked")
@@ -210,6 +222,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     }
     
     processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
+    processInstanceExecution.setRootProcessInstanceId(processInstanceExecution.getId());
     if (authenticatedUserId != null) {
       processInstanceExecution.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
     }
@@ -358,11 +371,11 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
 
   public void deleteDataRelatedToExecution(ExecutionEntity executionEntity, String deleteReason) {
 
+    CommandContext commandContext = Context.getCommandContext();
+    
     // To start, deactivate the current incoming execution
     executionEntity.setEnded(true);
     executionEntity.setActive(false);
-
-    CommandContext commandContext = Context.getCommandContext();
 
     // Get variables related to execution and delete them
     VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();

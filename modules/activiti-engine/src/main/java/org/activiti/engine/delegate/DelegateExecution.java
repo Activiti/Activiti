@@ -29,6 +29,8 @@ public interface DelegateExecution extends VariableScope {
 
   /** Reference to the overall process instance */
   String getProcessInstanceId();
+  
+  String getRootProcessInstanceId();
 
   /**
    * The {@link ExecutionListener#EVENTNAME_START event name} in case this execution is passed in for an {@link ExecutionListener}

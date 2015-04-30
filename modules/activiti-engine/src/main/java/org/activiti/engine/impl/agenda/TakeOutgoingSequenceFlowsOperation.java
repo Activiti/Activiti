@@ -136,6 +136,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         ExecutionEntity outgoingExecutionEntity = new ExecutionEntity();
         outgoingExecutionEntity.setProcessDefinitionId(execution.getProcessDefinitionId());
         outgoingExecutionEntity.setProcessInstanceId(execution.getProcessInstanceId());
+        outgoingExecutionEntity.setRootProcessInstanceId(execution.getRootProcessInstanceId());
         outgoingExecutionEntity.setTenantId(execution.getTenantId());
 
         outgoingExecutionEntity.setScope(false);
