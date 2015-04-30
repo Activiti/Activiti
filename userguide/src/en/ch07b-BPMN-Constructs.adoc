@@ -88,7 +88,7 @@ It accepts as value either static values link:$$http://en.wikipedia.org/wiki/ISO
 </timerEventDefinition>
 ----
 
-If booth are specified then the endDate specified as attribute will be used by the system.
+If both are specified then the endDate specified as attribute will be used by the system.
 
  Currently only the _BoundaryTimerEvents_ and _CatchTimerEvent_ supports _EndDate_ functionality.
 
@@ -3634,8 +3634,6 @@ The above table explains how Activiti variables are going to be transferred to C
 |copyVariablesFromProperties|Copy Camel properties as Activiti variables of the same name
 |copyCamelBodyToBodyAsString|like default, but if camel Body is not a map, first convert it to String and then copy it in "camelBody"
 |copyVariablesFromHeader|Additionally copy camel headers to Activiti variables of the same names
-
-
 
 |===============
 
