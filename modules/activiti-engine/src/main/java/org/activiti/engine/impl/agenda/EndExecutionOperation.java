@@ -60,7 +60,7 @@ public class EndExecutionOperation extends AbstractOperation {
         EndEvent endEvent = (EndEvent) executionEntity.getCurrentFlowElement();
         subProcess = endEvent.getSubProcess();
 
-        if (parentExecution.isScope() && !parentExecution.getId().equals(parentExecution.getProcessInstanceId()) && subProcess != null && subProcess.getLoopCharacteristics() != null
+        if (!parentExecution.getId().equals(parentExecution.getProcessInstanceId()) && subProcess != null && subProcess.getLoopCharacteristics() != null
             && subProcess.getBehavior() instanceof MultiInstanceActivityBehavior) {
 
           MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
