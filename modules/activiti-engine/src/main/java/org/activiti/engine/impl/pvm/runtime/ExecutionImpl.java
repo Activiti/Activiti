@@ -398,6 +398,11 @@ public class ExecutionImpl implements Serializable, ActivityExecution, Execution
   public String getProcessInstanceId() {
     return getProcessInstance().getId();
   }
+  
+  @Override
+  public String getRootProcessInstanceId() {
+    return null;
+  }
 
   public String getBusinessKey() {
     return getProcessInstance().getBusinessKey();

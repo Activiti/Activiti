@@ -14,6 +14,7 @@ import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.workflow.simple.converter.ConversionConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 

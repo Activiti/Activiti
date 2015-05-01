@@ -22,6 +22,7 @@ import org.activiti.engine.impl.form.StartFormHandler;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.util.FormHandlerUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 
 /**
@@ -44,7 +45,7 @@ public class GetRenderedStartFormCmd implements Command<Object>, Serializable {
     if (processDefinition == null) {
       throw new ActivitiObjectNotFoundException("Process Definition '" + processDefinitionId + "' not found", ProcessDefinition.class);
     }
-    StartFormHandler startFormHandler = processDefinition.getStartFormHandler();
+    StartFormHandler startFormHandler = FormHandlerUtil.getStartFormHandler(commandContext, processDefinition); 
     if (startFormHandler == null) {
       return null;
     }

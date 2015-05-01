@@ -58,6 +58,7 @@ create table ACT_RU_EXECUTION (
     PARENT_ID_ varchar(64),
     PROC_DEF_ID_ varchar(64),
     SUPER_EXEC_ varchar(64),
+    ROOT_PROC_INST_ID_ varchar(64),
     ACT_ID_ varchar(255),
     IS_ACTIVE_ smallint check(IS_ACTIVE_ in (1,0)),
     IS_CONCURRENT_ smallint check(IS_CONCURRENT_ in (1,0)),
@@ -239,6 +240,11 @@ alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
     references ACT_RU_EXECUTION (ID_);
+    
+alter table ACT_RU_EXECUTION
+    add constraint ACT_FK_ROOT_PROCINST
+    foreign key (ROOT_PROC_INST_ID_)
+    references ACT_RU_EXECUTION;    
     
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCDEF 

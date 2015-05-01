@@ -43,7 +43,8 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
     getDbSqlSession().delete(entity);
 
     if (fireDeleteEvent && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
+      Context.getProcessEngineConfiguration().getEventDispatcher()
+        .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, entity));
     }
   }
 

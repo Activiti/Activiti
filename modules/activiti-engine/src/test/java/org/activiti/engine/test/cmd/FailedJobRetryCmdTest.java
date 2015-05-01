@@ -14,6 +14,7 @@ package org.activiti.engine.test.cmd;
 
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -50,7 +51,7 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
   }
 
   private ExecutionEntity fetchExecutionEntity(String processInstanceId) {
-    return (ExecutionEntity) runtimeService.createExecutionQuery().processInstanceId(processInstanceId).singleResult();
+    return (ExecutionEntity) runtimeService.createExecutionQuery().processInstanceId(processInstanceId).onlyProcessInstanceExecutions().singleResult();
   }
 
   private Job refreshJob(String jobId) {
@@ -75,7 +76,7 @@ public class FailedJobRetryCmdTest extends PluggableActivitiTestCase {
 
     assertEquals(4, job.getRetries());
 
-    ExecutionEntity execution = fetchExecutionEntity(pi.getProcessInstanceId());
+    Execution execution = runtimeService.createExecutionQuery().onlyChildExecutions().processInstanceId(pi.getId()).singleResult();
     assertEquals("failingServiceTask", execution.getActivityId());
 
     waitForExecutedJobWithRetriesLeft(3);

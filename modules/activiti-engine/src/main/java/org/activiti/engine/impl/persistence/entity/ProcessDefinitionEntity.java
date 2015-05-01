@@ -55,7 +55,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected String resourceName;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
   protected Integer historyLevel;
-  protected StartFormHandler startFormHandler;
   protected String diagramResourceName;
   protected boolean isGraphicalNotationDefined;
   protected Map<String, TaskDefinition> taskDefinitions;
@@ -248,14 +247,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setHistoryLevel(Integer historyLevel) {
     this.historyLevel = historyLevel;
-  }
-
-  public StartFormHandler getStartFormHandler() {
-    return startFormHandler;
-  }
-
-  public void setStartFormHandler(StartFormHandler startFormHandler) {
-    this.startFormHandler = startFormHandler;
   }
 
   public Map<String, TaskDefinition> getTaskDefinitions() {

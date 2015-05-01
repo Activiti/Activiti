@@ -143,7 +143,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
     assertNotNull(newValue);
     assertEquals("a value", newValue);
 
-    Task task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
+    Task task = taskService.createTaskQuery().singleResult();
     taskService.complete(task.getId());
 
   }
@@ -241,7 +241,7 @@ public class VariablesTest extends PluggableActivitiTestCase {
 
     assertEquals("434", resultVar);
 
-    task = taskService.createTaskQuery().executionId(processInstance.getId()).singleResult();
+    task = taskService.createTaskQuery().singleResult();
     taskService.complete(task.getId());
 
     // If no variable is given, no variable should be set and script test

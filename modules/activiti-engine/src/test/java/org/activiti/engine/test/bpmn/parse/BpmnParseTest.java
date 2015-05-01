@@ -17,7 +17,10 @@ import java.util.List;
 
 import org.activiti.bpmn.exceptions.XMLException;
 import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.GraphicInfo;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -64,90 +67,46 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParseDiagramInterchangeElements() {
 
-    // Graphical information is not yet exposed publicly, so we need to do
-    // some plumbing
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
-      public ProcessDefinitionEntity execute(CommandContext commandContext) {
-        return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("myProcess");
-      }
-    });
+    // Graphical information is not yet exposed publicly, so we need to do some plumbing
+    
+    BpmnModel bpmnModel = repositoryService.getBpmnModel(repositoryService.createProcessDefinitionQuery().singleResult().getId());
+    Process process = bpmnModel.getMainProcess();
 
-    assertNotNull(processDefinitionEntity);
-    assertEquals(7, processDefinitionEntity.getActivities().size());
-
-    // Check if diagram has been created based on Diagram Interchange when
-    // it's not a headless instance
-    List<String> resourceNames = repositoryService.getDeploymentResourceNames(processDefinitionEntity.getDeploymentId());
+    // Check if diagram has been created based on Diagram Interchange when  it's not a headless instance
+    List<String> resourceNames = repositoryService.getDeploymentResourceNames(repositoryService.createProcessDefinitionQuery().singleResult().getDeploymentId());
     assertEquals(2, resourceNames.size());
-
-    for (ActivityImpl activity : processDefinitionEntity.getActivities()) {
-
-      if (activity.getId().equals("theStart")) {
-        assertActivityBounds(activity, 70, 255, 30, 30);
-      } else if (activity.getId().equals("task1")) {
-        assertActivityBounds(activity, 176, 230, 100, 80);
-      } else if (activity.getId().equals("gateway1")) {
-        assertActivityBounds(activity, 340, 250, 40, 40);
-      } else if (activity.getId().equals("task2")) {
-        assertActivityBounds(activity, 445, 138, 100, 80);
-      } else if (activity.getId().equals("gateway2")) {
-        assertActivityBounds(activity, 620, 250, 40, 40);
-      } else if (activity.getId().equals("task3")) {
-        assertActivityBounds(activity, 453, 304, 100, 80);
-      } else if (activity.getId().equals("theEnd")) {
-        assertActivityBounds(activity, 713, 256, 28, 28);
-      }
-
-      for (PvmTransition sequenceFlow : activity.getOutgoingTransitions()) {
-        assertTrue(((TransitionImpl) sequenceFlow).getWaypoints().size() >= 4);
-
-        TransitionImpl transitionImpl = (TransitionImpl) sequenceFlow;
-        if (transitionImpl.getId().equals("flowStartToTask1")) {
-          assertSequenceFlowWayPoints(transitionImpl, 100, 270, 176, 270);
-        } else if (transitionImpl.getId().equals("flowTask1ToGateway1")) {
-          assertSequenceFlowWayPoints(transitionImpl, 276, 270, 340, 270);
-        } else if (transitionImpl.getId().equals("flowGateway1ToTask2")) {
-          assertSequenceFlowWayPoints(transitionImpl, 360, 250, 360, 178, 445, 178);
-        } else if (transitionImpl.getId().equals("flowGateway1ToTask3")) {
-          assertSequenceFlowWayPoints(transitionImpl, 360, 290, 360, 344, 453, 344);
-        } else if (transitionImpl.getId().equals("flowTask2ToGateway2")) {
-          assertSequenceFlowWayPoints(transitionImpl, 545, 178, 640, 178, 640, 250);
-        } else if (transitionImpl.getId().equals("flowTask3ToGateway2")) {
-          assertSequenceFlowWayPoints(transitionImpl, 553, 344, 640, 344, 640, 290);
-        } else if (transitionImpl.getId().equals("flowGateway2ToEnd")) {
-          assertSequenceFlowWayPoints(transitionImpl, 660, 270, 713, 270);
-        }
-
-      }
-    }
+    
+    assertActivityBounds(bpmnModel, "theStart", 70, 255, 30, 30);
+    assertActivityBounds(bpmnModel, "task1", 176, 230, 100, 80);
+    assertActivityBounds(bpmnModel, "gateway1", 340, 250, 40, 40);
+    assertActivityBounds(bpmnModel, "task2", 445, 138, 100, 80);
+    assertActivityBounds(bpmnModel, "gateway2", 620, 250, 40, 40);
+    assertActivityBounds(bpmnModel, "task3", 453, 304, 100, 80);
+    assertActivityBounds(bpmnModel, "theEnd", 713, 256, 28, 28);
+    
+    assertSequenceFlowWayPoints(bpmnModel, "flowStartToTask1", 100, 270, 176, 270);
+    assertSequenceFlowWayPoints(bpmnModel, "flowTask1ToGateway1", 276, 270, 340, 270);
+    assertSequenceFlowWayPoints(bpmnModel, "flowGateway1ToTask2", 360, 250, 360, 178, 445, 178);
+    assertSequenceFlowWayPoints(bpmnModel, "flowGateway1ToTask3", 360, 290, 360, 344, 453, 344);
+    assertSequenceFlowWayPoints(bpmnModel, "flowTask2ToGateway2", 545, 178, 640, 178, 640, 250);
+    assertSequenceFlowWayPoints(bpmnModel, "flowTask3ToGateway2", 553, 344, 640, 344, 640, 290);
+    assertSequenceFlowWayPoints(bpmnModel, "flowGateway2ToEnd", 660, 270, 713, 270);
+    
   }
 
   @Deployment
   public void testParseNamespaceInConditionExpressionType() {
-    CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    ProcessDefinitionEntity processDefinitionEntity = commandExecutor.execute(new Command<ProcessDefinitionEntity>() {
-      public ProcessDefinitionEntity execute(CommandContext commandContext) {
-        return Context.getProcessEngineConfiguration().getDeploymentManager().findDeployedLatestProcessDefinitionByKey("resolvableNamespacesProcess");
-      }
-    });
-
-    // Test that the process definition has been deployed
-    assertNotNull(processDefinitionEntity);
-    ActivityImpl activity = processDefinitionEntity.findActivity("ExclusiveGateway_1");
-    assertNotNull(activity);
-
-    // Test that the conditions has been resolved
-    for (PvmTransition transition : activity.getOutgoingTransitions()) {
-      if (transition.getDestination().getId().equals("Task_2")) {
-        assertTrue(transition.getProperty("conditionText").equals("#{approved}"));
-      } else if (transition.getDestination().getId().equals("Task_3")) {
-        assertTrue(transition.getProperty("conditionText").equals("#{!approved}"));
-      } else {
-        fail("Something went wrong");
-      }
-
-    }
+    
+    BpmnModel bpmnModel = repositoryService.getBpmnModel(repositoryService.createProcessDefinitionQuery().singleResult().getId());
+    Process process = bpmnModel.getProcesses().get(0);
+    assertNotNull(process);
+    
+    SequenceFlow sequenceFlow = (SequenceFlow) process.getFlowElement("SequenceFlow_3");
+    assertEquals("#{approved}", sequenceFlow.getConditionExpression());
+    
+    sequenceFlow = (SequenceFlow) process.getFlowElement("SequenceFlow_4");
+    assertEquals("#{!approved}", sequenceFlow.getConditionExpression());
+    
   }
 
   @Deployment
@@ -166,17 +125,21 @@ public class BpmnParseTest extends PluggableActivitiTestCase {
     repositoryService.deleteDeployment(repositoryService.createDeploymentQuery().singleResult().getId(), true);
   }
 
-  protected void assertActivityBounds(ActivityImpl activity, int x, int y, int width, int height) {
-    assertEquals(x, activity.getX());
-    assertEquals(y, activity.getY());
-    assertEquals(width, activity.getWidth());
-    assertEquals(height, activity.getHeight());
+  protected void assertActivityBounds(BpmnModel bpmnModel, String activityId, Integer x, Integer y, Integer width, Integer height) {
+    assertEquals(x.doubleValue(), bpmnModel.getGraphicInfo(activityId).getX());
+    assertEquals(y.doubleValue(), bpmnModel.getGraphicInfo(activityId).getY());
+    assertEquals(width.doubleValue(), bpmnModel.getGraphicInfo(activityId).getWidth());
+    assertEquals(height.doubleValue(), bpmnModel.getGraphicInfo(activityId).getHeight());
   }
 
-  protected void assertSequenceFlowWayPoints(TransitionImpl sequenceFlow, Integer... waypoints) {
-    assertEquals(waypoints.length, sequenceFlow.getWaypoints().size());
-    for (int i = 0; i < waypoints.length; i++) {
-      assertEquals(waypoints[i], sequenceFlow.getWaypoints().get(i));
+  protected void assertSequenceFlowWayPoints(BpmnModel bpmnModel, String sequenceFlowId, Integer... waypoints) {
+    List<GraphicInfo> graphicInfos = bpmnModel.getFlowLocationGraphicInfo(sequenceFlowId);
+    assertEquals(waypoints.length / 2, graphicInfos.size());
+    for (int i = 0; i < waypoints.length; i += 2) {
+      Integer x = waypoints[i];
+      Integer y = waypoints[i+1];
+      assertEquals(x.doubleValue(), graphicInfos.get(i/2).getX());
+      assertEquals(y.doubleValue(), graphicInfos.get(i/2).getY());
     }
   }
 

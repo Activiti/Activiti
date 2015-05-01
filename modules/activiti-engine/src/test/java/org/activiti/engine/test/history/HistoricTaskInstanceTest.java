@@ -156,7 +156,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().taskDescriptionLike("%unexistingdescripton%").count());
 
     // Execution id
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().executionId(finishedInstance.getId()).count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().processInstanceId(finishedInstance.getId()).count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().executionId("unexistingexecution").count());
 
     // Process instance id
@@ -331,7 +331,7 @@ public class HistoricTaskInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().taskDescriptionLike("%unexistingdescripton%").taskDescription("unexistingdescription").endOr().count());
 
     // Execution id
-    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().executionId(finishedInstance.getId()).endOr().count());
+    assertEquals(1, historyService.createHistoricTaskInstanceQuery().or().processInstanceId(finishedInstance.getId()).endOr().count());
     assertEquals(0, historyService.createHistoricTaskInstanceQuery().or().executionId("unexistingexecution").endOr().count());
 
     // Process instance id

@@ -34,12 +34,18 @@ public class ExecutionTreeUtil {
     Map<String, List<ExecutionEntity>> parentMapping = new HashMap<String, List<ExecutionEntity>>();
     for (ExecutionEntity executionEntity : executions) {
       String parentId = executionEntity.getParentId();
+      
+      // Support for call activity
+      if (parentId == null) {
+        parentId = executionEntity.getSuperExecutionId();
+      }
+      
       if (parentId != null) {
         if (!parentMapping.containsKey(parentId)) {
           parentMapping.put(parentId, new ArrayList<ExecutionEntity>());
         }
         parentMapping.get(parentId).add(executionEntity);
-      } else {
+      } else if (executionEntity.getSuperExecutionId() == null){
         executionTree.setRoot(new ExecutionTreeNode(executionEntity));
       }
     }

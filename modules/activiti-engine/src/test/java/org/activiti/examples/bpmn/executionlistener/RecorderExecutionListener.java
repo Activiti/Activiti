@@ -16,13 +16,16 @@ package org.activiti.examples.bpmn.executionlistener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.el.FixedValue;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
  * @author Bernd Ruecker
+ * @author Joram Barrez
  */
 public class RecorderExecutionListener implements ExecutionListener {
 
@@ -63,8 +66,16 @@ public class RecorderExecutionListener implements ExecutionListener {
 
   public void notify(DelegateExecution execution) {
     ExecutionEntity executionCasted = ((ExecutionEntity) execution);
-    recordedEvents.add(new RecordedEvent( //
-        executionCasted.getActivityId(), (String) executionCasted.getActivity().getProperties().get("name"), execution.getEventName(), (String) parameter.getValue(execution)));
+    
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+    String activityId = execution.getCurrentActivityId();
+    FlowElement currentFlowElement = process.getFlowElement(activityId, true);
+    
+    recordedEvents.add(new RecordedEvent(
+        executionCasted.getActivityId(),
+        currentFlowElement.getName(),
+        execution.getEventName(), 
+        (String) parameter.getValue(execution)));
   }
 
   public static void clear() {

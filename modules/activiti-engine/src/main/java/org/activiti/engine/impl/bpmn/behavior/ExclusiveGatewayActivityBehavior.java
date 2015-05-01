@@ -17,6 +17,9 @@ import java.util.Iterator;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.condition.ConditionUtil;
 import org.slf4j.Logger;
@@ -58,11 +61,17 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     Iterator<SequenceFlow> sequenceFlowIterator = exclusiveGateway.getOutgoingFlows().iterator();
     while (outgoingSequenceFlow == null && sequenceFlowIterator.hasNext()) {
       SequenceFlow sequenceFlow = sequenceFlowIterator.next();
-      boolean conditionEvaluatesToTrue = ConditionUtil.hasTrueCondition(sequenceFlow, execution);
-      if (conditionEvaluatesToTrue && (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId()))) {
-        if (log.isDebugEnabled()) {
-          log.debug("Sequence flow '{}'selected as outgoing sequence flow.", sequenceFlow.getId());
+      
+      String skipExpressionString = sequenceFlow.getSkipExpression();
+      if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpressionString)) {
+        boolean conditionEvaluatesToTrue = ConditionUtil.hasTrueCondition(sequenceFlow, execution);
+        if (conditionEvaluatesToTrue && (defaultSequenceFlowId == null || !defaultSequenceFlowId.equals(sequenceFlow.getId()))) {
+          if (log.isDebugEnabled()) {
+            log.debug("Sequence flow '{}'selected as outgoing sequence flow.", sequenceFlow.getId());
+          }
+          outgoingSequenceFlow = sequenceFlow;
         }
+      } else if (SkipExpressionUtil.shouldSkipFlowElement(Context.getCommandContext(), execution, skipExpressionString)) {
         outgoingSequenceFlow = sequenceFlow;
       }
 
@@ -70,27 +79,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
       if (defaultSequenceFlowId != null && defaultSequenceFlowId.equals(sequenceFlow.getId())) {
         defaultSequenceFlow = sequenceFlow;
       }
-
-      // Expression skipExpression = seqFlow.getSkipExpression();
-      //
-      // if (!SkipExpressionUtil.isSkipExpressionEnabled(execution,
-      // skipExpression)) {
-      // Condition condition = (Condition)
-      // seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-      // if ( (condition == null && (defaultSequenceFlow == null ||
-      // !defaultSequenceFlow.equals(seqFlow.getId())) )
-      // || (condition != null && condition.evaluate(execution)) ) {
-      // if (log.isDebugEnabled()) {
-      // log.debug("Sequence flow '{}'selected as outgoing sequence flow.",
-      // seqFlow.getId());
-      // }
-      // outgoingSeqFlow = seqFlow;
-      // }
-      // }
-      // else if (SkipExpressionUtil.shouldSkipFlowElement(execution,
-      // skipExpression)){
-      // outgoingSeqFlow = seqFlow;
-      // }
+      
     }
 
     // Leave the gateway

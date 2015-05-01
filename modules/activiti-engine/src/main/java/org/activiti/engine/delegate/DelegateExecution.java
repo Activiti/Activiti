@@ -29,6 +29,8 @@ public interface DelegateExecution extends VariableScope {
 
   /** Reference to the overall process instance */
   String getProcessInstanceId();
+  
+  String getRootProcessInstanceId();
 
   /**
    * The {@link ExecutionListener#EVENTNAME_START event name} in case this execution is passed in for an {@link ExecutionListener}
@@ -66,11 +68,6 @@ public interface DelegateExecution extends VariableScope {
    * Gets the id of the current activity.
    */
   String getCurrentActivityId();
-
-  /**
-   * Gets the name of the current activity.
-   */
-  String getCurrentActivityName();
 
   /**
    * Returns the tenant id, if any is set before on the process definition or process instance.

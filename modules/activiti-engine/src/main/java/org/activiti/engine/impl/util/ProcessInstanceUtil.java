@@ -1,3 +1,15 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.activiti.engine.impl.util;
 
 import java.util.Collection;
@@ -18,9 +30,25 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.collections.CollectionUtils;
 
+/**
+ * @author Tijs Rademakers
+ * @author Joram Barrez
+ */
 public class ProcessInstanceUtil {
-
-  public static ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, String businessKey, String processInstanceName, Map<String, Object> variables) {
+  
+  public static ProcessInstance createProcessInstance(ProcessDefinitionEntity processDefinition, 
+      String businessKey, String processInstanceName, Map<String, Object> variables) {
+    return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, false);
+  }
+  
+  public static ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
+      String businessKey, String processInstanceName, Map<String, Object> variables) {
+    return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, true);
+  }
+  
+  protected static ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
+      String businessKey, String processInstanceName, Map<String, Object> variables, boolean startProcessInstance) {
+    
     CommandContext commandContext = Context.getCommandContext();
     if (processDefinition.getEngineVersion() != null) {
       if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
@@ -52,7 +80,8 @@ public class ProcessInstanceUtil {
       throw new ActivitiException("No start element found for process definition " + processDefinition.getId());
     }
 
-    return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, processInstanceName, initialFlowElement, process, variables);
+    return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, businessKey, 
+        processInstanceName, initialFlowElement, process, variables, startProcessInstance);
   }
 
   public static ProcessInstance createAndStartProcessInstanceByMessage(ProcessDefinitionEntity processDefinition, String messageName, Map<String, Object> variables) {
@@ -100,11 +129,12 @@ public class ProcessInstanceUtil {
       throw new ActivitiException("No message start event found for process definition " + processDefinition.getId() + " and message name " + messageName);
     }
 
-    return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, initialFlowElement, process, variables);
+    return createAndStartProcessInstanceWithInitialFlowElement(processDefinition, null, null, initialFlowElement, process, variables, true);
   }
 
-  public static ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinitionEntity processDefinition, String businessKey, String processInstanceName,
-      FlowElement initialFlowElement, Process process, Map<String, Object> variables) {
+  protected static ProcessInstance createAndStartProcessInstanceWithInitialFlowElement(ProcessDefinitionEntity processDefinition, 
+      String businessKey, String processInstanceName, FlowElement initialFlowElement, 
+      Process process, Map<String, Object> variables, boolean startProcessInstance) {
 
     CommandContext commandContext = Context.getCommandContext();
 
@@ -113,11 +143,12 @@ public class ProcessInstanceUtil {
     if (initialFlowElement instanceof StartEvent) {
       initiatorVariableName = ((StartEvent) initialFlowElement).getInitiator();
     }
-
-    ExecutionEntity processInstance = commandContext.getExecutionEntityManager().createProcessInstanceExecution(processDefinition.getId(), businessKey, processDefinition.getTenantId(),
-        initiatorVariableName);
+    
+    ExecutionEntity processInstance = commandContext.getExecutionEntityManager()
+    		.createProcessInstanceExecution(processDefinition.getId(), businessKey, processDefinition.getTenantId(), initiatorVariableName);
+    
     commandContext.getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
-
+    
     processInstance.setVariables(processDataObjects(process.getDataObjects()));
 
     // Set the variables passed into the start command
@@ -136,7 +167,10 @@ public class ProcessInstanceUtil {
     // Create the first execution that will visit all the process definition elements
     ExecutionEntity execution = processInstance.createExecution();
     execution.setCurrentFlowElement(initialFlowElement);
-    commandContext.getAgenda().planContinueProcessOperation(execution);
+    
+    if (startProcessInstance) {
+      commandContext.getAgenda().planContinueProcessOperation(execution);
+    }
 
     return processInstance;
   }

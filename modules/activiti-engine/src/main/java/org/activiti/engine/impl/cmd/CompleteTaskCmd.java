@@ -46,7 +46,7 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
       }
     }
 
-    executeTaskComplete(task, variables, localScope);
+    executeTaskComplete(commandContext, task, variables, localScope);
     return null;
   }
 

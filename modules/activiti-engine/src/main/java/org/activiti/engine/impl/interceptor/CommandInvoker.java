@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.interceptor;
 
+import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.activiti.engine.impl.context.Context;
 
 /**
@@ -56,7 +57,14 @@ public class CommandInvoker extends AbstractCommandInterceptor {
   }
 
   public void executeOperation(Runnable runnable) {
-    runnable.run();
+    if (runnable instanceof AbstractOperation) {
+      AbstractOperation operation = (AbstractOperation) runnable;
+      if (operation.getExecution() == null || !operation.getExecution().isEnded()) {
+        runnable.run();
+      }
+    } else {
+      runnable.run();
+    }
   }
 
   @Override

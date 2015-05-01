@@ -151,11 +151,12 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     leave(execution);
   }
 
-  protected ExecutionEntity createSubProcessInstance(ProcessDefinitionEntity processDefinitionEntity, ExecutionEntity processInstanceEntity, FlowElement initialFlowElement) {
+  protected ExecutionEntity createSubProcessInstance(ProcessDefinitionEntity processDefinitionEntity, ExecutionEntity superExecutionEntity, FlowElement initialFlowElement) {
 
     ExecutionEntity subProcessInstance = new ExecutionEntity();
     subProcessInstance.setProcessDefinitionId(processDefinitionEntity.getId());
-    subProcessInstance.setSuperExecution(processInstanceEntity);
+    subProcessInstance.setSuperExecution(superExecutionEntity);
+    subProcessInstance.setRootProcessInstanceId(superExecutionEntity.getRootProcessInstanceId());
     subProcessInstance.setScope(true); // process instance is always a scope for all child executions
 
     // Inherit tenant id (if any)
@@ -167,10 +168,10 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     Context.getCommandContext().getExecutionEntityManager().insert(subProcessInstance, false);
 
     subProcessInstance.setProcessInstanceId(subProcessInstance.getId());
-    processInstanceEntity.setSubProcessInstance(subProcessInstance);
+    superExecutionEntity.setSubProcessInstance(subProcessInstance);
 
     // Fire events manage bidirectional super-subprocess relation
-    Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(processInstanceEntity, subProcessInstance, initialFlowElement);
+    Context.getCommandContext().getHistoryManager().recordSubProcessInstanceStart(superExecutionEntity, subProcessInstance, initialFlowElement);
 
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, subProcessInstance));

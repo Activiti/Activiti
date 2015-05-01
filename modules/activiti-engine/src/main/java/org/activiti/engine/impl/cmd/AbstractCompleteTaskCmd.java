@@ -12,17 +12,26 @@
  */
 package org.activiti.engine.impl.cmd;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.DelegateTask;
+import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.delegate.TaskListenerInvocation;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.task.DelegationState;
+import org.activiti.engine.task.IdentityLinkType;
 
 /**
  * @author Joram Barrez
@@ -33,18 +42,17 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
     super(taskId);
   }
 
-  protected void executeTaskComplete(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
+  protected void executeTaskComplete(CommandContext commandContext, TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
 
     if (taskEntity.getDelegationState() != null && taskEntity.getDelegationState().equals(DelegationState.PENDING)) {
       throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
     }
 
-    // fireEvent(TaskListener.EVENTNAME_COMPLETE);
-    // if (Authentication.getAuthenticatedUserId() != null &&
-    // task.getProcessInstanceId() != null) {
-    // getProcessInstance().involveUser(Authentication.getAuthenticatedUserId(),
-    // IdentityLinkType.PARTICIPANT);
-    // }
+    fireEvent(commandContext, taskEntity, TaskListener.EVENTNAME_COMPLETE);
+    if (Authentication.getAuthenticatedUserId() != null && taskEntity.getProcessInstanceId() != null) {
+      ExecutionEntity processInstanceEntity = commandContext.getExecutionEntityManager().findExecutionById(taskEntity.getProcessInstanceId());
+      processInstanceEntity.involveUser(Authentication.getAuthenticatedUserId(),IdentityLinkType.PARTICIPANT);
+    }
 
     ActivitiEventDispatcher eventDispatcher = Context.getProcessEngineConfiguration().getEventDispatcher();
     if (eventDispatcher.isEnabled()) {
@@ -55,7 +63,6 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
       }
     }
 
-    CommandContext commandContext = Context.getCommandContext();
     commandContext.getTaskEntityManager().deleteTask(taskEntity, TaskEntity.DELETE_REASON_COMPLETED, false);
 
     // Continue process (if not a standalone task)
@@ -63,6 +70,35 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
       ExecutionEntity executionEntity = commandContext.getExecutionEntityManager().findExecutionById(taskEntity.getExecutionId());
       commandContext.getAgenda().planTriggerExecutionOperation(executionEntity);
     }
+  }
+  
+  // TODO: this needs to be revised
+  public void fireEvent(CommandContext commandContext, TaskEntity taskEntity, String taskEventName) {
+    TaskDefinition taskDefinition = getTaskDefinition(taskEntity);
+    if (taskDefinition != null) {
+      List<TaskListener> taskEventListeners = taskDefinition.getTaskListener(taskEventName);
+      if (taskEventListeners != null) {
+        for (TaskListener taskListener : taskEventListeners) {
+          ExecutionEntity execution = commandContext.getExecutionEntityManager().findExecutionById(taskEntity.getExecutionId());
+          if (execution != null) {
+            taskEntity.setEventName(taskEventName);
+          }
+          try {
+            Context.getProcessEngineConfiguration()
+              .getDelegateInterceptor()
+              .handleInvocation(new TaskListenerInvocation(taskListener, (DelegateTask)taskEntity));
+          }catch (Exception e) {
+            throw new ActivitiException("Exception while invoking TaskListener: "+e.getMessage(), e);
+          }
+        }
+      }
+    }
+  }
+  
+  public TaskDefinition getTaskDefinition(TaskEntity taskEntity) {
+    // TODO: this has to be rewritten. Should not live on the ProcessDefinition!
+    ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(taskEntity.getProcessDefinitionId());
+    return processDefinitionEntity.getTaskDefinitions().get(taskEntity.getTaskDefinitionKey());
   }
 
 }

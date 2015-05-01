@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
@@ -56,33 +57,43 @@ public abstract class AbstractOperation implements Runnable {
     return currentFlowElement;
   }
 
-  protected void executeExecutionListeners(FlowElement flowElement, String eventType) {
-    List<ActivitiListener> listeners = flowElement.getExecutionListeners();
+  /**
+   * Executes the execution listeners defined on the given element, with the given event type.
+   */
+  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, String eventType) {
+    executeExecutionListeners(elementWithExecutionListeners, eventType, false);
+  }
+
+  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, String eventType, boolean ignoreType) {
+    List<ActivitiListener> listeners = elementWithExecutionListeners.getExecutionListeners();
     ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
-    for (ActivitiListener activitiListener : listeners) {
+    if (listeners != null) {
+      for (ActivitiListener activitiListener : listeners) {
 
-      if (eventType.equals(activitiListener.getEvent())) {
+        if (ignoreType || eventType.equals(activitiListener.getEvent())) {
 
-        ExecutionListener executionListener = null;
+          ExecutionListener executionListener = null;
 
-        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
-          executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-          executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
-          executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+          }
+
+          if (executionListener != null) {
+            ((ExecutionEntity) execution).setEventName(eventType);
+            executionListener.notify(execution);
+            
+            // TODO: is this still needed? Is this property still needed?
+            ((ExecutionEntity) execution).setEventName(null);
+          }
+
         }
-
-        if (executionListener != null) {
-          ((ExecutionEntity) execution).setEventName(eventType);
-          executionListener.notify(execution);
-        }
-
       }
     }
 
-    // TODO: is this still needed? Is this property still needed?
-    ((ExecutionEntity) execution).setEventName(null);
   }
 
   /* TODO: Should following methods be moved to the entityManager */

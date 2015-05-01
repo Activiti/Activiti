@@ -35,6 +35,8 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
+import org.activiti.engine.impl.util.tree.ExecutionTree;
+import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.IdentityLinkType;
@@ -100,6 +102,16 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   @SuppressWarnings("unchecked")
   public List<ProcessInstance> findProcessInstanceByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
     return getDbSqlSession().selectList("selectProcessInstanceByQueryCriteria", executionQuery);
+  }
+  
+  public ExecutionTree findExecutionTree(final String processInstanceId) {
+      List<ExecutionEntity> executions = getList("selectExecutionsByRootProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
+        @Override
+        public boolean isRetained(ExecutionEntity entity) {
+          return entity.getRootProcessInstanceId() != null && entity.getRootProcessInstanceId().equals(processInstanceId);
+        }
+      }); 
+      return ExecutionTreeUtil.buildExecutionTree(executions);
   }
 
   @SuppressWarnings("unchecked")
@@ -199,16 +211,18 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       processInstanceExecution.setTenantId(tenantId);
     }
 
-    String authenticatedUserId = Authentication.getAuthenticatedUserId();
-    if (initiatorVariableName != null) {
-      processInstanceExecution.setVariable(initiatorVariableName, authenticatedUserId);
-    }
 
     // Store in database
     Context.getCommandContext().getExecutionEntityManager().insert(processInstanceExecution, false);
 
     // Need to be after insert, cause we need the id
+    String authenticatedUserId = Authentication.getAuthenticatedUserId();
+    if (initiatorVariableName != null) {
+      processInstanceExecution.setVariable(initiatorVariableName, authenticatedUserId);
+    }
+    
     processInstanceExecution.setProcessInstanceId(processInstanceExecution.getId());
+    processInstanceExecution.setRootProcessInstanceId(processInstanceExecution.getId());
     if (authenticatedUserId != null) {
       processInstanceExecution.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
     }
@@ -280,19 +294,29 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       commandContext.getHistoricProcessInstanceEntityManager().deleteHistoricProcessInstanceById(execution.getId());
     }
   }
-
+  
   public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity) {
-    deleteDataRelatedToExecution(executionEntity);
-    delete(executionEntity); // TODO: what about delete reason?
+    deleteExecutionAndRelatedData(executionEntity, null);
+  }
+
+  public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason) {
+    deleteDataRelatedToExecution(executionEntity, deleteReason);
+    delete(executionEntity);
   }
 
   public void deleteProcessInstanceExecutionEntity(String processInstanceId, String currentFlowElementId, String deleteReason) {
     deleteProcessInstanceExecutionEntity(processInstanceId, currentFlowElementId, deleteReason, false);
   }
 
-  public void deleteProcessInstanceExecutionEntity(String processInstanceId, String currentFlowElementId, String deleteReason, boolean cascade) {
+  public void deleteProcessInstanceExecutionEntity(String processInstanceId, 
+      String currentFlowElementId, String deleteReason, boolean cascade) {
 
     ExecutionEntity processInstanceEntity = findExecutionById(processInstanceId);
+    
+    if (processInstanceEntity == null) {
+      throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
+    }
+    
     for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
       if (subExecutionEntity.getSubProcessInstance() != null) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, cascade);
@@ -305,14 +329,18 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       identityLinkEntityManager.delete(identityLinkEntity);
     }
 
-    deleteChildExecutions(processInstanceEntity);
-    deleteExecutionAndRelatedData(processInstanceEntity);
+    deleteChildExecutions(processInstanceEntity, deleteReason);
+    deleteExecutionAndRelatedData(processInstanceEntity, deleteReason);
 
     // TODO: what about delete reason?
     Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(processInstanceId, deleteReason, currentFlowElementId);
   }
-
+  
   public void deleteChildExecutions(ExecutionEntity executionEntity) {
+    deleteChildExecutions(executionEntity, null);
+  }
+
+  public void deleteChildExecutions(ExecutionEntity executionEntity, String deleteReason) {
 
     // The children of an execution for a tree. For correct deletions
     // (taking care of foreign keys between child-parent)
@@ -331,19 +359,23 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     for (int i = childExecutionEntities.size() - 1; i >= 0; i--) {
       ExecutionEntity childExecutionEntity = childExecutionEntities.get(i);
       if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
-        deleteExecutionAndRelatedData(childExecutionEntity);
+        deleteExecutionAndRelatedData(childExecutionEntity, deleteReason);
       }
     }
 
   }
-
+  
   public void deleteDataRelatedToExecution(ExecutionEntity executionEntity) {
+    deleteDataRelatedToExecution(executionEntity, null);
+  }
 
+  public void deleteDataRelatedToExecution(ExecutionEntity executionEntity, String deleteReason) {
+
+    CommandContext commandContext = Context.getCommandContext();
+    
     // To start, deactivate the current incoming execution
     executionEntity.setEnded(true);
     executionEntity.setActive(false);
-
-    CommandContext commandContext = Context.getCommandContext();
 
     // Get variables related to execution and delete them
     VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
@@ -359,7 +391,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
     Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
     for (TaskEntity taskEntity : tasksForExecution) {
-      taskEntityManager.deleteTask(taskEntity, null, false);
+      taskEntityManager.deleteTask(taskEntity, deleteReason, false);
     }
 
     // Delete jobs
