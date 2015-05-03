@@ -13,13 +13,13 @@
 
 package org.activiti.engine.test.db;
 
-import java.util.Collections;
 import java.util.List;
 
+import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SequenceFlow;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.RepositoryServiceImpl;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -51,26 +51,25 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
     assertEquals("Process One", processDefinition.getName());
     assertEquals("the first process", processDefinition.getProperty("documentation"));
 
-    PvmActivity start = processDefinition.findActivity("start");
-    assertNotNull(start);
-    assertEquals("start", start.getId());
-    assertEquals("S t a r t", start.getProperty("name"));
-    assertEquals("the start event", start.getProperty("documentation"));
-    assertEquals(Collections.EMPTY_LIST, start.getActivities());
-    List<PvmTransition> outgoingTransitions = start.getOutgoingTransitions();
-    assertEquals(1, outgoingTransitions.size());
-    assertEquals("${a == b}", outgoingTransitions.get(0).getProperty(BpmnParse.PROPERTYNAME_CONDITION_TEXT));
+    Process process = repositoryService.getBpmnModel(processDefinition.getId()).getMainProcess();
+    StartEvent startElement = (StartEvent) process.getFlowElement("start");
+    assertNotNull(startElement);
+    assertEquals("start", startElement.getId());
+    assertEquals("S t a r t", startElement.getName());
+    assertEquals("the start event", startElement.getDocumentation());
+    List<SequenceFlow> outgoingFlows = startElement.getOutgoingFlows();
+    assertEquals(1, outgoingFlows.size());
+    assertEquals("${a == b}", outgoingFlows.get(0).getConditionExpression());
 
-    PvmActivity end = processDefinition.findActivity("end");
-    assertNotNull(end);
-    assertEquals("end", end.getId());
+    EndEvent endElement = (EndEvent) process.getFlowElement("end");
+    assertNotNull(endElement);
+    assertEquals("end", endElement.getId());
 
-    PvmTransition transition = outgoingTransitions.get(0);
-    assertEquals("flow1", transition.getId());
-    assertEquals("Flow One", transition.getProperty("name"));
-    assertEquals("The only transitions in the process", transition.getProperty("documentation"));
-    assertSame(start, transition.getSource());
-    assertSame(end, transition.getDestination());
+    assertEquals("flow1", outgoingFlows.get(0).getId());
+    assertEquals("Flow One", outgoingFlows.get(0).getName());
+    assertEquals("The only transitions in the process", outgoingFlows.get(0).getDocumentation());
+    assertSame(startElement, outgoingFlows.get(0).getSourceFlowElement());
+    assertSame(endElement, outgoingFlows.get(0).getTargetFlowElement());
 
     repositoryService.deleteDeployment(deploymentId);
   }
