@@ -5,7 +5,7 @@
   <process id="callProcssWithSingleExceptionMap" isExecutable="true">
     <startEvent id="theStart"></startEvent>
     <serviceTask id="servicetask2" name="Set Flag" activiti:class="org.activiti.engine.test.bpmn.event.error.mapError.FlagDelegate"></serviceTask>
-    <callActivity id="callactivity1" name="Call activity"   calledElement="testCallProcessCalee">
+    <callActivity id="callactivity1" name="Call activity" calledElement="testCallProcessCalee">
      	<extensionElements>
     		<activiti:in source="exceptionClass" target="exceptionClass" />
 	        <activiti:mapException xmlns:activiti="http://activiti.org/bpmn" errorCode="myErrorCode1" includeChildExceptions="true">org.activiti.engine.test.bpmn.event.error.mapError.BoundaryErrorParentException</activiti:mapException>

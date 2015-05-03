@@ -583,7 +583,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
           .dispatchEvent(
               ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, getActivity() != null ? getActivity().getId() : getActivityId(),
                   getActivity() != null ? (String) getActivity().getProperties().get("name") : null, getId(), getProcessInstanceId(), getProcessDefinitionId(),
-                  getActivity() != null ? (String) getActivity().getProperties().get("type") : null, getActivity() != null ? getActivity().getActivityBehavior().getClass().getCanonicalName() : null));
+                  getActivity() != null ? (String) getActivity().getProperties().get("type") : null));
     }
   }
 

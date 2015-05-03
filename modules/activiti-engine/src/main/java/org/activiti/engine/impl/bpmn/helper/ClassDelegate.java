@@ -34,6 +34,7 @@ import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.delegate.TaskListenerInvocation;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
@@ -51,6 +52,8 @@ import org.activiti.engine.impl.util.ReflectUtil;
  */
 public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, SubProcessActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String className;
   protected List<FieldDeclaration> fieldDeclarations;
   protected ExecutionListener executionListenerInstance;
@@ -137,12 +140,10 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
         activityBehaviorInstance.execute(execution);
       } catch (BpmnError error) {
         ErrorPropagation.propagateError(error, execution);
-      } catch (Exception e) {
-        if (!ErrorPropagation.mapException(e, execution, mapExceptions))
-          throw new ActivitiException("Error while execution class delegate", e);
-
+      } catch (RuntimeException e) {
+        if (!ErrorPropagation.mapException(e, (ExecutionEntity) execution, mapExceptions))
+          throw e;
       }
-
     }
   }
 

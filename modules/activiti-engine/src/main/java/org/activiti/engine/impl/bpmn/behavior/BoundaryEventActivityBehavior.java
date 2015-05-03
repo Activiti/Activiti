@@ -83,7 +83,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
       if (currentlyExaminedExecution.isScope()) {
         parentScopeExecution = currentlyExaminedExecution;
       } else {
-        currentlyExaminedExecution = executionEntityManager.findExecutionById(executionEntity.getParentId());
+        currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
       }
     }
 

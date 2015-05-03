@@ -26,6 +26,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -143,7 +144,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
         ErrorPropagation.propagateError((BpmnError) camelException, execution);
         return true;
       } else {
-        if (ErrorPropagation.mapException(camelException, execution, mapExceptions))
+        if (ErrorPropagation.mapException(camelException, (ExecutionEntity) execution, mapExceptions))
           return true;
         else
           throw new ActivitiException("Unhandled exception on camel route", camelException);

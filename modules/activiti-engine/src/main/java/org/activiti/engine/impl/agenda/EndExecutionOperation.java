@@ -7,10 +7,12 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
+import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -36,7 +38,7 @@ public class EndExecutionOperation extends AbstractOperation {
   public void run() {
 
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
-    ExecutionEntity executionEntity = (ExecutionEntity) execution; // TODO: dont like the cast here
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
     // Find parent execution. If not found, it's the process instance and other logic needs to happen
     ExecutionEntity parentExecution = null;
@@ -46,7 +48,7 @@ public class EndExecutionOperation extends AbstractOperation {
 
     if (parentExecution != null) {
 
-      // If the execution is a scope, and it is ended, all the child executions must be deleted first.
+      // If the execution is a scope, all the child executions must be deleted first.
       if (executionEntity.isScope()) {
         executionEntityManager.deleteChildExecutions(executionEntity);
       }
@@ -74,15 +76,34 @@ public class EndExecutionOperation extends AbstractOperation {
 
       if (subProcess != null) {
         parentExecution.setCurrentFlowElement(subProcess);
+        if (subProcess instanceof Transaction) {
+          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution, parentExecution.getParent());
+        }
       } else {
         parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
       }
       
       // If there are no more active child executions, the process can be continues
-      // If not (eg an embedded subprocess still has active elements, we cannot continu)
+      // If not (eg an embedded subprocess still has active elements, we cannot continue)
       int activeChildExecution = getNumberOfActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId());
       if (activeChildExecution == 0) {
         agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);
+      } else {
+        // event scopes created by transaction sub processes should be deleted and ignored
+        boolean allEventScopeExecutions = true;
+        List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
+        for (ExecutionEntity childExecution : executions) {
+          if (childExecution.isEventScope()) {
+            executionEntityManager.deleteExecutionAndRelatedData(childExecution);
+          } else {
+            allEventScopeExecutions = false;
+            break;
+          }
+        }
+        
+        if (allEventScopeExecutions) {
+          agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);
+        }
       }
 
     } else {

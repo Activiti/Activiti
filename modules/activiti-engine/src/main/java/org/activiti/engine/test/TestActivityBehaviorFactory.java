@@ -24,6 +24,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.BusinessRuleTask;
 import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.CancelEventDefinition;
+import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.ErrorEventDefinition;
 import org.activiti.bpmn.model.EventGateway;
@@ -48,13 +49,14 @@ import org.activiti.bpmn.model.Transaction;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryCancelEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.BoundaryCompensateEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryMessageEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundarySignalEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryTimerEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.BusinessRuleTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.CancelBoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
@@ -87,7 +89,6 @@ import org.activiti.engine.impl.bpmn.behavior.TransactionActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.WebServiceActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
-import org.activiti.engine.impl.bpmn.parser.CompensateEventDefinition;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.bpmn.parser.factory.AbstractBehaviorFactory;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
@@ -275,8 +276,8 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   }
 
   @Override
-  public SubProcessActivityBehavior createSubprocActivityBehavior(SubProcess subProcess) {
-    return wrappedActivityBehaviorFactory.createSubprocActivityBehavior(subProcess);
+  public SubProcessActivityBehavior createSubprocessActivityBehavior(SubProcess subProcess) {
+    return wrappedActivityBehaviorFactory.createSubprocessActivityBehavior(subProcess);
   }
 
   @Override
@@ -354,8 +355,8 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   }
 
   @Override
-  public CancelBoundaryEventActivityBehavior createCancelBoundaryEventActivityBehavior(CancelEventDefinition cancelEventDefinition) {
-    return wrappedActivityBehaviorFactory.createCancelBoundaryEventActivityBehavior(cancelEventDefinition);
+  public BoundaryCancelEventActivityBehavior createBoundaryCancelEventActivityBehavior(CancelEventDefinition cancelEventDefinition) {
+    return wrappedActivityBehaviorFactory.createBoundaryCancelEventActivityBehavior(cancelEventDefinition);
   }
 
   @Override
@@ -372,6 +373,12 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   public BoundaryMessageEventActivityBehavior createBoundaryMessageEventActivityBehavior(BoundaryEvent boundaryEvent, MessageEventDefinition messageEventDefinition, boolean interrupting) {
     return wrappedActivityBehaviorFactory.createBoundaryMessageEventActivityBehavior(boundaryEvent, messageEventDefinition, interrupting);
   }
+  
+  @Override
+  public BoundaryCompensateEventActivityBehavior createBoundaryCompensateEventActivityBehavior(BoundaryEvent boundaryEvent, CompensateEventDefinition compensateEventDefinition, boolean interrupting) {
+    return wrappedActivityBehaviorFactory.createBoundaryCompensateEventActivityBehavior(boundaryEvent, compensateEventDefinition, interrupting);
+  }
+  
 
   // Mock support //////////////////////////////////////////////////////
 

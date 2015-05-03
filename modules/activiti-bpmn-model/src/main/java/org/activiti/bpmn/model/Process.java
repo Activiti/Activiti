@@ -95,8 +95,7 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
   }
 
   /**
-   * @param searchRecurive
-   *          : searches the whole process, including subprocesses
+   * @param searchRecurive: searches the whole process, including subprocesses
    */
   public FlowElement getFlowElement(String flowElementId, boolean searchRecurive) {
     if (searchRecurive) {
@@ -118,6 +117,25 @@ public class Process extends BaseElement implements FlowElementsContainer, HasEx
       }
     }
     return null;
+  }
+  
+  public List<Association> findAssociationsWithSourceRefRecursive(FlowElementsContainer flowElementsContainer, String sourceRef) {
+    List<Association> associations = new ArrayList<Association>();
+    for (Artifact artifact : flowElementsContainer.getArtifacts()) {
+      if (artifact instanceof Association) {
+        Association association = (Association) artifact;
+        if (association.getSourceRef() != null && association.getTargetRef() != null && association.getSourceRef().equals(sourceRef)) {
+          associations.add(association);
+        }
+      }
+    }
+    
+    for (FlowElement flowElement : flowElementsContainer.getFlowElements()) {
+      if (flowElement instanceof FlowElementsContainer) {
+        associations.addAll(findAssociationsWithSourceRefRecursive((FlowElementsContainer) flowElement, sourceRef));
+      }
+    }
+    return associations;
   }
 
   /**

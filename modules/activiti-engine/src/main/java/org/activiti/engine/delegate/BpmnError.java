@@ -25,7 +25,7 @@ import org.activiti.engine.impl.bpmn.parser.Error;
  * 
  * This class represents an actual instance of a BPMN Error, whereas {@link Error} represents an Error definition.
  * 
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class BpmnError extends ActivitiException {
 
@@ -39,7 +39,7 @@ public class BpmnError extends ActivitiException {
   }
 
   public BpmnError(String errorCode, String message) {
-    super(message + " (errorCode='" + errorCode + "')");
+    super(message);
     setErrorCode(errorCode);
   }
 
@@ -56,9 +56,4 @@ public class BpmnError extends ActivitiException {
   public String getErrorCode() {
     return errorCode;
   }
-
-  public String toString() {
-    return super.toString() + " (errorCode='" + errorCode + "')";
-  }
-
 }

@@ -50,7 +50,7 @@ public class AtomicOperationActivityExecute implements AtomicOperation {
             .getEventDispatcher()
             .dispatchEvent(
                 ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, execution.getActivity().getId(), (String) execution.getActivity().getProperty("name"), execution.getId(),
-                    execution.getProcessInstanceId(), execution.getProcessDefinitionId(), (String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName()));
+                    execution.getProcessInstanceId(), execution.getProcessDefinitionId(), (String) activity.getProperties().get("type")));
       }
 
       activityBehavior.execute(execution);

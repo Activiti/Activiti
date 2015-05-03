@@ -21,7 +21,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.process.ScopeImpl;
 
@@ -55,8 +54,7 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
             .getEventDispatcher()
             .dispatchEvent(
                 ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, execution.getActivity().getId(), (String) executionEntity.getActivity().getProperties().get("name"),
-                    execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), (String) executionEntity.getActivity().getProperties().get("type"), executionEntity
-                        .getActivity().getActivityBehavior().getClass().getCanonicalName()));
+                    execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), (String) executionEntity.getActivity().getProperties().get("type")));
       }
     }
 
@@ -77,46 +75,30 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
     } else if (execution.isScope()) {
 
       ActivityBehavior parentActivityBehavior = (parentActivity != null ? parentActivity.getActivityBehavior() : null);
-      if (parentActivityBehavior instanceof CompositeActivityBehavior) {
-        CompositeActivityBehavior compositeActivityBehavior = (CompositeActivityBehavior) parentActivity.getActivityBehavior();
-
-        if (activity.isScope() && activity.getOutgoingTransitions().isEmpty()) {
-          // there is no transition destroying the scope
-          InterpretableExecution parentScopeExecution = (InterpretableExecution) execution.getParent();
-          execution.destroy();
-          execution.remove();
-          parentScopeExecution.setActivity(parentActivity);
-          compositeActivityBehavior.lastExecutionEnded(parentScopeExecution);
+      // default destroy scope behavior
+      InterpretableExecution parentScopeExecution = (InterpretableExecution) execution.getParent();
+      execution.destroy();
+      execution.remove();
+      // if we are a scope under the process instance
+      // and have no outgoing transitions: end the process instance
+      // here
+      if (activity.getParent() == activity.getProcessDefinition()) {
+        parentScopeExecution.setActivity(activity);
+        if (activity.getOutgoingTransitions().isEmpty()) {
+          // we call end() because it sets isEnded on the
+          // execution
+          parentScopeExecution.end();
         } else {
-          execution.setActivity(parentActivity);
-          compositeActivityBehavior.lastExecutionEnded(execution);
+          // dispatch process completed event
+          if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
+          }
+
+          parentScopeExecution.performOperation(PROCESS_END);
         }
       } else {
-        // default destroy scope behavior
-        InterpretableExecution parentScopeExecution = (InterpretableExecution) execution.getParent();
-        execution.destroy();
-        execution.remove();
-        // if we are a scope under the process instance
-        // and have no outgoing transitions: end the process instance
-        // here
-        if (activity.getParent() == activity.getProcessDefinition()) {
-          parentScopeExecution.setActivity(activity);
-          if (activity.getOutgoingTransitions().isEmpty()) {
-            // we call end() because it sets isEnded on the
-            // execution
-            parentScopeExecution.end();
-          } else {
-            // dispatch process completed event
-            if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-              Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
-            }
-
-            parentScopeExecution.performOperation(PROCESS_END);
-          }
-        } else {
-          parentScopeExecution.setActivity(parentActivity);
-          parentScopeExecution.performOperation(ACTIVITY_END);
-        }
+        parentScopeExecution.setActivity(parentActivity);
+        parentScopeExecution.performOperation(ACTIVITY_END);
       }
 
     } else { // execution.isConcurrent() && !execution.isScope()

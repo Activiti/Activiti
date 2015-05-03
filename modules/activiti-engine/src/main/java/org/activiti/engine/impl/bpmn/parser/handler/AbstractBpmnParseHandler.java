@@ -56,10 +56,6 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
 
   private static final Logger logger = LoggerFactory.getLogger(AbstractBpmnParseHandler.class);
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(AbstractBpmnParseHandler.class);
-
-  public static final String PROPERTYNAME_IS_FOR_COMPENSATION = "isForCompensation";
-
   public static final String PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION = "eventDefinitions";
 
   public static final String PROPERTYNAME_ERROR_EVENT_DEFINITIONS = "errorEventDefinitions";
@@ -91,8 +87,8 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
   }
 
   public ActivityImpl createActivityOnScope(BpmnParse bpmnParse, FlowElement flowElement, String xmlLocalName, ScopeImpl scopeElement) {
-    if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Parsing activity {}", flowElement.getId());
+    if (logger.isDebugEnabled()) {
+      logger.debug("Parsing activity {}", flowElement.getId());
     }
 
     ActivityImpl activity = scopeElement.createActivity(flowElement.getId());
@@ -103,9 +99,7 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
     if (flowElement instanceof Activity) {
       Activity modelActivity = (Activity) flowElement;
       activity.setProperty("default", modelActivity.getDefaultFlow());
-      if (modelActivity.isForCompensation()) {
-        activity.setProperty(PROPERTYNAME_IS_FOR_COMPENSATION, true);
-      }
+      
     } else if (flowElement instanceof Gateway) {
       activity.setProperty("default", ((Gateway) flowElement).getDefaultFlow());
     }

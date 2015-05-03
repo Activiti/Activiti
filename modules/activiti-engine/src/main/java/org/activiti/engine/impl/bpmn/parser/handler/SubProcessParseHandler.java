@@ -27,7 +27,7 @@ public class SubProcessParseHandler extends AbstractActivityBpmnParseHandler<Sub
 
   protected void executeParse(BpmnParse bpmnParse, SubProcess subProcess) {
 
-    subProcess.setBehavior(bpmnParse.getActivityBehaviorFactory().createSubprocActivityBehavior(subProcess));
+    subProcess.setBehavior(bpmnParse.getActivityBehaviorFactory().createSubprocessActivityBehavior(subProcess));
 
     bpmnParse.processFlowElements(subProcess.getFlowElements());
     processArtifacts(bpmnParse, subProcess.getArtifacts());

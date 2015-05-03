@@ -26,7 +26,6 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -115,14 +114,7 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     ExecutionEntity subProcessInitialExecution = subProcessInstance.createExecution();
     subProcessInitialExecution.setCurrentFlowElement(initialFlowElement);
 
-    try {
-      Context.getAgenda().planContinueProcessOperation(subProcessInitialExecution);
-    } catch (Exception e) {
-      if (!ErrorPropagation.mapException(e, subProcessInitialExecution, mapExceptions, true)) {
-        throw new ActivitiException("Error executing call activity", e);
-      }
-    }
-
+    Context.getAgenda().planContinueProcessOperation(subProcessInitialExecution);
   }
 
   public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {

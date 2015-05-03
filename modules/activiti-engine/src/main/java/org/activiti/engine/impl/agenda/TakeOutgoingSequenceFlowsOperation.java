@@ -1,9 +1,12 @@
 package org.activiti.engine.impl.agenda;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CancelEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
@@ -43,10 +46,31 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       execution.setCurrentFlowElement(currentFlowElement);
     }
 
-    // If execution is a scope (and not the process instance), the scope
-    // must first be destroyed before we can continue
+    // If execution is a scope (and not the process instance), the scope must first be destroyed before we can continue
     if (execution.getParentId() != null && execution.isScope()) {
       agenda.planDestroyScopeOperation(execution);
+    
+    } else if (currentFlowElement instanceof Activity) {
+      Activity activity = (Activity) currentFlowElement;
+      if (CollectionUtils.isNotEmpty(activity.getBoundaryEvents())) {
+        
+        List<String> notToDeleteEvents = new ArrayList<String>();
+        for (BoundaryEvent event : activity.getBoundaryEvents()) {
+          if (CollectionUtils.isNotEmpty(event.getEventDefinitions()) && 
+              event.getEventDefinitions().get(0) instanceof CancelEventDefinition) {
+            
+            notToDeleteEvents.add(event.getId());
+          }
+        }
+        
+        // Delete all child executions
+        Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(execution.getId());
+        for (ExecutionEntity childExcecution : childExecutions) {
+          if (childExcecution.getCurrentFlowElement() == null || notToDeleteEvents.contains(childExcecution.getCurrentFlowElement().getId()) == false) {
+            commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(childExcecution);
+          }
+        }
+      }
     }
     
     // Execution listener for end: the flow node is now ended

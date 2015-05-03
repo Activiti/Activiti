@@ -21,11 +21,7 @@
 			<sequenceFlow sourceRef="fork" targetRef="bookHotel" />
 			<sequenceFlow sourceRef="fork" targetRef="bookFlight" />
 
-			<serviceTask id="bookHotel" activiti:expression="${true}">
-				<multiInstanceLoopCharacteristics isSequential="true">
-				  <loopCardinality>5</loopCardinality>
-				</multiInstanceLoopCharacteristics>
-			</serviceTask>		
+			<serviceTask id="bookHotel" activiti:expression="${true}"/>	
 				
 			<serviceTask id="bookFlight" activiti:expression="${true}"/>
 

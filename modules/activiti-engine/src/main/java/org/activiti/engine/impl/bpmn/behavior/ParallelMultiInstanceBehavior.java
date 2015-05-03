@@ -28,6 +28,7 @@ import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior {
 

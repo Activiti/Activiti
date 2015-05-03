@@ -58,7 +58,6 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     return (ExecutionEntity) getDbSqlSession().selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
   }
 
-  @SuppressWarnings("unchecked")
   public List<ExecutionEntity> findChildExecutionsByParentExecutionId(final String parentExecutionId) {
     return getList("selectExecutionsByParentExecutionId", parentExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override

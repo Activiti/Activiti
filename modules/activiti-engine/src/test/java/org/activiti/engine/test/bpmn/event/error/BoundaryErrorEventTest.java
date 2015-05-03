@@ -73,8 +73,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
     assertEquals("Inner subprocess task 1", tasks.get(0).getName());
     assertEquals("Inner subprocess task 2", tasks.get(1).getName());
 
-    // Completing task 2, will cause the end error event to throw error with
-    // code 123
+    // Completing task 2, will cause the end error event to throw error with code 123
     taskService.complete(tasks.get(1).getId());
     taskService.createTaskQuery().list();
     Task taskAfterError = taskService.createTaskQuery().singleResult();
@@ -378,7 +377,7 @@ public class BoundaryErrorEventTest extends PluggableActivitiTestCase {
       fail("The script throws error event with errorCode 'errorUncaught', but no catching boundary event was defined. An exception is expected which did not occur");
       assertProcessEnded(procId);
     } catch (BpmnError e) {
-      assertTextPresent("No catching boundary event found for error with errorCode 'errorUncaught', neither in same process nor in parent process (errorCode='errorUncaught')", e.getMessage());
+      assertTextPresent("No catching boundary event found for error with errorCode 'errorUncaught', neither in same process nor in parent process", e.getMessage());
     }
   }
 

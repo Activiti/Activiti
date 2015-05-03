@@ -17,7 +17,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
  * @author Joram Barrez
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 

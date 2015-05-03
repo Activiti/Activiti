@@ -27,14 +27,11 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
-import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
@@ -53,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * @author Joram Barrez
  * @author Falko Menge
  */
-public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior implements CompositeActivityBehavior, SubProcessActivityBehavior {
+public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior implements SubProcessActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
@@ -112,7 +109,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
   // required for supporting embedded subprocesses
   public void lastExecutionEnded(ActivityExecution execution) {
-    ScopeUtil.createEventScopeExecution((ExecutionEntity) execution);
+    //ScopeUtil.createEventScopeExecution((ExecutionEntity) execution);
     leave(execution);
   }
 

@@ -17,18 +17,12 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHandler<CompensateEventDefinition> {
-
-  private static final Logger logger = LoggerFactory.getLogger(CompensateEventDefinitionParseHandler.class);
 
   public Class<? extends BaseElement> getHandledType() {
     return CompensateEventDefinition.class;
@@ -36,30 +30,15 @@ public class CompensateEventDefinitionParseHandler extends AbstractBpmnParseHand
 
   protected void executeParse(BpmnParse bpmnParse, CompensateEventDefinition eventDefinition) {
 
-    ScopeImpl scope = bpmnParse.getCurrentScope();
-    if (StringUtils.isNotEmpty(eventDefinition.getActivityRef())) {
-      if (scope.findActivity(eventDefinition.getActivityRef()) == null) {
-        logger.warn("Invalid attribute value for 'activityRef': no activity with id '" + eventDefinition.getActivityRef() + "' in current scope " + scope.getId());
-      }
-    }
-
-    org.activiti.engine.impl.bpmn.parser.CompensateEventDefinition compensateEventDefinition = new org.activiti.engine.impl.bpmn.parser.CompensateEventDefinition();
-    compensateEventDefinition.setActivityRef(eventDefinition.getActivityRef());
-    compensateEventDefinition.setWaitForCompletion(eventDefinition.isWaitForCompletion());
-
-    ActivityImpl activity = bpmnParse.getCurrentActivity();
     if (bpmnParse.getCurrentFlowElement() instanceof ThrowEvent) {
-
-      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowCompensationEventActivityBehavior((ThrowEvent) bpmnParse.getCurrentFlowElement(),
-          compensateEventDefinition));
+      ThrowEvent throwEvent = (ThrowEvent) bpmnParse.getCurrentFlowElement();
+      throwEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowCompensationEventActivityBehavior(
+          throwEvent, eventDefinition));
 
     } else if (bpmnParse.getCurrentFlowElement() instanceof BoundaryEvent) {
-
       BoundaryEvent boundaryEvent = (BoundaryEvent) bpmnParse.getCurrentFlowElement();
-      boolean interrupting = boundaryEvent.isCancelActivity();
-
-      activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryEventActivityBehavior(boundaryEvent, interrupting));
-      activity.setProperty("type", "compensationBoundaryCatch");
+      boundaryEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createBoundaryCompensateEventActivityBehavior(boundaryEvent, 
+          eventDefinition, boundaryEvent.isCancelActivity()));
 
     } else {
 

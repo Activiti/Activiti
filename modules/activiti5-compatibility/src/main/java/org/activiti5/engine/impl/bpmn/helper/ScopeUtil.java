@@ -76,19 +76,14 @@ public class ScopeUtil {
 
       while (execution != null) {
         currentActivity = execution.getActivity();
-        if (scopeActivity.getActivities().contains(currentActivity) /*
-                                                                     * does not search rec
-                                                                     */
+        if (scopeActivity.getActivities().contains(currentActivity) // does not search rec
             || scopeActivity.equals(currentActivity)) {
+          
           // found a candidate execution; lets still check whether we
-          // find an
-          // execution which is also sitting in an activity part of
-          // this scope
-          // higher up the hierarchy
+          // find an execution which is also sitting in an activity part of this scope higher up the hierarchy
           candiadateExecution = execution;
-        } else if (currentActivity != null && currentActivity.contains((ActivityImpl) scopeActivity) /*
-                                                                                                      * searches rec
-                                                                                                      */) {
+          
+        } else if (currentActivity != null && currentActivity.contains((ActivityImpl) scopeActivity)) {
           // now we're too "high", the candidate execution is the one.
           break;
         }
@@ -125,11 +120,8 @@ public class ScopeUtil {
     // first spawn the compensating executions
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       ExecutionEntity compensatingExecution = null;
-      // check whether compensating execution is already created
-      // (which is the case when compensating an embedded subprocess,
-      // where the compensating execution is created when leaving the
-      // subprocess
-      // and holds snapshot data).
+      // check whether compensating execution is already created (which is the case when compensating an embedded subprocess,
+      // where the compensating execution is created when leaving the subprocess and holds snapshot data).
       if (eventSubscription.getConfiguration() != null) {
         compensatingExecution = Context.getCommandContext().getExecutionEntityManager().findExecutionById(eventSubscription.getConfiguration());
         // move the compensating execution under this execution:
@@ -142,8 +134,7 @@ public class ScopeUtil {
       compensatingExecution.setConcurrent(true);
     }
 
-    // signal compensation events in reverse order of their 'created'
-    // timestamp
+    // signal compensation events in reverse order of their 'created' timestamp
     Collections.sort(eventSubscriptions, new Comparator<EventSubscriptionEntity>() {
       public int compare(EventSubscriptionEntity o1, EventSubscriptionEntity o2) {
         return o2.getCreated().compareTo(o1.getCreated());
@@ -179,8 +170,7 @@ public class ScopeUtil {
       execution.setConcurrent(false);
 
       // copy local variables to eventScopeExecution by value. This way,
-      // the eventScopeExecution references a 'snapshot' of the local
-      // variables
+      // the eventScopeExecution references a 'snapshot' of the local variables
       Map<String, Object> variables = execution.getVariablesLocal();
       for (Entry<String, Object> variable : variables.entrySet()) {
         eventScopeExecution.setVariableLocal(variable.getKey(), variable.getValue());

@@ -27,8 +27,6 @@ import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.event.EventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
 
 /**
  * @author Joram Barrez
@@ -53,7 +51,6 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
 
   // runtime state /////////////////////////////
   protected ExecutionEntity execution;
-  protected ActivityImpl activity;
 
   // ///////////////////////////////////////////
 
@@ -154,24 +151,6 @@ public abstract class EventSubscriptionEntity implements PersistentObject, HasRe
     if (execution != null) {
       this.executionId = execution.getId();
       this.processInstanceId = execution.getProcessInstanceId();
-    }
-  }
-
-  public ActivityImpl getActivity() {
-    if (activity == null && activityId != null) {
-      ExecutionEntity execution = getExecution();
-      if (execution != null) {
-        ProcessDefinitionImpl processDefinition = execution.getProcessDefinition();
-        activity = processDefinition.findActivity(activityId);
-      }
-    }
-    return activity;
-  }
-
-  public void setActivity(ActivityImpl activity) {
-    this.activity = activity;
-    if (activity != null) {
-      this.activityId = activity.getId();
     }
   }
 

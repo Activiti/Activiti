@@ -13,14 +13,7 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
-import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
-import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.PvmScope;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 /**
  * Denotes an 'activity' in the sense of BPMN 2.0: a parent class for all tasks, subprocess and callActivity.
@@ -38,33 +31,11 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
    * has loop characteristics, and delegate to the behavior if this is the case.
    */
   public void leave(ActivityExecution execution) {
-    if (hasCompensationHandler(execution)) {
-      createCompensateEventSubscription(execution);
-    }
     if (!hasLoopCharacteristics()) {
       super.leave(execution);
     } else if (hasMultiInstanceCharacteristics()) {
       multiInstanceActivityBehavior.leave(execution);
     }
-  }
-
-  protected boolean hasCompensationHandler(ActivityExecution execution) {
-    return false;
-    // return
-    // execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_COMPENSATION_HANDLER_ID)
-    // != null;
-  }
-
-  protected void createCompensateEventSubscription(ActivityExecution execution) {
-    String compensationHandlerId = (String) execution.getActivity().getProperty(BpmnParse.PROPERTYNAME_COMPENSATION_HANDLER_ID);
-
-    ExecutionEntity executionEntity = (ExecutionEntity) execution;
-    ActivityImpl compensationHandlder = executionEntity.getProcessDefinition().findActivity(compensationHandlerId);
-    PvmScope scopeActivitiy = compensationHandlder.getParent();
-    ExecutionEntity scopeExecution = ScopeUtil.findScopeExecutionForScope(executionEntity, scopeActivitiy);
-
-    CompensateEventSubscriptionEntity compensateEventSubscriptionEntity = CompensateEventSubscriptionEntity.createAndInsert(scopeExecution);
-    compensateEventSubscriptionEntity.setActivity(compensationHandlder);
   }
 
   protected boolean hasLoopCharacteristics() {
@@ -81,33 +52,6 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
 
   public void setMultiInstanceActivityBehavior(MultiInstanceActivityBehavior multiInstanceActivityBehavior) {
     this.multiInstanceActivityBehavior = multiInstanceActivityBehavior;
-  }
-
-  @Override
-  public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
-    if ("compensationDone".equals(triggerName)) {
-      signalCompensationDone(execution, triggerData);
-    } else {
-      super.trigger(execution, triggerName, triggerData);
-    }
-  }
-
-  protected void signalCompensationDone(ActivityExecution execution, Object signalData) {
-    // default behavior is to join compensating executions and propagate the
-    // signal if all executions
-    // have compensated
-
-    // join compensating executions
-    if (execution.getExecutions().isEmpty()) {
-      if (execution.getParent() != null) {
-        ActivityExecution parent = execution.getParent();
-        ((InterpretableExecution) execution).remove();
-        ((InterpretableExecution) parent).signal("compensationDone", signalData);
-      }
-    } else {
-      ((ExecutionEntity) execution).forceUpdate();
-    }
-
   }
 
 }

@@ -25,7 +25,6 @@ import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.CompositeActivityBehavior;
 import org.apache.commons.collections.CollectionUtils;
 
 /**
@@ -33,7 +32,7 @@ import org.apache.commons.collections.CollectionUtils;
  * 
  * @author Joram Barrez
  */
-public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior implements CompositeActivityBehavior {
+public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
@@ -70,18 +69,6 @@ public class SubProcessActivityBehavior extends AbstractBpmnActivityBehavior imp
     ExecutionEntity startSubProcessExecution = ((ExecutionEntity) execution).createExecution();
     startSubProcessExecution.setCurrentFlowElement(startElement);
     Context.getAgenda().planContinueProcessOperation(startSubProcessExecution);
-  }
-
-  public void lastExecutionEnded(ActivityExecution execution) {
-    SubProcess subProcess = getSubProcessFromExecution(execution);
-
-    // remove the template-defined data object variables
-    Map<String, Object> dataObjectVars = processDataObjects(subProcess.getDataObjects());
-    if (dataObjectVars != null) {
-      execution.removeVariablesLocal(dataObjectVars.keySet());
-    }
-
-    bpmnActivityBehavior.performDefaultOutgoingBehavior(execution);
   }
 
   protected SubProcess getSubProcessFromExecution(ActivityExecution execution) {

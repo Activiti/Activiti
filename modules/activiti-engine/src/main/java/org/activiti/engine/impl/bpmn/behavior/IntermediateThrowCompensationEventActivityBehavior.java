@@ -15,18 +15,20 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.bpmn.parser.CompensateEventDefinition;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 /**
- * @author Daniel Meyer
+ * @author Tijs Rademakers
  */
 public class IntermediateThrowCompensationEventActivityBehavior extends FlowNodeActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   protected final CompensateEventDefinition compensateEventDefinition;
 
   public IntermediateThrowCompensationEventActivityBehavior(CompensateEventDefinition compensateEventDefinition) {

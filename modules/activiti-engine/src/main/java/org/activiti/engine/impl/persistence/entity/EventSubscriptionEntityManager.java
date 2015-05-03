@@ -35,6 +35,7 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
 
   /** keep track of subscriptions created in the current command */
   protected List<SignalEventSubscriptionEntity> createdSignalSubscriptions = new ArrayList<SignalEventSubscriptionEntity>();
+  protected List<CompensateEventSubscriptionEntity> createdCompensateSubscriptions = new ArrayList<CompensateEventSubscriptionEntity>();
 
   public SignalEventSubscriptionEntity insertSignalEvent(SignalEventDefinition signalEventDefinition, Signal signal, ExecutionEntity execution) {
     SignalEventSubscriptionEntity subscriptionEntity = new SignalEventSubscriptionEntity();
@@ -72,6 +73,35 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     insert(subscriptionEntity);
     execution.getEventSubscriptionsInternal().add(subscriptionEntity);
     return subscriptionEntity;
+  }
+  
+  public CompensateEventSubscriptionEntity insertCompensationEvent(ExecutionEntity execution, String activityId) {
+    CompensateEventSubscriptionEntity eventSubscription = new CompensateEventSubscriptionEntity();
+    eventSubscription.setExecution(execution);
+    eventSubscription.setActivityId(activityId);
+    if (execution.getTenantId() != null) {
+      eventSubscription.setTenantId(execution.getTenantId());
+    }
+    insert(eventSubscription);
+    createdCompensateSubscriptions.add(eventSubscription);
+    return eventSubscription;
+  }
+  
+  public List<CompensateEventSubscriptionEntity> getCompensateEventSubscriptions(String executionId) {
+    return getCompensateEventSubscriptions(executionId, null);
+  }
+
+  public List<CompensateEventSubscriptionEntity> getCompensateEventSubscriptions(String executionId, String activityId) {
+    List<EventSubscriptionEntity> eventSubscriptions = findEventSubscriptionsByExecutionAndType(executionId, "compensate");
+    List<CompensateEventSubscriptionEntity> result = new ArrayList<CompensateEventSubscriptionEntity>();
+    for (EventSubscriptionEntity eventSubscriptionEntity : eventSubscriptions) {
+      if (eventSubscriptionEntity instanceof CompensateEventSubscriptionEntity) {
+        if (activityId == null || activityId.equals(eventSubscriptionEntity.getActivityId())) {
+          result.add((CompensateEventSubscriptionEntity) eventSubscriptionEntity);
+        }
+      }
+    }
+    return result;
   }
 
   public void deleteEventSubscription(EventSubscriptionEntity persistentObject) {
@@ -168,26 +198,46 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     // add events created in this command (not visible yet in query)
     for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
       if (executionId.equals(entity.getExecutionId()) && name.equals(entity.getEventName())) {
-        selectList.add((SignalEventSubscriptionEntity) entity);
+        selectList.add(entity);
       }
     }
 
     return new ArrayList<SignalEventSubscriptionEntity>(selectList);
   }
 
+  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByExecutionAndType(String executionId, String type) {
     final String query = "selectEventSubscriptionsByExecutionAndType";
     Map<String, String> params = new HashMap<String, String>();
     params.put("executionId", executionId);
     params.put("eventType", type);
-    return getDbSqlSession().selectList(query, params);
+    Set<EventSubscriptionEntity> selectList = new HashSet<EventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
+    
+    // add events created in this command (not visible yet in query)
+    if ("signal".equals(type)) {
+      for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
+        if (executionId.equals(entity.getExecutionId())) {
+          selectList.add(entity);
+        }
+      }
+    } else if ("compensate".equals(type)) {
+      for (CompensateEventSubscriptionEntity entity : createdCompensateSubscriptions) {
+        if (executionId.equals(entity.getExecutionId())) {
+          selectList.add(entity);
+        }
+      }
+    }
+
+    return new ArrayList<EventSubscriptionEntity>(selectList);
   }
 
+  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(String executionId) {
     final String query = "selectEventSubscriptionsByExecution";
     return getDbSqlSession().selectList(query, executionId);
   }
 
+  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptions(String executionId, String type, String activityId) {
     final String query = "selectEventSubscriptionsByExecutionTypeAndActivity";
     Map<String, String> params = new HashMap<String, String>();
@@ -197,6 +247,7 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     return getDbSqlSession().selectList(query, params);
   }
 
+  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration(String type, String configuration, String tenantId) {
     final String query = "selectEventSubscriptionsByConfiguration";
     Map<String, String> params = new HashMap<String, String>();
@@ -208,6 +259,7 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     return getDbSqlSession().selectList(query, params);
   }
 
+  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByName(String type, String eventName, String tenantId) {
     final String query = "selectEventSubscriptionsByName";
     Map<String, String> params = new HashMap<String, String>();
@@ -219,6 +271,7 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     return getDbSqlSession().selectList(query, params);
   }
 
+  @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByNameAndExecution(String type, String eventName, String executionId) {
     final String query = "selectEventSubscriptionsByNameAndExecution";
     Map<String, String> params = new HashMap<String, String>();

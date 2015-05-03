@@ -13,42 +13,106 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.Collection;
+
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CancelEventDefinition;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
- * @author Daniel Meyer
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
+  
+  private static final long serialVersionUID = 1L;
 
   @Override
   public void execute(ActivityExecution execution) {
 
+    ExecutionEntity executionEntity = (ExecutionEntity) execution;
+    CommandContext commandContext = Context.getCommandContext();
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    
     // find cancel boundary event:
-    ActivityImpl cancelBoundaryEvent = ScopeUtil.findInParentScopesByBehaviorType((ActivityImpl) execution.getActivity(), CancelBoundaryEventActivityBehavior.class);
-
+    ExecutionEntity parentScopeExecution = null;
+    ExecutionEntity currentlyExaminedExecution = executionEntityManager.findExecutionById(executionEntity.getParentId());
+    while (currentlyExaminedExecution != null && parentScopeExecution == null) {
+      if (currentlyExaminedExecution.getCurrentFlowElement() instanceof SubProcess) {
+        parentScopeExecution = currentlyExaminedExecution;
+      } else {
+        currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
+      }
+    }
+    
+    if (parentScopeExecution == null) {
+      throw new ActivitiException("No sub process execution found for cancel end event " + executionEntity.getCurrentActivityId());
+    }
+    
+    SubProcess subProcess = (SubProcess) parentScopeExecution.getCurrentFlowElement();
+    BoundaryEvent cancelBoundaryEvent = null;
+    if (CollectionUtils.isNotEmpty(subProcess.getBoundaryEvents())) {
+      for (BoundaryEvent boundaryEvent : subProcess.getBoundaryEvents()) {
+        if (CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
+            boundaryEvent.getEventDefinitions().get(0) instanceof CancelEventDefinition) {
+          
+          cancelBoundaryEvent = boundaryEvent;
+          break;
+        }
+      }
+    }
+    
     if (cancelBoundaryEvent == null) {
-      throw new ActivitiException("Could not find cancel boundary event for cancel end event " + execution.getActivity());
+      throw new ActivitiException("Could not find cancel boundary event for cancel end event " + executionEntity.getCurrentActivityId());
     }
 
-    ActivityExecution scopeExecution = ScopeUtil.findScopeExecutionForScope((ExecutionEntity) execution, cancelBoundaryEvent.getParentActivity());
+    ExecutionEntity newParentScopeExecution = null;
+    currentlyExaminedExecution = executionEntityManager.findExecutionById(parentScopeExecution.getParentId());
+    while (currentlyExaminedExecution != null && newParentScopeExecution == null) {
+      if (currentlyExaminedExecution.isScope()) {
+        newParentScopeExecution = currentlyExaminedExecution;
+      } else {
+        currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
+      }
+    }
 
-    // end all executions and process instances in the scope of the
-    // transaction
-    scopeExecution.destroyScope("cancel end event fired");
+    if (newParentScopeExecution == null) {
+      throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event " + cancelBoundaryEvent.getId());
+    }
+    
+    ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentScopeExecution, newParentScopeExecution);
+    
+    // set new parent for boundary event execution
+    executionEntity.setParent(newParentScopeExecution);
+    executionEntity.setCurrentFlowElement(cancelBoundaryEvent);
+    
+    // end all executions and process instances in the scope of the transaction
+    deleteChildExecutions(parentScopeExecution, executionEntity, commandContext);
 
-    // the scope execution executes the boundary event
-    InterpretableExecution outgoingExecution = (InterpretableExecution) scopeExecution;
-    outgoingExecution.setActivity(cancelBoundaryEvent);
-    outgoingExecution.setActive(true);
+    commandContext.getAgenda().planTriggerExecutionOperation(executionEntity);
+  }
+  
+  protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution, CommandContext commandContext) {
+    // Delete all child executions
+    ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
+    if (CollectionUtils.isNotEmpty(childExecutions)) {
+      for (ExecutionEntity childExcecution : childExecutions) {
+        if (childExcecution.getId().equals(notToDeleteExecution.getId()) == false) {
+          deleteChildExecutions(childExcecution, notToDeleteExecution, commandContext);
+        }
+      }
+    }
 
-    // execute the boundary
-    cancelBoundaryEvent.getActivityBehavior().execute(outgoingExecution);
+    executionEntityManager.deleteDataRelatedToExecution(parentExecution);
+    commandContext.getExecutionEntityManager().delete(parentExecution);
   }
 
 }

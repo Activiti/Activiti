@@ -38,11 +38,13 @@ public class ProcessInstanceUtil {
   
   public static ProcessInstance createProcessInstance(ProcessDefinitionEntity processDefinition, 
       String businessKey, String processInstanceName, Map<String, Object> variables) {
+    
     return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, false);
   }
   
   public static ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
       String businessKey, String processInstanceName, Map<String, Object> variables) {
+    
     return createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables, true);
   }
   

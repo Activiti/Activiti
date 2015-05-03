@@ -15,20 +15,22 @@ package org.activiti.engine.impl.event;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
 /**
- * @author Daniel Meyer
+ * @author Tijs Rademakers
  */
 public class CompensationEventHandler implements EventHandler {
 
@@ -47,32 +49,31 @@ public class CompensationEventHandler implements EventHandler {
 
     ExecutionEntity compensatingExecution = commandContext.getExecutionEntityManager().findExecutionById(configuration);
 
-    ActivityImpl compensationHandler = eventSubscription.getActivity();
+    String processDefinitionId = compensatingExecution.getProcessDefinitionId();
+    Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
+    if (process == null) {
+      throw new ActivitiException("Cannot start process instance. Process model (id = " + processDefinitionId + ") could not be found");
+    }
+    
+    FlowElement flowElement = process.getFlowElement(eventSubscription.getActivityId(), true);
 
-    if ((compensationHandler.getProperty(BpmnParse.PROPERTYNAME_IS_FOR_COMPENSATION) == null || !(Boolean) compensationHandler.getProperty(BpmnParse.PROPERTYNAME_IS_FOR_COMPENSATION))
-        && compensationHandler.isScope()) {
+    if (flowElement instanceof SubProcess && ((SubProcess) flowElement).isForCompensation() == false) {
 
       // descend into scope:
-      List<CompensateEventSubscriptionEntity> eventsForThisScope = compensatingExecution.getCompensateEventSubscriptions();
+      List<CompensateEventSubscriptionEntity> eventsForThisScope = commandContext.getEventSubscriptionEntityManager().getCompensateEventSubscriptions(compensatingExecution.getId());
       ScopeUtil.throwCompensationEvent(eventsForThisScope, compensatingExecution, false);
 
     } else {
+      
       try {
 
         if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-          commandContext
-              .getProcessEngineConfiguration()
-              .getEventDispatcher()
-              .dispatchEvent(
-                  ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPENSATE, compensationHandler.getId(), (String) compensationHandler.getProperty("name"),
-                      compensatingExecution.getId(), compensatingExecution.getProcessInstanceId(), compensatingExecution.getProcessDefinitionId(), (String) compensatingExecution.getActivity()
-                          .getProperties().get("type"), compensatingExecution.getActivity().getActivityBehavior().getClass().getCanonicalName()));
+          commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPENSATE, flowElement.getId(), flowElement.getName(),
+                    compensatingExecution.getId(), compensatingExecution.getProcessInstanceId(), compensatingExecution.getProcessDefinitionId(), flowElement.getClass().getCanonicalName()));
         }
-        compensatingExecution.setActivity(compensationHandler);
-
-        // executing the atomic operation makes sure activity start
-        // events are fired
-        compensatingExecution.performOperation(AtomicOperation.ACTIVITY_START);
+        compensatingExecution.setCurrentFlowElement(flowElement);
+        Context.getAgenda().planContinueProcessOperation(compensatingExecution);
 
       } catch (Exception e) {
         throw new ActivitiException("Error while handling compensation event " + eventSubscription, e);

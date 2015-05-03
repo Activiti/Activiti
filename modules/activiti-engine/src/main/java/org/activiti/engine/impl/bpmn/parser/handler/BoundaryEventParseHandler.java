@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<BoundaryEvent> {
 
@@ -54,8 +55,7 @@ public class BoundaryEventParseHandler extends AbstractFlowNodeBpmnParseHandler<
       bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
 
     } else {
-      // Should already be picked up by process validator on deploy, so
-      // this is just to be sure
+      // Should already be picked up by process validator on deploy, so this is just to be sure
       logger.warn("Unsupported boundary event type for boundary event " + boundaryEvent.getId());
     }
 

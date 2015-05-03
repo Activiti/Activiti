@@ -31,18 +31,15 @@ public class ThrowCustomExceptionDelegate implements JavaDelegate {
     String exceptionClassName = exceptionClassVar.toString();
 
     if (StringUtils.isNotEmpty(exceptionClassName)) {
-      ActivitiException exception = null;
+      RuntimeException exception = null;
       try {
         Class<?> clazz = Class.forName(exceptionClassName);
-        exception = (ActivitiException) clazz.newInstance();
+        exception = (RuntimeException) clazz.newInstance();
 
       } catch (Exception e) {
         throw new ActivitiException("Class not found", e);
       }
       throw exception;
-
     }
-
   }
-
 }

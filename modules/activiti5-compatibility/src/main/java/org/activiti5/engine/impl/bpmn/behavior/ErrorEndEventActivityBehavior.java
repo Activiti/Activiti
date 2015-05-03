@@ -17,10 +17,12 @@ import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
  * @author Joram Barrez
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class ErrorEndEventActivityBehavior extends FlowNodeActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String errorCode;
 
   public ErrorEndEventActivityBehavior(String errorCode) {
