@@ -109,8 +109,6 @@ public interface ActivityBehaviorFactory {
 
   public abstract NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent);
 
-  public abstract EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent, String activityId);
-
   public abstract TaskActivityBehavior createTaskActivityBehavior(Task task);
 
   public abstract ManualTaskActivityBehavior createManualTaskActivityBehavior(ManualTask manualTask);
@@ -162,6 +160,8 @@ public interface ActivityBehaviorFactory {
   public abstract ParallelMultiInstanceBehavior createParallelMultiInstanceBehavior(Activity activity, AbstractBpmnActivityBehavior innerActivityBehavior);
 
   public abstract SubProcessActivityBehavior createSubprocessActivityBehavior(SubProcess subProcess);
+  
+  public abstract EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent);
 
   public abstract CallActivityBehavior createCallActivityBehavior(CallActivity callActivity);
 

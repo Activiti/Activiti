@@ -7,6 +7,7 @@ import java.util.List;
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CancelEventDefinition;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
@@ -25,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
 
@@ -134,7 +136,31 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
     if (outgoingSequenceFlow.size() == 0) {
       if (flowNode.getOutgoingFlows() == null || flowNode.getOutgoingFlows().size() == 0) {
         logger.info("No outgoing sequence flow found for flow node '{}'.", flowNode.getId());
-        agenda.planEndExecutionOperation(execution);
+        
+        if (flowNode.getSubProcess() != null && flowNode.getSubProcess() instanceof EventSubProcess) {
+          
+          ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+          executionEntityManager.deleteChildExecutions((ExecutionEntity) execution);
+          executionEntityManager.deleteExecutionAndRelatedData((ExecutionEntity) execution);
+          
+          // event sub process nested in sub process
+          if (flowNode.getSubProcess().getSubProcess() != null) {
+            executionEntityManager.deleteChildExecutions((ExecutionEntity) execution.getParent());
+            executionEntityManager.deleteExecutionAndRelatedData((ExecutionEntity) execution.getParent());
+            ActivityExecution parentExecution = execution.getParent().getParent();
+            parentExecution.setCurrentFlowElement(flowNode.getSubProcess().getSubProcess());
+            agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution);
+          
+          // event sub process on process root level
+          } else {
+            executionEntityManager.deleteChildExecutions((ExecutionEntity) execution.getParent());
+            agenda.planEndExecutionOperation(execution.getParent());
+          }
+          
+        } else {
+          agenda.planEndExecutionOperation(execution);
+        }
+        
         return;
       } else {
         throw new ActivitiException("No outgoing sequence flow of element '" + flowNode.getId() + "' could be selected for continuing the process");

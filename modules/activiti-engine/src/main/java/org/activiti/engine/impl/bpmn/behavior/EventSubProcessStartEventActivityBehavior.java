@@ -10,62 +10,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Collections;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.activiti.bpmn.model.EventSubProcess;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.ValuedDataObject;
+import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 
 /**
- * Specialization of the Start Event for Event Sub-Processes.
+ * Implementation of the BPMN 2.0 event subprocess start event.
  * 
- * Assumes that we enter with the "right" execution, which is the top-most execution for the current scope
- * 
- * @author Daniel Meyer
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
-public class EventSubProcessStartEventActivityBehavior extends NoneStartEventActivityBehavior {
+public class EventSubProcessStartEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
-  // default = true
-  protected boolean isInterrupting = true;
-  protected String activityId;
+  private static final long serialVersionUID = 1L;
 
-  public EventSubProcessStartEventActivityBehavior(String activityId) {
-    this.activityId = activityId;
-  }
-
-  @Override
   public void execute(ActivityExecution execution) {
+    StartEvent startEvent = (StartEvent) execution.getCurrentFlowElement();
+    EventSubProcess eventSubProcess = (EventSubProcess) startEvent.getSubProcess();
 
-    InterpretableExecution interpretableExecution = (InterpretableExecution) execution;
-    ActivityImpl activity = interpretableExecution.getProcessDefinition().findActivity(activityId);
+    execution.setScope(true);
 
-    ActivityExecution outgoingExecution = execution;
-
-    if (isInterrupting) {
-      execution.destroyScope("Event subprocess triggered using activity " + activityId);
-    } else {
-      outgoingExecution = execution.createExecution();
-      outgoingExecution.setActive(true);
-      outgoingExecution.setScope(false);
-      outgoingExecution.setConcurrent(true);
+    // initialize the template-defined data objects as variables
+    Map<String, Object> dataObjectVars = processDataObjects(eventSubProcess.getDataObjects());
+    if (dataObjectVars != null) {
+      execution.setVariablesLocal(dataObjectVars);
     }
 
-    // set the outgoing execution to this activity
-    ((InterpretableExecution) outgoingExecution).setActivity(activity);
-
-    // continue execution
-    outgoingExecution.takeAll(activity.getOutgoingTransitions(), Collections.EMPTY_LIST);
+    ExecutionEntity startSubProcessExecution = ((ExecutionEntity) execution).createExecution();
+    startSubProcessExecution.setCurrentFlowElement(startEvent);
+    Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(startSubProcessExecution);
   }
 
-  public void setInterrupting(boolean b) {
-    isInterrupting = b;
+  protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
+    Map<String, Object> variablesMap = new HashMap<String, Object>();
+    // convert data objects to process variables
+    if (dataObjects != null) {
+      for (ValuedDataObject dataObject : dataObjects) {
+        variablesMap.put(dataObject.getName(), dataObject.getValue());
+      }
+    }
+    return variablesMap;
   }
-
-  public boolean isInterrupting() {
-    return isInterrupting;
-  }
-
 }

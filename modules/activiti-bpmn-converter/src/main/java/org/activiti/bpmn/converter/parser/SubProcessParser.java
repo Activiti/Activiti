@@ -70,7 +70,9 @@ public class SubProcessParser implements BpmnXMLConstants {
     }
 
     if (activeSubProcessList.size() > 1) {
-      activeSubProcessList.get(activeSubProcessList.size() - 2).addFlowElement(subProcess);
+      SubProcess parentSubProcess = activeSubProcessList.get(activeSubProcessList.size() - 2);
+      parentSubProcess.addFlowElement(subProcess);
+      subProcess.setSubProcess(parentSubProcess);
 
     } else {
       activeProcess.addFlowElement(subProcess);

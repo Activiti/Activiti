@@ -13,18 +13,16 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
+ * @author Tijs Rademakers
  */
 public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<StartEvent> {
-
-  private static Logger logger = LoggerFactory.getLogger(StartEventParseHandler.class);
 
   // public static final String PROPERTYNAME_INITIATOR_VARIABLE_NAME = "initiatorVariableName";
   // public static final String PROPERTYNAME_INITIAL = "initial";
@@ -40,9 +38,13 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
       element.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
     }
 
-    if (element.getSubProcess() == null && (CollectionUtils.isEmpty(element.getEventDefinitions()) || bpmnParse.getCurrentProcess().getInitialFlowElement() == null)) {
+    if (element.getSubProcess() == null && (CollectionUtils.isEmpty(element.getEventDefinitions()) || 
+        bpmnParse.getCurrentProcess().getInitialFlowElement() == null)) {
 
       bpmnParse.getCurrentProcess().setInitialFlowElement(element);
+    
+    } else if (element.getSubProcess() != null && element.getSubProcess() instanceof EventSubProcess) {
+      element.setBehavior(bpmnParse.getActivityBehaviorFactory().createEventSubProcessStartEventActivityBehavior(element));
     }
   }
 

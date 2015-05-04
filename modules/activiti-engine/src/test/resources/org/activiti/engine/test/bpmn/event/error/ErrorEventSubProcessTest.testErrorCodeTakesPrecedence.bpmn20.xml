@@ -11,43 +11,42 @@
 		<startEvent id="theStart" />
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="subprocess" />
 		
-			<!-- this boundary event is not executed as the eventSubProcess takes precedence  -->
-	 <boundaryEvent id="catchErrorBoundary" attachedToRef="subprocess">
-      <errorEventDefinition />
-    </boundaryEvent>
+		<!-- this boundary event is not executed as the eventSubProcess takes precedence  -->
+	 	<boundaryEvent id="catchErrorBoundary" attachedToRef="subprocess">
+      		<errorEventDefinition />
+    	</boundaryEvent>
 
-    <subProcess id="subprocess">
-      <startEvent id="subprocessStart" />
-      <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="subprocessEnd" />
-      <endEvent id="subprocessEnd">
-        <errorEventDefinition errorRef="myError" />
-      </endEvent>
+    	<subProcess id="subprocess">
+      		<startEvent id="subprocessStart" />
+		   	<sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="subprocessEnd" />
+		  	<endEvent id="subprocessEnd">
+		   		<errorEventDefinition errorRef="myError" />
+		   	</endEvent>
       
-      <subProcess id="eventSubProcess" triggeredByEvent="true">
+      		<subProcess id="eventSubProcess" triggeredByEvent="true">
             
-		    <startEvent id="catchError">
-		      <errorEventDefinition /> <!-- no errorCode: catch any error -->
-		    </startEvent>
-		    <sequenceFlow id="flow2" sourceRef="catchError" targetRef="taskAfterErrorCatch" />
-		    <userTask id="taskAfterErrorCatch" name="Escalated Task" />
+		    	<startEvent id="catchError">
+		      		<errorEventDefinition /> <!-- no errorCode: catch any error -->
+		    	</startEvent>
+		    	<sequenceFlow id="flow2" sourceRef="catchError" targetRef="taskAfterErrorCatch" />
+		    	<userTask id="taskAfterErrorCatch" name="Escalated Task" />
 		    
-      </subProcess>
+		   	</subProcess>
       
-       <subProcess id="eventSubProcess2" triggeredByEvent="true">
+       		<subProcess id="eventSubProcess2" triggeredByEvent="true">
             
-		    <startEvent id="catchError2">
-		      <errorEventDefinition errorRef="myError" /> <!-- if myError is thrown: this one takes precedence -->
-		    </startEvent>
-		    <sequenceFlow id="flow22" sourceRef="catchError2" targetRef="taskAfterErrorCatch2" />
-		    <userTask id="taskAfterErrorCatch2" name="Escalated Task" />
+		    	<startEvent id="catchError2">
+		      		<errorEventDefinition errorRef="myError" /> <!-- if myError is thrown: this one takes precedence -->
+		    	</startEvent>
+		    	<sequenceFlow id="flow22" sourceRef="catchError2" targetRef="taskAfterErrorCatch2" />
+		    	<userTask id="taskAfterErrorCatch2" name="Escalated Task" />
 		    
-      </subProcess>
+      		</subProcess>
 
-    </subProcess>
+    	</subProcess>
     
-    
-    <sequenceFlow id="flow3" sourceRef="subprocess" targetRef="theEnd" />
-    <sequenceFlow id="flow4" sourceRef="catchErrorBoundary" targetRef="theEnd" />
+    	<sequenceFlow id="flow3" sourceRef="subprocess" targetRef="theEnd" />
+    	<sequenceFlow id="flow4" sourceRef="catchErrorBoundary" targetRef="theEnd" />
 		
 		<endEvent id="theEnd" />
 

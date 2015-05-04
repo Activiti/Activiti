@@ -134,11 +134,6 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   }
 
   @Override
-  public EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent, String activityId) {
-    return wrappedActivityBehaviorFactory.createEventSubProcessStartEventActivityBehavior(startEvent, activityId);
-  }
-
-  @Override
   public TaskActivityBehavior createTaskActivityBehavior(Task task) {
     return wrappedActivityBehaviorFactory.createTaskActivityBehavior(task);
   }
@@ -278,6 +273,11 @@ public class TestActivityBehaviorFactory extends AbstractBehaviorFactory impleme
   @Override
   public SubProcessActivityBehavior createSubprocessActivityBehavior(SubProcess subProcess) {
     return wrappedActivityBehaviorFactory.createSubprocessActivityBehavior(subProcess);
+  }
+  
+  @Override
+  public EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent) {
+    return wrappedActivityBehaviorFactory.createEventSubProcessStartEventActivityBehavior(startEvent);
   }
 
   @Override

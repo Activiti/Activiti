@@ -108,10 +108,6 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     return new NoneStartEventActivityBehavior();
   }
 
-  public EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent, String activityId) {
-    return new EventSubProcessStartEventActivityBehavior(activityId);
-  }
-
   // Task
 
   public TaskActivityBehavior createTaskActivityBehavior(Task task) {
@@ -333,6 +329,10 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
 
   public SubProcessActivityBehavior createSubprocessActivityBehavior(SubProcess subProcess) {
     return new SubProcessActivityBehavior();
+  }
+  
+  public EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent) {
+    return new EventSubProcessStartEventActivityBehavior();
   }
 
   // Call activity
