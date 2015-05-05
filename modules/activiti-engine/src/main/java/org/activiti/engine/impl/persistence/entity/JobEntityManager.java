@@ -107,11 +107,13 @@ public class JobEntityManager extends AbstractManager {
   protected void hintJobExecutor(JobEntity job) {  
     JobExecutor jobExecutor = Context.getProcessEngineConfiguration().getJobExecutor();
 
-    // notify job executor:      
-    TransactionListener transactionListener = new JobAddedNotification(jobExecutor);
-    Context.getCommandContext()
-      .getTransactionContext()
-      .addTransactionListener(TransactionState.COMMITTED, transactionListener);
+    // notify job executor:
+    if (jobExecutor != null) {
+      TransactionListener transactionListener = new JobAddedNotification(jobExecutor);
+      Context.getCommandContext()
+              .getTransactionContext()
+              .addTransactionListener(TransactionState.COMMITTED, transactionListener);
+    }
   }
 
   public void cancelTimers(ExecutionEntity execution) {

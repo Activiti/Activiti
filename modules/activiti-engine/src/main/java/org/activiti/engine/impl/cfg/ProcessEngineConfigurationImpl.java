@@ -1159,7 +1159,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // job executor /////////////////////////////////////////////////////////////
   
   protected void initJobExecutor() {
-    if (isAsyncExecutorEnabled() == false) {
+    if (isAsyncExecutorEnabled() == false && isJobExecutorActivate()) {
       if (jobExecutor == null) {
         jobExecutor = new DefaultJobExecutor();
       }
