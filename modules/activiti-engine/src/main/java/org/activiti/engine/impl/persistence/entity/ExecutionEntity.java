@@ -1250,7 +1250,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (isProcessInstanceType()) {
       return "ProcessInstance[" + getToStringIdentity() + "]";
     } else {
-      return (isConcurrent ? "Concurrent" : "") + (isScope ? "Scope" : "") + "Execution[" + getToStringIdentity() + "]";
+      return (isScope ? "Scope" : "") + "Execution[ id '" + getToStringIdentity() + "'"
+                + (activityId != null ? " - activity '" + activityId + "'" : "") 
+                + (parentId != null ? " - parent '" + parentId + "'" : "") + "] ";
     }
   }
 

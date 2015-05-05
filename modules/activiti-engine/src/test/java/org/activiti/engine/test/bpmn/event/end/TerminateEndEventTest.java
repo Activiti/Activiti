@@ -205,10 +205,8 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());
 
-		long executionEntities2 = runtimeService.createExecutionQuery().count();
-		assertEquals(10, executionEntities2);
-
 		List<Task> tasks = taskService.createTaskQuery().list();
+		assertEquals(3, tasks.size()); // The service task delegate should have set the 'terminate' variable 3 times out of the 5 subprocess runs
 		for (Task t : tasks) {
 			taskService.complete(t.getId());
 		}
@@ -296,10 +294,6 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 	        "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminate.bpmn" })
 	public void testTerminateInCallActivityConcurrent() throws Exception {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
-
-		// should terminate the called process and continue the parent
-		long executionEntities = runtimeService.createExecutionQuery().count();
-		assertEquals(1, executionEntities);
 
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());

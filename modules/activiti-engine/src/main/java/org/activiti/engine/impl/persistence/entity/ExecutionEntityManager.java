@@ -13,14 +13,13 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,6 +35,7 @@ import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.impl.util.tree.ExecutionTree;
+import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
 import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -344,19 +344,29 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     // The children of an execution for a tree. For correct deletions
     // (taking care of foreign keys between child-parent)
     // the leafs of this tree must be deleted first before the parents elements.
+    
+//    // Gather all children
+//    List<ExecutionEntity> childExecutionEntities = new ArrayList<ExecutionEntity>();
+//    LinkedList<ExecutionEntity> uncheckedExecutions = new LinkedList<ExecutionEntity>(executionEntity.getExecutions());
+//    while (!uncheckedExecutions.isEmpty()) {
+//      ExecutionEntity currentExecutionentity = uncheckedExecutions.pop();
+//      childExecutionEntities.add(currentExecutionentity);
+//      uncheckedExecutions.addAll(currentExecutionentity.getExecutions());
+//     }
+//    // Delete them (reverse order : leafs of the tree first)
+//    for (int i = childExecutionEntities.size() - 1; i >= 0; i--) {
+//     ExecutionEntity childExecutionEntity = childExecutionEntities.get(i);
 
-    // Gather all children
-    List<ExecutionEntity> childExecutionEntities = new ArrayList<ExecutionEntity>();
-    LinkedList<ExecutionEntity> uncheckedExecutions = new LinkedList<ExecutionEntity>(executionEntity.getExecutions());
-    while (!uncheckedExecutions.isEmpty()) {
-      ExecutionEntity currentExecutionentity = uncheckedExecutions.pop();
-      childExecutionEntities.add(currentExecutionentity);
-      uncheckedExecutions.addAll(currentExecutionentity.getExecutions());
+    ExecutionTree executionTree = findExecutionTree(executionEntity.getRootProcessInstanceId());
+    ExecutionTreeNode executionTreeNode = executionTree.getTreeNode(executionEntity.getId());
+    
+    if (executionTreeNode == null) {
+      return;
     }
-
-    // Delete them (reverse order : leafs of the tree first)
-    for (int i = childExecutionEntities.size() - 1; i >= 0; i--) {
-      ExecutionEntity childExecutionEntity = childExecutionEntities.get(i);
+    
+    Iterator<ExecutionTreeNode> iterator = executionTreeNode.leafsFirstIterator();
+    while (iterator.hasNext()) {
+      ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
       if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
         deleteExecutionAndRelatedData(childExecutionEntity, deleteReason);
       }

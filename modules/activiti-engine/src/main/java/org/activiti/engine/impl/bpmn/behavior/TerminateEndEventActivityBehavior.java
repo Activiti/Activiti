@@ -72,7 +72,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 				// Call activity needs special handling: the call activity is destroyed, but the main process continues
 				if (scopeExecutionEntity.getSuperExecutionId() != null) {
 				  
-				  executionEntityManager.deleteChildExecutions(scopeTreeNode.getExecutionEntity());
+				  executionEntityManager.deleteChildExecutions(scopeExecutionEntity);
 				  executionEntityManager.deleteExecutionAndRelatedData(scopeExecutionEntity);
 					ExecutionEntity superExecutionEntity = 
 							executionEntityManager.findExecutionById(scopeExecutionEntity.getSuperExecutionId());
