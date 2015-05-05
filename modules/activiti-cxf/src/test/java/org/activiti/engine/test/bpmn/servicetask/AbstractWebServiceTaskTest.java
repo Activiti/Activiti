@@ -13,8 +13,8 @@
 package org.activiti.engine.test.bpmn.servicetask;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
-import org.activiti.engine.impl.webservice.Counter;
-import org.activiti.engine.impl.webservice.CounterImpl;
+import org.activiti.engine.impl.webservice.WebServiceMock;
+import org.activiti.engine.impl.webservice.WebServiceMockImpl;
 import org.apache.cxf.endpoint.Server;
 import org.apache.cxf.interceptor.LoggingInInterceptor;
 import org.apache.cxf.interceptor.LoggingOutInterceptor;
@@ -26,18 +26,18 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
 public abstract class AbstractWebServiceTaskTest extends
 		PluggableActivitiTestCase {
 
-	protected Counter counter;
+    protected WebServiceMock webServiceMock;
 	private Server server;
 
 	@Override
 	protected void initializeProcessEngine() {
 		super.initializeProcessEngine();
 
-		counter = new CounterImpl();
+        webServiceMock = new WebServiceMockImpl();
 		JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
-		svrFactory.setServiceClass(Counter.class);
-		svrFactory.setAddress("http://localhost:63081/counter");
-		svrFactory.setServiceBean(counter);
+		svrFactory.setServiceClass(WebServiceMock.class);
+        svrFactory.setAddress("http://localhost:63081/webservicemock");
+        svrFactory.setServiceBean(webServiceMock);
 		svrFactory.getInInterceptors().add(new LoggingInInterceptor());
 		svrFactory.getOutInterceptors().add(new LoggingOutInterceptor());
 		server = svrFactory.create();

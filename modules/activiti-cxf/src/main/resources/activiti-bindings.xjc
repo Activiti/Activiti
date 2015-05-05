@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<jaxb:bindings
+   xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+   xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+   xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd" version="2.1">
+   <jaxb:globalBindings>
+      <!-- 
+           Use java.util.Date instead of javax.xml.datatype.XMLGregorianCalendar for xsd:date, xsd:dateTime, 
+           because Activiti engine uses java.util.Date to store dates/times and JaxB generated XMLGregorianCalendar by default.
+      -->
+      <jaxb:javaType name="java.util.Date" xmlType="xsd:time"
+         parseMethod="org.activiti.engine.impl.webservice.DatatypeConverter.parseTime" printMethod="org.activiti.engine.impl.webservice.DatatypeConverter.printTime" />
+      <jaxb:javaType name="java.util.Date" xmlType="xsd:date"
+         parseMethod="org.activiti.engine.impl.webservice.DatatypeConverter.parseDate" printMethod="org.activiti.engine.impl.webservice.DatatypeConverter.printDate" />
+      <jaxb:javaType name="java.util.Date" xmlType="xsd:dateTime"
+         parseMethod="org.activiti.engine.impl.webservice.DatatypeConverter.parseDateTime" printMethod="org.activiti.engine.impl.webservice.DatatypeConverter.printDateTime" />
+   </jaxb:globalBindings>
+</jaxb:bindings>

@@ -13,7 +13,7 @@
   -->
 
   <import importType="http://schemas.xmlsoap.org/wsdl/"
-          location="http://localhost:63081/counter?wsdl"
+          location="http://localhost:63081/webservicemock?wsdl"
           namespace="http://webservice.activiti.org/" />
           
   <process id="asyncWebServiceInvocationWithSimplisticDataFlow">

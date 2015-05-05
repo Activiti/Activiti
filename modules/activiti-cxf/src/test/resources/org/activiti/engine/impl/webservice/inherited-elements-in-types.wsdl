@@ -1,10 +1,10 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<wsdl:definitions name="InheritedElement" targetNamespace="http://webservice.activiti.org/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
-   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.activiti.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+<wsdl:definitions name="InheritedElement" targetNamespace="http://webservice.activiti.org/counter" xmlns:ns1="http://schemas.xmlsoap.org/soap/http"
+   xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://webservice.activiti.org/counter" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
    <wsdl:types>
-      <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://webservice.activiti.org/"
-         xmlns:tns="http://webservice.activiti.org/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://webservice.activiti.org/counter"
+         xmlns:tns="http://webservice.activiti.org/counter" xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
          <xsd:complexType name="rootAbstractRequestType">
             <xsd:sequence>

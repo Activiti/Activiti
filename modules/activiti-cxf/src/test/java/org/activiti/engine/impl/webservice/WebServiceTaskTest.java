@@ -12,6 +12,11 @@
  */
 package org.activiti.engine.impl.webservice;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
@@ -27,18 +32,18 @@ import org.apache.cxf.jaxws.JaxWsServerFactoryBean;
  */
 public class WebServiceTaskTest extends PluggableActivitiTestCase {
 
-    private Counter counter;
+    private WebServiceMock webServiceMock;
     private Server server;
 
     @Override
     protected void initializeProcessEngine() {
         super.initializeProcessEngine();
 
-        counter = new CounterImpl();
+        webServiceMock = new WebServiceMockImpl();
         JaxWsServerFactoryBean svrFactory = new JaxWsServerFactoryBean();
-        svrFactory.setServiceClass(Counter.class);
-        svrFactory.setAddress("http://localhost:63081/counter");
-        svrFactory.setServiceBean(counter);
+        svrFactory.setServiceClass(WebServiceMock.class);
+        svrFactory.setAddress("http://localhost:63081/webservicemock");
+        svrFactory.setServiceBean(webServiceMock);
         svrFactory.getInInterceptors().add(new LoggingInInterceptor());
         svrFactory.getOutInterceptors().add(new LoggingOutInterceptor());
         server = svrFactory.create();
@@ -54,12 +59,28 @@ public class WebServiceTaskTest extends PluggableActivitiTestCase {
     @Deployment
     public void testWebServiceInvocation() throws Exception {
 
-        assertEquals(-1, counter.getCount());
+        assertEquals(-1, webServiceMock.getCount());
 
         ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("webServiceInvocation");
         waitForJobExecutorToProcessAllJobs(10000L, 250L);
 
-        assertEquals(0, counter.getCount());
+        assertEquals(0, webServiceMock.getCount());
+        assertTrue(processInstance.isEnded());
+    }
+
+    @Deployment
+    public void testWebServiceInvocationDataStructure() throws Exception {
+
+        final Calendar calendar = Calendar.getInstance();
+        calendar.set(2015, Calendar.APRIL, 23, 0, 0, 0);
+        final Date expectedDate = calendar.getTime();
+        final Map<String, Object> variables = new HashMap<String, Object>(1);
+        variables.put("startDate", expectedDate);
+        ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("webServiceInvocationDataStructure",
+                variables);
+        waitForJobExecutorToProcessAllJobs(10000L, 250L);
+
+        assertEquals(expectedDate, webServiceMock.getDataStructure().eltDate);
         assertTrue(processInstance.isEnded());
     }
 
