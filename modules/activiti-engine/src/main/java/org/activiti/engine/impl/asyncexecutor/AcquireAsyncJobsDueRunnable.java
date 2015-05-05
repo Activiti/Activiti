@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.cmd.AcquireAsyncJobsDueCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +50,11 @@ public class AcquireAsyncJobsDueRunnable implements Runnable {
       
       try {
         AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireAsyncJobsDueCmd(asyncExecutor));
-        
+
+        for (JobEntity job : acquiredJobs.getJobs()) {
+          asyncExecutor.executeAsyncJob(job);
+        }
+
         // if all jobs were executed
         millisToWait = asyncExecutor.getDefaultAsyncJobAcquireWaitTimeInMillis();
         int jobsAcquired = acquiredJobs.size();
