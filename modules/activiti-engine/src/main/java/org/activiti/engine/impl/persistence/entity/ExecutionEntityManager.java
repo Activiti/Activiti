@@ -345,18 +345,6 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     // (taking care of foreign keys between child-parent)
     // the leafs of this tree must be deleted first before the parents elements.
     
-//    // Gather all children
-//    List<ExecutionEntity> childExecutionEntities = new ArrayList<ExecutionEntity>();
-//    LinkedList<ExecutionEntity> uncheckedExecutions = new LinkedList<ExecutionEntity>(executionEntity.getExecutions());
-//    while (!uncheckedExecutions.isEmpty()) {
-//      ExecutionEntity currentExecutionentity = uncheckedExecutions.pop();
-//      childExecutionEntities.add(currentExecutionentity);
-//      uncheckedExecutions.addAll(currentExecutionentity.getExecutions());
-//     }
-//    // Delete them (reverse order : leafs of the tree first)
-//    for (int i = childExecutionEntities.size() - 1; i >= 0; i--) {
-//     ExecutionEntity childExecutionEntity = childExecutionEntities.get(i);
-
     ExecutionTree executionTree = findExecutionTree(executionEntity.getRootProcessInstanceId());
     ExecutionTreeNode executionTreeNode = executionTree.getTreeNode(executionEntity.getId());
     

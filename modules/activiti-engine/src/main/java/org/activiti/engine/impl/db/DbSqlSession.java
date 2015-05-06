@@ -59,6 +59,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.util.IoUtil;
@@ -370,6 +371,10 @@ public class DbSqlSession implements Session {
     public void setPersistentObjects(List<PersistentObject> persistentObjects) {
       this.persistentObjects = persistentObjects;
     }
+    
+    public void setPersistentObjectEntities(List<? extends PersistentObject> persistentObjects) {
+      this.persistentObjects = (List<PersistentObject>) persistentObjects;
+    }
 
     @Override
     public String toString() {
@@ -633,7 +638,7 @@ public class DbSqlSession implements Session {
    * Optimizes the given delete operations: for example, if there are two deletes for two different variables, merges this into one bulk delete which improves performance
    */
   protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
-
+    
     // No optimization possible for 0 or 1 operations
     if (!isOptimizeDeleteOperationsEnabled || deleteOperations.size() <= 1) {
       return deleteOperations;
@@ -696,7 +701,62 @@ public class DbSqlSession implements Session {
     }
     return optimizedDeleteOperations;
   }
-
+  
+  protected List<DeleteOperation> optimizeDeleteOperationsTRYOUT(List<DeleteOperation> deleteOperations) {
+    List<DeleteOperation> optimizedDeleteOperations = new ArrayList<DbSqlSession.DeleteOperation>(deleteOperations.size());
+    
+    int nrOfExecutionEntities = 0;
+    
+    for (int i = 0; i < deleteOperations.size(); i++) {
+      DeleteOperation deleteOperation = deleteOperations.get(i);
+      if (isCheckedExecutionEntityDelete(deleteOperation)) {
+        nrOfExecutionEntities++;
+      }
+    }
+    
+    List<ExecutionEntity> executionEntitiesToDelete = new ArrayList<ExecutionEntity>(nrOfExecutionEntities);
+    
+    for (DeleteOperation deleteOperation : deleteOperations) {
+      
+      if (isCheckedExecutionEntityDelete(deleteOperation) && nrOfExecutionEntities > 1) {
+        
+        // Check parent id / super execution id to know the order of deletions (children first)
+        ExecutionEntity executionEntity = (ExecutionEntity) ((CheckedDeleteOperation) deleteOperation).getPersistentObject();
+        int parentIndex = -1;
+        for (int deleteIndex = 0; deleteIndex < executionEntitiesToDelete.size(); deleteIndex++) {
+          ExecutionEntity executionEntityToDelete = executionEntitiesToDelete.get(deleteIndex);
+          if (executionEntityToDelete.getId().equals(executionEntity.getParentId()) || executionEntityToDelete.getId().equals(executionEntity.getSuperExecutionId())) {
+            parentIndex = deleteIndex;
+            break;
+          }
+        }
+        
+        if (parentIndex == -1) {
+          executionEntitiesToDelete.add(executionEntity);
+        } else {
+          executionEntitiesToDelete.add(parentIndex, executionEntity);
+        }
+        
+        // If all execution entities have been found, make a bulk delete out of it
+        if (executionEntitiesToDelete.size() == nrOfExecutionEntities) {
+          BulkCheckedDeleteOperation bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(ExecutionEntity.class);
+          bulkCheckedDeleteOperation.setPersistentObjectEntities(executionEntitiesToDelete);
+          optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
+        }
+        
+      } else {
+        optimizedDeleteOperations.add(deleteOperation);
+      }
+      
+    }
+    
+    return optimizedDeleteOperations;
+  }
+  
+  protected boolean isCheckedExecutionEntityDelete(DeleteOperation deleteOperation) {
+    return deleteOperation instanceof CheckedDeleteOperation && ((CheckedDeleteOperation) deleteOperation).getPersistentObject() instanceof ExecutionEntity;
+  }
+  
   protected void flushDeserializedObjects() {
     for (DeserializedObject deserializedObject : deserializedObjects) {
       deserializedObject.flush();
@@ -825,7 +885,12 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushRegularDeletes(boolean dispatchEvent) {
-    List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
+  
+    // TODO: Should we re-enable this?
+//    List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
+
+    List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperationsTRYOUT(deleteOperations);
+    
     for (DeleteOperation delete : optimizedDeleteOperations) {
       // for (DeleteOperation delete : deleteOperations) {
       log.debug("executing: {}", delete);

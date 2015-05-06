@@ -106,6 +106,13 @@
     delete from ${prefix}ACT_RU_EXECUTION where ID_ = #{id} and REV_ = #{revision}
   </delete>
   
+  <delete id="bulkDeleteExecution" parameterType="java.util.Collection">
+    delete from ${prefix}ACT_RU_EXECUTION where
+     <foreach item="execution" collection="list" index="index" separator=" or ">
+        ID_ = #{execution.id, jdbcType=VARCHAR}
+    </foreach>
+  </delete>
+  
   <!-- EXECUTION RESULTMAP -->
   
   <resultMap id="executionResultMap" type="org.activiti.engine.impl.persistence.entity.ExecutionEntity">
