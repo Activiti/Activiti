@@ -32,8 +32,15 @@ import org.activiti.engine.task.Task;
 
 /**
  * @author Tom Baeyens
+ * @author Joram Barrez
  */
 public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
+  
+  @Override
+  public void insert(TaskEntity entity, boolean fireCreateEvent) {
+    super.insert(entity, fireCreateEvent);
+    Context.getCommandContext().getHistoryManager().recordTaskId(entity);
+  }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public void deleteTasksByProcessInstanceId(String processInstanceId, String deleteReason, boolean cascade) {

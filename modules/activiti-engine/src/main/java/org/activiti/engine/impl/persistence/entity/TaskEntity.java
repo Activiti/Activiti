@@ -127,6 +127,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
     if (execution != null) {
       execution.addTask(this);
+      setExecutionId(execution.getId());
     }
 
     commandContext.getHistoryManager().recordTaskCreated(this, execution);
@@ -494,6 +495,10 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
 
       if (!StringUtils.equals(initialAssignee, assignee)) {
         fireEvent(TaskListener.EVENTNAME_ASSIGNMENT);
+        
+        // TODO: this was like this in v5. Not sure if this is the right place?
+        commandContext.getHistoryManager().recordTaskAssignment(this);
+        
         initialAssignee = assignee;
       }
 

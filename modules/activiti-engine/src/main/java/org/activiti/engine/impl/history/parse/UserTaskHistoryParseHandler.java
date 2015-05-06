@@ -23,6 +23,9 @@ import org.activiti.engine.impl.history.handler.UserTaskIdHandler;
 import org.activiti.engine.impl.task.TaskDefinition;
 
 /**
+ * 
+ * TODO: DELETE, not used anymore
+ * 
  * @author Joram Barrez
  */
 public class UserTaskHistoryParseHandler extends AbstractBpmnParseHandler<UserTask> {

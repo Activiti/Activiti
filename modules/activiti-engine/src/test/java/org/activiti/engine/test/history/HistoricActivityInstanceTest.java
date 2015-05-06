@@ -272,7 +272,8 @@ public class HistoricActivityInstanceTest extends PluggableActivitiTestCase {
 
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
 
-    runtimeService.signalEventReceived("alert", task.getExecutionId());
+    Execution signalExecution = runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").singleResult();
+    runtimeService.signalEventReceived("alert", signalExecution.getId());
     assertEquals(0L, runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
 
     historicActivityInstance = historyService.createHistoricActivityInstanceQuery().activityId("boundary").processInstanceId(processInstance.getId()).singleResult();

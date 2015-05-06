@@ -37,6 +37,10 @@ public class HistoricActivityInstanceEntity extends HistoricScopeInstanceEntity 
   protected String taskId;
   protected String calledProcessInstanceId;
   protected String tenantId = ProcessEngineConfiguration.NO_TENANT_ID;
+  
+  public HistoricActivityInstanceEntity() {
+    
+  }
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = (Map<String, Object>) new HashMap<String, Object>();

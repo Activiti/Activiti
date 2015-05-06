@@ -380,6 +380,8 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       HistoricTaskInstanceEntity historicTaskInstance = new HistoricTaskInstanceEntity(task, execution);
       getDbSqlSession().insert(historicTaskInstance);
     }
+    
+    recordTaskId(task);
   }
 
   /*

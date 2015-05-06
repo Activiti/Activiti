@@ -70,7 +70,8 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     // Fork
 
     // TODO: Verify if this is the correct place! Seems out of place here!
-    // Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
+    // Is needed to set the endTime for all historic activity joins
+    Context.getCommandContext().getHistoryManager().recordActivityEnd((ExecutionEntity) execution);
 
     if (nbrOfExecutionsCurrentlyJoined == nbrOfExecutionsToJoin) {
 

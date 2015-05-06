@@ -1115,7 +1115,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     parseHandlers.add(new FlowNodeHistoryParseHandler());
     // parseHandlers.add(new ProcessHistoryParseHandler());
     // parseHandlers.add(new StartEventHistoryParseHandler());
-    parseHandlers.add(new UserTaskHistoryParseHandler());
+//    parseHandlers.add(new UserTaskHistoryParseHandler());
     return parseHandlers;
   }
 
