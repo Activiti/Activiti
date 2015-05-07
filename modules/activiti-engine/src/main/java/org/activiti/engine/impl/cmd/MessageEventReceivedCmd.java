@@ -66,8 +66,8 @@ public class MessageEventReceivedCmd extends NeedsActiveExecutionCmd<Void> {
       throw new ActivitiIllegalArgumentException("messageName cannot be null");
     }
 
-    List<EventSubscriptionEntity> eventSubscriptions = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName,
-        executionId);
+    List<EventSubscriptionEntity> eventSubscriptions = commandContext.getEventSubscriptionEntityManager().
+        findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName, executionId);
 
     if (eventSubscriptions.isEmpty()) {
       throw new ActivitiException("Execution with id '" + executionId + "' does not have a subscription to a message event with name '" + messageName + "'");

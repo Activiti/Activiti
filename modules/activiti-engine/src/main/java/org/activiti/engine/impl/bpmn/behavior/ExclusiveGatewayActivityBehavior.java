@@ -17,7 +17,8 @@ import java.util.Iterator;
 import org.activiti.bpmn.model.ExclusiveGateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
-import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -52,6 +53,12 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     }
 
     ExclusiveGateway exclusiveGateway = (ExclusiveGateway) execution.getCurrentFlowElement();
+    
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, exclusiveGateway.getId(), exclusiveGateway.getName(), execution.getId(),
+              execution.getProcessInstanceId(), execution.getProcessDefinitionId(), parseActivityType(exclusiveGateway)));
+    }
 
     SequenceFlow outgoingSequenceFlow = null;
     SequenceFlow defaultSequenceFlow = null;

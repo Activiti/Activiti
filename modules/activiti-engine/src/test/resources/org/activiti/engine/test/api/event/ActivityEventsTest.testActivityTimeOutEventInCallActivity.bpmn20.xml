@@ -9,13 +9,13 @@
 		<startEvent id="theStart" />
 		<sequenceFlow id="flow1" sourceRef="theStart" targetRef="callActivity" />
 
-    <sequenceFlow id="flow3" sourceRef="callActivity" targetRef="theEnd" />
+    	<sequenceFlow id="flow3" sourceRef="callActivity" targetRef="theEnd" />
 
-    <callActivity id="callActivity" calledElement="subprocess"/>
+    	<callActivity id="callActivity" calledElement="subprocess"/>
 
 		<boundaryEvent id="boundaryTimer" cancelActivity="true" attachedToRef="callActivity">
 			<timerEventDefinition>
-			  <timeDuration>PT2H</timeDuration>
+			  	<timeDuration>PT2H</timeDuration>
 			</timerEventDefinition>
 		</boundaryEvent>
 		<sequenceFlow id="flow2" sourceRef="boundaryTimer" targetRef="taskAfterCatch" />
@@ -25,21 +25,21 @@
 
 	</process>
 
-  <process id="subprocess">
+  	<process id="subprocess">
 
     <startEvent id="subprocessStart"/>
     <sequenceFlow id="subFlow1" sourceRef="subprocessStart" targetRef="innerSubprocess"/>
 
     <subProcess id="innerSubprocess">
-      <startEvent id="innerSubprocessStart"/>
-      <sequenceFlow id="innerSubFlow1" sourceRef="innerSubprocessStart" targetRef="innerFork"/>
+      	<startEvent id="innerSubprocessStart"/>
+      	<sequenceFlow id="innerSubFlow1" sourceRef="innerSubprocessStart" targetRef="innerFork"/>
 
-      <parallelGateway id="innerFork"/>
-      <sequenceFlow id="innerSubFlow2" sourceRef="innerFork" targetRef="innerTask1"/>
-      <sequenceFlow id="innerSubFlow3" sourceRef="innerFork" targetRef="innerTask2"/>
+      	<parallelGateway id="innerFork"/>
+      	<sequenceFlow id="innerSubFlow2" sourceRef="innerFork" targetRef="innerTask1"/>
+      	<sequenceFlow id="innerSubFlow3" sourceRef="innerFork" targetRef="innerTask2"/>
 
-      <userTask id="innerTask1" name="Inner subprocess task 1"/>
-      <userTask id="innerTask2" name="Inner subprocess task 2"/>
+      	<userTask id="innerTask1" name="Inner subprocess task 1"/>
+      	<userTask id="innerTask2" name="Inner subprocess task 2"/>
 
     </subProcess>
 

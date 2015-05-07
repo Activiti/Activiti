@@ -32,8 +32,8 @@ public class TimerUtil {
    * 
    * Takes in an optional execution, if missing the {@link NoExecutionVariableScope} will be used (eg Timer start event)
    */
-  public static TimerEntity createTimerEntityForTimerEventDefinition(TimerEventDefinition timerEventDefinition, boolean isInterruptingTimer, ExecutionEntity executionEntity, String jobHandlerType,
-      String jobHandlerConfig) {
+  public static TimerEntity createTimerEntityForTimerEventDefinition(TimerEventDefinition timerEventDefinition, boolean isInterruptingTimer, 
+      ExecutionEntity executionEntity, String jobHandlerType, String jobHandlerConfig) {
 
     String businessCalendarRef = null;
     Expression expression = null;
@@ -100,12 +100,10 @@ public class TimerUtil {
     }
 
     if (StringUtils.isNotEmpty(timerEventDefinition.getTimeCycle())) {
-      // See ACT-1427: A boundary timer with a cancelActivity='true',
-      // doesn't need to repeat itself
+      // See ACT-1427: A boundary timer with a cancelActivity='true', doesn't need to repeat itself
       boolean repeat = !isInterruptingTimer;
 
-      // ACT-1951: intermediate catching timer events shouldn't repeat
-      // according to spec
+      // ACT-1951: intermediate catching timer events shouldn't repeat according to spec
       if (TimerCatchIntermediateEventJobHandler.TYPE.equals(jobHandlerType)) {
         repeat = false;
       }
