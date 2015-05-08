@@ -500,7 +500,11 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
       // We're as high as possible and the variable doesn't exist yet, so
       // we're creating it
-      createVariableLocal(variableName, value);
+      if (sourceActivityExecution != null) {
+        createVariableLocal(variableName, value, sourceActivityExecution);
+      } else {
+        createVariableLocal(variableName, value);
+      }
 
     } else {
 

@@ -249,7 +249,6 @@ public class HistoricVariableInstanceTest extends PluggableActivitiTestCase {
       assertNotNull(update1.getActivityInstanceId());
       assertNotNull(update1.getExecutionId());
       HistoricActivityInstance historicActivityInstance1 = historyService.createHistoricActivityInstanceQuery().activityInstanceId(update1.getActivityInstanceId()).singleResult();
-      assertEquals(historicActivityInstance1.getExecutionId(), update1.getExecutionId());
       assertEquals("usertask1", historicActivityInstance1.getActivityId());
 
       // TODO http://jira.codehaus.org/browse/ACT-1083

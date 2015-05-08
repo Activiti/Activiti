@@ -86,33 +86,44 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals("bytes", historicVariableUpdate.getVariableName());
     assertEquals(":-(", new String((byte[]) historicVariableUpdate.getValue()));
     assertEquals(0, historicVariableUpdate.getRevision());
-    assertEquals(historicStartEvent.getId(), historicVariableUpdate.getActivityInstanceId());
+    
+    // Activiti 6: we don't store the start event activityId anymore!
+//    assertEquals(historicStartEvent.getId(), historicVariableUpdate.getActivityInstanceId());
+    assertNull(historicVariableUpdate.getActivityInstanceId());
 
     // Variable is updated when process was in waitstate
     historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(1);
     assertEquals("bytes", historicVariableUpdate.getVariableName());
     assertEquals(":-)", new String((byte[]) historicVariableUpdate.getValue()));
     assertEquals(1, historicVariableUpdate.getRevision());
-    assertEquals(waitStateActivity.getId(), historicVariableUpdate.getActivityInstanceId());
+    
+//    assertEquals(waitStateActivity.getId(), historicVariableUpdate.getActivityInstanceId());
+    assertNull(historicVariableUpdate.getActivityInstanceId());
 
     historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(2);
     assertEquals("character", historicVariableUpdate.getVariableName());
     assertEquals("a", historicVariableUpdate.getValue());
     assertEquals(0, historicVariableUpdate.getRevision());
-    assertEquals(historicStartEvent.getId(), historicVariableUpdate.getActivityInstanceId());
+    
+//    assertEquals(historicStartEvent.getId(), historicVariableUpdate.getActivityInstanceId());
+    assertNull(historicVariableUpdate.getActivityInstanceId());
 
     historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(3);
     assertEquals("number", historicVariableUpdate.getVariableName());
     assertEquals("one", historicVariableUpdate.getValue());
     assertEquals(0, historicVariableUpdate.getRevision());
-    assertEquals(historicStartEvent.getId(), historicVariableUpdate.getActivityInstanceId());
+    
+//    assertEquals(historicStartEvent.getId(), historicVariableUpdate.getActivityInstanceId());
+    assertNull(historicVariableUpdate.getActivityInstanceId());
 
     // Variable is updated when process was in waitstate
     historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(4);
     assertEquals("number", historicVariableUpdate.getVariableName());
     assertEquals("two", historicVariableUpdate.getValue());
     assertEquals(1, historicVariableUpdate.getRevision());
-    assertEquals(waitStateActivity.getId(), historicVariableUpdate.getActivityInstanceId());
+    
+//    assertEquals(waitStateActivity.getId(), historicVariableUpdate.getActivityInstanceId());
+    assertNull(historicVariableUpdate.getActivityInstanceId());
 
     // Variable set from process-start execution listener
     historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(5);
@@ -128,8 +139,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals(0, historicVariableUpdate.getRevision());
     assertNull(historicVariableUpdate.getActivityInstanceId());
 
-    // Variable set from activity start execution listener on the
-    // servicetask
+    // Variable set from activity start execution listener on the servicetask
     historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(7);
     assertEquals("zVar3", historicVariableUpdate.getVariableName());
     assertEquals("Event: start", historicVariableUpdate.getValue());
@@ -151,7 +161,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals(serviceTaskActivity.getId(), historicVariableUpdate.getActivityInstanceId());
 
     // trigger receive task
-    runtimeService.signal(processInstance.getId());
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("waitState").singleResult().getId());
     assertProcessEnded(processInstance.getId());
 
     // check for historic process variables set
@@ -260,7 +270,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     Map<String, Object> variables = new HashMap<String, Object>();
     variables.put("process", "one");
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("receiveTask", variables);
-    runtimeService.signal(processInstance.getProcessInstanceId());
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("waitState").singleResult().getId());
 
     assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableName("process").count());
     assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("process", "one").count());
@@ -268,7 +278,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     Map<String, Object> variables2 = new HashMap<String, Object>();
     variables2.put("process", "two");
     ProcessInstance processInstance2 = runtimeService.startProcessInstanceByKey("receiveTask", variables2);
-    runtimeService.signal(processInstance2.getProcessInstanceId());
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("waitState").singleResult().getId());
 
     assertEquals(2, historyService.createHistoricVariableInstanceQuery().variableName("process").count());
     assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("process", "one").count());
@@ -282,7 +292,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     variables3.put("long", 1000l);
     variables3.put("double", 25.43d);
     ProcessInstance processInstance3 = runtimeService.startProcessInstanceByKey("receiveTask", variables3);
-    runtimeService.signal(processInstance3.getProcessInstanceId());
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("waitState").singleResult().getId());
 
     assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableName("long").count());
     assertEquals(1, historyService.createHistoricVariableInstanceQuery().variableValueEquals("long", 1000l).count());
@@ -1220,7 +1230,6 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertNotNull(update1.getActivityInstanceId());
     assertNotNull(update1.getExecutionId());
     HistoricActivityInstance historicActivityInstance1 = historyService.createHistoricActivityInstanceQuery().activityInstanceId(update1.getActivityInstanceId()).singleResult();
-    assertEquals(historicActivityInstance1.getExecutionId(), update1.getExecutionId());
     assertEquals("usertask1", historicActivityInstance1.getActivityId());
 
     assertNotNull(update2.getActivityInstanceId());
