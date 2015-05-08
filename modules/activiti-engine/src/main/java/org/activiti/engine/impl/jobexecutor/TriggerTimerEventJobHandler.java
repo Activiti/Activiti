@@ -12,6 +12,13 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import java.util.List;
+
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CallActivity;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -40,5 +47,57 @@ public class TriggerTimerEventJobHandler implements JobHandler {
     if (commandContext.getEventDispatcher().isEnabled()) {
       commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.TIMER_FIRED, job));
     }
+    
+    if (execution.getCurrentFlowElement() instanceof BoundaryEvent) {
+      dispatchExecutionTimeOut(job, execution, commandContext);
+    }
+  }
+  
+  protected void dispatchExecutionTimeOut(JobEntity timerEntity, ExecutionEntity execution, CommandContext commandContext) {
+    FlowElement currentElement = execution.getCurrentFlowElement();
+    if (currentElement instanceof BoundaryEvent) {
+      BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
+      if (boundaryEvent.isCancelActivity() && boundaryEvent.getAttachedToRef() != null) {
+
+        ExecutionEntity parentExecution = execution.getParent();
+        dispatchExecutionTimeOut(timerEntity, parentExecution, commandContext);
+      }
+    
+    } else {
+      
+      // subprocesses
+      if (execution.getCurrentFlowElement() instanceof SubProcess) {
+        for (ExecutionEntity subExecution : execution.getExecutions()) {
+          dispatchExecutionTimeOut(timerEntity, subExecution, commandContext);
+        }
+        
+      // call activities  
+      } else if (execution.getCurrentFlowElement() instanceof CallActivity) {
+        ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
+        if (subProcessInstance != null) {
+          List<ExecutionEntity> childExecutions = subProcessInstance.getExecutions();
+          for (ExecutionEntity subExecution : childExecutions) {
+            dispatchExecutionTimeOut(timerEntity, subExecution, commandContext);
+          }
+        }
+      }
+      
+      // flow nodes
+      if (execution.getCurrentFlowElement() instanceof FlowNode) {
+        dispatchActivityTimeOut(timerEntity, (FlowNode) execution.getCurrentFlowElement(), execution, commandContext);
+      }
+    }
+  }
+
+  protected void dispatchActivityTimeOut(JobEntity timerEntity, FlowNode flowNode, ExecutionEntity execution, CommandContext commandContext) {
+    commandContext.getEventDispatcher().dispatchEvent(
+        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), execution.getId(), execution.getProcessInstanceId(),
+            execution.getProcessDefinitionId(), parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), timerEntity));
+  }
+  
+  protected String parseActivityType(FlowNode flowNode) {
+    String elementType = flowNode.getClass().getSimpleName();
+    elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
+    return elementType;
   }
 }

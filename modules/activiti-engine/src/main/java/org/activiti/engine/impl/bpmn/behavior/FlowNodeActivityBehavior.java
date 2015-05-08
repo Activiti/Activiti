@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
@@ -51,6 +52,12 @@ public abstract class FlowNodeActivityBehavior implements TriggerableActivityBeh
     // concrete activity behaviours that do accept signals should override
     // this method;
     throw new ActivitiException("this activity isn't waiting for a trigger");
+  }
+  
+  protected String parseActivityType(FlowNode flowNode) {
+    String elementType = flowNode.getClass().getSimpleName();
+    elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
+    return elementType;
   }
 
 }

@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -93,7 +94,12 @@ public abstract class AbstractOperation implements Runnable {
         }
       }
     }
-
+  }
+  
+  protected String parseActivityType(FlowNode flowNode) {
+    String elementType = flowNode.getClass().getSimpleName();
+    elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
+    return elementType;
   }
 
   /* TODO: Should following methods be moved to the entityManager */

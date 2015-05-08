@@ -11,6 +11,8 @@ import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
@@ -118,6 +120,13 @@ public class ContinueProcessOperation extends AbstractOperation {
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
     if (activityBehavior != null) {
       logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
+      
+      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, flowNode.getId(), flowNode.getName(), execution.getId(),
+                execution.getProcessInstanceId(), execution.getProcessDefinitionId(), parseActivityType(flowNode)));
+      }
+      
       try {
         activityBehavior.execute(execution);
       } catch (RuntimeException e) {
@@ -200,5 +209,4 @@ public class ContinueProcessOperation extends AbstractOperation {
     // TODO: must be extracted / cache should be accessed in another way
     return ProcessDefinitionUtil.getProcess(processDefinitionId);
   }
-
 }

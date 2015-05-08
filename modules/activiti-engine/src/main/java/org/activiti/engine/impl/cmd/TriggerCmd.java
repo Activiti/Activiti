@@ -13,10 +13,13 @@
 
 package org.activiti.engine.impl.cmd;
 
+import java.util.Map;
+
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-
-import java.util.Map;
 
 /**
  * @author Tom Baeyens
@@ -37,6 +40,11 @@ public class TriggerCmd extends NeedsActiveExecutionCmd<Object> {
     if (processVariables != null) {
       execution.setVariables(processVariables);
     }
+    
+    Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+        ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, execution.getCurrentActivityId(), null, 
+            null, execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId()));
+    
     commandContext.getAgenda().planTriggerExecutionOperation(execution);
     return null;
   }

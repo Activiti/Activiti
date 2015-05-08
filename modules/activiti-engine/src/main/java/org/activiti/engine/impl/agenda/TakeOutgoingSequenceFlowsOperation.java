@@ -14,7 +14,10 @@ import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
@@ -80,10 +83,20 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         && !execution.isProcessInstanceType()) { // a process instance execution can never leave a flownode, but it can pass here whilst cleaning up
       executeExecutionListeners(currentFlowElement, ExecutionListener.EVENTNAME_END);
     }
-
+    
     // No scope, can continue
     if (currentFlowElement instanceof FlowNode) {
-      leaveFlowNode((FlowNode) currentFlowElement);
+      
+      FlowNode flowNode = (FlowNode) currentFlowElement;
+      
+      if (execution.getId().equals(execution.getProcessInstanceId()) == false) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, flowNode.getId(), flowNode.getName(),
+                execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), parseActivityType(flowNode)));
+      }
+      
+      leaveFlowNode(flowNode);
+      
     } else if (currentFlowElement instanceof SequenceFlow) {
       // Nothing to do here. The operation wasn't really needed, so simply pass it through
       agenda.planContinueProcessOperation(execution);

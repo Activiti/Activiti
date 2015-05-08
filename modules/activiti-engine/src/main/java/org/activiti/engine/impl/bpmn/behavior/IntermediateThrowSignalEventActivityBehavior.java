@@ -18,6 +18,8 @@ import java.util.List;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
@@ -58,6 +60,11 @@ public class IntermediateThrowSignalEventActivityBehavior extends AbstractBpmnAc
     }
 
     for (SignalEventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalEventSubscriptionEntity.getActivityId(), signalEventName, 
+              null, signalEventSubscriptionEntity.getExecutionId(), signalEventSubscriptionEntity.getProcessInstanceId(), 
+              signalEventSubscriptionEntity.getProcessDefinitionId()));
+      
       signalEventSubscriptionEntity.eventReceived(null, signalEventDefinition.isAsync());
     }
 

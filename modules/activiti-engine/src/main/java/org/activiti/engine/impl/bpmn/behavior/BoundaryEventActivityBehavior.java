@@ -14,6 +14,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Collection;
 
+import org.activiti.bpmn.model.CallActivity;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -65,12 +66,10 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     // }
 
     // The destroy scope operation will look for the parent execution and
-    // destroy the whole scope,
-    // and leave the boundary event using this parent execution.
+    // destroy the whole scope, and leave the boundary event using this parent execution.
     //
     // The take outgoing seq flows operation below (the non-interrupting
-    // else clause) on the other hand
-    // uses the child execution to leave, which keeps the scope alive.
+    // else clause) on the other hand uses the child execution to leave, which keeps the scope alive.
     //
     // Which is what we need.
 
@@ -90,11 +89,11 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     if (parentScopeExecution == null) {
       throw new ActivitiException("Programmatic error: no parent scope execution found for boundary event");
     }
+    
+    deleteChildExecutions(attachedRefScopeExecution, executionEntity, commandContext);
 
     // set new parent for boundary event execution
     executionEntity.setParent(parentScopeExecution);
-
-    deleteChildExecutions(attachedRefScopeExecution, executionEntity, commandContext);
 
     commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity, true);
   }
@@ -144,9 +143,16 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
         }
       }
     }
+    
+    if (parentExecution.getCurrentFlowElement() instanceof CallActivity) {
+      ExecutionEntity subProcessExecution = executionEntityManager.findSubProcessInstanceBySuperExecutionId(parentExecution.getId());
+      if (subProcessExecution != null) {
+        deleteChildExecutions(subProcessExecution, notToDeleteExecution, commandContext);
+      }
+    }
 
     executionEntityManager.deleteDataRelatedToExecution(parentExecution);
-    commandContext.getExecutionEntityManager().delete(parentExecution);
+    executionEntityManager.delete(parentExecution);
   }
 
   public boolean isInterrupting() {

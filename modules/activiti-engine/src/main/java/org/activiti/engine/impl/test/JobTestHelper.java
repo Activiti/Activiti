@@ -39,9 +39,7 @@ public class JobTestHelper {
   }
 
   public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis) {
-
     waitForJobExecutorToProcessAllJobs(processEngineConfiguration, managementService, maxMillisToWait, intervalMillis, true);
-
   }
 
   public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfiguration processEngineConfiguration, ManagementService managementService, long maxMillisToWait, long intervalMillis,
@@ -69,8 +67,7 @@ public class JobTestHelper {
           try {
             areJobsAvailable = areJobsAvailable(managementService);
           } catch (Throwable t) {
-            // Ignore, possible that exception occurs due to
-            // locking/updating of table on MSSQL when
+            // Ignore, possible that exception occurs due to locking/updating of table on MSSQL when
             // isolation level doesn't allow READ of the table
           }
         }
