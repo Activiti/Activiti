@@ -74,8 +74,8 @@ public class ContinueProcessOperation extends AbstractOperation {
   }
 
   protected void executeProcessStartExecutionListeners() {
-	org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
-	executeExecutionListeners(process, ExecutionListener.EVENTNAME_START);
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+    executeExecutionListeners(process, ExecutionListener.EVENTNAME_START);
   }
 
   protected void continueThroughFlowNode(FlowNode flowNode) {

@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -173,12 +174,12 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
     // If loopcounter == 0, then historic activity instance already created,
     // no need to pass through executeActivity again since it will create a new historic activity
-    // if (loopCounter == 0) {
-    innerActivityBehavior.execute(execution);
-    // } else {
-    // execution.setCurrentFlowElement(activity);
-    // Context.getAgenda().planContinueProcessOperation(execution);
-    // }
+    if (loopCounter == 0) {
+      innerActivityBehavior.execute(execution);
+    } else {
+      execution.setCurrentFlowElement(activity);
+      Context.getAgenda().planContinueMultiInstanceOperation(execution);
+    }
   }
 
   protected boolean usesCollection() {
@@ -241,15 +242,16 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
    * Since no transitions are followed when leaving the inner activity, it is needed to call the end listeners yourself.
    */
   protected void callActivityEndListeners(ActivityExecution execution) {
+    List<ActivitiListener> endListeners = new ArrayList<ActivitiListener>();
     List<ActivitiListener> listeners = activity.getExecutionListeners();
     if (CollectionUtils.isNotEmpty(listeners)) {
       for (ActivitiListener activitiListener : listeners) {
         if ("end".equalsIgnoreCase(activitiListener.getEvent())) {
-
+          endListeners.add(activitiListener);
         }
       }
     }
-    CallActivityEndListenersOperation atomicOperation = new CallActivityEndListenersOperation(listeners);
+    CallActivityEndListenersOperation atomicOperation = new CallActivityEndListenersOperation(endListeners);
     Context.getCommandContext().performOperation(atomicOperation, (InterpretableExecution) execution);
   }
 

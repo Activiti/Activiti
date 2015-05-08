@@ -71,6 +71,10 @@ public class Agenda {
   public void planContinueProcessSynchronousOperation(ActivityExecution execution) {
     planOperation(new ContinueProcessOperation(commandContext, execution, true), (ExecutionEntity) execution);
   }
+  
+  public void planContinueMultiInstanceOperation(ActivityExecution execution) {
+    planOperation(new ContinueMultiInstanceOperation(commandContext, execution), (ExecutionEntity) execution);
+  }
 
   public void planTakeOutgoingSequenceFlowsOperation(ActivityExecution execution) {
     planTakeOutgoingSequenceFlowsOperation(execution, true);

@@ -309,9 +309,8 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("sum", 0);
     vars.put("nrOfLoops", 5);
-    runtimeService.startProcessInstanceByKey("miSequentialScriptTask", vars);
-    Execution waitStateExecution = runtimeService.createExecutionQuery().singleResult();
-    int sum = (Integer) runtimeService.getVariable(waitStateExecution.getId(), "sum");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("miSequentialScriptTask", vars);
+    int sum = (Integer) runtimeService.getVariable(processInstance.getId(), "sum");
     assertEquals(10, sum);
   }
 
@@ -455,7 +454,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
       if (i != 3) {
         List<String> activities = runtimeService.getActiveActivityIds(procId);
         assertNotNull(activities);
-        assertEquals(1, activities.size());
+        assertEquals(2, activities.size());
       }
     }
 
@@ -642,7 +641,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Execution waitState = runtimeService.createExecutionQuery().singleResult();
     assertEquals(10, runtimeService.getVariable(waitState.getId(), "sum"));
 
-    runtimeService.signal(waitState.getId());
+    runtimeService.trigger(waitState.getId());
     assertProcessEnded(procId);
   }
 
@@ -652,7 +651,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     Execution waitState = runtimeService.createExecutionQuery().singleResult();
     assertEquals(12, runtimeService.getVariable(waitState.getId(), "sum"));
 
-    runtimeService.signal(waitState.getId());
+    runtimeService.trigger(waitState.getId());
     assertProcessEnded(procId);
   }
 
@@ -1051,7 +1050,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     // Complete all four of the executions
     for (Execution execution : executions) {
-      runtimeService.signal(execution.getId());
+      runtimeService.trigger(execution.getId());
     }
 
     // There is one task after the task
@@ -1072,7 +1071,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertEquals(3, executions.size());
 
     // Signal only one execution. Then the timer will fire
-    runtimeService.signal(executions.get(1).getId());
+    runtimeService.trigger(executions.get(1).getId());
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + 60000L));
     waitForJobExecutorToProcessAllJobs(10000L, 1000L);
 
@@ -1093,7 +1092,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     // Complete all four of the executions
     while (execution != null) {
-      runtimeService.signal(execution.getId());
+      runtimeService.trigger(execution.getId());
       execution = runtimeService.createExecutionQuery().activityId("theReceiveTask").singleResult();
     }
 

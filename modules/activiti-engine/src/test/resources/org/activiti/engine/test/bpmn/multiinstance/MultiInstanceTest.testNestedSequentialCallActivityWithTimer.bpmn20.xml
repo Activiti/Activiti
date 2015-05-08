@@ -26,20 +26,20 @@
           <sequenceFlow id="flow4" sourceRef="subStart3" targetRef="miCallActivity" />
         
           <callActivity id="miCallActivity" calledElement="externalSubProcess">
-			      <multiInstanceLoopCharacteristics isSequential="true">
-			        <loopCardinality>${4}</loopCardinality>
-			      </multiInstanceLoopCharacteristics>
-			    </callActivity>
+		      <multiInstanceLoopCharacteristics isSequential="true">
+		        <loopCardinality>${4}</loopCardinality>
+		      </multiInstanceLoopCharacteristics>
+		  </callActivity>
           
           <sequenceFlow id="flow5" sourceRef="miCallActivity" targetRef="subProcessEnd3" />
           <endEvent id="subProcessEnd3" />
         
         </subProcess>
         
-        <boundaryEvent id="timer" attachedToRef="miCallActivity">
-        <timerEventDefinition>
-          <timeDuration>PT99H</timeDuration>
-        </timerEventDefinition>
+        <boundaryEvent id="timer" attachedToRef="nesting3">
+        	<timerEventDefinition>
+          		<timeDuration>PT99H</timeDuration>
+        	</timerEventDefinition>
         </boundaryEvent>
         <sequenceFlow id="flow6" sourceRef="timer" targetRef="taskAfterTimer" />
         <userTask id="taskAfterTimer" />

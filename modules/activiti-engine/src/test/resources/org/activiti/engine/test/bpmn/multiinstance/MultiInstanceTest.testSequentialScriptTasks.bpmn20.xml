@@ -26,7 +26,7 @@
     <sequenceFlow id="flow3" sourceRef="miScriptTask" targetRef="waitState" />
     <receiveTask id="waitState" />
     
-     <sequenceFlow id="flow4" sourceRef="waitState" targetRef="theEnd" />
+    <sequenceFlow id="flow4" sourceRef="waitState" targetRef="theEnd" />
     <endEvent id="theEnd" />
     
   </process>

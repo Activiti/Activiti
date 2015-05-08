@@ -484,8 +484,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
     this.assignee = assignee;
 
     // if there is no command context, then it means that the user is
-    // calling the
-    // setAssignee outside a service method. E.g. while creating a new task.
+    // calling the setAssignee outside a service method. E.g. while creating a new task.
     if (commandContext != null) {
       commandContext.getHistoryManager().recordTaskAssigneeChange(id, assignee);
 

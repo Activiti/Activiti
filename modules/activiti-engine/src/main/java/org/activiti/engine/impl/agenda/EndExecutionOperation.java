@@ -1,5 +1,6 @@
 package org.activiti.engine.impl.agenda;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -67,9 +68,19 @@ public class EndExecutionOperation extends AbstractOperation {
         if (!parentExecution.getId().equals(parentExecution.getProcessInstanceId()) && subProcess != null && subProcess.getLoopCharacteristics() != null
             && subProcess.getBehavior() instanceof MultiInstanceActivityBehavior) {
 
-          MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
-          parentExecution.setCurrentFlowElement(subProcess);
-          multiInstanceBehavior.leave(parentExecution);
+          List<ExecutionEntity> activeChildExecutions = getActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId());
+          boolean containsOtherChildExecutions = false;
+          for (ExecutionEntity activeExecution : activeChildExecutions) {
+            if (activeExecution.getId().equals(executionEntity.getId()) == false) {
+              containsOtherChildExecutions = true;
+            }
+          }
+          
+          if (containsOtherChildExecutions == false) {
+            MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
+            parentExecution.setCurrentFlowElement(subProcess);
+            multiInstanceBehavior.leave(parentExecution);
+          }
           return;
         }
       }
@@ -185,6 +196,19 @@ public class EndExecutionOperation extends AbstractOperation {
     }
     
     return activeExecutions;
+  }
+  
+  protected List<ExecutionEntity> getActiveChildExecutionsForExecution(ExecutionEntityManager executionEntityManager, String executionId) {
+    List<ExecutionEntity> activeChildExecutions = new ArrayList<ExecutionEntity>();
+    List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(executionId);
+    
+    for (ExecutionEntity activeExecution : executions) {
+      if (!(activeExecution.getCurrentFlowElement() instanceof BoundaryEvent)) {
+        activeChildExecutions.add(activeExecution);
+      }
+    }
+    
+    return activeChildExecutions;
   }
 
 }
