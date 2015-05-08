@@ -132,32 +132,32 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       // Insert historic process-instance
       getDbSqlSession().insert(historicProcessInstance);
 
-      // Also record the start-event manually, as there is no "start"
-      // activity history listener for this
-      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
+//      // Also record the start-event manually, as there is no "start"
+//      // activity history listener for this
+//      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
+//
+//      String processDefinitionId = processInstance.getProcessDefinitionId();
+//      String processInstanceId = processInstance.getId();
+//      String executionId = processInstance.getId();
 
-      String processDefinitionId = processInstance.getProcessDefinitionId();
-      String processInstanceId = processInstance.getId();
-      String executionId = processInstance.getId();
-
-      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
-      historicActivityInstance.setId(idGenerator.getNextId());
-      historicActivityInstance.setProcessDefinitionId(processDefinitionId);
-      historicActivityInstance.setProcessInstanceId(processInstanceId);
-      historicActivityInstance.setExecutionId(executionId);
-      historicActivityInstance.setActivityId(startElement.getId());
-      historicActivityInstance.setActivityName(startElement.getName());
-      historicActivityInstance.setActivityType(parseActivityType(startElement));
-      Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-      historicActivityInstance.setStartTime(now);
-      historicActivityInstance.setEndTime(now);
-
-      // Inherit tenant id (if applicable)
-      if (processInstance.getTenantId() != null) {
-        historicActivityInstance.setTenantId(processInstance.getTenantId());
-      }
-
-      getDbSqlSession().insert(historicActivityInstance);
+//      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
+//      historicActivityInstance.setId(idGenerator.getNextId());
+//      historicActivityInstance.setProcessDefinitionId(processDefinitionId);
+//      historicActivityInstance.setProcessInstanceId(processInstanceId);
+//      historicActivityInstance.setExecutionId(executionId);
+//      historicActivityInstance.setActivityId(startElement.getId());
+//      historicActivityInstance.setActivityName(startElement.getName());
+//      historicActivityInstance.setActivityType(parseActivityType(startElement));
+//      Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+//      historicActivityInstance.setStartTime(now);
+//      historicActivityInstance.setEndTime(now);
+//
+//      // Inherit tenant id (if applicable)
+//      if (processInstance.getTenantId() != null) {
+//        historicActivityInstance.setTenantId(processInstance.getTenantId());
+//      }
+//
+//      getDbSqlSession().insert(historicActivityInstance);
     }
   }
 
@@ -179,28 +179,28 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       }
       getDbSqlSession().insert(historicProcessInstance);
 
-      HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution);
+      HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution, false);
       if (activitiyInstance != null) {
         activitiyInstance.setCalledProcessInstanceId(subProcessInstance.getProcessInstanceId());
       }
 
-      // Fix for ACT-1728: start-event not recorded for subprocesses
-      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
-
-      // Also record the start-event manually, as there is no "start"
-      // activity history listener for this
-      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
-      historicActivityInstance.setId(idGenerator.getNextId());
-      historicActivityInstance.setProcessDefinitionId(subProcessInstance.getProcessDefinitionId());
-      historicActivityInstance.setProcessInstanceId(subProcessInstance.getProcessInstanceId());
-      historicActivityInstance.setExecutionId(subProcessInstance.getId());
-      historicActivityInstance.setActivityId(initialElement.getId());
-      historicActivityInstance.setActivityName(initialElement.getName());
-      historicActivityInstance.setActivityType(parseActivityType(initialElement));
-      Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
-      historicActivityInstance.setStartTime(now);
-
-      getDbSqlSession().insert(historicActivityInstance);
+//      // Fix for ACT-1728: start-event not recorded for subprocesses
+//      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
+//
+//      // Also record the start-event manually, as there is no "start"
+//      // activity history listener for this
+//      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
+//      historicActivityInstance.setId(idGenerator.getNextId());
+//      historicActivityInstance.setProcessDefinitionId(subProcessInstance.getProcessDefinitionId());
+//      historicActivityInstance.setProcessInstanceId(subProcessInstance.getProcessInstanceId());
+//      historicActivityInstance.setExecutionId(subProcessInstance.getId());
+//      historicActivityInstance.setActivityId(initialElement.getId());
+//      historicActivityInstance.setActivityName(initialElement.getName());
+//      historicActivityInstance.setActivityType(parseActivityType(initialElement));
+//      Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+//      historicActivityInstance.setStartTime(now);
+//
+//      getDbSqlSession().insert(historicActivityInstance);
     }
   }
 
@@ -249,7 +249,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordActivityEnd(ExecutionEntity executionEntity) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
+      HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity, false);
       if (historicActivityInstance != null) {
         historicActivityInstance.markEnded(null);
       }
@@ -285,7 +285,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   }
 
   @Override
-  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution) {
+  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound) {
     String executionId = execution.getId();
     String activityId = execution.getActivityId();
 
@@ -310,15 +310,48 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     }
 
     // Check the database
-    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext()).executionId(executionId).activityId(activityId).unfinished()
-        .listPage(0, 1);
+    List<HistoricActivityInstance> historicActivityInstances = new HistoricActivityInstanceQueryImpl(Context.getCommandContext())
+      .executionId(executionId).activityId(activityId).unfinished()
+      .listPage(0, 1);
 
     if (!historicActivityInstances.isEmpty()) {
       return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
     }
 
     if (execution.getParentId() != null) {
-      return findActivityInstance((ExecutionEntity) execution.getParent());
+      HistoricActivityInstanceEntity historicActivityInstanceFromParent = findActivityInstance((ExecutionEntity) execution.getParent(), false); // always fals for create, we only check if it can be found 
+      if (historicActivityInstanceFromParent != null) {
+        return historicActivityInstanceFromParent;
+      }
+    }
+    
+    if (createOnNotFound) {
+      IdGenerator idGenerator = Context.getProcessEngineConfiguration().getIdGenerator();
+      
+      String processDefinitionId = execution.getProcessDefinitionId();
+      String processInstanceId = execution.getProcessInstanceId();
+        
+      HistoricActivityInstanceEntity historicActivityInstance = new HistoricActivityInstanceEntity();
+      historicActivityInstance.setId(idGenerator.getNextId());
+      historicActivityInstance.setProcessDefinitionId(processDefinitionId);
+      historicActivityInstance.setProcessInstanceId(processInstanceId);
+      historicActivityInstance.setExecutionId(executionId);
+      historicActivityInstance.setActivityId(execution.getActivityId());
+      if (execution.getCurrentFlowElement() != null) {
+        historicActivityInstance.setActivityName(execution.getCurrentFlowElement().getName());
+        historicActivityInstance.setActivityType(parseActivityType(execution.getCurrentFlowElement()));
+      }
+      Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+      historicActivityInstance.setStartTime(now);
+  
+      // Inherit tenant id (if applicable)
+      if (execution.getTenantId() != null) {
+        historicActivityInstance.setTenantId(execution.getTenantId());
+      }
+      
+      getHistoricActivityInstanceManager().insert(historicActivityInstance);
+      return historicActivityInstance;
+      
     }
 
     return null;
@@ -394,7 +427,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     ExecutionEntity executionEntity = task.getExecution();
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       if (executionEntity != null) {
-        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity);
+        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity, false);
         if (historicActivityInstance != null) {
           historicActivityInstance.setAssignee(task.getAssignee());
         }
@@ -428,7 +461,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       ExecutionEntity execution = task.getExecution();
       if (execution != null) {
-        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(execution);
+        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(execution, false);
         if (historicActivityInstance != null) {
           historicActivityInstance.setTaskId(task.getId());
         }
@@ -651,7 +684,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = HistoricDetailVariableInstanceUpdateEntity.copyAndInsert(variable);
 
       if (useActivityId && sourceActivityExecution != null) {
-        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution);
+        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution, false);
         if (historicActivityInstance != null) {
           historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
         }
@@ -789,7 +822,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
    * @see org.activiti.engine.impl.history.HistoryManagerInterface# reportFormPropertiesSubmitted (org.activiti.engine.impl.persistence.entity.ExecutionEntity, java.util.Map, java.lang.String)
    */
   @Override
-  public void reportFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId) {
+  public void recordFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId) {
     if (isHistoryLevelAtLeast(HistoryLevel.AUDIT)) {
       for (String propertyId : properties.keySet()) {
         String propertyValue = properties.get(propertyId);

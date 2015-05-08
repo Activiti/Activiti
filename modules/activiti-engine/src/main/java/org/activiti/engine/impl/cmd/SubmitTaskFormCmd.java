@@ -39,7 +39,7 @@ public class SubmitTaskFormCmd extends AbstractCompleteTaskCmd {
   }
 
   protected Void execute(CommandContext commandContext, TaskEntity task) {
-    commandContext.getHistoryManager().reportFormPropertiesSubmitted(task.getExecution(), properties, taskId);
+    commandContext.getHistoryManager().recordFormPropertiesSubmitted(task.getExecution(), properties, taskId);
 
     TaskFormHandler taskFormHandler = task.getTaskDefinition().getTaskFormHandler();
     taskFormHandler.submitFormProperties(properties, task.getExecution());

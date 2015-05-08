@@ -50,7 +50,7 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
       processInstance = (ExecutionEntity) ProcessInstanceUtil.createProcessInstance(processDefinition, null, null, null);
     }
 
-    commandContext.getHistoryManager().reportFormPropertiesSubmitted(processInstance, properties, null);
+    commandContext.getHistoryManager().recordFormPropertiesSubmitted(processInstance.getExecutions().get(0), properties, null);
 
     StartFormHandler startFormHandler = FormHandlerUtil.getStartFormHandler(commandContext, processDefinition); 
     startFormHandler.submitFormProperties(properties, processInstance);
