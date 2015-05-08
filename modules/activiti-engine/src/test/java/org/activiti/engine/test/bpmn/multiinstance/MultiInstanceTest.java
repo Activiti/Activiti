@@ -270,7 +270,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     assertEquals("gonzo", tasks.get(1).getAssignee());
     assertEquals("kermit", tasks.get(2).getAssignee());
 
-    // Completing 3 tasks will trigger completioncondition
+    // Completing 3 tasks will trigger completion condition
     taskService.complete(tasks.get(0).getId());
     taskService.complete(tasks.get(1).getId());
     taskService.complete(tasks.get(2).getId());
@@ -280,15 +280,20 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testParallelUserTasksExecutionAndTaskListeners() {
-    runtimeService.startProcessInstanceByKey("miParallelUserTasks");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("miParallelUserTasks");
     List<Task> tasks = taskService.createTaskQuery().list();
     for (Task task : tasks) {
       taskService.complete(task.getId());
     }
 
-    Execution waitState = runtimeService.createExecutionQuery().singleResult();
-    assertEquals(3, runtimeService.getVariable(waitState.getId(), "taskListenerCounter"));
-    assertEquals(3, runtimeService.getVariable(waitState.getId(), "executionListenerCounter"));
+    Execution waitState = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
+    assertNotNull(waitState);
+    
+    assertEquals(3, runtimeService.getVariable(processInstance.getId(), "taskListenerCounter"));
+    assertEquals(3, runtimeService.getVariable(processInstance.getId(), "executionListenerCounter"));
+    
+    runtimeService.trigger(waitState.getId());
+    assertProcessEnded(processInstance.getId());
   }
 
   @Deployment
@@ -396,10 +401,13 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testParallelScriptTasksCompletionCondition() {
-    runtimeService.startProcessInstanceByKey("miParallelScriptTaskCompletionCondition");
-    Execution waitStateExecution = runtimeService.createExecutionQuery().singleResult();
-    int sum = (Integer) runtimeService.getVariable(waitStateExecution.getId(), "sum");
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("miParallelScriptTaskCompletionCondition");
+    Execution waitStateExecution = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
+    assertNotNull(waitStateExecution);
+    int sum = (Integer) runtimeService.getVariable(processInstance.getId(), "sum");
     assertEquals(2, sum);
+    runtimeService.trigger(waitStateExecution.getId());
+    assertProcessEnded(processInstance.getId());
   }
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelScriptTasksCompletionCondition.bpmn20.xml" })
@@ -580,6 +588,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     for (Task task : tasks) {
       taskService.complete(task.getId());
     }
+    
     assertProcessEnded(procId);
   }
 

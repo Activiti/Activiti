@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
@@ -49,7 +50,7 @@ import org.slf4j.LoggerFactory;
  * {@link MultiInstanceActivityBehavior} if needed.
  * 
  * @author Joram Barrez
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBehavior implements SubProcessActivityBehavior {
 
@@ -186,10 +187,8 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
     return collectionExpression != null || collectionVariable != null;
   }
 
-  protected boolean isExtraScopeNeeded() {
-    // special care is needed when the behavior is an embedded subprocess
-    // (not very clean, but it works)
-    return innerActivityBehavior instanceof org.activiti.engine.impl.bpmn.behavior.SubProcessActivityBehavior;
+  protected boolean isExtraScopeNeeded(FlowNode flowNode) {
+    return flowNode.getSubProcess() != null;
   }
 
   protected int resolveLoopCardinality(ActivityExecution execution) {
