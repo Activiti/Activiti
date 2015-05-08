@@ -316,6 +316,12 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
     }
     
+    deleteProcessInstanceExecutionEntity(processInstanceEntity, currentFlowElementId, deleteReason, cascade);
+  }
+  
+  public void deleteProcessInstanceExecutionEntity(ExecutionEntity processInstanceEntity, 
+      String currentFlowElementId, String deleteReason, boolean cascade) {
+    
     for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
       if (subExecutionEntity.getSubProcessInstance() != null) {
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, cascade);
@@ -323,7 +329,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     }
 
     IdentityLinkEntityManager identityLinkEntityManager = Context.getCommandContext().getIdentityLinkEntityManager();
-    List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceId);
+    List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getId());
     for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
       identityLinkEntityManager.delete(identityLinkEntity);
     }
@@ -332,7 +338,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     deleteExecutionAndRelatedData(processInstanceEntity, deleteReason);
 
     // TODO: what about delete reason?
-    Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(processInstanceId, deleteReason, currentFlowElementId);
+    Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(processInstanceEntity.getId(), deleteReason, currentFlowElementId);
   }
   
   public void deleteChildExecutions(ExecutionEntity executionEntity) {

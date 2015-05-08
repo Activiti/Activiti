@@ -12,6 +12,7 @@
  */
 package org.activiti.engine.impl.jobexecutor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.activiti.bpmn.model.BoundaryEvent;
@@ -24,15 +25,11 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
  */
 public class TriggerTimerEventJobHandler implements JobHandler {
-
-  private static Logger log = LoggerFactory.getLogger(TriggerTimerEventJobHandler.class);
 
   public static final String TYPE = "trigger-timer";
 
@@ -49,26 +46,38 @@ public class TriggerTimerEventJobHandler implements JobHandler {
     }
     
     if (execution.getCurrentFlowElement() instanceof BoundaryEvent) {
-      dispatchExecutionTimeOut(job, execution, commandContext);
+      List<String> processedElements = new ArrayList<String>();
+      dispatchExecutionTimeOut(job, execution, processedElements, commandContext);
     }
   }
   
-  protected void dispatchExecutionTimeOut(JobEntity timerEntity, ExecutionEntity execution, CommandContext commandContext) {
+  protected void dispatchExecutionTimeOut(JobEntity timerEntity, ExecutionEntity execution, List<String> processedElements, CommandContext commandContext) {
     FlowElement currentElement = execution.getCurrentFlowElement();
     if (currentElement instanceof BoundaryEvent) {
       BoundaryEvent boundaryEvent = (BoundaryEvent) execution.getCurrentFlowElement();
       if (boundaryEvent.isCancelActivity() && boundaryEvent.getAttachedToRef() != null) {
 
-        ExecutionEntity parentExecution = execution.getParent();
-        dispatchExecutionTimeOut(timerEntity, parentExecution, commandContext);
+        if (processedElements.contains(boundaryEvent.getId()) == false) {
+          processedElements.add(boundaryEvent.getId());
+          ExecutionEntity parentExecution = execution.getParent();
+          dispatchExecutionTimeOut(timerEntity, parentExecution, processedElements, commandContext);
+        }
       }
     
     } else {
       
+      // flow nodes
+      if (execution.getCurrentFlowElement() instanceof FlowNode) {
+        processedElements.add(execution.getCurrentActivityId());
+        dispatchActivityTimeOut(timerEntity, (FlowNode) execution.getCurrentFlowElement(), execution, commandContext);
+      }
+      
       // subprocesses
       if (execution.getCurrentFlowElement() instanceof SubProcess) {
         for (ExecutionEntity subExecution : execution.getExecutions()) {
-          dispatchExecutionTimeOut(timerEntity, subExecution, commandContext);
+          if (processedElements.contains(subExecution.getCurrentActivityId()) == false) {
+            dispatchExecutionTimeOut(timerEntity, subExecution, processedElements, commandContext);
+          }
         }
         
       // call activities  
@@ -77,14 +86,11 @@ public class TriggerTimerEventJobHandler implements JobHandler {
         if (subProcessInstance != null) {
           List<ExecutionEntity> childExecutions = subProcessInstance.getExecutions();
           for (ExecutionEntity subExecution : childExecutions) {
-            dispatchExecutionTimeOut(timerEntity, subExecution, commandContext);
+            if (processedElements.contains(subExecution.getCurrentActivityId()) == false) {
+              dispatchExecutionTimeOut(timerEntity, subExecution, processedElements, commandContext);
+            }
           }
         }
-      }
-      
-      // flow nodes
-      if (execution.getCurrentFlowElement() instanceof FlowNode) {
-        dispatchActivityTimeOut(timerEntity, (FlowNode) execution.getCurrentFlowElement(), execution, commandContext);
       }
     }
   }

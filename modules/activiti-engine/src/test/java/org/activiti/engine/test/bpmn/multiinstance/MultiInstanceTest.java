@@ -430,7 +430,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
       if (i != 3) {
         List<String> activities = runtimeService.getActiveActivityIds(procId);
         assertNotNull(activities);
-        assertEquals(2, activities.size());
+        assertEquals(3, activities.size());
       }
     }
 

@@ -28,7 +28,7 @@ import org.activiti.engine.test.Deployment;
 
 /**
  * @author Joram Barrez
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class SubProcessTest extends PluggableActivitiTestCase {
 
