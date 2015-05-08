@@ -62,10 +62,10 @@ public abstract class AbstractOperation implements Runnable {
    * Executes the execution listeners defined on the given element, with the given event type.
    */
   protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, String eventType) {
-    executeExecutionListeners(elementWithExecutionListeners, eventType, false);
+    executeExecutionListeners(elementWithExecutionListeners, null, eventType, false);
   }
 
-  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, String eventType, boolean ignoreType) {
+  protected void executeExecutionListeners(HasExecutionListeners elementWithExecutionListeners, ActivityExecution executionToUseForListener, String eventType, boolean ignoreType) {
     List<ActivitiListener> listeners = elementWithExecutionListeners.getExecutionListeners();
     ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
     if (listeners != null) {
@@ -82,13 +82,15 @@ public abstract class AbstractOperation implements Runnable {
           } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
             executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
           }
+          
+          ActivityExecution executionToUse = executionToUseForListener != null ? executionToUseForListener : execution;
 
           if (executionListener != null) {
-            ((ExecutionEntity) execution).setEventName(eventType);
-            executionListener.notify(execution);
+            ((ExecutionEntity) executionToUse).setEventName(eventType);
+            executionListener.notify(executionToUse);
             
             // TODO: is this still needed? Is this property still needed?
-            ((ExecutionEntity) execution).setEventName(null);
+            ((ExecutionEntity) executionToUse).setEventName(null);
           }
 
         }

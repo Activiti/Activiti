@@ -85,21 +85,31 @@ public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
     if (element instanceof BoundaryEvent) {
       // A boundary-event never receives an activity start-event
       BoundaryEvent boundaryEvent = (BoundaryEvent) element;
-      addExecutionListener("end", ACTIVITY_INSTANCE_START_LISTENER, boundaryEvent);
-      addExecutionListener("end", ACTIVITI_INSTANCE_END_LISTENER, boundaryEvent);
+      addExecutionListenerAtStart("end", ACTIVITY_INSTANCE_START_LISTENER, boundaryEvent);
+      addExecutionListenerAtEnd("end", ACTIVITI_INSTANCE_END_LISTENER, boundaryEvent);
     } else {
       FlowElement flowElement = (FlowElement) element;
-      addExecutionListener("start", ACTIVITY_INSTANCE_START_LISTENER, flowElement);
-      addExecutionListener("end", ACTIVITI_INSTANCE_END_LISTENER, flowElement);
+      addExecutionListenerAtStart("start", ACTIVITY_INSTANCE_START_LISTENER, flowElement);
+      addExecutionListenerAtEnd("end", ACTIVITI_INSTANCE_END_LISTENER, flowElement);
     }
   }
 
-  protected void addExecutionListener(String event, String className, FlowElement element) {
+  protected void addExecutionListenerAtStart(String event, String className, FlowElement element) {
+    ActivitiListener listener = createActivitiListener(event, className);
+    element.getExecutionListeners().add(0, listener);
+  }
+
+  protected void addExecutionListenerAtEnd(String event, String className, FlowElement element) {
+    ActivitiListener listener = createActivitiListener(event, className);
+    element.getExecutionListeners().add(listener);
+  }
+  
+  protected ActivitiListener createActivitiListener(String event, String className) {
     ActivitiListener listener = new ActivitiListener();
     listener.setEvent(event);
     listener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_CLASS);
     listener.setImplementation(className);
-    element.getExecutionListeners().add(listener);
+    return listener;
   }
 
 }

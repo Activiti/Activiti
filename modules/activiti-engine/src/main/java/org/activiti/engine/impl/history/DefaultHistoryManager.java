@@ -217,10 +217,11 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       if (executionEntity.getCurrentActivityId() != null && executionEntity.getCurrentFlowElement() != null) {
         
-        HistoricActivityInstanceEntity historicActivityInstanceEntity = findActivityInstance(executionEntity, false);
-        if (historicActivityInstanceEntity == null) {
-          createHistoricActivityInstanceEntity(executionEntity);
-        }
+        createHistoricActivityInstanceEntity(executionEntity);
+//        HistoricActivityInstanceEntity historicActivityInstanceEntity = findActivityInstance(executionEntity, false);
+//        if (historicActivityInstanceEntity == null) {
+//          createHistoricActivityInstanceEntity(executionEntity);
+//        }
         
       }
     }

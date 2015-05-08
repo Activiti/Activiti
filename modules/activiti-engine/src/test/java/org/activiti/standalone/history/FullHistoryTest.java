@@ -130,7 +130,7 @@ public class FullHistoryTest extends ResourceActivitiTestCase {
     assertEquals("zVar1", historicVariableUpdate.getVariableName());
     assertEquals("Event: start", historicVariableUpdate.getValue());
     assertEquals(0, historicVariableUpdate.getRevision());
-    assertEquals(historicStartEvent.getId(), historicVariableUpdate.getActivityInstanceId());
+    assertNull(historicVariableUpdate.getActivityInstanceId());
 
     // Variable set from transition take execution listener
     historicVariableUpdate = (HistoricVariableUpdate) historicDetails.get(6);

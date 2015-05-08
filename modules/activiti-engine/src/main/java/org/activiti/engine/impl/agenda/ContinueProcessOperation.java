@@ -75,7 +75,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
   protected void executeProcessStartExecutionListeners() {
     org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
-    executeExecutionListeners(process, ExecutionListener.EVENTNAME_START);
+    executeExecutionListeners(process, execution.getParent(), ExecutionListener.EVENTNAME_START, false);
   }
 
   protected void continueThroughFlowNode(FlowNode flowNode) {
@@ -145,7 +145,7 @@ public class ContinueProcessOperation extends AbstractOperation {
 
     // Execution listener
     if (CollectionUtils.isNotEmpty(sequenceFlow.getExecutionListeners())) {
-      executeExecutionListeners(sequenceFlow, ExecutionListener.EVENTNAME_TAKE, true); // True -> any event type will be treated as 'take' for a sequence flow
+      executeExecutionListeners(sequenceFlow, null, ExecutionListener.EVENTNAME_TAKE, true); // True -> any event type will be treated as 'take' for a sequence flow
     }
 
     FlowElement targetFlowElement = sequenceFlow.getTargetFlowElement();
