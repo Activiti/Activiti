@@ -1133,7 +1133,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    * used to calculate the sourceActivityExecution for method {@link #updateActivityInstanceIdInHistoricVariableUpdate(HistoricDetailVariableInstanceUpdateEntity, ExecutionEntity)}
    */
   protected ExecutionEntity getSourceActivityExecution() {
-    return (activityId != null ? this : null);
+    return this;
   }
 
   @Override
