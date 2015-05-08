@@ -401,7 +401,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     JobEntityManager jobEntityManager = commandContext.getJobEntityManager();
     Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
     for (JobEntity job : jobsForExecution) {
-      jobEntityManager.delete(job);
+      jobEntityManager.delete(job, false); // false -> jobs fire the events themselves TODO: is this right?
     }
 
     // Delete event subscriptions

@@ -49,11 +49,11 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     assertEquals(2, listener.getEventsReceived().size());
     ActivitiEvent event = listener.getEventsReceived().get(0);
     assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-    checkEventContext(event, theJob, false);
+    checkEventContext(event, theJob);
 
     event = listener.getEventsReceived().get(1);
     assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-    checkEventContext(event, theJob, false);
+    checkEventContext(event, theJob);
 
     listener.clearEventsReceived();
 
@@ -65,7 +65,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
     Job updatedJob = (Job) ((ActivitiEntityEvent) event).getEntity();
     assertEquals(5, updatedJob.getRetries());
-    checkEventContext(event, theJob, true);
+    checkEventContext(event, theJob);
 
     listener.clearEventsReceived();
 
@@ -81,17 +81,17 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     // First, a timer fired event has been dispatched
     event = listener.getEventsReceived().get(0);
     assertEquals(ActivitiEventType.TIMER_FIRED, event.getType());
-    checkEventContext(event, theJob, true);
+    checkEventContext(event, theJob);
 
     // Next, a delete event has been dispatched
     event = listener.getEventsReceived().get(1);
     assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-    checkEventContext(event, theJob, true);
+    checkEventContext(event, theJob);
 
     // Finally, a complete event has been dispatched
     event = listener.getEventsReceived().get(2);
     assertEquals(ActivitiEventType.JOB_EXECUTION_SUCCESS, event.getType());
-    checkEventContext(event, theJob, true);
+    checkEventContext(event, theJob);
   }
 
   /**
@@ -115,11 +115,11 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     assertEquals(2, listener.getEventsReceived().size());
     ActivitiEvent event = listener.getEventsReceived().get(0);
     assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
-    checkEventContext(event, theJob, false);
+    checkEventContext(event, theJob);
 
     event = listener.getEventsReceived().get(1);
     assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
-    checkEventContext(event, theJob, false);
+    checkEventContext(event, theJob);
 
     listener.clearEventsReceived();
 
@@ -295,37 +295,33 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     // First, the timer was fired
     ActivitiEvent event = listener.getEventsReceived().get(0);
     assertEquals(ActivitiEventType.TIMER_FIRED, event.getType());
-    checkEventContext(event, theJob, true);
+    checkEventContext(event, theJob);
 
     // Second, the job-entity was deleted, as the job was executed
     event = listener.getEventsReceived().get(1);
     assertEquals(ActivitiEventType.ENTITY_DELETED, event.getType());
-    checkEventContext(event, theJob, true);
+    checkEventContext(event, theJob);
 
     // Next, a job failed event is dispatched
     event = listener.getEventsReceived().get(2);
     assertEquals(ActivitiEventType.JOB_EXECUTION_FAILURE, event.getType());
-    checkEventContext(event, theJob, true);
+    checkEventContext(event, theJob);
 
     // Finally, an update-event is received and the job count is decremented
     event = listener.getEventsReceived().get(3);
     assertEquals(ActivitiEventType.ENTITY_UPDATED, event.getType());
-    checkEventContext(event, theJob, true);
+    checkEventContext(event, theJob);
 
     event = listener.getEventsReceived().get(4);
     assertEquals(ActivitiEventType.JOB_RETRIES_DECREMENTED, event.getType());
     assertEquals(0, ((Job) ((ActivitiEntityEvent) event).getEntity()).getRetries());
-    checkEventContext(event, theJob, true);
+    checkEventContext(event, theJob);
   }
 
-  protected void checkEventContext(ActivitiEvent event, Job entity, boolean scopeExecutionExpected) {
+  protected void checkEventContext(ActivitiEvent event, Job entity) {
     assertEquals(entity.getProcessInstanceId(), event.getProcessInstanceId());
     assertEquals(entity.getProcessDefinitionId(), event.getProcessDefinitionId());
-    if (scopeExecutionExpected) {
-      assertEquals(entity.getExecutionId(), event.getExecutionId());
-    } else {
-      assertEquals(entity.getProcessInstanceId(), event.getExecutionId());
-    }
+    assertNotNull(event.getExecutionId());
 
     assertTrue(event instanceof ActivitiEntityEvent);
     ActivitiEntityEvent entityEvent = (ActivitiEntityEvent) event;
