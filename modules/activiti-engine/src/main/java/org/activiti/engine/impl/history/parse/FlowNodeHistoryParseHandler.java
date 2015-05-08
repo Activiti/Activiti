@@ -33,6 +33,7 @@ import org.activiti.bpmn.model.ReceiveTask;
 import org.activiti.bpmn.model.ScriptTask;
 import org.activiti.bpmn.model.SendTask;
 import org.activiti.bpmn.model.ServiceTask;
+import org.activiti.bpmn.model.StartEvent;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Task;
 import org.activiti.bpmn.model.ThrowEvent;
@@ -52,6 +53,7 @@ public class FlowNodeHistoryParseHandler implements BpmnParseHandler {
   protected static Set<Class<? extends BaseElement>> supportedElementClasses = new HashSet<Class<? extends BaseElement>>();
 
   static {
+    supportedElementClasses.add(StartEvent.class);
     supportedElementClasses.add(EndEvent.class);
     supportedElementClasses.add(ThrowEvent.class);
     supportedElementClasses.add(BoundaryEvent.class);

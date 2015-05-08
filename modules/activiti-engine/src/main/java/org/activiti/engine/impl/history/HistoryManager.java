@@ -65,7 +65,7 @@ public interface HistoryManager extends Session {
    * Finds the {@link HistoricActivityInstanceEntity} that is active in the given execution. Uses the {@link DbSqlSession} cache to make sure the right instance is returned, regardless of whether or
    * not entities have already been flushed to DB.
    */
-  public abstract HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution);
+  public abstract HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound);
 
   /**
    * Replaces any open historic activityInstances' execution-id's to the id of the replaced execution, if activity history is enabled.
@@ -208,7 +208,7 @@ public interface HistoryManager extends Session {
   /**
    * Report form properties submitted, if audit history is enabled.
    */
-  public abstract void reportFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId);
+  public abstract void recordFormPropertiesSubmitted(ExecutionEntity processInstance, Map<String, String> properties, String taskId);
 
   // Identity link related history
   /**
