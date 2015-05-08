@@ -96,6 +96,11 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
   }
   
   public TaskDefinition getTaskDefinition(TaskEntity taskEntity) {
+    
+    if (taskEntity.getProcessDefinitionId() == null) {
+      return null;
+    }
+    
     // TODO: this has to be rewritten. Should not live on the ProcessDefinition!
     ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(taskEntity.getProcessDefinitionId());
     return processDefinitionEntity.getTaskDefinitions().get(taskEntity.getTaskDefinitionKey());

@@ -337,7 +337,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
 
   protected void assertExecutionDetails(ActivitiEvent event, ProcessInstance processInstance) {
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
-    assertEquals(processInstance.getId(), event.getExecutionId());
+    assertNotNull(event.getExecutionId());
     assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
   }
 
