@@ -304,7 +304,23 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       .listPage(0, 1);
 
     if (!historicActivityInstances.isEmpty()) {
-      return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
+      
+      // Need to check if the historicActivityInstanceEntity is not in the cache yet (eg a loop back in the process),
+      // in that case the endTime is updated for the cached version, but still not flushed to the db and it will show up in the query above.
+      boolean foundInCache = false;
+      HistoricActivityInstanceEntity historicActivityInstanceEntityFromDb = (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
+      for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
+        if (historicActivityInstanceEntityFromDb.getId().equals(cachedHistoricActivityInstance.getId())) {
+          foundInCache = true;
+          break;
+        }
+      }
+      
+      // if it's found in the cache, we already checked it above, the endTime was not null. Otherwise, we can return the result from the db
+      if (!foundInCache) {
+        return (HistoricActivityInstanceEntity) historicActivityInstances.get(0);
+      }
+      
     }
 
     if (execution.getParentId() != null) {
