@@ -12,36 +12,77 @@
  */
 package org.activiti.engine.test.cfg;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiOptimisticLockingException;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
+import org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContextFactory;
+import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
+import org.activiti.engine.impl.interceptor.CommandInterceptor;
 import org.activiti.engine.impl.interceptor.CommandInvoker;
 import org.activiti.engine.impl.interceptor.RetryInterceptor;
-
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
- * 
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
-public class RetryInterceptorTest extends TestCase {
+public class RetryInterceptorTest {
 
-  protected class CommandThrowingOptimisticLockingException implements Command<Void> {
-    public Void execute(CommandContext commandContext) {
-      throw new ActivitiOptimisticLockingException("");
-    }
+  protected ProcessEngine processEngine;
+  
+  protected RetryInterceptor retryInterceptor;
+  
+  @Before
+  public void setupProcessEngine() {
+    ProcessEngineConfigurationImpl processEngineConfiguration = (ProcessEngineConfigurationImpl) new StandaloneInMemProcessEngineConfiguration();
+    processEngineConfiguration.setJdbcUrl("jdbc:h2:mem:retryInterceptorTest");
+    List<CommandInterceptor> interceptors = new ArrayList<CommandInterceptor>();
+    retryInterceptor = new RetryInterceptor();
+    interceptors.add(retryInterceptor);
+    processEngineConfiguration.setCustomPreCommandInterceptors(interceptors);
+    processEngine = processEngineConfiguration.buildProcessEngine();
+  }
+  
+  @After
+  public void shutdownProcessEngine() {
+    processEngine.close();
   }
 
+  @Test
   public void testRetryInterceptor() {
-    RetryInterceptor retryInterceptor = new RetryInterceptor();
-    retryInterceptor.setNext(new CommandInvoker());
+    
     try {
-      retryInterceptor.execute(new CommandConfig(), new CommandThrowingOptimisticLockingException());
-      fail("ActivitiException expected.");
+      processEngine.getManagementService().executeCommand(new CommandThrowingOptimisticLockingException());
+      Assert.fail("ActivitiException expected.");
     } catch (ActivitiException e) {
-      assertTrue(e.getMessage().contains(retryInterceptor.getNumOfRetries() + " retries failed"));
+      Assert.assertTrue(e.getMessage().contains(retryInterceptor.getNumOfRetries() + " retries failed"));
+    }
+    
+    Assert.assertEquals(retryInterceptor.getNumOfRetries() + 1, counter.get()); // +1, we retry 3 times, so one extra for the regular execution
+  }
+
+  public static AtomicInteger counter = new AtomicInteger();
+  
+  protected class CommandThrowingOptimisticLockingException implements Command<Void> {
+    
+    public Void execute(CommandContext commandContext) {
+      
+      counter.incrementAndGet();
+      
+      throw new ActivitiOptimisticLockingException("");
     }
   }
 }

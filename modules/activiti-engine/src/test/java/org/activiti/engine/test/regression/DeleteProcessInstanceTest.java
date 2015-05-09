@@ -41,7 +41,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     log.info("Process instance (of process model " + instanceUser.getProcessDefinitionId() + ") started with id: " + instanceUser.getId() + ".");
 
     // Assert that the process instance is active.
-    Execution executionUser = runtimeService.createExecutionQuery().processInstanceId(instanceUser.getProcessInstanceId()).singleResult();
+    Execution executionUser = runtimeService.createExecutionQuery().processInstanceId(instanceUser.getProcessInstanceId()).onlyChildExecutions().singleResult();
     assertFalse(executionUser.isEnded());
 
     // Assert that a user task is available for claiming.
@@ -74,7 +74,7 @@ public class DeleteProcessInstanceTest extends PluggableActivitiTestCase {
     log.info("Process instance (of process model " + instanceJava.getProcessDefinitionId() + ") started with id: " + instanceJava.getId() + ".");
 
     // Assert that the process instance is active.
-    Execution executionJava = runtimeService.createExecutionQuery().processInstanceId(instanceJava.getProcessInstanceId()).singleResult();
+    Execution executionJava = runtimeService.createExecutionQuery().processInstanceId(instanceJava.getProcessInstanceId()).onlyChildExecutions().singleResult();
     assertFalse(executionJava.isEnded());
 
     // Try to execute job 3 times
