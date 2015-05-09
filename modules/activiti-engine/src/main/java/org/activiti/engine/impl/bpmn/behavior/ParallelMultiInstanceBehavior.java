@@ -90,7 +90,6 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
    * Called when the wrapped {@link ActivityBehavior} calls the {@link AbstractBpmnActivityBehavior#leave(ActivityExecution)} method. Handles the completion of one of the parallel instances
    */
   public void leave(ActivityExecution execution) {
-    callActivityEndListeners(execution);
 
     if (resolveNrOfInstances(execution) == 0) {
       // Empty collection, just leave.
@@ -101,13 +100,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
-
-    if (isExtraScopeNeeded()) {
-      // In case an extra scope was created, it must be destroyed first before going further
-      ExecutionEntity extraScope = (ExecutionEntity) execution;
-      execution = execution.getParent();
-      extraScope.remove();
-    }
+    
+    callActivityEndListeners(execution);
 
     if (execution.getParent() != null) { // will be null in case of empty collection
       setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
@@ -122,8 +116,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       executionEntity.inactivate();
       executionEntity.getParent().forceUpdate();
 
-      List<ActivityExecution> joinedExecutions = executionEntity.findInactiveConcurrentExecutions(execution.getActivity());
-      if (joinedExecutions.size() >= nrOfInstances || completionConditionSatisfied(execution)) {
+      if (nrOfCompletedInstances >= nrOfInstances || completionConditionSatisfied(execution)) {
 
         deleteChildExecutions(executionEntity.getParent(), false, Context.getCommandContext());
         Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity.getParent(), true);

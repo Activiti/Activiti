@@ -13,9 +13,13 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
@@ -61,9 +65,18 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     } else {
       throw new ActivitiException("Programmatic error: parallel gateway behaviour can only be applied" + " to a ParallelGateway instance, but got an instance of " + flowElement);
     }
-
+    
+    ActivityExecution multiInstanceExecution = null;
+    if (hasMultiInstanceParent(parallelGateway)) {
+      multiInstanceExecution = findMultiInstanceParentExecution(execution);
+    }
+    
     ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     Collection<ExecutionEntity> joinedExecutions = executionEntityManager.getInactiveExecutionsInActivity(execution.getCurrentActivityId());
+    if (multiInstanceExecution != null) {
+      joinedExecutions = cleanJoinedExecutions(joinedExecutions, multiInstanceExecution);
+    }
+    
     int nbrOfExecutionsToJoin = parallelGateway.getIncomingFlows().size();
     int nbrOfExecutionsCurrentlyJoined = joinedExecutions.size();
 
@@ -87,7 +100,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
 
           // The current execution will be reused and not deleted
           if (!joinedExecution.getId().equals(execution.getId())) {
-            executionEntityManager.delete(joinedExecution);
+            executionEntityManager.deleteExecutionAndRelatedData(joinedExecution);
           }
 
         }
@@ -100,6 +113,72 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
       log.debug("parallel gateway '{}' does not activate: {} of {} joined", execution.getCurrentActivityId(), nbrOfExecutionsCurrentlyJoined, nbrOfExecutionsToJoin);
     }
 
+  }
+  
+  protected Collection<ExecutionEntity> cleanJoinedExecutions(Collection<ExecutionEntity> joinedExecutions, ActivityExecution multiInstanceExecution) {
+    List<ExecutionEntity> cleanedExecutions = new ArrayList<ExecutionEntity>();
+    for (ExecutionEntity executionEntity : joinedExecutions) {
+      if (isChildOfMultiInstanceExecution(executionEntity, multiInstanceExecution)) {
+        cleanedExecutions.add(executionEntity);
+      }
+    }
+    return cleanedExecutions;
+  }
+  
+  protected boolean isChildOfMultiInstanceExecution(ActivityExecution executionEntity, ActivityExecution multiInstanceExecution) {
+    boolean isChild = false;
+    ActivityExecution parentExecution = executionEntity.getParent();
+    if (parentExecution != null) {
+      if (parentExecution.getId().equals(multiInstanceExecution.getId())) {
+        isChild = true;
+      } else {
+        boolean isNestedChild = isChildOfMultiInstanceExecution(parentExecution, multiInstanceExecution);
+        if (isNestedChild) {
+          isChild = true;
+        }
+      }
+    }
+    
+    return isChild;
+  }
+  
+  protected boolean hasMultiInstanceParent(FlowNode flowNode) {
+    boolean hasMultiInstanceParent = false;
+    if (flowNode.getSubProcess() != null) {
+      if (flowNode.getSubProcess().getLoopCharacteristics() != null) {
+        hasMultiInstanceParent = true;
+      } else {
+        boolean hasNestedMultiInstanceParent = hasMultiInstanceParent(flowNode.getSubProcess());
+        if (hasNestedMultiInstanceParent) {
+          hasMultiInstanceParent = true;
+        }
+      }
+    }
+    
+    return hasMultiInstanceParent;
+  }
+  
+  protected ActivityExecution findMultiInstanceParentExecution(ActivityExecution execution) {
+    ActivityExecution multiInstanceExecution = null;
+    ActivityExecution parentExecution = execution.getParent();
+    if (parentExecution != null && parentExecution.getCurrentFlowElement() != null) {
+      FlowElement flowElement = parentExecution.getCurrentFlowElement();
+      if (flowElement instanceof Activity) {
+        Activity activity = (Activity) flowElement;
+        if (activity.getLoopCharacteristics() != null) {
+          multiInstanceExecution = parentExecution;
+        }
+      }
+      
+      if (multiInstanceExecution == null) {
+        ActivityExecution potentialMultiInstanceExecution = findMultiInstanceParentExecution(parentExecution);
+        if (potentialMultiInstanceExecution != null) {
+          multiInstanceExecution = potentialMultiInstanceExecution;
+        }
+      }
+    }
+    
+    return multiInstanceExecution;
   }
 
 }
