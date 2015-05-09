@@ -26,6 +26,10 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
     // Cannot make abstract cause some managers don't use db persistence (eg ldap)
     throw new UnsupportedOperationException();
   }
+  
+  public List<Class<? extends Entity>> getManagedPersistentObjectSubClasses() {
+    return null;
+  }
 
   public void insert(Entity entity) {
     insert(entity, true);
@@ -96,13 +100,25 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
         entityMap.put(cachedEntity.getId(), cachedEntity);
       }
     }
+    
+    if (getManagedPersistentObjectSubClasses() != null) {
+      for (Class<? extends Entity> entitySubClass : getManagedPersistentObjectSubClasses()) {
+        for (Entity cachedEntity : getDbSqlSession().findInCache(entitySubClass)) {
+          if (retainEntityCondition.isRetained(cachedEntity)) {
+            entityMap.put(cachedEntity.getId(), cachedEntity);
+          }
+        }
+      }
+    }
 
     // Remove any entries which are already deleted
     Collection<Entity> result = entityMap.values();
-    Iterator<Entity> resultIterator = result.iterator();
-    while (resultIterator.hasNext()) {
-      if (getDbSqlSession().isPersistentObjectDeleted(resultIterator.next())) {
-        resultIterator.remove();
+    if (result.size() > 0) {
+      Iterator<Entity> resultIterator = result.iterator();
+      while (resultIterator.hasNext()) {
+        if (getDbSqlSession().isPersistentObjectDeleted(resultIterator.next())) {
+          resultIterator.remove();
+        }
       }
     }
 

@@ -73,7 +73,8 @@ public class JobEventsTest extends PluggableActivitiTestCase {
     Calendar tomorrow = Calendar.getInstance();
     tomorrow.add(Calendar.DAY_OF_YEAR, 1);
     processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-    waitForJobExecutorToProcessAllJobs(2000, 100);
+//    waitForJobExecutorToProcessAllJobs(2000, 100);
+    managementService.executeJob(managementService.createJobQuery().singleResult().getId());
 
     // Check delete-event has been dispatched
     assertEquals(3, listener.getEventsReceived().size());

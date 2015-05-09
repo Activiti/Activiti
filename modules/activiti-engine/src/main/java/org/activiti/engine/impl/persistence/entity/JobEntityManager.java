@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.runtime.Job;
 
 /**
@@ -40,6 +42,18 @@ import org.activiti.engine.runtime.Job;
  * @author Joram Barrez
  */
 public class JobEntityManager extends AbstractEntityManager<JobEntity> {
+  
+  protected static final List<Class<? extends JobEntity>> ENTITY_SUBCLASSES = Arrays.asList(TimerEntity.class, MessageEntity.class);
+  
+  @Override
+  public Class<JobEntity> getManagedPersistentObject() {
+    return JobEntity.class;
+  }
+  
+  @Override
+  public List<Class<? extends JobEntity>> getManagedPersistentObjectSubClasses() {
+    return ENTITY_SUBCLASSES;
+  }
 
   public void send(MessageEntity message) {
 
@@ -151,8 +165,13 @@ public class JobEntityManager extends AbstractEntityManager<JobEntity> {
   }
 
   @SuppressWarnings("unchecked")
-  public List<JobEntity> findJobsByExecutionId(String executionId) {
-    return getDbSqlSession().selectList("selectJobsByExecutionId", executionId);
+  public List<JobEntity> findJobsByExecutionId(final String executionId) {
+    return getList("selectJobsByExecutionId", executionId, new CachedEntityMatcher<JobEntity>() {
+      @Override
+      public boolean isRetained(JobEntity jobEntity) {
+        return jobEntity.getExecutionId() != null && jobEntity.getExecutionId().equals(executionId);
+      }
+    });
   }
 
   @SuppressWarnings("unchecked")

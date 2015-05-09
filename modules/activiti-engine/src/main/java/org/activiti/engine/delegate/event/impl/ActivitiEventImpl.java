@@ -86,4 +86,10 @@ public class ActivitiEventImpl implements ActivitiEvent {
   public EngineServices getEngineServices() {
     return Context.getProcessEngineConfiguration();
   }
+  
+  @Override
+  public String toString() {
+    return getClass() + " - " + type;
+  }
+  
 }

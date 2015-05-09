@@ -30,6 +30,7 @@ import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,7 +160,7 @@ public class TimerEntity extends JobEntity {
     }
 
     if (processDefinitionId != null) {
-      ProcessDefinition def = Context.getProcessEngineConfiguration().getRepositoryService().getProcessDefinition(processDefinitionId);
+      ProcessDefinition def = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId); 
       maxIterations = checkStartEventDefinitions(def, embededActivityId);
       if (maxIterations <= 1) {
         maxIterations = checkBoundaryEventsDefinitions(def, embededActivityId);
