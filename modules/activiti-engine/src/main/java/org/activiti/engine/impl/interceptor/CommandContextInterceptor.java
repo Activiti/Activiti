@@ -13,14 +13,8 @@
 
 package org.activiti.engine.impl.interceptor;
 
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
-import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.jobexecutor.FailedJobCommandFactory;
-import org.activiti.engine.impl.jobexecutor.FailedJobListener;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,20 +59,12 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
 
       context.exception(e);
       
-      if (context.isManualJobExecution() && !contextReused) {
-        handleManualJobFailure(context, e);
-      }
-
     } finally {
       try {
         if (!contextReused) {
           context.close();
         }
       } finally {
-        
-        if (context.isManualJobExecution() && !contextReused && context.getException() == null) { // !contextReused -> only needed on highest level
-          handleManualJobSuccess(context);
-        }
         
         // Pop from stack
         Context.removeCommandContext();
@@ -87,33 +73,6 @@ public class CommandContextInterceptor extends AbstractCommandInterceptor {
     }
 
     return null;
-  }
-
-  protected void handleManualJobSuccess(CommandContext context) {
-    if (context.getEventDispatcher().isEnabled()) {
-      context.getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, 
-          Context.getJobExecutorContext().getCurrentJob()));
-    }
-  }
-
-  protected void handleManualJobFailure(CommandContext context, Exception e) {
-    FailedJobListener failedJobListener = null;
-    
-    // When transaction is rolled back, decrement retries
-    JobEntity currentJob = Context.getJobExecutorContext().getCurrentJob();
-    failedJobListener = new FailedJobListener(context.getProcessEngineConfiguration().getCommandExecutor(), currentJob.getId());
-    failedJobListener.setException(e);
-    context.getTransactionContext().addTransactionListener(TransactionState.ROLLED_BACK, failedJobListener);
-    
-    if (context.getEventDispatcher().isEnabled()) {
-      try {
-        context.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(
-            ActivitiEventType.JOB_EXECUTION_FAILURE, currentJob, e));
-      } catch(Throwable ignore) {
-        log.warn("Exception occured while dispatching job failure event, ignoring.", ignore);
-      }
-    }
   }
 
   public CommandContextFactory getCommandContextFactory() {

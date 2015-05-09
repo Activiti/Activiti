@@ -88,8 +88,6 @@ public class CommandContext {
   protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
   protected LinkedList<Object> resultStack = new LinkedList<Object>();; // needs to be a stack, as JavaDelegates can do api calls again
   
-  protected boolean isManualJobExecution;
-
   public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
     nextOperations.add(executionOperation);
     if (nextOperations.size() == 1) {
@@ -128,7 +126,7 @@ public class CommandContext {
       try {
         try {
 
-          if (exception == null && closeListeners != null) {
+          if (closeListeners != null) {
             try {
               for (CommandContextCloseListener listener : closeListeners) {
                 listener.closing(this);
@@ -154,7 +152,7 @@ public class CommandContext {
             exception(exception);
           }
 
-          if (exception == null && closeListeners != null) {
+          if (closeListeners != null) {
             try {
               for (CommandContextCloseListener listener : closeListeners) {
                 listener.closed(this);
@@ -448,12 +446,4 @@ public class CommandContext {
     resultStack.add(result);
   }
 
-  public boolean isManualJobExecution() {
-    return isManualJobExecution;
-  }
-
-  public void setManualJobExecution(boolean isManualJobExecution) {
-    this.isManualJobExecution = isManualJobExecution;
-  }
-  
 }

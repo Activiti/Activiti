@@ -17,12 +17,14 @@ import java.io.Serializable;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.JobNotFoundException;
+import org.activiti.engine.delegate.event.ActivitiEventType;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.interceptor.CommandContextCloseListener;
 import org.activiti.engine.impl.jobexecutor.FailedJobListener;
-import org.activiti.engine.impl.jobexecutor.JobExecutorContext;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,14 +67,10 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
     if (log.isDebugEnabled()) {
       log.debug("Executing job {}", job.getId());
     }
-
-    JobExecutorContext jobExecutorContext = Context.getJobExecutorContext();
-    if (jobExecutorContext != null) { // if null, then we are not called by the job executor
-      jobExecutorContext.setCurrentJob(job);
-    }
+    
+    commandContext.addCloseListener(new ManualJobExecutionCommandContextCloseListener(job));
 
     try {
-      commandContext.setManualJobExecution(true);
       job.execute(commandContext);
     } catch (Throwable exception) {
       // Finally, Throw the exception to indicate the ExecuteJobCmd failed
@@ -84,6 +82,52 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
 
   public String getJobId() {
     return jobId;
+  }
+  
+  public static final class ManualJobExecutionCommandContextCloseListener implements CommandContextCloseListener {
+    
+    protected JobEntity jobEntity;
+    
+    public ManualJobExecutionCommandContextCloseListener(JobEntity jobEntity) {
+      this.jobEntity = jobEntity;
+    }
+
+    @Override
+    public void closing(CommandContext context) {
+      
+      if (context.getException() != null) {
+      
+        FailedJobListener failedJobListener = null;
+        
+        // When transaction is rolled back, decrement retries
+        failedJobListener = new FailedJobListener(context.getProcessEngineConfiguration().getCommandExecutor(), jobEntity.getId());
+        failedJobListener.setException(context.getException());
+        context.getTransactionContext().addTransactionListener(TransactionState.ROLLED_BACK, failedJobListener);
+        
+        if (context.getEventDispatcher().isEnabled()) {
+          try {
+            context.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(
+                ActivitiEventType.JOB_EXECUTION_FAILURE, jobEntity, context.getException()));
+          } catch(Throwable ignore) {
+            log.warn("Exception occured while dispatching job failure event, ignoring.", ignore);
+          }
+        }
+        
+      } else {
+        
+        if (context.getEventDispatcher().isEnabled()) {
+          context.getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_EXECUTION_SUCCESS, jobEntity));
+        }
+        
+      }
+    }
+
+    @Override
+    public void closed(CommandContext commandContext) {
+      
+    }
+    
   }
 
 }

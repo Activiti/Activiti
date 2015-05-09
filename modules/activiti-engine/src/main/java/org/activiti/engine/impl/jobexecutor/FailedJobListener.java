@@ -44,11 +44,7 @@ public class FailedJobListener implements TransactionListener {
     Command<Object> cmd = failedJobCommandFactory.getCommand(jobId, exception);
 
     log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
-    
-    boolean originalIsManualJobExecution = commandContext.isManualJobExecution();
-    commandContext.setManualJobExecution(false);
     commandExecutor.execute(commandConfig, cmd);
-    commandContext.setManualJobExecution(originalIsManualJobExecution);
   }
 
   public void setException(Throwable exception) {

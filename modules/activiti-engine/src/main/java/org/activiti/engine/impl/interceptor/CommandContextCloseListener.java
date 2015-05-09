@@ -1,7 +1,7 @@
 package org.activiti.engine.impl.interceptor;
 
 /**
- * A listener that can be used to be notified of the closure of a {@link CommandContext}.
+ * A listener that can be used to be notified of lifecycle events of the command context.
  * 
  * @author Joram Barrez
  */
