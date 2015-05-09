@@ -100,9 +100,9 @@ public class IdentityServiceTest extends PluggableActivitiTestCase {
     
     //interface defintion states that setting picture to null should delete it
     identityService.setUserPicture(userId, null);
-    assertNull('it should be possible to nullify user picture',identityService.getUserPicture(userId));    
+    assertNull("it should be possible to nullify user picture",identityService.getUserPicture(userId));    
     user = identityService.createUserQuery().userId("johndoe").singleResult();
-    assertNull('it should be possible to delete user picture',identityService.getUserPicture(userId));
+    assertNull("it should be possible to delete user picture",identityService.getUserPicture(userId));
 
     identityService.deleteUser(user.getId());
   }
