@@ -17,6 +17,7 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -29,6 +30,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.ProcessInstance;
 
 /**
@@ -111,11 +113,11 @@ public class SetProcessDefinitionVersionCmd implements Command<Void>, Serializab
   }
 
   protected void validateAndSwitchVersionOfExecution(CommandContext commandContext, ExecutionEntity execution, ProcessDefinitionEntity newProcessDefinition) {
-    // check that the new process definition version contains the current
-    // activity
-    if (execution.getActivity() != null && !newProcessDefinition.contains(execution.getActivity())) {
+    // check that the new process definition version contains the current activity
+    org.activiti.bpmn.model.Process process = ProcessDefinitionUtil.getProcess(newProcessDefinition.getId());
+    if (execution.getActivityId() != null && process.getFlowElement(execution.getActivityId(), true) == null) { 
       throw new ActivitiException("The new process definition " + "(key = '" + newProcessDefinition.getKey() + "') " + "does not contain the current activity " + "(id = '"
-          + execution.getActivity().getId() + "') " + "of the process instance " + "(id = '" + processInstanceId + "').");
+          + execution.getActivityId() + "') " + "of the process instance " + "(id = '" + processInstanceId + "').");
     }
 
     // switch the process instance to the new process definition version
