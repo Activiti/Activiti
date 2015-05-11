@@ -60,6 +60,9 @@ public class InclusiveGatewayActivityBehavior extends GatewayActivityBehavior im
   protected void executeInclusiveGatewayLogic(ExecutionEntity execution) {
     CommandContext commandContext = Context.getCommandContext();
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
+    
+    lockFirstParentScope(execution);
+    
     Collection<ExecutionEntity> allExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
     Iterator<ExecutionEntity> executionIterator = allExecutions.iterator();
     boolean oneExecutionCanReachGateway = false;

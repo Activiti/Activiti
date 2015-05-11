@@ -114,7 +114,7 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     if (executionEntity.getParent() != null) {
 
       executionEntity.inactivate();
-      executionEntity.getParent().forceUpdate();
+      lockFirstParentScope(executionEntity);
 
       if (nrOfCompletedInstances >= nrOfInstances || completionConditionSatisfied(execution)) {
 
@@ -126,7 +126,26 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       super.leave(executionEntity);
     }
   }
+  
+  protected void lockFirstParentScope(ActivityExecution execution) {
+    
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+    
+    boolean found = false;
+    ExecutionEntity parentScopeExecution = null;
+    ExecutionEntity currentExecution = (ExecutionEntity) execution;
+    while (!found && currentExecution != null && currentExecution.getParentId() != null) {
+      parentScopeExecution = executionEntityManager.findExecutionById(currentExecution.getParentId());
+      if (parentScopeExecution != null && parentScopeExecution.isScope()) {
+        found = true;
+      }
+      currentExecution = parentScopeExecution;
+    }
+    
+    parentScopeExecution.forceUpdate();
+  }
 
+  // TODO: can the ExecutionManager.deleteChildExecution not be used?
   protected void deleteChildExecutions(ExecutionEntity parentExecution, boolean deleteExecution, CommandContext commandContext) {
     // Delete all child executions
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();

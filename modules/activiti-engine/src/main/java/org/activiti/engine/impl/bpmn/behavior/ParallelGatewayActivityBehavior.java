@@ -66,6 +66,8 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
       throw new ActivitiException("Programmatic error: parallel gateway behaviour can only be applied" + " to a ParallelGateway instance, but got an instance of " + flowElement);
     }
     
+    lockFirstParentScope(execution);
+    
     ActivityExecution multiInstanceExecution = null;
     if (hasMultiInstanceParent(parallelGateway)) {
       multiInstanceExecution = findMultiInstanceParentExecution(execution);
