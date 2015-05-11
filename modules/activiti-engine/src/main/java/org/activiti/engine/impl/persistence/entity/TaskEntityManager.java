@@ -63,8 +63,12 @@ public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
       deleteTask(task, reason, cascade);
     }
   }
-
+  
   public void deleteTask(TaskEntity task, String deleteReason, boolean cascade) {
+    deleteTask(task, deleteReason, cascade, false);
+  }
+    
+  public void deleteTask(TaskEntity task, String deleteReason, boolean cascade, boolean cancel) {
     if (!task.isDeleted()) {
       task.fireEvent(TaskListener.EVENTNAME_DELETE);
       task.setDeleted(true);
@@ -90,6 +94,13 @@ public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
       getDbSqlSession().delete(task);
 
       if (commandContext.getEventDispatcher().isEnabled()) {
+        
+        if (cancel) {
+          commandContext.getEventDispatcher().dispatchEvent(
+                  ActivitiEventBuilder.createActivityCancelledEvent(task.getExecution().getActivityId(), task.getName(), task.getExecutionId(), task.getProcessInstanceId(),
+                      task.getProcessDefinitionId(), "userTask", UserTaskActivityBehavior.class.getName(), deleteReason));
+        }
+        
         commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, task));
       }
     }

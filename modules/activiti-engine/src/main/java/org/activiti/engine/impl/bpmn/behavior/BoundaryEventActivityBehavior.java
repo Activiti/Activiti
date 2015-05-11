@@ -147,7 +147,7 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
     if (parentExecution.getCurrentFlowElement() instanceof CallActivity) {
       ExecutionEntity subProcessExecution = executionEntityManager.findSubProcessInstanceBySuperExecutionId(parentExecution.getId());
       if (subProcessExecution != null) {
-        executionEntityManager.deleteProcessInstanceExecutionEntity(subProcessExecution, subProcessExecution.getCurrentActivityId(), "boundary event interrupting", true);
+        executionEntityManager.deleteProcessInstanceExecutionEntity(subProcessExecution, subProcessExecution.getCurrentActivityId(), "boundary event interrupting", true, false);
       }
     
     }

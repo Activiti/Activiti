@@ -299,16 +299,24 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   }
 
   public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason) {
-    deleteDataRelatedToExecution(executionEntity, deleteReason);
+    deleteExecutionAndRelatedData(executionEntity, deleteReason, false);
+  }
+  
+  public void deleteExecutionAndRelatedData(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
+    deleteDataRelatedToExecution(executionEntity, deleteReason, cancel);
     delete(executionEntity);
   }
-
+  
   public void deleteProcessInstanceExecutionEntity(String processInstanceId, String currentFlowElementId, String deleteReason) {
-    deleteProcessInstanceExecutionEntity(processInstanceId, currentFlowElementId, deleteReason, false);
+    deleteProcessInstanceExecutionEntity(processInstanceId, currentFlowElementId, deleteReason, false, false);
   }
-
+  
+  public void deleteProcessInstanceExecutionEntity(String processInstanceId, String currentFlowElementId, String deleteReason, boolean cancel) {
+    deleteProcessInstanceExecutionEntity(processInstanceId, currentFlowElementId, deleteReason, false, true);
+  }
+  
   public void deleteProcessInstanceExecutionEntity(String processInstanceId, 
-      String currentFlowElementId, String deleteReason, boolean cascade) {
+      String currentFlowElementId, String deleteReason, boolean cascade, boolean cancel) {
 
     ExecutionEntity processInstanceEntity = findExecutionById(processInstanceId);
     
@@ -316,11 +324,11 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       throw new ActivitiObjectNotFoundException("No process instance found for id '" + processInstanceId + "'", ProcessInstance.class);
     }
     
-    deleteProcessInstanceExecutionEntity(processInstanceEntity, currentFlowElementId, deleteReason, cascade);
+    deleteProcessInstanceExecutionEntity(processInstanceEntity, currentFlowElementId, deleteReason, cascade, cancel);
   }
   
   public void deleteProcessInstanceExecutionEntity(ExecutionEntity processInstanceEntity, 
-      String currentFlowElementId, String deleteReason, boolean cascade) {
+      String currentFlowElementId, String deleteReason, boolean cascade, boolean cancel) {
     
     for (ExecutionEntity subExecutionEntity : processInstanceEntity.getExecutions()) {
       if (subExecutionEntity.getSubProcessInstance() != null) {
@@ -334,8 +342,8 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       identityLinkEntityManager.delete(identityLinkEntity);
     }
 
-    deleteChildExecutions(processInstanceEntity, deleteReason);
-    deleteExecutionAndRelatedData(processInstanceEntity, deleteReason);
+    deleteChildExecutions(processInstanceEntity, deleteReason, cancel);
+    deleteExecutionAndRelatedData(processInstanceEntity, deleteReason, cancel);
 
     // TODO: what about delete reason?
     Context.getCommandContext().getHistoryManager().recordProcessInstanceEnd(processInstanceEntity.getId(), deleteReason, currentFlowElementId);
@@ -346,6 +354,10 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   }
 
   public void deleteChildExecutions(ExecutionEntity executionEntity, String deleteReason) {
+    deleteChildExecutions(executionEntity, deleteReason, false);
+  }
+    
+  public void deleteChildExecutions(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
 
     // The children of an execution for a tree. For correct deletions
     // (taking care of foreign keys between child-parent)
@@ -362,17 +374,21 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     while (iterator.hasNext()) {
       ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
       if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
-        deleteExecutionAndRelatedData(childExecutionEntity, deleteReason);
+        deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, cancel);
       }
     }
 
   }
   
+  public void deleteDataRelatedToExecution(ExecutionEntity executionEntity, boolean cancel) {
+    deleteDataRelatedToExecution(executionEntity, null, cancel);
+  }
+  
   public void deleteDataRelatedToExecution(ExecutionEntity executionEntity) {
-    deleteDataRelatedToExecution(executionEntity, null);
+    deleteDataRelatedToExecution(executionEntity, null, false);
   }
 
-  public void deleteDataRelatedToExecution(ExecutionEntity executionEntity, String deleteReason) {
+  public void deleteDataRelatedToExecution(ExecutionEntity executionEntity, String deleteReason, boolean cancel) {
 
     CommandContext commandContext = Context.getCommandContext();
     
@@ -394,7 +410,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     TaskEntityManager taskEntityManager = commandContext.getTaskEntityManager();
     Collection<TaskEntity> tasksForExecution = taskEntityManager.findTasksByExecutionId(executionEntity.getId());
     for (TaskEntity taskEntity : tasksForExecution) {
-      taskEntityManager.deleteTask(taskEntity, deleteReason, false);
+      taskEntityManager.deleteTask(taskEntity, deleteReason, false, cancel);
     }
 
     // Delete jobs

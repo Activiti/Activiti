@@ -231,7 +231,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
   }
 
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
-  public void testProcessInstanceCancelledEvents_cancell() throws Exception {
+  public void testProcessInstanceCancelledEvents_cancel() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertNotNull(processInstance);
     listener.clearEventsReceived();

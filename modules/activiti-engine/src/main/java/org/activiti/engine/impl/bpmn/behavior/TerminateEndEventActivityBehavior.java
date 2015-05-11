@@ -12,27 +12,19 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
-import java.util.Collection;
-import java.util.List;
-
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.JobEntityManager;
-import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
-import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.util.tree.ExecutionTree;
 import org.activiti.engine.impl.util.tree.ExecutionTreeBfsIterator;
 import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
-import org.activiti.engine.impl.util.tree.ExecutionTreeUtil;
 
 /**
  * @author Joram Barrez
@@ -51,7 +43,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 		
 		if (destroyProcessInstance) {
 
-			deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
+		  // Not yet enabled in BPMN
+		  
+//			deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
 			
 		} else {
 			
@@ -67,6 +61,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 			}
 			
 			ExecutionEntity scopeExecutionEntity = scopeTreeNode.getExecutionEntity(); 
+			sendProcessInstanceCancelledEvent(scopeExecutionEntity, execution.getCurrentFlowElement());
 			if (scopeExecutionEntity.getParentId() == null) {
 				
 				// Call activity needs special handling: the call activity is destroyed, but the main process continues
@@ -88,7 +83,9 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 				commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
 				commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeExecutionEntity);
 			}
+			
 		}
+		
 		
 	}
 
@@ -104,84 +101,50 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 	    }
     }
 	
-	
-  //-------------------------------------------------------------------------------------------------------------------
-	// OLD STUFF. Need to copy a few bits in still
-	// -------------------------------------------------------------------------------------------------------------------
-
-//    public void execute(ActivityExecution execution) {
-//
-//        PvmActivity terminateEndEventActivity = execution.getActivity();
-//        ActivityExecution scopeExecution = ScopeUtil.findScopeExecution(execution);
-//
-//        boolean loop = true;
-//        // get top superexecution to terminate
-//        while (scopeExecution.getSuperExecutionId() != null && loop) {
-//            ActivityExecution superExecution = (ActivityExecution) Context.getProcessEngineConfiguration().getRuntimeService().createExecutionQuery().executionId(scopeExecution.getSuperExecutionId())
-//                    .singleResult();
-//            if (superExecution != null) {
-//                // superExecution can be null in the case when no wait state was
-//                // reached between super start event and TerminateEndEvent
-//                while (superExecution.getParent() != null) {
-//                    superExecution = superExecution.getParent();
-//                }
-//                scopeExecution = superExecution;
-//            } else {
-//                loop = false;
-//            }
-//        }
-//
-////        terminateExecution(execution, terminateEndEventActivity, scopeExecution);
-//    }
-
-    private void terminateExecution(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
-        // send cancelled event
-        sendCancelledEvent(execution, terminateEndEventActivity, scopeExecution);
-
-        // destroy the scope
-        scopeExecution.destroyScope("terminate end event fired");
-
-        // set the scope execution to the terminate end event and make it end here.
-        // (the history should reflect that the execution ended here and we want an 'end time' for the historic activity instance.)
-        ((InterpretableExecution) scopeExecution).setActivity(terminateEndEventActivity);
-        
-        // end the scope execution
-        scopeExecution.end();
-    }
-
-    private void sendCancelledEvent(ActivityExecution execution, ActivityImpl terminateEndEventActivity, ActivityExecution scopeExecution) {
+    protected void sendProcessInstanceCancelledEvent(ActivityExecution execution, FlowElement terminateEndEvent) {
         if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
             Context.getProcessEngineConfiguration().getEventDispatcher()
-                    .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), terminateEndEventActivity));
+                    .dispatchEvent(ActivitiEventBuilder.createCancelledEvent(execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), execution.getCurrentFlowElement()));
         }
-        dispatchExecutionCancelled(scopeExecution, terminateEndEventActivity);
+        
+        dispatchExecutionCancelled(execution, terminateEndEvent);
     }
 
-    private void dispatchExecutionCancelled(ActivityExecution execution, ActivityImpl causeActivity) {
+    protected void dispatchExecutionCancelled(ActivityExecution execution, FlowElement terminateEndEvent) {
+      
+       ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+      
         // subprocesses
-        for (ActivityExecution subExecution : execution.getExecutions()) {
-            dispatchExecutionCancelled(subExecution, causeActivity);
+        for (ActivityExecution subExecution : executionEntityManager.findChildExecutionsByParentExecutionId(execution.getId())) {
+            dispatchExecutionCancelled(subExecution, terminateEndEvent);
         }
 
         // call activities
         ExecutionEntity subProcessInstance = Context.getCommandContext().getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
         if (subProcessInstance != null) {
-            dispatchExecutionCancelled(subProcessInstance, causeActivity);
+            dispatchExecutionCancelled(subProcessInstance,  terminateEndEvent);
         }
 
         // activity with message/signal boundary events
-        ActivityImpl activity = (ActivityImpl) execution.getActivity();
-        if (activity != null && activity.getActivityBehavior() != null && activity != causeActivity) {
-            dispatchActivityCancelled(execution, activity, causeActivity);
+        FlowElement currentFlowElement = execution.getCurrentFlowElement();
+        if (currentFlowElement != null && currentFlowElement instanceof FlowNode) {
+          dispatchActivityCancelled(execution, terminateEndEvent);
         }
     }
 
-    private void dispatchActivityCancelled(ActivityExecution execution, ActivityImpl activity, ActivityImpl causeActivity) {
+    protected void dispatchActivityCancelled(ActivityExecution execution, FlowElement termninateEndEvent) {
         Context.getProcessEngineConfiguration()
                 .getEventDispatcher()
                 .dispatchEvent(
-                        ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(), (String) activity.getProperties().get("name"), execution.getId(), execution.getProcessInstanceId(),
-                                execution.getProcessDefinitionId(), (String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName(), causeActivity));
+                        ActivitiEventBuilder.createActivityCancelledEvent(
+                            execution.getCurrentFlowElement().getId(), 
+                            execution.getCurrentFlowElement().getName(), 
+                            execution.getId(), 
+                            execution.getProcessInstanceId(),
+                            execution.getProcessDefinitionId(), 
+                            execution.getCurrentFlowElement().getClass().getName(), 
+                            ((FlowNode) execution.getCurrentFlowElement()).getBehavior().getClass().getCanonicalName(), 
+                            termninateEndEvent));
     }
 
 }
