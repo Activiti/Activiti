@@ -99,10 +99,8 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     ExecutionEntity processInstance = processDefinition.createProcessInstance(businessKey);
 
     // now set the variables passed into the start command
-    if (variables != null) {
-      processInstance.setVariables(variables);
-    }
-    
+    initializeVariables(processInstance);
+
     // now set processInstance name
     if (processInstanceName != null) {
       processInstance.setName(processInstanceName);
@@ -112,5 +110,11 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
     processInstance.start();
     
     return processInstance;
+  }
+
+  protected void initializeVariables(ExecutionEntity processInstance) {
+    if (variables != null) {
+      processInstance.setVariables(variables);
+    }
   }
 }

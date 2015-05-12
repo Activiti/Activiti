@@ -219,6 +219,19 @@
     "PROPERTY.EVENTLISTENERS.SIGNALNAME" : "Signal name",
     "PROPERTY.EVENTLISTENERS.SIGNALNAME.PLACEHOLDER" : "Enter a signal name",
     "PROPERTY.EVENTLISTENERS.UNSELECTED" : "No event listener selected",
+    
+    "PROPERTY.SIGNALDEFINITIONS.DISPLAY" : "{{length}} signal definitions",
+    "PROPERTY.SIGNALDEFINITIONS.EMPTY" : "No signal definitions configured",
+    "PROPERTY.SIGNALDEFINITIONS.SCOPE-GLOBAL": "Global",
+    "PROPERTY.SIGNALDEFINITIONS.SCOPE-PROCESSINSTANCE": "Process Instance",
+    "PROPERTY.SIGNALDEFINITIONS.ID" : "Id",
+    "PROPERTY.SIGNALDEFINITIONS.NAME" : "Name",
+    "PROPERTY.SIGNALDEFINITIONS.SCOPE" : "Scope", 
+  
+    "PROPERTY.MESSAGEDEFINITIONS.DISPLAY" : "{{length}} message definitions",
+    "PROPERTY.MESSAGEDEFINITIONS.EMPTY" : "No message definitions configured",
+    "PROPERTY.MESSAGEDEFINITIONS.ID" : "Id",
+    "PROPERTY.MESSAGEDEFINITIONS.NAME" : "Name",
 
     "PROPERTY.SEQUENCEFLOW.ORDER.EMPTY" : "No sequence flow order determined",
     "PROPERTY.SEQUENCEFLOW.ORDER.NOT.EMPTY" : "Sequence flow order set",

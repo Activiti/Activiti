@@ -15,7 +15,6 @@ package org.activiti.engine.history;
 
 import org.activiti.engine.query.Query;
 
-
 /** 
  * Programmatic querying for {@link HistoricVariableInstance}s.
  * 
@@ -29,6 +28,9 @@ public interface HistoricVariableInstanceQuery extends Query<HistoricVariableIns
   /** Only select historic process variables with the given process instance. */
   HistoricVariableInstanceQuery processInstanceId(String processInstanceId);
   
+  /** Only select historic process variables with the given id. **/
+  HistoricVariableInstanceQuery executionId(String executionId);
+
   /** Only select historic process variables with the given task. */
   HistoricVariableInstanceQuery taskId(String taskId);
 

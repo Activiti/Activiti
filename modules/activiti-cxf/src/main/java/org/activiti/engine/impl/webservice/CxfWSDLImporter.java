@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.wsdl.Definition;
 import javax.wsdl.Types;
@@ -40,6 +41,7 @@ import org.apache.cxf.wsdl.WSDLManager;
 import org.apache.cxf.wsdl11.WSDLServiceBuilder;
 
 import com.ibm.wsdl.extensions.schema.SchemaImpl;
+import com.sun.codemodel.JClass;
 import com.sun.codemodel.JDefinedClass;
 import com.sun.codemodel.JFieldVar;
 import com.sun.tools.xjc.ConsoleErrorReporter;
@@ -157,12 +159,23 @@ public class CxfWSDLImporter implements XMLImporter {
     SimpleStructureDefinition structure = new SimpleStructureDefinition(this.namespace + qname.getLocalPart());
     this.structures.put(structure.getId(), structure);
     
-    Map<String, JFieldVar> fields = theClass.fields();
-    int index = 0;
-    for (Entry<String, JFieldVar> entry : fields.entrySet()) {
+    importFields(theClass, structure);
+  }
+  
+  private static void importFields(final JDefinedClass theClass, final SimpleStructureDefinition structure) {
+    final AtomicInteger index = new AtomicInteger(0);
+    _importFields(theClass, index, structure);
+  }
+  
+  private static void _importFields(final JDefinedClass theClass, final AtomicInteger index, final SimpleStructureDefinition structure) {
+      
+    final JClass parentClass = theClass._extends();
+    if (parentClass != null && parentClass instanceof JDefinedClass) {
+      _importFields((JDefinedClass)parentClass, index, structure);
+    }
+    for (Entry<String, JFieldVar> entry : theClass.fields().entrySet()) {
       Class<?> fieldClass = ReflectUtil.loadClass(entry.getValue().type().boxify().fullName());
-      structure.setFieldName(index, entry.getKey(), fieldClass);
-      index++;
+      structure.setFieldName(index.getAndIncrement(), entry.getKey(), fieldClass);
     }
   }
   

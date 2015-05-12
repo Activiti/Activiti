@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiObjectNotFoundException;
+import org.activiti.engine.ActivitiOptimisticLockingException;
 import org.activiti.engine.impl.ExecutionQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessInstanceQueryImpl;
@@ -202,7 +203,10 @@ public class ExecutionEntityManager extends AbstractManager {
     params.put("lockTime", lockCal.getTime());
     params.put("expirationTime", expirationTime);
     
-    getDbSqlSession().update("updateProcessInstanceLockTime", params);
+    int result = getDbSqlSession().update("updateProcessInstanceLockTime", params);
+    if (result == 0) {
+    	throw new ActivitiOptimisticLockingException("Could not lock process instance");
+    }
   }
   
   public void clearProcessInstanceLockTime(String processInstanceId) {

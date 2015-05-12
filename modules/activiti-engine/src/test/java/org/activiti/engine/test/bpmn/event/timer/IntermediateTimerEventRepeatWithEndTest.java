@@ -13,7 +13,12 @@ package org.activiti.engine.test.bpmn.event.timer;
  * limitations under the License.
  */
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -22,10 +27,6 @@ import org.activiti.engine.test.Deployment;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
-
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 /**
  * @author Vasile Dirla
  */
@@ -109,11 +110,13 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     waitForJobExecutorToProcessAllJobs(2000, 500);
     //expect to execute because the end time is reached.
 
-    HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
-            .processInstanceId(processInstance.getId())
-            .singleResult();
-
-    assertNotNull(historicInstance.getEndTime());
+    if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
+      HistoricProcessInstance historicInstance = historyService.createHistoricProcessInstanceQuery()
+              .processInstanceId(processInstance.getId())
+              .singleResult();
+  
+      assertNotNull(historicInstance.getEndTime());
+    }
 
     //now all the process instances should be completed
     List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().list();

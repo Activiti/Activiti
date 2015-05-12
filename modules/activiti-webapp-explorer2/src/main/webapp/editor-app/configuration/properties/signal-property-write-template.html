@@ -1,0 +1,4 @@
+<div ng-controller="ActivitiSignalRefCtrl">
+    <select ng-model="property.value" ng-change="signalChanged()" ng-options="signalDefinition.id as (signalDefinition.name + ' (' + signalDefinition.id + ')') for signalDefinition in signalDefinitions">
+    </select>
+</div>

@@ -90,7 +90,7 @@ public class DurationHelper {
       end = expression.size() == 1 ? null : parseDate(expression.get(1));
     } else {
       start = parseDate(expression.get(0));
-      if (isDuration(expression.get(1))) {
+      if (isDuration(expression.get(1)))  {
         period = parsePeriod(expression.get(1));
       } else {
         end = parseDate(expression.get(1));
