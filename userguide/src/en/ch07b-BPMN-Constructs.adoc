@@ -1,4 +1,4 @@
-[[bpmnConstructs]]
+﻿[[bpmnConstructs]]
 
 == BPMN 2.0 Constructs
 
@@ -1176,9 +1176,9 @@ An attached intermediate _catching_ cancel on the boundary of a transaction subp
 ===== Graphical notation
 
 
-A cancel boundary event is visualized as a typical intermediate event (Circle with smaller circle inside) on the boundary, with the cancel icon inside. The cancel icon is white (unfilled), to indicate the _catching_
+A cancel boundary event is visualized as a typical intermediate event (Circle with smaller circle inside) on the boundary, with the cancel icon inside. The cancel icon is white (unfilled), to indicate the _catching_ semantics.
 
-image::images/bpmn.boundary.cancel.event.png[align="center"]	 semantics.
+image::images/bpmn.boundary.cancel.event.png[align="center"]
 
 
 
