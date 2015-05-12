@@ -45,7 +45,7 @@ public class FieldExtensionExport implements BpmnXMLConstants {
             xtw.writeCData(fieldExtension.getStringValue());
           } else {
             xtw.writeStartElement(ACTIVITI_EXTENSIONS_PREFIX, ATTRIBUTE_FIELD_EXPRESSION, ACTIVITI_EXTENSIONS_NAMESPACE);
-            xtw.writeCharacters(fieldExtension.getExpression());
+            xtw.writeCData(fieldExtension.getExpression());
           }
           xtw.writeEndElement();
           xtw.writeEndElement(); 
