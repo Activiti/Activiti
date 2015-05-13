@@ -61,7 +61,6 @@
     <activiti.osgi.remove.headers>Ignore-Package,Include-Resource,Private-Package,Bundle-DocURL</activiti.osgi.remove.headers>
     <activiti.osgi.include.resource>{maven-resources}</activiti.osgi.include.resource>
     <activiti.osgi.embed></activiti.osgi.embed>
-    <additionalparam>-Xdoclint:none</additionalparam>
   </properties>
 
   <dependencyManagement>
@@ -794,9 +793,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-        		<additionalparam>-Xdoclint:none</additionalparam>
-      		</configuration>
             <executions>
               <execution>
                 <id>attach-javadocs</id>
@@ -940,9 +936,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<additionalparam>-Xdoclint:none</additionalparam>
-				</configuration>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
