@@ -634,20 +634,48 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   @Deployment
   public void testParallelSubProcessCompletionCondition() {
     String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessCompletionCondition").getId();
-    List<Task> tasks = taskService.createTaskQuery().orderByExecutionId().asc().list();
+    List<Task> tasks = taskService.createTaskQuery().list();
     assertEquals(4, tasks.size());
-
-    for (int i = 0; i < 2; i++) {
-      taskService.complete(tasks.get(i).getId());
+    
+    List<Task> subProcessTasks1 = taskService.createTaskQuery().taskDefinitionKey("subProcessTask1").list();
+    assertEquals(2, subProcessTasks1.size());
+    
+    List<Task> subProcessTasks2 = taskService.createTaskQuery().taskDefinitionKey("subProcessTask2").list();
+    assertEquals(2, subProcessTasks2.size());
+    
+    Execution taskExecution = runtimeService.createExecutionQuery().executionId(subProcessTasks1.get(0).getExecutionId()).singleResult();
+    String parentExecutionId = taskExecution.getParentId();
+    
+    Task subProcessTask2 = null;
+    for (Task task : subProcessTasks2) {
+      Execution toFindExecution = runtimeService.createExecutionQuery().executionId(task.getExecutionId()).singleResult();
+      if (toFindExecution.getParentId().equals(parentExecutionId)) {
+        subProcessTask2 = task;
+        break;
+      }
     }
 
+    assertNotNull(subProcessTask2);
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(subProcessTask2.getId());
+    
     assertProcessEnded(procId);
   }
 
   @Deployment
   public void testParallelSubProcessAllAutomatic() {
     String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics", CollectionUtil.singletonMap("nrOfLoops", 5)).getId();
-    Execution waitState = runtimeService.createExecutionQuery().singleResult();
+    
+    for (int i = 0; i < 5; i++) {
+      List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
+      assertTrue(waitSubExecutions.size() > 0);
+      runtimeService.trigger(waitSubExecutions.get(0).getId());
+    }
+    
+    List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
+    assertEquals(0, waitSubExecutions.size());
+    
+    Execution waitState = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
     assertEquals(10, runtimeService.getVariable(waitState.getId(), "sum"));
 
     runtimeService.trigger(waitState.getId());
@@ -657,8 +685,18 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.testParallelSubProcessAllAutomatic.bpmn20.xml" })
   public void testParallelSubProcessAllAutomaticCompletionCondition() {
     String procId = runtimeService.startProcessInstanceByKey("miParallelSubprocessAllAutomatics", CollectionUtil.singletonMap("nrOfLoops", 10)).getId();
-    Execution waitState = runtimeService.createExecutionQuery().singleResult();
-    assertEquals(12, runtimeService.getVariable(waitState.getId(), "sum"));
+    
+    for (int i = 0; i < 6; i++) {
+      List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
+      assertTrue(waitSubExecutions.size() > 0);
+      runtimeService.trigger(waitSubExecutions.get(0).getId());
+    }
+    
+    List<Execution> waitSubExecutions = runtimeService.createExecutionQuery().activityId("subProcessWait").list();
+    assertEquals(0, waitSubExecutions.size());
+    
+    Execution waitState = runtimeService.createExecutionQuery().activityId("waitState").singleResult();
+    assertEquals(12, runtimeService.getVariable(procId, "sum"));
 
     runtimeService.trigger(waitState.getId());
     assertProcessEnded(procId);

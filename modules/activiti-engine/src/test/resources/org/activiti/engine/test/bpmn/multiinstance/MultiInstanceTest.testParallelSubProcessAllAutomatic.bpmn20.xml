@@ -17,7 +17,11 @@
       </multiInstanceLoopCharacteristics>
       
       <startEvent id="subProcessStart" />
-      <sequenceFlow id="subFlow1" sourceRef="subProcessStart" targetRef="subProcessFork" />
+      <sequenceFlow id="subFlowStart" sourceRef="subProcessStart" targetRef="subProcessWait" />
+      
+      <receiveTask id="subProcessWait" />
+      
+      <sequenceFlow id="subFlow1" sourceRef="subProcessWait" targetRef="subProcessFork" />
       
       <parallelGateway id="subProcessFork" />
       <sequenceFlow id="subFlow2" sourceRef="subProcessFork" targetRef="subProcessTask1" />
@@ -67,6 +71,9 @@
     
     <sequenceFlow id="flow3" sourceRef="miSubProcess" targetRef="waitState" />
     <receiveTask id="waitState" />
+    
+    <sequenceFlow id="flow4" sourceRef="waitState" targetRef="theEnd" />
+    <endEvent id="theEnd" />
     
   </process>
 

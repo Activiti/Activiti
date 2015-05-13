@@ -74,7 +74,7 @@ public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
     }
     
     ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
-    Collection<ExecutionEntity> joinedExecutions = executionEntityManager.getInactiveExecutionsInActivity(execution.getCurrentActivityId());
+    Collection<ExecutionEntity> joinedExecutions = executionEntityManager.getInactiveExecutionsInActivityAndForProcessInstance(execution.getCurrentActivityId(), execution.getProcessInstanceId());
     if (multiInstanceExecution != null) {
       joinedExecutions = cleanJoinedExecutions(joinedExecutions, multiInstanceExecution);
     }

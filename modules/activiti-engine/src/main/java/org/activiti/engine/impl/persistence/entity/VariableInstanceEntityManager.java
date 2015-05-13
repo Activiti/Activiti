@@ -39,8 +39,7 @@ public class VariableInstanceEntityManager extends AbstractEntityManager<Variabl
   public List<VariableInstanceEntity> findVariableInstancesByTaskId(String taskId) {
     return getDbSqlSession().selectList("selectVariablesByTaskId", taskId);
   }
-
-  @SuppressWarnings("unchecked")
+  
   public Collection<VariableInstanceEntity> findVariableInstancesByExecutionId(final String executionId) {
     return getList("selectVariablesByExecutionId", executionId, new CachedEntityMatcher<VariableInstanceEntity>() {
       public boolean isRetained(VariableInstanceEntity variableInstanceEntity) {

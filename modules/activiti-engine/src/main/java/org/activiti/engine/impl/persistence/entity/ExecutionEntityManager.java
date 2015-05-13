@@ -175,6 +175,18 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       }
     });
   }
+  
+  public Collection<ExecutionEntity> getInactiveExecutionsInActivityAndForProcessInstance(final String activityId, final String processInstanceId) {
+    HashMap<String, String> params = new HashMap<String, String>(2);
+    params.put("activityId", activityId);
+    params.put("processInstanceId", processInstanceId);
+    return getList("selectInactiveExecutionsInActivityAndProcessInstance", params, new CachedEntityMatcher<ExecutionEntity>() {
+      public boolean isRetained(ExecutionEntity executionEntity) {
+        return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && !executionEntity.isActive() &&
+            executionEntity.getActivityId() != null && executionEntity.getActivityId().equals(activityId);
+      }
+    });
+  }
 
   @SuppressWarnings("unchecked")
   public List<Execution> findExecutionsByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {

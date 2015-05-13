@@ -71,8 +71,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   protected Expression collectionExpression;
   protected String collectionVariable;
   protected String collectionElementVariable;
-  // default variable name for loop counter for inner instances (as described
-  // in the spec)
+  // default variable name for loop counter for inner instances (as described in the spec)
   protected String collectionElementIndexVariable = "loopCounter";
 
   /**
@@ -192,8 +191,7 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
 
   protected int resolveLoopCardinality(ActivityExecution execution) {
-    // Using Number since expr can evaluate to eg. Long (which is also the
-    // default for Juel)
+    // Using Number since expr can evaluate to eg. Long (which is also the default for Juel)
     Object value = loopCardinalityExpression.getValue(execution);
     if (value instanceof Number) {
       return ((Number) value).intValue();

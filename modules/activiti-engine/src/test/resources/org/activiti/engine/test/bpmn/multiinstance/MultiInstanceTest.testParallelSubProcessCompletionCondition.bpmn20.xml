@@ -25,7 +25,6 @@
       
       <userTask id="subProcessTask1" name="task one" />
       <sequenceFlow id="subFlow4" sourceRef="subProcessTask1" targetRef="join" />
-       
       
       <userTask id="subProcessTask2" name="task two" />
       <sequenceFlow id="subFlow5" sourceRef="subProcessTask2" targetRef="join" />

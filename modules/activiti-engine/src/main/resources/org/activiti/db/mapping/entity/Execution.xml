@@ -277,6 +277,14 @@
   	and IS_ACTIVE_ = 0
   </select>
   
+  <select id="selectInactiveExecutionsInActivityAndProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
+  	select *
+  	from ${prefix}ACT_RU_EXECUTION
+  	where ACT_ID_ = #{parameter.activityId}
+  	and PROC_INST_ID_ = #{parameter.processInstanceId}
+  	and IS_ACTIVE_ = 0
+  </select>
+  
   <select id="selectExecutionsByQueryCriteria" parameterType="org.activiti.engine.impl.ExecutionQueryImpl" resultMap="executionResultMap">
   	${limitBefore}
     select distinct RES.* ${limitBetween}, P.KEY_ as ProcessDefinitionKey, P.ID_ as ProcessDefinitionId

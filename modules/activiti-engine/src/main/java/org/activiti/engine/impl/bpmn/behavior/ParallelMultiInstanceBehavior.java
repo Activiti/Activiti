@@ -100,13 +100,14 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
-    
-    callActivityEndListeners(execution);
 
     if (execution.getParent() != null) { // will be null in case of empty collection
       setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
       setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
     }
+    
+    callActivityEndListeners(execution);
+    
     logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
 
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
@@ -116,10 +117,16 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
       executionEntity.inactivate();
       lockFirstParentScope(executionEntity);
 
-      if (nrOfCompletedInstances >= nrOfInstances || completionConditionSatisfied(execution)) {
+      if (nrOfCompletedInstances >= nrOfInstances || completionConditionSatisfied(execution.getParent())) {
 
-        deleteChildExecutions(executionEntity.getParent(), false, Context.getCommandContext());
-        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(executionEntity.getParent(), true);
+        ExecutionEntity workWithExecution = null;
+        if (nrOfInstances > 0) {
+          workWithExecution = executionEntity.getParent();
+        } else {
+          workWithExecution = executionEntity;
+        }
+        deleteChildExecutions(workWithExecution, false, Context.getCommandContext());
+        Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(workWithExecution, true);
       }
 
     } else {
