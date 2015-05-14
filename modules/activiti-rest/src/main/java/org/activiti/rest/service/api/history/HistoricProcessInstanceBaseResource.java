@@ -52,7 +52,7 @@ public class HistoricProcessInstanceBaseResource {
   @Autowired
   protected HistoryService historyService;
 
-  protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest, Map<String,String> allRequestParams, String serverRootUrl) {
+  protected DataResponse getQueryResponse(HistoricProcessInstanceQueryRequest queryRequest, Map<String,String> allRequestParams) {
     HistoricProcessInstanceQuery query = historyService.createHistoricProcessInstanceQuery();
 
     // Populate query based on request
@@ -123,7 +123,7 @@ public class HistoricProcessInstanceBaseResource {
     	query.processInstanceWithoutTenantId();
     }
 
-    return new HistoricProcessInstancePaginateList(restResponseFactory, serverRootUrl).paginateList(
+    return new HistoricProcessInstancePaginateList(restResponseFactory).paginateList(
         allRequestParams, queryRequest, query, "processInstanceId", allowedSortProperties);
   }
 

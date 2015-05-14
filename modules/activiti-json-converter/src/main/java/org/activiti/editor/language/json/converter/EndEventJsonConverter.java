@@ -45,8 +45,8 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
     convertersToJsonMap.put(EndEvent.class, EndEventJsonConverter.class);
   }
   
-  protected String getStencilId(FlowElement flowElement) {
-    EndEvent endEvent = (EndEvent) flowElement;
+  protected String getStencilId(BaseElement baseElement) {
+    EndEvent endEvent = (EndEvent) baseElement;
     List<EventDefinition> eventDefinitions = endEvent.getEventDefinitions();
     if (eventDefinitions.size() != 1) {
       return STENCIL_EVENT_END_NONE;
@@ -60,8 +60,8 @@ public class EndEventJsonConverter extends BaseBpmnJsonConverter {
     }
   }
   
-  protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
-    EndEvent endEvent = (EndEvent) flowElement;
+  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
+    EndEvent endEvent = (EndEvent) baseElement;
     addEventProperties(endEvent, propertiesNode);
   }
   

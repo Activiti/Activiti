@@ -6,8 +6,8 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -58,8 +58,9 @@ public class ProcessDefinitionCollectionResourceTest extends BaseSpringRestTestC
       assertResultsPresentInDataResponse(baseUrl, oneTaskProcess.getId(), twoTaskprocess.getId(), latestOneTaskProcess.getId(), oneTaskWithDiProcess.getId());
       
       // Verify ACT-2141 Persistent isGraphicalNotation flag for process definitions
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + baseUrl), HttpStatus.SC_OK);
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + baseUrl), HttpStatus.SC_OK);
       JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+      closeResponse(response);
       for (int i=0; i<dataNode.size(); i++) {
       	JsonNode processDefinitionJson = dataNode.get(i);
       	
@@ -145,7 +146,7 @@ public class ProcessDefinitionCollectionResourceTest extends BaseSpringRestTestC
       // Test using latest without key -> not allowed
       url = baseUrl + "?latest=true&name=anyname";
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + url);
-      executeHttpRequest(httpGet, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_BAD_REQUEST));
       
     } finally {
       // Always cleanup any created deployments, even if the test failed

@@ -114,8 +114,7 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       }
     }
     
-    return getQueryResponse(queryRequest, allRequestParams, 
-        request.getRequestURL().toString().replace("/runtime/process-instances", ""));
+    return getQueryResponse(queryRequest, allRequestParams);
   }
   
   
@@ -179,8 +178,6 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
       
       response.setStatus(HttpStatus.CREATED.value());
       
-      String serverRootUrl = httpRequest.getRequestURL().toString().replace("/runtime/process-instances", "");
-      
       //Added by Ryan Johnston
       if (request.getReturnVariables()) {
         Map<String, Object> runtimeVariableMap = null;
@@ -193,10 +190,10 @@ public class ProcessInstanceCollectionResource extends BaseProcessInstanceResour
           runtimeVariableMap = runtimeService.getVariables(instance.getId());
         }
     	  return restResponseFactory.createProcessInstanceResponse(instance, true, 
-    	      runtimeVariableMap, historicVariableList, serverRootUrl);
+    	      runtimeVariableMap, historicVariableList);
     	  
       } else {
-    	  return restResponseFactory.createProcessInstanceResponse(instance, serverRootUrl);
+    	  return restResponseFactory.createProcessInstanceResponse(instance);
       }
       //End Added by Ryan Johnston
       

@@ -13,7 +13,6 @@
 
 package org.activiti.rest.service.api.identity;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,15 +47,7 @@ public class UserInfoCollectionResource extends BaseUserResource {
   public List<UserInfoResponse> getUserInfo(@PathVariable String userId, HttpServletRequest request) {
     User user = getUserFromRequest(userId);
     
-    List<UserInfoResponse> responses = new ArrayList<UserInfoResponse>();
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
-    // Create responses for all keys,not including value as this is exposed through the individual resource URL.
-    for (String key : identityService.getUserInfoKeys(user.getId())) {
-      responses.add(restResponseFactory.createUserInfoResponse(key, null, user.getId(), serverRootUrl));
-    }
-    
-    return responses;
+    return restResponseFactory.createUserInfoKeysResponse(identityService.getUserInfoKeys(user.getId()), user.getId());
   }
   
   
@@ -81,8 +72,6 @@ public class UserInfoCollectionResource extends BaseUserResource {
     identityService.setUserInfo(user.getId(), userRequest.getKey(), userRequest.getValue());
     
     response.setStatus(HttpStatus.CREATED.value());
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/users/"));
-    return restResponseFactory.createUserInfoResponse(userRequest.getKey(), userRequest.getValue(), user.getId(), serverRootUrl);
+    return restResponseFactory.createUserInfoResponse(userRequest.getKey(), userRequest.getValue(), user.getId());
   }
 }

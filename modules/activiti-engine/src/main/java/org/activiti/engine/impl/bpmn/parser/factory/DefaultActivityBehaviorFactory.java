@@ -28,6 +28,7 @@ import org.activiti.bpmn.model.IOParameter;
 import org.activiti.bpmn.model.InclusiveGateway;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.ManualTask;
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.bpmn.model.ParallelGateway;
 import org.activiti.bpmn.model.ReceiveTask;
 import org.activiti.bpmn.model.ScriptTask;
@@ -89,15 +90,16 @@ import org.activiti.engine.impl.task.TaskDefinition;
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Default implementation of the {@link ActivityBehaviorFactory}. 
- * Used when no custom {@link ActivityBehaviorFactory} is injected on 
- * the {@link ProcessEngineConfigurationImpl}.
+ * Default implementation of the {@link ActivityBehaviorFactory}. Used when no
+ * custom {@link ActivityBehaviorFactory} is injected on the
+ * {@link ProcessEngineConfigurationImpl}.
  * 
  * @author Joram Barrez
  */
 public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory implements ActivityBehaviorFactory {
   
   // Start event
+  public final static String EXCEPTION_MAP_FIELD = "mapExceptions";
 
   public NoneStartEventActivityBehavior createNoneStartEventActivityBehavior(StartEvent startEvent) {
     return new NoneStartEventActivityBehavior();
@@ -128,17 +130,35 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   // Service task
   
   public ClassDelegate createClassDelegateServiceTask(ServiceTask serviceTask) {
-    return new ClassDelegate(serviceTask.getImplementation(), createFieldDeclarations(serviceTask.getFieldExtensions()));
+    Expression skipExpression;
+    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
+      skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
+    } else {
+      skipExpression = null;
+    }
+    return new ClassDelegate(serviceTask.getImplementation(), createFieldDeclarations(serviceTask.getFieldExtensions()), skipExpression, serviceTask.getMapExceptions());
   }
   
   public ServiceTaskDelegateExpressionActivityBehavior createServiceTaskDelegateExpressionActivityBehavior(ServiceTask serviceTask) {
     Expression delegateExpression = expressionManager.createExpression(serviceTask.getImplementation());
-    return new ServiceTaskDelegateExpressionActivityBehavior(delegateExpression, createFieldDeclarations(serviceTask.getFieldExtensions()));
+    Expression skipExpression;
+    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
+      skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
+    } else {
+      skipExpression = null;
+    }
+    return new ServiceTaskDelegateExpressionActivityBehavior(delegateExpression, skipExpression, createFieldDeclarations(serviceTask.getFieldExtensions()));
   }
   
   public ServiceTaskExpressionActivityBehavior createServiceTaskExpressionActivityBehavior(ServiceTask serviceTask) {
     Expression expression = expressionManager.createExpression(serviceTask.getImplementation());
-    return new ServiceTaskExpressionActivityBehavior(expression, serviceTask.getResultVariableName());
+    Expression skipExpression;
+    if (StringUtils.isNotEmpty(serviceTask.getSkipExpression())) {
+      skipExpression = expressionManager.createExpression(serviceTask.getSkipExpression());
+    } else {
+      skipExpression = null;
+    }
+    return new ServiceTaskExpressionActivityBehavior(expression, skipExpression, serviceTask.getResultVariableName());
   }
   
   public WebServiceActivityBehavior createWebServiceActivityBehavior(ServiceTask serviceTask) {
@@ -216,6 +236,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
       }
       
       List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
+      addExceptionMapAsFieldDeclaraion(fieldDeclarations, task.getMapExceptions());
       return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
      
     } catch (ClassNotFoundException e) {
@@ -223,14 +244,31 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
   }
   
+  private void addExceptionMapAsFieldDeclaraion(List<FieldDeclaration> fieldDeclarations, List<MapExceptionEntry> mapExceptions) {
+    FieldDeclaration exceptionMapsFieldDeclaration = new FieldDeclaration(EXCEPTION_MAP_FIELD, mapExceptions.getClass().toString(), mapExceptions);
+    fieldDeclarations.add(exceptionMapsFieldDeclaration);
+    
+  }
+
   public ShellActivityBehavior createShellActivityBehavior(ServiceTask serviceTask) {
     List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(serviceTask.getFieldExtensions());
     return (ShellActivityBehavior) ClassDelegate.instantiateDelegate(ShellActivityBehavior.class, fieldDeclarations);
   }
   
   public BusinessRuleTaskActivityBehavior createBusinessRuleTaskActivityBehavior(BusinessRuleTask businessRuleTask) {
-    BusinessRuleTaskActivityBehavior ruleActivity = new BusinessRuleTaskActivityBehavior();
-    
+    BusinessRuleTaskActivityBehavior ruleActivity = null;
+	if(StringUtils.isNotEmpty(businessRuleTask.getClassName())){
+		try {
+			Class<?> clazz=Class.forName(businessRuleTask.getClassName());
+			ruleActivity=(BusinessRuleTaskActivityBehavior)clazz.newInstance();
+		} catch (Exception e) {
+			throw new ActivitiException(
+					"Could not instiate businessRuleTask class: ", e);
+		}
+	}else{
+		ruleActivity=new BusinessRuleTaskActivityBehavior();
+	}
+	
     for (String ruleVariableInputObject : businessRuleTask.getInputVariables()) {
       ruleActivity.addRuleVariableInputIdExpression(expressionManager.createExpression(ruleVariableInputObject.trim()));
     }
@@ -301,9 +339,9 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     
     CallActivityBehavior callActivityBehaviour = null;
     if (StringUtils.isNotEmpty(callActivity.getCalledElement()) && callActivity.getCalledElement().matches(expressionRegex)) {
-      callActivityBehaviour = new CallActivityBehavior(expressionManager.createExpression(callActivity.getCalledElement()));
+      callActivityBehaviour = new CallActivityBehavior(expressionManager.createExpression(callActivity.getCalledElement()), callActivity.getMapExceptions());
     } else {
-      callActivityBehaviour = new CallActivityBehavior(callActivity.getCalledElement());
+      callActivityBehaviour = new CallActivityBehavior(callActivity.getCalledElement(), callActivity.getMapExceptions());
     }
 
     for (IOParameter ioParameter : callActivity.getInParameters()) {

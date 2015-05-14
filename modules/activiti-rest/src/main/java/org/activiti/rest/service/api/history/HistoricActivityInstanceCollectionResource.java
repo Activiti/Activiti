@@ -84,6 +84,6 @@ public class HistoricActivityInstanceCollectionResource extends HistoricActivity
     	query.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
     }
 
-    return getQueryResponse(query, allRequestParams, request.getRequestURL().toString().replace("/history/historic-activity-instances", ""));
+    return getQueryResponse(query, allRequestParams);
   }
 }

@@ -51,13 +51,26 @@
             "exclusivedefinition" : "Yes",
             "executionlisteners" : "",
             "formkeydefinition" : "",
-            "formproperties" : { "items" : [ { "formproperty_id" : "number",
+            "formproperties" : { "items" : [ 
+                    { "formproperty_id" : "number",
                       "formproperty_name" : "Number",
-                      "formproperty_type" : "long"
+                      "formproperty_type" : "long",
+                      "formproperty_expression":null,
+                      "formproperty_variable":null,
+                      "formproperty_required":"No",
+                      "formproperty_readable":"Yes",
+                      "formproperty_writeable":"Yes",
+                      "formproperty_formvalues": "undefined"
                     },
                     { "formproperty_id" : "message",
                       "formproperty_name" : "Message",
-                      "formproperty_type" : "string"
+                      "formproperty_type" : "string",
+                      "formproperty_expression":null,
+                      "formproperty_variable":null,
+                      "formproperty_required":"No",
+                      "formproperty_readable":"Yes",
+                      "formproperty_writeable":"Yes",
+                      "formproperty_formvalues": "undefined"
                     }
                   ],
                 "totalCount" : 2

@@ -14,6 +14,7 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ public class AttachmentEntity implements Attachment, PersistentObject, HasRevisi
   protected String contentId;
   protected ByteArrayEntity content;
   protected String userId;
+  protected Date time;
 
   public Object getPersistentState() {
     Map<String, Object> persistentState = new HashMap<String, Object>();
@@ -155,6 +157,14 @@ public class AttachmentEntity implements Attachment, PersistentObject, HasRevisi
   
   public String getUserId() {
 	return userId;
+  }
+  
+  public Date getTime() {
+    return time;
+  }
+  
+  public void setTime(Date time) {
+    this.time = time;
   }
   
 }

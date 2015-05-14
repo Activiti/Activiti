@@ -20,6 +20,7 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.impl.bpmn.helper.ClassDelegate;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
+import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.bpmn.parser.FieldDeclaration;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ActivityBehaviorInvocation;
@@ -41,10 +42,12 @@ import org.activiti.engine.impl.pvm.delegate.SignallableActivityBehavior;
 public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityBehavior {
   
   protected Expression expression;
+  protected Expression skipExpression;
   private final List<FieldDeclaration> fieldDeclarations;
-  
-  public ServiceTaskDelegateExpressionActivityBehavior(Expression expression, List<FieldDeclaration> fieldDeclarations) {
+
+  public ServiceTaskDelegateExpressionActivityBehavior(Expression expression, Expression skipExpression, List<FieldDeclaration> fieldDeclarations) {
     this.expression = expression;
+    this.skipExpression = skipExpression;
     this.fieldDeclarations = fieldDeclarations;
   }
 
@@ -60,27 +63,35 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
 	public void execute(ActivityExecution execution) throws Exception {
 
     try {
+      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression); 
+      if (!isSkipExpressionEnabled || 
+              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+        
+        // Note: we can't cache the result of the expression, because the
+        // execution can change: eg.
+        // delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
+        Object delegate = expression.getValue(execution);
+        ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
 
-      // Note: we can't cache the result of the expression, because the
-      // execution can change: eg. delegateExpression='${mySpringBeanFactory.randomSpringBean()}'
-      Object delegate = expression.getValue(execution);
-      ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
+        if (delegate instanceof ActivityBehavior) {
 
-      if (delegate instanceof ActivityBehavior) {
-        Context.getProcessEngineConfiguration()
-          .getDelegateInterceptor()
-          .handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
+          if(delegate instanceof AbstractBpmnActivityBehavior){
+            ((AbstractBpmnActivityBehavior) delegate).setMultiInstanceActivityBehavior(getMultiInstanceActivityBehavior());
+          }
 
-      } else if (delegate instanceof JavaDelegate) {
-        Context.getProcessEngineConfiguration()
-          .getDelegateInterceptor()
-          .handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
-        leave(execution);
+          Context.getProcessEngineConfiguration().getDelegateInterceptor()
+                  .handleInvocation(new ActivityBehaviorInvocation((ActivityBehavior) delegate, execution));
 
+        } else if (delegate instanceof JavaDelegate) {
+          Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new JavaDelegateInvocation((JavaDelegate) delegate, execution));
+          leave(execution);
+
+        } else {
+          throw new ActivitiIllegalArgumentException("Delegate expression " + expression + " did neither resolve to an implementation of "
+                  + ActivityBehavior.class + " nor " + JavaDelegate.class);
+        }
       } else {
-        throw new ActivitiIllegalArgumentException("Delegate expression " + expression
-                + " did neither resolve to an implementation of " + ActivityBehavior.class
-                + " nor " + JavaDelegate.class);
+        leave(execution);
       }
     } catch (Exception exc) {
 

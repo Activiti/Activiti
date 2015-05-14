@@ -1373,6 +1373,7 @@
 				<xsd:attribute name="sourceRef" type="xsd:IDREF" use="required"/>
 				<xsd:attribute name="targetRef" type="xsd:IDREF" use="required"/>
 				<xsd:attribute name="isImmediate" type="xsd:boolean" use="optional"/>
+				<xsd:attribute name="skipExpression" type="xsd:string" use="optional"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>
@@ -1383,6 +1384,7 @@
 			<xsd:extension base="tTask">
 				<xsd:attribute name="implementation" type="tImplementation" default="##WebService"/>
 				<xsd:attribute name="operationRef" type="xsd:QName" use="optional"/>
+				<xsd:attribute name="skipExpression" type="xsd:string" use="optional"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>	
@@ -1555,6 +1557,7 @@
 					<xsd:element ref="rendering" minOccurs="0" maxOccurs="unbounded"/>
 				</xsd:sequence>
 				<xsd:attribute name="implementation" type="tImplementation" default="##unspecified"/>
+				<xsd:attribute name="skipExpression" type="xsd:string" use="optional"/>
 			</xsd:extension>
 		</xsd:complexContent>
 	</xsd:complexType>

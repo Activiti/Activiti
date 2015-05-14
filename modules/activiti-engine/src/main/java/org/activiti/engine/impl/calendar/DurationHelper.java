@@ -44,6 +44,8 @@ public class DurationHelper {
 
   private int times;
 
+  private int maxIterations = -1;
+
   private DatatypeFactory datatypeFactory;
 
   public Calendar getStart() {
@@ -68,8 +70,9 @@ public class DurationHelper {
 
   protected ClockReader clockReader;
 
-  public DurationHelper(String expressionS, ClockReader clockReader) throws Exception {
+  public DurationHelper(String expressionS, int maxIterations, ClockReader clockReader) throws Exception {
     this.clockReader = clockReader;
+    this.maxIterations = maxIterations;
     List<String> expression = Arrays.asList(expressionS.split("/"));
     datatypeFactory = DatatypeFactory.newInstance();
 
@@ -78,7 +81,7 @@ public class DurationHelper {
     }
     if (expression.get(0).startsWith("R")) {
       isRepeat = true;
-      times = expression.get(0).length() == 1 ? Integer.MAX_VALUE : Integer.parseInt(expression.get(0).substring(1));
+      times = expression.get(0).length() == 1 ? Integer.MAX_VALUE-1 : Integer.parseInt(expression.get(0).substring(1));
       expression = expression.subList(1, expression.size());
     }
 
@@ -87,23 +90,27 @@ public class DurationHelper {
       end = expression.size() == 1 ? null : parseDate(expression.get(1));
     } else {
       start = parseDate(expression.get(0));
-      if (isDuration(expression.get(1))) {
+      if (isDuration(expression.get(1)))  {
         period = parsePeriod(expression.get(1));
       } else {
         end = parseDate(expression.get(1));
         period = datatypeFactory.newDuration(end.getTimeInMillis() - start.getTimeInMillis());
       }
     }
-    if (start == null && end == null) {
+    if (start == null) {
       start = clockReader.getCurrentCalendar();
     }
 
   }
 
+  public DurationHelper(String expressionS, ClockReader clockReader) throws Exception {
+    this(expressionS,-1,clockReader);
+  }
+
   public Calendar getCalendarAfter() {
     return getCalendarAfter(clockReader.getCurrentCalendar());
   }
-  
+
   public Calendar getCalendarAfter(Calendar time) {
     if (isRepeat) {
       return getDateAfterRepeat(time);
@@ -115,6 +122,10 @@ public class DurationHelper {
     return add(start, period);
   }
 
+  public Boolean isValidDate(Date newTimer) {
+    return end==null || end.getTime().after(newTimer) || end.getTime().equals(newTimer);
+  }
+
   public Date getDateAfter() {
     Calendar date = getCalendarAfter();
 
@@ -122,26 +133,17 @@ public class DurationHelper {
   }
 
   private Calendar getDateAfterRepeat(Calendar date) {
-    if (start != null) {
-      Calendar cur = TimeZoneUtil.convertToTimeZone(start, date.getTimeZone());
 
-      for (int i = 0; i < times && !cur.after(date); i++) {
-        cur = add(cur, period);
-      }
-
-      return cur.before(date) ? date : TimeZoneUtil.convertToTimeZone(cur, clockReader.getCurrentTimeZone());
+    Calendar cur = TimeZoneUtil.convertToTimeZone(start, date.getTimeZone());
+    int maxLoops = times;
+    if (maxIterations > 0) {
+      maxLoops = maxIterations - times;
+    }
+    for (int i = 0; i < maxLoops+1 && !cur.after(date); i++) {
+      cur = add(cur, period);
     }
 
-    Calendar cur = add(TimeZoneUtil.convertToTimeZone(end, date.getTimeZone()), period.negate());
-
-    Calendar next = TimeZoneUtil.convertToTimeZone(end, date.getTimeZone());
-
-    for (int i = 0; i < times && cur.after(date); i++) {
-      next = cur;
-      cur = add(cur, period.negate());
-    }
-    
-    return next.before(date) ? date : TimeZoneUtil.convertToTimeZone(next, clockReader.getCurrentTimeZone());
+    return cur.before(date) ? date : TimeZoneUtil.convertToTimeZone(cur, clockReader.getCurrentTimeZone());
   }
 
   private Calendar add(Calendar date, Duration duration) {

@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -40,9 +41,7 @@ public class TaskResource extends TaskBaseResource {
 
   @RequestMapping(value="/runtime/tasks/{taskId}", method = RequestMethod.GET, produces="application/json")
   public TaskResponse getTask(@PathVariable String taskId, HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    return restResponseFactory.createTaskResponse(getTaskFromRequest(taskId), serverRootUrl);
+    return restResponseFactory.createTaskResponse(getTaskFromRequest(taskId));
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}", method = RequestMethod.PUT, produces="application/json")
@@ -63,13 +62,11 @@ public class TaskResource extends TaskBaseResource {
     taskService.saveTask(task);
     task = taskService.createTaskQuery().taskId(task.getId()).singleResult();
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    return restResponseFactory.createTaskResponse(task, serverRootUrl);
+    return restResponseFactory.createTaskResponse(task);
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}", method = RequestMethod.POST)
+  @ResponseStatus(value = HttpStatus.OK)
   public void executeTaskAction(@PathVariable String taskId, @RequestBody TaskActionRequest actionRequest) {
     if (actionRequest == null) {
       throw new ActivitiException("A request body was expected when executing a task action.");

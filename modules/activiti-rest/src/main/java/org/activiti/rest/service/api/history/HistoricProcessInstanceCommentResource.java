@@ -57,9 +57,7 @@ public class HistoricProcessInstanceCommentResource {
       throw new ActivitiObjectNotFoundException("Process instance '" + instance.getId() + "' doesn't have a comment with id '" + commentId + "'.", Comment.class);
     }
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-process-instances/"));
-    return restResponseFactory.createRestComment(comment, serverRootUrl);
+    return restResponseFactory.createRestComment(comment);
   }
   
   @RequestMapping(value="/history/historic-process-instances/{processInstanceId}/comments/{commentId}", method = RequestMethod.DELETE)

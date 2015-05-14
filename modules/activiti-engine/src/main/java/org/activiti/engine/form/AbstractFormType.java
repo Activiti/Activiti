@@ -22,6 +22,8 @@ package org.activiti.engine.form;
  * @author Joram Barrez
  */
 public abstract class AbstractFormType implements FormType {
+	
+  private static final long serialVersionUID = 1L;
 
   public abstract Object convertFormValueToModelValue(String propertyValue);
 

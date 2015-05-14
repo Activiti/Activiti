@@ -153,10 +153,10 @@ public class RuntimeServiceImpl extends ServiceImpl implements RuntimeService {
     return commandExecutor.execute(new GetExecutionVariableCmd(executionId, variableName, false));
   }
 
-    @Override
-    public <T> T getVariable(String executionId, String variableName, Class<T> variableClass) {
-        return variableClass.cast(getVariable(executionId, variableName));
-    }
+  @Override
+  public <T> T getVariable(String executionId, String variableName, Class<T> variableClass) {
+  	return variableClass.cast(getVariable(executionId, variableName));
+  }
 
   @Override
   public boolean hasVariable(String executionId, String variableName) {

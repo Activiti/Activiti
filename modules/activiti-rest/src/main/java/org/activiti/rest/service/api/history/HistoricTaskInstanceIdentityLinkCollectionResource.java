@@ -44,15 +44,10 @@ public class HistoricTaskInstanceIdentityLinkCollectionResource {
   public List<HistoricIdentityLinkResponse> getTaskIdentityLinks(@PathVariable String taskId, HttpServletRequest request) {
     List<HistoricIdentityLink> identityLinks = historyService.getHistoricIdentityLinksForTask(taskId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-task-instances/"));
-    List<HistoricIdentityLinkResponse> responseList = new ArrayList<HistoricIdentityLinkResponse>();
     if (identityLinks != null) {
-      for (HistoricIdentityLink instance : identityLinks) {
-        responseList.add(restResponseFactory.createHistoricIdentityLinkResponse(instance, serverRootUrl));
-      }
+      return restResponseFactory.createHistoricIdentityLinkResponseList(identityLinks);
     }
     
-    return responseList;
+    return new ArrayList<HistoricIdentityLinkResponse>();
   }
 }

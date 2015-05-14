@@ -45,7 +45,12 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
     units.put("year", Calendar.YEAR);
     units.put("years", Calendar.YEAR);
   }
-  
+
+  @Override
+  public Date resolveDuedate(String duedateDescription, int maxIterations) {
+    return resolveDuedate(duedateDescription);
+  }
+
   public Date resolveDuedate(String duedate) {
     Date resolvedDuedate = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
     
@@ -55,6 +60,16 @@ public class DefaultBusinessCalendar implements BusinessCalendar {
     }
 
     return resolvedDuedate;
+  }
+
+  @Override
+  public Boolean validateDuedate(String duedateDescription, int maxIterations, Date endDate, Date newTimer) {
+    return true;
+  }
+
+  @Override
+  public Date resolveEndDate(String endDate) {
+    return null;
   }
 
   protected Date addSingleUnitQuantity(Date startDate, String singleUnitQuantity) {

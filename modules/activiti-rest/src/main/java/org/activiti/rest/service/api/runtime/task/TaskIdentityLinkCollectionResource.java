@@ -13,14 +13,12 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
-import org.activiti.engine.task.IdentityLink;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.api.engine.RestIdentityLink;
 import org.springframework.http.HttpStatus;
@@ -39,17 +37,8 @@ public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
 
   @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks", method = RequestMethod.GET, produces="application/json")
   public List<RestIdentityLink> getIdentityLinks(@PathVariable("taskId") String taskId, HttpServletRequest request) {
-    List<RestIdentityLink> result = new ArrayList<RestIdentityLink>();
     Task task = getTaskFromRequest(taskId);
-    
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    List<IdentityLink> identityLinks = taskService.getIdentityLinksForTask(task.getId());
-    for (IdentityLink link : identityLinks) {
-      result.add(restResponseFactory.createRestIdentityLink(link, serverRootUrl));
-    }
-    return result;
+    return restResponseFactory.createRestIdentityLinks(taskService.getIdentityLinksForTask(task.getId()));
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks", method = RequestMethod.POST, produces="application/json")
@@ -78,10 +67,7 @@ public class TaskIdentityLinkCollectionResource extends TaskBaseResource {
     
     response.setStatus(HttpStatus.CREATED.value());
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
     return restResponseFactory.createRestIdentityLink(identityLink.getType(), identityLink.getUser(), 
-        identityLink.getGroup(), task.getId(), null, null, serverRootUrl);
+        identityLink.getGroup(), task.getId(), null, null);
   }
 }

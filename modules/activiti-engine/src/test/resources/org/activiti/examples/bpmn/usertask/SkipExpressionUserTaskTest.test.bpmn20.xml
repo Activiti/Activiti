@@ -1,0 +1,13 @@
+<definitions 
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+  
+  <process id="skipExpressionUserTask">
+    <startEvent id="theStart" name="Start Event"/>
+    <sequenceFlow sourceRef="theStart" targetRef="userTask1" />
+    <userTask id="userTask1" name="Task1" activiti:skipExpression="${execution.getVariable('skip')}"/> 
+    <sequenceFlow sourceRef="userTask1" targetRef="theEnd" />
+    <endEvent id="theEnd" name="End Event"/>
+  </process>
+</definitions>

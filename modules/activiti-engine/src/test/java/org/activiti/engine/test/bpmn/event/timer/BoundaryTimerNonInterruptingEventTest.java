@@ -17,7 +17,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
@@ -48,7 +48,9 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
 
     // After setting the clock to time '1 hour and 5 seconds', the first timer should fire
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
-    waitForJobExecutorToProcessAllJobs(5000L, 25L);
+    Job job = managementService.createJobQuery().executable().singleResult();
+    assertNotNull(job);
+    managementService.executeJob(job.getId());
     
     // we still have one timer more to fire
     assertEquals(1L, jobQuery.count());
@@ -180,18 +182,36 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
   @Deployment
   public void testTimerWithCycle() throws Exception {
     runtimeService.startProcessInstanceByKey("nonInterruptingCycle").getId();
-    TaskQuery tq = taskService.createTaskQuery().taskDefinitionKey("timerFiredTask");
-    assertEquals(0, tq.count());
-    moveByHours(1);
-    assertEquals(1, tq.count());
-    moveByHours(1);
-    assertEquals(2, tq.count());
+
+    List<Job> jobs = managementService.createJobQuery().list();
+    assertEquals(1, jobs.size());
+    //boundary events
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+      fail("a new job must be prepared because there are undefinite number of repeats 1 hour interval");
+    }catch (Exception ex){
+      //expected exception because a new job is prepared
+    }
+
+   moveByMinutes(60);
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+      fail("a new job must be prepared because there are undefinite number of repeats 1 hour interval");
+    }catch (Exception ex){
+      //expected exception because a new job is prepared
+    }
+
 
     Task task = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
     taskService.complete(task.getId());
 
-    moveByHours(1);
-    assertEquals(2, tq.count());
+    moveByMinutes(60);
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+     }catch (Exception ex){
+      fail("No more jobs since the user completed the task");
+
+    }
   }
   
   @Deployment
@@ -311,13 +331,8 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     assertProcessEnded(procId);
   }
 
-  //we cannot use waitForExecutor... method since there will always be one job left
-  private void moveByHours(int hours) throws Exception {
-    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((hours * 60 * 1000 * 60) + 5000)));
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
-    Thread.sleep(1000);
-    jobExecutor.shutdown();
+  private void moveByMinutes(int minutes) throws Exception {
+    processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + ((minutes * 60 * 1000))));
   }
 
 

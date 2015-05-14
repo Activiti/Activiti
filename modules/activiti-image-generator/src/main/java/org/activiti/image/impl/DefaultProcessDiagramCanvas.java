@@ -123,6 +123,8 @@ public class DefaultProcessDiagramCanvas {
   protected static BufferedImage CAMEL_TASK_IMAGE;
   
   protected static BufferedImage TIMER_IMAGE;
+  protected static BufferedImage COMPENSATE_THROW_IMAGE;
+  protected static BufferedImage COMPENSATE_CATCH_IMAGE;
   protected static BufferedImage ERROR_THROW_IMAGE;
   protected static BufferedImage ERROR_CATCH_IMAGE;
   protected static BufferedImage MESSAGE_THROW_IMAGE;
@@ -215,24 +217,26 @@ public class DefaultProcessDiagramCanvas {
     LABEL_FONT = new Font(labelFontName, Font.ITALIC, 10);
     
     try {
-      USERTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/userTask.png", customClassLoader));
-      SCRIPTTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/scriptTask.png", customClassLoader));
-      SERVICETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/serviceTask.png", customClassLoader));
-      RECEIVETASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/receiveTask.png", customClassLoader));
-      SENDTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/sendTask.png", customClassLoader));
-      MANUALTASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/manualTask.png", customClassLoader));
-      BUSINESS_RULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/businessRuleTask.png", customClassLoader));
-      SHELL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/shellTask.png", customClassLoader));
-      CAMEL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/camelTask.png", customClassLoader));
-      MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/muleTask.png", customClassLoader));
+      USERTASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/userTask.png", customClassLoader));
+      SCRIPTTASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/scriptTask.png", customClassLoader));
+      SERVICETASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/serviceTask.png", customClassLoader));
+      RECEIVETASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/receiveTask.png", customClassLoader));
+      SENDTASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/sendTask.png", customClassLoader));
+      MANUALTASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/manualTask.png", customClassLoader));
+      BUSINESS_RULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/businessRuleTask.png", customClassLoader));
+      SHELL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/shellTask.png", customClassLoader));
+      CAMEL_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/camelTask.png", customClassLoader));
+      MULE_TASK_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/muleTask.png", customClassLoader));
       
-      TIMER_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/timer.png", customClassLoader));
-      ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error-throw.png", customClassLoader));
-      ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/error.png", customClassLoader));
-      MESSAGE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/message-throw.png", customClassLoader));
-      MESSAGE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/message.png", customClassLoader));
-      SIGNAL_THROW_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/signal-throw.png", customClassLoader));
-      SIGNAL_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResourceAsStream("org/activiti/icons/signal.png", customClassLoader));
+      TIMER_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/timer.png", customClassLoader));
+      COMPENSATE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/compensate-throw.png", customClassLoader));
+      COMPENSATE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/compensate.png", customClassLoader));
+      ERROR_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/error-throw.png", customClassLoader));
+      ERROR_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/error.png", customClassLoader));
+      MESSAGE_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/message-throw.png", customClassLoader));
+      MESSAGE_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/message.png", customClassLoader));
+      SIGNAL_THROW_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/signal-throw.png", customClassLoader));
+      SIGNAL_CATCH_IMAGE = ImageIO.read(ReflectUtil.getResource("org/activiti/icons/signal.png", customClassLoader));
     } catch (IOException e) {
       LOGGER.warn("Could not load image for process diagram creation: {}", e.getMessage());
     }
@@ -315,6 +319,10 @@ public class DefaultProcessDiagramCanvas {
   public void drawSignalStartEvent(GraphicInfo graphicInfo, double scaleFactor) {
     drawStartEvent(graphicInfo, SIGNAL_CATCH_IMAGE, scaleFactor);
   }
+  
+  public void drawMessageStartEvent(GraphicInfo graphicInfo, double scaleFactor) {
+    drawStartEvent(graphicInfo, MESSAGE_CATCH_IMAGE, scaleFactor);
+  }
 
   public void drawStartEvent(GraphicInfo graphicInfo, BufferedImage image, double scaleFactor) {
     Paint originalPaint = g.getPaint();
@@ -326,8 +334,10 @@ public class DefaultProcessDiagramCanvas {
     g.draw(circle);
     g.setPaint(originalPaint);
     if (image != null) {
-      g.drawImage(image, (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4)), 
-          (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 4)), 
+      // calculate coordinates to center image
+      int imageX = (int) Math.round(graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (image.getWidth() / 2 * scaleFactor));
+      int imageY = (int) Math.round(graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (image.getHeight() / 2 * scaleFactor));  
+      g.drawImage(image, imageX, imageY,
           (int) (image.getWidth() / scaleFactor), (int) (image.getHeight() / scaleFactor), null);
     }
 
@@ -404,16 +414,26 @@ public class DefaultProcessDiagramCanvas {
     g.draw(innerCircle);
 
     if (image != null) {
-      int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 4));
-      int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 4));
+      // calculate coordinates to center image
+      int imageX = (int) (graphicInfo.getX() + (graphicInfo.getWidth() / 2) - (image.getWidth() / 2 * scaleFactor));
+      int imageY = (int) (graphicInfo.getY() + (graphicInfo.getHeight() / 2) - (image.getHeight() / 2 * scaleFactor));  
       if (scaleFactor == 1.0 && "timer".equals(eventType)) {
         // move image one pixel to center timer image
-        imageX--;
-        imageY--;
+        imageX++;
+        imageY++;
       }
       g.drawImage(image, imageX, imageY, (int) (image.getWidth() / scaleFactor), 
           (int) (image.getHeight() / scaleFactor), null);
     }
+  }
+
+  public void drawCatchingCompensateEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingCompensateEvent(graphicInfo, isInterrupting, scaleFactor);
+    drawLabel(name, graphicInfo);
+  }
+
+  public void drawCatchingCompensateEvent(GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, isInterrupting, COMPENSATE_CATCH_IMAGE, "compensate", scaleFactor);
   }
 
   public void drawCatchingTimerEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
@@ -441,6 +461,19 @@ public class DefaultProcessDiagramCanvas {
 
   public void drawCatchingSignalEvent(GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
     drawCatchingEvent(graphicInfo, isInterrupting, SIGNAL_CATCH_IMAGE, "signal", scaleFactor);
+  }
+  
+  public void drawCatchingMessageEvent(GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, isInterrupting, MESSAGE_CATCH_IMAGE, "message", scaleFactor);
+  }
+
+  public void drawCatchingMessageEvent(String name, GraphicInfo graphicInfo, boolean isInterrupting, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, isInterrupting, MESSAGE_CATCH_IMAGE, "message", scaleFactor);
+    drawLabel(name, graphicInfo);
+  }
+  
+  public void drawThrowingCompensateEvent(GraphicInfo graphicInfo, double scaleFactor) {
+    drawCatchingEvent(graphicInfo, true, COMPENSATE_THROW_IMAGE, "compensate", scaleFactor);
   }
 
   public void drawThrowingSignalEvent(GraphicInfo graphicInfo, double scaleFactor) {
@@ -1146,34 +1179,36 @@ public class DefaultProcessDiagramCanvas {
     Shape shapeFirst = createShape(sourceShapeType, sourceGraphicInfo);
     Shape shapeLast = createShape(targetShapeType, targetGraphicInfo);
 
-    GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
-    GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size()-1);
-    if (shapeFirst != null) {
-      graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
-      graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());
-    }
-    if (shapeLast != null) {
-      graphicInfoLast.setX(shapeLast.getBounds2D().getCenterX());
-      graphicInfoLast.setY(shapeLast.getBounds2D().getCenterY());
-    }
-
-    Point p = null;
-    
-    if (shapeFirst != null) {
-      Line2D.Double lineFirst = new Line2D.Double(graphicInfoFirst.getX(), graphicInfoFirst.getY(), graphicInfoList.get(1).getX(), graphicInfoList.get(1).getY());
-      p = getIntersection(shapeFirst, lineFirst);
-      if (p != null) {
-        graphicInfoFirst.setX(p.getX());
-        graphicInfoFirst.setY(p.getY());
+    if (graphicInfoList != null && graphicInfoList.size() > 0) {
+      GraphicInfo graphicInfoFirst = graphicInfoList.get(0);
+      GraphicInfo graphicInfoLast = graphicInfoList.get(graphicInfoList.size()-1);
+      if (shapeFirst != null) {
+        graphicInfoFirst.setX(shapeFirst.getBounds2D().getCenterX());
+        graphicInfoFirst.setY(shapeFirst.getBounds2D().getCenterY());
       }
-    }
-
-    if (shapeLast != null) {
-      Line2D.Double lineLast = new Line2D.Double(graphicInfoLast.getX(), graphicInfoLast.getY(), graphicInfoList.get(graphicInfoList.size()-2).getX(), graphicInfoList.get(graphicInfoList.size()-2).getY());
-      p = getIntersection(shapeLast, lineLast);
-      if (p != null) {
-        graphicInfoLast.setX(p.getX());
-        graphicInfoLast.setY(p.getY());
+      if (shapeLast != null) {
+        graphicInfoLast.setX(shapeLast.getBounds2D().getCenterX());
+        graphicInfoLast.setY(shapeLast.getBounds2D().getCenterY());
+      }
+  
+      Point p = null;
+      
+      if (shapeFirst != null) {
+        Line2D.Double lineFirst = new Line2D.Double(graphicInfoFirst.getX(), graphicInfoFirst.getY(), graphicInfoList.get(1).getX(), graphicInfoList.get(1).getY());
+        p = getIntersection(shapeFirst, lineFirst);
+        if (p != null) {
+          graphicInfoFirst.setX(p.getX());
+          graphicInfoFirst.setY(p.getY());
+        }
+      }
+  
+      if (shapeLast != null) {
+        Line2D.Double lineLast = new Line2D.Double(graphicInfoLast.getX(), graphicInfoLast.getY(), graphicInfoList.get(graphicInfoList.size()-2).getX(), graphicInfoList.get(graphicInfoList.size()-2).getY());
+        p = getIntersection(shapeLast, lineLast);
+        if (p != null) {
+          graphicInfoLast.setX(p.getX());
+          graphicInfoLast.setY(p.getY());
+        }
       }
     }
 

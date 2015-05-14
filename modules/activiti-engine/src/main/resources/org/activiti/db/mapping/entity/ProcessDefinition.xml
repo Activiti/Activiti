@@ -132,6 +132,12 @@
       <if test="deploymentId != null">
         and RES.DEPLOYMENT_ID_ = #{deploymentId}
       </if>
+      <if test="deploymentIds != null and !deploymentIds.isEmpty()">
+        and RES.DEPLOYMENT_ID_ in
+        <foreach item="item" index="index" collection="deploymentIds" open="(" separator="," close=")">
+          #{item}
+        </foreach>
+      </if>
       <if test="latest">
         and RES.VERSION_ = (select max(VERSION_) from ${prefix}ACT_RE_PROCDEF where KEY_ = RES.KEY_ 
              <if test="tenantId != null">

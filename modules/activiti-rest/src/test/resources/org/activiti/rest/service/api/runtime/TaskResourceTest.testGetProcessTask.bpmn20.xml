@@ -9,7 +9,7 @@
   
     <startEvent id="theStart" />
     <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theTask" />
-    <userTask id="theTask" name="my task" activiti:assignee="kermit">
+    <userTask id="theTask" name="my task" activiti:assignee="kermit" activiti:formKey="myForm.json">
        <documentation>Usertask</documentation>
     </userTask>    
     <sequenceFlow id="flow2" sourceRef="theTask" targetRef="theEnd" />

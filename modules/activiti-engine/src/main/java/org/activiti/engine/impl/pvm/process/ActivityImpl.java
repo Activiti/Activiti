@@ -18,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.pvm.PvmActivity;
 import org.activiti.engine.impl.pvm.PvmException;
 import org.activiti.engine.impl.pvm.PvmTransition;
@@ -40,6 +42,8 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   protected boolean isAsync;
   protected boolean isExclusive;
   protected String failedJobRetryTimeCycleValue;
+  protected List<MapExceptionEntry> mapExceptions = new ArrayList<MapExceptionEntry>(); 
+  
   
   // Graphical information
   protected int x = -1;
@@ -50,23 +54,29 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   public ActivityImpl(String id, ProcessDefinitionImpl processDefinition) {
     super(id, processDefinition);
   }
-
-  public TransitionImpl createOutgoingTransition() {
-    return createOutgoingTransition(null);
-  }
+  
   public String getFailedJobRetryTimeCycleValue() {
 		return failedJobRetryTimeCycleValue;
   }
+  
   public void setFailedJobRetryTimeCycleValue(String failedJobRetryTimeCycleValue) {
 	  this.failedJobRetryTimeCycleValue = failedJobRetryTimeCycleValue;
   }
-
+  
+  public TransitionImpl createOutgoingTransition() {
+    return createOutgoingTransition(null);
+  }
+  
   public TransitionImpl createOutgoingTransition(String transitionId) {
-    TransitionImpl transition = new TransitionImpl(transitionId, processDefinition);
+    return createOutgoingTransition(transitionId, null);
+  }
+
+  public TransitionImpl createOutgoingTransition(String transitionId, Expression skipExpression) {
+    TransitionImpl transition = new TransitionImpl(transitionId, skipExpression, processDefinition);
     transition.setSource(this);
     outgoingTransitions.add(transition);
     
-    if (transitionId!=null) {
+    if (transitionId != null) {
       if (namedOutgoingTransitions.containsKey(transitionId)) {
         throw new PvmException("activity '"+id+" has duplicate transition '"+transitionId+"'");
       }
@@ -193,5 +203,14 @@ public class ActivityImpl extends ScopeImpl implements PvmActivity, HasDIBounds 
   public void setExclusive(boolean isExclusive) {
     this.isExclusive = isExclusive;
   }
+
+  public List<MapExceptionEntry> getMapExceptions() {
+    return mapExceptions;
+  }
+  
+  public void setMapExceptions(List<MapExceptionEntry> mapExceptions) {
+    this.mapExceptions = mapExceptions;
+  }
+  
   
 }

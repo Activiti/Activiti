@@ -15,7 +15,7 @@
 
         <serviceTask id="serviceTask1" activiti:type="camel">
           <extensionElements>
-            <activiti:field name="camelContext" stringValue="customCamelContext" />
+            <activiti:field name="camelContext" stringValue="camelContext" />
           </extensionElements>
         </serviceTask>
         <sequenceFlow id="flow2" sourceRef="serviceTask1" targetRef="receive"/>
@@ -24,11 +24,7 @@
 
         <sequenceFlow id="flow3" sourceRef="receive" targetRef="serviceTask2"/>
 
-        <serviceTask id="serviceTask2" activiti:type="camel">
-          <extensionElements>
-            <activiti:field name="camelContext" stringValue="customCamelContext" />
-          </extensionElements>
-        </serviceTask>
+        <serviceTask id="serviceTask2" activiti:type="camel" />
 
         <sequenceFlow id="flow4" sourceRef="serviceTask2" targetRef="end"/>
         <endEvent id="end"/>

@@ -22,8 +22,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -54,9 +54,9 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertTrue(responseNode.isArray());
       assertEquals(1, responseNode.size());
@@ -73,7 +73,7 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       // Test with unexisting task
       httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, "unexistingtask"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -99,13 +99,13 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
-      
+      CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
       List<Comment> commentsOnTask = taskService.getTaskComments(task.getId());
       assertNotNull(commentsOnTask);
       assertEquals(1, commentsOnTask.size());
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("kermit", responseNode.get("author").textValue());
       assertEquals("This is a comment...", responseNode.get("message").textValue());
@@ -137,13 +137,14 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT_COLLECTION, task.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
 
     List<Comment> commentsOnTask = taskService.getTaskComments(task.getId());
     assertNotNull(commentsOnTask);
     assertEquals(1, commentsOnTask.size());
 
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals(processInstance.getId(), responseNode.get("processInstanceId").asText());
     assertEquals(task.getId(), responseNode.get("taskId").asText());
@@ -170,9 +171,9 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       
       assertEquals("kermit", responseNode.get("author").textValue());
@@ -186,12 +187,12 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       // Test with unexisting task
       httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, "unexistingtask", "123"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
       // Test with unexisting comment
       httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), "unexistingcomment"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
        
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -218,17 +219,17 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       
       HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
-      executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
       
       // Test with unexisting task
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, "unexistingtask", "123"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
       // Test with unexisting comment
       httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), "unexistingcomment"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -257,9 +258,9 @@ public class TaskCommentResourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_COMMENT, task.getId(), comment.getId()));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       
       assertEquals("kermit", responseNode.get("author").textValue());

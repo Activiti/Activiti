@@ -1,0 +1,309 @@
+
+== Simulation with Activiti-Crystalball (Experimental)
+
+[[crb-introduction]]
+
+
+=== Introduction
+
+[[crb-overview]]
+
+==== Short overview
+
+activiti-crystalball (CrystalBall) is simulation engine for Activiti Business Process Management Platform. CrystalBall allows use of simulation for:
+      
+* decision support - for production workflow (e.g. should we add now more resources to the system to meet due dates?).
+* optimisation and understanding - testing changes and understanding their impacts.
+* training - simulation can be used to train staff before roll out.
+* ... 
+
+
+[[crb-unique]]
+
+
+==== CrystalBall is unique
+
+No need to:
+      
+* create separate simulation models and engines.
+* create different reporting for simulation.
+* feed simulation engine with a lot of data.
+
+CrystalBall simulator is based on Activiti. That's why it is easy to copy data and start simulation and be able to replay workflow behavior from the history.
+    
+
+[[crb-inside]]
+
+
+=== CrystalBall inside
+
+
+CrystalBall is a link:$$http://en.wikipedia.org/wiki/Discrete_event_simulation$$[discrete event simulator]. The simplest implementation is org.activiti.crystalball.simulator.SimpleSimulationRun.
+  
+[source,java,linenums]  
+----
+init();
+
+SimulationEvent event = removeSimulationEvent();
+
+while (!simulationEnd(event)) {
+	executeEvent(event);
+	event = removeSimulationEvent();
+}
+
+close();  
+----
+
+
+SimulationRun is able to execute simulation events generated from different sources (see link:$$#crb-playback$$[PlayBack]).
+
+
+[[crb-history-analysis]]
+
+
+=== History analysis
+
+One of the usecases where simulation can be used is analysis of the history. The production environment does not give any chance to repeat and debug bugs. That's why it is almost impossible to get process engine into the state which is the same as it was on the production environment on the time when bug occurred. The problem is not the hardware but
+        
+* time - process instance run can take several months.
+* concurrency - process instance run can interfere with another one and bug can be found only in the case of parallel execution of both of them.
+* users - a lot of users can participate on the process instance execution. It takes a lot of effort to get process instance to the state where error occurred.
+            
+The simulation can address mentioned issues easily. Simulation time is virtual and does not depend on real time. Activiti process engine itself is virtual. There is no need to create virtual process engine which is used in the simulation experiment. In this case concurrency can be addressed naturally. Users' behavior can be logged and replayed from this log or predicted and generated on demand.
+      
+The best way to analyze history is to re-live it once more time. The re-living is hardly achievable in real life but it can be achieved by simulation.
+      
+
+[[crb-collectEvents]]
+
+
+==== Events from the history.
+
+
+The most important thing to re-live the history is to collect events which affected world status. Let's say that our process is driven by user events (e.g. claim, complete task...). In such a case we have can use two event sources:
+          
+* process history - currently supported only in original link:$$http://gro-mar.github.io/activiti-crystalball/$$[activiti-crystalball] project.
+* logged ActivitiEvents. Basically we can add ActivitiEventListener to the engine from which we want to log events. Logged events are stored and after the time analyzed. The basic implementation is org.activiti.crystalball.simulator.delegate.event.impl.InMemoryRecordActivitiEventListener:
+
+[source,java,linenums]
+----
+@Override
+public void onEvent(ActivitiEvent event) {
+  Collection<SimulationEvent> simulationEvents = transform(event);
+  store(simulationEvents);
+}
+----
+
+Events are stored. We can continue in re-living the history again.
+        
+
+[[crb-playback]]
+
+
+==== PlayBack
+
+The good thing on the playback is that it can be played over and over again till we do not completely understand what has happened. Crystalball simulation is based on real data, real user behavior and it is Crystalball's advantage.
+        
+The best way to understand how playback works is to explain step by step an example based on JUnit test org.activiti.crystalball.simulator.delegate.event.PlaybackRunTest. The process on which simulation is tested is the simplest one:
+
+[source,xml,linenums]
+----
+<process id="theSimplestProcess" name="Without task Process">
+  <documentation>This is a process for testing purposes</documentation>
+
+  <startEvent id="theStart"/>
+  <sequenceFlow id="flow1" sourceRef="theStart" targetRef="theEnd"/>
+  <endEvent id="theEnd"/>
+
+</process>
+----
+
+This process is deployed and used in real and simulation run.
+          
+* record events
+
+[source,java,linenums]
+----
+// get process engine with record listener to log events
+ProcessEngine processEngine = (new RecordableProcessEngineFactory(THE_SIMPLEST_PROCESS, listener)).getObject();
+
+// start process instance with variables
+Map<String,Object> variables = new HashMap<String, Object>();
+variables.put(TEST_VARIABLE, TEST_VALUE);
+processEngine.getRuntimeService().startProcessInstanceByKey(SIMPLEST_PROCESS, BUSINESS_KEY,variables);
+
+// check process engine status - there should be one process instance in the history
+checkStatus(processEngine);
+
+// close and destroy process engine
+EventRecorderTestUtils.closeProcessEngine(processEngine, listener);
+ProcessEngines.destroy();
+----
+
+Code snippet above will record ActivitiEventType.ENTITY_CREATED after startProcessInstanceByKey method invocation.
+              
+* start simulation run
+
+[source,java,linenums]
+----
+final SimpleSimulationRun.Builder builder = new SimpleSimulationRun.Builder();
+// init simulation run
+// get process engine factory - the only difference from RecordableProcessEngineFactory that log listener is not added
+DefaultSimulationProcessEngineFactory simulationProcessEngineFactory = new DefaultSimulationProcessEngineFactory(THE_SIMPLEST_PROCESS);
+// configure simulation run
+builder.processEngine(simulationProcessEngineFactory)
+       // set playback event calendar from recorded events
+       .eventCalendar(new PlaybackEventCalendarFactory(new SimulationEventComparator(), listener.getSimulationEvents()))
+       // set handlers for simulation events
+       .customEventHandlerMap(EventRecorderTestUtils.getHandlers());
+SimpleSimulationRun simRun = builder.build();
+
+simRun.execute(new NoExecutionVariableScope());
+
+// check the status - the same method which was used in record events method
+checkStatus(simulationProcessEngineFactory.getObject());
+
+// close and destroy process engine
+simRun.getProcessEngine().close();
+ProcessEngines.destroy();
+----
+
+More advanced playback examples are in org.activiti.crystalball.simulator.delegate.event.PlaybackProcessStartTest
+        
+
+[[crb-debug]]
+
+
+==== Process engine debugger
+
+
+Playback limits us to execute all simulation events (e.g. start process, complete task) in one bunch. Debugger allows us to split execution into smaller steps and observe process engine status between the steps.
+        
+SimpleSimulationRun implements SimulationDebugger interface. SimulationDebugger allows to execute simulation events step by step, to run simulation to the specified time.
+
+[source,java,linenums]
+----
+  /**
+  * Allows to run simulation in debug mode
+  */
+  public interface SimulationDebugger {
+  /**
+  * initialize simulation run
+  * @param execution - variable scope to transfer variables from and to simulation run
+  */
+  void init(VariableScope execution);
+
+  /**
+  * step one simulation event forward
+  */
+  void step();
+
+  /**
+  * continue in the simulation run
+  */
+  void runContinue();
+
+  /**
+  * execute simulation run till simulationTime
+  */
+  void runTo(long simulationTime);
+
+  /**
+  * execute simulation run till simulation event of the specific type
+  */
+  void runTo(String simulationEventType);
+
+  /**
+  * close simulation run
+  */
+  void close();
+}
+----
+
+
+To see process engine debugger in action run SimpleSimulationRunTest
+        
+
+[[crb-replay]]
+
+
+==== Replay
+
+Playback needs to create another process engine instance. Playback does not affect "real" environment, on the other side it needs simulation experiment configuration. Replay works on the "real" process engine. Replay executes simulation event on the running process engine. The consequence is that replay lives in real time. Real time means that simulation events are scheduled to be executed immediately.
+        
+Example bellow shows how to replay one process instance. The same technique can be applied in playback to for playing only one process instance. (ReplayRunTest) The first part of the test initialize process engine, starts one process instance and completes process instance's task.
+
+[source,java,linenums]
+----
+  ProcessEngine processEngine = initProcessEngine();
+
+  TaskService taskService = processEngine.getTaskService();
+  RuntimeService runtimeService = processEngine.getRuntimeService();
+
+  Map<String, Object> variables = new HashMap<String, Object>();
+  variables.put(TEST_VARIABLE, TEST_VALUE);
+  ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(USERTASK_PROCESS, BUSINESS_KEY,
+  variables);
+
+  Task task = taskService.createTaskQuery().taskDefinitionKey("userTask").singleResult();
+  TimeUnit.MILLISECONDS.sleep(50);
+  taskService.complete(task.getId());
+----
+
+Used process engine is basic InMemoryStandaloneProcessEngine with
+          
+* InMemoryRecordActivitiEventListener (already used in playback) to record Activiti events and transform them to simulation events.
+* UserTaskExecutionListener - when new user task is created and new task is form replay process instance, schedule task complete event to the event calendar.
+
+Next test part starts simulation debugger on the same process engine as original process. Replay event handlers replaces StartProcessEventHandler with StartReplayProcessEventHandler. StartReplayProcessEventHandler takes process instance Id to replay and in the init phase schedule process instance start. StartProcessEventHandler in the handle phase starts new process instance with one reserved variable. Variable name is "_replay.processInstanceId". The variable is used to store id of the process which is replayed. ReplaySimulationRun in comparison with SimpleSimulationRun does not:
+          
+* create and close process engine instance.
+* change simulation time. (real time cannot be changed)
+[source,java,linenums]
+
+----
+final SimulationDebugger simRun = new ReplaySimulationRun(processEngine,
+  getReplayHandlers(processInstance.getId()));
+----
+
+And now replay process instance can start. At the beginning there are no process instances running. There is one process instance finished in the history. After the init there is one simulation event in the event calendar - to start process instance which replays already finished process instance.
+
+[source,java,linenums]
+----
+simRun.init();
+
+// original process is finished - there should not be any running process instance/task
+assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey(USERTASK_PROCESS).count());
+assertEquals(0, taskService.createTaskQuery().taskDefinitionKey("userTask").count());
+
+simRun.step();
+
+// replay process was started
+assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey(USERTASK_PROCESS).count());
+// there should be one task
+assertEquals(1, taskService.createTaskQuery().taskDefinitionKey("userTask").count());
+----
+
+When the task was created UserTaskExecutionListener created new simulation event to complete user task.
+
+[source,java,linenums]
+----
+simRun.step();
+
+// userTask was completed - replay process was finished
+assertEquals(0, runtimeService.createProcessInstanceQuery().processDefinitionKey(USERTASK_PROCESS).count());
+assertEquals(0, taskService.createTaskQuery().taskDefinitionKey("userTask").count());
+----
+
+Simulation is finished and we can continue in another process instance start, or any other events. For now we can close simRun and process engine.
+
+[source,java,linenums]
+----
+simRun.close();
+processEngine.close();
+ProcessEngines.destroy();
+----
+
+
+        
+

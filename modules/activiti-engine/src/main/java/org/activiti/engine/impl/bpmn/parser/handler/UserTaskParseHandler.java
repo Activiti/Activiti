@@ -129,6 +129,10 @@ public class UserTaskParseHandler extends AbstractActivityBpmnParseHandler<UserT
     	taskDefinition.addCustomGroupIdentityLinkExpression(customGroupIdentityLinkType, groupIdentityLinkExpression);
       }
 
+    if (StringUtils.isNotEmpty(userTask.getSkipExpression())) {
+      taskDefinition.setSkipExpression(expressionManager.createExpression(userTask.getSkipExpression()));
+    }
+    
     return taskDefinition;
   }
   

@@ -50,9 +50,7 @@ public class DeploymentResource {
       throw new ActivitiObjectNotFoundException("Could not find a deployment with id '" + deploymentId + "'.", Deployment.class);
     }
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/deployments/"));
-    return restResponseFactory.createDeploymentResponse(deployment, serverRootUrl);
+    return restResponseFactory.createDeploymentResponse(deployment);
   }
   
   @RequestMapping(value="/repository/deployments/{deploymentId}", method = RequestMethod.DELETE, produces = "application/json")

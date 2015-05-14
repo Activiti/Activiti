@@ -41,11 +41,11 @@ public class ManualTaskJsonConverter extends BaseBpmnJsonConverter {
     convertersToJsonMap.put(ManualTask.class, ManualTaskJsonConverter.class);
   }
   
-  protected String getStencilId(FlowElement flowElement) {
+  protected String getStencilId(BaseElement baseElement) {
     return STENCIL_TASK_MANUAL;
   }
   
-  protected void convertElementToJson(ObjectNode propertiesNode, FlowElement flowElement) {
+  protected void convertElementToJson(ObjectNode propertiesNode, BaseElement baseElement) {
   	
   }
   

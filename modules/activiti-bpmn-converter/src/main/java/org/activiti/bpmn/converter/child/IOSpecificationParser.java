@@ -21,24 +21,20 @@ import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataSpec;
 import org.activiti.bpmn.model.IOSpecification;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.SendTask;
-import org.activiti.bpmn.model.ServiceTask;
-import org.activiti.bpmn.model.SubProcess;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Tijs Rademakers
  */
 public class IOSpecificationParser extends BaseChildElementParser {
-
+  
   public String getElementName() {
     return ELEMENT_IOSPECIFICATION;
   }
   
   public void parseChildElement(XMLStreamReader xtr, BaseElement parentElement, BpmnModel model) throws Exception {
     
-    if (parentElement instanceof ServiceTask == false && parentElement instanceof SendTask == false && 
-        parentElement instanceof SubProcess == false && parentElement instanceof Process == false) return;
+    if (parentElement instanceof Activity == false && parentElement instanceof Process == false) return;
     
     IOSpecification ioSpecification = new IOSpecification();
     BpmnXMLUtil.addXMLLocation(ioSpecification, xtr);
@@ -51,7 +47,7 @@ public class IOSpecificationParser extends BaseChildElementParser {
           BpmnXMLUtil.addXMLLocation(dataSpec, xtr);
           dataSpec.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
           dataSpec.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
-          dataSpec.setItemSubjectRef(parseItemSubjectRef(xtr.getAttributeValue(null, ATTRIBUTE_DATA_SUBJECT_REF), model));
+          dataSpec.setItemSubjectRef(parseItemSubjectRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF), model));
           ioSpecification.getDataInputs().add(dataSpec);
 
         } else if (xtr.isStartElement() && ELEMENT_DATA_OUTPUT.equalsIgnoreCase(xtr.getLocalName())) {
@@ -59,7 +55,7 @@ public class IOSpecificationParser extends BaseChildElementParser {
           BpmnXMLUtil.addXMLLocation(dataSpec, xtr);
           dataSpec.setId(xtr.getAttributeValue(null, ATTRIBUTE_ID));
           dataSpec.setName(xtr.getAttributeValue(null, ATTRIBUTE_NAME));
-          dataSpec.setItemSubjectRef(parseItemSubjectRef(xtr.getAttributeValue(null, ATTRIBUTE_DATA_SUBJECT_REF), model));
+          dataSpec.setItemSubjectRef(parseItemSubjectRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_SUBJECT_REF), model));
           ioSpecification.getDataOutputs().add(dataSpec);
           
         } else if (xtr.isStartElement() && ELEMENT_DATA_INPUT_REFS.equalsIgnoreCase(xtr.getLocalName())) {

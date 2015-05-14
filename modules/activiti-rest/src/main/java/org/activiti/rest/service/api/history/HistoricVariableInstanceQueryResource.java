@@ -36,6 +36,6 @@ public class HistoricVariableInstanceQueryResource extends HistoricVariableInsta
   public DataResponse queryVariableInstances(@RequestBody HistoricVariableInstanceQueryRequest queryRequest, 
       @RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
   
-    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/query/historic-variable-instances", ""));
+    return getQueryResponse(queryRequest, allRequestParams);
   }
 }

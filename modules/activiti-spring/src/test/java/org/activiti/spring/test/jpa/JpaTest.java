@@ -1,14 +1,13 @@
 package org.activiti.spring.test.jpa;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
-import org.junit.Test;
 import org.springframework.test.context.ContextConfiguration;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  *
@@ -17,7 +16,6 @@ import java.util.Map;
 @ContextConfiguration( locations =  "JPASpringTest-context.xml")
 public class JpaTest extends SpringActivitiTestCase {
 
-    @Test
     public void testJpaVariableHappyPath() {
         before();
         Map<String, Object> variables = new HashMap<String, Object>();
@@ -54,7 +52,6 @@ public class JpaTest extends SpringActivitiTestCase {
         deleteDeployments();
     }
 
-    @Test
     public void testJpaVariableDisapprovalPath() {
 
         before();

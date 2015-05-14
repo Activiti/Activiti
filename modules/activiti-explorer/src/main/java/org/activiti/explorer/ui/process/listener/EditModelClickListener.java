@@ -18,6 +18,8 @@ import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
 import org.activiti.explorer.ui.process.simple.editor.SimpleTableEditorConstants;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.WorkflowDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -36,6 +38,8 @@ public class EditModelClickListener implements ClickListener {
 
   private static final long serialVersionUID = 1L;
   
+  protected static final Logger LOGGER = LoggerFactory.getLogger(EditModelClickListener.class);
+  
   protected Model model;
   protected NotificationManager notificationManager;
   
@@ -51,7 +55,7 @@ public class EditModelClickListener implements ClickListener {
 	    try {
 		    showModeler();
 	    } catch (MalformedURLException e) {
-		    e.printStackTrace();
+	      LOGGER.error("Error showing modeler", e);
 		    ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_EDITOR_LOADING_ERROR, e);
 	    }
     }
@@ -114,7 +118,7 @@ public class EditModelClickListener implements ClickListener {
             
           }
         } catch (Exception e) {
-          e.printStackTrace();
+          LOGGER.error("Error showing editor", e);
           ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_EDITOR_LOADING_ERROR, e);
         } finally {
           ExplorerApp.get().getMainWindow().removeWindow(selectEditorPopupWindow);
@@ -129,7 +133,7 @@ public class EditModelClickListener implements ClickListener {
   protected void showModeler() throws MalformedURLException {
 	  URL explorerURL = ExplorerApp.get().getURL();
 	  URL url = new URL(explorerURL.getProtocol(), explorerURL.getHost(), explorerURL.getPort(),
-			  explorerURL.getPath().replace("/ui", "") + "service/editor?id=" + model.getId());
+			  explorerURL.getPath().replace("/ui",  "") + "modeler.html?modelId=" + model.getId());
     ExplorerApp.get().getMainWindow().open(new ExternalResource(url));
   }
   

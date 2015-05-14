@@ -47,10 +47,7 @@ public class TaskIdentityLinkResource extends TaskBaseResource {
     
     IdentityLink link = getIdentityLink(family, identityId, type, task.getId());
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    return restResponseFactory.createRestIdentityLink(link, serverRootUrl);
+    return restResponseFactory.createRestIdentityLink(link);
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}/identitylinks/{family}/{identityId}/{type}", method = RequestMethod.DELETE)

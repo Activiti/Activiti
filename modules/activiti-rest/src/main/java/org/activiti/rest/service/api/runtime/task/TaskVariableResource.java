@@ -49,10 +49,7 @@ public class TaskVariableResource extends TaskVariableBaseResource {
       @PathVariable("variableName") String variableName, @RequestParam(value="scope", required=false) String scope,
       HttpServletRequest request, HttpServletResponse response) {
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    return getVariableFromRequest(taskId, variableName, scope, false, serverRootUrl);
+    return getVariableFromRequest(taskId, variableName, scope, false);
   }
   
   @RequestMapping(value="/runtime/tasks/{taskId}/variables/{variableName}", method = RequestMethod.PUT, produces="application/json")
@@ -62,12 +59,9 @@ public class TaskVariableResource extends TaskVariableBaseResource {
     
     Task task = getTaskFromRequest(taskId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
     RestVariable result = null;
     if (request instanceof MultipartHttpServletRequest) {
-      result = setBinaryVariable((MultipartHttpServletRequest) request, task, false, serverRootUrl);
+      result = setBinaryVariable((MultipartHttpServletRequest) request, task, false);
       
       if (!result.getName().equals(variableName)) {
         throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
@@ -90,7 +84,7 @@ public class TaskVariableResource extends TaskVariableBaseResource {
         throw new ActivitiIllegalArgumentException("Variable name in the body should be equal to the name used in the requested URL.");
       }
       
-      result = setSimpleVariable(restVariable, task, false, serverRootUrl);
+      result = setSimpleVariable(restVariable, task, false);
     }
     return result;
   }

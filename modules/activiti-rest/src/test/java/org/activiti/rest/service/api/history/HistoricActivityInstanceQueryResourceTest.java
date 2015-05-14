@@ -26,7 +26,7 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 
@@ -137,10 +137,11 @@ public class HistoricActivityInstanceQueryResourceTest extends BaseSpringRestTes
     // Do the actual call
     HttpPost post = new HttpPost(SERVER_URL_PREFIX + url);
     post.setEntity(new StringEntity(body.toString()));
-    HttpResponse response = executeHttpRequest(post, 200);
+    CloseableHttpResponse response = executeRequest(post, 200);
     
     // Check status and size
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
     assertEquals(numberOfResultsExpected, dataNode.size());
 
     // Check presence of ID's

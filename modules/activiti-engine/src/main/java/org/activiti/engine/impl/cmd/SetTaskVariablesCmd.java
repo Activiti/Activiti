@@ -40,9 +40,18 @@ public class SetTaskVariablesCmd extends NeedsActiveTaskCmd<Object> {
   protected Object execute(CommandContext commandContext, TaskEntity task) {
 
     if (isLocal) {
-      task.setVariablesLocal(variables);
+    	if (variables != null) {
+    		for (String variableName : variables.keySet()) {
+    			task.setVariableLocal(variableName, variables.get(variableName), false);
+    		}
+    	}
+      
     } else {
-      task.setVariables(variables);
+    	if (variables != null) {
+    		for (String variableName : variables.keySet()) {
+    			task.setVariable(variableName, variables.get(variableName), false);
+    		}
+    	}
     }
     
     // ACT-1887: Force an update of the task's revision to prevent simultaneous inserts of the same

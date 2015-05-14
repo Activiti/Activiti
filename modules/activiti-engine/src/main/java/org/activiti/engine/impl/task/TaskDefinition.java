@@ -46,7 +46,8 @@ public class TaskDefinition implements Serializable {
   protected Expression priorityExpression;
   protected Expression categoryExpression;
   protected Map<String, Set<Expression>> customUserIdentityLinkExpressions = new HashMap<String, Set<Expression>>(); 
-  protected Map<String, Set<Expression>> customGroupIdentityLinkExpressions = new HashMap<String, Set<Expression>>(); 
+  protected Map<String, Set<Expression>> customGroupIdentityLinkExpressions = new HashMap<String, Set<Expression>>();
+  protected Expression skipExpression;
   
   // form fields
   protected TaskFormHandler taskFormHandler;
@@ -204,4 +205,12 @@ public class TaskDefinition implements Serializable {
     }
   }
   
+  public Expression getSkipExpression() {
+    return skipExpression;
+  }
+
+  
+  public void setSkipExpression(Expression skipExpression) {
+    this.skipExpression = skipExpression;
+  }
 }

@@ -19,6 +19,7 @@ import org.activiti.engine.RuntimeService;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.impl.DefaultComponent;
+import org.apache.camel.util.IntrospectionSupport;
 
 /**
  * This class has been modified to be consistent with the changes to CamelBehavior and its implementations. The set of changes
@@ -30,15 +31,15 @@ import org.apache.camel.impl.DefaultComponent;
  */
 public class ActivitiComponent extends DefaultComponent {
 
-  private IdentityService identityService;
+  protected IdentityService identityService;
     
-  private RuntimeService runtimeService;
+  protected RuntimeService runtimeService;
   
-  private boolean copyVariablesToProperties;
+  protected boolean copyVariablesToProperties;
 
-  private boolean copyVariablesToBodyAsMap;
+  protected boolean copyVariablesToBodyAsMap;
 
-  private boolean copyCamelBodyToBody;
+  protected boolean copyCamelBodyToBody;
 
   public ActivitiComponent() {}
   
@@ -59,12 +60,20 @@ public class ActivitiComponent extends DefaultComponent {
   }
 
   @Override
-  protected Endpoint createEndpoint(String s, String s1, Map<String, Object> stringObjectMap) throws Exception {
-    ActivitiEndpoint ae = new ActivitiEndpoint(s, getCamelContext(), runtimeService);
+  protected Endpoint createEndpoint(String s, String s1, Map<String, Object> parameters) throws Exception {
+    ActivitiEndpoint ae = new ActivitiEndpoint(s, getCamelContext());
     ae.setIdentityService(identityService);
+    ae.setRuntimeService(runtimeService);
+    
     ae.setCopyVariablesToProperties(this.copyVariablesToProperties);
     ae.setCopyVariablesToBodyAsMap(this.copyVariablesToBodyAsMap);
     ae.setCopyCamelBodyToBody(this.copyCamelBodyToBody);
+    
+    Map<String, Object> returnVars = IntrospectionSupport.extractProperties(parameters, "var.return.");
+    if (returnVars != null && returnVars.size() > 0) {
+      ae.getReturnVarMap().putAll(returnVars);
+    }
+    
     return ae;
   }
   

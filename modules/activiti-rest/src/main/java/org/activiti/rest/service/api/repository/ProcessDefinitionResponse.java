@@ -24,6 +24,7 @@ public class ProcessDefinitionResponse {
   private int version;
   private String name;
   private String description;
+  private String tenantId;
   private String deploymentId;
   private String deploymentUrl;
   private String resource;
@@ -62,6 +63,12 @@ public class ProcessDefinitionResponse {
   }
   public void setName(String name) {
     this.name = name;
+  }
+  public String getTenantId() {
+    return tenantId;
+  }
+  public void setTenantId(String tenantId) {
+    this.tenantId = tenantId;
   }
   public String getDeploymentId() {
     return deploymentId;

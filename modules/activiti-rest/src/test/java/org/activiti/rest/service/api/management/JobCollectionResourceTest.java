@@ -85,27 +85,27 @@ public class JobCollectionResourceTest extends BaseSpringRestTestCase {
     assertResultsPresentInDataResponse(url, asyncJob.getId());
     
     // Fetch using executable
-    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?executable=true";
-    assertResultsPresentInDataResponse(url, asyncJob.getId());
+//    url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?executable=true";
+//    assertResultsPresentInDataResponse(url, asyncJob.getId());
     
     // Fetch using timers only
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?timersOnly=true";
     assertResultsPresentInDataResponse(url, timerJob.getId());
     
     // Combining messagesOnly with timersOnly should result in exception
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?timersOnly=true&messagesOnly=true"), HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+        RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?timersOnly=true&messagesOnly=true"), HttpStatus.SC_BAD_REQUEST));
     
     // Fetch using dueBefore
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?dueBefore=" + getISODateString(inAnHour.getTime());
-    assertResultsPresentInDataResponse(url, timerJob.getId());
+    assertResultsPresentInDataResponse(url, timerJob.getId(), asyncJob.getId());
     
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?dueBefore=" + getISODateString(hourAgo.getTime());
     assertResultsPresentInDataResponse(url);
     
     // Fetch using dueAfter
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?dueAfter=" + getISODateString(hourAgo.getTime());
-    assertResultsPresentInDataResponse(url, timerJob.getId());
+    assertResultsPresentInDataResponse(url, timerJob.getId(), asyncJob.getId());
     
     url = RestUrls.createRelativeResourceUrl(RestUrls.URL_JOB_COLLECTION) + "?dueAfter=" + getISODateString(inAnHour.getTime());
     assertResultsPresentInDataResponse(url);

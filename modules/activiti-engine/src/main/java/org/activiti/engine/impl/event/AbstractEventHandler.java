@@ -16,6 +16,7 @@ package org.activiti.engine.impl.event;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.BoundaryEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -52,6 +53,8 @@ public abstract class AbstractEventHandler implements EventHandler {
 
       try {
 
+        dispatchActivitiesCanceledIfNeeded(eventSubscription, execution, activity, commandContext);
+
         activityBehavior.execute(execution);
 
       } catch (RuntimeException e) {
@@ -66,6 +69,47 @@ public abstract class AbstractEventHandler implements EventHandler {
       }
       execution.signal(eventSubscription.getEventName(), payload);
     }
-
   }
+
+  protected void dispatchActivitiesCanceledIfNeeded(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, ActivityImpl boundaryEventActivity, CommandContext commandContext) {
+    ActivityBehavior boundaryActivityBehavior = boundaryEventActivity.getActivityBehavior();
+    if (boundaryActivityBehavior instanceof BoundaryEventActivityBehavior) {
+      BoundaryEventActivityBehavior boundaryEventActivityBehavior = (BoundaryEventActivityBehavior) boundaryActivityBehavior;
+      if (boundaryEventActivityBehavior.isInterrupting()) {
+        dispatchExecutionCancelled(eventSubscription, execution, commandContext);
+      }
+    }
+  }
+
+  protected void dispatchExecutionCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, CommandContext commandContext) {
+    // subprocesses
+    for (ExecutionEntity subExecution : execution.getExecutions()) {
+      dispatchExecutionCancelled(eventSubscription, subExecution, commandContext);
+    }
+
+    // call activities
+    ExecutionEntity subProcessInstance = commandContext.getExecutionEntityManager().findSubProcessInstanceBySuperExecutionId(execution.getId());
+    if (subProcessInstance != null) {
+      dispatchExecutionCancelled(eventSubscription, subProcessInstance, commandContext);
+    }
+
+    // activity with message/signal boundary events
+    ActivityImpl activity = execution.getActivity();
+    if (activity != null && activity.getActivityBehavior() != null) {
+      dispatchActivityCancelled(eventSubscription, execution, activity, commandContext);
+    }
+  }
+
+  protected void dispatchActivityCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, ActivityImpl activity, CommandContext commandContext) {
+    commandContext.getEventDispatcher().dispatchEvent(
+      ActivitiEventBuilder.createActivityCancelledEvent(activity.getId(),
+        (String) activity.getProperties().get("name"),
+        execution.getId(),
+        execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
+        (String) activity.getProperties().get("type"),
+        activity.getActivityBehavior().getClass().getCanonicalName(),
+        eventSubscription)
+    );
+  }
+
 }

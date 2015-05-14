@@ -20,8 +20,8 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 
@@ -151,10 +151,11 @@ public class HistoricProcessInstanceQueryResourceTest extends BaseSpringRestTest
     
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + url + "?sort=startTime");
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_OK);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_OK);
     
     // Check status and size
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
     assertEquals(2, dataNode.size());
     assertEquals(processInstance.getId(), dataNode.get(0).get("id").asText());
     assertEquals(processInstance2.getId(), dataNode.get(1).get("id").asText());

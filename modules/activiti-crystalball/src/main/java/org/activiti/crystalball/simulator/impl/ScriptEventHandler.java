@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
  */
 public class ScriptEventHandler implements SimulationEventHandler {
 
-  private static Logger log = LoggerFactory.getLogger(StartProcessByIdEventHandler.class);
+  private static Logger log = LoggerFactory.getLogger(ScriptEventHandler.class);
 
   protected String scriptPropertyName;
   protected String language;

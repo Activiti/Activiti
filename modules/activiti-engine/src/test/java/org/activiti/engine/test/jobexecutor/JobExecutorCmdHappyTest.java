@@ -12,19 +12,18 @@
  */
 package org.activiti.engine.test.jobexecutor;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import org.activiti.engine.impl.cmd.AcquireJobsCmd;
-import org.activiti.engine.impl.cmd.ExecuteJobsCmd;
+import org.activiti.engine.impl.asyncexecutor.AcquiredJobEntities;
+import org.activiti.engine.impl.cmd.AcquireTimerJobsCmd;
+import org.activiti.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.AcquiredJobs;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.activiti.engine.runtime.Job;
 
 /**
  * @author Tom Baeyens
@@ -33,7 +32,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
 
   public void testJobCommandsWithMessage() {
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
+    
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
@@ -43,19 +42,13 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
       }
     });
 
-    AcquiredJobs acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
-    List<List<String>> jobIdsList = acquiredJobs.getJobIdBatches();
-    assertEquals(1, jobIdsList.size());
-
-    List<String> jobIds = jobIdsList.get(0);
-
-    List<String> expectedJobIds = new ArrayList<String>();
-    expectedJobIds.add(jobId);
-
-    assertEquals(expectedJobIds, new ArrayList<String>(jobIds));
+    Job job  = managementService.createJobQuery().singleResult();
+    assertNotNull(job);
+    assertEquals(jobId, job.getId());
+    
     assertEquals(0, tweetHandler.getMessages().size());
 
-    commandExecutor.execute(new ExecuteJobsCmd(jobId));
+    managementService.executeJob(job.getId());
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());
@@ -69,8 +62,7 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
     processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME));
 
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-
+    
     String jobId = commandExecutor.execute(new Command<String>() {
 
       public String execute(CommandContext commandContext) {
@@ -80,26 +72,21 @@ public class JobExecutorCmdHappyTest extends JobExecutorTestCase {
       }
     });
 
-    AcquiredJobs acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
-    List<List<String>> jobIdsList = acquiredJobs.getJobIdBatches();
-    assertEquals(0, jobIdsList.size());
-
-    List<String> expectedJobIds = new ArrayList<String>();
+    AcquiredJobEntities acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd("testLockOwner", 10000, 5));
+    assertEquals(0, acquiredJobs.size());
 
     processEngineConfiguration.getClock().setCurrentTime(new Date(SOME_TIME + (20 * SECOND)));
 
-    acquiredJobs = commandExecutor.execute(new AcquireJobsCmd(jobExecutor));
-    jobIdsList = acquiredJobs.getJobIdBatches();
-    assertEquals(1, jobIdsList.size());
+    acquiredJobs = commandExecutor.execute(new AcquireTimerJobsCmd("testLockOwner", 10000, 5));
+    assertEquals(1, acquiredJobs.size());
 
-    List<String> jobIds = jobIdsList.get(0);
+    JobEntity job = acquiredJobs.getJobs().iterator().next();
 
-    expectedJobIds.add(jobId);
-    assertEquals(expectedJobIds, new ArrayList<String>(jobIds));
+    assertEquals(jobId, job.getId());
 
     assertEquals(0, tweetHandler.getMessages().size());
 
-    commandExecutor.execute(new ExecuteJobsCmd(jobId));
+    commandExecutor.execute(new ExecuteAsyncJobCmd(job));
 
     assertEquals("i'm coding a test", tweetHandler.getMessages().get(0));
     assertEquals(1, tweetHandler.getMessages().size());

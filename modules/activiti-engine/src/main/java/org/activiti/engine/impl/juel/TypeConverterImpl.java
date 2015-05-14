@@ -19,8 +19,12 @@ import java.beans.PropertyEditor;
 import java.beans.PropertyEditorManager;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Date;
 
 import org.activiti.engine.impl.javax.el.ELException;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.ISODateTimeFormat;
 
 /**
  * Type Conversions as described in EL 2.1 specification (section 1.17).
@@ -257,6 +261,11 @@ public class TypeConverterImpl implements TypeConverter {
 		if (value instanceof Enum<?>) {
 			return ((Enum<?>)value).name();
 		}
+    if (value instanceof Date) {
+      DateTimeFormatter fmt = ISODateTimeFormat.dateTime();
+      DateTime dt = new DateTime(value);
+      return fmt.print(dt);
+    }
 		return value.toString();
 	}
 

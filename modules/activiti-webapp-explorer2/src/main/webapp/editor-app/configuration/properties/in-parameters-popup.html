@@ -1,0 +1,53 @@
+
+<div class="modal" ng-controller="KisBpmInParametersPopupCtrl">
+    <div class="modal-dialog modal-wide">
+        <div class="modal-content">
+			<div class="modal-header">
+			    <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="close()">&times;</button>
+			    <h2>{{'PROPERTY.PROPERTY.EDIT.TITLE' | translate:property}}</h2>
+			</div>
+			<div class="modal-body">
+			
+			    <div class="row row-no-gutter">
+			        <div class="col-xs-6">
+			            <div ng-if="translationsRetrieved" class="kis-listener-grid" ng-grid="gridOptions"></div>
+			            <div class="pull-right">
+			                <div class="btn-group">
+			                    <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.MOVE.UP' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="moveParameterUp()"><i class="glyphicon glyphicon-arrow-up"></i></a>
+			                    <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.MOVE.DOWN' | translate}}" data-placement="bottom" data-original-title="" title="" ng-click="moveParameterDown()"><i class="glyphicon glyphicon-arrow-down"></i></a>
+			                </div>
+			                <div class="btn-group">
+			                    <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.ADD' | translate:property}}" data-placement="bottom" data-original-title="" title="" ng-click="addNewParameter()"><i class="glyphicon glyphicon-plus"></i></a>
+			                    <a class="btn btn-icon btn-lg" rel="tooltip" data-title="{{'ACTION.REMOVE' | translate:property}}" data-placement="bottom" data-original-title="" title="" ng-click="removeParameter()"><i class="glyphicon glyphicon-minus"></i></a>
+			                </div>
+			            </div>
+			        </div>
+			
+			        <div class="col-xs-6">
+			            <div ng-show="selectedParameters.length > 0">
+							
+							<div class="form-group">
+						   		<label for="sourceField">{{'PROPERTY.PARAMETER.SOURCE' | translate}}</label>
+						   		<input type="text" id="sourceField" class="form-control" ng-model="selectedParameters[0].source" placeholder="{{'PROPERTY.PARAMETER.SOURCE.PLACEHOLDER' | translate}}" />
+							</div>
+							<div class="form-group">
+						   		<label for="expressionField">{{'PROPERTY.PARAMETER.SOURCEEXPRESSION' | translate}}</label>
+						   		<input type="text" id="expressionField" class="form-control" ng-model="selectedParameters[0].sourceExpression" placeholder="{{'PROPERTY.PARAMETER.SOURCEEXPRESSION.PLACEHOLDER' | translate}}" />
+							</div>
+							<div class="form-group">
+						   		<label for="expressionField">{{'PROPERTY.PARAMETER.TARGET' | translate}}</label>
+						   		<input type="text" id="expressionField" class="form-control" ng-model="selectedParameters[0].target" placeholder="{{'PROPERTY.PARAMETER.TARGET.PLACEHOLDER' | translate}}" />
+							</div>
+			                
+			            </div>
+			            <div ng-show="selectedParameters.length == 0" class="muted no-property-selected" translate>PROPERTY.PARAMETER.EMPTY</div>
+			        </div>
+			    </div>
+			</div>
+			<div class="modal-footer">
+			    <button ng-click="cancel()" class="btn btn-primary" translate>ACTION.CANCEL</button>
+			    <button ng-click="save()" class="btn btn-primary" translate>ACTION.SAVE</button>
+			</div>
+		</div>
+	</div>
+</div>

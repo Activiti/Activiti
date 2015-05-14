@@ -13,10 +13,14 @@
 
 package org.activiti.engine.test.bpmn.event.message;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
+import org.activiti.engine.runtime.Job;
+import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
@@ -551,6 +555,153 @@ public class MessageBoundaryEventTest extends PluggableActivitiTestCase {
     
     // and we are done
     
+  }
+  
+  @Deployment
+  public void testSingleBoundaryMessageEventWithBoundaryTimerEvent() {
+    final Date startTime = new Date();
+
+    runtimeService.startProcessInstanceByKey("process");
+
+    assertEquals(2, runtimeService.createExecutionQuery().count());
+
+    Execution execution = runtimeService.createExecutionQuery()
+        .messageEventSubscriptionName("messageName")
+        .singleResult();
+    assertNull(execution);
+
+    // ///////////////////////////////////
+    // Verify the first task
+    Task userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("task", userTask.getTaskDefinitionKey());
+
+    // ///////////////////////////////////
+    // Advance the clock to trigger the timer.
+     final JobQuery jobQuery =
+           managementService.createJobQuery().processInstanceId(userTask.getProcessInstanceId());
+     assertEquals(1, jobQuery.count());
+
+    // After setting the clock to time '1 hour and 5 seconds', the timer should fire.
+    processEngineConfiguration.getClock().setCurrentTime(
+        new Date(startTime.getTime() + ((60 * 60 * 1000) + 5000)));
+    waitForJobExecutorOnCondition(12000L, 100L, new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        return taskService.createTaskQuery().count() == 2;
+      }
+    });
+    
+    // It is a repeating job, so it will come back.
+    assertEquals(1L, jobQuery.count());
+
+    // ///////////////////////////////////
+    // Verify and complete the first task
+    userTask = taskService.createTaskQuery().taskDefinitionKey("task").singleResult();
+    assertNotNull(userTask);
+    taskService.complete(userTask.getId());
+
+    // ///////////////////////////////////
+    // Complete the after timer task
+    userTask = taskService.createTaskQuery().taskDefinitionKey("taskTimer").singleResult();
+    assertNotNull(userTask);
+    taskService.complete(userTask.getId());
+    
+    // Timer job of boundary event of task should be deleted and timer job of task timer boundary event should be created.
+    assertEquals(1L, jobQuery.count());
+
+    // ///////////////////////////////////
+    // Verify that the message exists
+    userTask = taskService.createTaskQuery().singleResult();
+    assertEquals("taskAfterTask", userTask.getTaskDefinitionKey());
+
+    execution = runtimeService.createExecutionQuery()
+        .messageEventSubscriptionName("messageName")
+        .singleResult();
+    assertNotNull(execution);
+
+    // ///////////////////////////////////
+    // Send the message and verify that we went back to the right spot.
+    runtimeService.messageEventReceived("messageName", execution.getId());
+
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("task", userTask.getTaskDefinitionKey());
+
+    execution = runtimeService.createExecutionQuery()
+        .messageEventSubscriptionName("messageName")
+        .singleResult();
+    assertNull(execution);
+
+    // ///////////////////////////////////
+    // Complete the first task (again).
+    taskService.complete(userTask.getId());
+
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterTask", userTask.getTaskDefinitionKey());
+
+    execution = runtimeService.createExecutionQuery()
+        .messageEventSubscriptionName("messageName")
+        .singleResult();
+    assertNotNull(execution);
+
+    // ///////////////////////////////////
+    // Verify timer firing.
+
+    // After setting the clock to time '2 hours and 5 seconds', the timer should fire.
+    processEngineConfiguration.getClock().setCurrentTime(
+        new Date(startTime.getTime() + ((2 * 60 * 60 * 1000) + 5000)));
+    waitForJobExecutorOnCondition(2000L, 100L, new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        return taskService.createTaskQuery().count() == 2;
+      }
+    });
+    
+    // It is a repeating job, so it will come back.
+    assertEquals(1L, jobQuery.count());
+
+    // After setting the clock to time '3 hours and 5 seconds', the timer should fire again.
+    processEngineConfiguration.getClock().setCurrentTime(
+        new Date(startTime.getTime() + ((3 * 60 * 60 * 1000) + 5000)));
+    waitForJobExecutorOnCondition(2000L, 100L, new Callable<Boolean>() {
+      @Override
+      public Boolean call() throws Exception {
+        return taskService.createTaskQuery().list().size() == 3;
+      }
+    });
+    // It is a repeating job, so it will come back.
+    assertEquals(1L, jobQuery.count());
+
+    // ///////////////////////////////////
+    // Complete the after timer tasks
+    final List<Task> tasks =
+        taskService.createTaskQuery().taskDefinitionKey("taskAfterTaskTimer").list();
+    assertEquals(2, tasks.size());
+
+    taskService.complete(tasks.get(0).getId());
+    taskService.complete(tasks.get(1).getId());
+
+    // ///////////////////////////////////
+    // Complete the second task
+    taskService.complete(userTask.getId());
+
+    // ///////////////////////////////////
+    // Complete the third task
+    userTask = taskService.createTaskQuery().singleResult();
+    assertNotNull(userTask);
+    assertEquals("taskAfterTaskAfterTask", userTask.getTaskDefinitionKey());
+    taskService.complete(userTask.getId());
+
+    // ///////////////////////////////////
+    // We should be done at this point
+    assertEquals(0, runtimeService.createProcessInstanceQuery().count());
+
+    execution = runtimeService.createExecutionQuery()
+        .messageEventSubscriptionName("messageName")
+        .singleResult();
+    assertNull(execution);
   }
 
 }

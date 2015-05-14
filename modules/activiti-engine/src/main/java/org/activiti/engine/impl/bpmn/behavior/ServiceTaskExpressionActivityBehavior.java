@@ -16,12 +16,12 @@ package org.activiti.engine.impl.bpmn.behavior;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
+import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-
 /**
- * ActivityBehavior that evaluates an expression when executed. Optionally, it sets the result 
- * of the expression as a variable on the execution.
+ * ActivityBehavior that evaluates an expression when executed. Optionally, it
+ * sets the result of the expression as a variable on the execution.
  * 
  * @author Tom Baeyens
  * @author Christian Stettler
@@ -32,21 +32,28 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 public class ServiceTaskExpressionActivityBehavior extends TaskActivityBehavior {
 
   protected Expression expression;
+  protected Expression skipExpression;
   protected String resultVariable;
 
-  public ServiceTaskExpressionActivityBehavior(Expression expression, String resultVariable) {
+  public ServiceTaskExpressionActivityBehavior(Expression expression, Expression skipExpression, String resultVariable) {
     this.expression = expression;
+    this.skipExpression = skipExpression;
     this.resultVariable = resultVariable;
   }
 
   public void execute(ActivityExecution execution) throws Exception {
-	Object value = null;
-	try {
-		value = expression.getValue(execution);
-		if (resultVariable != null) {
-		    execution.setVariable(resultVariable, value);
-		}
-		leave(execution);
+    Object value = null;
+    try {
+      boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+      if (!isSkipExpressionEnabled || 
+              (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+        value = expression.getValue(execution);
+        if (resultVariable != null) {
+          execution.setVariable(resultVariable, value);
+        }
+      }
+
+      leave(execution);
     } catch (Exception exc) {
 
       Throwable cause = exc;

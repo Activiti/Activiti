@@ -31,7 +31,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   public static boolean INVOCATION;
   
   @Deployment
-  public void testAsycServiceNoListeners() {  
+  public void testAsyncServiceNoListeners() {  
     INVOCATION = false;
     // start process 
     runtimeService.startProcessInstanceByKey("asyncService");
@@ -49,7 +49,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
-  public void testAsycServiceListeners() {  
+  public void testAsyncServiceListeners() {  
     String pid = runtimeService.startProcessInstanceByKey("asyncService").getProcessInstanceId();
     assertEquals(1, managementService.createJobQuery().count());
     // the listener was not yet invoked:
@@ -61,7 +61,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
-  public void testAsycServiceConcurrent() {  
+  public void testAsyncServiceConcurrent() {  
     INVOCATION = false;
     // start process 
     runtimeService.startProcessInstanceByKey("asyncService");
@@ -98,17 +98,22 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   
 
   @Deployment
-  public void testFailingAsycServiceTimer() { 
+  public void testFailingAsyncServiceTimer() { 
     // start process 
     runtimeService.startProcessInstanceByKey("asyncService");
     // now there should be one job in the database, and it is a message
     assertEquals(1, managementService.createJobQuery().count());
     Job job = managementService.createJobQuery().singleResult();
-    if(!(job instanceof MessageEntity)) {
+    if (!(job instanceof MessageEntity)) {
       fail("the job must be a message");
     }      
     
-    waitForJobExecutorToProcessAllJobs(10000L, 100L);
+    try {
+      managementService.executeJob(job.getId());
+      fail();
+    } catch (Exception e) {
+      // exception expected
+    }
     
     // the service failed: the execution is still sitting in the service task:
     Execution execution = runtimeService.createExecutionQuery().singleResult();
@@ -153,7 +158,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
-  public void testAsycServiceSubProcessTimer() { 
+  public void testAsyncServiceSubProcessTimer() { 
     INVOCATION = false;
     // start process 
     runtimeService.startProcessInstanceByKey("asyncService");
@@ -172,7 +177,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   }
   
   @Deployment
-  public void testAsycServiceSubProcess() {    
+  public void testAsyncServiceSubProcess() {    
     // start process 
     runtimeService.startProcessInstanceByKey("asyncService");
 
@@ -186,7 +191,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   }
 
   @Deployment
-  public void testAsycTask() {  
+  public void testAsyncTask() {  
     // start process 
     runtimeService.startProcessInstanceByKey("asyncTask");
     // now there should be one job in the database:
@@ -199,7 +204,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
   }
 
   @Deployment
-  public void testAsycScript() {  
+  public void testAsyncScript() {  
     // start process 
     runtimeService.startProcessInstanceByKey("asyncScript").getProcessInstanceId();
     // now there should be one job in the database:
@@ -219,8 +224,8 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     runtimeService.signal(eid);        
   }
   
-  @Deployment(resources={"org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsycCallActivity.bpmn20.xml", 
-          "org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsycServiceNoListeners.bpmn20.xml"})
+  @Deployment(resources={"org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncCallActivity.bpmn20.xml", 
+          "org/activiti/engine/test/bpmn/async/AsyncTaskTest.testAsyncServiceNoListeners.bpmn20.xml"})
   public void testAsyncCallActivity() throws Exception {  
     // start process 
     runtimeService.startProcessInstanceByKey("asyncCallactivity");
@@ -233,12 +238,12 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     assertEquals(0, runtimeService.createProcessInstanceQuery().count());
   }
 
-  @Deployment(resources = {"org/activiti/engine/test/bpmn/async/AsyncTaskTest.testBasicAsycCallActivity.bpmn20.xml",
+  @Deployment(resources = {"org/activiti/engine/test/bpmn/async/AsyncTaskTest.testBasicAsyncCallActivity.bpmn20.xml",
             "org/activiti/engine/test/bpmn/StartToEndTest.testStartToEnd.bpmn20.xml"})
-  public void testBasicAsycCallActivity() {
+  public void testBasicAsyncCallActivity() {
     runtimeService.startProcessInstanceByKey("myProcess");
     Assert.assertEquals("There should be one job available.", 1, managementService.createJobQuery().count());
-    waitForJobExecutorToProcessAllJobs(10000L, 100L);
+    waitForJobExecutorToProcessAllJobs(10000L, 500L);
     assertEquals(0, managementService.createJobQuery().count());
   }
   
@@ -255,7 +260,7 @@ public class AsyncTaskTest extends PluggableActivitiTestCase {
     // there is no usertask
     assertNull(taskService.createTaskQuery().singleResult());
         
-    waitForJobExecutorToProcessAllJobs(10000L, 100L);
+    waitForJobExecutorToProcessAllJobs(10000L, 500L);
     // the listener was now invoked:
     assertNotNull(runtimeService.getVariable(pid, "listener"));
     // the task listener was now invoked:

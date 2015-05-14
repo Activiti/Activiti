@@ -20,8 +20,8 @@ import org.activiti.engine.task.Event;
 import org.activiti.engine.task.Task;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 
@@ -46,9 +46,9 @@ public class TaskEventResourceTest extends BaseSpringRestTestCase {
 
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT_COLLECTION, task.getId()));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-     
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertTrue(responseNode.isArray());
       
@@ -82,9 +82,9 @@ public class TaskEventResourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, task.getId(), event.getId()));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals(event.getId(), responseNode.get("id").textValue());
       assertEquals(event.getAction(), responseNode.get("action").textValue());
@@ -116,11 +116,11 @@ public class TaskEventResourceTest extends BaseSpringRestTestCase {
       
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, task.getId(), "unexisting"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
       httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, "unexisting", "unexistingEvent"));
-      executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -147,7 +147,7 @@ public class TaskEventResourceTest extends BaseSpringRestTestCase {
       for (Event event : events) {
         HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
             RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_EVENT, task.getId(), event.getId()));
-        executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+        closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
       }
       
       events = taskService.getTaskEvents(task.getId());

@@ -25,6 +25,7 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.TaskQueryImpl;
+import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -44,8 +45,21 @@ public class TaskEntityManager extends AbstractManager {
       .list();
   
     String reason = (deleteReason == null || deleteReason.length() == 0) ? TaskEntity.DELETE_REASON_DELETED : deleteReason;
-    
+
+    CommandContext commandContext = Context.getCommandContext();
+
     for (TaskEntity task: tasks) {
+      if (commandContext.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        commandContext.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createActivityCancelledEvent(
+            task.getExecution().getActivityId(),
+            task.getName(),
+            task.getExecutionId(),
+            task.getProcessInstanceId(),
+            task.getProcessDefinitionId(),
+            "userTask", UserTaskActivityBehavior.class.getName(), deleteReason));
+      }
+
       deleteTask(task, reason, cascade);
     }
   }

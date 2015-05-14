@@ -13,13 +13,11 @@
 
 package org.activiti.rest.service.api.runtime.task;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.activiti.engine.history.HistoricTaskInstance;
-import org.activiti.engine.task.Event;
 import org.activiti.rest.service.api.engine.EventResponse;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,16 +33,7 @@ public class TaskEventCollectionResource extends TaskBaseResource {
 
   @RequestMapping(value="/runtime/tasks/{taskId}/events", method = RequestMethod.GET, produces="application/json")
   public List<EventResponse> getEvents(@PathVariable String taskId, HttpServletRequest request) {
-    List<EventResponse> result = new ArrayList<EventResponse>();
     HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
-    
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
-    for (Event event : taskService.getTaskEvents(task.getId())) {
-      result.add(restResponseFactory.createEventResponse(event, serverRootUrl));
-    }
-    
-    return result;
+    return restResponseFactory.createEventResponseList(taskService.getTaskEvents(task.getId()));
   }
 }

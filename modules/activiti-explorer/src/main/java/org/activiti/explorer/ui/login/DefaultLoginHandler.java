@@ -78,7 +78,10 @@ public class DefaultLoginHandler implements LoginHandler {
   }
   
   public void onRequestStart(HttpServletRequest request, HttpServletResponse response) {
-    // Noting to do here
+    if (ExplorerApp.get().getLoggedInUser() != null && request.getSession(false) != null) {
+      
+      request.getSession().setAttribute(Constants.AUTHENTICATED_USER_ID, ExplorerApp.get().getLoggedInUser().getId());
+    }
   }
 
   public void onRequestEnd(HttpServletRequest request, HttpServletResponse response) {

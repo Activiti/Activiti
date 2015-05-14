@@ -89,7 +89,6 @@
     <result property="processInstanceId" column="PROC_INST_ID_" jdbcType="VARCHAR" />
     <result property="businessKey" column="BUSINESS_KEY_" jdbcType="VARCHAR"/>
     <result property="processDefinitionId" column="PROC_DEF_ID_" jdbcType="VARCHAR" />
-    <result property="deploymentId" column="DeploymentId" jdbcType="VARCHAR" />
     <result property="startTime" column="START_TIME_" jdbcType="TIMESTAMP" />
     <result property="endTime" column="END_TIME_" jdbcType="TIMESTAMP" />
     <result property="durationInMillis" column="DURATION_" jdbcType="BIGINT" />
@@ -167,10 +166,19 @@
   <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
     ${limitBefore}
     select distinct RES.*,
-    VAR.ID_ as VAR_ID_, VAR.NAME_ as VAR_NAME_, VAR.VAR_TYPE_ as VAR_TYPE_, VAR.REV_ as VAR_REV_,
-    VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, VAR.TASK_ID_ as VAR_TASK_ID_,
-    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, VAR.DOUBLE_ as VAR_DOUBLE_, 
-    VAR.TEXT_ as VAR_TEXT_, VAR.TEXT2_ as VAR_TEXT2_, VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, VAR.LONG_ as VAR_LONG_
+    VAR.ID_ as VAR_ID_, 
+    VAR.NAME_ as VAR_NAME_, 
+    VAR.VAR_TYPE_ as VAR_TYPE_, 
+    VAR.REV_ as VAR_REV_,
+    VAR.PROC_INST_ID_ as VAR_PROC_INST_ID_, 
+    VAR.EXECUTION_ID_ as VAR_EXECUTION_ID_, 
+    VAR.TASK_ID_ as VAR_TASK_ID_,
+    VAR.BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, 
+    VAR.DOUBLE_ as VAR_DOUBLE_, 
+    VAR.TEXT_ as VAR_TEXT_, 
+    VAR.TEXT2_ as VAR_TEXT2_, 
+    VAR.LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, 
+    VAR.LONG_ as VAR_LONG_
     ${limitBetween}
     <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
     ${orderBy}
@@ -180,26 +188,59 @@
   <select id="selectHistoricProcessInstancesWithVariablesByQueryCriteria_mssql_or_db2" parameterType="org.activiti.engine.impl.HistoricProcessInstanceQueryImpl" resultMap="historicProcessInstanceAndVariablesResultMap">
     ${limitBefore}
     select distinct TEMPRES_ID_ as ID_,
-    TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_, TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_,
-    TEMPRES_START_TIME_ as START_TIME_, TEMPRES_END_TIME_ as END_TIME_,
-    TEMPRES_DURATION_ as DURATION_, TEMPRES_START_USER_ID_ as START_USER_ID_, TEMPRES_START_ACT_ID_ as START_ACT_ID_,
-    TEMPRES_END_ACT_ID_ as END_ACT_ID_, TEMPRES_SUPER_PROCESS_INSTANCE_ID_ as SUPER_PROCESS_INSTANCE_ID_,
+    TEMPRES_BUSINESS_KEY_ as BUSINESS_KEY_, 
+    TEMPRES_PROC_DEF_ID_ as PROC_DEF_ID_,
+    TEMPRES_START_TIME_ as START_TIME_, 
+    TEMPRES_END_TIME_ as END_TIME_,
+    TEMPRES_DURATION_ as DURATION_, 
+    TEMPRES_START_USER_ID_ as START_USER_ID_, 
+    TEMPRES_START_ACT_ID_ as START_ACT_ID_,
+    TEMPRES_END_ACT_ID_ as END_ACT_ID_, 
+    TEMPRES_SUPER_PROCESS_INSTANCE_ID_ as SUPER_PROCESS_INSTANCE_ID_,
     TEMPRES_DELETE_REASON_ as DELETE_REASON_,
-    TEMPVAR_ID_ as VAR_ID_, TEMPVAR_NAME_ as VAR_NAME_, TEMPVAR_TYPE_ as VAR_TYPE_, TEMPVAR_REV_ as VAR_REV_,
-    TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
-    TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, TEMPVAR_DOUBLE_ as VAR_DOUBLE_, 
-    TEMPVAR_TEXT_ as VAR_TEXT_, TEMPVAR_TEXT2_ as VAR_TEXT2_, TEMPVAR_LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, TEMPVAR_LONG_ as VAR_LONG_
+    TEMPRES_NAME_ as NAME_,
+    TEMPRES_TENANT_ID_ as TENANT_ID_,
+    TEMPVAR_ID_ as VAR_ID_, 
+    TEMPVAR_NAME_ as VAR_NAME_, 
+    TEMPVAR_TYPE_ as VAR_TYPE_, 
+    TEMPVAR_REV_ as VAR_REV_,
+    TEMPVAR_PROC_INST_ID_ as VAR_PROC_INST_ID_, 
+    TEMPVAR_EXECUTION_ID_ as VAR_EXECUTION_ID_, 
+    TEMPVAR_TASK_ID_ as VAR_TASK_ID_,
+    TEMPVAR_BYTEARRAY_ID_ as VAR_BYTEARRAY_ID_, 
+    TEMPVAR_DOUBLE_ as VAR_DOUBLE_, 
+    TEMPVAR_TEXT_ as VAR_TEXT_, 
+    TEMPVAR_TEXT2_ as VAR_TEXT2_, 
+    TEMPVAR_LAST_UPDATED_TIME_ as VAR_LAST_UPDATED_TIME_, 
+    TEMPVAR_LONG_ as VAR_LONG_
     ${limitOuterJoinBetween}
-    RES.ID_ as TEMPRES_ID_, RES.BUSINESS_KEY_ as TEMPRES_BUSINESS_KEY_,
-    RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
-    RES.START_TIME_ as TEMPRES_START_TIME_, RES.END_TIME_ as TEMPRES_END_TIME_,
-    RES.DURATION_ as TEMPRES_DURATION_, RES.START_USER_ID_ as TEMPRES_START_USER_ID_,
-    RES.START_ACT_ID_ as TEMPRES_START_ACT_ID_, RES.END_ACT_ID_ as TEMPRES_END_ACT_ID_,
-    RES.SUPER_PROCESS_INSTANCE_ID_ as TEMPRES_SUPER_PROCESS_INSTANCE_ID_, RES.DELETE_REASON_ as TEMPRES_DELETE_REASON_,
-    VAR.ID_ as TEMPVAR_ID_, VAR.NAME_ as TEMPVAR_NAME_, VAR.VAR_TYPE_ as TEMPVAR_TYPE_, VAR.REV_ as TEMPVAR_REV_,
-    VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
-    VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
-    VAR.TEXT_ as TEMPVAR_TEXT_, VAR.TEXT2_ as TEMPVAR_TEXT2_, VAR.LAST_UPDATED_TIME_ as TEMPVAR_LAST_UPDATED_TIME_, VAR.LONG_ as TEMPVAR_LONG_
+    RES.ID_ as TEMPRES_ID_, 
+    RES.BUSINESS_KEY_ as TEMPRES_BUSINESS_KEY_,
+    RES.PROC_DEF_ID_ as TEMPRES_PROC_DEF_ID_, 
+    RES.PROC_INST_ID_ as TEMPRES_PROC_INST_ID_, 
+    RES.START_TIME_ as TEMPRES_START_TIME_, 
+    RES.END_TIME_ as TEMPRES_END_TIME_,
+    RES.DURATION_ as TEMPRES_DURATION_, 
+    RES.START_USER_ID_ as TEMPRES_START_USER_ID_,
+    RES.START_ACT_ID_ as TEMPRES_START_ACT_ID_, 
+    RES.END_ACT_ID_ as TEMPRES_END_ACT_ID_,
+    RES.SUPER_PROCESS_INSTANCE_ID_ as TEMPRES_SUPER_PROCESS_INSTANCE_ID_, 
+    RES.DELETE_REASON_ as TEMPRES_DELETE_REASON_,
+    RES.NAME_ as TEMPRES_NAME_, 
+    RES.TENANT_ID_ as TEMPRES_TENANT_ID_,
+    VAR.ID_ as TEMPVAR_ID_, 
+    VAR.NAME_ as TEMPVAR_NAME_, 
+    VAR.VAR_TYPE_ as TEMPVAR_TYPE_, 
+    VAR.REV_ as TEMPVAR_REV_,
+    VAR.PROC_INST_ID_ as TEMPVAR_PROC_INST_ID_, 
+    VAR.EXECUTION_ID_ as TEMPVAR_EXECUTION_ID_, 
+    VAR.TASK_ID_ as TEMPVAR_TASK_ID_,
+    VAR.BYTEARRAY_ID_ as TEMPVAR_BYTEARRAY_ID_, 
+    VAR.DOUBLE_ as TEMPVAR_DOUBLE_, 
+    VAR.TEXT_ as TEMPVAR_TEXT_, 
+    VAR.TEXT2_ as TEMPVAR_TEXT2_, 
+    VAR.LAST_UPDATED_TIME_ as TEMPVAR_LAST_UPDATED_TIME_, 
+    VAR.LONG_ as TEMPVAR_LONG_
     <include refid="selectHistoricProcessInstancesWithVariablesByQueryCriteriaSql"/> 
     ${orderBy}
     ${limitAfter}
@@ -214,7 +255,7 @@
   </sql>
   
   <sql id="commonSelectHistoricProcessInstancesByQueryCriteriaSql">
-    <if test="processKeyNotIn != null || processDefinitionKey != null || (orQueryObject != null &amp;&amp; (orQueryObject.processKeyNotIn != null || orQueryObject.processDefinitionKey != null))">
+    <if test="processKeyNotIn != null || processDefinitionKey != null || (processDefinitionKeyIn != null &amp;&amp; processDefinitionKeyIn.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.processKeyNotIn != null || orQueryObject.processDefinitionKey != null || (orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0)))">
       inner join ${prefix}ACT_RE_PROCDEF DEF on RES.PROC_DEF_ID_ = DEF.ID_
     </if>
     <foreach collection="queryVariableValues" index="index" item="queryVariableValue">
@@ -243,6 +284,13 @@
       </if>
       <if test="processDefinitionKey != null">
         and DEF.KEY_ = #{processDefinitionKey}
+      </if>
+      <if test="processDefinitionKeyIn != null &amp;&amp; processDefinitionKeyIn.size() &gt; 0">
+        and DEF.KEY_ IN
+        <foreach item="definition" index="index" collection="processDefinitionKeyIn"
+                 open="(" separator="," close=")">
+          #{definition}
+        </foreach>
       </if>
       <if test="businessKey != null">
         and RES.BUSINESS_KEY_ = #{businessKey}
@@ -389,6 +437,13 @@
           </if>
           <if test="orQueryObject.processDefinitionKey != null">
             or DEF.KEY_ = #{orQueryObject.processDefinitionKey}
+          </if>
+          <if test="orQueryObject.processDefinitionKeyIn != null &amp;&amp; orQueryObject.processDefinitionKeyIn.size() &gt; 0">
+            or DEF.KEY_ IN
+            <foreach item="definition" index="index" collection="orQueryObject.processDefinitionKeyIn"
+                     open="(" separator="," close=")">
+              #{definition}
+            </foreach>
           </if>
           <if test="orQueryObject.businessKey != null">
             or RES.BUSINESS_KEY_ = #{orQueryObject.businessKey}

@@ -12,6 +12,9 @@
  */
 package org.activiti.engine.impl.webservice;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -142,5 +145,24 @@ public class WSDLImporterTest {
       Assert.assertEquals(parameters[i], simpleStructure.getFieldNameAt(i));
       Assert.assertEquals(classes[i], simpleStructure.getFieldTypeAt(i));
     }
+  }
+  
+  @Test
+  public void testImportInheritedElement() throws Exception {
+    URL url = ReflectUtil.getResource("org/activiti/engine/impl/webservice/inherited-elements-in-types.wsdl");
+    assertNotNull(url);
+    importer.importFrom(url.toString());
+
+    List<StructureDefinition> structures = sortStructures();
+    assertEquals(1, structures.size());
+    final Object structureTypeInst = ReflectUtil.instantiate("org.activiti.webservice.StructureType");
+    final Class structureType = structureTypeInst.getClass();
+    this.assertStructure(structures.get(0), "inheritedRequest", new String[] { "rootElt", "inheritedElt", "newSimpleElt", 
+        "newStructuredElt" }, new Class<?>[] { Short.class, Integer.class, String.class, structureType });
+    assertEquals(2, structureType.getDeclaredFields().length);
+    assertNotNull(structureType.getDeclaredField("booleanElt"));
+    assertNotNull(structureType.getDeclaredField("dateElt"));
+    assertEquals(1, structureType.getSuperclass().getDeclaredFields().length);
+    assertNotNull(structureType.getSuperclass().getDeclaredField("rootElt"));
   }
 }

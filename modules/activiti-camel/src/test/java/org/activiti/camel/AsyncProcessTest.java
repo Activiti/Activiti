@@ -19,19 +19,46 @@ package org.activiti.camel;
 
 import java.util.List;
 
-import org.activiti.engine.RuntimeService;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
+import org.apache.camel.CamelContext;
+import org.apache.camel.Route;
+import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:camel-activiti-context.xml")
+@ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class AsyncProcessTest extends SpringActivitiTestCase {
 
   @Autowired
-  RuntimeService runtimeService;
+  protected CamelContext camelContext;
+
+  public void  setUp() throws Exception {
+    camelContext.addRoutes(new RouteBuilder() {
+
+       @Override
+       public void configure() throws Exception {
+    	    from("activiti:asyncCamelProcess:serviceTaskAsync1").setHeader("destination", constant("activiti:asyncCamelProcess:receive1")).to("seda:asyncQueue");
+    	    from("activiti:asyncCamelProcess:serviceTaskAsync2").setHeader("destination", constant("activiti:asyncCamelProcess:receive2")).to("seda:asyncQueue2");
+    	    from("seda:asyncQueue").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
+    	    
+    	    from("seda:asyncQueue2").to("bean:sleepBean?method=sleep").to("seda:receiveQueue");
+    	    
+    	    from("seda:receiveQueue").recipientList(header("destination"));
+       }
+		});
+	}
+   
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r: routes) {       
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
+    }
+  }
+
 
   @Deployment(resources = {"process/async.bpmn20.xml"})
   public void testRunProcess() throws Exception {

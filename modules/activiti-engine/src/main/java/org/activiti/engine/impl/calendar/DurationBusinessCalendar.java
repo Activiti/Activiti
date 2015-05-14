@@ -29,7 +29,7 @@ public class DurationBusinessCalendar extends BusinessCalendarImpl {
     super(clockReader);
   }
 
-  public Date resolveDuedate(String duedate) {
+  public Date resolveDuedate(String duedate, int maxIterations) {
     try {
       DurationHelper dh = new DurationHelper(duedate, clockReader);
       return dh.getDateAfter();
@@ -37,7 +37,7 @@ public class DurationBusinessCalendar extends BusinessCalendarImpl {
       throw new ActivitiException("couldn't resolve duedate: "+e.getMessage(), e);
     }
   }
-    
+
 // Code below just left in for a while just in case it would be needed again.
 //  
 //  private static Map<String, Integer> units = new HashMap<String, Integer>();

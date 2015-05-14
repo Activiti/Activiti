@@ -53,11 +53,8 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
     List<AttachmentResponse> result = new ArrayList<AttachmentResponse>();
     HistoricTaskInstance task = getHistoricTaskFromRequest(taskId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
     for (Attachment attachment : taskService.getTaskAttachments(task.getId())) {
-      result.add(restResponseFactory.createAttachmentResponse(attachment, serverRootUrl));
+      result.add(restResponseFactory.createAttachmentResponse(attachment));
     }
     
     return result;
@@ -66,13 +63,10 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
   @RequestMapping(value="/runtime/tasks/{taskId}/attachments", method = RequestMethod.POST, produces="application/json")
   public AttachmentResponse createAttachment(@PathVariable String taskId, HttpServletRequest request, HttpServletResponse response) {
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
     AttachmentResponse result = null;
     Task task = getTaskFromRequest(taskId);
     if (request instanceof MultipartHttpServletRequest) {
-      result = createBinaryAttachment((MultipartHttpServletRequest) request, task, serverRootUrl, response);
+      result = createBinaryAttachment((MultipartHttpServletRequest) request, task, response);
     } else {
       
       AttachmentRequest attachmentRequest = null;
@@ -87,15 +81,14 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
         throw new ActivitiIllegalArgumentException("AttachmentRequest properties not found in request");
       }
       
-      result = createSimpleAttachment(attachmentRequest, task, serverRootUrl);
+      result = createSimpleAttachment(attachmentRequest, task);
     }
     
     response.setStatus(HttpStatus.CREATED.value());
     return result;
   }
   
-  protected AttachmentResponse createSimpleAttachment(AttachmentRequest attachmentRequest, 
-      Task task, String serverRootUrl) {
+  protected AttachmentResponse createSimpleAttachment(AttachmentRequest attachmentRequest, Task task) {
     
     if (attachmentRequest.getName() == null) {
       throw new ActivitiIllegalArgumentException("Attachment name is required.");
@@ -104,11 +97,10 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
     Attachment createdAttachment = taskService.createAttachment(attachmentRequest.getType(), task.getId(), 
         task.getProcessInstanceId(), attachmentRequest.getName(), attachmentRequest.getDescription(), attachmentRequest.getExternalUrl());
 
-    return restResponseFactory.createAttachmentResponse(createdAttachment, serverRootUrl);
+    return restResponseFactory.createAttachmentResponse(createdAttachment);
   }
   
-  protected AttachmentResponse createBinaryAttachment(MultipartHttpServletRequest request, Task task, 
-      String serverRootUrl, HttpServletResponse response) {
+  protected AttachmentResponse createBinaryAttachment(MultipartHttpServletRequest request, Task task, HttpServletResponse response) {
     
     String name = null;
     String description = null;
@@ -149,7 +141,7 @@ public class TaskAttachmentCollectionResource extends TaskBaseResource {
               description, file.getInputStream());
       
       response.setStatus(HttpStatus.CREATED.value());
-      return restResponseFactory.createAttachmentResponse(createdAttachment, serverRootUrl);
+      return restResponseFactory.createAttachmentResponse(createdAttachment);
       
     } catch (Exception e) {
       throw new ActivitiException("Error creating attachment response", e);

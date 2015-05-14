@@ -79,7 +79,7 @@ public class GroupCollectionResource {
       query.potentialStarter(allRequestParams.get("potentialStarter"));
     }
 
-    return new GroupPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/identity/groups", ""))
+    return new GroupPaginateList(restResponseFactory)
         .paginateList(allRequestParams, query, "id", properties);
   }
   
@@ -102,7 +102,7 @@ public class GroupCollectionResource {
     
     response.setStatus(HttpStatus.CREATED.value());
     
-    return restResponseFactory.createGroupResponse(created, httpRequest.getRequestURL().toString().replace("/identity/groups", ""));
+    return restResponseFactory.createGroupResponse(created);
   }
   
 }

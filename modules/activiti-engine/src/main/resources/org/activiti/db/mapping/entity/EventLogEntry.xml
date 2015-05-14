@@ -43,7 +43,7 @@
   <insert id="insertEventLogEntry_oracle" parameterType="org.activiti.engine.impl.persistence.entity.EventLogEntryEntity">
     insert into ${prefix}ACT_EVT_LOG(LOG_NR_, TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_)
     values (
-      ACT_EVT_LOG_seq.nextVal,
+      ${prefix}ACT_EVT_LOG_seq.nextVal,
       #{type, jdbcType=VARCHAR}, 
       #{processDefinitionId, jdbcType=VARCHAR}, 
       #{processInstanceId, jdbcType=VARCHAR},

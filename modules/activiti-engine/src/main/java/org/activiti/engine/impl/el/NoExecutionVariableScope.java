@@ -50,24 +50,58 @@ public class NoExecutionVariableScope implements VariableScope {
   public Map<String, Object> getVariablesLocal() {
     return Collections.EMPTY_MAP;
   }
+  
+  @SuppressWarnings("unchecked")
+  @Override
+  public Map<String, Object> getVariables(Collection<String> variableNames) {
+  	return Collections.EMPTY_MAP;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Map<String, Object> getVariables(Collection<String> variableNames, boolean fetchAllVariables) {
+  	return Collections.EMPTY_MAP;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Map<String, Object> getVariablesLocal(Collection<String> variableNames) {
+  	return Collections.EMPTY_MAP;
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Map<String, Object> getVariablesLocal(Collection<String> variableNames, boolean fetchAllVariables) {
+  	return Collections.EMPTY_MAP;
+  }
 
   public Object getVariable(String variableName) {
+    return null;
+  }
+  
+  @Override
+  public Object getVariable(String variableName, boolean fetchAllVariables) {
     return null;
   }
 
   public Object getVariableLocal(String variableName) {
     return null;
   }
+  
+  @Override
+  public Object getVariableLocal(String variableName, boolean fetchAllVariables) {
+    return null;
+  }
 
-    @Override
-    public <T> T getVariable(String variableName, Class<T> variableClass) {
-        return null;
-    }
+	@Override
+	public <T> T getVariable(String variableName, Class<T> variableClass) {
+		return null;
+	}
 
-    @Override
-    public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
-        return null;
-    }
+	@Override
+	public <T> T getVariableLocal(String variableName, Class<T> variableClass) {
+		return null;
+	}
 
   @SuppressWarnings("unchecked")
   public Set<String> getVariableNames() {
@@ -81,9 +115,19 @@ public class NoExecutionVariableScope implements VariableScope {
   public void setVariable(String variableName, Object value) {
     throw new UnsupportedOperationException("No execution active, no variables can be set");
   }
+  
+  @Override
+  public void setVariable(String variableName, Object value, boolean fetchAllVariables) {
+  	throw new UnsupportedOperationException("No execution active, no variables can be set");
+  }
 
   public Object setVariableLocal(String variableName, Object value) {
     throw new UnsupportedOperationException("No execution active, no variables can be set");
+  }
+  
+  @Override
+  public Object setVariableLocal(String variableName, Object value, boolean fetchAllVariables) {
+  	throw new UnsupportedOperationException("No execution active, no variables can be set");
   }
 
   public void setVariables(Map<String, ? extends Object> variables) {

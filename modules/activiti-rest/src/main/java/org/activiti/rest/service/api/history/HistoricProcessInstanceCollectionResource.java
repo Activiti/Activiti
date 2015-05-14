@@ -105,6 +105,6 @@ public class HistoricProcessInstanceCollectionResource extends HistoricProcessIn
     	queryRequest.setWithoutTenantId(Boolean.valueOf(allRequestParams.get("withoutTenantId")));
     }
     
-    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/history/historic-process-instances", ""));
+    return getQueryResponse(queryRequest, allRequestParams);
   }
 }

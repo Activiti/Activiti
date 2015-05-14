@@ -55,8 +55,6 @@ public class GroupMembershipCollectionResource extends BaseGroupResource {
     identityService.createMembership(memberShip.getUserId(), group.getId());
     response.setStatus(HttpStatus.CREATED.value());
      
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/groups/"));
-    return restResponseFactory.createMembershipResponse(memberShip.getUserId(), group.getId(), serverRootUrl);
+    return restResponseFactory.createMembershipResponse(memberShip.getUserId(), group.getId());
   }
 }

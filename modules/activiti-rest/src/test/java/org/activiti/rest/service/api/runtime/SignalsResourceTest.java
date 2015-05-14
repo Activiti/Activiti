@@ -48,7 +48,7 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    
 	    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_SIGNALS));
 	    httpPost.setEntity(new StringEntity(requestNode.toString()));
-	    executeHttpRequest(httpPost, HttpStatus.SC_NO_CONTENT);
+	    closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
 	    
 	    // Check if process is started as a result of the signal without tenant ID set
 	    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId().processDefinitionKey("processWithSignalStart1").count());
@@ -57,7 +57,7 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    // Signal with tenant
 	    requestNode.put("tenantId", "my tenant");
 	    httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
 	   
 	    // Check if process is started as a result of the signal, in the right tenant
 	    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceTenantId("my tenant").processDefinitionKey("processWithSignalStart1").count());
@@ -70,7 +70,7 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    var.put("value", "test");
 	    
 	    httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
 	    
 	    // Check if process is started as a result of the signal, in the right tenant and with var set
 	    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceTenantId("my tenant")
@@ -82,7 +82,7 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    requestNode.remove("tenantId");
 	    
 	    httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_NO_CONTENT));
 	    
 	    // Check if process is started as a result of the signal, witout tenant and with var set
 	    assertEquals(1, runtimeService.createProcessInstanceQuery().processInstanceWithoutTenantId()
@@ -105,8 +105,7 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    	.addClasspathResource("org/activiti/rest/service/api/runtime/SignalsResourceTest.process-signal-start.bpmn20.xml")
 	    	.tenantId("my tenant")
 	    	.deploy();
-	  
-	  
+
 	  try {
 	  	  
 	    // Signal without vars, without tenant
@@ -116,20 +115,18 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    
 	    HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + RestUrls.createRelativeResourceUrl(RestUrls.URL_SIGNALS));
       httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_ACCEPTED);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_ACCEPTED));
 	    
 	    // Check if job is queued as a result of the signal without tenant ID set
 	    assertEquals(1, managementService.createJobQuery().jobWithoutTenantId().count());
-	    
-	    
+	 
 	    // Signal with tenant
 	    requestNode.put("tenantId", "my tenant");
 	    httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_ACCEPTED);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_ACCEPTED));
 	    
 	    // Check if job is queued as a result of the signal, in the right tenant
 	    assertEquals(1, managementService.createJobQuery().jobTenantId("my tenant").count());
-	    
 	    
 	    // Signal with variables and async, should fail as it's not supported
 	    ArrayNode vars = requestNode.putArray("variables");
@@ -138,7 +135,7 @@ public class SignalsResourceTest extends BaseSpringRestTestCase {
 	    var.put("value", "test");
 	    
 	    httpPost.setEntity(new StringEntity(requestNode.toString()));
-      executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
 		    
 	  } finally {
 	  	// Clean up tenant-specific deployment

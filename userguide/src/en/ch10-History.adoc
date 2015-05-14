@@ -1,0 +1,212 @@
+[[history]]
+
+== History
+
+History is the component that captures what happened during process execution and stores it permanently.  In contrast to the runtime data,  the history data will remain present in the DB also after process instances have completed.
+
+There are 5 history entities:
+
+* ++HistoricProcessInstance++s containing information about current and past process instances.
+* ++HistoricVariableInstance++s containing the latest value of a process variable or task variable.
+* ++HistoricActivityInstance++s containing information about a single execution of an activity (node in the process).
+* ++HistoricTaskInstance++s containing information about current and past (completed and deleted) task instances.
+* ++HistoricDetail++s containing various kinds of information related to either a historic process instances, an activity instance or a task instance.
+
+Since the DB contains historic entities for past as well as ongoing instances, you might want to consider  querying these tables in order to minimize access to the runtime process instance data  and that way keeping the runtime execution performant.
+
+Later on, this information will be exposed in Activiti Explorer. Also, it will be the information from which the reports will be generated.
+
+
+[[historyQuery]]
+
+
+=== Querying history
+
+In the API, it's possible to query all 5 of the History entities. The HistoryService exposes the methods +createHistoricProcessInstanceQuery()+, +createHistoricVariableInstanceQuery()+, +createHistoricActivityInstanceQuery()+,  +createHistoricDetailQuery()+ and +createHistoricTaskInstanceQuery()+.
+
+Below are a couple of examples that show some of the possibilities of the query API for history. Full description of the possibilities can be found in the link:$$http://activiti.org/javadocs/index.html$$[javadocs], in the +org.activiti.engine.history+ package.
+
+[[historyQueryProcessInstance]]
+
+
+==== HistoricProcessInstanceQuery
+
+Get 10 +HistoricProcessInstances+ that are finished and which took the most time to complete (the longest duration) of all finished processes with definition 'XXX'.
+
+[source,java,linenums]
+----
+historyService.createHistoricProcessInstanceQuery()
+  .finished()
+  .processDefinitionId("XXX")
+  .orderByProcessInstanceDuration().desc()
+  .listPage(0, 10);
+----
+
+
+[[historyQueryVariableInstance]]
+
+
+==== HistoricVariableInstanceQuery
+
+Get all +HistoricVariableInstances+ from a finished process instance with id 'xxx' ordered by variable name.
+
+[source,java,linenums]
+----
+historyService.createHistoricVariableInstanceQuery()
+  .processInstanceId("XXX")
+  .orderByVariableName.desc()
+  .list();
+----
+
+[[historyQueryActivityInstance]]
+
+
+==== HistoricActivityInstanceQuery
+
+Get the last +HistoricActivityInstance+ of type 'serviceTask' that has been finished in any process that uses the processDefinition with id XXX.
+
+[source,java,linenums]
+----
+historyService.createHistoricActivityInstanceQuery()
+  .activityType("serviceTask")
+  .processDefinitionId("XXX")
+  .finished()
+  .orderByHistoricActivityInstanceEndTime().desc()
+  .listPage(0, 1);
+----
+
+[[historyQueryDetail]]
+
+
+==== HistoricDetailQuery
+
+The next example, gets all variable-updates that have been done in process with id 123. Only ++HistoricVariableUpdate++s will be returned by this query. Note that it's possible that a certain variable name has multiple +HistoricVariableUpdate+ entries, for each time the variable was updated in the process. You can use +orderByTime+ (the time the variable update was done) or +orderByVariableRevision+ (revision of runtime variable at the time of updating) to find out in what order they occurred.
+
+[source,java,linenums]
+----
+historyService.createHistoricDetailQuery()
+  .variableUpdates()
+  .processInstanceId("123")
+  .orderByVariableName().asc()
+  .list()
+----
+
+This example gets all <<formProperties,form-properties>> that were submitted in any task or when starting the process with id "123". Only ++HistoricFormProperties++s will be returned by this query.
+
+[source,java,linenums]
+----
+historyService.createHistoricDetailQuery()
+  .formProperties()
+  .processInstanceId("123")
+  .orderByVariableName().asc()
+  .list()
+----
+
+
+The last example gets all variable updates that were performed on the task with id "123". This returns all +HistoricVariableUpdates+ for variables that were set on the task (task local variables), and NOT on the process instance.
+
+[source,java,linenums]
+----
+historyService.createHistoricDetailQuery()
+  .variableUpdates()
+  .taskId("123")
+  .orderByVariableName().asc()
+  .list()
+----
+
+Task local variables can be set using the +TaskService+ or on a +DelegateTask+, inside ++TaskListener++:
+
+[source,java,linenums]
+----
+taskService.setVariableLocal("123", "myVariable", "Variable value");
+----
+
+[source,java,linenums]
+----
+public void notify(DelegateTask delegateTask) {
+  delegateTask.setVariableLocal("myVariable", "Variable value");
+}
+----
+
+[[historyQueryTaskInstance]]
+
+
+==== HistoricTaskInstanceQuery
+
+Get 10 ++HistoricTaskInstance++s that are finished and which took the most time to complete (the longest duration) of all tasks.
+
+[source,java,linenums]
+----
+historyService.createHistoricTaskInstanceQuery()
+  .finished()
+  .orderByHistoricTaskInstanceDuration().desc()
+  .listPage(0, 10);
+----
+
+Get ++HistoricTaskInstance++s that are deleted with a delete reason that contains "invalid", which were last assigned to user 'kermit'.
+
+[source,java,linenums]
+----
+historyService.createHistoricTaskInstanceQuery()
+  .finished()
+  .taskDeleteReasonLike("%invalid%")
+  .taskAssignee("kermit")
+  .listPage(0, 10);
+----
+
+
+[[historyConfig]]
+
+=== History configuration
+
+The history level can be configured programmatically, using the enum org.activiti.engine.impl.history.HistoryLevel (or _HISTORY_ constants defined on +ProcessEngineConfiguration+ for versions prior to 5.11):
+
+[source,java,linenums]
+----
+ProcessEngine processEngine = ProcessEngineConfiguration
+  .createProcessEngineConfigurationFromResourceDefault()
+  .setHistory(HistoryLevel.AUDIT.getKey())
+  .buildProcessEngine();
+----
+
+The level can also be configured in activiti.cfg.xml or in a spring-context:
+
+[source,xml,linenums]
+----
+<bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneInMemProcessEngineConfiguration">
+  <property name="history" value="audit" />
+  ...
+</bean>
+----
+
+Following history levels can be configured:
+
+* ++none++: skips all history archiving.  This is the most performant for runtime  process execution, but no historical information will be available.
+* ++activity++: archives all process instances and activity instances.  At the end of the process instance, the latest values of the top level process instance variables  will be copied to historic variable instances.  No details will be archived.
+* ++audit++: This is the default. It archives all process instances,  activity instances, keeps variable values continuously in sync and all form properties that are submitted  so that all user interaction through forms is traceable and can be audited.
+* ++full++: This is the highest level of history archiving and hence the  slowest.  This level stores all information as in the +audit+ level  plus all other possible details, mostly this are process variable updates.
+
+*Prior to Activiti 5.11, the history level was stored in the database (table +$$ACT_GE_PROPERTY$$+, property with name ++historyLevel++). Starting from 5.11, this value is not used anymore and is ignored/deleted from the database. The history can now be changed between 2 boots of the engine, without an exception being thrown in case the level changed from the previous engine-boot.*
+
+[[historyFormAuditPurposes]]
+
+
+=== History for audit purposes
+
+When <<historyConfig,configuring>> at least +audit+ level for configuration. Then all properties submitted through methods  +FormService.submitStartFormData(String processDefinitionId, Map<String, String> properties)+ and +FormService.submitTaskFormData(String taskId, Map<String, String> properties)+ are recorded.
+
+Form properties can be retrieved with the query API like this:
+
+[source,java,linenums]
+----
+historyService
+      .createHistoricDetailQuery()
+      .formProperties()
+      ...
+      .list();
+----
+
+In that case only historic details of type +HistoricFormProperty+ are returned.
+
+
+If you've set the authenticated user before calling the submit methods with +IdentityService.setAuthenticatedUserId(String)+ then that authenticated user who submitted the form will be accessible in the history as well with +HistoricProcessInstance.getStartUserId()+ for start forms and  +HistoricActivityInstance.getAssignee()+ for task forms.

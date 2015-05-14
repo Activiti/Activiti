@@ -13,10 +13,6 @@
 
 package org.activiti.engine.impl;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
-
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.impl.interceptor.CommandContext;
@@ -24,6 +20,10 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.persistence.entity.SuspensionState;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -41,9 +41,11 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected String businessKey;
   protected boolean includeChildExecutionsWithBusinessKeyQuery;
   protected String processDefinitionId;
+  protected Set<String> processDefinitionIds;
   protected String processDefinitionName;
-  protected Set<String> processInstanceIds; 
+  protected Set<String> processInstanceIds;
   protected String processDefinitionKey;
+  protected Set<String> processDefinitionKeys;
   protected String deploymentId;
   protected List<String> deploymentIds;
   protected String superProcessInstanceId;
@@ -191,6 +193,23 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     return this;
   }
 
+  @Override
+  public ProcessInstanceQuery processDefinitionIds(Set<String> processDefinitionIds) {
+    if (processDefinitionIds == null) {
+      throw new ActivitiIllegalArgumentException("Set of process definition ids is null");
+    }
+    if (processDefinitionIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Set of process definition ids is empty");
+    }
+
+    if (inOrStatement) {
+      this.orQueryObject.processDefinitionIds = processDefinitionIds;
+    } else {
+      this.processDefinitionIds = processDefinitionIds;
+    }
+    return this;
+  }
+
   public ProcessInstanceQueryImpl processDefinitionKey(String processDefinitionKey) {
     if (processDefinitionKey == null) {
       throw new ActivitiIllegalArgumentException("Process definition key is null");
@@ -203,7 +222,24 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
     }
     return this;
   }
-  
+
+  @Override
+  public ProcessInstanceQuery processDefinitionKeys(Set<String> processDefinitionKeys) {
+    if (processDefinitionKeys == null) {
+      throw new ActivitiIllegalArgumentException("Set of process definition keys is null");
+    }
+    if (processDefinitionKeys.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Set of process definition keys is empty");
+    }
+
+    if (inOrStatement) {
+      this.orQueryObject.processDefinitionKeys = processDefinitionKeys;
+    } else {
+      this.processDefinitionKeys = processDefinitionKeys;
+    }
+    return this;
+  }
+
   public ProcessInstanceQueryImpl deploymentId(String deploymentId) {
     if (inOrStatement) {
       this.orQueryObject.deploymentId = deploymentId;
@@ -517,11 +553,17 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   public String getProcessDefinitionId() {
     return processDefinitionId;
   }
+  public Set<String> getProcessDefinitionIds() {
+    return processDefinitionIds;
+  }
   public String getProcessDefinitionName() {
     return processDefinitionName;
   }
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
+  }
+  public Set<String> getProcessDefinitionKeys() {
+    return processDefinitionKeys;
   }
   public String getActivityId() {
     return null; // Unused, see dynamic query

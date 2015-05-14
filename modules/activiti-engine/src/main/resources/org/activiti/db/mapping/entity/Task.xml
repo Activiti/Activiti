@@ -137,7 +137,7 @@
     <result property="categoryWithoutCascade" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+    <result property="formKeyWithoutCascade" column="FORM_KEY_" jdbcType="VARCHAR" />
   </resultMap>
   
   <resultMap id="taskAndVariablesResultMap" type="org.activiti.engine.impl.persistence.entity.TaskEntity">
@@ -159,7 +159,7 @@
     <result property="categoryWithoutCascade" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
-    <result property="formKey" column="FORM_KEY_" jdbcType="VARCHAR" />
+    <result property="formKeyWithoutCascade" column="FORM_KEY_" jdbcType="VARCHAR" />
     <collection property="queryVariables" column="TASK_ID_" javaType="ArrayList" ofType="org.activiti.engine.impl.persistence.entity.VariableInstanceEntity">
       <id property="id" column="VAR_ID_"/>
       <result property="name" column="VAR_NAME_" javaType="String" jdbcType="VARCHAR" />
@@ -309,7 +309,7 @@
       </foreach>
       </if>
     
-    <if test="processDefinitionKey != null || processDefinitionKeyLike != null ||  processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null))">
+    <if test="processDefinitionKey != null || processDefinitionKeyLike != null ||  processDefinitionKeyLikeIgnoreCase != null || processDefinitionName != null || processDefinitionNameLike != null || (processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0) || (processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0) || (orQueryObject != null &amp;&amp; (orQueryObject.processDefinitionKey != null || orQueryObject.processDefinitionKeyLike != null || orQueryObject.processDefinitionKeyLikeIgnoreCase != null || orQueryObject.processDefinitionName != null || orQueryObject.processDefinitionNameLike != null || (orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0) || (orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0)))">
       inner join ${prefix}ACT_RE_PROCDEF D on RES.PROC_DEF_ID_ = D.ID_
     </if>
     <if test="processInstanceBusinessKey != null || processInstanceBusinessKeyLike != null  || processInstanceBusinessKeyLikeIgnoreCase != null || (orQueryObject != null &amp;&amp; (orQueryObject.processInstanceBusinessKey != null || orQueryObject.processInstanceBusinessKeyLike != null || orQueryObject.processInstanceBusinessKeyLikeIgnoreCase != null))">
@@ -393,6 +393,13 @@
       <if test="processInstanceId != null">
         and RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="processInstanceIds != null &amp;&amp; processInstanceIds.size() &gt; 0">
+        and RES.PROC_INST_ID_ IN
+        <foreach item="processInstance" index="index" collection="processInstanceIds" 
+                 open="(" separator="," close=")">
+          #{processInstance}
+        </foreach>
+      </if>
       <if test="processInstanceBusinessKey != null">
         and E.BUSINESS_KEY_ = #{processInstanceBusinessKey}
       </if>
@@ -437,6 +444,20 @@
       </if>
       <if test="processDefinitionNameLike != null">
         and D.NAME_ like #{processDefinitionNameLike}
+      </if>
+      <if test="processCategoryInList != null &amp;&amp; processCategoryInList.size() &gt; 0">
+        and D.CATEGORY_ IN
+        <foreach item="processCategory" index="index" collection="processCategoryInList"
+                 open="(" separator="," close=")">
+          #{processCategory}
+        </foreach>
+      </if>
+      <if test="processCategoryNotInList != null &amp;&amp; processCategoryNotInList.size() &gt; 0">
+        and D.CATEGORY_ NOT IN
+        <foreach item="processCategory" index="index" collection="processCategoryNotInList"
+                 open="(" separator="," close=")">
+          #{processCategory}
+        </foreach>
       </if>
       <if test="deploymentId != null">
         and DEPLOY_P.DEPLOYMENT_ID_ = #{deploymentId}
@@ -581,7 +602,7 @@
           <if test="userIdForCandidateAndAssignee != null">
             <if test="candidateGroups == null">
               and (RES.ASSIGNEE_ = #{userIdForCandidateAndAssignee} or (RES.ASSIGNEE_ is null and (I.USER_ID_ = #{userIdForCandidateAndAssignee}
-              or I.GROUP_ID_ IN (select g.GROUP_ID_ from ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{userIdForCandidateAndAssignee} ) ) ) )
+              or I.GROUP_ID_ IN (select g.GROUP_ID_ from ${prefix}ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{userIdForCandidateAndAssignee} ) ) ) )
             </if>
           </if>
           <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->
@@ -677,6 +698,13 @@
             <if test="orQueryObject.processInstanceId != null">
               or RES.PROC_INST_ID_ = #{orQueryObject.processInstanceId}
             </if>
+            <if test="orQueryObject.processInstanceIds != null &amp;&amp; orQueryObject.processInstanceIds.size() &gt; 0">
+              or RES.PROC_INST_ID_ IN
+              <foreach item="processInstance" index="index" collection="orQueryObject.processInstanceIds" 
+                       open="(" separator="," close=")">
+                #{processInstance}
+              </foreach>
+            </if>
             <if test="orQueryObject.processInstanceBusinessKey != null">
               or E.BUSINESS_KEY_ = #{orQueryObject.processInstanceBusinessKey}
             </if>
@@ -721,6 +749,20 @@
             </if>
             <if test="orQueryObject.processDefinitionNameLike != null">
               or D.NAME_ like #{orQueryObject.processDefinitionNameLike}
+            </if>
+            <if test="orQueryObject.processCategoryInList != null &amp;&amp; orQueryObject.processCategoryInList.size() &gt; 0">
+              or D.CATEGORY_ IN
+              <foreach item="processCategory" index="index" collection="orQueryObject.processCategoryInList"
+                       open="(" separator="," close=")">
+                #{processCategory}
+              </foreach>
+            </if>
+            <if test="orQueryObject.processCategoryNotInList != null &amp;&amp; orQueryObject.processCategoryNotInList.size() &gt; 0">
+              or D.CATEGORY_ NOT IN
+              <foreach item="processCategory" index="index" collection="orQueryObject.processCategoryNotInList"
+                       open="(" separator="," close=")">
+                #{processCategory}
+              </foreach>
             </if>
             <if test="orQueryObject.deploymentId != null">
               or DEPLOY_P.DEPLOYMENT_ID_ = #{orQueryObject.deploymentId}
@@ -865,7 +907,7 @@
                 <if test="orQueryObject.userIdForCandidateAndAssignee != null">
                   <if test="orQueryObject.candidateGroups == null">
                     or (RES.ASSIGNEE_ = #{orQueryObject.userIdForCandidateAndAssignee} or (RES.ASSIGNEE_ is null and (I.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee}
-                    or I.GROUP_ID_ IN (select g.GROUP_ID_ from ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee} ) ) ) )
+                    or I.GROUP_ID_ IN (select g.GROUP_ID_ from ${prefix}ACT_ID_MEMBERSHIP g where g.USER_ID_ = #{orQueryObject.userIdForCandidateAndAssignee} ) ) ) )
                   </if>
                 </if>
                 <!-- if dbIdentityUsed set false in process engine configuration of using custom session factory of GroupIdentityManager -->

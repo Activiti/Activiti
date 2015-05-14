@@ -78,6 +78,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
     if (executionId != null) {
       execution = commandContext.getExecutionEntityManager().findExecutionById(executionId);
     }
+    
     Map<String, JobHandler> jobHandlers = Context.getProcessEngineConfiguration().getJobHandlers();
     JobHandler jobHandler = jobHandlers.get(jobHandlerType);
     jobHandler.execute(this, jobHandlerConfiguration, execution, commandContext);
@@ -116,7 +117,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
 
     // Also delete the job's exception byte array
     exceptionByteArrayRef.delete();
-    
+
     // remove link to execution
     if (executionId != null) {
       ExecutionEntity execution = Context.getCommandContext()
@@ -124,7 +125,7 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
         .findExecutionById(executionId);
       execution.removeJob(this);
     }
-    
+
     if(Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
     	Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
     			ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, this));

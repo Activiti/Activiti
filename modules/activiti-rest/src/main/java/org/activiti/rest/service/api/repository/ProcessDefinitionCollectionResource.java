@@ -45,6 +45,7 @@ public class ProcessDefinitionCollectionResource {
     properties.put("name", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_NAME);
     properties.put("version", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_VERSION);
     properties.put("deploymentId", ProcessDefinitionQueryProperty.DEPLOYMENT_ID);
+    properties.put("tenantId", ProcessDefinitionQueryProperty.PROCESS_DEFINITION_TENANT_ID);
   }
   
   @Autowired
@@ -110,8 +111,14 @@ public class ProcessDefinitionCollectionResource {
     if (allRequestParams.containsKey("startableByUser")) {
       processDefinitionQuery.startableByUser(allRequestParams.get("startableByUser"));
     }
+    if (allRequestParams.containsKey("tenantId")) {
+      processDefinitionQuery.processDefinitionTenantId(allRequestParams.get("tenantId"));
+    }
+    if (allRequestParams.containsKey("tenantIdLike")) {
+      processDefinitionQuery.processDefinitionTenantIdLike(allRequestParams.get("tenantIdLike"));
+    }
     
-    return new ProcessDefinitionsPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/repository/process-definitions", ""))
+    return new ProcessDefinitionsPaginateList(restResponseFactory)
         .paginateList(allRequestParams, processDefinitionQuery, "name", properties);
   }
 }

@@ -30,6 +30,7 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.repository.DeploymentQuery;
 import org.activiti.rest.common.api.DataResponse;
 import org.activiti.rest.service.api.RestResponseFactory;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -93,7 +94,7 @@ public class DeploymentCollectionResource {
     	}
     }
 
-    DataResponse response = new DeploymentsPaginateList(restResponseFactory, request.getRequestURL().toString().replace("/repository/deployments", ""))
+    DataResponse response = new DeploymentsPaginateList(restResponseFactory)
         .paginateList(allRequestParams, deploymentQuery, "id", allowedSortProperties);
     return response;
   }
@@ -116,7 +117,14 @@ public class DeploymentCollectionResource {
     
     try {
       DeploymentBuilder deploymentBuilder = repositoryService.createDeployment();
-      String fileName = file.getName();
+      String fileName = file.getOriginalFilename();
+      if (StringUtils.isEmpty(fileName) || !(
+          fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn") || 
+          fileName.toLowerCase().endsWith(".bar") || fileName.toLowerCase().endsWith(".zip"))) {
+        
+        fileName = file.getName();
+      }
+      
       if (fileName.endsWith(".bpmn20.xml") || fileName.endsWith(".bpmn")) {
         deploymentBuilder.addInputStream(fileName, file.getInputStream());
       } else if (fileName.toLowerCase().endsWith(".bar") || fileName.toLowerCase().endsWith(".zip")) {
@@ -134,7 +142,7 @@ public class DeploymentCollectionResource {
       
       response.setStatus(HttpStatus.CREATED.value());
       
-      return restResponseFactory.createDeploymentResponse(deployment, request.getRequestURL().toString().replace("/repository/deployments", ""));
+      return restResponseFactory.createDeploymentResponse(deployment);
       
     } catch (Exception e) {
       if (e instanceof ActivitiException) {

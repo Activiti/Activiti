@@ -78,8 +78,8 @@ public class BaseJPARestTestCase extends PvmTestCase {
 
   private static Logger log = LoggerFactory.getLogger(BaseJPARestTestCase.class);
   
-  protected static final int HTTP_SERVER_PORT = 7878;
-  protected static final String SERVER_URL_PREFIX = "http://localhost:7878/service/";
+  protected static final int HTTP_SERVER_PORT = 7979;
+  protected static final String SERVER_URL_PREFIX = "http://localhost:7979/service/";
   protected static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList(
     "ACT_GE_PROPERTY"
   );

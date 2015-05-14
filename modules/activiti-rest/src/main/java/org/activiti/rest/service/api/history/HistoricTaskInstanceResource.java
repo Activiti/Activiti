@@ -42,9 +42,7 @@ public class HistoricTaskInstanceResource {
 
   @RequestMapping(value="/history/historic-task-instances/{taskId}", method = RequestMethod.GET, produces = "application/json")
   public HistoricTaskInstanceResponse getTaskInstance(@PathVariable String taskId, HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/history/historic-task-instances/"));
-    return restResponseFactory.createHistoricTaskInstanceResponse(getHistoricTaskInstanceFromRequest(taskId), serverRootUrl);
+    return restResponseFactory.createHistoricTaskInstanceResponse(getHistoricTaskInstanceFromRequest(taskId));
   }
   
   @RequestMapping(value="/history/historic-task-instances/{taskId}", method = RequestMethod.DELETE)

@@ -12,6 +12,10 @@
  */
 package org.activiti.engine.test.api.event;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
 import org.activiti.engine.delegate.event.ActivitiEntityEvent;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -22,11 +26,6 @@ import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import java.util.Calendar;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * Test case for all {@link ActivitiEvent}s related to jobs.
@@ -123,18 +122,34 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 
     listener.clearEventsReceived();
 
-    // fire timer for the first time
+    try {
+     waitForJobExecutorToProcessAllJobs(2000, 100);
+     fail("a new job must be prepared because there are 2 repeats");
+   }catch (Exception ex){
+     //expected exception because a new job is prepared
+   }
+
     testClock.setCurrentTime(new Date(now.getTime() + 10000L));
-    waitForJobExecutorToProcessAllJobs(20000, 100);
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+      fail("a new job must be prepared because there are 2 repeats");
+    }catch (Exception ex){
+      //expected exception because a new job is prepared
+    }
 
-    // fire timer for the second time
     testClock.setCurrentTime(new Date(now.getTime() + 20000L));
-    waitForJobExecutorToProcessAllJobs(20000, 100);
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+    }catch (Exception ex){
+      fail("There must be no jobs remaining");
+    }
 
-    // do not fire timer
     testClock.setCurrentTime(new Date(now.getTime() + 30000L));
-    waitForJobExecutorToProcessAllJobs(20000, 100);
-
+    try {
+      waitForJobExecutorToProcessAllJobs(2000, 100);
+    }catch (Exception ex){
+      fail("There must be no jobs remaining");
+    }
     // count timer fired events
     int timerFiredCount = 0;
     List<ActivitiEvent> eventsReceived = listener.getEventsReceived();
@@ -265,7 +280,12 @@ public class JobEventsTest extends PluggableActivitiTestCase {
 		Calendar tomorrow = Calendar.getInstance();
 		tomorrow.add(Calendar.DAY_OF_YEAR, 1);
 		processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
-		waitForJobExecutorToProcessAllJobs(2000, 100);
+		try {
+		  managementService.executeJob(theJob.getId());
+		  fail("Expected exception");
+		} catch (Exception e) {
+		  // exception expected
+		}
 		
 		// Check delete-event has been dispatched
 		assertEquals(5, listener.getEventsReceived().size());

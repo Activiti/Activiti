@@ -65,13 +65,13 @@ public class ExchangeUtils {
     } else {
       camelVarMap = new HashMap<String, Object>();
       Object camelBody = null;
-      if (exchange.hasOut())
+      if (exchange.hasOut()) {
     	  camelBody = exchange.getOut().getBody();
-      else
+      } else {
     	  camelBody = exchange.getIn().getBody();
+      }
       
-      
-      if(camelBody instanceof Map<?,?>) {
+      if (camelBody instanceof Map<?,?>) {
         Map<?,?> camelBodyMap = (Map<?,?>)camelBody;
         for (@SuppressWarnings("rawtypes") Map.Entry e : camelBodyMap.entrySet()) {
           if (e.getKey() instanceof String) {
@@ -79,20 +79,22 @@ public class ExchangeUtils {
           }
         }
       } else {
-        if(activitiEndpoint.isCopyCamelBodyToBodyAsString() && !(camelBody instanceof String)) {
+        if (activitiEndpoint.isCopyCamelBodyToBodyAsString() && !(camelBody instanceof String)) {
           camelBody = exchange.getContext().getTypeConverter().convertTo(String.class, exchange, camelBody);
         }
-        camelVarMap.put(CAMELBODY, camelBody);
+        if (camelBody != null) {
+          camelVarMap.put(CAMELBODY, camelBody);
+        }
       }
 
-      if(activitiEndpoint.isCopyVariablesFromHeader()) {
+      if (activitiEndpoint.isCopyVariablesFromHeader()) {
         boolean isSetProcessInitiator = activitiEndpoint.isSetProcessInitiator();
-        for(Map.Entry<String, Object> header : exchange.getIn().getHeaders().entrySet()) {
+        for (Map.Entry<String, Object> header : exchange.getIn().getHeaders().entrySet()) {
           // Don't pass the process initiator header as a variable.
           if (isSetProcessInitiator && activitiEndpoint.getProcessInitiatorHeaderName().equals(header.getKey())) {
               continue;
           }
-    	  camelVarMap.put(header.getKey(), header.getValue());
+          camelVarMap.put(header.getKey(), header.getValue());
         }
       }
     }

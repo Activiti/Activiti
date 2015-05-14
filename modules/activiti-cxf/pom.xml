@@ -10,7 +10,7 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.17.0-SNAPSHOT</version>
+    <version>5.18.0-SNAPSHOT</version>
   </parent>
   
   <properties>
@@ -130,10 +130,6 @@
           <artifactId>asm</artifactId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>xerces</groupId>
-      <artifactId>xercesImpl</artifactId>
     </dependency>
     <dependency>
       <groupId>com.h2database</groupId>

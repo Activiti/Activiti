@@ -12,7 +12,7 @@
  */
 package org.activiti.image.util;
 
-import java.io.InputStream;
+import java.net.URL;
 
 
 /**
@@ -20,21 +20,28 @@ import java.io.InputStream;
  */
 public abstract class ReflectUtil {
 
-  public static InputStream getResourceAsStream(String name) {
-    return getResourceAsStream(name, null);
+  public static URL getResource(String name) {
+    return getResource(name, null);
   }
   
-  public static InputStream getResourceAsStream(String name, ClassLoader customClassLoader) {
-    InputStream resourceStream = null;
+  public static URL getResource(String name, ClassLoader customClassLoader) {
+    URL resourceURL = null;
     if (customClassLoader != null) {
-      resourceStream = customClassLoader.getResourceAsStream(name);
+      resourceURL = customClassLoader.getResource(name);
     }
     
-    if (resourceStream == null) {
+    if (resourceURL == null) {
       // Try the current Thread context classloader
       ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-      resourceStream = classLoader.getResourceAsStream(name);
+      if (classLoader != null) {
+        resourceURL = classLoader.getResource(name);
+      }
+      
+      if (resourceURL == null) {
+        classLoader = ReflectUtil.class.getClassLoader();
+        resourceURL = classLoader.getResource(name);
+      }
     }
-    return resourceStream;
+    return resourceURL;
    }
 }

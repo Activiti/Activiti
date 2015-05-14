@@ -24,6 +24,8 @@ import org.activiti.explorer.NotificationManager;
 import org.activiti.explorer.ViewManager;
 import org.activiti.explorer.identity.LoggedInUser;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaadin.ui.CustomLayout;
 import com.vaadin.ui.LoginForm.LoginEvent;
@@ -36,6 +38,8 @@ import com.vaadin.ui.LoginForm.LoginListener;
 public class LoginPage extends CustomLayout {
   
   private static final long serialVersionUID = 1L;
+  
+  protected static final Logger LOGGER = LoggerFactory.getLogger(LoginPage.class);
   
   protected transient IdentityService identityService = ProcessEngines.getDefaultProcessEngine().getIdentityService();
   
@@ -105,7 +109,7 @@ public class LoginPage extends CustomLayout {
           notificationManager.showErrorNotification(Messages.LOGIN_FAILED_HEADER, i18nManager.getMessage(Messages.LOGIN_FAILED_INVALID));
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        LOGGER.error("Error at login", e);
       }
     }
   }

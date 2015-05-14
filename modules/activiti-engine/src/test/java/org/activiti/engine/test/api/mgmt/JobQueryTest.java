@@ -175,7 +175,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     
     // Setting the clock before the start of the process instance, makes none of the jobs executable
     processEngineConfiguration.getClock().setCurrentTime(testStartTime);
-    verifyQueryResults(query, 1); // 1, since a message is always executable when retries > 0
+    verifyQueryResults(query, 0); 
   }
   
   public void testQueryByOnlyTimers() {
@@ -208,18 +208,18 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     verifyQueryResults(query, 2);
     
     query = managementService.createJobQuery().duedateLowerThan(new Date(timerThreeFireTime.getTime() + ONE_SECOND));
-    verifyQueryResults(query, 3);
+    verifyQueryResults(query, 4);
   }
   
   public void testQueryByDuedateHigherThan() {
     JobQuery query = managementService.createJobQuery().duedateHigherThan(testStartTime);
-    verifyQueryResults(query, 3);
+    verifyQueryResults(query, 4);
     
     query = managementService.createJobQuery().duedateHigherThan(timerOneFireTime);
-    verifyQueryResults(query, 2);
+    verifyQueryResults(query, 3);
     
     query = managementService.createJobQuery().duedateHigherThan(timerTwoFireTime);
-    verifyQueryResults(query, 1);
+    verifyQueryResults(query, 2);
     
     query = managementService.createJobQuery().duedateHigherThan(timerThreeFireTime);
     verifyQueryResults(query, 0);
@@ -276,7 +276,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     assertNotNull(job);
     
     List<Job> list = managementService.createJobQuery().withException().list();
-    assertEquals(list.size(), 1);
+    assertEquals(1, list.size());
     
     deleteJobInDatabase();
     
@@ -287,7 +287,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
     assertNotNull(job);
     
     list = managementService.createJobQuery().withException().list();
-    assertEquals(list.size(), 1);
+    assertEquals(1, list.size());
     
     deleteJobInDatabase();
     

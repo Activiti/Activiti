@@ -19,23 +19,18 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import junit.framework.AssertionFailedError;
 
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.impl.ProcessEngineImpl;
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.bpmn.parser.factory.ActivityBehaviorFactory;
-import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -289,57 +284,4 @@ public abstract class TestHelper {
     return new TestActivityBehaviorFactory(existingActivityBehaviorFactory);
   }
   
-  // Helper method for working with timers ///////////////////////////////////////////////////
-  
-  public static void waitForJobExecutorToProcessAllJobs(ProcessEngineConfigurationImpl processEngineConfiguration, long maxMillisToWait, long intervalMillis) {
-    JobExecutor jobExecutor = processEngineConfiguration.getJobExecutor();
-    jobExecutor.start();
-
-    try {
-      Timer timer = new Timer();
-      InteruptTask task = new InteruptTask(Thread.currentThread());
-      timer.schedule(task, maxMillisToWait);
-      boolean areJobsAvailable = true;
-      try {
-        while (areJobsAvailable && !task.isTimeLimitExceeded()) {
-          Thread.sleep(intervalMillis);
-          areJobsAvailable = areJobsAvailable(processEngineConfiguration);
-        }
-      } catch (InterruptedException e) {
-      } finally {
-        timer.cancel();
-      }
-      if (areJobsAvailable) {
-        throw new ActivitiException("time limit of " + maxMillisToWait + " was exceeded");
-      }
-
-    } finally {
-      jobExecutor.shutdown();
-    }
-  }
-
-  public static boolean areJobsAvailable(ProcessEngineConfigurationImpl processEngineConfiguration) {
-    return !processEngineConfiguration
-      .getManagementService()
-      .createJobQuery()
-      .executable()
-      .list()
-      .isEmpty();
-  }
-
-  private static class InteruptTask extends TimerTask {
-    protected boolean timeLimitExceeded = false;
-    protected Thread thread;
-    public InteruptTask(Thread thread) {
-      this.thread = thread;
-    }
-    public boolean isTimeLimitExceeded() {
-      return timeLimitExceeded;
-    }
-    public void run() {
-      timeLimitExceeded = true;
-      thread.interrupt();
-    }
-  }
-
 }

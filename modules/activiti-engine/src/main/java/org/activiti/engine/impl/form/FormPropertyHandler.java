@@ -13,6 +13,7 @@
 
 package org.activiti.engine.impl.form;
 
+import java.io.Serializable;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
@@ -26,8 +27,10 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 /**
  * @author Tom Baeyens
  */
-public class FormPropertyHandler {
+public class FormPropertyHandler implements Serializable {
 
+  private static final long serialVersionUID = 1L;
+  
   protected String id;
   protected String name;
   protected AbstractFormType type;

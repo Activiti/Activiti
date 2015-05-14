@@ -25,6 +25,8 @@ import org.activiti.engine.repository.ProcessDefinition;
  * @author Joram Barrez
  */
 public class ProcessDefinitionFormType extends AbstractFormType {
+	
+  private static final long serialVersionUID = 1L;
 
   public static final String TYPE_NAME = "processDefinition";
   

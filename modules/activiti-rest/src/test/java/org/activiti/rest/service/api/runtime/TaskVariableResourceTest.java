@@ -28,8 +28,8 @@ import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.HttpMultipartHelper;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
@@ -57,10 +57,10 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       taskService.saveTask(task);
       taskService.setVariableLocal(task.getId(), "localTaskVariable", "localValue");
 
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, task.getId(), "localTaskVariable")), HttpStatus.SC_OK);
-      
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("local", responseNode.get("scope").asText());
       assertEquals("localValue", responseNode.get("value").asText());
@@ -75,10 +75,10 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       taskService.setVariableLocal(processTask.getId(), "sharedVariable", "taskValue");
       
       // ANY scope, local should get precedence
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, processTask.getId(), "sharedVariable")), HttpStatus.SC_OK);
-      
       responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("local", responseNode.get("scope").asText());
       assertEquals("taskValue", responseNode.get("value").asText());
@@ -86,10 +86,10 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       assertEquals("string", responseNode.get("type").asText());
       
       // LOCAL scope
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, processTask.getId(), "sharedVariable") + "?scope=local"), HttpStatus.SC_OK);
-      
       responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("local", responseNode.get("scope").asText());
       assertEquals("taskValue", responseNode.get("value").asText());
@@ -97,10 +97,10 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       assertEquals("string", responseNode.get("type").asText());
       
       // GLOBAL scope
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, processTask.getId(), "sharedVariable") + "?scope=global"), HttpStatus.SC_OK);
-      
       responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("global", responseNode.get("scope").asText());
       assertEquals("processValue", responseNode.get("value").asText());
@@ -108,16 +108,16 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       assertEquals("string", responseNode.get("type").asText());
       
       // Illegal scope
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, processTask.getId(), "sharedVariable") + "?scope=illegal"), HttpStatus.SC_BAD_REQUEST);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, processTask.getId(), "sharedVariable") + "?scope=illegal"), HttpStatus.SC_BAD_REQUEST));
       
       // Unexisting task
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, "unexisting", "sharedVariable")), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, "unexisting", "sharedVariable")), HttpStatus.SC_NOT_FOUND));
       
       // Unexisting variable
-      response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, processTask.getId(), "unexistingVariable")), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, processTask.getId(), "unexistingVariable")), HttpStatus.SC_NOT_FOUND));
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -142,10 +142,11 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       taskService.setVariableLocal(task.getId(), "localTaskVariable", "This is a binary piece of text".getBytes());
 
       // Force content-type to TEXT_PLAIN to make sure this is ignored and application-octect-stream is always returned
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, task.getId(), "localTaskVariable")), HttpStatus.SC_OK);
       
       String actualResponseBytesAsText = IOUtils.toString(response.getEntity().getContent());
+      closeResponse(response);
       assertEquals("This is a binary piece of text", actualResponseBytesAsText);
       assertEquals("application/octet-stream", response.getEntity().getContentType().getValue());
       
@@ -172,7 +173,7 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       taskService.saveTask(task);
       taskService.setVariableLocal(task.getId(), "localTaskVariable", originalSerializable);
 
-      HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+      CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, task.getId(), "localTaskVariable")), HttpStatus.SC_OK);
       
       // Read the serializable from the stream
@@ -182,6 +183,7 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       assertTrue(readSerializable instanceof TestSerializableVariable);
       assertEquals("This is some field", ((TestSerializableVariable) readSerializable).getSomeField());
       assertEquals("application/x-java-serialized-object", response.getEntity().getContentType().getValue());
+      closeResponse(response);
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -204,12 +206,12 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       taskService.setVariableLocal(task.getId(), "localTaskVariable", "this is a plain string variable");
 
       // Try getting data for non-binary variable
-      executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, task.getId(), "localTaskVariable")), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, task.getId(), "localTaskVariable")), HttpStatus.SC_NOT_FOUND));
       
       // Try getting data for unexisting property
-      executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
-          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, task.getId(), "unexistingVariable")), HttpStatus.SC_NOT_FOUND);
+      closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
+          RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE_DATA, task.getId(), "unexistingVariable")), HttpStatus.SC_NOT_FOUND));
       
     } finally {
       // Clean adhoc-tasks even if test fails
@@ -236,7 +238,7 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
     // Delete variable without scope, local should be presumed -> local removed and global should be retained
     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, task.getId(), "overlappingVariable"));
-    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
     
     assertFalse(taskService.hasVariableLocal(task.getId(), "overlappingVariable"));
     assertTrue(taskService.hasVariable(task.getId(), "overlappingVariable"));
@@ -244,7 +246,7 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
     // Delete local scope variable
     httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, task.getId(), "anotherTaskVariable") + "?scope=local");
-    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
     
     assertFalse(taskService.hasVariableLocal(task.getId(), "anotherTaskVariable"));
     
@@ -252,12 +254,12 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
     assertTrue(taskService.hasVariable(task.getId(), "overlappingVariable"));
     httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, task.getId(), "overlappingVariable") + "?scope=global");
-    executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+    closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
     
     assertFalse(taskService.hasVariable(task.getId(), "overlappingVariable"));
 
     // Run the same delete again, variable is not there so 404 should be returned
-    executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -281,9 +283,9 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, task.getId(), "overlappingVariable"));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-    
+    CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("updatedLocalValue", responseNode.get("value").asText());
     assertEquals("local", responseNode.get("scope").asText());
@@ -299,9 +301,9 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
     requestNode.put("type", "string");
     requestNode.put("scope", "local");
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-    
+    response = executeRequest(httpPut, HttpStatus.SC_OK);
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("updatedLocalValueOnceAgain", responseNode.get("value").asText());
     assertEquals("local", responseNode.get("scope").asText());
@@ -317,9 +319,9 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
     requestNode.put("type", "string");
     requestNode.put("scope", "global");
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-    
+    response = executeRequest(httpPut, HttpStatus.SC_OK);
     responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("updatedInGlobalScope", responseNode.get("value").asText());
     assertEquals("global", responseNode.get("scope").asText());
@@ -330,14 +332,14 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
     // Try updating with mismatch between URL and body variableName unexisting property
     requestNode.put("name", "unexistingVariable");
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    response = executeHttpRequest(httpPut, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_BAD_REQUEST));
     
     // Try updating unexisting property
     requestNode.put("name", "unexistingVariable");
     httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, task.getId(), "unexistingVariable"));
     httpPut.setEntity(new StringEntity(requestNode.toString()));
-    response = executeHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -362,9 +364,9 @@ public class TaskVariableResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_TASK_VARIABLE, task.getId(), "binaryVariable"));
       httpPut.setEntity(HttpMultipartHelper.getMultiPartEntity("value", "application/octet-stream", binaryContent, additionalFields));
-      HttpResponse response = executeBinaryHttpRequest(httpPut, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeBinaryRequest(httpPut, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("binaryVariable", responseNode.get("name").asText());
       assertTrue(responseNode.get("value").isNull());

@@ -38,6 +38,7 @@ import org.activiti.explorer.ExplorerApp;
 import org.activiti.explorer.I18nManager;
 import org.activiti.explorer.Messages;
 import org.activiti.explorer.ui.mainlayout.ExplorerLayout;
+import org.activiti.explorer.util.XmlUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,7 +145,7 @@ public class ProcessDefinitionInfoComponent extends VerticalLayout {
         
         final InputStream definitionStream = repositoryService.getResourceAsStream(
             processDefinition.getDeploymentId(), processDefinition.getResourceName());
-        XMLInputFactory xif = XMLInputFactory.newInstance();
+        XMLInputFactory xif = XmlUtil.createSafeXmlInputFactory();
         XMLStreamReader xtr = xif.createXMLStreamReader(definitionStream);
         BpmnModel bpmnModel = new BpmnXMLConverter().convertToBpmnModel(xtr);
         

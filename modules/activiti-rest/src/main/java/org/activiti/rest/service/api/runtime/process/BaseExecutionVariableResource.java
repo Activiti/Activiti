@@ -50,12 +50,12 @@ public class BaseExecutionVariableResource {
   protected RuntimeService runtimeService;
   
   protected byte[] getVariableDataByteArray(Execution execution, String variableName, String scope,
-      HttpServletResponse response, String serverRootUrl) {
+      HttpServletResponse response) {
     
     try {
       byte[] result = null;
       
-      RestVariable variable = getVariableFromRequest(execution, variableName, scope, true, serverRootUrl);
+      RestVariable variable = getVariableFromRequest(execution, variableName, scope, true);
       if (RestResponseFactory.BYTE_ARRAY_VARIABLE_TYPE.equals(variable.getType())) {
         result = (byte[]) variable.getValue();
         response.setContentType("application/octet-stream");
@@ -79,7 +79,7 @@ public class BaseExecutionVariableResource {
   }
   
   protected RestVariable setBinaryVariable(MultipartHttpServletRequest request, 
-      Execution execution, int responseVariableType, boolean isNew, String serverRootUrl) {
+      Execution execution, int responseVariableType, boolean isNew) {
     
     // Validate input and set defaults
     if (request.getFileMap().size() == 0) {
@@ -149,10 +149,10 @@ public class BaseExecutionVariableResource {
       
       if (responseVariableType == RestResponseFactory.VARIABLE_PROCESS) {
         return restResponseFactory.createBinaryRestVariable(variableName, scope, variableType, 
-            null, null, execution.getId(), serverRootUrl);
+            null, null, execution.getId());
       } else {
         return restResponseFactory.createBinaryRestVariable(variableName, scope, variableType, null, 
-            execution.getId(), null, serverRootUrl);
+            execution.getId(), null);
       }
       
     } catch (IOException ioe) {
@@ -163,7 +163,7 @@ public class BaseExecutionVariableResource {
     
   }
   
-  protected RestVariable setSimpleVariable(RestVariable restVariable, Execution execution, boolean isNew, String serverRootUrl) {
+  protected RestVariable setSimpleVariable(RestVariable restVariable, Execution execution, boolean isNew) {
     if (restVariable.getName() == null) {
       throw new ActivitiIllegalArgumentException("Variable name is required");
     }
@@ -178,7 +178,7 @@ public class BaseExecutionVariableResource {
     setVariable(execution, restVariable.getName(), actualVariableValue, scope, isNew);
     
     return constructRestVariable(restVariable.getName(), actualVariableValue, scope, 
-        execution.getId(), false, serverRootUrl);
+        execution.getId(), false);
   }
   
   protected void setVariable(Execution execution, String name, Object value, RestVariableScope scope, boolean isNew) {
@@ -220,7 +220,7 @@ public class BaseExecutionVariableResource {
   }
   
   public RestVariable getVariableFromRequest(Execution execution, String variableName, String scope, 
-      boolean includeBinary, String serverRootUrl) {
+      boolean includeBinary) {
     
     boolean variableFound = false;
     Object value = null;
@@ -261,16 +261,16 @@ public class BaseExecutionVariableResource {
       throw new ActivitiObjectNotFoundException("Execution '" + execution.getId() + 
           "' doesn't have a variable with name: '" + variableName + "'.", VariableInstanceEntity.class);
     } else {
-      return constructRestVariable(variableName, value, variableScope, execution.getId(), includeBinary, serverRootUrl);
+      return constructRestVariable(variableName, value, variableScope, execution.getId(), includeBinary);
     }
   }
   
   
   protected RestVariable constructRestVariable(String variableName, Object value,
-          RestVariableScope variableScope, String executionId, boolean includeBinary, String serverRootUrl) {
+          RestVariableScope variableScope, String executionId, boolean includeBinary) {
     
     return restResponseFactory.createRestVariable(variableName, value, variableScope, executionId, 
-        RestResponseFactory.VARIABLE_EXECUTION, includeBinary, serverRootUrl);
+        RestResponseFactory.VARIABLE_EXECUTION, includeBinary);
   }
 
   /**

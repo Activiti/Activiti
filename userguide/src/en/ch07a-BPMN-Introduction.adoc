@@ -1,0 +1,428 @@
+[[bpmn20]]
+
+== BPMN 2.0 Introduction
+
+[[whatIsBpmn]]
+
+
+=== What is BPMN?
+
+See our link:$$http://activiti.org/faq.html#WhatIsBpmn20$$[FAQ entry on BPMN 2.0].
+
+
+[[bpmnDefiningProcess]]
+
+
+=== Defining a process
+
+
+[NOTE]
+====
+This introduction is written under the assumption you are using the link:$$http://eclipse.org/$$[Eclipse IDE] to create and edit files. Very little of this is specific to Eclipse, however. You can use any other tool you prefer to create XML files containing BPMN 2.0.
+
+====
+
+Create a new XML file (__right-click on any project and select New->Other->XML-XML File__) and give it a name. Make sure that the file *ends with .bpmn20.xml or .bpmn*, since otherwise the engine won't pick up this file for deployment.
+
+image::images/new.bpmn.procdef.png[align="center"]
+
+
+The root element of the BPMN 2.0 schema is the +definitions+ element. Within this element, multiple process definitions can be defined (although we advise to have only one process definition in each file, since this simplifies maintenance later in the development process). An empty process definition looks as listed below. Note that the minimal +definitions+ element only needs the +xmlns+ and +targetNamespace+ declaration. The +targetNamespace+ can be anything, and is useful for categorizing process definitions.
+
+[source,xml,linenums]
+----
+<definitions
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="Examples">
+
+  <process id="myProcess" name="My First Process">
+    ..
+  </process>
+
+</definitions>
+----
+
+Optionally you can also add the online schema location of the BPMN 2.0 XML schema, as an alternative to the XML catalog configuration in Eclipse.
+
+[source,xml,linenums]
+----
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL
+                    http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd
+----
+
+
+The +process+ element has two attributes:
+
+*  *id*: this attribute is *required* and maps to the *key* property of an Activiti +ProcessDefinition+ object. This +id+ can then be used to start a new process instance of the process definition, through the  +startProcessInstanceByKey+ method on the +RuntimeService+. This method will always take the *latest deployed version* of the process definition.
+
+[source,java,linenums]
+----
+ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("myProcess");
+----
+
+* Important to note here is that this is not the same as calling the  +startProcessInstanceById+ method. This method expects the String id  that was generated at deploy time by the Activiti engine, and can be retrieved by calling the +processDefinition.getId()+ method. The format of the generated id is *'key:version'*, and the length is *constrained to 64 characters*. If you get an +ActivitiException+ stating that the generated id is too long, limit the text in the _key_ field of the process.
+* *name*: this attribute is *optional* and maps to the _name_ property of a +ProcessDefinition+. The engine itself doesn't use this property, so it can be used for displaying a more human-friendly name in a user interface, for example.
+
+
+[[10minutetutorial]]
+
+
+=== Getting started: 10 minute tutorial
+
+In this section we will cover a (very simple) business process that we will use to introduce some basic Activiti concepts and the Activiti API.
+
+
+[[bpmn10MinuteTutorialPrerequisites]]
+
+
+==== Prerequisites
+
+This tutorial assumes that you have the <<demo.setup.one.minute.version,Activiti demo setup running>>, and that you are using a standalone H2 server. Edit +db.properties+ and set the +jdbc.url=jdbc:h2:tcp://localhost/activiti+, and then run the standalone server according to link:$$http://www.h2database.com/html/tutorial.html#using_server$$[H2's documentation].
+
+
+[[bpmn10MinuteTutorialGoal]]
+
+
+==== Goal
+
+The goal of this tutorial is to learn about Activiti and some basic BPMN 2.0 concepts. The end result will be a simple Java SE program that deploys a process definition, and interacts with this process through the Activiti engine API. We'll also touch some of the tooling around Activiti. Of course, what you'll learn in this tutorial can also be used when building your own web applications around your business processes.
+
+
+[[bpmnFirstExampleUseCase]]
+
+
+==== Use case
+
+The use case is straightforward: we have a company, let's call it BPMCorp. In BPMCorp, a financial report needs to be written every month for the company shareholders. This is the responsibility of the accountancy department. When the report is finished, one of the members of the upper management needs to approve the document before it is sent to all the shareholders.
+
+
+[[bpmnFirstExampleDiagram]]
+
+
+==== Process diagram
+
+The business process as described above can be graphically visualized using the   <<activitiDesigner,Activiti Designer>>. However, for this tutorial we'll type the XML ourselves, as we learn the most this way at this point. The graphical BPMN 2.0 notation of our process looks like this:
+
+image::images/financial.report.example.diagram.png[align="center"]
+
+What we see is a <<bpmnNoneStartEvent,none Start Event>> (circle on the left), followed by two <<bpmnUserTask,User Tasks>>: _'Write monthly financial report'_ and  _'Verify monthly financial report'_, ending in a <<bpmnNoneEndEvent,none end event>> (circle with thick border on the right).
+
+
+[[bpmnFirstExampleXml]]
+
+
+==== XML representation
+
+The XML version of this business process (__FinancialReportProcess.bpmn20.xml__) looks as shown below. It's easy to recognize the main elements of our process (click on the links for going to the detailed section of that BPMN 2.0 construct):
+
+* The <<bpmnNoneStartEvent,(none) start event>> tells us what the _entry point_ to the process is.
+* The <<bpmnUserTask,User Tasks>> declarations are the representation of the human tasks of our process. Note that the first task is assigned to the _accountancy_ group, while the second task is assigned to the _management_ group. See <<bpmnUserTaskAssignment,the section on user task assignment>> for more information on how users and groups can be assigned to user tasks.
+* The process ends when the <<bpmnNoneEndEvent,none end event>> is reached.
+* The elements are connected with each other through <<bpmnSequenceFlow,sequence flows>>. These sequence flows have a +source+ and +target+, defining the _direction_ of the sequence flow.
+
+[source,xml,linenums]
+----
+<definitions id="definitions"
+  targetNamespace="http://activiti.org/bpmn20"
+  xmlns:activiti="http://activiti.org/bpmn"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL">
+
+	<process id="financialReport" name="Monthly financial report reminder process">
+
+	  <startEvent id="theStart" />
+
+	  <sequenceFlow id='flow1' sourceRef='theStart' targetRef='writeReportTask' />
+
+	  <userTask id="writeReportTask" name="Write monthly financial report" >
+	    <documentation>
+	      Write monthly financial report for publication to shareholders.
+	    </documentation>
+	    <potentialOwner>
+	      <resourceAssignmentExpression>
+	        <formalExpression>accountancy</formalExpression>
+	      </resourceAssignmentExpression>
+	    </potentialOwner>
+	  </userTask>
+
+	  <sequenceFlow id='flow2' sourceRef='writeReportTask' targetRef='verifyReportTask' />
+
+	  <userTask id="verifyReportTask" name="Verify monthly financial report" >
+	    <documentation>
+	      Verify monthly financial report composed by the accountancy department.
+	      This financial report is going to be sent to all the company shareholders.
+	    </documentation>
+	    <potentialOwner>
+	      <resourceAssignmentExpression>
+	        <formalExpression>management</formalExpression>
+	      </resourceAssignmentExpression>
+	    </potentialOwner>
+	  </userTask>
+
+	  <sequenceFlow id='flow3' sourceRef='verifyReportTask' targetRef='theEnd' />
+
+	  <endEvent id="theEnd" />
+
+	</process>
+
+</definitions>
+----
+
+
+
+
+[[bpmnFirstExamplStartProcess]]
+
+
+==== Starting a process instance
+
+We have now created the *process definition* of our business process. From such a process definition, we can create *process instances*. In this case, one process instance would match with the creation and verification of a single financial report for a particular month. All the process instances share the same process definition.
+
+To be able to create process instances from a given process definition, we must first *deploy* this process definition. Deploying a process definition means two things:
+
+* The process definition will be stored in the persistent datastore that is configured for your Activiti engine. So by deploying our business process, we make sure that the engine will find the process definition after an engine reboot.
+* The BPMN 2.0 process file will be parsed to an in-memory object model that can be manipulated through the Activiti API.
+
+More information on deployment can be found <<chDeployment,in the dedicated section on deployment>>.
+
+As described in that section, deployment can happen in several ways. One way is through the API as follows. Note that all interaction with the Activiti engine happens through its _services_.
+
+[source,java,linenums]
+----
+Deployment deployment = repositoryService.createDeployment()
+  .addClasspathResource("FinancialReportProcess.bpmn20.xml")
+  .deploy();
+----
+
+Now we can start a new process instance using  the +id+ we defined in the process definition (see process element in the XML file). Note that this +id+ in Activiti terminology is called the *key*.
+
+[source,java,linenums]
+----
+ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("financialReport");
+----
+
+This will create a process instance that will first go through the start event. After the start event, it follows all the outgoing sequence flows (only one in this case) and the first task ('write monthly financial report') is reached. The Activiti engine will now store a task in the persistent database. At this point, the user or group assignments attached to the task are resolved and also stored in the database. It's important to note that the Activiti engine will continue process execution steps until it reaches a _wait state_, such as the user task. At such a wait state, the current state of the process instance is stored in the database. It remains in that state until a user decides to complete their task. At that point, the engine will continue until it reaches a new wait state or the end of the process. When the engine reboots or crashes in the meantime, the state of the process is safe and well in the database.
+
+After the task is created, the +startProcessInstanceByKey+ method will return since the user task activity is a _wait state_. In this case, the task is assigned to a group, which means that every member of the group is a *candidate* to perform the task.
+
+We can now throw this all together and create a simple Java program. Create a new  Eclipse project and add the Activiti jars and dependencies to its classpath  (these can be found in the _libs_ folder of the Activiti distribution). Before we can call the Activiti services, we must first construct a +ProcessEngine+ that gives us access to the services. Here we use the _'standalone'_ configuration, which constructs a +ProcessEngine+ that uses the database also used in the demo setup.
+
+You can download the process definition XML link:$$images/FinancialReportProcess.bpmn20.xml$$[here]. This file contains the XML as shown above, but also contains the necessary BPMN  <<generatingProcessDiagram,diagram interchange information>> to visualize the process in the Activiti tools.
+
+[source,java,linenums]
+----
+public static void main(String[] args) {
+
+  // Create Activiti process engine
+  ProcessEngine processEngine = ProcessEngineConfiguration
+    .createStandaloneProcessEngineConfiguration()
+    .buildProcessEngine();
+
+  // Get Activiti services
+  RepositoryService repositoryService = processEngine.getRepositoryService();
+  RuntimeService runtimeService = processEngine.getRuntimeService();
+
+  // Deploy the process definition
+  repositoryService.createDeployment()
+    .addClasspathResource("FinancialReportProcess.bpmn20.xml")
+    .deploy();
+
+  // Start a process instance
+  runtimeService.startProcessInstanceByKey("financialReport");
+}
+----
+
+
+[[bpmnFirstExampleCandidateList]]
+
+
+==== Task lists
+
+
+We can now retrieve this task through the +TaskService+ by adding the following logic:
+
+[source,java,linenums]
+----
+List<Task> tasks = taskService.createTaskQuery().taskCandidateUser("kermit").list();
+----
+
+Note that the user we pass to this operation needs to be a member of  the _accountancy_ group, since that was declared in the process definition:
+
+[source,xml,linenums]
+----
+<potentialOwner>
+  <resourceAssignmentExpression>
+    <formalExpression>accountancy</formalExpression>
+  </resourceAssignmentExpression>
+</potentialOwner>
+----
+
+We could also use the task query API to get the same results using the name of the group. We can now add the following logic to our code:
+
+[source,java,linenums]
+----
+TaskService taskService = processEngine.getTaskService();
+List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("accountancy").list();
+----
+
+Since we've configured our +ProcessEngine+ to use the same database as the demo setup is using, we can now log into link:$$http://localhost:8080/activiti-explorer/$$[Activiti Explorer]. By default, no user is in the _accountancy_ group. Login with kermit/kermit, click Groups and then "Create group". Then click Users and add the group to fozzie. Now login with fozzie/fozzie, and we will find  that we can start our business process after selecting the _Processes_ page and clicking on the _'Start Process'_ link in the _'Actions'_ column corresponding to the _'Monthly financial report'_ process.
+
+image::images/bpmn.financial.report.example.start.process.png[align="center"]
+
+As explained, the process will execute up to the first user task. Since we're logged in as kermit, we can see that there is a new candidate task available for him after we've started a process instance. Select the _Tasks_ page to view this new task.  Note that even if the process was started by someone else, the task would still be visible as a candidate task to everyone in the accountancy group.
+
+
+image::images/bpmn.financial.report.example.task.assigned.png[align="center"]
+
+[[bpmnFirstExampleClaimTask]]
+
+
+==== Claiming the task
+
+An accountant now needs to *claim the task*. By claiming the task, the specific user will become the *assignee* of the task and the task will disappear from every task list of the other members of the accountancy group. Claiming a task is programmatically done as follows:
+
+[source,java,linenums]
+----
+taskService.claim(task.getId(), "fozzie");
+----
+
+The task is now in the *personal task list of the one that claimed the task*.
+
+[source,java,linenums]
+----
+List<Task> tasks = taskService.createTaskQuery().taskAssignee("fozzie").list();
+----
+
+In the Activiti Explorer UI, clicking the _claim_ button will call the same operation. The task will now move to the personal task list of the logged on user. You also see that the assignee of the task changed to the current logged in user.
+
+image::images/bpmn.financial.report.example.claim.task.png[align="center"]
+
+
+
+[[bpmnFirstExampleCompleteTask]]
+
+
+==== Completing the task
+
+The accountant can now start working on the financial report. Once the report is finished, he can *complete the task*, which means that all work for that task is done.
+
+[source,java,linenums]
+----
+taskService.complete(task.getId());
+----
+
+For the Activiti engine, this is an external signal that the process instance execution must be continued. The task itself is removed from the runtime data. The single outgoing transition out of the task is followed, moving the execution to the second task (__'verification of the report'__).  The same mechanism as described for the first task will now be used to assign the second task, with the small difference that the task will be assigned to the  __management__ group.
+
+In the demo setup, completing the task is done by clicking the _complete_ button in the task list. Since Fozzie isn't an accountant, we need to log out of the Activiti Explorer and login in as _kermit_ (who is a manager). The second task is now visible in the unassigned task lists.
+
+
+[[bpmnFirstExampleEndingProcess]]
+
+
+==== Ending the process
+
+The verification task can be retrieved and claimed in exactly the same way as before. Completing this second task will move process execution to the end event, which finishes the process instance. The process instance and all related runtime execution data are removed from the datastore.
+
+When you log into Activiti Explorer you can verify this, since no records will be  found in the table where the process executions are stored.
+
+image::images/bpmn.financial.report.example.process.ended.png[align="center"]
+
+Programmatically, you can also verify that the process is ended using the +historyService+
+
+[source,java,linenums]
+----
+HistoryService historyService = processEngine.getHistoryService();
+HistoricProcessInstance historicProcessInstance =
+historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
+System.out.println("Process instance end time: " + historicProcessInstance.getEndTime());
+----
+
+[[bpmnFirstExampleCode]]
+
+
+==== Code overview
+
+Combine all the snippets from previous sections, and you should have something like this (this code takes in account that you probably will have started a few process instances through the Activiti Explorer UI. As such, it always retrieves a list of tasks instead of one task, so it always works):
+
+[source,java,linenums]
+----
+public class TenMinuteTutorial {
+
+  public static void main(String[] args) {
+
+    // Create Activiti process engine
+    ProcessEngine processEngine = ProcessEngineConfiguration
+      .createStandaloneProcessEngineConfiguration()
+      .buildProcessEngine();
+
+    // Get Activiti services
+    RepositoryService repositoryService = processEngine.getRepositoryService();
+    RuntimeService runtimeService = processEngine.getRuntimeService();
+
+    // Deploy the process definition
+    repositoryService.createDeployment()
+      .addClasspathResource("FinancialReportProcess.bpmn20.xml")
+      .deploy();
+
+    // Start a process instance
+    String procId = runtimeService.startProcessInstanceByKey("financialReport").getId();
+
+    // Get the first task
+    TaskService taskService = processEngine.getTaskService();
+    List<Task> tasks = taskService.createTaskQuery().taskCandidateGroup("accountancy").list();
+    for (Task task : tasks) {
+      System.out.println("Following task is available for accountancy group: " + task.getName());
+
+      // claim it
+      taskService.claim(task.getId(), "fozzie");
+    }
+
+    // Verify Fozzie can now retrieve the task
+    tasks = taskService.createTaskQuery().taskAssignee("fozzie").list();
+    for (Task task : tasks) {
+      System.out.println("Task for fozzie: " + task.getName());
+
+      // Complete the task
+      taskService.complete(task.getId());
+    }
+
+    System.out.println("Number of tasks for fozzie: "
+            + taskService.createTaskQuery().taskAssignee("fozzie").count());
+
+    // Retrieve and claim the second task
+    tasks = taskService.createTaskQuery().taskCandidateGroup("management").list();
+    for (Task task : tasks) {
+      System.out.println("Following task is available for management group: " + task.getName());
+      taskService.claim(task.getId(), "kermit");
+    }
+
+    // Completing the second task ends the process
+    for (Task task : tasks) {
+      taskService.complete(task.getId());
+    }
+
+    // verify that the process is actually finished
+    HistoryService historyService = processEngine.getHistoryService();
+    HistoricProcessInstance historicProcessInstance =
+      historyService.createHistoricProcessInstanceQuery().processInstanceId(procId).singleResult();
+    System.out.println("Process instance end time: " + historicProcessInstance.getEndTime());
+  }
+
+}
+----
+
+
+[[bpmnFirstExampleFutureEnhancements]]
+
+
+==== Future enhancements
+
+
+It's easy to see that this business process is too simple to be usable in reality. However, as you are going through the BPMN 2.0 constructs available in Activiti, you will be able to enhance the business process by:
+
+
+* defining *gateways* that act as decisions. This way, a manager could reject the financial report which would recreate the task for the accountant.
+* declaring and using *variables*, such that we can store or reference the report so that it can be visualized in the form.
+* defining a *service task* at the end of the process that will send the report to every shareholder.
+* etc.

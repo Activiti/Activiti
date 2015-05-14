@@ -11,6 +11,7 @@ import org.activiti.bpmn.model.FormValue;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.workflow.simple.converter.WorkflowDefinitionConversion;
 import org.activiti.workflow.simple.definition.HumanStepDefinition;
+import org.activiti.workflow.simple.definition.form.BooleanPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.FormDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.ListPropertyEntry;
@@ -43,9 +44,14 @@ public class BaseStepDefinitionConverterTest {
         reason.setName("Reason");
         reason.setType("string");
         formDefinition.addFormProperty(reason);
+        
+        BooleanPropertyDefinition validate = new BooleanPropertyDefinition();
+        validate.setName("Validate");
+        validate.setType("boolean");
+        formDefinition.addFormProperty(validate);
 
         List<FormProperty> properties = converter.convertProperties(formDefinition);
-        assertTrue(properties.size() == 2);
+        assertTrue(properties.size() == 3);
 
         FormProperty firstProperty = properties.get(0);
         assertNotNull(firstProperty);
@@ -70,6 +76,12 @@ public class BaseStepDefinitionConverterTest {
         assertTrue(secondProperty.getFormValues().isEmpty());
         assertEquals("Reason", secondProperty.getName());
         assertEquals("string", secondProperty.getType());
+        
+        FormProperty thirdProperty = properties.get(2);
+        assertNotNull(thirdProperty);
+        assertTrue(thirdProperty.getFormValues().isEmpty());
+        assertEquals("Validate", thirdProperty.getName());
+        assertEquals("boolean", thirdProperty.getType());
     }
 
     /**

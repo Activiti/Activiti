@@ -73,7 +73,7 @@ public class FormDataResource {
       throw new ActivitiObjectNotFoundException("Could not find a form data with id '" + id + "'.", FormData.class);
     }
     
-    return restResponseFactory.createFormDataResponse(formData, request.getRequestURL().toString().replace("/form/form-data", ""));
+    return restResponseFactory.createFormDataResponse(formData);
   }
   
   @RequestMapping(value="/form/form-data", method = RequestMethod.POST, produces="application/json")
@@ -108,8 +108,7 @@ public class FormDataResource {
       } else {
         processInstance = formService.submitStartFormData(submitRequest.getProcessDefinitionId(), propertyMap);
       }
-      return restResponseFactory.createProcessInstanceResponse(processInstance, 
-          request.getRequestURL().toString().replace("/form/form-data", ""));
+      return restResponseFactory.createProcessInstanceResponse(processInstance);
     }
   }
 }

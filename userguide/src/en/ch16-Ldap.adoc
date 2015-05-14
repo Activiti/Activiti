@@ -1,0 +1,226 @@
+[[chapter_ldap]]
+
+== LDAP integration
+
+Companies often already have a user and group store in the form of an LDAP system. Since version 5.14, Activiti offers an out-of-the-box solution for easily configuring  how Activiti should connect with an LDAP system.  
+    
+Before Activiti 5.14, it was already possible to integrate LDAP with Activiti. However, as of 5.14, the configuration has been simplified a lot. However, the 'old' way of configuring LDAP still works. More specifically, the simplified configuration is just a wrapper on top of the 'old' infrastructure.
+    
+
+[[ldap_usage]]
+
+
+=== Usage 
+
+To add the LDAP integration code to your project, simply add the following dependency to your pom.xml:
+            
+[source,xml,linenums]            
+----
+<dependency>
+  <groupId>org.activiti</groupId>
+  <artifactId>activiti-ldap</artifactId>
+  <version>latest.version</version>
+</dependency>                    
+----
+
+
+[[ldap_usecases]]
+
+
+=== Use cases
+
+The LDAP integration has currently two main use cases:
+            
+* Allow for authentication through the IdentityService. This is e.g. useful when using Activiti Explorer and the login needs to go through LDAP.
+* Fetching the groups of a user. This is important when for example querying tasks to see which tasks a certain user can see (i.e. tasks with a candidate group).
+                
+
+[[ldap_configuration]]
+
+
+=== Configuration
+
+Integrating the LDAP system with Activiti is done by injecting an instance of +org.activiti.ldap.LDAPConfigurator+ in the +configurators+ section of the process engine configuration. This class is highly extensible: methods can be easily overridden and many dependent beans are pluggable if the default implementation would not fit the use case.
+        
+This is an example configuration (note: of course, when creating the engine programmatically this is completely similar). Don't worry about all the properties for now, we'll look at them in detail in a next section.
+            
+[source,xml,linenums]            
+----
+    <bean id="processEngineConfiguration" class="...SomeProcessEngineConfigurationClass">
+        ...
+        <property name="configurators">
+          <list>
+              <bean class="org.activiti.ldap.LDAPConfigurator">
+              
+                <!-- Server connection params -->
+                <property name="server" value="ldap://localhost" />
+                <property name="port" value="33389" />
+                <property name="user" value="uid=admin, ou=users, o=activiti" />
+                <property name="password" value="pass" />
+                
+                <!-- Query params -->
+                <property name="baseDn" value="o=activiti" />
+                <property name="queryUserByUserId" value="(&(objectClass=inetOrgPerson)(uid={0}))" />
+                <property name="queryUserByFullNameLike" value="(&(objectClass=inetOrgPerson)(|({0}=*{1}*)({2}=*{3}*)))" />
+                <property name="queryGroupsForUser" value="(&(objectClass=groupOfUniqueNames)(uniqueMember={0}))" />
+                
+                <!-- Attribute config -->
+                <property name="userIdAttribute" value="uid" />
+                <property name="userFirstNameAttribute" value="cn" />
+                <property name="userLastNameAttribute" value="sn" />
+                <property name="userEmailAttribute" value="mail" />
+                
+                
+                <property name="groupIdAttribute" value="cn" />
+                <property name="groupNameAttribute" value="cn" />
+                
+              </bean>
+          </list>
+        </property>
+    </bean>         
+----
+
+[[ldap_properties]]
+
+
+=== Properties
+
+
+Following properties can be set on ++org.activiti.ldap.LDAPConfigurator++:
+
+            .LDAP configuration properties
+[options="header"]
+|===============
+|Property name|Description|Type|Default value
+|server|The server on which the LDAP system can be reached. For example 'ldap://localhost:33389'|String|
+|port|The port on which the LDAP system is running|int|
+|user|The user id that is used to connect to the LDAP system|String|
+|password|The password that is used to connect to the LDAP system|String|
+|initialContextFactory|The InitialContextFactory name used to connect to the LDAP system|String|com.sun.jndi.ldap.LdapCtxFactory
+|securityAuthentication|The value that is used for the 'java.naming.security.authentication' property used to connect to the LDAP system|String|simple
+|customConnectionParameters|Allows to set all LDAP connection parameters which do not have a dedicated setter. 
+                            See for example http://docs.oracle.com/javase/tutorial/jndi/ldap/jndi.html for custom
+                            properties. Such properties are for example to configure connection pooling, specific
+                            security settings, etc. All the provided parameters will be provided when creating a 
+                            connection to the LDAP system.|Map<String, String>|
+|baseDn|The base 'distinguished name' (DN) from which the searches for users and groups are started|String|
+|userBaseDn|The base 'distinguished name' (DN) from which the searches for users are started. If not provided, baseDn (see above) will be used|String|
+|groupBaseDn|The base 'distinguished name' (DN) from which the searches for groups are started. If not provided, baseDn (see above) will be used|String|
+|searchTimeLimit|The timeout that is used when doing a search in LDAP in milliseconds|long|one hour
+|queryUserByUserId|
+                            The query that is executed when searching for a user by userId. 
+                            For example: (&(objectClass=inetOrgPerson)(uid={0}))
+                            Here, all the objects in LDAP with the class 'inetOrgPerson'
+                            and who have the matching 'uid' attribute value will be returned.
+                            As shown in the example, the user id is injected by using
+                            {0}. If setting the query alone is insufficient for your specific
+                            LDAP setup, you can alternatively plug in a different
+                            LDAPQueryBuilder, which allows for more customization than only the  query.
+                            |string|
+|queryUserByFullNameLike|
+                            The query that is executed when searching for a user by full name. 
+                            For example: (& (objectClass=inetOrgPerson) (|({0}=*{1}*)({2}=*{3}*)) )
+                            Here, all the objects in LDAP with the class 'inetOrgPerson'
+                            and who have the matching first name and last name values will be returned.
+                            Note that {0} injects the firstNameAttribute (as defined above), {1} and {3} the search text
+                            and {2} the lastNameAttribute. If setting the query alone is insufficient for your specific
+                            LDAP setup, you can alternatively plug in a different
+                            LDAPQueryBuilder, which allows for more customization than only the  query.
+                            |string|
+|queryGroupsForUser|The query that is executed when searching for the groups of a specific user.
+                            For example: (&(objectClass=groupOfUniqueNames)(uniqueMember={0}))
+                            Here, all the objects in LDAP with the class 'groupOfUniqueNames'
+                            and where the provided DN (matching a DN for a user) is a 'uniqueMember' are returned.
+                            As shown in the example, the user id is injected by using {0}
+                            If setting the query alone is insufficient for your specific
+                            LDAP setup, you can alternatively plug in a different
+                            LDAPQueryBuilder, which allows for more customization than only the  query.|string|
+|userIdAttribute|Name of the attribute that matches the user id.
+                            This property is used when looking for a User object
+                            and the mapping between the LDAP object and the Activiti User object
+                            is done.|string|
+|userFirstNameAttribute|Name of the attribute that matches the user first name.
+                            This property is used when looking for a User object
+                            and the mapping between the LDAP object and the Activiti User object is done.|string|
+|userLastNameAttribute|Name of the attribute that matches the user last name.
+                            This property is used when looking for a User object
+                            and the mapping between the LDAP object and the Activiti User object is done.|string|
+|groupIdAttribute|Name of the attribute that matches the group id.
+                            This property is used when looking for a Group object
+                            and the mapping between the LDAP object and the Activiti Group object is done.|string|
+|groupNameAttribute|Name of the attribute that matches the group name.
+                            This property is used when looking for a Group object
+                            and the mapping between the LDAP object and the Activiti Group object is done.|String|
+|groupTypeAttribute|Name of the attribute that matches the group type.
+                            This property is used when looking for a Group object
+                            and the mapping between the LDAP object and the Activiti Group object
+                            is done.|String|
+
+|===============
+
+
+Following properties are when one wants to customize default behavior or introduced group caching:
+
+.Advanced properties
+[options="header"]
+|===============
+|Property name|Description|Type|Default value
+|ldapUserManagerFactory|Set a custom implementation of the LDAPUserManagerFactory if the default implementation is not suitable.|instance of LDAPUserManagerFactory|
+|ldapGroupManagerFactory|Set a custom implementation of the LDAPGroupManagerFactory if the default implementation is not suitable.|instance of LDAPGroupManagerFactory|
+|ldapMemberShipManagerFactory|Set a custom implementation of the LDAPMembershipManagerFactory if the default implementation is not suitable.
+                            Note that this is very unlikely, as membership are managed in the LDAP system itself normally.|An instance of LDAPMembershipManagerFactory|
+|ldapQueryBuilder|Set a custom query builder if the default implementation is not suitable.
+                            The LDAPQueryBuilder instance is used when the LDAPUserManager or
+                            LDAPGroupManage} does an actual query against the LDAP system.
+                            The default implementation uses the properties as set on this instance
+                            such as queryGroupsForUser and queryUserById|An instance of org.activiti.ldap.LDAPQueryBuilder|
+|groupCacheSize| Allows to set the size of the group cache.
+                            This is an LRU cache that caches groups for users and thus
+                            avoids hitting the LDAP system each time the groups of
+                            a user needs to be known.
+                            
+                            The cache will not be instantiated if the value is less than zero.
+                            By default set to -1, so no caching is done.
+                            |int|-1
+|groupCacheExpirationTime|Sets the expiration time of the group cache in milliseconds.
+                            When groups for a specific user are fetched, and if the group cache exists,
+                            the groups will be stored in this cache for the time set in this property.
+                            I.e. when the groups were fetched at 00:00 and the expiration time is 30 minutes,
+                            any fetch of the groups for that user after 00:30 will not come from the cache, but do
+                            a fetch again from the LDAP system. Likewise, everything group fetch for that user done
+                            between 00:00 - 00:30 will come from the cache.|long|one hour
+
+|===============
+
+
+
+Note when using Active Directory: people in the Activiti forum have reported that for Activiti Directory, the 'InitialDirContext' needs to be set to Context.REFERRAL. This can be passed through the customConnectionParameters map as described above.
+        
+
+[[lda-explorer]]
+
+
+=== Integrate LDAP in Explorer
+
+      
+* Add the LDAP configuration as above to +activiti-standalone-context.xml+
+* Add the activiti-ldap jar to WEB-INF/lib
+* Remove the +demoDataGenerator+ bean, as it will try to insert users (which is not possible with the LDAP integration)
+* Add following configuration to the +explorerApp+ bean in ++activiti-ui.context++:
+                        
+[source,xml,linenums]
+----
+<property name="adminGroups">
+  <list>
+    <value>admin</value>
+  </list>
+  </property>
+  <property name="userGroups">
+    <list>
+      <value>user</value>
+    </list>
+</property>                                            
+----
+
+Obviously replacing the values with your own values. The value that needs to be used is the id of the group (configurable through ++groupIdAttribute++). The config above will make all members of the 'admin' group an Administrator user in Activiti Explorer and similar for the user group. Any group not matching these values is seen as an 'assignment' group,  i.e. where tasks can become assigned to.
+                    

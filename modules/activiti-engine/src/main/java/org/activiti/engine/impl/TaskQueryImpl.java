@@ -67,6 +67,7 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String tenantIdLike;
   protected boolean withoutTenantId;
   protected String processInstanceId;
+  protected List<String> processInstanceIds;
   protected String executionId;
   protected Date createTime;
   protected Date createTimeBefore;
@@ -80,6 +81,8 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   protected String processDefinitionId;
   protected String processDefinitionName;
   protected String processDefinitionNameLike;
+  protected List<String> processCategoryInList;
+  protected List<String> processCategoryNotInList;
   protected String deploymentId;
   protected List<String> deploymentIds;
   protected String processInstanceBusinessKey;
@@ -548,6 +551,28 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     return this;
   }
   
+  @Override
+  public TaskQuery processInstanceIdIn(List<String> processInstanceIds) {
+    if(processInstanceIds == null) {
+      throw new ActivitiIllegalArgumentException("Process instance id list is null");
+    }
+    if(processInstanceIds.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Process instance id list is empty");
+    }
+    for (String processInstanceId : processInstanceIds) {
+      if (processInstanceId == null) {
+        throw new ActivitiIllegalArgumentException("None of the given process instance ids can be null");
+      }
+    }
+
+    if (orActive) {
+      orQueryObject.processInstanceIds = processInstanceIds;
+    } else {
+      this.processInstanceIds = processInstanceIds;
+    }
+    return this;
+  }
+  
   public TaskQueryImpl processInstanceBusinessKey(String processInstanceBusinessKey) {
     if(orActive) {
       orQueryObject.processInstanceBusinessKey = processInstanceBusinessKey;
@@ -871,7 +896,51 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
     }
     return this;
   }
-  
+
+  @Override
+  public TaskQuery processCategoryIn(List<String> processCategoryInList) {
+    if(processCategoryInList == null) {
+      throw new ActivitiIllegalArgumentException("Process category list is null");
+    }
+    if(processCategoryInList.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Process category list is empty");
+    }
+    for (String processCategory : processCategoryInList) {
+      if (processCategory == null) {
+        throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
+      }
+    }
+
+    if(orActive) {
+      orQueryObject.processCategoryInList = processCategoryInList;
+    } else {
+      this.processCategoryInList = processCategoryInList;
+    }
+    return this;
+  }
+
+  @Override
+  public TaskQuery processCategoryNotIn(List<String> processCategoryNotInList) {
+    if(processCategoryNotInList == null) {
+      throw new ActivitiIllegalArgumentException("Process category list is null");
+    }
+    if(processCategoryNotInList.isEmpty()) {
+      throw new ActivitiIllegalArgumentException("Process category list is empty");
+    }
+    for (String processCategory : processCategoryNotInList) {
+      if (processCategory == null) {
+        throw new ActivitiIllegalArgumentException("None of the given process categories can be null");
+      }
+    }
+
+    if(orActive) {
+      orQueryObject.processCategoryNotInList = processCategoryNotInList;
+    } else {
+      this.processCategoryNotInList = processCategoryNotInList;
+    }
+    return this;
+  }
+
   public TaskQuery deploymentId(String deploymentId) {
     if(orActive) {
       orQueryObject.deploymentId = deploymentId;
@@ -1192,6 +1261,9 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
   public String getProcessInstanceId() {
     return processInstanceId;
   }
+  public List<String> getProcessInstanceIds() {
+    return processInstanceIds;
+  }
   public String getExecutionId() {
     return executionId;
   }
@@ -1291,6 +1363,14 @@ public class TaskQueryImpl extends AbstractVariableQueryImpl<TaskQuery, Task> im
 
   public String getProcessDefinitionNameLike() {
     return processDefinitionNameLike;
+  }
+
+  public List<String> getProcessCategoryInList() {
+    return processCategoryInList;
+  }
+
+  public List<String> getProcessCategoryNotInList() {
+    return processCategoryNotInList;
   }
 
   public String getDeploymentId() {

@@ -95,13 +95,46 @@
     where EXECUTION_ID_ = #{parameter, jdbcType=VARCHAR}
     and TASK_ID_ is null
   </select>
-
+  
+  <select id="selectVariableInstanceByExecutionAndName" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
+	select * from ${prefix}ACT_RU_VARIABLE 
+    where EXECUTION_ID_ = #{executionId, jdbcType=VARCHAR} and NAME_= #{name, jdbcType=VARCHAR} and TASK_ID_ is null
+  </select>
+  
+  <select id="selectVariableInstancesByExecutionAndNames" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
+	select * from ${prefix}ACT_RU_VARIABLE 
+    where EXECUTION_ID_ = #{parameter.executionId, jdbcType=VARCHAR} and TASK_ID_ is null
+    <if test="parameter.names != null and parameter.names.size > 0">
+    and (
+      <foreach collection="parameter.names" index="index" item="name" separator=" or ">
+      	NAME_= #{name, jdbcType=VARCHAR}	
+      </foreach>	    
+    )
+    </if>
+  </select>
+  
   <select id="selectVariablesByTaskId"
     parameterType="org.activiti.engine.impl.db.ListQueryParameterObject"
     resultMap="variableInstanceResultMap">
     select * from ${prefix}ACT_RU_VARIABLE where
-    TASK_ID_ =
-    #{parameter, jdbcType=VARCHAR}
+    TASK_ID_ = #{parameter, jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectVariableInstanceByTaskAndName" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
+	select * from ${prefix}ACT_RU_VARIABLE 
+    where TASK_ID_ = #{taskId, jdbcType=VARCHAR} and NAME_= #{name, jdbcType=VARCHAR}
+  </select>
+  
+  <select id="selectVariableInstancesByTaskAndNames" parameterType="java.util.Map" resultMap="variableInstanceResultMap">
+	select * from ${prefix}ACT_RU_VARIABLE 
+    where TASK_ID_ = #{parameter.taskId, jdbcType=VARCHAR} 
+    <if test="parameter.names != null and parameter.names.size > 0">
+    and (
+      <foreach collection="parameter.names" index="index" item="name" separator=" or ">
+      	NAME_= #{name, jdbcType=VARCHAR}	
+      </foreach>	    
+    )
+    </if>
   </select>
 
 </mapper>

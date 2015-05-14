@@ -491,9 +491,9 @@ public class BeanELResolver extends ELResolver {
 			context.setPropertyResolved(true);
 		}
 		return result;
-	};
+	}
 
-	private Method findMethod(Object base, String name, Class<?>[] types, int paramCount) {
+  private Method findMethod(Object base, String name, Class<?>[] types, int paramCount) {
 		if (types != null) {
 			try {
 				return findAccessibleMethod(base.getClass().getMethod(name, types));

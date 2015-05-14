@@ -26,11 +26,10 @@ import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.junit.Assert;
-import org.junit.Test;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -47,7 +46,6 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseSpringRe
    * Test querying historic activity instance. 
    * GET history/historic-activity-instances
    */
-  @Test
   @Deployment(resources={"org/activiti/rest/service/api/twoTaskProcess.bpmn20.xml"})
   public void testQueryActivityInstances() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
@@ -109,8 +107,9 @@ public class HistoricActivityInstanceCollectionResourceTest extends BaseSpringRe
   
   protected void assertResultsPresentInDataResponse(String url, int numberOfResultsExpected, String... expectedActivityIds) throws JsonProcessingException, IOException {
     // Do the actual call
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
+  	CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + url), HttpStatus.SC_OK);
     JsonNode dataNode = objectMapper.readTree(response.getEntity().getContent()).get("data");
+    closeResponse(response);
     Assert.assertEquals(numberOfResultsExpected, dataNode.size());
     
     // Check presence of ID's

@@ -54,7 +54,7 @@ public class ExclusiveGatewayValidator extends ProcessLevelValidator {
       for (SequenceFlow flow : exclusiveGateway.getOutgoingFlows()) {
       	String condition = flow.getConditionExpression();
       	boolean isDefaultFlow = flow.getId() != null && flow.getId().equals(defaultSequenceFlow);
-      	boolean hasConditon = condition != null;
+      	boolean hasConditon = StringUtils.isNotEmpty(condition); 
       	
         if (!hasConditon && !isDefaultFlow) {
           flowsWithoutCondition.add(flow);

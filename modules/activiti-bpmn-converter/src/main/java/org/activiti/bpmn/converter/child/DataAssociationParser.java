@@ -30,6 +30,9 @@ public class DataAssociationParser implements BpmnXMLConstants {
     boolean readyWithDataAssociation = false;
     Assignment assignment = null;
     try {
+      
+      dataAssociation.setId(xtr.getAttributeValue(null, "id"));
+      
       while (readyWithDataAssociation == false && xtr.hasNext()) {
         xtr.next();
         if (xtr.isStartElement() && ELEMENT_SOURCE_REF.equals(xtr.getLocalName())) {

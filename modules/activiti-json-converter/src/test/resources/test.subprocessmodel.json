@@ -40,17 +40,17 @@
             "exclusivedefinition" : "No",
             "executionlisteners" : "",
             "formkeydefinition" : "",
-            "formproperties" : { "items" : [ { "formproperty_expression" : "",
-                      "formproperty_id" : "test",
-                      "formproperty_name" : "Test",
-                      "formproperty_type" : "string",
-                      "formproperty_variable" : ""
+            "formproperties" : { "formProperties" : [ { "expression" : "",
+                      "id" : "test",
+                      "name" : "Test",
+                      "type" : "string",
+                      "variable" : ""
                     },
-                    { "formproperty_expression" : "",
-                      "formproperty_id" : "test2",
-                      "formproperty_name" : "Test 2",
-                      "formproperty_type" : "string",
-                      "formproperty_variable" : ""
+                    { "expression" : "",
+                      "id" : "test2",
+                      "name" : "Test 2",
+                      "type" : "string",
+                      "variable" : ""
                     }
                   ],
                 "totalCount" : 2
@@ -60,15 +60,8 @@
             "name" : "User task 1",
             "prioritydefinition" : "",
             "tasklisteners" : "{\"totalCount\": 1, \"items\": [{\"task_listener_event_type\": \"create\", \"task_listener_class\": \"test\", \"task_listener_expression\": \"\", \"task_listener_delegate_expression\": \"\", \"task_listener_fields\": \"{\\\"totalCount\\\": 1, \\\"items\\\": [{\\\"task_listener_field_name\\\": \\\"test\\\", \\\"task_listener_field_value\\\": \\\"hello\\\", \\\"task_listener_field_expression\\\": \\\"\\\"}]}\"}]}",
-            "usertaskassignment" : { "items" : [ { "assignment_type" : "candidateUsers",
-                      "resourceassignmentexpr" : "kermit"
-                    },
-                    { "assignment_type" : "candidateGroups",
-                      "resourceassignmentexpr" : "management"
-                    }
-                  ],
-                "totalCount" : 2
-              }
+            "usertaskassignment" : { "assignment" : { "candidateUsers" : [{"value" : "kermit"}],
+            										  "candidateGroups" : [{"value" : "management"}]}}
           },
         "resourceId" : "userTask1",
         "stencil" : { "id" : "UserTask" }

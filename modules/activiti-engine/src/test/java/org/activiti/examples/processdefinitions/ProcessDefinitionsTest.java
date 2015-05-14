@@ -15,7 +15,9 @@ package org.activiti.examples.processdefinitions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.activiti.engine.impl.bpmn.deployer.BpmnDeployer;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
@@ -78,6 +80,43 @@ public class ProcessDefinitionsTest extends PluggableActivitiTestCase {
     assertEquals("Insurance Damage Report 1", processDefinition.getName());
     assertTrue(processDefinition.getId().startsWith("IDR:1"));
     assertEquals(1, processDefinition.getVersion());
+    
+    Set<String> queryDeploymentIds = new HashSet<String>();
+    queryDeploymentIds.add(processDefinitions.get(0).getDeploymentId());
+    queryDeploymentIds.add(processDefinitions.get(1).getDeploymentId());
+    List<ProcessDefinition> queryProcessDefinitions = repositoryService.createProcessDefinitionQuery()
+        .deploymentIds(queryDeploymentIds)
+        .orderByProcessDefinitionKey().asc()
+        .orderByProcessDefinitionVersion().desc()
+        .list();
+    assertEquals(2, queryProcessDefinitions.size());
+    
+    processDefinition = queryProcessDefinitions.get(0);
+    assertEquals("EN", processDefinition.getKey());
+    assertEquals("Expense Note 2", processDefinition.getName());
+    
+    processDefinition = queryProcessDefinitions.get(1);
+    assertEquals("EN", processDefinition.getKey());
+    assertEquals("Expense Note 1", processDefinition.getName());
+    
+    queryDeploymentIds = new HashSet<String>();
+    queryDeploymentIds.add(processDefinitions.get(0).getDeploymentId());
+    queryDeploymentIds.add(processDefinitions.get(3).getDeploymentId());
+    queryDeploymentIds.add(processDefinitions.get(4).getDeploymentId());
+    queryProcessDefinitions = repositoryService.createProcessDefinitionQuery().deploymentIds(queryDeploymentIds).list();
+    assertEquals(3, queryProcessDefinitions.size());
+    
+    processDefinition = queryProcessDefinitions.get(0);
+    assertEquals("EN", processDefinition.getKey());
+    assertEquals("Expense Note 2", processDefinition.getName());
+    
+    processDefinition = processDefinitions.get(3);
+    assertEquals("IDR", processDefinition.getKey());
+    assertEquals("Insurance Damage Report 2", processDefinition.getName());
+    
+    processDefinition = processDefinitions.get(4);
+    assertEquals("IDR", processDefinition.getKey());
+    assertEquals("Insurance Damage Report 1", processDefinition.getName());
 
     deleteDeployments(deploymentIds);
   }

@@ -59,20 +59,17 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
     // Check if it's a valid task to get the variables for
     Task task = getTaskFromRequest(taskId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
     RestVariableScope variableScope = RestVariable.getScopeFromString(scope);
     if (variableScope == null) {
       // Use both local and global variables
-      addLocalVariables(task, variableMap, serverRootUrl);
-      addGlobalVariables(task, variableMap, serverRootUrl);
+      addLocalVariables(task, variableMap);
+      addGlobalVariables(task, variableMap);
       
     } else if(variableScope == RestVariableScope.GLOBAL) {
-      addGlobalVariables(task, variableMap, serverRootUrl);
+      addGlobalVariables(task, variableMap);
       
     } else if(variableScope == RestVariableScope.LOCAL) {
-      addLocalVariables(task, variableMap, serverRootUrl);
+      addLocalVariables(task, variableMap);
     }
     
     // Get unique variables from map
@@ -85,12 +82,9 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
     
     Task task = getTaskFromRequest(taskId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/tasks/"));
-    
     Object result = null;
     if (request instanceof MultipartHttpServletRequest) {
-      result = setBinaryVariable((MultipartHttpServletRequest) request, task, true, serverRootUrl);
+      result = setBinaryVariable((MultipartHttpServletRequest) request, task, true);
     } else {
       
       List<RestVariable> inputVariables = new ArrayList<RestVariable>();
@@ -140,7 +134,7 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
         Object actualVariableValue = restResponseFactory.getVariableValue(var);
         variablesToSet.put(var.getName(), actualVariableValue);
         resultVariables.add(restResponseFactory.createRestVariable(var.getName(), actualVariableValue, varScope, 
-            task.getId(), RestResponseFactory.VARIABLE_TASK, false, serverRootUrl));
+            task.getId(), RestResponseFactory.VARIABLE_TASK, false));
       }
       
       if (!variablesToSet.isEmpty()) {
@@ -171,11 +165,11 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
     response.setStatus(HttpStatus.NO_CONTENT.value());
   }
   
-  protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap, String serverRootUrl) {
+  protected void addGlobalVariables(Task task, Map<String, RestVariable> variableMap) {
     if (task.getExecutionId() != null) {
       Map<String, Object> rawVariables = runtimeService.getVariables(task.getExecutionId());
       List<RestVariable> globalVariables = restResponseFactory.createRestVariables(rawVariables, task.getId(), 
-          RestResponseFactory.VARIABLE_TASK, RestVariableScope.GLOBAL, serverRootUrl);
+          RestResponseFactory.VARIABLE_TASK, RestVariableScope.GLOBAL);
       
       // Overlay global variables over local ones. In case they are present the values are not overridden, 
       // since local variables get precedence over global ones at all times.
@@ -188,10 +182,10 @@ public class TaskVariableCollectionResource extends TaskVariableBaseResource {
   }
 
   
-  protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap, String serverRootUrl) {
+  protected void addLocalVariables(Task task, Map<String, RestVariable> variableMap) {
     Map<String, Object> rawVariables = taskService.getVariablesLocal(task.getId());
     List<RestVariable> localVariables = restResponseFactory.createRestVariables(rawVariables, 
-        task.getId(), RestResponseFactory.VARIABLE_TASK, RestVariableScope.LOCAL, serverRootUrl);
+        task.getId(), RestResponseFactory.VARIABLE_TASK, RestVariableScope.LOCAL);
     
     for (RestVariable var : localVariables) {
       variableMap.put(var.getName(), var);

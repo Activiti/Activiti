@@ -27,7 +27,7 @@ public class MessageParser implements BpmnXMLConstants {
   
   public void parse(XMLStreamReader xtr, BpmnModel model) throws Exception {
     if (StringUtils.isNotEmpty(xtr.getAttributeValue(null, ATTRIBUTE_ID))) {
-      String messageId = model.getTargetNamespace() + ":" + xtr.getAttributeValue(null, ATTRIBUTE_ID);
+      String messageId   = xtr.getAttributeValue(null, ATTRIBUTE_ID);
       String messageName = xtr.getAttributeValue(null, ATTRIBUTE_NAME);
       String itemRef = parseItemRef(xtr.getAttributeValue(null, ATTRIBUTE_ITEM_REF), model);
       Message message = new Message(messageId, messageName, itemRef);
@@ -46,7 +46,7 @@ public class MessageParser implements BpmnXMLConstants {
         String resolvedNamespace = model.getNamespace(prefix);
         result = resolvedNamespace + ":" + itemRef.substring(indexOfP + 1);
       } else {
-        result = model.getTargetNamespace() + ":" + itemRef;
+        result = itemRef;
       }
     }
     return result;

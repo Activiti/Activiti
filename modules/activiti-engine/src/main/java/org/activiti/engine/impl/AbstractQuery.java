@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ManagementService;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.ListQueryParameterObject;
@@ -71,6 +72,11 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> extends ListQueryPa
   
   public AbstractQuery(CommandContext commandContext) {
     this.commandContext = commandContext;
+  }
+  
+  // To be used by custom queries
+  public AbstractQuery(ManagementService managementService){
+    this(((ManagementServiceImpl) managementService).getCommandExecutor());
   }
   
   public AbstractQuery<T, U> setCommandExecutor(CommandExecutor commandExecutor) {
@@ -198,6 +204,7 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> extends ListQueryPa
   		if (nullHandlingOnOrder.equals(NullHandlingOnOrder.NULLS_FIRST)) {
   			
   			if (ProcessEngineConfigurationImpl.DATABASE_TYPE_H2.equals(databaseType)
+            || ProcessEngineConfigurationImpl.DATABASE_TYPE_HSQL.equals(databaseType)
   					|| ProcessEngineConfigurationImpl.DATABASE_TYPE_POSTGRES.equals(databaseType)
   					|| ProcessEngineConfigurationImpl.DATABASE_TYPE_ORACLE.equals(databaseType)) {
   				orderBy = orderBy + defaultOrderByClause + " NULLS FIRST";
@@ -214,6 +221,7 @@ public abstract class AbstractQuery<T extends Query<?,?>, U> extends ListQueryPa
       } else if (nullHandlingOnOrder.equals(NullHandlingOnOrder.NULLS_LAST)) {
       	
   			if (ProcessEngineConfigurationImpl.DATABASE_TYPE_H2.equals(databaseType)
+  			    || ProcessEngineConfigurationImpl.DATABASE_TYPE_HSQL.equals(databaseType)
   					|| ProcessEngineConfigurationImpl.DATABASE_TYPE_POSTGRES.equals(databaseType)
   					|| ProcessEngineConfigurationImpl.DATABASE_TYPE_ORACLE.equals(databaseType)) {
   				orderBy = orderBy + column + " "+sortOrder + " NULLS LAST";

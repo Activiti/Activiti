@@ -19,13 +19,17 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.JobQueryImpl;
 import org.activiti.engine.impl.Page;
+import org.activiti.engine.impl.asyncexecutor.AsyncExecutor;
+import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.TransactionListener;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.jobexecutor.AsyncJobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
 import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.AbstractManager;
@@ -35,12 +39,38 @@ import org.activiti.engine.runtime.Job;
 /**
  * @author Tom Baeyens
  * @author Daniel Meyer
+ * @author Joram Barrez
  */
 public class JobEntityManager extends AbstractManager {
 
   public void send(MessageEntity message) {
+  	
+  	ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+  	
+  	if (processEngineConfiguration.isAsyncExecutorEnabled()) {
+  	
+  		// If the async executor is enabled, we need to set the duedate of the job to the current date + the default lock time. 
+  		// This is cope with the case where the async job executor or the process engine goes down
+  		// before executing the job. This way, other async job executors can pick the job up after the max lock time.
+  		Date dueDate = new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() 
+  				+ processEngineConfiguration.getAsyncExecutor().getAsyncJobLockTimeInMillis());
+  		message.setDuedate(dueDate);
+  		message.setLockExpirationTime(null); // was set before, but to be quickly picked up needs to be set to null
+  		
+  	} else if (!processEngineConfiguration.isJobExecutorActivate()) {
+  		
+  		// If the async executor is disabled AND there is no old school job executor,
+  		// The job needs to be picked up as soon as possible. So the due date is now set to the current time
+  		message.setDuedate(processEngineConfiguration.getClock().getCurrentTime());
+  		message.setLockExpirationTime(null); // was set before, but to be quickly picked up needs to be set to null
+  	}
+  	
     message.insert();
-    hintJobExecutor(message);    
+    if (processEngineConfiguration.isAsyncExecutorEnabled()) {
+      hintAsyncExecutor(message);
+    } else {
+      hintJobExecutor(message);
+    }
   }
  
   public void schedule(TimerEntity timer) {
@@ -50,14 +80,28 @@ public class JobEntityManager extends AbstractManager {
     }
 
     timer.insert();
-    pokeJobExecutor(timer);
-  }
-    
-  // Check if this timer is before the current process engine time
-  public void pokeJobExecutor(JobEntity job) {
-    if (job.getDuedate().getTime() <= (Context.getProcessEngineConfiguration().getClock().getCurrentTime().getTime())) {
-      hintJobExecutor(job);
+
+    ProcessEngineConfiguration engineConfiguration = Context.getProcessEngineConfiguration();
+    if (engineConfiguration.isAsyncExecutorEnabled() == false && 
+        timer.getDuedate().getTime() <= (engineConfiguration.getClock().getCurrentTime().getTime())) {
+
+      hintJobExecutor(timer);
     }
+  }
+  
+  public void retryAsyncJob(JobEntity job) {
+    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
+    asyncExecutor.executeAsyncJob(job);
+  }
+  
+  protected void hintAsyncExecutor(JobEntity job) {  
+    AsyncExecutor asyncExecutor = Context.getProcessEngineConfiguration().getAsyncExecutor();
+
+    // notify job executor:      
+    TransactionListener transactionListener = new AsyncJobAddedNotification(job, asyncExecutor);
+    Context.getCommandContext()
+      .getTransactionContext()
+      .addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
   
   protected void hintJobExecutor(JobEntity job) {  
@@ -69,7 +113,7 @@ public class JobEntityManager extends AbstractManager {
       .getTransactionContext()
       .addTransactionListener(TransactionState.COMMITTED, transactionListener);
   }
- 
+
   public void cancelTimers(ExecutionEntity execution) {
     List<TimerEntity> timers = Context
       .getCommandContext()
@@ -91,10 +135,26 @@ public class JobEntityManager extends AbstractManager {
   
   @SuppressWarnings("unchecked")
   public List<JobEntity> findNextJobsToExecute(Page page) {
-    Date now = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
     return getDbSqlSession().selectList("selectNextJobsToExecute", now, page);
   }
   
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findNextTimerJobsToExecute(Page page) {
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
+    return getDbSqlSession().selectList("selectNextTimerJobsToExecute", now, page);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<JobEntity> findAsyncJobsDueToExecute(Page page) {
+    ProcessEngineConfiguration processEngineConfig = Context.getProcessEngineConfiguration();
+    Date now = processEngineConfig.getClock().getCurrentTime();
+    return getDbSqlSession().selectList("selectAsyncJobsDueToExecute", now, page);
+  }
+  
+  @SuppressWarnings("unchecked")
   public List<JobEntity> findJobsByLockOwner(String lockOwner, int start, int maxNrOfJobs) {
   	return getDbSqlSession().selectList("selectJobsByLockOwner", lockOwner, start, maxNrOfJobs);
   }
@@ -134,7 +194,7 @@ public class JobEntityManager extends AbstractManager {
   public List<Job> findJobsByConfiguration(String jobHandlerType, String jobHandlerConfiguration) {
     Map<String, String> params = new HashMap<String, String>();
     params.put("handlerType", jobHandlerType);
-    params.put("handlerConfiguration", jobHandlerConfiguration);
+    params.put("handlerConfiguration", String.format("%%s%%",jobHandlerConfiguration));
     return getDbSqlSession().selectList("selectJobsByConfiguration", params);
   }
 

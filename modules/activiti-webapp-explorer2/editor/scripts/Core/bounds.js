@@ -1,27 +1,4 @@
 /**
- * Copyright (c) 2006
- * Martin Czuchra, Nicolas Peters, Daniel Polak, Willi Tscheschner
- *
- * Permission is hereby granted, free of charge, to any person obtaining a
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
- * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
- * DEALINGS IN THE SOFTWARE.
- **/
-
-/**
  * Init namespaces
  */
 if(!ORYX) {var ORYX = {};}
@@ -288,8 +265,10 @@ ORYX.Core.Bounds = {
 	 * bound delimiter points.
 	 */
 	upperLeft: function() {
-		
-		return {x:this.a.x, y:this.a.y};
+		var result = {};
+		result.x = this.a.x;
+		result.y = this.a.y;
+		return result;
 	},
 	
 	/**
@@ -297,8 +276,10 @@ ORYX.Core.Bounds = {
 	 * bound delimiter points.
 	 */
 	lowerRight: function() {
-		
-		return {x:this.b.x, y:this.b.y};
+		var result = {};
+		result.x = this.b.x;
+		result.y = this.b.y;
+		return result;
 	},
 	
 	/**
@@ -319,10 +300,10 @@ ORYX.Core.Bounds = {
 	 * @return {Point} The center point of this bounds.
 	 */
 	center: function() {
-		return {
-			x: (this.a.x + this.b.x)/2.0, 
-			y: (this.a.y + this.b.y)/2.0
-		};
+		var center = {};
+		center.x =(this.a.x + this.b.x)/2.0; 
+		center.y =(this.a.y + this.b.y)/2.0;
+		return center;
 	},
 
 	
@@ -330,10 +311,11 @@ ORYX.Core.Bounds = {
 	 * @return {Point} The center point of this bounds relative to upperLeft.
 	 */
 	midPoint: function() {
-		return {
-			x: (this.b.x - this.a.x)/2.0, 
-			y: (this.b.y - this.a.y)/2.0
-		};
+		
+		var midpoint = {};
+		midpoint.x = (this.b.x - this.a.x)/2.0; 
+		midpoint.y = (this.b.y - this.a.y)/2.0;
+		return midpoint;
 	},
 		
 	/**

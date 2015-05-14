@@ -120,7 +120,7 @@ public class TaskBaseResource {
   }
   
   protected DataResponse getTasksFromQueryRequest(TaskQueryRequest request, 
-      Map<String, String> requestParams, String serverRootUrl) {
+      Map<String, String> requestParams) {
     
     TaskQuery taskQuery = taskService.createTaskQuery();
     
@@ -286,7 +286,7 @@ public class TaskBaseResource {
       taskQuery.taskCandidateOrAssigned(request.getCandidateOrAssigned());
     }
     
-    return new TaskPaginateList(restResponseFactory, serverRootUrl).paginateList(
+    return new TaskPaginateList(restResponseFactory).paginateList(
         requestParams, request, taskQuery, "id", properties);
   }
   

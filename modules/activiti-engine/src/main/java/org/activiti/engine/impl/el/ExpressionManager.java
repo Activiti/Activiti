@@ -124,4 +124,13 @@ public class ExpressionManager {
     elResolver.add(new BeanELResolver());
     return elResolver;
   }
+
+	public Map<Object, Object> getBeans() {
+		return beans;
+	}
+
+	public void setBeans(Map<Object, Object> beans) {
+		this.beans = beans;
+	}
+  
 }

@@ -36,6 +36,6 @@ public class HistoricProcessInstanceQueryResource extends HistoricProcessInstanc
   public DataResponse queryProcessInstances(@RequestBody HistoricProcessInstanceQueryRequest queryRequest, 
       @RequestParam Map<String,String> allRequestParams, HttpServletRequest request) {
   
-    return getQueryResponse(queryRequest, allRequestParams, request.getRequestURL().toString().replace("/query/historic-process-instances", ""));
+    return getQueryResponse(queryRequest, allRequestParams);
   }
 }

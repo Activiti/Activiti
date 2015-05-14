@@ -48,10 +48,7 @@ public class ProcessDefinitionIdentityLinkResource extends BaseProcessDefinition
     // Check if identitylink to get exists
     IdentityLink link = getIdentityLink(family, identityId, processDefinition.getId());
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/repository/process-definitions/"));
-    
-    return restResponseFactory.createRestIdentityLink(link, serverRootUrl);
+    return restResponseFactory.createRestIdentityLink(link);
   }
 
   @RequestMapping(value="/repository/process-definitions/{processDefinitionId}/identitylinks/{family}/{identityId}", method = RequestMethod.DELETE)

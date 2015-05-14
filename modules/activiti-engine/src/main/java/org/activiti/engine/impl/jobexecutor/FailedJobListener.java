@@ -32,11 +32,10 @@ public class FailedJobListener implements TransactionListener {
   protected CommandExecutor commandExecutor;
   protected String jobId;
   protected Throwable exception;
-
-  public FailedJobListener(CommandExecutor commandExecutor, String jobId, Throwable exception) {
+  
+  public FailedJobListener(CommandExecutor commandExecutor, String jobId) {
     this.commandExecutor = commandExecutor;
     this.jobId = jobId;
-    this.exception = exception;
   }
   
   public void execute(CommandContext commandContext) {
@@ -46,6 +45,10 @@ public class FailedJobListener implements TransactionListener {
 
 	  log.trace("Using FailedJobCommandFactory '" + failedJobCommandFactory.getClass() + "' and command of type '" + cmd.getClass() + "'");
 	  commandExecutor.execute(commandConfig, cmd);
+  }
+  
+  public void setException(Throwable exception) {
+    this.exception = exception;
   }
 
 }

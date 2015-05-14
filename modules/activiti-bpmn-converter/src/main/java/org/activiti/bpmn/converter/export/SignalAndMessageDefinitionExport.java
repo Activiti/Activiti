@@ -72,7 +72,20 @@ public class SignalAndMessageDefinitionExport implements BpmnXMLConstants {
         xtw.writeAttribute(ATTRIBUTE_NAME, message.getName());
       }
       if (StringUtils.isNotEmpty(message.getItemRef())) {
-        xtw.writeAttribute(ATTRIBUTE_ITEM_REF, message.getItemRef());
+        // replace the namespace by the right prefix
+        String itemRef = message.getItemRef();
+        for (String prefix : model.getNamespaces().keySet()) {
+            String namespace = model.getNamespace(prefix);
+            if (itemRef.startsWith(namespace)) {
+                if (prefix.isEmpty()) {
+                    itemRef = itemRef.replace(namespace + ":", "");
+                } else {
+                    itemRef = itemRef.replace(namespace, prefix);
+                }
+                break;
+            }
+        }
+        xtw.writeAttribute(ATTRIBUTE_ITEM_REF, itemRef);
       }
       xtw.writeEndElement();
     }

@@ -14,47 +14,86 @@
 package org.activiti.camel;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
+import org.apache.camel.Route;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:custom-camel-activiti-context.xml")
+@ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class CustomContextTest extends SpringActivitiTestCase {
 
-  MockEndpoint service1;
+	@Autowired
+	protected CamelContext camelContext;
+	
+	protected MockEndpoint service1;
 
-  MockEndpoint service2;
+	protected MockEndpoint service2;
 
-  public void setUp() {
+	public void setUp() throws Exception {
+   
+    camelContext.addRoutes(new RouteBuilder() {
 
-    CamelContext ctx = applicationContext.getBean(CamelContext.class);
-    service1 = (MockEndpoint) ctx.getEndpoint("mock:service1");
-    service1.reset();
-    service2 = (MockEndpoint) ctx.getEndpoint("mock:service2");
-    service2.reset();
-
+   		@Override
+   		public void configure() throws Exception {	 
+   		  from("direct:start").to("activiti:camelProcess");	   		
+  
+   		  from("activiti:camelProcess:serviceTask1").setBody().property("var1")
+   	      .to("mock:service1").setProperty("var2").constant("var2")
+   	      .setBody().properties();
+  
+   		  from("activiti:camelProcess:serviceTask2?copyVariablesToBodyAsMap=true")
+   	      .to("mock:service2");
+  
+   		  from("direct:receive").to("activiti:camelProcess:receive");	   		  
+   		}
+   	});
+	       
+		service1 = (MockEndpoint) camelContext.getEndpoint("mock:service1");
+		service1.reset();
+		service2 = (MockEndpoint) camelContext.getEndpoint("mock:service2");
+		service2.reset();
+	}
+	
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r: routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
+    }
   }
+	
 
-  @Deployment(resources = {"process/custom.bpmn20.xml"})
-  public void testRunProcess() throws Exception {
-    CamelContext ctx = applicationContext.getBean(CamelContext.class);
-    ProducerTemplate tpl = ctx.createProducerTemplate();
-    service1.expectedBodiesReceived("ala");
+	@Deployment(resources = { "process/custom.bpmn20.xml" })
+	public void testRunProcess() throws Exception {
+		CamelContext ctx = applicationContext.getBean(CamelContext.class);
+		ProducerTemplate tpl = ctx.createProducerTemplate();
+		service1.expectedBodiesReceived("ala");
 
-    String instanceId = (String) tpl.requestBody("direct:start", Collections.singletonMap("var1", "ala"));
+		Exchange exchange = ctx.getEndpoint("direct:start").createExchange();
+		exchange.getIn().setBody(Collections.singletonMap("var1", "ala"));
+		tpl.send("direct:start", exchange);
+		
+		String instanceId = (String) exchange.getProperty("PROCESS_ID_PROPERTY");
+	
+		tpl.sendBodyAndProperty("direct:receive", null,
+				ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
 
-    tpl.sendBodyAndProperty("direct:receive", null, ActivitiProducer.PROCESS_ID_PROPERTY, instanceId);
+		assertProcessEnded(instanceId);
 
-    assertProcessEnded(instanceId);
-
-    service1.assertIsSatisfied();
+		service1.assertIsSatisfied();
+		
+		@SuppressWarnings("rawtypes")
     Map m = service2.getExchanges().get(0).getIn().getBody(Map.class);
-    assertEquals("ala", m.get("var1"));
-    assertEquals("var2", m.get("var2"));
-  }
+		assertEquals("ala", m.get("var1"));
+		assertEquals("var2", m.get("var2"));
+	}
 }

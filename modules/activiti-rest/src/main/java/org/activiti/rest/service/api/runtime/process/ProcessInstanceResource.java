@@ -36,9 +36,7 @@ public class ProcessInstanceResource extends BaseProcessInstanceResource {
 
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}", method = RequestMethod.GET, produces="application/json")
   public ProcessInstanceResponse getProcessInstance(@PathVariable String processInstanceId, HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
-    return restResponseFactory.createProcessInstanceResponse(getProcessInstanceFromRequest(processInstanceId), serverRootUrl);
+    return restResponseFactory.createProcessInstanceResponse(getProcessInstanceFromRequest(processInstanceId));
   }
   
   @RequestMapping(value="/runtime/process-instances/{processInstanceId}", method = RequestMethod.DELETE)
@@ -57,40 +55,37 @@ public class ProcessInstanceResource extends BaseProcessInstanceResource {
     
     ProcessInstance processInstance = getProcessInstanceFromRequest(processInstanceId);
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/runtime/process-instances/"));
-    
     if (ProcessInstanceActionRequest.ACTION_ACTIVATE.equals(actionRequest.getAction())) {
-      return activateProcessInstance(processInstance, serverRootUrl);
+      return activateProcessInstance(processInstance);
       
     } else if (ProcessInstanceActionRequest.ACTION_SUSPEND.equals(actionRequest.getAction())) {
-      return suspendProcessInstance(processInstance, serverRootUrl);
+      return suspendProcessInstance(processInstance);
     }
     throw new ActivitiIllegalArgumentException("Invalid action: '" + actionRequest.getAction() + "'.");
   }
   
-  protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance, String serverRootUrl) {
+  protected ProcessInstanceResponse activateProcessInstance(ProcessInstance processInstance) {
     if (!processInstance.isSuspended()) {
       throw new ActivitiConflictException("Process instance with id '" + 
           processInstance.getId() + "' is already active.");
     }
     runtimeService.activateProcessInstanceById(processInstance.getId());
    
-    ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance, serverRootUrl);
+    ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance);
     
     // No need to re-fetch the instance, just alter the suspended state of the result-object
     response.setSuspended(false);
     return response;
   }
 
-  protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance, String serverRootUrl) {
+  protected ProcessInstanceResponse suspendProcessInstance(ProcessInstance processInstance) {
     if (processInstance.isSuspended()) {
       throw new ActivitiConflictException("Process instance with id '" + 
           processInstance.getId() + "' is already suspended.");
     }
     runtimeService.suspendProcessInstanceById(processInstance.getId());
     
-    ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance, serverRootUrl);
+    ProcessInstanceResponse response = restResponseFactory.createProcessInstanceResponse(processInstance);
     
     // No need to re-fetch the instance, just alter the suspended state of the result-object
     response.setSuspended(true);

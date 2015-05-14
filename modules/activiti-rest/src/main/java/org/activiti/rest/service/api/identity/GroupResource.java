@@ -33,9 +33,7 @@ public class GroupResource extends BaseGroupResource {
 
   @RequestMapping(value="/identity/groups/{groupId}", method = RequestMethod.GET, produces = "application/json")
   public GroupResponse getGroup(@PathVariable String groupId, HttpServletRequest request) {
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/groups/"));
-    return restResponseFactory.createGroupResponse(getGroupFromRequest(groupId), serverRootUrl);
+    return restResponseFactory.createGroupResponse(getGroupFromRequest(groupId));
   }
   
   @RequestMapping(value="/identity/groups/{groupId}", method = RequestMethod.PUT, produces = "application/json")
@@ -54,9 +52,7 @@ public class GroupResource extends BaseGroupResource {
       throw new ActivitiIllegalArgumentException("Key provided in request body doesn't match the key in the resource URL.");
     }
     
-    String serverRootUrl = request.getRequestURL().toString();
-    serverRootUrl = serverRootUrl.substring(0, serverRootUrl.indexOf("/identity/groups/"));
-    return restResponseFactory.createGroupResponse(group, serverRootUrl);
+    return restResponseFactory.createGroupResponse(group);
   }
   
   @RequestMapping(value="/identity/groups/{groupId}", method = RequestMethod.DELETE)

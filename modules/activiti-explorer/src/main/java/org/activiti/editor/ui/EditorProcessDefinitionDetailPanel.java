@@ -269,8 +269,6 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
   
   protected void deployModel() {
     try {
-      
-      
       if (SimpleTableEditorConstants.TABLE_EDITOR_CATEGORY.equals(modelData.getCategory())) {
         deploySimpleTableEditorModel(repositoryService.getModelEditorSource(modelData.getId()));
       } else {
@@ -279,7 +277,7 @@ public class EditorProcessDefinitionDetailPanel extends DetailPanel {
       }
 
     } catch (Exception e) {
-      e.printStackTrace();
+      LOGGER.error("Failed to deploy model", e);
       ExplorerApp.get().getNotificationManager().showErrorNotification(Messages.PROCESS_TOXML_FAILED, e);
     }
   }

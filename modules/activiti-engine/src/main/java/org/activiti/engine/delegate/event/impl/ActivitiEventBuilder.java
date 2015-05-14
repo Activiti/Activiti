@@ -15,18 +15,7 @@ package org.activiti.engine.delegate.event.impl;
 import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.delegate.event.ActivitiActivityEvent;
-import org.activiti.engine.delegate.event.ActivitiEntityEvent;
-import org.activiti.engine.delegate.event.ActivitiEntityWithVariablesEvent;
-import org.activiti.engine.delegate.event.ActivitiErrorEvent;
-import org.activiti.engine.delegate.event.ActivitiEvent;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.ActivitiExceptionEvent;
-import org.activiti.engine.delegate.event.ActivitiMembershipEvent;
-import org.activiti.engine.delegate.event.ActivitiMessageEvent;
-import org.activiti.engine.delegate.event.ActivitiSequenceFlowTakenEvent;
-import org.activiti.engine.delegate.event.ActivitiSignalEvent;
-import org.activiti.engine.delegate.event.ActivitiVariableEvent;
+import org.activiti.engine.delegate.event.*;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
@@ -168,8 +157,32 @@ public class ActivitiEventBuilder {
 		newEvent.setBehaviorClass(behaviourClass);
 		return newEvent;
 	}
-	
-	public static ActivitiSignalEvent createSignalEvent(ActivitiEventType type, String activityId, String signalName, Object signalData, 
+
+  public static ActivitiActivityCancelledEvent createActivityCancelledEvent(String activityId, String activityName,
+                                                          String executionId, String processInstanceId, String processDefinitionId, String activityType, String behaviourClass, Object cause) {
+    ActivitiActivityCancelledEventImpl newEvent = new ActivitiActivityCancelledEventImpl();
+    newEvent.setActivityId(activityId);
+    newEvent.setActivityName(activityName);
+    newEvent.setExecutionId(executionId);
+    newEvent.setProcessDefinitionId(processDefinitionId);
+    newEvent.setProcessInstanceId(processInstanceId);
+    newEvent.setActivityType(activityType);
+    newEvent.setBehaviorClass(behaviourClass);
+    newEvent.setCause(cause);
+    return newEvent;
+  }
+
+	public static ActivitiCancelledEvent createCancelledEvent(String executionId, String processInstanceId,
+	                                                          String processDefinitionId, Object cause) {
+		ActivitiProcessCancelledEventImpl newEvent = new ActivitiProcessCancelledEventImpl();
+		newEvent.setExecutionId(executionId);
+		newEvent.setProcessDefinitionId(processDefinitionId);
+		newEvent.setProcessInstanceId(processInstanceId);
+		newEvent.setCause(cause);
+		return newEvent;
+	}
+
+	public static ActivitiSignalEvent createSignalEvent(ActivitiEventType type, String activityId, String signalName, Object signalData,
 			String executionId, String processInstanceId, String processDefinitionId) {
 		ActivitiSignalEventImpl newEvent = new ActivitiSignalEventImpl(type);
 		newEvent.setActivityId(activityId);

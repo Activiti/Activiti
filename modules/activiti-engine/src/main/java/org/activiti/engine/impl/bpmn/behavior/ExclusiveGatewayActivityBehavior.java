@@ -15,7 +15,9 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.Iterator;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.Condition;
+import org.activiti.engine.impl.bpmn.helper.SkipExpressionUtil;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
@@ -30,6 +32,8 @@ import org.slf4j.LoggerFactory;
  * @author Joram Barrez
  */
 public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
+  
+  private static final long serialVersionUID = 1L;
   
   private static Logger log = LoggerFactory.getLogger(ExclusiveGatewayActivityBehavior.class);
   
@@ -58,13 +62,19 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     Iterator<PvmTransition> transitionIterator = execution.getActivity().getOutgoingTransitions().iterator();
     while (outgoingSeqFlow == null && transitionIterator.hasNext()) {
       PvmTransition seqFlow = transitionIterator.next();
+      Expression skipExpression = seqFlow.getSkipExpression();
       
-      Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
-      if ( (condition == null && (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) ) 
-              || (condition != null && condition.evaluate(execution)) ) {
-        if (log.isDebugEnabled()) {
-          log.debug("Sequence flow '{}'selected as outgoing sequence flow.", seqFlow.getId());
+      if (!SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression)) {
+        Condition condition = (Condition) seqFlow.getProperty(BpmnParse.PROPERTYNAME_CONDITION);
+        if ( (condition == null && (defaultSequenceFlow == null || !defaultSequenceFlow.equals(seqFlow.getId())) ) 
+                || (condition != null && condition.evaluate(execution)) ) {
+          if (log.isDebugEnabled()) {
+            log.debug("Sequence flow '{}'selected as outgoing sequence flow.", seqFlow.getId());
+          }
+          outgoingSeqFlow = seqFlow;
         }
+      }
+      else if (SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression)){
         outgoingSeqFlow = seqFlow;
       }
     }

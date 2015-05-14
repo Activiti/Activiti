@@ -19,8 +19,8 @@ import org.activiti.engine.repository.Model;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPut;
@@ -54,11 +54,15 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       model.setTenantId("myTenant");
       repositoryService.saveModel(model);
       
+      repositoryService.addModelEditorSource(model.getId(), "This is the editor source".getBytes());
+      repositoryService.addModelEditorSourceExtra(model.getId(), "This is the extra editor source".getBytes());
+      
       HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
-      HttpResponse response = executeHttpRequest(httpGet, HttpStatus.SC_OK);
+      CloseableHttpResponse response = executeRequest(httpGet, HttpStatus.SC_OK);
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("Model name", responseNode.get("name").textValue());
       assertEquals("Model key", responseNode.get("key").textValue());
@@ -75,6 +79,9 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       assertTrue(responseNode.get("url").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId())));
       assertTrue(responseNode.get("deploymentUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_DEPLOYMENT, deploymentId)));
       
+      assertTrue(responseNode.get("sourceUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE, model.getId())));
+      assertTrue(responseNode.get("sourceExtraUrl").textValue().endsWith(RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL_SOURCE_EXTRA, model.getId())));
+      
     } finally
     {
       try {
@@ -88,7 +95,7 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
   public void testGetUnexistingModel() throws Exception {
     HttpGet httpGet = new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
-    executeHttpRequest(httpGet, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpGet, HttpStatus.SC_NOT_FOUND));
   }
   
   public void testDeleteModel() throws Exception {
@@ -108,7 +115,7 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       
       HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
-      executeHttpRequest(httpDelete, HttpStatus.SC_NO_CONTENT);
+      closeResponse(executeRequest(httpDelete, HttpStatus.SC_NO_CONTENT));
       
       // Check if the model is really gone
       assertNull(repositoryService.createModelQuery().modelId(model.getId()).singleResult());
@@ -128,7 +135,7 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
   public void testDeleteUnexistingModel() throws Exception {
     HttpDelete httpDelete = new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
-    executeHttpRequest(httpDelete, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpDelete, HttpStatus.SC_NOT_FOUND));
   }
   
   @Deployment(resources={"org/activiti/rest/service/api/repository/oneTaskProcess.bpmn20.xml"})
@@ -167,9 +174,10 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
       httpPut.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("Updated name", responseNode.get("name").textValue());
       assertEquals("Updated key", responseNode.get("key").textValue());
@@ -230,9 +238,9 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
       httpPut.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertNull(responseNode.get("name").textValue());
       assertNull(responseNode.get("key").textValue());
@@ -289,9 +297,9 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
       HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
           RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, model.getId()));
       httpPut.setEntity(new StringEntity(requestNode.toString()));
-      HttpResponse response = executeHttpRequest(httpPut, HttpStatus.SC_OK);
-      
+      CloseableHttpResponse response = executeRequest(httpPut, HttpStatus.SC_OK);
       JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+      closeResponse(response);
       assertNotNull(responseNode);
       assertEquals("Model name", responseNode.get("name").textValue());
       assertEquals("Model key", responseNode.get("key").textValue());
@@ -320,6 +328,6 @@ public class ModelResourceTest extends BaseSpringRestTestCase {
     HttpPut httpPut = new HttpPut(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_MODEL, "unexisting"));
     httpPut.setEntity(new StringEntity(objectMapper.createObjectNode().toString()));
-    executeHttpRequest(httpPut, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpPut, HttpStatus.SC_NOT_FOUND));
   }
 }

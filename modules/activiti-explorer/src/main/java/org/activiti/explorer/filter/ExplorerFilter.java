@@ -11,6 +11,9 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.activiti.explorer.Constants;
 
 public class ExplorerFilter implements Filter {
   
@@ -20,10 +23,8 @@ public class ExplorerFilter implements Filter {
   public void init(FilterConfig filterConfig) throws ServletException {
     ignoreList.add("/ui");
     ignoreList.add("/VAADIN");
-    ignoreList.add("/api");
-    ignoreList.add("/editor");
-    ignoreList.add("/explorer");
-    ignoreList.add("/libs");
+    ignoreList.add("/modeler.html");
+    ignoreList.add("/editor-app");
     ignoreList.add("/service");
     ignoreList.add("/diagram-viewer");
   }
@@ -39,8 +40,16 @@ public class ExplorerFilter implements Filter {
     } else {
       firstPart = path;
     }
+    
     if (ignoreList.contains(firstPart)) {
-        
+      
+      // Only authenticated users can access /service
+      if("/service".equals(firstPart) && req.getRemoteUser() == null &&
+        (req.getSession(false) == null || req.getSession().getAttribute(Constants.AUTHENTICATED_USER_ID) == null)){
+          ((HttpServletResponse)response).sendError(HttpServletResponse.SC_FORBIDDEN);
+          return;
+      }
+      
       chain.doFilter(request, response); // Goes to default servlet.
     } else {
       request.getRequestDispatcher("/ui" + path).forward(request, response);

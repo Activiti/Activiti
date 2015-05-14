@@ -30,6 +30,7 @@ import org.activiti.engine.impl.interceptor.CommandExecutor;
  * @author Tijs Rademakers
  * @author Falko Menge
  * @author Bernd Ruecker
+ * @author Joram Barrez
  */
 public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<HistoricProcessInstanceQuery, HistoricProcessInstance> implements HistoricProcessInstanceQuery {
 
@@ -46,6 +47,7 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   protected String startedBy;
   protected String superProcessInstanceId;
   protected boolean excludeSubprocesses;
+  protected List<String> processDefinitionKeyIn;
   protected List<String> processKeyNotIn;
   protected Date startedBefore;
   protected Date startedAfter;
@@ -117,7 +119,17 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
     }
     return this;
   }
-  
+
+  @Override
+  public HistoricProcessInstanceQuery processDefinitionKeyIn(List<String> processDefinitionKeys) {
+    if (inOrStatement) {
+      orQueryObject.processDefinitionKeyIn = processDefinitionKeys;
+    } else {
+      this.processDefinitionKeyIn = processDefinitionKeys;
+    }
+    return this;
+  }
+
   public HistoricProcessInstanceQuery processInstanceBusinessKey(String businessKey) {
     if (inOrStatement) {
       this.orQueryObject.businessKey = businessKey;
@@ -541,6 +553,9 @@ public class HistoricProcessInstanceQueryImpl extends AbstractVariableQueryImpl<
   }
   public String getProcessDefinitionKey() {
     return processDefinitionKey;
+  }
+  public List<String> getProcessDefinitionKeyIn() {
+    return processDefinitionKeyIn;
   }
   public String getProcessDefinitionIdLike() {
     return processDefinitionKey + ":%:%";

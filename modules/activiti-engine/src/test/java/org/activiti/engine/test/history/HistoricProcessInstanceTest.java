@@ -14,10 +14,13 @@
 package org.activiti.engine.test.history;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.history.HistoricIdentityLink;
@@ -25,6 +28,7 @@ import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.runtime.ProcessInstanceBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
@@ -157,6 +161,9 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("oneTaskProcess")).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("undefined", "oneTaskProcess")).count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("undefined1", "undefined2")).count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey("businessKey123").count()); 
     
     List<String> exludeIds = new ArrayList<String>();
@@ -225,6 +232,8 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().finished().count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processInstanceId(processInstance.getId()).processDefinitionId("undefined").endOr().count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processDefinitionId(processInstance.getProcessDefinitionId()).processDefinitionKey("undefined").count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(Arrays.asList("undefined", "oneTaskProcess")).endOr().count());
+    assertEquals(0, historyService.createHistoricProcessInstanceQuery().or().processDefinitionId("undefined").processDefinitionKeyIn(Arrays.asList("undefined1", "undefined2")).endOr().count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processDefinitionKey("oneTaskProcess").processDefinitionId("undefined").endOr().count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().or().processInstanceBusinessKey("businessKey123").processDefinitionId("undefined").endOr().count()); 
     
@@ -416,4 +425,70 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     	 assertEquals(0L, historyService.createHistoricProcessInstanceQuery().count());
     }
   }
+  
+  @Deployment(resources = {"org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml"})
+  public void testHistoricProcessInstanceName() {
+	  String piName = "Customized Process Instance Name";
+	  ProcessInstanceBuilder builder = runtimeService.createProcessInstanceBuilder();
+	  builder.processDefinitionKey("oneTaskProcess");
+	  builder.processInstanceName(piName);
+	  ProcessInstance processInstance1 = builder.start();
+	
+	  HistoricProcessInstance historicProcessInstance = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance1.getProcessInstanceId()).singleResult();
+	  assertEquals(piName, historicProcessInstance.getName());
+	  assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceName(piName).list().size());
+  }
+  
+  /**
+   * Validation for https://jira.codehaus.org/browse/ACT-2182
+   */
+  public void testNameAndTenantIdSetWhenFetchingVariables() {
+  	
+  	String tenantId = "testTenantId";
+  	String processInstanceName = "myProcessInstance";
+  	
+  	String deploymentId = repositoryService.createDeployment()
+  		.addClasspathResource("org/activiti/engine/test/history/oneTaskProcess.bpmn20.xml")
+  		.tenantId(tenantId)
+  		.deploy()
+  		.getId();
+  	
+  	Map<String, Object> vars = new HashMap<String, Object>();
+  	vars.put("name", "Kermit");
+  	vars.put("age", 60);
+  	ProcessInstance processInstance = runtimeService.startProcessInstanceByKeyAndTenantId("oneTaskProcess", vars, tenantId);
+  	runtimeService.setProcessInstanceName(processInstance.getId(), processInstanceName);
+  	
+  	// Verify name and tenant id (didnt work on mssql and db2) on process instance
+  	List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().includeProcessVariables().list();
+  	assertEquals(1, processInstances.size());
+  	processInstance = processInstances.get(0);
+  	
+  	assertEquals(processInstanceName, processInstance.getName());
+  	assertEquals(tenantId, processInstance.getTenantId());
+  	
+  	Map<String, Object> processInstanceVars = processInstance.getProcessVariables();
+  	assertEquals(2, processInstanceVars.size());
+  	assertEquals("Kermit", processInstanceVars.get("name"));
+  	assertEquals(60, processInstanceVars.get("age"));
+  	
+  	
+  	// Verify name and tenant id (didnt work on mssql and db2) on historic process instance
+  	List<HistoricProcessInstance> historicProcessInstances = historyService.createHistoricProcessInstanceQuery().includeProcessVariables().list();
+  	assertEquals(1, historicProcessInstances.size());
+  	HistoricProcessInstance historicProcessInstance = historicProcessInstances.get(0);
+  	
+  	// Verify name and tenant id (didnt work on mssql and db2) on process instance
+  	assertEquals(processInstanceName, historicProcessInstance.getName());
+  	assertEquals(tenantId, historicProcessInstance.getTenantId());
+  	
+  	Map<String, Object> historicProcessInstanceVars = historicProcessInstance.getProcessVariables();
+  	assertEquals(2, historicProcessInstanceVars.size());
+  	assertEquals("Kermit", historicProcessInstanceVars.get("name"));
+  	assertEquals(60, historicProcessInstanceVars.get("age"));
+  	
+  	// cleanup
+  	repositoryService.deleteDeployment(deploymentId, true);
+  }
+  
 }

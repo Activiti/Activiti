@@ -111,6 +111,9 @@
       <if test="processInstanceId != null">
         RES.PROC_INST_ID_ = #{processInstanceId}
       </if>
+      <if test="executionId != null">
+        RES.EXECUTION_ID_ = #{executionId}
+      </if>
       <if test="taskId != null">
         and RES.TASK_ID_ = #{taskId}
       </if>

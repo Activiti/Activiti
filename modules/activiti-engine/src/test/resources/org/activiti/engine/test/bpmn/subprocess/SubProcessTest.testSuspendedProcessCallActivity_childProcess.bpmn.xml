@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
+             typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath"
+             targetNamespace="http://www.activiti.org/processdef">
+    <process id="childProcess" isExecutable="true" name="Child Process">
+        <startEvent id="sp_Start" name="Start"></startEvent>
+        <userTask id="sp_UserTask" name="User Task"></userTask>
+        <endEvent id="sp_Stop" name="Stop"></endEvent>
+        <sequenceFlow id="link1" name="link1" sourceRef="sp_Start" targetRef="sp_UserTask"></sequenceFlow>
+        <sequenceFlow id="link2" name="Link 2" sourceRef="sp_UserTask" targetRef="sp_Stop"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_process">
+        <bpmndi:BPMNPlane bpmnElement="process" id="BPMNPlane_process">
+            <bpmndi:BPMNShape bpmnElement="sp_Start" id="BPMNShape_sp_Start">
+                <omgdc:Bounds height="30.0" width="30.0" x="180.0" y="123.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sp_UserTask" id="BPMNShape_sp_UserTask">
+                <omgdc:Bounds height="80.0" width="100.0" x="331.5" y="98.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="sp_Stop" id="BPMNShape_sp_Stop">
+                <omgdc:Bounds height="28.0" width="28.0" x="570.0" y="124.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="link2" id="BPMNEdge_link2">
+                <omgdi:waypoint x="431.5" y="138.0"></omgdi:waypoint>
+                <omgdi:waypoint x="570.0" y="138.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="link1" id="BPMNEdge_link1">
+                <omgdi:waypoint x="210.0" y="138.0"></omgdi:waypoint>
+                <omgdi:waypoint x="331.5" y="138.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
+</definitions>

@@ -16,15 +16,23 @@ package org.activiti.engine.impl.bpmn.behavior;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.engine.ActivitiException;
+import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.ActivitiObjectNotFoundException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.data.AbstractDataAssociation;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmProcessInstance;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
+import org.activiti.engine.repository.ProcessDefinition;
 
 
 /**
@@ -39,14 +47,17 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
   private List<AbstractDataAssociation> dataInputAssociations = new ArrayList<AbstractDataAssociation>();
   private List<AbstractDataAssociation> dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
   private Expression processDefinitionExpression;
+  protected List<MapExceptionEntry> mapExceptions;
 
-  public CallActivityBehavior(String processDefinitionKey) {
+  public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
     this.processDefinitonKey = processDefinitionKey;
+    this.mapExceptions = mapExceptions;
   }
   
-  public CallActivityBehavior(Expression processDefinitionExpression) {
+  public CallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions) {
     super();
     this.processDefinitionExpression = processDefinitionExpression;
+    this.mapExceptions = mapExceptions;
   }
 
   public void addDataInputAssociation(AbstractDataAssociation dataInputAssociation) {
@@ -63,8 +74,8 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
     if (processDefinitionExpression != null) {
       processDefinitonKey = (String) processDefinitionExpression.getValue(execution);
     }
-    
-    ProcessDefinitionImpl processDefinition = null;
+
+    ProcessDefinitionEntity processDefinition = null;
     if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
     	processDefinition = Context
     			.getProcessEngineConfiguration()
@@ -76,7 +87,12 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
           .getDeploymentManager()
           .findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitonKey, execution.getTenantId());
     }
-    		
+
+    // Do not start a process instance if the process definition is suspended
+    if (processDefinition.isSuspended()) {
+      throw new ActivitiException("Cannot start process instance. Process definition "
+          + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
+    }
     
     PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
     
@@ -92,7 +108,14 @@ public class CallActivityBehavior extends AbstractBpmnActivityBehavior implement
       subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
     }
     
-    subProcessInstance.start();
+    try {
+      subProcessInstance.start();
+    } catch (Exception e) {
+        if (!ErrorPropagation.mapException(e, execution, mapExceptions, true))
+            throw e;
+        
+      }
+      
   }
   
   public void setProcessDefinitonKey(String processDefinitonKey) {

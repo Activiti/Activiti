@@ -13,9 +13,12 @@
 
 package org.activiti.engine.impl.persistence.deploy;
 
+import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.converter.BpmnXMLConverter;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.ActivitiObjectNotFoundException;
@@ -27,6 +30,9 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntityManager;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.util.io.BytesStreamSource;
+import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 
 
@@ -38,6 +44,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 public class DeploymentManager {
 
   protected DeploymentCache<ProcessDefinitionEntity> processDefinitionCache;
+  protected DeploymentCache<BpmnModel> bpmnModelCache;
   protected DeploymentCache<Object> knowledgeBaseCache; // Needs to be object to avoid an import to Drools in this core class
   protected List<Deployer> deployers;
   
@@ -69,6 +76,42 @@ public class DeploymentManager {
       processDefinition = resolveProcessDefinition(processDefinition);
     }
     return processDefinition;
+  }
+  
+  public BpmnModel getBpmnModelById(String processDefinitionId) {
+    if (processDefinitionId == null) {
+      throw new ActivitiIllegalArgumentException("Invalid process definition id : null");
+    }
+    
+    // first try the cache
+    BpmnModel bpmnModel = bpmnModelCache.get(processDefinitionId);
+    
+    if (bpmnModel == null) {
+      ProcessDefinitionEntity processDefinition = findDeployedProcessDefinitionById(processDefinitionId);
+      if (processDefinition == null) {
+        throw new ActivitiObjectNotFoundException("no deployed process definition found with id '" + processDefinitionId + "'", ProcessDefinition.class);
+      }
+      
+      // Fetch the resource
+      String resourceName = processDefinition.getResourceName();
+      ResourceEntity resource = Context.getCommandContext().getResourceEntityManager()
+              .findResourceByDeploymentIdAndResourceName(processDefinition.getDeploymentId(), resourceName);
+      if (resource == null) {
+        if (Context.getCommandContext().getDeploymentEntityManager().findDeploymentById(processDefinition.getDeploymentId()) == null) {
+          throw new ActivitiObjectNotFoundException("deployment for process definition does not exist: " 
+              + processDefinition.getDeploymentId(), Deployment.class);
+        } else {
+          throw new ActivitiObjectNotFoundException("no resource found with name '" + resourceName 
+                  + "' in deployment '" + processDefinition.getDeploymentId() + "'", InputStream.class);
+        }
+      }
+      
+      // Convert the bpmn 2.0 xml to a bpmn model
+      BpmnXMLConverter bpmnXMLConverter = new BpmnXMLConverter();
+      bpmnModel = bpmnXMLConverter.convertToBpmnModel(new BytesStreamSource(resource.getBytes()), false, false);
+      bpmnModelCache.add(processDefinition.getId(), bpmnModel);
+    }
+    return bpmnModel;
   }
   
   public ProcessDefinitionEntity findDeployedLatestProcessDefinitionByKey(String processDefinitionKey) {
@@ -185,6 +228,14 @@ public class DeploymentManager {
     this.processDefinitionCache = processDefinitionCache;
   }
   
+  public DeploymentCache<BpmnModel> getBpmnModelCache() {
+    return bpmnModelCache;
+  }
+
+  public void setBpmnModelCache(DeploymentCache<BpmnModel> bpmnModelCache) {
+    this.bpmnModelCache = bpmnModelCache;
+  }
+
   public DeploymentCache<Object> getKnowledgeBaseCache() {
     return knowledgeBaseCache;
   }

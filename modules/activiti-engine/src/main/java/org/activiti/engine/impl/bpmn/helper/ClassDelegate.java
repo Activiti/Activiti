@@ -18,12 +18,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
+import org.activiti.bpmn.model.MapExceptionEntry;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.ExecutionListener;
+import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
@@ -46,6 +48,7 @@ import org.activiti.engine.impl.util.ReflectUtil;
  * 
  * @author Joram Barrez
  * @author Falko Menge
+ * @author Saeid Mirzaei
  */
 public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskListener, ExecutionListener, SubProcessActivityBehavior {
   
@@ -54,14 +57,32 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
   protected ExecutionListener executionListenerInstance;
   protected TaskListener taskListenerInstance;
   protected ActivityBehavior activityBehaviorInstance;
-  
-  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+  protected Expression skipExpression;
+  protected List<MapExceptionEntry> mapExceptions;
+
+  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
     this.className = className;
     this.fieldDeclarations = fieldDeclarations;
+    this.skipExpression = skipExpression;
+   
+  }
+
+  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations, Expression skipExpression, List<MapExceptionEntry> mapExceptions) {
+    this(className, fieldDeclarations, skipExpression);
+    this.mapExceptions = mapExceptions;
+   
+  }
+
+  public ClassDelegate(String className, List<FieldDeclaration> fieldDeclarations) {
+    this(className, fieldDeclarations, null);
   }
   
   public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations) {
-    this(clazz.getName(), fieldDeclarations);
+    this(clazz.getName(), fieldDeclarations, null);
+  }
+
+  public ClassDelegate(Class<?> clazz, List<FieldDeclaration> fieldDeclarations, Expression skipExpression) {
+    this(clazz.getName(), fieldDeclarations, skipExpression);
   }
 
   // Execution listener
@@ -110,13 +131,24 @@ public class ClassDelegate extends AbstractBpmnActivityBehavior implements TaskL
 
   // Activity Behavior
   public void execute(ActivityExecution execution) throws Exception {
-    if (activityBehaviorInstance == null) {
-      activityBehaviorInstance = getActivityBehaviorInstance(execution);
-    }
-    try {
-      activityBehaviorInstance.execute(execution);
-    } catch (BpmnError error) {
-      ErrorPropagation.propagateError(error, execution);
+    boolean isSkipExpressionEnabled = SkipExpressionUtil.isSkipExpressionEnabled(execution, skipExpression);
+    if (!isSkipExpressionEnabled || 
+            (isSkipExpressionEnabled && !SkipExpressionUtil.shouldSkipFlowElement(execution, skipExpression))) {
+      
+      if (activityBehaviorInstance == null) {
+        activityBehaviorInstance = getActivityBehaviorInstance(execution);
+      }
+      
+      try {
+        activityBehaviorInstance.execute(execution);
+      } catch (BpmnError error) {
+        ErrorPropagation.propagateError(error, execution);
+      } catch (Exception e) {
+        if (!ErrorPropagation.mapException(e, execution, mapExceptions))
+            throw e;
+        
+      }
+      
     }
   }
 

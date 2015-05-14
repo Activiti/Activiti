@@ -1,6 +1,7 @@
 package org.activiti.camel;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.runtime.ProcessInstance;
@@ -8,19 +9,44 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 import org.activiti.spring.impl.test.SpringActivitiTestCase;
 import org.apache.camel.CamelContext;
+import org.apache.camel.LoggingLevel;
+import org.apache.camel.Route;
+import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 
-@ContextConfiguration("classpath:camel-activiti-context.xml")
+@ContextConfiguration("classpath:generic-camel-activiti-context.xml")
 public class CamelVariableBodyMapTest extends SpringActivitiTestCase {
 	
-	MockEndpoint service1;
+  protected MockEndpoint service1;
+  
+  @Autowired
+  protected CamelContext camelContext;
 	
-  public void setUp() {
-    CamelContext ctx = applicationContext.getBean(CamelContext.class);
-    service1 = (MockEndpoint) ctx.getEndpoint("mock:serviceBehavior");
+  public void setUp() throws Exception {
+	  camelContext.addRoutes(new RouteBuilder() {
+
+			@Override
+			public void configure() throws Exception {
+				from("activiti:HelloCamel:serviceTask1")
+				  .log(LoggingLevel.INFO,"Received message on service task")
+				  .to("mock:serviceBehavior");				
+			}
+		});	
+    
+    service1 = (MockEndpoint) camelContext.getEndpoint("mock:serviceBehavior");
     service1.reset();
   }
+  
+  public void tearDown() throws Exception {
+    List<Route> routes = camelContext.getRoutes();
+    for (Route r: routes) {
+      camelContext.stopRoute(r.getId());
+      camelContext.removeRoute(r.getId());
+    }
+  }
+  
 	
 	@Deployment(resources = {"process/HelloCamelBodyMap.bpmn20.xml"})
 	public void testCamelBody() throws Exception {

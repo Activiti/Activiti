@@ -13,10 +13,8 @@
 
 package org.activiti.rest.service.api.management;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.activiti.engine.runtime.Job;
 import org.activiti.rest.common.api.AbstractPaginateList;
 import org.activiti.rest.service.api.RestResponseFactory;
 
@@ -26,20 +24,14 @@ import org.activiti.rest.service.api.RestResponseFactory;
 public class JobPaginateList extends AbstractPaginateList {
 
   protected RestResponseFactory restResponseFactory;
-  protected String serverRootUrl;
   
-  public JobPaginateList(RestResponseFactory restResponseFactory, String serverRootUrl) {
+  public JobPaginateList(RestResponseFactory restResponseFactory) {
     this.restResponseFactory = restResponseFactory;
-    this.serverRootUrl = serverRootUrl;
   }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   protected List processList(List list) {
-    List<JobResponse> responseList = new ArrayList<JobResponse>();
-    for (Object job : list) {
-      responseList.add(restResponseFactory.createJobResponse((Job) job, serverRootUrl));
-    }
-    return responseList;
+    return restResponseFactory.createJobResponseList(list);
   }
 }

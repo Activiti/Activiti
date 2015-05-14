@@ -53,6 +53,8 @@ import org.slf4j.LoggerFactory;
  */
 public class ParallelGatewayActivityBehavior extends GatewayActivityBehavior {
   
+  private static final long serialVersionUID = 1L;
+  
   private static Logger log = LoggerFactory.getLogger(ParallelGatewayActivityBehavior.class);
 
   public void execute(ActivityExecution execution) throws Exception { 

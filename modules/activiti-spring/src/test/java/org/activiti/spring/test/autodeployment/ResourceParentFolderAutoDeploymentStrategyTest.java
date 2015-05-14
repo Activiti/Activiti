@@ -13,6 +13,21 @@
 
 package org.activiti.spring.test.autodeployment;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isA;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.zip.ZipInputStream;
+
 import org.activiti.engine.ActivitiException;
 import org.activiti.spring.autodeployment.ResourceParentFolderAutoDeploymentStrategy;
 import org.junit.Before;
@@ -21,16 +36,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.core.io.Resource;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.zip.ZipInputStream;
-
-import static org.junit.Assert.*;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Mockito.*;
 
 /**
  * @author Tiese Barrell

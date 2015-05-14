@@ -18,6 +18,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Locale;
+import java.util.regex.Pattern;
 
 import org.activiti.engine.ActivitiClassLoadingException;
 import org.activiti.engine.ActivitiException;
@@ -33,7 +35,10 @@ import org.slf4j.LoggerFactory;
 public abstract class ReflectUtil {
 
   private static final Logger LOG = LoggerFactory.getLogger(ReflectUtil.class);
-  
+
+  private static final Pattern GETTER_PATTERN = Pattern.compile("(get|is)[A-Z].*");
+  private static final Pattern SETTER_PATTERN = Pattern.compile("set[A-Z].*");
+
   public static ClassLoader getClassLoader() {
     ClassLoader loader = getCustomClassLoader();
     if(loader == null) {
@@ -52,7 +57,7 @@ public abstract class ReflectUtil {
    if(classLoader != null) {
      try {
        LOG.trace("Trying to load class with custom classloader: {}", className);
-       clazz = Class.forName(className, true, classLoader);
+       clazz = loadClass(classLoader, className);
      } catch(Throwable t) {
        throwable = t;
      }
@@ -60,7 +65,7 @@ public abstract class ReflectUtil {
    if(clazz == null) {
      try {
        LOG.trace("Trying to load class with current thread context classloader: {}", className);
-       clazz = Class.forName(className, true, Thread.currentThread().getContextClassLoader());
+       clazz = loadClass(Thread.currentThread().getContextClassLoader(), className);
      } catch(Throwable t) {
        if(throwable == null) {
          throwable = t;
@@ -69,7 +74,7 @@ public abstract class ReflectUtil {
      if(clazz == null) {
        try {
          LOG.trace("Trying to load class with local classloader: {}", className);
-         clazz = Class.forName(className, true, ReflectUtil.class.getClassLoader());
+         clazz = loadClass(ReflectUtil.class.getClassLoader(), className);
        } catch(Throwable t) {
          if(throwable == null) {
            throwable = t;
@@ -83,7 +88,7 @@ public abstract class ReflectUtil {
    }
    return clazz;
   }
-  
+
   public static InputStream getResourceAsStream(String name) {
     InputStream resourceStream = null;
     ClassLoader classLoader = getCustomClassLoader();
@@ -277,5 +282,78 @@ public abstract class ReflectUtil {
       }
     }
     return null;
+  }
+
+	private static Class loadClass(ClassLoader classLoader, String className) throws ClassNotFoundException {
+		ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
+		boolean useClassForName = processEngineConfiguration == null ||
+				processEngineConfiguration.isUseClassForNameClassLoading();
+		return useClassForName ? Class.forName(className, true, classLoader) : classLoader.loadClass(className);
+	}
+
+  public static boolean isGetter(Method method) {
+    String name = method.getName();
+    Class< ? > type = method.getReturnType();
+    Class< ? > params[] = method.getParameterTypes();
+
+    if (!GETTER_PATTERN.matcher(name).matches()) {
+      return false;
+    }
+
+    // special for isXXX boolean
+    if (name.startsWith("is")) {
+      return params.length == 0 && type.getSimpleName().equalsIgnoreCase("boolean");
+    }
+
+    return params.length == 0 && !type.equals(Void.TYPE);
+  }
+
+  public static boolean isSetter(Method method, boolean allowBuilderPattern) {
+    String name = method.getName();
+    Class< ? > type = method.getReturnType();
+    Class< ? > params[] = method.getParameterTypes();
+
+    if (!SETTER_PATTERN.matcher(name).matches()) {
+      return false;
+    }
+
+    return params.length == 1 && (type.equals(Void.TYPE) || (allowBuilderPattern && method.getDeclaringClass().isAssignableFrom(type)));
+  }
+  
+  
+  public static boolean isSetter(Method method) {
+    return isSetter(method, false);
+  }
+
+
+  public static String getGetterShorthandName(Method method) {
+    if (!isGetter(method)) {
+      return method.getName();
+    }
+
+    String name = method.getName();
+    if (name.startsWith("get")) {
+      name = name.substring(3);
+      name = name.substring(0, 1).toLowerCase(Locale.ENGLISH) + name.substring(1);
+    } else if (name.startsWith("is")) {
+      name = name.substring(2);
+      name = name.substring(0, 1).toLowerCase(Locale.ENGLISH) + name.substring(1);
+    }
+
+    return name;
+  }
+  
+  public static String getSetterShorthandName(Method method) {
+    if (!isSetter(method)) {
+        return method.getName();
+    }
+
+    String name = method.getName();
+    if (name.startsWith("set")) {
+        name = name.substring(3);
+        name = name.substring(0, 1).toLowerCase(Locale.ENGLISH) + name.substring(1);
+    }
+
+    return name;
   }
 }

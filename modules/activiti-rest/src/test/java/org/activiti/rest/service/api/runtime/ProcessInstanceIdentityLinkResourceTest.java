@@ -17,8 +17,8 @@ import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.test.Deployment;
 import org.activiti.rest.service.BaseSpringRestTestCase;
 import org.activiti.rest.service.api.RestUrls;
-import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
@@ -47,10 +47,11 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseSpringRestTestC
     runtimeService.addUserIdentityLink(processInstance.getId(), "paul", "candidate");
 
     // Execute the request
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINKS_COLLECTION, processInstance.getId())), HttpStatus.SC_OK);
     
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertTrue(responseNode.isArray());
     assertEquals(2, responseNode.size());
@@ -98,9 +99,10 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseSpringRestTestC
     HttpPost httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINKS_COLLECTION, processInstance.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    HttpResponse response = executeHttpRequest(httpPost, HttpStatus.SC_CREATED);
+    CloseableHttpResponse response = executeRequest(httpPost, HttpStatus.SC_CREATED);
     
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("kermit", responseNode.get("user").textValue());
     assertEquals("myType", responseNode.get("type").textValue());
@@ -112,7 +114,7 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseSpringRestTestC
     httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINKS_COLLECTION, "unexistingprocess"));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_NOT_FOUND);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_NOT_FOUND));
 
     // Test with no user
     requestNode = objectMapper.createObjectNode();
@@ -121,20 +123,20 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseSpringRestTestC
     httpPost = new HttpPost(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINKS_COLLECTION, processInstance.getId()));
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
 
     // Test with group (which is not supported on processes)
     requestNode = objectMapper.createObjectNode();
     requestNode.put("type", "myType");
     requestNode.put("group", "sales");
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
 
     // Test with no type
     requestNode = objectMapper.createObjectNode();
     requestNode.put("user", "kermit");
     httpPost.setEntity(new StringEntity(requestNode.toString()));
-    executeHttpRequest(httpPost, HttpStatus.SC_BAD_REQUEST);
+    closeResponse(executeRequest(httpPost, HttpStatus.SC_BAD_REQUEST));
   }
 
   /**
@@ -146,10 +148,11 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseSpringRestTestC
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "myType");
     
-    HttpResponse response = executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    CloseableHttpResponse response = executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, processInstance.getId(), "kermit", "myType")), HttpStatus.SC_OK);
     
     JsonNode responseNode = objectMapper.readTree(response.getEntity().getContent());
+    closeResponse(response);
     assertNotNull(responseNode);
     assertEquals("kermit", responseNode.get("user").textValue());
     assertEquals("myType", responseNode.get("type").textValue());
@@ -158,9 +161,9 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseSpringRestTestC
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, processInstance.getId(), "kermit", "myType")));
 
     // Test with unexisting process
-    executeHttpRequest(new HttpGet(SERVER_URL_PREFIX + 
+    closeResponse(executeRequest(new HttpGet(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, 
-            RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")), HttpStatus.SC_NOT_FOUND);
+            RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")), HttpStatus.SC_NOT_FOUND));
   }
   
   /**
@@ -172,18 +175,18 @@ public class ProcessInstanceIdentityLinkResourceTest extends BaseSpringRestTestC
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     runtimeService.addUserIdentityLink(processInstance.getId(), "kermit", "myType");
     
-    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+    closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, 
-            processInstance.getId(), "kermit", "myType")), HttpStatus.SC_NO_CONTENT);
+            processInstance.getId(), "kermit", "myType")), HttpStatus.SC_NO_CONTENT));
     
     // Test with unexisting process identity link
-    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+    closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, 
-            processInstance.getId(), "kermit", "myType")), HttpStatus.SC_NOT_FOUND);
+            processInstance.getId(), "kermit", "myType")), HttpStatus.SC_NOT_FOUND));
     
     // Test with unexisting process
-    executeHttpRequest(new HttpDelete(SERVER_URL_PREFIX + 
+    closeResponse(executeRequest(new HttpDelete(SERVER_URL_PREFIX + 
         RestUrls.createRelativeResourceUrl(RestUrls.URL_PROCESS_INSTANCE_IDENTITYLINK, 
-            "unexistingprocess", RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")), HttpStatus.SC_NOT_FOUND);
+            "unexistingprocess", RestUrls.SEGMENT_IDENTITYLINKS_FAMILY_USERS, "kermit", "myType")), HttpStatus.SC_NOT_FOUND));
   }
 }

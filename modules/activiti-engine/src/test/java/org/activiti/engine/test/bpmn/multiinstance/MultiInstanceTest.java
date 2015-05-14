@@ -1156,5 +1156,64 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
     assertProcessEnded(processInstance.getId());
   }
+  
+  @Deployment
+  public void testInfiniteLoopWithDelegateExpressionFix() {
+  	
+  	// Add bean temporary to process engine
+  	
+  	Map<Object, Object> originalBeans = processEngineConfiguration.getExpressionManager().getBeans();
+  	
+  	try {
+  		
+  		Map<Object, Object> newBeans = new HashMap<Object, Object>();
+  		newBeans.put("SampleTask", new TestSampleServiceTask());
+  		processEngineConfiguration.getExpressionManager().setBeans(newBeans);
+  	
+	  	 Map<String, Object> params = new HashMap<String, Object>();
+	     params.put("sampleValues", Arrays.asList("eins", "zwei", "drei"));
+	     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("infiniteLoopTest", params);
+	     assertNotNull(processInstance);
+	     
+  	} finally {
+  		
+  		// Put beans back
+  		processEngineConfiguration.getExpressionManager().setBeans(originalBeans);
+  		
+  	}
+  }
+  
+  @Deployment
+  public void testEmptyCollectionOnParallelUserTask() {
+  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+	  	Map<String, Object> vars = new HashMap<String, Object>();
+	    vars.put("messages", Collections.EMPTY_LIST);
+	    runtimeService.startProcessInstanceByKey("parallelUserTaskMi", vars);
+	    
+	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+  	}
+  }
+  
+  @Deployment
+  public void testEmptyCollectionOnSequentialEmbeddedSubprocess() {
+  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+	  	Map<String, Object> vars = new HashMap<String, Object>();
+	    vars.put("messages", Collections.EMPTY_LIST);
+	    runtimeService.startProcessInstanceByKey("sequentialMiSubprocess", vars);
+	    
+	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+  	}
+  }
+  
+  @Deployment
+  public void testEmptyCollectionOnParallelEmbeddedSubprocess() {
+  	if(processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
+	  	Map<String, Object> vars = new HashMap<String, Object>();
+	    vars.put("messages", Collections.EMPTY_LIST);
+	    runtimeService.startProcessInstanceByKey("parallelMiSubprocess", vars);
+	    
+	    assertEquals(1L, historyService.createHistoricProcessInstanceQuery().finished().count());
+  	}
+  }
 
 }

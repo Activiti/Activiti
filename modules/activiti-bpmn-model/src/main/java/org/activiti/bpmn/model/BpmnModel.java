@@ -32,9 +32,11 @@ public class BpmnModel {
 	protected Map<String, GraphicInfo> labelLocationMap = new LinkedHashMap<String, GraphicInfo>();
 	protected Map<String, List<GraphicInfo>> flowLocationMap = new LinkedHashMap<String, List<GraphicInfo>>();
 	protected List<Signal> signals = new ArrayList<Signal>();
+	protected Map<String, MessageFlow> messageFlowMap = new LinkedHashMap<String, MessageFlow>();
 	protected Map<String, Message> messageMap = new LinkedHashMap<String, Message>();
 	protected Map<String, String> errorMap = new LinkedHashMap<String, String>();
 	protected Map<String, ItemDefinition> itemDefinitionMap = new LinkedHashMap<String, ItemDefinition>();
+	protected Map<String, DataStore> dataStoreMap = new LinkedHashMap<String, DataStore>();
 	protected List<Pool> pools = new ArrayList<Pool>();
 	protected List<Import> imports = new ArrayList<Import>();
 	protected List<Interface> interfaces = new ArrayList<Interface>();
@@ -308,6 +310,28 @@ public class BpmnModel {
     }
     return null;
   }
+  
+  public Map<String, MessageFlow> getMessageFlows() {
+    return messageFlowMap;
+  }
+  
+  public void setMessageFlows(Map<String, MessageFlow> messageFlows) {
+    this.messageFlowMap = messageFlows;
+  }
+
+  public void addMessageFlow(MessageFlow messageFlow) {
+    if (messageFlow != null && StringUtils.isNotEmpty(messageFlow.getId())) {
+      messageFlowMap.put(messageFlow.getId(), messageFlow);
+    }
+  }
+  
+  public MessageFlow getMessageFlow(String id) {
+    return messageFlowMap.get(id);
+  }
+  
+  public boolean containsMessageFlowId(String messageFlowId) {
+    return messageFlowMap.containsKey(messageFlowId);
+  }
 
   public Collection<Message> getMessages() {
     return messageMap.values();
@@ -327,11 +351,24 @@ public class BpmnModel {
       messageMap.put(message.getId(), message);
     }
   }
-  
+
   public Message getMessage(String id) {
-    return messageMap.get(id);
+    Message result = messageMap.get(id);
+    if (result == null) {
+      int indexOfNS = id.indexOf(":");
+      if (indexOfNS > 0) {
+        String idNamespace = id.substring(0, indexOfNS);
+        if (idNamespace.equalsIgnoreCase(this.getTargetNamespace())) {
+          id = id.substring(indexOfNS + 1);
+        }
+        result = messageMap.get(id);
+      }
+    }
+    return result;
   }
-  
+
+
+
   public boolean containsMessageId(String messageId) {
     return messageMap.containsKey(messageId);
   }
@@ -370,6 +407,32 @@ public class BpmnModel {
   
   public boolean containsItemDefinitionId(String id) {
     return itemDefinitionMap.containsKey(id);
+  }
+  
+  public Map<String, DataStore> getDataStores() {
+    return dataStoreMap;
+  }
+  
+  public void setDataStores(Map<String, DataStore> dataStoreMap) {
+    this.dataStoreMap = dataStoreMap;
+  }
+  
+  public DataStore getDataStore(String id) {
+    DataStore dataStore = null;
+    if (dataStoreMap.containsKey(id)) {
+      dataStore = dataStoreMap.get(id);
+    }
+    return dataStore;
+  }
+
+  public void addDataStore(String id, DataStore dataStore) {
+    if (StringUtils.isNotEmpty(id)) {
+      dataStoreMap.put(id, dataStore);
+    }
+  }
+  
+  public boolean containsDataStore(String id) {
+    return dataStoreMap.containsKey(id);
   }
 
   public List<Pool> getPools() {

@@ -10,8 +10,14 @@
     <groupId>org.activiti</groupId>
     <artifactId>activiti-root</artifactId>
     <relativePath>../..</relativePath>
-    <version>5.17.0-SNAPSHOT</version>
+    <version>5.18.0-SNAPSHOT</version>
   </parent>
+
+  <properties>
+    <activiti.artifact>
+      org.activiti.bpmn.layout
+    </activiti.artifact>
+  </properties>
 
   <build>
     <plugins>

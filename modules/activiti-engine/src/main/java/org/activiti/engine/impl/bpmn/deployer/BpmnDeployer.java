@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  */
 public class BpmnDeployer implements Deployer {
 
-  private static final Logger LOG = LoggerFactory.getLogger(BpmnDeployer.class);
+  private static final Logger log = LoggerFactory.getLogger(BpmnDeployer.class);
 
   public static final String[] BPMN_RESOURCE_SUFFIXES = new String[] { "bpmn20.xml", "bpmn" };
   public static final String[] DIAGRAM_SUFFIXES = new String[]{"png", "jpg", "gif", "svg"};
@@ -71,7 +71,7 @@ public class BpmnDeployer implements Deployer {
   protected IdGenerator idGenerator;
 
   public void deploy(DeploymentEntity deployment, Map<String, Object> deploymentSettings) {
-    LOG.debug("Processing deployment {}", deployment.getName());
+    log.debug("Processing deployment {}", deployment.getName());
     
     List<ProcessDefinitionEntity> processDefinitions = new ArrayList<ProcessDefinitionEntity>();
     Map<String, ResourceEntity> resources = deployment.getResources();
@@ -79,7 +79,7 @@ public class BpmnDeployer implements Deployer {
     final ProcessEngineConfigurationImpl processEngineConfiguration = Context.getProcessEngineConfiguration();
     for (String resourceName : resources.keySet()) {
 
-      LOG.info("Processing resource {}", resourceName);
+      log.info("Processing resource {}", resourceName);
       if (isBpmnResource(resourceName)) {
         ResourceEntity resource = resources.get(resourceName);
         byte[] bytes = resource.getBytes();
@@ -133,7 +133,7 @@ public class BpmnDeployer implements Deployer {
                   diagramResourceName = getProcessImageResourceName(resourceName, processDefinition.getKey(), "png");
                   createResource(diagramResourceName, diagramBytes, deployment);
               } catch (Throwable t) { // if anything goes wrong, we don't store the image (the process will still be executable).
-                LOG.warn("Error while generating process diagram, image will not be stored in repository", t);
+                log.warn("Error while generating process diagram, image will not be stored in repository", t);
               }
             } 
           }
@@ -324,9 +324,13 @@ public class BpmnDeployer implements Deployer {
                   .getDbSqlSession()
                   .pruneDeletedEntities(subscriptionsForSameMessageName);
                 
-          if(!subscriptionsForSameMessageName.isEmpty()) {
-            throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
-                    + "': there already is a message event subscription for the message with name '" + eventDefinition.getEventName() + "'.");
+          for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsForSameMessageName) {
+            // throw exception only if there's already a subscription as start event
+            if(eventSubscriptionEntity.getProcessInstanceId() == null || eventSubscriptionEntity.getProcessInstanceId().isEmpty()) {
+              // the event subscription has no instance-id, so it's a message start event
+              throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
+                      + "': there already is a message event subscription for the message with name '" + eventDefinition.getEventName() + "'.");
+            }
           }
           
           MessageEventSubscriptionEntity newSubscription = new MessageEventSubscriptionEntity();
