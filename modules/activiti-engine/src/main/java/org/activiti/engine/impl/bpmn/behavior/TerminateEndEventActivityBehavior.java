@@ -14,14 +14,13 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.util.tree.ExecutionTree;
 import org.activiti.engine.impl.util.tree.ExecutionTreeBfsIterator;
 import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
@@ -30,8 +29,10 @@ import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
  * @author Joram Barrez
  */
 public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior {
-	
-	protected boolean destroyProcessInstance;
+  
+  private static final long serialVersionUID = 1L;
+  
+  protected boolean destroyProcessInstance;
 	
 	@Override
 	public void execute(ActivityExecution execution) {
@@ -67,32 +68,44 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
 				// Call activity needs special handling: the call activity is destroyed, but the main process continues
 				if (scopeExecutionEntity.getSuperExecutionId() != null) {
 				  
-				  executionEntityManager.deleteChildExecutions(scopeExecutionEntity);
-				  executionEntityManager.deleteExecutionAndRelatedData(scopeExecutionEntity);
-					ExecutionEntity superExecutionEntity = 
-							executionEntityManager.findExecutionById(scopeExecutionEntity.getSuperExecutionId());
+				  executionEntityManager.deleteProcessInstanceExecutionEntity(scopeExecutionEntity.getId(), execution.getCurrentFlowElement().getId(), "terminate end event");
+					ExecutionEntity superExecutionEntity = executionEntityManager.findExecutionById(scopeExecutionEntity.getSuperExecutionId());
 					commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(superExecutionEntity);
 					
 				} else {
 				  
 				  deleteExecutionEntities(commandContext, executionEntityManager, executionTree.leafsFirstIterator());
-				  
 				}
 				
 			} else {
-				commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
-				commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeExecutionEntity);
+			  SubProcess subProcess = null;
+			  boolean isMultiInstance = false;
+			  if (scopeExecutionEntity.getCurrentFlowElement() instanceof SubProcess) {
+			    subProcess = (SubProcess) scopeExecutionEntity.getCurrentFlowElement();
+			    if (subProcess.getLoopCharacteristics() != null) {
+			      isMultiInstance = true;
+			    }
+			  }
+			  if (isMultiInstance) {
+			    MultiInstanceActivityBehavior multiInstanceBehavior = (MultiInstanceActivityBehavior) subProcess.getBehavior();
+          multiInstanceBehavior.leave(scopeExecutionEntity);
+          if (subProcess.getLoopCharacteristics().isSequential() == false) {
+            commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
+          }
+			    
+			  } else {
+  				commandContext.getAgenda().planDestroyScopeOperation(scopeExecutionEntity);
+  				commandContext.getAgenda().planTakeOutgoingSequenceFlowsOperation(scopeExecutionEntity);
+			  }
 			}
 			
 		}
-		
-		
 	}
 
 	protected void deleteExecutionEntities(CommandContext commandContext, 
 			ExecutionEntityManager executionEntityManager, ExecutionTreeBfsIterator treeIterator) {
 		
-		// Delete the execution in leafs-first order to avoid foreign key constraints firing
+		  // Delete the execution in leafs-first order to avoid foreign key constraints firing
 		
 	    while (treeIterator.hasNext()) {
 	    	ExecutionTreeNode treeNode = treeIterator.next();
@@ -145,6 +158,22 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
                             execution.getCurrentFlowElement().getClass().getName(), 
                             ((FlowNode) execution.getCurrentFlowElement()).getBehavior().getClass().getCanonicalName(), 
                             termninateEndEvent));
+    }
+    
+    protected boolean hasMultiInstanceParent(FlowNode flowNode) {
+      boolean hasMultiInstanceParent = false;
+      if (flowNode.getSubProcess() != null) {
+        if (flowNode.getSubProcess().getLoopCharacteristics() != null) {
+          hasMultiInstanceParent = true;
+        } else {
+          boolean hasNestedMultiInstanceParent = hasMultiInstanceParent(flowNode.getSubProcess());
+          if (hasNestedMultiInstanceParent) {
+            hasMultiInstanceParent = true;
+          }
+        }
+      }
+      
+      return hasMultiInstanceParent;
     }
 
 }

@@ -22,13 +22,15 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
+import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Nico Rehwaldt
+ * @author Tijs Rademakers
  */
 public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
@@ -205,6 +207,12 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());
 
+		List<Execution> waitExecutions = runtimeService.createExecutionQuery().activityId("subWait").list();
+		assertEquals(5, waitExecutions.size());
+		for (Execution execution : waitExecutions) {
+      runtimeService.trigger(execution.getId());
+    }
+		
 		List<Task> tasks = taskService.createTaskQuery().list();
 		assertEquals(3, tasks.size()); // The service task delegate should have set the 'terminate' variable 3 times out of the 5 subprocess runs
 		for (Task t : tasks) {
@@ -227,6 +235,9 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		// WHEN - complete -> terminate end event
 		Task preTerminate = taskService.createTaskQuery().taskName("preTerminate").singleResult();
 		taskService.complete(preTerminate.getId());
+		
+		Task myTask = taskService.createTaskQuery().taskDefinitionKey("theTask").singleResult();
+		taskService.complete(myTask.getId());
 
 		// THEN - super process is finished together with subprocesses
 		assertProcessEnded(pi.getId());
@@ -295,6 +306,16 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 	public void testTerminateInCallActivityConcurrent() throws Exception {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
+		List<ProcessInstance> childProcesses = runtimeService.createProcessInstanceQuery().processDefinitionKey("terminateEndEventSubprocessExample").list();
+    assertEquals(1, childProcesses.size());
+    
+    Execution waitExecution = runtimeService.createExecutionQuery().activityId("subProcessWait").processInstanceId(childProcesses.get(0).getId()).singleResult();
+    runtimeService.trigger(waitExecution.getId());
+
+    List<HistoricProcessInstance> historicChildProcesses = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("terminateEndEventSubprocessExample").list();
+    assertEquals(1, historicChildProcesses.size());
+    assertNotNull(historicChildProcesses.get(0).getEndTime());
+		
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());
 
@@ -303,16 +324,27 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 
 	@Deployment(resources = { "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.testTerminateInCallActivityConcurrentMulitInstance.bpmn",
 	        "org/activiti/engine/test/bpmn/event/end/TerminateEndEventTest.subProcessConcurrentTerminate.bpmn" })
-	public void testTerminateInCallActivityConcurrentMulitInstance() throws Exception {
+	public void testTerminateInCallActivityConcurrentMultiInstance() throws Exception {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
 
+		List<ProcessInstance> childProcesses = runtimeService.createProcessInstanceQuery().processDefinitionKey("terminateEndEventSubprocessExample").list();
+		assertEquals(5, childProcesses.size());
+		
+		for (ProcessInstance childProcess : childProcesses) {
+		  Execution waitExecution = runtimeService.createExecutionQuery().activityId("subProcessWait").processInstanceId(childProcess.getId()).singleResult();
+	    runtimeService.trigger(waitExecution.getId());
+    }
+		
+		List<HistoricProcessInstance> historicChildProcesses = historyService.createHistoricProcessInstanceQuery().processDefinitionKey("terminateEndEventSubprocessExample").list();
+    assertEquals(5, historicChildProcesses.size());
+    for (HistoricProcessInstance historicChildProcess : historicChildProcesses) {
+      assertNotNull(historicChildProcess.getEndTime());
+    }
+		
 		// should terminate the called process and continue the parent
-		long executionEntities = runtimeService.createExecutionQuery().count();
-		assertEquals(1, executionEntities);
-
 		Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("preNormalEnd").singleResult();
 		taskService.complete(task.getId());
-
+		
 		assertProcessEnded(pi.getId());
 	}
 }
