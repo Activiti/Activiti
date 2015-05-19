@@ -28,8 +28,9 @@ public class TestBPMNParseHandler extends AbstractBpmnParseHandler<Process> {
     return Process.class;
   }
 
-  protected void executeParse(BpmnParse bpmnParse, Process element) {
+  protected void executeParse(BpmnParse bpmnParse, Process process) {
     // Change the key of all deployed process-definitions
+    process.setId(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
     bpmnParse.getCurrentProcessDefinition().setKey(bpmnParse.getCurrentProcessDefinition().getKey() + "-modified");
   }
 
