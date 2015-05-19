@@ -118,6 +118,13 @@ public class ErrorPropagation {
     // } else {
     if (eventMap.containsKey(currentExecution.getActivityId())) {
       matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
+      
+      // check for parallel multi instance execution --> if so, get the parent execution
+      FlowElement parentElement = currentExecution.getParent().getCurrentFlowElement();
+      if (parentElement != null && parentElement.getId().equals(currentExecution.getCurrentFlowElement().getId())) {
+        currentExecution = currentExecution.getParent();
+      }
+      
     } else {
       currentExecution = currentExecution.getParent();
 
@@ -142,6 +149,12 @@ public class ErrorPropagation {
         if (matchingEvent == null) {
           if (eventMap.containsKey(currentExecution.getActivityId())) {
             matchingEvent = eventMap.get(currentExecution.getActivityId()).get(0);
+            
+            // check for parallel multi instance execution --> if so, get the parent execution
+            FlowElement parentElement = currentExecution.getParent().getCurrentFlowElement();
+            if (parentElement != null && parentElement.getId().equals(currentExecution.getCurrentFlowElement().getId())) {
+              currentExecution = currentExecution.getParent();
+            }
           } else if (StringUtils.isNotEmpty(currentExecution.getParentId())) {
             currentExecution = currentExecution.getParent();
           } else {

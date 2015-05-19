@@ -2,9 +2,11 @@ package org.activiti.engine.impl.agenda;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
@@ -64,6 +66,9 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
       
       try {
         activityBehavior.execute(execution);
+      } catch (BpmnError error) {
+        // re-throw business fault so that it can be caught by an Error Intermediate Event or Error Event Sub-Process in the process
+        ErrorPropagation.propagateError(error, execution);
       } catch (RuntimeException e) {
         if (LogMDC.isMDCEnabled()) {
           LogMDC.putMDCExecution(execution);
