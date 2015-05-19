@@ -25,6 +25,7 @@ import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Message;
 import org.activiti.bpmn.model.MessageEventDefinition;
+import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
@@ -36,7 +37,6 @@ import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
-import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
 import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cmd.CancelJobsCmd;
@@ -309,9 +309,7 @@ public class BpmnDeployer implements Deployer {
     }
   }
 
-  @SuppressWarnings("unchecked")
-  protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, org.activiti.bpmn.model.Process process, BpmnModel bpmnModel) {
-    CommandContext commandContext = Context.getCommandContext();
+  protected void addMessageEventSubscriptions(ProcessDefinitionEntity processDefinition, Process process, BpmnModel bpmnModel) {
     if (CollectionUtils.isNotEmpty(process.getFlowElements())) {
       for (FlowElement element : process.getFlowElements()) {
         if (element instanceof StartEvent) {
@@ -320,60 +318,55 @@ public class BpmnDeployer implements Deployer {
             EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
             if (eventDefinition instanceof MessageEventDefinition) {
               MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
-
-              if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
-                Message message = bpmnModel.getMessage(messageEventDefinition.getMessageRef());
-                messageEventDefinition.setMessageRef(message.getName());
-              }
-
-              // look for subscriptions for the same name in db:
-              List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE,
-                  messageEventDefinition.getMessageRef(), processDefinition.getTenantId());
-              // also look for subscriptions created in the session:
-              List<MessageEventSubscriptionEntity> cachedSubscriptions = commandContext.getDbSqlSession().findInCache(MessageEventSubscriptionEntity.class);
-              for (MessageEventSubscriptionEntity cachedSubscription : cachedSubscriptions) {
-                if (messageEventDefinition.getMessageRef().equals(cachedSubscription.getEventName()) && !subscriptionsForSameMessageName.contains(cachedSubscription)) {
-                  subscriptionsForSameMessageName.add(cachedSubscription);
-                }
-              }
-              // remove subscriptions deleted in the same command
-              subscriptionsForSameMessageName = commandContext.getDbSqlSession().pruneDeletedEntities(subscriptionsForSameMessageName);
-
-              for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsForSameMessageName) {
-                // throw exception only if there's already a
-                // subscription as start event
-                if (eventSubscriptionEntity.getProcessInstanceId() == null || eventSubscriptionEntity.getProcessInstanceId().isEmpty()) {
-                  // the event subscription has no instance-id, so
-                  // it's a message start event
-                  throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
-                      + "': there already is a message event subscription for the message with name '" + messageEventDefinition.getMessageRef() + "'.");
-                }
-              }
-
-              MessageEventSubscriptionEntity newSubscription = new MessageEventSubscriptionEntity();
-              newSubscription.setEventName(messageEventDefinition.getMessageRef());
-              newSubscription.setActivityId(startEvent.getId());
-              newSubscription.setConfiguration(processDefinition.getId());
-
-              if (processDefinition.getTenantId() != null) {
-                newSubscription.setTenantId(processDefinition.getTenantId());
-              }
-
-              newSubscription.insert();
+              insertMessageEvent(messageEventDefinition, startEvent, processDefinition, bpmnModel);
             }
           }
-        }
+        } 
+      }
+    }
+  }
+  
+  protected void insertMessageEvent(MessageEventDefinition messageEventDefinition, StartEvent startEvent, ProcessDefinitionEntity processDefinition, BpmnModel bpmnModel) {
+    CommandContext commandContext = Context.getCommandContext();
+    if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
+      Message message = bpmnModel.getMessage(messageEventDefinition.getMessageRef());
+      messageEventDefinition.setMessageRef(message.getName());
+    }
+
+    // look for subscriptions for the same name in db:
+    List<EventSubscriptionEntity> subscriptionsForSameMessageName = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByName(MessageEventHandler.EVENT_HANDLER_TYPE,
+        messageEventDefinition.getMessageRef(), processDefinition.getTenantId());
+    // also look for subscriptions created in the session:
+    List<MessageEventSubscriptionEntity> cachedSubscriptions = commandContext.getDbSqlSession().findInCache(MessageEventSubscriptionEntity.class);
+    for (MessageEventSubscriptionEntity cachedSubscription : cachedSubscriptions) {
+      if (messageEventDefinition.getMessageRef().equals(cachedSubscription.getEventName()) && !subscriptionsForSameMessageName.contains(cachedSubscription)) {
+        subscriptionsForSameMessageName.add(cachedSubscription);
+      }
+    }
+    // remove subscriptions deleted in the same command
+    subscriptionsForSameMessageName = commandContext.getDbSqlSession().pruneDeletedEntities(subscriptionsForSameMessageName);
+
+    for (EventSubscriptionEntity eventSubscriptionEntity : subscriptionsForSameMessageName) {
+      // throw exception only if there's already a
+      // subscription as start event
+      if (eventSubscriptionEntity.getProcessInstanceId() == null || eventSubscriptionEntity.getProcessInstanceId().isEmpty()) {
+        // the event subscription has no instance-id, so
+        // it's a message start event
+        throw new ActivitiException("Cannot deploy process definition '" + processDefinition.getResourceName()
+            + "': there already is a message event subscription for the message with name '" + messageEventDefinition.getMessageRef() + "'.");
       }
     }
 
-    List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) processDefinition.getProperty(BpmnParse.PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
-    if (eventDefinitions != null) {
-      for (EventSubscriptionDeclaration eventDefinition : eventDefinitions) {
-        if (eventDefinition.getEventType().equals("message") && eventDefinition.isStartEvent()) {
+    MessageEventSubscriptionEntity newSubscription = new MessageEventSubscriptionEntity();
+    newSubscription.setEventName(messageEventDefinition.getMessageRef());
+    newSubscription.setActivityId(startEvent.getId());
+    newSubscription.setConfiguration(processDefinition.getId());
 
-        }
-      }
+    if (processDefinition.getTenantId() != null) {
+      newSubscription.setTenantId(processDefinition.getTenantId());
     }
+
+    newSubscription.insert();
   }
 
   protected void removeObsoleteSignalEventSubScription(ProcessDefinitionEntity processDefinition, ProcessDefinitionEntity latestProcessDefinition) {

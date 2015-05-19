@@ -58,7 +58,8 @@ import org.activiti.engine.impl.bpmn.behavior.CallActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.CancelEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ErrorEndEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.EventBasedGatewayActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.EventSubProcessStartEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.EventSubProcessErrorStartEventActivityBehavior;
+import org.activiti.engine.impl.bpmn.behavior.EventSubProcessMessageStartEventActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.ExclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.InclusiveGatewayActivityBehavior;
 import org.activiti.engine.impl.bpmn.behavior.IntermediateCatchEventActivityBehavior;
@@ -331,8 +332,12 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     return new SubProcessActivityBehavior();
   }
   
-  public EventSubProcessStartEventActivityBehavior createEventSubProcessStartEventActivityBehavior(StartEvent startEvent) {
-    return new EventSubProcessStartEventActivityBehavior();
+  public EventSubProcessErrorStartEventActivityBehavior createEventSubProcessErrorStartEventActivityBehavior(StartEvent startEvent) {
+    return new EventSubProcessErrorStartEventActivityBehavior();
+  }
+  
+  public EventSubProcessMessageStartEventActivityBehavior createEventSubProcessMessageStartEventActivityBehavior(StartEvent startEvent, MessageEventDefinition messageEventDefinition) {
+    return new EventSubProcessMessageStartEventActivityBehavior(messageEventDefinition);
   }
 
   // Call activity
@@ -363,7 +368,6 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
   }
 
   public IntermediateCatchMessageEventActivityBehavior createIntermediateCatchMessageEventActivityBehavior(IntermediateCatchEvent intermediateCatchEvent, MessageEventDefinition messageEventDefinition) {
-
     return new IntermediateCatchMessageEventActivityBehavior(messageEventDefinition);
   }
 

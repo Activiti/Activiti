@@ -22,6 +22,7 @@ public class StartEvent extends Event {
 
   protected String initiator;
   protected String formKey;
+  protected boolean isInterrupting;
   protected List<FormProperty> formProperties = new ArrayList<FormProperty>();
 
   public String getInitiator() {
@@ -38,6 +39,14 @@ public class StartEvent extends Event {
 
   public void setFormKey(String formKey) {
     this.formKey = formKey;
+  }
+
+  public boolean isInterrupting() {
+    return isInterrupting;
+  }
+
+  public void setInterrupting(boolean isInterrupting) {
+    this.isInterrupting = isInterrupting;
   }
 
   public List<FormProperty> getFormProperties() {
@@ -58,7 +67,8 @@ public class StartEvent extends Event {
     super.setValues(otherEvent);
     setInitiator(otherEvent.getInitiator());
     setFormKey(otherEvent.getFormKey());
-
+    setInterrupting(otherEvent.isInterrupting);
+    
     formProperties = new ArrayList<FormProperty>();
     if (otherEvent.getFormProperties() != null && !otherEvent.getFormProperties().isEmpty()) {
       for (FormProperty property : otherEvent.getFormProperties()) {

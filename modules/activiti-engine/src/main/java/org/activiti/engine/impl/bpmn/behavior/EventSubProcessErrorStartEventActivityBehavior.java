@@ -29,7 +29,7 @@ import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
  * 
  * @author Tijs Rademakers
  */
-public class EventSubProcessStartEventActivityBehavior extends AbstractBpmnActivityBehavior {
+public class EventSubProcessErrorStartEventActivityBehavior extends AbstractBpmnActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
