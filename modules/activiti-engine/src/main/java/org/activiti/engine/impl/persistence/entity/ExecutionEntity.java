@@ -328,6 +328,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     this.currentFlowElement = currentFlowElement;
     if (currentFlowElement != null) {
       this.activityId = currentFlowElement.getId();
+    } else {
+      this.activityId = null;
     }
   }
 

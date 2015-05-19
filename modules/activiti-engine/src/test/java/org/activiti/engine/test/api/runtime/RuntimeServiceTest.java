@@ -308,7 +308,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = processEngine.getRuntimeService().startProcessInstanceByKey("errorEventSubprocess");
 
     List<String> activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
-    assertEquals(3, activeActivities.size());
+    assertEquals(5, activeActivities.size());
 
     List<Task> tasks = taskService.createTaskQuery().list();
     assertEquals(2, tasks.size());
@@ -327,10 +327,10 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     taskService.complete(parallelUserTask.getId());
 
     Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("subprocess1WaitBeforeError").singleResult();
-    runtimeService.signal(execution.getId());
+    runtimeService.trigger(execution.getId());
 
     activeActivities = runtimeService.getActiveActivityIds(processInstance.getId());
-    assertEquals(2, activeActivities.size());
+    assertEquals(4, activeActivities.size());
 
     tasks = taskService.createTaskQuery().list();
     assertEquals(2, tasks.size());
@@ -376,13 +376,12 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     assertEquals("MainUserTask", activeActivities.get(0));
 
     taskService.complete(tasks.get(0).getId());
-
     assertProcessEnded(processInstance.getId());
   }
 
   public void testSignalUnexistingExecututionId() {
     try {
-      runtimeService.signal("unexistingExecutionId");
+      runtimeService.trigger("unexistingExecutionId");
       fail("ActivitiException expected");
     } catch (ActivitiObjectNotFoundException ae) {
       assertTextPresent("execution unexistingExecutionId doesn't exist", ae.getMessage());
