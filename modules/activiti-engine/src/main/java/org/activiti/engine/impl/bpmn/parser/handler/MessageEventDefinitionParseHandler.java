@@ -31,7 +31,6 @@ public class MessageEventDefinitionParseHandler extends AbstractBpmnParseHandler
   }
 
   protected void executeParse(BpmnParse bpmnParse, MessageEventDefinition messageDefinition) {
-
     BpmnModel bpmnModel = bpmnParse.getBpmnModel();
     String messageRef = messageDefinition.getMessageRef();
     if (bpmnModel.containsMessageId(messageRef)) {

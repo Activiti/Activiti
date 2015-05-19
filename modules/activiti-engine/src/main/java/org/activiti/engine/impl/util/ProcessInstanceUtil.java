@@ -16,6 +16,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.Process;
@@ -169,6 +172,31 @@ public class ProcessInstanceUtil {
     // Create the first execution that will visit all the process definition elements
     ExecutionEntity execution = processInstance.createExecution();
     execution.setCurrentFlowElement(initialFlowElement);
+    
+    for (FlowElement flowElement : process.getFlowElements()) {
+      if (flowElement instanceof EventSubProcess) {
+        EventSubProcess eventSubProcess = (EventSubProcess) flowElement;
+        for (FlowElement subElement : eventSubProcess.getFlowElements()) {
+          if (subElement instanceof StartEvent) {
+            StartEvent startEvent = (StartEvent) subElement;
+            if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+              EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+              if (eventDefinition instanceof MessageEventDefinition) {
+                MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
+                BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinition.getId());
+                if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
+                  messageEventDefinition.setMessageRef(bpmnModel.getMessage(messageEventDefinition.getMessageRef()).getName());
+                }
+                ExecutionEntity messageExecution = processInstance.createExecution();
+                messageExecution.setCurrentFlowElement(startEvent);
+                messageExecution.setEventScope(true);
+                commandContext.getEventSubscriptionEntityManager().insertMessageEvent(messageEventDefinition, messageExecution);
+              }
+            }
+          }
+        }
+      }
+    }
     
     if (startProcessInstance) {
       commandContext.getAgenda().planContinueProcessOperation(execution);

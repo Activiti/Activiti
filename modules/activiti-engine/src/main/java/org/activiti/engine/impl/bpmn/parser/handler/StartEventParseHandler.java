@@ -13,7 +13,12 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ErrorEventDefinition;
+import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.EventSubProcess;
+import org.activiti.bpmn.model.Message;
+import org.activiti.bpmn.model.MessageEventDefinition;
 import org.activiti.bpmn.model.StartEvent;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.apache.commons.collections.CollectionUtils;
@@ -34,17 +39,33 @@ public class StartEventParseHandler extends AbstractActivityBpmnParseHandler<Sta
 
   @Override
   protected void executeParse(BpmnParse bpmnParse, StartEvent element) {
-    if (CollectionUtils.isEmpty(element.getEventDefinitions())) {
+    if (element.getSubProcess() != null && element.getSubProcess() instanceof EventSubProcess) {
+      if (CollectionUtils.isNotEmpty(element.getEventDefinitions())) {
+        EventDefinition eventDefinition = element.getEventDefinitions().get(0);
+        if (eventDefinition instanceof MessageEventDefinition) {
+          MessageEventDefinition messageDefinition = (MessageEventDefinition) eventDefinition;
+          BpmnModel bpmnModel = bpmnParse.getBpmnModel();
+          String messageRef = messageDefinition.getMessageRef();
+          if (bpmnModel.containsMessageId(messageRef)) {
+            Message message = bpmnModel.getMessage(messageRef);
+            messageDefinition.setMessageRef(message.getName());
+            messageDefinition.setExtensionElements(message.getExtensionElements());
+          }
+          element.setBehavior(bpmnParse.getActivityBehaviorFactory().createEventSubProcessMessageStartEventActivityBehavior(element, messageDefinition));
+        
+        } else if (eventDefinition instanceof ErrorEventDefinition) {
+          element.setBehavior(bpmnParse.getActivityBehaviorFactory().createEventSubProcessErrorStartEventActivityBehavior(element));
+        }
+      }
+      
+    } else if (CollectionUtils.isEmpty(element.getEventDefinitions())) {
       element.setBehavior(bpmnParse.getActivityBehaviorFactory().createNoneStartEventActivityBehavior(element));
     }
-
+    
     if (element.getSubProcess() == null && (CollectionUtils.isEmpty(element.getEventDefinitions()) || 
         bpmnParse.getCurrentProcess().getInitialFlowElement() == null)) {
 
       bpmnParse.getCurrentProcess().setInitialFlowElement(element);
-    
-    } else if (element.getSubProcess() != null && element.getSubProcess() instanceof EventSubProcess) {
-      element.setBehavior(bpmnParse.getActivityBehaviorFactory().createEventSubProcessStartEventActivityBehavior(element));
     }
   }
 

@@ -21,14 +21,13 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * @author Daniel Meyer
- * @author Falko Menge
+ * @author Tijs Rademakers
  */
 public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testInterruptingUnderProcessDefinition() {
-    testInterruptingUnderProcessDefinition(1);
+    testInterruptingUnderProcessDefinition(1, 3);
   }
 
   /**
@@ -36,31 +35,31 @@ public class MessageEventSubprocessTest extends PluggableActivitiTestCase {
    */
   @Deployment
   public void testTwoInterruptingUnderProcessDefinition() {
-    testInterruptingUnderProcessDefinition(2);
+    testInterruptingUnderProcessDefinition(2, 4);
   }
 
-  private void testInterruptingUnderProcessDefinition(int expectedNumberOfEventSubscriptions) {
+  private void testInterruptingUnderProcessDefinition(int expectedNumberOfEventSubscriptions, int numberOfExecutions) {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("process");
 
     // the process instance must have a message event subscription:
-    Execution execution = runtimeService.createExecutionQuery().executionId(processInstance.getId()).messageEventSubscriptionName("newMessage").singleResult();
+    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("newMessage").singleResult();
     assertNotNull(execution);
     assertEquals(expectedNumberOfEventSubscriptions, createEventSubscriptionQuery().count());
-    assertEquals(1, runtimeService.createExecutionQuery().count());
+    assertEquals(numberOfExecutions, runtimeService.createExecutionQuery().count());
 
-    // if we trigger the usertask, the process terminates and the event
-    // subscription is removed:
+    // if we trigger the usertask, the process terminates and the event subscription is removed:
     Task task = taskService.createTaskQuery().singleResult();
     assertEquals("task", task.getTaskDefinitionKey());
     taskService.complete(task.getId());
-    assertProcessEnded(processInstance.getId());
     assertEquals(0, createEventSubscriptionQuery().count());
     assertEquals(0, runtimeService.createExecutionQuery().count());
+    assertProcessEnded(processInstance.getId());
 
-    // now we start a new instance but this time we trigger the event
-    // subprocess:
+    // now we start a new instance but this time we trigger the event subprocess:
     processInstance = runtimeService.startProcessInstanceByKey("process");
-    runtimeService.messageEventReceived("newMessage", processInstance.getId());
+    execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("newMessage").singleResult();
+    assertNotNull(execution);
+    runtimeService.messageEventReceived("newMessage", execution.getId());
 
     task = taskService.createTaskQuery().singleResult();
     assertEquals("eventSubProcessTask", task.getTaskDefinitionKey());
