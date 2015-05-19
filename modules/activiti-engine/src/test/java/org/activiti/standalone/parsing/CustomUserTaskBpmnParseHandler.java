@@ -26,10 +26,8 @@ public class CustomUserTaskBpmnParseHandler extends UserTaskParseHandler {
 
     // Do the regular stuff
     super.executeParse(bpmnParse, userTask);
-
-    // Make user tasks always async
-    ActivityImpl activity = findActivity(bpmnParse, userTask.getId());
-    activity.setAsync(true);
+    
+    userTask.setAsynchronous(true);
   }
 
 }
