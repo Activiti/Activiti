@@ -84,6 +84,22 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       }
     });
   }
+  
+  public List<ExecutionEntity> findExecutionsByParentExecutionAndActivityIds(final String parentExecutionId, final Collection<String> activityIds) {
+    
+    Map<String, Object> parameters = new HashMap<String, Object>(2);
+    parameters.put("parentExecutionId", parentExecutionId);
+    parameters.put("activityIds", activityIds);
+    
+    return getList("selectExecutionsByParentExecutionAndActivityIds", parameters, new CachedEntityMatcher<ExecutionEntity>() {
+      
+      public boolean isRetained(ExecutionEntity executionEntity) {
+        return executionEntity.getParentId() != null && executionEntity.getParentId().equals(parentExecutionId)
+            && executionEntity.getActivityId() != null && activityIds.contains(executionEntity.getActivityId());
+      }
+      
+    });
+  }
 
   public long findExecutionCountByQueryCriteria(ExecutionQueryImpl executionQuery) {
     return (Long) getDbSqlSession().selectOne("selectExecutionCountByQueryCriteria", executionQuery);
@@ -93,7 +109,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   public List<ExecutionEntity> findExecutionsByQueryCriteria(ExecutionQueryImpl executionQuery, Page page) {
     return getDbSqlSession().selectList("selectExecutionsByQueryCriteria", executionQuery, page);
   }
-
+  
   public long findProcessInstanceCountByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
     return (Long) getDbSqlSession().selectOne("selectProcessInstanceCountByQueryCriteria", executionQuery);
   }

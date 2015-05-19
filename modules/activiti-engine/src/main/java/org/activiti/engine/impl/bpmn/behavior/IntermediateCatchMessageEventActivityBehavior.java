@@ -22,7 +22,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-public class IntermediateCatchMessageEventActivityBehavior extends AbstractBpmnActivityBehavior {
+public class IntermediateCatchMessageEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
@@ -39,6 +39,17 @@ public class IntermediateCatchMessageEventActivityBehavior extends AbstractBpmnA
 
   @Override
   public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+    ExecutionEntity executionEntity = deleteMessageEventSubScription(execution);
+    leaveIntermediateCatchEvent(executionEntity);
+  }
+  
+  @Override
+  public void cancelEvent(ActivityExecution execution) {
+    deleteMessageEventSubScription(execution);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution);
+  }
+
+  protected ExecutionEntity deleteMessageEventSubScription(ActivityExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
     List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
@@ -48,6 +59,6 @@ public class IntermediateCatchMessageEventActivityBehavior extends AbstractBpmnA
         eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
       }
     }
-    leave(executionEntity);
+    return executionEntity;
   }
 }
