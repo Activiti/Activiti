@@ -28,6 +28,7 @@ import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.CachedEntityMatcher;
 import org.activiti.engine.task.Task;
 
 /**
@@ -35,6 +36,11 @@ import org.activiti.engine.task.Task;
  * @author Joram Barrez
  */
 public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
+  
+  @Override
+  public Class<TaskEntity> getManagedPersistentObject() {
+    return TaskEntity.class;
+  }
   
   @Override
   public void insert(TaskEntity entity, boolean fireCreateEvent) {
@@ -114,8 +120,14 @@ public class TaskEntityManager extends AbstractEntityManager<TaskEntity> {
   }
 
   @SuppressWarnings("unchecked")
-  public List<TaskEntity> findTasksByExecutionId(String executionId) {
-    return getDbSqlSession().selectList("selectTasksByExecutionId", executionId);
+  public List<TaskEntity> findTasksByExecutionId(final String executionId) {
+    return getList("selectTasksByExecutionId", executionId, new CachedEntityMatcher<TaskEntity>() {
+      
+      public boolean isRetained(TaskEntity taskEntity) {
+        return taskEntity.getExecutionId() != null && executionId.equals(taskEntity.getExecutionId());
+      }
+      
+    });
   }
 
   @SuppressWarnings("unchecked")

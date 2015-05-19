@@ -339,14 +339,13 @@ public class SignalEventTest extends PluggableActivitiTestCase {
 
   @Deployment
   public void testSignalUserTask() {
-    ProcessInstance pi = runtimeService.startProcessInstanceByKey("catchSignal");
-
-    Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).activityId("waitState").singleResult();
+    runtimeService.startProcessInstanceByKey("catchSignal");
+    Execution execution = runtimeService.createExecutionQuery().onlyChildExecutions().activityId("waitState").singleResult();
 
     assertNotNull(execution);
 
     try {
-      runtimeService.signal(execution.getId());
+      runtimeService.trigger(execution.getId());
       fail("ActivitiException expected");
     } catch (ActivitiException ae) {
       // Exception expected
