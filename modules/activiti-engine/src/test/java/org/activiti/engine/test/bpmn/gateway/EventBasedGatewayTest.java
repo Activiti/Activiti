@@ -91,9 +91,10 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createProcessInstanceQuery().count());
     assertEquals(1, managementService.createJobQuery().count());
 
-    // we can query for an execution with has both a signal AND message
-    // subscription
-    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("newInvoice").signalEventSubscriptionName("alert").singleResult();
+    Execution execution = runtimeService.createExecutionQuery().messageEventSubscriptionName("newInvoice").singleResult();
+    assertNotNull(execution);
+    
+    execution = runtimeService.createExecutionQuery().signalEventSubscriptionName("alert").singleResult();
     assertNotNull(execution);
 
     processEngineConfiguration.getClock().setCurrentTime(new Date(processEngineConfiguration.getClock().getCurrentTime().getTime() + 10000));
@@ -116,7 +117,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     }
   }
 
-  public void testConnectedToActitiy() {
+  public void testConnectedToActivity() {
 
     try {
       repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/gateway/EventBasedGatewayTest.testConnectedToActivity.bpmn20.xml").deploy();

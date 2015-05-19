@@ -1622,8 +1622,9 @@ public class ProcessInstanceQueryTest extends PluggableActivitiTestCase {
 
     long piCount = runtimeService.createProcessInstanceQuery().count();
 
-    assertEquals(piCount, runtimeService.createNativeProcessInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(ProcessInstance.class)).list().size());
-    assertEquals(piCount, runtimeService.createNativeProcessInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(ProcessInstance.class)).count());
+    // There are 2 executions for each process instance
+    assertEquals(piCount*2, runtimeService.createNativeProcessInstanceQuery().sql("SELECT * FROM " + managementService.getTableName(ProcessInstance.class)).list().size());
+    assertEquals(piCount*2, runtimeService.createNativeProcessInstanceQuery().sql("SELECT count(*) FROM " + managementService.getTableName(ProcessInstance.class)).count());
   }
 
   /**

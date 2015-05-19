@@ -32,6 +32,7 @@ import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.slf4j.Logger;
@@ -152,6 +153,15 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
   }
 
   public void trigger(ActivityExecution execution, String signalName, Object signalData) {
+    
+    TaskEntityManager taskEntityManager = Context.getCommandContext().getTaskEntityManager();
+    List<TaskEntity> taskEntities = taskEntityManager.findTasksByExecutionId(execution.getId()); // Should be only one
+    for (TaskEntity taskEntity : taskEntities) {
+      if (!taskEntity.isDeleted()) {
+        throw new ActivitiException("UserTask should not be signalled before complete");
+      }
+    }
+    
     leave(execution);
   }
 

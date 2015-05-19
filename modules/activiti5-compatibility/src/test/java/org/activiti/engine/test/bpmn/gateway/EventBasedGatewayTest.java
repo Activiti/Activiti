@@ -116,7 +116,7 @@ public class EventBasedGatewayTest extends PluggableActivitiTestCase {
     }
   }
 
-  public void testConnectedToActitiy() {
+  public void testConnectedToActivity() {
 
     try {
       repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/bpmn/gateway/EventBasedGatewayTest.testConnectedToActivity.bpmn20.xml").deploy();

@@ -12,15 +12,19 @@
  */
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.List;
+
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.TimerUtil;
 
-public class IntermediateCatchTimerEventActivityBehavior extends AbstractBpmnActivityBehavior {
+public class IntermediateCatchTimerEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
@@ -35,9 +39,21 @@ public class IntermediateCatchTimerEventActivityBehavior extends AbstractBpmnAct
         .createTimerEntityForTimerEventDefinition(timerEventDefinition, false, (ExecutionEntity) execution, TriggerTimerEventJobHandler.TYPE, execution.getCurrentActivityId());
     Context.getCommandContext().getJobEntityManager().schedule(timer);
   }
+  
+  @Override
+  public void cancelEvent(ActivityExecution execution) {
+    JobEntityManager jobEntityManager = Context.getCommandContext().getJobEntityManager();
+    List<JobEntity> jobEntities = jobEntityManager.findJobsByExecutionId(execution.getId());
+    
+    for (JobEntity jobEntity : jobEntities) { // Should be only one
+      jobEntityManager.delete(jobEntity);
+    }
+    
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution);
+  }
 
   @Override
   public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
-    leave(execution);
+    leaveIntermediateCatchEvent(execution);
   }
 }

@@ -91,7 +91,9 @@ public class EndExecutionOperation extends AbstractOperation {
           ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution, parentExecution.getParent());
         }
       } else {
-        parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
+        if (!(parentExecution.getCurrentFlowElement() instanceof SubProcess)) {
+          parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
+        }
       }
       
       // If there are no more active child executions, the process can be continues

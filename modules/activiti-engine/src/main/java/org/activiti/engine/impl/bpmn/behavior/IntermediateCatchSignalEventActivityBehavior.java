@@ -23,7 +23,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
-public class IntermediateCatchSignalEventActivityBehavior extends AbstractBpmnActivityBehavior {
+public class IntermediateCatchSignalEventActivityBehavior extends IntermediateCatchEventActivityBehavior {
 
   private static final long serialVersionUID = 1L;
 
@@ -42,6 +42,17 @@ public class IntermediateCatchSignalEventActivityBehavior extends AbstractBpmnAc
 
   @Override
   public void trigger(ActivityExecution execution, String triggerName, Object triggerData) {
+    ExecutionEntity executionEntity = deleteSignalEventSubscription(execution);
+    leaveIntermediateCatchEvent(executionEntity);
+  }
+  
+  @Override
+  public void cancelEvent(ActivityExecution execution) {
+    deleteSignalEventSubscription(execution);
+    Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData((ExecutionEntity) execution);
+  }
+
+  protected ExecutionEntity deleteSignalEventSubscription(ActivityExecution execution) {
     ExecutionEntity executionEntity = (ExecutionEntity) execution;
 
     String eventName = null;
@@ -59,6 +70,6 @@ public class IntermediateCatchSignalEventActivityBehavior extends AbstractBpmnAc
         eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
       }
     }
-    leave(executionEntity);
+    return executionEntity;
   }
 }

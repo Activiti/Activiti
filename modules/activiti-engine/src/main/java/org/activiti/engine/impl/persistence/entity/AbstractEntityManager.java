@@ -67,17 +67,29 @@ public class AbstractEntityManager<Entity extends PersistentObject> extends Abst
    * Advanced operations
    */
 
-  public Entity getEntity(Class<? extends Entity> clazz, String entityId, CachedEntityMatcher<Entity> retainEntityCondition) {
+  public Entity getEntity(Class<? extends Entity> clazz, String entityId, CachedEntityMatcher<Entity> cachedEntityMatcher) {
 
     // Cache
     for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
-      if (retainEntityCondition.isRetained(cachedEntity)) {
+      if (cachedEntityMatcher.isRetained(cachedEntity)) {
         return cachedEntity;
       }
     }
 
     // Database
     return getDbSqlSession().selectById(clazz, entityId);
+  }
+  
+  public Entity getEntity(Class<? extends Entity> clazz, String selectQuery, Object parameter, CachedEntityMatcher<Entity> cachedEntityMatcher) {
+    // Cache
+    for (Entity cachedEntity : getDbSqlSession().findInCache(getManagedPersistentObject())) {
+      if (cachedEntityMatcher.isRetained(cachedEntity)) {
+        return cachedEntity;
+      }
+    }
+
+    // Database
+    return (Entity) getDbSqlSession().selectOne(selectQuery, parameter);
   }
 
   /**
