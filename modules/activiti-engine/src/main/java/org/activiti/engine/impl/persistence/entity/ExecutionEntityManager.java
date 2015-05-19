@@ -54,8 +54,14 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
 
   // FIND METHODS
 
-  public ExecutionEntity findSubProcessInstanceBySuperExecutionId(String superExecutionId) {
-    return (ExecutionEntity) getDbSqlSession().selectOne("selectSubProcessInstanceBySuperExecutionId", superExecutionId);
+  public ExecutionEntity findSubProcessInstanceBySuperExecutionId(final String superExecutionId) {
+    return getEntity(ExecutionEntity.class, "selectSubProcessInstanceBySuperExecutionId", superExecutionId, new CachedEntityMatcher<ExecutionEntity>() {
+
+      public boolean isRetained(ExecutionEntity executionEntity) {
+        return executionEntity.getSuperExecutionId() != null && superExecutionId.equals(executionEntity.getSuperExecutionId());
+      }
+      
+    });
   }
 
   public List<ExecutionEntity> findChildExecutionsByParentExecutionId(final String parentExecutionId) {

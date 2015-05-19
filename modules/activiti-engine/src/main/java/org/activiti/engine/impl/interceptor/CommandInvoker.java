@@ -14,11 +14,15 @@ package org.activiti.engine.impl.interceptor;
 
 import org.activiti.engine.impl.agenda.AbstractOperation;
 import org.activiti.engine.impl.context.Context;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Joram Barrez
  */
 public class CommandInvoker extends AbstractCommandInterceptor {
+  
+  private static final Logger logger = LoggerFactory.getLogger(CommandInvoker.class);
 
   @Override
   @SuppressWarnings("unchecked")
@@ -60,6 +64,7 @@ public class CommandInvoker extends AbstractCommandInterceptor {
     if (runnable instanceof AbstractOperation) {
       AbstractOperation operation = (AbstractOperation) runnable;
       if (operation.getExecution() == null || !operation.getExecution().isEnded()) {
+        logger.info("Executing operation " + operation.getClass());
         runnable.run();
       }
     } else {

@@ -133,6 +133,11 @@ public class BoundaryEventActivityBehavior extends FlowNodeActivityBehavior {
   }
 
   protected void deleteChildExecutions(ExecutionEntity parentExecution, ExecutionEntity notToDeleteExecution, CommandContext commandContext) {
+    
+    // TODO: would be good if this deleteChildExecutions could be removed and the one on the executionEntityManager is used
+    // The problem however, is that the 'notToDeleteExecution' is passed here. 
+    // This could be solved by not reusing an execution, but creating a new
+    
     // Delete all child executions
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
