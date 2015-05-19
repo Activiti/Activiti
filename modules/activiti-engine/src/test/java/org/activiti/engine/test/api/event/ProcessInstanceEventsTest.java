@@ -56,7 +56,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertNotNull(processInstance);
 
     // Check create-event
-    assertEquals(3, listener.getEventsReceived().size());
+    assertEquals(4, listener.getEventsReceived().size());
     assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
     // process instance create event
@@ -66,20 +66,27 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
     assertEquals(processInstance.getId(), event.getExecutionId());
     assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+    
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+    assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+    assertEquals(processInstance.getId(), event.getProcessInstanceId());
+    assertEquals(processInstance.getId(), event.getExecutionId());
+    assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 
     // start event create event
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
     assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
     assertNotEquals(processInstance.getId(), event.getExecutionId());
     assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
 
     // start event create initialized
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
     assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
     assertNotEquals(processInstance.getId(), event.getExecutionId());
     assertEquals(processInstance.getProcessDefinitionId(), event.getProcessDefinitionId());
+    
     listener.clearEventsReceived();
 
     // Check update event when suspended/activated
@@ -173,7 +180,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     String processDefinitionId = processInstance.getProcessDefinitionId();
 
     // Check create-event one main process the second one Scope execution, and the third one subprocess
-    assertEquals(6, listener.getEventsReceived().size());
+    assertEquals(7, listener.getEventsReceived().size());
     assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiEntityEvent);
 
     // process instance created event
@@ -183,30 +190,37 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
     assertEquals(processInstance.getId(), event.getExecutionId());
     assertEquals(processDefinitionId, event.getProcessDefinitionId());
-
-    // start event created event
+    
     event = (ActivitiEntityEvent) listener.getEventsReceived().get(1);
     String processExecutionId = event.getExecutionId();
+    assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
+    assertEquals(processInstance.getId(), event.getProcessInstanceId());
+    assertEquals(processInstance.getId(), processExecutionId);
+    assertEquals(processDefinitionId, event.getProcessDefinitionId());
+
+    // start event created event
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+    processExecutionId = event.getExecutionId();
     assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
     assertNotEquals(processInstance.getId(), processExecutionId);
     assertEquals(processDefinitionId, event.getProcessDefinitionId());
 
     // start event initialized event
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(2);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
     assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
     assertEquals(processInstance.getId(), event.getProcessInstanceId());
     assertNotEquals(processInstance.getId(), ((ExecutionEntity) event.getEntity()).getId());
 
     // sub process instance created event
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(3);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(4);
     assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
     ExecutionEntity subProcessEntity = (ExecutionEntity) event.getEntity();
     assertEquals(processExecutionId, subProcessEntity.getSuperExecutionId());
     String subProcessInstanceId = subProcessEntity.getProcessInstanceId();
 
     // sub process instance start created event
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(4);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(5);
     assertEquals(ActivitiEventType.ENTITY_CREATED, event.getType());
     assertEquals(subProcessInstanceId, event.getProcessInstanceId());
     assertNotEquals(subProcessInstanceId, event.getExecutionId());
@@ -216,7 +230,7 @@ public class ProcessInstanceEventsTest extends PluggableActivitiTestCase {
     assertEquals("simpleSubProcess", processDefinition.getKey());
 
     // sub process instance start initialized event
-    event = (ActivitiEntityEvent) listener.getEventsReceived().get(5);
+    event = (ActivitiEntityEvent) listener.getEventsReceived().get(6);
     assertEquals(ActivitiEventType.ENTITY_INITIALIZED, event.getType());
     assertEquals(subProcessInstanceId, event.getProcessInstanceId());
     assertNotEquals(subProcessInstanceId, event.getExecutionId());

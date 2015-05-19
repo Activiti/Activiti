@@ -263,6 +263,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     // Fire events
     if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstanceExecution));
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_INITIALIZED, processInstanceExecution));
     }
 
     return processInstanceExecution;
