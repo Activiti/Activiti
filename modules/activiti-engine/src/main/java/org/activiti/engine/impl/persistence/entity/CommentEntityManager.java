@@ -31,7 +31,7 @@ public class CommentEntityManager extends AbstractEntityManager<CommentEntity> {
 
   public void delete(CommentEntity commentEntity) {
     checkHistoryEnabled();
-    super.delete(commentEntity);
+    super.delete(commentEntity, false);
 
     Comment comment = (Comment) commentEntity;
     if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
@@ -52,7 +52,7 @@ public class CommentEntityManager extends AbstractEntityManager<CommentEntity> {
 
   public void insert(CommentEntity commentEntity) {
     checkHistoryEnabled();
-    super.insert(commentEntity);
+    super.insert(commentEntity, false);
 
     Comment comment = (Comment) commentEntity;
     if (getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
