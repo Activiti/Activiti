@@ -231,12 +231,14 @@ public class ActivitiEventBuilder {
     return newEvent;
   }
 
-  public static ActivitiErrorEvent createErrorEvent(ActivitiEventType type, String activityId, String errorCode, String executionId, String processInstanceId, String processDefinitionId) {
+  public static ActivitiErrorEvent createErrorEvent(ActivitiEventType type, String activityId, String errorId, String errorCode, 
+      String executionId, String processInstanceId, String processDefinitionId) {
     ActivitiErrorEventImpl newEvent = new ActivitiErrorEventImpl(type);
     newEvent.setActivityId(activityId);
     newEvent.setExecutionId(executionId);
     newEvent.setProcessDefinitionId(processDefinitionId);
     newEvent.setProcessInstanceId(processInstanceId);
+    newEvent.setErrorId(errorId);
     newEvent.setErrorCode(errorCode);
     return newEvent;
   }

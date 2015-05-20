@@ -102,7 +102,7 @@ public class ErrorPropagation {
     }
   }
 
-  protected static void executeCatch(Map<String, List<Event>> eventMap, ActivityExecution activityExecution, String errorCode) {
+  protected static void executeCatch(Map<String, List<Event>> eventMap, ActivityExecution activityExecution, String errorId) {
     ExecutionEntity currentExecution = (ExecutionEntity) activityExecution;
 
     Event matchingEvent = null;
@@ -165,18 +165,27 @@ public class ErrorPropagation {
     }
 
     if (matchingEvent != null && currentExecution != null) {
-      executeEventHandler(matchingEvent, currentExecution, errorCode);
+      executeEventHandler(matchingEvent, currentExecution, errorId);
     } else {
-      throw new ActivitiException("No matching parent execution for error code " + errorCode + " found");
+      throw new ActivitiException("No matching parent execution for error code " + errorId + " found");
     }
     // }
   }
 
-  protected static void executeEventHandler(Event event, ExecutionEntity parentExecution, String errorCode) {
+  protected static void executeEventHandler(Event event, ExecutionEntity parentExecution, String errorId) {
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-          ActivitiEventBuilder.createErrorEvent(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, event.getId(), errorCode, parentExecution.getId(),
+      BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(parentExecution.getProcessDefinitionId());
+      if (bpmnModel != null) {
+        
+        String errorCode = bpmnModel.getErrors().get(errorId);
+        if (errorCode == null) {
+          errorCode = errorId;
+        }
+        
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+          ActivitiEventBuilder.createErrorEvent(ActivitiEventType.ACTIVITY_ERROR_RECEIVED, event.getId(), errorId, errorCode, parentExecution.getId(),
               parentExecution.getProcessInstanceId(), parentExecution.getProcessDefinitionId()));
+      }
     }
 
     if (event instanceof StartEvent) {
