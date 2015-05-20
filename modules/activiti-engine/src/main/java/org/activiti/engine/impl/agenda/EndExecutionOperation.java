@@ -85,38 +85,24 @@ public class EndExecutionOperation extends AbstractOperation {
         }
       }
 
-      if (subProcess != null) {
-        parentExecution.setCurrentFlowElement(subProcess);
-        if (subProcess instanceof Transaction) {
-          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution, parentExecution.getParent());
-        }
-      } else {
-        if (!(parentExecution.getCurrentFlowElement() instanceof SubProcess)) {
-          parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
-        }
-      }
-      
       // If there are no more active child executions, the process can be continues
       // If not (eg an embedded subprocess still has active elements, we cannot continue)
-      int activeChildExecution = getNumberOfActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId());
-      if (activeChildExecution == 0) {
-        agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);
-      } else {
-        // event scopes created by transaction sub processes should be deleted and ignored
-        boolean allEventScopeExecutions = true;
-        List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
-        for (ExecutionEntity childExecution : executions) {
-          if (childExecution.isEventScope()) {
-            executionEntityManager.deleteExecutionAndRelatedData(childExecution);
-          } else {
-            allEventScopeExecutions = false;
-            break;
+      if (getNumberOfActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId()) == 0
+          || isAllEventScopeExecutions(executionEntityManager, parentExecution)) {
+        
+        if (subProcess != null) {
+          parentExecution.setCurrentFlowElement(subProcess);
+          if (subProcess instanceof Transaction) {
+            ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution, parentExecution.getParent());
+          }
+        } else {
+          if (!(parentExecution.getCurrentFlowElement() instanceof SubProcess)) {
+            parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
           }
         }
         
-        if (allEventScopeExecutions) {
-          agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);
-        }
+        agenda.planTakeOutgoingSequenceFlowsOperation(parentExecution, true);
+        
       }
 
     } else {
@@ -211,6 +197,20 @@ public class EndExecutionOperation extends AbstractOperation {
     }
     
     return activeChildExecutions;
+  }
+  
+  protected boolean isAllEventScopeExecutions(ExecutionEntityManager executionEntityManager, ExecutionEntity parentExecution) {
+    boolean allEventScopeExecutions = true;
+    List<ExecutionEntity> executions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
+    for (ExecutionEntity childExecution : executions) {
+      if (childExecution.isEventScope()) {
+        executionEntityManager.deleteExecutionAndRelatedData(childExecution);
+      } else {
+        allEventScopeExecutions = false;
+        break;
+      }
+    }
+    return allEventScopeExecutions;
   }
 
 }
