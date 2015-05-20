@@ -24,7 +24,7 @@ import org.activiti.engine.test.Deployment;
 /**
  * Test case for all {@link ActivitiEventListener}s that throw a message BPMN event when an {@link ActivitiEvent} has been dispatched.
  * 
- * @author Frederik Heremans
+ * @author Tijs Rademakers
  */
 public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase {
 
@@ -65,13 +65,12 @@ public class MessageThrowingEventListenerTest extends PluggableActivitiTestCase 
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testMessage");
     assertNotNull(processInstance);
 
-    // Fetch the task and re-assig it to trigger the event-listener
+    // Fetch the task and re-assign it to trigger the event-listener
     Task task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertNotNull(task);
     taskService.setAssignee(task.getId(), "kermit");
 
-    // Boundary-event should have been messaged and a new task should be
-    // available, on top of the already
+    // Boundary-event should have been messaged and a new task should be available, on top of the already
     // existing one, since the cancelActivity='false'
     task = taskService.createTaskQuery().processInstanceId(processInstance.getId()).taskDefinitionKey("subTask").singleResult();
     assertNotNull(task);

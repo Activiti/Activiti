@@ -129,6 +129,24 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     final String query = "selectEventSubscriptionByQueryCriteria";
     return getDbSqlSession().selectList(query, eventSubscriptionQueryImpl, page);
   }
+  
+  @SuppressWarnings("unchecked")
+  public List<MessageEventSubscriptionEntity> findMessageEventSubscriptionsByProcessInstanceAndEventName(String processInstanceId, String eventName) {
+    final String query = "selectMessageEventSubscriptionsByProcessInstanceAndEventName";
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("processInstanceId", processInstanceId);
+    params.put("eventName", eventName);
+    Set<MessageEventSubscriptionEntity> selectList = new HashSet<MessageEventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
+
+    // add events created in this command (not visible yet in query)
+    /*for (MessageEventSubscriptionEntity entity : created) {
+      if (processInstanceId.equals(entity.getProcessInstanceId()) && eventName.equals(entity.getEventName())) {
+        selectList.add(entity);
+      }
+    }*/
+
+    return new ArrayList<MessageEventSubscriptionEntity>(selectList);
+  }
 
   @SuppressWarnings("unchecked")
   public List<SignalEventSubscriptionEntity> findSignalEventSubscriptionsByEventName(String eventName, String tenantId) {

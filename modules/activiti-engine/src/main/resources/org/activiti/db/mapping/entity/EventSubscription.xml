@@ -96,6 +96,14 @@
     </where>
   </sql>
   
+  <select id="selectMessageEventSubscriptionsByProcessInstanceAndEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR EVT
+    where (EVENT_TYPE_ = 'message')
+        and EVENT_NAME_ = #{parameter.eventName}  
+        and PROC_INST_ID_ = #{parameter.processInstanceId}
+  </select>
+  
   <select id="selectSignalEventSubscriptionsByEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR EVT
@@ -111,7 +119,7 @@
     </if>   
   </select>
   
-   <select id="selectSignalEventSubscriptionsByProcessInstanceAndEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+  <select id="selectSignalEventSubscriptionsByProcessInstanceAndEventName" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR EVT
     where (EVENT_TYPE_ = 'signal')

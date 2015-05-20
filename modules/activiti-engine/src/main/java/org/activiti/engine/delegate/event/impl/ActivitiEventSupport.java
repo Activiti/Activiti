@@ -106,9 +106,7 @@ public class ActivitiEventSupport {
       if (listener.isFailOnException()) {
         throw new ActivitiException("Exception while executing event-listener", t);
       } else {
-        // Ignore the exception and continue notifying remaining
-        // listeners. The
-        // listener
+        // Ignore the exception and continue notifying remaining listeners. The listener
         // explicitly states that the exception should not bubble up
         LOG.warn("Exception while executing event-listener, which was ignored", t);
       }

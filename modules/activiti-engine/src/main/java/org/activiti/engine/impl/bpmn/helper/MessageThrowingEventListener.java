@@ -18,15 +18,15 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventListener;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.event.MessageEventHandler;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
+import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 
 /**
  * An {@link ActivitiEventListener} that throws a message event when an event is dispatched to it. Sends the message to the execution the event was fired from. If the execution is not subscribed to a
  * message, the process-instance is checked.
  * 
- * @author Frederik Heremans
+ * @author Tijs Rademakers
  * 
  */
 public class MessageThrowingEventListener extends BaseDelegateEventListener {
@@ -43,17 +43,11 @@ public class MessageThrowingEventListener extends BaseDelegateEventListener {
       }
 
       CommandContext commandContext = Context.getCommandContext();
-      List<EventSubscriptionEntity> subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE,
-          messageName, event.getExecutionId());
-
-      // Revert to messaging the process instance
-      if (subscriptionEntities.isEmpty() && event.getProcessInstanceId() != null && !event.getExecutionId().equals(event.getProcessInstanceId())) {
-        subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findEventSubscriptionsByNameAndExecution(MessageEventHandler.EVENT_HANDLER_TYPE, messageName,
-            event.getProcessInstanceId());
-      }
-
-      for (EventSubscriptionEntity signalEventSubscriptionEntity : subscriptionEntities) {
-        signalEventSubscriptionEntity.eventReceived(null, false);
+      List<MessageEventSubscriptionEntity> subscriptionEntities = commandContext.getEventSubscriptionEntityManager().findMessageEventSubscriptionsByProcessInstanceAndEventName(
+          event.getProcessInstanceId(), messageName);
+      
+      for (EventSubscriptionEntity messageEventSubscriptionEntity : subscriptionEntities) {
+        messageEventSubscriptionEntity.eventReceived(null, false);
       }
     }
   }
