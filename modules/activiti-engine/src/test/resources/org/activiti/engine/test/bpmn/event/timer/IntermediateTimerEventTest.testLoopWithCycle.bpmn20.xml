@@ -31,7 +31,7 @@
 				    var newCounter = counter + 1;
 				    execution.setVariable('counter', newCounter);
 				    
-                    if (newCounter == 3) {
+                    if (newCounter >= 3) {
                       execution.setVariable('completed', true);
                     } else {
                       execution.setVariable('completed', false);

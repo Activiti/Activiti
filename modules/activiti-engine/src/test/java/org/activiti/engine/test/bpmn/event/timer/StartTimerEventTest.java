@@ -161,9 +161,16 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
         ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processDefinitionKey("startTimerEventExample").singleResult();
         if (processInstance != null) {
           String pi = processInstance.getId();
-          Execution execution = runtimeService.createExecutionQuery().processInstanceId(pi).singleResult();
-          if (execution != null) {
-            return "changed".equals(execution.getActivityId());
+          List<Execution> executions = runtimeService.createExecutionQuery().processInstanceId(pi).list();
+          Execution activityExecution = null;
+          for (Execution execution : executions) {
+            if (execution.getProcessInstanceId().equals(execution.getId()) == false) {
+              activityExecution = execution;
+              break;
+            }
+          }
+          if (activityExecution != null) {
+            return "changed".equals(activityExecution.getActivityId());
           } else {
             return false;
           }

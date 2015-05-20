@@ -3,6 +3,8 @@ package org.activiti.engine.impl.util;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.TimerEventDefinition;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.Expression;
@@ -10,10 +12,10 @@ import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.calendar.BusinessCalendar;
 import org.activiti.engine.impl.calendar.CycleBusinessCalendar;
 import org.activiti.engine.impl.calendar.DueDateBusinessCalendar;
+import org.activiti.engine.impl.calendar.DurationBusinessCalendar;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
-import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.apache.commons.lang3.StringUtils;
@@ -50,7 +52,7 @@ public class TimerUtil {
 
     } else if (StringUtils.isNotEmpty(timerEventDefinition.getTimeDuration())) {
 
-      businessCalendarRef = DueDateBusinessCalendar.NAME;
+      businessCalendarRef = DurationBusinessCalendar.NAME;
       expression = expressionManager.createExpression(timerEventDefinition.getTimeDuration());
 
     }
@@ -64,9 +66,8 @@ public class TimerUtil {
     String dueDateString = null;
     Date duedate = null;
 
-    // ACT-1415: timer-declaration on start-event may contain expressionsNOT
-    // evaluating variables but other context, evaluating should happen
-    // nevertheless
+    // ACT-1415: timer-declaration on start-event may contain expressions NOT
+    // evaluating variables but other context, evaluating should happen nevertheless
     VariableScope scopeForExpression = executionEntity;
     if (scopeForExpression == null) {
       scopeForExpression = NoExecutionVariableScope.getSharedInstance();
@@ -104,8 +105,11 @@ public class TimerUtil {
       boolean repeat = !isInterruptingTimer;
 
       // ACT-1951: intermediate catching timer events shouldn't repeat according to spec
-      if (TimerCatchIntermediateEventJobHandler.TYPE.equals(jobHandlerType)) {
-        repeat = false;
+      if (executionEntity != null) {
+        FlowElement currentElement = executionEntity.getCurrentFlowElement();
+        if (currentElement != null && currentElement instanceof IntermediateCatchEvent) {
+          repeat = false;
+        }
       }
 
       if (repeat) {

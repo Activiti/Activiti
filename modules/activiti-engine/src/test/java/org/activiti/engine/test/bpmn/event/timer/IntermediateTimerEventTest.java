@@ -12,17 +12,17 @@
  */
 package org.activiti.engine.test.bpmn.event.timer;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 
 public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
 
@@ -139,8 +139,7 @@ public class IntermediateTimerEventTest extends PluggableActivitiTestCase {
   public void testLoopWithCycle() {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("testLoop");
 
-    // After looping 3 times, the process should end. Cycle should NOT
-    // repeat itself
+    // After looping 3 times, the process should end. Cycle should NOT repeat itself
     for (int i = 0; i < 3; i++) {
       Job timer = managementService.createJobQuery().singleResult();
       managementService.executeJob(timer.getId());
