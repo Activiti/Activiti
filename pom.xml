@@ -14,7 +14,7 @@
   </parent>
 
   <packaging>pom</packaging>
-  <version>5.17.1-SNAPSHOT</version>
+  <version>5.18.0-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.framework.version>4.1.5.RELEASE</spring.framework.version>
@@ -931,6 +931,22 @@
         <module>modules/activiti-crystalball</module>
         <module>modules/activiti-jmx</module>
       </modules>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
     </profile>
     <profile>
       <id>database</id>
