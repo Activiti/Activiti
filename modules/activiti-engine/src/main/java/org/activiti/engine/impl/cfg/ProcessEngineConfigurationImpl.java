@@ -408,6 +408,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   // Event logging to database
   protected boolean enableDatabaseEventLogging = false;
   
+  /**
+   *  Define a max length for storing String variable types in the database.
+   *  Mainly used for the Oracle NVARCHAR2 limit of 2000 characters
+   */
+  protected int maxLengthStringVariableType = 4000;
   
   // buildProcessEngine ///////////////////////////////////////////////////////
   
@@ -1253,8 +1258,8 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
         }
       }
       variableTypes.addType(new NullType());
-      variableTypes.addType(new StringType(4000));
-      variableTypes.addType(new LongStringType(4001));
+      variableTypes.addType(new StringType(maxLengthStringVariableType));
+      variableTypes.addType(new LongStringType(maxLengthStringVariableType + 1));
       variableTypes.addType(new BooleanType());
       variableTypes.addType(new ShortType());
       variableTypes.addType(new IntegerType());
@@ -2082,5 +2087,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 		this.enableDatabaseEventLogging = enableDatabaseEventLogging;
     return this;
 	}
+
+  public int getMaxLengthStringVariableType() {
+    return maxLengthStringVariableType;
+  }
+
+  public ProcessEngineConfigurationImpl setMaxLengthStringVariableType(int maxLengthStringVariableType) {
+    this.maxLengthStringVariableType = maxLengthStringVariableType;
+    return this;
+  }
 	
 }
