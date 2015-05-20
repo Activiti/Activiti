@@ -13,12 +13,14 @@
 
 package org.activiti.engine.impl.event;
 
+import java.util.List;
 import java.util.Map;
 
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.EventSubProcess;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.context.Context;
@@ -81,19 +83,54 @@ public abstract class AbstractEventHandler implements EventHandler {
     }
 
     // activity with message/signal boundary events
-    FlowElement activityElement = execution.getCurrentFlowElement();
-    if (activityElement != null && activityElement instanceof BoundaryEvent) {
-      BoundaryEvent boundaryEvent = (BoundaryEvent) activityElement;
+    FlowElement flowElement = execution.getCurrentFlowElement();
+    if (flowElement != null && flowElement instanceof BoundaryEvent) {
+      BoundaryEvent boundaryEvent = (BoundaryEvent) flowElement;
       if (boundaryEvent.getAttachedToRef() != null) {
         dispatchActivityCancelled(eventSubscription, execution, boundaryEvent.getAttachedToRef(), commandContext);
       }
     }
   }
 
-  protected void dispatchActivityCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity execution, FlowNode flowNode, CommandContext commandContext) {
+  protected void dispatchActivityCancelled(EventSubscriptionEntity eventSubscription, ExecutionEntity boundaryEventExecution, FlowNode flowNode, CommandContext commandContext) {
+    
+    // Scope
     commandContext.getEventDispatcher().dispatchEvent(
-        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(),
+        ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), boundaryEventExecution.getId(), boundaryEventExecution.getProcessInstanceId(), boundaryEventExecution.getProcessDefinitionId(),
             parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), eventSubscription));
+    
+    if (flowNode != null && flowNode instanceof SubProcess) {
+      // The parent of the boundary event execution will be the one on which the boundary event is set
+      ExecutionEntity parentExecutionEntity = commandContext.getExecutionEntityManager().findExecutionById(boundaryEventExecution.getParentId());
+      if (parentExecutionEntity != null) {
+        dispatchActivityCancelledForChildExecution(eventSubscription, parentExecutionEntity, boundaryEventExecution, commandContext);
+      }
+    }
+  }
+
+  protected void dispatchActivityCancelledForChildExecution(EventSubscriptionEntity eventSubscription, 
+      ExecutionEntity parentExecutionEntity, ExecutionEntity boundaryEventExecution, CommandContext commandContext) {
+    
+    List<ExecutionEntity> executionEntities = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(parentExecutionEntity.getId());
+    for (ExecutionEntity childExecution : executionEntities) {
+      
+      if (!boundaryEventExecution.getId().equals(childExecution.getId())
+          && childExecution.getCurrentFlowElement() != null 
+          && childExecution.getCurrentFlowElement() instanceof FlowNode) {
+        
+        FlowNode flowNode = (FlowNode) childExecution.getCurrentFlowElement();
+        commandContext.getEventDispatcher().dispatchEvent(
+            ActivitiEventBuilder.createActivityCancelledEvent(flowNode.getId(), flowNode.getName(), childExecution.getId(), childExecution.getProcessInstanceId(), childExecution.getProcessDefinitionId(),
+                parseActivityType(flowNode), flowNode.getBehavior().getClass().getCanonicalName(), eventSubscription));
+        
+        if (childExecution.isScope()) {
+          dispatchActivityCancelledForChildExecution(eventSubscription, childExecution, boundaryEventExecution, commandContext);
+        }
+        
+      }
+      
+    }
+    
   }
 
   protected String parseActivityType(FlowNode flowNode) {
