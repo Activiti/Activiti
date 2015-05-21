@@ -63,6 +63,7 @@ import org.activiti.bpmn.converter.parser.MessageParser;
 import org.activiti.bpmn.converter.parser.ParticipantParser;
 import org.activiti.bpmn.converter.parser.PotentialStarterParser;
 import org.activiti.bpmn.converter.parser.ProcessParser;
+import org.activiti.bpmn.converter.parser.ResourceParser;
 import org.activiti.bpmn.converter.parser.SignalParser;
 import org.activiti.bpmn.converter.parser.SubProcessParser;
 import org.activiti.bpmn.converter.util.BpmnXMLUtil;
@@ -128,6 +129,7 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
   protected ParticipantParser participantParser = new ParticipantParser();
   protected PotentialStarterParser potentialStarterParser = new PotentialStarterParser();
   protected ProcessParser processParser = new ProcessParser();
+  protected ResourceParser resourceParser = new ResourceParser();
   protected SignalParser signalParser = new SignalParser();
   protected SubProcessParser subProcessParser = new SubProcessParser();
 
@@ -321,6 +323,9 @@ public class BpmnXMLConverter implements BpmnXMLConstants {
 
         if (ELEMENT_DEFINITIONS.equals(xtr.getLocalName())) {
           definitionsParser.parse(xtr, model);
+          
+        } else if (ELEMENT_RESOURCE.equals(xtr.getLocalName())) {
+          resourceParser.parse(xtr, model);
 
         } else if (ELEMENT_SIGNAL.equals(xtr.getLocalName())) {
           signalParser.parse(xtr, model);
