@@ -35,6 +35,7 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
+import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.BpmnParser;
 import org.activiti.engine.impl.cfg.IdGenerator;
@@ -54,6 +55,7 @@ import org.activiti.engine.impl.persistence.deploy.ProcessDefinitionCacheEntry;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
+import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.MessageEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntityManager;
@@ -62,6 +64,7 @@ import org.activiti.engine.impl.persistence.entity.SignalEventSubscriptionEntity
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.TimerUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.task.IdentityLinkType;
 import org.apache.commons.collections.CollectionUtils;
@@ -212,7 +215,7 @@ public class BpmnDeployer implements Deployer {
 
         org.activiti.bpmn.model.Process process = processModels.get(processDefinition.getKey());
 
-        removeObsoleteTimers(processDefinition);
+        removeObsoleteTimers(processDefinition.getKey());
         addTimerDeclarations(processDefinition, process, timers);
 
         removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
@@ -272,7 +275,7 @@ public class BpmnDeployer implements Deployer {
             EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
             if (eventDefinition instanceof TimerEventDefinition) {
               TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
-                  TimerEventHandler.createConfiguration(processDefinition.getKey(), null));
+                  TimerEventHandler.createConfiguration(startEvent.getId(), null));
               timer.setProcessDefinitionId(processDefinition.getId());
 
               if (processDefinition.getTenantId() != null) {
@@ -286,9 +289,17 @@ public class BpmnDeployer implements Deployer {
     }
   }
 
-  protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
-    List<Job> jobsToDelete = Context.getCommandContext().getJobEntityManager().findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
-
+  protected void removeObsoleteTimers(String processDefinitionKey) {
+    JobEntityManager jobEntityManager = Context.getCommandContext().getJobEntityManager();
+    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(Context.getCommandContext())
+      .processDefinitionKey(processDefinitionKey).list();
+    
+    List<String> processDefinitionIds = new ArrayList<String>(processDefinitions.size());
+    for (ProcessDefinition p : processDefinitions) {
+      processDefinitionIds.add(p.getId());
+    }
+    
+    List<Job> jobsToDelete = jobEntityManager.findJobsByTypeAndProcessDefinitionIds(TimerStartEventJobHandler.TYPE, processDefinitionIds);
     for (Job job : jobsToDelete) {
       new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
     }

@@ -214,6 +214,22 @@
     ${limitAfter}   
   </select>
   
+  <select id="selectJobsByTypeAndProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+      select * from ${prefix}ACT_RU_JOB
+      where HANDLER_TYPE_ = #{parameter.handlerType}
+      and PROC_DEF_ID_ = #{parameter.processDefinitionId}
+  </select>
+  
+  <select id="selectJobsByTypeAndProcessDefinitionIds" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
+      select * from ${prefix}ACT_RU_JOB
+      where HANDLER_TYPE_ = #{parameter.handlerType}
+      <if test="parameter.processDefinitionIds != null">
+		    and (<foreach item="processDefinitionId" collection="parameter.processDefinitionIds" index="index" separator=" or ">
+		        PROC_DEF_ID_ = #{processDefinitionId, jdbcType=VARCHAR}
+		    </foreach>)
+      </if>
+  </select>
+  
   <select id="selectJobsByConfiguration" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="jobResultMap">
       select * from ${prefix}ACT_RU_JOB
       where HANDLER_TYPE_ = #{parameter.handlerType}

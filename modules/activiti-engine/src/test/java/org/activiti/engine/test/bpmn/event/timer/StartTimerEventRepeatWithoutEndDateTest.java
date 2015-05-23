@@ -95,7 +95,7 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     // (day by day)
     moveByMinutes(9 * 60 * 24);
     try {
-      waitForJobExecutorToProcessAllJobs(10000, 200);
+      waitForJobExecutorToProcessAllJobs(2000L, 200);
       fail("there must be a pending job because the endDate is not reached yet");
     } catch (Exception e) {
       // expected failure

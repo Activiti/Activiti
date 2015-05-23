@@ -198,15 +198,26 @@ public class JobEntityManager extends AbstractEntityManager<JobEntity> {
     final String query = "selectJobByQueryCriteria";
     return getDbSqlSession().selectList(query, jobQuery, page);
   }
-
+  
   @SuppressWarnings("unchecked")
-  public List<Job> findJobsByConfiguration(String jobHandlerType, String jobHandlerConfiguration) {
-    Map<String, String> params = new HashMap<String, String>();
+  public List<Job> findJobsByTypeAndProcessDefinitionId(String jobHandlerType, String processDefinitionId) {
+    Map<String, String> params = new HashMap<String, String>(2);
     params.put("handlerType", jobHandlerType);
-    params.put("handlerConfiguration", String.format("%%s%%", jobHandlerConfiguration));
-    return getDbSqlSession().selectList("selectJobsByConfiguration", params);
+    params.put("processDefinitionId", processDefinitionId);
+    return getDbSqlSession().selectList("selectJobsByTypeAndProcessDefinitionId", params);
   }
-
+  
+  @SuppressWarnings("unchecked")
+  public List<Job> findJobsByTypeAndProcessDefinitionIds(String jobHandlerType, List<String> processDefinitionIds) {
+    Map<String, Object> params = new HashMap<String, Object>(2);
+    params.put("handlerType", jobHandlerType);
+    
+    if (processDefinitionIds != null && processDefinitionIds.size() > 0) {
+      params.put("processDefinitionIds", processDefinitionIds);
+    }
+    return getDbSqlSession().selectList("selectJobsByTypeAndProcessDefinitionIds", params);
+  }
+  
   public long findJobCountByQueryCriteria(JobQueryImpl jobQuery) {
     return (Long) getDbSqlSession().selectOne("selectJobCountByQueryCriteria", jobQuery);
   }

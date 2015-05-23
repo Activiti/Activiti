@@ -131,8 +131,8 @@ public class DurationHelper {
     return date == null ? null : date.getTime();
   }
 
-  private Calendar getDateAfterRepeat(Calendar date) {
-
+  protected Calendar getDateAfterRepeat(Calendar date) {
+    
     Calendar cur = TimeZoneUtil.convertToTimeZone(start, date.getTimeZone());
     int maxLoops = times;
     if (maxIterations > 0) {
@@ -145,7 +145,7 @@ public class DurationHelper {
     return cur.before(date) ? date : TimeZoneUtil.convertToTimeZone(cur, clockReader.getCurrentTimeZone());
   }
 
-  private Calendar add(Calendar date, Duration duration) {
+  protected Calendar add(Calendar date, Duration duration) {
     Calendar calendar = (Calendar) date.clone();
 
     // duration.addTo does not account for daylight saving time (xerces),
@@ -160,15 +160,15 @@ public class DurationHelper {
     return calendar;
   }
 
-  private Calendar parseDate(String date) throws Exception {
+  protected Calendar parseDate(String date) throws Exception {
     return ISODateTimeFormat.dateTimeParser().withZone(DateTimeZone.forTimeZone(clockReader.getCurrentTimeZone())).parseDateTime(date).toCalendar(null);
   }
 
-  private Duration parsePeriod(String period) throws Exception {
+  protected Duration parsePeriod(String period) throws Exception {
     return datatypeFactory.newDuration(period);
   }
 
-  private boolean isDuration(String time) {
+  protected boolean isDuration(String time) {
     return time.startsWith("P");
   }
 

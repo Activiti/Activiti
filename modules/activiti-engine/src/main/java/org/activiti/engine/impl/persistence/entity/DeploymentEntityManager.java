@@ -83,7 +83,7 @@ public class DeploymentEntityManager extends AbstractEntityManager<DeploymentEnt
     for (ProcessDefinition processDefinition : processDefinitions) {
 
       // remove timer start events:
-      List<Job> timerStartJobs = Context.getCommandContext().getJobEntityManager().findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
+      List<Job> timerStartJobs = Context.getCommandContext().getJobEntityManager().findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
 
       if (timerStartJobs != null && !timerStartJobs.isEmpty()) {
 
