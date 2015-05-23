@@ -15,11 +15,12 @@ package org.activiti.examples.bpmn.executionlistener;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.SequenceFlowParseHandler;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 /**
  * @author Tijs Rademakers
@@ -35,13 +36,19 @@ public class CustomSequenceFlowBpmnParseHandler extends SequenceFlowParseHandler
     Map<String, List<ExtensionElement>> extensionElements = flow.getExtensionElements();
     if (extensionElements.containsKey("activiti_custom_condition")) {
       List<ExtensionElement> conditionsElements = extensionElements.get("activiti_custom_condition");
+      
       CustomSetConditionsExecutionListener customFlowListener = new CustomSetConditionsExecutionListener();
       customFlowListener.setFlowId(flow.getId());
       for (ExtensionElement conditionElement : conditionsElements) {
         customFlowListener.addCondition(conditionElement.getElementText());
       }
-      ActivityImpl activity = findActivity(bpmnParse, flow.getSourceRef());
-      activity.addExecutionListener("start", customFlowListener);
+      
+      ActivitiListener activitiListener = new ActivitiListener();
+      activitiListener.setImplementationType(ImplementationType.IMPLEMENTATION_TYPE_INSTANCE);
+      activitiListener.setInstance(customFlowListener);
+      activitiListener.setEvent("start");
+      flow.getSourceFlowElement().getExecutionListeners().add(activitiListener);
+      
     }
   }
 

@@ -16,7 +16,9 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.JobNotFoundException;
 import org.activiti.engine.ManagementService;
 import org.activiti.engine.event.EventLogEntry;
 import org.activiti.engine.impl.cmd.CancelJobCmd;
@@ -64,10 +66,22 @@ public class ManagementServiceImpl extends ServiceImpl implements ManagementServ
   }
 
   public void executeJob(String jobId) {
+    
+    if (jobId == null) {
+      throw new ActivitiIllegalArgumentException("JobId is null");
+    }
+    
     JobExecutorContext jobExecutorContext = new SingleJobExecutorContext();
     Context.setJobExecutorContext(jobExecutorContext);
     try {
       commandExecutor.execute(new ExecuteJobsCmd(jobId));
+    }
+    catch(RuntimeException e) {
+      if ((e instanceof JobNotFoundException)) {
+        throw e;
+      } else {
+        throw new ActivitiException("Job " + jobId + " failed", e);
+      }
     } finally {
       Context.removeJobExecutorContext();
     }

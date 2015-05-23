@@ -57,7 +57,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
       managementService.executeJob(null);
       fail("ActivitiException expected");
     } catch (ActivitiIllegalArgumentException re) {
-      assertTextPresent("jobId and job is null", re.getMessage());
+      assertTextPresent("JobId is null", re.getMessage());
     }
   }
 

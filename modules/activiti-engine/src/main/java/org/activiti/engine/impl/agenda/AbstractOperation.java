@@ -81,6 +81,8 @@ public abstract class AbstractOperation implements Runnable {
             executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
           } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
             executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_INSTANCE.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = (ExecutionListener) activitiListener.getInstance();
           }
           
           ActivityExecution executionToUse = executionToUseForListener != null ? executionToUseForListener : execution;

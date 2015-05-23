@@ -377,7 +377,7 @@ public class JobQueryTest extends PluggableActivitiTestCase {
       managementService.executeJob(timerJob.getId());
       fail("RuntimeException from within the script task expected");
     } catch (RuntimeException re) {
-      assertTextPresent(EXCEPTION_MESSAGE, re.getMessage());
+      assertTextPresent(EXCEPTION_MESSAGE, re.getCause().getMessage());
     }
     return processInstance;
   }

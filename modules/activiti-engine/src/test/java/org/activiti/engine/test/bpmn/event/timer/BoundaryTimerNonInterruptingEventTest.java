@@ -13,6 +13,7 @@
 
 package org.activiti.engine.test.bpmn.event.timer;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -265,8 +266,10 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     List<Execution> executions = runtimeService.createExecutionQuery().activityId("task").list();
     assertEquals(1, executions.size());
     List<String> activeActivityIds = runtimeService.getActiveActivityIds(executions.get(0).getId());
-    assertEquals(1, activeActivityIds.size());
+    assertEquals(2, activeActivityIds.size());
+    Collections.sort(activeActivityIds);
     assertEquals("task", activeActivityIds.get(0));
+    assertEquals("timer", activeActivityIds.get(1));
 
     runtimeService.signal(executions.get(0).getId());
 
