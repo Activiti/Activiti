@@ -13,6 +13,7 @@
 package org.activiti.engine.impl.bpmn.parser.handler;
 
 import org.activiti.bpmn.model.BaseElement;
+import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.bpmn.model.ThrowEvent;
@@ -42,9 +43,11 @@ public class IntermediateThrowEventParseHandler extends AbstractActivityBpmnPars
       SignalEventDefinition signalEventDefinition = (SignalEventDefinition) eventDefinition;
       intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowSignalEventActivityBehavior(intermediateEvent, signalEventDefinition,
           bpmnParse.getBpmnModel().getSignal(signalEventDefinition.getSignalRef())));
-      /*
-       * } else if (eventDefinition instanceof org.activiti.bpmn.model.CompensateEventDefinition) { bpmnParse.getBpmnParserHandlers().parseElement(bpmnParse, eventDefinition);
-       */
+      
+    } else if (eventDefinition instanceof CompensateEventDefinition) { 
+      CompensateEventDefinition compensateEventDefinition = (CompensateEventDefinition) eventDefinition;
+      intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowCompensationEventActivityBehavior(intermediateEvent, compensateEventDefinition));
+      
     } else if (eventDefinition == null) {
       intermediateEvent.setBehavior(bpmnParse.getActivityBehaviorFactory().createIntermediateThrowNoneEventActivityBehavior(intermediateEvent));
     } else {

@@ -103,6 +103,15 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     }
     return result;
   }
+  
+  public List<CompensateEventSubscriptionEntity> getCompensateEventSubscriptionsForProcessInstanceId(String processInstanceId, String activityId) {
+    List<EventSubscriptionEntity> eventSubscriptions = selectEventSubscriptionsByProcessInstanceAndActivity(processInstanceId, activityId, "compensate");
+    List<CompensateEventSubscriptionEntity> result = new ArrayList<CompensateEventSubscriptionEntity>();
+    for (EventSubscriptionEntity eventSubscriptionEntity : eventSubscriptions) {
+      result.add((CompensateEventSubscriptionEntity) eventSubscriptionEntity);
+    }
+    return result;
+  }
 
   public void deleteEventSubscription(EventSubscriptionEntity persistentObject) {
     getDbSqlSession().delete(persistentObject);
@@ -241,6 +250,33 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
     } else if ("compensate".equals(type)) {
       for (CompensateEventSubscriptionEntity entity : createdCompensateSubscriptions) {
         if (executionId.equals(entity.getExecutionId())) {
+          selectList.add(entity);
+        }
+      }
+    }
+
+    return new ArrayList<EventSubscriptionEntity>(selectList);
+  }
+  
+  @SuppressWarnings("unchecked")
+  public List<EventSubscriptionEntity> selectEventSubscriptionsByProcessInstanceAndActivity(String processInstanceId, String activityId, String type) {
+    final String query = "selectEventSubscriptionsByProcessInstanceTypeAndActivity";
+    Map<String, String> params = new HashMap<String, String>();
+    params.put("processInstanceId", processInstanceId);
+    params.put("eventType", type);
+    params.put("activityId", activityId);
+    Set<EventSubscriptionEntity> selectList = new HashSet<EventSubscriptionEntity>(getDbSqlSession().selectList(query, params));
+    
+    // add events created in this command (not visible yet in query)
+    if ("signal".equals(type)) {
+      for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
+        if (processInstanceId.equals(entity.getProcessInstanceId()) && activityId.equals(entity.getActivityId())) {
+          selectList.add(entity);
+        }
+      }
+    } else if ("compensate".equals(type)) {
+      for (CompensateEventSubscriptionEntity entity : createdCompensateSubscriptions) {
+        if (processInstanceId.equals(entity.getProcessInstanceId()) && activityId.equals(entity.getActivityId())) {
           selectList.add(entity);
         }
       }

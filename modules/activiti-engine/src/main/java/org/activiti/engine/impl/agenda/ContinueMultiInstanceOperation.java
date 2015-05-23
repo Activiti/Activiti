@@ -1,7 +1,14 @@
 package org.activiti.engine.impl.agenda;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -9,8 +16,10 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.logging.LogMDC;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -53,6 +62,12 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
       executeExecutionListeners(flowNode, ExecutionListener.EVENTNAME_START);
     }
     
+    // Execute compensation boundary events
+    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowNode);
+    if (CollectionUtils.isNotEmpty(boundaryEvents)) {
+      executeCompensationBoundaryEvents(boundaryEvents, execution);
+    }
+    
     // Execute actual behavior
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
     if (activityBehavior != null) {
@@ -78,5 +93,45 @@ public class ContinueMultiInstanceOperation extends AbstractOperation {
     } else {
       logger.debug("No activityBehavior on activity '{}' with execution {}", flowNode.getId(), execution.getId());
     }
+  }
+  
+  protected void executeCompensationBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ActivityExecution execution) {
+
+    // The parent execution becomes a scope, and a child execution is created for each of the boundary events
+    for (BoundaryEvent boundaryEvent : boundaryEvents) {
+
+      if (CollectionUtils.isEmpty(boundaryEvent.getEventDefinitions())) {
+        continue;
+      }
+
+      if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+        ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
+        childExecutionEntity.setParentId(execution.getId());
+        childExecutionEntity.setCurrentFlowElement(boundaryEvent);
+        childExecutionEntity.setScope(false);
+
+        ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+        logger.debug("Executing boundary event activityBehavior {} with execution {}", boundaryEventBehavior.getClass(), childExecutionEntity.getId());
+        boundaryEventBehavior.execute(childExecutionEntity);
+      }
+    }
+  }
+  
+  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowNode flowNode) {
+    Process process = getProcessDefinition(processDefinitionId);
+
+    // This could be cached or could be done at parsing time
+    List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
+    Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+    for (BoundaryEvent boundaryEvent : boundaryEvents) {
+      if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowNode.getId())) {
+        results.add(boundaryEvent);
+      }
+    }
+    return results;
+  }
+  
+  protected Process getProcessDefinition(String processDefinitionId) {
+    return ProcessDefinitionUtil.getProcess(processDefinitionId);
   }
 }

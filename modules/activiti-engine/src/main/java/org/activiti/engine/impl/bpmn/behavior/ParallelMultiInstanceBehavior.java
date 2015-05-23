@@ -17,7 +17,13 @@ import java.util.Collection;
 import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiIllegalArgumentException;
+import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
@@ -125,6 +131,34 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         } else {
           workWithExecution = executionEntity;
         }
+        
+        boolean hasCompensation = false;
+        Activity activity = (Activity) execution.getCurrentFlowElement(); 
+        if (activity instanceof Transaction) {
+          hasCompensation = true;
+        } else if (activity instanceof SubProcess) {
+          SubProcess subProcess = (SubProcess) activity;
+          for (FlowElement subElement : subProcess.getFlowElements()) {
+            if (subElement instanceof Activity) {
+              Activity subActivity = (Activity) subElement;
+              if (CollectionUtils.isNotEmpty(subActivity.getBoundaryEvents())) {
+                for (BoundaryEvent boundaryEvent : subActivity.getBoundaryEvents()) {
+                  if (CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
+                      boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+                    
+                    hasCompensation = true;
+                    break;
+                  }
+                }
+              }
+            }
+          }
+        }
+        
+        if (hasCompensation) {
+          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(workWithExecution, workWithExecution.getParent());
+        }
+        
         deleteChildExecutions(workWithExecution, false, Context.getCommandContext());
         Context.getAgenda().planTakeOutgoingSequenceFlowsOperation(workWithExecution, true);
       }

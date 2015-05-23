@@ -20,9 +20,7 @@
 			
 			<sequenceFlow sourceRef="startInScope" targetRef="bookHotel" />
 
-			<serviceTask id="bookHotel" activiti:expression="${true}">
-				
-			</serviceTask>		
+			<serviceTask id="bookHotel" activiti:expression="${true}" />
 				
 			<boundaryEvent id="compensateBookHotelEvt" name="Boundary event" attachedToRef="bookHotel">
 				<compensateEventDefinition />

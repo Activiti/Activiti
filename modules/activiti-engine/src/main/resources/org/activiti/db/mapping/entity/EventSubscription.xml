@@ -163,6 +163,14 @@
     	and (ACTIVITY_ID_ = #{parameter.activityId})
   </select>
   
+  <select id="selectEventSubscriptionsByProcessInstanceTypeAndActivity" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
+    select * 
+    from ${prefix}ACT_RU_EVENT_SUBSCR
+    where (EVENT_TYPE_ = #{parameter.eventType})
+    	and (PROC_INST_ID_ = #{parameter.processInstanceId})
+    	and (ACTIVITY_ID_ = #{parameter.activityId})
+  </select>
+  
   <select id="selectEventSubscriptionsByConfiguration" resultMap="eventSubscriptionResultMap" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject">
     select * 
     from ${prefix}ACT_RU_EVENT_SUBSCR

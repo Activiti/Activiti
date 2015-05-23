@@ -69,7 +69,11 @@ public class Agenda {
   }
 
   public void planContinueProcessSynchronousOperation(ActivityExecution execution) {
-    planOperation(new ContinueProcessOperation(commandContext, execution, true), (ExecutionEntity) execution);
+    planOperation(new ContinueProcessOperation(commandContext, execution, true, false), (ExecutionEntity) execution);
+  }
+  
+  public void planContinueProcessInCompensation(ActivityExecution execution) {
+    planOperation(new ContinueProcessOperation(commandContext, execution, false, true), (ExecutionEntity) execution);
   }
   
   public void planContinueMultiInstanceOperation(ActivityExecution execution) {
@@ -95,7 +99,7 @@ public class Agenda {
   public void planDestroyScopeOperation(ActivityExecution execution) {
     planOperation(new DestroyScopeOperation(commandContext, execution), (ExecutionEntity) execution);
   }
-
+  
   public void planExecuteInactiveBehaviorsOperation() {
     planOperation(new ExecuteInactiveBehaviorsOperation(commandContext));
   }

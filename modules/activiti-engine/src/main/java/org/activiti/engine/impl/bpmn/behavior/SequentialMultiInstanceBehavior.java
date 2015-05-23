@@ -13,11 +13,19 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.SubProcess;
+import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
+import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author Joram Barrez
@@ -70,7 +78,36 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     }
 
     if (loopCounter >= nrOfInstances || completionConditionSatisfied(execution)) {
+      boolean hasCompensation = false;
+      Activity activity = (Activity) execution.getCurrentFlowElement(); 
+      if (activity instanceof Transaction) {
+        hasCompensation = true;
+      } else if (activity instanceof SubProcess) {
+        SubProcess subProcess = (SubProcess) activity;
+        for (FlowElement subElement : subProcess.getFlowElements()) {
+          if (subElement instanceof Activity) {
+            Activity subActivity = (Activity) subElement;
+            if (CollectionUtils.isNotEmpty(subActivity.getBoundaryEvents())) {
+              for (BoundaryEvent boundaryEvent : subActivity.getBoundaryEvents()) {
+                if (CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
+                    boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+                  
+                  hasCompensation = true;
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      if (hasCompensation) {
+        ExecutionEntity executionEntity = (ExecutionEntity) execution;
+        ScopeUtil.createCopyOfSubProcessExecutionForCompensation(executionEntity, executionEntity.getParent());
+      }
+      
       super.leave(execution);
+      
     } else {
       try {
         executeOriginalBehavior(execution, loopCounter);

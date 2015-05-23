@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
@@ -21,6 +24,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,17 +89,46 @@ public class EndExecutionOperation extends AbstractOperation {
         }
       }
 
-      // If there are no more active child executions, the process can be continues
+      // If there are no more active child executions, the process can be continued
       // If not (eg an embedded subprocess still has active elements, we cannot continue)
       if (getNumberOfActiveChildExecutionsForExecution(executionEntityManager, parentExecution.getId()) == 0
           || isAllEventScopeExecutions(executionEntityManager, parentExecution)) {
         
         if (subProcess != null) {
           parentExecution.setCurrentFlowElement(subProcess);
+          boolean hasCompensation = false;
           if (subProcess instanceof Transaction) {
+            hasCompensation = true;
+          } else {
+            for (FlowElement subElement : subProcess.getFlowElements()) {
+              if (subElement instanceof Activity) {
+                Activity subActivity = (Activity) subElement;
+                if (CollectionUtils.isNotEmpty(subActivity.getBoundaryEvents())) {
+                  for (BoundaryEvent boundaryEvent : subActivity.getBoundaryEvents()) {
+                    if (CollectionUtils.isNotEmpty(boundaryEvent.getEventDefinitions()) && 
+                        boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+                      
+                      hasCompensation = true;
+                      break;
+                    }
+                  }
+                }
+              }
+            }
+          }
+          
+          if (hasCompensation) {
             ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentExecution, parentExecution.getParent());
           }
+          
         } else {
+          if (executionEntity.getCurrentFlowElement() instanceof Activity) {
+            Activity activity = (Activity) executionEntity.getCurrentFlowElement();
+            if (activity.isForCompensation()) {
+              return;
+            }
+          }
+          
           if (!(parentExecution.getCurrentFlowElement() instanceof SubProcess)) {
             parentExecution.setCurrentFlowElement(executionEntity.getCurrentFlowElement());
           }
