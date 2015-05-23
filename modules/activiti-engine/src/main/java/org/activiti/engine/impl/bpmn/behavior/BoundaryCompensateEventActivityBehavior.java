@@ -14,12 +14,12 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.ServiceTask;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.context.Context;
@@ -54,21 +54,21 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
       throw new ActivitiException("Process model (id = " + execution.getId() + ") could not be found");
     }
     
-    ServiceTask compensationTask = null;
+    Activity compensationActivity = null;
     List<Association> associations = process.findAssociationsWithSourceRefRecursive(process, boundaryEvent.getId());
     for (Association association : associations) {
       FlowElement targetElement = process.getFlowElement(association.getTargetRef(), true);
-      if (targetElement != null && targetElement instanceof ServiceTask) {
-        ServiceTask serviceTask = (ServiceTask) targetElement;
-        if (serviceTask.isForCompensation()) {
-          compensationTask = serviceTask;
+      if (targetElement != null && targetElement instanceof Activity) {
+        Activity activity = (Activity) targetElement;
+        if (activity.isForCompensation()) {
+          compensationActivity = activity;
           break;
         }
       }
     }
     
-    if (compensationTask == null) {
-      throw new ActivitiException("Compensation task could not be found");
+    if (compensationActivity == null) {
+      throw new ActivitiException("Compensation activity could not be found");
     }
     
     // find SubProcess or Process instance execution
@@ -89,7 +89,7 @@ public class BoundaryCompensateEventActivityBehavior extends BoundaryEventActivi
     }
     
     Context.getCommandContext().getEventSubscriptionEntityManager().insertCompensationEvent(
-        scopeExecution, compensationTask.getId());
+        scopeExecution, compensationActivity.getId());
   }
 
   @Override

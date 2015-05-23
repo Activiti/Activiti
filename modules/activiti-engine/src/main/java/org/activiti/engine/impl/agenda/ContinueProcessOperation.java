@@ -9,6 +9,7 @@ import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
+import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
@@ -35,14 +36,18 @@ public class ContinueProcessOperation extends AbstractOperation {
   private static Logger logger = LoggerFactory.getLogger(ContinueProcessOperation.class);
 
   protected boolean forceSynchronousOperation;
+  protected boolean inCompensation;
 
-  public ContinueProcessOperation(CommandContext commandContext, ActivityExecution execution, boolean forceSynchronousOperation) {
+  public ContinueProcessOperation(CommandContext commandContext, ActivityExecution execution, 
+      boolean forceSynchronousOperation, boolean inCompensation) {
+    
     super(commandContext, execution);
     this.forceSynchronousOperation = forceSynchronousOperation;
+    this.inCompensation = inCompensation;
   }
 
   public ContinueProcessOperation(CommandContext commandContext, ActivityExecution execution) {
-    this(commandContext, execution, false);
+    this(commandContext, execution, false, false);
   }
 
   @Override
@@ -111,13 +116,16 @@ public class ContinueProcessOperation extends AbstractOperation {
     }
 
     // Execute any boundary events
-    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowNode);
-    if (CollectionUtils.isNotEmpty(boundaryEvents)) {
-      executeBoundaryEvents(boundaryEvents, execution);
+    if (inCompensation == false) {
+      Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowNode);
+      if (CollectionUtils.isNotEmpty(boundaryEvents)) {
+        executeBoundaryEvents(boundaryEvents, execution);
+      }
     }
 
     // Execute actual behavior
     ActivityBehavior activityBehavior = (ActivityBehavior) flowNode.getBehavior();
+    
     if (activityBehavior != null) {
       logger.debug("Executing activityBehavior {} on activity '{}' with execution {}", activityBehavior.getClass(), flowNode.getId(), execution.getId());
       
@@ -192,7 +200,7 @@ public class ContinueProcessOperation extends AbstractOperation {
   }
 
   protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowNode flowNode) {
-    org.activiti.bpmn.model.Process process = getProcessDefinition(processDefinitionId);
+    Process process = getProcessDefinition(processDefinitionId);
 
     // This could be cached or could be done at parsing time
     List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
@@ -205,7 +213,7 @@ public class ContinueProcessOperation extends AbstractOperation {
     return results;
   }
 
-  protected org.activiti.bpmn.model.Process getProcessDefinition(String processDefinitionId) {
+  protected Process getProcessDefinition(String processDefinitionId) {
     // TODO: must be extracted / cache should be accessed in another way
     return ProcessDefinitionUtil.getProcess(processDefinitionId);
   }

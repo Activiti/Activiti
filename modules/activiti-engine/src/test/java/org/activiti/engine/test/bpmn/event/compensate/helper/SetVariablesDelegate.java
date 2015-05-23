@@ -18,6 +18,7 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 
 /**
  * @author Daniel Meyer
@@ -30,9 +31,9 @@ public class SetVariablesDelegate implements JavaDelegate {
   protected int lastInt = 0;
 
   public void execute(DelegateExecution execution) {
-    Object nrOfCompletedInstances = execution.getVariableLocal("nrOfCompletedInstances");
+    Object nrOfCompletedInstances = execution.getVariable("nrOfCompletedInstances");
     variablesMap.put(nrOfCompletedInstances, lastInt);
-    execution.setVariableLocal("variable", lastInt);
+    ((ExecutionEntity) execution).getParent().setVariableLocal("variable", lastInt);
     lastInt++;
   }
 

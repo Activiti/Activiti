@@ -73,7 +73,7 @@ public class CompensationEventHandler implements EventHandler {
                     compensatingExecution.getId(), compensatingExecution.getProcessInstanceId(), compensatingExecution.getProcessDefinitionId(), flowElement.getClass().getCanonicalName()));
         }
         compensatingExecution.setCurrentFlowElement(flowElement);
-        Context.getAgenda().planContinueProcessOperation(compensatingExecution);
+        Context.getAgenda().planContinueProcessInCompensation(compensatingExecution);
 
       } catch (Exception e) {
         throw new ActivitiException("Error while handling compensation event " + eventSubscription, e);
