@@ -114,6 +114,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     
     callActivityEndListeners(execution);
     
+    //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
+    
     logLoopDetails(execution, "instance completed", loopCounter, nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
 
     ExecutionEntity executionEntity = (ExecutionEntity) execution;

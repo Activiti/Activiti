@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.Gateway;
@@ -184,6 +185,10 @@ public class ContinueProcessOperation extends AbstractOperation {
     for (BoundaryEvent boundaryEvent : boundaryEvents) {
 
       if (CollectionUtils.isEmpty(boundaryEvent.getEventDefinitions())) {
+        continue;
+      }
+      
+      if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
         continue;
       }
 

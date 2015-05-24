@@ -20,8 +20,12 @@ import java.util.List;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.Activity;
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.ImplementationType;
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
@@ -32,11 +36,13 @@ import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +108,50 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
   }
 
   protected abstract void createInstances(ActivityExecution execution);
+  
+  protected void executeCompensationBoundaryEvents(FlowElement flowElement, ActivityExecution execution) {
+
+    //Execute compensation boundary events
+    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), flowElement);
+    if (CollectionUtils.isNotEmpty(boundaryEvents)) {
+      
+      // The parent execution becomes a scope, and a child execution is created for each of the boundary events
+      for (BoundaryEvent boundaryEvent : boundaryEvents) {
+
+        if (CollectionUtils.isEmpty(boundaryEvent.getEventDefinitions())) {
+          continue;
+        }
+
+        if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition) {
+          ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
+          childExecutionEntity.setParentId(execution.getId());
+          childExecutionEntity.setCurrentFlowElement(boundaryEvent);
+          childExecutionEntity.setScope(false);
+
+          ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+          boundaryEventBehavior.execute(childExecutionEntity);
+        }
+      }
+    }
+  }
+  
+  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowElement flowElement) {
+    Process process = getProcessDefinition(processDefinitionId);
+
+    // This could be cached or could be done at parsing time
+    List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
+    Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+    for (BoundaryEvent boundaryEvent : boundaryEvents) {
+      if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {
+        results.add(boundaryEvent);
+      }
+    }
+    return results;
+  }
+  
+  protected Process getProcessDefinition(String processDefinitionId) {
+    return ProcessDefinitionUtil.getProcess(processDefinitionId);
+  }
 
   // Intercepts signals, and delegates it to the wrapped {@link ActivityBehavior}.
   public void trigger(ActivityExecution execution, String signalName, Object signalData) {

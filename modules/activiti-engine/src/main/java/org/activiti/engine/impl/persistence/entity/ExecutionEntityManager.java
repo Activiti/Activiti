@@ -376,7 +376,15 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       identityLinkEntityManager.delete(identityLinkEntity);
     }
 
+    // delete event scope executions
+    for (ExecutionEntity childExecution : processInstanceEntity.getExecutions()) {
+      if (childExecution.isEventScope()) {
+        deleteExecutionAndRelatedData(childExecution);
+      }
+    }
+    
     deleteChildExecutions(processInstanceEntity, deleteReason, cancel);
+    
     deleteExecutionAndRelatedData(processInstanceEntity, deleteReason, cancel);
 
     // TODO: what about delete reason?
@@ -457,7 +465,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
 
     // Delete event subscriptions
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
-    List<EventSubscriptionEntity> eventSubscriptions = executionEntity.getEventSubscriptions();
+    List<EventSubscriptionEntity> eventSubscriptions = eventSubscriptionEntityManager.findEventSubscriptionsByExecution(executionEntity.getId());
     for (EventSubscriptionEntity eventSubscription : eventSubscriptions) {
       eventSubscriptionEntityManager.deleteEventSubscription(eventSubscription);
     }

@@ -76,6 +76,8 @@ public class SequentialMultiInstanceBehavior extends MultiInstanceActivityBehavi
     if (loopCounter != nrOfInstances && !completionConditionSatisfied(execution)) {
       callActivityEndListeners(execution);
     }
+    
+    //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
 
     if (loopCounter >= nrOfInstances || completionConditionSatisfied(execution)) {
       boolean hasCompensation = false;

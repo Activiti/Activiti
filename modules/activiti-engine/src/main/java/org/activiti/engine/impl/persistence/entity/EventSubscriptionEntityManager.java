@@ -288,7 +288,21 @@ public class EventSubscriptionEntityManager extends AbstractEntityManager<EventS
   @SuppressWarnings("unchecked")
   public List<EventSubscriptionEntity> findEventSubscriptionsByExecution(String executionId) {
     final String query = "selectEventSubscriptionsByExecution";
-    return getDbSqlSession().selectList(query, executionId);
+    Set<EventSubscriptionEntity> selectList = new HashSet<EventSubscriptionEntity>(getDbSqlSession().selectList(query, executionId));
+    
+    for (SignalEventSubscriptionEntity entity : createdSignalSubscriptions) {
+      if (executionId.equals(entity.getExecutionId())) {
+        selectList.add(entity);
+      }
+    }
+    
+    for (CompensateEventSubscriptionEntity entity : createdCompensateSubscriptions) {
+      if (executionId.equals(entity.getExecutionId())) {
+        selectList.add(entity);
+      }
+    }
+    
+    return new ArrayList<EventSubscriptionEntity>(selectList);
   }
 
   @SuppressWarnings("unchecked")

@@ -88,6 +88,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     // the task is present:
     Task task = taskService.createTaskQuery().singleResult();
     assertNotNull(task);
+    assertEquals("askCustomer", task.getTaskDefinitionKey());
 
     // making the tx fail:
     taskService.setVariable(task.getId(), "confirmed", false);
@@ -95,8 +96,8 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
 
     // now the process instance execution is sitting in the 'afterCancellation' task
     // -> has left the transaction using the cancel boundary event
-    List<String> activeActivityIds = runtimeService.getActiveActivityIds(processInstance.getId());
-    assertTrue(activeActivityIds.contains("afterCancellation"));
+    Execution execution = runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).activityId("afterCancellation").singleResult();
+    assertNotNull(execution);
 
     // we have no more compensate event subscriptions
     assertEquals(0, createEventSubscriptionQuery().eventType("compensate").count());
@@ -151,15 +152,15 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.getVariable(processInstance.getId(), "undoBookHotel"));
     assertEquals(1, runtimeService.getVariable(processInstance.getId(), "undoBookFlight"));
 
-    // if we have history, we check that the invocation of the compensation
-    // handlers is recorded in history.
+    // if we have history, we check that the invocation of the compensation handlers is recorded in history.
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("undoBookHotel").count());
       assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("undoBookFlight").count());
     }
 
     // end the process instance
-    runtimeService.signal(processInstance.getId());
+    Execution receiveExecution = runtimeService.createExecutionQuery().activityId("afterCancellation").singleResult();
+    runtimeService.trigger(receiveExecution.getId());
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());
   }
@@ -201,20 +202,17 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     assertEquals(5, runtimeService.getVariable(processInstance.getId(), "innerTxundoBookHotel"));
     assertEquals(1, runtimeService.getVariable(processInstance.getId(), "innerTxundoBookFlight"));
 
-    // if we have history, we check that the invocation of the compensation
-    // handlers is recorded in history.
+    // if we have history, we check that the invocation of the compensation handlers is recorded in history.
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       assertEquals(5, historyService.createHistoricActivityInstanceQuery().activityId("innerTxundoBookHotel").count());
-
       assertEquals(1, historyService.createHistoricActivityInstanceQuery().activityId("innerTxundoBookFlight").count());
     }
 
     // complete the task in the outer tx
     taskService.complete(taskOuter.getId());
 
-    // end the process instance (signal the execution still sitting in
-    // afterInnerCancellation)
-    runtimeService.signal(runtimeService.createExecutionQuery().activityId("afterInnerCancellation").singleResult().getId());
+    // end the process instance (signal the execution still sitting in afterInnerCancellation)
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("afterInnerCancellation").singleResult().getId());
 
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());
@@ -255,9 +253,8 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     // the compensation handler in the outer tx has been invoked
     assertEquals(1, runtimeService.getVariable(processInstance.getId(), "undoBookFlight"));
 
-    // end the process instance (signal the execution still sitting in
-    // afterOuterCancellation)
-    runtimeService.signal(runtimeService.createExecutionQuery().activityId("afterOuterCancellation").singleResult().getId());
+    // end the process instance (signal the execution still sitting in afterOuterCancellation)
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("afterOuterCancellation").singleResult().getId());
 
     assertProcessEnded(processInstance.getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());
@@ -276,19 +273,10 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
 
     // there are now 5 instances of the transaction:
 
-    List<EventSubscriptionEntity> EventSubscriptionEntitys = createEventSubscriptionQuery().eventType("compensate").list();
+    List<EventSubscriptionEntity> eventSubscriptionEntities = createEventSubscriptionQuery().eventType("compensate").list();
 
     // there are 10 compensation event subscriptions
-    assertEquals(10, EventSubscriptionEntitys.size());
-
-    // the event subscriptions are all under the same execution (the
-    // execution of the multi-instance wrapper)
-    String executionId = EventSubscriptionEntitys.get(0).getExecutionId();
-    for (EventSubscriptionEntity EventSubscriptionEntity : EventSubscriptionEntitys) {
-      if (!executionId.equals(EventSubscriptionEntity.getExecutionId())) {
-        fail("subscriptions not under same execution");
-      }
-    }
+    assertEquals(10, eventSubscriptionEntities.size());
 
     Task task = taskService.createTaskQuery().listPage(0, 1).get(0);
 
@@ -301,7 +289,7 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookHotel"));
     assertEquals(5, runtimeService.getVariable(processInstance.getId(), "undoBookFlight"));
 
-    runtimeService.signal(runtimeService.createExecutionQuery().activityId("afterCancellation").singleResult().getId());
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("afterCancellation").singleResult().getId());
 
     assertProcessEnded(processInstance.getId());
   }
@@ -318,15 +306,6 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     // there are 10 compensation event subscriptions
     assertEquals(10, EventSubscriptionEntitys.size());
 
-    // the event subscriptions are all under the same execution (the
-    // execution of the multi-instance wrapper)
-    String executionId = EventSubscriptionEntitys.get(0).getExecutionId();
-    for (EventSubscriptionEntity EventSubscriptionEntity : EventSubscriptionEntitys) {
-      if (!executionId.equals(EventSubscriptionEntity.getExecutionId())) {
-        fail("subscriptions not under same execution");
-      }
-    }
-
     // first complete the inner user-tasks
     List<Task> tasks = taskService.createTaskQuery().list();
     for (Task task : tasks) {
@@ -337,10 +316,10 @@ public class TransactionSubProcessTest extends PluggableActivitiTestCase {
     // now complete the inner receive tasks
     List<Execution> executions = runtimeService.createExecutionQuery().activityId("receive").list();
     for (Execution execution : executions) {
-      runtimeService.signal(execution.getId());
+      runtimeService.trigger(execution.getId());
     }
 
-    runtimeService.signal(runtimeService.createExecutionQuery().activityId("afterSuccess").singleResult().getId());
+    runtimeService.trigger(runtimeService.createExecutionQuery().activityId("afterSuccess").singleResult().getId());
 
     assertEquals(0, createEventSubscriptionQuery().count());
     assertProcessEnded(processInstance.getId());

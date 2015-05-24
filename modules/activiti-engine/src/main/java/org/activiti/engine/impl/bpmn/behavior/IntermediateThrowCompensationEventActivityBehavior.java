@@ -27,6 +27,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 
@@ -48,6 +49,7 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
     ThrowEvent throwEvent = (ThrowEvent) execution.getCurrentFlowElement();
     final String activityRef = compensateEventDefinition.getActivityRef();
     EventSubscriptionEntityManager eventSubscriptionEntityManager = Context.getCommandContext().getEventSubscriptionEntityManager();
+    ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
     
     List<CompensateEventSubscriptionEntity> eventSubscriptions = new ArrayList<CompensateEventSubscriptionEntity>();
     ExecutionEntity subProcessExecution = null;
@@ -65,7 +67,7 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
       }
     }
       
-    List<ExecutionEntity> processInstanceExecutions = Context.getCommandContext().getExecutionEntityManager().findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
+    List<ExecutionEntity> processInstanceExecutions = executionEntityManager.findChildExecutionsByProcessInstanceId(execution.getProcessInstanceId());
     for (ExecutionEntity childExecution : processInstanceExecutions) {
       if (childExecution.getCurrentFlowElement() != null && childExecution.getCurrentFlowElement().getId().equals(activityRef)) {
         subProcessExecution = childExecution;
@@ -91,7 +93,7 @@ public class IntermediateThrowCompensationEventActivityBehavior extends FlowNode
       // TODO: implement async (waitForCompletion=false in bpmn)
       ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
       if (subProcessExecution != null) {
-        Context.getCommandContext().getExecutionEntityManager().deleteExecutionAndRelatedData(subProcessExecution);
+        executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution);
       }
       leave(execution);
     }

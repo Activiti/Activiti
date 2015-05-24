@@ -13,7 +13,19 @@
 
 package org.activiti.engine.impl.bpmn.behavior;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CompensateEventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.Process;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * Denotes an 'activity' in the sense of BPMN 2.0: a parent class for all tasks, subprocess and callActivity.
@@ -31,11 +43,59 @@ public class AbstractBpmnActivityBehavior extends FlowNodeActivityBehavior {
    * has loop characteristics, and delegate to the behavior if this is the case.
    */
   public void leave(ActivityExecution execution) {
+    FlowElement currentFlowElement = execution.getCurrentFlowElement();
+    Collection<BoundaryEvent> boundaryEvents = findBoundaryEventsForFlowNode(execution.getProcessDefinitionId(), currentFlowElement);
+    if (CollectionUtils.isNotEmpty(boundaryEvents)) {
+      executeCompensateBoundaryEvents(boundaryEvents, execution);
+    }
     if (!hasLoopCharacteristics()) {
       super.leave(execution);
     } else if (hasMultiInstanceCharacteristics()) {
       multiInstanceActivityBehavior.leave(execution);
     }
+  }
+  
+  protected void executeCompensateBoundaryEvents(Collection<BoundaryEvent> boundaryEvents, ActivityExecution execution) {
+
+    // The parent execution becomes a scope, and a child execution is created for each of the boundary events
+    for (BoundaryEvent boundaryEvent : boundaryEvents) {
+
+      if (CollectionUtils.isEmpty(boundaryEvent.getEventDefinitions())) {
+        continue;
+      }
+      
+      if (boundaryEvent.getEventDefinitions().get(0) instanceof CompensateEventDefinition == false) {
+        continue;
+      }
+
+      ExecutionEntity childExecutionEntity = (ExecutionEntity) execution.createExecution();
+      childExecutionEntity.setParentId(execution.getId());
+      childExecutionEntity.setCurrentFlowElement(boundaryEvent);
+      childExecutionEntity.setScope(false);
+
+      ActivityBehavior boundaryEventBehavior = ((ActivityBehavior) boundaryEvent.getBehavior());
+      boundaryEventBehavior.execute(childExecutionEntity);
+    }
+
+  }
+  
+  protected Collection<BoundaryEvent> findBoundaryEventsForFlowNode(final String processDefinitionId, final FlowElement flowElement) {
+    Process process = getProcessDefinition(processDefinitionId);
+
+    // This could be cached or could be done at parsing time
+    List<BoundaryEvent> results = new ArrayList<BoundaryEvent>(1);
+    Collection<BoundaryEvent> boundaryEvents = process.findFlowElementsOfType(BoundaryEvent.class, true);
+    for (BoundaryEvent boundaryEvent : boundaryEvents) {
+      if (boundaryEvent.getAttachedToRefId() != null && boundaryEvent.getAttachedToRefId().equals(flowElement.getId())) {
+        results.add(boundaryEvent);
+      }
+    }
+    return results;
+  }
+
+  protected Process getProcessDefinition(String processDefinitionId) {
+    // TODO: must be extracted / cache should be accessed in another way
+    return ProcessDefinitionUtil.getProcess(processDefinitionId);
   }
 
   protected boolean hasLoopCharacteristics() {

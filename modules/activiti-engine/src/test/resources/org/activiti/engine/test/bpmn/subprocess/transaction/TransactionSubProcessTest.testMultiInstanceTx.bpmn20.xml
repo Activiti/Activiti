@@ -18,7 +18,6 @@
 				<loopCardinality>5</loopCardinality>
 			</multiInstanceLoopCharacteristics>
 
-
 			<startEvent id="txStart" />
 			
 			<sequenceFlow sourceRef="txStart" targetRef="fork" />
@@ -57,6 +56,8 @@
 			<sequenceFlow sourceRef="bookHotel" targetRef="receive" />
 			
 			<receiveTask id="receive" />
+			
+			<sequenceFlow sourceRef="receive" targetRef="success" />
 			
 			<sequenceFlow sourceRef="bookFlight" targetRef="askCustomer" />
 			

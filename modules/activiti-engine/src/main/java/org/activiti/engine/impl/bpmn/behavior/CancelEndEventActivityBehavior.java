@@ -14,9 +14,11 @@
 package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.Collection;
+import java.util.List;
 
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.bpmn.model.CancelEventDefinition;
+import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
@@ -47,6 +49,15 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     while (currentlyExaminedExecution != null && parentScopeExecution == null) {
       if (currentlyExaminedExecution.getCurrentFlowElement() instanceof SubProcess) {
         parentScopeExecution = currentlyExaminedExecution;
+        SubProcess subProcess = (SubProcess) currentlyExaminedExecution.getCurrentFlowElement();
+        if (subProcess.getLoopCharacteristics() != null) {
+          ExecutionEntity miExecution = parentScopeExecution.getParent();
+          FlowElement miElement = miExecution.getCurrentFlowElement();
+          if (miElement != null && miElement.getId().equals(subProcess.getId())) {
+            parentScopeExecution = miExecution;
+          }
+        }
+        
       } else {
         currentlyExaminedExecution = executionEntityManager.findExecutionById(currentlyExaminedExecution.getParentId());
       }
@@ -89,11 +100,24 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     
     ScopeUtil.createCopyOfSubProcessExecutionForCompensation(parentScopeExecution, newParentScopeExecution);
     
+    if (subProcess.getLoopCharacteristics() != null) {
+      List<ExecutionEntity> multiInstanceExecutions = parentScopeExecution.getExecutions();
+      for (ExecutionEntity multiInstanceExecution : multiInstanceExecutions) {
+        if (multiInstanceExecution.getId().equals(parentScopeExecution.getId()) == false) {
+          ScopeUtil.createCopyOfSubProcessExecutionForCompensation(multiInstanceExecution, newParentScopeExecution);
+          
+          // end all executions in the scope of the transaction
+          deleteChildExecutions(multiInstanceExecution, executionEntity, commandContext);
+          
+        }
+      }
+    }
+    
     // set new parent for boundary event execution
     executionEntity.setParent(newParentScopeExecution);
     executionEntity.setCurrentFlowElement(cancelBoundaryEvent);
     
-    // end all executions and process instances in the scope of the transaction
+    // end all executions in the scope of the transaction
     deleteChildExecutions(parentScopeExecution, executionEntity, commandContext);
 
     commandContext.getAgenda().planTriggerExecutionOperation(executionEntity);
@@ -112,7 +136,7 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     }
 
     executionEntityManager.deleteDataRelatedToExecution(parentExecution);
-    commandContext.getExecutionEntityManager().delete(parentExecution);
+    executionEntityManager.delete(parentExecution);
   }
 
 }

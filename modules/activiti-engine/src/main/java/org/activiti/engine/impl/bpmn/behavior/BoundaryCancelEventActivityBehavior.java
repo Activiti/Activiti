@@ -15,6 +15,7 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.List;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.impl.bpmn.helper.ScopeUtil;
@@ -58,6 +59,20 @@ public class BoundaryCancelEventActivityBehavior extends BoundaryEventActivityBe
     } else {
       // cancel boundary is always sync
       ScopeUtil.throwCompensationEvent(eventSubscriptions, execution, false);
+      executionEntityManager.deleteExecutionAndRelatedData(subProcessExecution);
+      if (subProcessExecution.getCurrentFlowElement() instanceof Activity) {
+        Activity activity = (Activity) subProcessExecution.getCurrentFlowElement();
+        if (activity.getLoopCharacteristics() != null) {
+          ExecutionEntity miExecution = subProcessExecution.getParent();
+          List<ExecutionEntity> miChildExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(miExecution.getId());
+          for (ExecutionEntity miChildExecution : miChildExecutions) {
+            if (subProcessExecution.getId().equals(miChildExecution.getId()) == false && activity.getId().equals(miChildExecution.getCurrentActivityId())) {
+              executionEntityManager.deleteExecutionAndRelatedData(miChildExecution);
+            }
+          }
+        }
+      }
+      leave(execution);
     }
   }
 }
