@@ -22,6 +22,7 @@ import org.activiti.engine.impl.cmd.CancelJobsCmd;
 import org.activiti.engine.impl.interceptor.CommandExecutor;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.IoUtil;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.JobQuery;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.runtime.ProcessInstanceQuery;
@@ -199,16 +200,16 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
   // Test for ACT-1533
   public void testTimerShouldNotBeRemovedWhenUndeployingOldVersion() throws Exception {
     // Deploy test process
-    String process = new String(IoUtil.readInputStream(getClass().getResourceAsStream("StartTimerEventTest.testTimerShouldNotBeRemovedWhenUndeployingOldVersion.bpmn20.xml"), ""));
+    String processXml = new String(IoUtil.readInputStream(getClass().getResourceAsStream("StartTimerEventTest.testTimerShouldNotBeRemovedWhenUndeployingOldVersion.bpmn20.xml"), ""));
     String firstDeploymentId = repositoryService.createDeployment().addInputStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml",
-            new ByteArrayInputStream(process.getBytes())).deploy().getId();
+            new ByteArrayInputStream(processXml.getBytes())).deploy().getId();
     
     // After process start, there should be timer created
     JobQuery jobQuery = managementService.createJobQuery();
     assertEquals(1, jobQuery.count());
 
     //we deploy new process version, with some small change
-    String processChanged = process.replaceAll("beforeChange","changed");
+    String processChanged = processXml.replaceAll("beforeChange","changed");
     String secondDeploymentId = repositoryService.createDeployment().addInputStream("StartTimerEventTest.testVersionUpgradeShouldCancelJobs.bpmn20.xml",
         new ByteArrayInputStream(processChanged.getBytes())).deploy().getId();
     assertEquals(1, jobQuery.count());
@@ -223,6 +224,178 @@ public class StartTimerEventTest extends PluggableActivitiTestCase {
     // Cleanup
     cleanDB();
     repositoryService.deleteDeployment(secondDeploymentId, true);
+  }
+  
+  public void testOldJobsDeletedOnRedeploy() {
+  	
+  	for (int i=0; i<3; i++) {
+  	
+	  	repositoryService.createDeployment()
+	  		.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testOldJobsDeletedOnRedeploy.bpmn20.xml")
+	  		.deploy();
+  	
+	  	assertEquals(i+1, repositoryService.createDeploymentQuery().count());
+	  	assertEquals(i+1, repositoryService.createProcessDefinitionQuery().count());
+	  	assertEquals(1, managementService.createJobQuery().count());
+
+  	}
+  	
+  	// Cleanup
+  	for (ProcessDefinition processDefinition : repositoryService.createProcessDefinitionQuery().processDefinitionKey("timer").orderByProcessDefinitionVersion().desc().list()) {
+  		repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
+  	}
+  	
+  	assertEquals(0, managementService.createJobQuery().count());
+  	
+  }
+
+  public void testTimersRecreatedOnDeploymentDelete() {
+  	
+  	// v1 has timer
+  	// v2 has no timer
+  	// v3 has no timer
+  	// v4 has no timer
+  	
+  	// Deploy v1
+  	String deployment1 = repositoryService.createDeployment()
+			.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v1.bpmn20.xml")
+			.deploy().getId();
+  	
+  	assertEquals(1, repositoryService.createDeploymentQuery().count());
+  	assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
+  	assertEquals(1, managementService.createJobQuery().count());
+  	
+  	// Deploy v2: no timer -> previous should be deleted
+  	String deployment2 = repositoryService.createDeployment()
+			.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v2.bpmn20.xml")
+			.deploy().getId();
+	
+  	assertEquals(2, repositoryService.createDeploymentQuery().count());
+  	assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+  	assertEquals(0, managementService.createJobQuery().count());
+  	
+    // Deploy v3: no timer 
+  	String deployment3 = repositoryService.createDeployment()
+ 			.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v3.bpmn20.xml")
+ 			.deploy().getId();
+ 	
+   	assertEquals(3, repositoryService.createDeploymentQuery().count());
+   	assertEquals(3, repositoryService.createProcessDefinitionQuery().count());
+   	assertEquals(0, managementService.createJobQuery().count());
+   	
+    // Deploy v4: no timer 
+   	String deployment4 = repositoryService.createDeployment()
+ 			.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v4.bpmn20.xml")
+ 			.deploy().getId();
+ 	
+   	assertEquals(4, repositoryService.createDeploymentQuery().count());
+   	assertEquals(4, repositoryService.createProcessDefinitionQuery().count());
+   	assertEquals(1, managementService.createJobQuery().count());
+   	
+   	// Delete v4 -> V3 active. No timer active anymore (v3 doesn't have a timer)
+   	repositoryService.deleteDeployment(deployment4, true);
+  	assertEquals(3, repositoryService.createDeploymentQuery().count());
+   	assertEquals(3, repositoryService.createProcessDefinitionQuery().count());
+   	assertEquals(0, managementService.createJobQuery().count());
+   	
+  	// Delete v2 --> V3 still active, nothing changed there
+   	repositoryService.deleteDeployment(deployment2, true);
+  	assertEquals(2, repositoryService.createDeploymentQuery().count());
+   	assertEquals(2, repositoryService.createProcessDefinitionQuery().count());
+   	assertEquals(0, managementService.createJobQuery().count()); // v3 is still active
+   	
+   	// Delete v3 -> fallback to v1
+  	repositoryService.deleteDeployment(deployment3, true);
+  	assertEquals(1, repositoryService.createDeploymentQuery().count());
+   	assertEquals(1, repositoryService.createProcessDefinitionQuery().count());
+   	assertEquals(1, managementService.createJobQuery().count());
+  	
+  	// Cleanup
+  	for (ProcessDefinition processDefinition : repositoryService.createProcessDefinitionQuery().processDefinitionKey("timer").orderByProcessDefinitionVersion().desc().list()) {
+  		repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
+  	}
+  	
+  	assertEquals(0, managementService.createJobQuery().count());
+  	
+  }
+  
+  // Same test as above, but now with tenants
+  public void testTimersRecreatedOnDeploymentDeleteWithTenantId() {
+
+  	// Deploy 4 versions without tenantId
+  	for (int i=1; i<=4; i++) {
+  		repositoryService.createDeployment()
+				.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v" + i + ".bpmn20.xml")
+				.deploy();
+  	}
+  	
+  	String testTenant = "Activiti-tenant";
+  	
+  	// Deploy v1
+  	String deployment1 = repositoryService.createDeployment()
+			.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v1.bpmn20.xml")
+			.tenantId(testTenant)
+			.deploy().getId();
+  	
+  	assertEquals(1, repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
+  	assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
+  	assertEquals(1, managementService.createJobQuery().jobTenantId(testTenant).count());
+  	
+  	// Deploy v2: no timer -> previous should be deleted
+  	String deployment2 = repositoryService.createDeployment()
+			.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v2.bpmn20.xml")
+			.tenantId(testTenant)
+			.deploy().getId();
+  	
+  	assertEquals(2, repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
+  	assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
+  	assertEquals(0, managementService.createJobQuery().jobTenantId(testTenant).count());
+	
+    // Deploy v3: no timer 
+  	String deployment3 = repositoryService.createDeployment()
+ 			.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v3.bpmn20.xml")
+ 			.tenantId(testTenant)
+ 			.deploy().getId();
+  	
+  	assertEquals(3, repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
+  	assertEquals(3, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
+  	assertEquals(0, managementService.createJobQuery().jobTenantId(testTenant).count());
+ 	
+    // Deploy v4: no timer 
+   	String deployment4 = repositoryService.createDeployment()
+ 			.addClasspathResource("org/activiti/engine/test/bpmn/event/timer/StartTimerEventTest.testTimersRecreatedOnDeploymentDelete_v4.bpmn20.xml")
+ 			.tenantId(testTenant)
+ 			.deploy().getId();
+   	
+  	assertEquals(4, repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
+  	assertEquals(4, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
+  	assertEquals(1, managementService.createJobQuery().jobTenantId(testTenant).count());
+ 	
+   	// Delete v4 -> V3 active. No timer active anymore (v3 doesn't have a timer)
+   	repositoryService.deleteDeployment(deployment4, true);
+  	assertEquals(3, repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
+  	assertEquals(3, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
+  	assertEquals(0, managementService.createJobQuery().jobTenantId(testTenant).count());
+   	
+  	// Delete v2 --> V3 still active, nothing changed there
+   	repositoryService.deleteDeployment(deployment2, true);
+  	assertEquals(2, repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
+  	assertEquals(2, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
+  	assertEquals(0, managementService.createJobQuery().jobTenantId(testTenant).count());
+   	
+   	// Delete v3 -> fallback to v1
+  	repositoryService.deleteDeployment(deployment3, true);
+  	assertEquals(1, repositoryService.createDeploymentQuery().deploymentTenantId(testTenant).count());
+  	assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionTenantId(testTenant).count());
+  	assertEquals(1, managementService.createJobQuery().jobTenantId(testTenant).count());
+  	
+  	// Cleanup
+  	for (ProcessDefinition processDefinition : repositoryService.createProcessDefinitionQuery().processDefinitionKey("timer").orderByProcessDefinitionVersion().desc().list()) {
+  		repositoryService.deleteDeployment(processDefinition.getDeploymentId(), true);
+  	}
+  	
+  	assertEquals(0, managementService.createJobQuery().count());
+  	
   }
   
   private void cleanDB() {
