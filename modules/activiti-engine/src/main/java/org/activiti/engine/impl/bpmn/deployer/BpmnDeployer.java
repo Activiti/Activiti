@@ -215,7 +215,7 @@ public class BpmnDeployer implements Deployer {
 
         org.activiti.bpmn.model.Process process = processModels.get(processDefinition.getKey());
 
-        removeObsoleteTimers(processDefinition.getKey());
+        removeObsoleteTimers(processDefinition);
         addTimerDeclarations(processDefinition, process, timers);
 
         removeObsoleteMessageEventSubscriptions(processDefinition, latestProcessDefinition);
@@ -289,19 +289,22 @@ public class BpmnDeployer implements Deployer {
     }
   }
 
-  protected void removeObsoleteTimers(String processDefinitionKey) {
-    JobEntityManager jobEntityManager = Context.getCommandContext().getJobEntityManager();
-    List<ProcessDefinition> processDefinitions = new ProcessDefinitionQueryImpl(Context.getCommandContext())
-      .processDefinitionKey(processDefinitionKey).list();
+ protected void removeObsoleteTimers(ProcessDefinitionEntity processDefinition) {
     
-    List<String> processDefinitionIds = new ArrayList<String>(processDefinitions.size());
-    for (ProcessDefinition p : processDefinitions) {
-      processDefinitionIds.add(p.getId());
+    List<Job> jobsToDelete = null;
+    
+    if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+      jobsToDelete = Context.getCommandContext().getJobEntityManager().findJobsByTypeAndProcessDefinitionKeyAndTenantId(
+          TimerStartEventJobHandler.TYPE, processDefinition.getKey(), processDefinition.getTenantId());
+    } else {
+      jobsToDelete = Context.getCommandContext().getJobEntityManager()
+          .findJobsByTypeAndProcessDefinitionKeyNoTenantId(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
     }
-    
-    List<Job> jobsToDelete = jobEntityManager.findJobsByTypeAndProcessDefinitionIds(TimerStartEventJobHandler.TYPE, processDefinitionIds);
-    for (Job job : jobsToDelete) {
-      new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
+
+    if (jobsToDelete != null) {
+      for (Job job :jobsToDelete) {
+          new CancelJobsCmd(job.getId()).execute(Context.getCommandContext());
+      }
     }
   }
 

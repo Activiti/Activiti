@@ -41,8 +41,9 @@ public class HistoricVariableInstanceCollectionResource extends HistoricVariable
     if (allRequestParams.get("taskId") != null) {
       query.setTaskId(allRequestParams.get("taskId"));
     }
-
-    if (allRequestParams.get("executionId") != null) {
+    
+    if(allRequestParams.get("executionId") != null)
+    {
       query.setExecutionId(allRequestParams.get("executionId"));
     }
 

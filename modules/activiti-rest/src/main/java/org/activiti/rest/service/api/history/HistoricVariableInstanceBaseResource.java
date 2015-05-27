@@ -58,8 +58,8 @@ public class HistoricVariableInstanceBaseResource {
     if (queryRequest.getTaskId() != null) {
       query.taskId(queryRequest.getTaskId());
     }
-
-    if (queryRequest.getExecutionId() != null) {
+    
+    if(queryRequest.getExecutionId() != null) {
       query.executionId(queryRequest.getExecutionId());
     }
 

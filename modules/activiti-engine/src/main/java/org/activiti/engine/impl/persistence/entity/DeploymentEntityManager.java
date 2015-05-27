@@ -16,18 +16,29 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.EventDefinition;
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.StartEvent;
+import org.activiti.bpmn.model.TimerEventDefinition;
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.event.MessageEventHandler;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
+import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
+import org.activiti.engine.impl.util.TimerUtil;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.Model;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Job;
+import org.apache.commons.collections.CollectionUtils;
 
 /**
  * @author Tom Baeyens
@@ -82,29 +93,82 @@ public class DeploymentEntityManager extends AbstractEntityManager<DeploymentEnt
 
     for (ProcessDefinition processDefinition : processDefinitions) {
 
-      // remove timer start events:
-      List<Job> timerStartJobs = Context.getCommandContext().getJobEntityManager().findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
-
-      if (timerStartJobs != null && !timerStartJobs.isEmpty()) {
-
-        long nrOfVersions = new ProcessDefinitionQueryImpl(Context.getCommandContext()).processDefinitionKey(processDefinition.getKey()).count();
-
-        long nrOfProcessDefinitionsWithSameKey = 0;
-        for (ProcessDefinition p : processDefinitions) {
-          if (!p.getId().equals(processDefinition.getId()) && p.getKey().equals(processDefinition.getKey())) {
-            nrOfProcessDefinitionsWithSameKey++;
+      // remove timer start events for current process definition:
+      
+      List<Job> timerStartJobs = Context.getCommandContext().getJobEntityManager()
+          .findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
+      if (timerStartJobs != null && timerStartJobs.size() > 0) {
+        for (Job timerStartJob : timerStartJobs) {
+          if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+            Context.getProcessEngineConfiguration()
+                   .getEventDispatcher()
+                   .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
           }
-        }
 
-        if (nrOfVersions - nrOfProcessDefinitionsWithSameKey <= 1) {
-          for (Job job : timerStartJobs) {
-            if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-              Context.getProcessEngineConfiguration().getEventDispatcher()
-                  .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job, null, null, processDefinition.getId()));
+          ((JobEntity) timerStartJob).delete();
+        }
+      }
+      
+      // If previous process definition version has a timer start event, it must be added
+      ProcessDefinitionEntity latestProcessDefinition = null;
+      if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+        latestProcessDefinition = Context.getCommandContext().getProcessDefinitionEntityManager()
+            .findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
+      } else {
+        latestProcessDefinition = Context.getCommandContext().getProcessDefinitionEntityManager()
+            .findLatestProcessDefinitionByKey(processDefinition.getKey());
+      }
+
+      // Only if the currently deleted process definition is the latest version, we fall back to the previous timer start event
+      if (processDefinition.getId().equals(latestProcessDefinition.getId())) { 
+        
+        // Try to find a previous version (it could be some versions are missing due to deletions)
+        int previousVersion = processDefinition.getVersion() - 1;
+        ProcessDefinitionEntity previousProcessDefinition = null;
+        while (previousProcessDefinition == null && previousVersion > 0) {
+          
+          ProcessDefinitionQueryImpl previousProcessDefinitionQuery = new ProcessDefinitionQueryImpl(Context.getCommandContext())
+            .processDefinitionVersion(previousVersion)
+            .processDefinitionKey(processDefinition.getKey());
+        
+          if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+            previousProcessDefinitionQuery.processDefinitionTenantId(processDefinition.getTenantId());
+          } else {
+            previousProcessDefinitionQuery.processDefinitionWithoutTenantId();
+          }
+        
+          previousProcessDefinition = (ProcessDefinitionEntity) previousProcessDefinitionQuery.singleResult();
+          previousVersion--;
+          
+        }
+        
+        // TODO: cleanup in a util or something like that
+        if (previousProcessDefinition != null) {
+
+          org.activiti.bpmn.model.Process previousProcess = ProcessDefinitionUtil.getProcess(previousProcessDefinition.getId());
+          if (CollectionUtils.isNotEmpty(previousProcess.getFlowElements())) {
+            List<StartEvent> startEvents = previousProcess.findFlowElementsOfType(StartEvent.class);
+            if (CollectionUtils.isNotEmpty(startEvents)) {
+              for (StartEvent startEvent : startEvents) {
+                if (CollectionUtils.isNotEmpty(startEvent.getEventDefinitions())) {
+                  EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
+                  if (eventDefinition instanceof TimerEventDefinition) {
+                    TimerEntity timer = TimerUtil.createTimerEntityForTimerEventDefinition((TimerEventDefinition) eventDefinition, false, null, TimerStartEventJobHandler.TYPE,
+                        TimerEventHandler.createConfiguration(startEvent.getId(), null));
+                    timer.setProcessDefinitionId(previousProcessDefinition.getId());
+
+                    if (previousProcessDefinition.getTenantId() != null) {
+                      timer.setTenantId(previousProcessDefinition.getTenantId());
+                    }
+
+                    Context.getCommandContext().getJobEntityManager().schedule(timer);
+                  }
+                }
+              }
             }
 
-            ((JobEntity) job).delete();
           }
+
         }
       }
 
