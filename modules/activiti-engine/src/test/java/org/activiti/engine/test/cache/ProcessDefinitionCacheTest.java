@@ -39,7 +39,7 @@ public class ProcessDefinitionCacheTest extends PvmTestCase {
   // Test for a bug: when the process engine is rebooted the
   // cache is cleaned and the deployed process definition is
   // removed from the process cache. This led to problems because
-  // the id wasnt fetched from the DB after a redeploy.
+  // the id wasn't fetched from the DB after a redeploy.
   public void testStartProcessInstanceByIdAfterReboot() {
 
     // In case this test is run in a test suite, previous engines might
@@ -60,7 +60,7 @@ public class ProcessDefinitionCacheTest extends PvmTestCase {
 
     processEngine.getRepositoryService().createDeployment().addClasspathResource("org/activiti/engine/test/cache/originalProcess.bpmn20.xml").deploy();
 
-    // verify existance of process definiton
+    // verify existence of process definition
     List<ProcessDefinition> processDefinitions = processEngine.getRepositoryService().createProcessDefinitionQuery().list();
 
     assertEquals(1, processDefinitions.size());

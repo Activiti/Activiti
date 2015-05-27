@@ -112,7 +112,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
       String bpmn20Xml = new String(bpmnXMLConverter.convertToXML(bpmnModel), "UTF-8");
       addString(resourceName, bpmn20Xml);
     } catch (UnsupportedEncodingException e) {
-      throw new ActivitiException("Errot while transforming BPMN model to xml: not UTF-8 encoded", e);
+      throw new ActivitiException("Error while transforming BPMN model to xml: not UTF-8 encoded", e);
     }
     return this;
   }

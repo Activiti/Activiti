@@ -37,7 +37,7 @@ public class EventListenersConfigurationTest extends ResourceActivitiTestCase {
     // Clear any events received (eg. engine initialisation)
     listener.clearEventsReceived();
 
-    // Dispath a custom event
+    // Dispatch a custom event
     ActivitiEvent event = new ActivitiEventImpl(ActivitiEventType.CUSTOM);
     processEngineConfiguration.getEventDispatcher().dispatchEvent(event);
 

@@ -119,7 +119,7 @@ public class ExecutionGraphUtil {
 
     // To avoid infinite looping, we must capture every node we visit
     // and check before going further in the graph if we have already
-    // visitedthe node.
+    // visited the node.
     visitedElements.add(sourceElement.getId());
 
     List<SequenceFlow> sequenceFlows = sourceElement.getOutgoingFlows();

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A BPMN 2.0 LaneSet, containg {@link Lane}s, currently only used for rendering the DI info.
+ * A BPMN 2.0 LaneSet, containing {@link Lane}s, currently only used for rendering the DI info.
  * 
  * @author Frederik Heremans
  */

@@ -70,9 +70,9 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
         
         // Delete all child executions
         Collection<ExecutionEntity> childExecutions = commandContext.getExecutionEntityManager().findChildExecutionsByParentExecutionId(execution.getId());
-        for (ExecutionEntity childExcecution : childExecutions) {
-          if (childExcecution.getCurrentFlowElement() == null || notToDeleteEvents.contains(childExcecution.getCurrentFlowElement().getId()) == false) {
-            commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(childExcecution);
+        for (ExecutionEntity childExecution : childExecutions) {
+          if (childExecution.getCurrentFlowElement() == null || notToDeleteEvents.contains(childExecution.getCurrentFlowElement().getId()) == false) {
+            commandContext.getExecutionEntityManager().deleteExecutionAndRelatedData(childExecution);
           }
         }
       }

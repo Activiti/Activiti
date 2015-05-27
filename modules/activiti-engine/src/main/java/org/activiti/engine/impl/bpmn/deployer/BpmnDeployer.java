@@ -171,7 +171,7 @@ public class BpmnDeployer implements Deployer {
     List<String> keyList = new ArrayList<String>();
     for (ProcessDefinitionEntity processDefinition : processDefinitions) {
       if (keyList.contains(processDefinition.getKey())) {
-        throw new ActivitiException("The deployment contains process definitions with the same key (process id atrribute), this is not allowed");
+        throw new ActivitiException("The deployment contains process definitions with the same key (process id attribute), this is not allowed");
       }
       keyList.add(processDefinition.getKey());
     }
@@ -203,7 +203,7 @@ public class BpmnDeployer implements Deployer {
         String nextId = idGenerator.getNextId();
         String processDefinitionId = processDefinition.getKey() + ":" + processDefinition.getVersion() + ":" + nextId; // ACT-505
 
-        // ACT-115: maximum id length is 64 charcaters
+        // ACT-115: maximum id length is 64 characters
         if (processDefinitionId.length() > 64) {
           processDefinitionId = nextId;
         }

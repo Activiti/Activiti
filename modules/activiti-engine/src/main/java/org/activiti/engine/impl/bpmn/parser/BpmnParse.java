@@ -221,7 +221,7 @@ public class BpmnParse implements BpmnXMLConstants {
         }
       }
 
-      // Validation successfull (or no validation)
+      // Validation successful (or no validation)
 
       // Continue with creating side artifacts: imports, item defs,
       // messages and operations
@@ -427,7 +427,7 @@ public class BpmnParse implements BpmnXMLConstants {
     for (FlowElement flowElement : flowElements) {
 
       // Sequence flow are also flow elements, but are only parsed once
-      // everyactivity is found
+      // every activity is found
       if (flowElement instanceof SequenceFlow) {
         sequenceFlowToParse.add((SequenceFlow) flowElement);
       } else if (flowElement instanceof BoundaryEvent) {

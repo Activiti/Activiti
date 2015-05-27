@@ -59,7 +59,7 @@ public class ScopeUtil {
   }
 
   /**
-   * returns the top-most execution sitting in an activity part of the scope defined by 'scopeActivitiy'.
+   * returns the top-most execution sitting in an activity part of the scope defined by 'scopeActivity'.
    */
   public static ExecutionEntity findScopeExecutionForScope(ExecutionEntity execution, PvmScope scopeActivity) {
 

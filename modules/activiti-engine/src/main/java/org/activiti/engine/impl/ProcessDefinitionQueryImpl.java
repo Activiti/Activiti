@@ -236,7 +236,7 @@ public class ProcessDefinitionQueryImpl extends AbstractQuery<ProcessDefinitionQ
   }
 
   public List<String> getAuthorizationGroups() {
-    // Simmilar behaviour as the TaskQuery.taskCandidateUser() which
+    // Similar behaviour as the TaskQuery.taskCandidateUser() which
     // includes the groups the candidate
     // user is part of
     if (authorizationUserId != null) {

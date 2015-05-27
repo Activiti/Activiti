@@ -36,7 +36,7 @@ public class TablePage {
   protected long firstResult;
 
   /**
-   * The actual content of the database table, stored as a list of mappings of the form {colum name, value}.
+   * The actual content of the database table, stored as a list of mappings of the form {column name, value}.
    * 
    * This means that every map object in the list corresponds with one row in the database table.
    */

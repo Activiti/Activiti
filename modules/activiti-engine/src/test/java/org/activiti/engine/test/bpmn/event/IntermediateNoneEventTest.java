@@ -20,20 +20,20 @@ import org.activiti.engine.test.Deployment;
 
 public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
 
-  private static boolean listenerExcecuted = false;
+  private static boolean listenerExecuted = false;
 
   public static class MyExecutionListener implements ExecutionListener {
     public void notify(DelegateExecution execution) {
-      listenerExcecuted = true;
+      listenerExecuted = true;
     }
   }
 
   @Deployment
   public void testIntermediateNoneTimerEvent() throws Exception {
-    assertFalse(listenerExcecuted);
+    assertFalse(listenerExecuted);
     ProcessInstance pi = runtimeService.startProcessInstanceByKey("intermediateNoneEventExample");
     assertProcessEnded(pi.getProcessInstanceId());
-    assertTrue(listenerExcecuted);
+    assertTrue(listenerExecuted);
   }
 
 }

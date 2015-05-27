@@ -152,7 +152,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
     processEngineConfiguration.getClock().setCurrentTime(new Date(startTime.getTime() + (60 * 60 * 1000) + 1000));
     waitForJobExecutorToProcessAllJobs(5000L, 50L);
 
-    // The inner subprocess should be destoyed, and the escalated task
+    // The inner subprocess should be destroyed, and the escalated task
     // should be active
     Task escalationTask = taskService.createTaskQuery().processInstanceId(pi.getId()).singleResult();
     assertEquals("Escalated task", escalationTask.getName());
@@ -223,7 +223,7 @@ public class SubProcessTest extends PluggableActivitiTestCase {
 
     managementService.executeJob(job.getId());
 
-    // The inner subprocess should be destoyed, and the tsk after the timer
+    // The inner subprocess should be destroyed, and the tsk after the timer
     // should be active
     Task taskAfterTimer = taskService.createTaskQuery().processInstanceId(processInstance.getId()).singleResult();
     assertEquals("Task after timer", taskAfterTimer.getName());

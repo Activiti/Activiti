@@ -76,7 +76,7 @@ public class JuelScriptEngine extends AbstractScriptEngine implements Compilable
   }
 
   public CompiledScript compile(Reader reader) throws ScriptException {
-    // Create a String based on the reader and complile it
+    // Create a String based on the reader and compile it
     return compile(readFully(reader));
   }
 

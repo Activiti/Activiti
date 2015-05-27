@@ -145,7 +145,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
         }
     }
 
-    protected void dispatchActivityCancelled(ActivityExecution execution, FlowElement termninateEndEvent) {
+    protected void dispatchActivityCancelled(ActivityExecution execution, FlowElement terminateEndEvent) {
         Context.getProcessEngineConfiguration()
                 .getEventDispatcher()
                 .dispatchEvent(
@@ -157,7 +157,7 @@ public class TerminateEndEventActivityBehavior extends FlowNodeActivityBehavior 
                             execution.getProcessDefinitionId(), 
                             execution.getCurrentFlowElement().getClass().getName(), 
                             ((FlowNode) execution.getCurrentFlowElement()).getBehavior().getClass().getCanonicalName(), 
-                            termninateEndEvent));
+                            terminateEndEvent));
     }
     
     protected boolean hasMultiInstanceParent(FlowNode flowNode) {

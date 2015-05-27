@@ -128,9 +128,9 @@ public class CancelEndEventActivityBehavior extends FlowNodeActivityBehavior {
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     if (CollectionUtils.isNotEmpty(childExecutions)) {
-      for (ExecutionEntity childExcecution : childExecutions) {
-        if (childExcecution.getId().equals(notToDeleteExecution.getId()) == false) {
-          deleteChildExecutions(childExcecution, notToDeleteExecution, commandContext);
+      for (ExecutionEntity childExecution : childExecutions) {
+        if (childExecution.getId().equals(notToDeleteExecution.getId()) == false) {
+          deleteChildExecutions(childExecution, notToDeleteExecution, commandContext);
         }
       }
     }

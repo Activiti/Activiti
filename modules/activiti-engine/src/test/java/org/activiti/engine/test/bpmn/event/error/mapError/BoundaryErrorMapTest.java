@@ -39,7 +39,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
 
   // exception does not match the single mapping
   @Deployment(resources = "org/activiti/engine/test/bpmn/event/error/mapError/BoundaryErrorMapTest.testClassDelegateSingleDirectMap.bpmn20.xml")
-  public void testClassDelegateSingleDirectMapNotMachingException() {
+  public void testClassDelegateSingleDirectMapNotMatchingException() {
     FlagDelegate.reset();
 
     Map<String, Object> vars = new HashMap<String, Object>();
@@ -48,13 +48,13 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
 
     try {
       runtimeService.startProcessInstanceByKey("processWithSingleExceptionMap", vars);
-      fail("exception expected, as there is no matching exceptio map");
+      fail("exception expected, as there is no matching exception map");
     } catch (Exception e) {
       assertFalse(FlagDelegate.isVisited());
     }
   }
 
-  // exception matches by inheritence
+  // exception matches by inheritance
   @Deployment
   public void testClassDelegateSingleInheritedMap() {
     Map<String, Object> vars = new HashMap<String, Object>();
@@ -67,7 +67,7 @@ public class BoundaryErrorMapTest extends PluggableActivitiTestCase {
 
   // check the default map
   @Deployment
-  public void tesClassDelegatetDefaultMap() {
+  public void testClassDelegateDefaultMap() {
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("exceptionClass", Exception.class.getName());
     FlagDelegate.reset();

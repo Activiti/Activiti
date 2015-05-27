@@ -268,9 +268,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     // Test LESS_THAN, should return 2 results
     executions = runtimeService.createExecutionQuery().variableValueLessThan("stringVar", "abcdeg").list();
     assertEquals(2, executions.size());
-    List<String> expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     List<String> ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThan("stringVar", "abcdef").count());
@@ -279,9 +279,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     // Test LESS_THAN_OR_EQUAL
     executions = runtimeService.createExecutionQuery().variableValueLessThanOrEqual("stringVar", "abcdef").list();
     assertEquals(2, executions.size());
-    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     assertEquals(3, runtimeService.createExecutionQuery().variableValueLessThanOrEqual("stringVar", "z").count());
@@ -310,9 +310,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     executions = runtimeService.createExecutionQuery().variableValueEquals("abcdef").list();
     assertEquals(2, executions.size());
-    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     execution = runtimeService.createExecutionQuery().variableValueEquals("notmatchinganyvalues").singleResult();
@@ -451,9 +451,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     executions = runtimeService.createExecutionQuery().variableValueLessThan("longVar", 55555L).list();
     assertEquals(2, executions.size());
 
-    List<String> expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     List<String> ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThan("longVar", 12345L).count());
@@ -472,9 +472,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     executions = runtimeService.createExecutionQuery().variableValueEquals(12345L).list();
     assertEquals(2, executions.size());
-    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     execution = runtimeService.createExecutionQuery().variableValueEquals(99999L).singleResult();
@@ -637,9 +637,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     executions = runtimeService.createExecutionQuery().variableValueLessThan("integerVar", 55555).list();
     assertEquals(2, executions.size());
 
-    List<String> expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     List<String> ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThan("integerVar", 12345).count());
@@ -658,9 +658,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     executions = runtimeService.createExecutionQuery().variableValueEquals(12345).list();
     assertEquals(2, executions.size());
-    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     execution = runtimeService.createExecutionQuery().variableValueEquals(99999).singleResult();
@@ -733,9 +733,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     executions = runtimeService.createExecutionQuery().variableValueLessThan("shortVar", (short) 5555).list();
     assertEquals(2, executions.size());
 
-    List<String> expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     List<String> ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThan("shortVar", (short) 1234).count());
@@ -754,9 +754,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     executions = runtimeService.createExecutionQuery().variableValueEquals((short) 1234).list();
     assertEquals(2, executions.size());
-    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     execution = runtimeService.createExecutionQuery().variableValueEquals((short) 999).singleResult();
@@ -844,9 +844,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     executions = runtimeService.createExecutionQuery().variableValueLessThan("dateVar", nextYear.getTime()).list();
     assertEquals(2, executions.size());
 
-    List<String> expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     List<String> ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     assertEquals(0, runtimeService.createExecutionQuery().variableValueLessThan("dateVar", date1).count());
@@ -865,9 +865,9 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
 
     executions = runtimeService.createExecutionQuery().variableValueEquals(date1).list();
     assertEquals(2, executions.size());
-    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(Arrays.asList(executions.get(0).getId(), executions.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     execution = runtimeService.createExecutionQuery().variableValueEquals(twoYearsLater.getTime()).singleResult();
@@ -923,28 +923,28 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     // Test unsupported operations
     try {
       runtimeService.createProcessInstanceQuery().variableValueGreaterThan("booleanVar", true);
-      fail("Excetion expected");
+      fail("Exception expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'greater than' condition", ae.getMessage());
     }
 
     try {
       runtimeService.createProcessInstanceQuery().variableValueGreaterThanOrEqual("booleanVar", true);
-      fail("Excetion expected");
+      fail("Exception expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'greater than or equal' condition", ae.getMessage());
     }
 
     try {
       runtimeService.createProcessInstanceQuery().variableValueLessThan("booleanVar", true);
-      fail("Excetion expected");
+      fail("Exception expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'less than' condition", ae.getMessage());
     }
 
     try {
       runtimeService.createProcessInstanceQuery().variableValueLessThanOrEqual("booleanVar", true);
-      fail("Excetion expected");
+      fail("Exception expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'less than or equal' condition", ae.getMessage());
     }
@@ -1023,7 +1023,7 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVar", null).count());
     assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVarLong", null).count());
     assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVarDouble", null).count());
-    // When a byte-array refrence is present, the variable is not considered
+    // When a byte-array reference is present, the variable is not considered
     // null
     assertEquals(1, runtimeService.createExecutionQuery().variableValueNotEquals("nullVarByte", null).count());
 
@@ -1035,35 +1035,35 @@ public class ExecutionQueryTest extends PluggableActivitiTestCase {
     // All other variable queries with null should throw exception
     try {
       runtimeService.createExecutionQuery().variableValueGreaterThan("nullVar", null);
-      fail("Excetion expected");
+      fail("Exception expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'greater than' condition", ae.getMessage());
     }
 
     try {
       runtimeService.createExecutionQuery().variableValueGreaterThanOrEqual("nullVar", null);
-      fail("Excetion expected");
+      fail("Exception expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'greater than or equal' condition", ae.getMessage());
     }
 
     try {
       runtimeService.createExecutionQuery().variableValueLessThan("nullVar", null);
-      fail("Excetion expected");
+      fail("Exception expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'less than' condition", ae.getMessage());
     }
 
     try {
       runtimeService.createExecutionQuery().variableValueLessThanOrEqual("nullVar", null);
-      fail("Excetion expected");
+      fail("Exception expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("Booleans and null cannot be used in 'less than or equal' condition", ae.getMessage());
     }
 
     try {
       runtimeService.createExecutionQuery().variableValueLike("nullVar", null);
-      fail("Excetion expected");
+      fail("Exception expected");
     } catch (ActivitiIllegalArgumentException ae) {
       assertTextPresent("Only string values can be used with 'like' condition", ae.getMessage());
     }

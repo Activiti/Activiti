@@ -325,7 +325,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     }
 
     if (execution.getParentId() != null) {
-      HistoricActivityInstanceEntity historicActivityInstanceFromParent = findActivityInstance((ExecutionEntity) execution.getParent(), activityId, false); // always fals for create, we only check if it can be found 
+      HistoricActivityInstanceEntity historicActivityInstanceFromParent = findActivityInstance((ExecutionEntity) execution.getParent(), activityId, false); // always false for create, we only check if it can be found
       if (historicActivityInstanceFromParent != null) {
         return historicActivityInstanceFromParent;
       }

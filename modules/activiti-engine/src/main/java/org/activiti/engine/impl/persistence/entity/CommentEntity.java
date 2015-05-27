@@ -35,7 +35,7 @@ public class CommentEntity implements Comment, Event, PersistentObject, Serializ
 
   protected String id;
 
-  // If comments would be removeable, revision needs to be added!
+  // If comments would be removable, revision needs to be added!
 
   protected String type;
   protected String userId;

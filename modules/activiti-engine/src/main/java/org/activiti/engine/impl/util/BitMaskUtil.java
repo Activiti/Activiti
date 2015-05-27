@@ -16,14 +16,14 @@ package org.activiti.engine.impl.util;
 /**
  * Util class for manipulating bit-flag in ints.
  * 
- * Currently, only 8-bits are supporten, but can be extended to use all 31 bits in the integer (1st of 32 bits is used for sign).
+ * Currently, only 8-bits are supported, but can be extended to use all 31 bits in the integer (1st of 32 bits is used for sign).
  * 
  * @author Frederik Heremans
  */
 public class BitMaskUtil {
 
   // First 8 masks as constant to prevent having to math.pow() every time a
-  // bit needs flippin'.
+  // bit needs flipping.
 
   private static final int FLAG_BIT_1 = 1; // 000...00000001
   private static final int FLAG_BIT_2 = 2; // 000...00000010
@@ -46,7 +46,7 @@ public class BitMaskUtil {
    */
   public static int setBitOn(int value, int bitNumber) {
     if (bitNumber <= 0 && bitNumber > 8) {
-      throw new IllegalArgumentException("Only bits 1 htrough 8 are supported");
+      throw new IllegalArgumentException("Only bits 1 through 8 are supported");
     }
 
     // To turn on, OR with the correct mask
@@ -63,7 +63,7 @@ public class BitMaskUtil {
    */
   public static int setBitOff(int value, int bitNumber) {
     if (bitNumber <= 0 && bitNumber > 8) {
-      throw new IllegalArgumentException("Only bits 1 htrough 8 are supported");
+      throw new IllegalArgumentException("Only bits 1 through 8 are supported");
     }
 
     // To turn on, OR with the correct mask
@@ -80,7 +80,7 @@ public class BitMaskUtil {
    */
   public static boolean isBitOn(int value, int bitNumber) {
     if (bitNumber <= 0 && bitNumber > 8) {
-      throw new IllegalArgumentException("Only bits 1 htrough 8 are supported");
+      throw new IllegalArgumentException("Only bits 1 through 8 are supported");
     }
 
     return ((value & MASKS[bitNumber - 1]) == MASKS[bitNumber - 1]);

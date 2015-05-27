@@ -20,7 +20,7 @@ import org.activiti.engine.task.Task;
 import org.activiti.engine.test.Deployment;
 
 /**
- * Simple process test to validate the current implementation protoype.
+ * Simple process test to validate the current implementation prototype.
  * 
  * @author Joram Barrez
  */

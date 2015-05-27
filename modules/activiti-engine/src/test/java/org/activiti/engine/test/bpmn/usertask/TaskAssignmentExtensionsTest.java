@@ -61,7 +61,7 @@ public class TaskAssignmentExtensionsTest extends PluggableActivitiTestCase {
     try {
       String resource = TestHelper.getBpmnProcessDefinitionResource(getClass(), "testDuplicateAssigneeDeclaration");
       repositoryService.createDeployment().addClasspathResource(resource).deploy();
-      fail("Invalid BPMN 2.0 process should not parse, but it gets parsed sucessfully");
+      fail("Invalid BPMN 2.0 process should not parse, but it gets parsed successfully");
     } catch (XMLException e) {
       // Exception is to be expected
     }

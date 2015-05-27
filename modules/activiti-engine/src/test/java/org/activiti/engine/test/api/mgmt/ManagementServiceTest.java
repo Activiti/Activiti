@@ -76,7 +76,7 @@ public class ManagementServiceTest extends PluggableActivitiTestCase {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("exceptionInJobExecution");
 
     // The execution is waiting in the first usertask. This contains a
-    // boundry
+    // boundary
     // timer event which we will execute manual for testing purposes.
     Job timerJob = managementService.createJobQuery().processInstanceId(processInstance.getId()).singleResult();
 

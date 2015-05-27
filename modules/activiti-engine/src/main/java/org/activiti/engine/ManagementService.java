@@ -62,7 +62,7 @@ public interface ManagementService {
   JobQuery createJobQuery();
 
   /**
-   * Forced synchronous execution of a job (eg. for administation or testing) The job will be executed, even if the process definition and/or the process instance is in suspended state.
+   * Forced synchronous execution of a job (eg. for administration or testing) The job will be executed, even if the process definition and/or the process instance is in suspended state.
    * 
    * @param jobId
    *          id of the job to execute, cannot be null.

@@ -126,7 +126,7 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())) {
           currentProcessDefinition.getEventSupport().addEventListener(bpmnParse.getListenerFactory().createEventThrowingEventListener(eventListener), types);
         } else {
-          LOGGER.warn("Unsupported implementation type for EventLIstener: " + eventListener.getImplementationType() + " for element " + bpmnParse.getCurrentFlowElement().getId());
+          LOGGER.warn("Unsupported implementation type for EventListener: " + eventListener.getImplementationType() + " for element " + bpmnParse.getCurrentFlowElement().getId());
         }
       }
     }

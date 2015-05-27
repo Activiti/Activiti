@@ -158,7 +158,7 @@ public class JtaTransactionInterceptor extends AbstractCommandInterceptor {
       throw e;
     } finally {
       if (rollbackEx != null && originalException != null) {
-        LOGGER.error("Error when rolling back transaction, orginal exception was:", originalException);
+        LOGGER.error("Error when rolling back transaction, original exception was:", originalException);
       }
     }
   }

@@ -30,7 +30,7 @@ import org.activiti.engine.test.ActivitiRule;
  * @author Saeid Mirzaei
  */
 
-// This helper class helps sharing the same code for jobExector test helpers,
+// This helper class helps sharing the same code for jobExecutor test helpers,
 // between Junit3 and junit 4 test support classes
 public class JobTestHelper {
 

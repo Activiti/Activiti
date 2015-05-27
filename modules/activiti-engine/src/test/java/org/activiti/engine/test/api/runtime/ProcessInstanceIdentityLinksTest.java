@@ -73,9 +73,9 @@ public class ProcessInstanceIdentityLinksTest extends PluggableActivitiTestCase 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.AUDIT)) {
       List<Event> processInstanceEvents = runtimeService.getProcessInstanceEvents(processInstanceId);
       assertEquals(1, processInstanceEvents.size());
-      Event processIsntanceEvent = processInstanceEvents.get(0);
-      assertEquals(Event.ACTION_ADD_GROUP_LINK, processIsntanceEvent.getAction());
-      List<String> processInstanceEventMessageParts = processIsntanceEvent.getMessageParts();
+      Event processInstanceEvent = processInstanceEvents.get(0);
+      assertEquals(Event.ACTION_ADD_GROUP_LINK, processInstanceEvent.getAction());
+      List<String> processInstanceEventMessageParts = processInstanceEvent.getMessageParts();
       assertEquals("muppets", processInstanceEventMessageParts.get(0));
       assertEquals(IdentityLinkType.PARTICIPANT, processInstanceEventMessageParts.get(1));
       assertEquals(2, processInstanceEventMessageParts.size());

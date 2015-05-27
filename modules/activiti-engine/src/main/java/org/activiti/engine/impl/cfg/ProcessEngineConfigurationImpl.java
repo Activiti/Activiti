@@ -617,7 +617,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
       }
 
       if (dataSource instanceof PooledDataSource) {
-        // ACT-233: connection pool of Ibatis is not properely
+        // ACT-233: connection pool of Ibatis is not properly
         // initialized if this is not called!
         ((PooledDataSource) dataSource).forceCloseAll();
       }
@@ -869,7 +869,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
     allConfigurators = new ArrayList<ProcessEngineConfigurator>();
 
-    // Configurators that are explicitely added to the config
+    // Configurators that are explicitly added to the config
     if (configurators != null) {
       for (ProcessEngineConfigurator configurator : configurators) {
         allConfigurators.add(configurator);
@@ -896,7 +896,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
       if (!allConfigurators.isEmpty()) {
 
-        // Order them according to the priorities (usefule for dependent
+        // Order them according to the priorities (useful for dependent
         // configurator)
         Collections.sort(allConfigurators, new Comparator<ProcessEngineConfigurator>() {
           @Override
@@ -1039,7 +1039,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected List<BpmnParseHandler> getDefaultBpmnParseHandlers() {
 
-    // Alpabetic list of default parse handler classes
+    // Alphabetic list of default parse handler classes
     List<BpmnParseHandler> bpmnParserHandlers = new ArrayList<BpmnParseHandler>();
     bpmnParserHandlers.add(new BoundaryEventParseHandler());
     bpmnParserHandlers.add(new BusinessRuleParseHandler());

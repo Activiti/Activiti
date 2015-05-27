@@ -54,7 +54,7 @@ public class ClassDelegateUtil {
       } catch (IllegalArgumentException e) {
         throw new ActivitiException("Error while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
       } catch (IllegalAccessException e) {
-        throw new ActivitiException("Illegal acces when calling '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
+        throw new ActivitiException("Illegal access when calling '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
       } catch (InvocationTargetException e) {
         throw new ActivitiException("Exception while invoking '" + declaration.getName() + "' on class " + target.getClass().getName(), e);
       }

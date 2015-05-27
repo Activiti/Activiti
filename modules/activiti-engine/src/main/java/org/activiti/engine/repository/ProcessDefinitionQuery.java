@@ -28,7 +28,7 @@ import org.activiti.engine.query.Query;
  */
 public interface ProcessDefinitionQuery extends Query<ProcessDefinitionQuery, ProcessDefinition> {
 
-  /** Only select process definiton with the given id. */
+  /** Only select process definition with the given id. */
   ProcessDefinitionQuery processDefinitionId(String processDefinitionId);
 
   /** Only select process definitions with the given category. */

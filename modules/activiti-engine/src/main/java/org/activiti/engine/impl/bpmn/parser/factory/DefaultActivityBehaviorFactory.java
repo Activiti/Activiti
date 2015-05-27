@@ -237,7 +237,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
       }
 
       List<FieldDeclaration> fieldDeclarations = createFieldDeclarations(fieldExtensions);
-      addExceptionMapAsFieldDeclaraion(fieldDeclarations, task.getMapExceptions());
+      addExceptionMapAsFieldDeclaration(fieldDeclarations, task.getMapExceptions());
       return (ActivityBehavior) ClassDelegate.instantiateDelegate(theClass, fieldDeclarations);
 
     } catch (ClassNotFoundException e) {
@@ -245,7 +245,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
     }
   }
 
-  private void addExceptionMapAsFieldDeclaraion(List<FieldDeclaration> fieldDeclarations, List<MapExceptionEntry> mapExceptions) {
+  private void addExceptionMapAsFieldDeclaration(List<FieldDeclaration> fieldDeclarations, List<MapExceptionEntry> mapExceptions) {
     FieldDeclaration exceptionMapsFieldDeclaration = new FieldDeclaration(EXCEPTION_MAP_FIELD, mapExceptions.getClass().toString(), mapExceptions);
     fieldDeclarations.add(exceptionMapsFieldDeclaration);
 
@@ -263,7 +263,7 @@ public class DefaultActivityBehaviorFactory extends AbstractBehaviorFactory impl
         Class<?> clazz = Class.forName(businessRuleTask.getClassName());
         ruleActivity = (BusinessRuleTaskActivityBehavior) clazz.newInstance();
       } catch (Exception e) {
-        throw new ActivitiException("Could not instiate businessRuleTask class: ", e);
+        throw new ActivitiException("Could not instantiate businessRuleTask class: ", e);
       }
     } else {
       ruleActivity = new BusinessRuleTaskActivityBehavior();

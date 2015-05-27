@@ -53,7 +53,7 @@ public interface HistoricDetailQuery extends Query<HistoricDetailQuery, Historic
   HistoricDetailQuery variableUpdates();
 
   /**
-   * Exclude all task-related {@link HistoricDetail}s, so only items which have no task-id set will be selected. When used togheter with {@link #taskId(String)}, this call is ignored task details are
+   * Exclude all task-related {@link HistoricDetail}s, so only items which have no task-id set will be selected. When used together with {@link #taskId(String)}, this call is ignored task details are
    * NOT excluded.
    */
   HistoricDetailQuery excludeTaskDetails();

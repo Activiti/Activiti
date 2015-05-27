@@ -325,7 +325,7 @@ public class CronExpression implements Serializable, Cloneable {
           throw new ParseException("Support for specifying 'L' with other days of the week is not implemented", -1);
         }
         if (exprOn == DAY_OF_WEEK && expr.indexOf('#') != -1 && expr.indexOf('#', expr.indexOf('#') + 1) != -1) {
-          throw new ParseException("Support for specifying multiple \"nth\" days is not imlemented.", -1);
+          throw new ParseException("Support for specifying multiple \"nth\" days is not implemented.", -1);
         }
 
         StringTokenizer vTok = new StringTokenizer(expr, ",");
@@ -440,12 +440,12 @@ public class CronExpression implements Serializable, Cloneable {
         throw new ParseException("Illegal character after '?': " + s.charAt(i), i);
       }
       if (type != DAY_OF_WEEK && type != DAY_OF_MONTH) {
-        throw new ParseException("'?' can only be specfied for Day-of-Month or Day-of-Week.", i);
+        throw new ParseException("'?' can only be specified for Day-of-Month or Day-of-Week.", i);
       }
       if (type == DAY_OF_WEEK && !lastdayOfMonth) {
         int val = ((Integer) daysOfMonth.last()).intValue();
         if (val == NO_SPEC_INT) {
-          throw new ParseException("'?' can only be specfied for Day-of-Month -OR- Day-of-Week.", i);
+          throw new ParseException("'?' can only be specified for Day-of-Month -OR- Day-of-Week.", i);
         }
       }
 
@@ -1220,7 +1220,7 @@ public class CronExpression implements Serializable, Cloneable {
             cl.set(Calendar.MONTH, mon);
             // no '- 1' here because we are promoting the month
             continue;
-          } else if (daysToAdd > 0) { // are we swithing days?
+          } else if (daysToAdd > 0) { // are we switching days?
             cl.set(Calendar.SECOND, 0);
             cl.set(Calendar.MINUTE, 0);
             cl.set(Calendar.HOUR_OF_DAY, 0);

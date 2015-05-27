@@ -472,9 +472,9 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     // Test LESS_THAN, should return 2 results
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThan("stringVar", "abcdeg").list();
     assertEquals(2, processInstances.size());
-    List<String> expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueLessThan("stringVar", "abcdef").count());
@@ -483,9 +483,9 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     // Test LESS_THAN_OR_EQUAL
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("stringVar", "abcdef").list();
     assertEquals(2, processInstances.size());
-    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     assertEquals(3, historyService.createHistoricProcessInstanceQuery().variableValueLessThanOrEqual("stringVar", "z").count());
@@ -514,9 +514,9 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals("abcdef").list();
     assertEquals(2, processInstances.size());
-    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     resultInstance = historyService.createHistoricProcessInstanceQuery().variableValueEquals("notmatchinganyvalues").singleResult();
@@ -650,9 +650,9 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueLessThan("dateVar", nextYear.getTime()).list();
     assertEquals(2, processInstances.size());
 
-    List<String> expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    List<String> expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     List<String> ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().variableValueLessThan("dateVar", date1).count());
@@ -671,9 +671,9 @@ public class HistoryServiceTest extends PluggableActivitiTestCase {
 
     processInstances = historyService.createHistoricProcessInstanceQuery().variableValueEquals(date1).list();
     assertEquals(2, processInstances.size());
-    expecedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
+    expectedIds = Arrays.asList(processInstance1.getId(), processInstance2.getId());
     ids = new ArrayList<String>(Arrays.asList(processInstances.get(0).getId(), processInstances.get(1).getId()));
-    ids.removeAll(expecedIds);
+    ids.removeAll(expectedIds);
     assertTrue(ids.isEmpty());
 
     resultInstance = historyService.createHistoricProcessInstanceQuery().variableValueEquals(twoYearsLater.getTime()).singleResult();

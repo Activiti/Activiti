@@ -23,7 +23,7 @@ public enum TimerDeclarationType {
 
   public final String calendarName;
 
-  TimerDeclarationType(String caledarName) {
-    this.calendarName = caledarName;
+  TimerDeclarationType(String calendarName) {
+    this.calendarName = calendarName;
   }
 }

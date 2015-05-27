@@ -270,7 +270,7 @@ public interface RepositoryService {
    * Sets the category of the process definition. Process definitions can be queried by category: see {@link ProcessDefinitionQuery#processDefinitionCategory(String)}.
    * 
    * @throws ActivitiObjectNotFoundException
-   *           if no process defintion with the provided id can be found.
+   *           if no process definition with the provided id can be found.
    */
   void setProcessDefinitionCategory(String processDefinitionId, String category);
 

@@ -109,7 +109,7 @@ public class ExecuteJobsCmd implements Command<Object>, Serializable {
             context.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(
                 ActivitiEventType.JOB_EXECUTION_FAILURE, jobEntity, context.getException()));
           } catch(Throwable ignore) {
-            log.warn("Exception occured while dispatching job failure event, ignoring.", ignore);
+            log.warn("Exception occurred while dispatching job failure event, ignoring.", ignore);
           }
         }
         

@@ -18,7 +18,7 @@ import java.util.Map;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 
 /**
- * helper/convience methods for working with collections.
+ * helper/convenience methods for working with collections.
  * 
  * @author Joram Barrez
  */
@@ -42,7 +42,7 @@ public class CollectionUtil {
   /**
    * Helper method to easily create a map.
    * 
-   * Takes as input a varargs containing the key1, value1, key2, value2, etc. Note: altough an Object, we will cast the key to String internally.
+   * Takes as input a varargs containing the key1, value1, key2, value2, etc. Note: although an Object, we will cast the key to String internally.
    */
   public static Map<String, Object> map(Object... objects) {
 

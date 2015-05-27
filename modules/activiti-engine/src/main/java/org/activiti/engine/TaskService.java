@@ -220,7 +220,7 @@ public interface TaskService {
   void complete(String taskId, Map<String, Object> variables);
 
   /**
-   * Called when the task is successfully executed, and the required task paramaters are given by the end-user.
+   * Called when the task is successfully executed, and the required task parameters are given by the end-user.
    * 
    * @param taskId
    *          the id of the task to complete, cannot be null.
@@ -548,7 +548,7 @@ public interface TaskService {
    */
   Attachment createAttachment(String attachmentType, String taskId, String processInstanceId, String attachmentName, String attachmentDescription, String url);
 
-  /** Update the name and decription of an attachment */
+  /** Update the name and description of an attachment */
   void saveAttachment(Attachment attachment);
 
   /** Retrieve a particular attachment */

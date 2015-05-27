@@ -130,7 +130,7 @@ public interface ExpressionNode extends Node {
   public Object invoke(Bindings bindings, ELContext context, Class<?> returnType, Class<?>[] paramTypes, Object[] paramValues);
 
   /**
-   * Get the canonical expression string for this node. Variable and funtion names will be replaced in a way such that two expression nodes that have the same node structure and bindings will also
+   * Get the canonical expression string for this node. Variable and function names will be replaced in a way such that two expression nodes that have the same node structure and bindings will also
    * answer the same value here.
    * <p/>
    * For example, <code>"${foo:bar()+2*foobar}"</code> may lead to <code>"${&lt;fn>() + 2 * &lt;var>}"</code> if <code>foobar</code> is a bound variable. Otherwise, the structural id would be

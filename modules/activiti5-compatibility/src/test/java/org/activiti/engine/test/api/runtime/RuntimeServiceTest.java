@@ -196,7 +196,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     assertEquals(2, runtimeService.createProcessInstanceQuery().processInstanceBusinessKey("123").count());
   }
 
-  // some databases might react strange on having mutiple times null for the
+  // some databases might react strange on having multiple times null for the
   // business key
   // when the unique constraint is {processDefinitionId, businessKey}
   @Deployment(resources = { "org/activiti/engine/test/api/oneTaskProcess.bpmn20.xml" })
@@ -281,7 +281,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     assertEquals(1, activities.size());
   }
 
-  public void testFindActiveActivityIdsUnexistingExecututionId() {
+  public void testFindActiveActivityIdsUnexistingExecutionId() {
     try {
       runtimeService.getActiveActivityIds("unexistingExecutionId");
       fail("ActivitiException expected");
@@ -291,7 +291,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     }
   }
 
-  public void testFindActiveActivityIdsNullExecututionId() {
+  public void testFindActiveActivityIdsNullExecutionId() {
     try {
       runtimeService.getActiveActivityIds(null);
       fail("ActivitiException expected");
@@ -380,7 +380,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     assertProcessEnded(processInstance.getId());
   }
 
-  public void testSignalUnexistingExecututionId() {
+  public void testSignalUnexistingExecutionId() {
     try {
       runtimeService.signal("unexistingExecutionId");
       fail("ActivitiException expected");
@@ -871,7 +871,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     // Set name for unexisting process instance, should fail
     try {
       runtimeService.setProcessInstanceName("unexisting", null);
-      fail("Exception excpected");
+      fail("Exception expected");
     } catch (ActivitiObjectNotFoundException aonfe) {
       assertEquals(ProcessInstance.class, aonfe.getObjectClass());
     }
@@ -884,7 +884,7 @@ public class RuntimeServiceTest extends PluggableActivitiTestCase {
     runtimeService.suspendProcessInstanceById(processInstance.getId());
     try {
       runtimeService.setProcessInstanceName(processInstance.getId(), null);
-      fail("Exception excpected");
+      fail("Exception expected");
     } catch (ActivitiException ae) {
       assertEquals("process instance " + processInstance.getId() + " is suspended, cannot set name", ae.getMessage());
     }

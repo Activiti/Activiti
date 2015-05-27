@@ -91,7 +91,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
       runtimeService.startProcessInstanceByKey("inclusiveGwNoSeqFlowSelected", CollectionUtil.singletonMap("input", 4));
       fail();
     } catch (ActivitiException e) {
-      // Exception exptected
+      // Exception expected
     }
   }
 
@@ -313,7 +313,7 @@ public class InclusiveGatewayTest extends PluggableActivitiTestCase {
   }
 
   /**
-   * This test the isReachable() check thaty is done to check if upstream tokens can reach the inclusive gateway.
+   * This test the isReachable() check that is done to check if upstream tokens can reach the inclusive gateway.
    * 
    * In case of loops, special care needs to be taken in the algorithm, or else stackoverflows will happen very quickly.
    */

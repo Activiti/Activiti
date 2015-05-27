@@ -47,7 +47,7 @@ public class ActivitiEventBuilder {
   /**
    * @param type
    *          type of event
-   * @return an {@link ActivitiEvent} that doesn't have it's execution context-fields filled, as the event is a global event, independant of any running execution.
+   * @return an {@link ActivitiEvent} that doesn't have it's execution context-fields filled, as the event is a global event, independent of any running execution.
    */
   public static ActivitiEvent createGlobalEvent(ActivitiEventType type) {
     ActivitiEventImpl newEvent = new ActivitiEventImpl(type);
@@ -67,7 +67,7 @@ public class ActivitiEventBuilder {
    *          type of event
    * @param entity
    *          the entity this event targets
-   * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related event fields will be populated. If not, execution details will be reteived from the
+   * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related event fields will be populated. If not, execution details will be retrieved from the
    *         {@link Object} if possible.
    */
   public static ActivitiEntityEvent createEntityEvent(ActivitiEventType type, Object entity) {
@@ -86,7 +86,7 @@ public class ActivitiEventBuilder {
    *          the entity this event targets
    * @param variables
    *          the variables associated with this entity
-   * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related event fields will be populated. If not, execution details will be reteived from the
+   * @return an {@link ActivitiEntityEvent}. In case an {@link ExecutionContext} is active, the execution related event fields will be populated. If not, execution details will be retrieved from the
    *         {@link Object} if possible.
    */
   @SuppressWarnings("rawtypes")

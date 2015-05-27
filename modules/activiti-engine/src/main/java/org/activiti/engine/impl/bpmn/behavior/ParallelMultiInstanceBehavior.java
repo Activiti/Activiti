@@ -194,8 +194,8 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     ExecutionEntityManager executionEntityManager = commandContext.getExecutionEntityManager();
     Collection<ExecutionEntity> childExecutions = executionEntityManager.findChildExecutionsByParentExecutionId(parentExecution.getId());
     if (CollectionUtils.isNotEmpty(childExecutions)) {
-      for (ExecutionEntity childExcecution : childExecutions) {
-        deleteChildExecutions(childExcecution, true, commandContext);
+      for (ExecutionEntity childExecution : childExecutions) {
+        deleteChildExecutions(childExecution, true, commandContext);
       }
     }
 

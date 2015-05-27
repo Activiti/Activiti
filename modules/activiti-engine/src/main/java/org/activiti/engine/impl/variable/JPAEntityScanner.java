@@ -51,7 +51,7 @@ public class JPAEntityScanner {
           if (idMethod != null) {
             metaData.setIdMethod(idMethod);
           } else {
-            throw new ActivitiException("Cannot find field or method with annotation @Id on class '" + clazz.getName() + "', only single-valued primary keys are supported on JPA-enities");
+            throw new ActivitiException("Cannot find field or method with annotation @Id on class '" + clazz.getName() + "', only single-valued primary keys are supported on JPA-entities");
           }
         }
         break;

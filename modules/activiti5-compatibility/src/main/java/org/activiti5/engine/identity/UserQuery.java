@@ -46,7 +46,7 @@ public interface UserQuery extends Query<UserQuery, User> {
    */
   UserQuery userFullNameLike(String fullNameLike);
 
-  /** Only those {@link User}s with the given email addres. */
+  /** Only those {@link User}s with the given email address. */
   UserQuery userEmail(String email);
 
   /**

@@ -30,7 +30,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Implementation of the Parallel Gateway/AND gateway as definined in the BPMN 2.0 specification.
+ * Implementation of the Parallel Gateway/AND gateway as defined in the BPMN 2.0 specification.
  * 
  * The Parallel Gateway can be used for splitting a path of execution into multiple paths of executions (AND-split/fork behavior), one for every outgoing sequence flow.
  * 
@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  * Note that there is a slight difference to spec (p. 436): "The parallel gateway is activated if there is at least one Token on each incoming sequence flow." We only check the number of incoming
  * tokens to the number of sequenceflow. So if two tokens would arrive through the same sequence flow, our implementation would activate the gateway.
  * 
- * Note that a Parallel Gateway having one incoming and multiple ougoing sequence flow, is the same as having multiple outgoing sequence flow on a given activity. However, a parallel gateway does NOT
+ * Note that a Parallel Gateway having one incoming and multiple outgoing sequence flow, is the same as having multiple outgoing sequence flow on a given activity. However, a parallel gateway does NOT
  * check conditions on the outgoing sequence flow.
  * 
  * @author Joram Barrez

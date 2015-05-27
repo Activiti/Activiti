@@ -47,12 +47,12 @@ public interface HistoryManager extends Session {
   public abstract void recordSubProcessInstanceStart(ExecutionEntity parentExecution, ExecutionEntity subProcessInstance, FlowElement initialFlowElement);
 
   /**
-   * Record the start of an activitiy, if activity history is enabled.
+   * Record the start of an activity, if activity history is enabled.
    */
   public abstract void recordActivityStart(ExecutionEntity executionEntity);
 
   /**
-   * Record the end of an activitiy, if activity history is enabled.
+   * Record the end of an activity, if activity history is enabled.
    */
   public abstract void recordActivityEnd(ExecutionEntity executionEntity);
 

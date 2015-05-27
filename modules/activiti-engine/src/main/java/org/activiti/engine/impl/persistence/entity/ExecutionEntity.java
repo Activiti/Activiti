@@ -75,7 +75,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   private static Logger log = LoggerFactory.getLogger(ExecutionEntity.class);
 
-  // Persistent refrenced entities state
+  // Persistent referenced entities state
   // //////////////////////////////////////
   protected static final int EVENT_SUBSCRIPTIONS_STATE_BIT = 1;
   protected static final int TASKS_STATE_BIT = 2;
@@ -349,7 +349,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     jobs = new ArrayList<JobEntity>();
     tasks = new ArrayList<TaskEntity>();
 
-    // Cached entity-state initialized to null, all bits are zore,
+    // Cached entity-state initialized to null, all bits are zero,
     // indicating NO entities present
     cachedEntityState = 0;
 
@@ -698,7 +698,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     }
   }
 
-  // bussiness key
+  // business key
   // ////////////////////////////////////////////////////////////
 
   public String getBusinessKey() {
@@ -1238,7 +1238,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     this.forcedUpdate = true;
   }
 
-  // process engine convience access
+  // process engine convenience access
   // /////////////////////////////////////////////////////////////////
 
   public EngineServices getEngineServices() {

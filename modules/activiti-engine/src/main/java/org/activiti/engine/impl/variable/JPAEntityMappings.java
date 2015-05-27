@@ -101,7 +101,7 @@ public class JPAEntityMappings {
     } catch (IllegalAccessException iae) {
       throw new ActivitiException("Cannot access id method/field for JPA Entity", iae);
     } catch (InvocationTargetException ite) {
-      throw new ActivitiException("Exception occured while getting value from id field/method on JPAEntity: " + ite.getCause().getMessage(), ite.getCause());
+      throw new ActivitiException("Exception occurred while getting value from id field/method on JPAEntity: " + ite.getCause().getMessage(), ite.getCause());
     }
 
     // Fall trough when no method and field is set

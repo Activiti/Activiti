@@ -131,7 +131,7 @@ public class ExecuteAsyncRunnable implements Runnable {
           try {
             commandContext.getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityExceptionEvent(ActivitiEventType.JOB_EXECUTION_FAILURE, job, exception));
           } catch (Throwable ignore) {
-            log.warn("Exception occured while dispatching job failure event, ignoring.", ignore);
+            log.warn("Exception occurred while dispatching job failure event, ignoring.", ignore);
           }
         }
 

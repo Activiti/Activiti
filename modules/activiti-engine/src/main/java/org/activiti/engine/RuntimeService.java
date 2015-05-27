@@ -190,7 +190,7 @@ public interface RuntimeService {
    * 
    * @return the {@link ProcessInstance} object representing the started process instance
    * 
-   * @throws ActivitiExeception
+   * @throws ActivitiException
    *           if no subscription to a message with the given name exists
    * 
    * @since 5.9
@@ -214,7 +214,7 @@ public interface RuntimeService {
    * @param businessKey
    *          the business key which is added to the started process instance
    * 
-   * @throws ActivitiExeception
+   * @throws ActivitiException
    *           if no subscription to a message with the given name exists
    * 
    * @since 5.10
@@ -239,7 +239,7 @@ public interface RuntimeService {
    *          the 'payload' of the message. The variables are added as processes variables to the started process instance.
    * @return the {@link ProcessInstance} object representing the started process instance
    * 
-   * @throws ActivitiExeception
+   * @throws ActivitiException
    *           if no subscription to a message with the given name exists
    * 
    * @since 5.9
@@ -266,7 +266,7 @@ public interface RuntimeService {
    *          the 'payload' of the message. The variables are added as processes variables to the started process instance.
    * @return the {@link ProcessInstance} object representing the started process instance
    * 
-   * @throws ActivitiExeception
+   * @throws ActivitiException
    *           if no subscription to a message with the given name exists
    * 
    * @since 5.9

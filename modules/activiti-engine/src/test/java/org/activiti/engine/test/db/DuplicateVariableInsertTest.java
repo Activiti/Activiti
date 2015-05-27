@@ -43,7 +43,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 
     final List<Exception> exceptions = new ArrayList<Exception>();
 
-    Thread firstInstertThread = new Thread(new Runnable() {
+    Thread firstInsertThread = new Thread(new Runnable() {
       @Override
       public void run() {
         try {
@@ -65,11 +65,11 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
       }
     });
 
-    firstInstertThread.start();
+    firstInsertThread.start();
     secondInsertThread.start();
 
     // Wait for threads to complete
-    firstInstertThread.join();
+    firstInsertThread.join();
     secondInsertThread.join();
 
     // One of the 2 threads should get an optimistic lock exception
@@ -96,7 +96,7 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
 
     final List<Exception> exceptions = new ArrayList<Exception>();
 
-    Thread firstInstertThread = new Thread(new Runnable() {
+    Thread firstInsertThread = new Thread(new Runnable() {
       @Override
       public void run() {
         try {
@@ -118,11 +118,11 @@ public class DuplicateVariableInsertTest extends PluggableActivitiTestCase {
       }
     });
 
-    firstInstertThread.start();
+    firstInsertThread.start();
     secondInsertThread.start();
 
     // Wait for threads to complete
-    firstInstertThread.join();
+    firstInsertThread.join();
     secondInsertThread.join();
 
     // One of the 2 threads should get an optimistic lock exception

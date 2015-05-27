@@ -38,7 +38,7 @@ public class BpmnParser {
   public static final String BPMN_DC_NS = "http://www.omg.org/spec/DD/20100524/DC";
 
   /**
-   * The namespace of the generic OMG DI elements (don't ask me why they didnt use the BPMN_DI_NS ...)
+   * The namespace of the generic OMG DI elements (don't ask me why they didn't use the BPMN_DI_NS ...)
    */
   public static final String OMG_DI_NS = "http://www.omg.org/spec/DD/20100524/DI";
 

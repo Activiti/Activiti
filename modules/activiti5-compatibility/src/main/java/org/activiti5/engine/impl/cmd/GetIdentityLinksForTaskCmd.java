@@ -49,7 +49,7 @@ public class GetIdentityLinksForTaskCmd implements Command<List<IdentityLink>>, 
     //
     // Note: we cant move this code to the TaskEntity (which would be
     // cleaner),
-    // since the task.delete cascased to all associated identityLinks
+    // since the task.delete cascaded to all associated identityLinks
     // and of course this leads to exception while trying to delete a
     // non-existing identityLink
     if (task.getAssignee() != null) {

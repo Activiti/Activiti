@@ -76,7 +76,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
     assertEquals("Task A", task.getName());
 
     // Test Timer Catch Intermediate Events after completing Task B (endDate
-    // not reached but it will be executed accrding to the expression)
+    // not reached but it will be executed according to the expression)
     taskService.complete(task.getId());
 
     try {

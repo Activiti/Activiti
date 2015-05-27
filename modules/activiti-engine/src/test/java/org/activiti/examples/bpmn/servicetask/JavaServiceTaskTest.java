@@ -116,7 +116,7 @@ public class JavaServiceTaskTest extends PluggableActivitiTestCase {
   public void testExceptionHandling() {
 
     // If variable value is != 'throw-exception', process goes
-    // through service task and ends immidiately
+    // through service task and ends immediately
     Map<String, Object> vars = new HashMap<String, Object>();
     vars.put("var", "no-exception");
     runtimeService.startProcessInstanceByKey("exceptionHandling", vars);

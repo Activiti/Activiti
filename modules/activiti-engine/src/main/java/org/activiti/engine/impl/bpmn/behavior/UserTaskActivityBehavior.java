@@ -203,8 +203,8 @@ public class UserTaskActivityBehavior extends TaskActivityBehavior {
       for (Expression userIdExpr : taskDefinition.getCandidateUserIdExpressions()) {
         Object value = userIdExpr.getValue(execution);
         if (value instanceof String) {
-          List<String> candiates = extractCandidates((String) value);
-          task.addCandidateUsers(candiates);
+          List<String> candidates = extractCandidates((String) value);
+          task.addCandidateUsers(candidates);
         } else if (value instanceof Collection) {
           task.addCandidateUsers((Collection) value);
         } else {

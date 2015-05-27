@@ -479,7 +479,7 @@ public class JPAVariableTest extends AbstractActivitiTestCase {
       fail("Exception expected");
     } catch (ActivitiException ae) {
       assertTextPresent("Cannot find field or method with annotation @Id on class", ae.getMessage());
-      assertTextPresent("only single-valued primary keys are supported on JPA-enities", ae.getMessage());
+      assertTextPresent("only single-valued primary keys are supported on JPA-entities", ae.getMessage());
     }
 
     // Starting process instance with a variable that has null as ID-value

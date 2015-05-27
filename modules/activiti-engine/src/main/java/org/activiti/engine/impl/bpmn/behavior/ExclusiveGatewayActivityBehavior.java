@@ -40,7 +40,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   /**
    * The default behaviour of BPMN, taking every outgoing sequence flow (where the condition evaluates to true), is not valid for an exclusive gateway.
    * 
-   * Hence, this behaviour is overriden and replaced by the correct behavior: selecting the first sequence flow which condition evaluates to true (or which hasn't got a condition) and leaving the
+   * Hence, this behaviour is overridden and replaced by the correct behavior: selecting the first sequence flow which condition evaluates to true (or which hasn't got a condition) and leaving the
    * activity through that sequence flow.
    * 
    * If no sequence flow is selected (ie all conditions evaluate to false), then the default sequence flow is taken (if defined).
@@ -49,7 +49,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
   public void leave(ActivityExecution execution) {
 
     if (log.isDebugEnabled()) {
-      log.debug("Leaving exclusive gatewt '{}'", execution.getCurrentActivityId());
+      log.debug("Leaving exclusive gateway '{}'", execution.getCurrentActivityId());
     }
 
     ExclusiveGateway exclusiveGateway = (ExclusiveGateway) execution.getCurrentFlowElement();

@@ -77,7 +77,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
     try {
       repositoryService.activateProcessDefinitionById(processDefinition.getId());
-      fail("Exception exprected");
+      fail("Exception expected");
     } catch (ActivitiException e) {
       // expected
     }
@@ -94,7 +94,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
 
     try {
       repositoryService.suspendProcessDefinitionById(processDefinition.getId());
-      fail("Exception exprected");
+      fail("Exception expected");
     } catch (ActivitiException e) {
       // expected
     }
@@ -473,7 +473,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     // Start process instance
     runtimeService.startProcessInstanceByKey("oneTaskProcess");
 
-    // Suspend all process definitions with same key in 2 hourse from now
+    // Suspend all process definitions with same key in 2 hours from now
     repositoryService.suspendProcessDefinitionByKey("oneTaskProcess", true, new Date(startTime.getTime() + (2 * hourInMs)));
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().active().count());
@@ -494,7 +494,7 @@ public class ProcessDefinitionSuspensionTest extends PluggableActivitiTestCase {
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().suspended().count());
     assertEquals(1, runtimeService.createProcessInstanceQuery().suspended().count());
 
-    // Activate again in 5 hourse from now
+    // Activate again in 5 hours from now
     repositoryService.activateProcessDefinitionByKey("oneTaskProcess", true, new Date(startTime.getTime() + (5 * hourInMs)));
     assertEquals(nrOfProcessDefinitions, repositoryService.createProcessDefinitionQuery().count());
     assertEquals(0, repositoryService.createProcessDefinitionQuery().active().count());

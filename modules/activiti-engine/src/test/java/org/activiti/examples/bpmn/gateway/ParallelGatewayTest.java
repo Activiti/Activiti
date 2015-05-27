@@ -76,7 +76,7 @@ public class ParallelGatewayTest extends PluggableActivitiTestCase {
     Task task4 = tasks.get(1);
     assertEquals("Task 4", task4.getName());
 
-    // Completing the remaing tasks should trigger the second join and end
+    // Completing the remaining tasks should trigger the second join and end
     // the process
     taskService.complete(task3.getId());
     taskService.complete(task4.getId());

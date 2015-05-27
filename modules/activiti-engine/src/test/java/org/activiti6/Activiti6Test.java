@@ -390,7 +390,7 @@ public class Activiti6Test extends AbstractActvitiTest {
     assertEquals("G", tasks.get(3).getName());
 
     // Completing C, D, A and G in that order to give the engine a bit of
-    // excercise
+    // exercise
     taskService.complete(taskService.createTaskQuery().taskName("C").singleResult().getId());
     tasks = taskService.createTaskQuery().processInstanceId(processInstance.getId()).orderByTaskName().asc().list();
     assertEquals(3, tasks.size());

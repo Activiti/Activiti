@@ -192,7 +192,7 @@ public class TaskDefinition implements Serializable {
       // In order to prevent having to merge the "all" tasklisteners with
       // the ones for a specific eventName,
       // every time "getTaskListener()" is called, we add the listener
-      // explicitally to the individual lists
+      // explicitly to the individual lists
       this.addTaskListener(TaskListener.EVENTNAME_CREATE, taskListener);
       this.addTaskListener(TaskListener.EVENTNAME_ASSIGNMENT, taskListener);
       this.addTaskListener(TaskListener.EVENTNAME_COMPLETE, taskListener);

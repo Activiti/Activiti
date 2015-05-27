@@ -72,7 +72,7 @@ public interface IdentityService {
   Group newGroup(String groupId);
 
   /**
-   * Creates a {@link GroupQuery} thats allows to programmatically query the groups.
+   * Creates a {@link GroupQuery} that allows to programmatically query the groups.
    */
   GroupQuery createGroupQuery();
 

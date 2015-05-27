@@ -181,7 +181,7 @@ public class TaskEventsTest extends PluggableActivitiTestCase {
    * Check events related to process instance delete and standalone task delete.
    */
   @Deployment(resources = { "org/activiti/engine/test/api/runtime/oneTaskProcess.bpmn20.xml" })
-  public void testDeleteEventDoesNotDispathComplete() throws Exception {
+  public void testDeleteEventDoesNotDispatchComplete() throws Exception {
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
     assertNotNull(processInstance);
     listener.clearEventsReceived();

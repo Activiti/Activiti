@@ -150,14 +150,14 @@ public abstract class ReflectUtil {
   }
 
   /**
-   * Returns the field of the given object or null if it doesnt exist.
+   * Returns the field of the given object or null if it doesn't exist.
    */
   public static Field getField(String fieldName, Object object) {
     return getField(fieldName, object.getClass());
   }
 
   /**
-   * Returns the field of the given class or null if it doesnt exist.
+   * Returns the field of the given class or null if it doesn't exist.
    */
   public static Field getField(String fieldName, Class<?> clazz) {
     Field field = null;
@@ -166,7 +166,7 @@ public abstract class ReflectUtil {
     } catch (SecurityException e) {
       throw new ActivitiException("not allowed to access field " + field + " on class " + clazz.getCanonicalName());
     } catch (NoSuchFieldException e) {
-      // for some reason getDeclaredFields doesnt search superclasses
+      // for some reason getDeclaredFields doesn't search superclasses
       // (which getFields() does ... but that gives only public fields)
       Class<?> superClass = clazz.getSuperclass();
       if (superClass != null) {
@@ -193,7 +193,7 @@ public abstract class ReflectUtil {
   public static Method getSetter(String fieldName, Class<?> clazz, Class<?> fieldType) {
     String setterName = "set" + Character.toTitleCase(fieldName.charAt(0)) + fieldName.substring(1, fieldName.length());
     try {
-      // Using getMathods(), getMathod(...) expects exact parameter type
+      // Using getMethods(), getMethod(...) expects exact parameter type
       // matching and ignores inheritance-tree.
       Method[] methods = clazz.getMethods();
       for (Method method : methods) {

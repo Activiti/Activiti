@@ -43,7 +43,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
   String errorCodeVariableStr;
   Boolean waitFlag;
   Boolean redirectErrorFlag;
-  Boolean cleanEnvBoolan;
+  Boolean cleanEnvBoolean;
   String directoryStr;
 
   private void readFields(ActivityExecution execution) {
@@ -62,7 +62,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
 
     waitFlag = waitStr == null || waitStr.equals("true");
     redirectErrorFlag = redirectErrorStr != null && redirectErrorStr.equals("true");
-    cleanEnvBoolan = cleanEnvStr != null && cleanEnvStr.equals("true");
+    cleanEnvBoolean = cleanEnvStr != null && cleanEnvStr.equals("true");
     directoryStr = getStringFromField(directory, execution);
 
   }
@@ -89,7 +89,7 @@ public class ShellActivityBehavior extends AbstractBpmnActivityBehavior {
 
     try {
       processBuilder.redirectErrorStream(redirectErrorFlag);
-      if (cleanEnvBoolan) {
+      if (cleanEnvBoolean) {
         Map<String, String> env = processBuilder.environment();
         env.clear();
       }

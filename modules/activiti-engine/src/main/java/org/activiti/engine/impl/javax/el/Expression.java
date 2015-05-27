@@ -19,7 +19,7 @@ import java.io.Serializable;
 import java.util.Hashtable;
 
 /**
- * Base class for the expression subclasses {@link ValueExpression} and {@link MethodExpression}, implementing characterstics common to both. All expressions must implement the equals() and hashCode()
+ * Base class for the expression subclasses {@link ValueExpression} and {@link MethodExpression}, implementing characteristics common to both. All expressions must implement the equals() and hashCode()
  * methods so that two expressions can be compared for equality. They are redefined abstract in this class to force their implementation in subclasses. All expressions must also be Serializable so
  * that they can be saved and restored. Expressions are also designed to be immutable so that only one instance needs to be created for any given expression String / {@link FunctionMapper}. This
  * allows a container to pre-create expressions and not have to reparse them each time they are evaluated.
@@ -63,7 +63,7 @@ public abstract class Expression implements Serializable {
 
   /**
    * Returns whether this expression was created from only literal text. This method must return true if and only if the expression string this expression was created from contained no unescaped EL
-   * delimeters (${...} or #{...}).
+   * delimiters (${...} or #{...}).
    * 
    * @return true if this expression was created from only literal text; false otherwise.
    */

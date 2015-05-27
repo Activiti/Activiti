@@ -193,7 +193,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     // boundary events
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
-      fail("a new job must be prepared because there are undefinite number of repeats 1 hour interval");
+      fail("a new job must be prepared because there are indefinite number of repeats 1 hour interval");
     } catch (Exception ex) {
       // expected exception because a new job is prepared
     }
@@ -201,7 +201,7 @@ public class BoundaryTimerNonInterruptingEventTest extends PluggableActivitiTest
     moveByMinutes(60);
     try {
       waitForJobExecutorToProcessAllJobs(2000, 100);
-      fail("a new job must be prepared because there are undefinite number of repeats 1 hour interval");
+      fail("a new job must be prepared because there are indefinite number of repeats 1 hour interval");
     } catch (Exception ex) {
       // expected exception because a new job is prepared
     }

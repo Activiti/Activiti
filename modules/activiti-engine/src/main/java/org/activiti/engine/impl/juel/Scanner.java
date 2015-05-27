@@ -453,7 +453,7 @@ public class Scanner {
   }
 
   /**
-   * Scan next token. After calling this method, {@link #getToken()} and {@link #getPosition()} can be used to retreive the token's image and input position.
+   * Scan next token. After calling this method, {@link #getToken()} and {@link #getPosition()} can be used to retrieve the token's image and input position.
    * 
    * @return scanned token
    */

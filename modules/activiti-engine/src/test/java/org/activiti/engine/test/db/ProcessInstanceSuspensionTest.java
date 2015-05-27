@@ -25,7 +25,7 @@ import org.activiti.engine.test.Deployment;
 public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/db/oneJobProcess.bpmn20.xml" })
-  public void testJobsNotVisisbleToAcquisitionIfInstanceSuspended() {
+  public void testJobsNotVisibleToAcquisitionIfInstanceSuspended() {
 
     ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().singleResult();
     ProcessInstance pi = runtimeService.startProcessInstanceByKey(pd.getKey());
@@ -50,7 +50,7 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
   }
 
   @Deployment(resources = { "org/activiti/engine/test/db/oneJobProcess.bpmn20.xml" })
-  public void testJobsNotVisisbleToAcquisitionIfDefinitionSuspended() {
+  public void testJobsNotVisibleToAcquisitionIfDefinitionSuspended() {
 
     ProcessDefinition pd = repositoryService.createProcessDefinitionQuery().singleResult();
     runtimeService.startProcessInstanceByKey(pd.getKey());
@@ -84,16 +84,16 @@ public class ProcessInstanceSuspensionTest extends PluggableActivitiTestCase {
     tomorrow.add(Calendar.DAY_OF_YEAR, 1);
     processEngineConfiguration.getClock().setCurrentTime(tomorrow.getTime());
 
-    // Check if timer is eligable to be executed, when process in not yet
+    // Check if timer is eligible to be executed, when process in not yet
     // suspended
     CommandExecutor commandExecutor = processEngineConfiguration.getCommandExecutor();
     List<TimerEntity> jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
     assertEquals(1, jobs.size());
 
-    // Suspend process instancd
+    // Suspend process instance
     runtimeService.suspendProcessInstanceById(procInst.getId());
 
-    // Check if the timer is NOT aquired, even though the duedate is reached
+    // Check if the timer is NOT acquired, even though the duedate is reached
     jobs = commandExecutor.execute(new GetUnlockedTimersByDuedateCmd(processEngineConfiguration.getClock().getCurrentTime(), new Page(0, 1)));
     assertEquals(0, jobs.size());
   }

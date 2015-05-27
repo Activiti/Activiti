@@ -255,7 +255,7 @@ public class StartAuthorizationTest extends PluggableActivitiTestCase {
       List<User> authorizedUsers = identityService.createUserQuery().potentialStarter(latestProcessDef.getId()).list();
       assertEquals(0, authorizedUsers.size());
 
-      // user1 and user2 are potential Startes of Process2
+      // user1 and user2 are potential starters of Process2
       latestProcessDef = repositoryService.createProcessDefinitionQuery().processDefinitionKey("process2").singleResult();
       authorizedUsers = identityService.createUserQuery().potentialStarter(latestProcessDef.getId()).orderByUserId().asc().list();
       assertEquals(2, authorizedUsers.size());

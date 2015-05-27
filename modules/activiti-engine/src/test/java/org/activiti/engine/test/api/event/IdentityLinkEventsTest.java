@@ -137,7 +137,7 @@ public class IdentityLinkEventsTest extends PluggableActivitiTestCase {
     taskService.addCandidateGroup(task.getId(), "sales");
 
     // Three events are received, since the user link on the task also
-    // creates an involvment in the process
+    // creates an involvement in the process
     assertEquals(6, listener.getEventsReceived().size());
 
     ActivitiEntityEvent event = (ActivitiEntityEvent) listener.getEventsReceived().get(0);
