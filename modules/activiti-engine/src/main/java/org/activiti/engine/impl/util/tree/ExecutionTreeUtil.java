@@ -49,7 +49,37 @@ public class ExecutionTreeUtil {
         executionTree.setRoot(new ExecutionTreeNode(executionEntity));
       }
     }
+    
+    fillExecutionTree(executionTree, parentMapping);
+    return executionTree;
+  }
+  
+  public static ExecutionTree buildExecutionTreeForProcessInstance(Collection<ExecutionEntity> executions) {
+    ExecutionTree executionTree = new ExecutionTree();
+    if (executions.size() == 0) {
+      return executionTree;
+    }
 
+    // Map the executions to their parents. Catch and store the root element (process instance execution) while were at it
+    Map<String, List<ExecutionEntity>> parentMapping = new HashMap<String, List<ExecutionEntity>>();
+    for (ExecutionEntity executionEntity : executions) {
+      String parentId = executionEntity.getParentId();
+      
+      if (parentId != null) {
+        if (!parentMapping.containsKey(parentId)) {
+          parentMapping.put(parentId, new ArrayList<ExecutionEntity>());
+        }
+        parentMapping.get(parentId).add(executionEntity);
+      } else {
+        executionTree.setRoot(new ExecutionTreeNode(executionEntity));
+      }
+    }
+    
+    fillExecutionTree(executionTree, parentMapping);
+    return executionTree;
+  }
+
+  protected static void fillExecutionTree(ExecutionTree executionTree, Map<String, List<ExecutionEntity>> parentMapping) {
     if (executionTree.getRoot() == null) {
       throw new ActivitiException("Programmatic error: the list of passed executions in the argument of the method should contain the process instance execution");
     }
@@ -78,8 +108,6 @@ public class ExecutionTreeUtil {
 
       }
     }
-
-    return executionTree;
   }
 
 }

@@ -61,7 +61,6 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     currentProcessDefinition.setName(process.getName());
     currentProcessDefinition.setCategory(bpmnParse.getBpmnModel().getTargetNamespace());
     currentProcessDefinition.setDescription(process.getDocumentation());
-    currentProcessDefinition.setProperty(PROPERTYNAME_DOCUMENTATION, process.getDocumentation()); // Kept for backwards compatibility. See ACT-1020
     currentProcessDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     currentProcessDefinition.setDeploymentId(bpmnParse.getDeployment().getId());
     createEventListeners(bpmnParse, process.getEventListeners(), currentProcessDefinition);
@@ -79,27 +78,24 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     if (LOGGER.isDebugEnabled()) {
       LOGGER.debug("Parsing process {}", currentProcessDefinition.getKey());
     }
-
-    bpmnParse.setCurrentScope(currentProcessDefinition);
-
+    
     bpmnParse.processFlowElements(process.getFlowElements());
     processArtifacts(bpmnParse, process.getArtifacts());
 
     // parse out any data objects from the template in order to set up the
     // necessary process variables
-    Map<String, Object> variables = processDataObjects(bpmnParse, process.getDataObjects(), currentProcessDefinition);
+    Map<String, Object> variables = processDataObjects(bpmnParse, process.getDataObjects());
     if (null != currentProcessDefinition.getVariables()) {
       currentProcessDefinition.getVariables().putAll(variables);
     } else {
       currentProcessDefinition.setVariables(variables);
     }
-
-    bpmnParse.removeCurrentScope();
-
+    
     if (process.getIoSpecification() != null) {
       IOSpecification ioSpecification = createIOSpecification(bpmnParse, process.getIoSpecification());
       currentProcessDefinition.setIoSpecification(ioSpecification);
     }
+
     return currentProcessDefinition;
   }
 
@@ -112,13 +108,17 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
 
         if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equals(eventListener.getImplementationType())) {
           currentProcessDefinition.getEventSupport().addEventListener(bpmnParse.getListenerFactory().createClassDelegateEventListener(eventListener), types);
+        
         } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equals(eventListener.getImplementationType())) {
           currentProcessDefinition.getEventSupport().addEventListener(bpmnParse.getListenerFactory().createDelegateExpressionEventListener(eventListener), types);
+        
         } else if (ImplementationType.IMPLEMENTATION_TYPE_THROW_SIGNAL_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_GLOBAL_SIGNAL_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_MESSAGE_EVENT.equals(eventListener.getImplementationType())
             || ImplementationType.IMPLEMENTATION_TYPE_THROW_ERROR_EVENT.equals(eventListener.getImplementationType())) {
+        
           currentProcessDefinition.getEventSupport().addEventListener(bpmnParse.getListenerFactory().createEventThrowingEventListener(eventListener), types);
+        
         } else {
           LOGGER.warn("Unsupported implementation type for EventListener: " + eventListener.getImplementationType() + " for element " + bpmnParse.getCurrentFlowElement().getId());
         }

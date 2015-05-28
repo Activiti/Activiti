@@ -15,7 +15,6 @@ package org.activiti.standalone.parsing;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 
 /**
  * @author Joram Barrez

@@ -25,11 +25,7 @@ import org.activiti.engine.impl.persistence.entity.CompensateEventSubscriptionEn
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntity;
 import org.activiti.engine.impl.persistence.entity.EventSubscriptionEntityManager;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.PvmProcessDefinition;
-import org.activiti.engine.impl.pvm.PvmScope;
-import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.apache.commons.collections.CollectionUtils;
 
@@ -37,82 +33,6 @@ import org.apache.commons.collections.CollectionUtils;
  * @author Tijs Rademakers
  */
 public class ScopeUtil {
-
-  /**
-   * Find the next scope execution in the parent execution hierarchy That method works different than
-   * {@link #findScopeExecutionForScope(org.activiti.engine.impl.persistence.entity.ExecutionEntity, org.activiti.engine.impl.pvm.PvmScope)} which returns the most outer scope execution.
-   * 
-   * @param execution
-   *          the execution from which to start the search
-   * @return the next scope execution in the parent execution hierarchy
-   */
-  public static ActivityExecution findScopeExecution(ActivityExecution execution) {
-
-    while (!execution.isScope()) {
-      execution = execution.getParent();
-    }
-
-    if (execution.isConcurrent()) {
-      execution = execution.getParent();
-    }
-
-    return execution;
-
-  }
-
-  /**
-   * returns the top-most execution sitting in an activity part of the scope defined by 'scopeActivitiy'.
-   */
-  public static ExecutionEntity findScopeExecutionForScope(ExecutionEntity execution, PvmScope scopeActivity) {
-
-    // TODO: this feels hacky!
-
-    if (scopeActivity instanceof PvmProcessDefinition) {
-      return execution.getProcessInstance();
-
-    } else {
-
-      ActivityImpl currentActivity = execution.getActivity();
-      ExecutionEntity candidateExecution = null;
-      ExecutionEntity originalExecution = execution;
-
-      while (execution != null) {
-        currentActivity = execution.getActivity();
-        if (scopeActivity.getActivities().contains(currentActivity) // does not search rec
-            || scopeActivity.equals(currentActivity)) {
-          
-          // found a candidate execution; lets still check whether we
-          // find an execution which is also sitting in an activity part of this scope higher up the hierarchy
-          candidateExecution = execution;
-          
-        } else if (currentActivity != null && currentActivity.contains((ActivityImpl) scopeActivity)) {
-          // now we're too "high", the candidate execution is the one.
-          break;
-        }
-
-        execution = execution.getParent();
-      }
-
-      // if activity is scope, we need to get the parent at least:
-      if (originalExecution == candidateExecution && originalExecution.getActivity().isScope() && !originalExecution.getActivity().equals(scopeActivity)) {
-        candidateExecution = originalExecution.getParent();
-      }
-
-      return candidateExecution;
-    }
-  }
-
-  public static ActivityImpl findInParentScopesByBehaviorType(ActivityImpl activity, Class<? extends ActivityBehavior> behaviorType) {
-    while (activity != null) {
-      for (ActivityImpl childActivity : activity.getActivities()) {
-        if (behaviorType.isAssignableFrom(childActivity.getActivityBehavior().getClass())) {
-          return childActivity;
-        }
-      }
-      activity = activity.getParentActivity();
-    }
-    return null;
-  }
 
   /**
    * we create a separate execution for each compensation handler invocation.

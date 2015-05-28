@@ -13,19 +13,22 @@
 
 package org.activiti.engine.impl.pvm;
 
+import org.activiti.engine.repository.ProcessDefinition;
+
+
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
  */
-public interface ReadOnlyProcessDefinition extends PvmScope {
+public interface ReadOnlyProcessDefinition extends ProcessDefinition {
 
+  String getId();
+  
   String getName();
 
   String getKey();
 
   String getDescription();
-
-  PvmActivity getInitial();
 
   String getDiagramResourceName();
 }

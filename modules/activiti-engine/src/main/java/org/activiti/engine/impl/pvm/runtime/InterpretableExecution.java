@@ -13,37 +13,18 @@
 
 package org.activiti.engine.impl.pvm.runtime;
 
-import org.activiti.engine.impl.pvm.PvmProcessElement;
-import org.activiti.engine.impl.pvm.PvmProcessInstance;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 
 /**
  * @author Tom Baeyens
  */
-public interface InterpretableExecution extends ActivityExecution, ExecutionListenerExecution, PvmProcessInstance {
-
-  void take(PvmTransition transition);
-
-  void take(PvmTransition transition, boolean fireActivityCompletedEvent);
+public interface InterpretableExecution extends ActivityExecution {
 
   void setEventName(String eventName);
-
-  void setEventSource(PvmProcessElement element);
 
   Integer getExecutionListenerIndex();
 
   void setExecutionListenerIndex(Integer executionListenerIndex);
-
-  ProcessDefinitionImpl getProcessDefinition();
-
-  void setActivity(ActivityImpl activity);
-
-  void performOperation(AtomicOperation etomicOperation);
 
   boolean isScope();
 
@@ -65,15 +46,9 @@ public interface InterpretableExecution extends ActivityExecution, ExecutionList
 
   boolean isDeleteRoot();
 
-  TransitionImpl getTransition();
-
-  void setTransition(TransitionImpl object);
-
   void initialize();
 
   void setParent(InterpretableExecution parent);
-
-  void setProcessDefinition(ProcessDefinitionImpl processDefinitionImpl);
 
   void setProcessInstance(InterpretableExecution processInstance);
 

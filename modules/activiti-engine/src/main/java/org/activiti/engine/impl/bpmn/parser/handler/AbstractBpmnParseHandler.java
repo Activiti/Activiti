@@ -12,25 +12,20 @@
  */
 package org.activiti.engine.impl.bpmn.parser.handler;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.activiti.bpmn.model.ActivitiListener;
-import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.Artifact;
 import org.activiti.bpmn.model.Association;
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.DataSpec;
-import org.activiti.bpmn.model.EventDefinition;
 import org.activiti.bpmn.model.EventGateway;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.Gateway;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.IntermediateCatchEvent;
 import org.activiti.bpmn.model.SequenceFlow;
@@ -41,10 +36,6 @@ import org.activiti.engine.impl.bpmn.data.DataRef;
 import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.bpmn.data.ItemDefinition;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
-import org.activiti.engine.impl.bpmn.parser.EventSubscriptionDeclaration;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
 import org.activiti.engine.parse.BpmnParseHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,48 +69,6 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
 
   protected abstract void executeParse(BpmnParse bpmnParse, T element);
 
-  protected ActivityImpl findActivity(BpmnParse bpmnParse, String id) {
-    return bpmnParse.getCurrentScope().findActivity(id);
-  }
-
-  public ActivityImpl createActivityOnCurrentScope(BpmnParse bpmnParse, FlowElement flowElement, String xmlLocalName) {
-    return createActivityOnScope(bpmnParse, flowElement, xmlLocalName, bpmnParse.getCurrentScope());
-  }
-
-  public ActivityImpl createActivityOnScope(BpmnParse bpmnParse, FlowElement flowElement, String xmlLocalName, ScopeImpl scopeElement) {
-    if (logger.isDebugEnabled()) {
-      logger.debug("Parsing activity {}", flowElement.getId());
-    }
-
-    ActivityImpl activity = scopeElement.createActivity(flowElement.getId());
-    bpmnParse.setCurrentActivity(activity);
-
-    activity.setProperty("name", flowElement.getName());
-    activity.setProperty("documentation", flowElement.getDocumentation());
-    if (flowElement instanceof Activity) {
-      Activity modelActivity = (Activity) flowElement;
-      activity.setProperty("default", modelActivity.getDefaultFlow());
-      
-    } else if (flowElement instanceof Gateway) {
-      activity.setProperty("default", ((Gateway) flowElement).getDefaultFlow());
-    }
-    activity.setProperty("type", xmlLocalName);
-
-    return activity;
-  }
-
-  protected void createExecutionListenersOnScope(BpmnParse bpmnParse, List<ActivitiListener> activitiListenerList, ScopeImpl scope) {
-    for (ActivitiListener activitiListener : activitiListenerList) {
-      scope.addExecutionListener(activitiListener.getEvent(), createExecutionListener(bpmnParse, activitiListener));
-    }
-  }
-
-  protected void createExecutionListenersOnTransition(BpmnParse bpmnParse, List<ActivitiListener> activitiListenerList, TransitionImpl transition) {
-    for (ActivitiListener activitiListener : activitiListenerList) {
-      transition.addExecutionListener(createExecutionListener(bpmnParse, activitiListener));
-    }
-  }
-
   protected ExecutionListener createExecutionListener(BpmnParse bpmnParse, ActivitiListener activitiListener) {
     ExecutionListener executionListener = null;
 
@@ -131,27 +80,6 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
       executionListener = bpmnParse.getListenerFactory().createDelegateExpressionExecutionListener(activitiListener);
     }
     return executionListener;
-  }
-
-  @SuppressWarnings("unchecked")
-  protected void addEventSubscriptionDeclaration(BpmnParse bpmnParse, EventSubscriptionDeclaration subscription, EventDefinition parsedEventDefinition, ScopeImpl scope) {
-    List<EventSubscriptionDeclaration> eventDefinitions = (List<EventSubscriptionDeclaration>) scope.getProperty(PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION);
-    if (eventDefinitions == null) {
-      eventDefinitions = new ArrayList<EventSubscriptionDeclaration>();
-      scope.setProperty(PROPERTYNAME_EVENT_SUBSCRIPTION_DECLARATION, eventDefinitions);
-    } else {
-      // if this is a message event, validate that it is the only one with
-      // the provided name for this scope
-      if (subscription.getEventType().equals("message")) {
-        for (EventSubscriptionDeclaration eventDefinition : eventDefinitions) {
-          if (eventDefinition.getEventType().equals("message") && eventDefinition.getEventName().equals(subscription.getEventName()) && eventDefinition.isStartEvent() == subscription.isStartEvent()) {
-
-            logger.warn("Cannot have more than one message event subscription with name '" + subscription.getEventName() + "' for scope '" + scope.getId() + "'");
-          }
-        }
-      }
-    }
-    eventDefinitions.add(subscription);
   }
 
   protected String getPrecedingEventBasedGateway(BpmnParse bpmnParse, IntermediateCatchEvent event) {
@@ -236,7 +164,7 @@ public abstract class AbstractBpmnParseHandler<T extends BaseElement> implements
      */
   }
 
-  protected Map<String, Object> processDataObjects(BpmnParse bpmnParse, Collection<ValuedDataObject> dataObjects, ScopeImpl scope) {
+  protected Map<String, Object> processDataObjects(BpmnParse bpmnParse, Collection<ValuedDataObject> dataObjects) {
     Map<String, Object> variablesMap = new HashMap<String, Object>();
     // convert data objects to process variables
     if (dataObjects != null) {

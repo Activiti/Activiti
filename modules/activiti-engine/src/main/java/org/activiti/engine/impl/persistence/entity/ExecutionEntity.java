@@ -14,10 +14,8 @@
 package org.activiti.engine.impl.persistence.entity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,31 +26,13 @@ import org.activiti.engine.EngineServices;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
-import org.activiti.engine.impl.bpmn.behavior.UserTaskActivityBehavior;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.DbSqlSession;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.AsyncContinuationJobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
-import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmException;
-import org.activiti.engine.impl.pvm.PvmExecution;
-import org.activiti.engine.impl.pvm.PvmProcessElement;
-import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
-import org.activiti.engine.impl.pvm.delegate.ExecutionListenerExecution;
-import org.activiti.engine.impl.pvm.delegate.TriggerableActivityBehavior;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
-import org.activiti.engine.impl.pvm.process.TransitionImpl;
-import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
-import org.activiti.engine.impl.pvm.runtime.OutgoingExecution;
 import org.activiti.engine.impl.util.BitMaskUtil;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.runtime.Execution;
@@ -68,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * @author Saeid Mirzaei
  */
 
-public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, ExecutionListenerExecution, Execution, PvmExecution, ProcessInstance, InterpretableExecution, PersistentObject,
+public class ExecutionEntity extends VariableScopeImpl implements ActivityExecution, Execution, ProcessInstance, InterpretableExecution, PersistentObject,
     HasRevision {
 
   private static final long serialVersionUID = 1L;
@@ -84,20 +64,7 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   // current position
   // /////////////////////////////////////////////////////////
 
-  protected ProcessDefinitionImpl processDefinition;
-
   protected FlowElement currentFlowElement;
-
-  /** current activity */
-  protected ActivityImpl activity;
-
-  /** current transition. is null when there is no transition being taken. */
-  protected TransitionImpl transition = null;
-
-  /**
-   * transition that will be taken. is null when there is no transition being taken.
-   */
-  protected TransitionImpl transitionBeingTaken = null;
 
   /**
    * the process instance. this is the root of the execution tree. the processInstance of a process instance is a self reference.
@@ -146,7 +113,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   // ///////////////////////////////////////////////////////////////////
 
   protected String eventName;
-  protected PvmProcessElement eventSource;
   protected int executionListenerIndex = 0;
 
   // associated entities /////////////////////////////////////////////////////
@@ -172,19 +138,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    * @see {@link #takeAll(List, List)} {@link OutgoingExecution}
    */
   protected ExecutionEntity replacedBy;
-
-  // atomic operations
-  // ////////////////////////////////////////////////////////
-
-  /**
-   * next operation. process execution is in fact runtime interpretation of the process model. each operation is a logical unit of interpretation of the process. so sequentially processing the
-   * operations drives the interpretation or execution of a process.
-   * 
-   * @see AtomicOperation
-   * @see #performOperation(AtomicOperation)
-   */
-  protected AtomicOperation nextOperation;
-  protected boolean isOperating = false;
 
   protected int revision = 1;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
@@ -336,11 +289,9 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   // scopes
   // ///////////////////////////////////////////////////////////////////
 
-  @SuppressWarnings("unchecked")
   public void initialize() {
     log.debug("initializing {}", this);
 
-    ScopeImpl scope = getScopeObject();
     ensureParentInitialized();
 
     // initialize the lists of referenced objects (prevents db queries)
@@ -349,21 +300,8 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     jobs = new ArrayList<JobEntity>();
     tasks = new ArrayList<TaskEntity>();
 
-    // Cached entity-state initialized to null, all bits are zero,
-    // indicating NO entities present
+    // Cached entity-state initialized to null, all bits are zero, indicating NO entities present
     cachedEntityState = 0;
-
-    List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) scope.getProperty(BpmnParse.PROPERTYNAME_TIMER_DECLARATION);
-    if (timerDeclarations != null) {
-      for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
-        TimerEntity timer = timerDeclaration.prepareTimerEntity(this);
-        Context.getCommandContext().getJobEntityManager().schedule(timer);
-      }
-    }
-  }
-
-  public void start() {
-    performOperation(AtomicOperation.PROCESS_START);
   }
 
   public void destroy() {
@@ -381,98 +319,10 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public void end() {
     isActive = false;
     isEnded = true;
-    performOperation(AtomicOperation.ACTIVITY_END);
   }
 
   public void setEnded(boolean isEnded) {
     this.isEnded = isEnded;
-  }
-
-  // methods that translate to operations
-  // /////////////////////////////////////
-
-  public void signal(String signalName, Object signalData) {
-    ensureActivityInitialized();
-    TriggerableActivityBehavior activityBehavior = (TriggerableActivityBehavior) activity.getActivityBehavior();
-    try {
-      String signalledActivityId = activity.getId();
-      activityBehavior.trigger(this, signalName, signalData);
-
-      // If needed, dispatch an event indicating an activity was signalled
-      boolean isUserTask = (activityBehavior instanceof UserTaskActivityBehavior)
-          || ((activityBehavior instanceof MultiInstanceActivityBehavior) && ((MultiInstanceActivityBehavior) activityBehavior).getInnerActivityBehavior() instanceof UserTaskActivityBehavior);
-
-      if (!isUserTask && Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        Context
-            .getProcessEngineConfiguration()
-            .getEventDispatcher()
-            .dispatchEvent(
-                ActivitiEventBuilder.createSignalEvent(ActivitiEventType.ACTIVITY_SIGNALED, signalledActivityId, signalName, signalData, this.id, this.processInstanceId, this.processDefinitionId));
-      }
-
-    } catch (RuntimeException e) {
-      throw e;
-    } catch (Exception e) {
-      throw new PvmException("couldn't process signal '" + signalName + "' on activity '" + activity.getId() + "': " + e.getMessage(), e);
-    }
-  }
-
-  public void take(PvmTransition transition) {
-    take(transition, true);
-  }
-
-  /**
-   * @param fireActivityCompletionEvent
-   *          This method can be called from other places (like {@link #takeAll(List, List)}), where the event is already fired. In that case, false is passed an no second event is fired.
-   */
-  public void take(PvmTransition transition, boolean fireActivityCompletionEvent) {
-
-    if (fireActivityCompletionEvent) {
-      fireActivityCompletedEvent();
-    }
-
-    if (this.transition != null) {
-      throw new PvmException("already taking a transition");
-    }
-    if (transition == null) {
-      throw new PvmException("transition is null");
-    }
-    setActivity((ActivityImpl) transition.getSource());
-    setTransition((TransitionImpl) transition);
-    performOperation(AtomicOperation.TRANSITION_NOTIFY_LISTENER_END);
-  }
-
-  public void executeActivity(PvmActivity activity) {
-    setActivity((ActivityImpl) activity);
-    performOperation(AtomicOperation.ACTIVITY_START);
-  }
-
-  public List<ActivityExecution> findInactiveConcurrentExecutions(PvmActivity activity) {
-    List<ActivityExecution> inactiveConcurrentExecutionsInActivity = new ArrayList<ActivityExecution>();
-    List<ActivityExecution> otherConcurrentExecutions = new ArrayList<ActivityExecution>();
-    if (isConcurrent()) {
-      List<? extends ActivityExecution> concurrentExecutions = getParent().getAllChildExecutions();
-      for (ActivityExecution concurrentExecution : concurrentExecutions) {
-        if (concurrentExecution.getActivity() == activity) {
-          if (!concurrentExecution.isActive()) {
-            inactiveConcurrentExecutionsInActivity.add(concurrentExecution);
-          }
-        } else {
-          otherConcurrentExecutions.add(concurrentExecution);
-        }
-      }
-    } else {
-      if (!isActive()) {
-        inactiveConcurrentExecutionsInActivity.add(this);
-      } else {
-        otherConcurrentExecutions.add(this);
-      }
-    }
-    if (log.isDebugEnabled()) {
-      log.debug("inactive concurrent executions in '{}': {}", activity, inactiveConcurrentExecutionsInActivity);
-      log.debug("other concurrent executions: {}", otherConcurrentExecutions);
-    }
-    return inactiveConcurrentExecutionsInActivity;
   }
 
   protected List<ExecutionEntity> getAllChildExecutions() {
@@ -482,112 +332,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       childExecutions.addAll(childExecution.getAllChildExecutions());
     }
     return childExecutions;
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public void takeAll(List<PvmTransition> transitions, List<ActivityExecution> recyclableExecutions) {
-
-    fireActivityCompletedEvent();
-
-    transitions = new ArrayList<PvmTransition>(transitions);
-    recyclableExecutions = (recyclableExecutions != null ? new ArrayList<ActivityExecution>(recyclableExecutions) : new ArrayList<ActivityExecution>());
-
-    if (recyclableExecutions.size() > 1) {
-      for (ActivityExecution recyclableExecution : recyclableExecutions) {
-        if (((ExecutionEntity) recyclableExecution).isScope()) {
-          throw new PvmException("joining scope executions is not allowed");
-        }
-      }
-    }
-
-    ExecutionEntity concurrentRoot = ((isConcurrent && !isScope) ? getParent() : this);
-    List<ExecutionEntity> concurrentActiveExecutions = new ArrayList<ExecutionEntity>();
-    List<ExecutionEntity> concurrentInActiveExecutions = new ArrayList<ExecutionEntity>();
-    for (ExecutionEntity execution : concurrentRoot.getExecutions()) {
-      if (execution.isActive()) {
-        concurrentActiveExecutions.add(execution);
-      } else {
-        concurrentInActiveExecutions.add(execution);
-      }
-    }
-
-    if (log.isDebugEnabled()) {
-      log.debug("transitions to take concurrent: {}", transitions);
-      log.debug("active concurrent executions: {}", concurrentActiveExecutions);
-    }
-
-    if ((transitions.size() == 1) && (concurrentActiveExecutions.isEmpty()) && allExecutionsInSameActivity(concurrentInActiveExecutions)) {
-
-      List<ExecutionEntity> recyclableExecutionImpls = (List) recyclableExecutions;
-      recyclableExecutions.remove(concurrentRoot);
-      for (ExecutionEntity prunedExecution : recyclableExecutionImpls) {
-        // End the pruned executions if necessary.
-        // Some recyclable executions are inactivated (joined
-        // executions)
-        // Others are already ended (end activities)
-
-        log.debug("pruning execution {}", prunedExecution);
-        prunedExecution.remove();
-      }
-
-      log.debug("activating the concurrent root {} as the single path of execution going forward", concurrentRoot);
-      concurrentRoot.setActive(true);
-      concurrentRoot.setActivity(activity);
-      concurrentRoot.setConcurrent(false);
-      concurrentRoot.take(transitions.get(0), false);
-
-    } else {
-
-      List<OutgoingExecution> outgoingExecutions = new ArrayList<OutgoingExecution>();
-
-      recyclableExecutions.remove(concurrentRoot);
-
-      log.debug("recyclable executions for reuse: {}", recyclableExecutions);
-
-      // first create the concurrent executions
-      while (!transitions.isEmpty()) {
-        PvmTransition outgoingTransition = transitions.remove(0);
-
-        ExecutionEntity outgoingExecution = null;
-        if (recyclableExecutions.isEmpty()) {
-          outgoingExecution = concurrentRoot.createExecution();
-          log.debug("new {} with parent {} created to take transition {}", outgoingExecution, outgoingExecution.getParent(), outgoingTransition);
-        } else {
-          outgoingExecution = (ExecutionEntity) recyclableExecutions.remove(0);
-          log.debug("recycled {} to take transition {}", outgoingExecution, outgoingTransition);
-        }
-
-        outgoingExecution.setActive(true);
-        outgoingExecution.setScope(false);
-        outgoingExecution.setConcurrent(true);
-        outgoingExecution.setTransitionBeingTaken((TransitionImpl) outgoingTransition);
-        outgoingExecutions.add(new OutgoingExecution(outgoingExecution, outgoingTransition, true));
-      }
-
-      // prune the executions that are not recycled
-      for (ActivityExecution prunedExecution : recyclableExecutions) {
-        log.debug("pruning execution {}", prunedExecution);
-        prunedExecution.end();
-      }
-
-      // then launch all the concurrent executions
-      for (OutgoingExecution outgoingExecution : outgoingExecutions) {
-        outgoingExecution.take(false);
-      }
-    }
-  }
-
-  protected void fireActivityCompletedEvent() {
-    // TODO: REMOVE
-//    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-//      Context
-//          .getProcessEngineConfiguration()
-//          .getEventDispatcher()
-//          .dispatchEvent(
-//              ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, getActivity() != null ? getActivity().getId() : getActivityId(),
-//                  getActivity() != null ? (String) getActivity().getProperties().get("name") : null, getId(), getProcessInstanceId(), getProcessDefinitionId(),
-//                  getActivity() != null ? (String) getActivity().getProperties().get("type") : null));
-//    }
   }
 
   protected boolean allExecutionsInSameActivity(List<ExecutionEntity> executions) {
@@ -604,45 +348,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
       }
     }
     return true;
-  }
-
-  public void performOperation(AtomicOperation executionOperation) {
-    if (executionOperation.isAsync(this)) {
-      scheduleAtomicOperationAsync(executionOperation);
-    } else {
-      performOperationSync(executionOperation);
-    }
-  }
-
-  protected void performOperationSync(AtomicOperation executionOperation) {
-    Context.getCommandContext().performOperation(executionOperation, this);
-  }
-
-  protected void scheduleAtomicOperationAsync(AtomicOperation executionOperation) {
-    MessageEntity message = new MessageEntity();
-    message.setExecution(this);
-    message.setExclusive(getActivity().isExclusive());
-    message.setJobHandlerType(AsyncContinuationJobHandler.TYPE);
-    // At the moment, only AtomicOperationTransitionCreateScope can be
-    // performed asynchronously,
-    // so there is no need to pass it to the handler
-
-    GregorianCalendar expireCal = new GregorianCalendar();
-    ProcessEngineConfiguration processEngineConfig = Context.getCommandContext().getProcessEngineConfiguration();
-    expireCal.setTime(processEngineConfig.getClock().getCurrentTime());
-    expireCal.add(Calendar.SECOND, processEngineConfig.getLockTimeAsyncJobWaitTime());
-    message.setLockExpirationTime(expireCal.getTime());
-
-    // Inherit tenant id (if applicable)
-    if (getTenantId() != null) {
-      message.setTenantId(getTenantId());
-    }
-
-    Context.getCommandContext().getJobEntityManager().send(message);
-  }
-
-  public boolean isActive(String activityId) {
-    return findExecution(activityId) != null;
   }
 
   public void inactivate() {
@@ -667,20 +372,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   public void setExecutions(List<ExecutionEntity> executions) {
     this.executions = executions;
-  }
-
-  /** searches for an execution positioned in the given activity */
-  public ExecutionEntity findExecution(String activityId) {
-    if ((getActivity() != null) && (getActivity().getId().equals(activityId))) {
-      return this;
-    }
-    for (ExecutionEntity nestedExecution : getExecutions()) {
-      ExecutionEntity result = nestedExecution.findExecution(activityId);
-      if (result != null) {
-        return result;
-      }
-    }
-    return null;
   }
 
   public List<String> findActiveActivityIds() {
@@ -716,12 +407,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   // process definition
   // ///////////////////////////////////////////////////////
-
-  /** ensures initialization and returns the process definition. */
-  public ProcessDefinitionImpl getProcessDefinition() {
-    ensureProcessDefinitionInitialized();
-    return processDefinition;
-  }
 
   public void setProcessDefinitionId(String processDefinitionId) {
     this.processDefinitionId = processDefinitionId;
@@ -763,21 +448,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     this.deploymentId = deploymentId;
   }
 
-  /**
-   * for setting the process definition, this setter must be used as subclasses can override
-   */
-  protected void ensureProcessDefinitionInitialized() {
-    if ((processDefinition == null) && (processDefinitionId != null)) {
-      ProcessDefinitionEntity deployedProcessDefinition = ProcessDefinitionUtil.getProcessDefinitionEntity(processDefinitionId);
-      setProcessDefinition(deployedProcessDefinition);
-    }
-  }
-
-  public void setProcessDefinition(ProcessDefinitionImpl processDefinition) {
-    this.processDefinition = processDefinition;
-    this.processDefinitionId = processDefinition.getId();
-  }
-
   // process instance
   // /////////////////////////////////////////////////////////
 
@@ -802,35 +472,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   public boolean isProcessInstanceType() {
     return parentId == null;
-  }
-
-  // activity
-  // /////////////////////////////////////////////////////////////////
-
-  /** ensures initialization and returns the activity */
-  public ActivityImpl getActivity() {
-    ensureActivityInitialized();
-    return activity;
-  }
-
-  /**
-   * must be called before the activity member field or getActivity() is called
-   */
-  protected void ensureActivityInitialized() {
-    if ((activity == null) && (activityId != null)) {
-      activity = getProcessDefinition().findActivity(activityId);
-    }
-  }
-
-  public void setActivity(ActivityImpl activity) {
-    this.activity = activity;
-    if (activity != null) {
-      this.activityId = activity.getId();
-      this.activityName = (String) activity.getProperty("name");
-    } else {
-      this.activityId = null;
-      this.activityName = null;
-    }
   }
 
   // parent
@@ -914,16 +555,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   // scopes
   // ///////////////////////////////////////////////////////////////////
-
-  protected ScopeImpl getScopeObject() {
-    ScopeImpl scope = null;
-    if (isProcessInstanceType()) {
-      scope = getProcessDefinition();
-    } else {
-      scope = getActivity();
-    }
-    return scope;
-  }
 
   public boolean isScope() {
     return isScope;
@@ -1228,7 +859,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   public void deleteCascade(String deleteReason) {
     this.deleteReason = deleteReason;
     this.deleteRoot = true;
-    performOperation(AtomicOperation.DELETE_CASCADE);
   }
 
   public int getRevisionNext() {
@@ -1473,28 +1103,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     return activityId;
   }
 
-  public TransitionImpl getTransition() {
-    return transition;
-  }
-
-  public void setTransition(TransitionImpl transition) {
-    this.transition = transition;
-    if (replacedBy != null) {
-      replacedBy.setTransition(transition);
-    }
-  }
-
-  public TransitionImpl getTransitionBeingTaken() {
-    return transitionBeingTaken;
-  }
-
-  public void setTransitionBeingTaken(TransitionImpl transitionBeingTaken) {
-    this.transitionBeingTaken = transitionBeingTaken;
-    if (replacedBy != null) {
-      replacedBy.setTransitionBeingTaken(transitionBeingTaken);
-    }
-  }
-
   public Integer getExecutionListenerIndex() {
     return executionListenerIndex;
   }
@@ -1529,14 +1137,6 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
 
   public void setEventName(String eventName) {
     this.eventName = eventName;
-  }
-
-  public PvmProcessElement getEventSource() {
-    return eventSource;
-  }
-
-  public void setEventSource(PvmProcessElement eventSource) {
-    this.eventSource = eventSource;
   }
 
   public String getDeleteReason() {

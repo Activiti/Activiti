@@ -58,8 +58,6 @@ import org.activiti.engine.impl.persistence.entity.TableDataManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
-import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.logging.LogMDC;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +76,6 @@ public class CommandContext {
   protected Map<Class<?>, SessionFactory> sessionFactories;
   protected Map<Class<?>, Session> sessions = new HashMap<Class<?>, Session>();
   protected Throwable exception = null;
-  protected LinkedList<AtomicOperation> nextOperations = new LinkedList<AtomicOperation>();
   protected ProcessEngineConfigurationImpl processEngineConfiguration;
   protected FailedJobCommandFactory failedJobCommandFactory;
   protected List<CommandContextCloseListener> closeListeners;
@@ -87,28 +84,6 @@ public class CommandContext {
   protected Agenda agenda = new Agenda(this);
   protected Map<String, ExecutionEntity> involvedExecutions = new HashMap<String, ExecutionEntity>(1); // The executions involved with the command
   protected LinkedList<Object> resultStack = new LinkedList<Object>();; // needs to be a stack, as JavaDelegates can do api calls again
-  
-  public void performOperation(AtomicOperation executionOperation, InterpretableExecution execution) {
-    nextOperations.add(executionOperation);
-    if (nextOperations.size() == 1) {
-      try {
-        Context.setExecutionContext(execution);
-        while (!nextOperations.isEmpty()) {
-          AtomicOperation currentOperation = nextOperations.removeFirst();
-          if (log.isTraceEnabled()) {
-            log.trace("AtomicOperation: {} on {}", currentOperation, this);
-          }
-          if (execution.getReplacedBy() == null) {
-            currentOperation.execute(execution);
-          } else {
-            currentOperation.execute(execution.getReplacedBy());
-          }
-        }
-      } finally {
-        Context.removeExecutionContext();
-      }
-    }
-  }
 
   public CommandContext(Command<?> command, ProcessEngineConfigurationImpl processEngineConfiguration) {
     this.command = command;

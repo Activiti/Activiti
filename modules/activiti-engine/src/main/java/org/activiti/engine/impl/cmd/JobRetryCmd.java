@@ -30,13 +30,10 @@ import org.activiti.engine.impl.cfg.TransactionContext;
 import org.activiti.engine.impl.cfg.TransactionState;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.jobexecutor.*;
-import org.activiti.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti.engine.impl.jobexecutor.JobAddedNotification;
+import org.activiti.engine.impl.jobexecutor.JobExecutor;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.persistence.entity.TimerEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,44 +141,13 @@ public class JobRetryCmd implements Command<Object> {
     return newDateCal.getTime();
   }
 
-  private ActivityImpl getCurrentActivity(CommandContext commandContext, JobEntity job) {
-    String type = job.getJobHandlerType();
-    ActivityImpl activity = null;
-
-    if (TimerExecuteNestedActivityJobHandler.TYPE.equals(type) || TimerCatchIntermediateEventJobHandler.TYPE.equals(type)) {
-      ExecutionEntity execution = fetchExecutionEntity(commandContext, job.getExecutionId());
-      if (execution != null) {
-        activity = execution.getProcessDefinition().findActivity(job.getJobHandlerConfiguration());
-      }
-    } else if (TimerStartEventJobHandler.TYPE.equals(type)) {
-      DeploymentManager deploymentManager = commandContext.getProcessEngineConfiguration().getDeploymentManager();
-      String processId = job.getJobHandlerConfiguration();
-      if (job instanceof TimerEntity) {
-        processId = TimerEventHandler.getActivityIdFromConfiguration(job.getJobHandlerConfiguration());
-      }
-      ProcessDefinitionEntity processDefinition = deploymentManager.findDeployedLatestProcessDefinitionByKeyAndTenantId(processId, job.getTenantId());
-      if (processDefinition != null) {
-        activity = processDefinition.getInitial();
-      }
-    } else if (AsyncContinuationJobHandler.TYPE.equals(type)) {
-      ExecutionEntity execution = fetchExecutionEntity(commandContext, job.getExecutionId());
-      if (execution != null) {
-        activity = execution.getActivity();
-      }
-    } else {
-      // nop, because activity type is not supported
-    }
-
-    return activity;
-  }
-
-  private String getExceptionStacktrace() {
+  protected String getExceptionStacktrace() {
     StringWriter stringWriter = new StringWriter();
     exception.printStackTrace(new PrintWriter(stringWriter));
     return stringWriter.toString();
   }
 
-  private ExecutionEntity fetchExecutionEntity(CommandContext commandContext, String executionId) {
+  protected ExecutionEntity fetchExecutionEntity(CommandContext commandContext, String executionId) {
     if (executionId == null) {
       return null;
     }

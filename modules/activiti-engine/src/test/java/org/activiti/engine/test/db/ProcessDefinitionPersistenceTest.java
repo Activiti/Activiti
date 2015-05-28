@@ -49,8 +49,7 @@ public class ProcessDefinitionPersistenceTest extends PluggableActivitiTestCase 
 
     assertEquals(procDefId, processDefinition.getId());
     assertEquals("Process One", processDefinition.getName());
-    assertEquals("the first process", processDefinition.getProperty("documentation"));
-
+    
     Process process = repositoryService.getBpmnModel(processDefinition.getId()).getMainProcess();
     StartEvent startElement = (StartEvent) process.getFlowElement("start");
     assertNotNull(startElement);

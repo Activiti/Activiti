@@ -910,7 +910,7 @@ public class DbSqlSession implements Session {
   protected void flushRegularDeletes(boolean dispatchEvent) {
   
     // TODO: Should we re-enable this?
-//    List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
+    //List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
 
     List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperationsTRYOUT(deleteOperations);
     

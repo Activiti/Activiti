@@ -17,7 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.BpmnError;
@@ -27,9 +29,9 @@ import org.activiti.engine.impl.bpmn.behavior.AbstractBpmnActivityBehavior;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
-import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.spring.SpringProcessEngineConfiguration;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
@@ -114,7 +116,7 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
   }
 
   protected ActivitiEndpoint createEndpoint(ActivityExecution execution) {
-    String uri = "activiti://" + getProcessDefinitionKey(execution) + ":" + execution.getActivity().getId();
+    String uri = "activiti://" + getProcessDefinitionKey(execution) + ":" + execution.getCurrentActivityId();
     return getEndpoint(uri);
   }
 
@@ -171,12 +173,16 @@ public abstract class CamelBehavior extends AbstractBpmnActivityBehavior impleme
   }
 
   protected String getProcessDefinitionKey(ActivityExecution execution) {
-    PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
-    return processDefinition.getKey();
+    Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+    return process.getId();
   }
 
   protected boolean isASync(ActivityExecution execution) {
-    return execution.getActivity().isAsync();
+    boolean async = false;
+    if (execution.getCurrentFlowElement() instanceof Activity) {
+      async = ((Activity) execution.getCurrentFlowElement()).isAsynchronous();
+    }
+    return async;
   }
 
   protected void setAppropriateCamelContext(ActivityExecution execution) {

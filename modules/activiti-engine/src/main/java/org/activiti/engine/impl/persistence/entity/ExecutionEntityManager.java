@@ -74,7 +74,7 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
   }
 
   public List<ExecutionEntity> findChildExecutionsByProcessInstanceId(final String processInstanceId) {
-    return getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
+    return getList("selectChildExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
       @Override
       public boolean isRetained(ExecutionEntity executionEntity) {
         return executionEntity.getProcessInstanceId() != null && executionEntity.getProcessInstanceId().equals(processInstanceId) && executionEntity.getParentId() != null;
@@ -134,6 +134,16 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       }); 
       return ExecutionTreeUtil.buildExecutionTree(executions);
   }
+  
+  public ExecutionTree findExecutionTreeInCurrentProcessInstance(final String processInstanceId) {
+    List<ExecutionEntity> executions = getList("selectExecutionsByProcessInstanceId", processInstanceId, new CachedEntityMatcher<ExecutionEntity>() {
+      @Override
+      public boolean isRetained(ExecutionEntity entity) {
+        return entity.getProcessInstanceId() != null && entity.getProcessInstanceId().equals(processInstanceId);
+      }
+    }); 
+    return ExecutionTreeUtil.buildExecutionTreeForProcessInstance(executions);
+}
 
   @SuppressWarnings("unchecked")
   public List<ProcessInstance> findProcessInstanceAndVariablesByQueryCriteria(ProcessInstanceQueryImpl executionQuery) {
@@ -244,7 +254,6 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       processInstanceExecution.setTenantId(tenantId);
     }
 
-
     // Store in database
     Context.getCommandContext().getExecutionEntityManager().insert(processInstanceExecution, false);
 
@@ -315,12 +324,36 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
         deleteProcessInstanceCascade(subExecutionEntity.getSubProcessInstance(), deleteReason, deleteHistory);
       }
     }
+    
+    IdentityLinkEntityManager identityLinkEntityManager = Context.getCommandContext().getIdentityLinkEntityManager();
+    List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(execution.getId());
+    for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
+      identityLinkEntityManager.delete(identityLinkEntity);
+    }
 
     CommandContext commandContext = Context.getCommandContext();
     commandContext.getTaskEntityManager().deleteTasksByProcessInstanceId(execution.getId(), deleteReason, deleteHistory);
 
     // delete the execution BEFORE we delete the history, otherwise we will
     // produce orphan HistoricVariableInstance instances
+    
+    ExecutionTree executionTree = findExecutionTreeInCurrentProcessInstance(execution.getProcessInstanceId());
+    ExecutionTreeNode executionTreeNode = null;
+    if (executionTree.getRoot() != null) {
+      executionTreeNode = executionTree.getTreeNode(execution.getId());
+    }
+    
+    if (executionTreeNode == null) {
+      return;
+    }
+    
+    Iterator<ExecutionTreeNode> iterator = executionTreeNode.leafsFirstIterator();
+    while (iterator.hasNext()) {
+      ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
+      deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, false);
+    }
+    
+    deleteExecutionAndRelatedData(execution);
     execution.deleteCascade(deleteReason);
 
     if (deleteHistory) {
