@@ -57,7 +57,7 @@ public class ExclusiveGatewayActivityBehavior extends GatewayActivityBehavior {
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
           ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, exclusiveGateway.getId(), exclusiveGateway.getName(), execution.getId(),
-              execution.getProcessInstanceId(), execution.getProcessDefinitionId(), parseActivityType(exclusiveGateway)));
+              execution.getProcessInstanceId(), execution.getProcessDefinitionId(), exclusiveGateway));
     }
 
     SequenceFlow outgoingSequenceFlow = null;

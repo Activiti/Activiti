@@ -133,7 +133,7 @@ public class ContinueProcessOperation extends AbstractOperation {
       if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_STARTED, flowNode.getId(), flowNode.getName(), execution.getId(),
-                execution.getProcessInstanceId(), execution.getProcessDefinitionId(), parseActivityType(flowNode)));
+                execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
       }
       
       try {
@@ -155,6 +155,25 @@ public class ContinueProcessOperation extends AbstractOperation {
     // Execution listener
     if (CollectionUtils.isNotEmpty(sequenceFlow.getExecutionListeners())) {
       executeExecutionListeners(sequenceFlow, null, ExecutionListener.EVENTNAME_TAKE, true); // True -> any event type will be treated as 'take' for a sequence flow
+    }
+    
+    // Firing event that transition is being taken       
+    if(Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      FlowElement sourceFlowElement = sequenceFlow.getSourceFlowElement();
+      FlowElement targetFlowElement = sequenceFlow.getTargetFlowElement();
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+        ActivitiEventBuilder.createSequenceFlowTakenEvent(
+            (ExecutionEntity) execution,
+            ActivitiEventType.SEQUENCEFLOW_TAKEN, 
+            sequenceFlow.getId(),
+            sourceFlowElement != null ? sourceFlowElement.getId() : null, 
+            sourceFlowElement != null ? (String) sourceFlowElement.getName() : null, 
+            sourceFlowElement != null ? sourceFlowElement.getClass().getName() : null,
+            sourceFlowElement != null ? ((FlowNode) sourceFlowElement).getBehavior(): null,
+            targetFlowElement != null ? targetFlowElement.getId() : null, 
+            targetFlowElement != null ? targetFlowElement.getName() : null, 
+            targetFlowElement != null ? targetFlowElement.getClass().getName() : null,
+            targetFlowElement != null ? ((FlowNode) targetFlowElement).getBehavior(): null));
     }
 
     FlowElement targetFlowElement = sequenceFlow.getTargetFlowElement();

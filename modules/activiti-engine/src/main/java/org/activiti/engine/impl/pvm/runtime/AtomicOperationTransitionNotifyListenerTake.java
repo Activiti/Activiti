@@ -69,15 +69,15 @@ public class AtomicOperationTransitionNotifyListenerTake implements AtomicOperat
       execution.setActivity(nextScope);
 
       // Firing event that transition is being taken
-      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-        Context
-            .getProcessEngineConfiguration()
-            .getEventDispatcher()
-            .dispatchEvent(
-                ActivitiEventBuilder.createSequenceFlowTakenEvent(ActivitiEventType.SEQUENCEFLOW_TAKEN, transition.getId(), activity.getId(), (String) activity.getProperties().get("name"),
-                    (String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName(), nextScope.getId(), (String) nextScope.getProperties().get("name"),
-                    (String) nextScope.getProperties().get("type"), nextScope.getActivityBehavior().getClass().getCanonicalName()));
-      }
+//      if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+//        Context
+//            .getProcessEngineConfiguration()
+//            .getEventDispatcher()
+//            .dispatchEvent(
+//                ActivitiEventBuilder.createSequenceFlowTakenEvent(ActivitiEventType.SEQUENCEFLOW_TAKEN, transition.getId(), activity.getId(), (String) activity.getProperties().get("name"),
+//                    (String) activity.getProperties().get("type"), activity.getActivityBehavior().getClass().getCanonicalName(), nextScope.getId(), (String) nextScope.getProperties().get("name"),
+//                    (String) nextScope.getProperties().get("type"), nextScope.getActivityBehavior().getClass().getCanonicalName()));
+//      }
 
       execution.performOperation(TRANSITION_CREATE_SCOPE);
     }

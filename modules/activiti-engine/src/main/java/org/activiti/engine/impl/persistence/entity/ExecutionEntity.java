@@ -578,15 +578,16 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
   }
 
   protected void fireActivityCompletedEvent() {
-    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context
-          .getProcessEngineConfiguration()
-          .getEventDispatcher()
-          .dispatchEvent(
-              ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, getActivity() != null ? getActivity().getId() : getActivityId(),
-                  getActivity() != null ? (String) getActivity().getProperties().get("name") : null, getId(), getProcessInstanceId(), getProcessDefinitionId(),
-                  getActivity() != null ? (String) getActivity().getProperties().get("type") : null));
-    }
+    // TODO: REMOVE
+//    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+//      Context
+//          .getProcessEngineConfiguration()
+//          .getEventDispatcher()
+//          .dispatchEvent(
+//              ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, getActivity() != null ? getActivity().getId() : getActivityId(),
+//                  getActivity() != null ? (String) getActivity().getProperties().get("name") : null, getId(), getProcessInstanceId(), getProcessDefinitionId(),
+//                  getActivity() != null ? (String) getActivity().getProperties().get("type") : null));
+//    }
   }
 
   protected boolean allExecutionsInSameActivity(List<ExecutionEntity> executions) {

@@ -14,6 +14,8 @@ package org.activiti.engine.delegate.event.impl;
 
 import java.util.Map;
 
+import org.activiti.bpmn.model.FlowElement;
+import org.activiti.bpmn.model.FlowNode;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.event.ActivitiActivityCancelledEvent;
 import org.activiti.engine.delegate.event.ActivitiActivityEvent;
@@ -31,6 +33,7 @@ import org.activiti.engine.delegate.event.ActivitiSignalEvent;
 import org.activiti.engine.delegate.event.ActivitiVariableEvent;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.context.ExecutionContext;
+import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.variable.VariableType;
 import org.activiti.engine.repository.ProcessDefinition;
@@ -99,21 +102,27 @@ public class ActivitiEventBuilder {
     return newEvent;
   }
 
-  public static ActivitiSequenceFlowTakenEvent createSequenceFlowTakenEvent(ActivitiEventType type, String sequenceFlowId, String sourceActivityId, String sourceActivityName,
-      String sourceActivityType, String sourceActivityBehaviorClass, String targetActivityId, String targetActivityName, String targetActivityType, String targetActivityBehaviorClass) {
+  public static ActivitiSequenceFlowTakenEvent createSequenceFlowTakenEvent(ExecutionEntity executionEntity, ActivitiEventType type, 
+      String sequenceFlowId, String sourceActivityId, String sourceActivityName, String sourceActivityType, Object sourceActivityBehavior, 
+      String targetActivityId, String targetActivityName, String targetActivityType, Object targetActivityBehavior) {
+    
     ActivitiSequenceFlowTakenEventImpl newEvent = new ActivitiSequenceFlowTakenEventImpl(type);
 
-    populateEventWithCurrentContext(newEvent);
+    if (executionEntity != null) {
+      newEvent.setExecutionId(executionEntity.getId());
+      newEvent.setProcessInstanceId(executionEntity.getProcessInstanceId());
+      newEvent.setProcessDefinitionId(executionEntity.getProcessDefinitionId());
+    }
 
     newEvent.setId(sequenceFlowId);
     newEvent.setSourceActivityId(sourceActivityId);
     newEvent.setSourceActivityName(sourceActivityName);
     newEvent.setSourceActivityType(sourceActivityType);
-    newEvent.setSourceActivityBehaviorClass(sourceActivityBehaviorClass);
+    newEvent.setSourceActivityBehaviorClass(sourceActivityBehavior != null ? sourceActivityBehavior.getClass().getCanonicalName() : null);
     newEvent.setTargetActivityId(targetActivityId);
     newEvent.setTargetActivityName(targetActivityName);
     newEvent.setTargetActivityType(targetActivityType);
-    newEvent.setTargetActivityBehaviorClass(targetActivityBehaviorClass);
+    newEvent.setTargetActivityBehaviorClass(targetActivityBehavior != null ? targetActivityBehavior.getClass().getCanonicalName() :  null);
 
     return newEvent;
   }
@@ -172,7 +181,7 @@ public class ActivitiEventBuilder {
   }
 
   public static ActivitiActivityEvent createActivityEvent(ActivitiEventType type, String activityId, String activityName, String executionId, 
-      String processInstanceId, String processDefinitionId, String activityType) {
+      String processInstanceId, String processDefinitionId, FlowElement flowElement) {
     
     ActivitiActivityEventImpl newEvent = new ActivitiActivityEventImpl(type);
     newEvent.setActivityId(activityId);
@@ -180,8 +189,23 @@ public class ActivitiEventBuilder {
     newEvent.setExecutionId(executionId);
     newEvent.setProcessDefinitionId(processDefinitionId);
     newEvent.setProcessInstanceId(processInstanceId);
-    newEvent.setActivityType(activityType);
+    
+    if (flowElement instanceof FlowNode) {
+      FlowNode flowNode = (FlowNode) flowElement;
+      newEvent.setActivityType(parseActivityType(flowNode));
+      Object behaviour = flowNode.getBehavior();
+      if (behaviour != null) {
+        newEvent.setBehaviorClass(behaviour.getClass().getCanonicalName());
+      }
+    }
+    
     return newEvent;
+  }
+  
+  protected static String parseActivityType(FlowNode flowNode) {
+    String elementType = flowNode.getClass().getSimpleName();
+    elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
+    return elementType;
   }
 
   public static ActivitiActivityCancelledEvent createActivityCancelledEvent(String activityId, String activityName, String executionId, String processInstanceId, String processDefinitionId,

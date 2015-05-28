@@ -49,12 +49,12 @@ public class AtomicOperationActivityEnd extends AbstractEventAtomicOperation {
     if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
       if (execution instanceof ExecutionEntity) {
         ExecutionEntity executionEntity = (ExecutionEntity) execution;
-        Context
-            .getProcessEngineConfiguration()
-            .getEventDispatcher()
-            .dispatchEvent(
-                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, execution.getActivity().getId(), (String) executionEntity.getActivity().getProperties().get("name"),
-                    execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), (String) executionEntity.getActivity().getProperties().get("type")));
+//        Context
+//            .getProcessEngineConfiguration()
+//            .getEventDispatcher()
+//            .dispatchEvent(
+//                ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, execution.getActivity().getId(), (String) executionEntity.getActivity().getProperties().get("name"),
+//                    execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), (String) executionEntity.getActivity().getProperties().get("type")));
       }
     }
 

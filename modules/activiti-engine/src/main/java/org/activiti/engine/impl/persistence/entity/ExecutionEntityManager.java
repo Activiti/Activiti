@@ -415,7 +415,9 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     Iterator<ExecutionTreeNode> iterator = executionTreeNode.leafsFirstIterator();
     while (iterator.hasNext()) {
       ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
-      if (childExecutionEntity.isActive() && !childExecutionEntity.isEnded()) {
+      if (childExecutionEntity.isActive() 
+          && !childExecutionEntity.isEnded()
+          && !executionTreeNode.getExecutionEntity().getId().equals(childExecutionEntity.getId())) { // Not the root of the tree is deleted here
         deleteExecutionAndRelatedData(childExecutionEntity, deleteReason, cancel);
       }
     }

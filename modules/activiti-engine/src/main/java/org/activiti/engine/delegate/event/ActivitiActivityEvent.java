@@ -34,4 +34,10 @@ public interface ActivitiActivityEvent extends ActivitiEvent {
    * @return the type of the activity (if set during parsing).
    */
   String getActivityType();
+  
+  /**
+   * @return the behaviourclass of the activity (if it could be determined)
+   */
+  String getBehaviorClass();
+  
 }

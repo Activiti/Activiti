@@ -92,7 +92,7 @@ public class TakeOutgoingSequenceFlowsOperation extends AbstractOperation {
       if (execution.getId().equals(execution.getProcessInstanceId()) == false) {
         Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
             ActivitiEventBuilder.createActivityEvent(ActivitiEventType.ACTIVITY_COMPLETED, flowNode.getId(), flowNode.getName(),
-                execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), parseActivityType(flowNode)));
+                execution.getId(), execution.getProcessInstanceId(), execution.getProcessDefinitionId(), flowNode));
       }
       
       leaveFlowNode(flowNode);

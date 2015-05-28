@@ -122,7 +122,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
 
       // Activity started
-      if (i == 2 || i == 5 || i == 8 || i == 12) {
+      if (i == 2 || i == 5 || i == 9 || i == 12) {
         assertNotNull(entry.getType());
         assertEquals(entry.getType(), ActivitiEventType.ACTIVITY_STARTED.name());
         assertNotNull(entry.getProcessDefinitionId());
@@ -131,8 +131,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
         assertNotNull(entry.getExecutionId());
         assertNull(entry.getTaskId());
 
-        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
-        });
+        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {});
         assertNotNull(data.get(Fields.ACTIVITY_ID));
         assertNotNull(data.get(Fields.PROCESS_DEFINITION_ID));
         assertNotNull(data.get(Fields.PROCESS_INSTANCE_ID));
@@ -167,7 +166,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
 
       // Sequence flow taken
-      if (i == 4 || i == 7 || i == 11) {
+      if (i == 4 || i == 7 || i == 8) {
         assertNotNull(entry.getType());
         assertEquals(entry.getType(), ActivitiEventType.SEQUENCEFLOW_TAKEN.name());
         assertNotNull(entry.getProcessDefinitionId());
@@ -214,7 +213,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
 
       // Tasks
-      if (i == 10 || i == 14) {
+      if (i == 11 || i == 14) {
 
         assertNotNull(entry.getType());
         assertEquals(entry.getType(), ActivitiEventType.TASK_CREATED.name());
@@ -246,7 +245,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
 
       }
 
-      if (i == 9 || i == 13) {
+      if (i == 10 || i == 13) {
 
         assertNotNull(entry.getType());
         assertEquals(entry.getType(), ActivitiEventType.TASK_ASSIGNED.name());
@@ -440,7 +439,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
     }
 
     assertEquals(15, eventLogEntries.size());
-
+    
     for (int i = 0; i < eventLogEntries.size(); i++) {
 
       EventLogEntry entry = eventLogEntries.get(i);
@@ -461,7 +460,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
 
       // Activity started
-      if (i == 2 || i == 5 || i == 8 || i == 12) {
+      if (i == 2 || i == 5 || i == 9 || i == 12) {
         assertEquals(entry.getType(), ActivitiEventType.ACTIVITY_STARTED.name());
         Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
         });
@@ -477,7 +476,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
 
       // Sequence flow taken
-      if (i == 4 || i == 7 || i == 11) {
+      if (i == 4 || i == 7 || i == 8) {
         assertEquals(entry.getType(), ActivitiEventType.SEQUENCEFLOW_TAKEN.name());
         Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
         });
@@ -493,14 +492,14 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
 
       // Tasks
-      if (i == 10 || i == 14) {
+      if (i == 11 || i == 14) {
         assertEquals(entry.getType(), ActivitiEventType.TASK_CREATED.name());
         Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
         });
         assertNull(data.get(Fields.TENANT_ID));
       }
 
-      if (i == 9 || i == 13) {
+      if (i == 10 || i == 13) {
         assertEquals(entry.getType(), ActivitiEventType.TASK_ASSIGNED.name());
         Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
         });

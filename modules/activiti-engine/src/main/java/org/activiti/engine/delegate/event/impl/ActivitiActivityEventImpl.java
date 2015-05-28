@@ -26,6 +26,7 @@ public class ActivitiActivityEventImpl extends ActivitiEventImpl implements Acti
   protected String activityId;
   protected String activityName;
   protected String activityType;
+  protected String behaviorClass;
 
   public ActivitiActivityEventImpl(ActivitiEventType type) {
     super(type);
@@ -56,4 +57,13 @@ public class ActivitiActivityEventImpl extends ActivitiEventImpl implements Acti
   public void setActivityType(String activityType) {
     this.activityType = activityType;
   }
+
+  public String getBehaviorClass() {
+    return behaviorClass;
+  }
+
+  public void setBehaviorClass(String behaviorClass) {
+    this.behaviorClass = behaviorClass;
+  }
+  
 }

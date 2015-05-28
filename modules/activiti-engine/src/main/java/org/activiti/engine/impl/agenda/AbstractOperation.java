@@ -100,12 +100,6 @@ public abstract class AbstractOperation implements Runnable {
     }
   }
   
-  protected String parseActivityType(FlowNode flowNode) {
-    String elementType = flowNode.getClass().getSimpleName();
-    elementType = elementType.substring(0, 1).toLowerCase() + elementType.substring(1);
-    return elementType;
-  }
-
   /* TODO: Should following methods be moved to the entityManager */
 
   public CommandContext getCommandContext() {
