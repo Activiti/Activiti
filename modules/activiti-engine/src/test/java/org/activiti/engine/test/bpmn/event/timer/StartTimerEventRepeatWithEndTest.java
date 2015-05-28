@@ -121,9 +121,9 @@ public class StartTimerEventRepeatWithEndTest extends PluggableActivitiTestCase 
 
     // ADVANCE THE CLOCK SO THE END DATE WILL BE REACHED
     // 12 dec (last execution)
-    moveByMinutes(60 * 24);
+    moveByMinutes((60 * 24) + 100);
     try {
-      waitForJobExecutorToProcessAllJobs(2000, 200);
+      waitForJobExecutorToProcessAllJobs(10000, 200);
     } catch (Exception e) {
       fail("Because the endDate is reached it will not be executed other jobs");
     }

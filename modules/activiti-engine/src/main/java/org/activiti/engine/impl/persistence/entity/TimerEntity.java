@@ -116,6 +116,7 @@ public class TimerEntity extends JobEntity {
         Date newTimer = calculateNextTimer();
         if (newTimer != null && isValidTime(newTimer)) {
           TimerEntity te = new TimerEntity(this);
+          System.out.println("-------AAP--->" + newTimer);
           te.setDuedate(newTimer);
           Context.getCommandContext().getJobEntityManager().schedule(te);
         }

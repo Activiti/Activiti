@@ -88,14 +88,14 @@ public class StartTimerEventRepeatWithoutEndDateTest extends PluggableActivitiTe
     // No tasks
     List<Task> tasks = taskService.createTaskQuery().list();
     assertEquals(0, tasks.size());
-
+    
     // ADVANCE THE CLOCK
     // advance the clock after 9 days from starting the process ->
     // the system will execute the pending job and will create a new one
     // (day by day)
-    moveByMinutes(9 * 60 * 24);
+    moveByMinutes((9 * 60 * 24));
     try {
-      waitForJobExecutorToProcessAllJobs(2000L, 200);
+      waitForJobExecutorToProcessAllJobs(10000L, 200);
       fail("there must be a pending job because the endDate is not reached yet");
     } catch (Exception e) {
       // expected failure

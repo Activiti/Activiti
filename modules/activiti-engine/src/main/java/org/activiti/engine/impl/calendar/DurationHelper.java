@@ -141,7 +141,7 @@ public class DurationHelper {
     for (int i = 0; i < maxLoops + 1 && !cur.after(date); i++) {
       cur = add(cur, period);
     }
-
+    
     return cur.before(date) ? date : TimeZoneUtil.convertToTimeZone(cur, clockReader.getCurrentTimeZone());
   }
 

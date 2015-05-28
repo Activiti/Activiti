@@ -14,6 +14,7 @@ package org.activiti.engine.impl.jobexecutor;
  */
 
 import org.activiti.engine.delegate.Expression;
+import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.util.json.JSONException;
 import org.activiti.engine.impl.util.json.JSONObject;
 
@@ -21,6 +22,14 @@ public class TimerEventHandler {
 
   public static final String PROPERTYNAME_TIMER_ACTIVITY_ID = "activityId";
   public static final String PROPERTYNAME_END_DATE_EXPRESSION = "timerEndDate";
+  
+  public static String createConfiguration(String id, String endDate) {
+    Expression endDateExpression = null;
+    if (endDate != null && !"".equals(endDate)) {
+      endDateExpression = Context.getCommandContext().getProcessEngineConfiguration().getExpressionManager().createExpression(endDate);
+    }
+    return createConfiguration(id, endDateExpression);
+  }
 
   public static String createConfiguration(String id, Expression endDate) {
     JSONObject cfgJson = new JSONObject();
