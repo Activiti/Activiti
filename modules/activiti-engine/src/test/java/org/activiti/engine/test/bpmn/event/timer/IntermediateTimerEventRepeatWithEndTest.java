@@ -104,9 +104,7 @@ public class IntermediateTimerEventRepeatWithEndTest extends PluggableActivitiTe
 
     // Test Timer Catch Intermediate Events after completing Task C
     taskService.complete(task.getId());
-    nextTimeCal.add(Calendar.MINUTE, 30); // after 1H 30 minutes from
-                                          // process start, the timer will
-                                          // trigger because of the endDate
+    nextTimeCal.add(Calendar.MINUTE, 60); 
     processEngineConfiguration.getClock().setCurrentTime(nextTimeCal.getTime());
 
     waitForJobExecutorToProcessAllJobs(2000, 500);
