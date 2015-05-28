@@ -12,11 +12,9 @@ public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl implem
   protected String sourceActivityId;
   protected String sourceActivityName;
   protected String sourceActivityType;
-  protected String sourceActivityBehaviorClass;
   protected String targetActivityId;
   protected String targetActivityName;
   protected String targetActivityType;
-  protected String targetActivityBehaviorClass;
 
   public ActivitiSequenceFlowTakenEventImpl(ActivitiEventType type) {
     super(type);
@@ -54,14 +52,6 @@ public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl implem
     this.sourceActivityType = sourceActivityType;
   }
 
-  public String getSourceActivityBehaviorClass() {
-    return sourceActivityBehaviorClass;
-  }
-
-  public void setSourceActivityBehaviorClass(String sourceActivityBehaviorClass) {
-    this.sourceActivityBehaviorClass = sourceActivityBehaviorClass;
-  }
-
   public String getTargetActivityId() {
     return targetActivityId;
   }
@@ -85,13 +75,4 @@ public class ActivitiSequenceFlowTakenEventImpl extends ActivitiEventImpl implem
   public void setTargetActivityType(String targetActivityType) {
     this.targetActivityType = targetActivityType;
   }
-
-  public String getTargetActivityBehaviorClass() {
-    return targetActivityBehaviorClass;
-  }
-
-  public void setTargetActivityBehaviorClass(String targetActivityBehaviorClass) {
-    this.targetActivityBehaviorClass = targetActivityBehaviorClass;
-  }
-
 }

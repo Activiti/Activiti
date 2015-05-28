@@ -100,7 +100,8 @@ public class ActivitiEventBuilder {
   }
 
   public static ActivitiSequenceFlowTakenEvent createSequenceFlowTakenEvent(ActivitiEventType type, String sequenceFlowId, String sourceActivityId, String sourceActivityName,
-      String sourceActivityType, String sourceActivityBehaviorClass, String targetActivityId, String targetActivityName, String targetActivityType, String targetActivityBehaviorClass) {
+      String sourceActivityType, String targetActivityId, String targetActivityName, String targetActivityType) {
+    
     ActivitiSequenceFlowTakenEventImpl newEvent = new ActivitiSequenceFlowTakenEventImpl(type);
 
     populateEventWithCurrentContext(newEvent);
@@ -109,12 +110,10 @@ public class ActivitiEventBuilder {
     newEvent.setSourceActivityId(sourceActivityId);
     newEvent.setSourceActivityName(sourceActivityName);
     newEvent.setSourceActivityType(sourceActivityType);
-    newEvent.setSourceActivityBehaviorClass(sourceActivityBehaviorClass);
     newEvent.setTargetActivityId(targetActivityId);
     newEvent.setTargetActivityName(targetActivityName);
     newEvent.setTargetActivityType(targetActivityType);
-    newEvent.setTargetActivityBehaviorClass(targetActivityBehaviorClass);
-
+    
     return newEvent;
   }
 

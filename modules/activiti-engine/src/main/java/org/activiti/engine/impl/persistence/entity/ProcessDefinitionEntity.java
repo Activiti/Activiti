@@ -14,6 +14,7 @@ package org.activiti.engine.impl.persistence.entity;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,20 +22,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.Expression;
-import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.delegate.event.impl.ActivitiEventSupport;
-import org.activiti.engine.impl.bpmn.parser.BpmnParse;
+import org.activiti.engine.impl.bpmn.data.IOSpecification;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.db.HasRevision;
 import org.activiti.engine.impl.db.PersistentObject;
-import org.activiti.engine.impl.form.StartFormHandler;
-import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.pvm.process.ProcessDefinitionImpl;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.activiti.engine.impl.pvm.ReadOnlyProcessDefinition;
 import org.activiti.engine.impl.task.TaskDefinition;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.task.IdentityLinkType;
@@ -43,10 +38,13 @@ import org.activiti.engine.task.IdentityLinkType;
  * @author Joram Barrez
  * @author Tijs Rademakers
  */
-public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements ProcessDefinition, PersistentObject, HasRevision {
+public class ProcessDefinitionEntity implements ReadOnlyProcessDefinition, ProcessDefinition, PersistentObject, HasRevision, Serializable {
 
   private static final long serialVersionUID = 1L;
 
+  protected String id;
+  protected String name;
+  protected String description;
   protected String key;
   protected int revision = 1;
   protected int version;
@@ -66,12 +64,12 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
   protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();
   protected transient ActivitiEventSupport eventSupport;
+  protected IOSpecification ioSpecification;
 
   // Backwards compatibility
   protected String engineVersion;
 
   public ProcessDefinitionEntity() {
-    super(null);
     eventSupport = new ActivitiEventSupport();
   }
 
@@ -79,72 +77,6 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     in.defaultReadObject();
     eventSupport = new ActivitiEventSupport();
 
-  }
-
-  public ExecutionEntity createProcessInstance(String businessKey, FlowElement initialFlowElement) {
-    ExecutionEntity processInstance = null;
-
-    if (initial == null) {
-      processInstance = (ExecutionEntity) super.createProcessInstance();
-    } else {
-      processInstance = (ExecutionEntity) super.createProcessInstanceForInitial(initial);
-    }
-
-    processInstance.setExecutions(new ArrayList<ExecutionEntity>());
-    processInstance.setProcessDefinition(processDefinition);
-    // Do not initialize variable map (let it happen lazily)
-
-    // Set business key (if any)
-    if (businessKey != null) {
-      processInstance.setBusinessKey(businessKey);
-    }
-
-    // Inherit tenant id (if any)
-    if (getTenantId() != null) {
-      processInstance.setTenantId(getTenantId());
-    }
-
-    // Reset the process instance in order to have the db-generated process
-    // instance id available
-    processInstance.setProcessInstance(processInstance);
-
-    // initialize the template-defined data objects as variables first
-    Map<String, Object> dataObjectVars = getVariables();
-    if (dataObjectVars != null) {
-      processInstance.setVariables(dataObjectVars);
-    }
-
-    String authenticatedUserId = Authentication.getAuthenticatedUserId();
-    String initiatorVariableName = (String) getProperty(BpmnParse.PROPERTYNAME_INITIATOR_VARIABLE_NAME);
-    if (initiatorVariableName != null) {
-      processInstance.setVariable(initiatorVariableName, authenticatedUserId);
-    }
-    if (authenticatedUserId != null) {
-      processInstance.addIdentityLink(authenticatedUserId, null, IdentityLinkType.STARTER);
-    }
-
-    Context.getCommandContext().getHistoryManager().recordProcessInstanceStart(processInstance, initialFlowElement);
-
-    if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_CREATED, processInstance));
-    }
-
-    return processInstance;
-  }
-
-  public ExecutionEntity createProcessInstance(String businessKey) {
-    return createProcessInstance(businessKey, null);
-  }
-
-  public ExecutionEntity createProcessInstance() {
-    return createProcessInstance(null);
-  }
-
-  @Override
-  protected InterpretableExecution newProcessInstance() {
-    ExecutionEntity processInstance = new ExecutionEntity();
-    processInstance.insert();
-    return processInstance;
   }
 
   public IdentityLinkEntity addIdentityLink(String userId, String groupId) {
@@ -197,6 +129,14 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     this.key = key;
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public void setDescription(String description) {
     this.description = description;
   }
@@ -221,6 +161,10 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
     this.version = version;
   }
 
+  public String getId() {
+    return id;
+  }
+  
   public void setId(String id) {
     this.id = id;
   }
@@ -359,6 +303,14 @@ public class ProcessDefinitionEntity extends ProcessDefinitionImpl implements Pr
 
   public void setEngineVersion(String engineVersion) {
     this.engineVersion = engineVersion;
+  }
+  
+  public IOSpecification getIoSpecification() {
+    return ioSpecification;
+  }
+
+  public void setIoSpecification(IOSpecification ioSpecification) {
+    this.ioSpecification = ioSpecification;
   }
 
 }

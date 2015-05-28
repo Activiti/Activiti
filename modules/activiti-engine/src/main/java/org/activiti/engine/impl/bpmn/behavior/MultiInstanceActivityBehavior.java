@@ -26,7 +26,6 @@ import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.bpmn.model.Process;
-import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.BpmnError;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -35,13 +34,10 @@ import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.bpmn.helper.ErrorPropagation;
 import org.activiti.engine.impl.bpmn.parser.factory.ListenerFactory;
 import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.delegate.ExecutionListenerInvocation;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
-import org.activiti.engine.impl.pvm.runtime.AtomicOperation;
-import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
@@ -289,22 +285,41 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
    * Since no transitions are followed when leaving the inner activity, it is needed to call the end listeners yourself.
    */
   protected void callActivityEndListeners(ActivityExecution execution) {
-    List<ActivitiListener> endListeners = new ArrayList<ActivitiListener>();
     List<ActivitiListener> listeners = activity.getExecutionListeners();
     if (CollectionUtils.isNotEmpty(listeners)) {
+      
+      ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
+      
       for (ActivitiListener activitiListener : listeners) {
         if ("end".equalsIgnoreCase(activitiListener.getEvent())) {
-          endListeners.add(activitiListener);
+          
+          ExecutionListener executionListener = null;
+
+          if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = listenerFactory.createClassDelegateExecutionListener(activitiListener);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = listenerFactory.createExpressionExecutionListener(activitiListener);
+          } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(activitiListener.getImplementationType())) {
+            executionListener = listenerFactory.createDelegateExpressionExecutionListener(activitiListener);
+          }
+
+          if (executionListener != null) {
+            ((ExecutionEntity) execution).setEventName(ExecutionListener.EVENTNAME_END);
+            executionListener.notify(execution);
+            
+            // TODO: is this still needed? Is this property still needed?
+            ((ExecutionEntity) execution).setEventName(null);
+          }
+          
         }
       }
     }
-    CallActivityEndListenersOperation atomicOperation = new CallActivityEndListenersOperation(endListeners);
-    Context.getCommandContext().performOperation(atomicOperation, (InterpretableExecution) execution);
+    
   }
 
   protected void logLoopDetails(ActivityExecution execution, String custom, int loopCounter, int nrOfCompletedInstances, int nrOfActiveInstances, int nrOfInstances) {
     if (LOGGER.isDebugEnabled()) {
-      LOGGER.debug("Multi-instance '{}' {}. Details: loopCounter={}, nrOrCompletedInstances={},nrOfActiveInstances={},nrOfInstances={}", execution.getActivity(), custom, loopCounter,
+      LOGGER.debug("Multi-instance '{}' {}. Details: loopCounter={}, nrOrCompletedInstances={},nrOfActiveInstances={},nrOfInstances={}", execution.getCurrentFlowElement(), custom, loopCounter,
           nrOfCompletedInstances, nrOfActiveInstances, nrOfInstances);
     }
   }
@@ -367,48 +382,5 @@ public abstract class MultiInstanceActivityBehavior extends FlowNodeActivityBeha
 
   public AbstractBpmnActivityBehavior getInnerActivityBehavior() {
     return innerActivityBehavior;
-  }
-
-  /**
-   * ACT-1339. Calling ActivityEndListeners within an {@link AtomicOperation} so that an executionContext is present.
-   * 
-   * @author Aris Tzoumas
-   * 
-   */
-  private static final class CallActivityEndListenersOperation implements AtomicOperation {
-
-    private List<ActivitiListener> listeners;
-
-    private CallActivityEndListenersOperation(List<ActivitiListener> listeners) {
-      this.listeners = listeners;
-    }
-
-    @Override
-    public void execute(InterpretableExecution execution) {
-      ListenerFactory listenerFactory = Context.getProcessEngineConfiguration().getListenerFactory();
-      for (ActivitiListener listener : listeners) {
-        ExecutionListener executionListener = null;
-
-        if (ImplementationType.IMPLEMENTATION_TYPE_CLASS.equalsIgnoreCase(listener.getImplementationType())) {
-          executionListener = listenerFactory.createClassDelegateExecutionListener(listener);
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_EXPRESSION.equalsIgnoreCase(listener.getImplementationType())) {
-          executionListener = listenerFactory.createExpressionExecutionListener(listener);
-        } else if (ImplementationType.IMPLEMENTATION_TYPE_DELEGATEEXPRESSION.equalsIgnoreCase(listener.getImplementationType())) {
-          executionListener = listenerFactory.createDelegateExpressionExecutionListener(listener);
-        }
-
-        try {
-          Context.getProcessEngineConfiguration().getDelegateInterceptor().handleInvocation(new ExecutionListenerInvocation(executionListener, execution));
-        } catch (Exception e) {
-          throw new ActivitiException("Couldn't execute end listener", e);
-        }
-      }
-    }
-
-    @Override
-    public boolean isAsync(InterpretableExecution execution) {
-      return false;
-    }
-
   }
 }

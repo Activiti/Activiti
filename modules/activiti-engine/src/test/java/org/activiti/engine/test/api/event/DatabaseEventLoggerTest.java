@@ -71,7 +71,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
     }
 
-    assertEquals(15, eventLogEntries.size());
+    assertEquals(12, eventLogEntries.size());
 
     long lastLogNr = -1;
     for (int i = 0; i < eventLogEntries.size(); i++) {
@@ -81,14 +81,13 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       if (i == 0) {
 
         assertNotNull(entry.getType());
-        assertEquals(entry.getType(), ActivitiEventType.VARIABLE_CREATED.name());
+        assertEquals(ActivitiEventType.VARIABLE_CREATED.name(), entry.getType());
         assertNotNull(entry.getProcessDefinitionId());
         assertNotNull(entry.getProcessInstanceId());
         assertNotNull(entry.getTimeStamp());
         assertNull(entry.getTaskId());
 
-        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
-        });
+        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {});
         assertNotNull(data.get(Fields.PROCESS_DEFINITION_ID));
         assertNotNull(data.get(Fields.PROCESS_INSTANCE_ID));
         assertNotNull(data.get(Fields.VALUE_STRING));
@@ -124,21 +123,19 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       // Activity started
       if (i == 2 || i == 5 || i == 8 || i == 12) {
         assertNotNull(entry.getType());
-        assertEquals(entry.getType(), ActivitiEventType.ACTIVITY_STARTED.name());
+        assertEquals(ActivitiEventType.ACTIVITY_STARTED.name(), entry.getType());
         assertNotNull(entry.getProcessDefinitionId());
         assertNotNull(entry.getProcessInstanceId());
         assertNotNull(entry.getTimeStamp());
         assertNotNull(entry.getExecutionId());
         assertNull(entry.getTaskId());
 
-        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
-        });
+        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {});
         assertNotNull(data.get(Fields.ACTIVITY_ID));
         assertNotNull(data.get(Fields.PROCESS_DEFINITION_ID));
         assertNotNull(data.get(Fields.PROCESS_INSTANCE_ID));
         assertNotNull(data.get(Fields.EXECUTION_ID));
         assertNotNull(data.get(Fields.ACTIVITY_TYPE));
-        assertNotNull(data.get(Fields.BEHAVIOR_CLASS));
         assertEquals(testTenant, data.get(Fields.TENANT_ID));
       }
 
@@ -146,22 +143,20 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       if (i == 3) {
 
         assertNotNull(entry.getType());
-        assertEquals(entry.getType(), ActivitiEventType.ACTIVITY_COMPLETED.name());
+        assertEquals(ActivitiEventType.ACTIVITY_COMPLETED.name(), entry.getType());
         assertNotNull(entry.getProcessDefinitionId());
         assertNotNull(entry.getProcessInstanceId());
         assertNotNull(entry.getTimeStamp());
         assertNotNull(entry.getExecutionId());
         assertNull(entry.getTaskId());
 
-        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
-        });
+        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {});
         assertNotNull(data.get(Fields.ACTIVITY_ID));
         assertEquals("startEvent1", data.get(Fields.ACTIVITY_ID));
         assertNotNull(data.get(Fields.PROCESS_DEFINITION_ID));
         assertNotNull(data.get(Fields.PROCESS_INSTANCE_ID));
         assertNotNull(data.get(Fields.EXECUTION_ID));
         assertNotNull(data.get(Fields.ACTIVITY_TYPE));
-        assertNotNull(data.get(Fields.BEHAVIOR_CLASS));
         assertEquals(testTenant, data.get(Fields.TENANT_ID));
 
       }
@@ -169,24 +164,18 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       // Sequence flow taken
       if (i == 4 || i == 7 || i == 11) {
         assertNotNull(entry.getType());
-        assertEquals(entry.getType(), ActivitiEventType.SEQUENCEFLOW_TAKEN.name());
+        assertEquals(ActivitiEventType.SEQUENCEFLOW_TAKEN.name(), entry.getType());
         assertNotNull(entry.getProcessDefinitionId());
         assertNotNull(entry.getProcessInstanceId());
         assertNotNull(entry.getTimeStamp());
         assertNotNull(entry.getExecutionId());
         assertNull(entry.getTaskId());
 
-        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
-        });
+        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {});
         assertNotNull(data.get(Fields.ID));
         assertNotNull(data.get(Fields.SOURCE_ACTIVITY_ID));
         assertNotNull(data.get(Fields.SOURCE_ACTIVITY_NAME));
         assertNotNull(data.get(Fields.SOURCE_ACTIVITY_TYPE));
-        assertNotNull(data.get(Fields.SOURCE_ACTIVITY_BEHAVIOR_CLASS));
-        assertNotNull(data.get(Fields.TARGET_ACTIVITY_ID));
-        assertNotNull(data.get(Fields.TARGET_ACTIVITY_NAME));
-        assertNotNull(data.get(Fields.TARGET_ACTIVITY_TYPE));
-        assertNotNull(data.get(Fields.TARGET_ACTIVITY_BEHAVIOR_CLASS));
         assertEquals(testTenant, data.get(Fields.TENANT_ID));
       }
 
@@ -194,21 +183,19 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       if (i == 6) {
 
         assertNotNull(entry.getType());
-        assertEquals(entry.getType(), ActivitiEventType.ACTIVITY_COMPLETED.name());
+        assertEquals(ActivitiEventType.ACTIVITY_COMPLETED.name(), entry.getType());
         assertNotNull(entry.getProcessDefinitionId());
         assertNotNull(entry.getProcessInstanceId());
         assertNotNull(entry.getTimeStamp());
         assertNotNull(entry.getExecutionId());
         assertNull(entry.getTaskId());
 
-        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
-        });
+        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {});
         assertNotNull(data.get(Fields.ACTIVITY_ID));
         assertNotNull(data.get(Fields.PROCESS_DEFINITION_ID));
         assertNotNull(data.get(Fields.PROCESS_INSTANCE_ID));
         assertNotNull(data.get(Fields.EXECUTION_ID));
         assertNotNull(data.get(Fields.ACTIVITY_TYPE));
-        assertNotNull(data.get(Fields.BEHAVIOR_CLASS));
         assertEquals(testTenant, data.get(Fields.TENANT_ID));
 
       }
@@ -217,15 +204,14 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       if (i == 10 || i == 14) {
 
         assertNotNull(entry.getType());
-        assertEquals(entry.getType(), ActivitiEventType.TASK_CREATED.name());
+        assertEquals(ActivitiEventType.TASK_CREATED.name(), entry.getType());
         assertNotNull(entry.getTimeStamp());
         assertNotNull(entry.getProcessDefinitionId());
         assertNotNull(entry.getProcessInstanceId());
         assertNotNull(entry.getExecutionId());
         assertNotNull(entry.getTaskId());
 
-        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
-        });
+        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {});
         assertNotNull(data.get(Fields.ID));
         assertNotNull(data.get(Fields.NAME));
         assertNotNull(data.get(Fields.ASSIGNEE));
@@ -249,15 +235,14 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       if (i == 9 || i == 13) {
 
         assertNotNull(entry.getType());
-        assertEquals(entry.getType(), ActivitiEventType.TASK_ASSIGNED.name());
+        assertEquals(ActivitiEventType.TASK_ASSIGNED.name(), entry.getType());
         assertNotNull(entry.getTimeStamp());
         assertNotNull(entry.getProcessDefinitionId());
         assertNotNull(entry.getProcessInstanceId());
         assertNotNull(entry.getExecutionId());
         assertNotNull(entry.getTaskId());
 
-        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {
-        });
+        Map<String, Object> data = objectMapper.readValue(entry.getData(), new TypeReference<HashMap<String, Object>>() {});
         assertNotNull(data.get(Fields.ID));
         assertNotNull(data.get(Fields.NAME));
         assertNotNull(data.get(Fields.ASSIGNEE));

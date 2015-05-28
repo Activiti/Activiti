@@ -17,7 +17,6 @@ import org.activiti.engine.ActivitiIllegalArgumentException;
 import org.activiti.engine.delegate.VariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
-import org.activiti.engine.impl.pvm.runtime.ExecutionImpl;
 
 /**
  * Bindings implementation using an {@link ExecutionImpl} as 'back-end'.

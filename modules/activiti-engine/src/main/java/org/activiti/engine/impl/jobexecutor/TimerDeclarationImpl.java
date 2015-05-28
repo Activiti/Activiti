@@ -179,18 +179,6 @@ public class TimerDeclarationImpl implements Serializable {
       // doesn't need to repeat itself
       boolean repeat = !isInterruptingTimer;
 
-      // ACT-1951: intermediate catching timer events shouldn't repeat
-      // according to spec
-      if (TimerCatchIntermediateEventJobHandler.TYPE.equals(jobHandlerType)) {
-        repeat = false;
-        if (endDate != null) {
-          long endDateMiliss = endDate.getTime();
-          long dueDateMiliss = duedate.getTime();
-          long dueDate = Math.min(endDateMiliss, dueDateMiliss);
-          timer.setDuedate(new Date(dueDate));
-        }
-      }
-
       if (repeat) {
         String prepared = prepareRepeat(dueDateString);
         timer.setRepeat(prepared);

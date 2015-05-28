@@ -20,7 +20,6 @@ import java.util.Set;
 
 import org.activiti.engine.delegate.Expression;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.rules.RulesAgendaFilter;
 import org.activiti.engine.impl.rules.RulesHelper;
@@ -36,6 +35,8 @@ import org.drools.runtime.StatefulKnowledgeSession;
  */
 public class BusinessRuleTaskActivityBehavior extends TaskActivityBehavior {
 
+  private static final long serialVersionUID = 1L;
+  
   protected Set<Expression> variablesInputExpressions = new HashSet<Expression>();
   protected Set<Expression> rulesExpressions = new HashSet<Expression>();
   protected boolean exclude = false;

@@ -55,9 +55,6 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.ExpressionManager;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
-import org.activiti.engine.impl.pvm.process.ActivityImpl;
-import org.activiti.engine.impl.pvm.process.HasDIBounds;
-import org.activiti.engine.impl.pvm.process.ScopeImpl;
 import org.activiti.engine.impl.util.ReflectUtil;
 import org.activiti.engine.impl.util.io.InputStreamSource;
 import org.activiti.engine.impl.util.io.ResourceStreamSource;
@@ -120,11 +117,7 @@ public class BpmnParse implements BpmnXMLConstants {
 
   protected FlowElement currentFlowElement;
 
-  protected ActivityImpl currentActivity;
-
   protected LinkedList<SubProcess> currentSubprocessStack = new LinkedList<SubProcess>();
-
-  protected LinkedList<ScopeImpl> currentScopeStack = new LinkedList<ScopeImpl>();
 
   /**
    * Mapping containing values stored during the first phase of parsing since other elements can reference these messages.
@@ -223,15 +216,13 @@ public class BpmnParse implements BpmnXMLConstants {
 
       // Validation successful (or no validation)
 
-      // Continue with creating side artifacts: imports, item defs,
-      // messages and operations
+      // Continue with creating side artifacts: imports, item defs, messages and operations
       createImports();
       createItemDefinitions();
       createMessages();
       createOperations();
 
-      // Attach logic to the processes (eg. map ActivityBehaviors to bpmn
-      // model elements)
+      // Attach logic to the processes (eg. map ActivityBehaviors to bpmn model elements)
       applyParseHandlers();
 
       // Finally, process the diagram interchange info
@@ -505,12 +496,7 @@ public class BpmnParse implements BpmnXMLConstants {
         ProcessDefinitionEntity processDefinition = getProcessDefinition(process.getId());
         if (processDefinition != null) {
           processDefinition.setGraphicalNotationDefined(true);
-          for (String shapeId : bpmnModel.getLocationMap().keySet()) {
-            if (processDefinition.findActivity(shapeId) != null) {
-              createBPMNShape(shapeId, bpmnModel.getGraphicInfo(shapeId), processDefinition);
-            }
-          }
-
+          
           for (String edgeId : bpmnModel.getFlowLocationMap().keySet()) {
             if (bpmnModel.getFlowElement(edgeId) != null) {
               createBPMNEdge(edgeId, bpmnModel.getFlowLocationGraphicInfo(edgeId));
@@ -519,28 +505,6 @@ public class BpmnParse implements BpmnXMLConstants {
         }
       }
     }
-  }
-
-  public void createBPMNShape(String key, GraphicInfo graphicInfo, ProcessDefinitionEntity processDefinition) {
-    ActivityImpl activity = processDefinition.findActivity(key);
-    if (activity != null) {
-      createDIBounds(graphicInfo, activity);
-
-    } else {
-      org.activiti.engine.impl.pvm.process.Lane lane = processDefinition.getLaneForId(key);
-
-      if (lane != null) {
-        // The shape represents a lane
-        createDIBounds(graphicInfo, lane);
-      }
-    }
-  }
-
-  protected void createDIBounds(GraphicInfo graphicInfo, HasDIBounds target) {
-    target.setX((int) graphicInfo.getX());
-    target.setY((int) graphicInfo.getY());
-    target.setWidth((int) graphicInfo.getWidth());
-    target.setHeight((int) graphicInfo.getHeight());
   }
 
   public void createBPMNEdge(String key, List<GraphicInfo> graphicList) {
@@ -553,6 +517,7 @@ public class BpmnParse implements BpmnXMLConstants {
         waypoints.add((int) waypointInfo.getY());
       }
       sequenceFlow.setWaypoints(waypoints);
+      
     } else if (bpmnModel.getArtifact(key) != null) {
       // it's an association, so nothing to do
     } else {
@@ -709,14 +674,6 @@ public class BpmnParse implements BpmnXMLConstants {
     this.currentProcess = currentProcess;
   }
 
-  public ActivityImpl getCurrentActivity() {
-    return currentActivity;
-  }
-
-  public void setCurrentActivity(ActivityImpl currentActivity) {
-    this.currentActivity = currentActivity;
-  }
-
   public void setCurrentSubProcess(SubProcess subProcess) {
     currentSubprocessStack.push(subProcess);
   }
@@ -728,17 +685,4 @@ public class BpmnParse implements BpmnXMLConstants {
   public void removeCurrentSubProcess() {
     currentSubprocessStack.pop();
   }
-
-  public void setCurrentScope(ScopeImpl scope) {
-    currentScopeStack.push(scope);
-  }
-
-  public ScopeImpl getCurrentScope() {
-    return currentScopeStack.peek();
-  }
-
-  public void removeCurrentScope() {
-    currentScopeStack.pop();
-  }
-
 }

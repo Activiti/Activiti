@@ -134,9 +134,7 @@ public class DeploymentManager {
 
     for (ProcessDefinition processDefinition : processDefinitions) {
 
-      // Since all process definitions are deleted by a single query, we
-      // should dispatch the
-      // events in this loop
+      // Since all process definitions are deleted by a single query, we should dispatch the events in this loop
       if (eventDispatcher.isEnabled()) {
         eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, processDefinition));
       }
@@ -145,8 +143,7 @@ public class DeploymentManager {
     // Delete data
     deploymentEntityManager.deleteDeployment(deploymentId, cascade);
 
-    // Since we use a delete by query, delete-events are not automatically
-    // dispatched
+    // Since we use a delete by query, delete-events are not automatically dispatched
     if (eventDispatcher.isEnabled()) {
       eventDispatcher.dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.ENTITY_DELETED, deployment));
     }

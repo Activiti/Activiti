@@ -16,8 +16,6 @@ import java.util.List;
 
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.engine.delegate.DelegateExecution;
-import org.activiti.engine.impl.pvm.PvmActivity;
-import org.activiti.engine.impl.pvm.PvmTransition;
 
 /**
  * @author Tom Baeyens
@@ -30,18 +28,6 @@ public interface ActivityExecution extends DelegateExecution {
   FlowElement getCurrentFlowElement();
 
   void setCurrentFlowElement(FlowElement flowElement);
-
-  /* Process instance/activity/transition retrieval */
-
-  /**
-   * returns the current {@link PvmActivity} of the execution.
-   */
-  PvmActivity getActivity();
-
-  /**
-   * leaves the current activity by taking the given transition.
-   */
-  void take(PvmTransition transition);
 
   /* Execution management */
 
@@ -111,21 +97,6 @@ public interface ActivityExecution extends DelegateExecution {
    * Changes whether this execution is a scope or not
    */
   void setScope(boolean isScope);
-
-  /**
-   * Retrieves all executions which are concurrent and inactive at the given activity.
-   */
-  List<ActivityExecution> findInactiveConcurrentExecutions(PvmActivity activity);
-
-  /**
-   * Takes the given outgoing transitions, and potentially reusing the given list of executions that were previously joined.
-   */
-  void takeAll(List<PvmTransition> outgoingTransitions, List<ActivityExecution> joinedExecutions);
-
-  /**
-   * Executes the {@link ActivityBehavior} associated with the given activity.
-   */
-  void executeActivity(PvmActivity activity);
 
   /**
    * Called when an execution is interrupted.

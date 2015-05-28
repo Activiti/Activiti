@@ -129,9 +129,6 @@ import org.activiti.engine.impl.form.LongFormType;
 import org.activiti.engine.impl.form.StringFormType;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.history.parse.FlowNodeHistoryParseHandler;
-import org.activiti.engine.impl.history.parse.ProcessHistoryParseHandler;
-import org.activiti.engine.impl.history.parse.StartEventHistoryParseHandler;
-import org.activiti.engine.impl.history.parse.UserTaskHistoryParseHandler;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContextFactory;
 import org.activiti.engine.impl.interceptor.CommandContextInterceptor;
@@ -150,8 +147,6 @@ import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.impl.jobexecutor.ProcessEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.RejectedJobsHandler;
 import org.activiti.engine.impl.jobexecutor.TimerActivateProcessDefinitionHandler;
-import org.activiti.engine.impl.jobexecutor.TimerCatchIntermediateEventJobHandler;
-import org.activiti.engine.impl.jobexecutor.TimerExecuteNestedActivityJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.jobexecutor.TimerSuspendProcessDefinitionHandler;
 import org.activiti.engine.impl.jobexecutor.TriggerTimerEventJobHandler;
@@ -1139,15 +1134,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected void initJobHandlers() {
     jobHandlers = new HashMap<String, JobHandler>();
-    TimerExecuteNestedActivityJobHandler timerExecuteNestedActivityJobHandler = new TimerExecuteNestedActivityJobHandler();
-    jobHandlers.put(timerExecuteNestedActivityJobHandler.getType(), timerExecuteNestedActivityJobHandler);
-
+    
     TriggerTimerEventJobHandler triggerTimerEventJobHandler = new TriggerTimerEventJobHandler();
     jobHandlers.put(triggerTimerEventJobHandler.getType(), triggerTimerEventJobHandler);
-
-    TimerCatchIntermediateEventJobHandler timerCatchIntermediateEvent = new TimerCatchIntermediateEventJobHandler();
-    jobHandlers.put(timerCatchIntermediateEvent.getType(), timerCatchIntermediateEvent);
-
+    
     TimerStartEventJobHandler timerStartEvent = new TimerStartEventJobHandler();
     jobHandlers.put(timerStartEvent.getType(), timerStartEvent);
 

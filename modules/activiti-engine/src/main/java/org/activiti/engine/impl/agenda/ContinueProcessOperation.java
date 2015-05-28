@@ -156,6 +156,14 @@ public class ContinueProcessOperation extends AbstractOperation {
     if (CollectionUtils.isNotEmpty(sequenceFlow.getExecutionListeners())) {
       executeExecutionListeners(sequenceFlow, null, ExecutionListener.EVENTNAME_TAKE, true); // True -> any event type will be treated as 'take' for a sequence flow
     }
+    
+    // Firing event that transition is being taken
+    if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+      Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
+              ActivitiEventBuilder.createSequenceFlowTakenEvent(ActivitiEventType.SEQUENCEFLOW_TAKEN, sequenceFlow.getId(), sequenceFlow.getSourceRef(), sequenceFlow.getSourceFlowElement().getName(),
+                  parseActivityType((FlowNode) sequenceFlow.getSourceFlowElement()), sequenceFlow.getTargetRef(), sequenceFlow.getTargetFlowElement().getName(),
+                  parseActivityType((FlowNode) sequenceFlow.getTargetFlowElement())));
+    }
 
     FlowElement targetFlowElement = sequenceFlow.getTargetFlowElement();
     execution.setCurrentFlowElement(targetFlowElement);

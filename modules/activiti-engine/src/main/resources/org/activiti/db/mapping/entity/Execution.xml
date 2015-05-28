@@ -252,9 +252,14 @@
     where ROOT_PROC_INST_ID_ = #{parameter}
   </select>
   
-  <select id="selectExecutionsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
+  <select id="selectChildExecutionsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
     select * from ${prefix}ACT_RU_EXECUTION
     where PROC_INST_ID_ = #{parameter} and PARENT_ID_ is not null
+  </select>
+  
+  <select id="selectExecutionsByProcessInstanceId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
+    select * from ${prefix}ACT_RU_EXECUTION
+    where PROC_INST_ID_ = #{parameter}
   </select>
   
   <select id="selectProcessInstanceIdsByProcessDefinitionId" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultType="string">

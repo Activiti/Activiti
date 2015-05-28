@@ -17,10 +17,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.impl.bpmn.behavior.BpmnActivityBehavior;
-import org.activiti.engine.impl.pvm.PvmProcessDefinition;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
@@ -50,7 +51,7 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
   }
 
   private ActivitiEndpoint createEndpoint(ActivityExecution execution) {
-    String uri = "activiti://" + getProcessName(execution) + ":" + execution.getActivity().getId();
+    String uri = "activiti://" + getProcessKey(execution) + ":" + execution.getCurrentActivityId();
     return getEndpoint(getContext(execution), uri);
   }
 
@@ -64,15 +65,15 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
   }
 
   private CamelContext getContext(ActivityExecution execution) {
-    String processName = getProcessName(execution);
+    String processKey = getProcessKey(execution);
     String names = "";
     for (ContextProvider provider : contextProviders) {
-      CamelContext ctx = provider.getContext(processName);
+      CamelContext ctx = provider.getContext(processKey);
       if (ctx != null) {
         return ctx;
       }
     }
-    throw new RuntimeException("Could not find camel context for " + processName + " names are " + names);
+    throw new RuntimeException("Could not find camel context for " + processKey + " names are " + names);
   }
 
   private Exchange createExchange(ActivityExecution activityExecution, ActivitiEndpoint endpoint) {
@@ -89,9 +90,9 @@ public class CamelBehaviour extends BpmnActivityBehavior implements ActivityBeha
     return ex;
   }
 
-  private String getProcessName(ActivityExecution execution) {
-    PvmProcessDefinition processDefinition = execution.getActivity().getProcessDefinition();
-    return processDefinition.getKey();
+  private String getProcessKey(ActivityExecution execution) {
+    Process process = ProcessDefinitionUtil.getProcess(execution.getProcessDefinitionId());
+    return process.getId();
   }
 
 }

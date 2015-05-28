@@ -200,8 +200,7 @@ public class JobEventsTest extends PluggableActivitiTestCase {
   }
 
   public void testJobCanceledEventOnProcessRedeploy() throws Exception {
-    // GIVEN
-    // deploy process definition
+    // GIVEN deploy process definition
     String deployment1 = repositoryService.createDeployment().addClasspathResource("org/activiti/engine/test/api/event/JobEventsTest.testTimerFiredForTimerStart.bpmn20.xml").deploy().getId();
     listener.clearEventsReceived();
 
