@@ -26,10 +26,14 @@ public interface ActivitiSequenceFlowTakenEvent extends ActivitiEvent {
   String getSourceActivityName();
 
   String getSourceActivityType();
+  
+  String getSourceActivityBehaviorClass();
 
   String getTargetActivityId();
 
   String getTargetActivityName();
 
   String getTargetActivityType();
+  
+  String getTargetActivityBehaviorClass();
 }

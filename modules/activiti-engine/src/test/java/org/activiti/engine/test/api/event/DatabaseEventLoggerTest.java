@@ -71,7 +71,7 @@ public class DatabaseEventLoggerTest extends PluggableActivitiTestCase {
       }
     }
 
-    assertEquals(12, eventLogEntries.size());
+    assertEquals(15, eventLogEntries.size());
 
     long lastLogNr = -1;
     for (int i = 0; i < eventLogEntries.size(); i++) {
