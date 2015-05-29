@@ -495,6 +495,9 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     Collection<JobEntity> jobsForExecution = jobEntityManager.findJobsByExecutionId(executionEntity.getId());
     for (JobEntity job : jobsForExecution) {
       job.delete(); // TODO: should be moved to entitymanager!
+      if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+        Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job));
+      }
 //      jobEntityManager.delete(job, false); // false -> jobs fire the events themselves TODO: is this right?
     }
 

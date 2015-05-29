@@ -46,14 +46,6 @@ public class BpmnActivityBehavior implements Serializable {
    * flow are selected, multiple, parallel paths of executions are created.
    */
   public void performDefaultOutgoingBehavior(ActivityExecution activityExecution) {
-    // TODO: old implementation. Should not be done here, but somewhere more
-    // core ...
-    // ActivityImpl activity = (ActivityImpl)
-    // activityExecution.getActivity();
-    // if (!(activity.getActivityBehavior() instanceof
-    // IntermediateCatchEventActivityBehavior)) {
-    // dispatchJobCanceledEvents(activityExecution);
-    // }
     performOutgoingBehavior(activityExecution, true, false);
   }
 
