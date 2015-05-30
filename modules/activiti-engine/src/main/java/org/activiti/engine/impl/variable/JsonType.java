@@ -66,6 +66,8 @@ public class JsonType extends StringType implements VariableType {
   }
 
   public String stringify(JsonStructure value) {
+    if (value == null)
+      return null;
     StringWriter sw = new StringWriter();
     JsonWriter jsonWriter = Json.createWriter(sw);
     jsonWriter.write(value);
