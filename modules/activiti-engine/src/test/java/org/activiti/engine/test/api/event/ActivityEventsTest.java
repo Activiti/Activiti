@@ -361,7 +361,7 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     // Complete task, next a compensation event will be thrown
     taskService.complete(task.getId());
 
-    assertEquals(2, listener.getEventsReceived().size());
+    assertEquals(1, listener.getEventsReceived().size());
 
     // A compensate-event is expected
     assertTrue(listener.getEventsReceived().get(0) instanceof ActivitiActivityEvent);
@@ -373,18 +373,6 @@ public class ActivityEventsTest extends PluggableActivitiTestCase {
     assertFalse(processInstance.getId().equals(activityEvent.getExecutionId()));
     assertEquals(processInstance.getProcessInstanceId(), activityEvent.getProcessInstanceId());
     assertEquals(processInstance.getProcessDefinitionId(), activityEvent.getProcessDefinitionId());
-
-    // Also, a signal-event is received, representing the boundary-event
-    // being executed.
-    assertTrue(listener.getEventsReceived().get(1) instanceof ActivitiSignalEvent);
-    ActivitiSignalEvent signalEvent = (ActivitiSignalEvent) listener.getEventsReceived().get(1);
-    assertEquals(ActivitiEventType.ACTIVITY_SIGNALED, signalEvent.getType());
-    assertEquals("throwCompensation", signalEvent.getActivityId());
-    assertEquals(processInstance.getId(), signalEvent.getExecutionId());
-    assertEquals(processInstance.getProcessInstanceId(), signalEvent.getProcessInstanceId());
-    assertEquals(processInstance.getProcessDefinitionId(), signalEvent.getProcessDefinitionId());
-    assertEquals("compensationDone", signalEvent.getSignalName());
-    assertNull(signalEvent.getSignalData());
 
     // Check if the process is still alive
     processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(processInstance.getId()).singleResult();
