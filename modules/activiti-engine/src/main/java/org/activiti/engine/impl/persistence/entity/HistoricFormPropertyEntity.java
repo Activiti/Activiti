@@ -13,10 +13,7 @@
 
 package org.activiti.engine.impl.persistence.entity;
 
-import java.util.Date;
-
 import org.activiti.engine.history.HistoricFormProperty;
-import org.activiti.engine.impl.cfg.IdGenerator;
 import org.activiti.engine.impl.context.Context;
 
 /**
@@ -44,7 +41,7 @@ public class HistoricFormPropertyEntity extends HistoricDetailEntity implements 
     this.propertyValue = propertyValue;
     this.time = Context.getProcessEngineConfiguration().getClock().getCurrentTime();
 
-    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution, true);
+    HistoricActivityInstanceEntity historicActivityInstance = Context.getCommandContext().getHistoryManager().findActivityInstance(execution, true, false);
     if (historicActivityInstance != null) {
       this.activityInstanceId = historicActivityInstance.getId();
     }

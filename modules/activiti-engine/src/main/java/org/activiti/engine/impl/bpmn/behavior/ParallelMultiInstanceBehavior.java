@@ -14,10 +14,12 @@ package org.activiti.engine.impl.bpmn.behavior;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.CallActivity;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.SubProcess;
@@ -30,7 +32,10 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityBehavior;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti.engine.impl.util.tree.ExecutionTree;
+import org.activiti.engine.impl.util.tree.ExecutionTreeNode;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author Joram Barrez
@@ -106,13 +111,13 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
     int nrOfInstances = getLoopVariable(execution, NUMBER_OF_INSTANCES);
     int nrOfCompletedInstances = getLoopVariable(execution, NUMBER_OF_COMPLETED_INSTANCES) + 1;
     int nrOfActiveInstances = getLoopVariable(execution, NUMBER_OF_ACTIVE_INSTANCES) - 1;
+    
+    callActivityEndListeners(execution);
 
     if (execution.getParent() != null) { // will be null in case of empty collection
       setLoopVariable(execution.getParent(), NUMBER_OF_COMPLETED_INSTANCES, nrOfCompletedInstances);
       setLoopVariable(execution.getParent(), NUMBER_OF_ACTIVE_INSTANCES, nrOfActiveInstances);
     }
-    
-    callActivityEndListeners(execution);
     
     //executeCompensationBoundaryEvents(execution.getCurrentFlowElement(), execution);
     
@@ -159,6 +164,30 @@ public class ParallelMultiInstanceBehavior extends MultiInstanceActivityBehavior
         
         if (hasCompensation) {
           ScopeUtil.createCopyOfSubProcessExecutionForCompensation(workWithExecution, workWithExecution.getParent());
+        }
+        
+        if (activity instanceof CallActivity) {
+          ExecutionEntityManager executionEntityManager = Context.getCommandContext().getExecutionEntityManager();
+          ExecutionTree executionTree = executionEntityManager.findExecutionTree(executionEntity.getRootProcessInstanceId());
+          ExecutionTreeNode executionTreeNode = executionTree.getTreeNode(workWithExecution.getId());
+          
+          if (executionTreeNode != null) {
+            List<String> callActivityExecutionIds = new ArrayList<String>();
+            List<ExecutionTreeNode> callActivityChildren = executionTreeNode.getChildren();
+            for (ExecutionTreeNode callActivityChild : callActivityChildren) {
+              if (activity.getId().equals(callActivityChild.getExecutionEntity().getCurrentActivityId())) {
+                callActivityExecutionIds.add(callActivityChild.getExecutionEntity().getId());
+              }
+            }
+            
+            Iterator<ExecutionTreeNode> iterator = executionTreeNode.leafsFirstIterator();
+            while (iterator.hasNext()) {
+              ExecutionEntity childExecutionEntity = iterator.next().getExecutionEntity();
+              if (StringUtils.isNotEmpty(childExecutionEntity.getSuperExecutionId()) && callActivityExecutionIds.contains(childExecutionEntity.getSuperExecutionId())) {
+                executionEntityManager.deleteProcessInstanceExecutionEntity(childExecutionEntity, activity.getId(), "call activity completion condition met", true, false);
+              }
+            }
+          }
         }
         
         deleteChildExecutions(workWithExecution, false, Context.getCommandContext());

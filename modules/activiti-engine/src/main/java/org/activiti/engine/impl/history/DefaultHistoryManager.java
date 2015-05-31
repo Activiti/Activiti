@@ -180,7 +180,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       }
       getDbSqlSession().insert(historicProcessInstance);
 
-      HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution, false);
+      HistoricActivityInstanceEntity activitiyInstance = findActivityInstance(parentExecution, false, true);
       if (activitiyInstance != null) {
         activitiyInstance.setCalledProcessInstanceId(subProcessInstance.getProcessInstanceId());
       }
@@ -235,7 +235,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   @Override
   public void recordActivityEnd(ExecutionEntity executionEntity) {
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
-      HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity, false);
+      HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity, false, true);
       if (historicActivityInstance != null) {
         historicActivityInstance.markEnded(null);
       }
@@ -271,21 +271,21 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
   }
 
   @Override
-  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound) {
-    return findActivityInstance(execution, execution.getActivityId(), createOnNotFound);
+  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, boolean createOnNotFound, boolean validateEndTimeNull) {
+    return findActivityInstance(execution, execution.getActivityId(), createOnNotFound, validateEndTimeNull);
   }
     
     
-  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId, boolean createOnNotFound) {
+  public HistoricActivityInstanceEntity findActivityInstance(ExecutionEntity execution, String activityId, boolean createOnNotFound, boolean validateEndTimeNull) {
     String executionId = execution.getId();
 
-    // search for the historic activity instance in the dbsqlsession cache
+    // search for the historic activity instance in the DbSqlSession cache
     List<HistoricActivityInstanceEntity> cachedHistoricActivityInstances = getDbSqlSession().findInCache(HistoricActivityInstanceEntity.class);
 
     // First do a check using the execution id
     List<HistoricActivityInstanceEntity> potentialCandidates = new ArrayList<HistoricActivityInstanceEntity>(1);
     for (HistoricActivityInstanceEntity cachedHistoricActivityInstance : cachedHistoricActivityInstances) {
-      if (activityId != null && (activityId.equals(cachedHistoricActivityInstance.getActivityId())) && (cachedHistoricActivityInstance.getEndTime() == null)) {
+      if (activityId != null && activityId.equals(cachedHistoricActivityInstance.getActivityId()) && (!validateEndTimeNull || cachedHistoricActivityInstance.getEndTime() == null)) {
         if (executionId.equals(cachedHistoricActivityInstance.getExecutionId())) {
           return cachedHistoricActivityInstance;
         } else {
@@ -325,7 +325,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     }
 
     if (execution.getParentId() != null) {
-      HistoricActivityInstanceEntity historicActivityInstanceFromParent = findActivityInstance((ExecutionEntity) execution.getParent(), activityId, false); // always false for create, we only check if it can be found
+      HistoricActivityInstanceEntity historicActivityInstanceFromParent = findActivityInstance((ExecutionEntity) execution.getParent(), activityId, false, validateEndTimeNull); // always false for create, we only check if it can be found
       if (historicActivityInstanceFromParent != null) {
         return historicActivityInstanceFromParent;
       }
@@ -438,7 +438,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     ExecutionEntity executionEntity = task.getExecution();
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       if (executionEntity != null) {
-        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity, false);
+        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(executionEntity, false, true);
         if (historicActivityInstance != null) {
           historicActivityInstance.setAssignee(task.getAssignee());
         }
@@ -472,7 +472,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
     if (isHistoryLevelAtLeast(HistoryLevel.ACTIVITY)) {
       ExecutionEntity execution = task.getExecution();
       if (execution != null) {
-        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(execution, false);
+        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(execution, false, true);
         if (historicActivityInstance != null) {
           historicActivityInstance.setTaskId(task.getId());
         }
@@ -695,7 +695,7 @@ public class DefaultHistoryManager extends AbstractManager implements HistoryMan
       HistoricDetailVariableInstanceUpdateEntity historicVariableUpdate = HistoricDetailVariableInstanceUpdateEntity.copyAndInsert(variable);
 
       if (useActivityId && sourceActivityExecution != null) {
-        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution, true);
+        HistoricActivityInstanceEntity historicActivityInstance = findActivityInstance(sourceActivityExecution, true, false);
         if (historicActivityInstance != null) {
           historicVariableUpdate.setActivityInstanceId(historicActivityInstance.getId());
         }

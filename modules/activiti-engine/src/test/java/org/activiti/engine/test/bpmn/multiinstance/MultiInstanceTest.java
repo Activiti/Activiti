@@ -75,10 +75,11 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/engine/test/bpmn/multiinstance/MultiInstanceTest.sequentialUserTasks.bpmn20.xml" })
   public void testSequentialUserTasksHistory() {
-    runtimeService.startProcessInstanceByKey("miSequentialUserTasks", CollectionUtil.singletonMap("nrOfLoops", 4)).getId();
+    String procId = runtimeService.startProcessInstanceByKey("miSequentialUserTasks", CollectionUtil.singletonMap("nrOfLoops", 4)).getId();
     for (int i = 0; i < 4; i++) {
       taskService.complete(taskService.createTaskQuery().singleResult().getId());
     }
+    assertProcessEnded(procId);
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
 
@@ -176,6 +177,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
         HistoricTaskInstance hi = historicTaskInstances.get(i);
         assertNotNull(hi.getStartTime());
         assertNotNull(hi.getEndTime());
+        assertEquals("My Task " + i, hi.getName());
         assertEquals("kermit_" + i, hi.getAssignee());
       }
 
@@ -391,7 +393,7 @@ public class MultiInstanceTest extends PluggableActivitiTestCase {
 
     if (processEngineConfiguration.getHistoryLevel().isAtLeast(HistoryLevel.ACTIVITY)) {
       List<HistoricActivityInstance> historicActivityInstances = historyService.createHistoricActivityInstanceQuery().activityType("scriptTask").list();
-      assertEquals(5, historicActivityInstances.size());
+      assertEquals(4, historicActivityInstances.size());
       for (HistoricActivityInstance hai : historicActivityInstances) {
         assertNotNull(hai.getStartTime());
         assertNotNull(hai.getEndTime());
