@@ -860,7 +860,7 @@
     </profile>
     
     <profile>
-      <id>oracle</id>
+      <id>oraclewithschema</id>
       <activation>
         <property>
           <name>databasewithschema</name>
