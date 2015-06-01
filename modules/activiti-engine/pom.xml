@@ -350,7 +350,7 @@
                   <tasks>
                     <echo message="updating activiti configuration to db ${database}" />
                     <copy file="${basedir}/../../qa/db/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${database}.properties" />
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${database}.properties" />
                     </copy>
                   </tasks>
                 </configuration>
@@ -401,7 +401,7 @@
                   <tasks>
                     <echo message="updating activiti configuration to db ${databasemssql}" />
                     <copy file="${basedir}/../../qa/db/mssql/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${databasemssql}.properties" />
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.activiti6.${databasemssql}.properties" />
                     </copy>
                   </tasks>
                 </configuration>
