@@ -230,7 +230,7 @@ alter table ACT_RU_EXECUTION
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_ROOT_PROCINST
     foreign key (ROOT_PROC_INST_ID_)
-    references ACT_RU_EXECUTION(ID_);    
+    references ACT_RU_EXECUTION(ID_) on delete cascade on update cascade;   
 
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCDEF 
