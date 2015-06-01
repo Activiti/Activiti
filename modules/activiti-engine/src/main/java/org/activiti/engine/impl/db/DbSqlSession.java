@@ -1153,8 +1153,7 @@ public class DbSqlSession implements Session {
 
   public boolean isTablePresent(String tableName) {
     // ACT-1610: in case the prefix IS the schema itself, we don't add the
-    // prefix, since the
-    // check is already aware of the schema
+    // prefix, since the check is already aware of the schema
     if (!dbSqlSessionFactory.isTablePrefixIsSchema()) {
       tableName = prependDatabaseTablePrefix(tableName);
     }
