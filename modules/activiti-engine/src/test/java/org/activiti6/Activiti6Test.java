@@ -22,8 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.util.CollectionUtil;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -480,6 +482,16 @@ public class Activiti6Test extends AbstractActvitiTest {
     taskService.complete(tasks.get(0).getId());
     taskService.complete(tasks.get(1).getId());
     assertEquals(0, runtimeService.createExecutionQuery().count());
+  }
+  
+  /**
+   * Simple test that checks if all databases have correcly added the process definition tag.
+   */
+  @Test
+  @org.activiti.engine.test.Deployment(resources = "org/activiti6/Activiti6Test.testOneTaskProcess.bpmn20.xml")
+  public void testProcessDefinitionTagCreated() {
+    ProcessDefinition processDefinition = repositoryService.createProcessDefinitionQuery().singleResult();
+    assertNull(((ProcessDefinitionEntity) processDefinition).getEngineVersion());
   }
 
 }

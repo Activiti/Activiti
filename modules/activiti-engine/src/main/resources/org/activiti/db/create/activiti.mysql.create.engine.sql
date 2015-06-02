@@ -196,6 +196,7 @@ create table ACT_EVT_LOG (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_bin;
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
+create index ACT_IDC_EXEC_ROOT on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
 create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
 create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK(GROUP_ID_);
@@ -220,18 +221,13 @@ alter table ACT_RU_EXECUTION
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PARENT 
     foreign key (PARENT_ID_) 
-    references ACT_RU_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_) on delete cascade;
     
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_SUPER 
     foreign key (SUPER_EXEC_) 
-    references ACT_RU_EXECUTION (ID_);
+    references ACT_RU_EXECUTION (ID_) on delete cascade;
     
-alter table ACT_RU_EXECUTION
-    add constraint ACT_FK_ROOT_PROCINST
-    foreign key (ROOT_PROC_INST_ID_)
-    references ACT_RU_EXECUTION(ID_);    
-
 alter table ACT_RU_EXECUTION
     add constraint ACT_FK_EXE_PROCDEF 
     foreign key (PROC_DEF_ID_) 

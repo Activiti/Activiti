@@ -344,16 +344,7 @@ public class DbSqlSession implements Session {
         throw new ActivitiException("no bulk delete statement for " + persistentObjectClass + " in the mapping files");
       }
 
-      // It only makes sense to check for optimistic locking exceptions
-      // for objects that actually have a revision
-      if (persistentObjects.get(0) instanceof HasRevision) {
-        int nrOfRowsDeleted = sqlSession.delete(bulkDeleteStatement, persistentObjects);
-        if (nrOfRowsDeleted < persistentObjects.size()) {
-          throw new ActivitiOptimisticLockingException("One of the entities " + persistentObjectClass + " was updated by another transaction concurrently while trying to do a bulk delete");
-        }
-      } else {
-        sqlSession.delete(bulkDeleteStatement, persistentObjects);
-      }
+      sqlSession.delete(bulkDeleteStatement, persistentObjects);
     }
 
     public Class<? extends PersistentObject> getPersistentObjectClass() {
@@ -657,93 +648,29 @@ public class DbSqlSession implements Session {
     return removedDeleteOperations;
   }
 
-  /**
-   * Optimizes the given delete operations: for example, if there are two deletes for two different variables, merges this into one bulk delete which improves performance
-   */
   protected List<DeleteOperation> optimizeDeleteOperations(List<DeleteOperation> deleteOperations) {
     
-    // No optimization possible for 0 or 1 operations
-    if (!isOptimizeDeleteOperationsEnabled || deleteOperations.size() <= 1) {
-      return deleteOperations;
-    }
-
-    List<DeleteOperation> optimizedDeleteOperations = new ArrayList<DbSqlSession.DeleteOperation>();
-    boolean[] checkedIndices = new boolean[deleteOperations.size()];
-    for (int i = 0; i < deleteOperations.size(); i++) {
-
-      if (checkedIndices[i] == true) {
-        continue;
-      }
-
-      DeleteOperation deleteOperation = deleteOperations.get(i);
-      boolean couldOptimize = false;
-      if (deleteOperation instanceof CheckedDeleteOperation) {
-
-        PersistentObject persistentObject = ((CheckedDeleteOperation) deleteOperation).getPersistentObject();
-        if (persistentObject instanceof BulkDeleteable) {
-          String bulkDeleteStatement = dbSqlSessionFactory.getBulkDeleteStatement(persistentObject.getClass());
-          bulkDeleteStatement = dbSqlSessionFactory.mapStatement(bulkDeleteStatement);
-          if (bulkDeleteStatement != null) {
-            BulkCheckedDeleteOperation bulkCheckedDeleteOperation = null;
-
-            // Find all objects of the same type
-            for (int j = 0; j < deleteOperations.size(); j++) {
-              DeleteOperation otherDeleteOperation = deleteOperations.get(j);
-              if (j != i && checkedIndices[j] == false && otherDeleteOperation instanceof CheckedDeleteOperation) {
-                PersistentObject otherPersistentObject = ((CheckedDeleteOperation) otherDeleteOperation).getPersistentObject();
-                if (otherPersistentObject.getClass().equals(persistentObject.getClass())) {
-                  if (bulkCheckedDeleteOperation == null) {
-                    bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(persistentObject.getClass());
-                    bulkCheckedDeleteOperation.addPersistentObject(persistentObject);
-                    optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
-                  }
-                  couldOptimize = true;
-                  bulkCheckedDeleteOperation.addPersistentObject(otherPersistentObject);
-                  checkedIndices[j] = true;
-                } else {
-                  // We may only optimize subsequent delete
-                  // operations of the same type, to prevent
-                  // messing up
-                  // the order of deletes of related entities
-                  // which may depend on the referenced entity
-                  // being deleted before
-                  break;
-                }
-              }
-
-            }
-          }
-        }
-      }
-
-      if (!couldOptimize) {
-        optimizedDeleteOperations.add(deleteOperation);
-      }
-      checkedIndices[i] = true;
-
-    }
-    return optimizedDeleteOperations;
-  }
-  
-  protected List<DeleteOperation> optimizeDeleteOperationsTRYOUT(List<DeleteOperation> deleteOperations) {
+    // TODO: currently only for Execution entities. Needs to be done for all.
+    
     List<DeleteOperation> optimizedDeleteOperations = new ArrayList<DbSqlSession.DeleteOperation>(deleteOperations.size());
-    
+
     int nrOfExecutionEntities = 0;
-    
+
     for (int i = 0; i < deleteOperations.size(); i++) {
       DeleteOperation deleteOperation = deleteOperations.get(i);
       if (isCheckedExecutionEntityDelete(deleteOperation)) {
         nrOfExecutionEntities++;
       }
     }
-    
+
     List<ExecutionEntity> executionEntitiesToDelete = new ArrayList<ExecutionEntity>(nrOfExecutionEntities);
-    
+
     for (DeleteOperation deleteOperation : deleteOperations) {
-      
+
       if (isCheckedExecutionEntityDelete(deleteOperation) && nrOfExecutionEntities > 1) {
-        
-        // Check parent id / super execution id to know the order of deletions (children first)
+
+        // Check parent id / super execution id to know the order of deletions
+        // (children first)
         ExecutionEntity executionEntity = (ExecutionEntity) ((CheckedDeleteOperation) deleteOperation).getPersistentObject();
         int parentIndex = -1;
         for (int deleteIndex = 0; deleteIndex < executionEntitiesToDelete.size(); deleteIndex++) {
@@ -753,24 +680,31 @@ public class DbSqlSession implements Session {
             break;
           }
         }
-        
+
         if (parentIndex == -1) {
           executionEntitiesToDelete.add(executionEntity);
         } else {
           executionEntitiesToDelete.add(parentIndex, executionEntity);
         }
-        
+
         // If all execution entities have been found, make a bulk delete out of it
+        
         if (executionEntitiesToDelete.size() == nrOfExecutionEntities) {
+          
+          // All Databases except MySQL can handle bulk deletes. 
+          // The next best thing if mysql can't have bulk deletes is 'layered' deletes, ie the childs are removed first
+          // before the parents, but in two different sql statements (vs 1 in the bulk delete).
+          
           BulkCheckedDeleteOperation bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(ExecutionEntity.class);
           bulkCheckedDeleteOperation.setPersistentObjectEntities(executionEntitiesToDelete);
           optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
+          
         }
-        
+          
       } else {
         optimizedDeleteOperations.add(deleteOperation);
       }
-      
+
     }
     
     return optimizedDeleteOperations;
@@ -909,10 +843,7 @@ public class DbSqlSession implements Session {
 
   protected void flushRegularDeletes(boolean dispatchEvent) {
   
-    // TODO: Should we re-enable this?
-    //List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
-
-    List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperationsTRYOUT(deleteOperations);
+    List<DeleteOperation> optimizedDeleteOperations = optimizeDeleteOperations(deleteOperations);
     
     for (DeleteOperation delete : optimizedDeleteOperations) {
       // for (DeleteOperation delete : deleteOperations) {
@@ -1296,11 +1227,10 @@ public class DbSqlSession implements Session {
       Exception exception = null;
       byte[] bytes = IoUtil.readInputStream(inputStream, resourceName);
       String ddlStatements = new String(bytes);
-      String databaseType = dbSqlSessionFactory.getDatabaseType();
 
       // Special DDL handling for certain databases
       try {
-        if ("mysql".equals(databaseType)) {
+        if (isMysql()) {
           DatabaseMetaData databaseMetaData = connection.getMetaData();
           int majorVersion = databaseMetaData.getDatabaseMajorVersion();
           int minorVersion = databaseMetaData.getDatabaseMinorVersion();
@@ -1342,7 +1272,7 @@ public class DbSqlSession implements Session {
 
         } else if (line.length() > 0) {
 
-          if ("oracle".equals(databaseType) && line.startsWith("begin")) {
+          if (isOracle() && line.startsWith("begin")) {
             inOraclePlsqlBlock = true;
             sqlStatement = addSqlStatementPiece(sqlStatement, line);
 
@@ -1472,6 +1402,14 @@ public class DbSqlSession implements Session {
 
   public <T> T getCustomMapper(Class<T> type) {
     return sqlSession.getMapper(type);
+  }
+  
+  public boolean isMysql() {
+    return dbSqlSessionFactory.getDatabaseType().equals("mysql");
+  }
+  
+  public boolean isOracle() {
+    return dbSqlSessionFactory.getDatabaseType().equals("oracle");
   }
 
   // query factory methods

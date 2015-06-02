@@ -45,15 +45,15 @@ public class ExecuteAsyncRunnable implements Runnable {
   }
 
   public void run() {
-
+    
     try {
       if (job.isExclusive()) {
         commandExecutor.execute(new LockExclusiveJobCmd(job));
       }
 
-    } catch (ActivitiOptimisticLockingException optimisticLockingException) {
+    } catch (Throwable lockException) {
       if (log.isDebugEnabled()) {
-        log.debug("Optimistic locking exception during exclusive job acquisition. Retrying job.", optimisticLockingException.getMessage());
+        log.debug("Exception during exclusive job acquisition. Retrying job.", lockException.getMessage());
       }
 
       commandExecutor.execute(new Command<Void>() {
@@ -63,11 +63,10 @@ public class ExecuteAsyncRunnable implements Runnable {
         }
       });
       return;
-
-    } catch (Throwable t) {
-      log.error("Error while locking exclusive job " + job.getId(), t);
-      return;
+      
     }
+
+    
 
     try {
       commandExecutor.execute(new ExecuteAsyncJobCmd(job));
