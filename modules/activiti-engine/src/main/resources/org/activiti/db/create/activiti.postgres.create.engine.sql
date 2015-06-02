@@ -193,6 +193,7 @@ create table ACT_EVT_LOG (
 );
 
 create index ACT_IDX_EXEC_BUSKEY on ACT_RU_EXECUTION(BUSINESS_KEY_);
+create index ACT_IDX_EXE_ROOT on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);
 create index ACT_IDX_TASK_CREATE on ACT_RU_TASK(CREATE_TIME_);
 create index ACT_IDX_IDENT_LNK_USER on ACT_RU_IDENTITYLINK(USER_ID_);
 create index ACT_IDX_IDENT_LNK_GROUP on ACT_RU_IDENTITYLINK(GROUP_ID_);
@@ -227,11 +228,6 @@ alter table ACT_RU_EXECUTION
     foreign key (SUPER_EXEC_) 
     references ACT_RU_EXECUTION (ID_);
     
-create index ACT_IDX_EXE_ROOT on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);    
-alter table ACT_RU_EXECUTION
-    add constraint ACT_FK_ROOT_PROCINST
-    foreign key (ROOT_PROC_INST_ID_)
-    references ACT_RU_EXECUTION (ID_);  
 
 create index ACT_IDX_EXE_PROCDEF on ACT_RU_EXECUTION(PROC_DEF_ID_); 
 alter table ACT_RU_EXECUTION

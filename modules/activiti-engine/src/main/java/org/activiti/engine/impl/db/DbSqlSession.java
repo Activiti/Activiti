@@ -344,16 +344,7 @@ public class DbSqlSession implements Session {
         throw new ActivitiException("no bulk delete statement for " + persistentObjectClass + " in the mapping files");
       }
 
-      // It only makes sense to check for optimistic locking exceptions
-      // for objects that actually have a revision
-      if (persistentObjects.get(0) instanceof HasRevision) {
-        int nrOfRowsDeleted = sqlSession.delete(bulkDeleteStatement, persistentObjects);
-        if (nrOfRowsDeleted < persistentObjects.size()) {
-          throw new ActivitiOptimisticLockingException("One of the entities " + persistentObjectClass + " was updated by another transaction concurrently while trying to do a bulk delete");
-        }
-      } else {
-        sqlSession.delete(bulkDeleteStatement, persistentObjects);
-      }
+      sqlSession.delete(bulkDeleteStatement, persistentObjects);
     }
 
     public Class<? extends PersistentObject> getPersistentObjectClass() {
@@ -704,21 +695,9 @@ public class DbSqlSession implements Session {
           // The next best thing if mysql can't have bulk deletes is 'layered' deletes, ie the childs are removed first
           // before the parents, but in two different sql statements (vs 1 in the bulk delete).
           
-          if (isMysql()) {
-            
-            // TODO: obviously this can be optimized, as we're recreating the DeleteOperation
-            // This is just to validate and make the tests run on mysql
-            for (ExecutionEntity executionEntityToDelete : executionEntitiesToDelete) {
-              optimizedDeleteOperations.add(new CheckedDeleteOperation(executionEntityToDelete));
-            }
-            
-          } else {
-            
-            BulkCheckedDeleteOperation bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(ExecutionEntity.class);
-            bulkCheckedDeleteOperation.setPersistentObjectEntities(executionEntitiesToDelete);
-            optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
-            
-          }
+          BulkCheckedDeleteOperation bulkCheckedDeleteOperation = new BulkCheckedDeleteOperation(ExecutionEntity.class);
+          bulkCheckedDeleteOperation.setPersistentObjectEntities(executionEntitiesToDelete);
+          optimizedDeleteOperations.add(bulkCheckedDeleteOperation);
           
         }
           
