@@ -49,7 +49,7 @@ public class SpringLimitedExpressionsTest extends SpringActivitiTestCase {
       taskService.complete(task.getId());
       fail("Exception should have been thrown");
     } catch (ActivitiException ae) {
-      assertTextPresent("Unknown property used in expression", ae.getMessage());
+      assertTextPresent("Unknown property used in expression", ae.getCause().getMessage());
     }
   }
 }
