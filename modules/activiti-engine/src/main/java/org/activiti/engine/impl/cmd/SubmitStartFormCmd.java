@@ -55,7 +55,7 @@ public class SubmitStartFormCmd extends NeedsActiveProcessDefinitionCmd<ProcessI
     StartFormHandler startFormHandler = FormHandlerUtil.getStartFormHandler(commandContext, processDefinition); 
     startFormHandler.submitFormProperties(properties, processInstance);
     
-    commandContext.getAgenda().planContinueProcessOperation(processInstance.getExecutions().get(0)); // There will always be one child execution created
+    ProcessInstanceUtil.startProcessInstance(processInstance, commandContext);
 
     return processInstance;
   }
