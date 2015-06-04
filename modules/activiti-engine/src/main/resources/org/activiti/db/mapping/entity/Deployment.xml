@@ -7,8 +7,8 @@
   <!-- DEPLOYMENT INSERT -->
   
   <insert id="insertDeployment" parameterType="org.activiti.engine.impl.persistence.entity.DeploymentEntity">
-    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_)
-    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP})
+    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, #{engineVersion, jdbcType=VARCHAR})
   </insert>
   
   <!-- DEPLOYMENT UPDATE -->
@@ -34,7 +34,7 @@
     <result property="category" column="CATEGORY_" jdbcType="VARCHAR" />
     <result property="tenantId" column="TENANT_ID_" jdbcType="VARCHAR" />
     <result property="deploymentTime" column="DEPLOY_TIME_" jdbcType="TIMESTAMP"/>
-    <result property="engineVersion" column="ENGINE_VERSION" jdbcType="VARCHAR" />
+    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- DEPLOYMENT SELECT -->

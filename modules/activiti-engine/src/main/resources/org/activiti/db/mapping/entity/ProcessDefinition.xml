@@ -7,7 +7,7 @@
   <!-- PROCESSDEFINITION INSERT -->
 
   <insert id="insertProcessDefinition" parameterType="org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity">
-    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_)
+    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_)
     values (#{id, jdbcType=VARCHAR},
     		1,
             #{category, jdbcType=VARCHAR},
@@ -21,7 +21,8 @@
             #{hasStartFormKey, jdbcType=BOOLEAN},
             #{isGraphicalNotationDefined, jdbcType=BOOLEAN},
             #{suspensionState, jdbcType=INTEGER},
-            #{tenantId, jdbcType=VARCHAR})
+            #{tenantId, jdbcType=VARCHAR},
+            #{engineVersion, jdbcType=VARCHAR})
   </insert>
   
   <!-- PROCESSDEFINITION UPDATE -->
@@ -65,7 +66,7 @@
     <result property="hasStartFormKey" column="HAS_START_FORM_KEY_" jdbcType="BOOLEAN"/>
     <result property="isGraphicalNotationDefined" column="HAS_GRAPHICAL_NOTATION_" jdbcType="BOOLEAN" />
     <result property="suspensionState" column="SUSPENSION_STATE_" jdbcType="INTEGER"/>
-    <result property="engineVersion" column="ENGINE_VERSION" jdbcType="VARCHAR" />
+    <result property="engineVersion" column="ENGINE_VERSION_" jdbcType="VARCHAR" />
   </resultMap>
 
   <!-- PROCESSDEFINITION SELECT -->

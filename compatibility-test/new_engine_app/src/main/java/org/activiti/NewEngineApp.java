@@ -12,11 +12,11 @@
  */
 package org.activiti;
 
-import org.activiti.engine.ProcessEngine;
-import org.activiti.engine.ProcessEngineConfiguration;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti5.engine.ProcessEngine;
+import org.activiti5.engine.ProcessEngineConfiguration;
+import org.activiti5.engine.RepositoryService;
+import org.activiti5.engine.RuntimeService;
+import org.activiti5.engine.runtime.ProcessInstance;
 
 /**
  * @author Joram Barrez
