@@ -63,6 +63,11 @@ public class ProcessParseHandler extends AbstractBpmnParseHandler<Process> {
     currentProcessDefinition.setDescription(process.getDocumentation());
     currentProcessDefinition.setTaskDefinitions(new HashMap<String, TaskDefinition>());
     currentProcessDefinition.setDeploymentId(bpmnParse.getDeployment().getId());
+    
+    if (bpmnParse.getDeployment().getEngineVersion() != null) {
+      currentProcessDefinition.setEngineVersion(bpmnParse.getDeployment().getEngineVersion());
+    }
+    
     createEventListeners(bpmnParse, process.getEventListeners(), currentProcessDefinition);
 
     ExpressionManager expressionManager = bpmnParse.getExpressionManager();

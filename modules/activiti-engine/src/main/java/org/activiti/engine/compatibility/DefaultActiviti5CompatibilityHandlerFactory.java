@@ -28,14 +28,14 @@ public class DefaultActiviti5CompatibilityHandlerFactory implements Activiti5Com
   public Activiti5CompatibilityHandler createActiviti5CompatibilityHandler() {
 
     if (compatibilityHandlerClassName == null) {
-      compatibilityHandlerClassName = "org.activiti5.engine.impl.compatibility.Activiti5CompatibilityHandlerImpl";
+      compatibilityHandlerClassName = "org.activiti.compatibility.DefaultActiviti5CompatibilityHandler";
     }
 
     try {
       Activiti5CompatibilityHandler handler = (Activiti5CompatibilityHandler) Class.forName(compatibilityHandlerClassName).newInstance();
       return handler;
     } catch (Exception e) {
-      logger.debug("Activiti 5 compatibility handler implementation not found or error during instantiation. " + "Error : " + e.getMessage() + ". Activiti 5 backwards compatibility disabled.");
+      logger.info("Activiti 5 compatibility handler implementation not found or error during instantiation. " + "Error : " + e.getMessage() + ". Activiti 5 backwards compatibility disabled.");
     }
     return null;
   }

@@ -30,6 +30,7 @@ create table ACT_RE_DEPLOYMENT (
     CATEGORY_ varchar(255),
     TENANT_ID_ varchar(255) default '',
     DEPLOY_TIME_ timestamp,
+    ENGINE_VERSION_ varchar(255),
     primary key (ID_)
 );
 
@@ -108,6 +109,7 @@ create table ACT_RE_PROCDEF (
     HAS_GRAPHICAL_NOTATION_ smallint check(HAS_GRAPHICAL_NOTATION_ in (1,0)),
     SUSPENSION_STATE_ integer,
     TENANT_ID_ varchar(255) not null default '',
+    ENGINE_VERSION_ varchar(255),
     primary key (ID_)
 );
 

@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -46,6 +48,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   protected boolean isProcessValidationEnabled = true;
   protected boolean isDuplicateFilterEnabled = false;
   protected Date processDefinitionsActivationDate;
+  protected Map<String, Object> deploymentProperties = new HashMap<String, Object>();
 
   public DeploymentBuilderImpl(RepositoryServiceImpl repositoryService) {
     this.repositoryService = repositoryService;
@@ -151,6 +154,12 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     this.processDefinitionsActivationDate = date;
     return this;
   }
+  
+  @Override
+  public DeploymentBuilder deploymentProperty(String propertyKey, Object propertyValue) {
+    deploymentProperties.put(propertyKey, propertyValue);
+    return this;
+  }
 
   public Deployment deploy() {
     return repositoryService.deploy(this);
@@ -179,4 +188,8 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
     return processDefinitionsActivationDate;
   }
 
+  public Map<String, Object> getDeploymentProperties() {
+    return deploymentProperties;
+  }
+  
 }
