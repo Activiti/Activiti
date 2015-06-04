@@ -272,14 +272,14 @@
   	select *
   	from ${prefix}ACT_RU_EXECUTION
   	where ACT_ID_ = #{parameter.activityId} 
-  	and IS_ACTIVE_ = 0
+  	and IS_ACTIVE_ = #{parameter.isActive}
   </select>
   
   <select id="selectInactiveExecutionsForProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
   	select *
   	from ${prefix}ACT_RU_EXECUTION
   	where PROC_INST_ID_ = #{parameter.processInstanceId}	
-  	and IS_ACTIVE_ = 0
+  	and IS_ACTIVE_ = #{parameter.isActive}
   </select>
   
   <select id="selectInactiveExecutionsInActivityAndProcessInstance" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">
@@ -287,7 +287,7 @@
   	from ${prefix}ACT_RU_EXECUTION
   	where ACT_ID_ = #{parameter.activityId}
   	and PROC_INST_ID_ = #{parameter.processInstanceId}
-  	and IS_ACTIVE_ = 0
+  	and IS_ACTIVE_ = #{parameter.isActive}
   </select>
   
   <select id="selectExecutionsByParentExecutionAndActivityIds" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" resultMap="executionResultMap">

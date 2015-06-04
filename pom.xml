@@ -578,23 +578,6 @@
         <artifactId>javaGeom</artifactId>
         <version>0.11.1</version>
       </dependency>
-      <!-- Webapps -->
-      <dependency>
-        <groupId>com.vaadin</groupId>
-        <artifactId>vaadin</artifactId>
-        <version>6.8.8</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-user</artifactId>
-        <version>2.3.0</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.google.gwt</groupId>
-        <artifactId>gwt-servlet</artifactId>
-        <version>2.3.0</version>
-      </dependency>
       <!-- Camel integration -->
       <dependency>
         <groupId>org.apache.camel</groupId>
@@ -758,12 +741,9 @@
         <module>modules/activiti-engine</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
-        <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
         <module>modules/activiti-diagram-rest</module>
-        <module>modules/activiti-explorer</module>
-        <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-spring</module>
@@ -830,7 +810,6 @@
         <module>modules/activiti-spring</module>
         <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-common-rest</module>
-        <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
@@ -852,7 +831,6 @@
         <module>modules/activiti-json-converter</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-common-rest</module>
-        <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
         <module>modules/activiti-cxf</module>
@@ -876,12 +854,6 @@
       <id>checkcdi</id>
       <modules>
         <module>modules/activiti-cdi</module>
-      </modules>
-    </profile>
-    <profile>
-      <id>checksimpleworkflow</id>
-      <modules>
-        <module>modules/activiti-simple-workflow</module>
       </modules>
     </profile>
     <profile>
@@ -912,16 +884,13 @@
         <module>modules/activiti-bpmn-converter</module>
         <module>modules/activiti-bpmn-layout</module>
         <module>modules/activiti-json-converter</module>
-        <module>modules/activiti-simple-workflow</module>
         <module>modules/activiti-spring</module>
         <module>modules/activiti-spring-boot</module>
         <module>modules/activiti-common-rest</module>
         <module>modules/activiti-modeler</module>
         <module>modules/activiti-diagram-rest</module>
-        <module>modules/activiti-explorer</module>
         <module>modules/activiti-rest</module>
         <module>modules/activiti-webapp-rest2</module>
-        <module>modules/activiti-webapp-explorer2</module>
         <module>modules/activiti-cxf</module>
         <module>modules/activiti-osgi</module>
         <module>modules/activiti-camel</module>
@@ -942,47 +911,6 @@
       <modules>
         <module>modules/activiti-engine</module>
       </modules>
-    </profile>
-    <profile>
-      <!-- Profile used by the start-explorer.sh script to build the Explorer
-        webapp and all its dependencies -->
-      <id>buildWebappDependencies</id>
-      <modules>
-        <module>modules/activiti-bpmn-model</module>
-        <module>modules/activiti-process-validation</module>
-        <module>modules/activiti-image-generator</module>
-        <module>modules/activiti-json-converter</module>
-        <module>modules/activiti-bpmn-converter</module>
-        <module>modules/activiti-engine</module>
-        <module>modules/activiti-spring</module>
-        <module>modules/activiti-explorer</module>
-        <module>modules/activiti-common-rest</module>
-        <module>modules/activiti-modeler</module>
-        <module>modules/activiti-diagram-rest</module>
-        <module>modules/activiti-bpmn-layout</module>
-        <module>modules/activiti-simple-workflow</module>
-        <module>modules/activiti-crystalball</module>
-      </modules>
-      <properties>
-        <skipTests>true</skipTests>
-      </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.zeroturnaround</groupId>
-            <artifactId>jrebel-maven-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>generate-rebel-xml</id>
-                <phase>process-resources</phase>
-                <goals>
-                  <goal>generate</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
     <profile>
       <!-- Profile used by the start-rest.sh script to build the Explorer
