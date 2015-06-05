@@ -18,7 +18,6 @@ import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.cmd.ExecuteAsyncJobCmd;
 import org.activiti.engine.impl.cmd.LockExclusiveJobCmd;
 import org.activiti.engine.impl.cmd.UnlockExclusiveJobCmd;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandConfig;
 import org.activiti.engine.impl.interceptor.CommandContext;

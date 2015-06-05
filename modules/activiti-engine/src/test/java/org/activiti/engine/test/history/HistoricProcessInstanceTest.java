@@ -16,6 +16,7 @@ package org.activiti.engine.test.history;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -157,7 +158,7 @@ public class HistoricProcessInstanceTest extends PluggableActivitiTestCase {
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstance.getId()).count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionId(processInstance.getProcessDefinitionId()).count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
-    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("oneTaskProcess")).count());
+    assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Collections.singletonList("oneTaskProcess")).count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("undefined", "oneTaskProcess")).count());
     assertEquals(0, historyService.createHistoricProcessInstanceQuery().processDefinitionKeyIn(Arrays.asList("undefined1", "undefined2")).count());
     assertEquals(1, historyService.createHistoricProcessInstanceQuery().processInstanceBusinessKey("businessKey123").count());
