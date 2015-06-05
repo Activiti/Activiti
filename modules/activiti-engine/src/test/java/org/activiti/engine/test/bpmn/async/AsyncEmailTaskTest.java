@@ -13,6 +13,7 @@
 package org.activiti.engine.test.bpmn.async;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.activiti.engine.test.Deployment;
@@ -41,7 +42,7 @@ public class AsyncEmailTaskTest extends EmailTestCase {
     assertEquals(1, messages.size());
 
     WiserMessage message = messages.get(0);
-    EmailServiceTaskTest.assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
+    EmailServiceTaskTest.assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost", Collections.singletonList("kermit@activiti.org"), null);
     assertProcessEnded(procId);
   }
 
@@ -59,7 +60,8 @@ public class AsyncEmailTaskTest extends EmailTestCase {
     assertEquals(1, messages.size());
 
     WiserMessage message = messages.get(0);
-    EmailServiceTaskTest.assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost", Arrays.asList("kermit@activiti.org"), null);
+    EmailServiceTaskTest.assertEmailSend(message, false, "Hello Kermit!", "This a text only e-mail.", "activiti@localhost",
+                                         Collections.singletonList("kermit@activiti.org"), null);
   }
 
 }
