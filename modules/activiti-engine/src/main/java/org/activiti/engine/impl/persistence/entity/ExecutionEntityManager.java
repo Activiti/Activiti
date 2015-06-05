@@ -406,12 +406,6 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       }
     }
 
-    IdentityLinkEntityManager identityLinkEntityManager = Context.getCommandContext().getIdentityLinkEntityManager();
-    List<IdentityLinkEntity> identityLinkEntities = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(processInstanceEntity.getId());
-    for (IdentityLinkEntity identityLinkEntity : identityLinkEntities) {
-      identityLinkEntityManager.delete(identityLinkEntity);
-    }
-
     // delete event scope executions
     for (ExecutionEntity childExecution : processInstanceEntity.getExecutions()) {
       if (childExecution.isEventScope()) {
@@ -476,6 +470,15 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
     executionEntity.setEnded(true);
     executionEntity.setActive(false);
 
+    if (executionEntity.getId().equals(executionEntity.getProcessInstanceId())) {
+      IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
+      Collection<IdentityLinkEntity> identityLinks = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(executionEntity.getProcessInstanceId());
+      for(IdentityLinkEntity identityLink : identityLinks)
+      {
+        identityLinkEntityManager.delete(identityLink);
+      }
+    }
+    
     // Get variables related to execution and delete them
     VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
     Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
