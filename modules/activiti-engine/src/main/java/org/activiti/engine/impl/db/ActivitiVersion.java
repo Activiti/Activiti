@@ -1,6 +1,7 @@
 package org.activiti.engine.impl.db;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -19,7 +20,7 @@ public class ActivitiVersion {
 
   public ActivitiVersion(String mainVersion) {
     this.mainVersion = mainVersion;
-    this.alternativeVersionStrings = Arrays.asList(mainVersion);
+    this.alternativeVersionStrings = Collections.singletonList(mainVersion);
   }
 
   public ActivitiVersion(String mainVersion, List<String> alternativeVersionStrings) {
