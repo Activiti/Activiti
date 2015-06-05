@@ -28,15 +28,23 @@ public class Activiti6StartProcessInstanceTest extends AbstractActiviti6Compatib
     
     // There should be one task active for the process, from the Activiti 5 test data generator
     assertEquals(1, taskService.createTaskQuery().processInstanceBusinessKey("activitiv5-one-task-process").count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
     assertEquals(1, repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").count());
     
     
     // Starting a new process instance will start it in Activiti 5 mode
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
+    assertEquals(2, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
     assertEquals(2, taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").count());
     
     // For Activiti 5, there should be only one execution
     assertEquals(1, runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).count());
+    
+    
+    // Completing a task in v5 mode
+    taskService.complete(taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").list().get(0).getId());
+    assertEquals(1, taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(1, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
     
     
     // Deploying the process definition again. But not yet ready to migrate to Actviti 6...
@@ -51,7 +59,8 @@ public class Activiti6StartProcessInstanceTest extends AbstractActiviti6Compatib
     }
     
     processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    assertEquals(3, taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(2, runtimeService.createProcessInstanceQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(2, taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").count());
     
     
     // The process definition has been migrated to Activiti 6. Deploying it as a 6 process definition
@@ -62,7 +71,7 @@ public class Activiti6StartProcessInstanceTest extends AbstractActiviti6Compatib
     assertNull(((ProcessDefinitionEntity) repositoryService.createProcessDefinitionQuery().processDefinitionKey("oneTaskProcess").latestVersion().singleResult()).getEngineVersion());
     
     processInstance = runtimeService.startProcessInstanceByKey("oneTaskProcess");
-    assertEquals(4, taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").count());
+    assertEquals(3, taskService.createTaskQuery().processDefinitionKey("oneTaskProcess").count());
     
     // For Activiti 6, we expect 2 execution (vs 1 in Activiti 5)
     assertEquals(2, runtimeService.createExecutionQuery().processInstanceId(processInstance.getId()).count());

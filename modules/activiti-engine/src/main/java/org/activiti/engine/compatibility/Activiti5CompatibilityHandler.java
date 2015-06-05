@@ -14,6 +14,7 @@ package org.activiti.engine.compatibility;
 
 import java.util.Map;
 
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -28,5 +29,7 @@ public interface Activiti5CompatibilityHandler {
   Deployment deploy(DeploymentBuilderImpl deploymentBuilder);
   
   ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName);
+  
+  void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope);
 
 }

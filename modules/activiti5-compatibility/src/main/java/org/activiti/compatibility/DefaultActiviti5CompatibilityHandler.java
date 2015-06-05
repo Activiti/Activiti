@@ -22,6 +22,7 @@ import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -35,16 +36,6 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
 
   protected ProcessEngine processEngine;
 
-  @Override
-  public ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, 
-      Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName) {
-    
-    org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance 
-        = getProcessEngine().getRuntimeService().startProcessInstanceByKey(processDefinitionKey);
-    return new Activiti5ProcessInstanceWrapper(activiti5ProcessInstance);
-    
-  }
-  
   @Override
   public Deployment deploy(DeploymentBuilderImpl activiti6DeploymentBuilder) {
     DeploymentBuilder deploymentBuilder = getProcessEngine().getRepositoryService().createDeployment();
@@ -91,6 +82,21 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     
     
     return new Activiti5DeploymentWrapper(deploymentBuilder.deploy());
+  }
+  
+  @Override
+  public ProcessInstance startProcessInstance(String processDefinitionKey, String processDefinitionId, 
+      Map<String, Object> variables, String businessKey, String tenantId, String processInstanceName) {
+    
+    org.activiti5.engine.runtime.ProcessInstance activiti5ProcessInstance 
+        = getProcessEngine().getRuntimeService().startProcessInstanceByKey(processDefinitionKey);
+    return new Activiti5ProcessInstanceWrapper(activiti5ProcessInstance);
+    
+  }
+  
+  @Override
+  public void completeTask(TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
+    getProcessEngine().getTaskService().complete(taskEntity.getId(), variables, localScope);
   }
   
   protected ProcessEngine getProcessEngine() {

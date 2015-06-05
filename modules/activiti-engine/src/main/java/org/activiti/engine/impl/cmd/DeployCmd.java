@@ -24,7 +24,6 @@ import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
-import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.interceptor.Command;
 import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.persistence.entity.DeploymentEntity;
@@ -50,7 +49,8 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
   public Deployment execute(CommandContext commandContext) {
 
     // Backwards compatibility with Activiti v5
-    if (deploymentBuilder.getDeploymentProperties() != null 
+    if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()
+        && deploymentBuilder.getDeploymentProperties() != null 
         && deploymentBuilder.getDeploymentProperties().containsKey(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION)
         && deploymentBuilder.getDeploymentProperties().get(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION).equals(Boolean.TRUE)) {
       
@@ -122,12 +122,10 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
 
   protected Deployment deployAsActiviti5ProcessDefinition(CommandContext commandContext) {
     Activiti5CompatibilityHandler activiti5CompatibilityHandler = commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
-
     if (activiti5CompatibilityHandler == null) {
       throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath. " 
           + "Cannot use the deployment property " + DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION);
     }
-
     return activiti5CompatibilityHandler.deploy(deploymentBuilder);
   }
 

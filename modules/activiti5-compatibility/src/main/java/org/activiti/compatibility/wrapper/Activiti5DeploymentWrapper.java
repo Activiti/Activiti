@@ -52,6 +52,4 @@ public class Activiti5DeploymentWrapper implements Deployment {
     return activiti5Deployment.getTenantId();
   }
   
-  
-
 }

@@ -34,6 +34,8 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Tijs Rademakers
@@ -56,19 +58,10 @@ public class ProcessInstanceUtil {
   protected static ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, 
       String businessKey, String processInstanceName, Map<String, Object> variables, boolean startProcessInstance) {
     
-    CommandContext commandContext = Context.getCommandContext();
-    if (processDefinition.getEngineVersion() != null) {
-      if (Activiti5CompatibilityHandler.ACTIVITI_5_ENGINE_TAG.equals(processDefinition.getEngineVersion())) {
-        Activiti5CompatibilityHandler activiti5CompatibilityHandler = commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
-
-        if (activiti5CompatibilityHandler == null) {
-          throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath");
-        }
-
-        return activiti5CompatibilityHandler.startProcessInstance(processDefinition.getKey(), processDefinition.getId(), variables, businessKey, processDefinition.getTenantId(), processInstanceName);
-      } else {
-        throw new ActivitiException("Invalid 'engine' for process definition " + processDefinition.getId() + " : " + processDefinition.getEngineVersion());
-      }
+    CommandContext commandContext = Context.getCommandContext(); // Todo: ideally, context should be passed here
+    if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinition)) {
+      Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+      return activiti5CompatibilityHandler.startProcessInstance(processDefinition.getKey(), processDefinition.getId(), variables, businessKey, processDefinition.getTenantId(), processInstanceName);
     }
 
     // Do not start process a process instance if the process definition is suspended

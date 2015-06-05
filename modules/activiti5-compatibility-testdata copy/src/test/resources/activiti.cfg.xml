@@ -14,6 +14,8 @@
 
     <!-- Database configurations -->
     <property name="databaseSchemaUpdate" value="true" />
+    
+    <property name="activiti5CompatibilityEnabled" value="true" />
 
   </bean>
   

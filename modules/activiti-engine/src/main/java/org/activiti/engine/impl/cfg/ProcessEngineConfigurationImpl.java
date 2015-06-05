@@ -408,6 +408,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int maxLengthStringVariableType = 4000;
 
   // Backwards compatibility
+  protected boolean isActiviti5CompatibilityEnabled = false; // Default activiti 5 backwards compatibility is disabled!
   protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
   protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
 
@@ -1440,8 +1441,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected void initActiviti5CompatibilityHandler() {
 
+    // If Activiti 5 compatibility is disabled, no need to do anything
     // If handler is injected, no need to do anything
-    if (activiti5CompatibilityHandler == null) {
+    if (!isActiviti5CompatibilityEnabled || activiti5CompatibilityHandler == null) {
 
       // Create default factory if nothing set
       if (activiti5CompatibilityHandlerFactory == null) {
@@ -2116,21 +2118,32 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.maxLengthStringVariableType = maxLengthStringVariableType;
     return this;
   }
+  
+  public boolean isActiviti5CompatibilityEnabled() {
+    return isActiviti5CompatibilityEnabled;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5CompatibilityEnabled(boolean isActiviti5CompatibilityEnabled) {
+    this.isActiviti5CompatibilityEnabled = isActiviti5CompatibilityEnabled;
+    return this;
+  }
 
   public Activiti5CompatibilityHandlerFactory getActiviti5CompatibilityHandlerFactory() {
     return activiti5CompatibilityHandlerFactory;
   }
 
-  public void setActiviti5CompatibilityHandlerFactory(Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory) {
+  public ProcessEngineConfigurationImpl setActiviti5CompatibilityHandlerFactory(Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory) {
     this.activiti5CompatibilityHandlerFactory = activiti5CompatibilityHandlerFactory;
+    return this;
   }
 
   public Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
     return activiti5CompatibilityHandler;
   }
 
-  public void setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
+  public ProcessEngineConfigurationImpl setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
     this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
+    return this;
   }
 
 }

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.DelegateTask;
 import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.delegate.event.ActivitiEventDispatcher;
@@ -29,6 +30,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.task.TaskDefinition;
+import org.activiti.engine.impl.util.Activiti5Util;
 import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.activiti.engine.task.DelegationState;
 import org.activiti.engine.task.IdentityLinkType;
@@ -43,7 +45,19 @@ public abstract class AbstractCompleteTaskCmd extends NeedsActiveTaskCmd<Void> {
   }
 
   protected void executeTaskComplete(CommandContext commandContext, TaskEntity taskEntity, Map<String, Object> variables, boolean localScope) {
-
+    
+    // Backwards compatibility
+    if (taskEntity.getProcessDefinitionId() != null) {
+      ProcessDefinitionEntity processDefinitionEntity = ProcessDefinitionUtil.getProcessDefinitionEntity(taskEntity.getProcessDefinitionId());
+      if (Activiti5Util.isActiviti5ProcessDefinition(commandContext, processDefinitionEntity)) {
+        Activiti5CompatibilityHandler activiti5CompatibilityHandler = Activiti5Util.getActiviti5CompatibilityHandler(commandContext); 
+        activiti5CompatibilityHandler.completeTask(taskEntity, variables, localScope);
+        return;
+      }
+    }
+    
+    // Task complete logic
+    
     if (taskEntity.getDelegationState() != null && taskEntity.getDelegationState().equals(DelegationState.PENDING)) {
       throw new ActivitiException("A delegated task cannot be completed, but should be resolved instead.");
     }
