@@ -30,7 +30,6 @@ import org.activiti.engine.impl.interceptor.CommandContext;
 import org.activiti.engine.impl.jobexecutor.JobHandler;
 import org.activiti.engine.runtime.Job;
 import org.apache.commons.lang3.StringUtils;
-import org.mvel2.ast.IsDef;
 
 /**
  * Stub of the common parts of a Job. You will normally work with a subclass of JobEntity, such as {@link TimerEntity} or {@link MessageEntity}.

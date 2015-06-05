@@ -16,7 +16,6 @@ import java.util.List;
 
 import org.activiti.bpmn.model.ActivitiListener;
 import org.activiti.bpmn.model.FlowElement;
-import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.ImplementationType;
 import org.activiti.engine.delegate.ExecutionListener;

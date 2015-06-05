@@ -13,7 +13,6 @@
 
 package org.activiti.examples.bpmn.servicetask;
 
-import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.engine.impl.context.Context;

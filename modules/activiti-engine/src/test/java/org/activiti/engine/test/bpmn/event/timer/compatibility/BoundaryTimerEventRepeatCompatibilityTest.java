@@ -14,7 +14,6 @@ package org.activiti.engine.test.bpmn.event.timer.compatibility;
  */
 
 import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
