@@ -191,7 +191,7 @@ public class ProcessInstanceUtil {
               EventDefinition eventDefinition = startEvent.getEventDefinitions().get(0);
               if (eventDefinition instanceof MessageEventDefinition) {
                 MessageEventDefinition messageEventDefinition = (MessageEventDefinition) eventDefinition;
-                BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinition.getId());
+                BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processInstance.getProcessDefinitionId());
                 if (bpmnModel.containsMessageId(messageEventDefinition.getMessageRef())) {
                   messageEventDefinition.setMessageRef(bpmnModel.getMessage(messageEventDefinition.getMessageRef()).getName());
                 }
@@ -207,12 +207,18 @@ public class ProcessInstanceUtil {
     }
     
     if (startProcessInstance) {
-      commandContext.getAgenda().planContinueProcessOperation(execution);
+      startProcessInstance(processInstance, commandContext);
     }
 
     return processInstance;
   }
-
+  
+  public static void startProcessInstance(ExecutionEntity processInstance, CommandContext commandContext)
+  {
+    ExecutionEntity execution = processInstance.getExecutions().get(0); // There will always be one child execution created
+    commandContext.getAgenda().planContinueProcessOperation(execution);
+  }
+  
   protected static Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
     Map<String, Object> variablesMap = new HashMap<String, Object>();
     // convert data objects to process variables
