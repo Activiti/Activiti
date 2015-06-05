@@ -13,18 +13,21 @@
 
 package org.activiti.compatibility;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration;
 import org.activiti5.engine.ProcessEngine;
+import org.activiti5.engine.parse.BpmnParseHandler;
 
 
-
-public class ProcessEngineFactory {
+public class DefaultProcessEngineFactory {
 
   /**
    * Takes in an Activiti 6 process engine config, gives back an Activiti 5 Process engine.
    */
-  public static ProcessEngine buildProcessEngine(ProcessEngineConfigurationImpl activiti6Configuration) {
+  public ProcessEngine buildProcessEngine(ProcessEngineConfigurationImpl activiti6Configuration) {
 
     // TODO: jta/spring/custom type
 
@@ -37,9 +40,29 @@ public class ProcessEngineFactory {
     } else {
       throw new RuntimeException("Unsupported process engine configuration");
     }
+    
+    convertParseHandlers(activiti6Configuration, activiti5Configuration);
 
     return activiti5Configuration.buildProcessEngine();
 
   }
 
+  protected void convertParseHandlers(ProcessEngineConfigurationImpl activiti6Configuration, org.activiti5.engine.impl.cfg.ProcessEngineConfigurationImpl activiti5Configuration) {
+    activiti5Configuration.setPreBpmnParseHandlers(convert(activiti6Configuration.getActiviti5PreBpmnParseHandlers()));
+    activiti5Configuration.setPostBpmnParseHandlers(convert(activiti6Configuration.getActiviti5PostBpmnParseHandlers()));
+    activiti5Configuration.setCustomDefaultBpmnParseHandlers(convert(activiti6Configuration.getActiviti5CustomDefaultBpmnParseHandlers()));
+  }
+  
+  protected List<BpmnParseHandler> convert(List<Object> activiti5BpmnParseHandlers) {
+    if (activiti5BpmnParseHandlers == null) {
+      return null;
+    }
+      
+    List<BpmnParseHandler> parseHandlers = new ArrayList<BpmnParseHandler>(activiti5BpmnParseHandlers.size());
+    for (Object activiti6BpmnParseHandler : activiti5BpmnParseHandlers) {
+      parseHandlers.add((BpmnParseHandler) activiti6BpmnParseHandler);
+    }
+    return parseHandlers;
+  }
+  
 }

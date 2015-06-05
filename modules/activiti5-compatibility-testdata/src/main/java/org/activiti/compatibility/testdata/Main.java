@@ -12,6 +12,8 @@
  */
 package org.activiti.compatibility.testdata;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.activiti.engine.ProcessEngine;
@@ -28,14 +30,19 @@ public class Main {
     logger.info("Booting up Activiti 5 Process Engine");
     ProcessEngine processEngine = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti5.cfg.xml").buildProcessEngine();
     logger.info("Starting test data generation.");
-    Reflections reflections = new Reflections("org.activiti.compatibility.testdata.generators");    
+    List<String> executedGenerators = new ArrayList<String>();
+    Reflections reflections = new Reflections("org.activiti.compatibility.testdata.generator");    
     Set<Class<? extends Activiti5TestDataGenerator>> generatorClasses = reflections.getSubTypesOf(Activiti5TestDataGenerator.class);
     for (Class<? extends Activiti5TestDataGenerator> generatorClass : generatorClasses) {
       Activiti5TestDataGenerator testDataGenerator = generatorClass.newInstance();
       testDataGenerator.generateTestData(processEngine);
-      logger.info("Executed test data generator " + testDataGenerator.getClass().getCanonicalName());
+      executedGenerators.add(testDataGenerator.getClass().getCanonicalName());
     }
+
     logger.info("Test data generation completed.");
+    for (String generatorClass : executedGenerators) {
+      logger.info("Executed test data generator " + generatorClass);
+    }
   }
   
 }

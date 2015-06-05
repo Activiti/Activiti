@@ -412,6 +412,11 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
   protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
 
+  // Can't have a dependency on the activiti5-engine module 
+  protected List<Object> activiti5PreBpmnParseHandlers;
+  protected List<Object> activiti5PostBpmnParseHandlers;
+  protected List<Object> activiti5CustomDefaultBpmnParseHandlers; 
+
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
 
@@ -2119,6 +2124,10 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
   
+  
+  
+  // Activiti 5
+  
   public boolean isActiviti5CompatibilityEnabled() {
     return isActiviti5CompatibilityEnabled;
   }
@@ -2146,4 +2155,31 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     return this;
   }
 
+  public List<Object> getActiviti5PreBpmnParseHandlers() {
+    return activiti5PreBpmnParseHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5PreBpmnParseHandlers(List<Object> activiti5PreBpmnParseHandlers) {
+    this.activiti5PreBpmnParseHandlers = activiti5PreBpmnParseHandlers;
+    return this;
+  }
+
+  public List<Object> getActiviti5PostBpmnParseHandlers() {
+    return activiti5PostBpmnParseHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5PostBpmnParseHandlers(List<Object> activiti5PostBpmnParseHandlers) {
+    this.activiti5PostBpmnParseHandlers = activiti5PostBpmnParseHandlers;
+    return this;
+  }
+
+  public List<Object> getActiviti5CustomDefaultBpmnParseHandlers() {
+    return activiti5CustomDefaultBpmnParseHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5CustomDefaultBpmnParseHandlers(List<Object> activiti5CustomDefaultBpmnParseHandlers) {
+    this.activiti5CustomDefaultBpmnParseHandlers = activiti5CustomDefaultBpmnParseHandlers;
+    return this;
+  }
+  
 }

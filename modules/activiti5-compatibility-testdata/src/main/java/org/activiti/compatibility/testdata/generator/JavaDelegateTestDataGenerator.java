@@ -10,22 +10,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.activiti.compatibility.testdata.generators;
+package org.activiti.compatibility.testdata.generator;
 
 import org.activiti.compatibility.testdata.Activiti5TestDataGenerator;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
 
-public class StartProcessInstanceTestDataGenerator implements Activiti5TestDataGenerator {
+public class JavaDelegateTestDataGenerator implements Activiti5TestDataGenerator {
 
   @Override
   public void generateTestData(ProcessEngine processEngine) {
     RepositoryService repositoryService = processEngine.getRepositoryService();
-    repositoryService.createDeployment().addClasspathResource("oneTaskProcess.bpmn20.xml").deploy();
+    repositoryService.createDeployment().addClasspathResource("javaDelegateProcess.bpmn20.xml").deploy();
     
     RuntimeService runtimeService = processEngine.getRuntimeService();
-    runtimeService.startProcessInstanceByKey("oneTaskProcess", "activitiv5-one-task-process");
+    runtimeService.startProcessInstanceByKey("javaDelegateTestProcess");
   }
 
 }

@@ -21,7 +21,7 @@ import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.junit.Test;
 
-public class Activiti6StartProcessInstanceTest extends AbstractActiviti6CompatibilityTest {
+public class StartProcessInstanceTest extends AbstractActiviti6CompatibilityTest {
 
   @Test
   public void testStartProcessInstance() {

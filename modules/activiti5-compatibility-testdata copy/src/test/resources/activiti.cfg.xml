@@ -16,6 +16,12 @@
     <property name="databaseSchemaUpdate" value="true" />
     
     <property name="activiti5CompatibilityEnabled" value="true" />
+    
+     <property name="activiti5PreBpmnParseHandlers">
+      <list>
+        <bean class="org.activiti.compatibility.test.parsehandler.RenameTaskBpmnParseHandler" />
+      </list>
+    </property>
 
   </bean>
   

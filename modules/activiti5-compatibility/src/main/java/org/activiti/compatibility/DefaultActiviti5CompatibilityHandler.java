@@ -34,7 +34,9 @@ import org.activiti5.engine.repository.DeploymentBuilder;
  */
 public class DefaultActiviti5CompatibilityHandler implements Activiti5CompatibilityHandler {
 
+  protected DefaultProcessEngineFactory processEngineFactory;
   protected ProcessEngine processEngine;
+  
 
   @Override
   public Deployment deploy(DeploymentBuilderImpl activiti6DeploymentBuilder) {
@@ -103,11 +105,22 @@ public class DefaultActiviti5CompatibilityHandler implements Activiti5Compatibil
     if (processEngine == null) {
       synchronized (this) {
         if (processEngine == null) {
-          processEngine = ProcessEngineFactory.buildProcessEngine(Context.getProcessEngineConfiguration());
+          processEngine = getProcessEngineFactory().buildProcessEngine(Context.getProcessEngineConfiguration());
         }
       }
     }
     return processEngine;
   }
 
+  public DefaultProcessEngineFactory getProcessEngineFactory() {
+    if(processEngineFactory == null) {
+      processEngineFactory = new DefaultProcessEngineFactory();
+    }
+    return processEngineFactory;
+  }
+
+  public void setProcessEngineFactory(DefaultProcessEngineFactory processEngineFactory) {
+    this.processEngineFactory = processEngineFactory;
+  }
+  
 }
