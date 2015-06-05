@@ -16,6 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
+import org.activiti.engine.test.impl.logger.DebugInfoExecutionTree.DebugInfoExecutionTreeNode;
+import org.slf4j.Logger;
 
 /**
  * @author Joram Barrez
