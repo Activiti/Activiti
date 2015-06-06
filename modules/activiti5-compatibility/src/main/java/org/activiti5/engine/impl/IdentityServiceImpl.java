@@ -12,6 +12,8 @@
  */
 package org.activiti5.engine.impl;
 
+import java.util.List;
+
 import org.activiti5.engine.IdentityService;
 import org.activiti5.engine.identity.Group;
 import org.activiti5.engine.identity.GroupQuery;
@@ -38,10 +40,7 @@ import org.activiti5.engine.impl.cmd.SaveUserCmd;
 import org.activiti5.engine.impl.cmd.SetUserInfoCmd;
 import org.activiti5.engine.impl.cmd.SetUserPictureCmd;
 import org.activiti5.engine.impl.identity.Authentication;
-import org.activiti5.engine.impl.persistence.entity.GroupEntity;
 import org.activiti5.engine.impl.persistence.entity.IdentityInfoEntity;
-
-import java.util.List;
 
 /**
  * @author Tom Baeyens
@@ -57,7 +56,7 @@ public class IdentityServiceImpl extends ServiceImpl implements IdentityService 
   }
 
   public void saveGroup(Group group) {
-    commandExecutor.execute(new SaveGroupCmd((GroupEntity) group));
+    commandExecutor.execute(new SaveGroupCmd(group));
   }
 
   public void saveUser(User user) {
