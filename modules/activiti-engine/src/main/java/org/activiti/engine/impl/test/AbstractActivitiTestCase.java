@@ -15,6 +15,7 @@ package org.activiti.engine.impl.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -52,7 +53,7 @@ import org.junit.Assert;
  */
 public abstract class AbstractActivitiTestCase extends PvmTestCase {
 
-  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList("ACT_GE_PROPERTY");
+  private static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Collections.singletonList("ACT_GE_PROPERTY");
 
   protected ProcessEngine processEngine;
 
