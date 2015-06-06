@@ -41,6 +41,7 @@ public class BpmnModel {
 	protected List<Import> imports = new ArrayList<Import>();
 	protected List<Interface> interfaces = new ArrayList<Interface>();
 	protected List<Artifact> globalArtifacts = new ArrayList<Artifact>();
+    protected List<Resource> resources = new ArrayList<Resource>();
 	protected Map<String, String> namespaceMap = new LinkedHashMap<String, String>();
 	protected String targetNamespace;
 	protected List<String> userTaskFormTypes;
@@ -280,7 +281,37 @@ public class BpmnModel {
 	public void addFlowGraphicInfoList(String key, List<GraphicInfo> graphicInfoList) {
 		flowLocationMap.put(key, graphicInfoList);
 	}
-	
+
+  public Collection<Resource> getResources() {
+    return resources;
+  }
+
+  public void setResources(Collection<Resource> resourceList) {
+    if (resourceList != null) {
+      resources.clear();
+      resources.addAll(resourceList);
+    }
+  }
+    
+  public void addResource(Resource resource) {
+    if (resource != null) {
+      resources.add(resource);
+    }
+  }
+    
+  public boolean containsResourceId(String resourceId) {
+    return getResource(resourceId) != null;
+  }
+    
+  public Resource getResource(String id) {
+    for (Resource resource : resources) {
+      if (id.equals(resource.getId())) {
+        return resource;
+      }
+    }
+    return null;
+  }
+
   public Collection<Signal> getSignals() {
   	return signals;
   }

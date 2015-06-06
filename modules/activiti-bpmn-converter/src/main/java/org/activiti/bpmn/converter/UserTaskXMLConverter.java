@@ -30,6 +30,7 @@ import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CustomProperty;
 import org.activiti.bpmn.model.ExtensionAttribute;
+import org.activiti.bpmn.model.Resource;
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.bpmn.model.alfresco.AlfrescoUserTask;
 import org.apache.commons.lang3.StringUtils;
@@ -274,6 +275,16 @@ public class UserTaskXMLConverter extends BaseBpmnXMLConverter {
               ((UserTask) parentElement).getCandidateGroups().add(assignmentValue);
             }
           }
+        }
+      } else if (StringUtils.isNotEmpty(resourceElement) && ELEMENT_RESOURCE_REF.equals(resourceElement)) {
+        String resourceId = xtr.getElementText();
+        if (model.containsResourceId(resourceId)) { 
+          Resource resource = model.getResource(resourceId);
+          ((UserTask) parentElement).getCandidateGroups().add(resource.getName());
+        } else { 
+          Resource resource = new Resource(resourceId, resourceId);
+          model.addResource(resource);
+          ((UserTask) parentElement).getCandidateGroups().add(resource.getName());
         }
       }
     }
