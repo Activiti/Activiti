@@ -408,8 +408,14 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int maxLengthStringVariableType = 4000;
 
   // Backwards compatibility
+  protected boolean isActiviti5CompatibilityEnabled = false; // Default activiti 5 backwards compatibility is disabled!
   protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
   protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
+
+  // Can't have a dependency on the activiti5-engine module 
+  protected List<Object> activiti5PreBpmnParseHandlers;
+  protected List<Object> activiti5PostBpmnParseHandlers;
+  protected List<Object> activiti5CustomDefaultBpmnParseHandlers; 
 
   // buildProcessEngine
   // ///////////////////////////////////////////////////////
@@ -1440,8 +1446,9 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
 
   protected void initActiviti5CompatibilityHandler() {
 
+    // If Activiti 5 compatibility is disabled, no need to do anything
     // If handler is injected, no need to do anything
-    if (activiti5CompatibilityHandler == null) {
+    if (!isActiviti5CompatibilityEnabled || activiti5CompatibilityHandler == null) {
 
       // Create default factory if nothing set
       if (activiti5CompatibilityHandlerFactory == null) {
@@ -2116,21 +2123,63 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.maxLengthStringVariableType = maxLengthStringVariableType;
     return this;
   }
+  
+  
+  
+  // Activiti 5
+  
+  public boolean isActiviti5CompatibilityEnabled() {
+    return isActiviti5CompatibilityEnabled;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5CompatibilityEnabled(boolean isActiviti5CompatibilityEnabled) {
+    this.isActiviti5CompatibilityEnabled = isActiviti5CompatibilityEnabled;
+    return this;
+  }
 
   public Activiti5CompatibilityHandlerFactory getActiviti5CompatibilityHandlerFactory() {
     return activiti5CompatibilityHandlerFactory;
   }
 
-  public void setActiviti5CompatibilityHandlerFactory(Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory) {
+  public ProcessEngineConfigurationImpl setActiviti5CompatibilityHandlerFactory(Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory) {
     this.activiti5CompatibilityHandlerFactory = activiti5CompatibilityHandlerFactory;
+    return this;
   }
 
   public Activiti5CompatibilityHandler getActiviti5CompatibilityHandler() {
     return activiti5CompatibilityHandler;
   }
 
-  public void setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
+  public ProcessEngineConfigurationImpl setActiviti5CompatibilityHandler(Activiti5CompatibilityHandler activiti5CompatibilityHandler) {
     this.activiti5CompatibilityHandler = activiti5CompatibilityHandler;
+    return this;
   }
 
+  public List<Object> getActiviti5PreBpmnParseHandlers() {
+    return activiti5PreBpmnParseHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5PreBpmnParseHandlers(List<Object> activiti5PreBpmnParseHandlers) {
+    this.activiti5PreBpmnParseHandlers = activiti5PreBpmnParseHandlers;
+    return this;
+  }
+
+  public List<Object> getActiviti5PostBpmnParseHandlers() {
+    return activiti5PostBpmnParseHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5PostBpmnParseHandlers(List<Object> activiti5PostBpmnParseHandlers) {
+    this.activiti5PostBpmnParseHandlers = activiti5PostBpmnParseHandlers;
+    return this;
+  }
+
+  public List<Object> getActiviti5CustomDefaultBpmnParseHandlers() {
+    return activiti5CustomDefaultBpmnParseHandlers;
+  }
+
+  public ProcessEngineConfigurationImpl setActiviti5CustomDefaultBpmnParseHandlers(List<Object> activiti5CustomDefaultBpmnParseHandlers) {
+    this.activiti5CustomDefaultBpmnParseHandlers = activiti5CustomDefaultBpmnParseHandlers;
+    return this;
+  }
+  
 }

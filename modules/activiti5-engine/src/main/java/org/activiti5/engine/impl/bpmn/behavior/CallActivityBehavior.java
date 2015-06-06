@@ -1,0 +1,151 @@
+/* Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.activiti5.engine.impl.bpmn.behavior;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.activiti.bpmn.model.MapExceptionEntry;
+import org.activiti5.engine.ActivitiException;
+import org.activiti5.engine.ActivitiIllegalArgumentException;
+import org.activiti5.engine.ActivitiObjectNotFoundException;
+import org.activiti5.engine.ProcessEngineConfiguration;
+import org.activiti5.engine.delegate.DelegateExecution;
+import org.activiti5.engine.delegate.Expression;
+import org.activiti5.engine.impl.bpmn.data.AbstractDataAssociation;
+import org.activiti5.engine.impl.bpmn.helper.ErrorPropagation;
+import org.activiti5.engine.impl.context.Context;
+import org.activiti5.engine.impl.persistence.deploy.DeploymentManager;
+import org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity;
+import org.activiti5.engine.impl.pvm.PvmProcessInstance;
+import org.activiti5.engine.impl.pvm.delegate.ActivityExecution;
+import org.activiti5.engine.impl.pvm.delegate.SubProcessActivityBehavior;
+import org.activiti5.engine.impl.pvm.process.ProcessDefinitionImpl;
+import org.activiti5.engine.repository.ProcessDefinition;
+
+
+/**
+ * Implementation of the BPMN 2.0 call activity
+ * (limited currently to calling a subprocess and not (yet) a global task).
+ * 
+ * @author Joram Barrez
+ */
+public class CallActivityBehavior extends AbstractBpmnActivityBehavior implements SubProcessActivityBehavior {
+  
+  protected String processDefinitonKey;
+  private List<AbstractDataAssociation> dataInputAssociations = new ArrayList<AbstractDataAssociation>();
+  private List<AbstractDataAssociation> dataOutputAssociations = new ArrayList<AbstractDataAssociation>();
+  private Expression processDefinitionExpression;
+  protected List<MapExceptionEntry> mapExceptions;
+
+  public CallActivityBehavior(String processDefinitionKey, List<MapExceptionEntry> mapExceptions) {
+    this.processDefinitonKey = processDefinitionKey;
+    this.mapExceptions = mapExceptions;
+  }
+  
+  public CallActivityBehavior(Expression processDefinitionExpression, List<MapExceptionEntry> mapExceptions) {
+    super();
+    this.processDefinitionExpression = processDefinitionExpression;
+    this.mapExceptions = mapExceptions;
+  }
+
+  public void addDataInputAssociation(AbstractDataAssociation dataInputAssociation) {
+    this.dataInputAssociations.add(dataInputAssociation);
+  }
+
+  public void addDataOutputAssociation(AbstractDataAssociation dataOutputAssociation) {
+    this.dataOutputAssociations.add(dataOutputAssociation);
+  }
+
+  public void execute(ActivityExecution execution) throws Exception {
+    
+	String processDefinitonKey = this.processDefinitonKey;
+    if (processDefinitionExpression != null) {
+      processDefinitonKey = (String) processDefinitionExpression.getValue(execution);
+    }
+
+    ProcessDefinitionEntity processDefinition = null;
+    if (execution.getTenantId() == null || ProcessEngineConfiguration.NO_TENANT_ID.equals(execution.getTenantId())) {
+    	processDefinition = Context
+    			.getProcessEngineConfiguration()
+    			.getDeploymentManager()
+    			.findDeployedLatestProcessDefinitionByKey(processDefinitonKey);
+    } else {
+    	processDefinition = Context
+          .getProcessEngineConfiguration()
+          .getDeploymentManager()
+          .findDeployedLatestProcessDefinitionByKeyAndTenantId(processDefinitonKey, execution.getTenantId());
+    }
+
+    // Do not start a process instance if the process definition is suspended
+    if (processDefinition.isSuspended()) {
+      throw new ActivitiException("Cannot start process instance. Process definition "
+          + processDefinition.getName() + " (id = " + processDefinition.getId() + ") is suspended");
+    }
+    
+    PvmProcessInstance subProcessInstance = execution.createSubProcessInstance(processDefinition);
+    
+    // copy process variables
+    for (AbstractDataAssociation dataInputAssociation : dataInputAssociations) {
+      Object value = null;
+      if (dataInputAssociation.getSourceExpression()!=null) {
+        value = dataInputAssociation.getSourceExpression().getValue(execution);
+      }
+      else {
+        value = execution.getVariable(dataInputAssociation.getSource());
+      }
+      subProcessInstance.setVariable(dataInputAssociation.getTarget(), value);
+    }
+    
+    try {
+      subProcessInstance.start();
+    } catch (Exception e) {
+        if (!ErrorPropagation.mapException(e, execution, mapExceptions, true))
+            throw e;
+        
+      }
+      
+  }
+  
+  public void setProcessDefinitonKey(String processDefinitonKey) {
+    this.processDefinitonKey = processDefinitonKey;
+  }
+  
+  public String getProcessDefinitonKey() {
+    return processDefinitonKey;
+  }
+  
+  public void completing(DelegateExecution execution, DelegateExecution subProcessInstance) throws Exception {
+    // only data.  no control flow available on this execution.
+
+    // copy process variables
+    for (AbstractDataAssociation dataOutputAssociation : dataOutputAssociations) {
+      Object value = null;
+      if (dataOutputAssociation.getSourceExpression()!=null) {
+        value = dataOutputAssociation.getSourceExpression().getValue(subProcessInstance);
+      }
+      else {
+        value = subProcessInstance.getVariable(dataOutputAssociation.getSource());
+      }
+      
+      execution.setVariable(dataOutputAssociation.getTarget(), value);
+    }
+  }
+
+  public void completed(ActivityExecution execution) throws Exception {
+    // only control flow.  no sub process instance data available
+    leave(execution);
+  }
+
+}

@@ -19,7 +19,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ActivitiException;
 import org.activiti.engine.ProcessEngineConfiguration;
+import org.activiti.engine.compatibility.Activiti5CompatibilityHandler;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.interceptor.Command;
@@ -29,6 +31,7 @@ import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.repository.DeploymentBuilderImpl;
 import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentProperties;
 
 /**
  * @author Tom Baeyens
@@ -44,6 +47,20 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
   }
 
   public Deployment execute(CommandContext commandContext) {
+
+    // Backwards compatibility with Activiti v5
+    if (commandContext.getProcessEngineConfiguration().isActiviti5CompatibilityEnabled()
+        && deploymentBuilder.getDeploymentProperties() != null 
+        && deploymentBuilder.getDeploymentProperties().containsKey(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION)
+        && deploymentBuilder.getDeploymentProperties().get(DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION).equals(Boolean.TRUE)) {
+      
+        return deployAsActiviti5ProcessDefinition(commandContext);
+    }
+
+    return executeDeploy(commandContext);
+  }
+
+  protected Deployment executeDeploy(CommandContext commandContext) {
     DeploymentEntity deployment = deploymentBuilder.getDeployment();
 
     deployment.setDeploymentTime(commandContext.getProcessEngineConfiguration().getClock().getCurrentTime());
@@ -103,6 +120,15 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
     return deployment;
   }
 
+  protected Deployment deployAsActiviti5ProcessDefinition(CommandContext commandContext) {
+    Activiti5CompatibilityHandler activiti5CompatibilityHandler = commandContext.getProcessEngineConfiguration().getActiviti5CompatibilityHandler();
+    if (activiti5CompatibilityHandler == null) {
+      throw new ActivitiException("Found Activiti 5 process definition, but no compatibility handler on the classpath. " 
+          + "Cannot use the deployment property " + DeploymentProperties.DEPLOY_AS_ACTIVITI5_PROCESS_DEFINITION);
+    }
+    return activiti5CompatibilityHandler.deploy(deploymentBuilder);
+  }
+
   protected boolean deploymentsDiffer(DeploymentEntity deployment, DeploymentEntity saved) {
 
     if (deployment.getResources() == null || saved.getResources() == null) {
@@ -145,29 +171,5 @@ public class DeployCmd<T> implements Command<Deployment>, Serializable {
       activateProcessDefinitionCmd.execute(commandContext);
     }
   }
-
-  // private boolean resourcesDiffer(ByteArrayEntity value, ByteArrayEntity
-  // other) {
-  // if (value == null && other == null) {
-  // return false;
-  // }
-  // String bytes = createKey(value.getBytes());
-  // String savedBytes = other == null ? null : createKey(other.getBytes());
-  // return !bytes.equals(savedBytes);
-  // }
-  //
-  // private String createKey(byte[] bytes) {
-  // if (bytes == null) {
-  // return "";
-  // }
-  // MessageDigest digest;
-  // try {
-  // digest = MessageDigest.getInstance("MD5");
-  // } catch (NoSuchAlgorithmException e) {
-  // throw new
-  // IllegalStateException("MD5 algorithm not available.  Fatal (should be in the JDK).");
-  // }
-  // bytes = digest.digest(bytes);
-  // return String.format("%032x", new BigInteger(1, bytes));
-  // }
+  
 }

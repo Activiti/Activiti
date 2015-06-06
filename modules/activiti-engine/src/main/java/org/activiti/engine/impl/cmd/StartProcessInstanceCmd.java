@@ -93,11 +93,15 @@ public class StartProcessInstanceCmd<T> implements Command<ProcessInstance>, Ser
       throw new ActivitiIllegalArgumentException("processDefinitionKey and processDefinitionId are null");
     }
 
-    ProcessInstance processInstance = ProcessInstanceUtil.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
+    ProcessInstance processInstance = createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
 
     return processInstance;
   }
 
+  protected ProcessInstance createAndStartProcessInstance(ProcessDefinitionEntity processDefinition, String businessKey, String processInstanceName, Map<String,Object> variables) {
+    return ProcessInstanceUtil.createAndStartProcessInstance(processDefinition, businessKey, processInstanceName, variables);
+  }
+  
   protected Map<String, Object> processDataObjects(Collection<ValuedDataObject> dataObjects) {
     Map<String, Object> variablesMap = new HashMap<String, Object>();
     // convert data objects to process variables

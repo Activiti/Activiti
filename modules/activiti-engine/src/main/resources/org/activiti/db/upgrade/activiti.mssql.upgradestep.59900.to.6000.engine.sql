@@ -1,8 +1,8 @@
-alter table ACT_RE_PROCDEF add column ENGINE_VERSION nvarchar(255);
-update ACT_RE_PROCDEF set ENGINE_VERSION = 'activiti-5';
+alter table ACT_RE_PROCDEF add column ENGINE_VERSION_ nvarchar(255);
+update ACT_RE_PROCDEF set ENGINE_VERSION_ = 'activiti-5';
 
-alter table ACT_RE_DEPLOYMENT add column ENGINE_VERSION nvarchar(255);
-update ACT_RE_DEPLOYMENT set ENGINE_VERSION = 'activiti-5';
+alter table ACT_RE_DEPLOYMENT add column ENGINE_VERSION_ nvarchar(255);
+update ACT_RE_DEPLOYMENT set ENGINE_VERSION_ = 'activiti-5';
 
 alter table ACT_RU_EXECUTION add column ROOT_PROC_INST_ID_ nvarchar(64);
 create index ACT_IDX_EXEC_ROOT on ACT_RU_EXECUTION(ROOT_PROC_INST_ID_);

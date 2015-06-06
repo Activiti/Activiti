@@ -81,6 +81,11 @@ public interface DeploymentBuilder {
    * the start until the given activation date.
    */
   DeploymentBuilder activateProcessDefinitionsOn(Date date);
+  
+  /**
+   * Allows to add a property to this {@link DeploymentBuilder} that influences the deployment.
+   */
+  DeploymentBuilder deploymentProperty(String propertyKey, Object propertyValue);
 
   /**
    * Deploys all provided sources to the Activiti engine.

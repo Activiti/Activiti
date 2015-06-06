@@ -1,0 +1,62 @@
+* Copy the src/ folder and pom.xml to activiti5-module, overwriting existing files
+
+* Change the pom.xml to have :
+
+ <name>Activiti 5 Compatibility - Engine</name>
+  <artifactId>activiti5-compatibility</artifactId>
+
+  <parent>
+    <groupId>org.activiti</groupId>
+    <artifactId>activiti-root</artifactId>
+    <relativePath>../..</relativePath>
+    <version>Current 6 version</version>
+  </parent>
+  
+  
+* Update versions in activiti5-compatibility pom.xml to latest version  
+
+* In Eclipse, rename the package from org.activiti to org.activiti5 (do this in a seprate IDE, Eclipse flips when doing it in the same one as where org.activiti for Activiti v6 is in!)
+	* Rename the package in src/main/java
+	* Rename the folder is src/main/resources
+	* Rename the package in src/test/java
+	* Rename the folder in src/test/resources
+
+* Remove (to avoid confusion)
+	* src/main/resources/org/activiti5/db/create
+	* src/main/resources/org/activiti5/db/drop
+	* src/main/resources/org/activiti5/db/upgrade
+	
+	
+* Save the mappings folder and the xml's from src/main/resources/org/activiti5/db/mapping/ (unless they changed in v5). If not, you have to do this
+  * Update src/main/resources/org/activiti5/db/mapping/mappings.xm, replace in that file 'org/activiti' to 'org/activiti5'
+  * ALL xml files in src/main/resources/org/activiti5/db/mapping/entity need to have a replace of 'org.activiti' into 'org.activiti5'.
+  * In deployment.xml, the insert should be 
+     <insert id="insertDeployment" parameterType="org.activiti5.engine.impl.persistence.entity.DeploymentEntity">
+    insert into ${prefix}ACT_RE_DEPLOYMENT(ID_, NAME_, CATEGORY_, TENANT_ID_, DEPLOY_TIME_, ENGINE_VERSION_)
+    values(#{id, jdbcType=VARCHAR}, #{name, jdbcType=VARCHAR}, #{category, jdbcType=VARCHAR}, #{tenantId, jdbcType=VARCHAR}, #{deploymentTime, jdbcType=TIMESTAMP}, 'activiti5')
+  </insert>
+  * In processdefinition.xml, the insert should be:
+  <insert id="insertProcessDefinition" parameterType="org.activiti5.engine.impl.persistence.entity.ProcessDefinitionEntity">
+    insert into ${prefix}ACT_RE_PROCDEF(ID_, REV_, CATEGORY_, NAME_, KEY_, VERSION_, DEPLOYMENT_ID_, RESOURCE_NAME_, DGRM_RESOURCE_NAME_, DESCRIPTION_, HAS_START_FORM_KEY_, HAS_GRAPHICAL_NOTATION_ , SUSPENSION_STATE_, TENANT_ID_, ENGINE_VERSION_)
+    values (#{id, jdbcType=VARCHAR},
+            1,
+            #{category, jdbcType=VARCHAR},
+            #{name, jdbcType=VARCHAR},
+            #{key, jdbcType=VARCHAR}, 
+            #{version, jdbcType=INTEGER},
+            #{deploymentId, jdbcType=VARCHAR},
+            #{resourceName, jdbcType=VARCHAR},
+            #{diagramResourceName, jdbcType=VARCHAR},
+            #{description, jdbcType=VARCHAR},
+            #{hasStartFormKey, jdbcType=BOOLEAN},
+            #{isGraphicalNotationDefined, jdbcType=BOOLEAN},
+            #{suspensionState, jdbcType=INTEGER},
+            #{tenantId, jdbcType=VARCHAR},
+            "activiti-5")
+  </insert>
+  
+
+* Update ProcessEngineConfigurationImpl: DEFAULT_MYBATIS_MAPPING_FILE to "org/activiti5/db/mapping/mappings.xml"
+
+* Change org.activiti5.engine.ProcessEngine VERSION field to the current 6 version
+	

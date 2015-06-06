@@ -16,6 +16,7 @@ package org.activiti.engine.impl.test;
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +54,7 @@ public abstract class TestHelper {
 
   public static final String EMPTY_LINE = "\n";
 
-  public static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Arrays.asList("ACT_GE_PROPERTY");
+  public static final List<String> TABLENAMES_EXCLUDED_FROM_DB_CLEAN_CHECK = Collections.singletonList("ACT_GE_PROPERTY");
 
   static Map<String, ProcessEngine> processEngines = new HashMap<String, ProcessEngine>();
 
