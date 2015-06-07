@@ -15,28 +15,14 @@ package org.activiti.engine.test.bpmn.event.timer.compatibility;
 
 import org.activiti.engine.delegate.event.ActivitiEvent;
 import org.activiti.engine.delegate.event.ActivitiEventType;
-import org.activiti.engine.impl.ManagementServiceImpl;
-import org.activiti.engine.impl.ProcessEngineImpl;
-import org.activiti.engine.impl.context.Context;
-import org.activiti.engine.impl.db.DbSqlSession;
-import org.activiti.engine.impl.db.DbSqlSessionFactory;
-import org.activiti.engine.impl.interceptor.Command;
-import org.activiti.engine.impl.interceptor.CommandConfig;
-import org.activiti.engine.impl.interceptor.CommandContext;
-import org.activiti.engine.impl.interceptor.CommandExecutor;
-import org.activiti.engine.impl.jobexecutor.TimerEventHandler;
-import org.activiti.engine.impl.persistence.entity.JobEntity;
-import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.impl.util.DefaultClockImpl;
 import org.activiti.engine.runtime.Clock;
 import org.activiti.engine.runtime.Job;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.activiti.engine.test.Deployment;
 import org.activiti.engine.test.api.event.TestActivitiEntityEventListener;
 
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 public class StartTimerEventRepeatCompatibilityTest extends TimerEventCompatibilityTest {

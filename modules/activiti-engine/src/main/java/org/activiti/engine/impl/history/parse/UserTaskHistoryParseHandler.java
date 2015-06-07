@@ -14,13 +14,10 @@ package org.activiti.engine.impl.history.parse;
 
 import org.activiti.bpmn.model.BaseElement;
 import org.activiti.bpmn.model.UserTask;
-import org.activiti.engine.delegate.TaskListener;
 import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.bpmn.parser.handler.AbstractBpmnParseHandler;
-import org.activiti.engine.impl.bpmn.parser.handler.UserTaskParseHandler;
 import org.activiti.engine.impl.history.handler.UserTaskAssignmentHandler;
 import org.activiti.engine.impl.history.handler.UserTaskIdHandler;
-import org.activiti.engine.impl.task.TaskDefinition;
 
 /**
  * 

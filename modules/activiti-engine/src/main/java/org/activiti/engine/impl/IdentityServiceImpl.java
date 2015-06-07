@@ -38,7 +38,6 @@ import org.activiti.engine.impl.cmd.SaveUserCmd;
 import org.activiti.engine.impl.cmd.SetUserInfoCmd;
 import org.activiti.engine.impl.cmd.SetUserPictureCmd;
 import org.activiti.engine.impl.identity.Authentication;
-import org.activiti.engine.impl.persistence.entity.GroupEntity;
 import org.activiti.engine.impl.persistence.entity.IdentityInfoEntity;
 
 import java.util.List;
