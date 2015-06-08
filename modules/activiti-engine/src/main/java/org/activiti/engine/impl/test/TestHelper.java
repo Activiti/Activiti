@@ -15,7 +15,6 @@ package org.activiti.engine.impl.test;
 
 import java.io.InputStream;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;

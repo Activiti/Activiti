@@ -17,8 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.activiti.engine.impl.persistence.AbstractManager;
-
 /**
  * @author Tom Baeyens
  * @author Joram Barrez
