@@ -7,6 +7,9 @@
   
     <extensionElements>
       <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.ExampleExecutionListenerOne" event="start" />
+      <activiti:executionListener class="org.activiti.examples.bpmn.executionlistener.RecorderExecutionListener" event="end">
+      	<activiti:field name="parameter" stringValue="End Process Listener" />
+      </activiti:executionListener>
     </extensionElements>
     
     <startEvent id="theStart" />
