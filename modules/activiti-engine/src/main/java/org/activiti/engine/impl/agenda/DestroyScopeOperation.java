@@ -11,6 +11,8 @@ import org.activiti.engine.impl.persistence.entity.JobEntity;
 import org.activiti.engine.impl.persistence.entity.JobEntityManager;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntityManager;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
+import org.activiti.engine.impl.persistence.entity.VariableInstanceEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 
 /**
@@ -72,6 +74,14 @@ public class DestroyScopeOperation extends AbstractOperation {
       jobEntityManager.delete(job);
     }
 
+    // Remove variables associated with this scope
+    VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
+    Collection<VariableInstanceEntity> variablesForExecution = variableInstanceEntityManager.findVariableInstancesByExecutionId(parentScopeExecution.getId());
+    for(VariableInstanceEntity variable : variablesForExecution)
+    {
+      variableInstanceEntityManager.delete(variable);
+    }
+    
     // Not a scope anymore
     parentScopeExecution.setScope(false);
     parentScopeExecution.setCurrentFlowElement(currentFlowElement);
