@@ -29,9 +29,9 @@ public class ScriptTaskListener implements TaskListener {
 
   protected Expression script;
 
-  protected Expression language = null;
+  protected Expression language;
 
-  protected Expression resultVariable = null;
+  protected Expression resultVariable;
 
   protected boolean autoStoreVariables;
 

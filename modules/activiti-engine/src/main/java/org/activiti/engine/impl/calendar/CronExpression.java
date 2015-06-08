@@ -194,8 +194,8 @@ public class CronExpression implements Serializable, Cloneable {
     dayMap.put("SAT", Integer.valueOf(7));
   }
 
-  private String cronExpression = null;
-  private TimeZone timeZone = null;
+  private String cronExpression;
+  private TimeZone timeZone;
   protected transient TreeSet<Integer> seconds;
   protected transient TreeSet<Integer> minutes;
   protected transient TreeSet<Integer> hours;
@@ -204,12 +204,12 @@ public class CronExpression implements Serializable, Cloneable {
   protected transient TreeSet<Integer> daysOfWeek;
   protected transient TreeSet<Integer> years;
 
-  protected transient boolean lastdayOfWeek = false;
-  protected transient int nthdayOfWeek = 0;
-  protected transient boolean lastdayOfMonth = false;
-  protected transient boolean nearestWeekday = false;
-  protected transient int lastdayOffset = 0;
-  protected transient boolean expressionParsed = false;
+  protected transient boolean lastdayOfWeek;
+  protected transient int nthdayOfWeek;
+  protected transient boolean lastdayOfMonth;
+  protected transient boolean nearestWeekday;
+  protected transient int lastdayOffset;
+  protected transient boolean expressionParsed;
 
   public static final int MAX_YEAR = Calendar.getInstance().get(Calendar.YEAR) + 100;
 

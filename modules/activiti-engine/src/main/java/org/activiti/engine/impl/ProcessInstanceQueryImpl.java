@@ -62,7 +62,7 @@ public class ProcessInstanceQueryImpl extends AbstractVariableQueryImpl<ProcessI
   protected boolean withoutTenantId;
 
   protected ProcessInstanceQueryImpl orQueryObject;
-  protected boolean inOrStatement = false;
+  protected boolean inOrStatement;
 
   // Unused, see dynamic query
   protected String activityId;

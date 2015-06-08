@@ -41,7 +41,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
   private static final long serialVersionUID = 1L;
 
   // The cache used when fetching all variables
-  protected Map<String, VariableInstanceEntity> variableInstances = null; // needs
+  protected Map<String, VariableInstanceEntity> variableInstances; // needs
                                                                           // to
                                                                           // be
                                                                           // null,
@@ -63,7 +63,7 @@ public abstract class VariableScopeImpl implements Serializable, VariableScope {
 
   protected ELContext cachedElContext;
 
-  protected String id = null;
+  protected String id;
 
   protected abstract Collection<VariableInstanceEntity> loadVariableInstances();
 

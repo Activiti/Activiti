@@ -105,15 +105,15 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
    */
   protected boolean isActive = true;
   protected boolean isScope = true;
-  protected boolean isConcurrent = false;
-  protected boolean isEnded = false;
-  protected boolean isEventScope = false;
+  protected boolean isConcurrent;
+  protected boolean isEnded;
+  protected boolean isEventScope;
 
   // events
   // ///////////////////////////////////////////////////////////////////
 
   protected String eventName;
-  protected int executionListenerIndex = 0;
+  protected int executionListenerIndex;
 
   // associated entities /////////////////////////////////////////////////////
 

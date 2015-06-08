@@ -50,7 +50,7 @@ public class VariableInstanceEntity implements ValueFields, PersistentObject, Ha
 
   protected Object cachedValue;
   protected boolean forcedUpdate;
-  protected boolean deleted = false;
+  protected boolean deleted;
 
   // Default constructor for SQL mapping
   protected VariableInstanceEntity() {

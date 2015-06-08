@@ -11,9 +11,9 @@ import org.activiti.engine.impl.interceptor.CommandContext;
  */
 public class GetEventLogEntriesCmd implements Command<List<EventLogEntry>> {
 
-  protected String processInstanceId = null;
-  protected Long startLogNr = null;
-  protected Long pageSize = null;
+  protected String processInstanceId;
+  protected Long startLogNr;
+  protected Long pageSize;
 
   public GetEventLogEntriesCmd() {
 

@@ -382,7 +382,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
    * Unfortunately, this feature is not available on some platforms (JDK 6, JBoss), hence the reason why it is disabled by default. If your platform allows the use of StaxSource during XML parsing, do
    * enable it.
    */
-  protected boolean enableSafeBpmnXml = false;
+  protected boolean enableSafeBpmnXml;
 
   /**
    * The following settings will determine the amount of entities loaded at once when the engine needs to load multiple entities (eg. when suspending a process definition with all its process
@@ -399,7 +399,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected Map<String, List<ActivitiEventListener>> typedEventListeners;
 
   // Event logging to database
-  protected boolean enableDatabaseEventLogging = false;
+  protected boolean enableDatabaseEventLogging;
   
   /**
   *  Define a max length for storing String variable types in the database.
@@ -408,7 +408,7 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
   protected int maxLengthStringVariableType = 4000;
 
   // Backwards compatibility
-  protected boolean isActiviti5CompatibilityEnabled = false; // Default activiti 5 backwards compatibility is disabled!
+  protected boolean isActiviti5CompatibilityEnabled; // Default activiti 5 backwards compatibility is disabled!
   protected Activiti5CompatibilityHandlerFactory activiti5CompatibilityHandlerFactory;
   protected Activiti5CompatibilityHandler activiti5CompatibilityHandler;
 

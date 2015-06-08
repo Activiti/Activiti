@@ -17,7 +17,7 @@ public class LogMDC {
   public static final String LOG_MDC_BUSINESS_KEY = "mdcBusinessKey";
   public static final String LOG_MDC_TASK_ID = "mdcTaskId";
 
-  static boolean enabled = false;
+  static boolean enabled;
 
   public static boolean isMDCEnabled() {
     return enabled;

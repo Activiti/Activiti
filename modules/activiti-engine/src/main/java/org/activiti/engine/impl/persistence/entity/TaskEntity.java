@@ -75,7 +75,7 @@ public class TaskEntity extends VariableScopeImpl implements Task, DelegateTask,
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
   protected String category;
 
-  protected boolean isIdentityLinksInitialized = false;
+  protected boolean isIdentityLinksInitialized;
   protected List<IdentityLinkEntity> taskIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
 
   protected String executionId;

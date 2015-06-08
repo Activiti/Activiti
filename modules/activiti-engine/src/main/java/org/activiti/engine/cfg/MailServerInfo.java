@@ -23,8 +23,8 @@ public class MailServerInfo {
   protected int mailServerPort;
   protected String mailServerUsername;
   protected String mailServerPassword;
-  protected boolean mailServerUseSSL = false;
-  protected boolean mailServerUseTLS = false;
+  protected boolean mailServerUseSSL;
+  protected boolean mailServerUseTLS;
 
   public String getMailServerDefaultFrom() {
     return mailServerDefaultFrom;

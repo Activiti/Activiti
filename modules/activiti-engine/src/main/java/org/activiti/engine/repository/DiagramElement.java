@@ -24,7 +24,7 @@ abstract public class DiagramElement implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
-  protected String id = null;
+  protected String id;
 
   public DiagramElement() {
   }

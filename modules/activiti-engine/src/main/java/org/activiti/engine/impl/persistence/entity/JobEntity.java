@@ -52,19 +52,19 @@ public abstract class JobEntity implements Job, PersistentObject, HasRevision, B
 
   protected Date duedate;
 
-  protected String lockOwner = null;
-  protected Date lockExpirationTime = null;
+  protected String lockOwner;
+  protected Date lockExpirationTime;
 
-  protected String executionId = null;
-  protected String processInstanceId = null;
-  protected String processDefinitionId = null;
+  protected String executionId;
+  protected String processInstanceId;
+  protected String processDefinitionId;
 
   protected boolean isExclusive = DEFAULT_EXCLUSIVE;
 
   protected int retries = DEFAULT_RETRIES;
 
-  protected String jobHandlerType = null;
-  protected String jobHandlerConfiguration = null;
+  protected String jobHandlerType;
+  protected String jobHandlerConfiguration;
 
   protected final ByteArrayRef exceptionByteArrayRef = new ByteArrayRef();
 
