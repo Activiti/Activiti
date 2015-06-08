@@ -31,7 +31,8 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
   @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersProcess.bpmn20.xml" })
   public void testExecutionListenersOnAllPossibleElements() {
-
+    RecorderExecutionListener.clear();
+    
     // Process start executionListener will have executionListener class
     // that sets 2 variables
     ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess", "businessKey123");
@@ -73,6 +74,12 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     taskService.complete(task.getId());
 
     assertProcessEnded(processInstance.getId());
+    
+    List<RecordedEvent> events = RecorderExecutionListener.getRecordedEvents();
+    assertEquals(1, events.size());
+    RecordedEvent event = events.get(0);
+    assertEquals("End Process Listener", event.getParameter());
+    
   }
 
   @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEvent.bpmn20.xml" })
@@ -106,7 +113,7 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertEquals("start", recordedEvents.get(3).getEventName());
 
   }
-
+  
   @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersFieldInjectionProcess.bpmn20.xml" })
   public void testExecutionListenerFieldInjection() {
     Map<String, Object> variables = new HashMap<String, Object>();
