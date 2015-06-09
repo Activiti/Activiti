@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.impl.agenda.TakeOutgoingSequenceFlowsOperation;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
@@ -149,5 +150,35 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
 
     assertEquals("theEnd", currentActivities.get(2).getActivityId());
     assertEquals("End Event", currentActivities.get(2).getActivityName());
+  }
+  
+  @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersForSubprocessStartEndEvent.bpmn20.xml" })
+  public void testExecutionListenersForSubprocessStartEndEvents() {
+    RecorderExecutionListener.clear();
+
+    ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("executionListenersProcess");
+    
+    List<RecordedEvent> recordedEvents = RecorderExecutionListener.getRecordedEvents();
+    assertEquals(1, recordedEvents.size());
+    assertEquals("Process Start", recordedEvents.get(0).getParameter());
+    
+    RecorderExecutionListener.clear();
+    
+    Task task = taskService.createTaskQuery().singleResult();
+    taskService.complete(task.getId());
+    
+    assertProcessEnded(processInstance.getId());
+
+    recordedEvents = RecorderExecutionListener.getRecordedEvents();
+    
+    for(RecordedEvent re : recordedEvents)
+    {
+      System.out.println(re.getParameter());
+    }
+    
+    assertEquals(3, recordedEvents.size());
+    assertEquals("Subprocess Start", recordedEvents.get(0).getParameter());
+    assertEquals("Subprocess End", recordedEvents.get(1).getParameter());
+    assertEquals("Process End", recordedEvents.get(2).getParameter());
   }
 }
