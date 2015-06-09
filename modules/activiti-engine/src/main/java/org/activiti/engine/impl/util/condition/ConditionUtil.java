@@ -20,7 +20,7 @@ public class ConditionUtil {
       // TODO: should be done at parse time?
       Expression expression = Context.getProcessEngineConfiguration().getExpressionManager().createExpression(sequenceFlow.getConditionExpression());
       Condition condition = new UelExpressionCondition(expression);
-      if (condition == null || (condition != null && condition.evaluate(execution))) {
+      if (condition.evaluate(execution)) {
         return true;
       }
 
