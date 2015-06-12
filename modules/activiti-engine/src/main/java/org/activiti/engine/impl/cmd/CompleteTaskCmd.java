@@ -38,12 +38,14 @@ public class CompleteTaskCmd extends AbstractCompleteTaskCmd {
   }
 
   protected Void execute(CommandContext commandContext, TaskEntity task) {
-    if (variables != null) {
-      if (localScope) {
-        task.setVariablesLocal(variables);
-      } else {
-        task.setExecutionVariables(variables);
-      }
+    if (variables!=null) {
+    	if (localScope) {
+    		task.setVariablesLocal(variables);
+    	} else if (task.getExecutionId() != null) {
+    		task.setExecutionVariables(variables);
+    	} else {
+    		task.setVariables(variables);
+    	}
     }
 
     executeTaskComplete(commandContext, task, variables, localScope);
