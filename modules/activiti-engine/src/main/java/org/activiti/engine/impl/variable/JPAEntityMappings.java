@@ -113,9 +113,6 @@ public class JPAEntityMappings {
     entityClass = ReflectUtil.loadClass(className);
 
     EntityMetaData metaData = getEntityMetaData(entityClass);
-    if (metaData == null) {
-      throw new ActivitiIllegalArgumentException("Class is not a JPA-entity: " + className);
-    }
 
     // Create primary key of right type
     Object primaryKey = createId(metaData, idString);
