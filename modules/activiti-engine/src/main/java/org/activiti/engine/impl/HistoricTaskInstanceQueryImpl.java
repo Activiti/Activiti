@@ -83,7 +83,7 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected Date dueDate;
   protected Date dueAfter;
   protected Date dueBefore;
-  protected boolean withoutDueDate = false;
+  protected boolean withoutDueDate;
   protected Date creationDate;
   protected Date creationAfterDate;
   protected Date creationBeforeDate;
@@ -94,10 +94,10 @@ public class HistoricTaskInstanceQueryImpl extends AbstractVariableQueryImpl<His
   protected String tenantId;
   protected String tenantIdLike;
   protected boolean withoutTenantId;
-  protected boolean includeTaskLocalVariables = false;
-  protected boolean includeProcessVariables = false;
+  protected boolean includeTaskLocalVariables;
+  protected boolean includeProcessVariables;
   protected HistoricTaskInstanceQueryImpl orQueryObject;
-  protected boolean inOrStatement = false;
+  protected boolean inOrStatement;
 
   public HistoricTaskInstanceQueryImpl() {
   }

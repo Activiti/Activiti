@@ -59,7 +59,7 @@ public class ProcessDefinitionEntity implements ReadOnlyProcessDefinition, Proce
   protected Map<String, Object> variables;
   protected boolean hasStartFormKey;
   protected int suspensionState = SuspensionState.ACTIVE.getStateCode();
-  protected boolean isIdentityLinksInitialized = false;
+  protected boolean isIdentityLinksInitialized;
   protected List<IdentityLinkEntity> definitionIdentityLinkEntities = new ArrayList<IdentityLinkEntity>();
   protected Set<Expression> candidateStarterUserIdExpressions = new HashSet<Expression>();
   protected Set<Expression> candidateStarterGroupIdExpressions = new HashSet<Expression>();

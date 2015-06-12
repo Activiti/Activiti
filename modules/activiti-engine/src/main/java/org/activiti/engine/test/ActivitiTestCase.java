@@ -52,7 +52,7 @@ import org.activiti.engine.test.mock.ActivitiMockSupport;
 public abstract class ActivitiTestCase extends TestCase {
 
   protected String configurationResource = "activiti.cfg.xml";
-  protected String deploymentId = null;
+  protected String deploymentId;
 
   protected ProcessEngineConfiguration processEngineConfiguration;
   protected ProcessEngine processEngine;

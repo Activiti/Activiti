@@ -54,8 +54,8 @@ public abstract class JobExecutor {
   protected RejectedJobsHandler rejectedJobsHandler;
   protected Thread jobAcquisitionThread;
 
-  protected boolean isAutoActivate = false;
-  protected boolean isActive = false;
+  protected boolean isAutoActivate;
+  protected boolean isActive;
 
   /**
    * To avoid deadlocks, the default for this is one. This way, in a clustered setup, multiple job executors can acquire jobs without creating a deadlock due to fetching multiple jobs at once and

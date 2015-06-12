@@ -41,8 +41,8 @@ public class HistoricVariableInstanceQueryImpl extends AbstractQuery<HistoricVar
   protected String activityInstanceId;
   protected String variableName;
   protected String variableNameLike;
-  protected boolean excludeTaskRelated = false;
-  protected boolean excludeVariableInitialization = false;
+  protected boolean excludeTaskRelated;
+  protected boolean excludeVariableInitialization;
   protected QueryVariableValue queryVariableValue;
 
   public HistoricVariableInstanceQueryImpl() {

@@ -22,10 +22,10 @@ public class DiagramNode extends DiagramElement {
 
   private static final long serialVersionUID = 1L;
 
-  private Double x = null;
-  private Double y = null;
-  private Double width = null;
-  private Double height = null;
+  private Double x;
+  private Double y;
+  private Double width;
+  private Double height;
 
   public DiagramNode() {
     super();

@@ -20,7 +20,7 @@ import org.activiti.engine.test.Deployment;
 
 public class IntermediateNoneEventTest extends PluggableActivitiTestCase {
 
-  private static boolean listenerExecuted = false;
+  private static boolean listenerExecuted;
 
   public static class MyExecutionListener implements ExecutionListener {
     public void notify(DelegateExecution execution) {

@@ -39,7 +39,7 @@ public class HistoricDetailQueryImpl extends AbstractQuery<HistoricDetailQuery, 
   protected String activityId;
   protected String activityInstanceId;
   protected String type;
-  protected boolean excludeTaskRelated = false;
+  protected boolean excludeTaskRelated;
 
   public HistoricDetailQueryImpl() {
   }

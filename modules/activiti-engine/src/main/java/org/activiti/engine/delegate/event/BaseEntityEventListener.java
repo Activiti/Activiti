@@ -22,7 +22,7 @@ package org.activiti.engine.delegate.event;
  */
 public class BaseEntityEventListener implements ActivitiEventListener {
 
-  protected boolean failOnException = false;
+  protected boolean failOnException;
   protected Class<?> entityClass;
 
   /**

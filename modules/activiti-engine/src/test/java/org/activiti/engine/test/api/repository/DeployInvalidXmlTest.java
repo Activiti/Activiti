@@ -91,7 +91,7 @@ public class DeployInvalidXmlTest extends PluggableActivitiTestCase {
 
   static class MyRunnable implements Runnable {
 
-    public boolean finished = false;
+    public boolean finished;
 
     protected RepositoryService repositoryService;
 

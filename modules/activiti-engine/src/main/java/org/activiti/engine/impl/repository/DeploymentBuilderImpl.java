@@ -46,7 +46,7 @@ public class DeploymentBuilderImpl implements DeploymentBuilder, Serializable {
   protected DeploymentEntity deployment = new DeploymentEntity();
   protected boolean isBpmn20XsdValidationEnabled = true;
   protected boolean isProcessValidationEnabled = true;
-  protected boolean isDuplicateFilterEnabled = false;
+  protected boolean isDuplicateFilterEnabled;
   protected Date processDefinitionsActivationDate;
   protected Map<String, Object> deploymentProperties = new HashMap<String, Object>();
 
