@@ -102,7 +102,7 @@ public class ActivitiEventDispatcherImpl implements ActivitiEventDispatcher {
 
     if (event instanceof ActivitiEntityEvent) {
       Object entity = ((ActivitiEntityEvent) event).getEntity();
-      if (entity instanceof ProcessDefinition) {
+      if (entity instanceof ProcessDefinitionEntity) {
         result = (ProcessDefinitionEntity) entity;
       }
     }
