@@ -25,6 +25,7 @@ import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
 import javax.xml.namespace.QName;
 
+import com.sun.codemodel.JJavaName;
 import org.activiti.bpmn.model.Import;
 import org.activiti.engine.impl.bpmn.data.SimpleStructureDefinition;
 import org.activiti.engine.impl.bpmn.data.StructureDefinition;
@@ -152,7 +153,7 @@ public class CxfWSDLImporter implements XMLImporter {
       this.importStructure(mapping);
     }
   }
-  
+
   private void importStructure(Mapping mapping) {
     QName qname = mapping.getElement();
     JDefinedClass theClass = (JDefinedClass) mapping.getType().getTypeClass();
@@ -175,7 +176,14 @@ public class CxfWSDLImporter implements XMLImporter {
     }
     for (Entry<String, JFieldVar> entry : theClass.fields().entrySet()) {
       Class<?> fieldClass = ReflectUtil.loadClass(entry.getValue().type().boxify().fullName());
-      structure.setFieldName(index.getAndIncrement(), entry.getKey(), fieldClass);
+      
+      String fieldName = entry.getKey();
+      if (fieldName.startsWith("_")) {
+        if (!JJavaName.isJavaIdentifier(fieldName.substring(1)))
+          fieldName = fieldName.substring(1); //it was prefixed with '_' so we should use the original name.
+      }
+      
+      structure.setFieldName(index.getAndIncrement(), fieldName, fieldClass);
     }
   }
   

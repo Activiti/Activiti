@@ -12,6 +12,14 @@
 
 <xs:element name="prettyPrintCountResponse" type="tns:prettyPrintCountResponse"></xs:element>
 
+    <xs:element name="noNameResult" type="tns:noNameResult"></xs:element>
+
+<xs:element name="noNameResultResponse" type="tns:noNameResultResponse"></xs:element>
+
+    <xs:element name="reservedWordAsName" type="tns:reservedWordAsName"></xs:element>
+
+<xs:element name="reservedWordAsNameResponse" type="tns:reservedWordAsNameResponse"></xs:element>
+
 <xs:element name="reset" type="tns:reset"></xs:element>
 
 <xs:element name="resetResponse" type="tns:resetResponse"></xs:element>
@@ -30,6 +38,32 @@
 <xs:complexType name="prettyPrintCountResponse">
 <xs:sequence>
 <xs:element name="prettyPrint" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+    <xs:complexType name="reservedWordAsName">
+<xs:sequence>
+<xs:element name="prefix" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="suffix" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="reservedWordAsNameResponse">
+<xs:sequence>
+<xs:element name="static" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+    <xs:complexType name="noNameResult">
+<xs:sequence>
+<xs:element name="prefix" type="xs:string" minOccurs="0"></xs:element>
+<xs:element name="suffix" type="xs:string" minOccurs="0"></xs:element>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="noNameResultResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"></xs:element>
 </xs:sequence>
 </xs:complexType>
 
