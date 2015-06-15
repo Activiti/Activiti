@@ -16,6 +16,7 @@ package org.activiti.image.impl;
 import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -469,6 +470,8 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
   protected DefaultProcessDiagramCanvas generateProcessDiagram(BpmnModel bpmnModel, String imageType, 
       List<String> highLightedActivities, List<String> highLightedFlows,
       String activityFontName, String labelFontName, ClassLoader customClassLoader, double scaleFactor) {
+  	
+  	prepareBpmnModel(bpmnModel);
     
     DefaultProcessDiagramCanvas processDiagramCanvas = initProcessDiagramCanvas(bpmnModel, imageType, activityFontName, labelFontName, customClassLoader);
     
@@ -499,6 +502,69 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
     }
     
     return processDiagramCanvas;
+  }
+  
+  protected void prepareBpmnModel(BpmnModel bpmnModel) {
+  
+  	// Need to make sure all elements have positive x and y. 
+  	// Check all graphicInfo and update the elements accordingly
+  	
+  	List<GraphicInfo> allGraphicInfos = new ArrayList<GraphicInfo>();
+  	if (bpmnModel.getLocationMap() != null) {
+  		allGraphicInfos.addAll(bpmnModel.getLocationMap().values());
+  	}
+  	if (bpmnModel.getLabelLocationMap() != null) {
+  		allGraphicInfos.addAll(bpmnModel.getLabelLocationMap().values());
+  	}
+  	if (bpmnModel.getFlowLocationMap() != null) {
+  		for (List<GraphicInfo> flowGraphicInfos : bpmnModel.getFlowLocationMap().values()) {
+  			allGraphicInfos.addAll(flowGraphicInfos);
+  		}
+  	}
+  	
+  	if (allGraphicInfos.size() > 0) {
+  		
+  		boolean needsTranslationX = false;
+  		boolean needsTranslationY = false;
+  		
+  		double lowestX = 0.0;
+  		double lowestY = 0.0;
+  		
+  		// Collect lowest x and y
+  		for (GraphicInfo graphicInfo : allGraphicInfos) {
+  			
+  			double x = graphicInfo.getX();
+  			double y = graphicInfo.getY();
+  			
+  			if (x < lowestX) {
+  				needsTranslationX = true;
+  				lowestX = x;
+  			}
+  			if (y < lowestY) {
+  				needsTranslationY = true;
+  				lowestY = y;
+  			}
+  			
+  		}
+  		
+  		// Update all graphicInfo objects
+  		if (needsTranslationX || needsTranslationY) {
+  			
+  			double translationX = Math.abs(lowestX);
+  			double translationY = Math.abs(lowestY);
+  			
+  			for (GraphicInfo graphicInfo : allGraphicInfos) {
+  				if (needsTranslationX) {
+  					graphicInfo.setX(graphicInfo.getX() + translationX);
+  				}
+  				if(needsTranslationY) {
+  					graphicInfo.setY(graphicInfo.getY() + translationY);
+  				}
+  			}
+  		}
+
+  	}
+  	
   }
 
   protected void drawActivity(DefaultProcessDiagramCanvas processDiagramCanvas, BpmnModel bpmnModel, 
@@ -585,8 +651,7 @@ public class DefaultProcessDiagramGenerator implements ProcessDiagramGenerator {
         // Draw sequenceflow label
         GraphicInfo labelGraphicInfo = bpmnModel.getLabelGraphicInfo(sequenceFlow.getId());
         if (labelGraphicInfo != null) {
-          GraphicInfo lineCenter = getLineCenter(graphicInfoList);
-          processDiagramCanvas.drawLabel(sequenceFlow.getName(), lineCenter, false);
+          processDiagramCanvas.drawLabel(sequenceFlow.getName(), labelGraphicInfo, false);
         }
       }
     }

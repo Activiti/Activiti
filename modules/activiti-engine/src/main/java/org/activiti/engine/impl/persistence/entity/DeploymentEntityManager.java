@@ -16,13 +16,16 @@ package org.activiti.engine.impl.persistence.entity;
 import java.util.List;
 import java.util.Map;
 
+import org.activiti.engine.ProcessEngineConfiguration;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.DeploymentQueryImpl;
 import org.activiti.engine.impl.Page;
 import org.activiti.engine.impl.ProcessDefinitionQueryImpl;
+import org.activiti.engine.impl.bpmn.parser.BpmnParse;
 import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.event.MessageEventHandler;
+import org.activiti.engine.impl.jobexecutor.TimerDeclarationImpl;
 import org.activiti.engine.impl.jobexecutor.TimerStartEventJobHandler;
 import org.activiti.engine.impl.persistence.AbstractManager;
 import org.activiti.engine.repository.Deployment;
@@ -91,36 +94,78 @@ public class DeploymentEntityManager extends AbstractManager {
     
     for (ProcessDefinition processDefinition : processDefinitions) {
       
-      // remove timer start events:
-      List<Job> timerStartJobs = Context.getCommandContext()
-        .getJobEntityManager()
-        .findJobsByConfiguration(TimerStartEventJobHandler.TYPE, processDefinition.getKey());
-      
-      if (timerStartJobs != null && !timerStartJobs.isEmpty()) {
-        
-        long nrOfVersions = new ProcessDefinitionQueryImpl(Context.getCommandContext())
-          .processDefinitionKey(processDefinition.getKey())
-          .count();
+      // remove timer start events for current process definition:
+    	
+    	List<Job> timerStartJobs = Context.getCommandContext().getJobEntityManager()
+    			.findJobsByTypeAndProcessDefinitionId(TimerStartEventJobHandler.TYPE, processDefinition.getId());
+    	if (timerStartJobs != null && timerStartJobs.size() > 0) {
+    		for (Job timerStartJob : timerStartJobs) {
+					if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
+						Context.getProcessEngineConfiguration()
+						       .getEventDispatcher()
+						       .dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, timerStartJob, null, null, processDefinition.getId()));
+					}
 
-        long nrOfProcessDefinitionsWithSameKey = 0;
-        for (ProcessDefinition p : processDefinitions) {
-          if (!p.getId().equals(processDefinition.getId()) && p.getKey().equals(processDefinition.getKey())) {
-            nrOfProcessDefinitionsWithSameKey++;
-          }
-        }
-        
-        if (nrOfVersions - nrOfProcessDefinitionsWithSameKey <= 1) {
-          for (Job job : timerStartJobs) {
-            if (Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
-              Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(
-                ActivitiEventBuilder.createEntityEvent(ActivitiEventType.JOB_CANCELED, job, null, null, processDefinition.getId()));
-            }
-
-            ((JobEntity)job).delete();        
-          }
-        }
+					((JobEntity) timerStartJob).delete();
+    		}
+    	}
+    	
+    	// If previous process definition version has a timer start event, it must be added
+    	ProcessDefinitionEntity latestProcessDefinition = null;
+      if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+      	latestProcessDefinition = Context.getCommandContext().getProcessDefinitionEntityManager()
+       			.findLatestProcessDefinitionByKeyAndTenantId(processDefinition.getKey(), processDefinition.getTenantId());
+      } else {
+      	latestProcessDefinition = Context.getCommandContext().getProcessDefinitionEntityManager()
+       			.findLatestProcessDefinitionByKey(processDefinition.getKey());
       }
-      
+
+      // Only if the currently deleted process definition is the latest version, we fall back to the previous timer start event
+    	if (processDefinition.getId().equals(latestProcessDefinition.getId())) { 
+    		
+    		// Try to find a previous version (it could be some versions are missing due to deletions)
+    		int previousVersion = processDefinition.getVersion() - 1;
+    		ProcessDefinitionEntity previousProcessDefinition = null;
+    		while (previousProcessDefinition == null && previousVersion > 0) {
+    			
+    			ProcessDefinitionQueryImpl previousProcessDefinitionQuery = new ProcessDefinitionQueryImpl(Context.getCommandContext())
+    				.processDefinitionVersion(previousVersion)
+    				.processDefinitionKey(processDefinition.getKey());
+    		
+    			if (processDefinition.getTenantId() != null && !ProcessEngineConfiguration.NO_TENANT_ID.equals(processDefinition.getTenantId())) {
+    				previousProcessDefinitionQuery.processDefinitionTenantId(processDefinition.getTenantId());
+    			} else {
+    				previousProcessDefinitionQuery.processDefinitionWithoutTenantId();
+    			}
+    		
+    			previousProcessDefinition = (ProcessDefinitionEntity) previousProcessDefinitionQuery.singleResult();
+    			previousVersion--;
+    			
+    		}
+    		
+    		if (previousProcessDefinition != null) {
+    			
+    			// Need to resolve process definition to make sure it's parsed
+    			ProcessDefinitionEntity resolvedProcessDefinition = Context.getProcessEngineConfiguration()
+    					.getDeploymentManager().resolveProcessDefinition(previousProcessDefinition);
+    			
+    			List<TimerDeclarationImpl> timerDeclarations = (List<TimerDeclarationImpl>) resolvedProcessDefinition.getProperty(BpmnParse.PROPERTYNAME_START_TIMER);
+    	    if (timerDeclarations != null) {
+    	      for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
+    	        TimerEntity timer = timerDeclaration.prepareTimerEntity(null);
+    	        timer.setProcessDefinitionId(previousProcessDefinition.getId());
+    	        
+    	        if (previousProcessDefinition.getTenantId() != null) {
+    	        	timer.setTenantId(previousProcessDefinition.getTenantId());
+    	        }
+    	        
+    	        Context.getCommandContext().getJobEntityManager().schedule(timer);
+    	      }
+    	    }
+    		}
+    		
+    	}
+    	
       // remove message event subscriptions:
       List<EventSubscriptionEntity> findEventSubscriptionsByConfiguration = Context
         .getCommandContext()

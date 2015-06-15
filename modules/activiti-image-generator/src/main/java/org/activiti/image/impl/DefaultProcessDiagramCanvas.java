@@ -255,14 +255,7 @@ public class DefaultProcessDiagramCanvas {
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     try {
-      // Try to remove white space
-      minX = (minX <= 5) ? 5 : minX;
-      minY = (minY <= 5) ? 5 : minY;
-      BufferedImage imageToSerialize = processDiagram;
-      if (minX >= 0 && minY >= 0) {
-        imageToSerialize = processDiagram.getSubimage(minX - 5, minY - 5, canvasWidth - minX + 5, canvasHeight - minY + 5);
-      }
-      ImageIO.write(imageToSerialize, imageType, out);
+      ImageIO.write(processDiagram, imageType, out);
       
     } catch (IOException e) {
       throw new ActivitiImageException("Error while generating process image", e);
@@ -1139,7 +1132,7 @@ public class DefaultProcessDiagramCanvas {
       g.setFont(LABEL_FONT);
 
       int wrapWidth = 100;
-      int textY = (int) (graphicInfo.getY() + graphicInfo.getHeight());
+      int textY = (int) graphicInfo.getY();
       
       // TODO: use drawMultilineText()
       AttributedString as = new AttributedString(text);
@@ -1154,8 +1147,9 @@ public class DefaultProcessDiagramCanvas {
     	  textY += tl.getAscent();
     	  Rectangle2D bb = tl.getBounds();
     	  double tX = graphicInfo.getX();
-    	  if (centered)
-        	  tX += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
+    	  if (centered) {
+    	  	tX += (int) (graphicInfo.getWidth() / 2 - bb.getWidth() / 2);
+    	  }
     	  tl.draw(g, (float) tX, textY);
     	  textY += tl.getDescent() + tl.getLeading() + (interline - 1.0f) * tl.getAscent();
       }
