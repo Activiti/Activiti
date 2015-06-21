@@ -155,7 +155,7 @@ public class WSDLImporterTest {
 
     List<StructureDefinition> structures = sortStructures();
     assertEquals(1, structures.size());
-    final Object structureTypeInst = ReflectUtil.instantiate("org.activiti.webservice.StructureType");
+        final Object structureTypeInst = ReflectUtil.instantiate("org.activiti.webservice.counter.StructureType");
     final Class structureType = structureTypeInst.getClass();
     this.assertStructure(structures.get(0), "inheritedRequest", new String[] { "rootElt", "inheritedElt", "newSimpleElt", 
         "newStructuredElt" }, new Class<?>[] { Short.class, Integer.class, String.class, structureType });

@@ -12,6 +12,8 @@
  */
 package org.activiti.engine.impl.webservice;
 
+import java.util.Date;
+
 import javax.jws.WebService;
 
 /**
@@ -19,14 +21,16 @@ import javax.jws.WebService;
  *
  * @author Esteban Robles Luna
  */
-@WebService(endpointInterface = "org.activiti.engine.impl.webservice.Counter",
-        serviceName = "Counter")
-public class CounterImpl implements Counter {
+@WebService(endpointInterface = "org.activiti.engine.impl.webservice.WebServiceMock", serviceName = "WebServiceMock")
+public class WebServiceMockImpl implements WebServiceMock {
 
   protected int count;
 
-  public CounterImpl() {
+  protected WebServiceDataStructure dataStructure = new WebServiceDataStructure();
+
+  public WebServiceMockImpl() {
     this.count = -1;
+    this.dataStructure = new WebServiceDataStructure();
   }
 
   /**
@@ -62,5 +66,20 @@ public class CounterImpl implements Counter {
    */
   public String prettyPrintCount(String prefix, String suffix) {
     return prefix + this.getCount() + suffix;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public void setDataStructure(String str, Date date) {
+    this.dataStructure.eltString = str;
+    this.dataStructure.eltDate = date;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public WebServiceDataStructure getDataStructure() {
+    return this.dataStructure;
   }
 }

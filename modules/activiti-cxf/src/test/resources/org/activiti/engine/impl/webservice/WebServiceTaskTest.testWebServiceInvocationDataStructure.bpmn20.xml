@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="org.activiti.enginge.impl.webservice"
+  xmlns:tns="org.activiti.enginge.impl.webservice"
+  xmlns:webservice="http://webservice.activiti.org/"
+  typeLanguage="http://www.w3.org/2001/XMLSchema"
+  expressionLanguage="http://www.w3.org/1999/XPath">
+
+  <import importType="http://schemas.xmlsoap.org/wsdl/"
+          location="http://localhost:63081/webservicemock?wsdl"
+          namespace="http://webservice.activiti.org/" />
+
+  <process id="webServiceInvocationDataStructure">
+
+    <startEvent id="theStart" >
+         <extensionElements>
+            <activiti:formProperty id="startDate" name="Start date (dd-MM-yyy hh:mm)" type="date" datePattern="dd-MM-yyyy hh:mm" required="true" />
+         </extensionElements>
+    </startEvent>
+
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="webService" />
+
+    <serviceTask id="webService"
+                 name="Web service invocation"
+                 implementation="##WebService"
+                 operationRef="tns:setDataStructureOperation">
+         <ioSpecification>
+            <dataInput itemSubjectRef="tns:setDataStructureRequestItem" id="dataInputOfServiceTaskRequest" />
+            <inputSet>
+               <dataInputRefs>dataInputOfServiceTaskRequest</dataInputRefs>
+            </inputSet>
+            <outputSet />
+         </ioSpecification>
+         <dataInputAssociation>
+            <targetRef>dataInputOfServiceTaskRequest</targetRef>
+            <assignment>
+               <from>${startDate}</from>
+               <to>${dataInputOfServiceTaskRequest.eltDate}</to>
+            </assignment>
+         </dataInputAssociation>
+    </serviceTask>
+
+    <sequenceFlow id="flow2" sourceRef="webService" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+
+  <itemDefinition id="setDataStructureRequestItem" structureRef="webservice:setDataStructure" /><!-- QName of input element --> <!-- NEEDED FOR THE ARGUMENTS -->
+  <itemDefinition id="setDataStructureResponseItem" structureRef="webservice:setDataStructureResponse" /><!-- QName of output element -->
+
+  <message id="setDataStructureRequestMessage" itemRef="tns:setDataStructureRequestItem" name="setDataStructureRequestMessage" />
+  <message id="setDataStructureResponseMessage" itemRef="tns:setDataStructureResponseItem" name="setDataStructureResponseMessage" />
+
+
+  <!-- Interface: implementationRef = QName of WSDL Port Type -->
+  <interface name="Webservice Interface"> <!-- NEEDED FOR THE PORT -->
+    <!-- Operation: implementationRef = QName of WSDL Operation -->
+    <operation id="setDataStructureOperation" name="Set Data Structure Operation" implementationRef="webservice:setDataStructure"> <!-- NEEDED FOR THE OPERATION NAME -->
+      <inMessageRef>tns:setDataStructureRequestMessage</inMessageRef>
+      <outMessageRef>tns:setDataStructureResponseMessage</outMessageRef>
+    </operation>
+  </interface>
+
+
+</definitions>

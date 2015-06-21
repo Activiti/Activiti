@@ -33,7 +33,7 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
 
   @Deployment
   public void testAsyncInvocationWithDataFlowUEL() throws Exception {
-    assertEquals(-1, counter.getCount());
+    assertEquals(-1, webServiceMock.getCount());
 
     ProcessDefinitionEntity processDefinition = processEngineConfiguration
       .getCommandExecutor()
@@ -58,6 +58,6 @@ public class WebServiceUELTest extends AbstractWebServiceTaskTest {
     processEngine.getRuntimeService().startProcessInstanceByKey("asyncWebServiceInvocationWithDataFlowUEL", variables);
     waitForJobExecutorToProcessAllJobs(10000L, 250L);
 
-    assertEquals(23, counter.getCount());
+    assertEquals(23, webServiceMock.getCount());
   }
 }
