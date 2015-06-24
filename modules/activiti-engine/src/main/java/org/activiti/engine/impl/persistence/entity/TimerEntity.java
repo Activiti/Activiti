@@ -47,6 +47,8 @@ public class TimerEntity extends JobEntity {
   protected Date endDate;
 
   public TimerEntity() {
+    super();
+    this.jobType = "timer";
   }
 
   public TimerEntity(TimerDeclarationImpl timerDeclaration) {
@@ -55,6 +57,7 @@ public class TimerEntity extends JobEntity {
     isExclusive = timerDeclaration.isExclusive();
     repeat = timerDeclaration.getRepeat();
     retries = timerDeclaration.getRetries();
+    this.jobType = "timer";
   }
 
   private TimerEntity(TimerEntity te) {
@@ -70,6 +73,7 @@ public class TimerEntity extends JobEntity {
 
     // Inherit tenant
     tenantId = te.tenantId;
+    this.jobType = "timer";
   }
 
   @Override

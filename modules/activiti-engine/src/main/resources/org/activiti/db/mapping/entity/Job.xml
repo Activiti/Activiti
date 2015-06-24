@@ -374,6 +374,88 @@
     )
   </insert>
 
+  <insert id="bulkInsertTimer" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_RU_JOB (
+            ID_, 
+            REV_,
+            TYPE_,
+            LOCK_OWNER_, 
+            LOCK_EXP_TIME_,
+            EXCLUSIVE_,
+            EXECUTION_ID_, 
+            PROCESS_INSTANCE_ID_,
+            PROC_DEF_ID_,
+            RETRIES_, 
+            EXCEPTION_STACK_ID_,
+            EXCEPTION_MSG_,
+            DUEDATE_,
+            REPEAT_,
+            HANDLER_TYPE_,
+            HANDLER_CFG_,
+            TENANT_ID_) VALUES 
+    <foreach collection="list" item="job" index="index" separator=","> 
+        (#{job.id, jdbcType=VARCHAR},
+         1,
+         #{job.jobType, jdbcType=VARCHAR},
+         #{job.lockOwner, jdbcType=VARCHAR},
+         #{job.lockExpirationTime, jdbcType=TIMESTAMP},
+         #{job.exclusive, jdbcType=BOOLEAN},
+         #{job.executionId, jdbcType=VARCHAR},
+         #{job.processInstanceId, jdbcType=VARCHAR},
+         #{job.processDefinitionId, jdbcType=VARCHAR},
+         #{job.retries, jdbcType=INTEGER},
+         #{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+         #{job.exceptionMessage, jdbcType=VARCHAR},
+         #{job.duedate, jdbcType=TIMESTAMP},
+         #{job.repeat, jdbcType=VARCHAR},
+         #{job.jobHandlerType, jdbcType=VARCHAR},
+         #{job.jobHandlerConfiguration, jdbcType=VARCHAR},
+         #{job.tenantId, jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <insert id="bulkInsertTimer_oracle" parameterType="java.util.List">
+    INSERT ALL 
+    <foreach collection="list" item="job" index="index"> 
+      INTO ${prefix}ACT_RU_JOB (
+              ID_, 
+              REV_,
+              TYPE_,
+              LOCK_OWNER_, 
+              LOCK_EXP_TIME_,
+              EXCLUSIVE_,
+              EXECUTION_ID_, 
+              PROCESS_INSTANCE_ID_,
+              PROC_DEF_ID_,
+              RETRIES_, 
+              EXCEPTION_STACK_ID_,
+              EXCEPTION_MSG_,
+              DUEDATE_,
+              REPEAT_,
+              HANDLER_TYPE_,
+              HANDLER_CFG_,
+              TENANT_ID_) VALUES 
+          (#{job.id, jdbcType=VARCHAR},
+           1,
+           #{job.jobType, jdbcType=VARCHAR},
+           #{job.lockOwner, jdbcType=VARCHAR},
+           #{job.lockExpirationTime, jdbcType=TIMESTAMP},
+           #{job.exclusive, jdbcType=BOOLEAN},
+           #{job.executionId, jdbcType=VARCHAR},
+           #{job.processInstanceId, jdbcType=VARCHAR},
+           #{job.processDefinitionId, jdbcType=VARCHAR},
+           #{job.retries, jdbcType=INTEGER},
+           #{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+           #{job.exceptionMessage, jdbcType=VARCHAR},
+           #{job.duedate, jdbcType=TIMESTAMP},
+           #{job.repeat, jdbcType=VARCHAR},
+           #{job.jobHandlerType, jdbcType=VARCHAR},
+           #{job.jobHandlerConfiguration, jdbcType=VARCHAR},
+           #{job.tenantId, jdbcType=VARCHAR})
+    </foreach>
+    SELECT * FROM dual;
+  </insert>
+
   <!-- TIMER UPDATE -->
 
   <update id="updateTimer" parameterType="org.activiti.engine.impl.persistence.entity.TimerEntity">
@@ -435,6 +517,84 @@
   
 
   <!-- MESSAGE INSERT -->
+
+  <insert id="bulkInsertMessage" parameterType="java.util.List">
+    INSERT INTO ${prefix}ACT_RU_JOB (
+        ID_, 
+        REV_, 
+        TYPE_,
+        LOCK_OWNER_, 
+        LOCK_EXP_TIME_,
+        EXCLUSIVE_,
+        EXECUTION_ID_, 
+        PROCESS_INSTANCE_ID_,
+        PROC_DEF_ID_,
+        DUEDATE_,
+        RETRIES_, 
+        EXCEPTION_STACK_ID_,
+        EXCEPTION_MSG_,
+        HANDLER_TYPE_,
+        HANDLER_CFG_,
+        TENANT_ID_) VALUES 
+    <foreach collection="list" item="job" index="index" separator=",">
+      (#{job.id, jdbcType=VARCHAR},
+       1,
+       #{job.jobType, jdbcType=VARCHAR},
+       #{job.lockOwner, jdbcType=VARCHAR},
+       #{job.lockExpirationTime, jdbcType=TIMESTAMP},
+       #{job.exclusive, jdbcType=BOOLEAN},
+       #{job.executionId, jdbcType=VARCHAR},
+       #{job.processInstanceId, jdbcType=VARCHAR},
+       #{job.processDefinitionId, jdbcType=VARCHAR},
+       #{job.duedate, jdbcType=TIMESTAMP},
+       #{job.retries, jdbcType=INTEGER},
+       #{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+       #{job.exceptionMessage, jdbcType=VARCHAR},
+       #{job.jobHandlerType, jdbcType=VARCHAR},
+       #{job.jobHandlerConfiguration, jdbcType=VARCHAR},
+       #{job.tenantId, jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+
+  <insert id="bulkInsertMessage_oracle" parameterType="java.util.List">
+    INSERT ALL 
+    <foreach collection="list" item="job" index="index">
+      INTO ${prefix}ACT_RU_JOB (
+          ID_, 
+          REV_, 
+          TYPE_,
+          LOCK_OWNER_, 
+          LOCK_EXP_TIME_,
+          EXCLUSIVE_,
+          EXECUTION_ID_, 
+          PROCESS_INSTANCE_ID_,
+          PROC_DEF_ID_,
+          DUEDATE_,
+          RETRIES_, 
+          EXCEPTION_STACK_ID_,
+          EXCEPTION_MSG_,
+          HANDLER_TYPE_,
+          HANDLER_CFG_,
+          TENANT_ID_) VALUES 
+      (#{job.id, jdbcType=VARCHAR},
+       1,
+       #{job.jobType, jdbcType=VARCHAR},
+       #{job.lockOwner, jdbcType=VARCHAR},
+       #{job.lockExpirationTime, jdbcType=TIMESTAMP},
+       #{job.exclusive, jdbcType=BOOLEAN},
+       #{job.executionId, jdbcType=VARCHAR},
+       #{job.processInstanceId, jdbcType=VARCHAR},
+       #{job.processDefinitionId, jdbcType=VARCHAR},
+       #{job.duedate, jdbcType=TIMESTAMP},
+       #{job.retries, jdbcType=INTEGER},
+       #{job.exceptionByteArrayRef, typeHandler=ByteArrayRefTypeHandler},
+       #{job.exceptionMessage, jdbcType=VARCHAR},
+       #{job.jobHandlerType, jdbcType=VARCHAR},
+       #{job.jobHandlerConfiguration, jdbcType=VARCHAR},
+       #{job.tenantId, jdbcType=VARCHAR})
+    </foreach>
+    SELECT * FROM dual;
+  </insert>
 
   <insert id="insertMessage" parameterType="org.activiti.engine.impl.persistence.entity.MessageEntity">
     insert into ${prefix}ACT_RU_JOB (

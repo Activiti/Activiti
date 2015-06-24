@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.LinkedHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -56,10 +57,14 @@ import org.activiti.engine.impl.TaskQueryImpl;
 import org.activiti.engine.impl.UserQueryImpl;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.context.Context;
+import org.activiti.engine.impl.db.PersistentObject;
 import org.activiti.engine.impl.db.upgrade.DbUpgradeStep;
 import org.activiti.engine.impl.history.HistoryLevel;
 import org.activiti.engine.impl.interceptor.Session;
+import org.activiti.engine.impl.persistence.entity.IdentityLinkEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
+import org.activiti.engine.impl.persistence.entity.ResourceEntity;
+import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.VariableInstanceEntity;
 import org.activiti.engine.impl.util.IoUtil;
 import org.activiti.engine.impl.util.ReflectUtil;
@@ -67,7 +72,6 @@ import org.activiti.engine.impl.variable.DeserializedObject;
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 /** responsibilities:
  *   - delayed flushing of inserts updates and deletes
@@ -273,6 +277,7 @@ public class DbSqlSession implements Session {
       cacheRemove(persistentObject.getClass(), persistentObject.getId());
     }
     
+    @Override
     public void execute() {
       String deleteStatement = dbSqlSessionFactory.getDeleteStatement(persistentObject.getClass());
       deleteStatement = dbSqlSessionFactory.mapStatement(deleteStatement);
@@ -335,6 +340,7 @@ public class DbSqlSession implements Session {
     	}
     }
     
+    @Override
     public void execute() {
     	
     	if (persistentObjects.isEmpty()) {
@@ -571,6 +577,7 @@ public class DbSqlSession implements Session {
 
   // flush ////////////////////////////////////////////////////////////////////
 
+  @Override
   public void flush() {
     List<DeleteOperation> removedOperations = removeUnnecessaryOperations();
     
@@ -735,7 +742,7 @@ public class DbSqlSession implements Session {
     return false;
   }
   
-  public <T extends PersistentObject> List<T> pruneDeletedEntities(List<T> listToPrune) {   
+  public <T extends PersistentObject> List<T> pruneDeletedEntities(List<T> listToPrune) {
     List<T> prunedList = new ArrayList<T>(listToPrune);
     for (T potentiallyDeleted : listToPrune) {
       for (DeleteOperation deleteOperation: deleteOperations) {
@@ -750,23 +757,47 @@ public class DbSqlSession implements Session {
   }
 
   protected void flushInserts() {
+    LinkedHashMap<Class<? extends PersistentObject>, List<PersistentObject>> bulkInsertHandledMap =
+        new LinkedHashMap<Class<? extends PersistentObject>, List<PersistentObject>>();
     for (PersistentObject insertedObject: insertedObjects) {
-      String insertStatement = dbSqlSessionFactory.getInsertStatement(insertedObject);
-      insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
-
-      if (insertStatement==null) {
-        throw new ActivitiException("no insert statement for "+insertedObject.getClass()+" in the ibatis mapping files");
+      if (!bulkInsertHandledMap.containsKey(insertedObject.getClass())) {
+        bulkInsertHandledMap.put(insertedObject.getClass(), new ArrayList<PersistentObject>());
       }
-      
-      log.debug("inserting: {}", insertedObject);
-      sqlSession.insert(insertStatement, insertedObject);
-      
-      // See http://jira.codehaus.org/browse/ACT-1290
-      if (insertedObject instanceof HasRevision) {
+      bulkInsertHandledMap.get(insertedObject.getClass()).add(insertedObject);
+    }
+    log.info("Insert queries collection formed: " + bulkInsertHandledMap);
+    // First process for entities in order of dependency requirement
+    for (EntityDependencyOrder entityName : EntityDependencyOrder.values()) {
+      if (!bulkInsertHandledMap.containsKey(entityName.getClazz())) {
+        continue;
+      }
+      flushBulkInserts(bulkInsertHandledMap.get(entityName.getClazz()), entityName.getClazz());
+      bulkInsertHandledMap.remove(entityName.getClazz());
+    }
+    // Next, process for all remaining entities
+    for (Class<? extends PersistentObject> clazz : bulkInsertHandledMap.keySet()) {
+      flushBulkInserts(bulkInsertHandledMap.get(clazz), clazz);
+    }
+    insertedObjects.clear();
+  }
+
+  private void flushBulkInserts(List<PersistentObject> variableList, Class<? extends PersistentObject> clazz) {
+    String insertStatement = dbSqlSessionFactory.getBulkInsertStatement(clazz);
+    insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
+    log.info("Insert statement to be executed:" + insertStatement);
+
+    if (insertStatement==null) {
+      throw new ActivitiException("no insert statement for "+variableList.get(0).getClass()+" in the ibatis mapping files");
+    }
+
+    log.info("inserting: {}", variableList);
+    sqlSession.insert(insertStatement, variableList);
+
+    if (variableList.get(0) instanceof HasRevision) {
+      for (PersistentObject insertedObject: variableList) {
         ((HasRevision) insertedObject).setRevision(((HasRevision) insertedObject).getRevisionNext());
       }
     }
-    insertedObjects.clear();
   }
 
   protected void flushUpdates(List<PersistentObject> updatedObjects) {
@@ -861,6 +892,7 @@ public class DbSqlSession implements Session {
     }
   }
 
+  @Override
   public void close() {
     sqlSession.close();
   }
