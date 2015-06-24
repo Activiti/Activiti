@@ -397,7 +397,7 @@
                   <tasks>
                     <echo message="updating activiti configuration to db ${databasewithschema}" />
                     <copy file="${basedir}/../../qa/db/schema/activiti.cfg.xml" todir="target/test-classes" overwrite="true">
-                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.activiti.${databasewithschema}.properties" />
+                      <filterset filtersfile="${user.home}/.activiti/jdbc/build.${databasewithschema}.properties" />
                     </copy>
                   </tasks>
                 </configuration>
