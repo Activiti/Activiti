@@ -856,6 +856,23 @@
     </profile>
     
     <profile>
+      <id>oraclewithschema</id>
+      <activation>
+        <property>
+          <name>databasewithschema</name>
+          <value>oracle</value>
+        </property>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>com.oracle.jdbc</groupId>
+          <artifactId>ojdbc5</artifactId>
+          <scope>test</scope>
+        </dependency>
+      </dependencies>
+    </profile>
+    
+    <profile>
       <id>db2</id>
       <activation>
         <property>
