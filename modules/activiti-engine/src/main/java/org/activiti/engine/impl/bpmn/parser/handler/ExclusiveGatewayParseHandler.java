@@ -30,6 +30,10 @@ public class ExclusiveGatewayParseHandler extends AbstractActivityBpmnParseHandl
   
   protected void executeParse(BpmnParse bpmnParse, ExclusiveGateway gateway) {
     ActivityImpl activity = createActivityOnCurrentScope(bpmnParse, gateway, BpmnXMLConstants.ELEMENT_GATEWAY_EXCLUSIVE);
+    
+    activity.setAsync(gateway.isAsynchronous());
+    activity.setExclusive(!gateway.isNotExclusive());
+    
     activity.setActivityBehavior(bpmnParse.getActivityBehaviorFactory().createExclusiveGatewayActivityBehavior(gateway));
   }
 
