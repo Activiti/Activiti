@@ -21,7 +21,9 @@ import org.activiti.engine.repository.Deployment;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.repository.ProcessDefinitionQuery;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -351,4 +353,19 @@ public class ProcessDefinitionQueryTest extends PluggableActivitiTestCase {
     assertEquals(2, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(0, 2).size());
     assertEquals(2, repositoryService.createNativeProcessDefinitionQuery().sql(baseQuerySql).listPage(1, 3).size());
   }
+  
+  public void testQueryByProcessDefinitionIds() {
+  	List<ProcessDefinition> processDefinitions = repositoryService.createProcessDefinitionQuery().list();
+  	Set<String> ids = new HashSet<String>();
+  	for (ProcessDefinition processDefinition : processDefinitions) {
+  		ids.add(processDefinition.getId());
+  	}
+  	
+  	List<ProcessDefinition> queryResults = repositoryService.createProcessDefinitionQuery().processDefinitionIds(ids).list();
+  	assertEquals(queryResults.size(), ids.size());
+  	for (ProcessDefinition processDefinition : queryResults) {
+  		assertTrue(ids.contains(processDefinition.getId()));
+  	}
+  }
+  
 }
