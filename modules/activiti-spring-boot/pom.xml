@@ -11,7 +11,7 @@
     </parent>
 
 
-    <artifactId>spring-boot</artifactId>
+    <artifactId>activiti-spring-boot</artifactId>
 
     <packaging>pom</packaging>
 
