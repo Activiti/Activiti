@@ -73,7 +73,7 @@ public class RecorderExecutionListener implements ExecutionListener {
     
     recordedEvents.add(new RecordedEvent(
         executionCasted.getActivityId(),
-        currentFlowElement.getName(),
+        (null != currentFlowElement) ? currentFlowElement.getName() : null,
         execution.getEventName(), 
         (String) parameter.getValue(execution)));
   }
