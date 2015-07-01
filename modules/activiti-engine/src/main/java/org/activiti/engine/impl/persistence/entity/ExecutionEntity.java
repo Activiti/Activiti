@@ -349,10 +349,12 @@ public class ExecutionEntity extends VariableScopeImpl implements ActivityExecut
     if (timerDeclarations!=null) {
       for (TimerDeclarationImpl timerDeclaration : timerDeclarations) {
         TimerEntity timer = timerDeclaration.prepareTimerEntity(this);
-        Context
-          .getCommandContext()
-          .getJobEntityManager()
-          .schedule(timer);        
+        if(timer!=null){
+          Context
+            .getCommandContext()
+            .getJobEntityManager()
+            .schedule(timer);
+        }
       }
     }
     

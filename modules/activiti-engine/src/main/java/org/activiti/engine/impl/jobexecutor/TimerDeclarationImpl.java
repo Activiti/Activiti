@@ -25,6 +25,7 @@ import org.activiti.engine.impl.context.Context;
 import org.activiti.engine.impl.el.NoExecutionVariableScope;
 import org.activiti.engine.impl.persistence.entity.ExecutionEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
+import org.joda.time.DateTime;
 
 /**
  * @author Tom Baeyens
@@ -143,24 +144,31 @@ public class TimerDeclarationImpl implements Serializable {
         endDate = businessCalendar.resolveEndDate(endDateString);
       }
     }
-    
+
     Object dueDateValue = description.getValue(scopeForExpression);
     if (dueDateValue instanceof String) {
       dueDateString = (String)dueDateValue;
     }
     else if (dueDateValue instanceof Date) {
       duedate = (Date)dueDateValue;
-    }
-    else {
+    }else if (dueDateValue instanceof DateTime) {
+    	//JodaTime support
+        duedate = ((DateTime) dueDateValue).toDate();
+    }  
+    //dueDateValue==null is OK - but unexpected class type must throw an error.
+    else if(dueDateValue!=null){
       throw new ActivitiException("Timer '"+executionEntity.getActivityId()+"' was not configured with a valid duration/time, either hand in a java.util.Date or a String in format 'yyyy-MM-dd'T'hh:mm:ss'");
     }
     
-    if (duedate==null) {      
+    if (duedate==null && dueDateString!=null) {      
       duedate = businessCalendar.resolveDuedate(dueDateString);
     }
 
-    TimerEntity timer = new TimerEntity(this);
-    timer.setDuedate(duedate);
+    TimerEntity timer = null;
+    //if dueDateValue is null -> this is OK - timer will be null and job not scheduled
+   	if(duedate!=null){
+   		timer = new TimerEntity(this);
+   		timer.setDuedate(duedate);
     timer.setEndDate(endDate);
     if (executionEntity != null) {
       timer.setExecution(executionEntity);
@@ -194,9 +202,10 @@ public class TimerDeclarationImpl implements Serializable {
         timer.setRepeat(prepared);
       }
     }
-    
+   	}
     return timer;
   }
+  
   private String prepareRepeat(String dueDate) {
     if (dueDate.startsWith("R") && dueDate.split("/").length==2) {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
