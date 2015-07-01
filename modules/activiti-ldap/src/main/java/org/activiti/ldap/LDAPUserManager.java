@@ -169,23 +169,23 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
     if (ldapConfigurator.getUserFirstNameAttribute() != null) {
     	try{
     		user.setFirstName(result.getAttributes().get(ldapConfigurator.getUserFirstNameAttribute()).get().toString());
-    	}catch(NullPointerException e){
+    	} catch(NullPointerException e){
     		user.setFirstName("");
     	}
     }
     if (ldapConfigurator.getUserLastNameAttribute() != null) {
     	try{
     		user.setLastName(result.getAttributes().get(ldapConfigurator.getUserLastNameAttribute()).get().toString());
-    	}catch(NullPointerException e){
+    	} catch(NullPointerException e){
     		user.setLastName("");
     	}
     }
     if (ldapConfigurator.getUserEmailAttribute() != null) {
-        try {
-            user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
-        }catch(NullPointerException e){
+      try {
+        user.setEmail(result.getAttributes().get(ldapConfigurator.getUserEmailAttribute()).get().toString());
+      } catch(NullPointerException e){
     		user.setEmail("");
-    	}
+      }
     }
   }
   
@@ -200,36 +200,30 @@ public class LDAPUserManager extends AbstractManager implements UserIdentityMana
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
 
-
   @Override
   public UserQuery createNewUserQuery() {
     return new UserQueryImpl(Context.getProcessEngineConfiguration().getCommandExecutor());
   }
-
 
   @Override
   public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
 
-
   @Override
   public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
-
 
   @Override
   public List<User> findPotentialStarterUsers(String proceDefId) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
 
-
   @Override
   public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult, int maxResults) {
     throw new ActivitiException("LDAP user manager doesn't support querying");
   }
-
 
   @Override
   public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
