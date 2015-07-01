@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:sasbpmn="http://www.sas.com/xml/schema/bpmn" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:ns8="http://sas.com/workflow" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://sas.com/workflow">
+  <process isExecutable="true" name="Simple Process Terminate with Authenticated User" id="simpleProcessTerminateWithAuthenticatedUser">
+    <startEvent id="ID_1" />
+    
+    <userTask name="Task1" id="ID_6"/>
+    <sequenceFlow targetRef="ID_6" sourceRef="ID_1" id="ID_7" />
+    <endEvent id="ID_8">
+      <terminateEventDefinition id="ID_9"/>
+    </endEvent>
+    <sequenceFlow targetRef="ID_8" sourceRef="ID_6" id="ID_10" />
+  </process>
+</definitions>

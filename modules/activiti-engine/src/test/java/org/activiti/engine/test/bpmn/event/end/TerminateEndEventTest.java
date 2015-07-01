@@ -23,6 +23,7 @@ import java.util.Map;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.activiti.engine.history.HistoricProcessInstance;
+import org.activiti.engine.impl.identity.Authentication;
 import org.activiti.engine.impl.test.PluggableActivitiTestCase;
 import org.activiti.engine.runtime.Execution;
 import org.activiti.engine.runtime.ProcessInstance;
@@ -68,6 +69,24 @@ public class TerminateEndEventTest extends PluggableActivitiTestCase {
 		assertProcessEnded(pi.getId());
 	}
 
+	@Deployment
+  public void testSimpleProcessTerminateWithAuthenticatedUser() throws Exception {
+    try {
+      Authentication.setAuthenticatedUserId("user1");
+      ProcessInstance pi = runtimeService.startProcessInstanceByKey("simpleProcessTerminateWithAuthenticatedUser");
+  
+      long executionEntities = runtimeService.createExecutionQuery().processInstanceId(pi.getId()).count();
+      assertEquals(2, executionEntities);
+  
+      Task task = taskService.createTaskQuery().processInstanceId(pi.getId()).taskDefinitionKey("ID_6").singleResult();
+      taskService.complete(task.getId());
+
+      assertProcessEnded(pi.getId());
+    } finally {
+      Authentication.setAuthenticatedUserId(null);
+    }
+  }
+	
 	@Deployment
 	public void testTerminateWithSubProcess() throws Exception {
 		ProcessInstance pi = runtimeService.startProcessInstanceByKey("terminateEndEventExample");
