@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="definitions"
+  xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:activiti="http://activiti.org/bpmn"
+  targetNamespace="org.activiti.engine.impl.webservice"
+  xmlns:tns="org.activiti.engine.impl.webservice"
+  xmlns:counter="http://webservice.activiti.org/">
+
+  <import importType="http://schemas.xmlsoap.org/wsdl/"
+          location="subdir/counterWithImport.wsdl"
+          namespace="http://webservice.activiti.org/" />
+
+  <process id="webServiceInvocationImport_DifferentDirectories">
+
+    <startEvent id="theStart" />
+
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="webService" />
+
+    <serviceTask id="webService"
+                 name="Web service invocation"
+                 implementation="##WebService"
+                 operationRef="tns:incOperation" />
+
+    <sequenceFlow id="flow2" sourceRef="webService" targetRef="theEnd" />
+
+    <endEvent id="theEnd" />
+
+  </process>
+
+  <itemDefinition id="incRequestItem" structureRef="counter:inc" /><!-- QName of input element --> <!-- NEEDED FOR THE ARGUMENTS -->
+  <itemDefinition id="incResponseItem" structureRef="counter:incResponse" /><!-- QName of output element -->
+
+  <message id="incRequestMessage" itemRef="tns:incRequestItem" name="incRequestMessage" />
+  <message id="incResponseMessage" itemRef="tns:incResponseItem" name="incResponseMessage" />
+
+
+  <!-- Interface: implementationRef = QName of WSDL Port Type -->
+  <interface name="Counter Interface"> <!-- NEEDED FOR THE PORT -->
+    <!-- Operation: implementationRef = QName of WSDL Operation -->
+    <operation id="incOperation" name="Increase Operation" implementationRef="counter:inc"> <!-- NEEDED FOR THE OPERATION NAME -->
+      <inMessageRef>tns:incRequestMessage</inMessageRef>
+      <outMessageRef>tns:incResponseMessage</outMessageRef>
+    </operation>
+  </interface>
+
+</definitions>
