@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 import org.activiti.engine.ActivitiException;
 import org.apache.camel.Exchange;
 import org.apache.camel.TypeConversionException;
-import org.springframework.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -64,10 +64,12 @@ public class ExchangeUtils {
     return pattern;
   }
     
-  private static boolean isBoolean(String st) {
-	    if (st == null)
+  private static boolean isBoolean(String booleanString) {
+	    if (StringUtils.isEmpty(booleanString)) {
 	      return false;
-	    String lower = st.toLowerCase();
+	    }
+	    
+	    String lower = booleanString.toLowerCase();
 	    return lower.equals("true") || lower.equals("false");
 	  }
 
@@ -76,7 +78,7 @@ public class ExchangeUtils {
 
     String copyProperties = activitiEndpoint.getCopyVariablesFromProperties();
     // don't other if the property is null, or is a false
-    if (!StringUtils.isEmpty(copyProperties) 
+    if (StringUtils.isNotEmpty(copyProperties) 
             && (!isBoolean(copyProperties) || Boolean.parseBoolean(copyProperties))) {
       
       Pattern pattern = createPattern(copyProperties, Boolean.parseBoolean(copyProperties));
@@ -85,8 +87,9 @@ public class ExchangeUtils {
       // filter camel property that can't be serializable for camel version after 2.12.x+      
       for (String s : exchangeVarMap.keySet()) {
         if (IGNORE_MESSAGE_PROPERTY.equalsIgnoreCase(s) == false) {
-         if (pattern == null || pattern.matcher(s).matches())  
-          camelVarMap.put(s, exchangeVarMap.get(s));
+          if (pattern == null || pattern.matcher(s).matches()) {
+            camelVarMap.put(s, exchangeVarMap.get(s));
+          }
         }
       }
     }
@@ -156,8 +159,8 @@ public class ExchangeUtils {
                       activitiEndpoint.getProcessInitiatorHeaderName() + "': Value must be of type String.", e);
           }
           
-          if (!StringUtils.hasText(initiator)) {
-              throw new RuntimeException("Initiator header '" + 
+          if (StringUtils.isEmpty(initiator)) {
+              throw new ActivitiException("Initiator header '" + 
                       activitiEndpoint.getProcessInitiatorHeaderName() + "': Value must be provided");
           }
       }
