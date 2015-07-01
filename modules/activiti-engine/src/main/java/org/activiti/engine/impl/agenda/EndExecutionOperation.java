@@ -11,7 +11,6 @@ import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
-import org.activiti.bpmn.model.HasExecutionListeners;
 import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
@@ -258,8 +257,7 @@ public class EndExecutionOperation extends AbstractOperation {
     return allEventScopeExecutions;
   }
 
-  protected Process getProcess(String processDefinitionId)
-  {
+  protected Process getProcess(String processDefinitionId) {
     BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
     return bpmnModel.getMainProcess();
   }

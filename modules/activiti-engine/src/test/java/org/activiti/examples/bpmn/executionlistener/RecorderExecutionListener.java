@@ -29,6 +29,8 @@ import org.activiti.engine.impl.util.ProcessDefinitionUtil;
  */
 public class RecorderExecutionListener implements ExecutionListener {
 
+  private static final long serialVersionUID = 1L;
+
   private FixedValue parameter;
 
   private static List<RecorderExecutionListener.RecordedEvent> recordedEvents = new ArrayList<RecorderExecutionListener.RecordedEvent>();
@@ -73,7 +75,7 @@ public class RecorderExecutionListener implements ExecutionListener {
     
     recordedEvents.add(new RecordedEvent(
         executionCasted.getActivityId(),
-        (null != currentFlowElement) ? currentFlowElement.getName() : null,
+        (currentFlowElement != null) ? currentFlowElement.getName() : null,
         execution.getEventName(), 
         (String) parameter.getValue(execution)));
   }

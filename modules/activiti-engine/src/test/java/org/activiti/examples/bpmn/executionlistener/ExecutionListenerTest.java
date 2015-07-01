@@ -79,7 +79,6 @@ public class ExecutionListenerTest extends PluggableActivitiTestCase {
     assertEquals(1, events.size());
     RecordedEvent event = events.get(0);
     assertEquals("End Process Listener", event.getParameter());
-    
   }
 
   @Deployment(resources = { "org/activiti/examples/bpmn/executionlistener/ExecutionListenersStartEndEvent.bpmn20.xml" })
