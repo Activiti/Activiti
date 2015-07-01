@@ -55,8 +55,12 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
   public void signal(ActivityExecution execution, String signalName, Object signalData) throws Exception {
     Object delegate = expression.getValue(execution);
     if( delegate instanceof SignallableActivityBehavior){
-      ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
-      ((SignallableActivityBehavior) delegate).signal( execution , signalName , signalData);
+      try {
+        ClassDelegate.applyFieldDeclaration(fieldDeclarations, delegate);
+        ((SignallableActivityBehavior) delegate).signal( execution , signalName , signalData);
+      } catch (Exception exc) {
+        propagateError(execution, exc);
+      }
     }
   }
 
@@ -94,7 +98,11 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
         leave(execution);
       }
     } catch (Exception exc) {
+      propagateError(execution, exc);
+    }
+  }
 
+  protected void propagateError( ActivityExecution execution, Exception exc ) throws Exception {
       Throwable cause = exc;
       BpmnError error = null;
       while (cause != null) {
@@ -109,9 +117,7 @@ public class ServiceTaskDelegateExpressionActivityBehavior extends TaskActivityB
         ErrorPropagation.propagateError(error, execution);
       } else {
         throw exc;
-      }
-
-    }
+      }	
   }
 
 }
