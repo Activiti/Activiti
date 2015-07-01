@@ -48,9 +48,9 @@ public class ActivitiEndpoint extends DefaultEndpoint {
 
   protected boolean copyCamelBodyToBody;
   
-  protected boolean copyVariablesFromProperties;
+  protected String copyVariablesFromProperties;
 
-  protected boolean copyVariablesFromHeader;
+  protected String copyVariablesFromHeader;
   
   protected boolean copyCamelBodyToBodyAsString;
   
@@ -132,20 +132,24 @@ public class ActivitiEndpoint extends DefaultEndpoint {
   public void setCopyVariablesToBodyAsMap(boolean copyVariablesToBodyAsMap) {
     this.copyVariablesToBodyAsMap = copyVariablesToBodyAsMap;
   }
-  
-  public boolean isCopyVariablesFromProperties() {
-    return copyVariablesFromProperties;
+
+
+  public String getCopyVariablesFromProperties() {
+    return copyVariablesFromProperties ;
   }
 
-  public void setCopyVariablesFromProperties(boolean copyVariablesFromProperties) {
+  
+  public void setCopyVariablesFromProperties(String copyVariablesFromProperties) {
     this.copyVariablesFromProperties = copyVariablesFromProperties;
   }
 
-  public boolean isCopyVariablesFromHeader() {
-    return this.copyVariablesFromHeader;
+  
+  public String getCopyVariablesFromHeader() {
+    return copyVariablesFromHeader;
+    
   }
-
-  public void setCopyVariablesFromHeader(boolean copyVariablesFromHeader) {
+  
+   public void setCopyVariablesFromHeader(String copyVariablesFromHeader) {
     this.copyVariablesFromHeader = copyVariablesFromHeader;
   }
   
