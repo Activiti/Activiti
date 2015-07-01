@@ -478,6 +478,15 @@ public class ExecutionEntityManager extends AbstractEntityManager<ExecutionEntit
       }
     }
 
+    if (executionEntity.getId().equals(executionEntity.getProcessInstanceId())) {
+      IdentityLinkEntityManager identityLinkEntityManager = commandContext.getIdentityLinkEntityManager();
+      Collection<IdentityLinkEntity> identityLinks = identityLinkEntityManager.findIdentityLinksByProcessInstanceId(executionEntity.getProcessInstanceId());
+      for(IdentityLinkEntity identityLink : identityLinks)
+      {
+        identityLinkEntityManager.delete(identityLink);
+      }
+    }
+    
     // Get variables related to execution and delete them
     VariableInstanceEntityManager variableInstanceEntityManager = commandContext.getVariableInstanceEntityManager();
     Collection<VariableInstanceEntity> executionVariables = variableInstanceEntityManager.findVariableInstancesByExecutionId(executionEntity.getId());
