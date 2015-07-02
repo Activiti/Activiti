@@ -2086,8 +2086,16 @@ public abstract class ProcessEngineConfigurationImpl extends ProcessEngineConfig
     this.enableEventDispatcher = enableEventDispatcher;
   }
 
+  public Map<String, List<ActivitiEventListener>> getTypedEventListeners() {
+    return typedEventListeners;
+  }
+
   public void setTypedEventListeners(Map<String, List<ActivitiEventListener>> typedListeners) {
     this.typedEventListeners = typedListeners;
+  }
+
+  public List<ActivitiEventListener> getEventListeners() {
+    return eventListeners;
   }
 
   public void setEventListeners(List<ActivitiEventListener> eventListeners) {
