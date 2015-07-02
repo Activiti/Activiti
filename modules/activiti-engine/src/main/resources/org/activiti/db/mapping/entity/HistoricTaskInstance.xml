@@ -262,7 +262,7 @@
   <!-- HISTORIC TASK INSTANCE SELECT -->
   
   <select id="selectHistoricTaskInstance" resultMap="historicTaskInstanceResultMap">
-    select * from ${prefix}ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId}
+    select * from ${prefix}ACT_HI_TASKINST where ID_ = #{historicTaskInstanceId, jdbcType=VARCHAR}
   </select>
   
   <select id="selectHistoricTaskInstanceIdsByProcessInstanceId" resultType="string" parameterType="org.activiti.engine.impl.db.ListQueryParameterObject" >
