@@ -6,13 +6,16 @@ import java.util.List;
 
 import org.activiti.bpmn.model.Activity;
 import org.activiti.bpmn.model.BoundaryEvent;
+import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.CompensateEventDefinition;
 import org.activiti.bpmn.model.EndEvent;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.bpmn.model.FlowNode;
+import org.activiti.bpmn.model.Process;
 import org.activiti.bpmn.model.SubProcess;
 import org.activiti.bpmn.model.Transaction;
 import org.activiti.engine.ActivitiException;
+import org.activiti.engine.delegate.ExecutionListener;
 import org.activiti.engine.delegate.event.ActivitiEventType;
 import org.activiti.engine.delegate.event.impl.ActivitiEventBuilder;
 import org.activiti.engine.impl.bpmn.behavior.MultiInstanceActivityBehavior;
@@ -24,6 +27,7 @@ import org.activiti.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.activiti.engine.impl.pvm.delegate.ActivityExecution;
 import org.activiti.engine.impl.pvm.delegate.SubProcessActivityBehavior;
 import org.activiti.engine.impl.pvm.runtime.InterpretableExecution;
+import org.activiti.engine.impl.util.ProcessDefinitionUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +54,7 @@ public class EndExecutionOperation extends AbstractOperation {
     if (executionEntity.getParentId() != null) {
       parentExecution = executionEntityManager.get(executionEntity.getParentId());
     }
-
+    
     if (parentExecution != null) {
 
       // If the execution is a scope, all the child executions must be deleted first.
@@ -171,6 +175,13 @@ public class EndExecutionOperation extends AbstractOperation {
         logger.debug("Active executions found. Process instance {} will not be ended.", processInstanceId);
       }
 
+      Process process = getProcess(executionEntity.getProcessDefinitionId());
+      
+      // Execute execution listeners for process end.
+      if (CollectionUtils.isNotEmpty(process.getExecutionListeners())) { 
+        executeExecutionListeners(process, executionEntity, ExecutionListener.EVENTNAME_END, false);
+      }
+      
       // and trigger execution afterwards
       if (superExecution != null) {
         superExecution.setSubProcessInstance(null);
@@ -184,7 +195,7 @@ public class EndExecutionOperation extends AbstractOperation {
           throw new ActivitiException("Error while completing sub process of execution " + executionEntity, e);
         }
 
-      } else {
+      } else {        
         // dispatch process completed event
         if (Context.getProcessEngineConfiguration() != null && Context.getProcessEngineConfiguration().getEventDispatcher().isEnabled()) {
           Context.getProcessEngineConfiguration().getEventDispatcher().dispatchEvent(ActivitiEventBuilder.createEntityEvent(ActivitiEventType.PROCESS_COMPLETED, execution));
@@ -246,4 +257,8 @@ public class EndExecutionOperation extends AbstractOperation {
     return allEventScopeExecutions;
   }
 
+  protected Process getProcess(String processDefinitionId) {
+    BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
+    return bpmnModel.getMainProcess();
+  }
 }

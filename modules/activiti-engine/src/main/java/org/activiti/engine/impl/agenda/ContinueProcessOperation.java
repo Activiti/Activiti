@@ -65,7 +65,7 @@ public class ContinueProcessOperation extends AbstractOperation {
     	
       // Check if it's the initial flow element. If so, we must fire the execution listeners for the process too
       FlowNode currentFlowNode = (FlowNode) currentFlowElement;
-      if (currentFlowNode.getIncomingFlows() != null && currentFlowNode.getIncomingFlows().size() == 0) {
+      if (currentFlowNode.getIncomingFlows() != null && currentFlowNode.getIncomingFlows().size() == 0 && currentFlowNode.getSubProcess() == null) {
     	  executeProcessStartExecutionListeners();
       }
     	
