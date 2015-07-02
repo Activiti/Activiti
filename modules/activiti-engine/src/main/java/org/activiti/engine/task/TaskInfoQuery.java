@@ -275,6 +275,9 @@ public interface TaskInfoQuery<T extends TaskInfoQuery<?, ?>, V extends TaskInfo
    */
   T processDefinitionKey(String processDefinitionKey);
   
+  /** Only select tasks that have a process definition for which the key is present in the given list **/
+  T processDefinitionKeyIn(List<String> processDefinitionKeys);
+  
   /**
    * Only select tasks which are part of a process instance which has a
    * process definition key like the given value.
