@@ -58,4 +58,14 @@ public class ExceptionHandlerAdvice {
   public ErrorInfo handleIllegal(ActivitiIllegalArgumentException e) {
     return new ErrorInfo("Bad request", e);
   }
+  
+  // Fall back
+  
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)  // 500
+  @ExceptionHandler(Exception.class)
+  @ResponseBody
+  public ErrorInfo handleOtherException(Exception e) {
+  	return new ErrorInfo("Internal server error", e);
+  }
+  
 }
