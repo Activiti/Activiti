@@ -220,7 +220,7 @@
   </select>
   
   <!-- mysql specific sql -->
-  <select id="selectProcessDefinitionsByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
+  <select id="selectProcessDefinitionsByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultMap="processDefinitionResultMap">
   	${limitBefore}
     select distinct RES.* ${limitBetween}
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
@@ -229,29 +229,13 @@
   </select>
 
   <!-- mysql specific sql -->
-  <select id="selectProcessDefinitionCountByQueryCriteria_mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultType="long">
+  <select id="selectProcessDefinitionCountByQueryCriteria" databaseId="mysql" parameterType="org.activiti.engine.impl.ProcessDefinitionQueryImpl" resultType="long">
     select distinct count(RES.ID_)
     <include refid="selectProcessDefinitionsByQueryCriteriaSql"/>
   </select>
 
   <select id="selectProcessDefinitionByNativeQuery" parameterType="java.util.Map" resultMap="processDefinitionResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBefore}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
-  </select>
-
-  <select id="selectProcessDefinitionByNativeQuery_mssql_or_db2" parameterType="java.util.Map" resultMap="processDefinitionResultMap">
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitBeforeNativeQuery}
-    </if>
-    ${sql}
-    <if test="resultType == 'LIST_PAGE'">
-      ${limitAfter}
-    </if>
+    <include refid="org.activiti.engine.db.common.selectByNativeQuery"/>
   </select>
 
   <select id="selectProcessDefinitionCountByNativeQuery" parameterType="java.util.Map" resultType="long">
