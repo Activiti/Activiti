@@ -65,7 +65,7 @@
          #{processDefinition.suspensionState, jdbcType=INTEGER},
          #{processDefinition.tenantId, jdbcType=VARCHAR})
     </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <!-- PROCESSDEFINITION UPDATE -->

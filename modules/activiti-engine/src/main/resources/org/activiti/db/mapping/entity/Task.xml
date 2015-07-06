@@ -99,7 +99,7 @@
          #{task.tenantId, jdbcType=VARCHAR},
          #{task.formKey, jdbcType=VARCHAR})
     </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <!-- TASK UPDATE -->

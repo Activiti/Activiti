@@ -62,7 +62,7 @@
            #{model.editorSourceExtraValueId, jdbcType=VARCHAR},
            #{model.tenantId, jdbcType=VARCHAR})
      </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- MODEL UPDATE -->

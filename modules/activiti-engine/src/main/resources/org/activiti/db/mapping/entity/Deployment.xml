@@ -33,7 +33,7 @@
            #{deployment.tenantId, jdbcType=VARCHAR},
            #{deployment.deploymentTime, jdbcType=TIMESTAMP})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- DEPLOYMENT UPDATE -->

@@ -296,7 +296,7 @@
            #{messageEventSubscription.processDefinitionId, jdbcType=VARCHAR},
            #{messageEventSubscription.tenantId, jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- MESSAGE UPDATE -->
@@ -407,7 +407,7 @@
            #{signalEventSubscription.processDefinitionId, jdbcType=VARCHAR},
            #{signalEventSubscription.tenantId, jdbcType=VARCHAR})
      </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- SIGNAL UPDATE -->
@@ -517,7 +517,7 @@
          #{compensateEventSubscription.processDefinitionId, jdbcType=VARCHAR},
          #{compensateEventSubscription.tenantId, jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <!-- Compensate UPDATE -->

@@ -35,7 +35,7 @@
        #{property.value, jdbcType=VARCHAR},
        1)
     </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- PROPERTY UPDATE -->
