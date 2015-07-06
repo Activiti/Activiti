@@ -107,7 +107,7 @@
             DELETE_REASON_,
             TENANT_ID_,
             NAME_
-          ) values 
+          ) VALUES 
               (#{historicProcessInstance.id ,jdbcType=VARCHAR},
                #{historicProcessInstance.processInstanceId, jdbcType=VARCHAR},
                #{historicProcessInstance.businessKey, jdbcType=VARCHAR},

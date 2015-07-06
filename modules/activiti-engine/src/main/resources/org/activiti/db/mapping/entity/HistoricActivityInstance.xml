@@ -107,7 +107,7 @@
           END_TIME_,
           DURATION_,
           TENANT_ID_
-        ) values 
+        ) VALUES 
            (#{historicActivityInstance.id ,jdbcType=VARCHAR},
             #{historicActivityInstance.processDefinitionId, jdbcType=VARCHAR},
             #{historicActivityInstance.processInstanceId, jdbcType=VARCHAR},

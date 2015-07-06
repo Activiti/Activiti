@@ -63,9 +63,9 @@
   </insert>
 
   <insert id="bulkInsertComment_oracle" parameterType="java.util.List">
-    insert all 
+    INSERT ALL 
       <foreach collection="list" item="comment" index="index">
-        into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_) values 
+        into ${prefix}ACT_HI_COMMENT (ID_, TYPE_, TIME_, USER_ID_, TASK_ID_, PROC_INST_ID_, ACTION_, MESSAGE_, FULL_MSG_) VALUES 
           (#{comment.id ,jdbcType=VARCHAR},
            #{comment.type ,jdbcType=VARCHAR},
            #{comment.time ,jdbcType=TIMESTAMP},

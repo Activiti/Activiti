@@ -35,9 +35,9 @@
   </insert>
   
   <insert id="bulkInsertIdentityLink_oracle" parameterType="org.activiti.engine.impl.persistence.entity.IdentityLinkEntity">
-    insert all
+    INSERT ALL
       <foreach collection="list" item="identityLink" index="index">
-        into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_) values
+        into ${prefix}ACT_RU_IDENTITYLINK (ID_, REV_, TYPE_, USER_ID_, GROUP_ID_, TASK_ID_, PROC_INST_ID_, PROC_DEF_ID_) VALUES
            (#{identityLink.id, jdbcType=VARCHAR},
             1,
             #{identityLink.type, jdbcType=VARCHAR},

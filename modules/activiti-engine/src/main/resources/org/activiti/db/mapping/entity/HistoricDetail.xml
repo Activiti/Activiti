@@ -54,7 +54,7 @@
   <insert id="bulkInsertHistoricFormProperty_oracle" parameterType="java.util.List">
     INSERT ALL 
     <foreach collection="list" item="historicFormProperty" index="index">
-      INTO ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_) values 
+      INTO ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, ACT_INST_ID_, EXECUTION_ID_, TASK_ID_, TIME_, NAME_, TEXT_) VALUES 
         (#{historicFormProperty.id, jdbcType=VARCHAR},
          #{historicFormProperty.detailType, jdbcType=VARCHAR},
          #{historicFormProperty.processInstanceId, jdbcType=VARCHAR},
@@ -115,7 +115,7 @@
     INSERT ALL 
       <foreach collection="list" item="historicDetailVariableInstance" index="index">
         INTO ${prefix}ACT_HI_DETAIL (ID_, TYPE_, PROC_INST_ID_, EXECUTION_ID_, ACT_INST_ID_, TASK_ID_,
-        NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_) values 
+        NAME_, REV_, VAR_TYPE_, TIME_, BYTEARRAY_ID_, DOUBLE_, LONG_ , TEXT_, TEXT2_) VALUES 
             (#{historicDetailVariableInstance.id, jdbcType=VARCHAR},
              #{historicDetailVariableInstance.detailType, jdbcType=VARCHAR},
              #{historicDetailVariableInstance.processInstanceId, jdbcType=VARCHAR},
