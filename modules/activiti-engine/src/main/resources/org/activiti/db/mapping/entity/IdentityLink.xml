@@ -47,7 +47,7 @@
             #{identityLink.processInstanceId, jdbcType=VARCHAR},
             #{identityLink.processDefId, jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <!-- IDENTITY LINK DELETE -->

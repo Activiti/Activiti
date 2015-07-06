@@ -36,7 +36,7 @@
              #{group.name ,jdbcType=VARCHAR},
              #{group.type ,jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- GROUP UPDATE -->

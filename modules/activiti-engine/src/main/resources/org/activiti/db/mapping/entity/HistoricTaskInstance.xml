@@ -159,7 +159,7 @@
              #{historicTask.category, jdbcType=VARCHAR},
              #{historicTask.tenantId, jdbcType=VARCHAR})
         </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- HISTORIC TASK INSTANCE UPDATE -->

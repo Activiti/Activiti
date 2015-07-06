@@ -65,7 +65,7 @@
          #{historicFormProperty.propertyId, jdbcType=VARCHAR},
          #{historicFormProperty.propertyValue, jdbcType=VARCHAR})
     </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <insert id="insertHistoricDetailVariableInstanceUpdate" parameterType="org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity">
@@ -132,7 +132,7 @@
              #{historicDetailVariableInstance.textValue, jdbcType=VARCHAR},
              #{historicDetailVariableInstance.textValue2, jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
   
   <!-- HISTORIC DETAILS DELETE -->

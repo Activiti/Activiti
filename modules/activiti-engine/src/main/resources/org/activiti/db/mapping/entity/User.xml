@@ -41,7 +41,7 @@
          #{user.email ,jdbcType=VARCHAR},
          #{user.password ,jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- USER UPDATE -->

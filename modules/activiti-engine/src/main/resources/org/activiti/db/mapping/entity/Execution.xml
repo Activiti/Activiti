@@ -76,7 +76,7 @@
              #{execution.tenantId, jdbcType=VARCHAR},
              #{execution.name, jdbcType=VARCHAR})
       </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- EXECUTION UPDATE -->

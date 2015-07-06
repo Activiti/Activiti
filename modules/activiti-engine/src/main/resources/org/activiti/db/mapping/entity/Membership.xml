@@ -30,7 +30,7 @@
         (#{membership.userId ,jdbcType=VARCHAR},
          #{membership.groupId ,jdbcType=VARCHAR})
     </foreach>
-    SELECT * FROM dual;
+    SELECT * FROM dual
   </insert>
 
   <!-- MEMBERSHIP UPDATE -->
