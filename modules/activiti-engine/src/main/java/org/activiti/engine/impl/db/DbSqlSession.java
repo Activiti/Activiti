@@ -785,27 +785,55 @@ public class DbSqlSession implements Session {
   	
     for (Class<? extends PersistentObject> persistentObjectClass : EntityDependencyOrder.INSERT_ORDER) {
       if (insertedObjects.containsKey(persistentObjectClass)) {
-        flushBulkInserts(insertedObjects.get(persistentObjectClass), persistentObjectClass);
-        insertedObjects.remove(persistentObjectClass);
+      	List<PersistentObject> persistentObjectsToInsert = insertedObjects.get(persistentObjectClass);
+      	if (persistentObjectsToInsert.size() == 1) {
+      		flushRegularInsert(persistentObjectsToInsert.get(0), persistentObjectClass);
+      	} else {
+      		flushBulkInsert(insertedObjects.get(persistentObjectClass), persistentObjectClass);
+      	}
+      	
+      	insertedObjects.remove(persistentObjectClass);
       }
     }
     
-    // Next, in case of custom entities
+    // Next, in case of custom entities or we've screwed up and forgotton some entity
     if (insertedObjects.size() > 0) {
 	    for (Class<? extends PersistentObject> clazz : insertedObjects.keySet()) {
-	      flushBulkInserts(insertedObjects.get(clazz), clazz);
+	    	List<PersistentObject> persistentObjectsToInsert = insertedObjects.get(clazz);
+      	if (persistentObjectsToInsert.size() == 1) {
+      		flushRegularInsert(persistentObjectsToInsert.get(0), clazz);
+      	} else {
+      		flushBulkInsert(insertedObjects.get(clazz), clazz);
+      	}
 	    }
     }
     
     insertedObjects.clear();
   }
+  
+  protected void flushRegularInsert(PersistentObject persistentObject, Class<? extends PersistentObject> clazz) {
+  	 String insertStatement = dbSqlSessionFactory.getInsertStatement(persistentObject);
+     insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
 
-  protected void flushBulkInserts(List<PersistentObject> persistentObjectList, Class<? extends PersistentObject> clazz) {
+     if (insertStatement==null) {
+       throw new ActivitiException("no insert statement for " + persistentObject.getClass() + " in the ibatis mapping files");
+     }
+     
+     log.debug("inserting: {}", persistentObject);
+     sqlSession.insert(insertStatement, persistentObject);
+     
+     // See http://jira.codehaus.org/browse/ACT-1290
+     if (persistentObject instanceof HasRevision) {
+       ((HasRevision) persistentObject).setRevision(((HasRevision) persistentObject).getRevisionNext());
+     }
+  }
+
+  protected void flushBulkInsert(List<PersistentObject> persistentObjectList, Class<? extends PersistentObject> clazz) {
     String insertStatement = dbSqlSessionFactory.getBulkInsertStatement(clazz);
     insertStatement = dbSqlSessionFactory.mapStatement(insertStatement);
 
     if (insertStatement==null) {
-      throw new ActivitiException("no insert statement for "+persistentObjectList.get(0).getClass()+" in the ibatis mapping files");
+      throw new ActivitiException("no insert statement for " + persistentObjectList.get(0).getClass() + " in the ibatis mapping files");
     }
 
     sqlSession.insert(insertStatement, persistentObjectList);
