@@ -285,7 +285,7 @@
   </insert>
   
   <insert id="bulkInsertMessageEventSubscription_oracle" parameterType="java.util.List">
-  insert all 
+  INSERT ALL 
       <foreach collection="list" item="messageEventSubscription" index="index">
         into ${prefix}ACT_RU_EVENT_SUBSCR (
             ID_, 
@@ -299,7 +299,7 @@
             CREATED_,
             PROC_DEF_ID_,
             TENANT_ID_
-          ) values 
+          ) VALUES 
           (#{messageEventSubscription.id, jdbcType=VARCHAR},
            1,
            #{messageEventSubscription.eventType, jdbcType=VARCHAR},
@@ -395,7 +395,7 @@
   </insert>
 
   <insert id="bulkInsertSignalEventSubscription_oracle" parameterType="java.util.List">
-   insert all 
+   INSERT ALL 
       <foreach collection="list" item="signalEventSubscription" index="index">
          into ${prefix}ACT_RU_EVENT_SUBSCR (
            ID_, 
@@ -410,7 +410,7 @@
           PROC_DEF_ID_,
           TENANT_ID_
           )
-          values 
+          VALUES 
           (#{signalEventSubscription.id, jdbcType=VARCHAR},
            1,
            #{signalEventSubscription.eventType, jdbcType=VARCHAR}',
@@ -505,7 +505,7 @@
   </insert>
 
   <insert id="bulkInsertCompensateEventSubscription_oracle" parameterType="java.util.List">
-    insert all 
+    INSERT ALL 
       <foreach collection="list" item="compensateEventSubscription" index="index">
         into ${prefix}ACT_RU_EVENT_SUBSCR (
           ID_, 
@@ -520,7 +520,7 @@
           PROC_DEF_ID_,
           TENANT_ID_
         )
-        values 
+        VALUES
         (#{compensateEventSubscription.id, jdbcType=VARCHAR},
          1,
          #{compensateEventSubscription.eventType, jdbcType=VARCHAR},

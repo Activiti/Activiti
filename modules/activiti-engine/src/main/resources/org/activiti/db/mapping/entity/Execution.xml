@@ -54,10 +54,10 @@
   </insert>
 
   <insert id="bulkInsertExecution_oracle" parameterType="java.util.List">
-    insert all 
+    INSERT ALL 
       <foreach collection="list" item="execution" index="index">
         into ${prefix}ACT_RU_EXECUTION (ID_, REV_, PROC_INST_ID_, BUSINESS_KEY_, PROC_DEF_ID_, ACT_ID_,
-        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_) values 
+        IS_ACTIVE_, IS_CONCURRENT_, IS_SCOPE_,IS_EVENT_SCOPE_, PARENT_ID_, SUPER_EXEC_, ROOT_PROC_INST_ID_, SUSPENSION_STATE_, CACHED_ENT_STATE_, TENANT_ID_, NAME_) VALUES 
             (#{execution.id ,jdbcType=VARCHAR},
              1,
              #{execution.processInstanceId, jdbcType=VARCHAR},

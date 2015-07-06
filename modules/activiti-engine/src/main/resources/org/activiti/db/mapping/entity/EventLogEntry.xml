@@ -95,10 +95,10 @@
   </insert>
 
   <insert id="bulkInsertEventLogEntry_oracle" parameterType="java.util.List">
-    insert all 
+    INSERT LL 
       <foreach collection="list" item="eventLogEntry" index="index">
         into ${prefix}ACT_EVT_LOG(LOG_NR_, TYPE_, PROC_DEF_ID_, PROC_INST_ID_, EXECUTION_ID_, TASK_ID_,
-        TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_) values 
+        TIME_STAMP_, USER_ID_, DATA_, LOCK_OWNER_, LOCK_TIME_, IS_PROCESSED_) VALUES 
             (${prefix}ACT_EVT_LOG_seq.nextVal,
              #{eventLogEntry.type, jdbcType=VARCHAR}, 
              #{eventLogEntry.processDefinitionId, jdbcType=VARCHAR}, 
