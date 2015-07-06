@@ -239,6 +239,11 @@ public class DbSqlSessionFactory implements SessionFactory {
     return getStatement(object.getClass(), insertStatements, "insert");
   }
   
+  
+  public String getInsertStatement(Class<? extends PersistentObject> clazz) {
+    return getStatement(clazz, insertStatements, "insert");
+  }
+  
   public String getBulkInsertStatement(Class clazz) {
     return getStatement(clazz, bulkInsertStatements, "bulkInsert");
   }

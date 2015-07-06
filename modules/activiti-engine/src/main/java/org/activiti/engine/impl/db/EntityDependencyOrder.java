@@ -31,6 +31,7 @@ import org.activiti.engine.impl.persistence.entity.MessageEntity;
 import org.activiti.engine.impl.persistence.entity.ModelEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.persistence.entity.PropertyEntity;
+import org.activiti.engine.impl.persistence.entity.ResourceEntity;
 import org.activiti.engine.impl.persistence.entity.TaskEntity;
 import org.activiti.engine.impl.persistence.entity.TimerEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntity;
@@ -99,6 +100,15 @@ public class EntityDependencyOrder {
 		 * FK to DeploymentEntity
 		 */
 		DELETE_ORDER.add(ByteArrayEntity.class);
+		
+		/*
+		 * FK from ModelEntity
+		 * FK from JobEntity
+		 * FK from VariableInstanceEntity
+		 * 
+		 * FK to DeploymentEntity
+		 */
+		DELETE_ORDER.add(ResourceEntity.class);
 		
 		/*
 		 * FK from ByteArray
